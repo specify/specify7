@@ -1,52 +1,232 @@
 {
   "collectionobject": {
     "items": [
-      { "collectionObjectAttribute": { "name": "Attributes", "desc": "Attributes" } },
-      { "paleoContext": { "ishidden": false, "name": "Geologic Context", "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting" } },
-      { "collectingEvent": { "ishidden": false, "name": "Collecting Event", "desc": "Collecting Event test", "items": [
-        { "stationFieldNumber": { "ishidden": false, "name": "Collector Number", "desc": "Number assigned by the collector" } },
-        { "method": { "ishidden": false, "name": "Method", "desc": "Method used to collect the specimen" } },
-        { "startTime": { "ishidden": false, "name": "Start Time", "desc": "Time, if known, that the collecting event started" } },
-        { "endTime": { "ishidden": false, "name": "End Time", "desc": "Time, if known, that the collecting event ended" } },
-        { "verbatimDate": { "ishidden": true, "name": "Verbatim Date", "desc": "The verbatim date as recorded by the collector" } },
-        { "collectingtrip": { "ishidden": false, "name": "Collecting Trip", "desc": "The collecting trip associated with the event. Each collecting trip may have multiple collecting events." } }
-      ] } },
-      {  "taxon": { "ishidden": false, "name": "Taxon", "desc": "Taxon", 
-        "items": [
-        { "text10": { "ishidden": false, "name": "Approved Formula", "desc": "The approved chemical formula for a mineral." } },
-        { "text11": { "ishidden": false, "name": "IMA Status", "desc": "International Mineralogical Association status." } },
-        { "text12": { "ishidden": false, "name": "IMA No./Year", "desc": "International Mineralogical Association number and year." } },
-        { "text13": { "ishidden": false, "name": "Country", "desc": "The country where the mineral was found." } },
-        { "text14": { "ishidden": false, "name": "First Reference", "desc": "The first reference for the mineral." } },
-        { "text15": { "ishidden": false, "name": "Second Reference", "desc": "The second reference for the mineral." } },
-        { "text3": { "ishidden": true, "name": "Code", "desc": "Code" } }
-      ] } }
+      { "catalognumber": { "ishidden": false, "name": "Catalog Number", "desc": "Can be configured to be numeric or in any format" } },
+      { "collectionobjecttype": { "ishidden": false, "name": "Object Type", "desc": "Type of collection object (Rock, Mineral, Meteorite, Fossil, etc.)." } },
+      { "altcatalognumber": { "ishidden": false, "name": "Alt Catalog Number", "desc": "Alternate catalog number" } },
+      { "catalogeddate": { "ishidden": false, "name": "Cataloged Date", "desc": "Date the object was entered into the catalog." } },
+      { "cataloger": { "ishidden": false, "name": "Cataloger", "desc": "Agent record for the user cataloging the collection object." } },
+      { "accession": { "ishidden": false, "name": "Accession Number", "desc": "Accession contains the usual fields within Specify." } },
+      { "text1": { "ishidden": false, "name": "Quality", "desc": "Indicates the quality of the specimen (from 0 stars to 5 stars)." } },
+      { "cojo": { "ishidden": false, "name": "Collection Object Group", "desc": "Optional group that the collection object is a child of." } },
+      { "text2": { "ishidden": false, "name": "Hazard Type", "desc": "Subdivision of hazards based on a set of unique characteristics and negative health outcomes." } },
+      { "text3": { "ishidden": false, "name": "Hazard Remarks", "desc": "General remarks regarding the hazard type within the scope of the specific collection object." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the collection object." } },
+      { "collectionobjectattachments": { "ishidden": false, "name": "Collection Object Attachments", "desc": "Enable attaching any file to this record." } },
+      { "collectionobjectcitations": { "ishidden": false, "name": "Collection Object Citations", "desc": "Enables users to capture data about the reference work where this information is cited." } },
+      { "conservdescriptions": { "ishidden": false, "name": "Conservation Description", "desc": "Captures information about how to display, handle, or conserve the specimen." } },
+      { "collectingevent": { "ishidden": false, "name": "Collecting Event", "desc": "Collecting Event" } },
+      { "paleocontext": { "ishidden": false, "name": "Geologic Context", "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting." } },
+      { "collectionobjectattribute": { "ishidden": false, "name": "Collection Object Attributes", "desc": "Attributes" } }
     ]
   },
 
-  "determination": {
+  "conservdescription": {
     "items": [
-      { "alternatename": { "ishidden": false, "name": "Verbatim Name", "desc": "This can capture the verbatim name of the determination in cases where the name does not fit in the standard hierarchy." } },
-      { "determiner": { "ishidden": true } },
-      { "determiners": { "ishidden": false } },
-      { "determinationcitations": { "ishidden": false } },
-      { "remarks": { "ishidden": false } },
-      { "text1": { "ishidden": false, "name": "Confirmation Technique", "desc": "Analytical technique utilized to confirm the identification" } }
+      { "text1": { "ishidden": false, "name": "Handling Requirements", "desc": "A summary of the procedural requirements employed to preserve and protect the specimen during physical interaction." } },
+      { "backgroundinfo": { "ishidden": false, "name": "Background Info", "desc": "Any background information on the object or preparation." } },
+      { "lightrecommendations": { "ishidden": false, "name": "Light Recommendations", "desc": "Information about the recommended lighting conditions for the object or preparation." } },
+      { "displayrecommendations": { "ishidden": false, "name": "Display Recommendations", "desc": "Information about the recommended display technique for the object or preparation." } },
+      { "otherrecommendations": { "ishidden": false, "name": "Other Recommendations", "desc": "Miscellaneous recommendations for the object or preparation." } },
+      { "events": { "ishidden": false, "name": "Conservator Events", "desc": "Links to one or more Conservator Events." } }
+    ]
+  },
+
+  "conservevent": {
+    "items": [
+      { "treatmentreport": { "ishidden": false, "name": "Treatment", "desc": "A description of the treatment that was done." } },
+      { "treatedbyagent": { "ishidden": false, "name": "Treated By", "desc": "Captures the person who treated the object or preparation." } },
+      { "examdate": { "ishidden": false, "name": "Exam Date", "desc": "The date the object was examined." } },
+      { "examinedbyagent": { "ishidden": false, "name": "Examined By", "desc": "Captures the person who examined the object or preparation." } },
+      { "conditionreport": { "ishidden": false, "name": "Condition Report", "desc": "A report on the condition of the object or preparation at the moment of the conservator event." } },
+      { "curatorapprovaldate": { "ishidden": false, "name": "Approval Date", "desc": "Approval date for the conservation event." } },
+      { "curator": { "ishidden": false, "name": "Approver", "desc": "Captures the curator who authorized the treatment." } },
+      { "conserveventattachments": { "ishidden": false, "name": "Conservator Event Attachments", "desc": "Enable attaching any file to this record." } }
+    ]
+  },
+
+  "collectionobjecttype": {
+    "items": [
+      { "name": { "ishidden": false, "name": "Name", "desc": "The name of the type of object (Mineral, Fossil, Meteorite, Rock, etc.)." } },
+      { "taxontreedef": { "ishidden": false, "name": "Taxon Tree", "desc": "The Taxon tree that the type corresponds to." } },
+      { "collection": { "ishidden": false, "name": "Collection", "desc": "Collection Object Types are specific to each Specify collection." } }
+    ]
+  },
+
+  "collectionobjectgroup": {
+    "items": [
+      { "name": { "ishidden": false, "name": "Name", "desc": "The name or ID of the Collection Object Group." } },
+      { "cogtype": { "ishidden": false, "name": "Collection Object Group Type", "desc": "Dictates the business logic and display of the Collection Object Group." } },
+      { "collection": { "ishidden": false, "name": "Collection", "desc": "Collection Object Groups are only visible within a single Specify collection." } }
+    ]
+  },
+
+  "collectionobjectgroupjoin": {
+    "items": [
+      { "isprimary": { "ishidden": false, "name": "Is Primary", "desc": "Indicates whether a particular collection object within a group is the primary member." } },
+      { "issubstrate": { "ishidden": false, "name": "Is Substrate", "desc": "Indicates whether a particular collection object within a group is the substrate that represents the group." } },
+      { "precedence": { "ishidden": false, "name": "Precedence", "desc": "Determines the order of group members when displayed." } },
+      { "text1": { "ishidden": false, "name": "Proportion", "desc": "Qualitative or quantitative fraction of a whole for part/whole relationships." } },
+      { "text2": { "ishidden": false, "name": "Role", "desc": "Role this object plays in the Collection Object Group." } },
+      { "childco": { "ishidden": false, "name": "Child Collection Object", "desc": "Represents a collection object member of a group." } },
+      { "childcog": { "ishidden": false, "name": "Child Collection Object Group", "desc": "Represents a collection object group member of a group." } }
     ]
   },
 
   "collectionobjectattribute": {
     "items": [
-      { "text3": { "ishidden": false, "name": "Size", "desc": "Size of the specimen" } },
-      { "text4": { "ishidden": false, "name": "Weight (g)", "desc": "Weight, in grams" } },
-      { "text7": { "ishidden": false, "name": "Color", "desc": "Color of the specimen" } },
-      { "text8": { "ishidden": false, "name": "Streak", "desc": "Streak of the mineral" } },
-      { "text10": { "ishidden": false, "name": "Hardness", "desc": "Hardness of the specimen" } },
-      { "text11": { "ishidden": false,  "name": "Crystal Form", "desc": "Crystal form of the mineral" } },
-      { "text13": { "ishidden": false, "name": "Cleavage", "desc": "Cleavage of the mineral" } },
-      { "number1": { "ishidden": false, "name": "Appraised Value", "desc": "Current appraised value of the specimen" } },
-      { "number2": { "ishidden": false, "name": "Current Value", "desc": "Current value of the specimen" } },
-      { "number3": { "ishidden": false, "name": "Insured Value", "desc": "Insured value of the specimen" } }
+      { "number3": { "ishidden": false, "name": "Insured Value", "desc": "Value the collection object is insured for." } },
+      { "number2": { "ishidden": false, "name": "Purchase Price", "desc": "Price paid for the collection object." } },
+      { "number1": { "ishidden": false, "name": "Appraised Value", "desc": "Financial value of the collection object." } },
+      { "date1": { "ishidden": false, "name": "Valuation Date", "desc": "Date the valuation was decided." } },
+      { "text1": { "ishidden": false, "name": "Valuation Remarks", "desc": "Notes on the valuation and any material changes which affect value." } },
+      { "agent1": { "ishidden": false, "name": "Valuator", "desc": "Person who evaluated the value of an object." } },
+      { "text2": { "ishidden": false, "name": "Analyses", "desc": "Miscellaneous analyses performed to the object." } },
+      { "text18": { "ishidden": false, "name": "History", "desc": "Miscellaneous history about the object." } },
+      { "text3": { "ishidden": false, "name": "Size", "desc": "Size of the specimen as originally described." } },
+      { "text4": { "ishidden": false, "name": "Mass", "desc": "Current mass as reported in primary source material, includes units." } },
+      { "text5": { "ishidden": false, "name": "Color", "desc": "Color of the specimen." } },
+      { "text6": { "ishidden": false, "name": "Luminescence Description", "desc": "Description of light emitted from the mineral when energized." } },
+      { "text7": { "ishidden": false, "name": "Analysis Type", "desc": "Technique utilized to determine the chemical composition of a mineral." } },
+      { "text8": { "ishidden": false, "name": "Measured Formula", "desc": "Calculated chemical formula using analytical data." } },
+      { "text9": { "ishidden": false, "name": "Chemistry Remarks", "desc": "Remarks on the chemistry of the object." } },
+      { "text10": { "ishidden": false, "name": "Crystal Habit", "desc": "Clearly observable shapes of crystals." } },
+      { "text11": { "ishidden": false, "name": "Aggregate", "desc": "Form of a mineral aggregate." } },
+      { "text12": { "ishidden": false, "name": "Crystal Form", "desc": "Geometric shape of a crystal." } },
+      { "text13": { "ishidden": false, "name": "Twinning Law", "desc": "Description of any physically discernable twinning." } },
+      { "text14": { "ishidden": false, "name": "Exsolution Texture", "desc": "Textures of any mineral aggregate or intergrowth formed by exsolution." } },
+      { "text15": { "ishidden": false, "name": "Cleavage", "desc": "Property of breaking along specific planes, especially those parallel to crystal faces." } },
+      { "text16": { "ishidden": false, "name": "Luster", "desc": "Reflection of light from the surface of a mineral." } },
+      { "text17": { "ishidden": false, "name": "Inclusions", "desc": "Description of inclusions." } }
+    ]
+  },
+
+  "preparation": {
+    "items": [
+      { "preptype": { "ishidden": false, "name": "Prep Type", "desc": "Type of preparation (noun)." } },
+      { "countamt": { "ishidden": false, "name": "Count", "desc": "Quantity of the particular preparation." } },
+      { "prepareddate": { "ishidden": false, "name": "Prepared Date", "desc": "Date the preparation was created." } },
+      { "preparedbyagent": { "ishidden": false, "name": "Prepared By", "desc": "Person responsible for creating a preparation." } },
+      { "description": { "ishidden": false, "name": "Description", "desc": "Miscellaneous remarks or a description of the preparation." } },
+      { "storage": { "ishidden": false, "name": "Storage", "desc": "Current storage location for a preparation." } },
+      { "preparationattachments": { "ishidden": false, "name": "Preparation Attachments", "desc": "Enable attaching any file to this record." } },
+      { "conservdescriptions": { "ishidden": false, "name": "Conservation Description", "desc": "Captures information about how to display, handle, or conserve the preparation." } }
+    ]
+  },
+
+  "collectingevent": {
+    "items": [
+      { "stationfieldnumber": { "ishidden": false, "name": "Station Field Number", "desc": "Used as the primary identifier for collecting event records." } },
+      { "text1": { "ishidden": false, "name": "Geologic Event", "desc": "Name of an identifiable event associated with the formation of a geologic specimen." } },
+      { "startdate": { "ishidden": false, "name": "Start Date", "desc": "Start date of the collecting event." } },
+      { "enddate": { "ishidden": false, "name": "End Date", "desc": "End date of the collecting event." } },
+      { "verbatimdate": { "ishidden": false, "name": "Verbatim Date", "desc": "Verbatim date as recorded by the collector." } },
+      { "locality": { "ishidden": false, "name": "Locality", "desc": "Locality associated with the collecting event." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Remarks about the collecting event." } }
+    ]
+  },
+
+  "locality": {
+    "items": [
+      { "localityname": { "ishidden": false, "name": "Locality Name", "desc": "Primary identifier for locality records." } },
+      { "latitude1": { "ishidden": false, "name": "Latitude", "desc": "Latitude of the locality." } },
+      { "longitude1": { "ishidden": false, "name": "Longitude", "desc": "Longitude of the locality." } },
+      { "datum": { "ishidden": false, "name": "Datum", "desc": "Indicates the datum." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the locality." } },
+      { "geography": { "ishidden": false, "name": "Geography", "desc": "Associated geography record." } }
+    ]
+  },
+
+  "determination": {
+    "items": [
+      { "taxon": { "ishidden": false, "name": "Taxon", "desc": "Name within the taxon tree." } },
+      { "preferredtaxon": { "ishidden": false, "name": "Preferred Taxon", "desc": "Preferred taxon when the selected taxon is a synonym." } },
+      { "text1": { "ishidden": false, "name": "Confirmation Technique", "desc": "Analytical technique utilized to confirm the identification." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks." } },
+      { "alternatename": { "ishidden": false, "name": "Verbatim Name", "desc": "Verbatim name when the standard hierarchy is not used." } },
+      { "determiners": { "ishidden": false, "name": "Determiners", "desc": "One or more determiners involved in identifying the collection object." } },
+      { "determinationcitations": { "ishidden": false, "name": "Determination Citations", "desc": "Reference works where the determination is cited." } }
+    ]
+  },
+
+  "taxon": {
+    "items": [
+      { "name": { "ishidden": false, "name": "Name", "desc": "Name of the taxon." } },
+      { "fullname": { "ishidden": false, "name": "Full Name", "desc": "Constructed by Specify systematically, not editable by the user." } },
+      { "text1": { "ishidden": false, "name": "Identifier", "desc": "Reference to the name within the current context (e.g., Dana or Nickel-Strunz Number)." } },
+      { "text2": { "ishidden": false, "name": "Identifier Type", "desc": "Type of resource associated with the identifier or schema it conforms to." } },
+      { "definitionitem": { "ishidden": false, "name": "Rank", "desc": "Rank within the taxon tree." } },
+      { "parent": { "ishidden": false, "name": "Parent", "desc": "Parent node in a higher rank." } },
+      { "commonname": { "ishidden": false, "name": "Common Name", "desc": "Common name." } },
+      { "author": { "ishidden": false, "name": "Author", "desc": "Author." } },
+      { "text3": { "ishidden": false, "name": "Source", "desc": "Source." } },
+      { "guid": { "ishidden": false, "name": "GUID", "desc": "Auto-generated or user-assigned GUID." } },
+      { "taxonattachments": { "ishidden": false, "name": "Attachments", "desc": "Attachments linked to the taxon record." } }
+    ]
+  },
+
+  "relativeage": {
+    "items": [
+      { "agename": { "ishidden": false, "name": "Age Name", "desc": "Name from the Geologic Time Scale tree." } },
+      { "ageuncertainty": { "ishidden": false, "name": "Uncertainty", "desc": "+/- the uncertainty value." } },
+      { "text1": { "ishidden": false, "name": "Uncertainty Type", "desc": "Calculation used to determine the error of a numerical age." } },
+      { "agetype": { "ishidden": false, "name": "Age Event", "desc": "Type of age being captured (optional)." } },
+      { "text2": { "ishidden": false, "name": "Verbatim Age", "desc": "Verbatim name for the relative age." } },
+      { "datingmethod": { "ishidden": false, "name": "Dating Method", "desc": "Dating method." } },
+      { "datingmethodremarks": { "ishidden": false, "name": "Dating Method Remarks", "desc": "Remarks related to the dating method used." } },
+      { "relativeageattachments": { "ishidden": false, "name": "Relative Age Attachments", "desc": "Enable attaching any file to this record." } },
+      { "relativeagecitations": { "ishidden": false, "name": "Relative Age Citations", "desc": "Reference works where the relative age is cited." } }
+    ]
+  },
+
+  "absoluteage": {
+    "items": [
+      { "absoluteage": { "ishidden": false, "name": "Absolute Age", "desc": "Absolute age in MYA." } },
+      { "ageuncertainty": { "ishidden": false, "name": "Uncertainty", "desc": "+/- the uncertainty value." } },
+      { "text1": { "ishidden": false, "name": "Uncertainty Type", "desc": "Calculation used to determine the error of a numerical age." } },
+      { "text2": { "ishidden": false, "name": "Verbatim Age", "desc": "Verbatim age, used when units are not MYA." } },
+      { "agetype": { "ishidden": false, "name": "Age Event", "desc": "Type of age being captured (optional)." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks." } },
+      { "datingmethod": { "ishidden": false, "name": "Dating Method", "desc": "Dating method." } },
+      { "datingmethodremarks": { "ishidden": false, "name": "Dating Method Remarks", "desc": "Remarks related to the dating method used." } },
+      { "absoluteageattachments": { "ishidden": false, "name": "Absolute Age Attachments", "desc": "Enable attaching any file to this record." } },
+      { "absoluteagecitations": { "ishidden": false, "name": "Absolute Age Citations", "desc": "Reference works where the absolute age is cited." } }
+    ]
+  },
+
+  "tectonicunit": {
+    "items": [
+      { "name": { "ishidden": false, "name": "Name", "desc": "Name of the tectonic unit." } },
+      { "fullname": { "ishidden": false, "name": "Full Name", "desc": "Constructed by Specify systematically, not editable by the user." } },
+      { "parent": { "ishidden": false, "name": "Parent", "desc": "Parent in a higher rank." } },
+      { "isaccepted": { "ishidden": false, "name": "Is Accepted", "desc": "If true, this is the accepted name. If false, it is a synonym." } },
+      { "definitionitem": { "ishidden": false, "name": "Rank", "desc": "Rank within the tectonics tree." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } }
+    ]
+  },
+
+  "paleocontext": {
+    "items": [
+      { "paleocontextname": { "ishidden": false, "name": "Geologic Context Name", "desc": "Geologic context name." } },
+      { "tectonicunit": { "ishidden": false, "name": "Tectonic Unit", "desc": "Associated tectonic unit." } },
+      { "lithostrat": { "ishidden": false, "name": "Litho Strat", "desc": "Associated lithostratigraphy." } },
+      { "chronosstrat": { "ishidden": false, "name": "Chrono Strat", "desc": "Associated chronostratigraphy." } },
+      { "chronosstratend": { "ishidden": false, "name": "Chrono Strat End", "desc": "Optional ending chronostratigraphy." } },
+      { "biostrat": { "ishidden": false, "name": "Bio Strat", "desc": "Associated biostratigraphy." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } }
+    ]
+  },
+
+  "geologictimeperiod": {
+    "items": [
+      { "name": { "ishidden": false, "name": "Name", "desc": "Name of the Geologic Time Scale item." } },
+      { "fullname": { "ishidden": false, "name": "Full Name", "desc": "Constructed by Specify systematically, not editable by the user." } },
+      { "parent": { "ishidden": false, "name": "Parent", "desc": "Parent in a higher rank." } },
+      { "isaccepted": { "ishidden": false, "name": "Is Accepted", "desc": "If true, this is the accepted name. If false, it is a synonym." } },
+      { "definitionitem": { "ishidden": false, "name": "Rank", "desc": "Rank within the Geologic Time Scale." } },
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } },
+      { "startperiod": { "ishidden": false, "name": "Start Period", "desc": "Start period in Ma." } },
+      { "endperiod": { "ishidden": false, "name": "End Period", "desc": "End period in Ma." } }
     ]
   }
 }
