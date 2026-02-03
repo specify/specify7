@@ -2999,7 +2999,7 @@
 			},
 			"date1precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -3021,7 +3021,7 @@
 			},
 			"date2precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -5243,7 +5243,7 @@
 			},
 			"borrowdateprecision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -15742,7 +15742,7 @@
 			},
 			"date1precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -15764,7 +15764,7 @@
 			},
 			"date2precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -15786,7 +15786,7 @@
 			},
 			"date3precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -15808,7 +15808,7 @@
 			},
 			"date4precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -15830,7 +15830,7 @@
 			},
 			"date5precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -16439,7 +16439,7 @@
 			},
 			"completeddateprecision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16516,7 +16516,7 @@
 			},
 			"curatorapprovaldateprecision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16538,7 +16538,7 @@
 			},
 			"examdateprecision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -16681,7 +16681,7 @@
 			},
 			"treatmentcompdateprecision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
@@ -32616,7 +32616,7 @@
 			},
 			"date1precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
@@ -32638,7 +32638,7 @@
 			},
 			"date2precision": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": null,
 				"picklistname": null,
 				"type": null,
