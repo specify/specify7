@@ -1231,6 +1231,11 @@
 					<cell type="field" id="fullName" uitype="text" name="fullName" colspan="7" readonly="true"/>
 				</row>
 				<row>
+					<cell type="label" labelfor="acceptedParent"/>
+					<cell type="field" id="acceptedParent" uitype="querycbx" initialize="name=Taxon;title=Taxon;editbtn=false;newbtn=false" name="acceptedParent" colspan="5" readonly="true"/>
+					<cell type="field" id="isAccepted" uitype="checkbox" name="isAccepted" default="true"/>
+				</row>
+				<row>
 					<cell type="label" labelfor="commonName"/>
 					<cell type="field" id="commonName" uitype="text" name="commonName" colspan="7"/>
 				</row>
@@ -1238,7 +1243,7 @@
 					<cell type="label" labelfor="author"/>
 					<cell type="field" id="author" uitype="text" name="author"/>
 					<cell type="label" labelfor="source"/>
-					<cell type="field" id="source" uitype="text" name="source" colspan="3"/>
+					<cell type="field" id="source" uitype="text" name="text3" colspan="3"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="identifier"/>

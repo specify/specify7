@@ -178,7 +178,9 @@
       { "author": { "ishidden": false, "name": "Author", "desc": "Author." } },
       { "text3": { "ishidden": false, "name": "Source", "desc": "Source." } },
       { "guid": { "ishidden": false, "name": "GUID", "desc": "Auto-generated or user-assigned GUID." } },
-      { "taxonattachments": { "ishidden": false, "name": "Attachments", "desc": "Attachments linked to the taxon record." } }
+      { "taxonattachments": { "ishidden": false, "name": "Attachments", "desc": "Attachments linked to the taxon record." } },
+      { "ishybrid": { "ishidden": true } },
+      { "source": { "ishidden": true } }
     ]
   },
 
