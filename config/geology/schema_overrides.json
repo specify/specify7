@@ -17,7 +17,9 @@
       { "conservdescriptions": { "ishidden": false, "name": "Conservation Description", "desc": "Captures information about how to display, handle, or conserve the specimen." } },
       { "collectingevent": { "ishidden": false, "name": "Collecting Event", "desc": "Collecting Event" } },
       { "paleocontext": { "ishidden": false, "name": "Geologic Context", "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting." } },
-      { "collectionobjectattribute": { "ishidden": false, "name": "Collection Object Attributes", "desc": "Attributes" } }
+      { "collectionobjectattribute": { "ishidden": false, "name": "Collection Object Attributes", "desc": "Attributes" } },
+      { "relativeages": { "ishidden": false, "name": "Relative Ages", "desc": "One or more relative ages associated with the specimen." } },
+      { "absoluteages": { "ishidden": false, "name": "Absolute Ages", "desc": "One or more absolute ages associated with the specimen." } }
     ]
   },
 
@@ -97,7 +99,13 @@
       { "text14": { "ishidden": false, "name": "Exsolution Texture", "desc": "Textures of any mineral aggregate or intergrowth formed by exsolution." } },
       { "text15": { "ishidden": false, "name": "Cleavage", "desc": "Property of breaking along specific planes, especially those parallel to crystal faces." } },
       { "text16": { "ishidden": false, "name": "Luster", "desc": "Reflection of light from the surface of a mineral." } },
-      { "text17": { "ishidden": false, "name": "Inclusions", "desc": "Description of inclusions." } }
+      { "text17": { "ishidden": false, "name": "Inclusions", "desc": "Description of inclusions." } },
+      { "yesNo1": { "ishidden": false, "name": "Widmanstätten Pattern", "desc": "Indicates whether the specimen exhibits the Widmanstätten pattern." } },
+      { "text19": { "ishidden": false, "name": "Composition", "desc": "Bulk chemical or mineralogical composition of the meteorite." } },
+      { "text20": { "ishidden": false, "name": "Shape", "desc": "Overall shape or morphology of the meteorite (e.g., angular, rounded, regmaglypts)." } },
+      { "yesNo2": { "ishidden": false, "name": "Magnetism", "desc": "Indicates whether the meteorite is magnetic." } },
+      { "text21": { "ishidden": false, "name": "Impact Features", "desc": "Description of any impact-related features (e.g., fusion crust, shatter cones, shock veins)." } },
+      { "remarks": { "ishidden": true } }
     ]
   },
 
@@ -120,9 +128,12 @@
       { "text1": { "ishidden": false, "name": "Geologic Event", "desc": "Name of an identifiable event associated with the formation of a geologic specimen." } },
       { "startdate": { "ishidden": false, "name": "Start Date", "desc": "Start date of the collecting event." } },
       { "enddate": { "ishidden": false, "name": "End Date", "desc": "End date of the collecting event." } },
+      { "starttime": { "ishidden": false, "name": "Start Time", "desc": "Start time of the collecting event." } },
+      { "endtime": { "ishidden": false, "name": "End Time", "desc": "End time of the collecting event." } },
       { "verbatimdate": { "ishidden": false, "name": "Verbatim Date", "desc": "Verbatim date as recorded by the collector." } },
       { "locality": { "ishidden": false, "name": "Locality", "desc": "Locality associated with the collecting event." } },
-      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Remarks about the collecting event." } }
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Remarks about the collecting event." } },
+      { "collectingtrip": { "ishidden": false, "name": "Collecting Trip", "desc": "Collecting trip associated with the collecting event." } }
     ]
   },
 
