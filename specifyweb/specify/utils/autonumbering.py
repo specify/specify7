@@ -93,7 +93,7 @@ class AutonumberingLockDispatcher(LockDispatcher):
                           scope_name: str,
                           scope_id: int,
                           value: str,
-                          time_to_live: int = 10):
+                          time_to_live: int = 5):
         key_name = self.autonumbering_redis_key(
             table_name, field_name, scope_name, scope_id)
         RedisString(self.redis).set(key_name, value,

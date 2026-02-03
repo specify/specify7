@@ -135,7 +135,7 @@ class ModelInstanceScope:
 
     @property
     def scope_type(self) -> ScopeType:
-        return self._infer_scope_type()
+        return ScopeType.from_model(self.scope_model)
 
     @property
     def scope_model(self) -> Model:
@@ -145,10 +145,6 @@ class ModelInstanceScope:
             return self._infer_scope_model()
 
         return scope
-
-    def _infer_scope_type(self) -> ScopeType:
-        scope_obj = self._infer_scope_model()
-        return ScopeType.from_model(scope_obj)
 
     def accession(self) -> Model:
         institution = models.Institution.objects.get()
@@ -333,7 +329,8 @@ def is_related(model_class: Model, field_name: str) -> bool:
     """
     if not hasattr(model_class, field_name):
         return False
-    field = getattr(model_class, field_name)
+    field_wrapper = getattr(model_class, field_name)
+    field = getattr(field_wrapper, "field")
     return getattr(field, "is_relation", False)
 
 def in_same_scope(object1: Model, object2: Model) -> bool:
