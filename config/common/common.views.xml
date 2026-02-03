@@ -6915,12 +6915,12 @@
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="dataType" uitype="dsptextfield" readonly="true"/>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="type" uitype="combobox" isrequired="true" readonly="true" initialize="editoncreate=true"/>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="name" uitype="text" isrequired="true"/>
+					<!-- <cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="dataType" uitype="dsptextfield" readonly="true"/> -->
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="type" uitype="combobox" isrequired="true" readonly="true" initialize="editoncreate=true"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="CollectionSub" id="5" name="collections" colspan="12"/>
