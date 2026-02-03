@@ -219,9 +219,9 @@
 						</rows>
 					</cell>
 				</row>
-				<row>
+				<!-- <row>
 					<cell colspan="3" type="field" id="pm" name="this" uitype="plugin" initialize="name=PaleoMap"/>
-				</row>
+				</row> -->
 				<!-- 		<row>
 			<cell type="subview" id="colObjAttr" name="collectionObjectAttribute" viewname="GeoAttributes" colspan="14"/>
 		</row> -->
