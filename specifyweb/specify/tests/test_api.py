@@ -1115,7 +1115,7 @@ class ScopingTests(ApiTests):
             discipline=self.other_discipline,
         )
         inferred_loan_scope = scoping.Scoping.model_from_instance(loan)
-        self.assertEqual(inferred_loan_scope.id, self.other_division.id)
+        self.assertEqual(inferred_loan_scope.id, self.other_discipline.id)
 
         collection_object_scope = scoping.Scoping.model_from_instance(
             self.collectionobjects[0]
