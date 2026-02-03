@@ -11,7 +11,8 @@
         { "verbatimDate": { "ishidden": true, "name": "Verbatim Date", "desc": "The verbatim date as recorded by the collector" } },
         { "collectingtrip": { "ishidden": false, "name": "Collecting Trip", "desc": "The collecting trip associated with the event. Each collecting trip may have multiple collecting events." } }
       ] } },
-      { "taxon": { "ishidden": false, "name": "Taxon", "desc": "Taxon", "items": [
+      {  "taxon": { "ishidden": false, "name": "Taxon", "desc": "Taxon", 
+        "items": [
         { "text10": { "ishidden": false, "name": "Approved Formula", "desc": "The approved chemical formula for a mineral." } },
         { "text11": { "ishidden": false, "name": "IMA Status", "desc": "International Mineralogical Association status." } },
         { "text12": { "ishidden": false, "name": "IMA No./Year", "desc": "International Mineralogical Association number and year." } },
@@ -19,10 +20,18 @@
         { "text14": { "ishidden": false, "name": "First Reference", "desc": "The first reference for the mineral." } },
         { "text15": { "ishidden": false, "name": "Second Reference", "desc": "The second reference for the mineral." } },
         { "text3": { "ishidden": true, "name": "Code", "desc": "Code" } }
-      ] } },
-      { "determination": { "ishidden": false, "name": "Determination", "desc": "Determination", "items": [
-        { "alternateName": { "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null, "name": "Verbatim Name", "desc": "The verbatim name of the specimen as recorded in the original source." } }
       ] } }
+    ]
+  },
+
+  "determination": {
+    "items": [
+      { "alternatename": { "ishidden": false, "name": "Verbatim Name", "desc": "This can capture the verbatim name of the determination in cases where the name does not fit in the standard hierarchy." } },
+      { "determiner": { "ishidden": true } },
+      { "determiners": { "ishidden": false } },
+      { "determinationcitations": { "ishidden": false } },
+      { "remarks": { "ishidden": false } },
+      { "text1": { "ishidden": false, "name": "Confirmation Technique", "desc": "Analytical technique utilized to confirm the identification" } }
     ]
   },
 
