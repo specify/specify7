@@ -276,35 +276,37 @@
 			<desc>Determination subform for Collection Object form.</desc>
 			<enableRules/>
 			<columnDef>100px,2px,210px,5px,76px,2px,200px,5px,90px,2px,140px,0px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,210px,5px,110px,2px,205px,5px,105px,2px,156px,0px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,253px,5px,95px,2px,238px,5px,140px,2px,185px,0px,p:g</columnDef>
-			<columnDef os="exp">p,2px,p:g,5px:g,p,2px,p:g,5px:g,p,2px,p:g(2),0px</columnDef>
+			<columnDef>115px,2px,210px,5px,110px,2px,205px,5px,105px,2px,75px,2px,75px,2px,75px,0px,p:g</columnDef>
 			<rowDef auto="true" cell="p" sep="2px"/>
 			<rows>
 				<row>
 					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="taxon" uitype="querycbx" initialize="name=Taxon" colspan="7"/>
+					<cell type="field" id="1" name="taxon" uitype="querycbx" initialize="name=Taxon" colspan="9"/>
 					<cell type="field" id="3" name="isCurrent" uitype="checkbox"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="13"/>
-					<cell type="field" id="13" name="preferredTaxon" uitype="text" readonly="true" colspan="9"/>
+					<cell type="field" id="13" name="preferredTaxon" uitype="text" readonly="true" colspan="11"/>
 				</row>
 				<row>
 					<cell type="label" label="Verbatim Name"/>
-					<cell type="field" uitype="text" id="verbatimName" name="alternateName" colspan="9"/>
+					<cell type="field" uitype="text" id="verbatimName" name="alternateName" colspan="11"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="7"/>
 					<cell type="field" id="7" uitype="plugin" name="this" initialize="name=PartialDateUI;df=determinedDate;tp=determinedDatePrecision" uifieldformatter="Date"/>
-					<cell type="label" labelfor="5"/>
-					<cell type="field" id="5" name="determiner" uitype="querycbx" initialize="name=Agent"/>
+					<cell type="label" labelfor="confirmationTechnique"/>
+					<cell type="field" uitype="combobox" id="confirmationTechnique" name="text1" colspan="2"/>
 					<cell type="label" labelfor="6"/>
-					<cell type="field" id="6" name="typeStatusName" uitype="combobox"/>
+					<cell type="field" id="6" name="typeStatusName" uitype="combobox" colspan="3"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="rem"/>
-					<cell type="field" uitype="textareabrief" id="rem" name="remarks" rows="2" colspan="9"/>
+					<cell type="field" uitype="textareabrief" id="rem" name="remarks" rows="2" colspan="10"/>
+					<cell type="subview" id="detCit" viewname="DeterminationCitation" name="determinationCitations" initialize="btn=true;align=center;verticalAlign=center" colspan="2"/>
+				</row>
+				<row>
+					<cell type="subview" id="determiners" name="determiners" viewname="Determiners" colspan="14"/>
 				</row>
 			</rows>
 		</viewdef>
@@ -332,15 +334,6 @@
 					<cell type="subview" id="attachments" viewname="ObjectAttachment" name="preparationAttachments" initialize="align=left;btn=true;icon=PreparationAttachment"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="barCod"/>
-					<cell type="field" id="barCod" name="barcode" uitype="text"/>
-					<cell type="label" labelfor="remarks"/>
-					<cell type="field" id="remarks" name="remarks" uitype="textareabrief" colspan="5"/>
-					<cell type="label" labelfor=""/>
-					<cell type="command" id="ShowLoansBtn" name="ShowLoansBtn" label="Show Interactions"/>
-					<cell type="field" id="isOnLoan" name="isOnLoan" uitype="checkbox" readonly="true"/>
-				</row>
-				<row>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="preparedByAgent" uitype="querycbx" initialize="name=Agent"/>
 					<cell type="label" labelfor="1"/>
@@ -348,12 +341,15 @@
 					<cell type="label" labelfor="4"/>
 					<cell type="field" id="4" name="storage" uitype="querycbx" initialize="name=Storage" colspan="3"/>
 				</row>
-				<!-- 		<row>
-			<cell type="subview" viewname="DeaccessionPreparation2" id="deaccprep" name="deaccessionPreparations" colspan="12"/>
-		</row> -->
+				<row>
+					<cell type="label" labelfor="barCode"/>
+					<cell type="field" id="barCode" name="barcode" uitype="text"/>
+					<cell type="label" labelfor="description"/>
+					<cell type="field" id="description" name="description" uitype="textareabrief" colspan="5"/>
+					<cell type="field" id="isOnLoan" name="isOnLoan" uitype="checkbox" readonly="true"/>
+					<cell type="command" id="ShowLoansBtn" name="ShowLoansBtn" label="Show Interactions" colspan="3"/>
+				</row>
 				<!--<row>
-                    <cell type="label" labelfor="desc"/>
-                    <cell type="field" id="desc" name="description" uitype="text"/>
                     <cell type="label" labelfor="n1"/>
                     <cell type="field" id="n1" name="number1" uitype="text"/>
                     <cell type="label" labelfor="n2"/>
@@ -418,8 +414,8 @@
 				<row>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="lithoStrat" uitype="querycbx" initialize="name=LithoStrat"/>
-					<cell type="label" labelfor="bioStrat"/>
-					<cell type="field" id="bioStrat" name="text1" uitype="text"/>
+					<cell type="label" labelfor="tectonics"/>
+					<cell type="field" id="tectonics" name="tectonicUnit" uitype="querycbx"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="2"/>
@@ -428,12 +424,8 @@
 					<cell type="field" id="254" name="chronosStratEnd" uitype="querycbx" initialize="name=ChronosStrat;displaydlg=ChronosStratDisplay;searchdlg=ChronosStratSearch" isrequired="false"/>
 				</row>
 				<row>
-					<cell type="label" labelfor="tectonics"/>
-					<cell type="field" id="tectonics" name="tectonicUnit" uitype="querycbx" isrequired="false" colspan="6"/>
-				</row>
-				<row>
 					<cell type="label" labelfor="4"/>
-					<cell type="field" id="4" name="remarks" uitype="textareabrief" rows="2" colspan="6"/>
+					<cell type="field" id="4" name="remarks" uitype="textareabrief" rows="1" colspan="6"/>
 				</row>
 				<!--<row>
         <cell type="label" labelfor="1"/>
@@ -470,71 +462,68 @@
     </row>-->
 			</rows>
 		</viewdef>
-		<viewdef name="SubPaleoContext" type="form" class="edu.ku.brc.specify.datamodel.PaleoContext" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
-			<desc>Stratigraphy subform within Collection Object form.</desc>
+		<viewdef name="SubPaleoContext" class="edu.ku.brc.specify.datamodel.PaleoContext" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
+			<desc>Paleocontext form.</desc>
 			<enableRules/>
-			<columnDef>100px,2px,195px,5px,59px,2px,195px,5px,67px,2px,195px,0px,p:g</columnDef>
-			<columnDef os="lnx">115px,2px,210px,5px,74px,2px,210px,5px,82px,2px,210px,0px,p:g</columnDef>
-			<columnDef os="mac">130px,2px,236px,5px,82px,2px,236px,5px,96px,2px,236px,0px,p:g</columnDef>
-			<columnDef os="exp">p,2px,p:g,5px:g,p,2px,p:g,5px:g,p,2px,p:g,0px</columnDef>
+			<columnDef>100px,2px,295px,5px,120px,2px,295px,0px,p:g</columnDef>
+			<columnDef os="lnx">115px,2px,324px,5px,145px,2px,324px,0px,p:g</columnDef>
+			<columnDef os="mac">130px,2px,365px,5px,163px,2px,365px,0px,p:g</columnDef>
+			<columnDef os="exp">p,2px,p:g(2),5px:g,p,2px,p:g(2),0px</columnDef>
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="chronosStrat" uitype="querycbx" initialize="name=ChronosStrat;displaydlg=ChronosStratDisplay;searchdlg=ChronosStratSearch" isrequired="false"/>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="bioStrat" uitype="querycbx" initialize="name=BioStrat;displaydlg=BioStratDisplay;searchdlg=BioStratSearch" isrequired="false"/>
+					<cell type="label" labelfor="pcn"/>
+					<cell type="field" id="pcn" name="paleoContextName" uitype="text" colspan="5"/>
+				</row>
+				<row>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="lithoStrat" uitype="querycbx" initialize="name=LithoStrat"/>
+					<cell type="label" labelfor="tectonics"/>
+					<cell type="field" id="tectonics" name="tectonicUnit" uitype="querycbx"/>
+				</row>
+				<row>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="chronosStrat" uitype="querycbx" initialize="name=ChronosStrat;displaydlg=ChronosStratDisplay;searchdlg=ChronosStratSearch" isrequired="false"/>
+					<cell type="label" labelfor="254"/>
+					<cell type="field" id="254" name="chronosStratEnd" uitype="querycbx" initialize="name=ChronosStrat;displaydlg=ChronosStratDisplay;searchdlg=ChronosStratSearch" isrequired="false"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="4"/>
-					<cell type="field" id="4" name="remarks" uitype="textareabrief" rows="2" colspan="10"/>
+					<cell type="field" id="4" name="remarks" uitype="textareabrief" rows="1" colspan="6"/>
 				</row>
 				<!--<row>
-                    <cell type="label" labelfor="bd"/>
-                    <cell type="field" id="bd" name="bottomDistance" uitype="text"/>
-                    <cell type="label" labelfor="2"/>
-                    <cell type="field" id="2" name="chronosStratEnd" uitype="querycbx" initialize="name=ChronosStrat;displaydlg=ChronosStratDisplay;searchdlg=ChronosStratSearch" isrequired="false"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="dir"/>
-                    <cell type="field" id="dir" name="direction" uitype="text"/>
-                    <cell type="label" labelfor="du"/>
-                    <cell type="field" id="du" name="distanceUnits" uitype="text"/>
-                    <cell type="label" labelfor="ps"/>
-                    <cell type="field" id="ps" name="positionState" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="n1"/>
-                    <cell type="field" id="n1" name="number1" uitype="text"/>
-                    <cell type="label" labelfor="n2"/>
-                    <cell type="field" id="n2" name="number2" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="t1"/>
-                    <cell type="field" id="t1" name="text1" uitype="text"/>
-                    <cell type="label" labelfor="t2"/>
-                    <cell type="field" id="t2" name="text2" uitype="text"/>
-                    <cell type="label" labelfor="td"/>
-                    <cell type="field" id="td" name="topDistance" uitype="text"/>
-                </row>
-                <row>
-                    <cell type="field" id="20" name="yesNo1" uitype="checkbox" initialize="editable=true"/>
-                    <cell type="field" id="20" name="yesNo2" uitype="checkbox" initialize="editable=true"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="9"/>
-                    <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
-                    <cell type="label" labelfor="10"/>
-                    <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
-                </row>
-                <row>
-                    <cell type="label" labelfor="11"/>
-                    <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
-                    <cell type="label" labelfor="12"/>
-                    <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
-                </row>-->
+        <cell type="label" labelfor="1"/>
+        <cell type="field" id="1" name="bioStrat" uitype="querycbx" initialize="name=BioStrat;displaydlg=BioStratDisplay;searchdlg=BioStratSearch" isrequired="false"/>
+        <cell type="label" labelfor="n1"/>
+        <cell type="field" id="n1" name="number1" uitype="text"/>
+        <cell type="label" labelfor="n2"/>
+        <cell type="field" id="n2" name="number2" uitype="text"/>
+        <cell type="label" labelfor="n3"/>
+        <cell type="field" id="n3" name="number3" uitype="text"/>
+        <cell type="label" labelfor="n4"/>
+        <cell type="field" id="n4" name="number4" uitype="text"/>
+        <cell type="label" labelfor="n5"/>
+        <cell type="field" id="n5" name="number5" uitype="text"/>
+    </row>
+    <row>
+        <cell type="field" id="yn1" name="yesNo1" uitype="checkbox" initialize="editable=true"/>
+        <cell type="field" id="yn2" name="yesNo2" uitype="checkbox" initialize="editable=true"/>
+        <cell type="field" id="yn3" name="yesNo3" uitype="checkbox" initialize="editable=true"/>
+        <cell type="field" id="yn4" name="yesNo4" uitype="checkbox" initialize="editable=true"/>
+        <cell type="field" id="yn5" name="yesNo5" uitype="checkbox" initialize="editable=true"/>
+    </row>
+    <row>
+        <cell type="label" labelfor="9"/>
+        <cell type="field" id="9" name="createdByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
+        <cell type="label" labelfor="10"/>
+        <cell type="field" id="10" name="modifiedByAgent" uitype="label" readonly="true" uifieldformatter="Agent"/>
+    </row>
+    <row>
+        <cell type="label" labelfor="11"/>
+        <cell type="field" id="11" name="timestampModified" uitype="label" readonly="true"/>
+        <cell type="label" labelfor="12"/>
+        <cell type="field" id="12" name="timestampCreated" uitype="label" readonly="true"/>
+    </row>-->
 			</rows>
 		</viewdef>
 		<viewdef name="RockAttributes" class="edu.ku.brc.specify.datamodel.CollectionObjectAttribute" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">

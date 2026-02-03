@@ -118,7 +118,7 @@
       { "description": { "ishidden": false, "name": "Description", "desc": "Miscellaneous remarks or a description of the preparation." } },
       { "storage": { "ishidden": false, "name": "Storage", "desc": "Current storage location for a preparation." } },
       { "preparationattachments": { "ishidden": false, "name": "Preparation Attachments", "desc": "Enable attaching any file to this record." } },
-      { "conservdescriptions": { "ishidden": false, "name": "Conservation Description", "desc": "Captures information about how to display, handle, or conserve the preparation." } }
+      { "barcode": { "ishidden": false, "name": "Barcode", "desc": "Barcode associated with the preparation." } }
     ]
   },
 
@@ -155,6 +155,7 @@
       { "text1": { "ishidden": false, "name": "Confirmation Technique", "desc": "Analytical technique utilized to confirm the identification." } },
       { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks." } },
       { "alternatename": { "ishidden": false, "name": "Verbatim Name", "desc": "Verbatim name when the standard hierarchy is not used." } },
+      { "determiner": { "ishidden": true } },
       { "determiners": { "ishidden": false, "name": "Determiners", "desc": "One or more determiners involved in identifying the collection object." } },
       { "determinationcitations": { "ishidden": false, "name": "Determination Citations", "desc": "Reference works where the determination is cited." } }
     ]
@@ -224,8 +225,12 @@
       { "chronosstrat": { "ishidden": false, "name": "Chrono Strat", "desc": "Associated chronostratigraphy." } },
       { "chronosstratend": { "ishidden": false, "name": "Chrono Strat End", "desc": "Optional ending chronostratigraphy." } },
       { "biostrat": { "ishidden": false, "name": "Bio Strat", "desc": "Associated biostratigraphy." } },
-      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } }
-    ]
+      { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } },
+      { "text1": { "ishidden": false, "name": "Tectonic Setting", "desc": "Description of the tectonic setting associated with the specimen." } }
+    ],
+    "ishidden": false,
+    "name": "Geologic Context",
+    "desc": "Geologic context about the specimen, including information on the chronostratigraphy, lithostratigraphy, and tectonic setting."
   },
 
   "geologictimeperiod": {

@@ -17916,7 +17916,7 @@
 			},
 			"guid": {
 				"format": null,
-				"ishidden": false,
+				"ishidden": true,
 				"isuiformatter": false,
 				"picklistname": null,
 				"type": null,
