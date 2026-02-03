@@ -238,7 +238,6 @@ def adding_node(node, collection=None, user=None):
         pref_key = f"sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}"
         add_synonym_enabled = bool(synonymized.get(pref_key, False))
 
-        # If NOT enabled, block adding to synonymized parent
         if add_synonym_enabled is False:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
