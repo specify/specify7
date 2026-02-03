@@ -5,7 +5,7 @@ Modules for filtering resources by the collection logged in
 from django.core.exceptions import FieldError
 from django.db.models import Q
 
-from ..utils.scoping import ScopeType
+from ..utils.scoping import Scoping, ScopeType
 from specifyweb.specify.models import (
     Geography,
     Geologictimeperiod,
@@ -13,7 +13,8 @@ from specifyweb.specify.models import (
     Taxon,
     Storage,
     Attachment,
-    Tectonicunit
+    Tectonicunit,
+    Accession
 )
 
 CONCRETE_HIERARCHY = ["collection", "discipline", "division", "institution"]
@@ -24,6 +25,7 @@ class HierarchyException(Exception):
     pass
 
 
+# REFACTOR: Using Scoping here where possible
 def filter_by_collection(queryset, collection, strict=True):
     if queryset.model is Attachment:
         return queryset.filter(
@@ -37,6 +39,13 @@ def filter_by_collection(queryset, collection, strict=True):
                 scopeid=collection.discipline.division.institution.id,
             )
         )
+
+    if queryset.model is Accession:
+        scope = Scoping.scope_type_from_class(Accession)
+        filters = ({"division": collection.discipline.division}
+                   if scope == ScopeType.DIVISION
+                   else {"division__institution": collection.discipline.division.institution})
+        return queryset.filter(**filters)
 
     if queryset.model in (Geography, Geologictimeperiod, Lithostrat, Tectonicunit):
         return queryset.filter(definition__disciplines=collection.discipline)
