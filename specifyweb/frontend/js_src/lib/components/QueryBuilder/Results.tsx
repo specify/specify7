@@ -37,8 +37,6 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { LoadingContext } from '../Core/Contexts';
-import {ajax} from "../../utils/ajax";
 
 export type QueryResultRow = RA<number | string | null>;
 
