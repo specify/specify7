@@ -267,7 +267,7 @@ def create_discipline(data):
         new_discipline = Discipline.objects.create(**data)
 
         # Create Splocalecontainers for all datamodel tables
-        # apply_schema_defaults(new_discipline)
+        apply_schema_defaults(new_discipline)
 
         # Apply default uniqueness rules
         apply_default_uniqueness_rules(new_discipline)

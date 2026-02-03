@@ -21,9 +21,8 @@ import type {
   TaxonFileDefaultList,
 } from '../TreeView/CreateTree';
 import { fetchDefaultTrees } from '../TreeView/CreateTree';
-import { checkFormCondition, renderFormFieldFactory } from './SetupForm';
+import { applyFormDefaults, checkFormCondition, renderFormFieldFactory } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
-import type { FieldConfig, ResourceConfig } from './setupResources';
 import { disciplineTypeOptions, resources,stepOrder } from './setupResources';
 import type {
   ResourceFormData,
@@ -52,33 +51,6 @@ function findNextStep(
     step += direction;
   }
   return currentStep;
-}
-
-function applyFormDefaults(
-  resource: ResourceConfig,
-  setFormData: (data: ResourceFormData) => void,
-  currentStep: number
-): void {
-  const resourceName = resources[currentStep].resourceName;
-  const defaultFormData: ResourceFormData = {};
-  const applyFieldDefaults = (
-    field: FieldConfig,
-    parentName?: string
-  ): void => {
-    const fieldName =
-      parentName === undefined ? field.name : `${parentName}.${field.name}`;
-    if (field.type === 'object' && field.fields !== undefined)
-      field.fields.forEach((field) => applyFieldDefaults(field, fieldName));
-    if (field.default !== undefined) defaultFormData[fieldName] = field.default;
-  };
-  resource.fields.forEach((field) => applyFieldDefaults(field));
-  setFormData((previous: ResourceFormData) => ({
-    ...previous,
-    [resourceName]: {
-      ...defaultFormData,
-      ...previous[resourceName],
-    },
-  }));
 }
 
 export function SetupTool({
