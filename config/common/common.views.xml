@@ -6961,7 +6961,7 @@
 					<cell type="field" id="5" name="description" uitype="textareabrief" rows="2" colspan="5"/>
 				</row>
 				<row>
-					<cell type="separator" label="Collection Description Fields" colspan="7"/>
+					<cell type="separator" label="Collection Description" colspan="7"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="8"/>

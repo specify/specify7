@@ -769,5 +769,59 @@
         { "title": "Skeleton", "value": "Skeleton" }
       ]
     }
+  ],
+  "geology": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dug", "value": "Dug" },
+        { "title": "Surface Collection", "value": "Surface Collection" },
+        { "title": "Excavation", "value": "Excavation" },
+        { "title": "By Hand", "value": "By Hand" },
+        { "title": "Hammer & Chisel", "value": "Hammer & Chisel" },
+        { "title": "Screening", "value": "Screening" },
+        { "title": "Trawling", "value": "Trawling" },
+        { "title": "Metal Detecting", "value": "Metal Detecting" },
+        { "title": "Magnet", "value": "Magnet" },
+        { "title": "Observed Fall", "value": "Observed Fall" }
+      ]
+    },
+    {
+      "name": "Quality",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "1 Star", "value": "1 Star" },
+        { "title": "2 Stars", "value": "2 Stars" },
+        { "title": "3 Stars", "value": "3 Stars" },
+        { "title": "4 Stars", "value": "4 Stars" },
+        { "title": "5 Stars", "value": "5 Stars" }
+      ]
+    },
+    {
+      "name": "HazardType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dry", "value": "Dry" },
+        { "title": "Radioactive", "value": "Radioactive" },
+        { "title": "Toxic", "value": "Toxic" },
+        { "title": "Asbestos", "value": "Asbestos" },
+        { "title": "Heavy Metals", "value": "Heavy Metals" },
+        { "title": "Sharp Edges", "value": "Sharp Edges" },
+        { "title": "Fragile", "value": "Fragile" },
+        { "title": "Explosive", "value": "Explosive" },
+        { "title": "Flammable", "value": "Flammable" },
+        { "title": "Biohazard", "value": "Biohazard" }
+      ]
+    }
   ]
 }
