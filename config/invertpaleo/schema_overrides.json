@@ -1,20 +1,55 @@
 {
-  "collectionobjectattribute": {
-    "ishidden": false,
-    "desc": "Collection Object Attribute",
-    "items": [
-      {"distanceUnits": {"ishidden": false, "name": "Distance Units", "desc": "Distance Units"}},
-      {"direction": {"ishidden": false, "name": "Direction", "desc": "Direction"}},
-      {"bottomDistance": {"ishidden": false, "name": "Bottom Distance", "desc": "Bottom Distance"}},
-      {"positionState": {"ishidden": false, "name": "Position State", "desc": "Position State"}},
-      {"topDistance": {"ishidden": false, "name": "Top Distance", "desc": "Top Distance"}}
-    ]
-  },
   "collectionobject": {
     "ishidden": false,
     "desc": "Collection Object",
     "items": [
-      {"collectionObjectAttribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
+      {"collectionobjectattribute": {"ishidden": true}},
+      {"collectionobjectcitations": {"ishidden": false}}
+    ]
+  },
+  "collectionobjectattribute": {
+    "ishidden": false,
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"direction": {"ishidden": false, "name": "Direction", "desc": "Direction"}},
+      {"distanceUnits": {"ishidden": false, "name": "Distance Units", "desc": "Distance Units"}},
+      {"bottomDistance": {"ishidden": false, "name": "Bottom Distance", "desc": "Bottom Distance"}},
+      {"topDistance": {"ishidden": false, "name": "Top Distance", "desc": "Top Distance"}},
+      {"positionState": {"ishidden": false, "name": "Position State", "desc": "Position State"}}
+    ]
+  },
+  "collectionobjectcitation": {
+    "ishidden": false,
+    "items": [
+      {"figurenumber": {"ishidden": true}},
+      {"pagenumber": {"ishidden": true}},
+      {"platenumber": {"ishidden": true}}
+    ]
+  },
+  "collectingevent": {
+    "ishidden": false,
+    "desc": "Collecting Event",
+    "items": [
+      {"endtime": {"ishidden": false}},
+      {"starttime": {"ishidden": false}},
+      {"paleocontext": {"ishidden": false}}
+    ]
+  },
+  "localitydetail": {
+    "ishidden": false,
+    "desc": "Locality Detail",
+    "items": [
+      {"paleolat": {"ishidden": false}},
+      {"paleolng": {"ishidden": false}}
+    ]
+  },
+  "paleocontext": {
+    "ishidden": false,
+    "desc": "Paleo Context",
+    "items": [
+      {"biostrat": {"ishidden": false}},
+      {"text1": {"ishidden": false}},
+      {"tectonicunit": {"ishidden": true}}
     ]
   }
 }
