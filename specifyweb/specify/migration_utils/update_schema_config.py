@@ -94,14 +94,12 @@ class FieldSchemaConfig(NamedTuple):
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
-def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]):
+def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) -> int:
     if not rows:
         return 0
 
-    # Group rows by which FK field they use, because the matching logic differs per FK column
-    groups: dict[str, list[dict]] = defaultdict(list)
     fk_fields = ("itemname", "itemdesc", "containername", "containerdesc")
-
+    groups: dict[str, list[dict]] = defaultdict(list)
     for r in rows:
         present = [f for f in fk_fields if r.get(f) is not None]
         if len(present) != 1:
@@ -110,29 +108,20 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]):
 
     total_created = 0
 
-    # Process each FK group with one query to find existing keys
     for fk_field, group_rows in groups.items():
-        wanted: set[Tuple[str, str, int]] = set()
         fk_ids: set[int] = set()
         texts: set[str] = set()
         languages: set[str] = set()
 
         for r in group_rows:
-            lang = r["language"]
-            text = r["text"]
-            fk_obj = r[fk_field]
-            fk_id = fk_obj.pk
+            fk_ids.add(r[fk_field].pk)
+            texts.add(r["text"])
+            languages.add(r["language"])
 
-            wanted.add((lang, text, fk_id))
-            fk_ids.add(fk_id)
-            texts.add(text)
-            languages.add(lang)
-
-        # Fetch existing rows for just these keys
         filt = {
-            f"{fk_field}_id__in": list(fk_ids),
-            "text__in": list(texts),
-            "language__in": list(languages),
+            f"{fk_field}_id__in": fk_ids,
+            "text__in": texts,
+            "language__in": languages,
         }
         existing = set(
             Splocaleitemstr.objects.filter(**filt).values_list("language", "text", f"{fk_field}_id")
@@ -140,14 +129,9 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]):
 
         to_create = []
         for r in group_rows:
-            lang = r["language"]
-            text = r["text"]
-            fk_id = r[fk_field].pk
-            key = (lang, text, fk_id)
-
+            key: Tuple[str, str, int] = (r["language"], r["text"], r[fk_field].pk)
             if key in existing:
                 continue
-
             existing.add(key)
             to_create.append(Splocaleitemstr(**r))
 
@@ -163,80 +147,88 @@ def update_table_schema_config_with_defaults(
     description: str = None,
     apps = global_apps,
     defaults: dict = None,
+    pending_itemstr_rows: list[dict] | None = None,
 ):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     table = datamodel.get_table(table_name)
-    
+
     # BUG: The splocalecontainer related tables can still exist in the database, 
     # and this will result in skipping any operation if the table/field is 
     # removed, renamed, etc.
-    if table is None: 
+    if table is None:
         logger.warning(
             f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}"
         )
         return
 
-    table_defaults = defaults if defaults is not None else dict()
-    table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
-    table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
+    flush_itemstr_at_end = pending_itemstr_rows is None
+    if flush_itemstr_at_end:
+        pending_itemstr_rows = []
 
-    table_config = TableSchemaConfig(
-        name=table.name,
-        discipline_id=discipline_id,
-        schema_type=0,
-        description=table_desc_str
-        if description is None
-        else description,
-        language="en"
-    )
+    try:
+        table_defaults = defaults if defaults is not None else dict()
+        table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
+        table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
 
-    # Create Splocalecontainer for the table
-    sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
-        name=table_config.name.lower(),
-        discipline_id=discipline_id,
-        schematype=table_config.schema_type,
-        ishidden=False,
-        issystem=table.system,
-        version=0,
-    )
-
-    if Splocalecontaineritem.objects.filter(
-        container=sp_local_container,
-        name=table_config.name.lower(),
-    ).exists():
-        return
-
-    # Create a Splocaleitemstr for the table name and description
-    item_str_rows = []
-    for k, text in {
-        "containername": table_name_str,
-        "containerdesc": table_desc_str,
-    }.items():
-        row = {
-            "text": text,
-            "language": "en",
-            "version": 0,
-            k: sp_local_container,
-        }
-        item_str_rows.append(row)
-
-    bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, item_str_rows)
-
-    for field in table.all_fields:
-        field_defaults = None
-        if table_defaults.get('items'):
-            field_defaults = table_defaults['items'].get(field.name.lower())
-        update_table_field_schema_config_with_defaults(
-            table_name,
-            discipline_id,
-            field.name,
-            apps,
-            defaults=field_defaults,
+        table_config = TableSchemaConfig(
+            name=table.name,
+            discipline_id=discipline_id,
+            schema_type=0,
+            description=table_desc_str if description is None else description,
+            language="en",
         )
 
+        sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
+            name=table_config.name.lower(),
+            discipline_id=discipline_id,
+            schematype=table_config.schema_type,
+            ishidden=False,
+            issystem=table.system,
+            version=0,
+        )
+
+        if Splocalecontaineritem.objects.filter(
+            container=sp_local_container,
+            name=table_config.name.lower(),
+        ).exists():
+            return
+
+        item_str_rows = []
+        for k, text in {
+            "containername": table_name_str,
+            "containerdesc": table_desc_str,
+        }.items():
+            item_str_rows.append(
+                {
+                    "text": text,
+                    "language": "en",
+                    "version": 0,
+                    k: sp_local_container,
+                }
+            )
+
+        pending_itemstr_rows.extend(item_str_rows)
+
+        for field in table.all_fields:
+            field_defaults = None
+            if table_defaults.get('items'):
+                field_defaults = table_defaults['items'].get(field.name.lower())
+
+            update_table_field_schema_config_with_defaults(
+                table_name,
+                discipline_id,
+                field.name,
+                apps,
+                defaults=field_defaults,
+                pending_itemstr_rows=pending_itemstr_rows,
+            )
+
+    finally:
+        if flush_itemstr_at_end and pending_itemstr_rows:
+            bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, pending_itemstr_rows)
 
 def revert_table_schema_config(table_name, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -259,7 +251,8 @@ def update_table_field_schema_config_with_defaults(
     discipline_id: int,
     field_name: str,
     apps = global_apps,
-    defaults: dict = None
+    defaults: dict = None,
+    pending_itemstr_rows: list[dict] | None = None,
 ):
     table = datamodel.get_table(table_name)
 
@@ -355,7 +348,10 @@ def update_table_field_schema_config_with_defaults(
         }
         itm_str_rows.append(row)
 
-    bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, itm_str_rows)
+    if pending_itemstr_rows is None:
+        bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, itm_str_rows)
+    else:
+        pending_itemstr_rows.extend(itm_str_rows)
 
 def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
