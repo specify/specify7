@@ -736,6 +736,15 @@ export const treeText = createDictionary({
     'en-us':
       'Creating tree record {current:number|formatted}/{total:number|formatted}',
   },
+  missingRanks: {
+    'en-us': 'Missing Ranks',
+  },
+  missingRanksDescription: {
+    'en-us': 'The populated tree you selected to download contains records in ranks that are missing from your tree.',
+  },
+  createMissingRanks: {
+    'en-us': 'Should the missing ranks be created?',
+  },
   source: {
     'en-us': 'Source',
   },

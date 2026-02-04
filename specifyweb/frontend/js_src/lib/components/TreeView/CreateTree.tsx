@@ -2,6 +2,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
+import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
@@ -16,6 +17,7 @@ import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
   AnyTree,
+  FilterTablesByEndsWith,
   SerializedResource,
 } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -104,6 +106,7 @@ export function CreateTree<
         disciplineName: resource.discipline,
         rowCount: resource.rows,
         treeName: resource.title,
+        createMissingRanks: true,
       },
     })
       .then(({ data, status }) => {
@@ -210,9 +213,13 @@ export function CreateTree<
 export function ImportTree<SCHEMA extends AnyTree>({
   tableName,
   treeDefId,
+  treeDefinitionItems,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefId: number;
+  readonly treeDefinitionItems: RA<
+      SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
+    >;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
@@ -222,11 +229,47 @@ export function ImportTree<SCHEMA extends AnyTree>({
     string | undefined
   >(undefined);
 
+  const [missingTreeRanks, setMissingTreeRanks] = React.useState<RA<string> | undefined>(undefined);
+  const [isMissingTreeRanks, setIsMissingTreeRanks] = React.useState<boolean>(false);
+  const [selectedPopulatedTree, setSelectedPopulatedTree] = React.useState<TaxonFileDefaultDefinition | undefined>(undefined);
+
   const connectedCollection = getSystemInfo().collection;
 
   const handleClick = async (
-    resource: TaxonFileDefaultDefinition
+    resource: TaxonFileDefaultDefinition,
+    createMissingRanks?: boolean
   ): Promise<void> => {
+    setSelectedPopulatedTree(resource);
+    // Check for missing ranks if no preference for createMissingRanks was provided.
+    console.log(createMissingRanks);
+    if (createMissingRanks === undefined) {
+      console.log("finding if theres missing ranks");
+      try {
+        const { data: mappingData, status } = await fetch(`/trees/default_tree_mapping/${encodeURIComponent(resource.mappingFile)}/`)
+        if (status === Http.OK && mappingData) {
+          const mappingRankNames = mappingData.ranks.map((rank: any) => {return rank.name});
+          const existingNames = treeDefinitionItems.map((item) => item.name);
+
+          const missing = mappingRankNames
+            .filter((rankName: string) => !existingNames.includes(rankName));
+
+          if (missing.length > 0) {
+            setSelectedPopulatedTree(resource);
+            setMissingTreeRanks(missing);
+            setIsMissingTreeRanks(true);
+            return;
+          }
+          // If all ranks are present then continue as normal
+        } else {
+          console.warn(
+            `Failed to fetch mapping for ${resource.mappingFile}`
+          );
+        }
+      } catch (err) {
+        console.error('Error fetching or parsing mapping file', err);
+      }
+    }
+
     setIsTreeCreationStarted(true);
     return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
       method: 'POST',
@@ -239,6 +282,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
         rowCount: resource.rows,
         treeName: resource.title,
         treeDefId,
+        createMissingRanks: createMissingRanks,
       },
     })
       .then(({ data, status }) => {
@@ -268,6 +312,20 @@ export function ImportTree<SCHEMA extends AnyTree>({
           onClick={() => {
             setIsActive(1);
           }}
+        />
+      ) : null}
+      {isMissingTreeRanks && missingTreeRanks && selectedPopulatedTree ? (
+        <MissingTreeRanksDialog
+          handleNo={() => {
+            handleClick(selectedPopulatedTree, false)
+          }}
+          handleYes={() => {
+            handleClick(selectedPopulatedTree, true)
+          }}
+          onClose={() => {
+            setIsMissingTreeRanks(false);
+          }}
+          missingTreeRanks={missingTreeRanks}
         />
       ) : null}
       {isActive === 1 ? (
@@ -377,6 +435,48 @@ export function PopulatedTreeList({
             </li>
           ))}
     </Ul>
+  );
+}
+
+export function MissingTreeRanksDialog({
+  missingTreeRanks,
+  handleYes,
+  handleNo,
+  onClose,
+}: {
+  readonly missingTreeRanks: RA<string>;
+  readonly handleYes: () => void;
+  readonly handleNo: () => void;
+  readonly onClose: () => void;
+}): JSX.Element | null {
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose component={Button.BorderedGray}>
+            {commonText.close()}
+          </Button.DialogClose>
+          <Button.Secondary onClick={handleNo}>
+            {commonText.no()}
+          </Button.Secondary>
+          <Button.Fancy onClick={handleYes}>
+            {queryText.yes()}
+          </Button.Fancy>
+        </>
+      }
+      header={treeText.missingRanks()}
+      onClose={onClose}
+    >
+      <div className="mb-4">
+        {treeText.missingRanksDescription()}
+        <ul className="ml-4 list-disc">
+          {missingTreeRanks && missingTreeRanks.length > 0
+            ? missingTreeRanks.map((rank) => <li key={rank}>{rank}</li>)
+            : null}
+        </ul>
+        {treeText.createMissingRanks()}
+      </div>
+    </Dialog>
   );
 }
 
