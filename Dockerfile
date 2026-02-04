@@ -163,6 +163,9 @@ RUN echo \
         "\nDEPOSITORY_DIR = '/volumes/static-files/depository'" \
         "\nREPORT_RUNNER_HOST = os.getenv('REPORT_RUNNER_HOST', '')" \
         "\nREPORT_RUNNER_PORT = os.getenv('REPORT_RUNNER_PORT', '')" \
+        "\nREDIS_HOST = os.getenv('REDIS_HOST', 'redis')" \
+        "\nREDIS_PORT = os.getenv('REDIS_PORT', 6379)" \
+        "\nREDIS_DB_INDEX = os.getenv('REDIS_DB_INDEX', 0)" \
         "\nWEB_ATTACHMENT_URL = os.getenv('ASSET_SERVER_URL', None)" \
         "\nWEB_ATTACHMENT_KEY = os.getenv('ASSET_SERVER_KEY', None)" \
         "\nWEB_ATTACHMENT_COLLECTION = os.getenv('ASSET_SERVER_COLLECTION', None)" \

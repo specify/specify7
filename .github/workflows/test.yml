@@ -67,6 +67,11 @@ jobs:
         options:
           --health-cmd="mariadb-admin ping" --health-interval=5s
           --health-timeout=2s --health-retries=3
+      redis:
+        image: redis:latest
+        ports:
+          - 6379
+
 
     steps:
       - uses: actions/checkout@v4
@@ -116,6 +121,8 @@ jobs:
           echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
+          echo "REDIS_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
+          echo "REDIS_PORT = ${{ job.services.redis.ports[6379] }}" >> specifyweb/settings/local_specify_settings.py
 
       - name: Need these files to be present
         run:

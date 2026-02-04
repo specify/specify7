@@ -1,8 +1,9 @@
-from typing import Any, TypedDict, Optional, Union
+from typing import Any, TypedDict, Optional, Union, Literal
 from collections.abc import Callable
 from typing_extensions import Protocol
 
 from specifyweb.backend.workbench.upload.predicates import DjangoPredicates, ToRemove
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
 
@@ -44,7 +45,11 @@ class Uploadable(Protocol):
     # we cannot cache. well, we can make this more complicated by recursviely caching
     # static parts of even a non-entirely-cachable uploadable.
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedUploadable": ...
 
     def get_cols(self) -> set[str]: ...
