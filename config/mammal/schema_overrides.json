@@ -1,9 +1,4 @@
 {
-  "collectionobject": {
-    "items": [
-      {"catalogeddate": {"ishidden": true}}
-    ]
-  },
   "collectionobjectattribute": {
     "ishidden": false,
     "items": [
@@ -21,9 +16,7 @@
     "ishidden": false,
     "items": [
       {"endtime": {"ishidden": false}},
-      {"starttime": {"ishidden": false}},
-      {"enddate": {"ishidden": true}},
-      {"startdate": {"ishidden": true}}
+      {"starttime": {"ishidden": false}}
     ]
   }
 }

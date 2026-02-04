@@ -12,5 +12,12 @@
       {"text5": {"ishidden": false, "name": "SVL", "desc": "SVL"}},
       {"text6": {"ishidden": false, "name": "Tail Length", "desc": "Tail Length"}}
     ]
+  },
+  "collectingevent": {
+    "ishidden": false,
+    "items": [
+      {"endtime": {"ishidden": false}},
+      {"starttime": {"ishidden": false}}
+    ]
   }
 }
