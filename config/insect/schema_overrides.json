@@ -8,5 +8,20 @@
       {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "LifeStage", "desc": "LifeStage"}},
       {"text1": {"ishidden": false, "picklistname": "Sex", "name": "Sex", "desc": "Sex"}}
     ]
+  },
+  "collectingevent": {
+    "items": [
+      { "endtime": { "ishidden": false } },
+      { "starttime": { "ishidden": false } }
+    ]
+  },
+  "determination": {
+    "items": [
+      { "addendum": { "ishidden": false } },
+      { "nameusage": { "ishidden": false } },
+      { "preferredtaxon": { "ishidden": false } },
+      { "qualifier": { "ishidden": false } },
+      { "remarks": { "ishidden": false } }
+    ]
   }
 }
