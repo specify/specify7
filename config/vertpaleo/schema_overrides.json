@@ -14,7 +14,33 @@
     "ishidden": false,
     "desc": "Collection Object",
     "items": [
-      {"collectionObjectAttribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
+      {"collectionobjectattribute": {"ishidden": true}}
+    ]
+  },
+  "collectingevent": {
+    "ishidden": false,
+    "desc": "Collecting Event",
+    "items": [
+      {"endtime": {"ishidden": false}},
+      {"starttime": {"ishidden": false}},
+      {"paleocontext": {"ishidden": false}}
+    ]
+  },
+  "localitydetail": {
+    "ishidden": false,
+    "desc": "Locality Detail",
+    "items": [
+      {"paleolat": {"ishidden": false}},
+      {"paleolng": {"ishidden": false}}
+    ]
+  },
+  "paleocontext": {
+    "ishidden": false,
+    "desc": "Paleo Context",
+    "items": [
+      {"biostrat": {"ishidden": false}},
+      {"text1": {"ishidden": false}},
+      {"tectonicunit": {"ishidden": true}}
     ]
   }
 }
