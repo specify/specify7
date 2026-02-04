@@ -1,119 +1,16 @@
 {
   "collectionobjectattribute": {
-    "items": [
-      {
-        "text7": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Total Length",
-          "desc": "Total Length"
-        }
-      },
-      {
-        "text3": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "ReproCondition",
-          "desc": "ReproCondition"
-        }
-      },
-      {
-        "text2": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Weight",
-          "desc": "Weight"
-        }
-      },
-      {
-        "text1": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "Sex",
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Sex",
-          "desc": "Sex"
-        }
-      },
-      {
-        "text8": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Color in Life",
-          "desc": "Color in Life"
-        }
-      },
-      {
-        "text4": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "LifeStage",
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "LifeStage",
-          "desc": "LifeStage"
-        }
-      },
-      {
-        "text5": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "SVL",
-          "desc": "SVL"
-        }
-      },
-      {
-        "text6": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Tail Length",
-          "desc": "Tail Length"
-        }
-      }
-    ],
-    "format": null,
     "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collection Object Attribute",
-    "desc": "Collection Object Attribute"
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"text7": {"ishidden": false, "name": "Total Length", "desc": "Total Length"}},
+      {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
+      {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}},
+      {"text1": {"ishidden": false, "picklistname": "Sex", "name": "Sex", "desc": "Sex"}},
+      {"text8": {"ishidden": false, "name": "Color in Life", "desc": "Color in Life"}},
+      {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "LifeStage", "desc": "LifeStage"}},
+      {"text5": {"ishidden": false, "name": "SVL", "desc": "SVL"}},
+      {"text6": {"ishidden": false, "name": "Tail Length", "desc": "Tail Length"}}
+    ]
   }
 }
