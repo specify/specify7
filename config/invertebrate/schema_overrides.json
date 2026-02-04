@@ -1,145 +1,23 @@
 {
   "collectingevent": {
-    "items": [
-      {
-        "method": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "CollectingMethod",
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Method",
-          "desc": "Method"
-        }
-      }
-    ],
-    "format": null,
     "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collecting Event",
-    "desc": "Collecting Event"
+    "desc": "Collecting Event",
+    "items": [
+      {"method": {"ishidden": false, "picklistname": "CollectingMethod", "name": "Method", "desc": "Method"}}
+    ]
   },
   "collectionobjectattribute": {
-    "items": [
-      {
-        "text4": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "LifeStage",
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Stage",
-          "desc": "Stage"
-        }
-      },
-      {
-        "text6": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Body Width",
-          "desc": "Body Width"
-        }
-      },
-      {
-        "text1": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "BiologicalSex",
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Sex",
-          "desc": "Sex"
-        }
-      },
-      {
-        "text8": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Range of Size",
-          "desc": "Range of Size"
-        }
-      },
-      {
-        "text3": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "ReproCondition",
-          "desc": "ReproCondition"
-        }
-      },
-      {
-        "text7": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Total Length",
-          "desc": "Total Length"
-        }
-      },
-      {
-        "text2": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Weight",
-          "desc": "Weight"
-        }
-      },
-      {
-        "text5": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Head Width",
-          "desc": "Head Width"
-        }
-      }
-    ],
-    "format": null,
     "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collection Object Attribute",
-    "desc": "Collection Object Attribute"
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "Stage", "desc": "Stage"}},
+      {"text6": {"ishidden": false, "name": "Body Width", "desc": "Body Width"}},
+      {"text1": {"ishidden": false, "picklistname": "BiologicalSex", "name": "Sex", "desc": "Sex"}},
+      {"text8": {"ishidden": false, "name": "Range of Size", "desc": "Range of Size"}},
+      {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
+      {"text7": {"ishidden": false, "name": "Total Length", "desc": "Total Length"}},
+      {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}},
+      {"text5": {"ishidden": false, "name": "Head Width", "desc": "Head Width"}}
+    ]
   }
 }
