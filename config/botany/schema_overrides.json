@@ -3,7 +3,7 @@
     "ishidden": false,
     "desc": "Collecting Event",
     "items": [
-      {"stationFieldNumber": {"ishidden": false, "name": "Collector Number", "desc": "Collector Number"}},
+      {"stationfieldnumber": {"ishidden": false, "name": "Collector Number", "desc": "Collector Number"}},
       {"remarks": {"ishidden": false, "name": "Locality and Habitat Notes", "desc": "Locality and Habitat Notes"}}
     ]
   },
@@ -13,8 +13,29 @@
     "items": [
       {"text1": {"ishidden": false, "picklistname": "Phenology", "name": "Phenology", "desc": "Phenology"}},
       {"description": {"ishidden": false, "name": "Specimen Description", "desc": "Specimen Description"}},
-      {"exsiccataItems": {"ishidden": false, "name": "Exsiccata Items", "desc": "Exsiccata Items"}},
-      {"collectionObjectAttribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
+      {"exsiccataitems": {"ishidden": false, "name": "Exsiccata Items", "desc": "Exsiccata Items"}},
+      {"collectionobjectattribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
+    ]
+  },
+  "determination": {
+    "items": [
+      { "addendum": { "ishidden": false } },
+      { "nameusage": { "ishidden": false } },
+      { "preferredtaxon": { "ishidden": false } },
+      { "qualifier": { "ishidden": false } },
+      { "remarks": { "ishidden": false } }
+    ]
+  },
+  "exsiccata": {
+    "items": [
+      { "exsiccataitems": { "ishidden": true } },
+      { "remarks": { "ishidden": true } },
+      { "schedae": { "ishidden": true } }
+    ]
+  },
+  "exsiccataitem": {
+    "items": [
+      { "number": { "ishidden": false } }
     ]
   }
 }
