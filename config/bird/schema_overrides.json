@@ -4,7 +4,9 @@
     "desc": "Collecting Event",
     "items": [
       {"stationFieldNumber": {"ishidden": false, "name": "Field Number", "desc": "Field Number"}},
-      {"method": {"ishidden": false, "name": "Method", "desc": "Method"}}
+      {"method": {"ishidden": false, "name": "Method", "desc": "Method"}},
+      { "endtime": { "ishidden": false } },
+      { "starttime": { "ishidden": false } }
     ]
   },
   "collectionobjectattribute": {
