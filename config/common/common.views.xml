@@ -6828,12 +6828,12 @@
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="dataType" uitype="dsptextfield" readonly="true"/>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="type" uitype="text" isrequired="true" readonly="true"/>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="name" uitype="text" isrequired="true"/>
+					<!-- <cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="dataType" uitype="dsptextfield" readonly="true"/> -->
+					<cell type="label" labelfor="1"/>
+					<cell type="field" id="1" name="type" uitype="text" isrequired="true" readonly="true"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="CollectionGridViewOnly" id="4" name="collections" colspan="12"/>
@@ -6848,10 +6848,10 @@
 				<row>
 					<cell type="separator" label="Discipline" colspan="4"/>
 				</row>
-				<row>
+				<!-- <row>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="dataType" uitype="dsptextfield" readonly="true"/>
-				</row>
+				</row> -->
 				<row>
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="type" uitype="text" isrequired="true" readonly="true"/>
@@ -6909,12 +6909,10 @@
 			<rowDef auto="true" cell="p" sep="2dlu"/>
 			<rows>
 				<row>
-					<cell type="label" labelfor="1"/>
-					<cell type="field" id="1" name="dataType" uitype="dsptextfield" readonly="true"/>
-					<cell type="label" labelfor="2"/>
-					<cell type="field" id="2" name="type" uitype="combobox" isrequired="true" readonly="true" initialize="editoncreate=true"/>
 					<cell type="label" labelfor="3"/>
 					<cell type="field" id="3" name="name" uitype="text" isrequired="true"/>
+					<cell type="label" labelfor="2"/>
+					<cell type="field" id="2" name="type" uitype="combobox" isrequired="true" readonly="true" initialize="editoncreate=true"/>
 				</row>
 				<row>
 					<cell type="subview" viewname="CollectionSub" id="5" name="collections" colspan="12"/>
@@ -7012,16 +7010,16 @@
 					<cell type="label" labelfor="1"/>
 					<cell type="field" id="1" name="collectionName" uitype="text" isrequired="true"/>
 					<cell type="label" label=" "/>
-					<cell type="field" id="6" name="isEmbeddedCollectingEvent" label="Add Collecting Event Automatically" uitype="checkbox"/>
+					<cell type="field" id="6" name="isEmbeddedCollectingEvent" uitype="checkbox"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="2"/>
 					<cell type="field" id="2" name="code" uitype="text" isrequired="false" colspan="5"/>
 				</row>
-				<row>
+				<!-- <row>
 					<cell type="label" labelfor="isa"/>
 					<cell type="field" id="isa" name="isaNumber" uitype="text" readonly="true"/>
-				</row>
+				</row> -->
 				<row>
 					<cell type="label" labelfor="guid"/>
 					<cell type="field" id="guid" name="guid" uitype="text" isrequired="false" colspan="6" readonly="true"/>
@@ -7067,14 +7065,14 @@
 				<row>
 					<cell type="label" labelfor="admin"/>
 					<cell type="field" id="admin" name="adminContact" uitype="querycbx" initialize="name=Agent;title=Agent" isrequired="false" colspan="3"/>
-					<cell type="field" id="6" name="isEmbeddedCollectingEvent" label="Embedded Collecting Event?" uitype="checkbox"/>
+					<cell type="field" id="6" name="isEmbeddedCollectingEvent" uitype="checkbox"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="5"/>
 					<cell type="field" id="5" name="description" uitype="textareabrief" rows="2" colspan="5"/>
 				</row>
 				<row>
-					<cell type="separator" label="ABCD Schema Fields (Optional)" colspan="7"/>
+					<cell type="separator" label="Collection Description" colspan="7"/>
 				</row>
 				<row>
 					<cell type="label" labelfor="8"/>

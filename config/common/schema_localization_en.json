@@ -2481,7 +2481,7 @@
       "attributedefs": {"name": "Attribute Defs", "desc": "Attribute Defs", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collections": {"name": "Collections", "desc": "Collections", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "datatype": {"name": "Data Type", "desc": "Data Type", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "datatype": {"name": "Data Type", "desc": "Data Type", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "division": {"name": "Division", "desc": "Division", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "geographytreedef": {"name": "Geography Tree Def", "desc": "Geography Tree Def", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "geologictimeperiodtreedef": {"name": "Chronostratigraphy Tree Def", "desc": "Chronostratigraphy Tree Def", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
