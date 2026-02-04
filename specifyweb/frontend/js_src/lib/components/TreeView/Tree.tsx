@@ -226,7 +226,7 @@ export function Tree<
             onClick={createRootNode}
           />
           {treeDefId ? (
-            <ImportTree tableName={tableName} treeDefId={treeDefId} />
+            <ImportTree tableName={tableName} treeDefId={treeDefId} treeDefinitionItems={treeDefinitionItems}/>
           ) : null}
         </div>
       ) : undefined}

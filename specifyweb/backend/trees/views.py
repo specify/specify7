@@ -898,3 +898,23 @@ def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
         return http.HttpResponse('', status=204)
     except Exception as e:
         return http.JsonResponse({'error': str(e)}, status=400)
+
+@login_maybe_required
+@require_GET
+def default_tree_mapping(request) -> http.HttpResponse:
+    """Retrieves a default populated tree's mapping from a url"""
+    # TODO: Reuse code from create_default_tree
+    mapping_url = request.GET.get("url")
+    if mapping_url:
+        try:
+            resp = requests.get(mapping_url)
+            resp.raise_for_status()
+            tree_cfg = resp.json()
+        except Exception:
+            return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
+    try:
+        validate(tree_cfg, DEFAULT_TREE_MAPPING_SCHEMA)
+    except ValidationError as e:
+        return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
+
+    return http.JsonResponse(tree_cfg)

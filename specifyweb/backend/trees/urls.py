@@ -25,4 +25,5 @@ urlpatterns = [
     path('create_default_tree/', views.create_default_tree_view),
     re_path(r'^create_default_tree/status/(?P<task_id>[^/]+)/$', views.default_tree_upload_status),
     re_path(r'^create_default_tree/abort/(?P<task_id>[^/]+)/$', views.abort_default_tree_creation),
+    re_path(r'^default_tree_mapping/(?P<task_id>[^/]+)/$', views.default_tree_mapping),
 ]
