@@ -8050,6 +8050,8 @@ class Autonumschcoll(models.Model):
     autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name="+", on_delete=protect_with_blockers)
 
+    save = partialmethod(custom_save)
+
     class Meta:
         db_table='autonumsch_coll'
         constraints = [
@@ -8063,6 +8065,8 @@ class Autonumschdsp(models.Model):
 
     autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name="+", on_delete=protect_with_blockers)
+
+    save = partialmethod(custom_save)
 
     class Meta:
         db_table='autonumsch_dsp'
@@ -8078,6 +8082,8 @@ class Autonumschdiv(models.Model):
     autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
     division = models.ForeignKey('Division', db_column='DivisionID', related_name="+", on_delete=protect_with_blockers)
 
+    save = partialmethod(custom_save)
+
     class Meta:
         db_table='autonumsch_div'
         constraints = [
@@ -8089,6 +8095,8 @@ class Specifyuser_spprincipal(models.Model):
 
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.CASCADE, related_name="+")
     spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=protect_with_blockers, related_name="+")
+
+    save = partialmethod(custom_save)
 
     class Meta:
         db_table = 'specifyuser_spprincipal'
@@ -8102,6 +8110,8 @@ class Spprincipal_sppermission(models.Model):
     sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name="+", on_delete=protect_with_blockers)
     spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name="+", on_delete=protect_with_blockers)
 
+    save = partialmethod(custom_save)
+
     class Meta:
         db_table = 'spprincipal_sppermission'
         constraints = [
@@ -8114,6 +8124,8 @@ class Project_colobj(models.Model):
     project = models.ForeignKey('Project', db_column='ProjectID', related_name="+", on_delete=protect_with_blockers)
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name="+", on_delete=protect_with_blockers)
 
+    save = partialmethod(custom_save)
+
     class Meta:
         db_table = 'project_colobj'
         constraints = [
@@ -8125,6 +8137,8 @@ class Spexportschema_exportmapping(models.Model):
 
     spexportschema = models.ForeignKey('Spexportschema', db_column='SpExportSchemaID', related_name="+", on_delete=protect_with_blockers)
     spexportschemamapping = models.ForeignKey('Spexportschemamapping',db_column='SpExportSchemaMappingID', related_name="+", on_delete=protect_with_blockers)
+
+    save = partialmethod(custom_save)
 
     class Meta:
         db_table = 'sp_schema_mapping'

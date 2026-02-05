@@ -370,16 +370,16 @@ class Relationship(Field):
 
 # REFACTOR: extract other relationship types from base Relationship?
 class ManyToMany(Relationship):
-    through_table: str
-    through_column: str
+    through_model: str
+    through_field: str
 
     def __init__(self,
                  name = None,
                  required = None,
                  relatedModelName = None,
                  otherSideName = None,
-                 through_table = None,
-                 through_column = None):
+                 through_model = None,
+                 through_field = None):
         super().__init__(name=name,
                          type='many-to-many',
                          is_relationship=True,
@@ -388,15 +388,15 @@ class ManyToMany(Relationship):
                          required=required,
                          relatedModelName=relatedModelName,
                          otherSideName=otherSideName)
-        if through_table is None:
-            raise ValueError("A through table must be specified for a \
+        if through_model is None:
+            raise ValueError("A through model must be specified for a \
                              ManyToMany Relationship!")
-        if through_column is None:
+        if through_field is None:
             raise ValueError("A column on the through table for the source \
                              side must be specified!")
 
-        self.through_table = through_table
-        self.through_column = through_column
+        self.through_model = through_model
+        self.through_field = through_field
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     iddef = tabledef.find("id")
