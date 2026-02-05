@@ -354,8 +354,6 @@ export const Select = wrap<
        */
       if (props.required !== true && props.multiple === true) {
         selected.map((option) => option.classList.add('dark:bg-neutral-500')); // Highlights selected object less bright
-        unselected.map(
-          (option) => option.classList.remove('dark:bg-neutral-500') // Prevents a previously selected option from remaining highlighted
         unselected.map((option) =>
           option.classList.remove('dark:bg-neutral-500') // Prevents a previously selected option from remaining highlighted
         );

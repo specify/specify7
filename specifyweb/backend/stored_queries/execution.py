@@ -35,6 +35,7 @@ from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
+from specifyweb.specify.datamodel import datamodel, is_tree_table
 
 logger = logging.getLogger(__name__)
 
@@ -80,6 +81,19 @@ def set_group_concat_max_len(connection):
     """
     connection.execute("SET group_concat_max_len = 1024 * 1024 * 1024")
 
+def _pick_synonymy_table(field_specs, base_table):
+    if base_table is not None and is_tree_table(base_table):
+        return base_table
+
+    for field_spec in field_specs:
+        if field_spec.fieldspec.contains_tree_rank():
+            return field_spec.fieldspec.table
+
+    for field_spec in field_specs:
+        if is_tree_table(field_spec.fieldspec.table):
+            return field_spec.fieldspec.table
+
+    return None
 
 def filter_by_collection(model, query, collection):
     """Add predicates to the given query to filter result to items scoped
@@ -908,6 +922,7 @@ def build_query(
     search_synonymy = if True, search synonym nodes as well, and return all record IDs associated with parent node
     """
     model = models.models_by_tableid[tableid]
+    base_table = datamodel.get_table_by_id(tableid, strict=True)
     id_field = model._id
     catalog_number_field = model.catalogNumber if hasattr(model, 'catalogNumber') else None
 
@@ -950,8 +965,8 @@ def build_query(
             )
     }
 
-    for table in tables_to_read:
-        check_table_permissions(collection, user, table, "read")
+    for table_to_read in tables_to_read:
+        check_table_permissions(collection, user, table_to_read, "read")
 
     query = filter_by_collection(model, query, collection)
 
@@ -1025,9 +1040,13 @@ def build_query(
         query = group_by_displayed_fields(query, selected_fields)
     
     if props.search_synonymy:
-        log_sqlalchemy_query(query.query)
-        synonymized_query = synonymize_tree_query(query.query, table)
-        query = query._replace(query=synonymized_query)
+        synonymy_table = _pick_synonymy_table(field_specs, base_table)
+        if synonymy_table is None:
+            logger.info("search_synonymy requested but no tree table found... skipping")
+        else:
+            log_sqlalchemy_query(query.query)
+            synonymized_query = synonymize_tree_query(query.query, synonymy_table)
+            query = query._replace(query=synonymized_query)
 
     internal_predicate = query.get_internal_filters()
     query = query.filter(internal_predicate)
