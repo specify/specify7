@@ -104,9 +104,44 @@ def query(request, id):
             limit=limit, 
             offset=offset
         )
+ 
 
     return HttpResponse(toJson(data), content_type='application/json')
 
+@require_GET
+@login_maybe_required
+@never_cache
+def query_ids(request, id):
+    """Executes the query with id <id> and returns only the record IDs of the results as JSON."""
+    check_permission_targets(request.specify_collection.id, request.specify_user.id, [QueryBuilderPt.execute])
+    offset = int(request.GET.get('offset', 0))
+
+    with models.session_context() as session:
+        sp_query = session.query(models.SpQuery).get(int(id))
+        distinct = sp_query.selectDistinct
+        tableid = sp_query.contextTableId
+    
+        if sp_query is None:
+            return HttpResponseBadRequest(f"SpQuery with id {id} does not exist.")
+
+        field_specs = [QueryField.from_spqueryfield(field, value_from_request(field, request.GET))
+                       for field in sorted(sp_query.fields, key=lambda field: field.position)]
+
+        data = execute(
+            session=session, 
+            collection=request.specify_collection, 
+            user=request.specify_user,
+            tableid=tableid, 
+            distinct=distinct, 
+            series=False,
+            count_only=False, 
+            field_specs=field_specs, 
+            limit=None, 
+            offset=offset
+        )
+
+    ids = [row[0] for row in data.get("results", [])]
+    return HttpResponse(toJson({ "ids": ids }), content_type='application/json')
 
 @require_POST
 @login_maybe_required
