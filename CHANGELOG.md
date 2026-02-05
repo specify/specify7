@@ -4,6 +4,15 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.11.4](https://github.com/specify/specify7/compare/v7.11.3...v7.11.4) (5 February 2026)
+
+### Fixed
+
+ * Prevent auto-incrementing in the WorkBench from preventing other users from accessing Specify ([#7671](https://github.com/specify/specify7/pull/7671) - *Reported by CSIRO, RBGE, NHMD, IRD, and many others*)
+    * Fixes an issue with auto-incrementing for the 'Treatment Number' field in 'Treatment Event' ([#7560](https://github.com/specify/specify7/issues/7560) - *Reported by SDNHM and CSIRO*)
+    * Solves an issue that prevented the upload of records with auto-incrementing fields when other users are creating records in the same table ([#4894](https://github.com/specify/specify7/issues/4894) - *Reported by RBGE and others*)
+
+
 ## [7.11.3](https://github.com/specify/specify7/compare/v7.11.2.1..v7.11.3) (12 November 2025)
 
 ### Added
