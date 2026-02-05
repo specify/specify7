@@ -4566,7 +4566,7 @@ class Locality(models.Model):
     remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
     sgrstatus = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='SGRStatus', db_index=False)
     shortname = models.CharField(blank=True, max_length=32, null=True, unique=False, db_column='ShortName', db_index=False)
-    srclatlongunit = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='SrcLatLongUnit', db_index=False)
+    srclatlongunit = models.SmallIntegerField(blank=False, null=False, default=0, unique=False, db_column='SrcLatLongUnit', db_index=False)
     text1 = models.TextField(blank=True, null=True, unique=False, db_column='Text1', db_index=False)
     text2 = models.TextField(blank=True, null=True, unique=False, db_column='Text2', db_index=False)
     text3 = models.TextField(blank=True, null=True, unique=False, db_column='Text3', db_index=False)
