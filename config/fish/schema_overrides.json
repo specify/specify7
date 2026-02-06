@@ -1,288 +1,39 @@
 {
   "collectionobjectattribute": {
-    "items": [
-      {
-        "text8": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Color in Life",
-          "desc": "Color in Life"
-        }
-      },
-      {
-        "text5": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "TL",
-          "desc": "TL"
-        }
-      },
-      {
-        "text6": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "SL",
-          "desc": "SL"
-        }
-      },
-      {
-        "text4": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "LifeStage",
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Stage",
-          "desc": "Stage"
-        }
-      },
-      {
-        "text1": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "Sex",
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Sex",
-          "desc": "Sex"
-        }
-      },
-      {
-        "text7": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Total Length",
-          "desc": "Total Length"
-        }
-      },
-      {
-        "text3": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "ReproCondition",
-          "desc": "ReproCondition"
-        }
-      },
-      {
-        "text2": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Weight",
-          "desc": "Weight"
-        }
-      }
-    ],
-    "format": null,
     "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collection Object Attribute",
-    "desc": "Collection Object Attribute"
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"text8": {"ishidden": false, "name": "Color in Life", "desc": "Color in Life"}},
+      {"text5": {"ishidden": false, "name": "TL", "desc": "TL"}},
+      {"text6": {"ishidden": false, "name": "SL", "desc": "SL"}},
+      {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "Stage", "desc": "Stage"}},
+      {"text1": {"ishidden": false, "picklistname": "Sex", "name": "Sex", "desc": "Sex"}},
+      {"text7": {"ishidden": false, "name": "Total Length", "desc": "Total Length"}},
+      {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
+      {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}}
+    ]
   },
   "collectingeventattribute": {
-    "items": [
-      {
-        "text4": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Current",
-          "desc": "Current"
-        }
-      },
-      {
-        "text8": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Vegetation",
-          "desc": "Vegetation"
-        }
-      },
-      {
-        "text3": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Temp",
-          "desc": "Temp"
-        }
-      },
-      {
-        "remarks": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Remarks",
-          "desc": "Remarks"
-        }
-      },
-      {
-        "text1": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Min Depth",
-          "desc": "Min Depth"
-        }
-      },
-      {
-        "text6": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Salinity",
-          "desc": "Salinity"
-        }
-      },
-      {
-        "text9": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": "HabitatType",
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Habitat Type",
-          "desc": "Habitat Type"
-        }
-      },
-      {
-        "text5": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Clarity",
-          "desc": "Clarity"
-        }
-      },
-      {
-        "text7": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Turbidity",
-          "desc": "Turbidity"
-        }
-      },
-      {
-        "text2": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": null,
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Max Depth",
-          "desc": "Max Depth"
-        }
-      }
-    ],
-    "format": null,
     "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collecting Event Attribute",
-    "desc": "Collecting Event Attribute"
+    "desc": "Collecting Event Attribute",
+    "items": [
+      {"text4": {"ishidden": false, "name": "Current", "desc": "Current"}},
+      {"text8": {"ishidden": false, "name": "Vegetation", "desc": "Vegetation"}},
+      {"text3": {"ishidden": false, "name": "Temp", "desc": "Temp"}},
+      {"remarks": {"ishidden": false, "name": "Remarks", "desc": "Remarks"}},
+      {"text1": {"ishidden": false, "name": "Min Depth", "desc": "Min Depth"}},
+      {"text6": {"ishidden": false, "name": "Salinity", "desc": "Salinity"}},
+      {"text9": {"ishidden": false, "picklistname": "HabitatType", "name": "Habitat Type", "desc": "Habitat Type"}},
+      {"text5": {"ishidden": false, "name": "Clarity", "desc": "Clarity"}},
+      {"text7": {"ishidden": false, "name": "Turbidity", "desc": "Turbidity"}},
+      {"text2": {"ishidden": false, "name": "Max Depth", "desc": "Max Depth"}}
+    ]
   },
   "collectionobject": {
-    "items": [
-      {
-        "text1": {
-          "format": null,
-          "ishidden": false,
-          "isuiformatter": false,
-          "picklistname": null,
-          "type": "java.lang.String",
-          "isrequired": false,
-          "weblinkname": null,
-          "name": "Other number",
-          "desc": "Other number"
-        }
-      }
-    ],
-    "format": null,
     "ishidden": false,
-    "isuiformatter": null,
-    "picklistname": null,
-    "type": null,
-    "aggregator": null,
-    "defaultui": null,
-    "name": "Collection Object",
-    "desc": "Collection Object"
+    "desc": "Collection Object",
+    "items": [
+      {"text1": {"ishidden": false, "name": "Other number", "desc": "Other number"}}
+    ]
   }
 }

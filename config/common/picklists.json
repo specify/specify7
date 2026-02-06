@@ -32,16 +32,6 @@
       ]
     },
     {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
-      ]
-    },
-    {
       "name": "Method",
       "issystem": true,
       "type": 0,
@@ -111,16 +101,6 @@
       "sizelimit": 5,
       "items": [
         { "title": "Cut", "value": "Cut" }
-      ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
       ]
     },
     {
@@ -218,20 +198,6 @@
         { "title": "Riffle", "value": "Riffle" },
         { "title": "Pelagic", "value": "Pelagic" }
       ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "EtOH", "value": "EtOH" },
-        { "title": "C&S", "value": "C&S" },
-        { "title": "X-Ray", "value": "X-Ray" },
-        { "title": "Image", "value": "Image" },
-        { "title": "Skeleton", "value": "Skeleton" }
-      ]
     }
   ],
   "herpetology": [
@@ -243,16 +209,6 @@
       "sizelimit": 5,
       "items": [
         { "title": "Trap", "value": "Trap" }
-      ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
       ]
     },
     {
@@ -316,16 +272,6 @@
         { "title": "Flight Intercept Trap", "value": "Flight Intercept Trap" },
         { "title": "Netting", "value": "Netting" },
         { "title": "Sweeping", "value": "Sweeping" }
-      ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
       ]
     },
     {
@@ -451,20 +397,6 @@
         { "title": "Unknown", "value": "Unknown" },
         { "title": "Hook & Line", "value": "Hook & Line" }
       ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "EtOH", "value": "EtOH" },
-        { "title": "C&S", "value": "C&S" },
-        { "title": "X-Ray", "value": "X-Ray" },
-        { "title": "Image", "value": "Image" },
-        { "title": "Skeleton", "value": "Skeleton" }
-      ]
     }
   ],
   "invertpaleo": [
@@ -480,16 +412,6 @@
         { "title": "Excavation", "value": "Excavation" },
         { "title": "Surface Collection", "value": "Surface Collection" },
         { "title": "Trawling", "value": "Trawling" }
-      ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
       ]
     }
   ],
@@ -540,20 +462,6 @@
         { "title": "Mist Net", "value": "Mist Net" },
         { "title": "Shot", "value": "Shot" }
       ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "EtOH", "value": "EtOH" },
-        { "title": "C&S", "value": "C&S" },
-        { "title": "X-Ray", "value": "X-Ray" },
-        { "title": "Image", "value": "Image" },
-        { "title": "Skeleton", "value": "Skeleton" }
-      ]
     }
   ],
   "paleobotany": [
@@ -582,16 +490,6 @@
         { "title": "Embryo", "value": "Embryo" },
         { "title": "Seed", "value": "Seed" },
         { "title": "Senescent", "value": "Senescent" }
-      ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
       ]
     }
   ],
@@ -636,27 +534,6 @@
         { "title": "Unknown", "value": "Unknown" },
         { "title": "Hook & Line", "value": "Hook & Line" }
       ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 12,
-      "items": [
-        { "title": "EtOH", "value": "EtOH" },
-        { "title": "Denatured EtOH", "value": "Denatured EtOH" },
-        { "title": "C&S", "value": "C&S" },
-        { "title": "Dry", "value": "Dry" },
-        { "title": "Formalin", "value": "Formalin" },
-        { "title": "Isopropanol", "value": "Isopropanol" },
-        { "title": "Misc", "value": "Misc" },
-        { "title": "Shell", "value": "Shell" },
-        { "title": "Skel", "value": "Skel" },
-        { "title": "Skin", "value": "Skin" },
-        { "title": "Slide", "value": "Slide" },
-        { "title": "Tissue", "value": "Tissue" }
-      ]
     }
   ],
   "vascplant": [
@@ -668,16 +545,6 @@
       "sizelimit": 5,
       "items": [
         { "title": "Cut", "value": "Cut" }
-      ]
-    },
-    {
-      "name": "CollObjPrepMeth",
-      "issystem": true,
-      "type": 0,
-      "readonly": true,
-      "sizelimit": 5,
-      "items": [
-        { "title": "Sheet", "value": "Sheet" }
       ]
     },
     {
@@ -754,19 +621,59 @@
       "items": [
         { "title": "Dug", "value": "Dug" }
       ]
+    }
+  ],
+  "geology": [
+    {
+      "name": "CollectingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dug", "value": "Dug" },
+        { "title": "Surface Collection", "value": "Surface Collection" },
+        { "title": "Excavation", "value": "Excavation" },
+        { "title": "By Hand", "value": "By Hand" },
+        { "title": "Hammer & Chisel", "value": "Hammer & Chisel" },
+        { "title": "Screening", "value": "Screening" },
+        { "title": "Trawling", "value": "Trawling" },
+        { "title": "Metal Detecting", "value": "Metal Detecting" },
+        { "title": "Magnet", "value": "Magnet" },
+        { "title": "Observed Fall", "value": "Observed Fall" }
+      ]
     },
     {
-      "name": "CollObjPrepMeth",
+      "name": "Quality",
       "issystem": true,
       "type": 0,
       "readonly": true,
       "sizelimit": 5,
       "items": [
-        { "title": "EtOH", "value": "EtOH" },
-        { "title": "C&S", "value": "C&S" },
-        { "title": "X-Ray", "value": "X-Ray" },
-        { "title": "Image", "value": "Image" },
-        { "title": "Skeleton", "value": "Skeleton" }
+        { "title": "1 Star", "value": "1 Star" },
+        { "title": "2 Stars", "value": "2 Stars" },
+        { "title": "3 Stars", "value": "3 Stars" },
+        { "title": "4 Stars", "value": "4 Stars" },
+        { "title": "5 Stars", "value": "5 Stars" }
+      ]
+    },
+    {
+      "name": "HazardType",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 10,
+      "items": [
+        { "title": "Dry", "value": "Dry" },
+        { "title": "Radioactive", "value": "Radioactive" },
+        { "title": "Toxic", "value": "Toxic" },
+        { "title": "Asbestos", "value": "Asbestos" },
+        { "title": "Heavy Metals", "value": "Heavy Metals" },
+        { "title": "Sharp Edges", "value": "Sharp Edges" },
+        { "title": "Fragile", "value": "Fragile" },
+        { "title": "Explosive", "value": "Explosive" },
+        { "title": "Flammable", "value": "Flammable" },
+        { "title": "Biohazard", "value": "Biohazard" }
       ]
     }
   ]
