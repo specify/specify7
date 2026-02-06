@@ -746,19 +746,19 @@ class Autonumberingscheme(models.Model):
         "Collection",
         through="Autonumschcoll",
         through_fields=("autonumberingscheme", "collection"),
-        related_name="autonumberingschemes"
+        related_name="numberingschemes"
     )
     disciplines = models.ManyToManyField(
         "Discipline",
         through="Autonumschdsp",
         through_fields=("autonumberingscheme", "discipline"),
-        related_name="autonumberingschemes"
+        related_name="numberingschemes"
     )
     divisions = models.ManyToManyField(
         "Division",
         through="Autonumschdiv",
         through_fields=("autonumberingscheme", "division"),
-        related_name="autonumberingschemes"
+        related_name="numberingschemes"
     )
 
     class Meta:
@@ -6658,7 +6658,7 @@ class Specifyuser(model_extras.Specifyuser):
         "SpPrincipal",
         through="Specifyuser_spprincipal",
         through_fields=("specifyuser", "spprincipal"),
-        related_name="spprincipals"
+        related_name="specifyusers"
     )
 
     class Meta:
@@ -8043,12 +8043,17 @@ class Tectonicunit(model_extras.Tectonicunit):
     save = partialmethod(custom_save)
 
 class Autonumschcoll(models.Model):
+    """
+    Many to Many Join table for Autonumberingscheme and Collection. 
+    Instead of using this class directly, prefer to use
+    Autonumberingscheme.collections or Collection.numberingschemes
+    """
     # specify_model = datamodel.get_table_strict("Autonumschcoll")
 
     id = models.AutoField(primary_key=True, db_column='AutonumSchCollID')
 
-    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name="+", on_delete=protect_with_blockers)
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=models.CASCADE)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name="+", on_delete=models.CASCADE)
 
     save = partialmethod(custom_save)
 
@@ -8059,12 +8064,17 @@ class Autonumschcoll(models.Model):
         ]
 
 class Autonumschdsp(models.Model):
+    """
+    Many to Many Join table for Autonumberingscheme and Discipline. 
+    Instead of using this class directly, prefer to use
+    Autonumberingscheme.disciplines or Discipline.numberingschemes
+    """
     # specify_model = datamodel.get_table_strict("Autonumschdsp")
 
     id = models.AutoField(primary_key=True, db_column='AutonumSchDspID')
 
-    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name="+", on_delete=protect_with_blockers)
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=models.CASCADE)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name="+", on_delete=models.CASCADE)
 
     save = partialmethod(custom_save)
 
@@ -8075,12 +8085,17 @@ class Autonumschdsp(models.Model):
         ]
 
 class Autonumschdiv(models.Model):
+    """
+    Many to Many Join table for Autonumberingscheme and Division. 
+    Instead of using this class directly, prefer to use
+    Autonumberingscheme.divisions or Division.numberingschemes
+    """
     # specify_model = datamodel.get_table_strict("Autonumschdiv")
 
     id = models.AutoField(primary_key=True, db_column='AutonumSchDivID')
 
-    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
-    division = models.ForeignKey('Division', db_column='DivisionID', related_name="+", on_delete=protect_with_blockers)
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=models.CASCADE)
+    division = models.ForeignKey('Division', db_column='DivisionID', related_name="+", on_delete=models.CASCADE)
 
     save = partialmethod(custom_save)
 
@@ -8091,10 +8106,15 @@ class Autonumschdiv(models.Model):
         ]
 
 class Specifyuser_spprincipal(models.Model):
+    """
+    Many to Many Join table for SpecifyUser and SpPrincipal. 
+    Instead of using this class directly, prefer to use
+    Specifyuser.spprincipals or Spprincipal.specifyusers
+    """
     id = models.AutoField(primary_key=True, db_column='SpeicfyuserSpPrincipalID')
 
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.CASCADE, related_name="+")
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=protect_with_blockers, related_name="+")
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.CASCADE, related_name="+")
 
     save = partialmethod(custom_save)
 
@@ -8105,10 +8125,15 @@ class Specifyuser_spprincipal(models.Model):
         ]
 
 class Spprincipal_sppermission(models.Model):
+    """
+    Many to Many Join table for SpPrincipal and SpPermission. 
+    Instead of using this class directly, prefer to use
+    SpPrincipal.sppermissions or Sppermission.spprincipals
+    """
     id = models.AutoField(primary_key=True, db_column='SpPrincipalSpPermissionID')
 
-    sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name="+", on_delete=protect_with_blockers)
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name="+", on_delete=protect_with_blockers)
+    sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name="+", on_delete=models.CASCADE)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name="+", on_delete=models.CASCADE)
 
     save = partialmethod(custom_save)
 
@@ -8119,6 +8144,11 @@ class Spprincipal_sppermission(models.Model):
         ]
 
 class Project_colobj(models.Model):
+    """
+    Many to Many Join table for Project and CollectionObject. 
+    Instead of using this class directly, prefer to use
+    Project.collectionobjects or Collectionobject.projects
+    """
     id = models.AutoField(primary_key=True, db_column='ProjectColObjID')
 
     project = models.ForeignKey('Project', db_column='ProjectID', related_name="+", on_delete=protect_with_blockers)
@@ -8133,6 +8163,11 @@ class Project_colobj(models.Model):
         ]
 
 class Spexportschema_exportmapping(models.Model):
+    """
+    Many to Many Join table for SpExportSchema and SpExportSchemaMapping. 
+    Instead of using this class directly, prefer to use
+    Spexportschema.mappings or Spexportschemamapping.spexportschemas
+    """
     id = models.AutoField(primary_key=True, db_column='SpExportSchemaExportMappingID')
 
     spexportschema = models.ForeignKey('Spexportschema', db_column='SpExportSchemaID', related_name="+", on_delete=protect_with_blockers)

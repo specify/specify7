@@ -6981,8 +6981,8 @@ class Migration(migrations.Migration):
             name='Spprincipal_sppermission',
             fields=[
                 ('id', models.AutoField(db_column='SpPrincipalSpPermissionID', primary_key=True, serialize=False)),
-                ('sppermission', models.ForeignKey(db_column='SpPermissionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.sppermission')),
-                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spprincipal')),
+                ('sppermission', models.ForeignKey(db_column='SpPermissionID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.sppermission')),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.spprincipal')),
             ],
             options={
                 'db_table': 'spprincipal_sppermission',
@@ -7004,7 +7004,7 @@ class Migration(migrations.Migration):
             fields=[
                 ('id', models.AutoField(db_column='SpeicfyuserSpPrincipalID', primary_key=True, serialize=False)),
                 ('specifyuser', models.ForeignKey(db_column='SpecifyUserID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to=settings.AUTH_USER_MODEL)),
-                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spprincipal')),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.spprincipal')),
             ],
             options={
                 'db_table': 'specifyuser_spprincipal',
@@ -7025,8 +7025,8 @@ class Migration(migrations.Migration):
             name='Autonumschdsp',
             fields=[
                 ('id', models.AutoField(db_column='AutonumSchDspID', primary_key=True, serialize=False)),
-                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.autonumberingscheme')),
-                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.discipline')),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.autonumberingscheme')),
+                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.discipline')),
             ],
             options={
                 'db_table': 'autonumsch_dsp',
@@ -7036,8 +7036,8 @@ class Migration(migrations.Migration):
             name='Autonumschdiv',
             fields=[
                 ('id', models.AutoField(db_column='AutonumSchDivID', primary_key=True, serialize=False)),
-                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.autonumberingscheme')),
-                ('division', models.ForeignKey(db_column='DivisionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.division')),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.autonumberingscheme')),
+                ('division', models.ForeignKey(db_column='DivisionID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.division')),
             ],
             options={
                 'db_table': 'autonumsch_div',
@@ -7047,8 +7047,8 @@ class Migration(migrations.Migration):
             name='Autonumschcoll',
             fields=[
                 ('id', models.AutoField(db_column='AutonumSchCollID', primary_key=True, serialize=False)),
-                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.autonumberingscheme')),
-                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collection')),
+                ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.autonumberingscheme')),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to='specify.collection')),
             ],
             options={
                 'db_table': 'autonumsch_coll',
@@ -7057,17 +7057,17 @@ class Migration(migrations.Migration):
         migrations.AddField(
             model_name='autonumberingscheme',
             name='collections',
-            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschcoll', to='specify.collection'),
+            field=models.ManyToManyField(related_name='numberingschemes', through='specify.Autonumschcoll', to='specify.collection'),
         ),
         migrations.AddField(
             model_name='autonumberingscheme',
             name='disciplines',
-            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschdsp', to='specify.discipline'),
+            field=models.ManyToManyField(related_name='numberingschemes', through='specify.Autonumschdsp', to='specify.discipline'),
         ),
         migrations.AddField(
             model_name='autonumberingscheme',
             name='divisions',
-            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschdiv', to='specify.division'),
+            field=models.ManyToManyField(related_name='numberingschemes', through='specify.Autonumschdiv', to='specify.division'),
         ),
         migrations.AddField(
             model_name='project',
