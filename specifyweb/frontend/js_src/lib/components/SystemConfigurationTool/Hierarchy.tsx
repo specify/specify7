@@ -300,8 +300,11 @@ function DialogForm({ open, onClose, onSubmit, title, step, formData, setFormDat
     React.useState<ResourceFormData>({});
 
   React.useEffect(() => {
+    if (!open) {
+      return;
+    }
     applyFormDefaults(resources[step], setFormData, step);
-  }, [step]);
+  }, [open, step]);
 
   // Fetch list of available default trees.
   const [treeOptions, setTreeOptions] = React.useState<
@@ -337,9 +340,13 @@ function DialogForm({ open, onClose, onSubmit, title, step, formData, setFormDat
 
   const [saveBlocked, setSaveBlocked] = React.useState<boolean>(false);
   React.useEffect(() => {
+    if (!open) {
+      setSaveBlocked(false);
+      return;
+    }
     const formValid = formRef.current?.checkValidity();
     setSaveBlocked(formValid !== true);
-  }, [formData, temporaryFormData, step]);
+  }, [formData, temporaryFormData, step, open]);
   const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
 
   if (!open) return null;
@@ -657,16 +664,9 @@ export function Hierarchy({
           <Ul className="m-5">{renderDisciplines(division)}</Ul>
           <div className="flex mt-1">
             {addButton(
+              // Use custom forms for discipline to allow tree configuration
               () => {
-                /*
-                 * SetNewResource(
-                 *   new tables.Discipline.Resource({
-                 *     division: `/api/specify/division/${division.id}/`,
-                 *   })
-                 * );
-                 * handleNewResource();
-                 * void refreshAllInfo();
-                 */
+                setFormData(Object.fromEntries(stepOrder.map((key) => [key, {}])));
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },
