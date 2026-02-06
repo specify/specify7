@@ -7,26 +7,26 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
 import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
-import { formsText } from '../../localization/forms';
 import { type RA } from '../../utils/types';
+import { getUniqueName } from '../../utils/uniquifyName';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
 import { MIN_PASSWORD_LENGTH } from '../Security/SetPassword';
+import type { InstitutionData } from '../SystemConfigurationTool/Utils';
 import type {
   TaxonFileDefaultDefinition,
   TaxonFileDefaultList,
 } from '../TreeView/CreateTree';
 import { PopulatedTreeList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { disciplineTypeOptions, stepOrder, FIELD_MAX_LENGTH, resources } from './setupResources';
+import { disciplineTypeOptions, FIELD_MAX_LENGTH, resources,stepOrder } from './setupResources';
 import type { ResourceFormData } from './types';
-import type { InstitutionData } from '../SystemConfigurationTool/Utils';
-import { getUniqueName } from '../../utils/uniquifyName';
 
 function getFormValue(
   formData: ResourceFormData,
@@ -349,17 +349,17 @@ export function renderFormFieldFactory({
               name={fieldName}
               required={required}
               value={getFormValue(formData, currentStep, fieldName) ?? ''}
-              onValueChange={(value) => handleChange(fieldName, value)}
               onChange={({ target }) => {
                 // Only allow unique discipline names
                 if (resources[currentStep].resourceName === 'discipline' && fieldName === 'name') {
                   const value = (target.value ?? '').trim();
-                  const isUnique = institutionData.children.some((child) => child.name === value) === false;
+                  const isUnique = !institutionData.children.some((child) => child.name === value);
                   target.setCustomValidity(
                     isUnique ? '' : formsText.valueMustBeUniqueToDatabase()
                   );
                 }
               }}
+              onValueChange={(value) => handleChange(fieldName, value)}
             />
           </Label.Block>
         )}

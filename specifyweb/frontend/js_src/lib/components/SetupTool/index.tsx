@@ -16,21 +16,22 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
+import type { InstitutionData } from '../SystemConfigurationTool/Utils';
 import type {
   TaxonFileDefaultDefinition,
   TaxonFileDefaultList,
 } from '../TreeView/CreateTree';
 import { fetchDefaultTrees } from '../TreeView/CreateTree';
-import { applyFormDefaults, checkFormCondition, renderFormFieldFactory, updateSetupFormData } from './SetupForm';
+import {
+  applyFormDefaults,
+  checkFormCondition,
+  renderFormFieldFactory,
+  updateSetupFormData,
+} from './SetupForm';
 import { SetupOverview } from './SetupOverview';
 import { resources, stepOrder } from './setupResources';
-import type {
-  ResourceFormData,
-  SetupProgress,
-  SetupResponse,
-} from './types';
+import type { ResourceFormData, SetupProgress, SetupResponse } from './types';
 import { flattenAllResources } from './utils';
-import type { InstitutionData } from '../SystemConfigurationTool/Utils';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -203,8 +204,8 @@ export function SetupTool({
   const institutionData: InstitutionData = {
     id: 0,
     name: '',
-    children: []
-  }
+    children: [],
+  };
 
   const { renderFormFields } = renderFormFieldFactory({
     formData,
