@@ -28,9 +28,8 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { tableLabel } from '../Preferences/UserDefinitions';
-import { applyFormDefaults, renderFormFieldFactory } from '../SetupTool/SetupForm';
+import { applyFormDefaults, renderFormFieldFactory, updateSetupFormData } from '../SetupTool/SetupForm';
 import {
-  disciplineTypeOptions,
   resources,
   stepOrder,
 } from '../SetupTool/setupResources';
@@ -282,18 +281,20 @@ type DialogFormProps = {
   readonly resourceIndex: number;
   readonly title: LocalizedString;
   readonly step: number;
-  readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
   readonly formData: ResourceFormData;
   readonly setFormData: (
       value: React.SetStateAction<ResourceFormData>
     ) => void;
+  readonly institutionData: InstitutionData;
 };
 
 import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
 
-function DialogForm({ open, onClose, onSubmit, title, step, formRef, formData, setFormData }: DialogFormProps) {
+function DialogForm({ open, onClose, onSubmit, title, step, formData, setFormData, institutionData }: DialogFormProps) {
   const id = useId('config-tool');
+
+  const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const [temporaryFormData, setTemporaryFormData] =
     React.useState<ResourceFormData>({});
@@ -320,44 +321,7 @@ function DialogForm({ open, onClose, onSubmit, title, step, formRef, formData, s
     name: string,
     newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
   ): void => {
-    setFormData((previous: ResourceFormData) => {
-      const resourceName = resources[step].resourceName;
-      const previousResourceData = previous[resourceName];
-      const updates: Record<string, any> = {
-        ...previousResourceData,
-        [name]: newValue,
-      };
-
-      // Switch discipline type
-      if (resourceName === 'discipline' && name === 'type') {
-        const matchingType = disciplineTypeOptions.find(
-          (option) => option.value === newValue
-        );
-        updates.name = matchingType
-          ? (matchingType.label ?? String(matchingType.value))
-          : '';
-
-        // Clear previous taxon tree configuration
-        if (Boolean(previous.taxonTreeDef?.preload)) {
-          const clearedTaxon = {
-            ...previous.taxonTreeDef,
-            preload: false,
-            preloadFile: undefined,
-          };
-
-          return {
-            ...previous,
-            [resourceName]: updates,
-            taxonTreeDef: clearedTaxon,
-          };
-        }
-      }
-
-      return {
-        ...previous,
-        [resourceName]: updates,
-      };
-    });
+    updateSetupFormData(setFormData, name, newValue, step, institutionData);
   };
 
   const { renderFormFields } = renderFormFieldFactory({
@@ -368,7 +332,15 @@ function DialogForm({ open, onClose, onSubmit, title, step, formRef, formData, s
     setTemporaryFormData,
     formRef,
     treeOptions,
+    institutionData,
   });
+
+  const [saveBlocked, setSaveBlocked] = React.useState<boolean>(false);
+  React.useEffect(() => {
+    const formValid = formRef.current?.checkValidity();
+    setSaveBlocked(formValid !== true);
+  }, [formData, temporaryFormData, step]);
+  const SubmitComponent = saveBlocked ? Submit.Danger : Submit.Save;
 
   if (!open) return null;
 
@@ -377,7 +349,7 @@ function DialogForm({ open, onClose, onSubmit, title, step, formRef, formData, s
       buttons={
         <>
           <Button.Info onClick={onClose}>{commonText.cancel()}</Button.Info>
-          <Submit.Save form={id('form')}>{commonText.save()}</Submit.Save>
+          <SubmitComponent form={id('form')}>{commonText.save()}</SubmitComponent>
         </>
       }
       header={title}
@@ -389,6 +361,7 @@ function DialogForm({ open, onClose, onSubmit, title, step, formRef, formData, s
         onSubmit={() => {
           onSubmit(formData);
         }}
+        forwardRef={formRef}
       >
         {renderFormFields(resources[step].fields)}
       </Form>
@@ -449,8 +422,6 @@ export function Hierarchy({
   readonly refreshAllInfo: () => Promise<void>;
 }): JSX.Element {
   if (!institution) return <LoadingScreen />;
-
-  const formRef = React.useRef<HTMLFormElement | null>(null);
 
   const [formData, setFormData] = React.useState<ResourceFormData>(
     Object.fromEntries(stepOrder.map((key) => [key, {}]))
@@ -584,9 +555,9 @@ export function Hierarchy({
                 }));
                 setDisciplineStep(1);
               }}
-              formRef={formRef}
               formData={formData}
               setFormData={setFormData}
+              institutionData={institution}
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 1}
@@ -601,9 +572,9 @@ export function Hierarchy({
                 }));
                 setDisciplineStep(2);
               }}
-              formRef={formRef}
               formData={formData}
               setFormData={setFormData}
+              institutionData={institution}
             />
             <DialogForm
               open={disciplineCreationOpen && disciplineStep === 2}
@@ -649,9 +620,9 @@ export function Hierarchy({
                   void refreshAllInfo();
                 }, 400);
               }}
-              formRef={formRef}
               formData={formData}
               setFormData={setFormData}
+              institutionData={institution}
             />
           </CollapsibleSection>
         </li>

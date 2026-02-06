@@ -10,6 +10,7 @@ import { commonText } from '../../localization/common';
 import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
+import { formsText } from '../../localization/forms';
 import { type RA } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -22,8 +23,10 @@ import type {
 } from '../TreeView/CreateTree';
 import { PopulatedTreeList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { stepOrder, FIELD_MAX_LENGTH, resources } from './setupResources';
+import { disciplineTypeOptions, stepOrder, FIELD_MAX_LENGTH, resources } from './setupResources';
 import type { ResourceFormData } from './types';
+import type { InstitutionData } from '../SystemConfigurationTool/Utils';
+import { getUniqueName } from '../../utils/uniquifyName';
 
 function getFormValue(
   formData: ResourceFormData,
@@ -91,6 +94,7 @@ export function renderFormFieldFactory({
   setTemporaryFormData,
   formRef,
   treeOptions,
+  institutionData,
 }: {
   readonly formData: ResourceFormData;
   readonly currentStep: number;
@@ -103,7 +107,8 @@ export function renderFormFieldFactory({
     value: React.SetStateAction<ResourceFormData>
   ) => void;
   readonly formRef: React.MutableRefObject<HTMLFormElement | null>;
-  readonly treeOptions?: TaxonFileDefaultList;
+  readonly treeOptions: TaxonFileDefaultList | undefined;
+  readonly institutionData: InstitutionData;
 }) {
   const [isTreeDialogOpen, handleTreeDialogOpen, handleTreeDialogClose] =
     useBooleanState(false);
@@ -345,6 +350,16 @@ export function renderFormFieldFactory({
               required={required}
               value={getFormValue(formData, currentStep, fieldName) ?? ''}
               onValueChange={(value) => handleChange(fieldName, value)}
+              onChange={({ target }) => {
+                // Only allow unique discipline names
+                if (resources[currentStep].resourceName === 'discipline' && fieldName === 'name') {
+                  const value = (target.value ?? '').trim();
+                  const isUnique = institutionData.children.some((child) => child.name === value) === false;
+                  target.setCustomValidity(
+                    isUnique ? '' : formsText.valueMustBeUniqueToDatabase()
+                  );
+                }
+              }}
             />
           </Label.Block>
         )}
@@ -416,4 +431,52 @@ export function renderFormFieldFactory({
   };
 
   return { renderFormField, renderFormFields };
+}
+
+export function updateSetupFormData(
+  setFormData: React.Dispatch<React.SetStateAction<ResourceFormData>>,
+  name: string,
+  newValue: LocalizedString | TaxonFileDefaultDefinition | boolean,
+  currentStep: number,
+  institutionData?: InstitutionData,
+): void {
+  setFormData((previous: ResourceFormData) => {
+    const resourceName = resources[currentStep].resourceName;
+    const previousResourceData = previous[resourceName];
+    const updates: Record<string, any> = {
+      ...previousResourceData,
+      [name]: newValue,
+    };
+
+    // Switch discipline type
+    if (resourceName === 'discipline' && name === 'type') {
+      const matchingType = disciplineTypeOptions.find(
+        (option) => option.value === newValue
+      );
+      if (matchingType) {
+        const disciplineName = getUniqueName(matchingType.label, institutionData ? institutionData.children.map((child) => child.name) : []);
+        updates.name = matchingType ? disciplineName : '';
+      }
+
+      // Clear previous taxon tree configuration
+      if (Boolean(previous.taxonTreeDef?.preload)) {
+        const clearedTaxon = {
+          ...previous.taxonTreeDef,
+          preload: false,
+          preloadFile: undefined,
+        };
+
+        return {
+          ...previous,
+          [resourceName]: updates,
+          taxonTreeDef: clearedTaxon,
+        };
+      }
+    }
+
+    return {
+      ...previous,
+      [resourceName]: updates,
+    };
+  });
 }

@@ -21,15 +21,16 @@ import type {
   TaxonFileDefaultList,
 } from '../TreeView/CreateTree';
 import { fetchDefaultTrees } from '../TreeView/CreateTree';
-import { applyFormDefaults, checkFormCondition, renderFormFieldFactory } from './SetupForm';
+import { applyFormDefaults, checkFormCondition, renderFormFieldFactory, updateSetupFormData } from './SetupForm';
 import { SetupOverview } from './SetupOverview';
-import { disciplineTypeOptions, resources,stepOrder } from './setupResources';
+import { resources, stepOrder } from './setupResources';
 import type {
   ResourceFormData,
   SetupProgress,
   SetupResponse,
 } from './types';
 import { flattenAllResources } from './utils';
+import type { InstitutionData } from '../SystemConfigurationTool/Utils';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -167,44 +168,7 @@ export function SetupTool({
     name: string,
     newValue: LocalizedString | TaxonFileDefaultDefinition | boolean
   ): void => {
-    setFormData((previous: ResourceFormData) => {
-      const resourceName = resources[currentStep].resourceName;
-      const previousResourceData = previous[resourceName];
-      const updates: Record<string, any> = {
-        ...previousResourceData,
-        [name]: newValue,
-      };
-
-      // Switch discipline type
-      if (resourceName === 'discipline' && name === 'type') {
-        const matchingType = disciplineTypeOptions.find(
-          (option) => option.value === newValue
-        );
-        updates.name = matchingType
-          ? (matchingType.label ?? String(matchingType.value))
-          : '';
-
-        // Clear previous taxon tree configuration
-        if (Boolean(previous.taxonTreeDef?.preload)) {
-          const clearedTaxon = {
-            ...previous.taxonTreeDef,
-            preload: false,
-            preloadFile: undefined,
-          };
-
-          return {
-            ...previous,
-            [resourceName]: updates,
-            taxonTreeDef: clearedTaxon,
-          };
-        }
-      }
-
-      return {
-        ...previous,
-        [resourceName]: updates,
-      };
-    });
+    updateSetupFormData(setFormData, name, newValue, currentStep);
   };
 
   const handleSubmit = (event: React.FormEvent): void => {
@@ -236,6 +200,12 @@ export function SetupTool({
     setCurrentStep(findNextStep(currentStep, formData, -1));
   };
 
+  const institutionData: InstitutionData = {
+    id: 0,
+    name: '',
+    children: []
+  }
+
   const { renderFormFields } = renderFormFieldFactory({
     formData,
     currentStep,
@@ -244,6 +214,7 @@ export function SetupTool({
     setTemporaryFormData,
     formRef,
     treeOptions,
+    institutionData,
   });
 
   const id = useId('setup-tool');
