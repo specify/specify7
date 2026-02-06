@@ -6978,138 +6978,143 @@ class Migration(migrations.Migration):
             index=models.Index(fields=['dateaccessioned'], name='AccessionDateIDX'),
         ),
         migrations.CreateModel(
-            name='SpecifyuserSpprincipal',
+            name='Spprincipal_sppermission',
             fields=[
-                ('id', models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')),
-            ],
-            options={
-                'db_table': 'specifyuser_spprincipal',
-                'ordering': (),
-                'managed': False,
-            },
-        ),
-        migrations.AlterField(
-            model_name='taxontreedefitem',
-            name='parent',
-            field=models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.taxontreedefitem'),
-        ),
-        migrations.CreateModel(
-            name='SpprincipalSppermission',
-            fields=[
-                ('sppermission', models.ForeignKey(db_column='SpPermissionID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='spprincipal_links', serialize=False, to='specify.sppermission')),
-                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='sppermission_links', to='specify.spprincipal')),
+                ('id', models.AutoField(db_column='SpPrincipalSpPermissionID', primary_key=True, serialize=False)),
+                ('sppermission', models.ForeignKey(db_column='SpPermissionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.sppermission')),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spprincipal')),
             ],
             options={
                 'db_table': 'spprincipal_sppermission',
-                'ordering': (),
-                'unique_together': {('sppermission', 'spprincipal')},
             },
         ),
         migrations.CreateModel(
-            name='ProjectColobj',
+            name='Spexportschema_exportmapping',
             fields=[
-                ('project', models.ForeignKey(db_column='ProjectID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='+', serialize=False, to='specify.project')),
+                ('id', models.AutoField(db_column='SpExportSchemaExportMappingID', primary_key=True, serialize=False)),
+                ('spexportschema', models.ForeignKey(db_column='SpExportSchemaID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spexportschema')),
+                ('spexportschemamapping', models.ForeignKey(db_column='SpExportSchemaMappingID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spexportschemamapping')),
+            ],
+            options={
+                'db_table': 'sp_schema_mapping',
+            },
+        ),
+        migrations.CreateModel(
+            name='Specifyuser_spprincipal',
+            fields=[
+                ('id', models.AutoField(db_column='SpeicfyuserSpPrincipalID', primary_key=True, serialize=False)),
+                ('specifyuser', models.ForeignKey(db_column='SpecifyUserID', on_delete=django.db.models.deletion.CASCADE, related_name='+', to=settings.AUTH_USER_MODEL)),
+                ('spprincipal', models.ForeignKey(db_column='SpPrincipalID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.spprincipal')),
+            ],
+            options={
+                'db_table': 'specifyuser_spprincipal',
+            },
+        ),
+        migrations.CreateModel(
+            name='Project_colobj',
+            fields=[
+                ('id', models.AutoField(db_column='ProjectColObjID', primary_key=True, serialize=False)),
                 ('collectionobject', models.ForeignKey(db_column='CollectionObjectID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collectionobject')),
+                ('project', models.ForeignKey(db_column='ProjectID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.project')),
             ],
             options={
                 'db_table': 'project_colobj',
-                'ordering': (),
             },
         ),
         migrations.CreateModel(
-            name='AutonumschDsp',
+            name='Autonumschdsp',
             fields=[
-                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='+', serialize=False, to='specify.discipline')),
+                ('id', models.AutoField(db_column='AutonumSchDspID', primary_key=True, serialize=False)),
                 ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.autonumberingscheme')),
+                ('discipline', models.ForeignKey(db_column='DisciplineID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.discipline')),
             ],
             options={
                 'db_table': 'autonumsch_dsp',
-                'ordering': (),
             },
         ),
         migrations.CreateModel(
-            name='AutonumschDiv',
+            name='Autonumschdiv',
             fields=[
-                ('division', models.ForeignKey(db_column='DivisionID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='+', serialize=False, to='specify.division')),
+                ('id', models.AutoField(db_column='AutonumSchDivID', primary_key=True, serialize=False)),
                 ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.autonumberingscheme')),
+                ('division', models.ForeignKey(db_column='DivisionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.division')),
             ],
             options={
                 'db_table': 'autonumsch_div',
-                'ordering': (),
             },
         ),
         migrations.CreateModel(
-            name='AutonumschColl',
+            name='Autonumschcoll',
             fields=[
-                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='+', serialize=False, to='specify.collection')),
+                ('id', models.AutoField(db_column='AutonumSchCollID', primary_key=True, serialize=False)),
                 ('autonumberingscheme', models.ForeignKey(db_column='AutoNumberingSchemeID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.autonumberingscheme')),
+                ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.collection')),
             ],
             options={
                 'db_table': 'autonumsch_coll',
-                'ordering': (),
             },
         ),
         migrations.AddField(
             model_name='autonumberingscheme',
             name='collections',
-            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.AutonumschColl', to='specify.collection'),
+            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschcoll', to='specify.collection'),
         ),
         migrations.AddField(
             model_name='autonumberingscheme',
             name='disciplines',
-            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.AutonumschDsp', to='specify.discipline'),
+            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschdsp', to='specify.discipline'),
         ),
         migrations.AddField(
             model_name='autonumberingscheme',
             name='divisions',
-            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.AutonumschDiv', to='specify.division'),
+            field=models.ManyToManyField(related_name='autonumberingschemes', through='specify.Autonumschdiv', to='specify.division'),
         ),
         migrations.AddField(
             model_name='project',
             name='collectionobjects',
-            field=models.ManyToManyField(related_name='projects', through='specify.ProjectColobj', to='specify.collectionobject'),
+            field=models.ManyToManyField(related_name='projects', through='specify.Project_colobj', to='specify.collectionobject'),
         ),
         migrations.AddField(
             model_name='specifyuser',
             name='spprincipals',
-            field=models.ManyToManyField(related_name='spprincipals', through='specify.SpecifyuserSpprincipal', to='specify.spprincipal'),
+            field=models.ManyToManyField(related_name='spprincipals', through='specify.Specifyuser_spprincipal', to='specify.spprincipal'),
+        ),
+        migrations.AddField(
+            model_name='spexportschema',
+            name='mappings',
+            field=models.ManyToManyField(related_name='spexportschemas', through='specify.Spexportschema_exportmapping', to='specify.spexportschemamapping'),
         ),
         migrations.AddField(
             model_name='spprincipal',
             name='sppermissions',
-            field=models.ManyToManyField(related_name='spprincipals', through='specify.SpprincipalSppermission', to='specify.sppermission'),
+            field=models.ManyToManyField(related_name='spprincipals', through='specify.Spprincipal_sppermission', to='specify.sppermission'),
         ),
-        migrations.CreateModel(
-            name='SpSchemaMapping',
-            fields=[
-                ('spexportschemamapping', models.ForeignKey(db_column='SpExportSchemaMappingID', on_delete=specifyweb.specify.models.protect_with_blockers, primary_key=True, related_name='sp_schema_mappings', serialize=False, to='specify.spexportschemamapping')),
-                ('spexportschema', models.ForeignKey(db_column='SpExportSchemaID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='sp_schema_mappings', to='specify.spexportschema')),
-            ],
-            options={
-                'db_table': 'sp_schema_mapping',
-                'ordering': (),
-                'unique_together': {('spexportschemamapping', 'spexportschema')},
-            },
+        migrations.AddConstraint(
+            model_name='spprincipal_sppermission',
+            constraint=models.UniqueConstraint(fields=('spprincipal', 'sppermission'), name='spprincipal_sppermission'),
         ),
-        migrations.AlterUniqueTogether(
-            name='projectcolobj',
-            unique_together={('project', 'collectionobject')},
+        migrations.AddConstraint(
+            model_name='spexportschema_exportmapping',
+            constraint=models.UniqueConstraint(fields=('spexportschema', 'spexportschemamapping'), name='exportschema_exportmapping'),
         ),
-        migrations.AlterUniqueTogether(
-            name='autonumschdsp',
-            unique_together={('discipline', 'autonumberingscheme')},
+        migrations.AddConstraint(
+            model_name='specifyuser_spprincipal',
+            constraint=models.UniqueConstraint(fields=('specifyuser', 'spprincipal'), name='specifyuser_spprincipal'),
         ),
-        migrations.AlterUniqueTogether(
-            name='autonumschdiv',
-            unique_together={('division', 'autonumberingscheme')},
+        migrations.AddConstraint(
+            model_name='project_colobj',
+            constraint=models.UniqueConstraint(fields=('project', 'collectionobject'), name='project_collectionobject'),
         ),
-        migrations.AlterUniqueTogether(
-            name='autonumschcoll',
-            unique_together={('collection', 'autonumberingscheme')},
+        migrations.AddConstraint(
+            model_name='autonumschdsp',
+            constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'discipline'), name='autonumberingscheme_discipline'),
         ),
-        migrations.AlterField(
-            model_name='taxontreedefitem',
-            name='parent',
-            field=models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.taxontreedefitem'),
+        migrations.AddConstraint(
+            model_name='autonumschdiv',
+            constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'division'), name='autonumberingscheme_division'),
+        ),
+        migrations.AddConstraint(
+            model_name='autonumschcoll',
+            constraint=models.UniqueConstraint(fields=('autonumberingscheme', 'collection'), name='autonumberingscheme_collection'),
         ),
     ]

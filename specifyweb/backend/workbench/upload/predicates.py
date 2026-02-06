@@ -12,7 +12,7 @@ from django.db.models import QuerySet, Q, F, Model, Exists, OuterRef
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.utils.func import Func
 
-from django.core.exceptions import ObjectDoesNotExist, FieldDoesNotExist, FieldError
+from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.backend.workbench.upload.clone import GENERIC_FIELDS_TO_SKIP
 
@@ -38,14 +38,6 @@ def add_to_remove_node(previous: ToRemoveNode, new_node: ToRemoveNode) -> ToRemo
         **previous,
         **{key: [*previous.get(key, []), *values] for key, values in new_node.items()},
     }
-
-def _model_supports_filter_key(model, key: str) -> bool:
-    field_name = key[:-3] if key.endswith("_id") else key
-    try:
-        model._meta.get_field(field_name)
-        return True
-    except FieldDoesNotExist:
-        return False
 
 
 class ToRemove(NamedTuple):
@@ -132,7 +124,7 @@ class DjangoPredicates(NamedTuple):
         base_predicates = {
             _get_field_name(field_name): value
             for (field_name, value) in self.filters.items()
-            if not isinstance(value, list) and _model_supports_filter_key(current_model, field_name)
+            if not isinstance(value, list)
         }
 
         filtered = {
@@ -142,19 +134,9 @@ class DjangoPredicates(NamedTuple):
 
         unique_alias = next(get_unique_alias)
 
-        # Apply filters first
-        query = query.filter(**filtered)
-
-        # IMPORTANT: downstream reduction logic assumes every predicate level
-        # defines a "predicate-N" alias, so always alias the PK.
-        unique_alias = next(get_unique_alias)
         alias_path = _get_field_name("id")
-        try:
-            query = query.alias(**{unique_alias: F(alias_path)})
-            aliases = [*aliases, (alias_path, unique_alias)]
-        except FieldError:
-            # Extremely defensive; every model should have "id"
-            pass
+        query = query.filter(**filtered).alias(**{unique_alias: F(alias_path)})
+        aliases = [*aliases, (alias_path, unique_alias)]
 
         def _reduce_by_key(rel_name: str):
             # mypy isn't able to infer types correctly
@@ -302,31 +284,12 @@ def canonicalize_remove_node(node: ToRemoveNode) -> Q:
 
 def _map_matchee(matchee: list[ToRemoveMatchee], model_name: str) -> Exists:
     model: Model = get_model(model_name)
-
-    # Filter out any filter keys that don't exist on this model
-    qs: list[Q] = []
-    for match in matchee:
-        safe_filter_on = {
-            k: v
-            for k, v in match["filter_on"].items()
-            if _model_supports_filter_key(model, k)
-        }
-        # If nothing remains, this particular matchee can't apply to this model
-        if safe_filter_on:
-            qs.append(Q(**safe_filter_on))
-
-    # If none of the matchees had any applicable filter keys,
-    # make this Exists() always false by filtering on an empty pk set.
-    if not qs:
-        return Exists(model.objects.none())
-
+    qs = [Q(**match["filter_on"]) for match in matchee]
     qs_or = Func.make_ors(qs)
     query = model.objects.filter(qs_or)
-
     to_remove = [match["remove"] for match in matchee if match["remove"] is not None]
     if to_remove:
         query = query.exclude(Func.make_ors(to_remove))
-
     return Exists(query)
 
 

@@ -67,9 +67,6 @@ def scoping_relationships(collection, table: Table) -> dict[str, int]:
     try:
         table.get_relationship("collection")
         extra_static["collection_id"] = collection.id
-        extra_static["discipline_id"] = collection.discipline_id
-        extra_static["division_id"] = collection.discipline.division_id
-        extra_static["institution_id"] = collection.discipline.division.institution_id
     except DoesNotExistError:
         pass
 

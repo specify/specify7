@@ -328,7 +328,6 @@ class Agent(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     organization = models.ForeignKey('Agent', db_column='ParentOrganizationID', related_name='orgmembers', null=True, on_delete=protect_with_blockers)
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='agents', null=True, on_delete=models.SET_NULL)
-    # institutiontc = models.ForeignKey("InstitutionNetwork", db_column="InstitutionTCID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="agents_institutiontc")
 
     class Meta:
         db_table = 'agent'
@@ -745,19 +744,19 @@ class Autonumberingscheme(models.Model):
     # Relationships: Many-to-Many
     collections = models.ManyToManyField(
         "Collection",
-        through="specify.Autonumschcoll",
+        through="Autonumschcoll",
         through_fields=("autonumberingscheme", "collection"),
         related_name="autonumberingschemes"
     )
     disciplines = models.ManyToManyField(
         "Discipline",
-        through="specify.AutonumschDsp",
+        through="Autonumschdsp",
         through_fields=("autonumberingscheme", "discipline"),
         related_name="autonumberingschemes"
     )
     divisions = models.ManyToManyField(
         "Division",
-        through="specify.AutonumschDiv",
+        through="Autonumschdiv",
         through_fields=("autonumberingscheme", "division"),
         related_name="autonumberingschemes"
     )
@@ -1401,7 +1400,6 @@ class Collection(models.Model):
     institutionnetwork = models.ForeignKey('Institution', db_column='InstitutionNetworkID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     collectionobjecttype = models.ForeignKey('CollectionObjectType', db_column='CollectionObjectTypeID', related_name='collections', null=True, on_delete=models.SET_NULL)
-    # institutionnetwork = models.ForeignKey("InstitutionNetwork", db_column="InstitutionNetworkID", on_delete=models.DO_NOTHING, null=True, blank=True, related_name="collections")
 
     class Meta:
         db_table = 'collection'
@@ -2904,7 +2902,6 @@ class Discipline(model_extras.Discipline):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     type = models.CharField(blank=True, max_length=64, null=True, unique=False, db_column='Type', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
-    # disciplineid = models.IntegerField(blank=True, null=False, unique=False, db_column='DisciplineId', db_index=False)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -5609,7 +5606,7 @@ class Project(models.Model):
     # Relationships: Many-to-Many
     collectionobjects = models.ManyToManyField(
         'CollectionObject',
-        through="specify.ProjectColobj",
+        through="Project_colobj",
         through_fields=("project", "collectionobject"),
         related_name="projects"
     )
@@ -6073,6 +6070,14 @@ class Spexportschema(models.Model):
     discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='spexportschemas', null=False, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
+    # Relationships: Many-to-Many
+    mappings = models.ManyToManyField(
+        "Spexportschemamapping",
+        through="Spexportschema_exportmapping",
+        through_fields=("spexportschema", "spexportschemamapping"),
+        related_name="spexportschemas"
+    )
+
     class Meta:
         db_table = 'spexportschema'
         ordering = ()
@@ -6341,7 +6346,12 @@ class Spprincipal(models.Model):
     userGroupScopeID = models.IntegerField(blank=True, null=True, db_column='userGroupScopeID')
 
     # Relationships: Many-to-Many
-    sppermissions = models.ManyToManyField("SpPermission", through="specify.SpprincipalSppermission", through_fields=("spprincipal", "sppermission"), related_name="spprincipals")
+    sppermissions = models.ManyToManyField(
+        "SpPermission",
+        through="Spprincipal_sppermission",
+        through_fields=("spprincipal", "sppermission"),
+        related_name="spprincipals"
+    )
 
     class Meta:
         db_table = 'spprincipal'
@@ -6644,7 +6654,12 @@ class Specifyuser(model_extras.Specifyuser):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     # Relationships: Many-to-Many
-    spprincipals = models.ManyToManyField("SpPrincipal", through="specify.SpecifyuserSpprincipal", through_fields=("specifyuser", "spprincipal"), related_name="spprincipals")
+    spprincipals = models.ManyToManyField(
+        "SpPrincipal",
+        through="Specifyuser_spprincipal",
+        through_fields=("specifyuser", "spprincipal"),
+        related_name="spprincipals"
+    )
 
     class Meta:
         db_table = 'specifyuser'
@@ -8027,100 +8042,106 @@ class Tectonicunit(model_extras.Tectonicunit):
 
     save = partialmethod(custom_save)
 
+class Autonumschcoll(models.Model):
+    # specify_model = datamodel.get_table_strict("Autonumschcoll")
 
+    id = models.AutoField(primary_key=True, db_column='AutonumSchCollID')
 
-class AutonumschColl(models.Model):
-    # specify_model = datamodel.get_table_strict('autonumsch_coll')
-
-    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
-    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
-
-    class Meta:
-        db_table = 'autonumsch_coll'
-        ordering = ()
-        unique_together = (('collection', 'autonumberingscheme'),)
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name="+", on_delete=protect_with_blockers)
 
     save = partialmethod(custom_save)
 
-class AutonumschDiv(models.Model):
-    # specify_model = datamodel.get_table_strict('autonumsch_div')
-
-    division = models.ForeignKey('Division', db_column='DivisionID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
-    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
-
     class Meta:
-        db_table = 'autonumsch_div'
-        ordering = ()
-        unique_together = (('division', 'autonumberingscheme'),)
+        db_table='autonumsch_coll'
+        constraints = [
+            models.UniqueConstraint(fields=["autonumberingscheme", "collection"], name="autonumberingscheme_collection")
+        ]
+
+class Autonumschdsp(models.Model):
+    # specify_model = datamodel.get_table_strict("Autonumschdsp")
+
+    id = models.AutoField(primary_key=True, db_column='AutonumSchDspID')
+
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
+    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name="+", on_delete=protect_with_blockers)
 
     save = partialmethod(custom_save)
 
-class AutonumschDsp(models.Model):
-    # specify_model = datamodel.get_table_strict('autonumsch_dsp')
-
-    discipline = models.ForeignKey('Discipline', db_column='DisciplineID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
-    autonumberingscheme = models.ForeignKey('AutoNumberingScheme', db_column='AutoNumberingSchemeID', related_name='+', null=False, on_delete=protect_with_blockers)
-
     class Meta:
-        db_table = 'autonumsch_dsp'
-        ordering = ()
-        unique_together = (('discipline', 'autonumberingscheme'),)
+        db_table='autonumsch_dsp'
+        constraints = [
+            models.UniqueConstraint(fields=["autonumberingscheme", "discipline"], name="autonumberingscheme_discipline")
+        ]
+
+class Autonumschdiv(models.Model):
+    # specify_model = datamodel.get_table_strict("Autonumschdiv")
+
+    id = models.AutoField(primary_key=True, db_column='AutonumSchDivID')
+
+    autonumberingscheme = models.ForeignKey('Autonumberingscheme', db_column='AutoNumberingSchemeID', related_name="+", on_delete=protect_with_blockers)
+    division = models.ForeignKey('Division', db_column='DivisionID', related_name="+", on_delete=protect_with_blockers)
 
     save = partialmethod(custom_save)
 
-class SpecifyuserSpprincipal(models.Model):
-    # specify_model = datamodel.get_table_strict('specifyuser_spprincipal')
+    class Meta:
+        db_table='autonumsch_div'
+        constraints = [
+            models.UniqueConstraint(fields=["autonumberingscheme", "division"], name="autonumberingscheme_division")
+        ]
+
+class Specifyuser_spprincipal(models.Model):
+    id = models.AutoField(primary_key=True, db_column='SpeicfyuserSpPrincipalID')
 
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', on_delete=models.CASCADE, related_name="+")
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=models.deletion.DO_NOTHING, related_name="+")
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', on_delete=protect_with_blockers, related_name="+")
+
+    save = partialmethod(custom_save)
 
     class Meta:
         db_table = 'specifyuser_spprincipal'
-        managed = False
-        ordering = ()
-        unique_together = (('specifyuser', 'spprincipal'),)
-        indexes = [
-            models.Index(fields=['specifyuser'], name='FK81E18B5E4BDD9E10'),
-            models.Index(fields=['spprincipal'], name='FK81E18B5E99A7381A'),
+        constraints = [
+            models.UniqueConstraint(fields=["specifyuser", "spprincipal"], name="specifyuser_spprincipal")
         ]
 
-class ProjectColobj(models.Model):
-    # specify_model = datamodel.get_table_strict('project_colobj')
+class Spprincipal_sppermission(models.Model):
+    id = models.AutoField(primary_key=True, db_column='SpPrincipalSpPermissionID')
 
-    # Composite PK table (no AutoField); use the two FKs as the PK
-    project = models.ForeignKey('Project', db_column='ProjectID', related_name='+', null=False, on_delete=protect_with_blockers, primary_key=True)
-    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='+', null=False, on_delete=protect_with_blockers)
-
-    class Meta:
-        db_table = 'project_colobj'
-        ordering = ()
-        unique_together = (('project', 'collectionobject'),)
+    sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name="+", on_delete=protect_with_blockers)
+    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name="+", on_delete=protect_with_blockers)
 
     save = partialmethod(custom_save)
-
-class SpSchemaMapping(models.Model):
-    # specify_model = datamodel.get_table_strict('sp_schema_mapping')
-
-    # Composite PK table; use one FK as primary key + unique_together
-    spexportschemamapping = models.ForeignKey('SpExportSchemaMapping', db_column='SpExportSchemaMappingID', related_name='sp_schema_mappings', null=False, on_delete=protect_with_blockers, primary_key=True)
-    spexportschema = models.ForeignKey('SpExportSchema', db_column='SpExportSchemaID', related_name='sp_schema_mappings', null=False, on_delete=protect_with_blockers)
-
-    class Meta:
-        db_table = 'sp_schema_mapping'
-        ordering = ()
-        unique_together = (('spexportschemamapping', 'spexportschema'),)
-
-    save = partialmethod(custom_save)
-
-class SpprincipalSppermission(models.Model):
-    # specify_model = datamodel.get_table_strict('spprincipal_sppermission')
-
-    sppermission = models.ForeignKey('SpPermission', db_column='SpPermissionID', related_name='spprincipal_links', null=False, on_delete=protect_with_blockers, primary_key=True)
-    spprincipal = models.ForeignKey('SpPrincipal', db_column='SpPrincipalID', related_name='sppermission_links', null=False, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'spprincipal_sppermission'
-        ordering = ()
-        unique_together = (('sppermission', 'spprincipal'),)
+        constraints = [
+            models.UniqueConstraint(fields=["spprincipal", "sppermission"], name="spprincipal_sppermission")
+        ]
+
+class Project_colobj(models.Model):
+    id = models.AutoField(primary_key=True, db_column='ProjectColObjID')
+
+    project = models.ForeignKey('Project', db_column='ProjectID', related_name="+", on_delete=protect_with_blockers)
+    collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name="+", on_delete=protect_with_blockers)
 
     save = partialmethod(custom_save)
+
+    class Meta:
+        db_table = 'project_colobj'
+        constraints = [
+            models.UniqueConstraint(fields=["project", "collectionobject"], name="project_collectionobject")
+        ]
+
+class Spexportschema_exportmapping(models.Model):
+    id = models.AutoField(primary_key=True, db_column='SpExportSchemaExportMappingID')
+
+    spexportschema = models.ForeignKey('Spexportschema', db_column='SpExportSchemaID', related_name="+", on_delete=protect_with_blockers)
+    spexportschemamapping = models.ForeignKey('Spexportschemamapping',db_column='SpExportSchemaMappingID', related_name="+", on_delete=protect_with_blockers)
+
+    save = partialmethod(custom_save)
+
+    class Meta:
+        db_table = 'sp_schema_mapping'
+        constraints = [
+            models.UniqueConstraint(fields=["spexportschema", "spexportschemamapping"], name="exportschema_exportmapping")
+        ]

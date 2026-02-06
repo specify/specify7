@@ -791,9 +791,7 @@ class BoundUploadTable(NamedTuple):
 
     def _get_inserter(self):
         def _inserter(model, attrs):
-            valid_fields = {f.attname for f in model._meta.concrete_fields}
-            filtered_attrs = {k: v for k, v in attrs.items() if k in valid_fields}
-            uploaded = model.objects.create(**filtered_attrs)
+            uploaded = model.objects.create(**attrs)
             self.auditor.insert(uploaded, None)
             return uploaded
 
@@ -1148,11 +1146,7 @@ class BoundUpdateTable(BoundUploadTable):
             return old == new
                 
         return {
-            key: FieldChangeInfo(
-                field_name=key,
-                old_value=getattr(reference_record, key),
-                new_value=new_value,
-            )  # type: ignore
+            key: FieldChangeInfo(field_name=key, old_value=getattr(reference_record, key), new_value=new_value)  # type: ignore
             for (key, new_value) in attrs.items()
-            if hasattr(reference_record, key) and not is_equal(getattr(reference_record, key), new_value)
+            if not is_equal(getattr(reference_record, key), new_value)
         }

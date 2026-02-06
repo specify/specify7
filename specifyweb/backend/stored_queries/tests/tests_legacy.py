@@ -956,7 +956,10 @@ expected_errors = {
   },
   "CollectionObjectGroup": {
     "incorrect_direction": {
-      "cojo": ["onetomany", "onetoone"]
+      "cojo": [
+        "onetomany",
+        "onetoone"
+      ]
     }
   },
 }
