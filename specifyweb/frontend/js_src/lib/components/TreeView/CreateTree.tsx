@@ -96,35 +96,17 @@ export function CreateTree<
     resource: TaxonFileDefaultDefinition
   ): Promise<void> => {
     setIsTreeCreationStarted(true);
-    return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: {
-        url: resource.file,
-        mappingUrl: resource.mappingFile,
-        collection: connectedCollection,
-        disciplineName: resource.discipline,
-        rowCount: resource.rows,
-        treeName: resource.title,
-        createMissingRanks: true,
-      },
-    })
-      .then(({ data, status }) => {
-        if (status === Http.OK) {
-          console.log(`${resource.title} tree created successfully:`, data);
-        } else if (status === Http.ACCEPTED) {
-          // Tree is being created in the background.
-          console.log(
-            `${resource.title} tree creation started successfully:`,
-            data
-          );
-          setTreeCreationTaskId(data.task_id);
-        }
-      })
-      .catch((error) => {
-        console.error(`Request failed for ${resource.file}:`, error);
-        throw error;
-      });
+    return startTreeCreation(
+      resource.file,
+      resource.mappingFile,
+      connectedCollection,
+      resource.discipline,
+      resource.rows,
+      resource.title,
+      undefined,
+      undefined,
+      (taskId: string | undefined) => setTreeCreationTaskId(taskId)
+    );
   };
 
   const handleClickEmptyTree = (
@@ -245,9 +227,15 @@ export function ImportTree<SCHEMA extends AnyTree>({
     if (createMissingRanks === undefined) {
       console.log("finding if theres missing ranks");
       try {
-        const { data: mappingData, status } = await fetch(`/trees/default_tree_mapping/${encodeURIComponent(resource.mappingFile)}/`)
-        if (status === Http.OK && mappingData) {
-          const mappingRankNames = mappingData.ranks.map((rank: any) => {return rank.name});
+        const response = await ajax<any>(`/trees/default_tree_mapping/`, {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: {
+            mappingUrl: resource.mappingFile
+          }
+        });
+        if (response.status === Http.OK && response.data) {
+          const mappingRankNames = response.data.ranks.map((rank: any) => {return rank.name});
           const existingNames = treeDefinitionItems.map((item) => item.name);
 
           const missing = mappingRankNames
@@ -261,46 +249,25 @@ export function ImportTree<SCHEMA extends AnyTree>({
           }
           // If all ranks are present then continue as normal
         } else {
-          console.warn(
-            `Failed to fetch mapping for ${resource.mappingFile}`
-          );
+          console.warn(`Failed to fetch mapping for ${resource.mappingFile}`);
         }
       } catch (err) {
-        console.error('Error fetching or parsing mapping file', err);
+        console.warn('Error fetching or parsing mapping file', err);
       }
     }
 
     setIsTreeCreationStarted(true);
-    return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
-      method: 'POST',
-      headers: { Accept: 'application/json' },
-      body: {
-        url: resource.file,
-        mappingUrl: resource.mappingFile,
-        collection: connectedCollection,
-        disciplineName: resource.discipline,
-        rowCount: resource.rows,
-        treeName: resource.title,
-        treeDefId,
-        createMissingRanks: createMissingRanks,
-      },
-    })
-      .then(({ data, status }) => {
-        if (status === Http.OK) {
-          console.log(`${resource.title} tree created successfully:`, data);
-        } else if (status === Http.ACCEPTED) {
-          // Tree is being created in the background.
-          console.log(
-            `${resource.title} tree creation started successfully:`,
-            data
-          );
-          setTreeCreationTaskId(data.task_id);
-        }
-      })
-      .catch((error) => {
-        console.error(`Request failed for ${resource.file}:`, error);
-        throw error;
-      });
+    return startTreeCreation(
+      resource.file,
+      resource.mappingFile,
+      connectedCollection,
+      resource.discipline,
+      resource.rows,
+      resource.title,
+      treeDefId,
+      createMissingRanks,
+      (taskId: string | undefined) => setTreeCreationTaskId(taskId)
+    );
   };
 
   return (
@@ -317,10 +284,12 @@ export function ImportTree<SCHEMA extends AnyTree>({
       {isMissingTreeRanks && missingTreeRanks && selectedPopulatedTree ? (
         <MissingTreeRanksDialog
           handleNo={() => {
-            handleClick(selectedPopulatedTree, false)
+            setIsMissingTreeRanks(false);
+            handleClick(selectedPopulatedTree, false);
           }}
           handleYes={() => {
-            handleClick(selectedPopulatedTree, true)
+            setIsMissingTreeRanks(false);
+            handleClick(selectedPopulatedTree, true);
           }}
           onClose={() => {
             setIsMissingTreeRanks(false);
@@ -365,6 +334,49 @@ export function ImportTree<SCHEMA extends AnyTree>({
       ) : null}
     </>
   );
+}
+
+async function startTreeCreation(
+  url: string,
+  mappingUrl: string,
+  collection: string,
+  disciplineName: string,
+  rowCount: number,
+  treeName: string,
+  treeDefId: number | undefined,
+  createMissingRanks: boolean | undefined,
+  onSuccess: (taskId: string | undefined) => void,
+): Promise<void> {
+  return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
+    method: 'POST',
+    headers: { Accept: 'application/json' },
+    body: {
+      url,
+      mappingUrl,
+      collection,
+      disciplineName,
+      rowCount,
+      treeName,
+      treeDefId,
+      createMissingRanks,
+    },
+  })
+    .then(({ data, status }) => {
+      if (status === Http.OK) {
+        console.log(`${treeName} tree created successfully:`, data);
+      } else if (status === Http.ACCEPTED) {
+        // Tree is being created in the background.
+        console.log(
+          `${treeName} tree creation started successfully:`,
+          data
+        );
+        onSuccess(data.task_id);
+      }
+    })
+    .catch((error) => {
+      console.error(`Request failed for ${treeName}:`, error);
+      throw error;
+    });
 }
 
 function EmptyTreeList({
@@ -459,22 +471,28 @@ export function MissingTreeRanksDialog({
           <Button.Secondary onClick={handleNo}>
             {commonText.no()}
           </Button.Secondary>
-          <Button.Fancy onClick={handleYes}>
+          <Button.Info onClick={handleYes}>
             {queryText.yes()}
-          </Button.Fancy>
+          </Button.Info>
         </>
       }
       header={treeText.missingRanks()}
       onClose={onClose}
     >
-      <div className="mb-4">
-        {treeText.missingRanksDescription()}
-        <ul className="ml-4 list-disc">
-          {missingTreeRanks && missingTreeRanks.length > 0
-            ? missingTreeRanks.map((rank) => <li key={rank}>{rank}</li>)
-            : null}
-        </ul>
-        {treeText.createMissingRanks()}
+      <div className="mb-4 flex flex-col gap-4">
+        <section>
+          {treeText.missingRanksDescription()}
+        </section>
+        <section>
+          <ul className="ml-4">
+            {missingTreeRanks && missingTreeRanks.length > 0
+              ? missingTreeRanks.map((rank) => <li key={rank}>{rank}</li>)
+              : null}
+          </ul>
+        </section>
+        <section>
+          {treeText.createMissingRanks()}
+        </section>
       </div>
     </Dialog>
   );

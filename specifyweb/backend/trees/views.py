@@ -900,11 +900,12 @@ def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
         return http.JsonResponse({'error': str(e)}, status=400)
 
 @login_maybe_required
-@require_GET
+@require_POST
 def default_tree_mapping(request) -> http.HttpResponse:
     """Retrieves a default populated tree's mapping from a url"""
     # TODO: Reuse code from create_default_tree
-    mapping_url = request.GET.get("url")
+    data = json.loads(request.body)
+    mapping_url = data.get("mappingUrl")
     if mapping_url:
         try:
             resp = requests.get(mapping_url)
