@@ -28,11 +28,12 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { tableLabel } from '../Preferences/UserDefinitions';
-import { applyFormDefaults, renderFormFieldFactory, updateSetupFormData } from '../SetupTool/SetupForm';
 import {
-  resources,
-  stepOrder,
-} from '../SetupTool/setupResources';
+  applyFormDefaults,
+  renderFormFieldFactory,
+  updateSetupFormData,
+} from '../SetupTool/SetupForm';
+import { resources, stepOrder } from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
@@ -282,16 +283,23 @@ type DialogFormProps = {
   readonly title: LocalizedString;
   readonly step: number;
   readonly formData: ResourceFormData;
-  readonly setFormData: (
-      value: React.SetStateAction<ResourceFormData>
-    ) => void;
+  readonly setFormData: (value: React.SetStateAction<ResourceFormData>) => void;
   readonly institutionData: InstitutionData;
 };
 
-import { fetchDefaultTrees } from '../TreeView/CreateTree';
 import type { TaxonFileDefaultList } from '../TreeView/CreateTree';
+import { fetchDefaultTrees } from '../TreeView/CreateTree';
 
-function DialogForm({ open, onClose, onSubmit, title, step, formData, setFormData, institutionData }: DialogFormProps) {
+function DialogForm({
+  open,
+  onClose,
+  onSubmit,
+  title,
+  step,
+  formData,
+  setFormData,
+  institutionData,
+}: DialogFormProps) {
   const id = useId('config-tool');
 
   const formRef = React.useRef<HTMLFormElement | null>(null);
@@ -356,7 +364,9 @@ function DialogForm({ open, onClose, onSubmit, title, step, formData, setFormDat
       buttons={
         <>
           <Button.Info onClick={onClose}>{commonText.cancel()}</Button.Info>
-          <SubmitComponent form={id('form')}>{commonText.save()}</SubmitComponent>
+          <SubmitComponent form={id('form')}>
+            {commonText.save()}
+          </SubmitComponent>
         </>
       }
       header={title}
@@ -364,11 +374,11 @@ function DialogForm({ open, onClose, onSubmit, title, step, formData, setFormDat
     >
       <Form
         className="flex-1 overflow-auto gap-2"
+        forwardRef={formRef}
         id={id('form')}
         onSubmit={() => {
           onSubmit(formData);
         }}
-        forwardRef={formRef}
       >
         {renderFormFields(resources[step].fields)}
       </Form>
@@ -550,8 +560,11 @@ export function Hierarchy({
 
             {/* DISCIPLINE CONFIG DIALOGS */}
             <DialogForm
+              formData={formData}
+              institutionData={institution}
               open={disciplineCreationOpen && disciplineStep === 0}
               resourceIndex={stepOrder.indexOf('discipline')}
+              setFormData={setFormData}
               step={stepOrder.indexOf('discipline')}
               title={tableLabel('Discipline')}
               onClose={closeDisciplineCreation}
@@ -562,13 +575,13 @@ export function Hierarchy({
                 }));
                 setDisciplineStep(1);
               }}
-              formData={formData}
-              setFormData={setFormData}
-              institutionData={institution}
             />
             <DialogForm
+              formData={formData}
+              institutionData={institution}
               open={disciplineCreationOpen && disciplineStep === 1}
               resourceIndex={stepOrder.indexOf('geographyTreeDef')}
+              setFormData={setFormData}
               step={stepOrder.indexOf('geographyTreeDef')}
               title={setupToolText.addNewGeographyTree()}
               onClose={closeDisciplineCreation}
@@ -579,13 +592,13 @@ export function Hierarchy({
                 }));
                 setDisciplineStep(2);
               }}
-              formData={formData}
-              setFormData={setFormData}
-              institutionData={institution}
             />
             <DialogForm
+              formData={formData}
+              institutionData={institution}
               open={disciplineCreationOpen && disciplineStep === 2}
               resourceIndex={stepOrder.indexOf('taxonTreeDef')}
+              setFormData={setFormData}
               step={stepOrder.indexOf('taxonTreeDef')}
               title={setupToolText.addNewTaxonTree()}
               onClose={closeDisciplineCreation}
@@ -627,9 +640,6 @@ export function Hierarchy({
                   void refreshAllInfo();
                 }, 400);
               }}
-              formData={formData}
-              setFormData={setFormData}
-              institutionData={institution}
             />
           </CollapsibleSection>
         </li>
