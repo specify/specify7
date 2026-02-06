@@ -21,6 +21,7 @@ type SystemInfo = {
   readonly stats_url: string | null;
   readonly stats_2_url: string | null;
   readonly discipline_type: string;
+  readonly geography_is_global: string;
 };
 
 let systemInfo: SystemInfo;

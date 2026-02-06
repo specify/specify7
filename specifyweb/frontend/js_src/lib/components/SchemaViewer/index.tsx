@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { welcomeText } from '../../localization/welcome';
 import { Container, H2 } from '../Atoms';
@@ -42,12 +41,8 @@ export function SchemaViewer(): JSX.Element {
   return (
     <Container.Full className="pt-0">
       <div className="flex items-center gap-2 pt-4">
-        <H2 className="text-2xl">
-          {commonText.colonLine({
-            label: welcomeText.schemaVersion(),
-            value: getSystemInfo().schema_version,
-          })}
-        </H2>
+        <H2 className="text-2xl">{welcomeText.schemaVersion()}</H2>
+        <H2 className="text-xl">{getSystemInfo().version}</H2>
         <span className="-ml-2 flex-1" />
         <Link.Info
           className="print:hidden"
@@ -56,19 +51,12 @@ export function SchemaViewer(): JSX.Element {
         >
           {schemaText.downloadAsJson()}
         </Link.Info>
-        <Link.Info
-          className="print:hidden"
-          download
-          href="/static/config/specify_datamodel.xml"
-        >
-          {schemaText.downloadAsXml()}
-        </Link.Info>
         <Button.Info
           className="print:hidden"
           onClick={(): void =>
             void downloadFile(
-              `${schemaText.schemaExportFileName()} - v${
-                getSystemInfo().schema_version
+              `${schemaText.schemaExportFileName()} - ${
+                getSystemInfo().version
               }.tsv`,
               schemaToTsv()
             ).catch(softFail)

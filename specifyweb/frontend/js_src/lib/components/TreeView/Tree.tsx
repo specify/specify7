@@ -23,6 +23,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AddRank } from './AddRank';
+import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
@@ -218,11 +219,16 @@ export function Tree<
         </div>
       </div>
       {rows.length === 0 ? (
-        <Button.Icon
-          icon="plus"
-          title={treeText.addRootNode()}
-          onClick={createRootNode}
-        />
+        <div className="flex flex-col gap-2 p-2">
+          <Button.Icon
+            icon="plus"
+            title={treeText.addRootNode()}
+            onClick={createRootNode}
+          />
+          {treeDefId ? (
+            <ImportTree tableName={tableName} treeDefId={treeDefId} treeDefinitionItems={treeDefinitionItems}/>
+          ) : null}
+        </div>
       ) : undefined}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (
