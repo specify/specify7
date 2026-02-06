@@ -453,7 +453,6 @@ export function updateSetupFormData(
       const matchingType = disciplineTypeOptions.find(
         (option) => option.value === newValue
       );
-      console.log(institutionData);
       if (matchingType) {
         const existingDisciplines = institutionData ? institutionData.children.flatMap(division =>
           division.children.map(discipline => discipline.name)
