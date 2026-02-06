@@ -93,7 +93,8 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
 
-# Information to connect to a Redis database
+# Specify will use this Redis as a process broker and storage for temporary
+# values
 REDIS_HOST="redis"
 REDIS_PORT=6379
 REDIS_DB_INDEX=0
