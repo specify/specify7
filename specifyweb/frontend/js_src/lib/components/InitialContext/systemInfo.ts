@@ -23,28 +23,7 @@ type SystemInfo = {
   readonly discipline_type: string;
 };
 
-type StatsCounts = {
-  readonly Collectionobject: number;
-  readonly Collection: number;
-  readonly Specifyuser: number;
-};
-
 let systemInfo: SystemInfo;
-
-function buildStatsLambdaUrl(base: string | null | undefined): string | null {
-  if (!base) return null;
-  let u = base.trim();
-
-  if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
-
-  const hasRoute = /\/(prod|default)\/[^\s/]+/.test(u);
-  if (!hasRoute) {
-    const stage = 'prod';
-    const route = 'AggrgatedSp7Stats';
-    u = `${u.replace(/\/$/, '')  }/${stage}/${route}`;
-  }
-  return u;
-}
 
 export const fetchContext = load<SystemInfo>(
   '/context/system_info.json',
