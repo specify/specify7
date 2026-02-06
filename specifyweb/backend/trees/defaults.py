@@ -130,13 +130,17 @@ class RankMappingConfiguration(TypedDict):
 
 class DefaultTreeContext():
     """Context for a default tree creation task"""
-    def __init__(self, tree_type: str, tree_name: str):
+    def __init__(self, tree_type: str, tree_name: str, tree_cfg: dict[str, RankMappingConfiguration], create_missing_ranks: bool):
         self.tree_type = tree_type
         self.tree_name = tree_name
 
         self.tree_def_model, self.tree_rank_model, self.tree_node_model = get_models(tree_type)
 
         self.tree_def = self.tree_def_model.objects.get(name=tree_name)
+
+        self.tree_cfg = tree_cfg
+        if create_missing_ranks:
+            self.create_missing_ranks()
         
         self.create_rank_map()
         self.root_parent = self.tree_node_model.objects.filter(
@@ -146,6 +150,21 @@ class DefaultTreeContext():
 
         self.counter = 0
         self.batch_size = 1000
+    
+    def create_missing_ranks(self):
+        for rank in self.tree_cfg['ranks']:
+            if rank.get('rank'):
+                self.tree_rank_model.objects.get_or_create(
+                    name=rank['name'],
+                    treedef=self.tree_def,
+                    rankid=rank.get('rank'),
+                    defaults={
+                        'title': (rank.get('title') or rank.get('name').title()),
+                        'isenforced': rank.get('enforced', True),
+                        'isinfullname': rank.get('infullname', False),
+                        'fullnameseparator': rank.get('fullnameseparator', ' '),
+                    }
+                )
 
     def create_rank_map(self):
         """Rank lookup map to reduce queries"""
@@ -376,7 +395,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             tree_name = tree_def.name
             
             # Start importing CSV data
-            context = DefaultTreeContext(tree_type, tree_name)
+            context = DefaultTreeContext(tree_type, tree_name, tree_cfg, create_missing_ranks)
 
             total_rows = 0
             if row_count:
