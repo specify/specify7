@@ -157,7 +157,9 @@ export function IntegratedRecordSelector({
     [parentContext, relationship]
   );
 
-  const isCollection = relationship.relatedTable.name === 'Collection' && relationship.name === 'collections';
+  const isCollection =
+    relationship.relatedTable.name === 'Collection' &&
+    relationship.name === 'collections';
 
   const isCOJO =
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
