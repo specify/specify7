@@ -353,7 +353,7 @@ export function renderFormFieldFactory({
                 // Only allow unique discipline names
                 if (resources[currentStep].resourceName === 'discipline' && fieldName === 'name') {
                   const value = (target.value ?? '').trim();
-                  const isUnique = !institutionData.children.some((child) => child.name === value);
+                  const isUnique = institutionData.children.some((child) => child.name === value);
                   target.setCustomValidity(
                     isUnique ? '' : formsText.valueMustBeUniqueToDatabase()
                   );
@@ -453,8 +453,12 @@ export function updateSetupFormData(
       const matchingType = disciplineTypeOptions.find(
         (option) => option.value === newValue
       );
+      console.log(institutionData);
       if (matchingType) {
-        const disciplineName = getUniqueName(matchingType.label, institutionData ? institutionData.children.map((child) => child.name) : []);
+        const existingDisciplines = institutionData ? institutionData.children.flatMap(division =>
+          division.children.map(discipline => discipline.name)
+        ) : [];
+        const disciplineName = getUniqueName(matchingType.label, existingDisciplines);
         updates.name = matchingType ? disciplineName : '';
       }
 
