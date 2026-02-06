@@ -16,17 +16,25 @@ class ScopeType(Enum):
 
     @staticmethod
     def from_model(obj) -> "ScopeType":
-        clazz = obj.__class__
+        app_and_model_name = obj._meta.label_lower
 
-        if clazz is models.Institution:
-            return ScopeType.INSTITUTION
-        if clazz is models.Division:
-            return ScopeType.DIVISION
-        if clazz is models.Discipline:
-            return ScopeType.DISCIPLINE
-        if clazz is models.Collection:
-            return ScopeType.COLLECTION
-        raise TypeError(f"{clazz.__name__} is not a hierarchy table")
+        # We can't directly use `obj.__class__ is SomeScopeModel` here because
+        # that will break historical fake models during migrations
+        # Using the app and model name means this will work in both migration
+        # and normal runtimes
+        # See https://docs.djangoproject.com/en/6.0/topics/migrations/#historical-models
+        # for more information about Django's Histroical models
+        mapping = {
+            'specify.institution': ScopeType.INSTITUTION,
+            'specify.division': ScopeType.DIVISION,
+            'specify.discipline': ScopeType.DISCIPLINE,
+            'specify.collection': ScopeType.COLLECTION
+        }
+
+        scope_type = mapping.get(app_and_model_name, None)
+        if scope_type is None:
+            raise TypeError(f"{app_and_model_name} is not a hierarchy table")
+        return scope_type
 
     def __gt__(self, other):
         if not isinstance(other, ScopeType):
