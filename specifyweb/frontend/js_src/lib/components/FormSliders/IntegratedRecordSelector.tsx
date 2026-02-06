@@ -157,9 +157,11 @@ export function IntegratedRecordSelector({
     [parentContext, relationship]
   );
 
-  const isCollection =
-    relationship.relatedTable.name === 'Collection' &&
-    relationship.name === 'collections';
+  const isSystemConfigResource =
+    (relationship.relatedTable.name === 'Collection' &&
+      relationship.name === 'collections') ||
+    (relationship.relatedTable.name === 'Discipline' &&
+      relationship.name === 'disciplines');
 
   const isCOJO =
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
@@ -261,7 +263,7 @@ export function IntegratedRecordSelector({
                             isReadOnly ||
                             (isToOne && collection.models.length > 0) ||
                             isTaxonTreeDefItemTable ||
-                            isCollection
+                            isSystemConfigResource
                           }
                           onClick={showSearchDialog}
                         />
@@ -284,7 +286,7 @@ export function IntegratedRecordSelector({
                               isReadOnly ||
                               (isToOne && collection.models.length > 0) ||
                               isTaxonTreeDefItemTable ||
-                              isCollection
+                              isSystemConfigResource
                             }
                             onClick={(): void => {
                               const resource =
@@ -323,7 +325,7 @@ export function IntegratedRecordSelector({
                             (renderedResourceId !== undefined &&
                               resource?.id === renderedResourceId) ||
                             disableRemove ||
-                            isCollection
+                            isSystemConfigResource
                           }
                           onClick={(): void => {
                             if (isAttachmentTable) {
