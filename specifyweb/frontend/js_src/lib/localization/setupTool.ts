@@ -251,12 +251,6 @@ export const setupToolText = createDictionary({
     'en-us': 'The last name of the agent associated with the account.',
   },
 
-  taxonTreeSetUp: {
-    'en-us': 'Set up taxon tree',
-  },
-  geoTreeSetUp: {
-    'en-us': 'Set up geo tree',
-  },
   addNewGeographyTree: {
     'en-us': 'Add new Geography Tree',
   },
