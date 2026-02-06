@@ -1,15 +1,16 @@
 import os
-import re
 import hmac
 import json
 import logging
 import time
-import shutil
 from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
 from xml.etree import ElementTree
 from datetime import datetime
+from django.apps import apps
+from stream_zip import ZIP_32, stream_zip
+from stat import S_IFREG
 
 import requests
 from django.conf import settings
@@ -19,9 +20,13 @@ from django.db import transaction
 from django.utils.translation import gettext as _
 from django.views.decorators.cache import cache_control, never_cache
 from django.views.decorators.http import require_POST
+from django.utils.text import get_valid_filename
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required, openapi
+from specifyweb.specify import models
+from specifyweb.specify.models import Recordsetitem
+from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
 
 from .dataset_views import dataset_view, datasets_view
 logger = logging.getLogger(__name__)
@@ -314,58 +319,64 @@ def download_all(request):
     except ValueError as e:
         return HttpResponseBadRequest(e)
 
-    attachmentLocations = r['attachmentlocations']
-    origFileNames = r['origfilenames']
+    attachment_locations = r['attachmentlocations']
+    orig_filenames = r['origfilenames']
+
+    # Optional record set parameter
+    # Fetches all the attachment locations instead of using the ones provided by the frontend
+    recordSetId = r.get('recordsetid', None)
+    if recordSetId is not None:
+        attachment_locations = []
+        orig_filenames = []
+        recordset = models.Recordset.objects.get(id=recordSetId)
+        table = get_model_by_table_id(recordset.dbtableid)
+        join_table = apps.get_model(table._meta.app_label, table.__name__ + 'attachment')
+
+        # Reach all attachments (record set -> record set item -> record -> record_attachment -> attachment)
+        recordsetitems = models.Recordsetitem.objects.filter(recordset__id=recordSetId).values_list('recordid', flat=True)
+        join_records = join_table.objects.filter(**{table.__name__.lower() + '_id__in': list(recordsetitems)}).select_related('attachment')
+        
+        for join_record in join_records:
+            attachment = join_record.attachment
+            if attachment.attachmentlocation is not None:
+                attachment_locations.append(attachment.attachmentlocation)
+                orig_filenames.append(os.path.basename(attachment.origfilename or attachment.attachmentlocation))
 
     filename = 'attachments_%s.zip' % datetime.now().isoformat()
-    path = os.path.join(settings.DEPOSITORY_DIR, filename)
-
-    try:
-        make_attachment_zip(attachmentLocations, origFileNames, get_collection(request), path)
-    except Exception as e:
-        return HttpResponseBadRequest(e)
-    
-    if not os.path.exists(path):
-        return HttpResponseBadRequest('Attachment archive not found')
-
-    def file_iterator(file_path, chunk_size=512 * 1024):
-        with open(file_path, 'rb') as f:
-            while chunk := f.read(chunk_size):
-                yield chunk
-        os.remove(file_path)
 
     response = StreamingHttpResponse(
-        file_iterator(path),
+        stream_attachment_zip(attachment_locations, orig_filenames, get_collection(request)),
         content_type='application/octet-stream')
     response['Content-Disposition'] = f'attachment; filename="{filename}"'
     return response
 
-def make_attachment_zip(attachmentLocations, origFileNames, collection, output_file):
-    output_dir = mkdtemp()
-    try:
-        fileNameAppearances = {}
-        for i, attachmentLocation in enumerate(attachmentLocations):
+def stream_attachment_zip(attachment_locations, orig_filenames, collection):
+    "Streams attachment zip file to the frontend as its being created"
+    session = requests.Session()
+    filename_appearances = {}
+    def file_iterator():
+        modified_at = datetime.now()
+        mode = S_IFREG | 0o600 # default file permissions
+        for i, attachment_location in enumerate(attachment_locations):
             data = {
-                'filename': attachmentLocation,
+                'filename': attachment_location,
                 'coll': collection,
                 'type': 'O',
-                'token': generate_token(get_timestamp(), attachmentLocation)
+                'token': generate_token(get_timestamp(), attachment_location)
             }
-            response = requests.get(server_urls['read'], params=data)
+            response = session.get(server_urls['read'], params=data, stream=True)
             if response.status_code == 200:
-                downloadFileName = origFileNames[i] if i < len(origFileNames) else attachmentLocation
-                fileNameAppearances[downloadFileName] = fileNameAppearances.get(downloadFileName, 0) + 1
-                if fileNameAppearances[downloadFileName] > 1:
-                    downloadOrigName = os.path.splitext(downloadFileName)[0]
-                    downloadExtension = os.path.splitext(downloadFileName)[1]
-                    downloadFileName = f'{downloadOrigName}_{fileNameAppearances[downloadFileName]-1}{downloadExtension}'
-                with open(os.path.join(output_dir, downloadFileName), 'wb') as f:
-                    f.write(response.content)
-        
-        basename = re.sub(r'\.zip$', '', output_file)
-        shutil.make_archive(basename, 'zip', output_dir, logger=logger)
-    finally:
-        shutil.rmtree(output_dir)
+                download_filename = get_valid_filename(orig_filenames[i] if i < len(orig_filenames) else attachment_location)
+                filename_appearances[download_filename] = filename_appearances.get(download_filename, 0) + 1
+                if filename_appearances[download_filename] > 1:
+                    # De-duplicate filename
+                    name, extension = os.path.splitext(download_filename)
+                    download_filename = f'{name}_{filename_appearances[download_filename]-1}{extension}'
+                def data_iterator():
+                    for chunk in response.iter_content(512 * 1024):
+                        yield chunk
+                yield (download_filename, modified_at, mode, ZIP_32, data_iterator())
+    return stream_zip(file_iterator())
 
 @transaction.atomic()
 @login_maybe_required

@@ -52,11 +52,13 @@ def catalog_number_for_sibling(request: http.HttpRequest):
         return http.JsonResponse({'error': 'An internal server error occurred.'}, status=500)                  
                                 
 
+# Display catalog number from parent CO on forms
+# Todo: document with openAPI
 @login_maybe_required
 @require_POST
 def catalog_number_from_parent(request: http.HttpRequest):
     """
-    Returns the catalog number of the parent component
+    Returns the catalog number of the parent collection object
     """
     try:
         request_data = json.loads(request.body)
@@ -72,14 +74,16 @@ def catalog_number_from_parent(request: http.HttpRequest):
         return http.JsonResponse(None, safe=False)
 
     try:
-        # Get the child CO
-        child = models.Collectionobject.objects.get(id=object_id)
+        # Get the child Component
+        child = models.Component.objects.select_related("collectionobject").get(id=object_id)
 
         # Get the parent CO
-        parent = child.componentParent
+        parent = child.collectionobject
 
         if parent and parent.catalognumber:
             return http.JsonResponse(parent.catalognumber, safe=False)
+        elif parent and parent.catalognumber is None:
+            return http.JsonResponse(None, safe=False)
         else:
             return http.JsonResponse({'error': 'Parent or parent catalog number not found.'}, status=404)
 

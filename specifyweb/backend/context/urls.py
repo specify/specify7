@@ -41,5 +41,4 @@ urlpatterns = [
     path('collection_resource/', collection_resources.collection_resources),
     path('collection_resource/<int:resourceid>/', collection_resources.collection_resource),
 
-
 ]

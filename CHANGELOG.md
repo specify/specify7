@@ -4,6 +4,27 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.11.4](https://github.com/specify/specify7/compare/v7.11.3...v7.11.4) (5 February 2026)
+
+### Fixed
+
+ * Prevent auto-incrementing in the WorkBench from preventing other users from accessing Specify ([#7671](https://github.com/specify/specify7/pull/7671) - *Reported by CSIRO, RBGE, NHMD, IRD, and many others*)
+    * Fixes an issue with auto-incrementing for the 'Treatment Number' field in 'Treatment Event' ([#7560](https://github.com/specify/specify7/issues/7560) - *Reported by SDNHM and CSIRO*)
+    * Solves an issue that prevented the upload of records with auto-incrementing fields when other users are creating records in the same table ([#4894](https://github.com/specify/specify7/issues/4894) - *Reported by RBGE and others*)
+
+
+## [7.11.3](https://github.com/specify/specify7/compare/v7.11.2.1..v7.11.3) (12 November 2025)
+
+### Added
+
+* SCC telemetry now reports the count of collection objects, collections, and users in a database
+
+### Fixed
+
+* Fixes an issue where pick lists defined based on a "Field From Table" would cause a crash ([#7456](https://github.com/specify/specify7/issues/7456))
+* Fixes an issue where tree numbering was being done incorrectly in some trees ([#7423](https://github.com/specify/specify7/issues/7423))
+* Fixes an issue where boolean values were not displaying in some cases when included in a table format or aggregation ([#7510](https://github.com/specify/specify7/issues/7510))
+
 ## [7.11.2](https://github.com/specify/specify7/compare/v7.11.1...v7.11.2) (27 September 2025)
 
 ### Added

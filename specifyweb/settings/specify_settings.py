@@ -59,6 +59,17 @@ DATABASE_OPTIONS = {}
 # database. This can be the same as the Specify 6 master user.
 MASTER_NAME = 'MasterUser'
 MASTER_PASSWORD = 'MasterPassword'
+MIGRATOR_NAME = 'MasterUser'
+MIGRATOR_PASSWORD = 'MasterPassword'
+APP_USER_NAME = 'MasterUser'
+APP_USER_PASSWORD = 'MasterPassword'
+
+# MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
+# MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
+# MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
+# MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
+# APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
+# APP_USER_PASSWORD = os.environ.get('APP_USER_PASSWORD', MIGRATOR_PASSWORD)
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
@@ -82,8 +93,7 @@ WEB_ATTACHMENT_REQUIRES_KEY_FOR_GET = False
 REPORT_RUNNER_HOST = ''
 REPORT_RUNNER_PORT = ''
 
-# Information to connect to a Redis database
-# Specify will use this database as a process broker and storage for temporary
+# Specify will use this Redis as a process broker and storage for temporary
 # values
 REDIS_HOST="redis"
 REDIS_PORT=6379
@@ -102,14 +112,19 @@ ANONYMOUS_USER = None
 # For exception logging using Sentry (https://github.com/getsentry/sentry).
 RAVEN_CONFIG = None
 
-# Support login mechanism.
-ALLOW_SUPPORT_LOGIN = False
-SUPPORT_LOGIN_TTL = 300
+# Enabling this option allows administrators with access to the
+# backend Specify instance to log in as any user for support
+# purposes without knowing their password.
+# https://discourse.specifysoftware.org/t/allow-support-login-documentation/2838
+ALLOW_SUPPORT_LOGIN = True
+# The amount of time in seconds each token is valid for
+SUPPORT_LOGIN_TTL = 180
 
 # Usage stats are transmitted to the following address.
 # Set to None to disable.
 STATS_URL = "https://stats.specifycloud.org/capture"
-STATS_2_URL = "pj9lpoo1pc.execute-api.us-east-1.amazonaws.com" # "https://stats-2.specifycloud.org/prod/AggrgatedSp7Stats"
+# STATS_2_URL = "https://stats-2.specifycloud.org/prod/AggrgatedSp7Stats"
+STATS_2_URL = "pj9lpoo1pc.execute-api.us-east-1.amazonaws.com"
 
 # Workbench uploader log directory.
 # Must exist and be writeable by the web server process.

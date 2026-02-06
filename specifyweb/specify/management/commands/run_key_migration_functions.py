@@ -49,6 +49,7 @@ def fix_cots(stdout: WriteToStdOut | None = None):
 
 def fix_schema_config(stdout: WriteToStdOut | None = None):
     funcs = [
+        # usc.update_all_table_schema_config_with_defaults,
         usc.create_geo_table_schema_config_with_defaults, # specify 0002
         usc.create_cotype_splocalecontaineritem, # specify 0003
         usc.create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
@@ -73,7 +74,13 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.remove_collectionobject_parentco, # specify 0029
         usc.add_quantities_gift, # specify 0032
         usc.update_paleo_desc, # specify 0033
-        usc.update_accession_date_fields # specify 0034
+        usc.update_accession_date_fields, # specify 0034
+        usc.update_loan_and_gift_agent_fields, # specify 0039
+        usc.update_loan_and_gift_agents, # specify 0039
+        usc.componets_schema_config_migrations, # specify 0040
+        usc.create_discipline_type_picklist, # specify 0042
+        usc.update_discipline_type_splocalecontaineritem, # specify 0042
+        usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
 

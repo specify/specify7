@@ -329,7 +329,7 @@ function SaveBlockedDialog({
     () =>
       generateMappingPathPreview(
         field[0].table.name,
-        field.map(({ name }) => name)
+        field.map(({ label }) => label)
       ),
     [field]
   );

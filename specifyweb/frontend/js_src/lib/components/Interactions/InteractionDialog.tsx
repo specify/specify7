@@ -55,6 +55,7 @@ import type {
 import { interactionsWithPrepTables } from './helpers';
 import {
   getPrepsAvailableForLoanCoIds,
+  getPrepsAvailableForLoanPrepField,
   getPrepsAvailableForLoanRs,
 } from './helpers';
 import { PrepDialog } from './PrepDialog';
@@ -72,11 +73,56 @@ export function InteractionDialog({
   readonly itemCollection?: Collection<AnyInteractionPreparation>;
   readonly interactionResource?: SpecifyResource<AnySchema>;
 }): JSX.Element {
-  const itemTable = isLoanReturn ? tables.Loan : tables.CollectionObject;
-  const searchField = itemTable.strictGetLiteralField(
-    itemTable.name === 'Loan' ? 'loanNumber' : 'catalogNumber'
+  const [collectionObjectFieldPref] = userPreferences.use(
+    'interactions',
+    'createInteractions',
+    'collectionObjectField'
   );
+
+  const isLoanReturnLike =
+    isLoanReturn || (actionTable.name !== 'Loan' && actionTable.name.includes('Loan'));
+
+  const itemTable = isLoanReturnLike ? tables.Loan : tables.CollectionObject;
+
+  const collectionObjectField = React.useMemo(() => {
+    const coField = tables.CollectionObject.literalFields.find(
+      ({ name }) => name === collectionObjectFieldPref
+    );
+    const fallback =
+      tables.CollectionObject.literalFields.find(
+        ({ name }) => name === 'catalogNumber'
+      ) ?? tables.CollectionObject.literalFields[0];
+    return coField ?? fallback;
+  }, [collectionObjectFieldPref]);
+
+  const searchField =
+    isLoanReturnLike && itemTable.name === 'Loan'
+      ? itemTable.strictGetLiteralField('loanNumber')
+      : collectionObjectField;
+
   const { parser, split, attributes } = useParser(searchField);
+
+  const [preparationFieldPref] = userPreferences.use(
+    'interactions',
+    'createInteractions',
+    'preparationField'
+  );
+
+  const preparationField = React.useMemo(() => {
+    const prepField = tables.Preparation.literalFields.find(
+      ({ name }) => name === preparationFieldPref
+    );
+    const fallback =
+      tables.Preparation.literalFields.find(({ name }) => name === 'barCode') ??
+      tables.Preparation.literalFields[0];
+    return prepField ?? fallback;
+  }, [preparationFieldPref]);
+
+  const {
+    parser: prepParser,
+    split: prepSplit,
+    attributes: prepAttributes,
+  } = useParser(preparationField);
 
   const [state, setState] = React.useState<
     | State<
@@ -105,6 +151,13 @@ export function InteractionDialog({
   const { validationRef, inputRef, setValidation } =
     useValidation<HTMLTextAreaElement>();
   const [catalogNumbers, setCatalogNumbers] = React.useState<string>('');
+
+  const {
+    validationRef: prepValidationRef,
+    inputRef: prepInputRef,
+    setValidation: setPrepValidation,
+  } = useValidation<HTMLTextAreaElement>();
+  const [preparationValues, setPreparationValues] = React.useState<string>('');
 
   const loading = React.useContext(LoadingContext);
 
@@ -147,11 +200,16 @@ export function InteractionDialog({
         (catalogNumbers.length === 0
           ? Promise.resolve([])
           : getPrepsAvailableForLoanCoIds(
-              'CatalogNumber',
+              searchField.name,
               catalogNumbers,
               isLoan
             )
-        ).then((data) => availablePrepsReady(catalogNumbers, data))
+        ).then((data) =>
+          availablePrepsReady(catalogNumbers, data, {
+            skipEntryMatch:
+              searchField.name.toLowerCase() !== 'catalognumber',
+          })
+        )
       );
   }
 
@@ -159,11 +217,15 @@ export function InteractionDialog({
 
   function availablePrepsReady(
     entries: RA<string> | undefined,
-    prepsData: RA<PreparationRow>
+    prepsData: RA<PreparationRow>,
+    options?: { readonly skipEntryMatch?: boolean }
   ) {
+    const skipEntryMatch =
+      options?.skipEntryMatch === true && prepsData.length > 0;
     const catalogNumbers = prepsData.map(([catalogNumber]) => catalogNumber);
-    const missing =
-      typeof entries === 'object'
+    const missing = skipEntryMatch
+      ? []
+      : typeof entries === 'object'
         ? entries.filter(
             (entry) => !catalogNumbers.some((data) => data.includes(entry))
           )
@@ -174,8 +236,11 @@ export function InteractionDialog({
     const availablePrep = prepsData.filter(
       (prepData) => Number.parseInt(prepData[10]) > 0
     );
-    const unavailable =
-      typeof entries === 'object'
+    const unavailable = skipEntryMatch
+      ? unavailablePrep
+          .map((item, index) => entries?.[index] ?? item[0])
+          .filter(Boolean)
+      : typeof entries === 'object'
         ? entries.filter((entry) =>
             unavailablePrep.some((item) => entry === item[0])
           )
@@ -265,6 +330,34 @@ export function InteractionDialog({
     return parsed;
   }
 
+  function handleParsePreparationField(): RA<string> | undefined {
+    const parseResults = prepSplit(preparationValues).map((value) =>
+      parseValue(prepParser, prepInputRef.current ?? undefined, value)
+    );
+
+    const errorMessages = parseResults
+      .filter((result): result is InvalidParseResult => !result.isValid)
+      .map(({ reason, value }) => `${reason} (${value})`);
+
+    if (errorMessages.length > 0) {
+      setPrepValidation(errorMessages);
+      return undefined;
+    }
+
+    setPrepValidation([]);
+
+    const parsed = f.unique(
+      (parseResults as RA<ValidParseResult>)
+        .filter(({ parsed }) => parsed !== null)
+        .map(({ parsed }) => (parsed as number | string).toString())
+        .sort(sortFunction(f.id))
+    );
+
+    setPreparationValues(parsed.join('\n'));
+
+    return parsed;
+  }
+
   const addInteractionResource = (): void => {
     itemCollection?.add(
       (interactionResource as SpecifyResource<
@@ -272,6 +365,21 @@ export function InteractionDialog({
       >) ?? new itemCollection.table.specifyTable.Resource()
     );
   };
+
+  function handleProceedPreparationField(): void {
+    const values = handleParsePreparationField();
+    if (values === undefined) return undefined;
+    loading(
+      (values.length === 0
+        ? Promise.resolve([])
+        : getPrepsAvailableForLoanPrepField(
+            preparationField.name,
+            values,
+            isLoan
+          )
+      ).then((data) => availablePrepsReady(values, data, { skipEntryMatch: true }))
+    );
+  }
 
   const collectionObjectGroupResourceTableId = React.useMemo(
     () => new tables.CollectionObjectGroup.Resource().specifyTable.tableId,
@@ -378,21 +486,29 @@ export function InteractionDialog({
                 ? interactionsText.addItems()
                 : itemTable.name === 'Loan'
                   ? interactionsText.recordReturn({ table: itemTable.label })
-                  : interactionsText.createRecord({ table: actionTable.name })
+                  : interactionsText.createRecord({ table: actionTable.label })
             }
             onClose={handleClose}
           >
             <details>
               <summary>
-                {interactionsText.byChoosingRecordSet({ count: totalCount })}
+                {interactionsText.byChoosingRecordSet({
+                  recordSet: tables.RecordSet.label,
+                  count: totalCount ?? 0,
+                })}
               </summary>
               {children}
             </details>
             <details>
               <summary>
-                {interactionsText.byEnteringNumbers({
-                  fieldName: searchField?.label ?? '',
-                })}
+                {isLoanReturnLike
+                  ? interactionsText.enterLoanNumbers({
+                      fieldName: searchField?.label ?? '',
+                    })
+                  : interactionsText.byEnteringNumbers({
+                      tableName: tables.CollectionObject.label,
+                      fieldName: searchField?.label ?? '',
+                    })}
               </summary>
               <div className="flex flex-col gap-2">
                 <AutoGrowTextArea
@@ -413,38 +529,66 @@ export function InteractionDialog({
                       : commonText.next()}
                   </Button.Info>
                 </div>
-                {state.type === 'InvalidState' && (
-                  <>
-                    {interactionsText.problemsFound()}
-                    {state.invalid.map((error, index) => (
-                      <p key={index}>{error}</p>
-                    ))}
-                  </>
-                )}
-                {state.type === 'MissingState' && (
-                  <>
-                    {state.missing.length > 0 && (
-                      <>
-                        <H3>{interactionsText.preparationsNotFoundFor()}</H3>
-                        {state.missing.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </>
-                    )}
-                    {state.unavailableBis.length > 0 && (
-                      <>
-                        <H3>
-                          {interactionsText.preparationsNotAvailableFor()}
-                        </H3>
-                        {state.unavailableBis.map((problem, index) => (
-                          <p key={index}>{problem}</p>
-                        ))}
-                      </>
-                    )}
-                  </>
-                )}
               </div>
             </details>
+            {isLoanReturnLike ? null : (
+              <details>
+                <summary>
+                  {interactionsText.byEnteringNumbers({
+                    tableName: preparationField.table.label,
+                    fieldName: preparationField?.label ?? '',
+                  })}
+                </summary>
+                <div className="flex flex-col gap-2">
+                  <AutoGrowTextArea
+                    forwardRef={prepValidationRef}
+                    spellCheck={false}
+                    value={preparationValues}
+                    onValueChange={setPreparationValues}
+                    {...prepAttributes}
+                  />
+                  <div>
+                    <Button.Info
+                      disabled={preparationValues.length === 0}
+                      onClick={(): void => handleProceedPreparationField()}
+                    >
+                      {state.type === 'MissingState' ||
+                      state.type === 'InvalidState'
+                        ? commonText.update()
+                        : commonText.next()}
+                    </Button.Info>
+                  </div>
+                </div>
+              </details>
+            )}
+            {state.type === 'InvalidState' && (
+              <div className="mt-2 space-y-1">
+                <H3>{interactionsText.problemsFound()}</H3>
+                {state.invalid.map((error, index) => (
+                  <p key={index}>{error}</p>
+                ))}
+              </div>
+            )}
+            {state.type === 'MissingState' && (
+              <div className="mt-2 space-y-2">
+                {state.missing.length > 0 && (
+                  <div>
+                    <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                    {state.missing.map((problem, index) => (
+                      <p key={index}>{problem}</p>
+                    ))}
+                  </div>
+                )}
+                {state.unavailableBis.length > 0 && (
+                  <div>
+                    <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
+                    {state.unavailableBis.map((problem, index) => (
+                      <p key={index}>{problem}</p>
+                    ))}
+                  </div>
+                )}
+              </div>
+            )}
           </Dialog>
         )}
       </RecordSetsDialog>
@@ -482,8 +626,7 @@ function useParser(searchField: LiteralField): {
     const parser = pluralizeParser(resolveParser(searchField));
     // Determine which delimiters are allowed
     const formatter = searchField.getUiFormatter();
-    const formatted =
-      formatter?.fields.map((field) => field.value).join('') ?? '';
+    const formatted = formatter?.defaultValue ?? '';
     const formatterHasNewLine = formatted.includes('\n');
     const formatterHasSpaces = formatted.includes(' ');
     const formatterHasCommas = formatted.includes(',');

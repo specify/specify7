@@ -132,6 +132,7 @@ def extend_columnoptions(
 
     if tablename.lower() == "collectionobjecttype" and fieldname.lower() == "name":
         context.cache['cotype_column'] = colopts.column
+        context.cache['component_type_column'] = colopts.column
 
     # REFACTOR: Make context always required and simply
     date_format = context.cache['date_format']
@@ -412,5 +413,6 @@ def apply_scoping_to_treerecord(tr: TreeRecord,
         disambiguation={},
         batch_edit_pack=None,
         scoped_cotypes=scoped_cotypes,
-        cotype_column=context.cache['cotype_column'] if context else None
+        cotype_column=context.cache['cotype_column'] if context else None,
+        component_type_column=context.cache['component_type_column'] if context else None
     )

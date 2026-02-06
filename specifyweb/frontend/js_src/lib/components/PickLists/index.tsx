@@ -158,12 +158,12 @@ export function PickListComboBox({
   const name = pickList?.get('name') ?? pickListName;
 
   const isReadOnly = React.useContext(ReadOnlyContext);
+
   return (
     <>
       {pickList?.get('readOnly') === true || isDisabled ? (
         <Select
           id={id}
-          // "null" value is represented as an empty string
           value={value ?? ''}
           {...getValidationAttributes(parser)}
           disabled={isDisabled || isReadOnly}

@@ -88,7 +88,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Sélectionner un fichier',
     'uk-ua': 'Виберіть файл',
     'de-ch': 'Datei auswählen',
-    'pt-br': 'Escolha o arquivo',
+    'pt-br': 'Selecione o arquivo',
   },
   reportParameters: {
     'en-us': 'Report Parameters',
@@ -106,7 +106,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Effectuer le rapport',
     'uk-ua': 'Запустити звіт',
     'de-ch': 'Bericht ausführen',
-    'pt-br': 'Relatório de execução',
+    'pt-br': 'Executar relatório',
   },
   missingReportQuery: {
     'en-us': 'Missing Report Query',
@@ -124,7 +124,7 @@ export const reportsText = createDictionary({
     'fr-fr': "Ce rapport n'a pas de requête associée",
     'uk-ua': 'Цей звіт не має прив’язаного запиту',
     'de-ch': 'Dieser Bericht hat keine zugehörige Abfrage',
-    'pt-br': 'Este relatório não possui uma consulta associada',
+    'pt-br': 'Este relatório não possui uma consulta associada.',
   },
   missingReport: {
     'en-us': 'Missing report',
@@ -133,7 +133,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Rapport manquant',
     'uk-ua': 'Відсутній звіт',
     'de-ch': 'Fehlender Bericht',
-    'pt-br': 'Relatório ausente',
+    'pt-br': 'Relatório desaparecido',
   },
   missingReportDescription: {
     'en-us': 'Unable to find an SpReport record for this App Resource',
@@ -146,7 +146,7 @@ export const reportsText = createDictionary({
       'Не вдалося знайти запис таблиці SpReport для цього ресурсу програми',
     'de-ch': 'Es kann kein SpReport für diese App-Ressource gefunden werden',
     'pt-br':
-      'Não é possível encontrar um registro SpReport para este recurso de aplicativo',
+      'Não foi possível encontrar um registro SpReport para este recurso do aplicativo.',
   },
   generateLabel: {
     'en-us': 'Generate label',
@@ -155,7 +155,7 @@ export const reportsText = createDictionary({
     'fr-fr': 'Générer une étiquette',
     'uk-ua': 'Створити етикетку',
     'de-ch': 'Etikett generieren',
-    'pt-br': 'Gerar rótulo',
+    'pt-br': 'Gerar etiqueta',
   },
   generateLabelOnSave: {
     'en-us': 'Generate label on save',
@@ -164,7 +164,7 @@ export const reportsText = createDictionary({
     'fr-fr': "Générer une étiquette lors de l'enregistrement",
     'uk-ua': 'Створити етикетку під час збереження',
     'de-ch': 'Etikett beim Speichern generieren',
-    'pt-br': 'Gerar rótulo ao salvar',
+    'pt-br': 'Gerar etiqueta ao salvar',
   },
   generateReport: {
     'en-us': 'Generate report',
