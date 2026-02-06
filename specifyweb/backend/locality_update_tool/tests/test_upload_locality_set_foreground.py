@@ -1,6 +1,6 @@
 from unittest.mock import Mock, patch
 from specifyweb.specify.tests.test_api import ApiTests
-from specifyweb.specify.views import upload_locality_set_foreground
+from specifyweb.backend.locality_update_tool.views import upload_locality_set_foreground
 
 def get_success_result(*args, **kwargs):
     success_result = dict(type="Uploaded", results=[])

@@ -4,7 +4,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from uuid import uuid4 as base_uuid4
 
 from specifyweb.backend.locality_update_tool.update_locality import LocalityUpdateStatus
-from specifyweb.specify.views import start_locality_set_background
+from specifyweb.backend.locality_update_tool.views import start_locality_set_background
 
 
 class TestStartLocalityBackground(ApiTests):

@@ -1,7 +1,7 @@
 from unittest.mock import patch
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.locality_update_tool.update_locality import ParseError, ParsedRow
-from specifyweb.specify.views import parse_locality_set_foreground
+from specifyweb.backend.locality_update_tool.views import parse_locality_set_foreground
 
 
 class TestParseLocalitySetForeground(ApiTests):
