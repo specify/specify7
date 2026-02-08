@@ -676,7 +676,9 @@ export function Hierarchy({
             {addButton(
               // Use custom forms for discipline to allow tree configuration
               () => {
-                setFormData(Object.fromEntries(stepOrder.map((key) => [key, {}])));
+                setFormData(
+                  Object.fromEntries(stepOrder.map((key) => [key, {}]))
+                );
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },

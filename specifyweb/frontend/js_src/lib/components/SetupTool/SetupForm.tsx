@@ -25,7 +25,12 @@ import type {
 } from '../TreeView/CreateTree';
 import { PopulatedTreeList } from '../TreeView/CreateTree';
 import type { FieldConfig, ResourceConfig } from './setupResources';
-import { disciplineTypeOptions, FIELD_MAX_LENGTH, resources,stepOrder } from './setupResources';
+import {
+  disciplineTypeOptions,
+  FIELD_MAX_LENGTH,
+  resources,
+  stepOrder,
+} from './setupResources';
 import type { ResourceFormData } from './types';
 
 function getFormValue(
@@ -142,15 +147,20 @@ export function renderFormFieldFactory({
 
     const verticalSpacing = width !== undefined && width < 2 ? '-mb-2' : 'mb-2';
 
-    const disciplineTypeValue = getFormValue(formData, stepOrder.indexOf('discipline'), 'type');
+    const disciplineTypeValue = getFormValue(
+      formData,
+      stepOrder.indexOf('discipline'),
+      'type'
+    );
     const isDisciplineNameDisabled =
       resources[currentStep].resourceName === 'discipline' &&
       fieldName === 'name' &&
       (disciplineTypeValue === undefined || disciplineTypeValue === '');
 
     const isRowEnableToggle = name === 'include';
-    const isRowEnabled =
-      Boolean(getFormValue(formData, currentStep, `${parentName}.include`));
+    const isRowEnabled = Boolean(
+      getFormValue(formData, currentStep, `${parentName}.include`)
+    );
 
     const taxonTreeAvailable =
       Array.isArray(treeOptions) &&
@@ -177,9 +187,7 @@ export function renderFormFieldFactory({
                     getFormValue(formData, currentStep, fieldName)
                   )}
                   disabled={
-                    inTable
-                      ? !isRowEnabled && !isRowEnableToggle
-                      : false
+                    inTable ? !isRowEnabled && !isRowEnableToggle : false
                   }
                   id={fieldName}
                   name={fieldName}
@@ -325,7 +333,7 @@ export function renderFormFieldFactory({
                   <PopulatedTreeList
                     discipline={disciplineTypeValue as string | undefined}
                     handleClick={(
-                      resource: TaxonFileDefaultDefinition,
+                      resource: TaxonFileDefaultDefinition
                     ): void => {
                       handleChange(fieldName, resource);
                       handleChange('preload', true);
@@ -351,9 +359,14 @@ export function renderFormFieldFactory({
               value={getFormValue(formData, currentStep, fieldName) ?? ''}
               onChange={({ target }) => {
                 // Only allow unique discipline names
-                if (resources[currentStep].resourceName === 'discipline' && fieldName === 'name') {
+                if (
+                  resources[currentStep].resourceName === 'discipline' &&
+                  fieldName === 'name'
+                ) {
                   const value = (target.value ?? '').trim();
-                  const isUnique = institutionData.children.some((child) => child.name === value);
+                  const isUnique = institutionData.children.some(
+                    (child) => child.name === value
+                  );
                   target.setCustomValidity(
                     isUnique ? '' : formsText.valueMustBeUniqueToDatabase()
                   );
@@ -438,7 +451,7 @@ export function updateSetupFormData(
   name: string,
   newValue: LocalizedString | TaxonFileDefaultDefinition | boolean,
   currentStep: number,
-  institutionData?: InstitutionData,
+  institutionData?: InstitutionData
 ): void {
   setFormData((previous: ResourceFormData) => {
     const resourceName = resources[currentStep].resourceName;
@@ -454,10 +467,15 @@ export function updateSetupFormData(
         (option) => option.value === newValue
       );
       if (matchingType) {
-        const existingDisciplines = institutionData ? institutionData.children.flatMap(division =>
-          division.children.map(discipline => discipline.name)
-        ) : [];
-        const disciplineName = getUniqueName(matchingType.label, existingDisciplines);
+        const existingDisciplines = institutionData
+          ? institutionData.children.flatMap((division) =>
+              division.children.map((discipline) => discipline.name)
+            )
+          : [];
+        const disciplineName = getUniqueName(
+          matchingType.label,
+          existingDisciplines
+        );
         updates.name = matchingType ? disciplineName : '';
       }
 
