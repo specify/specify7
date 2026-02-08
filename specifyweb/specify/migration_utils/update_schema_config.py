@@ -11,7 +11,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import connection, transaction
 from django.db.models.functions import RowNumber
 
-from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
     Discipline,
@@ -444,6 +444,61 @@ def update_table_field_schema_config_params(
     for k, v in update_params.items():
         setattr(sp_local_container_item, k, v)
     sp_local_container_item.save(update_fields=list(update_params.keys()))
+
+def find_missing_schema_config_fields(discipline_id: int, apps=global_apps,):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    missing_tables: list[str] = []
+    missing_fields: dict[str, list[str]] = {}
+
+    for table in datamodel.tables:
+        table_name = table.name
+        containers = Splocalecontainer.objects.filter(
+            name=table_name.lower(),
+            discipline_id=discipline_id,
+            schematype=0,
+        )
+        if not containers.exists():
+            missing_tables.append(table_name)
+            missing_fields[table_name] = [
+                field.name for field in table.all_fields if field.name
+            ]
+            continue
+
+        missing_in_table: list[str] = []
+        for field in table.all_fields:
+            if not field.name:
+                continue
+            if not Splocalecontaineritem.objects.filter(
+                container__in=containers,
+                name__iexact=field.name,
+            ).exists():
+                missing_in_table.append(field.name)
+
+        if missing_in_table:
+            missing_fields[table_name] = missing_in_table
+
+    return missing_tables, missing_fields
+
+
+def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, stdout=None,):
+    missing_tables, missing_fields = find_missing_schema_config_fields(discipline_id,apps=apps,)
+
+    for table_name in missing_tables:
+        if stdout is not None:
+            stdout(f"Creating schema config table container for {table_name}...")
+        update_table_schema_config_with_defaults(table_name, discipline_id, apps=apps,)
+
+    for table_name, fields in missing_fields.items():
+        if table_name in missing_tables:
+            continue
+        for field_name in fields:
+            if stdout is not None:
+                stdout(f"Creating schema config field {table_name}.{field_name}...")
+            update_table_field_schema_config_with_defaults(table_name, discipline_id, field_name, apps=apps,)
+
+    return missing_tables, missing_fields
 
 def deduplicate_schema_config_sql(apps=None):
     dedupe_sql = '''
