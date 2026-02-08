@@ -213,8 +213,6 @@ export function ImportTree<SCHEMA extends AnyTree>({
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
-  readonly buttonLabel?: LocalizedString;
-  readonly buttonClassName?: string;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
@@ -243,6 +241,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
     setSelectedPopulatedTree(resource);
     // Check for missing ranks if no preference for createMissingRanks was provided.
     if (createMissingRanks === undefined) {
+      console.log('finding if theres missing ranks');
       try {
         const response = await ajax<any>(`/trees/default_tree_mapping/`, {
           method: 'POST',

@@ -276,9 +276,20 @@ export function Tree<
           })}
         </div>
       </div>
-      {treeCreationProgress?.active ? (
-        <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium col-span-full">
-          {treeText.defaultTreeCreationLoadingMessage()}
+      {rows.length === 0 ? (
+        <div className="flex flex-col gap-2 p-2">
+          <Button.Icon
+            icon="plus"
+            title={treeText.addRootNode()}
+            onClick={createRootNode}
+          />
+          {treeDefId ? (
+            <ImportTree
+              tableName={tableName}
+              treeDefId={treeDefId}
+              treeDefinitionItems={treeDefinitionItems}
+            />
+          ) : null}
         </div>
       ) : (
         <>

@@ -697,7 +697,6 @@ export function Hierarchy({
                 setFormData(
                   Object.fromEntries(stepOrder.map((key) => [key, {}]))
                 );
-                setSelectedDivisionId(division.id);
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },

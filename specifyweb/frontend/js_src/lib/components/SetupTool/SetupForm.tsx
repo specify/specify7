@@ -364,11 +364,9 @@ export function renderFormFieldFactory({
                   fieldName === 'name'
                 ) {
                   const value = (target.value ?? '').trim();
-                  const existingDisciplines = institutionData.children.flatMap(
-                    (division) =>
-                      division.children.map((discipline) => discipline.name)
+                  const isUnique = institutionData.children.some(
+                    (child) => child.name === value
                   );
-                  const isUsed = existingDisciplines.includes(value);
                   target.setCustomValidity(
                     isUsed ? formsText.valueMustBeUniqueToDatabase() : ''
                   );
