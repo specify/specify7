@@ -277,14 +277,6 @@ def adding_node(node, collection=None, user=None):
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
     if parent.accepted_id is not None:
-        collection_prefs_dict = _get_collection_prefs_dict(collection, user)
-
-        treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-        treeManagement_pref = treeManagement_pref if isinstance(treeManagement_pref, dict) else {}
-
-        synonymized = treeManagement_pref.get('synonymized', {})
-        synonymized = synonymized if isinstance(synonymized, dict) else {}
-
         tree_name = node.specify_model.name
         add_synonym_enabled = _expand_synonymization_actions_enabled(collection, user, tree_name)
 
