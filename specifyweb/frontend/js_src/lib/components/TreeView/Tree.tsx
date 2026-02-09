@@ -223,9 +223,9 @@ export function Tree<
       {rows.length === 0 ? (
         <div className="flex flex-col gap-2 p-2">
           <Button.LikeLink
+            aria-label={treeText.initializeEmptyTree()}
             className="flex items-center gap-2 text-left"
             title={treeText.initializeEmptyTree()}
-            aria-label={treeText.initializeEmptyTree()}
             onClick={createRootNode}
           >
             {icons.plus}
@@ -233,11 +233,11 @@ export function Tree<
           </Button.LikeLink>
           {treeDefId ? (
             <ImportTree
+              buttonClassName="text-left"
+              buttonLabel={setupToolText.preloadTree()}
               tableName={tableName}
               treeDefId={treeDefId}
               treeDefinitionItems={treeDefinitionItems}
-              buttonLabel={setupToolText.preloadTree()}
-              buttonClassName="text-left"
             />
           ) : null}
         </div>
