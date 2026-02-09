@@ -229,9 +229,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
   ): Promise<void> => {
     setSelectedPopulatedTree(resource);
     // Check for missing ranks if no preference for createMissingRanks was provided.
-    console.log(createMissingRanks);
     if (createMissingRanks === undefined) {
-      console.log("finding if theres missing ranks");
       try {
         const response = await ajax<any>(`/trees/default_tree_mapping/`, {
           method: 'POST',

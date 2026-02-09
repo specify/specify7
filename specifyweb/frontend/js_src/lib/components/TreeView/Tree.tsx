@@ -224,12 +224,12 @@ export function Tree<
         <div className="flex flex-col gap-2 p-2">
           <Button.LikeLink
             className="flex items-center gap-2 text-left"
-            title={setupToolText.createEmptyTree()}
-            aria-label={setupToolText.createEmptyTree()}
+            title={treeText.initializeEmptyTree()}
+            aria-label={treeText.initializeEmptyTree()}
             onClick={createRootNode}
           >
             {icons.plus}
-            <span>{setupToolText.createEmptyTree()}</span>
+            <span>{treeText.initializeEmptyTree()}</span>
           </Button.LikeLink>
           {treeDefId ? (
             <ImportTree

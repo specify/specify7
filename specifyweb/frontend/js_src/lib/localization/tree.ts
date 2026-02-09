@@ -730,6 +730,9 @@ export const treeText = createDictionary({
   source: {
     'en-us': 'Source',
   },
+  initializeEmptyTree: {
+    'en-us': 'Initialize an empty tree',
+  },
   treeManagement: {
     'en-us': 'Tree Management',
     'de-ch': 'Baumpflege',
