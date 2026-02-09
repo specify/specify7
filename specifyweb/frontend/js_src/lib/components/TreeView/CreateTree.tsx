@@ -2,8 +2,8 @@ import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
-import { treeText } from '../../localization/tree';
 import { queryText } from '../../localization/query';
+import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
@@ -239,11 +239,11 @@ export function ImportTree<SCHEMA extends AnyTree>({
           }
         });
         if (response.status === Http.OK && response.data) {
-          const mappingRankNames = response.data.ranks.map((rank: any) => {return rank.name});
-          const existingNames = treeDefinitionItems.map((item) => item.name);
+          const mappingRankNames = response.data.ranks.map((rank: any) => rank.name);
+          const existingNames = new Set(treeDefinitionItems.map((item) => item.name));
 
           const missing = mappingRankNames
-            .filter((rankName: string) => !existingNames.includes(rankName));
+            .filter((rankName: string) => !existingNames.has(rankName));
 
           if (missing.length > 0) {
             setSelectedPopulatedTree(resource);
@@ -255,8 +255,8 @@ export function ImportTree<SCHEMA extends AnyTree>({
         } else {
           console.warn(`Failed to fetch mapping for ${resource.mappingFile}`);
         }
-      } catch (err) {
-        console.warn('Error fetching or parsing mapping file', err);
+      } catch (error) {
+        console.warn('Error fetching or parsing mapping file', error);
       }
     }
 
@@ -279,9 +279,9 @@ export function ImportTree<SCHEMA extends AnyTree>({
       {tableName === 'Taxon' && userInformation.isadmin ? (
         buttonLabel ? (
           <Button.LikeLink
+            aria-label={buttonLabel}
             className={`flex items-center gap-2 ${buttonClassName ?? ''}`}
             title={buttonLabel}
-            aria-label={buttonLabel}
             onClick={() => {
               setIsActive(1);
             }}
@@ -309,10 +309,10 @@ export function ImportTree<SCHEMA extends AnyTree>({
             setIsMissingTreeRanks(false);
             handleClick(selectedPopulatedTree, true);
           }}
+          missingTreeRanks={missingTreeRanks}
           onClose={() => {
             setIsMissingTreeRanks(false);
           }}
-          missingTreeRanks={missingTreeRanks}
         />
       ) : null}
       {isActive === 1 ? (
