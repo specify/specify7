@@ -467,23 +467,10 @@ def synonymize(node, into, agent, user=None, collection=None):
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
              }})
-    node.accepted_id = target.id
-    node.isaccepted = False
-    node.save()
+    tree_name = node.specify_model.name.lower()
+    add_synonym_enabled = _expand_synonymization_actions_enabled(collection, user, tree_name)
 
-    # This check can be disabled by a remote pref
-    collection_prefs_dict = _get_collection_prefs_dict(collection, user)
-
-    treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-    treeManagement_pref = treeManagement_pref if isinstance(treeManagement_pref, dict) else {}
-
-    synonymized = treeManagement_pref.get('synonymized', {})
-    synonymized = synonymized if isinstance(synonymized, dict) else {}
-
-    pref_key = f"sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}"
-    add_synonym_enabled = bool(synonymized.get(pref_key, False))
-
-    if (add_synonym_enabled is False) and node.children.exists():
+    if not add_synonym_enabled and node.children.exists():
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
@@ -501,6 +488,10 @@ def synonymize(node, into, agent, user=None, collection=None):
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
             }})
+    
+    node.accepted_id = target.id
+    node.isaccepted = False
+    node.save()
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     field_change_infos = [
