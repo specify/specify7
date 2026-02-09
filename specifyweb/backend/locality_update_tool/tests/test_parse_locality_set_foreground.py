@@ -6,7 +6,7 @@ from specifyweb.backend.locality_update_tool.views import parse_locality_set_for
 
 class TestParseLocalitySetForeground(ApiTests):
     
-    @patch("specifyweb.specify.views._parse_locality_set")
+    @patch("specifyweb.backend.locality_update_tool.views._parse_locality_set")
     def test_fail(self, parse_locality):
 
         errors = ParseError(message="guidHeaderNotProvided", field='guid', payload=None, row_number=0)
@@ -17,7 +17,7 @@ class TestParseLocalitySetForeground(ApiTests):
         self.assertEqual(status, 422)
         self.assertEqual(rows, [errors])
 
-    @patch("specifyweb.specify.views._parse_locality_set")
+    @patch("specifyweb.backend.locality_update_tool.views._parse_locality_set")
     def test_success(self, parse_locality):
 
         parsed = [ParsedRow(row_number=0, locality=dict(localityname="Test"), geocoorddetail=None, locality_id=4)]
