@@ -242,32 +242,42 @@ def _get_collection_prefs_dict(collection, user, *, fail_silently: bool = False)
 
     return loaded if isinstance(loaded, dict) else {}
 
-def _expand_synonymization_actions_enabled(collection, user, tree_name: str) -> bool:
+def _strict_synonymization_checks_enabled(collection, user, tree_name: str) -> bool:
     """
     New CollectionPreferences shape:
       treeManagement.expand_synonymization_actions.<tree_name> = true/false
-
+    New CollectionPreferences shape (opt-in strict checking):
+      treeManagement.strict_synonymization_checks.<tree_name> = true/false
+    
     Backward compat with legacy shape:
+      treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
+    Backward compat with legacy shape (opt-in expanded behavior):
       treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
     """
     prefs = _get_collection_prefs_dict(collection, user)
-
+ 
     tm = prefs.get("treeManagement") or {}
     if not isinstance(tm, dict):
         return False
-
+     
     # New shape
     esa = tm.get("expand_synonymization_actions")
     if isinstance(esa, dict) and tree_name in esa:
         return bool(esa.get(tree_name))
-
-    # Legacy shape
+    strict = tm.get("strict_synonymization_checks")
+    if isinstance(strict, dict) and tree_name in strict:
+        return bool(strict.get(tree_name))
+ 
+     # Legacy shape
     syn = tm.get("synonymized")
     if isinstance(syn, dict):
         legacy_key = f"sp7.allow_adding_child_to_synonymized_parent.{tree_name}"
         if legacy_key in syn:
             return bool(syn.get(legacy_key))
-
+            # Legacy meaning: True means "allow expanded behavior"
+            legacy_allow_expand = bool(syn.get(legacy_key))
+            return not legacy_allow_expand
+ 
     # Default if nothing set
     return False
 
@@ -277,10 +287,10 @@ def adding_node(node, collection=None, user=None):
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
     if parent.accepted_id is not None:
-        tree_name = node.specify_model.name
-        add_synonym_enabled = _expand_synonymization_actions_enabled(collection, user, tree_name)
+        tree_name = node.specify_model.name.lower()
+        strict_checks = _strict_synonymization_checks_enabled(collection, user, tree_name)
 
-        if add_synonym_enabled is False:
+        if strict_checks:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -460,9 +470,9 @@ def synonymize(node, into, agent, user=None, collection=None):
                 "children": list(into.children.values('id', 'fullname'))
              }})
     tree_name = node.specify_model.name.lower()
-    add_synonym_enabled = _expand_synonymization_actions_enabled(collection, user, tree_name)
+    strict_checks = _strict_synonymization_checks_enabled(collection, user, tree_name)
 
-    if not add_synonym_enabled and node.children.exists():
+    if strict_checks and node.children.exists():
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
