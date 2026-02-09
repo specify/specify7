@@ -148,11 +148,11 @@ def setup_database_task(self, data: dict):
             # Pre-load trees
             logger.info('Starting default tree downloads')
             if is_paleo_geo:
-                start_preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
+                start_preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id, None, False)
             if data['geographytreedef'].get('preload'):
-                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id, data['geographytreedef'].get('preloadfile'))
+                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id, data['geographytreedef'].get('preloadfile'), False)
             if data['taxontreedef'].get('preload'):
-                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id, data['taxontreedef'].get('preloadfile'))
+                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id, data['taxontreedef'].get('preloadfile'), True)
 
             update_progress()
     except Exception as e:
@@ -167,3 +167,28 @@ def get_last_setup_error() -> Optional[str]:
 
 def set_last_setup_error(error_text: Optional[str]):
     set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
+
+def create_discipline_and_trees_task(data: dict):
+    """Create discipline and discipline's trees in the correct order. Similar to setup_database_task, but for the configuration tool."""
+    logger.info('Creating discipline')
+    discipline_result = api.create_discipline(data['discipline'])
+    discipline_id = discipline_result.get('discipline_id')
+
+    # Ensure discipline id is set for tree creation
+    if isinstance(data.get('geographytreedef'), dict):
+        data['geographytreedef']['discipline_id'] = data['geographytreedef'].get('discipline_id') or discipline_id
+    if isinstance(data.get('taxontreedef'), dict):
+        data['taxontreedef']['discipline_id'] = data['taxontreedef'].get('discipline_id') or discipline_id
+
+    logger.info('Creating geography tree')
+    geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=False)
+    geography_treedef_id = geography_result.get('treedef_id')
+
+    logger.info('Creating taxon tree')
+    taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
+    taxon_treedef_id = taxon_result.get('treedef_id')
+
+    if data['geographytreedef'].get('preload'):
+        start_preload_default_tree('Geography', discipline_id, None, geography_treedef_id, None, data['geographytreedef'].get('preloadfile'), False)
+    if data['taxontreedef'].get('preload'):
+        start_preload_default_tree('Taxon', discipline_id, None, taxon_treedef_id, None, data['taxontreedef'].get('preloadfile'), True)

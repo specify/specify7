@@ -87,7 +87,7 @@ def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_ran
 
     return tree_def
 
-def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int], preload_file = None):
+def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int], preload_file = None, create_missing_ranks: bool = False):
     """Starts a populated default tree import without user input."""
     try:
         # Tree download config:
@@ -116,7 +116,7 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
 
         task_id = str(uuid4())
         create_default_tree_task.apply_async(
-            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, False, False],
+            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, False],
             task_id=f"create_default_tree_{tree_type}_{task_id}",
             taskid=task_id
         )
