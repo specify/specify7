@@ -353,9 +353,12 @@ export function renderFormFieldFactory({
                 // Only allow unique discipline names
                 if (resources[currentStep].resourceName === 'discipline' && fieldName === 'name') {
                   const value = (target.value ?? '').trim();
-                  const isUnique = institutionData.children.some((child) => child.name === value);
+                  const existingDisciplines = institutionData.children.flatMap(division =>
+                    division.children.map(discipline => discipline.name)
+                  );
+                  const isUsed = existingDisciplines.some((name) => name === value);
                   target.setCustomValidity(
-                    isUnique ? '' : formsText.valueMustBeUniqueToDatabase()
+                    isUsed ? formsText.valueMustBeUniqueToDatabase() : ''
                   );
                 }
               }}
