@@ -38,6 +38,7 @@ import type { ResourceFormData } from '../SetupTool/types';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
+import { LoadingContext } from '../Core/Contexts';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -450,6 +451,8 @@ export function Hierarchy({
     void refreshAllInfo();
   }, [refreshAllInfo]);
 
+  const loading = React.useContext(LoadingContext);
+
   const isGeographyGlobal = systemInfo.geography_is_global;
 
   const [
@@ -610,7 +613,7 @@ export function Hierarchy({
                     taxonTreeDef: formData.taxonTreeDef,
                   };
 
-                  void ajax('/setup_tool/discipline_and_trees/create/', {
+                  loading(ajax('/setup_tool/discipline_and_trees/create/', {
                     method: 'POST',
                     headers: {
                       Accept: 'application/json',
@@ -628,7 +631,7 @@ export function Hierarchy({
                         'Failed to create discipline and trees:',
                         error
                       );
-                    });
+                    }));
 
                   return next;
                 });
