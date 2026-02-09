@@ -37,6 +37,7 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { error } from 'node:console';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -218,7 +219,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           
         )}
        {/* buttons for select All and invert selection*/}
-        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 10000000 && queryResource?.get("id") && (
+        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 3_000_000 && queryResource?.get("id") && (
           <Button.Small
     onClick={(): void => {
       loading(
@@ -236,19 +237,25 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     {interactionsText.selectAll()}
   </Button.Small>
         )}
-          {(totalCount ?? 0) > 0  && queryResource?.get("id") && (
+          {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 3_000_000 && queryResource?.get("id") && (
           <Button.Small
           onClick={(): void => {
-            if (!loadedResults) return;
-            const allIDs =  new Set(
-              loadedResults.map((result) => result[queryIdField] as number)
+            loading(
+              fetchAllIDs(queryResource,loading)
+              .then((allIDs) => {
+                      if (!loadedResults) return;
+                      const invertedSelection = new Set( Array.from(allIDs).filter(id => !(selectedRows.has(id))));
+                      setSelectedRows(invertedSelection);
+                      handleSelected?.(Array.from(invertedSelection));
+                
+              })
+              .catch((error) => {
+                console.error("Error fetchign all IDs", error);
+              })
             );
-            const invertedSelection = new Set( Array.from(allIDs).filter(id => !(selectedRows.has(id))));
-            setSelectedRows(invertedSelection);
-            handleSelected?.(Array.from(invertedSelection));  
-            
-            }}
-            >
+  
+          }}
+          >
             {interactionsText.invertSelection()}
           </Button.Small>
           )}
