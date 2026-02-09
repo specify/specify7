@@ -22,6 +22,7 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import { getSystemInfo } from '../InitialContext/systemInfo';
@@ -38,7 +39,6 @@ import type { ResourceFormData } from '../SetupTool/types';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-import { LoadingContext } from '../Core/Contexts';
 
 type HierarchyNodeKind =
   | 'collection'
