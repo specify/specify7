@@ -46,12 +46,12 @@ class TestMergingStatus(ApiTests):
             }
         )
         
-    @patch("specifyweb.specify.views.record_merge_task")
+    @patch("specifyweb.backend.merge.views.record_merge_task")
     def test_existing_merge_dict_info(self, record_merge_task: Mock):
 
         self._existing_merge(dict(key="value"), record_merge_task)
 
-    @patch("specifyweb.specify.views.record_merge_task")
+    @patch("specifyweb.backend.merge.views.record_merge_task")
     def test_existing_merge_simple_info(self, record_merge_task: Mock):
 
         self._existing_merge("some simple str", record_merge_task)
