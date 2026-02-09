@@ -544,15 +544,6 @@ export const treeText = createDictionary({
     'ru-ru': 'Добавить дерево',
     'uk-ua': 'Додати дерево',
   },
-  addRootNode: {
-    'en-us': 'Add root node',
-    'de-ch': 'Füge den Stammknoten hinzu.',
-    'es-es': 'Agregar nodo raíz',
-    'fr-fr': 'Ajouter le nœud racine',
-    'pt-br': 'Adicionar nó raiz',
-    'ru-ru': 'Добавить корневой узел',
-    'uk-ua': 'Додати кореневий вузол',
-  },
   treePicker: {
     'en-us': 'Tree Picker',
     'de-ch': 'Baumpflücker',
