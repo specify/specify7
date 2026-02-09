@@ -207,19 +207,40 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def _get_collection_prefs_dict(collection, user) -> dict:
+def _get_collection_prefs_dict(collection, user, *, fail_silently: bool = False) -> dict:
     import specifyweb.backend.context.app_resource as app_resource
+
     res = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
     if not res:
         return {}
+
     collection_prefs_json, _, __ = res
     if not collection_prefs_json:
         return {}
+
     try:
         loaded = json.loads(collection_prefs_json)
-        return loaded if isinstance(loaded, dict) else {}
+    except json.JSONDecodeError as e:
+        logger.warning(
+            "Failed to parse CollectionPreferences JSON; collection_id=%s user_id=%s error=%s",
+            getattr(collection, "id", None),
+            getattr(user, "id", None),
+            str(e),
+        )
+        if fail_silently:
+            return {}
+        raise
     except Exception:
-        return {}
+        logger.exception(
+            "Unexpected error while loading CollectionPreferences; collection_id=%s user_id=%s",
+            getattr(collection, "id", None),
+            getattr(user, "id", None),
+        )
+        if fail_silently:
+            return {}
+        raise
+
+    return loaded if isinstance(loaded, dict) else {}
 
 def _expand_synonymization_actions_enabled(collection, user, tree_name: str) -> bool:
     """
