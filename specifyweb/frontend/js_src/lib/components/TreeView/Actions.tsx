@@ -145,8 +145,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              (doExpandSynonymActionsPref ? false : isSynonym) ||
-              // Forbid adding children to the lowest rank
+              (isSynonym && strictChecksEnabled) ||
               ranks.at(-1) === focusedRow.rankId
             }
             isRoot={false}
@@ -198,9 +197,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               disableButtons ||
               isReadOnly ||
               isRoot ||
-              (doExpandSynonymActionsPref
-                ? false
-                : !isSynonym && focusedRow.children > 0)
+              (strictChecksEnabled && !isSynonym && focusedRow.children > 0)
             }
             icon={isSynonym ? 'undoSynonym' : 'synonym'}
             title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}
@@ -515,4 +512,23 @@ function NodeDeleteButton({
       onDeleted={handleDeleted}
     />
   );
+}
+
+function getStrictSynonymizationChecksPref(
+  collectionPreferences: typeof import('../Preferences/collectionPreferences').collectionPreferences,
+  tableName: string
+): boolean {
+  const strict = collectionPreferences.get(
+    'treeManagement',
+    'strict_synonymization_checks',
+    tableName
+  );
+  if (typeof strict === 'boolean') return strict;
+
+  const legacyAllowExpand = collectionPreferences.get(
+    'treeManagement',
+    'synonymized',
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+  );
+  return typeof legacyAllowExpand === 'boolean' ? !legacyAllowExpand : false;
 }

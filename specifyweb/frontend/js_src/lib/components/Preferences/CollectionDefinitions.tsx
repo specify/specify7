@@ -61,6 +61,24 @@ export const collectionPreferenceDefinitions = {
   treeManagement: {
     title: treeText.treeManagement(),
     subCategories: {
+      strict_synonymization_checks: {
+        title: treeText.synonymizedNodes(), // or add a new string like “Strict synonym checks”
+        description: treeText.synonymizedNodesDescription(), // better: new description
+        items: {
+          Taxon: definePref<boolean>({
+            title: () => tableLabel('Taxon'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          Geography: definePref<boolean>({ ... }),
+          Storage: definePref<boolean>({ ... }),
+          GeologicTimePeriod: definePref<boolean>({ ... }),
+          LithoStrat: definePref<boolean>({ ... }),
+          TectonicUnit: definePref<boolean>({ ... }),
+        },
+      },
       synonymized: {
         title: treeText.synonymizedNodes(),
         description: treeText.synonymizedNodesDescription(),
@@ -69,7 +87,7 @@ export const collectionPreferenceDefinitions = {
             definePref<boolean>({
               title: () => tableLabel('Taxon'),
               requiresReload: false,
-              visible: true,
+              visible: false,
               defaultValue: false,
               type: 'java.lang.Boolean',
             }),

@@ -1,6 +1,7 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
+// import type { CollectionPreferences } from '../Preferences/collectionPreferences';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
@@ -41,10 +42,9 @@ export const treeBusinessRules = async (
 
     const prefModule = await import('../Preferences/collectionPreferences');
     const collectionPreferences = prefModule.collectionPreferences;
-    const doExpandSynonymActionsPref = collectionPreferences.get(
-      'treeManagement',
-      'synonymized',
-      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
+    const strictChecksEnabled = getStrictSynonymizationChecksPref(
+      collectionPreferences,
+      resource.specifyTable.name
     );
 
     const isParentSynonym = !parent.get('isAccepted');
@@ -52,7 +52,7 @@ export const treeBusinessRules = async (
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
       definitionItem === undefined ||
-      (isParentSynonym && !doExpandSynonymActionsPref) ||
+      (isParentSynonym && strictChecksEnabled) ||
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
         !possibleRanks
@@ -138,3 +138,25 @@ const predictFullName = async <
       headers: { Accept: 'text/plain' },
     }
   ).then(({ data }) => data);
+
+function getStrictSynonymizationChecksPref(
+  collectionPreferences: CollectionPreferences,
+  tableName: string
+): boolean {
+  // New preference (opt-in strict checking)
+  const strict = collectionPreferences.get(
+    'treeManagement',
+    'strict_synonymization_checks',
+    tableName
+  );
+  if (typeof strict === 'boolean') return strict;
+
+  // Legacy preference: true meant "allow expanded behavior"
+  // New meaning: strictChecksEnabled = !legacyAllowExpand
+  const legacyAllowExpand = collectionPreferences.get(
+    'treeManagement',
+    'synonymized',
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+  );
+  return typeof legacyAllowExpand === 'boolean' ? !legacyAllowExpand : false;
+}

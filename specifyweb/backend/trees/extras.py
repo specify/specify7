@@ -274,9 +274,8 @@ def _strict_synonymization_checks_enabled(collection, user, tree_name: str) -> b
         legacy_key = f"sp7.allow_adding_child_to_synonymized_parent.{tree_name}"
         if legacy_key in syn:
             return bool(syn.get(legacy_key))
-            # Legacy meaning: True means "allow expanded behavior"
-            legacy_allow_expand = bool(syn.get(legacy_key))
-            return not legacy_allow_expand
+        legacy_allow_expand = bool(syn.get(legacy_key))
+        return not legacy_allow_expand
  
     # Default if nothing set
     return False
