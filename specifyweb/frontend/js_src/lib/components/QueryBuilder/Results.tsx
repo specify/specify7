@@ -37,7 +37,6 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
-import { error } from 'node:console';
 
 export type QueryResultRow = RA<number | string | null>;
 
