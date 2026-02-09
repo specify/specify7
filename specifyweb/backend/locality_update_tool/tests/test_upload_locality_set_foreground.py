@@ -16,7 +16,7 @@ def get_failure_result(*args, **kwargs):
 class TestUploadLocalitySetForeground(ApiTests):
 
 
-    @patch('specifyweb.specify.views._upload_locality_set', get_success_result)
+    @patch('specifyweb.backend.locality_update_tool.views._upload_locality_set', get_success_result)
     def test_success(self):
 
         result = upload_locality_set_foreground(
@@ -31,8 +31,8 @@ class TestUploadLocalitySetForeground(ApiTests):
         self.assertEqual(result, dict(type="Uploaded", results=[], recordsetid=None))
 
 
-    @patch('specifyweb.specify.views.create_localityupdate_recordset')
-    @patch('specifyweb.specify.views._upload_locality_set', get_success_result)
+    @patch('specifyweb.backend.locality_update_tool.views.create_localityupdate_recordset')
+    @patch('specifyweb.backend.locality_update_tool.views._upload_locality_set', get_success_result)
     def test_success_record_set(self, create_recordset: Mock):
         recordset = Mock()
         recordset.pk = 9
@@ -49,7 +49,7 @@ class TestUploadLocalitySetForeground(ApiTests):
 
         self.assertEqual(result, dict(type="Uploaded", results=[], recordsetid=9))
 
-    @patch('specifyweb.specify.views._upload_locality_set', get_failure_result)
+    @patch('specifyweb.backend.locality_update_tool.views._upload_locality_set', get_failure_result)
     def test_failure(self):
 
         result = upload_locality_set_foreground(
