@@ -4,12 +4,14 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
+import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
 import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { icons } from '../Atoms/Icons';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -220,13 +222,23 @@ export function Tree<
       </div>
       {rows.length === 0 ? (
         <div className="flex flex-col gap-2 p-2">
-          <Button.Icon
-            icon="plus"
-            title={treeText.addRootNode()}
+          <Button.LikeLink
+            className="flex items-center gap-2 text-left"
+            title={setupToolText.createEmptyTree()}
+            aria-label={setupToolText.createEmptyTree()}
             onClick={createRootNode}
-          />
+          >
+            {icons.plus}
+            <span>{setupToolText.createEmptyTree()}</span>
+          </Button.LikeLink>
           {treeDefId ? (
-            <ImportTree tableName={tableName} treeDefId={treeDefId} treeDefinitionItems={treeDefinitionItems}/>
+            <ImportTree
+              tableName={tableName}
+              treeDefId={treeDefId}
+              treeDefinitionItems={treeDefinitionItems}
+              buttonLabel={setupToolText.preloadTree()}
+              buttonClassName="text-left"
+            />
           ) : null}
         </div>
       ) : undefined}

@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { treeText } from '../../localization/tree';
@@ -13,6 +14,7 @@ import { H2, Ul } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
@@ -196,12 +198,16 @@ export function ImportTree<SCHEMA extends AnyTree>({
   tableName,
   treeDefId,
   treeDefinitionItems,
+  buttonLabel,
+  buttonClassName,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefId: number;
   readonly treeDefinitionItems: RA<
       SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
     >;
+  readonly buttonLabel?: LocalizedString;
+  readonly buttonClassName?: string;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
@@ -273,13 +279,27 @@ export function ImportTree<SCHEMA extends AnyTree>({
   return (
     <>
       {tableName === 'Taxon' && userInformation.isadmin ? (
-        <Button.Icon
-          icon="upload"
-          title={commonText.import()}
-          onClick={() => {
-            setIsActive(1);
-          }}
-        />
+        buttonLabel ? (
+          <Button.LikeLink
+            className={`flex items-center gap-2 ${buttonClassName ?? ''}`}
+            title={buttonLabel}
+            aria-label={buttonLabel}
+            onClick={() => {
+              setIsActive(1);
+            }}
+          >
+            {icons.upload}
+            <span>{buttonLabel}</span>
+          </Button.LikeLink>
+        ) : (
+          <Button.Icon
+            icon="upload"
+            title={commonText.import()}
+            onClick={() => {
+              setIsActive(1);
+            }}
+          />
+        )
       ) : null}
       {isMissingTreeRanks && missingTreeRanks && selectedPopulatedTree ? (
         <MissingTreeRanksDialog
@@ -300,7 +320,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
       {isActive === 1 ? (
         <Dialog
           buttons={
-            <Button.DialogClose component={Button.BorderedGray}>
+            <Button.DialogClose>
               {commonText.cancel()}
             </Button.DialogClose>
           }
@@ -465,7 +485,7 @@ export function MissingTreeRanksDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose component={Button.BorderedGray}>
+          <Button.DialogClose>
             {commonText.close()}
           </Button.DialogClose>
           <Button.Secondary onClick={handleNo}>
