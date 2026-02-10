@@ -1,2 +1,516 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-11 00:10+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"attachments/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
+#: components/Attachments/RecordSetAttachment.tsx:161
+#: components/Attachments/RecordSetAttachment.tsx:164
+#: components/Attachments/RecordSetAttachment.tsx:168
+#: components/Attachments/index.tsx:161
+#: components/FormSliders/AttachmentsCollection.tsx:68
+#: components/FormSliders/AttachmentsCollection.tsx:91
+#: components/Header/menuItemDefinitions.ts:99
+#: components/Molecules/SyncAttachmentPicker.tsx:118
+#: components/Molecules/SyncAttachmentPicker.tsx:127
+#: components/Preferences/CollectionDefinitions.tsx:47
+#: components/Preferences/UserDefinitions.tsx:1434
+#: components/Router/Routes.tsx:182
+#: components/Router/Routes.tsx:485
+#: components/Statistics/StatsSpec.tsx:508
+#: components/WbAttachmentViewer/index.tsx:131
+#: components/WbImportAttachments/index.tsx:188
+#: components/WbImportAttachments/index.tsx:222
+#: components/WbToolkit/index.tsx:73
+#: components/WorkBench/WbAttachmentsPreview.tsx:115
+#: components/WorkBench/WbAttachmentsPreview.tsx:302
+#: components/WorkBench/WbAttachmentsPreview.tsx:336
+#: components/WorkBench/WbView.tsx:245
+#: components/WorkBench/hotProps.tsx:76
+#, fuzzy
+msgid "attachments"
+msgstr "Prilozi"
+
+#. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:224
+#, fuzzy
+msgid "scale"
+msgstr "Skala"
+
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
+#: components/Attachments/Plugin.tsx:41
+#: components/Attachments/Plugin.tsx:151
+#: components/Attachments/index.tsx:54
+#: components/AttachmentsBulkImport/Upload.tsx:251
+#: components/AttachmentsBulkImport/Upload.tsx:258
+#: components/WbImportAttachments/index.tsx:191
+#, fuzzy
+msgid "attachmentServerUnavailable"
+msgstr "Poslužitelj priloga nije dostupan"
+
+#. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:57
+#, fuzzy
+msgid "attachmentServerUnavailableDescription"
+msgstr "Postavite svoj poslužitelj priloga"
+
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
+#: components/Attachments/index.tsx:210
+#: components/FormMeta/SubViewMeta.tsx:42
+#: components/Preferences/UserDefinitions.tsx:1421
+#, fuzzy
+msgid "orderBy"
+msgstr "Poredaj po"
+
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
+#: components/Attachments/Plugin.tsx:155
+#: components/WbImportAttachments/index.tsx:197
+#, fuzzy
+msgid "uploadingInline"
+msgstr "Prijenos…"
+
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
+#: components/Attachments/Gallery.tsx:137
+#: components/Attachments/RecordSetAttachment.tsx:176
+#: components/AttachmentsBulkImport/utils.ts:463
+#, fuzzy
+msgid "noAttachments"
+msgstr "Nema privitaka"
+
+#. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:147
+#, fuzzy
+msgid "unableToFindRelatedRecord"
+msgstr "Nije moguće pronaći povezani zapis"
+
+#. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:150
+#, fuzzy
+msgid "unableToFindRelatedRecordDescription"
+msgstr "Nije moguće pronaći zapis na koji se odnosi ovaj privitak."
+
+#. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:51
+#, fuzzy
+msgid "multipleFilesSelected"
+msgstr "Odabrano je više datoteka"
+
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:377
+#, fuzzy
+msgid "showForm"
+msgstr "Prikaži obrazac"
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:205
+#, fuzzy
+msgid "fileSize"
+msgstr "Veličina datoteke"
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/Rollback.tsx:149
+#: components/AttachmentsBulkImport/utils.ts:458
+#, fuzzy
+msgid "deleted"
+msgstr "Izbrisano"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:456
+#, fuzzy
+msgid "noFile"
+msgstr "Nema datoteke"
+
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
+#, fuzzy
+msgid "pleaseReselectAllFiles"
+msgstr "Molimo vas da ponovno odaberete sve datoteke prije prijenosa."
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:455
+#, fuzzy
+msgid "incorrectFormatter"
+msgstr "Neispravno formatirano"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:459
+#, fuzzy
+msgid "alreadyUploaded"
+msgstr "Već preneseno"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:460
+#, fuzzy
+msgid "skipped"
+msgstr "Preskočeno"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:461
+#, fuzzy
+msgid "cancelled"
+msgstr "Otkazano"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:464
+#: components/AttachmentsBulkImport/utils.ts:467
+#, fuzzy
+msgid "frontEndInterruption"
+msgstr "{action:string} je bio u tijeku kada je došlo do prekida"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:462
+#, fuzzy
+msgid "matchError"
+msgstr "Pogreška podudaranja"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:470
+#, fuzzy
+msgid "errorReadingFile"
+msgstr "Greška pri čitanju datoteke"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:472
+#, fuzzy
+msgid "unhandledFatalResourceError"
+msgstr "Neobrađena fatalna pogreška resursa:"
+
+#. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:141
+#, fuzzy
+msgid "attachmentImportDatasetsCount"
+msgstr "Skupovi podataka za uvoz priloga ({count:number})"
+
+#. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:240
+#, fuzzy
+msgid "newAttachmentDataset"
+msgstr "Novi skup podataka za priloge {date: string}"
+
+#. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:269
+#, fuzzy
+msgid "newAttachmentDatasetBase"
+msgstr "Novi skup podataka za priloge"
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:393
+#, fuzzy
+msgid "uploadInterrupted"
+msgstr "Prijenos prekinut"
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:399
+#, fuzzy
+msgid "uploadInterruptedDescription"
+msgstr ""
+"Prijenos je bio u tijeku kada je došlo do prekida. Neke datoteke su možda "
+"prenesene."
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:404
+#, fuzzy
+msgid "rollbackInterrupted"
+msgstr "Povratak prekinut"
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:410
+#, fuzzy
+msgid "rollbackInterruptedDescription"
+msgstr ""
+"Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda "
+"izbrisane."
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:227
+#, fuzzy
+msgid "attachmentId"
+msgstr "ID privitka"
+
+#. Used in: Components > Attachments Bulk Import > Select Upload Path
+#: components/AttachmentsBulkImport/SelectUploadPath.tsx:34
+#: components/AttachmentsBulkImport/SelectUploadPath.tsx:41
+#, fuzzy
+msgid "choosePath"
+msgstr "Odaberite put"
+
+#. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:241
+#, fuzzy
+msgid "beginAttachmentUpload"
+msgstr "Započeti prijenos priloga?"
+
+#. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:244
+#, fuzzy
+msgid "beginUploadDescription"
+msgstr ""
+"Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u "
+"Navedite bazu podataka"
+
+#. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:59
+#, fuzzy
+msgid "interrupted"
+msgstr "Prekinuto"
+
+#. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:55
+#, fuzzy
+msgid "tryNow"
+msgstr "Isprobajte sada"
+
+#. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:62
+#, fuzzy
+msgid "interruptedTime"
+msgstr "Prekinuto. Ponovni pokušaj za {remainingTime:string}"
+
+#. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:137
+#, fuzzy
+msgid "rollbackDescription"
+msgstr ""
+"Vraćanje na prethodno stanje će izbrisati priloge iz Navedite bazu podataka "
+"i Poslužitelja imovine"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:474
+#, fuzzy
+msgid "noMatch"
+msgstr "Nema podudaranja"
+
+#. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:179
+#, fuzzy
+msgid "attachmentHaltLimit"
+msgstr "U prvim zapisima {halt:number} nisu pronađeni prilozi."
+
+#. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:187
+#, fuzzy
+msgid "fetchNextAttachments"
+msgstr "Potražite više priloga"
+
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
+#: components/Attachments/Dialog.tsx:101
+#: components/Attachments/Viewer.tsx:376
+#, fuzzy
+msgid "hideForm"
+msgstr "Sakrij obrazac"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1471
+#, fuzzy
+msgid "collapseFormByDefault"
+msgstr "Sažmi obrazac prema zadanim postavkama"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1472
+#, fuzzy
+msgid "collapseFormByDefaultDescription"
+msgstr ""
+"Treba li se obrazac za prilog prema zadanim postavkama sažeti prilikom "
+"pregleda postojećih priloga. Ako su kontrole priloga skrivene, ova postavka "
+"nema učinka."
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1463
+#, fuzzy
+msgid "showControls"
+msgstr "Prikaži kontrole privitaka"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1464
+#, fuzzy
+msgid "showControlsDescription"
+msgstr ""
+"Gumbi za zumiranje, smanjivanje, resetiranje i skrivanje/prikazivanje "
+"obrasca pri pregledu privitka prikazuju ili skrivaju privitak."
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:475
+#, fuzzy
+msgid "multipleMatches"
+msgstr "Višestruka podudaranja"
+
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
+#, fuzzy
+msgid "multipleMatchesClick"
+msgstr "Višestruka podudaranja. Kliknite za razrješenje dvosmislenosti"
+
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
+#, fuzzy
+msgid "totalFiles"
+msgstr "Ukupno datoteka"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:476
+#, fuzzy
+msgid "correctlyFormatted"
+msgstr "Ispravno formatirano"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:477
+#, fuzzy
+msgid "stoppedByUser"
+msgstr "Zaustavio korisnik"
+
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
+#: components/Router/OverlayRoutes.tsx:237
+#: components/Router/Routes.tsx:213
+#: components/Toolbar/WbsDialog.tsx:195
+#: components/WbImportAttachments/index.tsx:219
+#, fuzzy
+msgid "importAttachments"
+msgstr "Uvoz privitaka"
+
+#. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:30
+#, fuzzy
+msgid "onFile"
+msgstr "U datoteci"
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:416
+#, fuzzy
+msgid "duplicateFilesFound"
+msgstr "Pronađene duplikatne datoteke"
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:421
+#, fuzzy
+msgid "duplicateFilesDescription"
+msgstr "Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka."
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:479
+#, fuzzy
+msgid "errorFetchingRecord"
+msgstr "Pogreška pri dohvaćanju zapisa"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:480
+#, fuzzy
+msgid "errorSavingRecord"
+msgstr "Pogreška pri spremanju zapisa"
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:478
+#, fuzzy
+msgid "interruptionStopped"
+msgstr "Zaustavljeno zbog pogreške pri učitavanju prethodne datoteke"
+
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
+#, fuzzy
+msgid "chooseFilesToGetStarted"
+msgstr "Odaberite datoteke ili ih povucite ovdje da biste započeli."
+
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
+#, fuzzy
+msgid "selectIdentifier"
+msgstr "Odaberite identifikator s kojim ćete pronaći ime datoteke."
+
+#. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:224
+#, fuzzy
+msgid "progress"
+msgstr "Napredak"
+
+#. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:143
+#, fuzzy
+msgid "rollbackResults"
+msgstr "Rezultati vraćanja"
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Rollback.tsx:146
+#: components/AttachmentsBulkImport/Upload.tsx:268
+#, fuzzy
+msgid "resultValue"
+msgstr ""
+"{success: number} od {total: number} privitaka u skupu podataka je {action: "
+"string}."
+
+#. Used in: Components > Attachments Bulk Import > Rename Data Set
+#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
+#, fuzzy
+msgid "deleteAttachmentDataSetDescription"
+msgstr ""
+"Trajnim brisanjem skupa podataka uklanja se on i njegov put prijenosa. "
+"Također, nakon brisanja, vraćanje na prethodno stanje više neće biti moguće "
+"za preneseni skup podataka."
+
+#. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:481
+#, fuzzy
+msgid "attachmentUploadError"
+msgstr ""
+"Pogreška pri učitavanju privitka. Poslužitelj privitka možda nije dostupan "
+"ili je došlo do pogreške pri čitanju datoteke."
+
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#: components/Attachments/RecordSetAttachment.tsx:150
+#: components/Attachments/RecordSetAttachment.tsx:221
+#: components/FormSliders/AttachmentsCollection.tsx:84
+#, fuzzy
+msgid "downloadAll"
+msgstr "Preuzmi sve"
+
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
+#: components/Attachments/RecordSetAttachment.tsx:135
+#: components/FormSliders/AttachmentsCollection.tsx:79
+#, fuzzy
+msgid "downloadAllDescription"
+msgstr "Preuzmi sve pronađene priloge"
+
+#. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:224
+#, fuzzy
+msgid "createRecordSetToDownloadAll"
+msgstr ""
+"Nisu učitani svi privitci. Izradite skup zapisa rezultata upita kako biste "
+"preuzeli sve privitke."
+
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:60
+#, fuzzy
+msgid "deleteAttachmentWarning"
+msgstr "Jeste li sigurni da želite izbrisati ovaj privitak?"
+
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#, fuzzy
+msgid "attachmentDelition"
+msgstr "Brisanje privitka"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:50
+#, fuzzy
+msgid "publicDefault"
+msgstr "Učini privitke javnim prema zadanim postavkama"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:51
+#, fuzzy
+msgid "publicDefaultDescription"
+msgstr ""
+"Ovo kontrolira hoće li se novi privitci dodani u ovu kolekciju prema zadanim "
+"postavkama označavati kao \"Javni\". Javni privitci automatski će biti "
+"vidljivi na Navedite web portalu. Ova se postavka može poništiti za svaki "
+"pojedinačni privitak i ne utječe na postojeće privitke."
