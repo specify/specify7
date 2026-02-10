@@ -1,2 +1,722 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:43+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/user/"
+"hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
+#: components/ChooseCollection/index.tsx:183
+#: components/Header/UserTools.tsx:54
+#: components/Header/userToolDefinitions.ts:48
+#: components/Login/OicLogin.tsx:84
+#: components/Login/index.tsx:188
+#: components/Permissions/PermissionDenied.tsx:230
+#: components/Router/EntrypointRouter.tsx:22
+#: components/Router/EntrypointRouter.tsx:27
+#, fuzzy
+msgid "logIn"
+msgstr "Prijava"
+
+#. Used in: Components > Login > Index
+#: components/Login/index.tsx:164
+#, fuzzy
+msgid "username"
+msgstr "Korisničko ime"
+
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
+#: components/Login/index.tsx:176
+#: components/Security/SetPassword.tsx:54
+#, fuzzy
+msgid "password"
+msgstr "Lozinka"
+
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
+#: components/FormPlugins/CollectionRelOneToMany.tsx:181
+#: components/QueryComboBox/index.tsx:596
+#, fuzzy
+msgid "collectionAccessDenied"
+msgstr "Nemate pristup ovoj kolekciji"
+
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
+#: components/FormPlugins/CollectionRelOneToMany.tsx:184
+#: components/QueryComboBox/index.tsx:599
+#, fuzzy
+msgid "collectionAccessDeniedDescription"
+msgstr ""
+"Trenutno prijavljeni račun nema pristup kolekciji {collectionName:string}."
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
+#: components/Header/userToolDefinitions.ts:42
+#: components/PasswordChange/index.tsx:99
+#: components/Router/EntrypointRouter.tsx:40
+#: components/Security/SetPassword.tsx:92
+#, fuzzy
+msgid "changePassword"
+msgstr "Promjena lozinke"
+
+#. Used in: Components > Password Change > Index
+#: components/PasswordChange/index.tsx:65
+#, fuzzy
+msgid "oldPassword"
+msgstr "Stara lozinka"
+
+#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
+#: components/Core/Main.tsx:95
+#: components/Header/userToolDefinitions.ts:28
+#, fuzzy
+msgid "logOut"
+msgstr "Odjava"
+
+#. Used in: Components > Security > Missing Agents Dialog
+#: components/Security/MissingAgentsDialog.tsx:99
+#, fuzzy
+msgid "setUserAgents"
+msgstr "Postavljanje korisničkih agenata"
+
+#. Used in: Components > Password Change > Index
+#: components/PasswordChange/index.tsx:76
+#, fuzzy
+msgid "newPassword"
+msgstr "Nova lozinka"
+
+#. Used in: Components > Password Change > Index
+#: components/PasswordChange/index.tsx:88
+#, fuzzy
+msgid "repeatPassword"
+msgstr "Ponovite novu lozinku"
+
+#. Used in: Components > Core > Main
+#: components/Core/Main.tsx:102
+#, fuzzy
+msgid "noAgent"
+msgstr "Trenutni korisnik nema dodijeljenog agenta"
+
+#. Used in: Components > Core > Main
+#: components/Core/Main.tsx:105
+#, fuzzy
+msgid "noAgentDescription"
+msgstr "Prijavite se kao administrator i dodijelite agenta ovom korisniku"
+
+#. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
+#: components/Login/OicLogin.tsx:46
+#: components/Login/index.tsx:149
+#, fuzzy
+msgid "helloMessage"
+msgstr "Pozdrav, {userName:string}!"
+
+#. Used in: Components > Login > Oic Login
+#: components/Login/OicLogin.tsx:48
+#, fuzzy
+msgid "oicWelcomeMessage"
+msgstr ""
+"Pozvani ste da svom Specify korisničkom računu povežete vanjsku prijavu. To "
+"će vam omogućiti prijavu na Specify s odabranim pružateljem usluga u "
+"budućnosti."
+
+#. Used in: Components > Login > Oic Login
+#: components/Login/OicLogin.tsx:80
+#, fuzzy
+msgid "legacyLogin"
+msgstr "Prijavite se s Navedite račun"
+
+#. Used in: Components > Login > Index
+#: components/Login/index.tsx:151
+#, fuzzy
+msgid "unknownOicUser"
+msgstr ""
+"Trenutno nijedan Navedite korisnika nije povezan s vašim "
+"{providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, "
+"možete ih unijeti u nastavku kako biste povezali tog korisnika s vašim "
+"{providerName:string} računom za buduće prijave."
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
+#: components/Header/userToolDefinitions.ts:99
+#: components/Router/OverlayRoutes.tsx:174
+#: components/Toolbar/MasterKey.tsx:43
+#, fuzzy
+msgid "generateMasterKey"
+msgstr "Generiraj glavni ključ"
+
+#. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:71
+#, fuzzy
+msgid "userPassword"
+msgstr "Korisnička lozinka"
+
+#. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:40
+#, fuzzy
+msgid "generate"
+msgstr "Generirati"
+
+#. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:98
+#, fuzzy
+msgid "masterKeyGenerated"
+msgstr "Generiran glavni ključ"
+
+#. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:104
+#, fuzzy
+msgid "masterKeyFieldLabel"
+msgstr "Glavni ključ"
+
+#. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:62
+#, fuzzy
+msgid "incorrectPassword"
+msgstr "Lozinka je bila netočna."
+
+#. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:66
+#, fuzzy
+msgid "noAccessToResource"
+msgstr ""
+"Nemate pristup nijednom {collectionTable:string} koji sadrži ovaj resurs "
+"putem trenutno prijavljenog računa"
+
+#. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:71
+#, fuzzy
+msgid "resourceInaccessible"
+msgstr ""
+"Zatraženom resursu nije moguće pristupiti dok ste prijavljeni u trenutnu "
+"kolekciju."
+
+#. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:74
+#, fuzzy
+msgid "selectCollection"
+msgstr "Odaberite jednu od sljedećih kolekcija:"
+
+#. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:92
+#, fuzzy
+msgid "loginToProceed"
+msgstr "Možete se prijaviti na {collectionTable:string} kako biste nastavili:"
+
+#. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
+#: components/Permissions/FormatError.tsx:33
+#: components/Permissions/PermissionDenied.tsx:232
+#, fuzzy
+msgid "sessionTimeOut"
+msgstr "Nedovoljne privilegije"
+
+#. Used in: Components > Permissions > Permission Denied
+#: components/Permissions/PermissionDenied.tsx:239
+#, fuzzy
+msgid "sessionTimeOutDescription"
+msgstr ""
+"Nemate dovoljna prava za tu radnju ili je vaša trenutna sesija odjavljena."
+
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
+#: components/Formatters/formatters.ts:197
+#: components/Forms/dataObjFormatters.ts:290
+#: components/QueryComboBox/index.tsx:198
+#: components/Statistics/Categories.tsx:76
+#: components/Statistics/StatItems.tsx:186
+#: components/Statistics/StatItems.tsx:269
+#, fuzzy
+msgid "noPermission"
+msgstr "BEZ DOZVOLE"
+
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
+#: components/Forms/DataTask.tsx:135
+#: components/Permissions/PermissionDenied.tsx:223
+#, fuzzy
+msgid "permissionDeniedError"
+msgstr "Pogreška odbijenog pristupa"
+
+#. Used in: Components > Permissions > Format Error
+#: components/Permissions/FormatError.tsx:62
+#, fuzzy
+msgid "permissionDeniedDescription"
+msgstr ""
+"Nemate nikakvu politiku ili ulogu koja vam daje dopuštenje za sljedeću "
+"radnju:"
+
+#. Used in: Components > Forms > Data Task
+#: components/Forms/DataTask.tsx:138
+#, fuzzy
+msgid "emptyRecordSetsReadOnly"
+msgstr ""
+"Ne može se otvoriti prazan {recordSetTable:string} u načinu rada samo za "
+"čitanje"
+
+#. Used in: Components > Permissions > Format Error
+#: components/Permissions/FormatError.tsx:120
+#, fuzzy
+msgid "permissionDeniedForUrl"
+msgstr "Dozvola odbijena prilikom pristupa <url />"
+
+#. Used in: Components > Choose Collection > Index
+#: components/ChooseCollection/index.tsx:170
+#, fuzzy
+msgid "noAccessToCollections"
+msgstr ""
+"Prijavljeni korisnik nije dobio pristup nijednoj kolekciji u ovoj bazi "
+"podataka. Morate se prijaviti kao drugi korisnik."
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:26
+#, fuzzy
+msgid "userAccount"
+msgstr "Korisnički račun"
+
+#. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:84
+#, fuzzy
+msgid "removeAdmin"
+msgstr "Ukloni administratora"
+
+#. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:52
+#, fuzzy
+msgid "canNotRemoveYourself"
+msgstr "Ne možete opozvati vlastiti administratorski status"
+
+#. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:84
+#, fuzzy
+msgid "makeAdmin"
+msgstr "Postavi kao administrator"
+
+#. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
+#: components/Security/AdminStatusPlugin.tsx:50
+#: components/Security/UserCollections.tsx:128
+#, fuzzy
+msgid "saveUserFirst"
+msgstr "Prvo spremi korisnika"
+
+#. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:55
+#, fuzzy
+msgid "mustBeManager"
+msgstr "Korisnik prvo mora biti spremljen kao Upravitelj"
+
+#. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
+#: components/AppResources/tree.ts:228
+#: components/Security/CollectionRole.tsx:185
+#, fuzzy
+msgid "users"
+msgstr "Korisnički računi"
+
+#. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:140
+#, fuzzy
+msgid "institutionUsers"
+msgstr "Korisnički računi definirani u ovom {institutionTable:string}"
+
+#. Used in: Components > Security > Collection
+#: components/Security/Collection.tsx:151
+#, fuzzy
+msgid "collectionUsers"
+msgstr "Korisnički računi dodijeljeni ovome {collectionTable:string}"
+
+#. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
+#: components/Security/SetPassword.tsx:40
+#: components/Security/SetPassword.tsx:92
+#: components/Security/UserComponents.tsx:191
+#: components/Security/UserComponents.tsx:195
+#, fuzzy
+msgid "setPassword"
+msgstr "Postavi lozinku"
+
+#. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:83
+#, fuzzy
+msgid "userRoleLibrary"
+msgstr "Knjižnica predložaka uloga institucije"
+
+#. Used in: Components > Security > Set Password
+#: components/Security/SetPassword.tsx:29
+#: components/Security/SetPassword.tsx:50
+#, fuzzy
+msgid "passwordsDoNotMatchError"
+msgstr "Lozinke se ne podudaraju."
+
+#. Used in: Components > Security > Set Password
+#: components/Security/SetPassword.tsx:65
+#, fuzzy
+msgid "confirmPassword"
+msgstr "Potvrdi"
+
+#. Used in: Components > Toolbar > Security
+#: components/Toolbar/Security.tsx:133
+#, fuzzy
+msgid "collections"
+msgstr "Zbirke"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:76
+#, fuzzy
+msgid "configureCollectionAccess"
+msgstr "Odaberite pristup korisničke zbirke"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
+#: components/Header/userToolDefinitions.ts:85
+#: components/Router/Routes.tsx:73
+#: components/Toolbar/Security.tsx:102
+#, fuzzy
+msgid "securityPanel"
+msgstr "Sigurnost i računi"
+
+#. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:246
+#, fuzzy
+msgid "userRoles"
+msgstr "Korisničke uloge"
+
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
+#: components/Security/CollectionComponents.tsx:122
+#: components/Security/PreviewComponents.tsx:88
+#, fuzzy
+msgid "collectionUserRoles"
+msgstr "{collectionTable:string} Korisničke uloge"
+
+#. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:109
+#, fuzzy
+msgid "assignedUserRoles"
+msgstr "Dodijeljene korisničke uloge"
+
+#. Used in: Components > Security > Role
+#: components/Security/Role.tsx:153
+#, fuzzy
+msgid "rolePolicies"
+msgstr "Pravila o dopuštenjima uloga"
+
+#. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:145
+#, fuzzy
+msgid "userPolicies"
+msgstr "Pravila korisničkih dopuštenja"
+
+#. Used in: Components > Security > User
+#: components/Security/User.tsx:388
+#, fuzzy
+msgid "customUserPolices"
+msgstr ""
+"Prilagođene politike na razini zbirke (primjenjuje se samo na ovu zbirku)"
+
+#. Used in: Components > Security > Role
+#: components/Security/Role.tsx:117
+#, fuzzy
+msgid "role"
+msgstr "Uloga"
+
+#. Used in: Components > Security > Preview Tables
+#: components/Security/PreviewTables.tsx:65
+#, fuzzy
+msgid "read"
+msgstr "Čitaj"
+
+#. Used in: Components > Security > Preview
+#: components/Security/Preview.tsx:61
+#, fuzzy
+msgid "userPermissionPreview"
+msgstr "Profil korisničkih dozvola (samo za čitanje)"
+
+#. Used in: Components > Security > Preview
+#: components/Security/Preview.tsx:65
+#, fuzzy
+msgid "outOfDateWarning"
+msgstr ""
+"Napomena: pregled je možda zastario. Spremite promjene da biste ažurirali "
+"pregled."
+
+#. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:173
+#, fuzzy
+msgid "allUsers"
+msgstr "Svi korisnici"
+
+#. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:174
+#, fuzzy
+msgid "thisUser"
+msgstr "Ovaj korisnik"
+
+#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
+#: components/Permissions/FormatError.tsx:67
+#: components/Security/PreviewComponents.tsx:91
+#: components/Security/PreviewComponents.tsx:147
+#, fuzzy
+msgid "action"
+msgstr "Akcijski"
+
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
+#: components/AttachmentsBulkImport/Import.tsx:209
+#: components/Permissions/FormatError.tsx:68
+#: components/Security/PreviewComponents.tsx:92
+#: components/Security/PreviewComponents.tsx:148
+#, fuzzy
+msgid "resource"
+msgstr "Resurs"
+
+#. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:176
+#, fuzzy
+msgid "allCollections"
+msgstr "Sve kolekcije"
+
+#. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:177
+#, fuzzy
+msgid "thisCollection"
+msgstr "Ova kolekcija"
+
+#. Used in: Components > Security > Utils
+#: components/Security/utils.ts:144
+#, fuzzy
+msgid "allActions"
+msgstr "Sve radnje"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:260
+#, fuzzy
+msgid "collectionAccess"
+msgstr "Omogući pristup zbirci"
+
+#. Used in: Components > Router > Routes
+#: components/Router/Routes.tsx:150
+#, fuzzy
+msgid "createRole"
+msgstr "Stvori ulogu"
+
+#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
+#: components/Router/Routes.tsx:99
+#: components/Router/Routes.tsx:158
+#: components/Security/RoleTemplate.tsx:83
+#, fuzzy
+msgid "newRole"
+msgstr "Nova uloga"
+
+#. Used in: Components > Security > Role Template
+#: components/Security/RoleTemplate.tsx:108
+#, fuzzy
+msgid "fromLibrary"
+msgstr "Iz knjižnice:"
+
+#. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:32
+#, fuzzy
+msgid "createNewRoles"
+msgstr "Stvorite nove uloge:"
+
+#. Used in: Components > Security > Role Template
+#: components/Security/RoleTemplate.tsx:177
+#, fuzzy
+msgid "fromExistingRole"
+msgstr "Iz postojeće uloge:"
+
+#. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:30
+#, fuzzy
+msgid "updateExistingRoles"
+msgstr "Ažuriraj postojeće uloge:"
+
+#. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:31
+#, fuzzy
+msgid "unchangedRoles"
+msgstr "Nepromijenjene uloge:"
+
+#. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:86
+#, fuzzy
+msgid "institutionAdmin"
+msgstr "Administrator ustanove"
+
+#. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:51
+#, fuzzy
+msgid "createInviteLink"
+msgstr "Izradi poveznicu za poziv"
+
+#. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:56
+#, fuzzy
+msgid "userInviteLink"
+msgstr "Veza za poziv korisnika"
+
+#. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:61
+#, fuzzy
+msgid "userInviteLinkDescription"
+msgstr ""
+"Pošaljite sljedeću poveznicu korisniku {userName:string} kako biste im "
+"omogućili prvu prijavu."
+
+#. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:72
+#, fuzzy
+msgid "noProvidersForUserInviteLink"
+msgstr ""
+"Nije konfiguriran nijedan vanjski pružatelj identiteta. Možete konfigurirati "
+"neke u postavkama poslužitelja u odjeljku Navedite 7."
+
+#. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:243
+#, fuzzy
+msgid "legacyPermissions"
+msgstr "Navedite 6 dozvola"
+
+#. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:198
+#, fuzzy
+msgid "setPasswordBeforeSavePrompt"
+msgstr ""
+"Razmislite o postavljanju lozinke za ovog korisnika. Korisnici bez lozinke "
+"neće se moći prijaviti."
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:133
+#, fuzzy
+msgid "setCollections"
+msgstr "Set kolekcije"
+
+#. Used in: Components > Security > Missing Agents Dialog
+#: components/Security/MissingAgentsDialog.tsx:153
+#, fuzzy
+msgid "agentInUse"
+msgstr "Ovaj agent je već povezan s drugim korisnikom."
+
+#. Used in: Components > Security > Missing Agents Dialog
+#: components/Security/MissingAgentsDialog.tsx:102
+#, fuzzy
+msgid "setAgentsBeforeProceeding"
+msgstr "Prije nastavka postavite sljedeće agente:"
+
+#. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:211
+#, fuzzy
+msgid "externalIdentityProviders"
+msgstr "Vanjski pružatelji usluga identiteta:"
+
+#. Used in: Components > Security > Registry
+#: components/Security/registry.ts:116
+#, fuzzy
+msgid "allTables"
+msgstr "Sve tablice"
+
+#. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:194
+#, fuzzy
+msgid "loadingAdmins"
+msgstr "Učitavanje administratora..."
+
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:158
+#, fuzzy
+msgid "specifyAdmin"
+msgstr "(Navedite 7 administratora)"
+
+#. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:162
+#, fuzzy
+msgid "legacyAdmin"
+msgstr "(Navedite 6 administratora)"
+
+#. Used in: Components > Security > Role
+#: components/Security/Role.tsx:227
+#, fuzzy
+msgid "deleteRoleWithUsers"
+msgstr "Izbrisati ulogu koja ima korisnike?"
+
+#. Used in: Components > Security > Role
+#: components/Security/Role.tsx:230
+#, fuzzy
+msgid "deleteRoleWithUsersDescription"
+msgstr "Korisnici neće biti izbrisani, ali će izgubiti ovu ulogu."
+
+#. Used in: Components > Security > User
+#: components/Security/User.tsx:305
+#, fuzzy
+msgid "institutionPolicies"
+msgstr ""
+"Prilagođene politike na razini institucije (primjenjuju se na sve "
+"dodijeljene zbirke)"
+
+#. Used in: Components > Security > User
+#: components/Security/User.tsx:668
+#, fuzzy
+msgid "cantRemoveLastAdmin"
+msgstr "Ne mogu ukloniti status administratora ustanove"
+
+#. Used in: Components > Security > User
+#: components/Security/User.tsx:671
+#, fuzzy
+msgid "cantRemoveLastAdminDescription"
+msgstr "U ustanovi mora postojati barem jedan administrator ustanove"
+
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
+#: components/FormEditor/Editor.tsx:74
+#: components/Security/Policies.tsx:42
+#, fuzzy
+msgid "switchToHorizontalLayout"
+msgstr "Prebaci na horizontalni raspored"
+
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
+#: components/FormEditor/Editor.tsx:75
+#: components/Security/Policies.tsx:43
+#, fuzzy
+msgid "switchToVerticalLayout"
+msgstr "Prebaci na vertikalni raspored"
+
+#. Used in: Components > Security > Preview ⬤ Components > Security > Registry
+#: components/Security/Preview.tsx:78
+#: components/Security/registry.ts:81
+#, fuzzy
+msgid "advancedTables"
+msgstr "Napredne tablice"
+
+#. Used in: Components > Security > Utils
+#: components/Security/utils.ts:132
+#, fuzzy
+msgid "excludedInstitutionalPolicies"
+msgstr "Isključene institucionalne politike:"
+
+#. Used in: Components > Security > Policies
+#: components/Security/Policies.tsx:169
+#, fuzzy
+msgid "excludedInstitutionalPoliciesDescription"
+msgstr ""
+"(Neke politike koje se primjenjuju samo na razini institucije nisu ovdje "
+"prisutne na razini zbirke.)"
+
+#. Used in: Components > Security > User
+#: components/Security/User.tsx:262
+#, fuzzy
+msgid "accountSetupOptions"
+msgstr "Opcije postavljanja računa"
+
+#. Used in: Components > Query Builder > Specify User Auto Complete
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:9
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
+#, fuzzy
+msgid "currentUser"
+msgstr "Trenutni korisnik"
+
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
+#: components/Security/CollectionComponents.tsx:66
+#: components/Security/CollectionComponents.tsx:71
+#: components/Security/RoleTemplate.tsx:96
+#, fuzzy
+msgid "addRole"
+msgstr "Dodaj ulogu"
+
+#. Used in: Components > Security > Collection
+#: components/Security/Collection.tsx:215
+#, fuzzy
+msgid "addUser"
+msgstr "Dodaj korisnika"
