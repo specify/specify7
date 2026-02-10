@@ -1,2 +1,1047 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:43+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"workbench/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
+#: components/Header/menuItemDefinitions.ts:94
+#: components/Preferences/UserDefinitions.tsx:1956
+#: components/Router/OverlayRoutes.tsx:151
+#: components/WbUtils/datasetVariants.tsx:30
+#, fuzzy
+msgid "workBench"
+msgstr "Radni stol"
+
+#. Used in: Components > Wb Toolkit > Dev Show Plan
+#: components/WbToolkit/DevShowPlan.tsx:39
+#, fuzzy
+msgid "uploadPlan"
+msgstr "Plan prijenosa"
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/Rollback.tsx:29
+#: components/AttachmentsBulkImport/Rollback.tsx:93
+#: components/AttachmentsBulkImport/Rollback.tsx:130
+#: components/AttachmentsBulkImport/utils.ts:468
+#: components/WbUtils/datasetVariants.tsx:48
+#: components/WbUtils/datasetVariants.tsx:123
+#: components/WorkBench/Status.tsx:80
+#, fuzzy
+msgid "rollback"
+msgstr "Vrati se"
+
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
+#: components/AttachmentsBulkImport/Import.tsx:290
+#: components/WbActions/WbValidate.tsx:73
+#: components/WbPlanView/Mapper.tsx:463
+#, fuzzy
+msgid "validate"
+msgstr "Validiraj"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:78
+#, fuzzy
+msgid "validation"
+msgstr "Validacija"
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
+#: components/AttachmentsBulkImport/Upload.tsx:211
+#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/utils.ts:465
+#: components/Molecules/SyncAttachmentPicker.tsx:111
+#: components/WbUtils/datasetVariants.tsx:41
+#, fuzzy
+msgid "upload"
+msgstr "Prenesi"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:86
+#, fuzzy
+msgid "rollingBack"
+msgstr "Vraćanje unatrag"
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
+#: components/AttachmentsBulkImport/Upload.tsx:109
+#: components/WbUtils/datasetVariants.tsx:53
+#, fuzzy
+msgid "uploading"
+msgstr "Prijenos"
+
+#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:41
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:45
+#: components/WorkBench/Status.tsx:84
+#, fuzzy
+msgid "validating"
+msgstr "Validacija"
+
+#. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:168
+#, fuzzy
+msgid "disambiguate"
+msgstr "Višeznačno"
+
+#. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:277
+#, fuzzy
+msgid "fillUp"
+msgstr "Napunite"
+
+#. Used in: Components > Wb Actions > Wb Revert
+#: components/WbActions/WbRevert.tsx:33
+#: components/WbActions/WbRevert.tsx:41
+#, fuzzy
+msgid "revert"
+msgstr "Vrati"
+
+#. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:277
+#, fuzzy
+msgid "fillDown"
+msgstr "Popuni prema dolje"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
+#: components/Preferences/UserDefinitions.tsx:1962
+#: components/WbActions/WbValidate.tsx:58
+#, fuzzy
+msgid "dataCheck"
+msgstr "Validacija uživo"
+
+#. Used in: Components > Wb Actions > Wb Validate
+#: components/WbActions/WbValidate.tsx:54
+#: components/WbActions/WbValidate.tsx:57
+#, fuzzy
+msgid "dataCheckOn"
+msgstr "Validacija uživo: Uključeno"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1963
+#, fuzzy
+msgid "dataCheckDescription"
+msgstr ""
+"Napomena: validacija uživo je eksperimentalna značajka i nije zamjena za "
+"redovnu validaciju."
+
+#. Used in: Components > Wb Toolkit > Change Owner
+#: components/WbToolkit/ChangeOwner.tsx:41
+#: components/WbToolkit/ChangeOwner.tsx:88
+#, fuzzy
+msgid "changeOwner"
+msgstr "Promjena vlasnika"
+
+#. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:61
+#, fuzzy
+msgid "convertCoordinates"
+msgstr "Pretvori koordinate"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:50
+#, fuzzy
+msgid "navigation"
+msgstr "Navigacija"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:74
+#, fuzzy
+msgid "replace"
+msgstr "Zamijeniti"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:70
+#: components/WbUtils/index.tsx:78
+#, fuzzy
+msgid "replacementValue"
+msgstr "Zamjenska vrijednost"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:111
+#: components/WorkBench/AdvancedSearch.tsx:214
+#: components/WorkBench/AdvancedSearch.tsx:216
+#, fuzzy
+msgid "configureSearchReplace"
+msgstr "Konfiguriraj pretraživanje i zamjenu"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:120
+#, fuzzy
+msgid "modifiedCells"
+msgstr "Modificirane ćelije"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:127
+#, fuzzy
+msgid "newCells"
+msgstr "Nove ćelije"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:159
+#, fuzzy
+msgid "errorCells"
+msgstr "Ćelije s pogreškama"
+
+#. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/Mapper.tsx:470
+#, fuzzy
+msgid "dataEditor"
+msgstr "Uređivač podataka"
+
+#. Used in: Components > Work Bench > Use Disambiguation Dialog
+#: components/WorkBench/useDisambiguationDialog.tsx:105
+#, fuzzy
+msgid "noDisambiguationResults"
+msgstr "Nije moguće razdvojiti dvosmislenost"
+
+#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
+#: components/SpecifyNetworkCollection/Setup.tsx:69
+#: components/WbUtils/index.tsx:112
+#, fuzzy
+msgid "searchResults"
+msgstr "Rezultati pretraživanja"
+
+#. Used in: Components > Wb Utils > Navigation
+#: components/WbUtils/Navigation.tsx:97
+#, fuzzy
+msgid "clickToToggle"
+msgstr "Kliknite za promjenu vidljivosti"
+
+#. Used in: Components > Work Bench > Use Disambiguation Dialog
+#: components/WorkBench/useDisambiguationDialog.tsx:108
+#, fuzzy
+msgid "noDisambiguationResultsDescription"
+msgstr ""
+"Nijedan od podudarnih zapisa trenutno ne postoji u bazi podataka. To se može "
+"dogoditi ako su svi podudarni zapisi izbrisani od završetka postupka "
+"validacije ili ako su sva podudaranja bila dvosmislena u odnosu na druge "
+"zapise u ovom skupu podataka. U potonjem slučaju, morat ćete dodati polja i "
+"vrijednosti u skup podataka kako biste riješili dvosmislenost."
+
+#. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:68
+#, fuzzy
+msgid "disambiguateMatches"
+msgstr "Razdvoji višestruka podudaranja zapisa"
+
+#. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:57
+#, fuzzy
+msgid "applyAllUnavailable"
+msgstr "\"Primijeni sve\" nije dostupno dok je u tijeku Provjera podataka."
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Utils > Dataset Variants
+#: components/AttachmentsBulkImport/Rollback.tsx:134
+#: components/WbUtils/datasetVariants.tsx:49
+#: components/WbUtils/datasetVariants.tsx:124
+#, fuzzy
+msgid "beginRollback"
+msgstr "Započeti vraćanje skupa podataka?"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:42
+#, fuzzy
+msgid "startUpload"
+msgstr "Započeti prijenos skupa podataka?"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:46
+#, fuzzy
+msgid "startUploadDescription"
+msgstr "Prijenosom skupa podataka podaci će se dodati u bazu podataka Specify."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:169
+#, fuzzy
+msgid "deleteDataSet"
+msgstr "Izbrisati ovaj skup podataka?"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:89
+#, fuzzy
+msgid "deleteDataSetDescription"
+msgstr ""
+"Trajnim brisanjem skupa podataka uklanja se on i njegov plan prijenosa. "
+"Mapiranje podataka više neće biti dostupno za ponovnu upotrebu s drugim "
+"skupovima podataka. Također, nakon brisanja, vraćanje na prethodno stanje "
+"više neće biti opcija za preneseni skup podataka."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:131
+#, fuzzy
+msgid "dataSetDeleted"
+msgstr "Skup podataka uspješno izbrisan"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:50
+#, fuzzy
+msgid "beginRollbackDescription"
+msgstr ""
+"Vraćanje će ukloniti nove podatkovne zapise koje je ovaj skup podataka dodao "
+"u bazu podataka Specify. Cijelo vraćanje bit će otkazano ako su bilo koji od "
+"prenesenih podataka referencirani (ponovno korišteni) od strane drugih "
+"podatkovnih zapisa od njihovog prijenosa."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:134
+#, fuzzy
+msgid "dataSetDeletedDescription"
+msgstr "Skup podataka uspješno izbrisan."
+
+#. Used in: Components > Wb Actions > Wb Revert
+#: components/WbActions/WbRevert.tsx:45
+#, fuzzy
+msgid "revertChanges"
+msgstr "Poništiti nespremljene promjene?"
+
+#. Used in: Components > Wb Actions > Wb Revert
+#: components/WbActions/WbRevert.tsx:48
+#, fuzzy
+msgid "revertChangesDescription"
+msgstr ""
+"Ova radnja će odbaciti sve promjene napravljene u skupu podataka od "
+"posljednjeg spremanja."
+
+#. Used in: Components > Wb Actions > Wb Save
+#: components/WbActions/WbSave.tsx:71
+#, fuzzy
+msgid "saving"
+msgstr "Spremanje..."
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:319
+#, fuzzy
+msgid "validationNoErrors"
+msgstr "Validacija završena bez grešaka"
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:322
+#, fuzzy
+msgid "validationNoErrorsDescription"
+msgstr ""
+"Validacija nije pronašla greške, spremno je za učitavanje u bazu podataka."
+
+#. Used in: Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:124
+#, fuzzy
+msgid "wbUnloadProtect"
+msgstr "Promjene ovog skupa podataka nisu spremljene."
+
+#. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:313
+#, fuzzy
+msgid "noMatchErrorMessage"
+msgstr "Nema odgovarajućeg zapisa za tablicu s obaveznim podudaranjem."
+
+#. Used in: Components > Work Bench > Wb Validation
+#: components/WorkBench/WbValidation.tsx:342
+#, fuzzy
+msgid "matchedMultipleErrorMessage"
+msgstr ""
+"Ova vrijednost odgovara dvama ili više postojećih zapisa u bazi podataka, a "
+"podudaranje mora biti razjašnjeno prije prijenosa."
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:325
+#: components/WbActions/index.tsx:336
+#, fuzzy
+msgid "validationReEditWarning"
+msgstr ""
+"Napomena: Ako se ovaj skup podataka uredi i ponovno spremi, prije prijenosa "
+"treba ponovno pokrenuti Validaciju kako bi se provjerilo da nisu unesene "
+"nikakve pogreške."
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:330
+#, fuzzy
+msgid "validationErrors"
+msgstr "Validacija završena s pogreškama"
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:333
+#, fuzzy
+msgid "validationErrorsDescription"
+msgstr "Validacija je pronašla pogreške u skupu podataka."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:55
+#, fuzzy
+msgid "uploadSuccessful"
+msgstr "Prijenos završen bez grešaka"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:51
+#, fuzzy
+msgid "uploadSuccessfulDescription"
+msgstr ""
+"Kliknite gumb \"Rezultati\" da biste vidjeli broj novih zapisa dodanih "
+"svakoj tablici baze podataka."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:43
+#, fuzzy
+msgid "uploadErrors"
+msgstr "Prijenos nije uspio zbog ćelija s pogreškom"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:47
+#, fuzzy
+msgid "uploadErrorsDescription"
+msgstr "Prijenos nije uspio zbog jedne ili više pogrešaka u vrijednosti ćelije."
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:353
+#, fuzzy
+msgid "uploadErrorsSecondDescription"
+msgstr ""
+"Validirajte skup podataka i pregledajte natuknice za prelazak mišem preko "
+"svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i "
+"ponovno pokušajte {type:string}."
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:360
+#, fuzzy
+msgid "dataSetRollback"
+msgstr "Skup podataka uspješno je vraćen u prethodno stanje"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:52
+#, fuzzy
+msgid "dataSetRollbackDescription"
+msgstr ""
+"Ovaj vraćeni skup podataka je spremljen i može se uređivati ili ponovno "
+"prenijeti."
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:226
+#, fuzzy
+msgid "validationCanceled"
+msgstr "Validacija otkazana"
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:234
+#, fuzzy
+msgid "validationCanceledDescription"
+msgstr "Validacija skupa podataka otkazana."
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
+#: components/AttachmentsBulkImport/Rollback.tsx:30
+#: components/WbActions/index.tsx:228
+#, fuzzy
+msgid "rollbackCanceled"
+msgstr "Vraćanje otkazano"
+
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
+#: components/AttachmentsBulkImport/Rollback.tsx:31
+#: components/WbActions/index.tsx:236
+#, fuzzy
+msgid "rollbackCanceledDescription"
+msgstr "Vraćanje skupa podataka otkazano."
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
+#: components/AttachmentsBulkImport/Upload.tsx:110
+#: components/WbUtils/datasetVariants.tsx:44
+#, fuzzy
+msgid "uploadCanceled"
+msgstr "Prijenos otkazan"
+
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
+#: components/AttachmentsBulkImport/Upload.tsx:111
+#: components/WbUtils/datasetVariants.tsx:45
+#, fuzzy
+msgid "uploadCanceledDescription"
+msgstr "Prijenos skupa podataka otkazan."
+
+#. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:231
+#, fuzzy
+msgid "coordinateConverter"
+msgstr "Format geokoordinata"
+
+#. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:242
+#, fuzzy
+msgid "coordinateConverterDescription"
+msgstr "Odaberite željeni format geokoordinata"
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:119
+#, fuzzy
+msgid "wbUploadedUnavailable"
+msgstr "Skup podataka mora biti validiran ili prenesen"
+
+#. Used in: Components > Wb Actions > Wb Validate
+#: components/WbActions/WbValidate.tsx:47
+#: components/WbActions/WbValidate.tsx:69
+#, fuzzy
+msgid "wbValidateUnavailable"
+msgstr ""
+"Plan prijenosa potrebno je definirati prije nego što se ovaj skup podataka "
+"može validirati"
+
+#. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
+#: components/WorkBench/mapping.ts:82
+#, fuzzy
+msgid "emptyStringInline"
+msgstr "(prazan niz)"
+
+#. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
+#: components/WbActions/WbUpload.tsx:69
+#: components/WbActions/WbUpload.tsx:84
+#: components/WbActions/WbValidate.tsx:66
+#: components/WbToolkit/ChangeOwner.tsx:38
+#: components/WbToolkit/index.tsx:114
+#, fuzzy
+msgid "unavailableWhileEditing"
+msgstr "Za ovu radnju potrebno je spremiti sve promjene"
+
+#. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:71
+#: components/WbActions/WbUpload.tsx:86
+#, fuzzy
+msgid "uploadUnavailableWhileHasErrors"
+msgstr "Prijenos nije dostupan jer neke ćelije imaju pogreške u validaciji"
+
+#. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
+#: components/WbActions/WbValidate.tsx:45
+#: components/WbToolkit/CoordinateConverter.tsx:55
+#: components/WbToolkit/GeoLocate.tsx:54
+#: components/WbUtils/index.tsx:77
+#, fuzzy
+msgid "unavailableWhileViewingResults"
+msgstr "Ova radnja nije dostupna tijekom pregleda rezultata prijenosa"
+
+#. Used in: Components > Wb Actions > Index
+#: components/WbActions/index.tsx:116
+#, fuzzy
+msgid "unavailableWhileValidating"
+msgstr "Ova radnja nije dostupna dok je u tijeku Provjera podataka"
+
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
+#: components/WbToolkit/CoordinateConverter.tsx:57
+#: components/WbToolkit/GeoLocate.tsx:56
+#: components/WbToolkit/WbLeafletMap.tsx:62
+#, fuzzy
+msgid "unavailableWithoutLocality"
+msgstr "Ovaj alat zahtijeva mapiranje stupaca lokaliteta"
+
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
+#: components/WbToolkit/CoordinateConverter.tsx:53
+#: components/WbToolkit/GeoLocate.tsx:52
+#, fuzzy
+msgid "unavailableWhenUploaded"
+msgstr "Ovaj alat ne radi s prenesenim skupovima podataka"
+
+#. Used in: Components > Work Bench > Index
+#: components/WorkBench/index.tsx:53
+#, fuzzy
+msgid "dataSetDeletedOrNotFound"
+msgstr "Skup podataka je izbrisan u drugoj sesiji."
+
+#. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:267
+#, fuzzy
+msgid "includeDmsSymbols"
+msgstr "Uključi DMS simbole"
+
+#. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:265
+#, fuzzy
+msgid "uploadResults"
+msgstr "Prenesi rezultate"
+
+#. Used in: Components > Work Bench > Wb Spreadsheet
+#: components/WorkBench/WbSpreadsheet.tsx:97
+#, fuzzy
+msgid "noUploadResultsAvailable"
+msgstr "Nema dostupnih rezultata prijenosa za ovu ćeliju"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:116
+#, fuzzy
+msgid "navigationOptions"
+msgstr "Opcije navigacije"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:118
+#, fuzzy
+msgid "cursorPriority"
+msgstr "Prioritet kursora"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:131
+#, fuzzy
+msgid "columnFirst"
+msgstr "Prvi stupac"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:132
+#, fuzzy
+msgid "rowFirst"
+msgstr "Prvi red"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:138
+#, fuzzy
+msgid "searchOptions"
+msgstr "Opcije pretraživanja"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:144
+#, fuzzy
+msgid "findEntireCellsOnly"
+msgstr "Pronađi samo cijele ćelije"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:151
+#, fuzzy
+msgid "matchCase"
+msgstr "Velika i mala slova"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:158
+#, fuzzy
+msgid "useRegularExpression"
+msgstr "Koristite regularni izraz"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:165
+#, fuzzy
+msgid "liveUpdate"
+msgstr "Pretraživanje uživo"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:170
+#, fuzzy
+msgid "replaceOptions"
+msgstr "Zamijeni opcije"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:186
+#, fuzzy
+msgid "replaceNext"
+msgstr "Zamijeni sljedeće pojavljivanje"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:172
+#, fuzzy
+msgid "replaceMode"
+msgstr "Zamijeni način rada"
+
+#. Used in: Components > Router > Routes
+#: components/Router/Routes.tsx:207
+#, fuzzy
+msgid "importDataSet"
+msgstr "Uvoz skupa podataka"
+
+#. Used in: Components > Work Bench > Advanced Search
+#: components/WorkBench/AdvancedSearch.tsx:185
+#, fuzzy
+msgid "replaceAll"
+msgstr "Zamijeni sve podudarnosti"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:39
+#, fuzzy
+msgid "wbImportHeader"
+msgstr "Uvoz datoteke za stvaranje novog skupa podataka"
+
+#. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:273
+#, fuzzy
+msgid "previewDataSet"
+msgstr "Pregled skupa podataka"
+
+#. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:313
+#, fuzzy
+msgid "errorImporting"
+msgstr "Prilikom uvoza datoteke došlo je do sljedeće greške:"
+
+#. Used in: Components > Wb Import > Helpers
+#: components/WbImport/helpers.ts:108
+#: components/WbImport/helpers.ts:134
+#, fuzzy
+msgid "corruptFile"
+msgstr "Datoteka {fileName:string} je oštećena ili ne sadrži podatke!"
+
+#. Used in: Components > Molecules > Csv File Picker
+#: components/Molecules/CsvFilePicker.tsx:157
+#, fuzzy
+msgid "characterEncoding"
+msgstr "Kodiranje znakova:"
+
+#. Used in: Components > Molecules > Csv File Picker
+#: components/Molecules/CsvFilePicker.tsx:198
+#, fuzzy
+msgid "delimiter"
+msgstr "Razdjelnik:"
+
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#: components/Molecules/CsvFilePicker.tsx:172
+#: components/Preferences/UserDefinitions.tsx:1825
+#: components/Preferences/UserDefinitions.tsx:2070
+#, fuzzy
+msgid "comma"
+msgstr "Zarez"
+
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#: components/Molecules/CsvFilePicker.tsx:174
+#: components/Preferences/UserDefinitions.tsx:1833
+#: components/Preferences/UserDefinitions.tsx:2078
+#, fuzzy
+msgid "semicolon"
+msgstr "Točka-zarez"
+
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#: components/Molecules/CsvFilePicker.tsx:173
+#: components/Preferences/UserDefinitions.tsx:1829
+#: components/Preferences/UserDefinitions.tsx:2074
+#, fuzzy
+msgid "tab"
+msgstr "Tab"
+
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#: components/Molecules/CsvFilePicker.tsx:175
+#: components/Preferences/UserDefinitions.tsx:1837
+#: components/Preferences/UserDefinitions.tsx:2082
+#, fuzzy
+msgid "space"
+msgstr "Prostor"
+
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#: components/Molecules/CsvFilePicker.tsx:176
+#: components/Preferences/UserDefinitions.tsx:1841
+#: components/Preferences/UserDefinitions.tsx:2086
+#, fuzzy
+msgid "pipe"
+msgstr "Cijev"
+
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+#: components/Molecules/CsvFilePicker.tsx:212
+#: components/Preferences/UserDefinitions.tsx:750
+#: components/Preferences/UserDefinitions.tsx:771
+#: components/Preferences/UserDefinitions.tsx:792
+#, fuzzy
+msgid "determineAutomatically"
+msgstr "Automatski odredi"
+
+#. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:250
+#, fuzzy
+msgid "firstRowIsHeader"
+msgstr "Prvi red je zaglavlje:"
+
+#. Used in: Components > Wb Import > Index
+#: components/WbImport/index.tsx:118
+#, fuzzy
+msgid "chooseDataSetName"
+msgstr "Naziv za novi skup podataka:"
+
+#. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
+#: components/Molecules/FilePicker.tsx:225
+#: components/Toolbar/WbsDialog.tsx:198
+#, fuzzy
+msgid "importFile"
+msgstr "Uvoz datoteke"
+
+#. Used in: Components > Wb Import > Helpers
+#: components/WbImport/helpers.ts:67
+#, fuzzy
+msgid "columnName"
+msgstr "Stupac {columnIndex:number}"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:41
+#, fuzzy
+msgid "newDataSetName"
+msgstr "Novi skup podataka {date}"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:30
+#: components/WbUtils/datasetVariants.tsx:89
+#: components/WbUtils/datasetVariants.tsx:105
+#, fuzzy
+msgid "dataSets"
+msgstr "{variant:string} Skupovi podataka"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:34
+#: components/WbUtils/datasetVariants.tsx:109
+#, fuzzy
+msgid "wbsDialogEmpty"
+msgstr "Trenutno ne postoje skupovi podataka."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:36
+#, fuzzy
+msgid "createDataSetInstructions"
+msgstr ""
+"Za izradu nove datoteke koristite \"Uvezi datoteku\" ili \"Stvori novu\"."
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:209
+#, fuzzy
+msgid "createNew"
+msgstr "Stvori novo"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:195
+#, fuzzy
+msgid "dataSetMeta"
+msgstr "Svojstva skupa podataka"
+
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
+#: components/AttachmentsBulkImport/Datasets.tsx:152
+#: components/AttachmentsBulkImport/Datasets.tsx:284
+#: components/WbPlanView/Mapper.tsx:487
+#: components/WorkBench/DataSetMeta.tsx:219
+#, fuzzy
+msgid "dataSetName"
+msgstr "Naziv skupa podataka"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:242
+#, fuzzy
+msgid "numberOfRows"
+msgstr "Broj redaka"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:249
+#, fuzzy
+msgid "numberOfColumns"
+msgstr "Broj stupaca"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:348
+#, fuzzy
+msgid "importedFileName"
+msgstr "Naziv datoteke za uvoz"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:345
+#, fuzzy
+msgid "noFileName"
+msgstr "(bez naziva datoteke)"
+
+#. Used in: Components > Wb Toolkit > Change Owner
+#: components/WbToolkit/ChangeOwner.tsx:92
+#, fuzzy
+msgid "changeDataSetOwner"
+msgstr "Promjena vlasnika skupa podataka"
+
+#. Used in: Components > Wb Toolkit > Change Owner
+#: components/WbToolkit/ChangeOwner.tsx:109
+#, fuzzy
+msgid "changeDataSetOwnerDescription"
+msgstr "Odaberite novog vlasnika:"
+
+#. Used in: Components > Wb Toolkit > Change Owner
+#: components/WbToolkit/ChangeOwner.tsx:77
+#: components/WbToolkit/ChangeOwner.tsx:80
+#, fuzzy
+msgid "dataSetOwnerChanged"
+msgstr "Vlasnik skupa podataka promijenjen je"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:96
+#, fuzzy
+msgid "wbStatusAbortFailed"
+msgstr "Prekid nije uspio {operationName:string}. Pokušajte ponovno kasnije."
+
+#. 🟥E.x, Validating... Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:123
+#, fuzzy
+msgid "wbStatusOperationNoProgress"
+msgstr "{operationName:string}..."
+
+#. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:127
+#, fuzzy
+msgid "wbStatusOperationProgress"
+msgstr ""
+"{operationName:string} red {current:number|formatted}/"
+"{total:number|formatted}"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:110
+#, fuzzy
+msgid "wbStatusPendingDescription"
+msgstr "{operationName:string} ovog skupa podataka trebalo bi uskoro započeti."
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:382
+#, fuzzy
+msgid "dataSet"
+msgstr "Skup podataka"
+
+#. Used in: Components > Toolbar > Wbs Dialog
+#: components/Toolbar/WbsDialog.tsx:122
+#, fuzzy
+msgid "dataSetTimestampUploaded"
+msgstr "Vremenska oznaka prenesena"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:386
+#, fuzzy
+msgid "dataSetUploadedLabel"
+msgstr "(Preneseno, samo za čitanje)"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:71
+#, fuzzy
+msgid "wbStatusUnupload"
+msgstr "Status vraćanja skupa podataka"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:54
+#, fuzzy
+msgid "wbStatusUpload"
+msgstr "Status prijenosa skupa podataka"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:69
+#, fuzzy
+msgid "wbStatusValidation"
+msgstr "Status validacije skupa podataka"
+
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/ActionState.tsx:38
+#: components/AttachmentsBulkImport/ActionState.tsx:39
+#: components/WorkBench/Status.tsx:106
+#, fuzzy
+msgid "aborting"
+msgstr "Prekid..."
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:113
+#, fuzzy
+msgid "wbStatusPendingSecondDescription"
+msgstr ""
+"Ako se ova poruka prikazuje dulje od 30 sekundi, proces "
+"{operationName:string} je zauzet drugim skupom podataka. Pokušajte ponovno "
+"kasnije."
+
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#: components/AttachmentsBulkImport/ActionState.tsx:24
+#: components/AttachmentsBulkImport/ActionState.tsx:53
+#: components/WorkBench/Status.tsx:166
+#, fuzzy
+msgid "stop"
+msgstr "Stop"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:137
+#, fuzzy
+msgid "wbStatusError"
+msgstr "Došlo je do pogreške tijekom {operationName:string}"
+
+#. Used in: Components > Work Bench > Status
+#: components/WorkBench/Status.tsx:122
+#, fuzzy
+msgid "updatingTrees"
+msgstr "Ažuriranje stabala..."
+
+#. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:79
+#, fuzzy
+msgid "recordSetName"
+msgstr "Prijenos WB-a na \"{dataSet:string}\""
+
+#. Used in: Components > Work Bench > Disambiguation
+#: components/WorkBench/Disambiguation.tsx:100
+#, fuzzy
+msgid "ambiguousTaxaChild"
+msgstr "{node:string} {author:string} (u {parent:string})"
+
+#. Used in: Components > Work Bench > Wb Attachments Preview
+#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#, fuzzy
+msgid "attachmentsForRow"
+msgstr "Prilozi za redak {row:number}:"
+
+#. Used in: Components > Work Bench > Wb Attachments Preview
+#: components/WorkBench/WbAttachmentsPreview.tsx:340
+#, fuzzy
+msgid "detachWindow"
+msgstr "Odvoji prozor"
+
+#. Used in: Components > Wb Attachment Viewer > Index
+#: components/WbAttachmentViewer/index.tsx:140
+#, fuzzy
+msgid "attachWindow"
+msgstr "Priloži prozor"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:137
+#, fuzzy
+msgid "updatedCells"
+msgstr "Ažurirane ćelije"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:143
+#, fuzzy
+msgid "deletedCells"
+msgstr "Izbrisane ćelije"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:54
+#, fuzzy
+msgid "affectedResults"
+msgstr "Pogođeni zapisi"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:55
+#, fuzzy
+msgid "potentialAffectedResults"
+msgstr "Potencijalno pogođeni zapisi"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:59
+#, fuzzy
+msgid "wbAffectedDescription"
+msgstr "Broj novih zapisa na koje utječe svaka tablica:"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:60
+#, fuzzy
+msgid "wbAffectedPotentialDescription"
+msgstr "Broj novih zapisa na koje bi to utjecalo u svakoj tablici:"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:27
+#, fuzzy
+msgid "recordsCreated"
+msgstr "Stvoreni zapisi"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:30
+#, fuzzy
+msgid "recordsUpdated"
+msgstr "Zapisi ažurirani"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:28
+#, fuzzy
+msgid "recordsDeleted"
+msgstr "Zapisi izbrisani (ne uključujući uzdržavane osobe)"
+
+#. Used in: Components > Work Bench > Results
+#: components/WorkBench/Results.tsx:29
+#, fuzzy
+msgid "recordsMatchedAndChanged"
+msgstr "Povezani zapisi koji se podudaraju s različitim zapisima"
+
+#. Used in: Components > Wb Utils > Index
+#: components/WbUtils/index.tsx:149
+#, fuzzy
+msgid "matchAndChanged"
+msgstr "Usklađene i promijenjene ćelije"
