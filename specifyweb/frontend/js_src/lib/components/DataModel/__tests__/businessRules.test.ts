@@ -12,6 +12,7 @@ import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
+import { collectionPreferences } from '../../Preferences/collectionPreferences';
 import type {
   CollectingEvent,
   CollectionObjectType,
@@ -21,8 +22,11 @@ import type {
   TaxonTreeDefItem,
 } from '../types';
 
+// overrideAjax('/context/collection_resource/', []);
 overrideAjax('/context/collection_resource/', {
-  collectionPreferences: {},
+  collectionPreferences: [],
+  userPreferences: [],
+  disciplinePreferences: [],
 });
 
 mockTime();
@@ -893,6 +897,7 @@ describe('treeBusinessRules', () => {
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
 
     await taxon.businessRuleManager?.checkField('integer1');
+    await taxon.businessRuleManager?.pendingPromise;
 
     const { result: fieldChangeResult } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -900,35 +905,37 @@ describe('treeBusinessRules', () => {
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
   test('saveBlocker not on synonymized parent w/preference', async () => {
-    const { collectionPreferences } = await import(
-      '../../Preferences/collectionPreferences'
-    );
     const originalRaw = collectionPreferences.getRaw();
-    collectionPreferences.setRaw({
-      ...originalRaw,
-      treeManagement: {
-        ...originalRaw.treeManagement,
-        strict_synonymization_checks: {
-          ...(originalRaw.treeManagement as any)?.strict_synonymization_checks,
-          Taxon: false,
+
+    try {
+      collectionPreferences.setRaw({
+        ...originalRaw,
+        treeManagement: {
+          ...originalRaw.treeManagement,
+          strict_synonymization_checks: {
+            ...(originalRaw.treeManagement as any)?.strict_synonymization_checks,
+            Taxon: false,
+          },
         },
-      },
-    } as typeof originalRaw);
+      } as typeof originalRaw);
 
-    const taxon = new tables.Taxon.Resource({
-      name: 'dauricus',
-      parent: '/api/specify/taxon/6/',
-      rankId: 220,
-      definition: '/api/specify/taxontreedef/1/',
-      definitionItem: '/api/specify/taxontreedefitem/2/',
-    });
+      const taxon = new tables.Taxon.Resource({
+        name: 'dauricus',
+        parent: '/api/specify/taxon/6/',
+        rankId: 220,
+        definition: '/api/specify/taxontreedef/1/',
+        definitionItem: '/api/specify/taxontreedefitem/2/',
+      });
 
-    await taxon.businessRuleManager?.checkField('parent');
-    await taxon.businessRuleManager?.pendingPromise;
+      await taxon.businessRuleManager?.checkField('parent');
+      await taxon.businessRuleManager?.pendingPromise;
 
-    const { result } = renderHook(() =>
-      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
-    );
-    expect(result.current[0]).toStrictEqual([]);
+      const { result } = renderHook(() =>
+        useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+      );
+      expect(result.current[0]).toStrictEqual([]);
+    } finally {
+      collectionPreferences.setRaw(originalRaw);
+    }
   });
 });

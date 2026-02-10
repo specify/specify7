@@ -8,6 +8,7 @@ import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import type { Tables } from './types';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
@@ -39,7 +40,6 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const { collectionPreferences } = await import('../Preferences/collectionPreferences');
     const strictChecksEnabled = getStrictSynonymizationChecksPref(
       collectionPreferences,
       resource.specifyTable.name
@@ -137,64 +137,57 @@ const predictFullName = async <
     }
   ).then(({ data }) => data);
 
-const strictTrees = [
-  'Taxon',
-  'Geography',
-  'Storage',
-  'GeologicTimePeriod',
-  'LithoStrat',
-  'TectonicUnit',
-] as const;
+const STRICT_TREES = new Set([
+  'taxon',
+  'geography',
+  'storage',
+  'geologictimeperiod',
+  'lithostrat',
+  'tectonicunit',
+]);
 
-type StrictTreeName = (typeof strictTrees)[number];
-
-const isStrictTreeName = (value: string): value is StrictTreeName =>
-  (strictTrees as readonly string[]).includes(value);
-
-const legacyExpandKeyByTree: Record<
-  StrictTreeName,
-  | 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
-  | 'sp7.allow_adding_child_to_synonymized_parent.Geography'
-  | 'sp7.allow_adding_child_to_synonymized_parent.Storage'
-  | 'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod'
-  | 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat'
-  | 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'
-> = {
-  Taxon: 'sp7.allow_adding_child_to_synonymized_parent.Taxon',
-  Geography: 'sp7.allow_adding_child_to_synonymized_parent.Geography',
-  Storage: 'sp7.allow_adding_child_to_synonymized_parent.Storage',
-  GeologicTimePeriod:
-    'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
-  LithoStrat: 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat',
-  TectonicUnit: 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit',
-} as const;
+const canonicalPrefKey = (tableName: string): string =>
+  tableName.length === 0
+    ? tableName
+    : tableName[0].toUpperCase() + tableName.slice(1).toLowerCase();
 
 export function getStrictSynonymizationChecksPref(
   collectionPreferences: { get: (...args: any[]) => unknown },
   tableName: string
 ): boolean {
-  if (!isStrictTreeName(tableName)) return false;
+  const normalized = tableName.toLowerCase();
+  if (!STRICT_TREES.has(normalized)) return false;
 
-  const strict = collectionPreferences.get(
-    'treeManagement',
-    'strict_synonymization_checks',
-    tableName
-  );
-  if (typeof strict === 'boolean') return strict;
+  const keyTitle = canonicalPrefKey(normalized);
+  const keyRaw = tableName;
 
-  const expand = collectionPreferences.get(
-    'treeManagement',
-    'expand_synonymization_actions',
-    tableName
-  );
-  if (typeof expand === 'boolean') return !expand;
+  const strictValue =
+    (collectionPreferences.get(
+      'treeManagement',
+      'strict_synonymization_checks',
+      keyRaw
+    ) as unknown) ??
+    (collectionPreferences.get(
+      'treeManagement',
+      'strict_synonymization_checks',
+      keyTitle
+    ) as unknown);
 
-  const legacyAllowExpand = collectionPreferences.get(
-    'treeManagement',
-    'synonymized',
-    legacyExpandKeyByTree[tableName]
-  );
-  if (typeof legacyAllowExpand === 'boolean') return !legacyAllowExpand;
+  if (typeof strictValue === 'boolean') return strictValue;
+
+  const legacyAllow =
+    (collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
+      `sp7.allow_adding_child_to_synonymized_parent.${keyRaw}`
+    ) as unknown) ??
+    (collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
+      `sp7.allow_adding_child_to_synonymized_parent.${keyTitle}`
+    ) as unknown);
+
+  if (typeof legacyAllow === 'boolean') return !legacyAllow;
 
   return true;
 }
