@@ -551,7 +551,6 @@ function getStrictSynonymizationChecksPref(
 ): boolean {
   if (!isStrictTreeName(tableName)) return false;
 
-  // New preference (opt-in strict checking)
   const strict = collectionPreferences.get(
     'treeManagement',
     'strict_synonymization_checks',
@@ -559,12 +558,12 @@ function getStrictSynonymizationChecksPref(
   );
   if (typeof strict === 'boolean') return strict;
 
-  // Legacy preference: true meant "allow expanded behavior"
-  // New meaning: strictChecksEnabled = !legacyAllowExpand
   const legacyAllowExpand = collectionPreferences.get(
     'treeManagement',
     'synonymized',
     legacyExpandKeyByTree[tableName]
   );
-  return typeof legacyAllowExpand === 'boolean' ? !legacyAllowExpand : false;
+  if (typeof legacyAllowExpand === 'boolean') return !legacyAllowExpand;
+
+  return true;
 }
