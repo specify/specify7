@@ -22,11 +22,10 @@ import type {
   TaxonTreeDefItem,
 } from '../types';
 
-// overrideAjax('/context/collection_resource/', []);
 overrideAjax('/context/collection_resource/', {
-  collectionPreferences: [],
-  userPreferences: [],
-  disciplinePreferences: [],
+  collectionPreferences: {},
+  userPreferences: {},
+  disciplinePreferences: {},
 });
 
 mockTime();

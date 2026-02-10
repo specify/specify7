@@ -8,7 +8,11 @@ import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import type { Tables } from './types';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
+
+const getCollectionPreferences = async () => {
+  const mod = await import('../Preferences/collectionPreferences');
+  return mod.collectionPreferences;
+};
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
@@ -40,6 +44,7 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
+    const collectionPreferences = await getCollectionPreferences();
     const strictChecksEnabled = getStrictSynonymizationChecksPref(
       collectionPreferences,
       resource.specifyTable.name
