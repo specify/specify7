@@ -1,2 +1,103 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:42+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"notifications/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:96
+#, fuzzy
+msgid "notifications"
+msgstr "Obavijesti"
+
+#. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:42
+#, fuzzy
+msgid "notificationsCount"
+msgstr "Obavijesti: {count:number|formatted}"
+
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:45
+#, fuzzy
+msgid "notificationsLoading"
+msgstr "Obavijesti: …"
+
+#. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:125
+#, fuzzy
+msgid "mostRecentNotificationsTop"
+msgstr "(Poređano od najnovijeg do najstarijeg.)"
+
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:65
+#: components/Notifications/NotificationRenderers.tsx:95
+#, fuzzy
+msgid "exception"
+msgstr "Pogreška"
+
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
+#: components/AppResources/EditorComponents.tsx:159
+#: components/Attachments/Cell.tsx:80
+#: components/Attachments/Viewer.tsx:241
+#: components/LocalityUpdate/Status.tsx:396
+#: components/Notifications/NotificationRenderers.tsx:81
+#: components/Notifications/NotificationRenderers.tsx:111
+#: components/Notifications/NotificationRenderers.tsx:127
+#: components/Notifications/NotificationRenderers.tsx:342
+#: components/Toolbar/BackupDatabase.tsx:76
+#: components/Toolbar/BackupStatus.tsx:74
+#, fuzzy
+msgid "download"
+msgstr "Preuzmi"
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:41
+#, fuzzy
+msgid "feedItemUpdated"
+msgstr "RSS feed za izvoz je ažuriran."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:59
+#, fuzzy
+msgid "updateFeedFailed"
+msgstr "Ažuriranje feeda izvoza nije uspjelo."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:73
+#, fuzzy
+msgid "dwcaExportCompleted"
+msgstr "Izvoz DwCA-e je završen."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:89
+#, fuzzy
+msgid "dwcaExportFailed"
+msgstr "Izvoz DwCA nije uspio."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:103
+#, fuzzy
+msgid "queryExportToCsvCompleted"
+msgstr "Izvoz upita u CSV je završen."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:119
+#, fuzzy
+msgid "queryExportToKmlCompleted"
+msgstr "Izvoz upita u KML je završen."
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:145
+#, fuzzy
+msgid "dataSetOwnershipTransferred"
+msgstr ""
+"<userName /> vam je prenio vlasništvo nad skupom podataka <dataSetName />."
