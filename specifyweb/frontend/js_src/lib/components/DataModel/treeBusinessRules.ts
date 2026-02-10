@@ -1,7 +1,6 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-// import type { CollectionPreferences } from '../Preferences/collectionPreferences';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
@@ -40,8 +39,7 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const prefModule = await import('../Preferences/collectionPreferences');
-    const collectionPreferences = prefModule.collectionPreferences;
+    const { collectionPreferences } = await import('../Preferences/collectionPreferences');
     const strictChecksEnabled = getStrictSynonymizationChecksPref(
       collectionPreferences,
       resource.specifyTable.name
@@ -139,10 +137,44 @@ const predictFullName = async <
     }
   ).then(({ data }) => data);
 
+const strictTrees = [
+  'Taxon',
+  'Geography',
+  'Storage',
+  'GeologicTimePeriod',
+  'LithoStrat',
+  'TectonicUnit',
+] as const;
+
+type StrictTreeName = (typeof strictTrees)[number];
+
+const isStrictTreeName = (value: string): value is StrictTreeName =>
+  (strictTrees as readonly string[]).includes(value);
+
+const legacyExpandKeyByTree: Record<
+  StrictTreeName,
+  | 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
+  | 'sp7.allow_adding_child_to_synonymized_parent.Geography'
+  | 'sp7.allow_adding_child_to_synonymized_parent.Storage'
+  | 'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod'
+  | 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat'
+  | 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'
+> = {
+  Taxon: 'sp7.allow_adding_child_to_synonymized_parent.Taxon',
+  Geography: 'sp7.allow_adding_child_to_synonymized_parent.Geography',
+  Storage: 'sp7.allow_adding_child_to_synonymized_parent.Storage',
+  GeologicTimePeriod:
+    'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+  LithoStrat: 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat',
+  TectonicUnit: 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit',
+} as const;
+
 function getStrictSynonymizationChecksPref(
-  collectionPreferences: CollectionPreferences,
+  collectionPreferences: { get: (...args: any[]) => unknown },
   tableName: string
 ): boolean {
+  if (!isStrictTreeName(tableName)) return false;
+
   // New preference (opt-in strict checking)
   const strict = collectionPreferences.get(
     'treeManagement',
@@ -156,7 +188,7 @@ function getStrictSynonymizationChecksPref(
   const legacyAllowExpand = collectionPreferences.get(
     'treeManagement',
     'synonymized',
-    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+    legacyExpandKeyByTree[tableName]
   );
   return typeof legacyAllowExpand === 'boolean' ? !legacyAllowExpand : false;
 }

@@ -69,10 +69,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = collectionPreferences.get(
-    'treeManagement',
-    'synonymized',
-    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+  const strictChecksEnabled = getStrictSynonymizationChecksPref(
+    collectionPreferences,
+    tableName
   );
 
   const disableButtons =
@@ -514,10 +513,45 @@ function NodeDeleteButton({
   );
 }
 
+const strictTrees = [
+  'Taxon',
+  'Geography',
+  'Storage',
+  'GeologicTimePeriod',
+  'LithoStrat',
+  'TectonicUnit',
+] as const;
+
+type StrictTreeName = (typeof strictTrees)[number];
+
+const isStrictTreeName = (value: string): value is StrictTreeName =>
+  (strictTrees as readonly string[]).includes(value);
+
+const legacyExpandKeyByTree: Record<
+  StrictTreeName,
+  | 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
+  | 'sp7.allow_adding_child_to_synonymized_parent.Geography'
+  | 'sp7.allow_adding_child_to_synonymized_parent.Storage'
+  | 'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod'
+  | 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat'
+  | 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'
+> = {
+  Taxon: 'sp7.allow_adding_child_to_synonymized_parent.Taxon',
+  Geography: 'sp7.allow_adding_child_to_synonymized_parent.Geography',
+  Storage: 'sp7.allow_adding_child_to_synonymized_parent.Storage',
+  GeologicTimePeriod:
+    'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
+  LithoStrat: 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat',
+  TectonicUnit: 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit',
+} as const;
+
 function getStrictSynonymizationChecksPref(
-  collectionPreferences: typeof import('../Preferences/collectionPreferences').collectionPreferences,
+  collectionPreferences: { get: (...args: any[]) => unknown },
   tableName: string
 ): boolean {
+  if (!isStrictTreeName(tableName)) return false;
+
+  // New preference (opt-in strict checking)
   const strict = collectionPreferences.get(
     'treeManagement',
     'strict_synonymization_checks',
@@ -525,10 +559,12 @@ function getStrictSynonymizationChecksPref(
   );
   if (typeof strict === 'boolean') return strict;
 
+  // Legacy preference: true meant "allow expanded behavior"
+  // New meaning: strictChecksEnabled = !legacyAllowExpand
   const legacyAllowExpand = collectionPreferences.get(
     'treeManagement',
     'synonymized',
-    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
+    legacyExpandKeyByTree[tableName]
   );
   return typeof legacyAllowExpand === 'boolean' ? !legacyAllowExpand : false;
 }
