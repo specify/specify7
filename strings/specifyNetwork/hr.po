@@ -1,2 +1,155 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:41+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"specifyNetwork/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
+#: components/Preferences/CollectionDefinitions.tsx:162
+#: components/SpecifyNetwork/index.tsx:81
+#: components/SpecifyNetwork/index.tsx:89
+#: components/SpecifyNetwork/index.tsx:98
+#: components/Statistics/Pages.tsx:7
+#, fuzzy
+msgid "specifyNetwork"
+msgstr "Navedite mrežu"
+
+#. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:84
+#, fuzzy
+msgid "occurrenceOrGuidRequired"
+msgstr "Za prikaz ove stranice potrebno je navesti naziv vrste ili GUID"
+
+#. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:119
+#, fuzzy
+msgid "noDataError"
+msgstr "Nije moguće pronaći nikakve podatke za ovaj zahtjev"
+
+#. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:122
+#, fuzzy
+msgid "noDataErrorDescription"
+msgstr "Pokušajte pretražiti drugi zapis"
+
+#. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:51
+#, fuzzy
+msgid "dataQuality"
+msgstr "Kvaliteta podataka"
+
+#. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:64
+#, fuzzy
+msgid "reportedBy"
+msgstr "Prijavio/la {provider:string}"
+
+#. Used in: Components > Specify Network > Field Mapper
+#: components/SpecifyNetwork/FieldMapper.tsx:109
+#: components/SpecifyNetwork/FieldMapper.tsx:117
+#, fuzzy
+msgid "collectionDate"
+msgstr "Datum prikupljanja"
+
+#. Used in: Components > Specify Network > Map
+#: components/SpecifyNetwork/Map.tsx:221
+#, fuzzy
+msgid "mapDescription"
+msgstr "Ova karta prikazuje pojave ovog taksona iz agregatora iDigBio i GBIF."
+
+#. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:140
+#, fuzzy
+msgid "iDigBioDescription"
+msgstr ""
+"Pojavljivanja zabilježena u iDigBio prikazana su kao okrugle zelene točke, "
+"osim onih iz trenutne zbirke zabilježene u iDigBio koje su okrugle crvene "
+"točke. Zumiranjem crvenih točaka prikazuje se plava pribadača u obliku suze, "
+"a klikom na pribadaču izvršava se upit o lokaciji u Specify koji prikazuje "
+"sve vrste u trenutnoj Specify bazi podataka prikupljene s te lokacije."
+
+#. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:31
+#, fuzzy
+msgid "gbifDescription"
+msgstr ""
+"Za GBIF podatke, pojedinačne točke i skupine točaka prikazane su kao "
+"šesterokuti različitih boja, od žute preko narančaste do crvene. Tamnocrveni "
+"šesterokuti odgovaraju najgušćoj rasprostranjenosti prikupljenih primjeraka "
+"te vrste."
+
+#. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:59
+#, fuzzy
+msgid "connectToGbif"
+msgstr "Povežite se s GBIF-om"
+
+#. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:62
+#, fuzzy
+msgid "searchForInstitution"
+msgstr "Potražite svoju ustanovu:"
+
+#. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:75
+#, fuzzy
+msgid "institutionDistributionMap"
+msgstr ""
+"Karta distribucije svih digitaliziranih uzoraka koji se čuvaju u vašoj "
+"ustanovi"
+
+#. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:149
+#, fuzzy
+msgid "collectionDistributionMap"
+msgstr ""
+"Karta rasprostranjenosti svih digitaliziranih primjeraka u vašoj kolekciji"
+
+#. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:23
+#, fuzzy
+msgid "startYear"
+msgstr "Početna godina"
+
+#. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:44
+#, fuzzy
+msgid "endYear"
+msgstr "Kraj godine"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:165
+#, fuzzy
+msgid "publishingOrganizationKey"
+msgstr "Ključ izdavačke organizacije GBIF"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:167
+#, fuzzy
+msgid "publishingOrganizationKeyDescription"
+msgstr ""
+"GBIF \"publishingOrgKey\" (UUID) za ovu kolekciju, koji se koristi za "
+"integraciju Specify Network."
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:174
+#, fuzzy
+msgid "collectionKey"
+msgstr "Ključ skupa podataka GBIF"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:175
+#, fuzzy
+msgid "collectionKeyDescription"
+msgstr ""
+"GBIF \"dataSetKey\" (UUID) za ovu kolekciju, koji se koristi za integraciju "
+"Specify Network."
