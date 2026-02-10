@@ -1,2 +1,268 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-11 00:10+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"batchEdit/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
+#: components/BatchEdit/index.tsx:189
+#: components/Header/menuItemDefinitions.ts:115
+#: components/Preferences/UserDefinitions.tsx:2256
+#: components/Router/OverlayRoutes.tsx:254
+#: components/WbUtils/datasetVariants.tsx:89
+#: components/WbUtils/datasetVariants.tsx:105
+#, fuzzy
+msgid "batchEdit"
+msgstr "Skupno uređivanje"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:550
+#: components/WbPlanView/MapperComponents.tsx:560
+#, fuzzy
+msgid "batchEditPrefs"
+msgstr "Postavke grupnog uređivanja"
+
+#. Used in: Components > Batch Edit > Query Error
+#: components/BatchEdit/QueryError.tsx:42
+#, fuzzy
+msgid "removeField"
+msgstr ""
+"Polje nije podržano za skupno uređivanje. Uklonite polje ili ga sakrijte."
+
+#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:73
+#, fuzzy
+msgid "addTreeRank"
+msgstr ""
+"Sljedeći rangovi bit će dodani upitu kako bi se omogućilo skupno uređivanje"
+
+#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:89
+#, fuzzy
+msgid "pickTreesToFilter"
+msgstr ""
+"Odabrani rang(ovi) nalaze se u više stabala. Odaberite stablo(a) za skupno "
+"uređivanje"
+
+#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/index.tsx:162
+#, fuzzy
+msgid "datasetName"
+msgstr "{queryName:string} {datePart:string}"
+
+#. Used in: Components > Batch Edit > Query Error
+#: components/BatchEdit/QueryError.tsx:24
+#, fuzzy
+msgid "errorInQuery"
+msgstr "U upitu su pronađene sljedeće greške"
+
+#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:48
+#, fuzzy
+msgid "missingRanksInQuery"
+msgstr "Upit zahtijeva dodatne rangove za skupno uređivanje"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:111
+#, fuzzy
+msgid "createUpdateDataSetInstructions"
+msgstr ""
+"Pomoću alata za izradu upita napravite novi skup podataka za grupno "
+"uređivanje"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2262
+#, fuzzy
+msgid "numberOfRecords"
+msgstr "Broj zapisa odabranih iz upita"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:125
+#, fuzzy
+msgid "startRevertDescription"
+msgstr ""
+"Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane "
+"zapise i kreirati nove zapise"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:126
+#, fuzzy
+msgid "commitSuccessfulDescription"
+msgstr ""
+"Kliknite gumb \"Rezultati\" da biste vidjeli broj pogođenih zapisa u svakoj "
+"tablici baze podataka"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2285
+#, fuzzy
+msgid "showRollback"
+msgstr "Prikaži gumb za vraćanje"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2290
+#, fuzzy
+msgid "showRollbackDescription"
+msgstr ""
+"Vraćanje u skupnom uređivanju je eksperimentalna značajka. Ova će postavka "
+"sakriti gumb"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:116
+#, fuzzy
+msgid "commit"
+msgstr "Potvrdi"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:121
+#, fuzzy
+msgid "startCommitDescription"
+msgstr ""
+"Potvrdom skupa podataka ažurirat će se, dodavati i brisati podaci iz "
+"proračunske tablice u bazu podataka Specify."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:127
+#, fuzzy
+msgid "dateSetRevertDescription"
+msgstr ""
+"Ovaj vraćeni skup podataka je spremljen, međutim, ne može se uređivati. "
+"Ponovno pokrenite upit."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:128
+#, fuzzy
+msgid "committing"
+msgstr "Počinjanje"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:129
+#, fuzzy
+msgid "beStatusCommit"
+msgstr "Status potvrđivanja skupa podataka"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:117
+#, fuzzy
+msgid "startCommit"
+msgstr "Započeti potvrđivanje skupa podataka?"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:118
+#, fuzzy
+msgid "commitErrors"
+msgstr "Potvrda nije uspjela zbog ćelija s pogreškom"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:120
+#, fuzzy
+msgid "commitErrorsDescription"
+msgstr ""
+"Potvrda nije uspjela zbog jedne ili više pogrešaka u vrijednosti ćelije."
+
+#. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:78
+#, fuzzy
+msgid "batchEditRecordSetName"
+msgstr "BE potvrda od \"{dataSet:string}\""
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:518
+#, fuzzy
+msgid "deferForMatch"
+msgstr "Koristite samo vidljiva polja za podudaranje"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:119
+#, fuzzy
+msgid "commitCancelled"
+msgstr "Potvrda otkazana"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:122
+#, fuzzy
+msgid "commitCancelledDescription"
+msgstr "Opis otkazanog potvrđivanja"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:130
+#, fuzzy
+msgid "commitSuccessful"
+msgstr "Potvrda završena bez grešaka"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:519
+#, fuzzy
+msgid "deferForMatchDescription"
+msgstr ""
+"Ako je vrijednost true, nevidljiva polja baze podataka neće se koristiti za "
+"podudaranje. Zadana vrijednost je {default:boolean}"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:524
+#, fuzzy
+msgid "deferForNullCheck"
+msgstr "Koristite samo vidljiva polja za provjeru praznih zapisa"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:525
+#, fuzzy
+msgid "deferForNullCheckDescription"
+msgstr ""
+"Ako je vrijednost true, nevidljiva polja baze podataka neće se koristiti za "
+"određivanje je li zapis prazan ili ne. Zadana vrijednost je {default: "
+"boolean}"
+
+#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/index.tsx:183
+#, fuzzy
+msgid "batchEditDisabled"
+msgstr ""
+"Skupno uređivanje onemogućeno je za sistemske tablice i tablice hijerarhije "
+"opsega"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:390
+#, fuzzy
+msgid "cannotEditAfterRollback"
+msgstr ""
+"(Skupni skupovi podataka za skupno uređivanje ne mogu se uređivati nakon "
+"vraćanja na prethodno stanje - samo za čitanje)"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2277
+#, fuzzy
+msgid "enableRelationships"
+msgstr "Omogući odnose"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2282
+#, fuzzy
+msgid "enableRelationshipsDescription"
+msgstr ""
+"Omogućuje skupno uređivanje odnosa osnovne tablice. Vraćanje unatrag je "
+"onemogućeno kada su odnosi omogućeni."
+
+#. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:125
+#, fuzzy
+msgid "commitDataSet"
+msgstr "Potvrdi skup podataka"
+
+#. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:128
+#, fuzzy
+msgid "warningBatchEditText"
+msgstr ""
+"Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti "
+"rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu "
+"nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete "
+"u obzir utjecaj na njihovo iskustvo. Ova se radnja ne može poništiti."
