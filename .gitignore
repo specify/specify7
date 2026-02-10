@@ -16,7 +16,6 @@ seed-database
 /specifyweb/settings/debug.py
 /specifyweb/settings/secret_key.py
 /specifyweb/settings/ldap_settings.py
-Dockerfile_Me
 /.mypy_cache
 /specifyweb/frontend/locale/**/*.mo
 /specifyweb/settings/build_version.py
