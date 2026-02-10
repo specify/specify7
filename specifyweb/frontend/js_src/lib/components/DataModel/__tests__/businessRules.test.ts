@@ -12,7 +12,6 @@ import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
-import { collectionPreferences } from '../../Preferences/collectionPreferences';
 import type {
   CollectingEvent,
   CollectionObjectType,
