@@ -22,6 +22,33 @@ import type {
   TaxonTreeDefItem,
 } from '../types';
 
+jest.mock('../../Preferences/collectionPreferences', () => {
+  let raw: any = {
+    treeManagement: {
+      strict_synonymization_checks: {},
+      synonymized: {},
+    },
+  };
+
+  const get = (...path: any[]): unknown => {
+    return path.reduce((acc, key) => (acc == null ? acc : acc[key]), raw);
+  };
+
+  const getRaw = (): any => raw;
+
+  const setRaw = (next: any): void => {
+    raw = next;
+  };
+
+  return {
+    collectionPreferences: {
+      get,
+      getRaw,
+      setRaw,
+    },
+  };
+});
+
 overrideAjax('/context/collection_resource/', {
   collectionPreferences: {},
   userPreferences: {},
@@ -904,6 +931,10 @@ describe('treeBusinessRules', () => {
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
   test('saveBlocker not on synonymized parent w/preference', async () => {
+    const { collectionPreferences } = await import(
+      '../../Preferences/collectionPreferences'
+    );
+
     const originalRaw = collectionPreferences.getRaw();
 
     try {
@@ -912,11 +943,11 @@ describe('treeBusinessRules', () => {
         treeManagement: {
           ...originalRaw.treeManagement,
           strict_synonymization_checks: {
-            ...(originalRaw.treeManagement as any)?.strict_synonymization_checks,
+            ...(originalRaw.treeManagement?.strict_synonymization_checks ?? {}),
             Taxon: false,
           },
         },
-      } as typeof originalRaw);
+      });
 
       const taxon = new tables.Taxon.Resource({
         name: 'dauricus',
