@@ -56,7 +56,6 @@ export const FORBID_ADDING = new Set<keyof Tables>([
   'SpecifyUser',
   // See https://github.com/specify/specify7/issues/1754
   'Attachment',
-  'SpAppResource',
 ]);
 
 /**

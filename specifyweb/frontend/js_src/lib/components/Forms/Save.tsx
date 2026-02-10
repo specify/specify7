@@ -407,7 +407,7 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
     !NO_CLONE.has(tableName) &&
     !isDisabledCloneAppResource;
   const showAdd =
-    !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
+    !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName) && !(tableName === 'SpAppResource' && appResourceName === 'CollectionPreferences');
 
   return {
     showClone,
