@@ -29,9 +29,7 @@ jest.mock('../../Preferences/collectionPreferences', () => {
     },
   };
 
-  const get = (...path: any[]): unknown => {
-    return path.reduce((acc, key) => (acc == null ? acc : acc[key]), raw);
-  };
+  const get = (...path: readonly any[]): unknown => path.reduce((accumulator, key) => (accumulator == null ? accumulator : accumulator[key]), raw);
 
   const getRaw = (): any => raw;
 
@@ -942,7 +940,7 @@ describe('treeBusinessRules', () => {
         treeManagement: {
           ...originalRaw.treeManagement,
           strict_synonymization_checks: {
-            ...(originalRaw.treeManagement?.strict_synonymization_checks ?? {}),
+            ...(originalRaw.treeManagement?.strict_synonymization_checks),
             Taxon: false,
           },
         },
