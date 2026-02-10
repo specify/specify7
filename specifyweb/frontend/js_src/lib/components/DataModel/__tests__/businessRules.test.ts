@@ -901,9 +901,9 @@ describe('treeBusinessRules', () => {
       ...originalRaw,
       treeManagement: {
         ...originalRaw.treeManagement,
-        synonymized: {
-          ...originalRaw.treeManagement?.synonymized,
-          'sp7.allow_adding_child_to_synonymized_parent.Taxon': true,
+        strict_synonymization_checks: {
+          ...(originalRaw.treeManagement as any)?.strict_synonymization_checks,
+          Taxon: false,
         },
       },
     } as typeof originalRaw);
