@@ -3,6 +3,16 @@ import type { R } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { consoleLog } from './interceptLogs';
 
+const resolvePreferences = async (preferences: {
+  readonly fetch?: () => Promise<unknown>;
+  readonly getRaw?: () => unknown;
+}): Promise<unknown> => {
+  if (typeof preferences.fetch === 'function') await preferences.fetch();
+  return typeof preferences.getRaw === 'function'
+    ? preferences.getRaw()
+    : undefined;
+};
+
 const resolvedStackTrace: R<unknown> = {};
 Promise.all(
   Object.entries({
@@ -25,12 +35,11 @@ Promise.all(
       async ({ fetchContext }) => fetchContext
     ),
     userPreferences: import('../Preferences/userPreferences').then(
-      async ({ userPreferences }) =>
-        userPreferences.fetch().then(() => userPreferences.getRaw())
+      async ({ userPreferences }) => resolvePreferences(userPreferences)
     ),
     collectionPreferences: import('../Preferences/collectionPreferences').then(
       async ({ collectionPreferences }) =>
-        collectionPreferences.fetch().then(() => collectionPreferences.getRaw())
+        resolvePreferences(collectionPreferences)
     ),
     userInformation: import('../InitialContext/userInformation').then(
       async ({ fetchContext }) => fetchContext
