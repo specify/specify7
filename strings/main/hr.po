@@ -1,2 +1,170 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:42+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/main/"
+"hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:65
+#, fuzzy
+msgid "appTitle"
+msgstr "{baseTitle:string} | Navedite 7"
+
+#. 🟥Default page title. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:64
+#, fuzzy
+msgid "baseAppTitle"
+msgstr "Navedite 7"
+
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
+#: components/Formatters/Element.tsx:66
+#: components/Router/NotFoundView.tsx:15
+#: components/Router/NotFoundView.tsx:20
+#: components/Router/RouterUtils.tsx:194
+#, fuzzy
+msgid "pageNotFound"
+msgstr "Stranica nije pronađena"
+
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:25
+#, fuzzy
+msgid "nothingWasFound"
+msgstr "Ups! Ništa nije pronađeno"
+
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:26
+#, fuzzy
+msgid "pageNotFoundDescription"
+msgstr ""
+"Stranica koju tražite možda je uklonjena, promijenjen joj je naziv ili je "
+"privremeno nedostupna."
+
+#. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:29
+#, fuzzy
+msgid "returnToHomepage"
+msgstr "Povratak na početnu stranicu"
+
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+#: components/Errors/ErrorDialog.tsx:62
+#: components/Errors/FormatError.tsx:197
+#: components/Errors/FormatError.tsx:227
+#, fuzzy
+msgid "errorOccurred"
+msgstr "Žao nam je, nešto je pošlo po zlu"
+
+#. Used in: Components > Errors > Toasts
+#: components/Errors/Toasts.tsx:97
+#, fuzzy
+msgid "clickToSeeDetails"
+msgstr "Kliknite za detalje"
+
+#. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:187
+#, fuzzy
+msgid "errorOccurredDescription"
+msgstr ""
+"Žao nam je, čini se da ste naišli na grešku u Specify 7 za koju možda nismo "
+"svjesni."
+
+#. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:188
+#, fuzzy
+msgid "criticalErrorOccurredDescription"
+msgstr ""
+"Kako biste izbjegli oštećenje podatkovnih zapisa, morate ponovno započeti s "
+"sigurnog mjesta - početne stranice."
+
+#. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:39
+#, fuzzy
+msgid "errorResolutionDescription"
+msgstr ""
+"Ako se ovaj problem nastavi, obratite se IT podršci. Ako se radi o Specify "
+"Cloud bazi podataka, preuzmite poruku o pogrešci i pošaljite je na <email />."
+
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:56
+#, fuzzy
+msgid "errorResolutionSecondDescription"
+msgstr ""
+"Korisnici iz <memberLink>institucija članica</memberLink> mogu tražiti "
+"odgovore na pitanja i zatražiti pomoć na našem <discourseLink>Forumu "
+"zajednice</discourseLink>."
+
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
+#: components/Core/__tests__/Contexts.test.tsx:48
+#: components/Errors/ErrorDialog.tsx:196
+#: components/LocalityUpdate/Status.tsx:378
+#: components/LocalityUpdate/Status.tsx:425
+#, fuzzy
+msgid "errorMessage"
+msgstr "Poruka o pogrešci"
+
+#. Used in: Components > Router > Unload Protect
+#: components/Router/UnloadProtect.tsx:33
+#, fuzzy
+msgid "leavePageConfirmation"
+msgstr "Jeste li sigurni da želite napustiti ovu stranicu?"
+
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
+#: components/AttachmentsBulkImport/useEagerDataset.ts:109
+#: components/SchemaConfig/TableUniquenessRules.tsx:56
+#: components/SchemaConfig/TableUniquenessRules.tsx:205
+#: components/Security/Role.tsx:89
+#, fuzzy
+msgid "leavePageConfirmationDescription"
+msgstr "Nespremljene promjene bit će izgubljene ako napustite ovu stranicu."
+
+#. Used in: Components > Router > Unload Protect
+#: components/Router/UnloadProtect.tsx:28
+#, fuzzy
+msgid "leave"
+msgstr "Ostavite"
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:22
+#, fuzzy
+msgid "versionMismatch"
+msgstr "Navedena verzija ne odgovara verziji baze podataka"
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:26
+#, fuzzy
+msgid "versionMismatchDescription"
+msgstr ""
+"Navedena verzija {specifySixVersion:string} ne odgovara verziji baze "
+"podataka {databaseVersion:string}."
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:31
+#, fuzzy
+msgid "versionMismatchSecondDescription"
+msgstr "Stoga neke značajke programa Specify 7 možda neće ispravno raditi."
+
+#. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:34
+#, fuzzy
+msgid "versionMismatchInstructions"
+msgstr "Upute za rješavanje neusklađenosti Navedite shemu"
+
+#. Used in: Components > Core > Online Status
+#: components/Core/OnlineStatus.tsx:38
+#, fuzzy
+msgid "online"
+msgstr "online"
+
+#. Used in: Components > Core > Online Status
+#: components/Core/OnlineStatus.tsx:44
+#, fuzzy
+msgid "offline"
+msgstr "izvan mreže"
