@@ -1,2 +1,347 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-11 00:09+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/stats/"
+"hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:29
+#: components/Statistics/__tests__/layout.tests.ts:18
+#, fuzzy
+msgid "holdings"
+msgstr "Udjeli"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:32
+#: components/Statistics/__tests__/layout.tests.ts:21
+#, fuzzy
+msgid "collectionObjects"
+msgstr "Objekti kolekcije"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:63
+#: components/Statistics/StatsSpec.tsx:398
+#: components/Statistics/StatsSpec.tsx:401
+#: components/Statistics/__tests__/layout.tests.ts:83
+#: components/Statistics/__tests__/layout.tests.ts:86
+#, fuzzy
+msgid "typeSpecimens"
+msgstr "Tipični uzorci"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:140
+#, fuzzy
+msgid "itemsOnLoans"
+msgstr "Predmeti na posudbu"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:159
+#, fuzzy
+msgid "openLoansStat"
+msgstr "Otvoreni krediti"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:178
+#, fuzzy
+msgid "overdueLoans"
+msgstr "Dospjeli krediti"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:267
+#: components/Statistics/__tests__/layout.tests.ts:68
+#, fuzzy
+msgid "localityGeography"
+msgstr "Lokalitet / Geografija"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:270
+#, fuzzy
+msgid "localities"
+msgstr "Lokaliteti"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:569
+#, fuzzy
+msgid "curation"
+msgstr "Kuratorstvo"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:137
+#, fuzzy
+msgid "loans"
+msgstr "Zajmovi"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:296
+#, fuzzy
+msgid "geographyEntries"
+msgstr "Geografski unosi"
+
+#. Used in: Statistics > __tests__ > Layout
+#: components/Statistics/__tests__/layout.tests.ts:71
+#, fuzzy
+msgid "countries"
+msgstr "Zemlje"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:314
+#, fuzzy
+msgid "georeferencedLocalities"
+msgstr "Georeferencirani lokaliteti"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:446
+#, fuzzy
+msgid "digitization"
+msgstr "Digitalizacija"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:449
+#, fuzzy
+msgid "digitizedLastSevenDays"
+msgstr "Digitalizirano posljednjih 7 dana"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:468
+#, fuzzy
+msgid "digitizedLastMonth"
+msgstr "Digitalizirano prošli mjesec"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:487
+#, fuzzy
+msgid "digitizedLastYear"
+msgstr "Digitalizirano prošle godine"
+
+#. Used in: Components > Statistics > Add Stat Dialog
+#: components/Statistics/AddStatDialog.tsx:86
+#, fuzzy
+msgid "selectFromQueries"
+msgstr "Odaberite iz upita"
+
+#. Used in: Components > Statistics > Add Stat Dialog
+#: components/Statistics/AddStatDialog.tsx:110
+#, fuzzy
+msgid "selectFromAvailableDefault"
+msgstr "Odaberite iz dostupnih zadanih statistika"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:25
+#: components/Statistics/__tests__/layout.tests.ts:14
+#: components/Statistics/__tests__/layout.tests.ts:103
+#, fuzzy
+msgid "collection"
+msgstr "Kolekcija"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:565
+#: components/Statistics/__tests__/layout.tests.ts:99
+#, fuzzy
+msgid "personal"
+msgstr "Osobno"
+
+#. Used in: Components > Statistics > Index
+#: components/Statistics/index.tsx:141
+#: components/Statistics/index.tsx:494
+#, fuzzy
+msgid "private"
+msgstr "Privatno"
+
+#. Used in: Components > Statistics > Add Stat Dialog
+#: components/Statistics/AddStatDialog.tsx:82
+#, fuzzy
+msgid "chooseStatistics"
+msgstr "Odaberite Statistiku"
+
+#. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Statistics/StatsSpec.tsx:572
+#: components/Statistics/__tests__/layout.tests.ts:106
+#, fuzzy
+msgid "collectionObjectsCataloged"
+msgstr "Katalogizirani objekti zbirke"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:588
+#, fuzzy
+msgid "collectionObjectsDetermined"
+msgstr "Određeni objekti zbirke"
+
+#. Used in: Components > Statistics > Index
+#: components/Statistics/index.tsx:516
+#, fuzzy
+msgid "lastRefreshed"
+msgstr "Zadnje osvježeno"
+
+#. Used in: Components > Statistics > Hooks
+#: components/Statistics/hooks.tsx:375
+#, fuzzy
+msgid "categoryName"
+msgstr "Naziv kategorije"
+
+#. Used in: Components > Statistics > Hooks
+#: components/Statistics/hooks.tsx:376
+#, fuzzy
+msgid "itemName"
+msgstr "Naziv stavke"
+
+#. Used in: Components > Statistics > Hooks
+#: components/Statistics/hooks.tsx:377
+#, fuzzy
+msgid "itemValue"
+msgstr "Vrijednost stavke"
+
+#. Used in: Components > Statistics > Index
+#: components/Statistics/index.tsx:545
+#, fuzzy
+msgid "downloadAsTSV"
+msgstr "Preuzmi kao TSV"
+
+#. Used in: Components > Statistics > Index
+#: components/Statistics/index.tsx:140
+#: components/Statistics/index.tsx:494
+#, fuzzy
+msgid "shared"
+msgstr "Dijeljeno"
+
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Hooks ⬤ Components > Statistics > Index
+#: components/Header/menuItemDefinitions.ts:109
+#: components/Preferences/CollectionDefinitions.tsx:121
+#: components/Preferences/UserDefinitions.tsx:2186
+#: components/Router/Routes.tsx:461
+#: components/Statistics/hooks.tsx:118
+#: components/Statistics/index.tsx:512
+#, fuzzy
+msgid "statistics"
+msgstr "Statistika"
+
+#. Used in: Components > Statistics > Delete Category
+#: components/Statistics/DeleteCategory.tsx:26
+#: components/Statistics/DeleteCategory.tsx:45
+#, fuzzy
+msgid "deleteCategory"
+msgstr "Izbriši kategoriju"
+
+#. Used in: Components > Statistics > Stats Page Editing
+#: components/Statistics/StatsPageEditing.tsx:52
+#, fuzzy
+msgid "editPage"
+msgstr "Uredi stranicu"
+
+#. Used in: Components > Statistics > Stats Page Editing
+#: components/Statistics/StatsPageEditing.tsx:52
+#, fuzzy
+msgid "addPage"
+msgstr "Dodaj stranicu"
+
+#. Used in: Components > Statistics > Categories
+#: components/Statistics/Categories.tsx:298
+#, fuzzy
+msgid "addACategory"
+msgstr "Dodaj kategoriju"
+
+#. Used in: Components > Statistics > Index
+#: components/Statistics/index.tsx:521
+#, fuzzy
+msgid "refresh"
+msgstr "Osvježiti"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:532
+#, fuzzy
+msgid "collectionObjectsWithImages"
+msgstr "Objekti kolekcije sa slikama"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:345
+#: components/Statistics/StatsSpec.tsx:348
+#, fuzzy
+msgid "geographiesRepresented"
+msgstr "Zastupljena geografska područja"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:334
+#, fuzzy
+msgid "percentGeoReferenced"
+msgstr "Postotak georeferenciranja"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:553
+#, fuzzy
+msgid "percentImaged"
+msgstr "Postotak snimljenih"
+
+#. Used in: Components > Statistics > Delete Category
+#: components/Statistics/DeleteCategory.tsx:49
+#, fuzzy
+msgid "deleteWarning"
+msgstr "Jeste li sigurni da želite izbrisati kategoriju?"
+
+#. Used in: Components > Statistics > Delete Category
+#: components/Statistics/DeleteCategory.tsx:55
+#, fuzzy
+msgid "categoryToDelete"
+msgstr "Ovim će se trajno izbrisati sljedeća kategorija"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:511
+#, fuzzy
+msgid "collectionObjectsWithAttachments"
+msgstr "Objekti kolekcije s prilozima"
+
+#. Used in: Components > Statistics > Stat Items
+#: components/Statistics/StatItems.tsx:271
+#, fuzzy
+msgid "error"
+msgstr "Pogreška"
+
+#. Used in: Components > Statistics > Stats Spec
+#: components/Statistics/StatsSpec.tsx:204
+#: components/Statistics/StatsSpec.tsx:207
+#, fuzzy
+msgid "taxonRepresented"
+msgstr "Zastupljene taksone"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:127
+#, fuzzy
+msgid "layoutPreference"
+msgstr "Definira izgled stranice sa statistikom"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:136
+#, fuzzy
+msgid "showPreparationsTotal"
+msgstr "Prikaži {preparationTableName:string} ukupne iznose"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:140
+#, fuzzy
+msgid "showPreparationsTotalDescription"
+msgstr ""
+"Ako je omogućeno, zadana ploča sa statistikom {preparationTableName:string} "
+"uključivat će ukupan broj za svaki {lowerPreparationTableName:string} "
+"određenog {prepTypeTableName:string} uz ukupan zbroj. Ovo je korisno za "
+"kolekcije temeljene na lotovima."
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:152
+#, fuzzy
+msgid "autoRefreshRate"
+msgstr "Brzina automatskog osvježavanja (sati)"
+
+#. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:153
+#, fuzzy
+msgid "autoRefreshRateDescription"
+msgstr ""
+"Vremenski interval, u satima, u kojem će stranica sa statistikom automatski "
+"osvježiti svoje podatke. Zadana vrijednost je 24."
