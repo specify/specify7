@@ -169,13 +169,12 @@ const legacyExpandKeyByTree: Record<
   TectonicUnit: 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit',
 } as const;
 
-function getStrictSynonymizationChecksPref(
+export function getStrictSynonymizationChecksPref(
   collectionPreferences: { get: (...args: any[]) => unknown },
   tableName: string
 ): boolean {
   if (!isStrictTreeName(tableName)) return false;
 
-  // New preference (opt-in strict checking)
   const strict = collectionPreferences.get(
     'treeManagement',
     'strict_synonymization_checks',
@@ -183,12 +182,19 @@ function getStrictSynonymizationChecksPref(
   );
   if (typeof strict === 'boolean') return strict;
 
-  // Legacy preference: true meant "allow expanded behavior"
-  // New meaning: strictChecksEnabled = !legacyAllowExpand
+  const expand = collectionPreferences.get(
+    'treeManagement',
+    'expand_synonymization_actions',
+    tableName
+  );
+  if (typeof expand === 'boolean') return !expand;
+
   const legacyAllowExpand = collectionPreferences.get(
     'treeManagement',
     'synonymized',
     legacyExpandKeyByTree[tableName]
   );
-  return typeof legacyAllowExpand === 'boolean' ? !legacyAllowExpand : false;
+  if (typeof legacyAllowExpand === 'boolean') return !legacyAllowExpand;
+
+  return true;
 }

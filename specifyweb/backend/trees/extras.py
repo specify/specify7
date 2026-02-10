@@ -286,7 +286,7 @@ def adding_node(node, collection=None, user=None):
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
     if parent.accepted_id is not None:
-        tree_name = node.specify_model.name.lower()
+        tree_name = node.specify_model.name
         strict_checks = _strict_synonymization_checks_enabled(collection, user, tree_name)
 
         if strict_checks:
@@ -468,7 +468,7 @@ def synonymize(node, into, agent, user=None, collection=None):
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
              }})
-    tree_name = node.specify_model.name.lower()
+    tree_name = node.specify_model.name
     strict_checks = _strict_synonymization_checks_enabled(collection, user, tree_name)
 
     if strict_checks and node.children.exists():

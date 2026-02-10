@@ -23,6 +23,7 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
+import { getStrictSynonymizationChecksPref } from '../DataModel/treeBusinessRules';
 
 const treeActions = [
   'add',
@@ -511,59 +512,4 @@ function NodeDeleteButton({
       onDeleted={handleDeleted}
     />
   );
-}
-
-const strictTrees = [
-  'Taxon',
-  'Geography',
-  'Storage',
-  'GeologicTimePeriod',
-  'LithoStrat',
-  'TectonicUnit',
-] as const;
-
-type StrictTreeName = (typeof strictTrees)[number];
-
-const isStrictTreeName = (value: string): value is StrictTreeName =>
-  (strictTrees as readonly string[]).includes(value);
-
-const legacyExpandKeyByTree: Record<
-  StrictTreeName,
-  | 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
-  | 'sp7.allow_adding_child_to_synonymized_parent.Geography'
-  | 'sp7.allow_adding_child_to_synonymized_parent.Storage'
-  | 'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod'
-  | 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat'
-  | 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit'
-> = {
-  Taxon: 'sp7.allow_adding_child_to_synonymized_parent.Taxon',
-  Geography: 'sp7.allow_adding_child_to_synonymized_parent.Geography',
-  Storage: 'sp7.allow_adding_child_to_synonymized_parent.Storage',
-  GeologicTimePeriod:
-    'sp7.allow_adding_child_to_synonymized_parent.GeologicTimePeriod',
-  LithoStrat: 'sp7.allow_adding_child_to_synonymized_parent.LithoStrat',
-  TectonicUnit: 'sp7.allow_adding_child_to_synonymized_parent.TectonicUnit',
-} as const;
-
-function getStrictSynonymizationChecksPref(
-  collectionPreferences: { get: (...args: any[]) => unknown },
-  tableName: string
-): boolean {
-  if (!isStrictTreeName(tableName)) return false;
-
-  const strict = collectionPreferences.get(
-    'treeManagement',
-    'strict_synonymization_checks',
-    tableName
-  );
-  if (typeof strict === 'boolean') return strict;
-
-  const legacyAllowExpand = collectionPreferences.get(
-    'treeManagement',
-    'synonymized',
-    legacyExpandKeyByTree[tableName]
-  );
-  if (typeof legacyAllowExpand === 'boolean') return !legacyAllowExpand;
-
-  return true;
 }
