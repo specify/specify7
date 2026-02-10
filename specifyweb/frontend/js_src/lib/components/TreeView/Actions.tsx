@@ -23,7 +23,6 @@ import { hasPermission, hasTablePermission } from '../Permissions/helpers';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
-import { getStrictSynonymizationChecksPref } from '../DataModel/treeBusinessRules';
 
 const treeActions = [
   'add',
@@ -70,9 +69,10 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const strictChecksEnabled = getStrictSynonymizationChecksPref(
-    collectionPreferences,
-    tableName
+  const doExpandSynonymActionsPref = collectionPreferences.get(
+    'treeManagement',
+    'synonymized',
+    `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
   );
 
   const disableButtons =
@@ -145,7 +145,8 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
             addNew
             disabled={
               focusedRow === undefined ||
-              (isSynonym && strictChecksEnabled) ||
+              (doExpandSynonymActionsPref ? false : isSynonym) ||
+              // Forbid adding children to the lowest rank
               ranks.at(-1) === focusedRow.rankId
             }
             isRoot={false}
@@ -197,7 +198,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
               disableButtons ||
               isReadOnly ||
               isRoot ||
-              (strictChecksEnabled && !isSynonym && focusedRow.children > 0)
+              (doExpandSynonymActionsPref
+                ? false
+                : !isSynonym && focusedRow.children > 0)
             }
             icon={isSynonym ? 'undoSynonym' : 'synonym'}
             title={isSynonym ? treeText.undoSynonymy() : treeText.synonymize()}

@@ -21,37 +21,6 @@ import type {
   TaxonTreeDefItem,
 } from '../types';
 
-jest.mock('../../Preferences/collectionPreferences', () => {
-  let raw: any = {
-    treeManagement: {
-      strict_synonymization_checks: {},
-      synonymized: {},
-    },
-  };
-
-  const get = (...path: readonly any[]): unknown => path.reduce((accumulator, key) => (accumulator == null ? accumulator : accumulator[key]), raw);
-
-  const getRaw = (): any => raw;
-
-  const setRaw = (next: any): void => {
-    raw = next;
-  };
-
-  return {
-    collectionPreferences: {
-      get,
-      getRaw,
-      setRaw,
-    },
-  };
-});
-
-overrideAjax('/context/collection_resource/', {
-  collectionPreferences: {},
-  userPreferences: {},
-  disciplinePreferences: {},
-});
-
 mockTime();
 requireContext();
 
@@ -877,7 +846,6 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
-    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -895,7 +863,6 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
-    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -912,7 +879,6 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
-    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -920,7 +886,6 @@ describe('treeBusinessRules', () => {
     expect(result.current[0]).toStrictEqual(['Bad tree structure.']);
 
     await taxon.businessRuleManager?.checkField('integer1');
-    await taxon.businessRuleManager?.pendingPromise;
 
     const { result: fieldChangeResult } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -931,38 +896,31 @@ describe('treeBusinessRules', () => {
     const { collectionPreferences } = await import(
       '../../Preferences/collectionPreferences'
     );
-
     const originalRaw = collectionPreferences.getRaw();
-
-    try {
-      collectionPreferences.setRaw({
-        ...originalRaw,
-        treeManagement: {
-          ...originalRaw.treeManagement,
-          strict_synonymization_checks: {
-            ...(originalRaw.treeManagement?.strict_synonymization_checks),
-            Taxon: false,
-          },
+    collectionPreferences.setRaw({
+      ...originalRaw,
+      treeManagement: {
+        ...originalRaw.treeManagement,
+        synonymized: {
+          ...originalRaw.treeManagement?.synonymized,
+          'sp7.allow_adding_child_to_synonymized_parent.Taxon': true,
         },
-      });
+      },
+    } as typeof originalRaw);
 
-      const taxon = new tables.Taxon.Resource({
-        name: 'dauricus',
-        parent: '/api/specify/taxon/6/',
-        rankId: 220,
-        definition: '/api/specify/taxontreedef/1/',
-        definitionItem: '/api/specify/taxontreedefitem/2/',
-      });
+    const taxon = new tables.Taxon.Resource({
+      name: 'dauricus',
+      parent: '/api/specify/taxon/6/',
+      rankId: 220,
+      definition: '/api/specify/taxontreedef/1/',
+      definitionItem: '/api/specify/taxontreedefitem/2/',
+    });
 
-      await taxon.businessRuleManager?.checkField('parent');
-      await taxon.businessRuleManager?.pendingPromise;
+    await taxon.businessRuleManager?.checkField('parent');
 
-      const { result } = renderHook(() =>
-        useSaveBlockers(taxon, tables.Taxon.getField('parent'))
-      );
-      expect(result.current[0]).toStrictEqual([]);
-    } finally {
-      collectionPreferences.setRaw(originalRaw);
-    }
+    const { result } = renderHook(() =>
+      useSaveBlockers(taxon, tables.Taxon.getField('parent'))
+    );
+    expect(result.current[0]).toStrictEqual([]);
   });
 });

@@ -9,11 +9,6 @@ import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import type { Tables } from './types';
 
-const getCollectionPreferences = async () => {
-  const module_ = await import('../Preferences/collectionPreferences');
-  return module_.collectionPreferences;
-};
-
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
   Tables[`${TREE['tableName']}TreeDefItem`];
@@ -44,10 +39,12 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const collectionPreferences = await getCollectionPreferences();
-    const strictChecksEnabled = getStrictSynonymizationChecksPref(
-      collectionPreferences,
-      resource.specifyTable.name
+    const prefModule = await import('../Preferences/collectionPreferences');
+    const collectionPreferences = prefModule.collectionPreferences;
+    const doExpandSynonymActionsPref = collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
+      `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
     );
 
     const isParentSynonym = !parent.get('isAccepted');
@@ -55,7 +52,7 @@ export const treeBusinessRules = async (
     const hasBadTreeStrcuture =
       parent.id === resource.id ||
       definitionItem === undefined ||
-      (isParentSynonym && strictChecksEnabled) ||
+      (isParentSynonym && !doExpandSynonymActionsPref) ||
       parent.get('rankId') >= definitionItem.get('rankId') ||
       (possibleRanks !== undefined &&
         !possibleRanks
@@ -141,58 +138,3 @@ const predictFullName = async <
       headers: { Accept: 'text/plain' },
     }
   ).then(({ data }) => data);
-
-const STRICT_TREES = new Set([
-  'taxon',
-  'geography',
-  'storage',
-  'geologictimeperiod',
-  'lithostrat',
-  'tectonicunit',
-]);
-
-const canonicalPrefKey = (tableName: string): string =>
-  tableName.length === 0
-    ? tableName
-    : tableName[0].toUpperCase() + tableName.slice(1).toLowerCase();
-
-export function getStrictSynonymizationChecksPref(
-  collectionPreferences: { readonly get: (...args: readonly any[]) => unknown },
-  tableName: string
-): boolean {
-  const normalized = tableName.toLowerCase();
-  if (!STRICT_TREES.has(normalized)) return false;
-
-  const keyTitle = canonicalPrefKey(normalized);
-  const keyRaw = tableName;
-
-  const strictValue =
-    collectionPreferences.get(
-      'treeManagement',
-      'strict_synonymization_checks',
-      keyRaw
-    ) ??
-    collectionPreferences.get(
-      'treeManagement',
-      'strict_synonymization_checks',
-      keyTitle
-    );
-
-  if (typeof strictValue === 'boolean') return strictValue;
-
-  const legacyAllow =
-    collectionPreferences.get(
-      'treeManagement',
-      'synonymized',
-      `sp7.allow_adding_child_to_synonymized_parent.${keyRaw}`
-    ) ??
-    collectionPreferences.get(
-      'treeManagement',
-      'synonymized',
-      `sp7.allow_adding_child_to_synonymized_parent.${keyTitle}`
-    );
-
-  if (typeof legacyAllow === 'boolean') return !legacyAllow;
-
-  return true;
-}

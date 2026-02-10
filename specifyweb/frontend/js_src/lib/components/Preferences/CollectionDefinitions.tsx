@@ -61,54 +61,6 @@ export const collectionPreferenceDefinitions = {
   treeManagement: {
     title: treeText.treeManagement(),
     subCategories: {
-      strict_synonymization_checks: {
-        title: treeText.synonymizedNodes(),
-        description: treeText.synonymizedNodesDescription(),
-        items: {
-          Taxon: definePref<boolean>({
-            title: () => tableLabel('Taxon'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-          Geography: definePref<boolean>({
-            title: () => tableLabel('Geography'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-          Storage: definePref<boolean>({
-            title: () => tableLabel('Storage'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-          GeologicTimePeriod: definePref<boolean>({
-            title: () => tableLabel('GeologicTimePeriod'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-          LithoStrat: definePref<boolean>({
-            title: () => tableLabel('LithoStrat'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-          TectonicUnit: definePref<boolean>({
-            title: () => tableLabel('TectonicUnit'),
-            requiresReload: false,
-            visible: true,
-            defaultValue: false,
-            type: 'java.lang.Boolean',
-          }),
-        },
-      },
       synonymized: {
         title: treeText.synonymizedNodes(),
         description: treeText.synonymizedNodesDescription(),
@@ -117,7 +69,7 @@ export const collectionPreferenceDefinitions = {
             definePref<boolean>({
               title: () => tableLabel('Taxon'),
               requiresReload: false,
-              visible: false,
+              visible: true,
               defaultValue: false,
               type: 'java.lang.Boolean',
             }),

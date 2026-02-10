@@ -207,89 +207,55 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def _get_collection_prefs_dict(collection, user, *, fail_silently: bool = False) -> dict:
+def _get_collection_preferences(collection=None, user=None):
     import specifyweb.backend.context.app_resource as app_resource
 
-    res = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-    if not res:
+    try:
+        resource = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+    except Exception as e:
+        logger.warning('Could not load CollectionPreferences: %s', e)
         return {}
 
-    collection_prefs_json, _, __ = res
-    if not collection_prefs_json:
+    if resource is None:
+        return {}
+
+    if not isinstance(resource, (tuple, list)) or len(resource) == 0:
+        logger.warning('Unexpected CollectionPreferences resource format: %r', type(resource))
+        return {}
+
+    collection_prefs_json = resource[0]
+    if collection_prefs_json is None:
         return {}
 
     try:
-        loaded = json.loads(collection_prefs_json)
-    except json.JSONDecodeError as e:
-        logger.warning(
-            "Failed to parse CollectionPreferences JSON; collection_id=%s user_id=%s error=%s",
-            getattr(collection, "id", None),
-            getattr(user, "id", None),
-            str(e),
-        )
-        if fail_silently:
-            return {}
-        raise
-    except Exception:
-        logger.exception(
-            "Unexpected error while loading CollectionPreferences; collection_id=%s user_id=%s",
-            getattr(collection, "id", None),
-            getattr(user, "id", None),
-        )
-        if fail_silently:
-            return {}
-        raise
+        collection_prefs_dict = json.loads(collection_prefs_json)
+    except (TypeError, json.JSONDecodeError) as e:
+        logger.warning('Could not parse CollectionPreferences JSON: %s', e)
+        return {}
 
-    return loaded if isinstance(loaded, dict) else {}
+    return collection_prefs_dict if isinstance(collection_prefs_dict, dict) else {}
 
-def _strict_synonymization_checks_enabled(collection, user, tree_name: str) -> bool:
-    """
-    New CollectionPreferences shape:
-      treeManagement.expand_synonymization_actions.<tree_name> = true/false
-    New CollectionPreferences shape (opt-in strict checking):
-      treeManagement.strict_synonymization_checks.<tree_name> = true/false
-    
-    Backward compat with legacy shape:
-      treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
-    Backward compat with legacy shape (opt-in expanded behavior):
-      treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
-    """
-    prefs = _get_collection_prefs_dict(collection, user)
- 
-    tm = prefs.get("treeManagement") or {}
-    if not isinstance(tm, dict):
+def _allow_adding_child_to_synonymized_parent(node, collection=None, user=None):
+    collection_prefs_dict = _get_collection_preferences(collection, user)
+    tree_management_pref = collection_prefs_dict.get('treeManagement', {})
+
+    synonymized = tree_management_pref.get('synonymized', {}) \
+        if isinstance(tree_management_pref, dict) else {}
+
+    if not isinstance(synonymized, dict):
         return False
-     
-    # New shape
-    esa = tm.get("expand_synonymization_actions")
-    if isinstance(esa, dict) and tree_name in esa:
-        return bool(esa.get(tree_name))
-    strict = tm.get("strict_synonymization_checks")
-    if isinstance(strict, dict) and tree_name in strict:
-        return bool(strict.get(tree_name))
- 
-     # Legacy shape
-    syn = tm.get("synonymized")
-    if isinstance(syn, dict):
-        legacy_key = f"sp7.allow_adding_child_to_synonymized_parent.{tree_name}"
-        if legacy_key in syn:
-            return bool(syn.get(legacy_key))
-        legacy_allow_expand = bool(syn.get(legacy_key))
-        return not legacy_allow_expand
- 
-    # Default if nothing set
-    return False
 
-def adding_node(node, collection=None, user=None):
+    pref_key = f'sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}'
+    return synonymized.get(pref_key, False) is True
+
+def adding_node(node,collection=None, user=None):
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
     if parent.accepted_id is not None:
-        tree_name = node.specify_model.name
-        strict_checks = _strict_synonymization_checks_enabled(collection, user, tree_name)
-
-        if strict_checks:
+        allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
+        if not allow_adding_child:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -309,6 +275,7 @@ def adding_node(node, collection=None, user=None):
                     "parentid": parent.parent.id,
                     "children": list(parent.children.values('id', 'fullname'))
                  }})
+
     insertion_point = open_interval(model, parent.nodenumber, 1)
     node.highestchildnodenumber = node.nodenumber = insertion_point
 
@@ -468,31 +435,30 @@ def synonymize(node, into, agent, user=None, collection=None):
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
              }})
-    tree_name = node.specify_model.name
-    strict_checks = _strict_synonymization_checks_enabled(collection, user, tree_name)
+    node.accepted_id = target.id
+    node.isaccepted = False
+    node.save()
 
-    if strict_checks and node.children.exists():
+    # This check can be disabled by a remote pref
+    allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
+    if node.children.count() > 0 and not allow_adding_child:
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",
-            "localizationKey" : "nodeSynonimizeWithChildren",
-            "node" : {
+             "localizationKey" : "nodeSynonimizeWithChildren",
+             "node" : {
                 "id" : node.id,
                 "rankid" : node.rankid,
                 "fullName" : node.fullname,
                 "children": list(node.children.values('id', 'fullname'))
-            },
-            "parent" : {
+             },
+             "parent" : {
                 "id" : into.id,
                 "rankid" : into.rankid,
                 "fullName" : into.fullname,
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
-            }})
-    
-    node.accepted_id = target.id
-    node.isaccepted = False
-    node.save()
+             }})
     node.acceptedchildren.update(**{node.accepted_id_attr().replace('_id', ''): target})
     #assuming synonym can't be synonymized
     field_change_infos = [
