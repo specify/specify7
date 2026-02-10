@@ -71,11 +71,11 @@ export function overrideAjax(
 }
 
 const basePathParts = process.cwd().split('/');
-const jsSrcPathIndex = basePathParts.indexOf('js_src');
+const jsSourcePathIndex = basePathParts.indexOf('js_src');
 const basePath =
-  jsSrcPathIndex === -1
+  jsSourcePathIndex === -1
     ? process.cwd()
-    : basePathParts.slice(0, jsSrcPathIndex + 1).join('/');
+    : basePathParts.slice(0, jsSourcePathIndex + 1).join('/');
 
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
