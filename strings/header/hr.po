@@ -1,2 +1,329 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:42+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"header/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
+#: components/Core/Main.tsx:64
+#, fuzzy
+msgid "skipToContent"
+msgstr "Preskoči na sadržaj"
+
+#. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
+#: components/Header/menuItemProcessing.ts:65
+#, fuzzy
+msgid "main"
+msgstr "Glavni"
+
+#. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
+#: components/Header/ChooseCollection.tsx:75
+#: components/Header/ChooseCollection.tsx:81
+#, fuzzy
+msgid "currentCollection"
+msgstr "Trenutni {collectionTable:string}"
+
+#. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
+#: components/DataEntryTables/index.tsx:43
+#: components/Header/menuItemDefinitions.ts:43
+#: components/Router/OverlayRoutes.tsx:71
+#, fuzzy
+msgid "dataEntry"
+msgstr "Unos podataka"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+#: components/Header/userToolDefinitions.ts:112
+#: components/Router/OverlayRoutes.tsx:190
+#, fuzzy
+msgid "makeDwca"
+msgstr "Izradi DwC arhivu"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
+#: components/Header/userToolDefinitions.ts:104
+#: components/Router/OverlayRoutes.tsx:182
+#: components/Router/OverlayRoutes.tsx:262
+#: components/Toolbar/BackupDatabase.tsx:84
+#: components/Toolbar/BackupStatus.tsx:84
+#, fuzzy
+msgid "backupDatabase"
+msgstr "Sigurnosna kopija baze podataka"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+#: components/Header/userToolDefinitions.ts:118
+#: components/Router/OverlayRoutes.tsx:198
+#, fuzzy
+msgid "updateExportFeed"
+msgstr "Ažuriranje RSS feeda"
+
+#. Used in: Components > Export Feed > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:50
+#, fuzzy
+msgid "updateExportFeedConfirmation"
+msgstr "Ažurirati feed za izvoz?"
+
+#. Used in: Components > Export Feed > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:53
+#, fuzzy
+msgid "updateExportFeedConfirmationDescription"
+msgstr "Ažurirati sve stavke RSS izvoza feeda sada?"
+
+#. Used in: Components > Export Feed > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:24
+#, fuzzy
+msgid "feedExportStarted"
+msgstr "Započeto je ažuriranje feeda izvoza"
+
+#. Used in: Components > Export Feed > Force Update
+#: components/ExportFeed/ForceUpdate.tsx:27
+#, fuzzy
+msgid "feedExportStartedDescription"
+msgstr ""
+"Ažuriranje je započelo. Primit ćete obavijest za svaku ažuriranu stavku "
+"feeda."
+
+#. Used in: Components > Export Feed > Dwca
+#: components/ExportFeed/Dwca.tsx:129
+#, fuzzy
+msgid "dwcaExportStarted"
+msgstr "Izvoz DwCA-a je započeo"
+
+#. Used in: Components > Export Feed > Dwca
+#: components/ExportFeed/Dwca.tsx:132
+#, fuzzy
+msgid "dwcaExportStartedDescription"
+msgstr "Izvoz je započeo. Primit ćete obavijest kada izvoz bude dovršen."
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
+#: components/Header/userToolDefinitions.ts:126
+#: components/LocalityUpdate/index.tsx:83
+#, fuzzy
+msgid "localityUpdateTool"
+msgstr "Alat za ažuriranje lokacije"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:210
+#, fuzzy
+msgid "labelName"
+msgstr "Naziv oznake"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:210
+#, fuzzy
+msgid "reportName"
+msgstr "Naziv izvješća"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:178
+#, fuzzy
+msgid "createLabel"
+msgstr "Izradi novu oznaku"
+
+#. Used in: Components > Query Builder > Edit
+#: components/QueryBuilder/Edit.tsx:178
+#, fuzzy
+msgid "createReport"
+msgstr "Izradi novo izvješće"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+#: components/Header/userToolDefinitions.ts:90
+#: components/Router/OverlayRoutes.tsx:166
+#: components/Toolbar/TreeRepair.tsx:173
+#, fuzzy
+msgid "repairTree"
+msgstr "Popravak stabla"
+
+#. Used in: Components > Toolbar > Tree Repair
+#: components/Toolbar/TreeRepair.tsx:168
+#, fuzzy
+msgid "treeRepairComplete"
+msgstr "Popravak drveća je završen."
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:329
+#, fuzzy
+msgid "choose"
+msgstr "Odaberite"
+
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
+#: components/ExportFeed/Dwca.tsx:42
+#: components/ExportFeed/Editor.tsx:323
+#, fuzzy
+msgid "chooseDwca"
+msgstr "Odaberite DwCA"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:213
+#, fuzzy
+msgid "dwcaResource"
+msgstr "DwCA resurs"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:149
+#, fuzzy
+msgid "incompleteInline"
+msgstr "(nepotpun)"
+
+#. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
+#: components/ExportFeed/Dwca.tsx:52
+#: components/ExportFeed/Editor.tsx:324
+#, fuzzy
+msgid "chooseMetadataResource"
+msgstr "Odaberite resurs metapodataka"
+
+#. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:228
+#, fuzzy
+msgid "metadataResource"
+msgstr "Resurs metapodataka"
+
+#. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
+#: components/Header/ExpressSearchTask.tsx:53
+#: components/Header/ExpressSearchTask.tsx:124
+#: components/Router/OverlayRoutes.tsx:51
+#: components/Router/Routes.tsx:33
+#, fuzzy
+msgid "simpleSearch"
+msgstr "Jednostavno pretraživanje"
+
+#. Used in: Components > Header > Express Search Task
+#: components/Header/ExpressSearchTask.tsx:134
+#, fuzzy
+msgid "primarySearch"
+msgstr "Primarno pretraživanje"
+
+#. Used in: Components > Header > Express Search Task
+#: components/Header/ExpressSearchTask.tsx:140
+#, fuzzy
+msgid "secondarySearch"
+msgstr "Sekundarno pretraživanje"
+
+#. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:127
+#, fuzzy
+msgid "menuItems"
+msgstr "Stavke izbornika"
+
+#. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
+#: components/Header/UserTools.tsx:48
+#: components/Header/UserTools.tsx:79
+#: components/Preferences/Renderers.tsx:125
+#: components/Router/OverlayRoutes.tsx:43
+#, fuzzy
+msgid "userTools"
+msgstr "Korisnički alati"
+
+#. Used in: Components > Header > User Tools
+#: components/Header/UserTools.tsx:78
+#, fuzzy
+msgid "userToolsForUser"
+msgstr "Korisnički alati ({userName:string})"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:80
+#: components/Toolbar/Language.tsx:155
+#, fuzzy
+msgid "helpLocalizeSpecify"
+msgstr "Pomoć pri lokalizaciji Navedite 7"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:92
+#, fuzzy
+msgid "helpLocalizeSpecifyDescription"
+msgstr ""
+"Bili bismo vam vrlo zahvalni na podršci u lokalizaciji korisničkog sučelja "
+"Specify 7. Ako ste zainteresirani, molimo <link>pogledajte upute</link>."
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:115
+#, fuzzy
+msgid "incompleteLocalization"
+msgstr "Nepotpuna lokalizacija"
+
+#. Used in: Components > Toolbar > Language
+#: components/Toolbar/Language.tsx:127
+#, fuzzy
+msgid "incompleteLocalizationDescription"
+msgstr ""
+"Prijevod na ovaj jezik još nije dovršen. Nekim elementima možda nedostaje "
+"lokalizacija ili je lokalizacija netočna. Ako ste zainteresirani da nam "
+"pomognete dovršiti lokalizaciju, molimo <link>slijedite upute.</link>"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:161
+#, fuzzy
+msgid "tableApi"
+msgstr "API za tablice"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:166
+#, fuzzy
+msgid "operationsApi"
+msgstr "API za operacije"
+
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Toolbar > Wbs Dialog
+#: components/AppResources/Create.tsx:97
+#: components/AppResources/Create.tsx:133
+#: components/AppResources/Filters.tsx:171
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
+#: components/Header/userToolDefinitions.ts:132
+#: components/Preferences/UserDefinitions.tsx:631
+#: components/Preferences/index.tsx:65
+#: components/Preferences/index.tsx:71
+#: components/Toolbar/WbsDialog.tsx:227
+#, fuzzy
+msgid "documentation"
+msgstr "Dokumentacija"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:73
+#, fuzzy
+msgid "administration"
+msgstr "Administrativni alati"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:149
+#, fuzzy
+msgid "developers"
+msgstr "Resursi za razvojne programere"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:139
+#, fuzzy
+msgid "forum"
+msgstr "Forum zajednice"
+
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
+#: components/Errors/ErrorDialog.tsx:152
+#: components/Header/userToolDefinitions.ts:156
+#: components/Router/Routes.tsx:451
+#: components/RouterCommands/CacheBuster.tsx:39
+#, fuzzy
+msgid "clearCache"
+msgstr "Obriši predmemoriju preglednika"
+
+#. Used in: Components > Router Commands > Cache Buster
+#: components/RouterCommands/CacheBuster.tsx:42
+#, fuzzy
+msgid "cacheCleared"
+msgstr "Predmemorija je izbrisana. Molimo vas da ponovno učitate stranicu."
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:144
+#, fuzzy
+msgid "technicalDocumentation"
+msgstr "Dokumentacija"
+
+#. Used in: Components > Attachments > Chrono Chart
+#: components/Attachments/ChronoChart.tsx:29
+#, fuzzy
+msgid "chronostratigraphicChart"
+msgstr "Kronostratigrafski grafikon"
