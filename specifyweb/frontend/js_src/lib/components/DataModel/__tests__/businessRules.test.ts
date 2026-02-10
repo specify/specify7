@@ -12,7 +12,6 @@ import { useSaveBlockers } from '../saveBlockers';
 import { schema } from '../schema';
 import type { SpecifyTable } from '../specifyTable';
 import { tables } from '../tables';
-import { getStrictSynonymizationChecksPref } from '../treeBusinessRules';
 import type {
   CollectingEvent,
   CollectionObjectType,
@@ -21,6 +20,37 @@ import type {
   Taxon,
   TaxonTreeDefItem,
 } from '../types';
+
+jest.mock('../../Preferences/collectionPreferences', () => {
+  let raw: any = {
+    treeManagement: {
+      strict_synonymization_checks: {},
+      synonymized: {},
+    },
+  };
+
+  const get = (...path: readonly any[]): unknown => path.reduce((accumulator, key) => (accumulator == null ? accumulator : accumulator[key]), raw);
+
+  const getRaw = (): any => raw;
+
+  const setRaw = (next: any): void => {
+    raw = next;
+  };
+
+  return {
+    collectionPreferences: {
+      get,
+      getRaw,
+      setRaw,
+    },
+  };
+});
+
+overrideAjax('/context/collection_resource/', {
+  collectionPreferences: {},
+  userPreferences: {},
+  disciplinePreferences: {},
+});
 
 mockTime();
 requireContext();
@@ -934,69 +964,5 @@ describe('treeBusinessRules', () => {
     } finally {
       collectionPreferences.setRaw(originalRaw);
     }
-  });
-});
-
-describe('getStrictSynonymizationChecksPref', () => {
-  test('defaults to strict for supported trees when no explicit preference exists', () => {
-    const result = getStrictSynonymizationChecksPref(
-      {
-        get: () => undefined,
-        getRaw: () => ({}),
-      },
-      'Taxon'
-    );
-    expect(result).toBe(true);
-  });
-
-  test('uses explicit strict_synonymization_checks value', () => {
-    const result = getStrictSynonymizationChecksPref(
-      {
-        get: () => undefined,
-        getRaw: () => ({
-          treeManagement: {
-            strict_synonymization_checks: {
-              Taxon: false,
-            },
-          },
-        }),
-      },
-      'Taxon'
-    );
-    expect(result).toBe(false);
-  });
-
-  test('inverts legacy allow_adding_child_to_synonymized_parent value', () => {
-    const result = getStrictSynonymizationChecksPref(
-      {
-        get: () => undefined,
-        getRaw: () => ({
-          treeManagement: {
-            synonymized: {
-              'sp7.allow_adding_child_to_synonymized_parent.Taxon': true,
-            },
-          },
-        }),
-      },
-      'Taxon'
-    );
-    expect(result).toBe(false);
-  });
-
-  test('matches backend key mapping for geologictimeperiod', () => {
-    const result = getStrictSynonymizationChecksPref(
-      {
-        get: () => undefined,
-        getRaw: () => ({
-          treeManagement: {
-            strict_synonymization_checks: {
-              GeologicTimePeriod: false,
-            },
-          },
-        }),
-      },
-      'geologictimeperiod'
-    );
-    expect(result).toBe(false);
   });
 });

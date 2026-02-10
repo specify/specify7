@@ -245,47 +245,40 @@ def _get_collection_prefs_dict(collection, user, *, fail_silently: bool = False)
 def _strict_synonymization_checks_enabled(collection, user, tree_name: str) -> bool:
     """
     New CollectionPreferences shape:
+      treeManagement.expand_synonymization_actions.<tree_name> = true/false
+    New CollectionPreferences shape (opt-in strict checking):
       treeManagement.strict_synonymization_checks.<tree_name> = true/false
     
     Backward compat with legacy shape:
       treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
+    Backward compat with legacy shape (opt-in expanded behavior):
+      treeManagement.synonymized["sp7.allow_adding_child_to_synonymized_parent.<tree_name>"] = true/false
     """
-    prefs = _get_collection_prefs_dict(collection, user, fail_silently=True)
+    prefs = _get_collection_prefs_dict(collection, user)
  
     tm = prefs.get("treeManagement") or {}
     if not isinstance(tm, dict):
-        tm = {}
-
-    strict_tree_key_map = {
-        "taxon": "Taxon",
-        "geography": "Geography",
-        "storage": "Storage",
-        "geologictimeperiod": "GeologicTimePeriod",
-        "lithostrat": "LithoStrat",
-        "tectonicunit": "TectonicUnit",
-    }
-    normalized_name = tree_name.lower()
-    title_name = strict_tree_key_map.get(normalized_name)
-    if title_name is None:
         return False
-
-    key_candidates = [tree_name, title_name, normalized_name]
-
+     
+    # New shape
+    esa = tm.get("expand_synonymization_actions")
+    if isinstance(esa, dict) and tree_name in esa:
+        return bool(esa.get(tree_name))
     strict = tm.get("strict_synonymization_checks")
-    if isinstance(strict, dict):
-        for key in key_candidates:
-            if key in strict and isinstance(strict.get(key), bool):
-                return strict[key]
+    if isinstance(strict, dict) and tree_name in strict:
+        return bool(strict.get(tree_name))
  
-    # Legacy shape "allow expanded behavior"
+     # Legacy shape
     syn = tm.get("synonymized")
     if isinstance(syn, dict):
-        for key in key_candidates:
-            legacy_key = f"sp7.allow_adding_child_to_synonymized_parent.{key}"
-            if legacy_key in syn and isinstance(syn.get(legacy_key), bool):
-                return not syn[legacy_key]
+        legacy_key = f"sp7.allow_adding_child_to_synonymized_parent.{tree_name}"
+        if legacy_key in syn:
+            return bool(syn.get(legacy_key))
+        legacy_allow_expand = bool(syn.get(legacy_key))
+        return not legacy_allow_expand
  
-    return True
+    # Default if nothing set
+    return False
 
 def adding_node(node, collection=None, user=None):
     logger.info('adding node %s', node)

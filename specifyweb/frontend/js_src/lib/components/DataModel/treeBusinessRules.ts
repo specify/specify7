@@ -2,13 +2,17 @@ import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
 import type { AnyTree, TableFields } from './helperTypes';
 import type { SpecifyResource } from './legacyTypes';
 import { idFromUrl } from './resource';
 import type { Tables } from './types';
+
+const getCollectionPreferences = async () => {
+  const mod = await import('../Preferences/collectionPreferences');
+  return mod.collectionPreferences;
+};
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
 export type TreeDefItem<TREE extends AnyTree> =
@@ -40,6 +44,7 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
+    const collectionPreferences = await getCollectionPreferences();
     const strictChecksEnabled = getStrictSynonymizationChecksPref(
       collectionPreferences,
       resource.specifyTable.name
@@ -146,86 +151,48 @@ const STRICT_TREES = new Set([
   'tectonicunit',
 ]);
 
-const STRICT_TREE_KEY_MAP: Readonly<Record<string, string>> = {
-  taxon: 'Taxon',
-  geography: 'Geography',
-  storage: 'Storage',
-  geologictimeperiod: 'GeologicTimePeriod',
-  lithostrat: 'LithoStrat',
-  tectonicunit: 'TectonicUnit',
-};
+const canonicalPrefKey = (tableName: string): string =>
+  tableName.length === 0
+    ? tableName
+    : tableName[0].toUpperCase() + tableName.slice(1).toLowerCase();
 
 export function getStrictSynonymizationChecksPref(
-  collectionPreferences: {
-    get: (...args: any[]) => unknown;
-    getRaw?: () => unknown;
-  },
+  collectionPreferences: { get: (...args: any[]) => unknown },
   tableName: string
 ): boolean {
-  const rawPreferences = collectionPreferences.getRaw?.();
-  const treeManagement =
-    rawPreferences !== null &&
-    typeof rawPreferences === 'object' &&
-    'treeManagement' in rawPreferences
-      ? (rawPreferences as Record<string, unknown>).treeManagement
-      : undefined;
-  const treeManagementDict =
-    treeManagement !== null && typeof treeManagement === 'object'
-      ? (treeManagement as Record<string, unknown>)
-      : undefined;
-
   const normalized = tableName.toLowerCase();
   if (!STRICT_TREES.has(normalized)) return false;
 
-  const keyTitle = STRICT_TREE_KEY_MAP[normalized];
-  const keyCandidates = [tableName, keyTitle, normalized];
+  const keyTitle = canonicalPrefKey(normalized);
+  const keyRaw = tableName;
 
-  const strictSynonymizationChecks = treeManagementDict?.[
-    'strict_synonymization_checks'
-  ];
-  const strictSynonymizationChecksDict =
-    strictSynonymizationChecks !== null &&
-    typeof strictSynonymizationChecks === 'object'
-      ? (strictSynonymizationChecks as Record<string, unknown>)
-      : undefined;
+  const strictValue =
+    (collectionPreferences.get(
+      'treeManagement',
+      'strict_synonymization_checks',
+      keyRaw
+    ) as unknown) ??
+    (collectionPreferences.get(
+      'treeManagement',
+      'strict_synonymization_checks',
+      keyTitle
+    ) as unknown);
 
-  for (const key of keyCandidates) {
-    const strictValue = strictSynonymizationChecksDict?.[key];
-    if (typeof strictValue === 'boolean') return strictValue;
-  }
+  if (typeof strictValue === 'boolean') return strictValue;
 
-  const synonymized = treeManagementDict?.synonymized;
-  const synonymizedDict =
-    synonymized !== null && typeof synonymized === 'object'
-      ? (synonymized as Record<string, unknown>)
-      : undefined;
-  for (const key of keyCandidates) {
-    const legacyAllow =
-      synonymizedDict?.[
-        `sp7.allow_adding_child_to_synonymized_parent.${key}`
-      ];
-    if (typeof legacyAllow === 'boolean') return !legacyAllow;
-  }
+  const legacyAllow =
+    (collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
+      `sp7.allow_adding_child_to_synonymized_parent.${keyRaw}`
+    ) as unknown) ??
+    (collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
+      `sp7.allow_adding_child_to_synonymized_parent.${keyTitle}`
+    ) as unknown);
 
-  if (typeof collectionPreferences.getRaw !== 'function') {
-    for (const key of keyCandidates) {
-      const strictValueFromGet = collectionPreferences.get(
-        'treeManagement',
-        'strict_synonymization_checks',
-        key
-      ) as unknown;
-      if (typeof strictValueFromGet === 'boolean') return strictValueFromGet;
-    }
-
-    for (const key of keyCandidates) {
-      const legacyAllowFromGet = collectionPreferences.get(
-        'treeManagement',
-        'synonymized',
-        `sp7.allow_adding_child_to_synonymized_parent.${key}`
-      ) as unknown;
-      if (typeof legacyAllowFromGet === 'boolean') return !legacyAllowFromGet;
-    }
-  }
+  if (typeof legacyAllow === 'boolean') return !legacyAllow;
 
   return true;
 }
