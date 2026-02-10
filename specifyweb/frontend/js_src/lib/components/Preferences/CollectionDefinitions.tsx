@@ -62,8 +62,8 @@ export const collectionPreferenceDefinitions = {
     title: treeText.treeManagement(),
     subCategories: {
       strict_synonymization_checks: {
-        title: treeText.synonymizedNodes(), // or add a new string like “Strict synonym checks”
-        description: treeText.synonymizedNodesDescription(), // better: new description
+        title: treeText.synonymizedNodes(),
+        description: treeText.synonymizedNodesDescription(),
         items: {
           Taxon: definePref<boolean>({
             title: () => tableLabel('Taxon'),
@@ -72,11 +72,41 @@ export const collectionPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
-          Geography: definePref<boolean>({ ... }),
-          Storage: definePref<boolean>({ ... }),
-          GeologicTimePeriod: definePref<boolean>({ ... }),
-          LithoStrat: definePref<boolean>({ ... }),
-          TectonicUnit: definePref<boolean>({ ... }),
+          Geography: definePref<boolean>({
+            title: () => tableLabel('Geography'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          Storage: definePref<boolean>({
+            title: () => tableLabel('Storage'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          GeologicTimePeriod: definePref<boolean>({
+            title: () => tableLabel('GeologicTimePeriod'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          LithoStrat: definePref<boolean>({
+            title: () => tableLabel('LithoStrat'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          TectonicUnit: definePref<boolean>({
+            title: () => tableLabel('TectonicUnit'),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
       synonymized: {
