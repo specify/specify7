@@ -1,2 +1,890 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-11 00:09+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/forms/"
+"hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:818
+#, fuzzy
+msgid "forms"
+msgstr "Obrasci"
+
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
+#: components/Atoms/DataEntry.tsx:153
+#: components/Forms/Save.tsx:271
+#: components/Statistics/ResultsDialog.tsx:68
+#, fuzzy
+msgid "clone"
+msgstr "Klon"
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:272
+#, fuzzy
+msgid "cloneDescription"
+msgstr "Izradi potpunu kopiju trenutnog zapisa"
+
+#. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:143
+#, fuzzy
+msgid "valueMustBeUniqueToField"
+msgstr "Vrijednost mora biti jedinstvena za {fieldName:string}"
+
+#. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:146
+#, fuzzy
+msgid "valueMustBeUniqueToDatabase"
+msgstr "Vrijednost mora biti jedinstvena za bazu podataka"
+
+#. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:134
+#, fuzzy
+msgid "valuesOfMustBeUniqueToField"
+msgstr ""
+"Vrijednosti {values:string} moraju biti jedinstvene za {fieldName:string}"
+
+#. Used in: Components > Data Model > Uniqueness Rules
+#: components/DataModel/uniquenessRules.ts:138
+#, fuzzy
+msgid "valuesOfMustBeUniqueToDatabase"
+msgstr "Vrijednosti {values:string} moraju biti jedinstvene za bazu podataka"
+
+#. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:125
+#, fuzzy
+msgid "checkingIfResourceCanBeDeleted"
+msgstr "Provjeravam može li se resurs izbrisati…"
+
+#. Used in: Components > Molecules > Linked Records
+#: components/Molecules/LinkedRecords.tsx:105
+#, fuzzy
+msgid "checkingIfResourceIsUsed"
+msgstr "Provjeravam je li ovaj zapis trenutno u upotrebi…"
+
+#. Used in: Components > Molecules > Linked Records
+#: components/Molecules/LinkedRecords.tsx:51
+#: components/Molecules/LinkedRecords.tsx:119
+#, fuzzy
+msgid "noLinkedRecords"
+msgstr "Nema povezanih zapisa"
+
+#. Used in: Components > Molecules > Linked Records
+#: components/Molecules/LinkedRecords.tsx:133
+#, fuzzy
+msgid "recordUsedDescription"
+msgstr "Ovaj resurs je trenutno povezan sa sljedećim zapisima:"
+
+#. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:82
+#: components/Forms/DeleteButton.tsx:90
+#: components/Forms/DeleteButton.tsx:180
+#, fuzzy
+msgid "deleteBlocked"
+msgstr "Izbriši blokirano"
+
+#. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:183
+#, fuzzy
+msgid "deleteBlockedDescription"
+msgstr "Resurs se ne može izbrisati jer se na njega pozivaju sljedeći resursi:"
+
+#. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
+#: components/SchemaViewer/schemaToTsv.tsx:26
+#: components/WbPlanView/CustomSelectElement.tsx:295
+#, fuzzy
+msgid "relationship"
+msgstr "Odnos"
+
+#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:53
+#: components/FormPlugins/PaleoLocation.tsx:89
+#: components/FormPlugins/PaleoLocation.tsx:98
+#, fuzzy
+msgid "paleoMap"
+msgstr "Paleo karta"
+
+#. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:76
+#, fuzzy
+msgid "paleoRequiresGeography"
+msgstr "{geographyTable:string} Obavezno"
+
+#. Used in: Components > Form Plugins > Paleo Location
+#: components/FormPlugins/PaleoLocation.tsx:81
+#, fuzzy
+msgid "paleoRequiresGeographyDescription"
+msgstr ""
+"Paleo Map dodatak zahtijeva da {localityTable:string} ima geografske "
+"koordinate i da paleo kontekst ima geografsku starost s barem popunjenim "
+"vremenom početka ili i vremenom završetka."
+
+#. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:85
+#, fuzzy
+msgid "invalidDate"
+msgstr "Nevažeći datum"
+
+#. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:151
+#, fuzzy
+msgid "deleteConfirmation"
+msgstr ""
+"Jeste li sigurni da želite trajno izbrisati ovaj {tableName:string} iz baze "
+"podataka?"
+
+#. Used in: Components > Forms > Delete Button
+#: components/Forms/DeleteButton.tsx:54
+#, fuzzy
+msgid "deleteConfirmationDescription"
+msgstr "Ova se radnja ne može poništiti."
+
+#. Used in: Components > Form Plugins > Date Precision Picker
+#: components/FormPlugins/DatePrecisionPicker.tsx:28
+#, fuzzy
+msgid "datePrecision"
+msgstr "Preciznost datuma"
+
+#. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Date Precision Picker
+#: components/FormPlugins/DatePrecisionPicker.tsx:47
+#, fuzzy
+msgid "monthYear"
+msgstr "Pon / God."
+
+#. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:108
+#, fuzzy
+msgid "yearPlaceholder"
+msgstr "GGGG"
+
+#. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:141
+#, fuzzy
+msgid "today"
+msgstr "Danas"
+
+#. Used in: Components > Form Plugins > Date Input
+#: components/FormPlugins/DateInput.tsx:144
+#, fuzzy
+msgid "todayButtonDescription"
+msgstr "Postavi na trenutni datum"
+
+#. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:285
+#, fuzzy
+msgid "addToPickListConfirmation"
+msgstr "Dodati u {pickListTable:string}?"
+
+#. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:290
+#, fuzzy
+msgid "addToPickListConfirmationDescription"
+msgstr ""
+"Dodati vrijednost \"{value:string}\" u {pickListTable:string} pod nazivom \""
+"{pickListName:string}\"?"
+
+#. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:252
+#, fuzzy
+msgid "invalidType"
+msgstr "Nevažeća vrsta"
+
+#. Used in: Components > Pick Lists > Index
+#: components/PickLists/index.tsx:255
+#, fuzzy
+msgid "invalidNumericPicklistValue"
+msgstr "U ovom {pickListTable:string} su podržane samo numeričke vrijednosti"
+
+#. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
+#: components/Attachments/Plugin.tsx:116
+#: components/FormCells/FormTable.tsx:276
+#: components/FormCells/FormTable.tsx:610
+#: components/Forms/BaseResourceView.tsx:106
+#, fuzzy
+msgid "noData"
+msgstr "Nema podataka."
+
+#. Used in: Components > Toolbar > Record Set Edit
+#: components/Toolbar/RecordSetEdit.tsx:42
+#, fuzzy
+msgid "recordSetDeletionWarning"
+msgstr ""
+"{recordSetTable:string} \"{recordSetName:string}\" bit će izbrisan. "
+"Referencirani zapisi NEĆE biti izbrisani iz baze podataka."
+
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Merge Record
+#: components/FormCommands/index.tsx:39
+#: components/FormMeta/EditHistory.tsx:31
+#: components/FormMeta/MergeRecord.tsx:53
+#, fuzzy
+msgid "saveRecordFirst"
+msgstr "Prvo spremi zapis"
+
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
+#: components/FormSliders/Slider.tsx:32
+#: components/FormSliders/Slider.tsx:34
+#: components/Preferences/UserDefinitions.tsx:1237
+#, fuzzy
+msgid "firstRecord"
+msgstr "Prvi zapis"
+
+#. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
+#: components/FormSliders/Slider.tsx:96
+#: components/FormSliders/Slider.tsx:98
+#: components/Preferences/UserDefinitions.tsx:1241
+#, fuzzy
+msgid "lastRecord"
+msgstr "Posljednji zapis"
+
+#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/Slider.tsx:40
+#: components/FormSliders/Slider.tsx:43
+#, fuzzy
+msgid "previousRecord"
+msgstr "Prethodni zapis"
+
+#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/Slider.tsx:87
+#: components/FormSliders/Slider.tsx:90
+#, fuzzy
+msgid "nextRecord"
+msgstr "Sljedeći zapis"
+
+#. Used in: Components > Form Sliders > Slider
+#: components/FormSliders/Slider.tsx:57
+#, fuzzy
+msgid "currentRecord"
+msgstr "Trenutni objekt (izvan {total:number|formatted})"
+
+#. Used in: Components > Form Meta > Definition ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save
+#: components/FormMeta/Definition.tsx:93
+#: components/Forms/ResourceView.tsx:431
+#: components/Forms/Save.tsx:39
+#, fuzzy
+msgid "unsavedFormUnloadProtect"
+msgstr "Ovaj obrazac nije spremljen."
+
+#. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
+#: components/AttachmentsBulkImport/utils.ts:471
+#: components/Forms/Save.tsx:305
+#, fuzzy
+msgid "saveConflict"
+msgstr "Spremi sukob"
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:308
+#, fuzzy
+msgid "saveConflictDescription"
+msgstr ""
+"Podaci prikazani na ovoj stranici promijenio je drugi korisnik ili su "
+"promijenjeni na drugoj kartici preglednika te su zastarjeli. Stranicu je "
+"potrebno ponovno učitati kako bi se spriječilo spremanje nedosljednih "
+"podataka."
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:339
+#, fuzzy
+msgid "saveBlocked"
+msgstr "Spremi blokirano"
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:342
+#, fuzzy
+msgid "saveBlockedDescription"
+msgstr "Obrazac se ne može spremiti zbog sljedeće greške:"
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:115
+#: components/FormCommands/index.tsx:142
+#, fuzzy
+msgid "unavailableCommandButton"
+msgstr "Naredba N/A"
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:120
+#: components/FormCommands/index.tsx:147
+#, fuzzy
+msgid "commandUnavailable"
+msgstr "Naredba nije dostupna"
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:124
+#, fuzzy
+msgid "commandUnavailableDescription"
+msgstr "Ova naredba trenutno nije dostupna za Specify 7."
+
+#. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
+#: components/FormCommands/index.tsx:126
+#: components/FormPlugins/index.tsx:205
+#, fuzzy
+msgid "commandUnavailableSecondDescription"
+msgstr ""
+"Vjerojatno je uključeno u ovaj obrazac iz Specify 6 i možda će biti podržano "
+"u budućnosti."
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:129
+#, fuzzy
+msgid "commandName"
+msgstr "Naziv naredbe"
+
+#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:195
+#: components/FormPlugins/index.tsx:264
+#, fuzzy
+msgid "unavailablePluginButton"
+msgstr "Dodatak N/A"
+
+#. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
+#: components/FormPlugins/PaleoLocation.tsx:58
+#: components/FormPlugins/index.tsx:199
+#: components/FormPlugins/index.tsx:268
+#, fuzzy
+msgid "pluginNotAvailable"
+msgstr "Dodatak nije dostupan"
+
+#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:203
+#, fuzzy
+msgid "pluginNotAvailableDescription"
+msgstr "Ovaj dodatak trenutno nije dostupan za Specify 7"
+
+#. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
+#: components/FormPlugins/PaleoLocation.tsx:65
+#: components/FormPlugins/index.tsx:272
+#, fuzzy
+msgid "wrongTableForPlugin"
+msgstr ""
+"Ovaj dodatak se ne može koristiti na obrascu {currentTable:string}. "
+"Pokušajte ga premjestiti na obrasce {supportedTables:string}."
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:151
+#, fuzzy
+msgid "wrongTableForCommand"
+msgstr ""
+"Naredba se ne može koristiti na obrascu {currentTable:string}. Može se "
+"koristiti samo na obrascu {correctTable:string}."
+
+#. Used in: Components > Form Plugins > Index
+#: components/FormPlugins/index.tsx:208
+#, fuzzy
+msgid "pluginName"
+msgstr "Naziv dodatka"
+
+#. 🟥Yes/No probably shouldn't be translated as Specify 7 does not support changing which values are recognized as Yes/No in a given language. Used in: Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions
+#: utils/parser/definitions.ts:114
+#: utils/parser/__tests__/definitions.test.ts:184
+#: utils/parser/__tests__/definitions.test.ts:186
+#, fuzzy
+msgid "illegalBool"
+msgstr "Nedozvoljena vrijednost za polje Da/Ne"
+
+#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Parse ⬤ Parser > __tests__ > Parse
+#: hooks/__tests__/useResourceValue.test.tsx:146
+#: hooks/__tests__/useResourceValue.test.tsx:203
+#: utils/parser/parse.ts:33
+#: utils/parser/__tests__/parse.test.ts:61
+#: utils/parser/__tests__/parse.test.ts:79
+#: utils/parser/__tests__/parse.test.ts:207
+#: utils/parser/__tests__/parse.test.ts:209
+#, fuzzy
+msgid "requiredField"
+msgstr "Polje je obavezno."
+
+#. Used in: Components > Export Feed > Editor ⬤ Components > Query Combo Box > Index ⬤ Parser > __tests__ > Definitions
+#: components/ExportFeed/Editor.tsx:399
+#: components/ExportFeed/Editor.tsx:403
+#: components/QueryComboBox/index.tsx:192
+#: utils/parser/__tests__/definitions.test.ts:203
+#: utils/parser/__tests__/definitions.test.ts:205
+#: utils/parser/__tests__/definitions.test.ts:221
+#: utils/parser/__tests__/definitions.test.ts:223
+#, fuzzy
+msgid "invalidValue"
+msgstr "Nevažeća vrijednost"
+
+#. 🟥Used in field validation messages on the form. Used in: Components > Form Plugins > Date Input ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Definitions ⬤ Parser > __tests__ > Parse
+#: components/FormPlugins/DateInput.tsx:82
+#: components/FormPlugins/DateInput.tsx:84
+#: utils/parser/definitions.ts:208
+#: utils/parser/definitions.ts:210
+#: utils/parser/definitions.ts:374
+#: utils/parser/__tests__/definitions.test.ts:78
+#: utils/parser/__tests__/parse.test.ts:228
+#, fuzzy
+msgid "requiredFormat"
+msgstr "Potreban format: {format:string}."
+
+#. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
+#: hooks/__tests__/useResourceValue.test.tsx:195
+#: utils/parser/definitions.ts:52
+#: utils/parser/__tests__/parse.test.ts:139
+#: utils/parser/__tests__/parse.test.ts:158
+#: utils/parser/__tests__/parse.test.ts:181
+#, fuzzy
+msgid "inputTypeNumber"
+msgstr "Vrijednost mora biti broj"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:30
+#, fuzzy
+msgid "organization"
+msgstr "Organizacija"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:31
+#, fuzzy
+msgid "person"
+msgstr "Osoba"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:32
+#, fuzzy
+msgid "other"
+msgstr "Ostalo"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:33
+#, fuzzy
+msgid "group"
+msgstr "Skupina"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:37
+#, fuzzy
+msgid "userDefinedItems"
+msgstr "Korisnički definirane stavke"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:38
+#, fuzzy
+msgid "entireTable"
+msgstr "Cijela tablica"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:39
+#, fuzzy
+msgid "fieldFromTable"
+msgstr "Polje iz tablice"
+
+#. Used in: Components > Form Cells > Index
+#: components/FormCells/index.tsx:319
+#, fuzzy
+msgid "unsupportedCellType"
+msgstr "Nepodržana vrsta ćelije"
+
+#. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
+#: components/SearchDialog/index.tsx:325
+#, fuzzy
+msgid "additionalResultsOmitted"
+msgstr "Dodatni rezultati izostavljeni"
+
+#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:289
+#, fuzzy
+msgid "recordSelectorUnloadProtect"
+msgstr "Nastaviti bez spremanja?"
+
+#. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:292
+#, fuzzy
+msgid "recordSelectorUnloadProtectDescription"
+msgstr ""
+"Možda biste željeli spremiti ovaj zapis prije nego što napustite stranicu."
+
+#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:228
+#, fuzzy
+msgid "creatingNewRecord"
+msgstr "Izrada novog zapisa"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:153
+#, fuzzy
+msgid "reverse"
+msgstr "Obrnuto"
+
+#. Used in: Components > Query Builder > Audit Log Formatter
+#: components/QueryBuilder/AuditLogFormatter.tsx:47
+#, fuzzy
+msgid "deletedInline"
+msgstr "(izbrisano)"
+
+#. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:524
+#, fuzzy
+msgid "duplicateRecordSetItem"
+msgstr "Duplikat {recordSetItemTable:string}"
+
+#. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:529
+#, fuzzy
+msgid "duplicateRecordSetItemDescription"
+msgstr "Ovaj zapis je već prisutan u trenutnom {recordSetTable:string}"
+
+#. Used in: Components > Form Sliders > Record Set
+#: components/FormSliders/RecordSet.tsx:376
+#, fuzzy
+msgid "createNewRecordSet"
+msgstr "Izradi novi skup zapisa"
+
+#. Used in: Components > Pick Lists > Definitions
+#: components/PickLists/definitions.ts:154
+#, fuzzy
+msgid "forward"
+msgstr "Naprijed"
+
+#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:177
+#, fuzzy
+msgid "addToRecordSet"
+msgstr "Dodaj u {recordSetTable:string}"
+
+#. Used in: Components > Form Sliders > Record Selector From Ids
+#: components/FormSliders/RecordSelectorFromIds.tsx:182
+#, fuzzy
+msgid "removeFromRecordSet"
+msgstr "Ukloni iz {recordSetTable:string}"
+
+#. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
+#: components/AttachmentsBulkImport/utils.ts:473
+#: components/Molecules/AutoComplete.tsx:532
+#, fuzzy
+msgid "nothingFound"
+msgstr "Ništa nije pronađeno"
+
+#. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
+#: components/Forms/BulkCarryForward.tsx:290
+#: components/Forms/Save.tsx:253
+#, fuzzy
+msgid "carryForward"
+msgstr "Prenesi dalje"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:121
+#, fuzzy
+msgid "carryForwardEnabled"
+msgstr "Prikaži gumb za prijenos naprijed"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:201
+#, fuzzy
+msgid "bulkCarryForwardEnabled"
+msgstr "Prikaži broj skupnog prijenosa naprijed"
+
+#. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:254
+#, fuzzy
+msgid "bulkCarryForwardCount"
+msgstr "Broj skupnog prijenosa naprijed"
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:254
+#, fuzzy
+msgid "carryForwardDescription"
+msgstr "Stvorite novi zapis s prenesenim određenim poljima"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:124
+#: components/FormMeta/CarryForward.tsx:133
+#, fuzzy
+msgid "carryForwardSettingsDescription"
+msgstr "Konfigurirajte polja za prijenos naprijed"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:204
+#: components/FormMeta/CarryForward.tsx:225
+#, fuzzy
+msgid "bulkCarryForwardSettingsDescription"
+msgstr "Konfigurirajte polja za skupni prijenos naprijed"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:394
+#, fuzzy
+msgid "carryForwardTableSettingsDescription"
+msgstr "Konfiguriraj polja za prijenos ({tableName:string})"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:391
+#, fuzzy
+msgid "bulkCarryForwardTableSettingsDescription"
+msgstr "Konfigurirajte polja za skupni prijenos ({tableName:string})"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:464
+#, fuzzy
+msgid "carryForwardUniqueField"
+msgstr "Ovo polje mora biti jedinstveno. Ne može se prenijeti."
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:466
+#, fuzzy
+msgid "carryForwardRequiredField"
+msgstr "Ovo polje je obavezno. Mora se prenijeti dalje."
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:222
+#, fuzzy
+msgid "bulkCarryForwardRangeEnabled"
+msgstr "Prikaži raspon skupnog prijenosa naprijed"
+
+#. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:309
+#, fuzzy
+msgid "bulkCarryForwardRangeErrorDescription"
+msgstr ""
+"Nije moguće prenijeti zapis naprijed kroz navedeni raspon {field:string}."
+
+#. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:303
+#, fuzzy
+msgid "bulkCarryForwardRangeLimitExceeded"
+msgstr "Raspon premašuje ograničenje zapisa od {limit:number}."
+
+#. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:295
+#, fuzzy
+msgid "bulkCarryForwardRangeExistingRecords"
+msgstr "Sljedeći brojevi za {field:string} se već koriste:"
+
+#. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:176
+#, fuzzy
+msgid "bulkCarryForwardRangeStart"
+msgstr "Početak raspona prijenosa naprijed"
+
+#. Used in: Components > Forms > Bulk Carry Forward
+#: components/Forms/BulkCarryForward.tsx:184
+#, fuzzy
+msgid "bulkCarryForwardRangeEnd"
+msgstr "Kraj raspona prijenosa naprijed"
+
+#. Used in: Components > Form Meta > Carry Forward
+#: components/FormMeta/CarryForward.tsx:240
+#, fuzzy
+msgid "createRecordSetOnBulkCarryForward"
+msgstr "Stvori skup zapisa pri skupnom prijenosu naprijed"
+
+#. Used in: Components > Form Meta > Clone
+#: components/FormMeta/Clone.tsx:31
+#, fuzzy
+msgid "cloneButtonEnabled"
+msgstr "Prikaži gumb Kloniraj"
+
+#. Used in: Components > Form Meta > Clone
+#: components/FormMeta/Clone.tsx:57
+#, fuzzy
+msgid "addButtonEnabled"
+msgstr "Prikaži gumb Dodaj"
+
+#. Used in: Components > Forms > Save
+#: components/Forms/Save.tsx:280
+#, fuzzy
+msgid "addButtonDescription"
+msgstr "Stvori novi prazan zapis"
+
+#. Used in: Components > Form Meta > Auto Numbering
+#: components/FormMeta/AutoNumbering.tsx:27
+#: components/FormMeta/AutoNumbering.tsx:92
+#, fuzzy
+msgid "autoNumbering"
+msgstr "Automatsko numeriranje"
+
+#. Used in: Components > Field Formatters > Parts
+#: components/FieldFormatters/Parts.tsx:205
+#, fuzzy
+msgid "autoNumberByYear"
+msgstr "Automatsko numeriranje po godini"
+
+#. Used in: Components > Field Formatters > Parts
+#: components/FieldFormatters/Parts.tsx:191
+#, fuzzy
+msgid "autoNumber"
+msgstr "Automatsko numeriranje"
+
+#. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:153
+#, fuzzy
+msgid "editFormDefinition"
+msgstr "Uredi definiciju obrasca"
+
+#. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:117
+#, fuzzy
+msgid "useAutoGeneratedForm"
+msgstr "Koristi automatski generirani obrazac"
+
+#. Used in: Components > Form Meta > Definition
+#: components/FormMeta/Definition.tsx:134
+#, fuzzy
+msgid "useFieldLabels"
+msgstr "Koristite lokalizirane oznake polja"
+
+#. Used in: Components > Form Editor > Editor
+#: components/FormEditor/Editor.tsx:205
+#, fuzzy
+msgid "showFieldLabels"
+msgstr "Prikaži lokalizirane oznake polja"
+
+#. Used in: Components > Form Editor > Editor
+#: components/FormEditor/Editor.tsx:204
+#, fuzzy
+msgid "showDataModelLabels"
+msgstr "Prikaži nazive polja modela podataka"
+
+#. Used in: Components > Form Meta > Edit History
+#: components/FormMeta/EditHistory.tsx:34
+#: components/FormMeta/EditHistory.tsx:57
+#, fuzzy
+msgid "editHistory"
+msgstr "Povijest uređivanja"
+
+#. Used in: Components > Form Meta > Edit History
+#: components/FormMeta/EditHistory.tsx:82
+#, fuzzy
+msgid "editHistoryQueryName"
+msgstr "Povijest uređivanja za \"{formattedRecord:string}\""
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:149
+#, fuzzy
+msgid "formConfiguration"
+msgstr "Konfiguracija obrasca"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:181
+#, fuzzy
+msgid "formState"
+msgstr "Stanje obrasca"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:230
+#, fuzzy
+msgid "recordInformation"
+msgstr "Podaci o zapisu"
+
+#. Used in: Components > Form Meta > Share Record
+#: components/FormMeta/ShareRecord.tsx:44
+#, fuzzy
+msgid "shareRecord"
+msgstr "Podijeli zapis"
+
+#. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
+#: components/FormMeta/PickListUsages.tsx:26
+#: components/FormMeta/QueryTreeUsages.tsx:22
+#, fuzzy
+msgid "findUsages"
+msgstr "Pronađi upotrebe"
+
+#. Used in: Components > Form Meta > Pick List Usages
+#: components/FormMeta/PickListUsages.tsx:68
+#, fuzzy
+msgid "usagesOfPickList"
+msgstr "Upotreba popisa za odabir \"{pickList:string}\""
+
+#. Used in: Components > Form Meta > Sub View Meta
+#: components/FormMeta/SubViewMeta.tsx:36
+#, fuzzy
+msgid "subForm"
+msgstr "Podobrazac"
+
+#. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
+#: components/FormMeta/SubViewMeta.tsx:37
+#: components/Preferences/UserDefinitions.tsx:1248
+#, fuzzy
+msgid "formTable"
+msgstr "Mreža"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:199
+#, fuzzy
+msgid "subviewConfiguration"
+msgstr "Podprikaz"
+
+#. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
+#: components/FormMeta/ReadOnlyMode.tsx:20
+#: components/Header/UserTools.tsx:91
+#, fuzzy
+msgid "disableReadOnly"
+msgstr "Onemogući način rada samo za čitanje"
+
+#. Used in: Components > Form Meta > Read Only Mode
+#: components/FormMeta/ReadOnlyMode.tsx:20
+#, fuzzy
+msgid "enableReadOnly"
+msgstr "Omogući način samo za čitanje"
+
+#. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:75
+#, fuzzy
+msgid "configureDataEntryTables"
+msgstr "Konfigurirajte tablice za unos podataka"
+
+#. Used in: Components > Data Entry Tables > Edit
+#: components/DataEntryTables/Edit.tsx:76
+#, fuzzy
+msgid "configureInteractionTables"
+msgstr "Konfigurirajte tablice interakcije"
+
+#. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:68
+#: components/FormMeta/index.tsx:70
+#, fuzzy
+msgid "formMeta"
+msgstr "Meta obrazaca"
+
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
+#: components/AppResources/Create.tsx:287
+#: components/AppResources/Editor.tsx:262
+#: components/Formatters/formatters.ts:58
+#: components/Forms/BaseResourceView.tsx:124
+#: components/Forms/dataObjFormatters.ts:160
+#, fuzzy
+msgid "newResourceTitle"
+msgstr "Novo {tableName:string}"
+
+#. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
+#: components/Formatters/formatters.ts:59
+#: components/Forms/dataObjFormatters.ts:161
+#, fuzzy
+msgid "resourceFormatter"
+msgstr "{tableName:string} #{id:number}"
+
+#. Used in: Components > Forms > Resource View
+#: components/Forms/ResourceView.tsx:225
+#, fuzzy
+msgid "resourceDeleted"
+msgstr "Resurs izbrisan"
+
+#. Used in: Components > Forms > Resource View
+#: components/Forms/ResourceView.tsx:228
+#, fuzzy
+msgid "resourceDeletedDescription"
+msgstr "Stavka je uspješno izbrisana."
+
+#. Used in: Components > Forms > Date Range
+#: components/Forms/DateRange.tsx:53
+#, fuzzy
+msgid "dateRange"
+msgstr "(Raspon: {from:string} - {to:string})"
+
+#. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
+#: components/FieldFormatters/index.ts:296
+#, fuzzy
+msgid "catalogNumberNumericFormatter"
+msgstr "Broj kataloga Numerički"
+
+#. Used in: Components > Form Cells > COJODialog
+#: components/FormCells/COJODialog.tsx:94
+#, fuzzy
+msgid "addCOGChildren"
+msgstr "Dodajte COG djecu"
