@@ -1,3 +1,5 @@
+from unittest.mock import patch
+
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.models import Determination, Taxon, Taxontreedef
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
@@ -141,4 +143,29 @@ class TestSynonymize(GeographyTree):
 
         self.assertEqual(det_plantae_1.preferredtaxon_id, plantae.id)
         self.assertEqual(det_plantae_2.preferredtaxon_id, plantae.id)
-    
+
+    @patch("specifyweb.backend.context.app_resource.get_app_resource")
+    def test_synonymize_children_allowed_when_strict_disabled(self, get_app_resource):
+        get_app_resource.return_value = (
+            '{"treeManagement":{"strict_synonymization_checks":{"Geography": false}}}',
+            None,
+            None,
+        )
+
+        synonymize(self.kansas, self.mo, self.agent, user=None, collection=None)
+        self.kansas.refresh_from_db()
+
+        self.assertEqual(self.kansas.accepted_id, self.mo.id)
+
+    @patch("specifyweb.backend.context.app_resource.get_app_resource")
+    def test_synonymize_children_allowed_by_legacy_pref(self, get_app_resource):
+        get_app_resource.return_value = (
+            '{"treeManagement":{"synonymized":{"sp7.allow_adding_child_to_synonymized_parent.Geography": true}}}',
+            None,
+            None,
+        )
+
+        synonymize(self.kansas, self.mo, self.agent, user=None, collection=None)
+        self.kansas.refresh_from_db()
+
+        self.assertEqual(self.kansas.accepted_id, self.mo.id)
