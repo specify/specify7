@@ -1,2 +1,152 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-10 22:42+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"welcome/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
+#: components/HomePage/index.tsx:65
+#: components/Router/Routes.tsx:480
+#, fuzzy
+msgid "pageTitle"
+msgstr "Dobrodošli"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
+#: components/Header/userToolDefinitions.ts:134
+#: components/HomePage/AboutSpecify.tsx:68
+#: components/Router/OverlayRoutes.tsx:206
+#, fuzzy
+msgid "aboutSpecify"
+msgstr "O Specify 7"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:56
+#, fuzzy
+msgid "downloadInformation"
+msgstr "Preuzimanje informacija"
+
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
+#: components/HomePage/TaxonTiles.tsx:80
+#: components/Preferences/Renderers.tsx:250
+#, fuzzy
+msgid "taxonTiles"
+msgstr "Pločice taksona"
+
+#. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:73
+#, fuzzy
+msgid "taxonTilesDescription"
+msgstr ""
+"Prikazuju se taksoni s {count:number|formatted} ili više "
+"{collectionObjectTable:string} zapisa"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:79
+#, fuzzy
+msgid "fullAddress"
+msgstr ""
+"Konzorcij za navođenje zbirki <br />\n"
+"Institut za bioraznolikost <br />\n"
+"Sveučilište u Kansasu <br />\n"
+"1345 Jayhawk Blvd. <br />\n"
+"Lawrence, KS 66045 SAD"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:91
+#, fuzzy
+msgid "disclosure"
+msgstr ""
+"Specify softver je proizvod konzorcija Specify Collections kojim upravljaju "
+"i financiraju ga njegove institucije članice. Osnivači konzorcija uključuju: "
+"Commonwealth Scientific and Industrial Research Organisation (CSIRO), "
+"Consejo Superior de Investigaciones Científicas, Danski konzorcij muzeja, "
+"Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, Sveučilište Kansas "
+"i Sveučilište Michigan. Konzorcij djeluje pod neprofitnim, poreznim statusom "
+"501(c)3 Sveučilišnog centra za istraživanje u Kansasu. Specify je od 1996. "
+"do 2018. godine financiran bespovratnim sredstvima američke Nacionalne "
+"zaklade za znanost."
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:92
+#, fuzzy
+msgid "licence"
+msgstr ""
+"Specify 7, Autorska prava 2025, Sveučilišni centar za istraživanje u "
+"Kansasu. Specify dolazi BEZ APSOLUTNO NIKAKVOG JAMSTVA. Ovo je besplatni "
+"softver otvorenog koda licenciran pod GNU General Public License v2."
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:95
+#, fuzzy
+msgid "systemInformation"
+msgstr "Informacije o sustavu"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:99
+#, fuzzy
+msgid "specifyVersion"
+msgstr "Navedite verziju 7:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:100
+#, fuzzy
+msgid "gitSha"
+msgstr "Git SHA:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:101
+#, fuzzy
+msgid "buildDate"
+msgstr "Datum izrade:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:103
+#, fuzzy
+msgid "specifySixVersion"
+msgstr "Navedite 6 verzija:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:106
+#, fuzzy
+msgid "databaseVersion"
+msgstr "Verzija baze podataka:"
+
+#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
+#: components/HomePage/AboutSpecify.tsx:108
+#: components/SchemaViewer/index.tsx:47
+#, fuzzy
+msgid "schemaVersion"
+msgstr "Verzija sheme baze podataka"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:113
+#, fuzzy
+msgid "databaseName"
+msgstr "Naziv baze podataka:"
+
+#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:135
+#, fuzzy
+msgid "isaNumber"
+msgstr "ISA broj:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:138
+#, fuzzy
+msgid "browser"
+msgstr "Preglednik:"
+
+#. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:117
+#, fuzzy
+msgid "databaseCreationDate"
+msgstr "Datum kreiranja baze podataka:"
