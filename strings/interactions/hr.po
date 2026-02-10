@@ -1,2 +1,302 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-11 00:10+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"interactions/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
+#: components/FormCommands/ShowTransactions.tsx:119
+#: components/Header/menuItemDefinitions.ts:61
+#: components/Interactions/InteractionsDialog.tsx:58
+#: components/Preferences/UserDefinitions.tsx:702
+#: components/Router/OverlayRoutes.tsx:87
+#, fuzzy
+msgid "interactions"
+msgstr "Interakcije"
+
+#. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+#: components/Interactions/InteractionDialog.tsx:486
+#: components/Interactions/PrepDialog.tsx:146
+#, fuzzy
+msgid "addItems"
+msgstr "Dodaj stavke"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:488
+#, fuzzy
+msgid "recordReturn"
+msgstr "{table:string} Povratak"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:576
+#, fuzzy
+msgid "preparationsNotFoundFor"
+msgstr "Nisu pronađene pripreme za sljedeće zapise:"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:584
+#, fuzzy
+msgid "preparationsNotAvailableFor"
+msgstr ""
+"U sljedećim zapisima nisu dostupni pripravci za barem jednu vrstu pripravka:"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:566
+#, fuzzy
+msgid "problemsFound"
+msgstr "Postoje problemi s unosom:"
+
+#. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:495
+#, fuzzy
+msgid "byChoosingRecordSet"
+msgstr "Odaberite {recordSet:string} (dostupno je {count:number|formatted})"
+
+#. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:508
+#: components/Interactions/InteractionDialog.tsx:537
+#, fuzzy
+msgid "byEnteringNumbers"
+msgstr "Unesite {tableName:string} {fieldName:string}s"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:505
+#, fuzzy
+msgid "enterLoanNumbers"
+msgstr "Unesite {fieldName: string}"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:466
+#, fuzzy
+msgid "withoutPreparations"
+msgstr "Bez priprema"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:423
+#: components/Interactions/InteractionDialog.tsx:427
+#, fuzzy
+msgid "continueWithoutPreparations"
+msgstr "Nastavite bez pripreme"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:462
+#, fuzzy
+msgid "addUnassociated"
+msgstr "Dodaj nepovezanu stavku"
+
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
+#: components/Interactions/PrepDialog.tsx:157
+#: components/Statistics/StatsSpec.tsx:48
+#: components/Statistics/StatsSpec.tsx:88
+#: components/Statistics/StatsSpec.tsx:91
+#: components/Statistics/__tests__/layout.tests.ts:39
+#: components/Statistics/__tests__/layout.tests.ts:42
+#, fuzzy
+msgid "preparations"
+msgstr "Pripreme"
+
+#. Used in: Components > Form Commands > Index
+#: components/FormCommands/index.tsx:101
+#, fuzzy
+msgid "preparationsCanNotBeReturned"
+msgstr "Pripreme se u ovom kontekstu ne mogu vratiti."
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:75
+#, fuzzy
+msgid "noUnresolvedPreparations"
+msgstr "Nema neriješenih priprema za ovaj kredit."
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:315
+#, fuzzy
+msgid "unresolved"
+msgstr "Neriješeno"
+
+#. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
+#: components/Interactions/LoanReturn.tsx:318
+#: components/QueryBuilder/LoanReturn.tsx:164
+#, fuzzy
+msgid "return"
+msgstr "Povratak"
+
+#. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:321
+#, fuzzy
+msgid "resolve"
+msgstr "Odlučnost"
+
+#. Used in: Components > Interactions > Loan Return
+#: components/Interactions/LoanReturn.tsx:170
+#, fuzzy
+msgid "returnAllPreparations"
+msgstr "Vratite sve pripreme"
+
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
+#: components/Interactions/LoanReturn.tsx:201
+#: components/QueryBuilder/LoanReturn.tsx:162
+#, fuzzy
+msgid "returnSelectedPreparations"
+msgstr "Vrati odabrane pripreme"
+
+#. Used in: Components > Interactions > Prep Dialog
+#: components/Interactions/PrepDialog.tsx:128
+#, fuzzy
+msgid "selectAllAvailablePreparations"
+msgstr "Odaberite sve dostupne pripreme"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row ⬤ Components > Interactions > Prep Return Row
+#: components/FormMeta/CarryForward.tsx:362
+#: components/Interactions/LoanReturn.tsx:182
+#: components/Interactions/PrepDialog.tsx:133
+#: components/Interactions/PrepDialog.tsx:257
+#: components/Interactions/PrepDialogRow.tsx:90
+#: components/Interactions/PrepDialogRow.tsx:92
+#: components/Interactions/PrepReturnRow.tsx:80
+#: components/Interactions/PrepReturnRow.tsx:82
+#, fuzzy
+msgid "selectAll"
+msgstr "Odaberi sve"
+
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Interactions > Prep Dialog Row
+#: components/Interactions/LoanReturn.tsx:275
+#: components/Interactions/LoanReturn.tsx:279
+#: components/Interactions/LoanReturn.tsx:289
+#: components/Interactions/LoanReturn.tsx:293
+#: components/Interactions/PrepDialog.tsx:163
+#: components/Interactions/PrepDialog.tsx:167
+#: components/Interactions/PrepDialogRow.tsx:181
+#: components/Interactions/PrepDialogRow.tsx:184
+#, fuzzy
+msgid "selectedAmount"
+msgstr "Odabrani iznos"
+
+#. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:101
+#: components/Interactions/PrepReturnRow.tsx:105
+#, fuzzy
+msgid "returnedAmount"
+msgstr "Vraćeni iznos"
+
+#. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:121
+#: components/Interactions/PrepReturnRow.tsx:125
+#, fuzzy
+msgid "resolvedAmount"
+msgstr "Riješeni iznos"
+
+#. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
+#: components/Interactions/PrepDialogRow.tsx:263
+#, fuzzy
+msgid "prepReturnFormatter"
+msgstr "{tableName:string}: {resource:string}"
+
+#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:136
+#, fuzzy
+msgid "resolvedLoans"
+msgstr "Riješeni {loanTable:string} zapisi"
+
+#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:125
+#, fuzzy
+msgid "openLoans"
+msgstr "Otvori {loanTable:string} zapise"
+
+#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:147
+#, fuzzy
+msgid "gifts"
+msgstr "{giftTable:string} zapisi"
+
+#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:159
+#, fuzzy
+msgid "exchanges"
+msgstr "{exhangeInTable:string} / {exhangeOutTable:string} zapisi"
+
+#. Used in: Components > Interactions > Prep Return Row
+#: components/Interactions/PrepReturnRow.tsx:41
+#, fuzzy
+msgid "unCataloged"
+msgstr "nekatalogizirano"
+
+#. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:392
+#: components/Interactions/InteractionDialog.tsx:433
+#, fuzzy
+msgid "returnedPreparations"
+msgstr "Vraćeni zapisi {tablePreparation:string}"
+
+#. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:397
+#, fuzzy
+msgid "returnedAndSaved"
+msgstr ""
+"Vraćeno je i spremljeno {count:number|formatted} {tablePreparation:string} "
+"zapisa"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Query Builder > Results
+#: components/FormMeta/CarryForward.tsx:382
+#: components/Interactions/LoanReturn.tsx:197
+#: components/Interactions/PrepDialog.tsx:140
+#: components/QueryBuilder/Results.tsx:211
+#, fuzzy
+msgid "deselectAll"
+msgstr "Poništi odabir svih"
+
+#. Used in: Components > Interactions > Prep Dialog
+#: components/Interactions/PrepDialog.tsx:270
+#, fuzzy
+msgid "available"
+msgstr "Dostupno"
+
+#. Used in: Components > Interactions > Prep Dialog
+#: components/Interactions/PrepDialog.tsx:271
+#, fuzzy
+msgid "unavailable"
+msgstr "Nije dostupno"
+
+#. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
+#: components/Interactions/InteractionsDialog.tsx:81
+#: components/QueryBuilder/LoanReturn.tsx:148
+#, fuzzy
+msgid "returnLoan"
+msgstr "Vrati {tableLoan:string} zapise"
+
+#. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
+#: components/Interactions/InteractionDialog.tsx:489
+#: components/Interactions/PrepDialog.tsx:147
+#, fuzzy
+msgid "createRecord"
+msgstr "Stvori {table:string}"
+
+#. Used in: Components > Interactions > Interaction Dialog
+#: components/Interactions/InteractionDialog.tsx:438
+#, fuzzy
+msgid "noPreparationsWarning"
+msgstr "Nijedan od ovih zapisa nema pripreme. Želite li nastaviti?"
+
+#. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
+#: components/BatchEdit/MissingRanks.tsx:44
+#: components/FormSliders/AttachmentWarningDeletion.tsx:53
+#: components/Interactions/InteractionDialog.tsx:478
+#: components/TreeView/AddRank.tsx:62
+#, fuzzy
+msgid "continue"
+msgstr "Nastaviti"
+
+#. Used in: Components > Interactions > Prep Dialog Row
+#: components/Interactions/PrepDialogRow.tsx:175
+#, fuzzy
+msgid "notAvailable"
+msgstr "Nije dostupno"
