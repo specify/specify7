@@ -21,6 +21,10 @@ import type {
   TaxonTreeDefItem,
 } from '../types';
 
+overrideAjax('/context/collection_resource/', {
+  collectionPreferences: {},
+});
+
 mockTime();
 requireContext();
 
@@ -846,6 +850,7 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
+    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -863,6 +868,7 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
+    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -879,6 +885,7 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
+    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
@@ -917,6 +924,7 @@ describe('treeBusinessRules', () => {
     });
 
     await taxon.businessRuleManager?.checkField('parent');
+    await taxon.businessRuleManager?.pendingPromise;
 
     const { result } = renderHook(() =>
       useSaveBlockers(taxon, tables.Taxon.getField('parent'))
