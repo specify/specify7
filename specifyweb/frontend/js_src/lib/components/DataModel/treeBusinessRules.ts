@@ -10,8 +10,8 @@ import { idFromUrl } from './resource';
 import type { Tables } from './types';
 
 const getCollectionPreferences = async () => {
-  const mod = await import('../Preferences/collectionPreferences');
-  return mod.collectionPreferences;
+  const module_ = await import('../Preferences/collectionPreferences');
+  return module_.collectionPreferences;
 };
 
 // eslint-disable-next-line unicorn/prevent-abbreviations
@@ -157,7 +157,7 @@ const canonicalPrefKey = (tableName: string): string =>
     : tableName[0].toUpperCase() + tableName.slice(1).toLowerCase();
 
 export function getStrictSynonymizationChecksPref(
-  collectionPreferences: { get: (...args: any[]) => unknown },
+  collectionPreferences: { readonly get: (...args: readonly any[]) => unknown },
   tableName: string
 ): boolean {
   const normalized = tableName.toLowerCase();
@@ -167,30 +167,30 @@ export function getStrictSynonymizationChecksPref(
   const keyRaw = tableName;
 
   const strictValue =
-    (collectionPreferences.get(
+    collectionPreferences.get(
       'treeManagement',
       'strict_synonymization_checks',
       keyRaw
-    ) as unknown) ??
-    (collectionPreferences.get(
+    ) ??
+    collectionPreferences.get(
       'treeManagement',
       'strict_synonymization_checks',
       keyTitle
-    ) as unknown);
+    );
 
   if (typeof strictValue === 'boolean') return strictValue;
 
   const legacyAllow =
-    (collectionPreferences.get(
+    collectionPreferences.get(
       'treeManagement',
       'synonymized',
       `sp7.allow_adding_child_to_synonymized_parent.${keyRaw}`
-    ) as unknown) ??
-    (collectionPreferences.get(
+    ) ??
+    collectionPreferences.get(
       'treeManagement',
       'synonymized',
       `sp7.allow_adding_child_to_synonymized_parent.${keyTitle}`
-    ) as unknown);
+    );
 
   if (typeof legacyAllow === 'boolean') return !legacyAllow;
 
