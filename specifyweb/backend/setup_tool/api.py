@@ -198,7 +198,8 @@ def create_discipline(data):
 
     # Resolve division
     division_url = data.get('division')
-    division = resolve_uri_or_fallback(division_url, None, Division)
+    division_id = data.pop('division_id', None)
+    division = resolve_uri_or_fallback(division_url, division_id, Division)
     if not division:
         raise SetupError("No Division available to assign")
 
@@ -362,7 +363,10 @@ def create_specifyuser(data):
 
     try:
         # Create user
-        new_user = Specifyuser.objects.create(**data)
+        new_user = Specifyuser.objects.create(
+            **data,
+            usertype='Manager'
+        )
         new_user.set_password(new_user.password)
         new_user.save()
 
