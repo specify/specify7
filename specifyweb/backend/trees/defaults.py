@@ -94,7 +94,7 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
 
         return tree_def
 
-def create_default_root(tree_def, tree_type: str):
+def create_default_root(tree_def, tree_type: str, kwargs: Optional[dict]):
     """Create root node"""
     # TODO: Avoid having duplicated code from add_root endpoint
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
@@ -115,7 +115,8 @@ def create_default_root(tree_def, tree_type: str):
         nodenumber=1,
         definition=tree_def,
         definitionitem=root_rank,
-        parent=None
+        parent=None,
+        **(kwargs if kwargs is not None else {})
     )
     return tree_node
 
@@ -391,7 +392,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                     auto_rank_id += 10
                 tree_def = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
             
-            create_default_root(tree_def, tree_type)
+            create_default_root(tree_def, tree_type, tree_cfg.get('root'))
             tree_name = tree_def.name
             
             # Start importing CSV data
