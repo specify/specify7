@@ -43,8 +43,40 @@ def setup_database_background(data: dict) -> str:
     
     return task.id
 
-def queue_fix_schema_config_background() -> str:
-    """Queue fix_schema_config to run asynchronously and return the task id"""
+def _is_fix_schema_config_task_running() -> bool:
+    """Return True when fix_schema_config_task is already in-flight on a worker"""
+    def has_matching_task(task_entries, target_task_name: str) -> bool:
+        for entry in (task_entries or []):
+            entry_name = entry.get("name")
+            if entry_name is None and isinstance(entry.get("request"), dict):
+                entry_name = entry["request"].get("name")
+            if entry_name == target_task_name:
+                return True
+        return False
+
+    try:
+        inspector = app.control.inspect(timeout=1)
+        snapshots = (
+            inspector.active() or {},
+            inspector.reserved() or {},
+            inspector.scheduled() or {},
+        )
+    except Exception:
+        return False
+
+    task_name = f"{__name__}.fix_schema_config_task"
+    for snapshot in snapshots:
+        for worker_tasks in snapshot.values():
+            if has_matching_task(worker_tasks, task_name):
+                return True
+    return False
+
+def queue_fix_schema_config_background() -> Optional[str]:
+    """Queue fix_schema_config unless already running; return task id or None"""
+    if _is_fix_schema_config_task_running():
+        logger.info("Skipping fix_schema_config_task enqueue because one is already running")
+        return None
+
     task = fix_schema_config_task.apply_async()
     return task.id
 
