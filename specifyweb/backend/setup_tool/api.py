@@ -223,7 +223,7 @@ def create_discipline(data, run_fix_schema_config_async: bool = True):
     tectonicunittreedef = resolve_uri_or_fallback(tectonicunittreedef_url, None, Tectonicunittreedef)
     lithostrattreedef = resolve_uri_or_fallback(lithostrattreedef_url, None, Lithostrattreedef)
 
-    if geographytreedef is None or geologictimeperiodtreedef is None:
+    if geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
 
     # Assign a taxon tree. Not required, but its eventually needed for collection object type.
@@ -282,7 +282,6 @@ def create_discipline(data, run_fix_schema_config_async: bool = True):
         apply_default_uniqueness_rules(new_discipline)
 
         # Update tree scoping
-        update_tree_scoping(geographytreedef, new_discipline.id)
         update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
 
         if (

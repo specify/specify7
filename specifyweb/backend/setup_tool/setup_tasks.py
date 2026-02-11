@@ -214,6 +214,7 @@ def set_last_setup_error(error_text: Optional[str]):
     set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
 
 def create_discipline_and_trees_task(data: dict):
+    from specifyweb.specify.models import Discipline
     """Create discipline and discipline's trees in the correct order. Similar to setup_database_task, but for the configuration tool."""
     logger.debug('## CREATING DISCIPLINE AND TREES WITH SETTINGS:##')
     logger.debug(data)
@@ -234,6 +235,11 @@ def create_discipline_and_trees_task(data: dict):
     logger.info('Creating taxon tree')
     taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
     taxon_treedef_id = taxon_result.get('treedef_id')
+
+    Discipline.objects.filter(id=discipline_id).update(
+    geographytreedef_id=geography_treedef_id,
+    taxontreedef_id=taxon_treedef_id,
+    )
 
     if data['geographytreedef'].get('preload'):
         start_preload_default_tree('Geography', discipline_id, None, geography_treedef_id, None, data['geographytreedef'].get('preloadfile'), False)
