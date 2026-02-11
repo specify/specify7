@@ -197,7 +197,7 @@ def create_discipline(data):
             return {"discipline_id": existing_discipline.id}
 
     # Resolve division
-    division_url = data.get('division')
+    division_url = data.pop('division')
     division_id = data.pop('division_id', None)
     division = resolve_uri_or_fallback(division_url, division_id, Division)
     if not division:

@@ -170,6 +170,8 @@ def set_last_setup_error(error_text: Optional[str]):
 
 def create_discipline_and_trees_task(data: dict):
     """Create discipline and discipline's trees in the correct order. Similar to setup_database_task, but for the configuration tool."""
+    logger.debug('## CREATING DISCIPLINE AND TREES WITH SETTINGS:##')
+    logger.debug(data)
     logger.info('Creating discipline')
     discipline_result = api.create_discipline(data['discipline'])
     discipline_id = discipline_result.get('discipline_id')

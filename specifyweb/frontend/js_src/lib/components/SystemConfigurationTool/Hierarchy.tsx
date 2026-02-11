@@ -610,7 +610,10 @@ export function Hierarchy({
                 setDisciplineRelatedFormData((previous) => {
                   const next = {
                     ...previous,
-                    division_id: discipline.id,
+                    discipline: {
+                      ...(previous?.discipline ?? {}),
+                      division_id: division.id,
+                    },
                     taxonTreeDef: formData.taxonTreeDef,
                   };
 
