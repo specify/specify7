@@ -15,7 +15,13 @@ from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_f
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
-from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error
+from specifyweb.backend.setup_tool.setup_tasks import (
+    setup_database_background,
+    get_active_setup_task,
+    get_last_setup_error,
+    set_last_setup_error,
+    queue_fix_schema_config_background,
+)
 from specifyweb.celery_tasks import MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
@@ -290,7 +296,7 @@ def create_discipline(data):
     except Exception as e:
         raise SetupError(e)
 
-def create_collection(data):
+def create_collection(data, run_fix_schema_config_async: bool = True):
     from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
@@ -329,9 +335,14 @@ def create_collection(data):
 
         # Create Preparation Types
         create_default_prep_types(new_collection, discipline.type)
+
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
-        fix_schema_config()
+        if run_fix_schema_config_async:
+            queue_fix_schema_config_background()
+        else:
+            fix_schema_config()
+        
         # Create Collection Object Type
         fix_cots()
 

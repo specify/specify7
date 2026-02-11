@@ -43,6 +43,11 @@ def setup_database_background(data: dict) -> str:
     
     return task.id
 
+def queue_fix_schema_config_background() -> str:
+    """Queue fix_schema_config to run asynchronously and return the task id"""
+    task = fix_schema_config_task.apply_async()
+    return task.id
+
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
     task_id = get_string(ACTIVE_TASK_REDIS_KEY)
@@ -133,7 +138,10 @@ def setup_database_task(self, data: dict):
             update_progress()
 
             logger.info('Creating collection')
-            collection_result = api.create_collection(data['collection'])
+            collection_result = api.create_collection(
+                data['collection'],
+                run_fix_schema_config_async=False
+            )
             collection_id = collection_result.get('collection_id')
             update_progress()
 
@@ -158,6 +166,11 @@ def setup_database_task(self, data: dict):
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
         raise
+
+@app.task(bind=True)
+def fix_schema_config_task(self):
+    """Run schema config migration fixups in a background worker"""
+    fix_schema_config()
 
 def get_last_setup_error() -> Optional[str]:
     err = get_string(LAST_ERROR_REDIS_KEY)
