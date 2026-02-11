@@ -550,7 +550,6 @@ export function Hierarchy({
             {/* COLLECTIONS */}
             {discipline.children.length > 0 &&
               renderCollections(discipline.children)}
-
             {canAddCollection && (
               <div className="flex  mb-2 ml-2">
                 {addButton(() => {
@@ -564,102 +563,98 @@ export function Hierarchy({
                 }, tableLabel('Collection'))}
               </div>
             )}
-
             {/* DISCIPLINE CONFIG DIALOGS */}
-            {disciplineStep === 0 && (
-              <DialogForm
-                formData={formData}
-                institutionData={institution}
-                open={disciplineCreationOpen && disciplineStep === 0}
-                resourceIndex={stepOrder.indexOf('discipline')}
-                setFormData={setFormData}
-                step={stepOrder.indexOf('discipline')}
-                title={tableLabel('Discipline')}
-                onClose={closeDisciplineCreation}
-                onSubmit={(formData) => {
-                  setDisciplineRelatedFormData((previous) => ({
+
+            <DialogForm
+              formData={formData}
+              institutionData={institution}
+              open={disciplineCreationOpen && disciplineStep === 0}
+              resourceIndex={stepOrder.indexOf('discipline')}
+              setFormData={setFormData}
+              step={stepOrder.indexOf('discipline')}
+              title={tableLabel('Discipline')}
+              onClose={closeDisciplineCreation}
+              onSubmit={(formData) => {
+                setDisciplineRelatedFormData((previous) => ({
+                  ...previous,
+                  discipline: formData.discipline,
+                }));
+                setDisciplineStep(1);
+              }}
+            />
+
+            <DialogForm
+              formData={formData}
+              institutionData={institution}
+              open={disciplineCreationOpen && disciplineStep === 1}
+              resourceIndex={stepOrder.indexOf('geographyTreeDef')}
+              setFormData={setFormData}
+              step={stepOrder.indexOf('geographyTreeDef')}
+              title={setupToolText.addNewGeographyTree()}
+              onClose={closeDisciplineCreation}
+              onSubmit={(formData) => {
+                setDisciplineRelatedFormData((previous) => ({
+                  ...previous,
+                  geographyTreeDef: formData.geographyTreeDef,
+                }));
+                setDisciplineStep(2);
+              }}
+            />
+
+            <DialogForm
+              formData={formData}
+              institutionData={institution}
+              open={disciplineCreationOpen && disciplineStep === 2}
+              resourceIndex={stepOrder.indexOf('taxonTreeDef')}
+              setFormData={setFormData}
+              step={stepOrder.indexOf('taxonTreeDef')}
+              title={setupToolText.addNewTaxonTree()}
+              onClose={closeDisciplineCreation}
+              onSubmit={(formData) => {
+                // Store final form data and send creation request
+                setDisciplineRelatedFormData((previous) => {
+                  const next = {
                     ...previous,
-                    discipline: formData.discipline,
-                  }));
-                  setDisciplineStep(1);
-                }}
-              />
-            )}
-            {disciplineStep === 1 && (
-              <DialogForm
-                formData={formData}
-                institutionData={institution}
-                open={disciplineCreationOpen && disciplineStep === 1}
-                resourceIndex={stepOrder.indexOf('geographyTreeDef')}
-                setFormData={setFormData}
-                step={stepOrder.indexOf('geographyTreeDef')}
-                title={setupToolText.addNewGeographyTree()}
-                onClose={closeDisciplineCreation}
-                onSubmit={(formData) => {
-                  setDisciplineRelatedFormData((previous) => ({
-                    ...previous,
-                    geographyTreeDef: formData.geographyTreeDef,
-                  }));
-                  setDisciplineStep(2);
-                }}
-              />
-            )}
-            {disciplineStep === 2 && (
-              <DialogForm
-                formData={formData}
-                institutionData={institution}
-                open={disciplineCreationOpen && disciplineStep === 2}
-                resourceIndex={stepOrder.indexOf('taxonTreeDef')}
-                setFormData={setFormData}
-                step={stepOrder.indexOf('taxonTreeDef')}
-                title={setupToolText.addNewTaxonTree()}
-                onClose={closeDisciplineCreation}
-                onSubmit={(formData) => {
-                  // Store final form data and send creation request
-                  setDisciplineRelatedFormData((previous) => {
-                    const next = {
-                      ...previous,
-                      discipline: {
-                        ...(previous?.discipline ?? {}),
-                        division_id: selectedDivisionId,
+                    discipline: {
+                      ...(previous?.discipline ?? {}),
+                      division_id: selectedDivisionId,
+                    },
+                    taxonTreeDef: formData.taxonTreeDef,
+                  };
+
+                  loading(
+                    ajax('/setup_tool/discipline_and_trees/create/', {
+                      method: 'POST',
+                      headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
                       },
-                      taxonTreeDef: formData.taxonTreeDef,
-                    };
-
-                    loading(
-                      ajax('/setup_tool/discipline_and_trees/create/', {
-                        method: 'POST',
-                        headers: {
-                          Accept: 'application/json',
-                          'Content-Type': 'application/json',
-                        },
-                        body: JSON.stringify(next),
-                        errorMode: 'visible',
-                        expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
+                      body: JSON.stringify(next),
+                      errorMode: 'visible',
+                      expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
+                    })
+                      .then(() => {
+                        void refreshAllInfo();
                       })
-                        .then(() => {
-                          void refreshAllInfo();
-                        })
-                        .catch((error) => {
-                          console.error(
-                            'Failed to create discipline and trees:',
-                            error
-                          );
-                        })
-                    );
+                      .catch((error) => {
+                        console.error(
+                          'Failed to create discipline and trees:',
+                          error
+                        );
+                      })
+                  );
 
-                    return next;
-                  });
+                  return next;
+                });
 
-                  closeDisciplineCreation();
-                  setDisciplineStep(0);
+                closeDisciplineCreation();
+                setDisciplineStep(0);
+                void refreshAllInfo();
+                globalThis.setTimeout(() => {
                   void refreshAllInfo();
-                  globalThis.setTimeout(() => {
-                    void refreshAllInfo();
-                  }, 400);
-                }}
-              />
-            )}
+                }, 400);
+              }}
+            />
           </CollapsibleSection>
         </li>
       );
