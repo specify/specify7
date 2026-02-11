@@ -189,7 +189,7 @@ def create_division(data):
         logger.exception(f'Division error: {e}')
         raise SetupError(e)
 
-def create_discipline(data, run_fix_schema_config_async: bool = True):
+def create_discipline(data):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
         Geologictimeperiodtreedef, Taxontreedef, Tectonicunittreedef, Lithostrattreedef
@@ -273,10 +273,6 @@ def create_discipline(data, run_fix_schema_config_async: bool = True):
 
         # Create Splocalecontainers for all datamodel tables
         apply_schema_defaults(new_discipline)
-        if run_fix_schema_config_async:
-            queue_fix_schema_config_background()
-        else:
-            fix_schema_config()
 
         # Apply default uniqueness rules
         apply_default_uniqueness_rules(new_discipline)
