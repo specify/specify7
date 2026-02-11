@@ -616,7 +616,7 @@ export function Hierarchy({
                   const next = {
                     ...previous,
                     discipline: {
-                      ...(previous?.discipline ?? {}),
+                      ...(previous?.discipline),
                       division_id: selectedDivisionId,
                     },
                     taxonTreeDef: formData.taxonTreeDef,
