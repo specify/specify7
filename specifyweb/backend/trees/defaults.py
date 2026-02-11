@@ -94,7 +94,7 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
 
         return tree_def
 
-def create_default_root(tree_def, tree_type: str, kwargs: Optional[dict]):
+def create_default_root(tree_def, tree_type: str, kwargs: Optional[dict]= None):
     """Create root node"""
     # TODO: Avoid having duplicated code from add_root endpoint
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
