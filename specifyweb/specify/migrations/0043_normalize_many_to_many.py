@@ -342,7 +342,7 @@ class Migration(migrations.Migration):
             atomic=True,
         ),
         *[migrations.RunSQL(
-            sql=f"DROP TABLE {table}",
+            sql=f"DROP TABLE IF EXISTS {table}",
             reverse_sql=LEGACY_MANY_TO_MANY_JOIN_TABLES[table]["sql"]
         ) for table in LEGACY_MANY_TO_MANY_JOIN_TABLES.keys()],
         migrations.CreateModel(
