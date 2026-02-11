@@ -306,7 +306,7 @@ def create_collection(data):
 
     # Handle discipline reference from URL
     discipline_id = data.get('discipline_id', None)
-    discipline_url = data.pop('discipline', None)
+    discipline_url = data.get('discipline', None)
     discipline = resolve_uri_or_fallback(discipline_url, discipline_id, Discipline)
     if discipline is not None:
         data['discipline_id'] = discipline.id
