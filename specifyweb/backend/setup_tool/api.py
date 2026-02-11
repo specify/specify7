@@ -203,7 +203,7 @@ def create_discipline(data):
     if not division:
         raise SetupError("No Division available to assign")
 
-    data['division'] = division
+    data['division_id'] = division.id
     
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
@@ -308,8 +308,10 @@ def create_collection(data):
     discipline_id = data.get('discipline_id', None)
     discipline_url = data.get('discipline', None)
     discipline = resolve_uri_or_fallback(discipline_url, discipline_id, Discipline)
+
     if discipline is not None:
         data['discipline_id'] = discipline.id
+        data['discipline'] = discipline
     else:
         raise SetupError("No discipline available")
     
