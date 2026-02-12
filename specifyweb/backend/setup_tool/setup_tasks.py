@@ -80,7 +80,7 @@ def get_active_preload_task() -> Tuple[Optional[AsyncResult], bool]:
     task_id = get_string(PRELOAD_TASK_REDIS_KEY)
 
     if not task_id:
-        return None
+        return None, False
 
     res = app.AsyncResult(task_id)
     busy = res.state in ("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS")
@@ -97,7 +97,7 @@ def get_active_preload_task() -> Tuple[Optional[AsyncResult], bool]:
                 err_msg = str(err)
             set_string(LAST_PRELOAD_ERROR_REDIS_KEY, err_msg)
 
-        return None
+        return None, False
 
     return res, busy
 
