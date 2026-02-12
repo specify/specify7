@@ -1,2 +1,439 @@
 msgid ""
-msgstr "X-Generator: Weblate\nMIME-Version: 1.0\nContent-Type: text/plain; charset=UTF-8\nContent-Transfer-Encoding: 8bit"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-02-12 21:09+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"schema/hr/>\n"
+"Language: hr\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
+"X-Generator: Weblate 5.16-dev\n"
+
+#. Used in: Components > Schema Config > Table ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Preview Tables ⬤ Components > Security > Registry ⬤ Components > Web Links > Element
+#: components/SchemaConfig/Table.tsx:51
+#: components/SchemaViewer/schemaToTsv.tsx:15
+#: components/Security/PreviewTables.tsx:69
+#: components/Security/registry.ts:78
+#: components/WebLinks/Element.tsx:40
+#, fuzzy
+msgid "table"
+msgstr "Stol"
+
+#. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
+#: components/Attachments/index.tsx:195
+#: components/FormEditor/Table.tsx:49
+#: components/Router/Routes.tsx:415
+#: components/SchemaConfig/Tables.tsx:49
+#, fuzzy
+msgid "tables"
+msgstr "Tablice"
+
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
+#: components/Preferences/UserDefinitions.tsx:891
+#: components/WbPlanView/MapperComponents.tsx:452
+#, fuzzy
+msgid "tableName"
+msgstr "Naziv tablice"
+
+#. Used in: Components > Web Links > Element
+#: components/WebLinks/Element.tsx:52
+#, fuzzy
+msgid "withoutTable"
+msgstr "Bez stola"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Languages ⬤ Components > Security > Registry
+#: components/Header/userToolDefinitions.ts:68
+#: components/Preferences/UserDefinitions.tsx:834
+#: components/Router/Routes.tsx:389
+#: components/SchemaConfig/Components.tsx:30
+#: components/SchemaConfig/Languages.tsx:36
+#: components/Security/registry.ts:206
+#, fuzzy
+msgid "schemaConfig"
+msgstr "Konfiguracija sheme"
+
+#. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:75
+#, fuzzy
+msgid "unsavedSchemaUnloadProtect"
+msgstr "Promjene sheme nisu spremljene"
+
+#. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
+#: components/SchemaConfig/Components.tsx:38
+#: components/WbPlanView/MapperComponents.tsx:335
+#, fuzzy
+msgid "changeBaseTable"
+msgstr "Promijeni osnovnu tablicu"
+
+#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#: components/FieldFormatters/FieldFormatter.tsx:59
+#: components/Formatters/Fields.tsx:75
+#: components/LocalityUpdate/Status.tsx:377
+#: components/LocalityUpdate/Status.tsx:422
+#: components/SchemaConfig/Field.tsx:43
+#: components/WebLinks/Definition.tsx:25
+#, fuzzy
+msgid "field"
+msgstr "Polje"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
+#: components/FormMeta/CarryForward.tsx:405
+#: components/Forms/generateFormDefinition.ts:130
+#: components/SchemaConfig/Fields.tsx:49
+#: components/SchemaConfig/Fields.tsx:60
+#: components/SchemaConfig/UniquenessRuleRow.tsx:253
+#: components/SchemaViewer/Fields.tsx:43
+#, fuzzy
+msgid "fields"
+msgstr "Polja"
+
+#. Used in: Components > Form Meta > Carry Forward ⬤ Components > Forms > Generate Form Definition ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Relationships
+#: components/FormMeta/CarryForward.tsx:414
+#: components/Forms/generateFormDefinition.ts:168
+#: components/SchemaConfig/Fields.tsx:68
+#: components/SchemaConfig/UniquenessRuleRow.tsx:254
+#: components/SchemaViewer/Relationships.tsx:45
+#, fuzzy
+msgid "relationships"
+msgstr "Odnosi"
+
+#. Used in: Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Config > Uniqueness Rule Scope
+#: components/SchemaConfig/UniquenessRuleRow.tsx:102
+#: components/SchemaConfig/UniquenessRuleRow.tsx:200
+#: components/SchemaConfig/UniquenessRuleRow.tsx:311
+#: components/SchemaConfig/UniquenessRuleScope.tsx:43
+#, fuzzy
+msgid "database"
+msgstr "Baza podataka"
+
+#. Used in: Components > Schema Config > Uniqueness Rule Scope
+#: components/SchemaConfig/UniquenessRuleScope.tsx:176
+#: components/SchemaConfig/UniquenessRuleScope.tsx:178
+#, fuzzy
+msgid "setScope"
+msgstr "Postavi opseg"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Config > Table
+#: components/SchemaConfig/Field.tsx:48
+#: components/SchemaConfig/Table.tsx:56
+#, fuzzy
+msgid "caption"
+msgstr "Naslov"
+
+#. Used in: Components > Export Feed > Editor ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role ⬤ Components > Web Links > Element
+#: components/ExportFeed/Editor.tsx:62
+#: components/ExportFeed/Editor.tsx:174
+#: components/SchemaConfig/Field.tsx:58
+#: components/SchemaConfig/Table.tsx:66
+#: components/SchemaViewer/Fields.tsx:59
+#: components/SchemaViewer/Relationships.tsx:96
+#: components/SchemaViewer/schemaToTsv.tsx:22
+#: components/Security/Role.tsx:141
+#: components/WebLinks/Element.tsx:30
+#, fuzzy
+msgid "description"
+msgstr "Opis"
+
+#. Used in: Components > Schema Config > Table
+#: components/SchemaConfig/Table.tsx:104
+#, fuzzy
+msgid "hideTable"
+msgstr "Sakrij tablicu"
+
+#. Used in: Components > Schema Config > Field
+#: components/SchemaConfig/Field.tsx:87
+#, fuzzy
+msgid "hideField"
+msgstr "Sakrij polje"
+
+#. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
+#: components/Formatters/Types.tsx:56
+#: components/SchemaConfig/Table.tsx:147
+#, fuzzy
+msgid "tableFormat"
+msgstr "Format tablice"
+
+#. Used in: Components > Formatters > Types ⬤ Components > Schema Config > Table
+#: components/Formatters/Types.tsx:60
+#: components/SchemaConfig/Table.tsx:148
+#, fuzzy
+msgid "tableAggregation"
+msgstr "Agregacija tablica"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:85
+#, fuzzy
+msgid "oneToOne"
+msgstr "Jedan na jedan"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:86
+#, fuzzy
+msgid "oneToMany"
+msgstr "Jedan-na-mnogo"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:87
+#, fuzzy
+msgid "manyToOne"
+msgstr "Više prema jedan"
+
+#. Used in: Components > Schema Config > Helpers
+#: components/SchemaConfig/helpers.ts:88
+#, fuzzy
+msgid "manyToMany"
+msgstr "mnogo-na-mnogo"
+
+#. Used in: Components > Schema Config > Field ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaConfig/Field.tsx:68
+#: components/SchemaViewer/Fields.tsx:64
+#: components/SchemaViewer/schemaToTsv.tsx:28
+#, fuzzy
+msgid "fieldLength"
+msgstr "Duljina"
+
+#. Used in: Components > Form Meta > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/FormMeta/index.tsx:75
+#: components/SchemaViewer/Fields.tsx:61
+#: components/SchemaViewer/Relationships.tsx:98
+#: components/SchemaViewer/schemaToTsv.tsx:24
+#, fuzzy
+msgid "readOnly"
+msgstr "Samo za čitanje"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:67
+#, fuzzy
+msgid "fieldFormat"
+msgstr "Format polja"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:91
+#, fuzzy
+msgid "uiFormattersForField"
+msgstr "Formateri polja za {fieldLabel:string}"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:84
+#, fuzzy
+msgid "formatted"
+msgstr "Formatirano"
+
+#. Used in: Components > Schema Config > Format ⬤ Components > Web Links > Element
+#: components/SchemaConfig/Format.tsx:131
+#: components/WebLinks/Element.tsx:26
+#, fuzzy
+msgid "webLink"
+msgstr "Web-veza"
+
+#. Used in: Components > Schema Config > Format
+#: components/SchemaConfig/Format.tsx:159
+#, fuzzy
+msgid "userDefined"
+msgstr "Korisnički definirano"
+
+#. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
+#: components/Router/Routes.tsx:404
+#: components/SchemaConfig/Languages.tsx:29
+#: components/SchemaConfig/Languages.tsx:78
+#, fuzzy
+msgid "addLanguage"
+msgstr "Dodaj jezik"
+
+#. Used in: Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Fields.tsx:65
+#: components/SchemaViewer/Relationships.tsx:101
+#: components/SchemaViewer/schemaToTsv.tsx:29
+#, fuzzy
+msgid "databaseColumn"
+msgstr "Stupac baze podataka"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:102
+#: components/SchemaViewer/schemaToTsv.tsx:30
+#, fuzzy
+msgid "relatedTable"
+msgstr "Povezani model"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:103
+#: components/SchemaViewer/schemaToTsv.tsx:31
+#, fuzzy
+msgid "otherSideName"
+msgstr "Drugo bočno ime"
+
+#. Used in: Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Relationships.tsx:61
+#: components/SchemaViewer/Relationships.tsx:104
+#: components/SchemaViewer/schemaToTsv.tsx:32
+#, fuzzy
+msgid "dependent"
+msgstr "Ovisnik"
+
+#. Used in: Components > Schema Viewer > Relationships
+#: components/SchemaViewer/Relationships.tsx:77
+#, fuzzy
+msgid "independent"
+msgstr "Neovisni"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:57
+#, fuzzy
+msgid "downloadAsJson"
+msgstr "Preuzmi kao JSON"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:64
+#, fuzzy
+msgid "downloadAsXml"
+msgstr "Preuzmi kao XML"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:77
+#, fuzzy
+msgid "downloadAsTsv"
+msgstr "Preuzmi kao TSV"
+
+#. Used in: Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
+#: components/SchemaViewer/Table.tsx:61
+#: components/SchemaViewer/schemaToTsv.tsx:19
+#, fuzzy
+msgid "tableId"
+msgstr "ID tablice"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:62
+#, fuzzy
+msgid "fieldCount"
+msgstr "Broj polja"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:63
+#, fuzzy
+msgid "relationshipCount"
+msgstr "Broj odnosa"
+
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
+#: components/Header/userToolDefinitions.ts:151
+#: components/Router/Routes.tsx:45
+#: components/Router/Routes.tsx:49
+#, fuzzy
+msgid "databaseSchema"
+msgstr "Shema baze podataka"
+
+#. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:83
+#, fuzzy
+msgid "selectedTables"
+msgstr "Odabrane tablice"
+
+#. Used in: Components > Toolbar > Query Tables Edit
+#: components/Toolbar/QueryTablesEdit.tsx:81
+#, fuzzy
+msgid "possibleTables"
+msgstr "Moguće tablice"
+
+#. Used in: Components > Schema Viewer > Table
+#: components/SchemaViewer/Table.tsx:45
+#, fuzzy
+msgid "goToTop"
+msgstr "Idi na vrh"
+
+#. Used in: Components > Schema Viewer > Fields
+#: components/SchemaViewer/Fields.tsx:31
+#, fuzzy
+msgid "idField"
+msgstr "Polje za identifikaciju"
+
+#. Used in: Components > Schema Config > Table Uniqueness Rules
+#: components/SchemaConfig/TableUniquenessRules.tsx:145
+#, fuzzy
+msgid "tableUniquenessRules"
+msgstr "{tableName:string} Pravila jedinstvenosti"
+
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
+#: components/Router/OverlayRoutes.tsx:245
+#: components/SchemaConfig/Table.tsx:93
+#, fuzzy
+msgid "uniquenessRules"
+msgstr "Pravila jedinstvenosti"
+
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/TableUniquenessRules.tsx:178
+#: components/SchemaConfig/UniquenessRuleRow.tsx:247
+#, fuzzy
+msgid "uniqueFields"
+msgstr "Jedinstvena polja"
+
+#. Used in: Components > Schema Config > Table Uniqueness Rules
+#: components/SchemaConfig/TableUniquenessRules.tsx:136
+#, fuzzy
+msgid "addUniquenessRule"
+msgstr "Dodaj pravilo jedinstvenosti"
+
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/UniquenessRuleRow.tsx:240
+#, fuzzy
+msgid "configureUniquenessRule"
+msgstr "Konfiguriraj pravilo jedinstvenosti"
+
+#. Used in: Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Schema Viewer > Fields
+#: components/SchemaConfig/TableUniquenessRules.tsx:179
+#: components/SchemaConfig/UniquenessRuleRow.tsx:300
+#: components/SchemaViewer/Fields.tsx:38
+#, fuzzy
+msgid "scope"
+msgstr "Opseg"
+
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/UniquenessRuleRow.tsx:59
+#: components/SchemaConfig/UniquenessRuleRow.tsx:173
+#, fuzzy
+msgid "uniquenessDuplicatesFound"
+msgstr "Duplikati pronađeni u bazi podataka"
+
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/UniquenessRuleRow.tsx:233
+#, fuzzy
+msgid "exportDuplicates"
+msgstr "Izvoz duplikata"
+
+#. Used in: Components > Schema Config > Uniqueness Rule Row
+#: components/SchemaConfig/UniquenessRuleRow.tsx:208
+#, fuzzy
+msgid "numberOfDuplicates"
+msgstr "Broj duplikata"
+
+#. Used in: Components > Schema Config > Index
+#: components/SchemaConfig/index.tsx:38
+#, fuzzy
+msgid "schemaViewTitle"
+msgstr "Konfiguracija sheme: {tableName:string}"
+
+#. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:70
+#, fuzzy
+msgid "schemaExportFileName"
+msgstr "Navedite 7 podatkovnih modela"
+
+#. Used in: Components > Schema Config > Fields
+#: components/SchemaConfig/Fields.tsx:78
+#, fuzzy
+msgid "sortByHiddenFields"
+msgstr "Sortiraj po skrivenim poljima"
+
+#. Used in: Components > Schema Config > Fields
+#: components/SchemaConfig/Fields.tsx:93
+#, fuzzy
+msgid "hidden"
+msgstr "skriven"
+
+#. Used in: Components > Formatters > Fields
+#: components/Formatters/Fields.tsx:76
+#, fuzzy
+msgid "customFieldFormat"
+msgstr "Prilagođeni format polja"
