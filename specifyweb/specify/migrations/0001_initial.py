@@ -2430,7 +2430,7 @@ class Migration(migrations.Migration):
                 ('version', models.IntegerField(blank=True, db_column='Version', default=0, null=True)),
                 ('createdbyagent', models.ForeignKey(db_column='CreatedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
                 ('modifiedbyagent', models.ForeignKey(db_column='ModifiedByAgentID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent')),
-                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.taxontreedefitem')),
+                ('parent', models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.DO_NOTHING, related_name='children', to='specify.taxontreedefitem')),
                 ('treedef', models.ForeignKey(db_column='TaxonTreeDefID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='treedefitems', to='specify.taxontreedef')),
             ],
             options={
