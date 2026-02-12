@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
@@ -140,26 +139,38 @@ export function Tree<
   };
 
   // Add a cookie or local storage (browser storage), if not busy than never call this again
-  const [treePreloading] = useAsyncState(
-    React.useCallback(
-      async () =>
-        ajax<PreloadProgress>('/setup_tool/preload_tree_status/', {
-          method: 'GET',
-          headers: { Accept: 'application/json' },
-          errorMode: 'silent',
+  const [treePreloading, setTreePreloading] = React.useState<
+    PreloadProgress | undefined
+  >(undefined);
+
+  React.useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    const fetchTreeProgress = () => {
+      ajax<PreloadProgress>('/setup_tool/preload_tree_status/', {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        errorMode: 'silent',
+      })
+        .then(({ data }) => {
+          console.log(data, rows.length);
+          setTreePreloading(data);
+
+          if (!data?.busy && intervalId) {
+            clearInterval(intervalId);
+          }
         })
-          .then(({ data }) => {
-            console.log(data);
-            return data;
-          })
-          .catch((error) => {
-            console.error('Failed to fetch setup progress:', error);
-            return undefined;
-          }),
-      []
-    ),
-    true
-  );
+        .catch((error) => {
+          console.error('Failed to fetch setup progress:', error);
+        });
+    };
+
+    fetchTreeProgress();
+
+    intervalId = setInterval(fetchTreeProgress, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
 
   return (
     <div
@@ -171,7 +182,6 @@ export function Tree<
         ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
       `}
       role="none table"
-      // First role is for screen readers. Second is for styling
       style={
         {
           '--cols': treeDefinitionItems.length,
@@ -180,11 +190,8 @@ export function Tree<
         } as React.CSSProperties
       }
       tabIndex={0}
-      // When tree viewer is focused, move focus to last focused node
       onFocus={(event): void => {
-        // Don't handle bubbled events
         if (event.currentTarget !== event.target) return;
-        // If user wants to edit tree ranks, allow tree ranks to receive focus
         if (isEditingRanks) return;
         event.preventDefault();
       }}

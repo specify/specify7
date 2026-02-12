@@ -87,7 +87,6 @@ def get_active_preload_task() -> Tuple[Optional[AsyncResult], bool]:
 
     # Task finished → clear the key
     if not busy and res.state in ("SUCCESS", "FAILURE", "REVOKED"):
-        set_string(PRELOAD_TASK_REDIS_KEY, None)
         # Save error if any
         if res.state == "FAILURE":
             err = getattr(res, "info", None)
@@ -95,9 +94,7 @@ def get_active_preload_task() -> Tuple[Optional[AsyncResult], bool]:
                 err_msg = err.get("error") or err.get("exc_message") or err.get("message") or repr(err)
             else:
                 err_msg = str(err)
-            set_string(LAST_PRELOAD_ERROR_REDIS_KEY, err_msg)
-
-        return None, False
+            set_string(LAST_PRELOAD_ERROR_REDIS_KEY, err_msg or '', time_to_live=60*60*24)
 
     return res, busy
 
