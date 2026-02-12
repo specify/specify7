@@ -1,6 +1,8 @@
 from decimal import Decimal
 import logging
-from typing import Any, NamedTuple, Literal, Union
+import time
+from typing import Any, NamedTuple, Literal, Union, cast
+from collections import defaultdict
 
 from django.db import transaction, IntegrityError
 
@@ -50,8 +52,23 @@ from .uploadable import (
     BatchEditSelf,
 )
 
-
 logger = logging.getLogger(__name__)
+
+_PROCESS_TIMINGS: dict[str, float] = defaultdict(float)
+
+def reset_process_timings() -> None:
+    """Clear accumulated BoundUploadTable timing data."""
+    _PROCESS_TIMINGS.clear()
+
+
+def get_process_timings() -> dict[str, float]:
+    """Return a shallow copy of accumulated timings (seconds per stage)."""
+    return dict(_PROCESS_TIMINGS)
+
+
+def _add_timing(stage: str, dt: float) -> None:
+    """Accumulate dt seconds into a named stage."""
+    _PROCESS_TIMINGS[stage] += dt
 
 # This doesn't cause race conditions, since the cache itself is local to a dataset.
 # Even if you've another validation on the same thread, this won't cause an issue
@@ -454,8 +471,8 @@ class BoundUploadTable(NamedTuple):
                     ):
                         continue
                     if field.many_to_one or field.one_to_one:
-                        attname: str = field.attname  # type: ignore
-                        hit = getattr(record_ref, attname) != None
+                        attname = cast(str, getattr(field, "attname"))
+                        hit = getattr(record_ref, attname) is not None
                     else:
                         hit = getattr(record_ref, field.name).exists()
                     if hit:
@@ -517,7 +534,9 @@ class BoundUploadTable(NamedTuple):
                 self.cache.pop(cache_key)
             return cache_hit
 
+        t0 = time.perf_counter()
         reference_record = safe_fetch(model, {"id": current_id}, self.current_version)
+        _add_timing("get_reference", time.perf_counter() - t0)
 
         if should_cache and self.cache is not None:
             self.cache[cache_key] = reference_record
@@ -556,10 +575,11 @@ class BoundUploadTable(NamedTuple):
         )
 
         current_id = self.current_id
-
         assert current_id != NULL_RECORD, "found handling a NULL record!"
 
+        t0 = time.perf_counter()
         to_one_results = self._process_to_ones()
+        _add_timing("to_ones", time.perf_counter() - t0)
 
         if any(result.get_id() == "Failure" for result in to_one_results.values()):
             return UploadResult(PropagatedFailure(), to_one_results, {})
@@ -572,43 +592,49 @@ class BoundUploadTable(NamedTuple):
 
         # This is very handy to check for whether the entire record needs to be skipped or not.
         # This also returns predicates for to-many, we if this is empty, we really are a null record
-
         is_edit_table = isinstance(self, BoundUpdateTable)
+
+        t0 = time.perf_counter()
         try:
             filter_predicate = self.get_django_predicates(
                 should_defer_match=self._should_defer_match,
                 to_one_override=to_one_results,
                 consider_dependents=is_edit_table,
                 is_origin=True,
-                origin_is_editable=is_edit_table
+                origin_is_editable=is_edit_table,
             )
         except ContetRef as e:
             # Not sure if there is a better way for this. Consider moving this to binding.
+            _add_timing("predicates", time.perf_counter() - t0)
             return UploadResult(
                 FailedBusinessRule(str(e), {}, info), to_one_results, {}
             )
+        else:
+            _add_timing("predicates", time.perf_counter() - t0)
 
+        t0 = time.perf_counter()
         attrs = {
             **(
                 {}
-                if self.auditor.props.batch_edit_prefs['deferForNullCheck']
+                if self.auditor.props.batch_edit_prefs["deferForNullCheck"]
                 else self._resolve_reference_attributes(model, self._get_reference())
             ),
             **attrs,
         }
+        _add_timing("resolve_reference_attrs", time.perf_counter() - t0)
 
-        if (
-            all(v is None for v in attrs.values()) and not filter_predicate.filters
-        ) and allow_null:
-            # nothing to upload
+        if (all(v is None for v in attrs.values()) and not filter_predicate.filters) and allow_null:
             return UploadResult(NullRecord(info), to_one_results, {})
+
         if not skip_match:
             assert not is_edit_table, "Trying to match update table!"
 
+            # Possible second predicates build, time this separately
             if not filter_predicate.filters and self.current_id is not None:
                 # Technically, we'll get always the empty predicate back if self.current_id is None
                 # So, we can skip the check for "self.current_id is not None:". But, it 
                 # is an optimization (a micro-one)
+                t0 = time.perf_counter()
                 filter_predicate = self.get_django_predicates(
                     should_defer_match=self._should_defer_match,
                     # to_one_results should be completely empty (or all nulls)
@@ -617,14 +643,23 @@ class BoundUploadTable(NamedTuple):
                     consider_dependents=False,
                     # Don't necessarily reduce the empty fields now.
                     is_origin=False,
-                    origin_is_editable=False
+                    origin_is_editable=False,
                 )
+                _add_timing("predicates_secondary", time.perf_counter() - t0)
 
+            # timing _match
+            t0 = time.perf_counter()
             match = self._match(filter_predicate, info)
+            _add_timing("match", time.perf_counter() - t0)
+
             if match:
                 return UploadResult(match, to_one_results, {})
 
-        return self._do_upload(model, to_one_results, info)
+        t0 = time.perf_counter()
+        result = self._do_upload(model, to_one_results, info)
+        _add_timing("do_upload", time.perf_counter() - t0)
+
+        return result
 
     def _process_to_ones(self) -> dict[str, UploadResult]:
         return {
@@ -711,28 +746,27 @@ class BoundUploadTable(NamedTuple):
             **to_one_results,
             **{
                 fieldname: to_one_def.force_upload_row()
-                for fieldname, to_one_def in
                 # Make the upload order deterministic (maybe? depends on if it matched I guess)
                 # But because the records can't be shared, the unupload order shouldn't matter anyways...
-                Func.sort_by_key(self.toOne)
+                for fieldname, to_one_def in Func.sort_by_key(self.toOne)
                 if to_one_def.is_one_to_one()
             },
         }
 
         to_one_ids: dict[str, int | None] = {}
         for field, result in to_one_results.items():
-            id = result.get_id()
-            if id == "Failure":
+            id_ = result.get_id()
+            if id_ == "Failure":
                 return UploadResult(PropagatedFailure(), to_one_results, {})
-            to_one_ids[field] = id
+            to_one_ids[field] = id_
 
         new_attrs = {
             **attrs,
             **self.scopingAttrs,
             **self.static,
             **{
-                model._meta.get_field(fieldname).attname: id  # type: ignore
-                for fieldname, id in to_one_ids.items()
+                cast(str, getattr(model._meta.get_field(fieldname), "attname")): id_
+                for fieldname, id_ in to_one_ids.items()
             },
             **(
                 {"createdbyagent_id": self.uploadingAgentId}
@@ -762,7 +796,9 @@ class BoundUploadTable(NamedTuple):
     def _handle_to_many(
         self, update: bool, parent_id: int, model: models.ModelWithTable
     ):
-        return {
+        stage_name = "update_to_many" if update else "insert_to_many"
+        t0 = time.perf_counter()
+        result = {
             fieldname: _upload_to_manys(
                 model,
                 parent_id,
@@ -770,10 +806,39 @@ class BoundUploadTable(NamedTuple):
                 update,
                 records,
                 # we don't care about checking for dependents if we aren't going to delete them!
-                self.auditor.props.allow_delete_dependents and self._relationship_is_dependent(fieldname),
+                self.auditor.props.allow_delete_dependents
+                and self._relationship_is_dependent(fieldname),
             )
             for fieldname, records in Func.sort_by_key(self.toMany)
         }
+        _add_timing(stage_name, time.perf_counter() - t0)
+        return result
+
+    def _has_scoping_changes(self, concrete_field_changes):
+        return any(
+            scoping_attr in concrete_field_changes
+            for scoping_attr in self.scopingAttrs.keys()
+        )
+    
+    # Edge case: Scope change is allowed for Loan -> division.
+    # See: https://github.com/specify/specify7/pull/5417#issuecomment-2613245552
+    def _is_scope_change_allowed(self, concrete_field_changes):
+        if self.name == "Loan" and "division_id" in concrete_field_changes:
+            return True
+        
+        return False
+
+    def _do_update(self, reference_obj, dirty_fields, **attrs):
+        # TODO: Try handling parent_obj. Quite complicated and ugly.
+        self.auditor.update(reference_obj, None, dirty_fields)
+        for key, value in attrs.items():
+            setattr(reference_obj, key, value)
+        if hasattr(reference_obj, "version"):
+            # Consider using bump_version here.
+            # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
+            setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
+        reference_obj.save()
+        return reference_obj
 
     def _do_insert(self, model, attrs) -> Any:
         inserter = self._get_inserter()
@@ -791,13 +856,27 @@ class BoundUploadTable(NamedTuple):
 
     def _get_inserter(self):
         def _inserter(model, attrs):
-            uploaded = model.objects.create(**attrs)
-            self.auditor.insert(uploaded, None)
-            return uploaded
+            # Object construction
+            t0 = time.perf_counter()
+            obj = model(**attrs)
+            _add_timing("insert_init", time.perf_counter() - t0)
+
+            # DB write
+            t1 = time.perf_counter()
+            obj.save()
+            _add_timing("insert_save", time.perf_counter() - t1)
+
+            # Audit
+            t2 = time.perf_counter()
+            self.auditor.insert(obj, None)
+            _add_timing("insert_audit", time.perf_counter() - t2)
+
+            return obj
 
         return _inserter
 
     def _do_picklist_additions(self) -> list[PicklistAddition]:
+        t0 = time.perf_counter()
         added_picklist_items = []
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
@@ -813,6 +892,7 @@ class BoundUploadTable(NamedTuple):
                         name=a.picklist.name, caption=a.column, value=a.value, id=pli.id
                     )
                 )
+        _add_timing("picklist", time.perf_counter() - t0)
         return added_picklist_items
 
     def delete_row(self, parent_obj=None) -> UploadResult:
@@ -872,7 +952,157 @@ class BoundUploadTable(NamedTuple):
             return True
         
         return django_model.specify_model.get_relationship(field_name).dependent
+    
+    def can_use_bulk_insert(self) -> bool:
+        # TODO: Review and test which rows can be used with bulk create
 
+        # Updates / clones are not handled by bulk create
+        if self.current_id is not None:
+            return False
+
+        # Must-match semantics are special, so use normal creation
+        if self.must_match():
+            return False
+
+        if self.toMany:
+            # return False
+            return True
+
+        # If any parsed field wants to add to a picklist, use normal creation
+        # for parsed in self.parsedFields:
+        #     if getattr(parsed, "add_to_picklist", None) is not None:
+        #         return False
+
+        return True
+    
+    def prepare_for_bulk_insert(
+        self,
+    ) -> tuple[UploadResult | None, dict[str, Any] | None]:
+        model = self.django_model
+
+        # Disambiguation shortcut: behaves like _handle_row
+        if self.disambiguation is not None:
+            if model.objects.filter(id=self.disambiguation).exists():
+                info = ReportInfo(
+                    tableName=self.name,
+                    columns=[pr.column for pr in self.parsedFields],
+                    treeInfo=None,
+                )
+                return (
+                    UploadResult(
+                        Matched(
+                            id=self.disambiguation,
+                            info=info,
+                        ),
+                        {},
+                        {},
+                    ),
+                    None,
+                )
+
+        info = ReportInfo(
+            tableName=self.name,
+            columns=[pr.column for pr in self.parsedFields],
+            treeInfo=None,
+        )
+
+        # to-ones
+        to_one_results = self._process_to_ones()
+        if any(result.get_id() == "Failure" for result in to_one_results.values()):
+            return UploadResult(PropagatedFailure(), to_one_results, {}), None
+
+        # base attrs from parsed fields
+        attrs = {
+            fieldname_: value
+            for parsedField in self.parsedFields
+            for fieldname_, value in parsedField.upload.items()
+        }
+
+        is_edit_table = isinstance(self, BoundUpdateTable)
+
+        # build predicates, same as in _handle_row
+        try:
+            filter_predicate = self.get_django_predicates(
+                should_defer_match=self._should_defer_match,
+                to_one_override=to_one_results,
+                consider_dependents=is_edit_table,
+                is_origin=True,
+                origin_is_editable=is_edit_table,
+            )
+        except ContetRef as e:
+            return (
+                UploadResult(
+                    FailedBusinessRule(str(e), {}, info),
+                    to_one_results,
+                    {},
+                ),
+                None,
+            )
+
+        # merge reference attrs (null-safe; for inserts, this usually ends up empty)
+        attrs = {
+            **(
+                {}
+                if self.auditor.props.batch_edit_prefs["deferForNullCheck"]
+                else self._resolve_reference_attributes(model, self._get_reference())
+            ),
+            **attrs,
+        }
+
+        # null row check
+        if (all(v is None for v in attrs.values()) and not filter_predicate.filters):
+            return UploadResult(NullRecord(info), to_one_results, {}), None
+
+        # match attempt (same as _handle_row, but we know current_id is None)
+        match = self._match(filter_predicate, info)
+        if match:
+            return UploadResult(match, to_one_results, {}), None
+
+        missing_required = self._check_missing_required()
+        if missing_required is not None:
+            return UploadResult(missing_required, to_one_results, {}), None
+
+        # Upload one-to-ones (force) like in _do_upload
+        to_one_results = {
+            **to_one_results,
+            **{
+                fieldname: to_one_def.force_upload_row()
+                for fieldname, to_one_def in Func.sort_by_key(self.toOne)
+                if to_one_def.is_one_to_one()
+            },
+        }
+
+        to_one_ids: dict[str, int | None] = {}
+        for field, result in to_one_results.items():
+            id_ = result.get_id()
+            if id_ == "Failure":
+                return UploadResult(PropagatedFailure(), to_one_results, {}), None
+            to_one_ids[field] = id_
+
+        # Build final attrs exactly like _do_upload
+        new_attrs = {
+            **attrs,
+            **self.scopingAttrs,
+            **self.static,
+            **{
+                model._meta.get_field(fieldname).attname: id_  # type: ignore
+                for fieldname, id_ in to_one_ids.items()
+            },
+            **(
+                {"createdbyagent_id": self.uploadingAgentId}
+                if model.specify_model.get_field("createdbyagent")
+                else {}
+            ),
+        }
+
+        plan: dict[str, Any] = {
+            "model": model,
+            "attrs": new_attrs,
+            "info": info,
+            "to_one_results": to_one_results,
+            "bound_table": self,
+        }
+        return None, plan
 
 class BoundOneToOneTable(BoundUploadTable):
     def is_one_to_one(self) -> bool:
@@ -902,7 +1132,8 @@ class BoundMustMatchTable(BoundUploadTable):
 def _upload_to_manys(
     parent_model, parent_id, parent_field, is_update, records, is_dependent
 ) -> list[UploadResult]:
-    fk_field = parent_model._meta.get_field(parent_field).remote_field.attname
+    rel = parent_model._meta.get_field(parent_field).remote_field
+    fk_field = cast(str, getattr(rel, "attname"))
     bound_tables = [
         record._replace(
             disambiguation=None, static={**record.static, fk_field: parent_id}
@@ -967,110 +1198,6 @@ class BoundUpdateTable(BoundUploadTable):
             )
             for field_name, to_one_def in Func.sort_by_key(self.toOne)
         }
-
-    def _do_upload(
-        self, model, to_one_results: dict[str, UploadResult], info: ReportInfo
-    ) -> UploadResult:
-
-        missing_required = self._check_missing_required()
-
-        if missing_required is not None:
-            return UploadResult(missing_required, to_one_results, {})
-
-        attrs = {
-            **{
-                fieldname_: value
-                for parsedField in self.parsedFields
-                for fieldname_, value in parsedField.upload.items()
-            },
-            **self.scopingAttrs,
-            **self.static,
-        }
-
-        to_one_ids = {
-            model._meta.get_field(fieldname).attname: result.get_id()
-            for fieldname, result in to_one_results.items()
-        }
-
-        # Should also always get a cache hit at this point, evict the hit.
-        reference_record = self._get_reference(should_cache=False)
-
-        assert reference_record is not None
-
-        concrete_field_changes = BoundUpdateTable._field_changed(
-            reference_record, attrs
-        )
-
-        if self._has_scoping_changes(concrete_field_changes) and not self._is_scope_change_allowed(concrete_field_changes):
-            scope_change_error = ParseFailures([WorkBenchParseFailure("scopeChangeError", {}, self.parsedFields[0].column)])
-            return UploadResult(scope_change_error, {}, {})
-
-        to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)
-
-        to_one_matched_and_changed = {
-            related: result._replace(
-                record_result=MatchedAndChanged(*result.record_result)
-            )
-            for related, result in to_one_results.items()
-            if isinstance(result.record_result, Matched)
-            and model._meta.get_field(related).attname in to_one_changes
-        }
-
-        to_one_results = {**to_one_results, **to_one_matched_and_changed}
-
-        changed = len(concrete_field_changes) != 0
-
-        if changed:
-            modified_columns = [
-                parsed.column
-                for parsed in self.parsedFields
-                if (
-                    any(
-                        fieldname in concrete_field_changes
-                        for fieldname in parsed.upload.keys()
-                    )
-                )
-            ]
-            info = info._replace(columns=modified_columns)
-
-        # Changed is just concrete field changes. We might have changed a to-one too.
-        # This is done like this to avoid an unecessary save when we know there is no
-        if changed or to_one_changes:
-            attrs = {
-                **attrs,
-                **to_one_ids,
-                **(
-                    {"modifiedbyagent_id": self.uploadingAgentId}
-                    if hasattr(reference_record, "modifiedbyagent_id")
-                    else {}
-                ),
-            }
-
-            with transaction.atomic():
-                try:
-                    updated = self._do_update(
-                        reference_record,
-                        [*to_one_changes.values(), *concrete_field_changes.values()],
-                        **attrs,
-                    )
-                    picklist_additions = self._do_picklist_additions()
-                except (BusinessRuleException, IntegrityError) as e:
-                    return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), to_one_results, {}
-                    )
-
-        record: Updated | NoChange = (
-            Updated(updated.pk, info, picklist_additions)
-            if changed
-            else NoChange(reference_record.pk, info)
-        )
-        to_many_results = self._handle_to_many(True, record.get_id(), model)
-
-        to_one_adjusted, to_many_adjusted = self._clean_up_fks(
-            to_one_results, to_many_results
-        )
-
-        return UploadResult(record, to_one_adjusted, to_many_adjusted)
     
     def _has_scoping_changes(self, concrete_field_changes):
         return any(
@@ -1086,17 +1213,150 @@ class BoundUpdateTable(BoundUploadTable):
         
         return False
 
-    def _do_update(self, reference_obj, dirty_fields, **attrs):
-        # TODO: Try handling parent_obj. Quite complicated and ugly.
-        self.auditor.update(reference_obj, None, dirty_fields)
-        for key, value in attrs.items():
-            setattr(reference_obj, key, value)
-        if hasattr(reference_obj, "version"):
-            # Consider using bump_version here.
-            # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
-            setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
-        reference_obj.save()
-        return reference_obj
+    def _do_upload(
+        self,
+        model: models.ModelWithTable,
+        to_one_results: dict[str, UploadResult],
+        info: ReportInfo,
+    ) -> UploadResult:
+        """
+        Update path: requires an existing reference record.
+        Includes fine-grained timing via _add_timing(...).
+        """
+
+        # missing required
+        t0 = time.perf_counter()
+        missing_required = self._check_missing_required()
+        _add_timing("update_missing_required", time.perf_counter() - t0)
+
+        if missing_required is not None:
+            return UploadResult(missing_required, to_one_results, {})
+
+        # build attrs
+        t0 = time.perf_counter()
+        attrs = {
+            **{
+                fieldname_: value
+                for parsedField in self.parsedFields
+                for fieldname_, value in parsedField.upload.items()
+            },
+            **self.scopingAttrs,
+            **self.static,
+        }
+        _add_timing("update_build_attrs", time.perf_counter() - t0)
+
+        # map to_one ids
+        t0 = time.perf_counter()
+        to_one_ids = {
+            cast(str, getattr(model._meta.get_field(fieldname), "attname")): result.get_id()
+            for fieldname, result in to_one_results.items()
+        }
+        _add_timing("update_to_one_ids", time.perf_counter() - t0)
+
+        # Should also always get a cache hit at this point, evict the hit.
+        t0 = time.perf_counter()
+        reference_record = self._get_reference(should_cache=False)
+        _add_timing("update_get_reference", time.perf_counter() - t0)
+
+        assert reference_record is not None
+
+        # field diffs for concrete fields
+        t0 = time.perf_counter()
+        concrete_field_changes = BoundUpdateTable._field_changed(
+            reference_record, attrs
+        )
+        _add_timing("update_field_diff", time.perf_counter() - t0)
+
+        # scope-change guard
+        if self._has_scoping_changes(concrete_field_changes) and not self._is_scope_change_allowed(concrete_field_changes):
+            scope_change_error = ParseFailures([
+                WorkBenchParseFailure("scopeChangeError", {}, self.parsedFields[0].column)
+            ])
+            return UploadResult(scope_change_error, {}, {})
+
+        # field diffs for to-ones
+        t0 = time.perf_counter()
+        to_one_changes = BoundUpdateTable._field_changed(reference_record, to_one_ids)
+        _add_timing("update_to_one_diff", time.perf_counter() - t0)
+
+        # adjust to_one_results for MatchedAndChanged
+        t0 = time.perf_counter()
+        to_one_matched_and_changed = {
+            related: result._replace(
+                record_result=MatchedAndChanged(*result.record_result)
+            )
+            for related, result in to_one_results.items()
+            if isinstance(result.record_result, Matched)
+            and cast(str, getattr(model._meta.get_field(related), "attname")) in to_one_changes
+        }
+        to_one_results = {**to_one_results, **to_one_matched_and_changed}
+        _add_timing("update_to_one_mark_changed", time.perf_counter() - t0)
+
+        changed = len(concrete_field_changes) != 0
+
+        if changed:
+            t0 = time.perf_counter()
+            modified_columns = [
+                parsed.column
+                for parsed in self.parsedFields
+                if any(
+                    fieldname in concrete_field_changes
+                    for fieldname in parsed.upload.keys()
+                )
+            ]
+            info = info._replace(columns=modified_columns)
+            _add_timing("update_modified_columns", time.perf_counter() - t0)
+
+        # Changed is just concrete field changes. We might have changed a to-one too.
+        # This is done like this to avoid an unecessary save when we know there is none.
+        # main UPDATE, auditor and save, only if something actually changed
+        if changed or to_one_changes:
+            attrs = {
+                **attrs,
+                **to_one_ids,
+                **(
+                    {"modifiedbyagent_id": self.uploadingAgentId}
+                    if hasattr(reference_record, "modifiedbyagent_id")
+                    else {}
+                ),
+            }
+
+            with transaction.atomic():
+                try:
+                    # audit and save timing
+                    t0 = time.perf_counter()
+                    updated = self._do_update( # type: ignore[attr-defined]
+                        reference_record,
+                        [*to_one_changes.values(), *concrete_field_changes.values()],
+                        **attrs,
+                    )
+                    _add_timing("update_save", time.perf_counter() - t0)
+
+                    t1 = time.perf_counter()
+                    picklist_additions = self._do_picklist_additions()
+                    _add_timing("update_picklist", time.perf_counter() - t1)
+                except (BusinessRuleException, IntegrityError) as e:
+                    return UploadResult(
+                        FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                    )
+
+        record: Updated | NoChange
+        if changed:
+            record = Updated(updated.pk, info, picklist_additions)
+        else:
+            record = NoChange(reference_record.pk, info)
+
+        t0 = time.perf_counter()
+        to_many_results = self._handle_to_many(True, record.get_id(), model)
+        _add_timing("update_to_many", time.perf_counter() - t0)
+
+        t1 = time.perf_counter()
+        to_one_adjusted, to_many_adjusted = self._clean_up_fks(
+            to_one_results, to_many_results
+        )
+        _add_timing("update_cleanup", time.perf_counter() - t1)
+
+        return UploadResult(record, to_one_adjusted, to_many_adjusted)
 
     def _do_insert(self):
         raise Exception("Attempting to insert into a save table directly!")

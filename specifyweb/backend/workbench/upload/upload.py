@@ -12,14 +12,18 @@ from typing import (
     Optional,
     Sized,
     Tuple,
+    Any,
+    Protocol,
+    Type,
+    cast,
 )
 from collections.abc import Callable
 from collections.abc import Sized
+from collections import defaultdict
 
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
-from typing import Any, Optional, cast
 
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
@@ -57,9 +61,10 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
-from .upload_table import UploadTable
+from .upload_table import BoundUploadTable, reset_process_timings, get_process_timings
 from .scope_context import ScopeContext
 from ..models import Spdataset
+from .scoping import DEFERRED_SCOPING
 
 from .upload_attachments import (
     has_attachments,
@@ -73,6 +78,8 @@ Progress = Callable[[int, int | None], None]
 
 logger = logging.getLogger(__name__)
 
+BULK_BATCH_SIZE = 2000
+BULK_FLUSH_SIZE = 4000
 
 class RollbackFailure(Exception):
     pass
@@ -87,14 +94,15 @@ class Rollback(Exception):
 def savepoint(description: str):
     try:
         with transaction.atomic():
-            logger.info(f"entering save point: {repr(description)}")
+            # logger.info(f"entering save point: {repr(description)}")
             yield
-            logger.info(f"leaving save point: {repr(description)}")
+            # logger.info(f"leaving save point: {repr(description)}")
 
     except Rollback as r:
-        logger.info(
-            f"rolling back save point: {repr(description)} due to: {repr(r.reason)}"
-        )
+        # logger.info(
+        #     f"rolling back save point: {repr(description)} due to: {repr(r.reason)}"
+        # )
+        pass
 
 
 @contextmanager
@@ -220,6 +228,7 @@ def do_upload_dataset(
             ),
             batch_edit_prefs=batchEditPrefs,
         ),
+        use_bulk_create=True, # TODO: Shift this parameter into the API request
     )
     success = not any(r.contains_failure() for r in results)
     if not no_commit:
@@ -318,6 +327,50 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> tuple[Table, ScopedUploadab
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
+class _HasNameToOne(Protocol):
+    name: str
+    toOne: dict[str, Uploadable]
+
+def _make_scope_key(upload_plan: Uploadable, collection, row: Row) -> tuple:
+    key_parts: list[Any] = [
+        ("collection_id", getattr(collection, "id", None)),
+        ("base_table", getattr(upload_plan, "name", None)),
+    ]
+
+    plan = cast(_HasNameToOne, upload_plan) # helps mypy
+
+    try:
+        if plan.name.lower() == "collectionobject" and "collectionobjecttype" in plan.toOne:
+            cotype_ut = cast(Any, plan.toOne["collectionobjecttype"])
+            wb_col = cotype_ut.wbcols.get("name")
+            if wb_col is not None:
+                key_parts.append(
+                    ("cotype_name", row.get(wb_col.column))
+                )
+    except Exception:
+        key_parts.append(("cotype_name", "__error__"))
+
+    try:
+        for (table_name, rel_field), (_related_table, filter_field, _rel_name) in DEFERRED_SCOPING.items():
+            if plan.name.lower() != table_name.lower():
+                continue
+            if rel_field not in plan.toOne:
+                continue
+
+            ut_other = cast(Any, plan.toOne[rel_field])
+            wb_col = ut_other.wbcols.get(filter_field)
+            if wb_col is not None:
+                key_parts.append(
+                    (
+                        f"deferred:{table_name}.{rel_field}.{filter_field}",
+                        row.get(wb_col.column),
+                    )
+                )
+    except Exception:
+        key_parts.append(("deferred_error", True))
+
+    return tuple(key_parts)
+
 def do_upload(
     collection,
     rows: Rows,
@@ -329,6 +382,7 @@ def do_upload(
     progress: Progress | None = None,
     batch_edit_packs: list[BatchEditJson | None] | None = None,
     auditor_props: AuditorProps | None = None,
+    use_bulk_create: bool = False,
 ) -> list[UploadResult]:
     cache: dict = {}
     _auditor = Auditor(
@@ -341,91 +395,302 @@ def do_upload(
         agent=models.Agent.objects.get(id=uploading_agent_id),
     )
     total = len(rows) if isinstance(rows, Sized) else None
-    cached_scope_table = None
 
     scope_context = ScopeContext()
+    reset_process_timings()
+
+    stage_timings: dict[str, float] = {
+        "apply_scoping": 0.0,
+        "disambiguate": 0.0,
+        "batch_edit": 0.0,
+        "bind": 0.0,
+        "save_row": 0.0,
+        "process_row": 0.0,
+    }
+
+    scoped_cache: dict[tuple, ScopedUploadable] = {}
+
+    # set bulk_insert stats values
+    bulk_candidates = 0  # rows where we considered bulk insert
+    bulk_eligible = 0    # rows that passed can_use_bulk_insert()
+    bulk_deferred = 0    # rows actually queued for bulk_create
+
+    # Pending bulk inserts: list of (row_index, plan_dict)
+    # plan_dict: {
+    #   "model": ModelClass,
+    #   "attrs": dict,
+    #   "info": ReportInfo,
+    #   "to_one_results": dict[str, UploadResult],
+    #   "bound_table": BoundUploadTable,
+    # }
+    pending_inserts: list[tuple[int, dict[str, Any]]] = []
+    total_inserted = 0
+
+    def flush_pending_inserts() -> None:
+        nonlocal total_inserted
+
+        if not use_bulk_create or not pending_inserts:
+            return
+
+        t0_bulk = time.perf_counter()
+
+        # Group pending inserts by model to make bulk_create efficient
+        grouped: dict[Any, list[tuple[int, dict[str, Any]]]] = defaultdict(list)
+        for row_index, plan in pending_inserts:
+            grouped[plan["model"]].append((row_index, plan))
+
+        inserted_now = 0
+
+        for model, group in grouped.items():
+            # Build objects for this model and perform bulk_create
+            objs = [model(**plan["attrs"]) for (_idx, plan) in group]
+            created_objs = model.objects.bulk_create(
+                objs, batch_size=BULK_BATCH_SIZE
+            )
+            inserted_now += len(created_objs)
+
+            # Attach audit, picklists, to-many, UploadResult
+            for (row_index, plan), obj in zip(group, created_objs):
+                bound: BoundUploadTable = plan["bound_table"]
+                info = plan["info"]
+                to_one_results = plan["to_one_results"]
+
+                bound.auditor.insert(obj, None)
+                picklist_additions = bound._do_picklist_additions()
+                to_many_results = bound._handle_to_many(
+                    update=False,
+                    parent_id=obj.id,
+                    model=model,
+                )
+
+                record = Uploaded(obj.id, info, picklist_additions)
+                results[row_index] = UploadResult(
+                    record, to_one_results, to_many_results
+                )
+
+        bulk_duration = time.perf_counter() - t0_bulk
+        stage_timings["save_row"] += bulk_duration
+        total_inserted += inserted_now
+
+        logger.info(
+            "bulk_create flush: inserted %d rows in %.4fs",
+            inserted_now,
+            bulk_duration,
+        )
+
+        # Clear buffer after flush
+        pending_inserts.clear()
 
     with savepoint("main upload"):
         tic = time.perf_counter()
-        results: list[UploadResult] = []
+        results: list[UploadResult | None] = []
         for i, row in enumerate(rows):
-            _cache = cache.copy() if cache is not None and allow_partial else cache
+            # _cache = cache.copy() if cache is not None and allow_partial else cache
+            _cache = cache
             da = disambiguations[i] if disambiguations else None
             batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
-            with savepoint("row upload") if allow_partial else no_savepoint():
-                # the fact that upload plan is cachable, is invariant across rows.
-                # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
 
-                # Added to validate cotype on Component table
-                # Only reorder if this is the Component table
+            with savepoint("row upload") if allow_partial else no_savepoint():
+
                 component_upload = cast(Any, upload_plan)
-                if component_upload.name == 'Component':
+                if component_upload.name == "Component":
                     toOne = component_upload.toOne
 
                     # Only reorder if both keys exist
-                    if 'type' in toOne and 'name' in toOne:
+                    if "type" in toOne and "name" in toOne:
                         # Temporarily remove them
-                        type_val = toOne.pop('type')
-                        name_val = toOne.pop('name')
+                        type_val = toOne.pop("type")
+                        name_val = toOne.pop("name")
 
                         # Reinsert in desired order: type before name
-                        toOne.update({'type': type_val, 'name': name_val})
+                        toOne.update({"type": type_val, "name": name_val})
+
+                # apply_scoping cached per scope key
+                scoped_table: ScopedUploadable | None
 
                 if has_attachments(row):
-                    # If there's an attachments column, add attachments to upload plan
-                    attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
+                    attachments_valid, result = validate_attachment(
+                        row, upload_plan  # type: ignore
+                    )
                     if not attachments_valid:
-                        results.append(result) # type: ignore
+                        results.append(result)  # type: ignore
                         cache = _cache
                         raise Rollback("failed row")
-                    row, row_upload_plan = add_attachments_to_plan(row, upload_plan) # type: ignore
-                    scoped_table = row_upload_plan.apply_scoping(collection, scope_context, row)
 
-                elif cached_scope_table is None:
-                    scoped_table = upload_plan.apply_scoping(collection, scope_context, row)
-                    if not scope_context.is_variable:
-                        # This forces every row to rescope when not variable
-                        cached_scope_table = scoped_table
+                    t0 = time.perf_counter()
+                    row, row_upload_plan = add_attachments_to_plan(
+                        row, upload_plan  # type: ignore
+                    )
+                    scoped_table = row_upload_plan.apply_scoping(
+                        collection, scope_context, row
+                    )
+                    stage_timings["apply_scoping"] += time.perf_counter() - t0
+
                 else:
-                    scoped_table = cached_scope_table
+                    scope_key = _make_scope_key(upload_plan, collection, row)
+                    scoped_table = scoped_cache.get(scope_key)
 
-                bind_result = (
-                    scoped_table.disambiguate(da)
-                    .apply_batch_edit_pack(batch_edit_pack)
-                    .bind(row, uploading_agent_id, _auditor, cache)
+                    if scoped_table is None:
+                        t0 = time.perf_counter()
+                        scoped_table = upload_plan.apply_scoping(
+                            collection, scope_context, row
+                        )
+                        stage_timings["apply_scoping"] += time.perf_counter() - t0
+                        scoped_cache[scope_key] = scoped_table
+
+                assert scoped_table is not None
+
+                t0 = time.perf_counter()
+                scoped_after_disambiguation = scoped_table.disambiguate(da)
+                stage_timings["disambiguate"] += time.perf_counter() - t0
+
+                t0 = time.perf_counter()
+                scoped_after_batch = scoped_after_disambiguation.apply_batch_edit_pack(
+                    batch_edit_pack
                 )
+                stage_timings["batch_edit"] += time.perf_counter() - t0
+
+                t0 = time.perf_counter()
+                bind_result = scoped_after_batch.bind(
+                    row, uploading_agent_id, _auditor, cache
+                )
+                stage_timings["bind"] += time.perf_counter() - t0
+
+                row_result: UploadResult | None = None
+                deferred_plan: dict[str, Any] | None = None
+
                 if isinstance(bind_result, ParseFailures):
-                    result = UploadResult(bind_result, {}, {})
+                    row_result = UploadResult(bind_result, {}, {})
                 else:
                     can_save = bind_result.can_save()
-                    # We need to have additional context on whether we can save or not. This could, hackily, be taken from ds's isupdate field.
-                    # But, that seeems very hacky. Instead, we can easily check if the base table can be saved. Legacy ones will simply return false,
-                    # so we'll be able to proceed fine.
-                    result = (
-                        bind_result.save_row(force=True)
-                        if can_save
-                        else bind_result.process_row()
-                    )
 
-                results.append(result)
-                if progress is not None:
-                    progress(len(results), total)
-                logger.info(
-                    f"finished row {len(results)}, cache size: {cache and len(cache)}"
-                )
-                if result.contains_failure():
-                    cache = _cache
-                    raise Rollback("failed row")
+                    if can_save:
+                        # Updates use the normal creation/upload
+                        t0 = time.perf_counter()
+                        row_result = bind_result.save_row(force=True)
+                        stage_timings["save_row"] += time.perf_counter() - t0
+                    else:
+                        # Potential insert path
+                        if use_bulk_create and isinstance(bind_result, BoundUploadTable):
+                            bulk_candidates += 1
+
+                            if bind_result.can_use_bulk_insert():
+                                bulk_eligible += 1
+
+                                # Prepare everything except the final INSERT
+                                t0 = time.perf_counter()
+                                bulk_result, insert_plan = bind_result.prepare_for_bulk_insert()
+                                stage_timings["process_row"] += time.perf_counter() - t0
+
+                                if bulk_result is not None:
+                                    # matched existing record, null row, or failure
+                                    row_result = bulk_result
+                                else:
+                                    # Defer the actual INSERT to the bulk creation
+                                    deferred_plan = insert_plan
+                            else:
+                                # Fallback to normal behavior if not eligible
+                                t0 = time.perf_counter()
+                                row_result = bind_result.process_row()
+                                stage_timings["process_row"] += time.perf_counter() - t0
+                        else:
+                            # Normal per-row insert/match path
+                            t0 = time.perf_counter()
+                            row_result = bind_result.process_row()
+                            stage_timings["process_row"] += time.perf_counter() - t0
+
+                if deferred_plan is not None:
+                    # Row will be inserted later via bulk_create
+                    row_index = len(results)
+                    results.append(None)
+                    pending_inserts.append((row_index, deferred_plan))
+                    bulk_deferred += 1
+
+                    if progress is not None:
+                        progress(len(results), total)
+                else:
+                    assert row_result is not None
+                    results.append(row_result)
+
+                    if progress is not None:
+                        progress(len(results), total)
+
+                    if row_result.contains_failure():
+                        cache = _cache # NOTE: Make sure we want to keep this line
+                        raise Rollback("failed row")
+
+            # Periodic flush to bound memory usage
+            if use_bulk_create and len(pending_inserts) >= BULK_FLUSH_SIZE:
+                flush_pending_inserts()
+
+        # Flush for any remaining deferred bulk inserts
+        if use_bulk_create:
+            flush_pending_inserts()
+            del pending_inserts
+
+        # Make sure no placeholders are left
+        assert all(r is not None for r in results)
 
         toc = time.perf_counter()
-        logger.info(f"finished upload of {len(results)} rows in {toc-tic}s")
+        total_time = toc - tic
+
+        def fmt_stage(name: str, duration: float) -> str:
+            if total_time > 0:
+                pct = duration / total_time * 100.0
+            else:
+                pct = 0.0
+            return f"{name}={duration:.4f}s ({pct:.1f}%)"
+
+        stage_summary = ", ".join(
+            fmt_stage(name, duration)
+            for name, duration in sorted(
+                stage_timings.items(), key=lambda kv: kv[1], reverse=True
+            )
+        )
+
+        logger.info(
+            "finished upload of %s rows in %.4fs; stage breakdown: %s",
+            len(results),
+            total_time,
+            stage_summary,
+        )
+
+        process_timings = get_process_timings()
+        if process_timings:
+            total_proc_time = sum(process_timings.values())
+
+            def fmt_inner(name: str, duration: float) -> str:
+                pct = (duration / total_proc_time * 100.0) if total_proc_time > 0 else 0.0
+                return f"{name}={duration:.4f}s ({pct:.1f}%)"
+
+            inner_summary = ", ".join(
+                fmt_inner(name, duration)
+                for name, duration in sorted(
+                    process_timings.items(), key=lambda kv: kv[1], reverse=True
+                )
+            )
+            logger.info(
+                "BoundUploadTable timing breakdown: %s",
+                inner_summary,
+            )
+
+        if use_bulk_create:
+            logger.info(
+                "bulk_create stats: candidates=%d, eligible=%d, deferred=%d, inserted=%d",
+                bulk_candidates,
+                bulk_eligible,
+                bulk_deferred,
+                total_inserted,
+            )
+        upload_result_lst: list[UploadResult] = [cast(UploadResult, r) for r in results]
 
         if no_commit:
             raise Rollback("no_commit option")
         else:
-            fixup_trees(scoped_table, results)
+            assert scoped_table is not None
+            fixup_trees(scoped_table, upload_result_lst)
 
-    return results
+    return upload_result_lst
 
 
 do_upload_csv = do_upload
