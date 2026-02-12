@@ -10,6 +10,10 @@ type StatsCounts = {
   readonly Specifyuser: number;
 };
 
+const stats2RequestIntervalMs = 24 * 60 * 60 * 1000;
+const stats2RequestKeyPrefix = 'specify7-stats2-last-request';
+const stats2RequestTimeoutMs = 5_000;
+
 function buildStatsLambdaUrl(base: string | null | undefined): string | null {
   if (!base) return null;
   let u = base.trim();
@@ -23,6 +27,53 @@ function buildStatsLambdaUrl(base: string | null | undefined): string | null {
     u = `${u.replace(/\/$/, '')}/${stage}/${route}`;
   }
   return u;
+}
+
+function buildStats2RequestKey(lambdaUrl: string, collectionGuid: string): string {
+  return `${stats2RequestKeyPrefix}:${collectionGuid}:${lambdaUrl}`;
+}
+
+function shouldSendStats2Request(storageKey: string, now = Date.now()): boolean {
+  if (globalThis.localStorage === undefined) return true;
+
+  try {
+    const previousRequestAt = globalThis.localStorage.getItem(storageKey);
+    if (previousRequestAt === null) return true;
+    const parsed = Number(previousRequestAt);
+    if (!Number.isFinite(parsed)) return true;
+    if (parsed > now) return true;
+    return now - parsed >= stats2RequestIntervalMs;
+  } catch {
+    return true;
+  }
+}
+
+function recordStats2Request(storageKey: string, now = Date.now()): void {
+  if (globalThis.localStorage === undefined) return;
+
+  try {
+    globalThis.localStorage.setItem(storageKey, `${now}`);
+  } catch {}
+}
+
+function pingInBackground(url: string): void {
+  const controller =
+    typeof globalThis.AbortController === 'function'
+      ? new globalThis.AbortController()
+      : undefined;
+  const timeoutId =
+    controller === undefined
+      ? undefined
+      : globalThis.setTimeout(() => controller.abort(), stats2RequestTimeoutMs);
+
+  void ping(url, {
+    errorMode: 'silent',
+    ...(controller === undefined ? {} : { signal: controller.signal }),
+  })
+    .catch(softFail)
+    .finally(() => {
+      if (timeoutId !== undefined) globalThis.clearTimeout(timeoutId);
+    });
 }
 
 export const fetchContext = fetchSystemInfo.then(async (systemInfo) => {
@@ -74,8 +125,20 @@ export const fetchContext = fetchSystemInfo.then(async (systemInfo) => {
 
   const lambdaUrl = buildStatsLambdaUrl(systemInfo.stats_2_url);
   if (lambdaUrl) {
-    await ping(formatUrl(lambdaUrl, parameters, false), {
-      errorMode: 'silent',
-    }).catch(softFail);
+    const storageKey = buildStats2RequestKey(
+      lambdaUrl,
+      `${systemInfo.collection_guid}`
+    );
+    if (!shouldSendStats2Request(storageKey)) {
+      return;
+    }
+    recordStats2Request(storageKey);
+    pingInBackground(formatUrl(lambdaUrl, parameters, false));
   }
 });
+
+export const exportsForTests = {
+  buildStats2RequestKey,
+  shouldSendStats2Request,
+  recordStats2Request,
+};
