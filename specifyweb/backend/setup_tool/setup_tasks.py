@@ -8,7 +8,7 @@ from typing import Tuple, Optional
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resource_defaults
-from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tree
+from specifyweb.backend.setup_tool.tree_defaults import LAST_PRELOAD_ERROR_REDIS_KEY, PRELOAD_TASK_REDIS_KEY, start_preload_default_tree
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
@@ -72,6 +72,33 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
         # Commented out to allow error messages to be checked multiple times.
         # if _active_setup_task_id == task_id:
         #     _active_setup_task_id = None
+    return res, busy
+
+
+def get_active_preload_task() -> Tuple[Optional[AsyncResult], bool]:
+    """Return the status of the preload tree task."""
+    task_id = get_string(PRELOAD_TASK_REDIS_KEY)
+
+    if not task_id:
+        return None
+
+    res = app.AsyncResult(task_id)
+    busy = res.state in ("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS")
+
+    # Task finished → clear the key
+    if not busy and res.state in ("SUCCESS", "FAILURE", "REVOKED"):
+        set_string(PRELOAD_TASK_REDIS_KEY, None)
+        # Save error if any
+        if res.state == "FAILURE":
+            err = getattr(res, "info", None)
+            if isinstance(err, dict):
+                err_msg = err.get("error") or err.get("exc_message") or err.get("message") or repr(err)
+            else:
+                err_msg = str(err)
+            set_string(LAST_PRELOAD_ERROR_REDIS_KEY, err_msg)
+
+        return None
+
     return res, busy
 
 @app.task(bind=True)
@@ -177,6 +204,11 @@ def get_last_setup_error() -> Optional[str]:
     if err == '':
         return None
     return err
+
+def get_last_preload_error() -> Optional[str]:
+    """Return the last error of the preload task, if any."""
+    err = get_string(LAST_PRELOAD_ERROR_REDIS_KEY)
+    return err or None
 
 def set_last_setup_error(error_text: Optional[str]):
     set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)

@@ -29,6 +29,9 @@ import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
+import { ajax } from '../../utils/ajax';
+import { useAsyncState } from '../../hooks/useAsyncState';
+import { PreloadProgress } from '../SetupTool/types';
 
 const treeToPref = {
   Geography: 'geography',
@@ -136,6 +139,28 @@ export function Tree<
     }
   };
 
+  //add a cookie or local storage (browser storage), if not busy than never call this again
+  const [treePreloading] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<PreloadProgress>('/setup_tool/preload_tree_status/', {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => {
+            console.log(data);
+            return data;
+          })
+          .catch((error) => {
+            console.error('Failed to fetch setup progress:', error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
   return (
     <div
       className={`
@@ -220,7 +245,11 @@ export function Tree<
           })}
         </div>
       </div>
-      {rows.length === 0 ? (
+      {treePreloading?.busy ? (
+        <div className="flex flex-col gap-2 p-2 text-center text-lg font-medium">
+          {setupToolText.treeLoadingMessage()}
+        </div>
+      ) : rows.length === 0 ? (
         <div className="flex flex-col gap-2 p-2">
           <Button.LikeLink
             aria-label={treeText.initializeEmptyTree()}
@@ -241,7 +270,7 @@ export function Tree<
             />
           ) : null}
         </div>
-      ) : undefined}
+      ) : null}
       <ul role="tree rowgroup">
         {rows.map((row, index) => (
           <TreeRow

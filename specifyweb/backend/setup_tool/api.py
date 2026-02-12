@@ -4,11 +4,15 @@ These will be called in the correct order by the background setup task in setup_
 """
 
 import json
+from typing import Optional
 from django.http import (JsonResponse)
 from django.db.models import Max
 from django.db import transaction
+from specifyweb.celery_tasks import app
+from celery.result import AsyncResult
 
 from specifyweb.backend.permissions.models import UserPolicy
+
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
@@ -16,6 +20,8 @@ from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import (
+    get_active_preload_task,
+    get_last_preload_error,
     setup_database_background,
     get_active_setup_task,
     get_last_setup_error,
@@ -77,6 +83,22 @@ def get_setup_resource_progress() -> dict:
         "taxonTreeDef": models.Taxontreedef.objects.exists(),
         "collection": models.Collection.objects.exists(),
         "specifyUser": models.Specifyuser.objects.exists(),
+    }
+
+def get_preload_tree_status():
+    """Returns the current status of the preload tree task."""
+    active_task, busy = get_active_preload_task()
+
+    # Optionally return progress if your task sets it in `update_state`
+    progress = None
+    if active_task:
+        info = getattr(active_task, "info", None) or getattr(active_task, "result", None)
+        if isinstance(info, dict):
+            progress = info.get("progress")
+
+    return {
+        "busy": busy,
+        "last_error": get_last_preload_error()
     }
 
 def _guided_setup_condition(request) -> bool:

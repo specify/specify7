@@ -6,9 +6,13 @@ import requests
 
 from .utils import load_json_from_file
 from specifyweb.backend.trees.defaults import initialize_default_tree, create_default_tree_task
+from specifyweb.backend.redis_cache.store import set_string
 
 import logging
 logger = logging.getLogger(__name__)
+
+PRELOAD_TASK_REDIS_KEY = "ACTIVE_PRELOAD_TASK_ID"
+LAST_PRELOAD_ERROR_REDIS_KEY = "specify:preload:last_error"
 
 DEFAULT_TREE_RANKS_FILES = {
     'Storage': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'storage_tree.json',
@@ -115,11 +119,14 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
         tree_cfg = resp.json()
 
         task_id = str(uuid4())
-        create_default_tree_task.apply_async(
-            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, False],
-            task_id=f"create_default_tree_{tree_type}_{task_id}",
-            taskid=task_id
+        async_result = create_default_tree_task.apply_async(
+        args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, False],
+        task_id=f"create_default_tree_{tree_type}_{task_id}",
+        taskid=task_id
         )
+
+        set_string(PRELOAD_TASK_REDIS_KEY, async_result.id, time_to_live=60*60*2)
+        return async_result.id
     except Exception as e:
         # Give up if there's an error to avoid resetting the entire setup.
         logger.warning(f'Error trying to preload {tree_type} tree: {e}')

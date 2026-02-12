@@ -280,4 +280,7 @@ export const setupToolText = createDictionary({
   emptyTaxonTree: {
     'en-us': 'An empty taxon tree will be created',
   },
+  treeLoadingMessage: {
+    'en-us': 'Tree is loading, please wait…',
+  },
 } as const);
