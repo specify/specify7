@@ -1,11 +1,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
@@ -24,14 +26,12 @@ import { ResourceView } from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
+import type { PreloadProgress } from '../SetupTool/types';
 import { AddRank } from './AddRank';
 import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
-import { ajax } from '../../utils/ajax';
-import { useAsyncState } from '../../hooks/useAsyncState';
-import { PreloadProgress } from '../SetupTool/types';
 
 const treeToPref = {
   Geography: 'geography',
@@ -139,7 +139,7 @@ export function Tree<
     }
   };
 
-  //add a cookie or local storage (browser storage), if not busy than never call this again
+  // Add a cookie or local storage (browser storage), if not busy than never call this again
   const [treePreloading] = useAsyncState(
     React.useCallback(
       async () =>
