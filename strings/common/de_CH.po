@@ -41,7 +41,7 @@ msgstr "Nein"
 #: components/Forms/ResourceView.tsx:388
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
-#: components/Interactions/InteractionDialog.tsx:415
+#: components/Interactions/InteractionDialog.tsx:417
 #: components/Interactions/InteractionsDialog.tsx:54
 #: components/Interactions/LoanReturn.tsx:167
 #: components/Interactions/PrepDialog.tsx:125
@@ -209,8 +209,8 @@ msgstr "Erstellen"
 #: components/Forms/Save.tsx:338
 #: components/Header/UserTools.tsx:75
 #: components/HomePage/AboutSpecify.tsx:60
-#: components/Interactions/InteractionDialog.tsx:391
-#: components/Interactions/InteractionDialog.tsx:481
+#: components/Interactions/InteractionDialog.tsx:393
+#: components/Interactions/InteractionDialog.tsx:483
 #: components/Interactions/LoanReturn.tsx:71
 #: components/Interactions/PrepDialog.tsx:122
 #: components/Leaflet/Map.tsx:103
@@ -401,8 +401,8 @@ msgid "delete"
 msgstr "Löschen"
 
 #: components/Attachments/Dialog.tsx:128
-#: components/Interactions/InteractionDialog.tsx:529
-#: components/Interactions/InteractionDialog.tsx:558
+#: components/Interactions/InteractionDialog.tsx:531
+#: components/Interactions/InteractionDialog.tsx:560
 #: components/WbToolkit/GeoLocate.tsx:154
 #. Used in: Components > Attachments > Dialog ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Wb Toolkit > Geo Locate
 msgid "next"
@@ -628,8 +628,8 @@ msgid "end"
 msgstr "Ende"
 
 #: components/ExportFeed/ForceUpdate.tsx:46
-#: components/Interactions/InteractionDialog.tsx:528
-#: components/Interactions/InteractionDialog.tsx:557
+#: components/Interactions/InteractionDialog.tsx:530
+#: components/Interactions/InteractionDialog.tsx:559
 #: components/PickLists/definitions.ts:44
 #: components/Security/PreviewTables.tsx:67
 #. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
