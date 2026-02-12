@@ -293,13 +293,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                       ? undefined
                       : queryResource?.get('name')
                   }
-                  recordIds={(): RA<number> =>
-                    loadedResults
-                      .filter((result) =>
-                        selectedRows.has(result[queryIdField] as number)
-                      )
-                      .map((result) => result[queryIdField] as number)
-                  }
+                  recordIds={(): RA<number> => Array.from(selectedRows)}
+                  
                   saveComponent={recordSetFromQueryLoading}
                 />
               ) : (
