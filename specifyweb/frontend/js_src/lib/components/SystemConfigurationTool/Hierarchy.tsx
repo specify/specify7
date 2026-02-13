@@ -39,6 +39,7 @@ import type { ResourceFormData } from '../SetupTool/types';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
+import { nestAllResources } from '../SetupTool/utils';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -629,7 +630,7 @@ export function Hierarchy({
                         Accept: 'application/json',
                         'Content-Type': 'application/json',
                       },
-                      body: JSON.stringify(next),
+                      body: JSON.stringify(nestAllResources(next)),
                       errorMode: 'visible',
                       expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
                     })

@@ -33,7 +33,7 @@ function flattenToNested(data: Record<string, any>): Record<string, any> {
   return result;
 }
 
-export function flattenAllResources(
+export function nestAllResources(
   data: Record<string, any>
 ): Record<string, any> {
   const result: Record<string, any> = {};

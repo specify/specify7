@@ -31,7 +31,7 @@ import {
 import { SetupOverview } from './SetupOverview';
 import { resources, stepOrder } from './setupResources';
 import type { ResourceFormData, SetupProgress, SetupResponse } from './types';
-import { flattenAllResources } from './utils';
+import { nestAllResources } from './utils';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -146,7 +146,7 @@ export function SetupTool({
         Accept: 'application/json',
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify(flattenAllResources(data)),
+      body: JSON.stringify(nestAllResources(data)),
       errorMode: 'visible',
       expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
     })
