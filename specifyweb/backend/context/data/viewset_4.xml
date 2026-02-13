@@ -3522,7 +3522,7 @@
                     <cell colspan="5" id="5" name="description" rows="2" type="field" uitype="textareabrief" />
                 </row>
                 <row>
-                    <cell colspan="7" label="ABCD Schema Fields (Optional)" type="separator" />
+                    <cell colspan="7" label="Collection Description" type="separator" />
                 </row>
                  <row>
                     <cell labelfor="8" type="label" />
@@ -3635,7 +3635,7 @@
                     <cell colspan="5" id="5" name="description" rows="2" type="field" uitype="textareabrief" />
                 </row>
                 <row>
-                    <cell colspan="7" label="ABCD Schema Fields (Optional)" type="separator" />
+                    <cell colspan="7" label="Collection Description" type="separator" />
                 </row>
                  <row>
                     <cell labelfor="8" type="label" />
