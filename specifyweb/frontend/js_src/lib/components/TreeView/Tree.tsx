@@ -41,6 +41,8 @@ const treeToPref = {
   TectonicUnit: 'tectonicUnit',
 } as const;
 
+const busyStates = ['RUNNING', 'STARTED'];
+
 export function Tree<
   SCHEMA extends AnyTree,
   TREE_NAME extends SCHEMA['tableName'],
@@ -159,10 +161,11 @@ export function Tree<
       .then(({ data }) => {
         const oldTreePreloading = treePreloadingRef.current;
 
+        
         if (
           oldTreePreloading &&
-          oldTreePreloading.taskstatus === 'RUNNING' &&
-          data.taskstatus !== 'RUNNING'
+          busyStates.includes(oldTreePreloading.taskstatus) &&
+          !busyStates.includes(data.taskstatus)
         ) {
           // Tree was in progress, and it just finished
           stop();
@@ -170,7 +173,7 @@ export function Tree<
           return;
         } else if (
           oldTreePreloading === undefined &&
-          data.taskstatus !== 'RUNNING'
+          !busyStates.includes(data.taskstatus)
         ) {
           // Tree was already complete
           stop();
@@ -279,86 +282,90 @@ export function Tree<
           })}
         </div>
       </div>
-      {treePreloading?.taskstatus === 'RUNNING' ? (
+      {(treePreloading !== undefined && busyStates.includes(treePreloading.taskstatus)) ? (
         <div className="flex flex-col gap-2 p-2 text-center text-lg font-medium">
           {setupToolText.treeLoadingMessage()}
         </div>
-      ) : rows.length === 0 ? (
-        <div className="flex flex-col gap-2 p-2">
-          <Button.LikeLink
-            aria-label={treeText.initializeEmptyTree()}
-            className="flex items-center gap-2 text-left"
-            title={treeText.initializeEmptyTree()}
-            onClick={createRootNode}
-          >
-            {icons.plus}
-            <span>{treeText.initializeEmptyTree()}</span>
-          </Button.LikeLink>
-          {treeDefId ? (
-            <ImportTree
-              buttonClassName="text-left"
-              buttonLabel={setupToolText.preloadTree()}
-              tableName={tableName}
-              treeDefId={treeDefId}
-              treeDefinitionItems={treeDefinitionItems}
-            />
+      ) : (
+        <>
+          {rows.length === 0 ? (
+            <div className="flex flex-col gap-2 p-2">
+              <Button.LikeLink
+                aria-label={treeText.initializeEmptyTree()}
+                className="flex items-center gap-2 text-left"
+                title={treeText.initializeEmptyTree()}
+                onClick={createRootNode}
+              >
+                {icons.plus}
+                <span>{treeText.initializeEmptyTree()}</span>
+              </Button.LikeLink>
+              {treeDefId ? (
+                <ImportTree
+                  buttonClassName="text-left"
+                  buttonLabel={setupToolText.preloadTree()}
+                  tableName={tableName}
+                  treeDefId={treeDefId}
+                  treeDefinitionItems={treeDefinitionItems}
+                />
+              ) : null}
+            </div>
           ) : null}
-        </div>
-      ) : null}
-      <ul role="tree rowgroup">
-        {rows.map((row, index) => (
-          <TreeRow
-            actionRow={actionRow}
-            collapsedRanks={collapsedRanks ?? []}
-            conformation={
-              conformation
-                ?.find(([id]) => id === row.nodeId)
-                ?.slice(1) as Conformations
-            }
-            focusPath={
-              (focusPath[0] === 0 && index === 0) || focusPath[0] === row.nodeId
-                ? focusPath.slice(1)
-                : undefined
-            }
-            getRows={getRows}
-            getStats={getStats}
-            hideEmptyNodes={hideEmptyNodes}
-            key={row.nodeId}
-            nodeStats={undefined}
-            path={[]}
-            rankNameId={id}
-            ranks={ranks}
-            row={row}
-            setFocusedRow={setFocusedRow}
-            synonymColor={synonymColor}
-            treeName={tableName}
-            onAction={(action): void => {
-              if (action === 'next')
-                if (rows[index + 1] === undefined) return undefined;
-                else setFocusPath([rows[index + 1].nodeId]);
-              else if (action === 'previous' && index > 0)
-                setFocusPath([rows[index - 1].nodeId]);
-              else if (action === 'previous' || action === 'parent')
-                setFocusPath([]);
-              else if (action === 'focusPrevious') focusRef.current?.focus();
-              else if (action === 'focusNext') searchBoxRef.current?.focus();
-              return undefined;
-            }}
-            onChangeConformation={(newConformation): void =>
-              setConformation([
-                ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
-                ...(typeof newConformation === 'object'
-                  ? ([[row.nodeId, ...newConformation]] as const)
-                  : []),
-              ])
-            }
-            onFocusNode={(newFocusPath): void => {
-              setFocusPath([row.nodeId, ...newFocusPath]);
-              setLastFocusedTree();
-            }}
-          />
-        ))}
-      </ul>
+          <ul role="tree rowgroup">
+            {rows.map((row, index) => (
+              <TreeRow
+                actionRow={actionRow}
+                collapsedRanks={collapsedRanks ?? []}
+                conformation={
+                  conformation
+                    ?.find(([id]) => id === row.nodeId)
+                    ?.slice(1) as Conformations
+                }
+                focusPath={
+                  (focusPath[0] === 0 && index === 0) || focusPath[0] === row.nodeId
+                    ? focusPath.slice(1)
+                    : undefined
+                }
+                getRows={getRows}
+                getStats={getStats}
+                hideEmptyNodes={hideEmptyNodes}
+                key={row.nodeId}
+                nodeStats={undefined}
+                path={[]}
+                rankNameId={id}
+                ranks={ranks}
+                row={row}
+                setFocusedRow={setFocusedRow}
+                synonymColor={synonymColor}
+                treeName={tableName}
+                onAction={(action): void => {
+                  if (action === 'next')
+                    if (rows[index + 1] === undefined) return undefined;
+                    else setFocusPath([rows[index + 1].nodeId]);
+                  else if (action === 'previous' && index > 0)
+                    setFocusPath([rows[index - 1].nodeId]);
+                  else if (action === 'previous' || action === 'parent')
+                    setFocusPath([]);
+                  else if (action === 'focusPrevious') focusRef.current?.focus();
+                  else if (action === 'focusNext') searchBoxRef.current?.focus();
+                  return undefined;
+                }}
+                onChangeConformation={(newConformation): void =>
+                  setConformation([
+                    ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
+                    ...(typeof newConformation === 'object'
+                      ? ([[row.nodeId, ...newConformation]] as const)
+                      : []),
+                  ])
+                }
+                onFocusNode={(newFocusPath): void => {
+                  setFocusPath([row.nodeId, ...newFocusPath]);
+                  setLastFocusedTree();
+                }}
+              />
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }
