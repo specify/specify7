@@ -287,9 +287,12 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 
         rank_title = rank_mapping.get('title', rank_name.capitalize())
 
-        # Get the rank by the column name.
+        # Get the rank by the rank id, or column name as a fallback.
         # Skip creating on this rank if it doesn't exist
-        tree_def_item = context.tree_def_item_map.get(rank_name)
+        if rank_mapping['rank']:
+            tree_def_item = context.rankid_map.get(rank_mapping['rank'])
+        else:
+            tree_def_item = context.tree_def_item_map.get(rank_name)
 
         if tree_def_item is None:
             continue
