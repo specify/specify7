@@ -41,7 +41,7 @@ const treeToPref = {
   TectonicUnit: 'tectonicUnit',
 } as const;
 
-const busyStates = ['RUNNING', 'STARTED'];
+const busyStates = new Set(['RUNNING', 'STARTED']);
 
 export function Tree<
   SCHEMA extends AnyTree,
@@ -164,8 +164,8 @@ export function Tree<
         
         if (
           oldTreePreloading &&
-          busyStates.includes(oldTreePreloading.taskstatus) &&
-          !busyStates.includes(data.taskstatus)
+          busyStates.has(oldTreePreloading.taskstatus) &&
+          !busyStates.has(data.taskstatus)
         ) {
           // Tree was in progress, and it just finished
           stop();
@@ -173,7 +173,7 @@ export function Tree<
           return;
         } else if (
           oldTreePreloading === undefined &&
-          !busyStates.includes(data.taskstatus)
+          !busyStates.has(data.taskstatus)
         ) {
           // Tree was already complete
           stop();
@@ -282,7 +282,7 @@ export function Tree<
           })}
         </div>
       </div>
-      {(treePreloading !== undefined && busyStates.includes(treePreloading.taskstatus)) ? (
+      {(treePreloading !== undefined && busyStates.has(treePreloading.taskstatus)) ? (
         <div className="flex flex-col gap-2 p-2 text-center text-lg font-medium">
           {setupToolText.treeLoadingMessage()}
         </div>
