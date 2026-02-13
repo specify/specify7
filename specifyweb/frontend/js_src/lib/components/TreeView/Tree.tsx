@@ -25,8 +25,8 @@ import { ResourceView } from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
-import { TreeCreationProgressInfo } from './CreateTree';
 import { AddRank } from './AddRank';
+import type { TreeCreationProgressInfo } from './CreateTree';
 import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
@@ -148,20 +148,30 @@ export function Tree<
   }, [treePreloading]);
 
   const fetchTreeProgress = (stop: () => void) => {
-    ajax<TreeCreationProgressInfo>(`/trees/create_default_tree/status/create_default_tree_${tableName.toLowerCase()}_${treeDefId}/`, {
-      method: 'GET',
-      headers: { Accept: 'application/json' },
-      errorMode: 'silent',
-    })
+    ajax<TreeCreationProgressInfo>(
+      `/trees/create_default_tree/status/create_default_tree_${tableName.toLowerCase()}_${treeDefId}/`,
+      {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        errorMode: 'silent',
+      }
+    )
       .then(({ data }) => {
         const oldTreePreloading = treePreloadingRef.current;
 
-        if (oldTreePreloading && oldTreePreloading.taskstatus === 'RUNNING' && data.taskstatus !== 'RUNNING') {
+        if (
+          oldTreePreloading &&
+          oldTreePreloading.taskstatus === 'RUNNING' &&
+          data.taskstatus !== 'RUNNING'
+        ) {
           // Tree was in progress, and it just finished
           stop();
           globalThis.location.reload();
           return;
-        } else if (oldTreePreloading === undefined && data.taskstatus !== 'RUNNING') {
+        } else if (
+          oldTreePreloading === undefined &&
+          data.taskstatus !== 'RUNNING'
+        ) {
           // Tree was already complete
           stop();
         }
@@ -170,16 +180,16 @@ export function Tree<
       .catch((error) => {
         console.error('Failed to fetch setup progress:', error);
       });
-    };
+  };
 
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
     const stopInterval = () => {
       if (intervalId) {
-      clearInterval(intervalId);
+        clearInterval(intervalId);
       }
-    }
+    };
     fetchTreeProgress(stopInterval);
 
     intervalId = setInterval(() => {
