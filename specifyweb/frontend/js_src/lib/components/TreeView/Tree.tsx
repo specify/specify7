@@ -25,7 +25,7 @@ import { ResourceView } from '../Forms/ResourceView';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
-import type { PreloadProgress } from '../SetupTool/types';
+import { TreeCreationProgressInfo } from './CreateTree';
 import { AddRank } from './AddRank';
 import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
@@ -140,34 +140,51 @@ export function Tree<
 
   // Add a cookie or local storage (browser storage), if not busy than never call this again
   const [treePreloading, setTreePreloading] = React.useState<
-    PreloadProgress | undefined
+    TreeCreationProgressInfo | undefined
   >(undefined);
+  const treePreloadingRef = React.useRef(treePreloading);
+  React.useEffect(() => {
+    treePreloadingRef.current = treePreloading;
+  }, [treePreloading]);
+
+  const fetchTreeProgress = (stop: () => void) => {
+    ajax<TreeCreationProgressInfo>(`/trees/create_default_tree/status/create_default_tree_${tableName.toLowerCase()}_${treeDefId}/`, {
+      method: 'GET',
+      headers: { Accept: 'application/json' },
+      errorMode: 'silent',
+    })
+      .then(({ data }) => {
+        const oldTreePreloading = treePreloadingRef.current;
+
+        if (oldTreePreloading && oldTreePreloading.taskstatus === 'RUNNING' && data.taskstatus !== 'RUNNING') {
+          // Tree was in progress, and it just finished
+          stop();
+          globalThis.location.reload();
+          return;
+        } else if (oldTreePreloading === undefined && data.taskstatus !== 'RUNNING') {
+          // Tree was already complete
+          stop();
+        }
+        setTreePreloading(data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch setup progress:', error);
+      });
+    };
 
   React.useEffect(() => {
     let intervalId: NodeJS.Timeout;
 
-    const fetchTreeProgress = () => {
-      ajax<PreloadProgress>('/setup_tool/preload_tree_status/', {
-        method: 'GET',
-        headers: { Accept: 'application/json' },
-        errorMode: 'silent',
-      })
-        .then(({ data }) => {
-          console.log(data, rows.length);
-          setTreePreloading(data);
+    const stopInterval = () => {
+      if (intervalId) {
+      clearInterval(intervalId);
+      }
+    }
+    fetchTreeProgress(stopInterval);
 
-          if (!data?.busy && intervalId) {
-            clearInterval(intervalId);
-          }
-        })
-        .catch((error) => {
-          console.error('Failed to fetch setup progress:', error);
-        });
-    };
-
-    fetchTreeProgress();
-
-    intervalId = setInterval(fetchTreeProgress, 5000);
+    intervalId = setInterval(() => {
+      fetchTreeProgress(stopInterval);
+    }, 5000);
 
     return () => clearInterval(intervalId);
   }, []);
@@ -252,7 +269,7 @@ export function Tree<
           })}
         </div>
       </div>
-      {treePreloading?.busy ? (
+      {treePreloading?.taskstatus === 'RUNNING' ? (
         <div className="flex flex-col gap-2 p-2 text-center text-lg font-medium">
           {setupToolText.treeLoadingMessage()}
         </div>

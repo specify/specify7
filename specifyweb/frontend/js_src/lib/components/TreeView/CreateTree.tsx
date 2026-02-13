@@ -48,7 +48,7 @@ type TreeCreationInfo = {
   readonly message: string;
   readonly task_id?: string;
 };
-type TreeCreationProgressInfo = {
+export type TreeCreationProgressInfo = {
   readonly taskstatus: string;
   readonly taskprogress: any;
   readonly taskid: string;

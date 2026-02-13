@@ -118,10 +118,10 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
         resp.raise_for_status()
         tree_cfg = resp.json()
 
-        task_id = str(uuid4())
+        task_id = str(tree_def_id or uuid4())
         async_result = create_default_tree_task.apply_async(
         args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, False],
-        task_id=f"create_default_tree_{tree_type}_{task_id}",
+        task_id=f"create_default_tree_{tree_type.lower()}_{task_id}",
         taskid=task_id
         )
 

@@ -34,6 +34,7 @@ from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
 from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
+from specifyweb.backend.trees.utils import SPECIFY_TREES
 from specifyweb.backend.trees.stats import get_tree_stats
 
 import logging
@@ -738,8 +739,12 @@ def create_default_tree_view(request):
 
     url = data.get('url', None)
 
-    tree_rank_model_name = tree_discipline_name.capitalize()
-    tree_name = data.get('treeName', tree_rank_model_name)
+    tree_name = data.get('treeName', tree_discipline_name.capitalize())
+    
+    tree_type = 'taxon'
+    if tree_discipline_name in SPECIFY_TREES:
+        # non-taxon tree
+        tree_type = tree_discipline_name.lower()
 
     row_count = data.get('rowCount', None)
 
@@ -766,10 +771,10 @@ def create_default_tree_view(request):
     except ValidationError as e:
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
-    task_id = str(uuid4())
+    task_id = str(tree_def_id or uuid4())
     async_result = create_default_tree_task.apply_async(
         args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
-        task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
+        task_id=f"create_default_tree_{tree_type}_{task_id}",
         taskid=task_id
     )
     return http.JsonResponse({
