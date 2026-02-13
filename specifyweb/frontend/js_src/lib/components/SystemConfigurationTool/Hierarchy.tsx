@@ -36,10 +36,10 @@ import {
 } from '../SetupTool/SetupForm';
 import { resources, stepOrder } from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
+import { nestAllResources } from '../SetupTool/utils';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-import { nestAllResources } from '../SetupTool/utils';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -617,7 +617,7 @@ export function Hierarchy({
                   const next = {
                     ...previous,
                     discipline: {
-                      ...(previous?.discipline),
+                      ...previous?.discipline,
                       division_id: selectedDivisionId,
                     },
                     taxonTreeDef: formData.taxonTreeDef,
