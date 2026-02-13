@@ -153,13 +153,14 @@ class DefaultTreeContext():
         self.batch_size = 1000
     
     def create_missing_ranks(self):
+        """Create missings ranks when importing nodes into an existing tree. Matches ranks by rank id."""
         for rank in self.tree_cfg['ranks']:
             if rank.get('rank'):
                 self.tree_rank_model.objects.get_or_create(
-                    name=rank['name'],
                     treedef=self.tree_def,
                     rankid=rank.get('rank'),
                     defaults={
+                        'name': rank['name'],
                         'title': (rank.get('title') or rank.get('name').title()),
                         'isenforced': rank.get('enforced', True),
                         'isinfullname': rank.get('infullname', False),
