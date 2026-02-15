@@ -19,6 +19,7 @@ import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
+import { getField } from '../DataModel/helpers';
 import {
   PrepReturnRow,
   updateResolvedChanged,
