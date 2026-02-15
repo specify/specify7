@@ -13,7 +13,7 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { backboneFieldSeparator } from '../DataModel/helpers';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -25,10 +25,8 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  CollectionObject,
-  CollectionObjectType,
-} from '../DataModel/types';
+import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObjectType } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -250,6 +248,10 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
+  // Used to fetch again tree def if the component type changes
+  const componentType =
+    resource?.specifyTable === tables.Component ? resource?.get('type') : null;
+
   const [fetchedTreeDefinition] = useAsyncState(
     React.useCallback(async () => {
       if (resource?.specifyTable === tables.Determination) {
@@ -265,6 +267,17 @@ export function QueryComboBox({
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
+      } else if (resource?.specifyTable === tables.Component) {
+        const typeResource = await toTable(resource, 'Component')?.rgetPromise(
+          'type'
+        );
+        if (typeResource === undefined || typeResource === null) {
+          console.warn('Could not scope Component -> name without type', {
+            component: resource,
+          });
+          return undefined;
+        }
+        return typeResource.get('taxonTreeDef');
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
@@ -273,7 +286,11 @@ export function QueryComboBox({
         return definition || parentDefinition;
       }
       return undefined;
-    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+    }, [
+      resource,
+      resource?.collection?.related?.get('collectionObjectType'),
+      componentType,
+    ]),
     false
   );
 
@@ -380,19 +397,6 @@ export function QueryComboBox({
     />
   );
 
-  const isTree =
-    resource?.specifyTable === undefined
-      ? false
-      : isTreeTable(resource?.specifyTable.name);
-
-  const isRoot = isTree ? resource?.get('rankId') === 0 : false;
-
-  const validation = { ...getValidationAttributes(parser) };
-
-  if (isRoot && field.name === 'parent') {
-    delete validation.required;
-  }
-
   return (
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
@@ -414,10 +418,10 @@ export function QueryComboBox({
           forwardRef={validationRef}
           inputProps={{
             id,
-            required: isRoot ? false : isRequired,
+            required: isRequired,
             title:
               typeof typeSearch === 'object' ? typeSearch.title : undefined,
-            ...validation,
+            ...getValidationAttributes(parser),
             type: 'text',
             [titlePosition]: 'top',
           }}
@@ -557,6 +561,10 @@ export function QueryComboBox({
                                         : fieldName === 'taxonTreeDefId'
                                           ? {
                                               field: 'definition',
+                                              queryBuilderFieldPath: [
+                                                'definition',
+                                                'id',
+                                              ],
                                               isRelationship: true,
                                               operation: 'in',
                                               isNot: false,

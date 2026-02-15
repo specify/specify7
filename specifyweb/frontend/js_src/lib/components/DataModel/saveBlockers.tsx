@@ -167,17 +167,17 @@ export function useAllSaveBlockers(
   filterBlockers?: LiteralField | Relationship
 ): RA<BlockerWithResource> {
   const [blockers, setBlockers] = React.useState<RA<BlockerWithResource>>([]);
-  const allBlockers =
-    resource === undefined
-      ? undefined
-      : getAllBlockers(resource, filterBlockers);
   React.useEffect(
     () =>
-      resource === undefined || allBlockers === undefined
+      resource === undefined
         ? undefined
         : resource.noBusinessRules
           ? setBlockers([])
-          : blockerEvents.on('change', () => setBlockers(allBlockers), true),
+          : blockerEvents.on(
+              'change',
+              () => setBlockers(getAllBlockers(resource, filterBlockers)),
+              true
+            ),
     [resource]
   );
   return blockers;

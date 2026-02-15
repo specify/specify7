@@ -254,7 +254,7 @@ export function PrepDialog({
             .catch((error) => softFail(error));
         }}
       >
-        <table className="grid-table grid-cols-[min-content_repeat(6,auto)] gap-2">
+        <table className="grid-table grid-cols-[min-content_repeat(7,auto)] gap-2">
           <thead>
             <tr>
               <th scope="col">
@@ -263,6 +263,7 @@ export function PrepDialog({
               <th scope="col">
                 {getField(tables.CollectionObject, 'catalogNumber').label}
               </th>
+              <th scope="col">{tables.Preparation.label}</th>
               <th scope="col">
                 {getField(tables.Determination, 'taxon').label}
               </th>

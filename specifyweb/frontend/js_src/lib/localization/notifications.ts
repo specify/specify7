@@ -47,7 +47,7 @@ export const notificationsText = createDictionary({
     'fr-fr': '(Classé du plus récent au plus ancien.)',
     'uk-ua': '(У порядку від останнього до найстарішого.)',
     'de-ch': '(Geordnet von neu zu alt)',
-    'pt-br': '(Ordenados do mais recente para o mais antigo.)',
+    'pt-br': '(Ordenado do mais recente para o mais antigo.)',
   },
   exception: {
     comment: 'Used as a label for a button that downloads the error message',
@@ -84,7 +84,7 @@ export const notificationsText = createDictionary({
     'fr-fr': "La mise à jour du flux d'exportation a échoué.",
     'uk-ua': 'Не вдалося експортувати оновлення каналу.',
     'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
-    'pt-br': 'Falha na atualização do feed de exportação.',
+    'pt-br': 'A atualização do feed de exportação falhou.',
   },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
@@ -102,7 +102,7 @@ export const notificationsText = createDictionary({
     'fr-fr': "L'exportation DwCA a échoué.",
     'uk-ua': 'Помилка експорту DwCA.',
     'de-ch': 'Der DwCA-Export ist fehlgeschlagen.',
-    'pt-br': 'Falha na exportação do DwCA.',
+    'pt-br': 'A exportação para DwCA falhou.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
@@ -111,7 +111,7 @@ export const notificationsText = createDictionary({
     'fr-fr': 'Exportation de la requête au format CSV terminée.',
     'uk-ua': 'Експорт запиту в CSV завершено.',
     'de-ch': 'Der Abfrageexport nach CSV wurde abgeschlossen.',
-    'pt-br': 'Exportação de consulta para CSV concluída.',
+    'pt-br': 'Exportação da consulta para CSV concluída.',
   },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
@@ -120,7 +120,7 @@ export const notificationsText = createDictionary({
     'fr-fr': 'Exportation de la requête vers KML terminée.',
     'uk-ua': 'Експорт запиту в KML завершено.',
     'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
-    'pt-br': 'Exportação de consulta para KML concluída.',
+    'pt-br': 'Exportação da consulta para KML concluída.',
   },
   dataSetOwnershipTransferred: {
     'en-us':

@@ -1,10 +1,10 @@
 from django.test import Client
 import json
 
-from specifyweb.specify.tests.test_trees import GeographyTree
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 def _url(obj):
-    return f"/api/delete_blockers/{obj._meta.model_name}/{obj.id}/"
+    return f"/delete_blockers/delete_blockers/{obj._meta.model_name}/{obj.id}/"
 
 class TestDeleteBlockers(GeographyTree):
 
@@ -63,4 +63,3 @@ class TestDeleteBlockers(GeographyTree):
         
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
-    

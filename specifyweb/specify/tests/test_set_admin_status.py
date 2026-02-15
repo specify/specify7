@@ -1,4 +1,3 @@
-
 from django.test import Client
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -17,7 +16,7 @@ class TestSetAdminStatus(ApiTests):
         c.force_login(self.specifyuser)
 
         response = c.post(
-            f'/api/set_admin_status/{self.specifyuser.id}/',
+            f'/accounts/set_admin_status/{self.specifyuser.id}/',
             dict(admin_status='true')
         )
 
@@ -38,7 +37,7 @@ class TestSetAdminStatus(ApiTests):
         c.force_login(self.specifyuser)
 
         response = c.post(
-            f'/api/set_admin_status/{self.specifyuser.id}/',
+            f'/accounts/set_admin_status/{self.specifyuser.id}/',
             dict(admin_status='false')
         )
 

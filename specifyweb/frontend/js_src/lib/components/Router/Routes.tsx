@@ -209,6 +209,14 @@ export const routes: RA<EnhancedRoute> = [
           import('../WbImport').then(({ WbImportView }) => WbImportView),
       },
       {
+        path: 'import-attachments',
+        title: attachmentsText.importAttachments(),
+        element: () =>
+          import('../WbImportAttachments').then(
+            ({ WbImportAttachmentsView }) => WbImportAttachmentsView
+          ),
+      },
+      {
         path: 'plan/:id',
         element: () =>
           import('../WbPlanView').then(
@@ -369,6 +377,14 @@ export const routes: RA<EnhancedRoute> = [
       ),
   },
   {
+    path: 'collection-preferences',
+    title: preferencesText.collectionPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
+      ),
+  },
+  {
     path: 'schema-config',
     title: schemaText.schemaConfig(),
     element: () =>
@@ -463,6 +479,14 @@ export const routes: RA<EnhancedRoute> = [
     index: true,
     title: welcomeText.pageTitle(),
     element: () => import('../HomePage').then(({ WelcomeView }) => WelcomeView),
+  },
+  {
+    path: 'workbench-attachment',
+    title: attachmentsText.attachments(),
+    element: () =>
+      import('../WbAttachmentViewer/index').then(
+        ({ WbAttachmentViewerView }) => WbAttachmentViewerView
+      ),
   },
   /*
    * The "*" route (the 404 case) was not added, as otherwise it would be

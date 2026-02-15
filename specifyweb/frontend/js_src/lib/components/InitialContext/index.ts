@@ -15,7 +15,7 @@ export const cachableUrls = new Set<string>();
  * Mark URL as cachable -> should have its cache cleared when cache buster is
  * invoked
  */
-export function cachableUrl(url: string): string {
+export function cacheableUrl(url: string): string {
   cachableUrls.add(url);
   return url;
 }
@@ -57,7 +57,7 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     // Doing async import to avoid a circular dependency
     const { ajax } = await import('../../utils/ajax');
 
-    const { data } = await ajax<T>(cachableUrl(path), {
+    const { data } = await ajax<T>(cacheableUrl(path), {
       errorMode: 'visible',
       headers: { Accept: mimeType },
     });
@@ -65,6 +65,35 @@ export const load = async <T>(path: string, mimeType: MimeType): Promise<T> =>
     return data;
   });
 
+/**
+ * These endpoints should still be called as a part of loading the initial
+ * context, but are not strictly required for normal operation of the
+ * application.
+ * Because of this, these endpoints are called after the initialContext and do
+ * not block or prevent access to Specify
+ */
+export const secondaryContext = Promise.all([
+  /**
+   * REFACTOR: Move non-essential endpoints here from initialContext to speed
+   * up initial loading times.
+   * Icon Definitions, Legacy UI Localization, Uniqueness Rules, and possibly
+   * even Field Formatters and Remote Prefs can all theoretically be moved here.
+   *
+   * Some more work would need to be done to handle the case where a component
+   * attempts to access the resources as they're being fetched.
+   */
+  // Send basic stats
+  import('./stats'),
+]).then(async (modules) =>
+  Promise.all(modules.map(async ({ fetchContext }) => fetchContext))
+);
+
+/**
+ * These endpoints are essential for nearly all operations in Specify and have
+ * to be fetched before the application can even be accessed.
+ * That is, the application will necessarily be blocked until
+ * all of these requests are resolved.
+ */
 export const initialContext = Promise.all([
   // Fetch general context information (NOT CACHED)
   import('../DataModel/schema'),

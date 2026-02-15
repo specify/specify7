@@ -25,7 +25,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'À propos de Spécifier 7',
     'uk-ua': 'Про Specify 7',
     'de-ch': 'Über Specify 7',
-    'pt-br': 'Sobre o Specify 7',
+    'pt-br': 'Sobre Especificar 7',
   },
   downloadInformation: {
     'en-us': 'Download Information',
@@ -43,7 +43,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Tuiles Taxons',
     'uk-ua': 'Taxon Tiles',
     'de-ch': 'Taxon-Kacheln',
-    'pt-br': 'Telhas de táxons',
+    'pt-br': 'Blocos de táxon',
   },
   taxonTilesDescription: {
     'en-us':
@@ -59,7 +59,7 @@ export const welcomeText = createDictionary({
     'de-ch':
       'Zeigt Taxa mit {count:number|formatted} oder mehr {collectionObjectTable:string} Datensätzen',
     'pt-br':
-      'Exibindo Taxa com {count:number|formatted} ou mais {collectionObjectTable:string} registros',
+      'Exibindo táxons com {count:number|formatted} ou mais registros {collectionObjectTable:string}',
   },
   fullAddress: {
     'en-us':
@@ -91,7 +91,7 @@ export const welcomeText = createDictionary({
     'de-ch':
       "Die Specify-Software ist ein Produkt des Specify Collections Consortiums, das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu den Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, University of Michigan. Das Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S. Steuerstatus des University of Kansas Center for Research. Specify wurde von 1996 bis 2018 durch Zuschüsse der U.S. National Science Foundation unterstützt.",
     'pt-br':
-      "O software Specify é um produto do Consórcio de Coleções Specify, administrado e financiado por suas instituições associadas. Os membros fundadores do consórcio incluem: Organização de Pesquisa Científica e Industrial da Commonwealth (CSIRO), Consejo Superior de Investigaciones Científicas, Consórcio de Museus da Dinamarca, Muséum d'Histoire Naturelle Geneva, Universidade da Flórida, Universidade do Kansas e Universidade de Michigan. O consórcio opera sob o status tributário americano 501(c)3, sem fins lucrativos, do Centro de Pesquisa da Universidade do Kansas. O Specify foi apoiado de 1996 a 2018 por doações da Fundação Nacional de Ciências dos EUA.",
+      "O software Specify é um produto do Specify Collections Consortium, que é governado e financiado por suas instituições membros. Os membros fundadores do Consórcio incluem: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas e University of Michigan. O Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos EUA (NSF).",
   },
   licence: {
     'en-us':
@@ -101,13 +101,13 @@ export const welcomeText = createDictionary({
     'es-es':
       'Specify 7 Copyright © 2025 University of Kansas Center for Research. Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, bajo licencia GNU General Public License 2 (GPL2).',
     'fr-fr':
-      "Specify 7, Copyright 2025, Centre de recherche de l'Université du Kansas. Specify est fourni sans AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source, sous licence GNU General Public License v2.",
+      "Specify 7, © 2025, Centre de recherche de l'Université du Kansas. Specify est fourni SANS AUCUNE GARANTIE. Ce logiciel libre et open source est distribué sous licence GNU GPL v2.",
     'uk-ua':
       'Укажіть 7, авторське право 2025, Дослідницький центр Канзаського університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public License v2.',
     'de-ch':
       'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.',
     'pt-br':
-      'Especifique 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Especifique NÃO OFERECE NENHUMA GARANTIA. Este é um software gratuito e de código aberto, licenciado sob a Licença Pública Geral GNU v2.',
+      'Specify 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v2.',
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -125,16 +125,16 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Spécifiez la version 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
-    'pt-br': 'Especifique 7 versões:',
+    'pt-br': 'Especificar versão 7:',
   },
   gitSha: {
     'en-us': 'Git SHA:',
     'ru-ru': 'Git SHA:',
     'es-es': 'Git SHA:',
-    'fr-fr': 'Git SHA :',
+    'fr-fr': 'SHA Git :',
     'uk-ua': 'Git SHA:',
     'de-ch': 'Git SHA:',
-    'pt-br': 'Git SHA:',
+    'pt-br': 'SHA do Git:',
   },
   buildDate: {
     'en-us': 'Build Date:',
@@ -143,7 +143,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Date de construction :',
     'uk-ua': 'Дата збірки:',
     'de-ch': 'Datum des Builds:',
-    'pt-br': 'Data de construção:',
+    'pt-br': 'Data de compilação:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
@@ -152,7 +152,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Spécifiez la version 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
-    'pt-br': 'Especifique 6 versões:',
+    'pt-br': 'Especificar versão 6:',
   },
   databaseVersion: {
     'en-us': 'Database Version:',
@@ -167,7 +167,7 @@ export const welcomeText = createDictionary({
     'en-us': 'DB Schema Version',
     'ru-ru': 'Версия схемы базы данных',
     'es-es': 'Versión del Esquema de base de datos',
-    'fr-fr': 'Version du schéma de la base de données',
+    'fr-fr': 'Version du schéma de base de données',
     'uk-ua': 'Версія схеми БД',
     'de-ch': 'Datenbankschema-Version',
     'pt-br': 'Versão do esquema do banco de dados',
@@ -207,6 +207,6 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Date de création de la base de données :',
     'uk-ua': 'Дата створення БД:',
     'de-ch': 'Datenbank Erstelldatum:',
-    'pt-br': 'Data de criação do BD:',
+    'pt-br': 'Data de criação do banco de dados:',
   },
 } as const);

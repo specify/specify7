@@ -18,6 +18,7 @@ import { getNameFromTreeRankName, valueIsToManyIndex } from './mappingHelpers';
 import type {
   ColumnDefinition,
   ColumnOptions,
+  DatasetAttachmentPrefs,
   TreeRecord,
   Uploadable,
   UploadPlan,
@@ -197,7 +198,8 @@ export const uploadPlanBuilder = (
   baseTableName: keyof Tables,
   lines: RA<SplitMappingPath>,
   mustMatchPreferences: RR<keyof Tables, boolean>,
-  batchEditPrefs?: BatchEditPrefs
+  batchEditPrefs?: BatchEditPrefs,
+  attachmentPrefs?: DatasetAttachmentPrefs
 ): UploadPlan => ({
   baseTableName: toLowerCase(baseTableName),
   uploadable: toUploadable(
@@ -209,6 +211,7 @@ export const uploadPlanBuilder = (
     true
   ),
   batchEditPrefs,
+  attachmentPrefs,
 });
 
 const indexMappings = (

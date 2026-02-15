@@ -310,6 +310,14 @@ function Wrapped({
     [state, table.name]
   );
 
+  React.useEffect(() => {
+    if (!showSeries)
+      setQuery({
+        ...query,
+        smushed: false,
+      });
+  }, [showSeries]);
+
   return treeRanksLoaded ? (
     <ReadOnlyContext.Provider value={isReadOnly}>
       <IsQueryBasicContext.Provider value={isBasic}>
@@ -580,19 +588,20 @@ function Wrapped({
                     ? runQuery('regular')
                     : undefined
                 }
-                onToggleDistinct={(): void =>
+                onToggleDistinct={(): void => {
                   setQuery({
                     ...query,
                     selectDistinct: !(query.selectDistinct ?? false),
-                  })
-                }
+                  });
+                  setSaveRequired(true);
+                }}
                 onToggleHidden={setShowHiddenFields}
-                onToggleSeries={(): void =>
+                onToggleSeries={(): void => {
                   setQuery({
                     ...query,
                     smushed: !(query.smushed ?? false),
-                  })
-                }
+                  });
+                }}
               />
             </div>
             {hasPermission('/querybuilder/query', 'execute') && (

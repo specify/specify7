@@ -2,14 +2,13 @@ import React from 'react';
 
 import { localityText } from '../../localization/locality';
 import { queryText } from '../../localization/query';
-import type { Parser } from '../../utils/parser/definitions';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { IsQueryBasicContext } from './Context';
-import type { QueryFieldType } from './FieldFilter';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
+import type { QueryLineFieldMeta } from './Line';
 
 export function QueryLineTools({
   fieldMeta,
@@ -20,11 +19,7 @@ export function QueryLineTools({
   onMoveUp: handleMoveUp,
   onMoveDown: handleMoveDown,
 }: {
-  readonly fieldMeta: {
-    readonly fieldType: QueryFieldType | undefined;
-    readonly parser: Parser | undefined;
-    readonly canOpenMap: boolean;
-  };
+  readonly fieldMeta: QueryLineFieldMeta;
   readonly onOpenMap: (() => void) | undefined;
   readonly field: QueryField;
   readonly isFieldComplete: boolean;

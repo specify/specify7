@@ -1,8 +1,8 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
-import type { UiFormatter } from '../index';
-import { fetchContext, getUiFormatters } from '../index';
+import type { UiFormatter } from '..';
+import { fetchContext, getUiFormatters } from '..';
 
 mockTime();
 requireContext();
@@ -16,27 +16,29 @@ const getFormatter = (): UiFormatter | undefined =>
 const getSecondFormatter = (): UiFormatter | undefined =>
   getUiFormatters().AccessionNumber;
 
-describe('valueOrWild', () => {
+describe('defaultValue', () => {
   test('catalog number', () =>
-    expect(getFormatter()?.valueOrWild()).toBe('#########'));
+    expect(getFormatter()?.defaultValue).toBe('#########'));
 
   test('accession number', () =>
-    expect(getSecondFormatter()?.valueOrWild()).toBe('2022-AA-###'));
+    expect(getSecondFormatter()?.defaultValue).toBe('2022-AA-###'));
 });
 
-describe('parseRegExp', () => {
+describe('placeholder', () => {
   test('catalog number', () =>
-    expect(getFormatter()?.parseRegExp()).toBe('^(#########|\\d{0,9})$'));
-  test('accession number', () =>
-    expect(getSecondFormatter()?.parseRegExp()).toBe(
-      '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$'
-    ));
-});
-
-describe('pattern', () => {
-  test('catalog number', () =>
-    expect(getUiFormatters().CatalogNumberNumericRegex?.pattern()).toBe(
+    expect(getUiFormatters().CatalogNumberNumericRegex?.placeholder).toBe(
       '####[-A]'
+    ));
+  test('accession number', () =>
+    expect(getSecondFormatter()?.placeholder).toBe('2022-AA-###'));
+});
+
+describe('regex', () => {
+  test('catalog number', () =>
+    expect(getFormatter()?.regex.source).toBe('^(#########|\\d{0,9})$'));
+  test('accession number', () =>
+    expect(getSecondFormatter()?.regex.source).toBe(
+      '^(YEAR|\\d{4})(-)([a-zA-Z0-9]{2})(-)(###|\\d{3})$'
     ));
 });
 

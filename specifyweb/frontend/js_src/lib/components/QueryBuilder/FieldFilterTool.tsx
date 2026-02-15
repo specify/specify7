@@ -10,7 +10,7 @@ import {
   mappingElementDivider,
   mappingElementDividerClassName,
 } from '../WbPlanView/LineComponents';
-import type { QueryFieldFilter } from './FieldFilter';
+import type { QueryFieldFilter } from './FieldFilterSpec';
 import type { QueryField } from './helpers';
 
 type FieldFilterToolProps = {
