@@ -125,9 +125,7 @@ export function PrepDialog({
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             <Button.Info
               disabled={!canSelectAll}
-              title={interactionsText.selectAllAvailablePreparations({
-                preparationTable: tables.Preparation.label.toLowerCase(),
-              })}
+              title={interactionsText.selectAllAvailablePreparations()}
               onClick={(): void =>
                 setSelected(preparations.map(({ available }) => available))
               }
@@ -156,9 +154,7 @@ export function PrepDialog({
           </>
         )
       }
-      header={interactionsText.preparations({
-        preparationTable: tables.Preparation.label,
-      })}
+      header={interactionsText.preparations()}
       onClose={handleClose}
     >
       <Label.Inline className="gap-2">
