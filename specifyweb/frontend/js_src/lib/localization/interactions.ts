@@ -38,8 +38,17 @@ export const interactionsText = createDictionary({
   },
   noInteractions: {
     comment: 'Example: There are no interactions linked to this {preparation}',
-    'en-us':
-      'There are no interactions linked to this {preparationTable:string}.',
+    'en-us': 'There are no interactions linked to this preparation.',
+  },
+  tableLabelRecords: {
+    comment: 'Example: Loan records',
+    'en-us': '{tableLabel:string} records',
+    'ru-ru': '{tableLabel:string} записи',
+    'es-es': '{tableLabel:string} registros',
+    'fr-fr': '{tableLabel:string} enregistrements',
+    'uk-ua': '{tableLabel:string} записи',
+    'de-ch': '{tableLabel:string} Datensätze',
+    'pt-br': '{tableLabel:string} registros',
   },
   preparationsNotFoundFor: {
     'en-us': 'No preparations were found for the following records:',

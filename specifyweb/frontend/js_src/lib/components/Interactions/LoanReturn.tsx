@@ -11,7 +11,6 @@ import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Loan, LoanPreparation } from '../DataModel/types';
@@ -72,13 +71,7 @@ export function LoanReturn({
         header={tables.LoanPreparation.label}
         onClose={handleClose}
       >
-        {interactionsText.noUnresolvedPreparations({
-          loanPreparationsLabel: getField(
-            tables.Loan,
-            'loanPreparations'
-          ).label.toLowerCase(),
-          loanTableLabel: tables.Loan.label,
-        })}
+        {interactionsText.noUnresolvedPreparations()}
       </Dialog>
     ) : (
       <PreparationReturn
@@ -173,9 +166,7 @@ function PreparationReturn({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           <Button.Info
             disabled={!canSelectAll}
-            title={interactionsText.returnAllPreparations({
-              preparationTable: tables.Preparation.label.toLowerCase(),
-            })}
+            title={interactionsText.returnAllPreparations()}
             onClick={(): void =>
               setState(
                 state.map(({ unresolved, remarks }) => ({
@@ -206,9 +197,7 @@ function PreparationReturn({
           </Button.Info>
           <Submit.Success
             form={id('form')}
-            title={interactionsText.returnSelectedPreparations({
-              preparationTable: tables.Preparation.label.toLowerCase(),
-            })}
+            title={interactionsText.returnSelectedPreparations()}
           >
             {commonText.apply()}
           </Submit.Success>

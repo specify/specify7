@@ -80,9 +80,7 @@ export function ShowLoansCommand({
               (relatedIds) =>
                 Array.isArray(relatedIds) && relatedIds.length === 0
             )
-          ? interactionsText.noInteractions({
-              preparationTable: tables.Preparation.label,
-            })
+          ? interactionsText.noInteractions()
           : accessibleInteractionTables
               .map(
                 (interactionTable) =>
