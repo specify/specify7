@@ -206,10 +206,6 @@ export const interactionsText = createDictionary({
     'de-ch': '{tableName:string}: {resource:string}',
     'pt-br': '{tableName:string}: {resource:string}',
   },
-  tableLabelRecords: {
-    comment: 'Example: Exchange In records',
-    'en-us': '{tableLabel:string} records',
-  },
   unCataloged: {
     'en-us': 'uncataloged',
     'ru-ru': 'некаталогизированный',
