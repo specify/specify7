@@ -719,7 +719,7 @@ export const treeText = createDictionary({
       'Creating tree record {current:number|formatted}/{total:number|formatted}',
   },
   defaultTreeCreationLoadingMessage: {
-    'en-us': 'Default Tree Creation is in progress, please wait...'
+    'en-us': 'Default Tree Creation is in progress, please wait...',
   },
   missingRanks: {
     'en-us': 'Missing Ranks',
