@@ -25,7 +25,6 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
-import { Tables } from '../DataModel/types';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
@@ -393,7 +392,7 @@ function DialogForm({
 const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
-) => (
+): JSX.Element | null => (
   hasTablePermission(resource.specifyTable.name, 'update') ? 
   <div className="flex items-center">
     <ResourceLink
@@ -418,7 +417,7 @@ const handleEditResource = (
 const addButton = (
   createResource: () => void,
   table: typeof tables[keyof typeof tables]
-): JSX.Element => (
+): JSX.Element | null => (
   hasTablePermission(table.name, 'create') ? 
   <Button.LikeLink
     className="flex items-center gap-2 mb-2"
