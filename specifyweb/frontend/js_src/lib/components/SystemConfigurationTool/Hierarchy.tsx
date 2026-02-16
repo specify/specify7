@@ -25,6 +25,7 @@ import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
+import { Tables } from '../DataModel/types';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
@@ -40,6 +41,7 @@ import { nestAllResources } from '../SetupTool/utils';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
+import { hasTablePermission } from '../Permissions/helpers';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -392,6 +394,7 @@ const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
 ) => (
+  hasTablePermission(resource.specifyTable.name, 'update') ? 
   <div className="flex items-center">
     <ResourceLink
       component={Link.Default}
@@ -409,13 +412,14 @@ const handleEditResource = (
       {icons.pencil}
       {commonText.edit()}
     </ResourceLink>
-  </div>
+  </div> : null
 );
 
 const addButton = (
   createResource: () => void,
-  tableName: string
+  table: typeof tables[keyof typeof tables]
 ): JSX.Element => (
+  hasTablePermission(table.name, 'create') ? 
   <Button.LikeLink
     className="flex items-center gap-2 mb-2"
     onClick={() => {
@@ -424,9 +428,9 @@ const addButton = (
   >
     <span className="flex items-center gap-1">
       {icons.plus}
-      {`${setupToolText.hierarchyAddNew()} ${tableName}`}
+      {`${setupToolText.hierarchyAddNew()} ${tableLabel(table.name)}`}
     </span>
-  </Button.LikeLink>
+  </Button.LikeLink> : null
 );
 
 export function Hierarchy({
@@ -561,7 +565,7 @@ export function Hierarchy({
                   );
                   handleNewResource();
                   void refreshAllInfo();
-                }, tableLabel('Collection'))}
+                }, tables.Collection)}
               </div>
             )}
             {/* DISCIPLINE CONFIG DIALOGS */}
@@ -698,7 +702,7 @@ export function Hierarchy({
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },
-              `${tableLabel('Discipline')}`
+              tables.Discipline
             )}
           </div>
         </CollapsibleSection>
@@ -743,7 +747,7 @@ export function Hierarchy({
                   setNewResource(new tables.Division.Resource());
                   handleNewResource();
                   void refreshAllInfo();
-                }, tableLabel('Division'))}
+                }, tables.Division)}
               </div>
             </CollapsibleSection>
           </li>

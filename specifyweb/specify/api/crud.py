@@ -59,6 +59,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     # Redirect to a dedicated object creation function for the model
     model_name = model.__name__.lower()
     if model_name in CREATE_MODEL_REDIRECTS:
+        check_table_permissions(collection, agent, model, "create")
         result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
         return model.objects.filter(id=result[f'{model_name}_id']).first()
 

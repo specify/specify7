@@ -31,6 +31,7 @@ import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
+import { userInformation } from '../InitialContext/userInformation';
 
 const treeToPref = {
   Geography: 'geography',
@@ -284,7 +285,7 @@ export function Tree<
         </div>
       ) : (
         <>
-          {rows.length === 0 ? (
+          {userInformation.isadmin && rows.length === 0 ? (
             <div className="flex flex-col gap-2 p-2">
               <Button.LikeLink
                 aria-label={treeText.initializeEmptyTree()}

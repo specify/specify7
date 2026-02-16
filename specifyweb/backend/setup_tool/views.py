@@ -9,6 +9,7 @@ from django.views.decorators.http import require_POST
 from django.db import transaction
 from specifyweb.backend.setup_tool.utils import normalize_keys
 from specifyweb.backend.setup_tool.setup_tasks import create_discipline_and_trees_task
+from specifyweb.backend.permissions.permissions import check_table_permissions
 
 import logging
 logger = logging.getLogger(__name__)
@@ -135,6 +136,11 @@ def create_specifyuser_view(request):
 @require_POST
 @transaction.atomic
 def create_discipline_and_trees(request):
+    from specifyweb.specify.models import Discipline, Taxontreedef, Geographytreedef
+    check_table_permissions(request.specify_collection, request.specify_user_agent, Discipline, "create")
+    check_table_permissions(request.specify_collection, request.specify_user_agent, Taxontreedef, "create")
+    check_table_permissions(request.specify_collection, request.specify_user_agent, Geographytreedef, "create")
+
     raw_data = json.loads(request.body)
     data = normalize_keys(raw_data)
 
