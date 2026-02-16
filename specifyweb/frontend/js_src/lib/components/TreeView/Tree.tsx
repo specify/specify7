@@ -22,6 +22,7 @@ import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -31,7 +32,6 @@ import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
-import { userInformation } from '../InitialContext/userInformation';
 
 const treeToPref = {
   Geography: 'geography',
@@ -168,10 +168,7 @@ export function Tree<
           stop();
           globalThis.location.reload();
           return;
-        } else if (
-          oldTreeCreationProgress === undefined &&
-          !data.active
-        ) {
+        } else if (oldTreeCreationProgress === undefined && !data.active) {
           // Tree was already complete
           stop();
         }
@@ -318,7 +315,8 @@ export function Tree<
                     ?.slice(1) as Conformations
                 }
                 focusPath={
-                  (focusPath[0] === 0 && index === 0) || focusPath[0] === row.nodeId
+                  (focusPath[0] === 0 && index === 0) ||
+                  focusPath[0] === row.nodeId
                     ? focusPath.slice(1)
                     : undefined
                 }
@@ -342,13 +340,16 @@ export function Tree<
                     setFocusPath([rows[index - 1].nodeId]);
                   else if (action === 'previous' || action === 'parent')
                     setFocusPath([]);
-                  else if (action === 'focusPrevious') focusRef.current?.focus();
-                  else if (action === 'focusNext') searchBoxRef.current?.focus();
+                  else if (action === 'focusPrevious')
+                    focusRef.current?.focus();
+                  else if (action === 'focusNext')
+                    searchBoxRef.current?.focus();
                   return undefined;
                 }}
                 onChangeConformation={(newConformation): void =>
                   setConformation([
-                    ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
+                    ...(conformation?.filter(([id]) => id !== row.nodeId) ??
+                      []),
                     ...(typeof newConformation === 'object'
                       ? ([[row.nodeId, ...newConformation]] as const)
                       : []),

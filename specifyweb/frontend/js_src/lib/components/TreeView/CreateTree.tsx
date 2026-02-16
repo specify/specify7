@@ -209,8 +209,8 @@ export function ImportTree<SCHEMA extends AnyTree>({
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefId: number;
   readonly treeDefinitionItems: RA<
-      SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
-    >;
+    SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
+  >;
   readonly buttonLabel?: LocalizedString;
   readonly buttonClassName?: string;
 }): JSX.Element {
@@ -222,9 +222,14 @@ export function ImportTree<SCHEMA extends AnyTree>({
     string | undefined
   >(undefined);
 
-  const [missingTreeRanks, setMissingTreeRanks] = React.useState<RA<string> | undefined>(undefined);
-  const [isMissingTreeRanks, setIsMissingTreeRanks] = React.useState<boolean>(false);
-  const [selectedPopulatedTree, setSelectedPopulatedTree] = React.useState<TaxonFileDefaultDefinition | undefined>(undefined);
+  const [missingTreeRanks, setMissingTreeRanks] = React.useState<
+    RA<string> | undefined
+  >(undefined);
+  const [isMissingTreeRanks, setIsMissingTreeRanks] =
+    React.useState<boolean>(false);
+  const [selectedPopulatedTree, setSelectedPopulatedTree] = React.useState<
+    TaxonFileDefaultDefinition | undefined
+  >(undefined);
 
   const connectedCollection = getSystemInfo().collection;
 
@@ -240,15 +245,20 @@ export function ImportTree<SCHEMA extends AnyTree>({
           method: 'POST',
           headers: { Accept: 'application/json' },
           body: {
-            mappingUrl: resource.mappingFile
-          }
+            mappingUrl: resource.mappingFile,
+          },
         });
         if (response.status === Http.OK && response.data) {
-          const mappingRankNames = response.data.ranks.map((rank: any) => rank.name);
-          const existingNames = new Set(treeDefinitionItems.map((item) => item.name));
+          const mappingRankNames = response.data.ranks.map(
+            (rank: any) => rank.name
+          );
+          const existingNames = new Set(
+            treeDefinitionItems.map((item) => item.name)
+          );
 
-          const missing = mappingRankNames
-            .filter((rankName: string) => !existingNames.has(rankName));
+          const missing = mappingRankNames.filter(
+            (rankName: string) => !existingNames.has(rankName)
+          );
 
           if (missing.length > 0) {
             setSelectedPopulatedTree(resource);
@@ -323,9 +333,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
       {isActive === 1 ? (
         <Dialog
           buttons={
-            <Button.DialogClose>
-              {commonText.cancel()}
-            </Button.DialogClose>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           }
           header={commonText.import()}
           onClose={() => setIsActive(0)}
@@ -368,7 +376,7 @@ async function startTreeCreation(
   treeName: string,
   treeDefId: number | undefined,
   createMissingRanks: boolean | undefined,
-  onSuccess: (taskId: string | undefined) => void,
+  onSuccess: (taskId: string | undefined) => void
 ): Promise<void> {
   return ajax<TreeCreationInfo>('/trees/create_default_tree/', {
     method: 'POST',
@@ -389,10 +397,7 @@ async function startTreeCreation(
         console.log(`${treeName} tree created successfully:`, data);
       } else if (status === Http.ACCEPTED) {
         // Tree is being created in the background.
-        console.log(
-          `${treeName} tree creation started successfully:`,
-          data
-        );
+        console.log(`${treeName} tree creation started successfully:`, data);
         onSuccess(data.task_id);
       }
     })
@@ -488,24 +493,18 @@ export function MissingTreeRanksDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose>
-            {commonText.close()}
-          </Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Secondary onClick={handleNo}>
             {commonText.no()}
           </Button.Secondary>
-          <Button.Info onClick={handleYes}>
-            {queryText.yes()}
-          </Button.Info>
+          <Button.Info onClick={handleYes}>{queryText.yes()}</Button.Info>
         </>
       }
       header={treeText.missingRanks()}
       onClose={onClose}
     >
       <div className="mb-4 flex flex-col gap-4">
-        <section>
-          {treeText.missingRanksDescription()}
-        </section>
+        <section>{treeText.missingRanksDescription()}</section>
         <section>
           <ul className="ml-4">
             {missingTreeRanks && missingTreeRanks.length > 0
@@ -513,9 +512,7 @@ export function MissingTreeRanksDialog({
               : null}
           </ul>
         </section>
-        <section>
-          {treeText.createMissingRanks()}
-        </section>
+        <section>{treeText.createMissingRanks()}</section>
       </div>
     </Dialog>
   );
