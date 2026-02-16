@@ -80,7 +80,8 @@ export function InteractionDialog({
   );
 
   const isLoanReturnLike =
-    isLoanReturn || (actionTable.name !== 'Loan' && actionTable.name.includes('Loan'));
+    isLoanReturn ||
+    (actionTable.name !== 'Loan' && actionTable.name.includes('Loan'));
 
   const itemTable = isLoanReturnLike ? tables.Loan : tables.CollectionObject;
 
@@ -206,8 +207,7 @@ export function InteractionDialog({
             )
         ).then((data) =>
           availablePrepsReady(catalogNumbers, data, {
-            skipEntryMatch:
-              searchField.name.toLowerCase() !== 'catalognumber',
+            skipEntryMatch: searchField.name.toLowerCase() !== 'catalognumber',
           })
         )
       );
@@ -377,7 +377,9 @@ export function InteractionDialog({
             values,
             isLoan
           )
-      ).then((data) => availablePrepsReady(values, data, { skipEntryMatch: true }))
+      ).then((data) =>
+        availablePrepsReady(values, data, { skipEntryMatch: true })
+      )
     );
   }
 
