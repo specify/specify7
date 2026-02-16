@@ -28,16 +28,7 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
     """Creates an initial empty tree."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
-        
-        # Uniquify name
-        tree_def = None
-        unique_tree_name = tree_name
-        if tree_def_model.objects.filter(name=tree_name).exists():
-            i = 1
-            while tree_def_model.objects.filter(name=f"{tree_name}_{i}").exists():
-                i += 1
-            unique_tree_name = f"{tree_name}_{i}"
-        
+
         # Create tree definition
         scope = {}
         if discipline_or_institution:
@@ -49,6 +40,15 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
                 scope = {
                     'discipline': discipline_or_institution
                 }
+        
+        # Uniquify name
+        tree_def = None
+        unique_tree_name = tree_name
+        if tree_def_model.objects.filter(name=tree_name, **scope).exists():
+            i = 1
+            while tree_def_model.objects.filter(name=f"{tree_name}_{i}", **scope).exists():
+                i += 1
+            unique_tree_name = f"{tree_name}_{i}"
 
         tree_def, _ = tree_def_model.objects.get_or_create(
             name=unique_tree_name,
@@ -335,6 +335,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
     discipline = None
     if discipline_id:
         discipline = spmodels.Discipline.objects.get(id=discipline_id)
+
     tree_name = initial_tree_name # Name will be uniquified on tree creation
 
     if notify and specify_user_id and specify_collection_id:
