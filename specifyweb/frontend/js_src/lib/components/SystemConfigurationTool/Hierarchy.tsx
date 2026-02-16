@@ -28,6 +28,7 @@ import { tables } from '../DataModel/tables';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
+import { hasTablePermission } from '../Permissions/helpers';
 import { tableLabel } from '../Preferences/UserDefinitions';
 import {
   applyFormDefaults,
@@ -40,7 +41,6 @@ import { nestAllResources } from '../SetupTool/utils';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
-import { hasTablePermission } from '../Permissions/helpers';
 
 type HierarchyNodeKind =
   | 'collection'
