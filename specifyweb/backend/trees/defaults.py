@@ -131,13 +131,11 @@ class RankMappingConfiguration(TypedDict):
 
 class DefaultTreeContext():
     """Context for a default tree creation task"""
-    def __init__(self, tree_type: str, tree_name: str, tree_cfg: dict[str, RankMappingConfiguration], create_missing_ranks: bool):
+    def __init__(self, tree_type: str, tree_def, tree_cfg: dict[str, RankMappingConfiguration], create_missing_ranks: bool):
         self.tree_type = tree_type
-        self.tree_name = tree_name
+        self.tree_def = tree_def
 
         self.tree_def_model, self.tree_rank_model, self.tree_node_model = get_models(tree_type)
-
-        self.tree_def = self.tree_def_model.objects.get(name=tree_name)
 
         self.tree_cfg = tree_cfg
         if create_missing_ranks:
@@ -401,7 +399,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
             tree_name = tree_def.name
             
             # Start importing CSV data
-            context = DefaultTreeContext(tree_type, tree_name, tree_cfg, create_missing_ranks)
+            context = DefaultTreeContext(tree_type, tree_def, tree_cfg, create_missing_ranks)
 
             total_rows = 0
             if row_count:
