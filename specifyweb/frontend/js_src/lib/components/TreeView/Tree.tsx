@@ -41,8 +41,6 @@ const treeToPref = {
   TectonicUnit: 'tectonicUnit',
 } as const;
 
-const busyStates = new Set(['RUNNING', 'STARTED']);
-
 export function Tree<
   SCHEMA extends AnyTree,
   TREE_NAME extends SCHEMA['tableName'],
@@ -149,7 +147,7 @@ export function Tree<
     treeCreationProgressRef.current = treeCreationProgress;
   }, [treeCreationProgress]);
 
-  const fetchTreeProgress = (stop: () => void) => {
+  const fetchTreeProgress = (stop: () => void): void => {
     ajax<TreeCreationProgressInfo>(
       `/trees/create_default_tree/status/create_default_tree_${tableName.toLowerCase()}_${treeDefId}/`,
       {
@@ -281,11 +279,9 @@ export function Tree<
         </div>
       </div>
       {treeCreationProgress?.active ? (
-        <>
-          <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium">
-            {treeText.defaultTreeCreationLoadingMessage()}
-          </div>
-        </>
+        <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium">
+          {treeText.defaultTreeCreationLoadingMessage()}
+        </div>
       ) : (
         <>
           {rows.length === 0 ? (
