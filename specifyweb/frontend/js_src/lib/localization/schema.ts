@@ -426,7 +426,7 @@ export const schemaText = createDictionary({
   tableUniquenessRules: {
     'en-us': '{tableName:string} Uniqueness Rules',
     'de-ch': '{tableName:string} Eindeutigkeitsregeln',
-    'es-es': '{tableName:string} Reglas de singularidad',
+    'es-es': '{tableName:string} Reglas de unicidad',
     'fr-fr': "{tableName:string} Règles d'unicité",
     'ru-ru': '{tableName:string} Правила уникальности',
     'uk-ua': '{tableName:string} Правила унікальності',
