@@ -13,19 +13,13 @@ type StatsCounts = {
 const stats2RequestIntervalMs = 24 * 60 * 60 * 1000;
 const stats2RequestKeyPrefix = 'specify7-stats2-last-request';
 const stats2RequestTimeoutMs = 5000;
+const stats2LambdaFunctionUrl = 'https://hvf3gvyu6q3f3mkf6y5xlddstq0xmuel.lambda-url.us-east-1.on.aws/';
 
 function buildStatsLambdaUrl(base: string | null | undefined): string | null {
   if (!base) return null;
   let u = base.trim();
 
   if (!/^https?:\/\//i.test(u)) u = `https://${u}`;
-
-  const hasRoute = /\/(prod|default)\/[^\s/]+/.test(u);
-  if (!hasRoute) {
-    const stage = 'prod';
-    const route = 'AggrgatedSp7Stats';
-    u = `${u.replace(/\/$/, '')}/${stage}/${route}`;
-  }
   return u;
 }
 
@@ -123,7 +117,7 @@ export const fetchContext = fetchSystemInfo.then(async (systemInfo) => {
       { errorMode: 'silent' }
     ).catch(softFail);
 
-  const lambdaUrl = buildStatsLambdaUrl(systemInfo.stats_2_url);
+  const lambdaUrl = buildStatsLambdaUrl(stats2LambdaFunctionUrl);
   if (lambdaUrl) {
     const storageKey = buildStats2RequestKey(
       lambdaUrl,
