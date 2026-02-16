@@ -31,6 +31,7 @@ import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
 import { TreeRow } from './Row';
+import { userInformation } from '../InitialContext/userInformation';
 
 const treeToPref = {
   Geography: 'geography',
@@ -40,8 +41,6 @@ const treeToPref = {
   LithoStrat: 'lithoStrat',
   TectonicUnit: 'tectonicUnit',
 } as const;
-
-const busyStates = new Set(['RUNNING', 'STARTED']);
 
 export function Tree<
   SCHEMA extends AnyTree,
@@ -141,15 +140,15 @@ export function Tree<
   };
 
   // Add a cookie or local storage (browser storage), if not busy than never call this again
-  const [treePreloading, setTreePreloading] = React.useState<
+  const [treeCreationProgress, setTreeCreationProgress] = React.useState<
     TreeCreationProgressInfo | undefined
   >(undefined);
-  const treePreloadingRef = React.useRef(treePreloading);
+  const treeCreationProgressRef = React.useRef(treeCreationProgress);
   React.useEffect(() => {
-    treePreloadingRef.current = treePreloading;
-  }, [treePreloading]);
+    treeCreationProgressRef.current = treeCreationProgress;
+  }, [treeCreationProgress]);
 
-  const fetchTreeProgress = (stop: () => void) => {
+  const fetchTreeProgress = (stop: () => void): void => {
     ajax<TreeCreationProgressInfo>(
       `/trees/create_default_tree/status/create_default_tree_${tableName.toLowerCase()}_${treeDefId}/`,
       {
@@ -159,26 +158,24 @@ export function Tree<
       }
     )
       .then(({ data }) => {
-        const oldTreePreloading = treePreloadingRef.current;
-
-        
+        const oldTreeCreationProgress = treeCreationProgressRef.current;
         if (
-          oldTreePreloading &&
-          busyStates.has(oldTreePreloading.taskstatus) &&
-          !busyStates.has(data.taskstatus)
+          oldTreeCreationProgress &&
+          oldTreeCreationProgress.active &&
+          !data.active
         ) {
           // Tree was in progress, and it just finished
           stop();
           globalThis.location.reload();
           return;
         } else if (
-          oldTreePreloading === undefined &&
-          !busyStates.has(data.taskstatus)
+          oldTreeCreationProgress === undefined &&
+          !data.active
         ) {
           // Tree was already complete
           stop();
         }
-        setTreePreloading(data);
+        setTreeCreationProgress(data);
       })
       .catch((error) => {
         console.error('Failed to fetch setup progress:', error);
@@ -282,13 +279,13 @@ export function Tree<
           })}
         </div>
       </div>
-      {(treePreloading !== undefined && busyStates.has(treePreloading.taskstatus)) ? (
-        <div className="flex flex-col gap-2 p-2 text-center text-lg font-medium">
-          {setupToolText.treeLoadingMessage()}
+      {treeCreationProgress?.active ? (
+        <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium">
+          {treeText.defaultTreeCreationLoadingMessage()}
         </div>
       ) : (
         <>
-          {rows.length === 0 ? (
+          {userInformation.isadmin && rows.length === 0 ? (
             <div className="flex flex-col gap-2 p-2">
               <Button.LikeLink
                 aria-label={treeText.initializeEmptyTree()}

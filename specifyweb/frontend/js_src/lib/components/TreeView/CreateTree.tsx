@@ -48,10 +48,15 @@ type TreeCreationInfo = {
   readonly message: string;
   readonly task_id?: string;
 };
+type TreeCreationTaskProgress = {
+  readonly current: number;
+  readonly total: number;
+};
 export type TreeCreationProgressInfo = {
   readonly taskstatus: string;
-  readonly taskprogress: any;
+  readonly taskprogress: TreeCreationTaskProgress | undefined;
   readonly taskid: string;
+  readonly active: boolean;
 };
 
 export async function fetchDefaultTrees(): Promise<TaxonFileDefaultList> {
@@ -550,8 +555,8 @@ export function TreeCreationProgressDialog({
           }
         ).then(({ data }) => {
           if (data.taskstatus === 'RUNNING') {
-            setProgress(data.taskprogress.current ?? 0);
-            setProgressTotal(data.taskprogress.total ?? 1);
+            setProgress(data.taskprogress?.current ?? 0);
+            setProgressTotal(data.taskprogress?.total ?? 1);
           } else if (data.taskstatus === 'FAILURE') {
             onStopped();
             throw data.taskprogress;

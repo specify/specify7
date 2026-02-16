@@ -40,6 +40,7 @@ import { nestAllResources } from '../SetupTool/utils';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
+import { hasTablePermission } from '../Permissions/helpers';
 
 type HierarchyNodeKind =
   | 'collection'
@@ -391,7 +392,8 @@ function DialogForm({
 const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
-) => (
+): JSX.Element | null => (
+  hasTablePermission(resource.specifyTable.name, 'update') ? 
   <div className="flex items-center">
     <ResourceLink
       component={Link.Default}
@@ -409,13 +411,14 @@ const handleEditResource = (
       {icons.pencil}
       {commonText.edit()}
     </ResourceLink>
-  </div>
+  </div> : null
 );
 
 const addButton = (
   createResource: () => void,
-  tableName: string
-): JSX.Element => (
+  table: typeof tables[keyof typeof tables]
+): JSX.Element | null => (
+  hasTablePermission(table.name, 'create') ? 
   <Button.LikeLink
     className="flex items-center gap-2 mb-2"
     onClick={() => {
@@ -424,9 +427,9 @@ const addButton = (
   >
     <span className="flex items-center gap-1">
       {icons.plus}
-      {`${setupToolText.hierarchyAddNew()} ${tableName}`}
+      {`${setupToolText.hierarchyAddNew()} ${tableLabel(table.name)}`}
     </span>
-  </Button.LikeLink>
+  </Button.LikeLink> : null
 );
 
 export function Hierarchy({
@@ -561,7 +564,7 @@ export function Hierarchy({
                   );
                   handleNewResource();
                   void refreshAllInfo();
-                }, tableLabel('Collection'))}
+                }, tables.Collection)}
               </div>
             )}
             {/* DISCIPLINE CONFIG DIALOGS */}
@@ -698,7 +701,7 @@ export function Hierarchy({
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },
-              `${tableLabel('Discipline')}`
+              tables.Discipline
             )}
           </div>
         </CollapsibleSection>
@@ -743,7 +746,7 @@ export function Hierarchy({
                   setNewResource(new tables.Division.Resource());
                   handleNewResource();
                   void refreshAllInfo();
-                }, tableLabel('Division'))}
+                }, tables.Division)}
               </div>
             </CollapsibleSection>
           </li>
