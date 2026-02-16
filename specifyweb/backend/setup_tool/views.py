@@ -162,8 +162,3 @@ def create_discipline_and_trees(request):
 def get_setup_progress(request):
     """Returns a dictionary of the status of the database setup."""
     return http.JsonResponse(api.get_setup_progress())
-
-@require_GET
-def get_preload_tree_status(request):
-    """Returns a dictionary of the status of the tree loading."""
-    return http.JsonResponse(api.get_preload_tree_status())
