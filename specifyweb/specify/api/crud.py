@@ -2,7 +2,7 @@
 
 
 import logging
-from typing import Any
+from typing import Any, Dict
 from collections.abc import Callable
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
@@ -45,7 +45,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     """Create a new instance of 'model' and populate it with 'data'."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
-    CREATE_MODEL_REDIRECTS = {
+    CREATE_MODEL_REDIRECTS: Dict[str, Callable[[dict], dict]] = {
         'institution': create_institution,
         'division': create_division,
         'discipline': create_discipline,
@@ -59,6 +59,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     # Redirect to a dedicated object creation function for the model
     model_name = model.__name__.lower()
     if model_name in CREATE_MODEL_REDIRECTS:
+        check_table_permissions(collection, agent, model, "create")
         result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
         return model.objects.filter(id=result[f'{model_name}_id']).first()
 

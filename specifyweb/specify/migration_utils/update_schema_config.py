@@ -1,11 +1,15 @@
 import re
+import json
 
 from typing import NamedTuple, Tuple
 import logging
 from collections import defaultdict
+from functools import lru_cache
+from pathlib import Path
 
 
 from django.db.models import Q, Count, Window, F
+from django.conf import settings
 from django.apps import apps as global_apps
 from django.core.exceptions import MultipleObjectsReturned
 from django.db import connection, transaction
@@ -53,6 +57,94 @@ logger = logging.getLogger(__name__)
 HIDDEN_FIELDS = [
     "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
 ]
+
+def _has_explicit_hidden_override(field_config: dict) -> bool:
+    return any(key.lower() == "ishidden" for key in field_config.keys())
+
+@lru_cache(maxsize=None)
+def _schema_override_hidden_values_for_discipline(
+    discipline_type: str,
+) -> dict[str, dict[str, bool]]:
+    """
+    Return a mapping of {table_name -> {field_name -> ishidden_value}} for fields
+    that have an
+    explicit `ishidden` override in config/<discipline>/schema_overrides.json.
+    """
+    normalized_discipline = (discipline_type or "").lower()
+    if not normalized_discipline:
+        return {}
+
+    schema_overrides_path = (
+        Path(settings.SPECIFY_CONFIG_DIR) / normalized_discipline / "schema_overrides.json"
+    )
+    if not schema_overrides_path.exists():
+        return {}
+
+    try:
+        with schema_overrides_path.open("r", encoding="utf-8") as schema_overrides_file:
+            overrides = json.load(schema_overrides_file)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning(
+            "Unable to read schema overrides for discipline '%s' at %s: %s",
+            normalized_discipline,
+            schema_overrides_path,
+            exc,
+        )
+        return {}
+
+    if not isinstance(overrides, dict):
+        return {}
+
+    hidden_override_values_by_table: dict[str, dict[str, bool]] = {}
+    for table_name, table_config in overrides.items():
+        if not isinstance(table_config, dict):
+            continue
+
+        explicit_hidden_override_values: dict[str, bool] = {}
+        items = table_config.get("items", [])
+        if not isinstance(items, list):
+            continue
+
+        for item in items:
+            if not isinstance(item, dict):
+                continue
+
+            for field_name, field_config in item.items():
+                if not isinstance(field_config, dict):
+                    continue
+                if not _has_explicit_hidden_override(field_config):
+                    continue
+                for key, value in field_config.items():
+                    if key.lower() == "ishidden":
+                        explicit_hidden_override_values[field_name.lower()] = bool(value)
+                        break
+
+        if explicit_hidden_override_values:
+            hidden_override_values_by_table[table_name.lower()] = explicit_hidden_override_values
+
+    return hidden_override_values_by_table
+
+@lru_cache(maxsize=None)
+def _schema_override_hidden_fields_for_discipline(discipline_type: str) -> dict[str, set[str]]:
+    hidden_override_values = _schema_override_hidden_values_for_discipline(discipline_type)
+    return {
+        table_name: set(table_values.keys())
+        for table_name, table_values in hidden_override_values.items()
+    }
+
+def _fields_without_explicit_hidden_override(
+    table_name: str,
+    field_names: list[str],
+    discipline_type: str,
+) -> list[str]:
+    table_hidden_overrides = _schema_override_hidden_fields_for_discipline(
+        discipline_type
+    ).get(table_name.lower(), set())
+    return [
+        field_name
+        for field_name in field_names
+        if field_name.lower() not in table_hidden_overrides
+    ]
 
 def datamodel_type_to_schematype(datamodel_type: str) -> str: 
     """
@@ -110,30 +202,60 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
 
     for fk_field, group_rows in groups.items():
         fk_ids: set[int] = set()
-        texts: set[str] = set()
         languages: set[str] = set()
 
         for r in group_rows:
             fk_ids.add(r[fk_field].pk)
-            texts.add(r["text"])
             languages.add(r["language"])
 
-        filt = {
-            f"{fk_field}_id__in": fk_ids,
-            "text__in": texts,
-            "language__in": languages,
-        }
-        existing = set(
-            Splocaleitemstr.objects.filter(**filt).values_list("language", "text", f"{fk_field}_id")
+        existing_rows = list(
+            Splocaleitemstr.objects.filter(
+                **{
+                    f"{fk_field}_id__in": fk_ids,
+                    "language__in": languages,
+                }
+            )
+            .filter(
+                Q(country__isnull=True) | Q(country=""),
+                Q(variant__isnull=True) | Q(variant=""),
+            )
+            .order_by("id")
         )
 
-        to_create = []
+        existing_by_key: dict[Tuple[str, int], list] = defaultdict(list)
+        fk_field_id = f"{fk_field}_id"
+        for existing_row in existing_rows:
+            key = (existing_row.language, getattr(existing_row, fk_field_id))
+            existing_by_key[key].append(existing_row)
+
+        desired_by_key: dict[Tuple[str, int], dict] = {}
         for r in group_rows:
-            key: Tuple[str, str, int] = (r["language"], r["text"], r[fk_field].pk)
-            if key in existing:
+            key = (r["language"], r[fk_field].pk)
+            desired_by_key[key] = r
+
+        rows_to_update = []
+        ids_to_delete: set[int] = set()
+        to_create = []
+        for key, desired_row in desired_by_key.items():
+            existing_for_key = existing_by_key.get(key, [])
+
+            if not existing_for_key:
+                to_create.append(Splocaleitemstr(**desired_row))
                 continue
-            existing.add(key)
-            to_create.append(Splocaleitemstr(**r))
+
+            keeper = existing_for_key[0]
+            if keeper.text != desired_row["text"]:
+                keeper.text = desired_row["text"]
+                rows_to_update.append(keeper)
+
+            for duplicate in existing_for_key[1:]:
+                ids_to_delete.add(duplicate.id)
+
+        if ids_to_delete:
+            Splocaleitemstr.objects.filter(id__in=ids_to_delete).delete()
+
+        if rows_to_update:
+            Splocaleitemstr.objects.bulk_update(rows_to_update, ["text"])
 
         if to_create:
             Splocaleitemstr.objects.bulk_create(to_create)
@@ -1158,17 +1280,62 @@ def update_hidden_prop(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Discipline = apps.get_model('specify', 'Discipline')
+    discipline_types_by_id = dict(Discipline.objects.values_list("id", "type"))
 
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
+        field_names = [field_name.lower() for field_name in fields]
+        field_name_set = set(field_names)
         containers = Splocalecontainer.objects.filter(
             name=table.lower(),
             schematype=0
         )
         for container in containers:
+            discipline_type = discipline_types_by_id.get(container.discipline_id, "")
+            explicit_hidden_overrides = {
+                field_name: ishidden
+                for field_name, ishidden in _schema_override_hidden_values_for_discipline(
+                    discipline_type
+                ).get(table.lower(), {}).items()
+                if field_name in field_name_set
+            }
+            explicit_fields_to_hide = [
+                field_name
+                for field_name, ishidden in explicit_hidden_overrides.items()
+                if ishidden
+            ]
+            explicit_fields_to_show = [
+                field_name
+                for field_name, ishidden in explicit_hidden_overrides.items()
+                if not ishidden
+            ]
+
+            if explicit_fields_to_hide:
+                Splocalecontaineritem.objects.filter(
+                    container=container,
+                    ishidden=False,
+                    name__in=explicit_fields_to_hide,
+                ).update(ishidden=True)
+
+            if explicit_fields_to_show:
+                Splocalecontaineritem.objects.filter(
+                    container=container,
+                    ishidden=True,
+                    name__in=explicit_fields_to_show,
+                ).update(ishidden=False)
+
+            fields_to_hide = _fields_without_explicit_hidden_override(
+                table,
+                field_names,
+                discipline_type,
+            )
+            if not fields_to_hide:
+                continue
+
             items_updated = Splocalecontaineritem.objects.filter(
                 container=container,
                 ishidden=False,
-                name__in=[field_name.lower() for field_name in fields]
+                name__in=fields_to_hide
             ).update(ishidden=True)
             if items_updated > 0:
                 logger.info(f"Hid {items_updated} items for table {table} and container {container.id}")
@@ -1192,15 +1359,27 @@ def update_hidden_prop(apps, schema_editor=None):
 def reverse_update_hidden_prop(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+    discipline_types_by_id = dict(Discipline.objects.values_list("id", "type"))
 
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
+        field_names = [field_name.lower() for field_name in fields]
         containers = Splocalecontainer.objects.filter(
             name=table.lower(),
         )
         for container in containers:
+            discipline_type = discipline_types_by_id.get(container.discipline_id, "")
+            fields_to_unhide = _fields_without_explicit_hidden_override(
+                table,
+                field_names,
+                discipline_type,
+            )
+            if not fields_to_unhide:
+                continue
+
             items = Splocalecontaineritem.objects.filter(
                 container=container,
-                name__in=[field_name.lower() for field_name in fields]
+                name__in=fields_to_unhide
             )
             logger.info(f"Reverting {items.count()} items for table {table} and container {container.id}")
             items.update(ishidden=False)

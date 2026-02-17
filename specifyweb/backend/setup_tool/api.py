@@ -4,18 +4,26 @@ These will be called in the correct order by the background setup task in setup_
 """
 
 import json
+from typing import Optional
 from django.http import (JsonResponse)
 from django.db.models import Max
 from django.db import transaction
 
 from specifyweb.backend.permissions.models import UserPolicy
+
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
 from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
-from specifyweb.backend.setup_tool.setup_tasks import setup_database_background, get_active_setup_task, get_last_setup_error, set_last_setup_error
+from specifyweb.backend.setup_tool.setup_tasks import (
+    setup_database_background,
+    get_active_setup_task,
+    get_last_setup_error,
+    set_last_setup_error,
+    queue_fix_schema_config_background,
+)
 from specifyweb.celery_tasks import MissingWorkerError
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
@@ -195,16 +203,15 @@ def create_discipline(data):
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
             return {"discipline_id": existing_discipline.id}
-    
-    is_first_discipline = Discipline.objects.count() == 0
 
     # Resolve division
     division_url = data.get('division')
-    division = resolve_uri_or_fallback(division_url, None, Division)
+    division_id = data.get('division_id', None)
+    division = resolve_uri_or_fallback(division_url, division_id, Division)
     if not division:
         raise SetupError("No Division available to assign")
 
-    data['division'] = division
+    data['division_id'] = division.id
     
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
@@ -218,7 +225,7 @@ def create_discipline(data):
     tectonicunittreedef = resolve_uri_or_fallback(tectonicunittreedef_url, None, Tectonicunittreedef)
     lithostrattreedef = resolve_uri_or_fallback(lithostrattreedef_url, None, Lithostrattreedef)
 
-    if geographytreedef is None or geologictimeperiodtreedef is None:
+    if geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
 
     # Assign a taxon tree. Not required, but its eventually needed for collection object type.
@@ -273,7 +280,6 @@ def create_discipline(data):
         apply_default_uniqueness_rules(new_discipline)
 
         # Update tree scoping
-        update_tree_scoping(geographytreedef, new_discipline.id)
         update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
 
         if (
@@ -286,18 +292,12 @@ def create_discipline(data):
                 update_tree_scoping(tectonicunittreedef, new_discipline.id)
                 update_tree_scoping(lithostrattreedef, new_discipline.id)
 
-        # Create a default taxon tree if the database is already set up.
-        if not is_first_discipline:
-            create_taxon_tree({
-                'discipline_id': new_discipline.id
-            })
-
         return {"discipline_id": new_discipline.id}
 
     except Exception as e:
         raise SetupError(e)
 
-def create_collection(data):
+def create_collection(data, run_fix_schema_config_async: bool = True):
     from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
@@ -313,10 +313,12 @@ def create_collection(data):
 
     # Handle discipline reference from URL
     discipline_id = data.get('discipline_id', None)
-    discipline_url = data.pop('discipline', None)
+    discipline_url = data.get('discipline', None)
     discipline = resolve_uri_or_fallback(discipline_url, discipline_id, Discipline)
+
     if discipline is not None:
         data['discipline_id'] = discipline.id
+        data['discipline'] = discipline
     else:
         raise SetupError("No discipline available")
     
@@ -334,9 +336,14 @@ def create_collection(data):
 
         # Create Preparation Types
         create_default_prep_types(new_collection, discipline.type)
+
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
-        fix_schema_config()
+        if run_fix_schema_config_async:
+            queue_fix_schema_config_background()
+        else:
+            fix_schema_config()
+        
         # Create Collection Object Type
         fix_cots()
 
@@ -370,7 +377,10 @@ def create_specifyuser(data):
 
     try:
         # Create user
-        new_user = Specifyuser.objects.create(**data)
+        new_user = Specifyuser.objects.create(
+            **data,
+            usertype='Manager'
+        )
         new_user.set_password(new_user.password)
         new_user.save()
 

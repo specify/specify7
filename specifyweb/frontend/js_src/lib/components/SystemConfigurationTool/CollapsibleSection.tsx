@@ -20,7 +20,7 @@ export function CollapsibleSection({
     <div className="mb-2">
       <div className="flex items-start">
         <Button.Icon
-          className={`ml-2 ${hasChildren ? '' : 'invisible'}`}
+          className={`ml-1 ${hasChildren ? '' : 'invisible'}`}
           icon={isOpen ? 'chevronDown' : 'chevronRight'}
           title="collapse"
           onClick={handleOpen}
@@ -28,7 +28,7 @@ export function CollapsibleSection({
         {title}
       </div>
 
-      {isOpen && <div className="ml-10">{children}</div>}
+      {isOpen && <div className="ml-3">{children}</div>}
     </div>
   );
 }

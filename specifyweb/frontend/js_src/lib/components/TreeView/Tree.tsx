@@ -4,12 +4,15 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
+import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
+import { ajax } from '../../utils/ajax';
 import { ping } from '../../utils/ajax/ping';
 import type { GetSet, RA } from '../../utils/types';
 import { toggleItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { icons } from '../Atoms/Icons';
 import type {
   AnyTree,
   FilterTablesByEndsWith,
@@ -19,10 +22,12 @@ import { idFromUrl } from '../DataModel/resource';
 import { deserializeResource } from '../DataModel/serializers';
 import { softError } from '../Errors/assert';
 import { ResourceView } from '../Forms/ResourceView';
+import { userInformation } from '../InitialContext/userInformation';
 import { hasTablePermission } from '../Permissions/helpers';
 import { useHighContrast } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { AddRank } from './AddRank';
+import type { TreeCreationProgressInfo } from './CreateTree';
 import { ImportTree } from './CreateTree';
 import type { Conformations, Row, Stats } from './helpers';
 import { fetchStats } from './helpers';
@@ -134,6 +139,63 @@ export function Tree<
     }
   };
 
+  // Add a cookie or local storage (browser storage), if not busy than never call this again
+  const [treeCreationProgress, setTreeCreationProgress] = React.useState<
+    TreeCreationProgressInfo | undefined
+  >(undefined);
+  const treeCreationProgressRef = React.useRef(treeCreationProgress);
+  React.useEffect(() => {
+    treeCreationProgressRef.current = treeCreationProgress;
+  }, [treeCreationProgress]);
+
+  const fetchTreeProgress = (stop: () => void): void => {
+    ajax<TreeCreationProgressInfo>(
+      `/trees/create_default_tree/status/create_default_tree_${tableName.toLowerCase()}_${treeDefId}/`,
+      {
+        method: 'GET',
+        headers: { Accept: 'application/json' },
+        errorMode: 'silent',
+      }
+    )
+      .then(({ data }) => {
+        const oldTreeCreationProgress = treeCreationProgressRef.current;
+        if (
+          oldTreeCreationProgress &&
+          oldTreeCreationProgress.active &&
+          !data.active
+        ) {
+          // Tree was in progress, and it just finished
+          stop();
+          globalThis.location.reload();
+          return;
+        } else if (oldTreeCreationProgress === undefined && !data.active) {
+          // Tree was already complete
+          stop();
+        }
+        setTreeCreationProgress(data);
+      })
+      .catch((error) => {
+        console.error('Failed to fetch setup progress:', error);
+      });
+  };
+
+  React.useEffect(() => {
+    let intervalId: NodeJS.Timeout;
+
+    const stopInterval = () => {
+      if (intervalId) {
+        clearInterval(intervalId);
+      }
+    };
+    fetchTreeProgress(stopInterval);
+
+    intervalId = setInterval(() => {
+      fetchTreeProgress(stopInterval);
+    }, 5000);
+
+    return () => clearInterval(intervalId);
+  }, []);
+
   return (
     <div
       className={`
@@ -144,7 +206,6 @@ export function Tree<
         ${highContrast ? 'border dark:border-white' : 'bg-gradient-to-bl'}
       `}
       role="none table"
-      // First role is for screen readers. Second is for styling
       style={
         {
           '--cols': treeDefinitionItems.length,
@@ -153,11 +214,8 @@ export function Tree<
         } as React.CSSProperties
       }
       tabIndex={0}
-      // When tree viewer is focused, move focus to last focused node
       onFocus={(event): void => {
-        // Don't handle bubbled events
         if (event.currentTarget !== event.target) return;
-        // If user wants to edit tree ranks, allow tree ranks to receive focus
         if (isEditingRanks) return;
         event.preventDefault();
       }}
@@ -218,76 +276,94 @@ export function Tree<
           })}
         </div>
       </div>
-      {rows.length === 0 ? (
-        <div className="flex flex-col gap-2 p-2">
-          <Button.Icon
-            icon="plus"
-            title={treeText.addRootNode()}
-            onClick={createRootNode}
-          />
-          {treeDefId ? (
-            <ImportTree
-              tableName={tableName}
-              treeDefId={treeDefId}
-              treeDefinitionItems={treeDefinitionItems}
-            />
-          ) : null}
+      {treeCreationProgress?.active ? (
+        <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium">
+          {treeText.defaultTreeCreationLoadingMessage()}
         </div>
-      ) : undefined}
-      <ul role="tree rowgroup">
-        {rows.map((row, index) => (
-          <TreeRow
-            actionRow={actionRow}
-            collapsedRanks={collapsedRanks ?? []}
-            conformation={
-              conformation
-                ?.find(([id]) => id === row.nodeId)
-                ?.slice(1) as Conformations
-            }
-            focusPath={
-              (focusPath[0] === 0 && index === 0) || focusPath[0] === row.nodeId
-                ? focusPath.slice(1)
-                : undefined
-            }
-            getRows={getRows}
-            getStats={getStats}
-            hideEmptyNodes={hideEmptyNodes}
-            key={row.nodeId}
-            nodeStats={undefined}
-            path={[]}
-            rankNameId={id}
-            ranks={ranks}
-            row={row}
-            setFocusedRow={setFocusedRow}
-            synonymColor={synonymColor}
-            treeName={tableName}
-            onAction={(action): void => {
-              if (action === 'next')
-                if (rows[index + 1] === undefined) return undefined;
-                else setFocusPath([rows[index + 1].nodeId]);
-              else if (action === 'previous' && index > 0)
-                setFocusPath([rows[index - 1].nodeId]);
-              else if (action === 'previous' || action === 'parent')
-                setFocusPath([]);
-              else if (action === 'focusPrevious') focusRef.current?.focus();
-              else if (action === 'focusNext') searchBoxRef.current?.focus();
-              return undefined;
-            }}
-            onChangeConformation={(newConformation): void =>
-              setConformation([
-                ...(conformation?.filter(([id]) => id !== row.nodeId) ?? []),
-                ...(typeof newConformation === 'object'
-                  ? ([[row.nodeId, ...newConformation]] as const)
-                  : []),
-              ])
-            }
-            onFocusNode={(newFocusPath): void => {
-              setFocusPath([row.nodeId, ...newFocusPath]);
-              setLastFocusedTree();
-            }}
-          />
-        ))}
-      </ul>
+      ) : (
+        <>
+          {userInformation.isadmin && rows.length === 0 ? (
+            <div className="flex flex-col gap-2 p-2">
+              <Button.LikeLink
+                aria-label={treeText.initializeEmptyTree()}
+                className="flex items-center gap-2 text-left"
+                title={treeText.initializeEmptyTree()}
+                onClick={createRootNode}
+              >
+                {icons.plus}
+                <span>{treeText.initializeEmptyTree()}</span>
+              </Button.LikeLink>
+              {treeDefId ? (
+                <ImportTree
+                  buttonClassName="text-left"
+                  buttonLabel={setupToolText.preloadTree()}
+                  tableName={tableName}
+                  treeDefId={treeDefId}
+                  treeDefinitionItems={treeDefinitionItems}
+                />
+              ) : null}
+            </div>
+          ) : null}
+          <ul role="tree rowgroup">
+            {rows.map((row, index) => (
+              <TreeRow
+                actionRow={actionRow}
+                collapsedRanks={collapsedRanks ?? []}
+                conformation={
+                  conformation
+                    ?.find(([id]) => id === row.nodeId)
+                    ?.slice(1) as Conformations
+                }
+                focusPath={
+                  (focusPath[0] === 0 && index === 0) ||
+                  focusPath[0] === row.nodeId
+                    ? focusPath.slice(1)
+                    : undefined
+                }
+                getRows={getRows}
+                getStats={getStats}
+                hideEmptyNodes={hideEmptyNodes}
+                key={row.nodeId}
+                nodeStats={undefined}
+                path={[]}
+                rankNameId={id}
+                ranks={ranks}
+                row={row}
+                setFocusedRow={setFocusedRow}
+                synonymColor={synonymColor}
+                treeName={tableName}
+                onAction={(action): void => {
+                  if (action === 'next')
+                    if (rows[index + 1] === undefined) return undefined;
+                    else setFocusPath([rows[index + 1].nodeId]);
+                  else if (action === 'previous' && index > 0)
+                    setFocusPath([rows[index - 1].nodeId]);
+                  else if (action === 'previous' || action === 'parent')
+                    setFocusPath([]);
+                  else if (action === 'focusPrevious')
+                    focusRef.current?.focus();
+                  else if (action === 'focusNext')
+                    searchBoxRef.current?.focus();
+                  return undefined;
+                }}
+                onChangeConformation={(newConformation): void =>
+                  setConformation([
+                    ...(conformation?.filter(([id]) => id !== row.nodeId) ??
+                      []),
+                    ...(typeof newConformation === 'object'
+                      ? ([[row.nodeId, ...newConformation]] as const)
+                      : []),
+                  ])
+                }
+                onFocusNode={(newFocusPath): void => {
+                  setFocusPath([row.nodeId, ...newFocusPath]);
+                  setLastFocusedTree();
+                }}
+              />
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   );
 }

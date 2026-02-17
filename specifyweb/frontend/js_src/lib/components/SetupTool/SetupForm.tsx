@@ -367,8 +367,13 @@ export function renderFormFieldFactory({
                   const isUnique = institutionData.children.some(
                     (child) => child.name === value
                   );
+                  const existingDisciplines = institutionData.children.flatMap(
+                    (division) =>
+                      division.children.map((discipline) => discipline.name)
+                  );
+                  const isUsed = existingDisciplines.includes(value);
                   target.setCustomValidity(
-                    isUnique ? '' : formsText.valueMustBeUniqueToDatabase()
+                    isUsed ? formsText.valueMustBeUniqueToDatabase() : ''
                   );
                 }
               }}
@@ -388,7 +393,7 @@ export function renderFormFieldFactory({
     if (isTable && fields.length > 0 && fields[0].fields) {
       // Table format specifically for tree rank configuration
       return (
-        <div className="w-full rounded-md overflow-hidden border border-gray-300 dark:border-gray-500">
+        <div className="w-full rounded-md overflow-hidden border border-gray-300 dark:border-gray-500 max-w-lg">
           <table className="w-full border-collapse table-fixed bg-white dark:bg-neutral-800">
             <thead>
               <tr className="bg-gray-100 dark:bg-neutral-700 border-b-2 border-gray-400 dark:border-gray-500">

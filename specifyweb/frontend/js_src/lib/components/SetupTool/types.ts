@@ -17,6 +17,11 @@ export type SetupProgress = {
   readonly last_error: string | null;
 };
 
+export type PreloadProgress = {
+  readonly busy: boolean;
+  readonly last_error: string | null;
+};
+
 export type SetupResponse = {
   readonly success: boolean;
   readonly setup_progress: SetupProgress;

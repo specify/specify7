@@ -19,6 +19,7 @@ import logging
 logger = logging.getLogger(__name__)
 
 # Keep track of the currently running setup task. There should only ever be one.
+# Also defined separately in setup_tool/apps.py
 ACTIVE_TASK_REDIS_KEY = "specify:setup:active_task_id"
 ACTIVE_TASK_TTL = 60*60*2 # setup should be less than 2 hours
 # Keep track of last error.
@@ -41,6 +42,11 @@ def setup_database_background(data: dict) -> str:
 
     set_string(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
     
+    return task.id
+
+def queue_fix_schema_config_background() -> str:
+    """Queue fix_schema_config to run asynchronously and return the task id"""
+    task = fix_schema_config_task.apply_async()
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
@@ -68,6 +74,7 @@ def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
         # if _active_setup_task_id == task_id:
         #     _active_setup_task_id = None
     return res, busy
+
 
 @app.task(bind=True)
 def setup_database_task(self, data: dict):
@@ -133,7 +140,10 @@ def setup_database_task(self, data: dict):
             update_progress()
 
             logger.info('Creating collection')
-            collection_result = api.create_collection(data['collection'])
+            collection_result = api.create_collection(
+                data['collection'],
+                run_fix_schema_config_async=False
+            )
             collection_id = collection_result.get('collection_id')
             update_progress()
 
@@ -148,16 +158,21 @@ def setup_database_task(self, data: dict):
             # Pre-load trees
             logger.info('Starting default tree downloads')
             if is_paleo_geo:
-                start_preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id)
+                start_preload_default_tree('Geologictimeperiod', discipline_id, collection_id, chronostrat_treedef_id, specifyuser_id, None, False)
             if data['geographytreedef'].get('preload'):
-                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id, data['geographytreedef'].get('preloadfile'))
+                start_preload_default_tree('Geography', discipline_id, collection_id, geography_treedef_id, specifyuser_id, data['geographytreedef'].get('preloadfile'), False)
             if data['taxontreedef'].get('preload'):
-                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id, data['taxontreedef'].get('preloadfile'))
+                start_preload_default_tree('Taxon', discipline_id, collection_id, taxon_treedef_id, specifyuser_id, data['taxontreedef'].get('preloadfile'), True)
 
             update_progress()
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
         raise
+
+@app.task(bind=True)
+def fix_schema_config_task(self):
+    """Run schema config migration fixups in a background worker"""
+    fix_schema_config()
 
 def get_last_setup_error() -> Optional[str]:
     err = get_string(LAST_ERROR_REDIS_KEY)
@@ -167,3 +182,36 @@ def get_last_setup_error() -> Optional[str]:
 
 def set_last_setup_error(error_text: Optional[str]):
     set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
+
+def create_discipline_and_trees_task(data: dict):
+    from specifyweb.specify.models import Discipline
+    """Create discipline and discipline's trees in the correct order. Similar to setup_database_task, but for the configuration tool."""
+    logger.debug('## CREATING DISCIPLINE AND TREES WITH SETTINGS:##')
+    logger.debug(data)
+    logger.info('Creating discipline')
+    discipline_result = api.create_discipline(data['discipline'])
+    discipline_id = discipline_result.get('discipline_id')
+
+    # Ensure discipline id is set for tree creation
+    if isinstance(data.get('geographytreedef'), dict):
+        data['geographytreedef']['discipline_id'] = data['geographytreedef'].get('discipline_id') or discipline_id
+    if isinstance(data.get('taxontreedef'), dict):
+        data['taxontreedef']['discipline_id'] = data['taxontreedef'].get('discipline_id') or discipline_id
+
+    logger.info('Creating geography tree')
+    geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=False)
+    geography_treedef_id = geography_result.get('treedef_id')
+
+    logger.info('Creating taxon tree')
+    taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
+    taxon_treedef_id = taxon_result.get('treedef_id')
+
+    Discipline.objects.filter(id=discipline_id).update(
+    geographytreedef_id=geography_treedef_id,
+    taxontreedef_id=taxon_treedef_id,
+    )
+
+    if data['geographytreedef'].get('preload'):
+        start_preload_default_tree('Geography', discipline_id, None, geography_treedef_id, None, data['geographytreedef'].get('preloadfile'), False)
+    if data['taxontreedef'].get('preload'):
+        start_preload_default_tree('Taxon', discipline_id, None, taxon_treedef_id, None, data['taxontreedef'].get('preloadfile'), True)

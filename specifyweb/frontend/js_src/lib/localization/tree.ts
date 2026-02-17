@@ -544,15 +544,6 @@ export const treeText = createDictionary({
     'ru-ru': 'Добавить дерево',
     'uk-ua': 'Додати дерево',
   },
-  addRootNode: {
-    'en-us': 'Add root node',
-    'de-ch': 'Füge den Stammknoten hinzu.',
-    'es-es': 'Agregar nodo raíz',
-    'fr-fr': 'Ajouter le nœud racine',
-    'pt-br': 'Adicionar nó raiz',
-    'ru-ru': 'Добавить корневой узел',
-    'uk-ua': 'Додати кореневий вузол',
-  },
   treePicker: {
     'en-us': 'Tree Picker',
     'de-ch': 'Baumpflücker',
@@ -727,6 +718,9 @@ export const treeText = createDictionary({
     'en-us':
       'Creating tree record {current:number|formatted}/{total:number|formatted}',
   },
+  defaultTreeCreationLoadingMessage: {
+    'en-us': 'Default Tree Creation is in progress, please wait...',
+  },
   missingRanks: {
     'en-us': 'Missing Ranks',
   },
@@ -739,6 +733,9 @@ export const treeText = createDictionary({
   },
   source: {
     'en-us': 'Source',
+  },
+  initializeEmptyTree: {
+    'en-us': 'Initialize an empty tree',
   },
   treeManagement: {
     'en-us': 'Tree Management',

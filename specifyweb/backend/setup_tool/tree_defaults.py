@@ -5,7 +5,7 @@ from uuid import uuid4
 import requests
 
 from .utils import load_json_from_file
-from specifyweb.backend.trees.defaults import initialize_default_tree, create_default_tree_task
+from specifyweb.backend.trees.defaults import initialize_default_tree, create_default_tree_task, queue_create_default_tree_task
 
 import logging
 logger = logging.getLogger(__name__)
@@ -87,7 +87,7 @@ def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_ran
 
     return tree_def
 
-def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int], preload_file = None):
+def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], collection_id: Optional[int], tree_def_id: int, specify_user_id: Optional[int], preload_file = None, create_missing_ranks: bool = False):
     """Starts a populated default tree import without user input."""
     try:
         # Tree download config:
@@ -114,12 +114,15 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
         resp.raise_for_status()
         tree_cfg = resp.json()
 
-        task_id = str(uuid4())
-        create_default_tree_task.apply_async(
-            args=[url, discipline_id, tree_discipline_name, collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, False, False],
-            task_id=f"create_default_tree_{tree_type}_{task_id}",
+        task_id = str(tree_def_id or uuid4())
+        async_result = create_default_tree_task.apply_async(
+            args=[url, discipline_id, tree_type.lower(), collection_id, specify_user_id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, False],
+            task_id=f"create_default_tree_{tree_type.lower()}_{task_id}",
             taskid=task_id
         )
+        if tree_def_id:
+            queue_create_default_tree_task(f"create_default_tree_{tree_type.lower()}_{task_id}")
+        return async_result.id
     except Exception as e:
         # Give up if there's an error to avoid resetting the entire setup.
         logger.warning(f'Error trying to preload {tree_type} tree: {e}')

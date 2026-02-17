@@ -12,9 +12,13 @@ from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_models, SPECIFY_TREES, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
+from specifyweb.backend.redis_cache.store import get_string, set_string
 
 import logging
 logger = logging.getLogger(__name__)
+
+# Also defined separately in trees/apps.py
+ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY = "specify:trees:active_tree_creation"
 
 class RankConfiguration(TypedDict):
     name: str
@@ -28,16 +32,7 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
     """Creates an initial empty tree."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
-        
-        # Uniquify name
-        tree_def = None
-        unique_tree_name = tree_name
-        if tree_def_model.objects.filter(name=tree_name).exists():
-            i = 1
-            while tree_def_model.objects.filter(name=f"{tree_name}_{i}").exists():
-                i += 1
-            unique_tree_name = f"{tree_name}_{i}"
-        
+
         # Create tree definition
         scope = {}
         if discipline_or_institution:
@@ -49,6 +44,15 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
                 scope = {
                     'discipline': discipline_or_institution
                 }
+        
+        # Uniquify name
+        tree_def = None
+        unique_tree_name = tree_name
+        if tree_def_model.objects.filter(name=tree_name, **scope).exists():
+            i = 1
+            while tree_def_model.objects.filter(name=f"{tree_name}_{i}", **scope).exists():
+                i += 1
+            unique_tree_name = f"{tree_name}_{i}"
 
         tree_def, _ = tree_def_model.objects.get_or_create(
             name=unique_tree_name,
@@ -94,7 +98,7 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
 
         return tree_def
 
-def create_default_root(tree_def, tree_type: str):
+def create_default_root(tree_def, tree_type: str, kwargs: Optional[dict]= None):
     """Create root node"""
     # TODO: Avoid having duplicated code from add_root endpoint
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
@@ -115,7 +119,8 @@ def create_default_root(tree_def, tree_type: str):
         nodenumber=1,
         definition=tree_def,
         definitionitem=root_rank,
-        parent=None
+        parent=None,
+        **(kwargs if kwargs is not None else {})
     )
     return tree_node
 
@@ -130,13 +135,11 @@ class RankMappingConfiguration(TypedDict):
 
 class DefaultTreeContext():
     """Context for a default tree creation task"""
-    def __init__(self, tree_type: str, tree_name: str, tree_cfg: dict[str, RankMappingConfiguration], create_missing_ranks: bool):
+    def __init__(self, tree_type: str, tree_def, tree_cfg: dict[str, RankMappingConfiguration], create_missing_ranks: bool):
         self.tree_type = tree_type
-        self.tree_name = tree_name
+        self.tree_def = tree_def
 
         self.tree_def_model, self.tree_rank_model, self.tree_node_model = get_models(tree_type)
-
-        self.tree_def = self.tree_def_model.objects.get(name=tree_name)
 
         self.tree_cfg = tree_cfg
         if create_missing_ranks:
@@ -152,13 +155,14 @@ class DefaultTreeContext():
         self.batch_size = 1000
     
     def create_missing_ranks(self):
+        """Create missings ranks when importing nodes into an existing tree. Matches ranks by rank id."""
         for rank in self.tree_cfg['ranks']:
             if rank.get('rank'):
                 self.tree_rank_model.objects.get_or_create(
-                    name=rank['name'],
                     treedef=self.tree_def,
                     rankid=rank.get('rank'),
                     defaults={
+                        'name': rank['name'],
                         'title': (rank.get('title') or rank.get('name').title()),
                         'isenforced': rank.get('enforced', True),
                         'isinfullname': rank.get('infullname', False),
@@ -285,9 +289,12 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 
         rank_title = rank_mapping.get('title', rank_name.capitalize())
 
-        # Get the rank by the column name.
+        # Get the rank by the rank id, or column name as a fallback.
         # Skip creating on this rank if it doesn't exist
-        tree_def_item = context.tree_def_item_map.get(rank_name)
+        if rank_mapping['rank']:
+            tree_def_item = context.rankid_map.get(rank_mapping['rank'])
+        else:
+            tree_def_item = context.tree_def_item_map.get(rank_name)
 
         if tree_def_item is None:
             continue
@@ -321,8 +328,33 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
             parent_id = None
         rank_id += 10
 
+def queue_create_default_tree_task(task_id):
+    """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
+    current_list = get_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY) or ''
+    if len(current_list) > 0:
+        new_list = f'{current_list}:{task_id}'
+    else:
+        new_list = f'{task_id}'
+    logger.debug(current_list)
+    set_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, new_list, time_to_live=60*60*2)
+
+def get_active_create_default_tree_tasks() -> str:
+    current_list = get_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY) or ''
+    tasks = current_list.split(':')
+    logger.debug(current_list)
+    return tasks
+
+def finish_create_default_tree_task(task_id):
+    """Clear a finished tree creation task from redis cache."""
+    tasks = get_active_create_default_tree_tasks()
+    tasks = [task for task in tasks if task != task_id]
+    new_list = ':'.join(tasks)
+    logger.debug(new_list)
+
+    set_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, new_list, time_to_live=60*60*2)
+
 @app.task(base=LogErrorsTask, bind=True)
-def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline_name: str, specify_collection_id: Optional[int],
+def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str, specify_collection_id: Optional[int],
                              specify_user_id: Optional[int], tree_cfg: dict, row_count: Optional[int], initial_tree_name: str,
                              existing_tree_def_id = None, create_missing_ranks: bool = False, notify: bool = True):
     logger.info(f'starting task {str(self.request.id)}')
@@ -330,6 +362,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
     discipline = None
     if discipline_id:
         discipline = spmodels.Discipline.objects.get(id=discipline_id)
+
     tree_name = initial_tree_name # Name will be uniquified on tree creation
 
     if notify and specify_user_id and specify_collection_id:
@@ -356,11 +389,6 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
 
     try:
         with transaction.atomic():
-            tree_type = 'taxon'
-            if tree_discipline_name in SPECIFY_TREES:
-                # non-taxon tree
-                tree_type = tree_discipline_name
-
             tree_def = None
             if existing_tree_def_id:
                 # Import into exisiting tree
@@ -391,11 +419,11 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                     auto_rank_id += 10
                 tree_def = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
             
-            create_default_root(tree_def, tree_type)
+            create_default_root(tree_def, tree_type, tree_cfg.get('root'))
             tree_name = tree_def.name
             
             # Start importing CSV data
-            context = DefaultTreeContext(tree_type, tree_name, tree_cfg, create_missing_ranks)
+            context = DefaultTreeContext(tree_type, tree_def, tree_cfg, create_missing_ranks)
 
             total_rows = 0
             if row_count:
@@ -423,6 +451,8 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                     # 'error': str(e)
                 })
             )
+        if existing_tree_def_id:
+            finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id}')
         raise
 
     if notify and specify_user_id and specify_collection_id:
@@ -435,6 +465,8 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_discipline
                 'collection_id': specify_collection_id,
             })
         )
+    
+    finish_create_default_tree_task(self.request.id)
 
 def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
     """

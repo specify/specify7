@@ -29,11 +29,12 @@ from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
 from specifyweb.backend.trees.utils import get_search_filters
-from specifyweb.backend.trees.defaults import create_default_tree_task
+from specifyweb.backend.trees.defaults import create_default_tree_task, queue_create_default_tree_task, get_active_create_default_tree_tasks
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
 from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
+from specifyweb.backend.trees.utils import SPECIFY_TREES
 from specifyweb.backend.trees.stats import get_tree_stats
 
 import logging
@@ -738,8 +739,12 @@ def create_default_tree_view(request):
 
     url = data.get('url', None)
 
-    tree_rank_model_name = tree_discipline_name.capitalize()
-    tree_name = data.get('treeName', tree_rank_model_name)
+    tree_name = data.get('treeName', tree_discipline_name.capitalize())
+    
+    tree_type = 'taxon'
+    if tree_discipline_name in SPECIFY_TREES:
+        # non-taxon tree
+        tree_type = tree_discipline_name.lower()
 
     row_count = data.get('rowCount', None)
 
@@ -766,12 +771,14 @@ def create_default_tree_view(request):
     except ValidationError as e:
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
-    task_id = str(uuid4())
+    task_id = str(tree_def_id or uuid4())
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_discipline_name, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
-        task_id=f"create_default_tree_{tree_discipline_name}_{task_id}",
+        args=[url, discipline.id, tree_type, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
+        task_id=f"create_default_tree_{tree_type}_{task_id}",
         taskid=task_id
     )
+    if tree_def_id:
+        queue_create_default_tree_task(f'create_default_tree_{tree_type.lower()}_{tree_def_id}')
     return http.JsonResponse({
         'message': 'Trees creation started in the background.',
         'task_id': async_result.id
@@ -836,12 +843,14 @@ def create_default_tree_view(request):
 def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
     """Returns the task status for the default tree upload celery task"""
 
+    tasks = get_active_create_default_tree_tasks()
     result = create_default_tree_task.AsyncResult(task_id)
 
     status = {
         'taskstatus': result.status,
         'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
-        'taskid': task_id
+        'taskid': task_id,
+        'active': task_id in tasks
     }
 
     return http.JsonResponse(status)

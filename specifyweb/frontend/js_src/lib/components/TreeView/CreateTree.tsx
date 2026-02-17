@@ -1,4 +1,5 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
@@ -13,6 +14,7 @@ import { H2, Ul } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
@@ -46,10 +48,15 @@ type TreeCreationInfo = {
   readonly message: string;
   readonly task_id?: string;
 };
-type TreeCreationProgressInfo = {
+type TreeCreationTaskProgress = {
+  readonly current: number;
+  readonly total: number;
+};
+export type TreeCreationProgressInfo = {
   readonly taskstatus: string;
-  readonly taskprogress: any;
+  readonly taskprogress: TreeCreationTaskProgress | undefined;
   readonly taskid: string;
+  readonly active: boolean;
 };
 
 export async function fetchDefaultTrees(): Promise<TaxonFileDefaultList> {
@@ -196,12 +203,16 @@ export function ImportTree<SCHEMA extends AnyTree>({
   tableName,
   treeDefId,
   treeDefinitionItems,
+  buttonLabel,
+  buttonClassName,
 }: {
   readonly tableName: SCHEMA['tableName'];
   readonly treeDefId: number;
   readonly treeDefinitionItems: RA<
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
+  readonly buttonLabel?: LocalizedString;
+  readonly buttonClassName?: string;
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const [isActive, setIsActive] = React.useState(0);
@@ -228,7 +239,6 @@ export function ImportTree<SCHEMA extends AnyTree>({
   ): Promise<void> => {
     setSelectedPopulatedTree(resource);
     // Check for missing ranks if no preference for createMissingRanks was provided.
-    console.log(createMissingRanks);
     if (createMissingRanks === undefined) {
       console.log('finding if theres missing ranks');
       try {
@@ -283,13 +293,27 @@ export function ImportTree<SCHEMA extends AnyTree>({
   return (
     <>
       {tableName === 'Taxon' && userInformation.isadmin ? (
-        <Button.Icon
-          icon="upload"
-          title={commonText.import()}
-          onClick={() => {
-            setIsActive(1);
-          }}
-        />
+        buttonLabel ? (
+          <Button.LikeLink
+            aria-label={buttonLabel}
+            className={`flex items-center gap-2 ${buttonClassName ?? ''}`}
+            title={buttonLabel}
+            onClick={() => {
+              setIsActive(1);
+            }}
+          >
+            {icons.upload}
+            <span>{buttonLabel}</span>
+          </Button.LikeLink>
+        ) : (
+          <Button.Icon
+            icon="upload"
+            title={commonText.import()}
+            onClick={() => {
+              setIsActive(1);
+            }}
+          />
+        )
       ) : null}
       {isMissingTreeRanks && missingTreeRanks && selectedPopulatedTree ? (
         <MissingTreeRanksDialog
@@ -310,9 +334,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
       {isActive === 1 ? (
         <Dialog
           buttons={
-            <Button.DialogClose component={Button.BorderedGray}>
-              {commonText.cancel()}
-            </Button.DialogClose>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           }
           header={commonText.import()}
           onClose={() => setIsActive(0)}
@@ -472,9 +494,7 @@ export function MissingTreeRanksDialog({
     <Dialog
       buttons={
         <>
-          <Button.DialogClose component={Button.BorderedGray}>
-            {commonText.close()}
-          </Button.DialogClose>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           <Button.Secondary onClick={handleNo}>
             {commonText.no()}
           </Button.Secondary>
@@ -536,8 +556,8 @@ export function TreeCreationProgressDialog({
           }
         ).then(({ data }) => {
           if (data.taskstatus === 'RUNNING') {
-            setProgress(data.taskprogress.current ?? 0);
-            setProgressTotal(data.taskprogress.total ?? 1);
+            setProgress(data.taskprogress?.current ?? 0);
+            setProgressTotal(data.taskprogress?.total ?? 1);
           } else if (data.taskstatus === 'FAILURE') {
             onStopped();
             throw data.taskprogress;

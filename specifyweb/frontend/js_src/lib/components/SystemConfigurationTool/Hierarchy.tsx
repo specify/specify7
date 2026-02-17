@@ -22,11 +22,13 @@ import { Form } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
+import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
+import { hasTablePermission } from '../Permissions/helpers';
 import { tableLabel } from '../Preferences/UserDefinitions';
 import {
   applyFormDefaults,
@@ -35,6 +37,7 @@ import {
 } from '../SetupTool/SetupForm';
 import { resources, stepOrder } from '../SetupTool/setupResources';
 import type { ResourceFormData } from '../SetupTool/types';
+import { nestAllResources } from '../SetupTool/utils';
 import type { TaxonFileDefaultDefinition } from '../TreeView/CreateTree';
 import { CollapsibleSection } from './CollapsibleSection';
 import type { InstitutionData } from './Utils';
@@ -389,7 +392,8 @@ function DialogForm({
 const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
-) => (
+): JSX.Element | null => (
+  hasTablePermission(resource.specifyTable.name, 'update') ? 
   <div className="flex items-center">
     <ResourceLink
       component={Link.Default}
@@ -407,13 +411,14 @@ const handleEditResource = (
       {icons.pencil}
       {commonText.edit()}
     </ResourceLink>
-  </div>
+  </div> : null
 );
 
 const addButton = (
   createResource: () => void,
-  tableName: string
-): JSX.Element => (
+  table: typeof tables[keyof typeof tables]
+): JSX.Element | null => (
+  hasTablePermission(table.name, 'create') ? 
   <Button.LikeLink
     className="flex items-center gap-2 mb-2"
     onClick={() => {
@@ -422,9 +427,9 @@ const addButton = (
   >
     <span className="flex items-center gap-1">
       {icons.plus}
-      {`${setupToolText.hierarchyAddNew()} ${tableName}`}
+      {`${setupToolText.hierarchyAddNew()} ${tableLabel(table.name)}`}
     </span>
-  </Button.LikeLink>
+  </Button.LikeLink> : null
 );
 
 export function Hierarchy({
@@ -444,11 +449,17 @@ export function Hierarchy({
     Object.fromEntries(stepOrder.map((key) => [key, {}]))
   );
 
+  const [selectedDivisionId, setSelectedDivisionId] = React.useState<
+    number | null
+  >(null);
+
   const systemInfo = getSystemInfo();
 
   React.useEffect(() => {
     void refreshAllInfo();
   }, [refreshAllInfo]);
+
+  const loading = React.useContext(LoadingContext);
 
   const isGeographyGlobal = systemInfo.geography_is_global;
 
@@ -543,7 +554,6 @@ export function Hierarchy({
             {/* COLLECTIONS */}
             {discipline.children.length > 0 &&
               renderCollections(discipline.children)}
-
             {canAddCollection && (
               <div className="flex  mb-2 ml-2">
                 {addButton(() => {
@@ -554,11 +564,11 @@ export function Hierarchy({
                   );
                   handleNewResource();
                   void refreshAllInfo();
-                }, tableLabel('Collection'))}
+                }, tables.Collection)}
               </div>
             )}
-
             {/* DISCIPLINE CONFIG DIALOGS */}
+
             <DialogForm
               formData={formData}
               institutionData={institution}
@@ -576,6 +586,7 @@ export function Hierarchy({
                 setDisciplineStep(1);
               }}
             />
+
             <DialogForm
               formData={formData}
               institutionData={institution}
@@ -593,6 +604,7 @@ export function Hierarchy({
                 setDisciplineStep(2);
               }}
             />
+
             <DialogForm
               formData={formData}
               institutionData={institution}
@@ -607,28 +619,34 @@ export function Hierarchy({
                 setDisciplineRelatedFormData((previous) => {
                   const next = {
                     ...previous,
+                    discipline: {
+                      ...previous?.discipline,
+                      division_id: selectedDivisionId,
+                    },
                     taxonTreeDef: formData.taxonTreeDef,
                   };
 
-                  void ajax('/setup_tool/discipline_and_trees/create/', {
-                    method: 'POST',
-                    headers: {
-                      Accept: 'application/json',
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(next),
-                    errorMode: 'visible',
-                    expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
-                  })
-                    .then(() => {
-                      void refreshAllInfo();
+                  loading(
+                    ajax('/setup_tool/discipline_and_trees/create/', {
+                      method: 'POST',
+                      headers: {
+                        Accept: 'application/json',
+                        'Content-Type': 'application/json',
+                      },
+                      body: JSON.stringify(nestAllResources(next)),
+                      errorMode: 'visible',
+                      expectedErrors: [Http.CONFLICT, Http.UNAVAILABLE],
                     })
-                    .catch((error) => {
-                      console.error(
-                        'Failed to create discipline and trees:',
-                        error
-                      );
-                    });
+                      .then(() => {
+                        void refreshAllInfo();
+                      })
+                      .catch((error) => {
+                        console.error(
+                          'Failed to create discipline and trees:',
+                          error
+                        );
+                      })
+                  );
 
                   return next;
                 });
@@ -679,10 +697,11 @@ export function Hierarchy({
                 setFormData(
                   Object.fromEntries(stepOrder.map((key) => [key, {}]))
                 );
+                setSelectedDivisionId(division.id);
                 openDisciplineCreation();
                 setDisciplineStep(0);
               },
-              `${tableLabel('Discipline')}`
+              tables.Discipline
             )}
           </div>
         </CollapsibleSection>
@@ -727,7 +746,7 @@ export function Hierarchy({
                   setNewResource(new tables.Division.Resource());
                   handleNewResource();
                   void refreshAllInfo();
-                }, tableLabel('Division'))}
+                }, tables.Division)}
               </div>
             </CollapsibleSection>
           </li>

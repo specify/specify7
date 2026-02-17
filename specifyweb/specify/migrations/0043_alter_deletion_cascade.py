@@ -121,4 +121,14 @@ class Migration(migrations.Migration):
             name='collection',
             field=models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.CASCADE, related_name='preptypes', to='specify.collection'),
         ),
+        migrations.AlterField(
+            model_name='collectionobjectgrouptype',
+            name='collection',
+            field=models.ForeignKey(db_column='CollectionID', on_delete=django.db.models.deletion.CASCADE, related_name='cogtypes', to='specify.collection'),
+        ),
+        migrations.AlterField(
+            model_name='taxontreedefitem',
+            name='parent',
+            field=models.ForeignKey(db_column='ParentItemID', null=True, on_delete=django.db.models.deletion.CASCADE, related_name='children', to='specify.taxontreedefitem'),
+        ),
     ]
