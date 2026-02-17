@@ -95,7 +95,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     expectedErrors = [],
   }: Parameters<typeof ajax>[1]
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
-  if (url.startsWith('https://stats.specifycloud.org/capture'))
+  if (url.startsWith('https://sp7-stats.specifycloud.org/capture'))
     return formatResponse('', accept, expectedErrors, undefined);
 
   const parsedUrl = new URL(url, globalThis?.location.origin);
