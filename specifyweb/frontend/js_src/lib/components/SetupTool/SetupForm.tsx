@@ -364,9 +364,6 @@ export function renderFormFieldFactory({
                   fieldName === 'name'
                 ) {
                   const value = (target.value ?? '').trim();
-                  const isUnique = institutionData.children.some(
-                    (child) => child.name === value
-                  );
                   const existingDisciplines = institutionData.children.flatMap(
                     (division) =>
                       division.children.map((discipline) => discipline.name)
