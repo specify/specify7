@@ -13,7 +13,7 @@ type StatsCounts = {
 const stats2RequestIntervalMs = 24 * 60 * 60 * 1000;
 const stats2RequestKeyPrefix = 'specify7-stats2-last-request';
 const stats2RequestTimeoutMs = 5000;
-Const stats2LambdaFunctionUrl = 'https://stats-2.specifycloud.org';
+const stats2LambdaFunctionUrl = 'https://stats-2.specifycloud.org';
 
 function buildStatsLambdaUrl(base: string | null | undefined): string | null {
   if (!base) return null;
