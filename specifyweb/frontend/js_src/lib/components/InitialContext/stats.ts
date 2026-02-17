@@ -14,6 +14,7 @@ const stats2RequestIntervalMs = 24 * 60 * 60 * 1000;
 const stats2RequestKeyPrefix = 'specify7-stats2-last-request';
 const stats2RequestTimeoutMs = 5000;
 const stats2LambdaFunctionUrl = 'https://hvf3gvyu6q3f3mkf6y5xlddstq0xmuel.lambda-url.us-east-1.on.aws/';
+// const stats2LambdaFunctionUrl = 'https://stats-2.specifycloud.org';
 
 function buildStatsLambdaUrl(base: string | null | undefined): string | null {
   if (!base) return null;
@@ -48,6 +49,14 @@ function recordStats2Request(storageKey: string, now = Date.now()): void {
   try {
     globalThis.localStorage.setItem(storageKey, `${now}`);
   } catch {}
+}
+
+function shouldSkipLambdaStatsRequest(hostname: string): boolean {
+  const normalizedHostname = hostname.toLowerCase();
+  return (
+    normalizedHostname === 'localhost' ||
+    normalizedHostname.endsWith('.test.specifysystems.org')
+  );
 }
 
 function pingInBackground(url: string): void {
@@ -119,6 +128,9 @@ export const fetchContext = fetchSystemInfo.then(async (systemInfo) => {
 
   const lambdaUrl = buildStatsLambdaUrl(stats2LambdaFunctionUrl);
   if (lambdaUrl) {
+    if (shouldSkipLambdaStatsRequest(globalThis.location.hostname)) {
+      return;
+    }
     const storageKey = buildStats2RequestKey(
       lambdaUrl,
       `${systemInfo.collection_guid}`
@@ -135,4 +147,5 @@ export const exportsForTests = {
   buildStats2RequestKey,
   shouldSendStats2Request,
   recordStats2Request,
+  shouldSkipLambdaStatsRequest,
 };
