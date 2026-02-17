@@ -96,6 +96,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     displayedFields,
   } = props;
 
+  React.useEffect(() => {
+    if (queryResource?.get('id') && (props.totalCount ?? 0)>0)  {
+      fetchAllRecordIDs(queryResource, () => {}).catch(() => {});
+    }
+  }, [queryResource?.get('id'), props.totalCount]);
+
   const {
     results: [results, setResults],
     onFetchMore: handleFetchMore,
@@ -222,7 +228,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           <Button.Small
     onClick={(): void => {
       loading(
-        fetchAllIDs(queryResource, loading)
+        fetchAllRecordIDs(queryResource, loading)
           .then((allIDs) => {
             setSelectedRows(new Set(allIDs));
             handleSelected?.(allIDs);
@@ -240,7 +246,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           <Button.Small
           onClick={(): void => {
             loading(
-              fetchAllIDs(queryResource,loading)
+              fetchAllRecordIDs(queryResource,loading)
               .then((allIDs) => {
                       if (!loadedResults) return;
                       const invertedSelection = new Set( Array.from(allIDs).filter(id => !(selectedRows.has(id))));
@@ -293,8 +299,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                       ? undefined
                       : queryResource?.get('name')
                   }
-                  recordIds={(): RA<number> => Array.from(selectedRows)}
-                  
+                  recordIds={(): RA<number> => {
+                    const queryId = queryResource?.get('id');
+                    if (queryId && storedRecordIDs.has(queryId)) {
+                      const allIDs = storedRecordIDs.get(queryId)!;
+                      return allIDs.filter((id) => selectedRows.has(id));
+                    }
+                    return Array.from(selectedRows);
+                  }}
+
                   saveComponent={recordSetFromQueryLoading}
                 />
               ) : (
@@ -512,7 +525,9 @@ export function canMerge(table: SpecifyTable): boolean {
   return canMergeOtherTables || canMergePaleoContext || canMergeCollectingEvent;
 }
 
-async function fetchAllIDs(
+const storedRecordIDs = new Map<number, RA<number>>();
+
+async function fetchAllRecordIDs(
 queryResource: SpecifyResource<SpQuery> | undefined,
   loading: (promise: Promise<unknown>) => void
 ): Promise<RA<number>> {
@@ -522,7 +537,11 @@ queryResource: SpecifyResource<SpQuery> | undefined,
   if (!queryResource) {
     throw new Error('Query resource is undefined');
   }
-  
+
+  if (storedRecordIDs.has(queryId)) {
+    return storedRecordIDs.get(queryId)!;
+  }
+
   return new Promise<RA<number>>((resolve, reject) => {
     loading(
       (async () => {
@@ -539,7 +558,8 @@ queryResource: SpecifyResource<SpQuery> | undefined,
 
           const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
           console.log(`Fetched ${data.ids.length} IDs in ${elapsed} seconds`);
-  
+
+          storedRecordIDs.set(queryId, data.ids);
           resolve(data.ids);
         } catch (error) {
           reject(error);
