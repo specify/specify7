@@ -6,6 +6,7 @@ import requests
 
 from .utils import load_json_from_file
 from specifyweb.backend.trees.defaults import initialize_default_tree, create_default_tree_task, queue_create_default_tree_task
+from specifyweb.backend.trees.utils import TREE_NAMES
 
 import logging
 logger = logging.getLogger(__name__)
@@ -83,7 +84,9 @@ def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_ran
     else:
         discipline_or_institution = kwargs.get('discipline')
 
-    tree_def = initialize_default_tree(tree_type.lower(), discipline_or_institution, tree_type.title(), rank_cfg, kwargs['fullnamedirection'])
+    tree_name = TREE_NAMES.get(tree_type.lower())
+
+    tree_def = initialize_default_tree(tree_type.lower(), discipline_or_institution, tree_name, rank_cfg, kwargs['fullnamedirection'])
 
     return tree_def
 
@@ -92,7 +95,7 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
     try:
         # Tree download config:
         tree_discipline_name = tree_type.lower()
-        tree_name = tree_type.title()
+        tree_name = TREE_NAMES.get(tree_type.lower())
         row_count = 1000000 # dummy value, only to allow progress checking
         # Tree file urls
         url = DEFAULT_TREE_URLS.get(tree_type)

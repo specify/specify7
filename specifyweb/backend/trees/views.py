@@ -34,7 +34,7 @@ from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from specifyweb.backend.trees.ranks import tree_rank_count
 from . import extras
 from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
-from specifyweb.backend.trees.utils import SPECIFY_TREES
+from specifyweb.backend.trees.utils import SPECIFY_TREES, TREE_NAMES
 from specifyweb.backend.trees.stats import get_tree_stats
 
 import logging
@@ -745,6 +745,7 @@ def create_default_tree_view(request):
     if tree_discipline_name in SPECIFY_TREES:
         # non-taxon tree
         tree_type = tree_discipline_name.lower()
+        tree_name = TREE_NAMES.get(tree_type)
 
     row_count = data.get('rowCount', None)
 

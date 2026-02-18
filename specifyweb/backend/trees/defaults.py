@@ -10,7 +10,7 @@ from django.db import transaction
 from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
-from specifyweb.backend.trees.utils import get_models, SPECIFY_TREES, TREE_ROOT_NODES
+from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.redis_cache.store import get_string, set_string
 

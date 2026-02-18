@@ -19,6 +19,15 @@ TREE_ROOT_NODES = {
     'tectonicunit': 'Root'
 }
 
+TREE_NAMES = {
+    'taxon': 'Taxon',
+    'storage': 'Storage',
+    'geography': "Geography",
+    'geologictimeperiod': 'Chronostratigraphy',
+    'lithostrat': 'Lithostratigraphy',
+    'tectonicunit': 'Tectonic Unit'
+}
+
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
     if tree_name == 'storage':

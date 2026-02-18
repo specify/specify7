@@ -31,8 +31,6 @@ from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniq
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, fix_schema_config
 
 import logging
-
-from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 logger = logging.getLogger(__name__)
 
 APP_VERSION = "7"
