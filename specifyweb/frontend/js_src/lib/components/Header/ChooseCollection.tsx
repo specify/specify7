@@ -1,17 +1,13 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
 import { sortFunction, toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { backboneFieldSeparator } from '../DataModel/helpers';
-import type { SerializedRecord } from '../DataModel/helperTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
@@ -52,19 +48,6 @@ export function CollectionPicker({
   ];
   readonly isReadOnly?: boolean;
 }): JSX.Element {
-  const [newAvailableCollections] = useAsyncState(
-    React.useCallback(
-      async () =>
-        ajax<{
-          readonly available: RA<SerializedRecord<Collection>>;
-        }>('/context/collection/', {
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => data.available.map(serializeResource)),
-      []
-    ),
-    false
-  );
-
   const [sortOrder] = userPreferences.use(
     'chooseCollection',
     'general',
@@ -72,9 +55,7 @@ export function CollectionPicker({
   );
   const sortedCollections = React.useMemo(() => {
     const { direction, fieldNames } = toLargeSortConfig(sortOrder);
-    return Array.from(
-      newAvailableCollections ?? userInformation.availableCollections
-    )
+    return Array.from(userInformation.availableCollections)
       .sort(
         sortFunction(
           (collection) =>
@@ -87,7 +68,7 @@ export function CollectionPicker({
         )
       )
       .map(serializeResource);
-  }, [sortOrder, newAvailableCollections]);
+  }, [sortOrder]);
 
   return (
     <Select
