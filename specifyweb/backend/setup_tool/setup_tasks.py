@@ -209,6 +209,8 @@ def create_discipline_and_trees_task(data: dict):
     taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
     taxon_treedef_id = taxon_result.get('treedef_id')
 
+    lithostrat_id = None
+    tectonicunit_id = None
     if is_paleo_geo:
         logger.info('Creating Lithostratigraphy tree')
         lithostrat_result = api.create_lithostrat_tree(DEFAULT_TREE.copy())
@@ -216,7 +218,7 @@ def create_discipline_and_trees_task(data: dict):
 
         logger.info('Creating Tectonic Unit tree')
         tectonicunit_result = api.create_tectonicunit_tree(DEFAULT_TREE.copy())
-        tectonicunit_id = lithostrat_result.get('tectonicunittreedef_id')
+        tectonicunit_id = tectonicunit_result.get('tectonicunittreedef_id')
 
     Discipline.objects.filter(id=discipline_id).update(
         geographytreedef_id=geography_treedef_id,
