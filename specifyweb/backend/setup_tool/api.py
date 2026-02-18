@@ -14,7 +14,10 @@ from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
-from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
+from specifyweb.backend.setup_tool.schema_defaults import (
+    apply_schema_defaults,
+    queue_apply_schema_defaults_background,
+)
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import (
@@ -189,7 +192,7 @@ def create_division(data):
         logger.exception(f'Division error: {e}')
         raise SetupError(e)
 
-def create_discipline(data):
+def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
         Geologictimeperiodtreedef, Taxontreedef, Tectonicunittreedef, Lithostrattreedef
@@ -247,7 +250,10 @@ def create_discipline(data):
         new_discipline = Discipline.objects.create(**data)
 
         # Create Splocalecontainers for all datamodel tables
-        apply_schema_defaults(new_discipline)
+        if run_apply_schema_defaults_async:
+            queue_apply_schema_defaults_background(new_discipline.id)
+        else:
+            apply_schema_defaults(new_discipline)
 
         # Apply default uniqueness rules
         apply_default_uniqueness_rules(new_discipline)

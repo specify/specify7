@@ -24,7 +24,6 @@ from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
 from specifyweb.backend.patches.migration_utils import apply_migrations as apply_patches
-from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
 
 logger = logging.getLogger(__name__)
 
@@ -50,13 +49,14 @@ def fix_cots(stdout: WriteToStdOut | None = None):
 
 def fix_schema_config(stdout: WriteToStdOut | None = None):
     def apply_schema_overrides_for_all_disciplines(_apps):
+        from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults_task
         Discipline = _apps.get_model('specify', 'Discipline')
         for discipline in Discipline.objects.all():
             if stdout is not None:
                 stdout(
                     f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
                 )
-            apply_schema_defaults(discipline)
+            apply_schema_defaults_task.run(discipline.id)
 
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
