@@ -159,13 +159,32 @@ def create_institution(data):
     return {'institution_id': new_institution.id}
 
 def create_division(data):
-    from specifyweb.specify.models import Division, Institution
+    from specifyweb.specify.models import Division, Institution, Agent, Specifyuser
+
+    def ensure_user_agent_for_division(division) -> None:
+        user_ids = Agent.objects.filter(
+            specifyuser_id__isnull=False
+        ).values_list('specifyuser_id', flat=True).distinct()
+        for user in Specifyuser.objects.filter(id__in=user_ids):
+            if Agent.objects.filter(specifyuser=user, division=division).exists():
+                continue
+            template_agent = Agent.objects.filter(specifyuser=user).order_by('id').first()
+            if template_agent is None:
+                continue
+            Agent.objects.create(
+                agenttype=template_agent.agenttype,
+                lastname=template_agent.lastname or user.name or "User",
+                firstname=template_agent.firstname,
+                division=division,
+                specifyuser=user,
+            )
 
     # If division_id is provided and exists, return success
     existing_id = data.pop('division_id', None)
     if existing_id:
         existing_division = Division.objects.filter(id=existing_id).first()
         if existing_division:
+            ensure_user_agent_for_division(existing_division)
             return {"division_id": existing_division.id}
 
     # Determine new Division ID
@@ -187,6 +206,7 @@ def create_division(data):
     # Create new division
     try:
         new_division = Division.objects.create(**data)
+        ensure_user_agent_for_division(new_division)
         return {"division_id": new_division.id}
     except Exception as e:
         logger.exception(f'Division error: {e}')
