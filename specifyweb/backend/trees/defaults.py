@@ -113,19 +113,19 @@ def create_default_root(tree_def, tree_type: str, root_cfg: Optional[dict]= None
     if existing_root:
         return existing_root
     
-    defaults = {
+    kwargs = {
         'name': TREE_ROOT_NODES.get(tree_type, "Root"),
         'fullname': TREE_ROOT_NODES.get(tree_type, "Root"),
+        'nodenumber': 1,
+        'definition': tree_def,
+        'definitionitem': root_rank,
+        'parent': None,
     }
     if root_cfg:
-        defaults.update(root_cfg)
+        kwargs.update(root_cfg)
 
     tree_node, _ = tree_node_model.objects.get_or_create(
-        nodenumber=1,
-        definition=tree_def,
-        definitionitem=root_rank,
-        parent=None,
-        defaults=defaults
+        **kwargs
     )
     return tree_node
 
