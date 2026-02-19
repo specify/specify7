@@ -29,7 +29,7 @@ let systemInfo: SystemInfo;
 export const fetchContext = load<SystemInfo>(
   '/context/system_info.json',
   'application/json'
-).then((data) => {
+).then(async (data) => {
   systemInfo = data;
 
   return systemInfo;

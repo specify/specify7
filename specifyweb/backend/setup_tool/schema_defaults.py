@@ -1,6 +1,6 @@
-from typing import Optional
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
 from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
+from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
 from specifyweb.specify.models import Discipline
 
@@ -56,3 +56,14 @@ def apply_schema_defaults(discipline: Discipline):
             description=table_description,
             defaults=table_defaults,
         )
+
+def queue_apply_schema_defaults_background(discipline_id: int) -> str:
+    """Queue apply_schema_defaults to run asynchronously and return the task id."""
+    task = apply_schema_defaults_task.apply_async(args=[discipline_id])
+    return task.id
+
+@app.task(bind=True)
+def apply_schema_defaults_task(self, discipline_id: int):
+    """Run schema localization defaults for one discipline in a background worker."""
+    discipline = Discipline.objects.get(id=discipline_id)
+    apply_schema_defaults(discipline)

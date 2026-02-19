@@ -88,6 +88,11 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
     systemConfigurationTool: {
       title: userText.systemConfig(),
+      enabled: () =>
+        hasToolPermission('resources', 'read') &&
+        hasTablePermission('Discipline', 'read') &&
+        hasTablePermission('Collection', 'read') &&
+        hasTablePermission('SpecifyUser', 'read'),
       url: '/specify/system-configuration/',
       icon: icons.library,
     },

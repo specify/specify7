@@ -10,7 +10,7 @@ from django.db import transaction
 from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
-from specifyweb.backend.trees.utils import get_models, SPECIFY_TREES, TREE_ROOT_NODES
+from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.redis_cache.store import get_string, set_string
 
@@ -28,7 +28,7 @@ class RankConfiguration(TypedDict):
     fullnameseparator: NotRequired[str]
     rank: int # rank id
 
-def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name: str, rank_cfg: list[RankConfiguration], full_name_direction: int=1):
+def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name: str, rank_cfg: list[RankConfiguration], full_name_direction: int=1, root_cfg: Optional[dict]= None):
     """Creates an initial empty tree."""
     with transaction.atomic():
         tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
@@ -94,11 +94,11 @@ def initialize_default_tree(tree_type: str, discipline_or_institution, tree_name
             # Create a root node for non-taxon trees
             # New taxon trees are expected to be empty
             if tree_type != 'taxon':
-                create_default_root(tree_def, tree_type)
+                create_default_root(tree_def, tree_type, root_cfg)
 
         return tree_def
 
-def create_default_root(tree_def, tree_type: str, kwargs: Optional[dict]= None):
+def create_default_root(tree_def, tree_type: str, root_cfg: Optional[dict]= None):
     """Create root node"""
     # TODO: Avoid having duplicated code from add_root endpoint
     tree_def_model, tree_rank_model, tree_node_model = get_models(tree_type)
@@ -112,15 +112,20 @@ def create_default_root(tree_def, tree_type: str, kwargs: Optional[dict]= None):
     
     if existing_root:
         return existing_root
+    
+    kwargs = {
+        'name': TREE_ROOT_NODES.get(tree_type, "Root"),
+        'fullname': TREE_ROOT_NODES.get(tree_type, "Root"),
+        'nodenumber': 1,
+        'definition': tree_def,
+        'definitionitem': root_rank,
+        'parent': None,
+    }
+    if root_cfg:
+        kwargs.update(root_cfg)
 
     tree_node, _ = tree_node_model.objects.get_or_create(
-        name=TREE_ROOT_NODES.get(tree_type, "Root"),
-        fullname=TREE_ROOT_NODES.get(tree_type, "Root"),
-        nodenumber=1,
-        definition=tree_def,
-        definitionitem=root_rank,
-        parent=None,
-        **(kwargs if kwargs is not None else {})
+        **kwargs
     )
     return tree_node
 
@@ -417,7 +422,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
                         'rank': rank.get('rank', auto_rank_id)
                     })
                     auto_rank_id += 10
-                tree_def = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction)
+                tree_def = initialize_default_tree(tree_type, discipline, initial_tree_name, rank_cfg, full_name_direction, tree_cfg.get('root'))
             
             create_default_root(tree_def, tree_type, tree_cfg.get('root'))
             tree_name = tree_def.name

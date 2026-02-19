@@ -14,7 +14,10 @@ from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.specify.models import Spversion
 from specifyweb.specify import models
 from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
-from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults
+from specifyweb.backend.setup_tool.schema_defaults import (
+    apply_schema_defaults,
+    queue_apply_schema_defaults_background,
+)
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.setup_tasks import (
@@ -31,8 +34,6 @@ from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniq
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, fix_schema_config
 
 import logging
-
-from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 logger = logging.getLogger(__name__)
 
 APP_VERSION = "7"
@@ -158,13 +159,32 @@ def create_institution(data):
     return {'institution_id': new_institution.id}
 
 def create_division(data):
-    from specifyweb.specify.models import Division, Institution
+    from specifyweb.specify.models import Division, Institution, Agent, Specifyuser
+
+    def ensure_user_agent_for_division(division) -> None:
+        user_ids = Agent.objects.filter(
+            specifyuser_id__isnull=False
+        ).values_list('specifyuser_id', flat=True).distinct()
+        for user in Specifyuser.objects.filter(id__in=user_ids):
+            if Agent.objects.filter(specifyuser=user, division=division).exists():
+                continue
+            template_agent = Agent.objects.filter(specifyuser=user).order_by('id').first()
+            if template_agent is None:
+                continue
+            Agent.objects.create(
+                agenttype=template_agent.agenttype,
+                lastname=template_agent.lastname or user.name or "User",
+                firstname=template_agent.firstname,
+                division=division,
+                specifyuser=user,
+            )
 
     # If division_id is provided and exists, return success
     existing_id = data.pop('division_id', None)
     if existing_id:
         existing_division = Division.objects.filter(id=existing_id).first()
         if existing_division:
+            ensure_user_agent_for_division(existing_division)
             return {"division_id": existing_division.id}
 
     # Determine new Division ID
@@ -186,12 +206,13 @@ def create_division(data):
     # Create new division
     try:
         new_division = Division.objects.create(**data)
+        ensure_user_agent_for_division(new_division)
         return {"division_id": new_division.id}
     except Exception as e:
         logger.exception(f'Division error: {e}')
         raise SetupError(e)
 
-def create_discipline(data):
+def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
         Geologictimeperiodtreedef, Taxontreedef, Tectonicunittreedef, Lithostrattreedef
@@ -217,13 +238,9 @@ def create_discipline(data):
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
     geographytreedef_url = data.pop('geographytreedef_1', None)
     geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef_1', None)
-    tectonicunittreedef_url = data.pop('tectonicunittreedef', None)
-    lithostrattreedef_url = data.pop('lithostrattreedef', None)
 
     geographytreedef = resolve_uri_or_fallback(geographytreedef_url, None, Geographytreedef)
     geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
-    tectonicunittreedef = resolve_uri_or_fallback(tectonicunittreedef_url, None, Tectonicunittreedef)
-    lithostrattreedef = resolve_uri_or_fallback(lithostrattreedef_url, None, Lithostrattreedef)
 
     if geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
@@ -240,27 +257,6 @@ def create_discipline(data):
         'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
     })
 
-    if (
-        data['type'] in PALEO_DISCIPLINES
-        or data['type'] in GEOLOGY_DISCIPLINES
-    ):
-        # Automatically create trees if they don't exist
-        default_tree = {'ranks': {}}
-
-        if tectonicunittreedef is None:
-            create_tectonicunit_tree(default_tree.copy())
-            tectonicunittreedef = Tectonicunittreedef.objects.last()
-            data['tectonicunittreedef_id'] = tectonicunittreedef.id
-        else:
-            data['tectonicunittreedef_id'] = tectonicunittreedef.id
-
-        if lithostrattreedef is None:
-            create_lithostrat_tree(default_tree.copy())
-            lithostrattreedef = Lithostrattreedef.objects.last()
-            data['lithostrattreedef_id'] = lithostrattreedef.id
-        else:
-            data['lithostrattreedef_id'] = lithostrattreedef.id
-
     # Assign new Discipline ID
     max_id = Discipline.objects.aggregate(Max('id'))['id__max'] or 0
     data['id'] = max_id + 1
@@ -274,23 +270,16 @@ def create_discipline(data):
         new_discipline = Discipline.objects.create(**data)
 
         # Create Splocalecontainers for all datamodel tables
-        apply_schema_defaults(new_discipline)
+        if run_apply_schema_defaults_async:
+            queue_apply_schema_defaults_background(new_discipline.id)
+        else:
+            apply_schema_defaults(new_discipline)
 
         # Apply default uniqueness rules
         apply_default_uniqueness_rules(new_discipline)
 
         # Update tree scoping
         update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
-
-        if (
-            data['type'] in PALEO_DISCIPLINES
-            or data['type'] in GEOLOGY_DISCIPLINES
-        ):
-            if tectonicunittreedef is None or lithostrattreedef is None:
-                pass
-            else:
-                update_tree_scoping(tectonicunittreedef, new_discipline.id)
-                update_tree_scoping(lithostrattreedef, new_discipline.id)
 
         return {"discipline_id": new_discipline.id}
 

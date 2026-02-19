@@ -277,7 +277,7 @@ export function Tree<
         </div>
       </div>
       {treeCreationProgress?.active ? (
-        <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium">
+        <div className="flex flex-col gap-2 p-2 text-left text-lg font-medium col-span-full">
           {treeText.defaultTreeCreationLoadingMessage()}
         </div>
       ) : (
