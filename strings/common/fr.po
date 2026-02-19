@@ -464,8 +464,8 @@ msgstr "Outils"
 #: components/Preferences/Renderers.tsx:118
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:75
-#: components/QueryBuilder/Results.tsx:199
-#: components/QueryBuilder/Results.tsx:200
+#: components/QueryBuilder/Results.tsx:210
+#: components/QueryBuilder/Results.tsx:211
 #: components/QueryComboBox/index.tsx:433
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
@@ -1067,7 +1067,7 @@ msgstr "{header:string} :"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:96
-#: components/QueryBuilder/Results.tsx:195
+#: components/QueryBuilder/Results.tsx:206
 #: components/QueryBuilder/ResultsTable.tsx:201
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
