@@ -733,6 +733,9 @@ export const treeText = createDictionary({
     'en-us':
       'Creating tree record {current:number|formatted}/{total:number|formatted}',
   },
+  defaultTreeCreationLoadingMessage: {
+    'en-us': 'Default tree creation is in progress, please wait...',
+  },
   missingRanks: {
     'en-us': 'Missing Ranks',
   },
