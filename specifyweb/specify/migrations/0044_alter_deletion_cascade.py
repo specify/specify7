@@ -7,7 +7,7 @@ import django.db.models.deletion
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0042_discipline_type_picklist'),
+        ('specify', '0043_normalize_many_to_many'),
     ]
 
     operations = [
