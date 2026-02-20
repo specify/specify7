@@ -233,6 +233,7 @@ export const querySpecToResource = (
       contextTableId: genericTables[querySpec.tableName].tableId,
       countOnly: false,
       selectDistinct: querySpec.isDistinct ?? false,
+      searchSynonymy: querySpec.searchSynonymy ?? false,
       fields: makeSerializedFieldsFromPaths(
         querySpec.tableName,
         querySpec.fields

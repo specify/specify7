@@ -236,7 +236,10 @@ class QueryFieldSpec(
         root_table = datamodel.get_table_by_id(int(path.popleft()))
 
         if is_relation:
-            path.pop()
+            extracted_fieldname, _ = extract_date_part(field_name)
+            root_field = root_table.get_field(extracted_fieldname, strict=False)
+            if isinstance(root_field, Relationship):
+                path.pop()
 
         join_path = []
         node = root_table

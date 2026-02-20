@@ -301,6 +301,9 @@ export const queryText = createDictionary({
     'ru-ru': 'Ряд',
     'uk-ua': 'Серія',
   },
+  searchSynonyms: {
+    'en-us': 'Search Synonyms',
+  },
   createCsv: {
     'en-us': 'Create CSV',
     'ru-ru': 'Создать CSV-файл',
