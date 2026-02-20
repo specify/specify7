@@ -578,6 +578,7 @@ function Wrapped({
               />
               <QueryToolbar
                 isDistinct={query.selectDistinct ?? false}
+                isSeries={query.smushed ?? false}
                 searchSynonymy={query.searchSynonymy ?? false}
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
