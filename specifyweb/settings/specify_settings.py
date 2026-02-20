@@ -122,9 +122,8 @@ SUPPORT_LOGIN_TTL = 180
 
 # Usage stats are transmitted to the following address.
 # Set to None to disable.
-STATS_URL = "https://stats.specifycloud.org/capture"
-# STATS_2_URL = "https://stats-2.specifycloud.org/prod/AggrgatedSp7Stats"
-STATS_2_URL = "pj9lpoo1pc.execute-api.us-east-1.amazonaws.com"
+STATS_URL = "https://sp7-stats.specifycloud.org/capture"
+STATS_2_URL = "https://stats-2.specifycloud.org"
 
 # Workbench uploader log directory.
 # Must exist and be writeable by the web server process.

@@ -15,6 +15,6 @@ test('can fetch and parse system information', async () =>
     isa_number: '2014427',
     schema_version: '2.9',
     specify6_version: '6.8.03',
-    stats_url: 'https://stats.specifycloud.org/capture',
+    stats_url: 'https://sp7-stats.specifycloud.org/capture',
     version: '(debug)',
   }));
