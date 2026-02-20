@@ -340,13 +340,13 @@ def queue_create_default_tree_task(task_id):
         new_list = f'{current_list}:{task_id}'
     else:
         new_list = f'{task_id}'
-    logger.debug(current_list)
+    logger.debug(f'Active tree creation tasks: {str(current_list)}')
     set_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, new_list, time_to_live=60*60*2)
 
 def get_active_create_default_tree_tasks() -> str:
     current_list = get_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY) or ''
     tasks = current_list.split(':')
-    logger.debug(current_list)
+    logger.debug(f'Active tree creation tasks: {str(current_list)}')
     return tasks
 
 def finish_create_default_tree_task(task_id):
@@ -354,7 +354,7 @@ def finish_create_default_tree_task(task_id):
     tasks = get_active_create_default_tree_tasks()
     tasks = [task for task in tasks if task != task_id]
     new_list = ':'.join(tasks)
-    logger.debug(new_list)
+    logger.debug(f'Active tree creation tasks: {str(new_list)}')
 
     set_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, new_list, time_to_live=60*60*2)
 
