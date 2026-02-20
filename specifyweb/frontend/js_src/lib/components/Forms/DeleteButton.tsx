@@ -56,11 +56,17 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
   isIcon = false,
+  children,
 }: DeleteButtonProps<SCHEMA> & {
   readonly deletionMessage?: React.ReactNode;
   readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
+  // A render prop to render custom children inside the delete dialog
+  readonly children?: (
+    onClick: () =>void,
+    disabled:boolean 
+  ) => JSX.Element;
 }): JSX.Element {
   const { blockers, setBlockers, fetchBlockers } = useDeleteBlockers(
     resource,
@@ -74,9 +80,21 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyTable.name;
 
+// Callback for button click
+  const handleClick = (): void => {
+    handleOpen();
+    fetchBlockers();
+  };
+
+  const isDisabled = blockers === undefined || isBlocked;
+
   return (
     <>
-      {isIcon ? (
+    {/* Use  children as render prop if provided */}
+     {typeof children === 'function' ? (
+      children(handleClick, isDisabled)
+     ) :
+      isIcon ? (
         <Button.Icon
           icon="trash"
           title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
