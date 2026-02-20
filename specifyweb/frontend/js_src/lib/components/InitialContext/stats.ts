@@ -23,11 +23,17 @@ function buildStatsLambdaUrl(base: string | null | undefined): string | null {
   return u;
 }
 
-function buildStats2RequestKey(lambdaUrl: string, collectionGuid: string): string {
+function buildStats2RequestKey(
+  lambdaUrl: string,
+  collectionGuid: string
+): string {
   return `${stats2RequestKeyPrefix}:${collectionGuid}:${lambdaUrl}`;
 }
 
-function shouldSendStats2Request(storageKey: string, now = Date.now()): boolean {
+function shouldSendStats2Request(
+  storageKey: string,
+  now = Date.now()
+): boolean {
   if (globalThis.localStorage === undefined) return true;
 
   try {
