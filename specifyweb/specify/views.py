@@ -14,7 +14,7 @@ from tempfile import TemporaryDirectory
 from django import http
 from django.conf import settings
 from django.views.decorators.cache import cache_control
-from django.views.decorators.http import require_POST, require_http_methods
+from django.views.decorators.http import require_http_methods
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.dispatch import collection_dispatch, resource_dispatch

@@ -48,6 +48,16 @@ def fix_cots(stdout: WriteToStdOut | None = None):
     log_and_run(funcs, stdout)
 
 def fix_schema_config(stdout: WriteToStdOut | None = None):
+    def apply_schema_overrides_for_all_disciplines(_apps):
+        from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults_task
+        Discipline = _apps.get_model('specify', 'Discipline')
+        for discipline in Discipline.objects.all():
+            if stdout is not None:
+                stdout(
+                    f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
+                )
+            apply_schema_defaults_task.run(discipline.id)
+
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
         usc.create_geo_table_schema_config_with_defaults, # specify 0002
@@ -80,6 +90,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.componets_schema_config_migrations, # specify 0040
         usc.create_discipline_type_picklist, # specify 0042
         usc.update_discipline_type_splocalecontaineritem, # specify 0042
+        apply_schema_overrides_for_all_disciplines,
         usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)

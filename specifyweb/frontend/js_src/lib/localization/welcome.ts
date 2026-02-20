@@ -164,7 +164,7 @@ export const welcomeText = createDictionary({
     'pt-br': 'Versão do banco de dados:',
   },
   schemaVersion: {
-    'en-us': 'DB Schema Version',
+    'en-us': 'Database Schema',
     'ru-ru': 'Версия схемы базы данных',
     'es-es': 'Versión del Esquema de base de datos',
     'fr-fr': 'Version du schéma de base de données',
@@ -180,16 +180,6 @@ export const welcomeText = createDictionary({
     'uk-ua': "Ім'я бази даних:",
     'de-ch': 'Datenbank-Name:',
     'pt-br': 'Nome do banco de dados:',
-  },
-  isaNumber: {
-    comment: 'I believe ISA stands for Institution Service Agreement',
-    'en-us': 'ISA Number:',
-    'ru-ru': 'Номер ISA:',
-    'es-es': 'Número ISA:',
-    'fr-fr': 'Numéro ISA :',
-    'uk-ua': 'Номер ISA:',
-    'de-ch': 'ISA-Nummer:',
-    'pt-br': 'Número ISA:',
   },
   browser: {
     'en-us': 'Browser:',

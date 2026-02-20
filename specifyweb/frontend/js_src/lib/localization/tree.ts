@@ -544,15 +544,6 @@ export const treeText = createDictionary({
     'ru-ru': 'Добавить дерево',
     'uk-ua': 'Додати дерево',
   },
-  addRootNode: {
-    'en-us': 'Add root node',
-    'de-ch': 'Füge den Stammknoten hinzu.',
-    'es-es': 'Agregar nodo raíz',
-    'fr-fr': 'Ajouter le nœud racine',
-    'pt-br': 'Adicionar nó raiz',
-    'ru-ru': 'Добавить корневой узел',
-    'uk-ua': 'Додати кореневий вузол',
-  },
   treePicker: {
     'en-us': 'Tree Picker',
     'de-ch': 'Baumpflücker',
@@ -661,15 +652,6 @@ export const treeText = createDictionary({
     'ru-ru': 'Палеонтология позвоночных',
     'uk-ua': 'Палеонтологія хребетних',
   },
-  defaultRemarks: {
-    'en-us': 'A default taxon tree',
-    'de-ch': 'Ein Standard-Taxonbaum',
-    'es-es': 'Un árbol de taxones predeterminado',
-    'fr-fr': 'Un arbre taxonomique par défaut',
-    'pt-br': 'Uma árvore taxonômica padrão',
-    'ru-ru': 'Дерево таксонов по умолчанию',
-    'uk-ua': 'Дерево таксонів за замовчуванням',
-  },
   emptyTree: {
     'en-us': 'Empty Tree',
     'de-ch': 'Leerer Baum',
@@ -705,6 +687,55 @@ export const treeText = createDictionary({
     'pt-br': 'Meteoritos',
     'ru-ru': 'Метеориты',
     'uk-ua': 'Метеорити',
+  },
+  emptyTrees: {
+    'en-us': 'Empty Trees',
+  },
+  populatedTrees: {
+    'en-us': 'Populated Trees',
+  },
+  defaultTreeCreationStarted: {
+    'en-us': 'Default Tree Creation Started',
+  },
+  defaultTreeCreationStartedDescription: {
+    'en-us':
+      'The tree will be created in the background. You will be notified once it is completed.',
+  },
+  defaultTreeTaskStarted: {
+    'en-us': 'The default tree creation process has started.',
+  },
+  defaultTreeTaskFailed: {
+    'en-us': 'Default tree creation failed.',
+  },
+  defaultTreeTaskCancelled: {
+    'en-us': 'Default tree creation was cancelled.',
+  },
+  defaultTreeTaskCompleted: {
+    'en-us': 'Default tree creation completed successfully.',
+  },
+  defaultTreeCreationProgress: {
+    comment: 'E.x, Creating tree record 999/1,000',
+    'en-us':
+      'Creating tree record {current:number|formatted}/{total:number|formatted}',
+  },
+  defaultTreeCreationLoadingMessage: {
+    'en-us': 'Default tree creation is in progress, please wait...'
+  },
+  missingRanks: {
+    'en-us': 'Missing Ranks',
+  },
+  missingRanksDescription: {
+    'en-us':
+      'The populated tree you selected to download contains records in ranks that are missing from your tree.',
+  },
+  createMissingRanks: {
+    'en-us': 'Should the missing ranks be created?',
+  },
+  source: {
+    'en-us': 'Source',
+  },
+  initializeEmptyTree: {
+    'en-us': 'Initialize an empty tree',
   },
   treeManagement: {
     'en-us': 'Tree Management',

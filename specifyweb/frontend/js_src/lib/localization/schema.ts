@@ -333,15 +333,6 @@ export const schemaText = createDictionary({
     'de-ch': 'Als JSON herunterladen',
     'pt-br': 'Baixar como JSON',
   },
-  downloadAsXml: {
-    'en-us': 'Download as XML',
-    'ru-ru': 'Скачать в формате XML',
-    'es-es': 'Descargar como XML',
-    'fr-fr': 'Télécharger au format XML',
-    'uk-ua': 'Завантажити як XML',
-    'de-ch': 'Als XML herunterladen',
-    'pt-br': 'Baixar como XML',
-  },
   downloadAsTsv: {
     'en-us': 'Download as TSV',
     'ru-ru': 'Скачать в формате TSV',

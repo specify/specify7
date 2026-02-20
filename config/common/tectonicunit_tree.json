@@ -1,0 +1,45 @@
+{
+  "tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Root",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0
+        },
+        {
+          "name": "Superstructure",
+          "enforced": false,
+          "infullname": false,
+          "rank": 100
+        },
+        {
+          "name": "Tectonic Domain",
+          "enforced": false,
+          "infullname": false,
+          "rank": 200
+        },
+        {
+          "name": "Tectonic Subdomain",
+          "enforced": false,
+          "infullname": false,
+          "rank": 300
+        },
+        {
+          "name": "Tectonic Unit",
+          "enforced": false,
+          "infullname": true,
+          "rank": 400
+        },
+        {
+          "name": "Tectonic Subunit",
+          "enforced": false,
+          "infullname": true,
+          "rank": 500
+        }
+      ]
+    },
+    "nodes": []
+  }
+}

@@ -97,15 +97,16 @@ class Specifyuser(models.Model):
         "Make the user not a Specify 6 admin."
         from django.db import connection, transaction
 
-        cursor = connection.cursor()
-        cursor.execute("""
-        DELETE FROM specifyuser_spprincipal
-        WHERE SpecifyUserId = %s
-        AND SpPrincipalId IN (
-          SELECT SpPrincipalId FROM spprincipal
-          WHERE Name = 'Administrator'
-        )
-        """, [self.id])
+        # TODO: UNCOMMENT THIS. Commented specifically for testing PR https://github.com/specify/specify7/pull/6671
+        # cursor = connection.cursor()
+        # cursor.execute("""
+        # DELETE FROM specifyuser_spprincipal
+        # WHERE SpecifyUserId = %s
+        # AND SpPrincipalId IN (
+        #   SELECT SpPrincipalId FROM spprincipal
+        #   WHERE Name = 'Administrator'
+        # )
+        # """, [self.id])
 
     def save(self, *args, **kwargs):
         # There is a signal handler that updates last_login when

@@ -422,6 +422,32 @@
         { "title": "Erosion", "value": "Erosion" },
         { "title": "Diagenetic", "value": "Diagenetic" }
       ]
+    },
+    {
+      "name": "AbsoluteAgeDatingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 5,
+      "items": [
+        { "title": "Radiometric", "value": "Radiometric" },
+        { "title": "Thermoluminescence", "value": "Thermoluminescence" },
+        { "title": "Optically Stimulated Luminescence (OSL)", "value": "Optically Stimulated Luminescence (OSL)" },
+        { "title": "Electron Spin Resonance (ESR)", "value": "Electron Spin Resonance (ESR)" },
+        { "title": "Observation", "value": "Observation" }
+      ]
+    },
+    {
+      "name": "RelativeAgeDatingMethod",
+      "issystem": true,
+      "type": 0,
+      "readonly": true,
+      "sizelimit": 4,
+      "items": [
+        { "title": "Known stratigraphic position", "value": "Known stratigraphic position" },
+        { "title": "Fossil record", "value": "Fossil record" },
+        { "title": "Radiometric (adjacent)", "value": "Radiometric (adjacent)" }
+      ]
     }
   ]
 }

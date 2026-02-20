@@ -158,9 +158,17 @@ export function FormTable<SCHEMA extends AnySchema>({
     lastRow?.focus();
   }, [resources]);
 
+  const isSystemConfigResource =
+    (relationship.relatedTable.name === 'Collection' &&
+      relationship.name === 'collections') ||
+    (relationship.relatedTable.name === 'Discipline' &&
+      relationship.name === 'disciplines');
+
   const isToOne =
     !relationshipIsToMany(relationship) || shouldBeToOne(relationship);
-  const disableAdding = isToOne && resources.length > 0;
+
+  const disableAdding =
+    (isToOne && resources.length > 0) || isSystemConfigResource;
 
   const header = commonText.countLine({
     resource: relationship.label,
