@@ -599,12 +599,13 @@ function Wrapped({
                   setSaveRequired(true);
                 }}
                 onToggleHidden={setShowHiddenFields}
-                onToggleSearchSynonymy={(): void =>
+                onToggleSearchSynonymy={(): void => {
                   setQuery({
                     ...query,
                     searchSynonymy: !(query.searchSynonymy ?? false),
-                  })
-                }
+                  });
+                  setSaveRequired(true);
+                }}
                 onToggleSeries={(): void => {
                   setQuery({
                     ...query,

@@ -601,7 +601,7 @@ def run_ephemeral_query(collection, user, spquery):
     recordsetid = spquery.get("recordsetid", None)
     distinct = spquery["selectdistinct"]
     series = spquery.get('smushed', None)
-    search_synonymy = spquery['searchsynonymy'] 
+    search_synonymy = bool(spquery.get("searchsynonymy", False))
     tableid = spquery["contexttableid"]
     count_only = spquery["countonly"]
     format_audits = spquery.get("formatauditrecids", False)

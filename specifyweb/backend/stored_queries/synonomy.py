@@ -1,5 +1,5 @@
 from typing import Optional, Tuple, List
-from sqlalchemy import select, union
+from sqlalchemy import select, union, func
 from sqlalchemy.sql import Select
 from sqlalchemy.orm import Query
 from sqlalchemy.sql.selectable import FromClause, Alias, Join
@@ -17,13 +17,14 @@ def synonymize_tree_query(
 
     expand_from_accepted = True  (default)
     - Start from the records that match the original predicate.
-    - Then include all synonyms whose AcceptedID points to those records.
+    - Resolve each match to its accepted root via COALESCE(AcceptedID, id_col).
+    - Then include all synonyms whose AcceptedID points to those accepted roots.
 
     Query Building Strategy:
         target_taxon := (original FROM+JOINS + WHERE) projected as (id_col, AcceptedID)
-        root_ids     := SELECT id_col FROM target_taxon
-        syn_ids      := SELECT id_col FROM tree WHERE AcceptedID IN (root_ids)
-        ids          := root_ids UNION syn_ids
+        accepted_roots := SELECT COALESCE(AcceptedID, id_col) FROM target_taxon
+        syn_ids        := SELECT id_col FROM tree WHERE AcceptedID IN (accepted_roots)
+        ids            := accepted_roots UNION syn_ids
 
     expand_from_accepted = False
     - Include records whose synonymized children match the original predicate.
@@ -58,18 +59,21 @@ def synonymize_tree_query(
     )
 
     if expand_from_accepted:
-        # root_ids: the records that actually matched the original predicate
-        root_ids = select(target_taxon_cte.c.TaxonID.label("id"))
+        # Resolve each matched row to its accepted root so both directions work
+        accepted_roots = select(
+            func.coalesce(
+                target_taxon_cte.c.AcceptedID,
+                target_taxon_cte.c.TaxonID,
+            ).label("id")
+        ).subquery("accepted_roots")
 
-        # syn_ids: any record whose AcceptedID points at one of those root_ids
-        # Use the underlying tree table (not the alias) so we don't bring over the original WHERE.
+        # Any row whose AcceptedID points at one of those accepted roots
+        # Use the base tree table, not the query alias, so we don't carry original WHERE
         syn_ids = select(taxon_table.c[id_col_name].label("id")).where(
-            taxon_table.c.AcceptedID.in_(
-                select(target_taxon_cte.c.TaxonID)
-            )
+            taxon_table.c.AcceptedID.in_(select(accepted_roots.c.id))
         )
 
-        ids = union(root_ids, syn_ids).subquery("ids")
+        ids = union(select(accepted_roots.c.id), syn_ids).subquery("ids")
 
     else:
         # Subquery to get the relevant ids for synonymy: id_col and AcceptedID
