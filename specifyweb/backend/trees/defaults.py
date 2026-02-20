@@ -456,8 +456,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
                     # 'error': str(e)
                 })
             )
-        if existing_tree_def_id:
-            finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id}')
+        finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id or self.request.id}')
         raise
 
     if notify and specify_user_id and specify_collection_id:
@@ -471,7 +470,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
             })
         )
     
-    finish_create_default_tree_task(self.request.id)
+    finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id or self.request.id}')
 
 def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
     """
