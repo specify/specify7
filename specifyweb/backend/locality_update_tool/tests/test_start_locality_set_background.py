@@ -4,7 +4,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from uuid import uuid4 as base_uuid4
 
 from specifyweb.backend.locality_update_tool.update_locality import LocalityUpdateStatus
-from specifyweb.specify.views import start_locality_set_background
+from specifyweb.backend.locality_update_tool.views import start_locality_set_background
 
 
 class TestStartLocalityBackground(ApiTests):
@@ -44,12 +44,12 @@ class TestStartLocalityBackground(ApiTests):
             modifiedbyagent_id=self.agent.id
         ))
 
-    @patch('specifyweb.specify.views.uuid4')
-    @patch('specifyweb.specify.views.parse_locality_task')
+    @patch('specifyweb.backend.locality_update_tool.views.uuid4')
+    @patch('specifyweb.backend.locality_update_tool.views.parse_locality_task')
     def test_parse_only_task(self, parse_locality_task: Mock, uuid4: Mock):
         self._test_start_locality_set(True, parse_locality_task, uuid4)
 
-    @patch('specifyweb.specify.views.uuid4')
-    @patch('specifyweb.specify.views.update_locality_task')
+    @patch('specifyweb.backend.locality_update_tool.views.uuid4')
+    @patch('specifyweb.backend.locality_update_tool.views.update_locality_task')
     def test_upload_task(self, update_locality_task: Mock, uuid4: Mock):
         self._test_start_locality_set(False, update_locality_task, uuid4)

@@ -33,7 +33,7 @@ class TestParseField(ApiTests):
 
         self.assertEqual(parsed_with_value, parsed_with_value_result)
 
-    @patch("specifyweb.specify.update_locality.get_uiformatter")
+    @patch("specifyweb.backend.locality_update_tool.update_locality.get_uiformatter")
     def test_cnn_formatter(self, get_uiformatter: Mock):
 
         get_uiformatter.return_value = UIFormatter(
