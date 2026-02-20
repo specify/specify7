@@ -717,7 +717,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           loanReturnPrep.set('quantityReturned', returnedLeft);
 
         if (previousResolved < returned) {
-          loanReturnPrep.set('quantityResolved', returned);
+          loanReturnPrep.set(
+            'quantityResolved',
+            returned > totalLoaned ? totalLoaned : returned
+          );
           previousLoanPreparations.previousResolved[loanReturnPrep.cid] =
             returned;
         }
@@ -739,6 +742,14 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         }
 
         if (resolved < 0) loanReturnPrep.set('quantityResolved', 0);
+
+        const quantityReturned = loanReturnPrep.get('quantityReturned');
+        if (quantityReturned !== null && quantityReturned > resolved) {
+          loanReturnPrep.set(
+            'quantityReturned',
+            Math.min(Math.max(resolved, 0), available)
+          );
+        }
 
         previousLoanPreparations.previousResolved[loanReturnPrep.cid] =
           resolved;
