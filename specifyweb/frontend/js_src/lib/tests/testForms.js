@@ -1,4 +1,5 @@
 // TEST: refactor this test
+// TEMP: trigger front-end-test github action (delete later)
 
 define([
   'underscore',
