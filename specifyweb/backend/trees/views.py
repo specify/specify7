@@ -772,14 +772,14 @@ def create_default_tree_view(request):
     except ValidationError as e:
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
-    task_id = str(tree_def_id or uuid4())
+    task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
         args=[url, discipline.id, tree_type, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
         task_id=f"create_default_tree_{tree_type}_{task_id}",
         taskid=task_id
     )
     if tree_def_id:
-        queue_create_default_tree_task(f'create_default_tree_{tree_type.lower()}_{tree_def_id}')
+        queue_create_default_tree_task(f'create_default_tree_{tree_type.lower()}_{tree_def_id or task_id}')
     return http.JsonResponse({
         'message': 'Trees creation started in the background.',
         'task_id': async_result.id
@@ -834,6 +834,10 @@ def create_default_tree_view(request):
                     "taskid": {
                         "type": "string",
                         "description": "The id of the task you queried"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "If you provided an id in the format create_default_tree_[tree_type]_[tree_def_id]. Should only be used if you don't know the real task id."
                     }
                 },
                 "required": ["taskstatus", "taskid"]
@@ -842,7 +846,9 @@ def create_default_tree_view(request):
     })
 @require_GET
 def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
-    """Returns the task status for the default tree upload celery task"""
+    """Returns the task status for the default tree upload celery task.
+    If you don't know the task id, the format create_default_tree_{tree_type}_{task_id} can be used just to get the active status.
+    Celery task logs are semi-permanent, so ids need to be generated randomly."""
 
     tasks = get_active_create_default_tree_tasks()
     result = create_default_tree_task.AsyncResult(task_id)

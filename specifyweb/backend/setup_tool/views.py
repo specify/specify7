@@ -137,6 +137,8 @@ def create_specifyuser_view(request):
 @transaction.atomic
 def create_discipline_and_trees(request):
     from specifyweb.specify.models import Discipline, Taxontreedef, Geographytreedef
+    if not request.specify_user.is_admin():
+        return http.HttpResponseForbidden('Specifyuser must be an instituion admin')
     check_table_permissions(request.specify_collection, request.specify_user_agent, Discipline, "create")
     check_table_permissions(request.specify_collection, request.specify_user_agent, Taxontreedef, "create")
     check_table_permissions(request.specify_collection, request.specify_user_agent, Geographytreedef, "create")

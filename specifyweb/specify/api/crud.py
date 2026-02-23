@@ -45,6 +45,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     """Create a new instance of 'model' and populate it with 'data'."""
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
+    from specifyweb.backend.permissions.permissions import PermissionsException
     CREATE_MODEL_REDIRECTS: Dict[str, Callable[[dict], dict]] = {
         'institution': create_institution,
         'division': create_division,
@@ -59,6 +60,8 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     # Redirect to a dedicated object creation function for the model
     model_name = model.__name__.lower()
     if model_name in CREATE_MODEL_REDIRECTS:
+        if not agent.specifyuser.is_admin():
+            raise PermissionsException("Specifyuser must be an instituion admin")
         check_table_permissions(collection, agent, model, "create")
         result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
         return model.objects.filter(id=result[f'{model_name}_id']).first()

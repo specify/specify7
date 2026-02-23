@@ -89,6 +89,7 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     systemConfigurationTool: {
       title: userText.systemConfig(),
       enabled: () =>
+        userInformation.isadmin &&
         hasToolPermission('resources', 'read') &&
         hasTablePermission('Discipline', 'read') &&
         hasTablePermission('Collection', 'read') &&
