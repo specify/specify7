@@ -41,11 +41,11 @@ row_plan_map = RowPlanMap(
         ),
         "collectingevent": RowPlanMap(
             batch_edit_pack=BatchEditPack(
-                id=BatchEditFieldPack(field=None, idx=19, value=None),
+                id=BatchEditFieldPack(field=None, idx=18, value=None),
                 order=BatchEditFieldPack(field=None, idx=None, value=None),
-                version=BatchEditFieldPack(field=None, idx=20, value=None),
+                version=BatchEditFieldPack(field=None, idx=19, value=None),
             ),
-            columns=[BatchEditFieldPack(field=None, idx=18, value=None)],
+            columns=[],
             to_one={
                 "locality": RowPlanMap(
                     batch_edit_pack=BatchEditPack(
@@ -54,6 +54,7 @@ row_plan_map = RowPlanMap(
                         version=BatchEditFieldPack(field=None, idx=31, value=None),
                     ),
                     columns=[
+                        BatchEditFieldPack(field=None, idx=20, value=None),
                         BatchEditFieldPack(field=None, idx=21, value=None),
                         BatchEditFieldPack(field=None, idx=22, value=None),
                         BatchEditFieldPack(field=None, idx=23, value=None),
