@@ -135,7 +135,7 @@ class TestRecordMergeRequests(ApiTests):
         )
         self._assert_invalid_request(response)
 
-    @patch("specifyweb.specify.views.record_merge_task")
+    @patch("specifyweb.backend.merge.views.record_merge_task")
     def test_permissions_enforced_background(self, record_merge_task):
         test_id = "UUID_TEST_ID"
         _apply_async = Mock(return_value=MockResult(test_id))
@@ -172,8 +172,8 @@ class TestRecordMergeRequests(ApiTests):
         )
         self.assertTrue(Spmerging.objects.filter(**filter_params).exists())
 
-    @patch("specifyweb.specify.views.uuid4")
-    @patch("specifyweb.specify.views.record_merge_task")
+    @patch("specifyweb.backend.merge.views.uuid4")
+    @patch("specifyweb.backend.merge.views.record_merge_task")
     def test_other_merge_no_result(self, record_merge_task, uuid4):
 
         def __async_result(taskid):

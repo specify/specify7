@@ -71,9 +71,11 @@ export function overrideAjax(
 }
 
 const basePathParts = process.cwd().split('/');
-const basePath = basePathParts
-  .slice(0, basePathParts.indexOf('js_src') + 1)
-  .join('/');
+const jsSourcePathIndex = basePathParts.indexOf('js_src');
+const basePath =
+  jsSourcePathIndex === -1
+    ? process.cwd()
+    : basePathParts.slice(0, jsSourcePathIndex + 1).join('/');
 
 /**
  * When process.env.NODE_ENV === 'test', this intercepts the AJAX requests
@@ -95,10 +97,22 @@ export async function ajaxMock<RESPONSE_TYPE>(
     expectedErrors = [],
   }: Parameters<typeof ajax>[1]
 ): Promise<AjaxResponseObject<RESPONSE_TYPE>> {
-  if (url.startsWith('https://stats.specifycloud.org/capture'))
+  if (url.startsWith('https://sp7-stats.specifycloud.org/capture'))
     return formatResponse('', accept, expectedErrors, undefined);
 
-  const parsedUrl = new URL(url, globalThis?.location.origin);
+  const safeOrigin = (() => {
+    try {
+      const origin = globalThis.location?.origin;
+      return typeof origin === 'string' ? origin : 'http://localhost';
+    } catch {
+      return 'http://localhost';
+    }
+  })();
+
+  const parsedUrl = new URL(
+    url,
+    safeOrigin
+  );
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
   const overwrittenData =
     overrides[url]?.[requestMethod] ??
@@ -117,7 +131,13 @@ export async function ajaxMock<RESPONSE_TYPE>(
    * Windows.
    */
   const [splitUrl, queryString = ''] = url.split('?');
-  const parsedPath = path.parse(`${basePath}/lib/tests/ajax/static${splitUrl}`);
+  const normalizedUrl =
+    splitUrl !== '/' && splitUrl.endsWith('/')
+      ? splitUrl.slice(0, -1)
+      : splitUrl;
+  const parsedPath = path.parse(
+    `${basePath}/lib/tests/ajax/static${normalizedUrl}`
+  );
   const directoryName =
     queryString === ''
       ? parsedPath.dir
