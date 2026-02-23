@@ -567,36 +567,44 @@ def update_table_field_schema_config_params(
         setattr(sp_local_container_item, k, v)
     sp_local_container_item.save(update_fields=list(update_params.keys()))
 
-def find_missing_schema_config_fields(discipline_id: int, apps=global_apps,):
+def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     missing_tables: list[str] = []
     missing_fields: dict[str, list[str]] = {}
 
+    containers = Splocalecontainer.objects.filter(
+        discipline_id=discipline_id,
+        schematype=0,
+    )
+    container_names = set(
+        containers.values_list('name', flat=True)
+    )
+
+    existing_fields_by_table: dict[str, set[str]] = defaultdict(set)
+    for table_name, field_name in Splocalecontaineritem.objects.filter(
+        container__in=containers
+    ).values_list('container__name', 'name'):
+        if table_name and field_name:
+            existing_fields_by_table[table_name].add(field_name.lower())
+
     for table in datamodel.tables:
         table_name = table.name
-        containers = Splocalecontainer.objects.filter(
-            name=table_name.lower(),
-            discipline_id=discipline_id,
-            schematype=0,
-        )
-        if not containers.exists():
+        table_name_lower = table_name.lower()
+        if table_name_lower not in container_names:
             missing_tables.append(table_name)
-            missing_fields[table_name] = [
+            missing_fields[table_name] = sorted(
                 field.name for field in table.all_fields if field.name
-            ]
+            )
             continue
 
-        missing_in_table: list[str] = []
-        for field in table.all_fields:
-            if not field.name:
-                continue
-            if not Splocalecontaineritem.objects.filter(
-                container__in=containers,
-                name__iexact=field.name,
-            ).exists():
-                missing_in_table.append(field.name)
+        existing_fields = existing_fields_by_table.get(table_name_lower, set())
+        missing_in_table = sorted( # sort for better reproducablity
+            field.name
+            for field in table.all_fields
+            if field.name and field.name.lower() not in existing_fields
+        )
 
         if missing_in_table:
             missing_fields[table_name] = missing_in_table
@@ -604,21 +612,22 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps,):
     return missing_tables, missing_fields
 
 
-def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, stdout=None,):
-    missing_tables, missing_fields = find_missing_schema_config_fields(discipline_id,apps=apps,)
+def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, stdout=None):
+    missing_tables, missing_fields = find_missing_schema_config_fields(discipline_id, apps=apps)
+    missing_table_set = set(missing_tables)
 
     for table_name in missing_tables:
         if stdout is not None:
             stdout(f"Creating schema config table container for {table_name}...")
-        update_table_schema_config_with_defaults(table_name, discipline_id, apps=apps,)
+        update_table_schema_config_with_defaults(table_name, discipline_id, apps=apps)
 
     for table_name, fields in missing_fields.items():
-        if table_name in missing_tables:
+        if table_name in missing_table_set:
             continue
         for field_name in fields:
             if stdout is not None:
                 stdout(f"Creating schema config field {table_name}.{field_name}...")
-            update_table_field_schema_config_with_defaults(table_name, discipline_id, field_name, apps=apps,)
+            update_table_field_schema_config_with_defaults(table_name, discipline_id, field_name, apps=apps)
 
     return missing_tables, missing_fields
 
