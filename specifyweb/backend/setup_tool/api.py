@@ -237,10 +237,12 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
     geographytreedef_url = data.pop('geographytreedef_1', None)
+    geographytreedef_id = data.pop('geographytreedef_id', None)
     geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef_1', None)
+    geologictimeperiodtreedef_id = data.pop('geologictimeperiodtreedef_id', None)
 
-    geographytreedef = resolve_uri_or_fallback(geographytreedef_url, None, Geographytreedef)
-    geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
+    geographytreedef = resolve_uri_or_fallback(geographytreedef_url, geographytreedef_id, Geographytreedef)
+    geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, geologictimeperiodtreedef_id, Geologictimeperiodtreedef)
 
     if geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
