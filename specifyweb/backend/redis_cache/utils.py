@@ -47,6 +47,12 @@ def _add_to_set(key: str, *elements: str):
     host = redis_connection(decode_responses=True)
     return host.sadd(key, *elements)
 
+def _remove_from_set(key: str, *elements: str) -> int:
+    if len(elements) <= 0:
+        return 0
+    host = redis_connection(decode_responses=True)
+    return host.srem(key, *elements)
+
 def _set_elements(key: str) -> set:
     host = redis_connection(decode_responses=True)
     return host.smembers(key)
