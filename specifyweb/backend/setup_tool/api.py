@@ -27,7 +27,7 @@ from specifyweb.backend.setup_tool.setup_tasks import (
     set_last_setup_error,
     queue_fix_schema_config_background,
 )
-from specifyweb.celery_tasks import MissingWorkerError
+from specifyweb.celery_tasks import MissingWorkerError, app
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
@@ -47,6 +47,7 @@ def get_setup_progress() -> dict:
     """Returns a dictionary of the status of the database setup."""
     # Check if setup is currently in progress
     active_setup_task, busy = get_active_setup_task()
+    busy = busy or is_config_task_running()
 
     completed_resources = None
     last_error = None
@@ -465,3 +466,70 @@ def create_tree(name: str, data: dict) -> dict:
         return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)
+
+CONFIG_TASKS = frozenset({
+    "specifyweb.backend.trees.defaults.create_default_tree_task",
+    "specifyweb.backend.setup_tool.setup_tasks.setup_database_task",
+    "specifyweb.backend.setup_tool.setup_tasks.fix_schema_config_task",
+    "specifyweb.backend.setup_tool.schema_defaults.apply_schema_defaults_task",
+})
+
+def _extract_active_task_names(active_tasks_by_worker: dict) -> list[str]:
+    """Flatten list of task names"""
+    task_names: list[str] = []
+    for worker_tasks in active_tasks_by_worker.values():
+        for task in worker_tasks or []:
+            task_name = task.get("name")
+            if task_name is not None:
+                task_names.append(task_name)
+    return task_names
+
+def _task_name_to_progress_key(task_name: str) -> str:
+    """Convert a task function name into a camelCase progress key."""
+    task_function_name = task_name.rsplit(".", 1)[-1]
+    parts = task_function_name.split("_")
+    return parts[0] + "".join(part.title() for part in parts[1:])
+
+def _get_config_resource_progress_from_active_names(active_task_names: set[str]) -> dict:
+    """Return config task booleans from a set of active task names"""
+    return {
+        _task_name_to_progress_key(task_name): task_name in active_task_names
+        for task_name in sorted(CONFIG_TASKS)
+    }
+
+def get_running_worker_task_names() -> list[str]:
+    """Returns the names of active Celery tasks across all workers"""
+    active_tasks_by_worker = app.control.inspect(timeout=1).active()
+    if active_tasks_by_worker is None:
+        raise MissingWorkerError("The Specify Worker is not running.")
+
+    return _extract_active_task_names(active_tasks_by_worker)
+
+def is_config_task_running(running_task_names: Optional[list[str]] = None) -> bool:
+    """Returns whether any setup or config related Celery task is currently active"""
+    if running_task_names is None:
+        try:
+            running_task_names = get_running_worker_task_names()
+        except MissingWorkerError:
+            return False
+
+    active_task_names = set(running_task_names)
+    return not CONFIG_TASKS.isdisjoint(active_task_names)
+
+def get_config_resource_progress(running_task_names: Optional[list[str]] = None) -> dict:
+    """Returns a dictionary of config task activity by task type"""
+    active_task_names = set(running_task_names or [])
+    return _get_config_resource_progress_from_active_names(active_task_names)
+
+def get_config_progress() -> dict:
+    """Returns a dict of the status of config/setup related background tasks"""
+    running_task_names: list[str] = get_running_worker_task_names()
+    busy = is_config_task_running(running_task_names)
+    last_error = None
+    completed_resources = get_config_resource_progress(running_task_names)
+
+    return {
+        "resources": completed_resources,
+        "last_error": last_error,
+        "busy": busy,
+    }
