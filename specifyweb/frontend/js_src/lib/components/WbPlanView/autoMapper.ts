@@ -35,7 +35,7 @@ import {
   valueIsToManyIndex,
   valueIsTreeRank,
 } from './mappingHelpers';
-import { isCircularRelationship } from './modelHelpers';
+import { isCircularRelationship, isMappableReadOnlyField } from './modelHelpers';
 
 // REFACTOR: make code more readable. split into several files
 
@@ -623,7 +623,9 @@ export class AutoMapper {
 
     const table = strictGetTable(tableName);
     const fields = table.fields.filter(
-      ({ overrides }) => !overrides.isHidden && !overrides.isReadOnly
+      ({ name, overrides }) =>
+        !overrides.isHidden &&
+        (!overrides.isReadOnly || isMappableReadOnlyField(tableName, name))
     );
     const label = table.label.toLowerCase();
 

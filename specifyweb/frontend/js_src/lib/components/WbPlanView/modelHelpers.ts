@@ -155,3 +155,11 @@ export const isNestedToMany = (
 ) =>
   relationshipIsToMany(relationship) &&
   relationshipIsToMany(parentRelationship);
+
+/**
+ * Tree fullName is read-only in forms but still useful as a mapper target.
+ */
+export const isMappableReadOnlyField = (
+  tableName: keyof Tables,
+  fieldName: string
+): boolean => isTreeTable(tableName) && fieldName === 'fullName';

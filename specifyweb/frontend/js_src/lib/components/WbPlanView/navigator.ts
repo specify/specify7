@@ -43,7 +43,11 @@ import {
   valueIsTreeDefinition,
   valueIsTreeMeta,
 } from './mappingHelpers';
-import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
+import {
+  getMaxToManyIndex,
+  isCircularRelationship,
+  isMappableReadOnlyField,
+} from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
 
 type NavigationCallbackPayload = {
@@ -582,7 +586,8 @@ export function getMappingLineData({
             isIncluded &&=
               isNoRestrictionsMode ||
               spec.includeReadOnly ||
-              !field.overrides.isReadOnly;
+              !field.overrides.isReadOnly ||
+              isMappableReadOnlyField(table.name, field.name);
 
             // Hide frontend only field
             isIncluded &&= !(
