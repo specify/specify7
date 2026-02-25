@@ -72,3 +72,21 @@ def is_worker_alive():
         return bool(res)
     except Exception:
         return False
+
+def _extract_active_task_names(active_tasks_by_worker: dict) -> list[str]:
+    """Flatten list of task names"""
+    task_names: list[str] = []
+    for worker_tasks in active_tasks_by_worker.values():
+        for task in worker_tasks or []:
+            task_name = task.get("name")
+            if task_name is not None:
+                task_names.append(task_name)
+    return task_names
+
+def get_running_worker_task_names() -> list[str]:
+    """Returns the names of active Celery tasks across all workers"""
+    active_tasks_by_worker = app.control.inspect(timeout=1).active()
+    if active_tasks_by_worker is None:
+        raise MissingWorkerError("The Specify Worker is not running.")
+
+    return _extract_active_task_names(active_tasks_by_worker)

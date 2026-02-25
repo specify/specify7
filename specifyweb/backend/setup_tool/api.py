@@ -27,7 +27,7 @@ from specifyweb.backend.setup_tool.setup_tasks import (
     set_last_setup_error,
     queue_fix_schema_config_background,
 )
-from specifyweb.celery_tasks import MissingWorkerError, app
+from specifyweb.celery_tasks import MissingWorkerError, get_running_worker_task_names
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
@@ -237,9 +237,9 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
-    geographytreedef_url = data.pop('geographytreedef_1', None)
+    geographytreedef_url = data.pop('geographytreedef', None)
     geographytreedef_id = data.pop('geographytreedef_id', None)
-    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef_1', None)
+    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef', None)
     geologictimeperiodtreedef_id = data.pop('geologictimeperiodtreedef_id', None)
 
     geographytreedef = resolve_uri_or_fallback(geographytreedef_url, geographytreedef_id, Geographytreedef)
@@ -474,16 +474,6 @@ CONFIG_TASKS = frozenset({
     "specifyweb.backend.setup_tool.schema_defaults.apply_schema_defaults_task",
 })
 
-def _extract_active_task_names(active_tasks_by_worker: dict) -> list[str]:
-    """Flatten list of task names"""
-    task_names: list[str] = []
-    for worker_tasks in active_tasks_by_worker.values():
-        for task in worker_tasks or []:
-            task_name = task.get("name")
-            if task_name is not None:
-                task_names.append(task_name)
-    return task_names
-
 def _task_name_to_progress_key(task_name: str) -> str:
     """Convert a task function name into a camelCase progress key."""
     task_function_name = task_name.rsplit(".", 1)[-1]
@@ -496,14 +486,6 @@ def _get_config_resource_progress_from_active_names(active_task_names: set[str])
         _task_name_to_progress_key(task_name): task_name in active_task_names
         for task_name in sorted(CONFIG_TASKS)
     }
-
-def get_running_worker_task_names() -> list[str]:
-    """Returns the names of active Celery tasks across all workers"""
-    active_tasks_by_worker = app.control.inspect(timeout=1).active()
-    if active_tasks_by_worker is None:
-        raise MissingWorkerError("The Specify Worker is not running.")
-
-    return _extract_active_task_names(active_tasks_by_worker)
 
 def is_config_task_running(running_task_names: Optional[list[str]] = None) -> bool:
     """Returns whether any setup or config related Celery task is currently active"""
