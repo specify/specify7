@@ -1,5 +1,12 @@
 from typing import Optional
-from specifyweb.specify.models import Spappresource, Spappresourcedata, Spappresourcedir, Specifyuser
+
+from specifyweb.specify.models import (
+    Discipline,
+    Spappresource,
+    Spappresourcedata,
+    Spappresourcedir,
+    Specifyuser,
+)
 import logging
 logger = logging.getLogger(__name__)
 
@@ -31,3 +38,32 @@ def create_global_prefs(user: Optional[Specifyuser] = None) -> None:
         spappresource=resource,
         data=b''
     )
+
+
+def ensure_discipline_resource_dir(discipline: Discipline) -> Spappresourcedir:
+    """
+    Ensure a discipline-level app resource directory exists
+    """
+    existing_dir = (
+        Spappresourcedir.objects.filter(
+            discipline=discipline,
+            collection__isnull=True,
+            specifyuser__isnull=True,
+            usertype__isnull=True,
+            ispersonal=False
+        )
+        .first()
+    )
+
+    if existing_dir is None:
+        return Spappresourcedir.objects.create(
+            discipline=discipline,
+            disciplinetype=discipline.type,
+            ispersonal=False,
+        )
+
+    if existing_dir.disciplinetype != discipline.type:
+        existing_dir.disciplinetype = discipline.type
+        existing_dir.save(update_fields=['disciplinetype'])
+
+    return existing_dir

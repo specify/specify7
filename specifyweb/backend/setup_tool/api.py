@@ -20,6 +20,7 @@ from specifyweb.backend.setup_tool.schema_defaults import (
 )
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
+from specifyweb.backend.setup_tool.app_resource_defaults import ensure_discipline_resource_dir
 from specifyweb.backend.setup_tool.setup_tasks import (
     setup_database_background,
     get_active_setup_task,
@@ -224,6 +225,7 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     if existing_id:
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
+            ensure_discipline_resource_dir(existing_discipline)
             return {"discipline_id": existing_discipline.id}
 
     # Resolve division
@@ -271,6 +273,7 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     # Create new Discipline
     try:
         new_discipline = Discipline.objects.create(**data)
+        ensure_discipline_resource_dir(new_discipline)
 
         # Create Splocalecontainers for all datamodel tables
         if run_apply_schema_defaults_async:
