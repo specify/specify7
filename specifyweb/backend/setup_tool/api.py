@@ -216,7 +216,7 @@ def create_division(data):
 def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
-        Geologictimeperiodtreedef, Taxontreedef, Tectonicunittreedef, Lithostrattreedef
+        Geologictimeperiodtreedef, Taxontreedef
     )
 
     # Check if discipline_id is provided and already exists
@@ -503,7 +503,7 @@ def get_config_resource_progress(running_task_names: Optional[list[str]] = None)
     active_task_names = set(running_task_names or [])
     return _get_config_resource_progress_from_active_names(active_task_names)
 
-def get_config_progress() -> dict:
+def get_config_progress(collection_id: Optional[int] = None) -> dict:
     """Returns a dict of the status of config/setup related background tasks"""
     running_task_names: list[str] = get_running_worker_task_names()
     busy = is_config_task_running(running_task_names)

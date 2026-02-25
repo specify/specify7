@@ -37,6 +37,7 @@ from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
+from specifyweb.backend.setup_tool.api import get_config_progress
 
 
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -298,6 +299,8 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
+        if get_config_progress(collection.id).get('busy'):
+            return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
         return response
