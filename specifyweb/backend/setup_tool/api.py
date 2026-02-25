@@ -505,7 +505,11 @@ def get_config_resource_progress(running_task_names: Optional[list[str]] = None)
 
 def get_config_progress(collection_id: Optional[int] = None) -> dict:
     """Returns a dict of the status of config/setup related background tasks"""
-    running_task_names: list[str] = get_running_worker_task_names()
+    try:
+        running_task_names = get_running_worker_task_names()
+    except MissingWorkerError:
+        running_task_names = []
+
     busy = is_config_task_running(running_task_names)
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)

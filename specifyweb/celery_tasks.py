@@ -85,7 +85,11 @@ def _extract_active_task_names(active_tasks_by_worker: dict) -> list[str]:
 
 def get_running_worker_task_names() -> list[str]:
     """Returns the names of active Celery tasks across all workers"""
-    active_tasks_by_worker = app.control.inspect(timeout=1).active()
+    try:
+        active_tasks_by_worker = app.control.inspect(timeout=1).active()
+    except Exception as exc:
+        raise MissingWorkerError("The Specify Worker is not running.") from exc
+
     if active_tasks_by_worker is None:
         raise MissingWorkerError("The Specify Worker is not running.")
 
