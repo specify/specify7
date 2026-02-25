@@ -228,6 +228,14 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
             ensure_discipline_resource_dir(existing_discipline)
             return {"discipline_id": existing_discipline.id}
 
+    # Guard against duplicate discipline names across divisions
+    discipline_name = data.get('name')
+    if isinstance(discipline_name, str):
+        normalized_name = discipline_name.strip()
+        data['name'] = normalized_name
+        if normalized_name and Discipline.objects.filter(name__iexact=normalized_name).exists():
+            raise SetupError(f"A discipline named '{normalized_name}' already exists.")
+
     # Resolve division
     division_url = data.get('division')
     division_id = data.get('division_id', None)
