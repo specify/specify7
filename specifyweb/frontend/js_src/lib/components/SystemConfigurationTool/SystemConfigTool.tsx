@@ -16,10 +16,10 @@ import { collection, discipline, division } from '../FormParse/webOnlyViews';
 import { ResourceView } from '../Forms/ResourceView';
 import { load } from '../InitialContext';
 import { LoadingScreen } from '../Molecules/Dialog';
+import { ProtectedAction } from '../Permissions/PermissionDenied';
 import { Hierarchy } from './Hierarchy';
 import type { InstitutionData } from './Utils';
 import { fetchAllSystemData } from './Utils';
-import { ProtectedAction } from '../Permissions/PermissionDenied';
 
 export function SystemConfigurationTool(): JSX.Element | null {
   const [allInfo, setAllInfo] = React.useState<InstitutionData | null>(null);
