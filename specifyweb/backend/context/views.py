@@ -321,9 +321,11 @@ def user(request):
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
+    available_collections = users_collections_for_sp7(request.specify_user.id)
+    available_collections = _filter_collections_not_ready_for_config_task(available_collections)
     data['available_collections'] = [
         obj_to_data(c)
-        for c in users_collections_for_sp7(request.specify_user.id)
+        for c in available_collections
     ]
     data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
 
