@@ -346,12 +346,6 @@ msgstr "Sinkroniziraj"
 msgid "addTree"
 msgstr "Dodaj stablo"
 
-#. Used in: Components > Tree View > Tree
-#: components/TreeView/Tree.tsx:223
-#, fuzzy
-msgid "addRootNode"
-msgstr "Dodaj korijenski čvor"
-
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:292
 #: components/TreeView/index.tsx:294
@@ -446,26 +440,6 @@ msgstr "Vaskularne biljke"
 #, fuzzy
 msgid "vertpaleo"
 msgstr "Paleontologija kralježnjaka"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:414
-#: components/TreeView/defaults.ts:442
-#: components/TreeView/defaults.ts:470
-#: components/TreeView/defaults.ts:492
-#: components/TreeView/defaults.ts:516
-#: components/TreeView/defaults.ts:535
-#: components/TreeView/defaults.ts:560
-#: components/TreeView/defaults.ts:579
-#: components/TreeView/defaults.ts:600
-#: components/TreeView/defaults.ts:619
-#: components/TreeView/defaults.ts:646
-#: components/TreeView/defaults.ts:663
-#: components/TreeView/defaults.ts:672
-#: components/TreeView/defaults.ts:680
-#: components/TreeView/defaults.ts:701
-#, fuzzy
-msgid "defaultRemarks"
-msgstr "Zadano stablo taksona"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:700
