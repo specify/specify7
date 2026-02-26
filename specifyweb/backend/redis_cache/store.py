@@ -1,4 +1,4 @@
-from .utils import _set_string, _get_string, _delete_key, _add_to_set, _set_elements, _redis_type
+from .utils import _set_string, _get_string, _delete_key, _add_to_set, _remove_from_set, _set_elements, _redis_type
 
 
 def set_string(key: str, value: str, time_to_live=None, override_existing=True):
@@ -19,6 +19,11 @@ def get_bytes(key: str, delete_key=False) -> bytes:
 
 def add_to_set(key: str, *elements: str):
     return _add_to_set(key, *elements)
+
+
+def remove_from_set(key: str, *elements: str):
+    return _remove_from_set(key, *elements)
+
 
 def set_members(key: str):
     return _set_elements(key)

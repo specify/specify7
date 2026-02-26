@@ -5,6 +5,7 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
+from datetime import timedelta
 from typing import List
 
 from django.conf import settings
@@ -26,7 +27,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     PermissionTargetAction, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
-from specifyweb.specify.models import Collection, Collectionobject, Institution, \
+from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
@@ -37,6 +38,7 @@ from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
+from specifyweb.backend.setup_tool.api import get_config_progress, is_config_task_running
 
 
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -298,6 +300,8 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
+        if get_config_progress(collection.id).get('busy'):
+            return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
         return response
@@ -317,9 +321,11 @@ def user(request):
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
+    available_collections = users_collections_for_sp7(request.specify_user.id)
+    available_collections = _filter_collections_not_ready_for_config_task(available_collections)
     data['available_collections'] = [
         obj_to_data(c)
-        for c in users_collections_for_sp7(request.specify_user.id)
+        for c in available_collections
     ]
     data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
 
@@ -639,6 +645,65 @@ def remote_prefs(request):
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
 
+
+def _filter_collections_not_ready_for_config_task(collections):
+    if not is_config_task_running():
+        return collections
+
+    # If config tasks are running, filter out newly created collections.
+    fifteen_minutes_ago = timezone.now() - timedelta(minutes=15)
+    return [
+        c
+        for c in collections
+        if c.timestampcreated is None or c.timestampcreated <= fifteen_minutes_ago
+    ]
+
+
+def _build_system_data(*, filter_not_ready_collections: bool):
+    institution = Institution.objects.get()
+    divisions = list(Division.objects.all())
+    disciplines = list(Discipline.objects.all())
+    collections = list(Collection.objects.all())
+
+    if filter_not_ready_collections:
+        collections = _filter_collections_not_ready_for_config_task(collections)
+
+    discipline_map = {}
+    for discipline in disciplines:
+        discipline_map[discipline.id] = {
+            "id": discipline.id,
+            "name": discipline.name,
+            "children": [],
+            "geographytreedef": discipline.geographytreedef_id,
+            "taxontreedef": discipline.taxontreedef_id
+        }
+
+    for collection in collections:
+        if collection.discipline_id in discipline_map:
+            discipline_map[collection.discipline_id]["children"].append({
+                "id": collection.id,
+                "name": collection.collectionname
+            })
+
+    division_map = {}
+    for division in divisions:
+        division_map[division.id] = {
+            "id": division.id,
+            "name": division.name,
+            "children": []
+        }
+
+    for discipline in disciplines:
+        if discipline.division_id in division_map:
+            division_map[discipline.division_id]["children"].append(discipline_map[discipline.id])
+
+    return {
+        "id": institution.id,
+        "name": institution.name,
+        "children": list(division_map.values())
+    }
+
+
 @require_http_methods(['GET', 'HEAD'])
 @cache_control(max_age=86400, public=True)
 @skip_collection_access_check
@@ -663,9 +728,34 @@ def system_info(request):
         collection=collection and collection.collectionname,
         collection_guid=collection and collection.guid,
         isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type
+        discipline_type=discipline and discipline.type,
+        geography_is_global=institution.issinglegeographytree
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
+
+@require_http_methods(["GET"])
+@cache_control(max_age=86400, public=True)
+@skip_collection_access_check
+def all_system_data(request):
+    """
+    Returns all institutions, divisions, disciplines, and collections.
+    """
+    return JsonResponse(
+        _build_system_data(filter_not_ready_collections=True),
+        safe=False,
+    )
+
+@require_http_methods(["GET"])
+@cache_control(max_age=86400, public=True)
+@skip_collection_access_check
+def all_system_config_data(request):
+    """
+    Returns all institutions, divisions, disciplines, and collections.
+    """
+    return JsonResponse(
+        _build_system_data(filter_not_ready_collections=False),
+        safe=False,
+    )
 
 PATH_GROUP_RE = re.compile(r'\(\?P<([^>]+)>[^\)]*\)')
 PATH_GROUP_RE_EXTENDED = re.compile(r'<([^:]+):([^>]+)>')

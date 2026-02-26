@@ -109,10 +109,7 @@ export async function ajaxMock<RESPONSE_TYPE>(
     }
   })();
 
-  const parsedUrl = new URL(
-    url,
-    safeOrigin
-  );
+  const parsedUrl = new URL(url, safeOrigin);
   const urlWithoutQuery = `${parsedUrl.origin}${parsedUrl.pathname}`;
   const overwrittenData =
     overrides[url]?.[requestMethod] ??

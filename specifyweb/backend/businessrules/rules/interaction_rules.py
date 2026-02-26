@@ -47,7 +47,6 @@ def loanprep_quantity_must_be_lte_availability(ipreparation):
                  "quantityresolved": quantityresolved,
                  "available": available})
 
-
 @orm_signal_handler('pre_save', 'Giftpreparation')
 def giftprep_quantity_must_be_lte_availability(ipreparation):
     if ipreparation.preparation is not None:
