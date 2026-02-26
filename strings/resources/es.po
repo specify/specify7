@@ -15,7 +15,7 @@ msgstr ""
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:75
 #: components/Preferences/UserDefinitions.tsx:2131
-#: components/Router/Routes.tsx:251
+#: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 msgid "appResources"
@@ -84,7 +84,7 @@ msgid "subCategories"
 msgstr "Subcategorías"
 
 #: components/AppResources/Aside.tsx:331
-#: components/Router/Routes.tsx:259
+#: components/Router/Routes.tsx:267
 #. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 msgid "addResource"
 msgstr "Agregar recurso"

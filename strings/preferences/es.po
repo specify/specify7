@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.16-dev\n"
 
 #: components/Preferences/index.tsx:103
-#: components/Router/Routes.tsx:373
+#: components/Router/Routes.tsx:381
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
 msgstr "Preferencias"
@@ -1192,7 +1192,7 @@ msgstr ""
 #: components/AppResources/types.tsx:111
 #: components/Header/userToolDefinitions.ts:61
 #: components/Preferences/index.tsx:102
-#: components/Router/Routes.tsx:381
+#: components/Router/Routes.tsx:389
 #. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "collectionPreferences"

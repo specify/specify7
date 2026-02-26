@@ -128,13 +128,13 @@ msgstr "As alterações não salvas serão perdidas se você sair desta página.
 msgid "leave"
 msgstr "Deixar"
 
-#: components/Core/VersionMismatch.tsx:22
+#: components/Core/VersionMismatch.tsx:27
 #. Used in: Components > Core > Version Mismatch
 #, fuzzy
 msgid "versionMismatch"
 msgstr "A versão especificada não corresponde à versão do banco de dados."
 
-#: components/Core/VersionMismatch.tsx:26
+#: components/Core/VersionMismatch.tsx:31
 #. Used in: Components > Core > Version Mismatch
 #, fuzzy
 msgid "versionMismatchDescription"
@@ -142,7 +142,7 @@ msgstr ""
 "A versão especificada {specifySixVersion:string} não corresponde à versão "
 "do banco de dados {databaseVersion:string}."
 
-#: components/Core/VersionMismatch.tsx:31
+#: components/Core/VersionMismatch.tsx:36
 #. Used in: Components > Core > Version Mismatch
 #, fuzzy
 msgid "versionMismatchSecondDescription"
@@ -150,7 +150,7 @@ msgstr ""
 "Portanto, algumas funcionalidades do Specify 7 podem não funcionar "
 "corretamente."
 
-#: components/Core/VersionMismatch.tsx:34
+#: components/Core/VersionMismatch.tsx:39
 #. Used in: Components > Core > Version Mismatch
 #, fuzzy
 msgid "versionMismatchInstructions"

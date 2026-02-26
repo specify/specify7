@@ -3,8 +3,9 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:54
 #: components/Router/OverlayRoutes.tsx:79
+#: components/SetupTool/SetupForm.tsx:330
 #: components/Toolbar/TreeRepair.tsx:42
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
 msgid "trees"
 msgstr "Trees"
 
@@ -242,7 +243,7 @@ msgstr "Direct {collectionObjectTable:string} Count"
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect {collectionObjectTable:string} Count"
 
-#: components/TreeView/Tree.tsx:185
+#: components/TreeView/Tree.tsx:244
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Edit Ranks"
@@ -296,16 +297,11 @@ msgstr "Choose Parent Rank"
 msgid "moveItems"
 msgstr "Move Items"
 
-#: components/TreeView/CreateTree.tsx:64
-#: components/TreeView/CreateTree.tsx:77
+#: components/TreeView/CreateTree.tsx:140
+#: components/TreeView/CreateTree.tsx:153
 #. Used in: Components > Tree View > Create Tree
 msgid "addTree"
 msgstr "Add Tree"
-
-#: components/TreeView/Tree.tsx:223
-#. Used in: Components > Tree View > Tree
-msgid "addRootNode"
-msgstr "Add root node"
 
 #: components/TreeView/index.tsx:292
 #: components/TreeView/index.tsx:294
@@ -313,99 +309,162 @@ msgstr "Add root node"
 msgid "treePicker"
 msgstr "Tree Picker"
 
-#: components/TreeView/defaults.ts:413
+#: components/TreeView/defaults.ts:431
 #. Used in: Components > Tree View > Defaults
 msgid "botany"
 msgstr "Botany"
 
-#: components/TreeView/defaults.ts:441
+#: components/TreeView/defaults.ts:458
 #. Used in: Components > Tree View > Defaults
 msgid "entomology"
 msgstr "Entomology"
 
-#: components/TreeView/defaults.ts:469
+#: components/TreeView/defaults.ts:485
 #. Used in: Components > Tree View > Defaults
 msgid "herpetology"
 msgstr "Herpetology"
 
-#: components/TreeView/defaults.ts:491
+#: components/TreeView/defaults.ts:506
 #. Used in: Components > Tree View > Defaults
 msgid "ichthyology"
 msgstr "Ichthyology"
 
-#: components/TreeView/defaults.ts:515
+#: components/TreeView/defaults.ts:529
 #. Used in: Components > Tree View > Defaults
 msgid "invertpaleo"
 msgstr "Invertebrate Paleontology"
 
-#: components/TreeView/defaults.ts:534
+#: components/TreeView/defaults.ts:547
 #. Used in: Components > Tree View > Defaults
 msgid "invertzoo"
 msgstr "Invertebrate Zoology"
 
-#: components/TreeView/defaults.ts:559
+#: components/TreeView/defaults.ts:571
 #. Used in: Components > Tree View > Defaults
 msgid "mammalogy"
 msgstr "Mammalogy"
 
-#: components/TreeView/defaults.ts:578
+#: components/TreeView/defaults.ts:589
 #. Used in: Components > Tree View > Defaults
 msgid "ornithology"
 msgstr "Ornithology"
 
-#: components/TreeView/defaults.ts:599
+#: components/TreeView/defaults.ts:609
 #. Used in: Components > Tree View > Defaults
 msgid "paleobot"
 msgstr "Paleobotany"
 
-#: components/TreeView/defaults.ts:618
+#: components/TreeView/defaults.ts:627
 #. Used in: Components > Tree View > Defaults
 msgid "vascplant"
 msgstr "Vascular Plants"
 
-#: components/TreeView/defaults.ts:645
+#: components/TreeView/defaults.ts:653
 #. Used in: Components > Tree View > Defaults
 msgid "vertpaleo"
 msgstr "Vertebrate Paleontology"
 
-#: components/TreeView/defaults.ts:414
-#: components/TreeView/defaults.ts:442
-#: components/TreeView/defaults.ts:470
-#: components/TreeView/defaults.ts:492
-#: components/TreeView/defaults.ts:516
-#: components/TreeView/defaults.ts:535
-#: components/TreeView/defaults.ts:560
-#: components/TreeView/defaults.ts:579
-#: components/TreeView/defaults.ts:600
-#: components/TreeView/defaults.ts:619
-#: components/TreeView/defaults.ts:646
-#: components/TreeView/defaults.ts:663
-#: components/TreeView/defaults.ts:672
-#: components/TreeView/defaults.ts:680
-#: components/TreeView/defaults.ts:701
-#. Used in: Components > Tree View > Defaults
-msgid "defaultRemarks"
-msgstr "A default taxon tree"
-
-#: components/TreeView/defaults.ts:700
+#: components/TreeView/defaults.ts:704
 #. Used in: Components > Tree View > Defaults
 msgid "emptyTree"
 msgstr "Empty Tree"
 
-#: components/TreeView/defaults.ts:662
+#: components/TreeView/defaults.ts:669
 #. Used in: Components > Tree View > Defaults
 msgid "minerals"
 msgstr "Minerals"
 
-#: components/TreeView/defaults.ts:679
+#: components/TreeView/defaults.ts:684
 #. Used in: Components > Tree View > Defaults
 msgid "rocks"
 msgstr "Rocks"
 
-#: components/TreeView/defaults.ts:671
+#: components/TreeView/defaults.ts:677
 #. Used in: Components > Tree View > Defaults
 msgid "meteorites"
 msgstr "Meteorites"
+
+#: components/TreeView/CreateTree.tsx:420
+#. Used in: Components > Tree View > Create Tree
+msgid "emptyTrees"
+msgstr "Empty Trees"
+
+#: components/TreeView/CreateTree.tsx:462
+#. Used in: Components > Tree View > Create Tree
+msgid "populatedTrees"
+msgstr "Populated Trees"
+
+#: components/TreeView/CreateTree.tsx:589
+#. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationStarted"
+msgstr "Default Tree Creation Started"
+
+#: components/TreeView/CreateTree.tsx:601
+#. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationStartedDescription"
+msgstr ""
+"The tree will be created in the background. You will be notified once it is "
+"completed."
+
+#: components/Notifications/NotificationRenderers.tsx:367
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskStarted"
+msgstr "The default tree creation process has started."
+
+#: components/Notifications/NotificationRenderers.tsx:375
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskFailed"
+msgstr "Default tree creation failed."
+
+#: components/Notifications/NotificationRenderers.tsx:383
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskCancelled"
+msgstr "Default tree creation was cancelled."
+
+#: components/Notifications/NotificationRenderers.tsx:391
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskCompleted"
+msgstr "Default tree creation completed successfully."
+
+#: components/TreeView/CreateTree.tsx:595
+#. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationProgress"
+msgstr "Creating tree record {current:number|formatted}/{total:number|formatted}"
+
+#: components/TreeView/Tree.tsx:281
+#. Used in: Components > Tree View > Tree
+msgid "defaultTreeCreationLoadingMessage"
+msgstr "Default tree creation is in progress, please wait..."
+
+#: components/TreeView/CreateTree.tsx:504
+#. Used in: Components > Tree View > Create Tree
+msgid "missingRanks"
+msgstr "Missing Ranks"
+
+#: components/TreeView/CreateTree.tsx:508
+#. Used in: Components > Tree View > Create Tree
+msgid "missingRanksDescription"
+msgstr ""
+"The populated tree you selected to download contains records in ranks that "
+"are missing from your tree."
+
+#: components/TreeView/CreateTree.tsx:516
+#. Used in: Components > Tree View > Create Tree
+msgid "createMissingRanks"
+msgstr "Should the missing ranks be created?"
+
+#: components/SetupTool/SetupForm.tsx:320
+#: components/TreeView/CreateTree.tsx:474
+#. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
+msgid "source"
+msgstr "Source"
+
+#: components/TreeView/Tree.tsx:288
+#: components/TreeView/Tree.tsx:290
+#: components/TreeView/Tree.tsx:294
+#. Used in: Components > Tree View > Tree
+msgid "initializeEmptyTree"
+msgstr "Initialize an empty tree"
 
 #: components/Preferences/CollectionDefinitions.tsx:62
 #. Used in: Components > Preferences > Collection Definitions

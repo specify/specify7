@@ -546,7 +546,7 @@ msgstr "Замінити всі збіги"
 msgid "replaceNext"
 msgstr "Замінити наступне входження"
 
-#: components/Router/Routes.tsx:207
+#: components/Router/Routes.tsx:215
 #. Used in: Components > Router > Routes
 msgid "importDataSet"
 msgstr "Імпорт набору даних"

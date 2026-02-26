@@ -16,7 +16,7 @@ msgstr ""
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
-#: components/Login/index.tsx:188
+#: components/Login/index.tsx:199
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
@@ -24,12 +24,12 @@ msgstr ""
 msgid "logIn"
 msgstr "Увійти"
 
-#: components/Login/index.tsx:164
+#: components/Login/index.tsx:175
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Ім'я користувача"
 
-#: components/Login/index.tsx:176
+#: components/Login/index.tsx:187
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -94,7 +94,7 @@ msgid "noAgentDescription"
 msgstr "Будь ласка, увійдіть як адміністратор і призначте агента цьому користувачеві"
 
 #: components/Login/OicLogin.tsx:46
-#: components/Login/index.tsx:149
+#: components/Login/index.tsx:160
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Привіт, {userName:string}!"
@@ -112,7 +112,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Увійти за допомогою Вказати обліковий запис"
 
-#: components/Login/index.tsx:151
+#: components/Login/index.tsx:162
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
@@ -121,7 +121,7 @@ msgstr ""
 "«Вказати», ви можете ввести їх нижче, щоб пов’язати цього користувача з "
 "вашим обліковим записом {providerName:string} для майбутніх входів."
 
-#: components/Header/userToolDefinitions.ts:99
+#: components/Header/userToolDefinitions.ts:110
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -285,7 +285,9 @@ msgstr "Встановити пароль"
 
 #: components/Security/SetPassword.tsx:29
 #: components/Security/SetPassword.tsx:50
-#. Used in: Components > Security > Set Password
+#: components/SetupTool/SetupForm.tsx:250
+#: components/SetupTool/SetupForm.tsx:273
+#. Used in: Components > Security > Set Password ⬤ Components > Setup Tool > Setup Form
 msgid "passwordsDoNotMatchError"
 msgstr "Паролі не збігаються."
 
@@ -306,6 +308,7 @@ msgstr "Виберіть доступ до колекції користувач
 
 #: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
+#: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
@@ -609,3 +612,13 @@ msgstr "Додати роль"
 #. Used in: Components > Security > Collection
 msgid "addUser"
 msgstr "Додати користувача"
+
+#: components/SystemConfigurationTool/SystemConfigTool.tsx:69
+#. Used in: Components > System Configuration Tool > System Config Tool
+msgid "systemConfigurationTool"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:90
+#. Used in: Components > Header > User Tool Definitions
+msgid "systemConfig"
+msgstr ""

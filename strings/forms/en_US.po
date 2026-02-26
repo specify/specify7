@@ -34,7 +34,8 @@ msgid "valueMustBeUniqueToField"
 msgstr "Value must be unique to {fieldName:string}"
 
 #: components/DataModel/uniquenessRules.ts:146
-#. Used in: Components > Data Model > Uniqueness Rules
+#: components/SetupTool/SetupForm.tsx:373
+#. Used in: Components > Data Model > Uniqueness Rules ⬤ Components > Setup Tool > Setup Form
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Value must be unique to database"
 
@@ -174,8 +175,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Only numeric values are supported in this {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:116
-#: components/FormCells/FormTable.tsx:276
-#: components/FormCells/FormTable.tsx:610
+#: components/FormCells/FormTable.tsx:284
+#: components/FormCells/FormTable.tsx:618
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
@@ -440,12 +441,14 @@ msgid "createNewRecordSet"
 msgstr "Create a new record set"
 
 #: components/PickLists/definitions.ts:154
-#. Used in: Components > Pick Lists > Definitions
+#: components/SetupTool/setupResources.ts:97
+#. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 msgid "forward"
 msgstr "Forward"
 
 #: components/PickLists/definitions.ts:153
-#. Used in: Components > Pick Lists > Definitions
+#: components/SetupTool/setupResources.ts:98
+#. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 msgid "reverse"
 msgstr "Reverse"
 

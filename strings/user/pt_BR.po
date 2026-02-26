@@ -15,7 +15,7 @@ msgstr ""
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
-#: components/Login/index.tsx:188
+#: components/Login/index.tsx:199
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
@@ -24,13 +24,13 @@ msgstr ""
 msgid "logIn"
 msgstr "Conecte-se"
 
-#: components/Login/index.tsx:164
+#: components/Login/index.tsx:175
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "username"
 msgstr "Nome de usuário"
 
-#: components/Login/index.tsx:176
+#: components/Login/index.tsx:187
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 #, fuzzy
@@ -106,7 +106,7 @@ msgid "noAgentDescription"
 msgstr "Faça login como administrador e atribua um agente a este usuário."
 
 #: components/Login/OicLogin.tsx:46
-#: components/Login/index.tsx:149
+#: components/Login/index.tsx:160
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #, fuzzy
 msgid "helloMessage"
@@ -127,7 +127,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Faça login com a conta especificada."
 
-#: components/Login/index.tsx:151
+#: components/Login/index.tsx:162
 #. Used in: Components > Login > Index
 #, fuzzy
 msgid "unknownOicUser"
@@ -137,7 +137,7 @@ msgstr ""
 "\"Especifique\", poderá inseri-los abaixo para associar esse usuário à sua "
 "conta {providerName:string} para logins futuros."
 
-#: components/Header/userToolDefinitions.ts:99
+#: components/Header/userToolDefinitions.ts:110
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -331,7 +331,9 @@ msgstr "Definir senha"
 
 #: components/Security/SetPassword.tsx:29
 #: components/Security/SetPassword.tsx:50
-#. Used in: Components > Security > Set Password
+#: components/SetupTool/SetupForm.tsx:250
+#: components/SetupTool/SetupForm.tsx:273
+#. Used in: Components > Security > Set Password ⬤ Components > Setup Tool > Setup Form
 #, fuzzy
 msgid "passwordsDoNotMatchError"
 msgstr "As senhas não coincidem."
@@ -356,6 +358,7 @@ msgstr "Selecione o acesso à coleção de usuários"
 
 #: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
+#: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #, fuzzy
@@ -719,3 +722,13 @@ msgstr "Adicionar função"
 #, fuzzy
 msgid "addUser"
 msgstr "Adicionar usuário"
+
+#: components/SystemConfigurationTool/SystemConfigTool.tsx:69
+#. Used in: Components > System Configuration Tool > System Config Tool
+msgid "systemConfigurationTool"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:90
+#. Used in: Components > Header > User Tool Definitions
+msgid "systemConfig"
+msgstr ""

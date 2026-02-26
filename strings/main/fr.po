@@ -116,26 +116,26 @@ msgstr ""
 msgid "leave"
 msgstr "Quitter"
 
-#: components/Core/VersionMismatch.tsx:22
+#: components/Core/VersionMismatch.tsx:27
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatch"
 msgstr "La version de Specify ne correspond pas à la version de la base de données"
 
-#: components/Core/VersionMismatch.tsx:26
+#: components/Core/VersionMismatch.tsx:31
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchDescription"
 msgstr ""
 "La version {specifySixVersion:string} de Specify ne correspond pas à la "
 "version {databaseVersion:string} de la base de données."
 
-#: components/Core/VersionMismatch.tsx:31
+#: components/Core/VersionMismatch.tsx:36
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchSecondDescription"
 msgstr ""
 "Certaines fonctionnalités de Specify 7 peuvent donc ne pas fonctionner "
 "correctement."
 
-#: components/Core/VersionMismatch.tsx:34
+#: components/Core/VersionMismatch.tsx:39
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Instructions pour résoudre l'incompatibilité de schéma de Specify"

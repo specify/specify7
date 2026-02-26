@@ -12,8 +12,8 @@ msgstr "Content-Type: text/plain\n"
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
 #: components/Preferences/UserDefinitions.tsx:1434
-#: components/Router/Routes.tsx:182
-#: components/Router/Routes.tsx:485
+#: components/Router/Routes.tsx:190
+#: components/Router/Routes.tsx:493
 #: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:131
 #: components/WbImportAttachments/index.tsx:188
@@ -307,7 +307,7 @@ msgid "stoppedByUser"
 msgstr "Stopped By User"
 
 #: components/Router/OverlayRoutes.tsx:237
-#: components/Router/Routes.tsx:213
+#: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:219
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index

@@ -12,12 +12,12 @@ msgstr ""
 "X-Generator: Weblate 5.3\n"
 
 #: components/HomePage/index.tsx:65
-#: components/Router/Routes.tsx:480
+#: components/Router/Routes.tsx:488
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Bienvenida"
 
-#: components/Header/userToolDefinitions.ts:134
+#: components/Header/userToolDefinitions.ts:145
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:206
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
@@ -105,28 +105,22 @@ msgstr "Versión de Specify 6:"
 msgid "databaseVersion"
 msgstr "Versión de la Base de Datos:"
 
-#: components/HomePage/AboutSpecify.tsx:108
-#: components/SchemaViewer/index.tsx:47
-#. Used in: Components > Home Page > About Specify ⬤ Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 msgid "schemaVersion"
 msgstr "Versión del Esquema de base de datos"
 
-#: components/HomePage/AboutSpecify.tsx:113
+#: components/HomePage/AboutSpecify.tsx:107
 #. Used in: Components > Home Page > About Specify
 msgid "databaseName"
 msgstr "Nombre de la Base de Datos:"
 
-#: components/HomePage/AboutSpecify.tsx:135
-#. 🟥I believe ISA stands for Institution Service Agreement. Used in: Components > Home Page > About Specify
-msgid "isaNumber"
-msgstr "Número ISA:"
-
-#: components/HomePage/AboutSpecify.tsx:138
+#: components/HomePage/AboutSpecify.tsx:128
 #. Used in: Components > Home Page > About Specify
 msgid "browser"
 msgstr "Navegador:"
 
-#: components/HomePage/AboutSpecify.tsx:117
+#: components/HomePage/AboutSpecify.tsx:111
 #. Used in: Components > Home Page > About Specify
 msgid "databaseCreationDate"
 msgstr "Fecha de creación de la base de datos:"

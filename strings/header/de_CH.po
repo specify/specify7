@@ -35,13 +35,13 @@ msgstr "Derzeitige {collectionTable:string}"
 msgid "dataEntry"
 msgstr "Datenerfassung"
 
-#: components/Header/userToolDefinitions.ts:112
+#: components/Header/userToolDefinitions.ts:123
 #: components/Router/OverlayRoutes.tsx:190
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "makeDwca"
 msgstr "DwC-Archiv erstellen"
 
-#: components/Header/userToolDefinitions.ts:104
+#: components/Header/userToolDefinitions.ts:115
 #: components/Router/OverlayRoutes.tsx:182
 #: components/Router/OverlayRoutes.tsx:262
 #: components/Toolbar/BackupDatabase.tsx:84
@@ -50,7 +50,7 @@ msgstr "DwC-Archiv erstellen"
 msgid "backupDatabase"
 msgstr "Datenbank sichern"
 
-#: components/Header/userToolDefinitions.ts:118
+#: components/Header/userToolDefinitions.ts:129
 #: components/Router/OverlayRoutes.tsx:198
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "updateExportFeed"
@@ -90,7 +90,7 @@ msgstr ""
 "Export gestartet. Sie erhalten eine Benachrichtigung, sobald der Export "
 "abgeschlossen ist."
 
-#: components/Header/userToolDefinitions.ts:126
+#: components/Header/userToolDefinitions.ts:137
 #: components/LocalityUpdate/index.tsx:83
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #, fuzzy
@@ -117,7 +117,7 @@ msgstr "Neues Label erstellen"
 msgid "createReport"
 msgstr "Neuen Bericht erstellen"
 
-#: components/Header/userToolDefinitions.ts:90
+#: components/Header/userToolDefinitions.ts:101
 #: components/Router/OverlayRoutes.tsx:166
 #: components/Toolbar/TreeRepair.tsx:173
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
@@ -229,12 +229,12 @@ msgstr ""
 "Vervollständigung der Übersetzung zu helfen, <link>befolgen Sie bitte die "
 "Anweisungen.</link>"
 
-#: components/Header/userToolDefinitions.ts:161
+#: components/Header/userToolDefinitions.ts:172
 #. Used in: Components > Header > User Tool Definitions
 msgid "tableApi"
 msgstr "Tabellen-API"
 
-#: components/Header/userToolDefinitions.ts:166
+#: components/Header/userToolDefinitions.ts:177
 #. Used in: Components > Header > User Tool Definitions
 msgid "operationsApi"
 msgstr "Operations-API"
@@ -243,12 +243,13 @@ msgstr "Operations-API"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
-#: components/Header/userToolDefinitions.ts:132
+#: components/Header/userToolDefinitions.ts:143
 #: components/Preferences/UserDefinitions.tsx:631
 #: components/Preferences/index.tsx:65
 #: components/Preferences/index.tsx:71
+#: components/SetupTool/index.tsx:280
 #: components/Toolbar/WbsDialog.tsx:227
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Toolbar > Wbs Dialog
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"
 msgstr "Dokumentation"
 
@@ -257,19 +258,19 @@ msgstr "Dokumentation"
 msgid "administration"
 msgstr "Administrative Werkzeuge"
 
-#: components/Header/userToolDefinitions.ts:149
+#: components/Header/userToolDefinitions.ts:160
 #. Used in: Components > Header > User Tool Definitions
 msgid "developers"
 msgstr "Ressourcen für Entwickler"
 
-#: components/Header/userToolDefinitions.ts:139
+#: components/Header/userToolDefinitions.ts:150
 #. Used in: Components > Header > User Tool Definitions
 msgid "forum"
 msgstr "Community-Forum"
 
 #: components/Errors/ErrorDialog.tsx:152
-#: components/Header/userToolDefinitions.ts:156
-#: components/Router/Routes.tsx:451
+#: components/Header/userToolDefinitions.ts:167
+#: components/Router/Routes.tsx:459
 #: components/RouterCommands/CacheBuster.tsx:39
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 msgid "clearCache"
@@ -280,7 +281,7 @@ msgstr "Browser-Cache leeren"
 msgid "cacheCleared"
 msgstr "Der Cache wurde geleert. Bitte laden Sie die Seite neu."
 
-#: components/Header/userToolDefinitions.ts:144
+#: components/Header/userToolDefinitions.ts:155
 #. Used in: Components > Header > User Tool Definitions
 msgid "technicalDocumentation"
 msgstr "Dokumentation"

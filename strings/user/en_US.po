@@ -5,7 +5,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:48
 #: components/Login/OicLogin.tsx:84
-#: components/Login/index.tsx:188
+#: components/Login/index.tsx:199
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
@@ -13,12 +13,12 @@ msgstr "Content-Type: text/plain\n"
 msgid "logIn"
 msgstr "Log In"
 
-#: components/Login/index.tsx:164
+#: components/Login/index.tsx:175
 #. Used in: Components > Login > Index
 msgid "username"
 msgstr "Username"
 
-#: components/Login/index.tsx:176
+#: components/Login/index.tsx:187
 #: components/Security/SetPassword.tsx:54
 #. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
@@ -83,7 +83,7 @@ msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"
 
 #: components/Login/OicLogin.tsx:46
-#: components/Login/index.tsx:149
+#: components/Login/index.tsx:160
 #. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Hello, {userName:string}!"
@@ -101,7 +101,7 @@ msgstr ""
 msgid "legacyLogin"
 msgstr "Sign in with Specify Account"
 
-#: components/Login/index.tsx:151
+#: components/Login/index.tsx:162
 #. Used in: Components > Login > Index
 msgid "unknownOicUser"
 msgstr ""
@@ -110,7 +110,7 @@ msgstr ""
 "password, you can enter them below to associate that user with your "
 "{providerName:string} account for future logins."
 
-#: components/Header/userToolDefinitions.ts:99
+#: components/Header/userToolDefinitions.ts:110
 #: components/Router/OverlayRoutes.tsx:174
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
@@ -276,7 +276,9 @@ msgstr "Set Password"
 
 #: components/Security/SetPassword.tsx:29
 #: components/Security/SetPassword.tsx:50
-#. Used in: Components > Security > Set Password
+#: components/SetupTool/SetupForm.tsx:250
+#: components/SetupTool/SetupForm.tsx:273
+#. Used in: Components > Security > Set Password ⬤ Components > Setup Tool > Setup Form
 msgid "passwordsDoNotMatchError"
 msgstr "Passwords do not match."
 
@@ -297,6 +299,7 @@ msgstr "Select user collection access"
 
 #: components/Header/userToolDefinitions.ts:85
 #: components/Router/Routes.tsx:73
+#: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
@@ -598,3 +601,13 @@ msgstr "Add Role"
 #. Used in: Components > Security > Collection
 msgid "addUser"
 msgstr "Add User"
+
+#: components/SystemConfigurationTool/SystemConfigTool.tsx:69
+#. Used in: Components > System Configuration Tool > System Config Tool
+msgid "systemConfigurationTool"
+msgstr "System Configuration Tool"
+
+#: components/Header/userToolDefinitions.ts:90
+#. Used in: Components > Header > User Tool Definitions
+msgid "systemConfig"
+msgstr "System Config"

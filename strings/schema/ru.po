@@ -24,7 +24,7 @@ msgstr "Стол"
 
 #: components/Attachments/index.tsx:195
 #: components/FormEditor/Table.tsx:49
-#: components/Router/Routes.tsx:415
+#: components/Router/Routes.tsx:423
 #: components/SchemaConfig/Tables.tsx:49
 #. Used in: Components > Attachments > Index ⬤ Components > Form Editor > Table ⬤ Components > Router > Routes ⬤ Components > Schema Config > Tables
 #, fuzzy
@@ -46,7 +46,7 @@ msgstr "Без стола"
 
 #: components/Header/userToolDefinitions.ts:68
 #: components/Preferences/UserDefinitions.tsx:834
-#: components/Router/Routes.tsx:389
+#: components/Router/Routes.tsx:397
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
 #: components/Security/registry.ts:206
@@ -235,7 +235,7 @@ msgstr "Веб-ссылка"
 msgid "userDefined"
 msgstr "Определяется пользователем"
 
-#: components/Router/Routes.tsx:404
+#: components/Router/Routes.tsx:412
 #: components/SchemaConfig/Languages.tsx:29
 #: components/SchemaConfig/Languages.tsx:78
 #. Used in: Components > Router > Routes ⬤ Components > Schema Config > Languages
@@ -279,19 +279,13 @@ msgstr "Зависимый"
 msgid "independent"
 msgstr "Независимый"
 
-#: components/SchemaViewer/index.tsx:57
+#: components/SchemaViewer/index.tsx:52
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsJson"
 msgstr "Скачать в формате JSON"
 
-#: components/SchemaViewer/index.tsx:64
-#. Used in: Components > Schema Viewer > Index
-#, fuzzy
-msgid "downloadAsXml"
-msgstr "Скачать в формате XML"
-
-#: components/SchemaViewer/index.tsx:77
+#: components/SchemaViewer/index.tsx:65
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "downloadAsTsv"
@@ -316,7 +310,7 @@ msgstr "Количество полей"
 msgid "relationshipCount"
 msgstr "Количество отношений"
 
-#: components/Header/userToolDefinitions.ts:151
+#: components/Header/userToolDefinitions.ts:162
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
@@ -413,7 +407,7 @@ msgstr "Количество дубликатов"
 msgid "schemaViewTitle"
 msgstr "Конфигурация схемы: {tableName:string}"
 
-#: components/SchemaViewer/index.tsx:70
+#: components/SchemaViewer/index.tsx:58
 #. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "schemaExportFileName"
