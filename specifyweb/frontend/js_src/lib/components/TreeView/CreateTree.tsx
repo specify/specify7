@@ -173,7 +173,6 @@ export function CreateTree<
                   setIsTreeCreationStarted(false);
                   setTreeCreationTaskId(undefined);
                   setIsActive(0);
-                  globalThis.location.reload();
                 }}
                 onStopped={() => {
                   setIsTreeCreationStarted(false);
@@ -354,6 +353,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
                   setIsTreeCreationStarted(false);
                   setTreeCreationTaskId(undefined);
                   setIsActive(0);
+                  globalThis.location.reload();
                 }}
                 onStopped={() => {
                   setIsTreeCreationStarted(false);
