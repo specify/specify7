@@ -13,17 +13,11 @@ from specifyweb.specify.management.commands.run_key_migration_functions import f
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 from specifyweb.backend.redis_cache.store import set_string, get_string
+from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
 
 from uuid import uuid4
 import logging
 logger = logging.getLogger(__name__)
-
-# Keep track of the currently running setup task. There should only ever be one.
-# Also defined separately in setup_tool/apps.py
-ACTIVE_TASK_REDIS_KEY = "specify:setup:active_task_id"
-ACTIVE_TASK_TTL = 60*60*2 # setup should be less than 2 hours
-# Keep track of last error.
-LAST_ERROR_REDIS_KEY = "specify:setup:last_error"
 
 def setup_database_background(data: dict) -> str:
     # Clear any previous error logs.

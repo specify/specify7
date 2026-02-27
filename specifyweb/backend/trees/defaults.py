@@ -6,6 +6,7 @@ import time
 from requests.exceptions import ChunkedEncodingError, ConnectionError
 
 from django.db import transaction
+from django.conf import settings
 
 from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
@@ -13,12 +14,10 @@ import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.redis_cache.store import add_to_set, remove_from_set, set_members
+from specifyweb.backend.trees.redis import ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY
 
 import logging
 logger = logging.getLogger(__name__)
-
-# Also defined separately in trees/apps.py
-ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY = "specify:trees:active_tree_creation"
 
 class RankConfiguration(TypedDict):
     name: str
