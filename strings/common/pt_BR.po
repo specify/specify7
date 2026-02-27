@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-02-27 15:09+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Caroline Denis <caroline.denis@specifysoftware.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/common/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -1134,9 +1134,8 @@ msgstr "Selecione os arquivos ou arraste-os aqui"
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:49
 #: components/Attachments/Viewer.tsx:352
-#, fuzzy
 msgid "zoom"
-msgstr "Ampliar"
+msgstr "Aumentar zoom"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:54
