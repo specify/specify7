@@ -314,18 +314,23 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
             parent_id = None
             parent = buffered
         else:
+            # Add new node to buffer
             data = {
                 'name': record_name,
                 'fullname': record_name,
                 'definition': tree_def,
                 'definitionitem': tree_def_item,
                 'rankid': tree_def_item.rankid,
-                **defaults
             }
+            if hasattr(tree_node_model, 'isaccepted'):
+                data['isaccepted'] = True
+            data.update(defaults)
+            
             if parent is not None:
                 data['parent'] = parent
             elif parent_id is not None:
                 data['parent_id'] = parent_id
+
             obj = tree_node_model(**data)
             obj = context.add_node_to_buffer(obj, tree_def_item.rankid, row_id)
 
