@@ -462,11 +462,15 @@ def create_tree(name: str, data: dict) -> dict:
 
         treedef = start_default_tree_from_configuration(name, kwargs, ranks)
 
-        # Set as the primary tree in the discipline if its the first one
+        # Set as the primary tree in the institution/discipline if its the first one
+        tree_field_name = f'{name.lower()}treedef_id'
+        if use_institution and institution:
+            if getattr(institution, tree_field_name) is None:
+                setattr(institution, tree_field_name, treedef.id)
+                institution.save()
         if use_discipline and discipline:
-            field_name = f'{name.lower()}treedef_id'
-            if getattr(discipline, field_name) is None:
-                setattr(discipline, field_name, treedef.id)
+            if getattr(discipline, tree_field_name) is None:
+                setattr(discipline, tree_field_name, treedef.id)
                 discipline.save()
 
         # Optionally preload tree
