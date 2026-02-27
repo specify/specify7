@@ -1,5 +1,4 @@
 from django.apps import AppConfig
-from django.conf import settings
 from specifyweb.backend.redis_cache.store import get_string
 import logging
 logger = logging.getLogger(__name__)
@@ -12,8 +11,7 @@ class SetupToolConfig(AppConfig):
         from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY
         try:
             # Clear potential setup task id leftover from a crash
-            db_name = getattr(settings, "DATABASE_NAME")
-            task_id = get_string(ACTIVE_TASK_REDIS_KEY.format(database=db_name), delete_key=True)
+            task_id = get_string(ACTIVE_TASK_REDIS_KEY, delete_key=True)
             if task_id is not None:
                 logger.debug(f'Clearing last active setup task: {task_id}')
         except Exception:

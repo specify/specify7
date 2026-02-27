@@ -334,21 +334,18 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 
 def queue_create_default_tree_task(task_id):
     """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
-    db_name = getattr(settings, "DATABASE_NAME")
-    add_to_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY.format(database=db_name), task_id)
-    logger.debug(f"Queued task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY.format(database=db_name))}")
+    add_to_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
+    logger.debug(f"Queued task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
 
 def get_active_create_default_tree_tasks() -> list[str]:
-    db_name = getattr(settings, "DATABASE_NAME")
-    tasks = set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY.format(database=db_name))
+    tasks = set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
     logger.debug(f"Active tree creation tasks: {tasks}")
     return list(tasks)
 
 def finish_create_default_tree_task(task_id):
     """Clear a finished tree creation task from redis cache."""
-    db_name = getattr(settings, "DATABASE_NAME")
-    remove_from_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY.format(database=db_name), task_id)
-    logger.debug(f"Finished task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY.format(database=db_name))}")
+    remove_from_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
+    logger.debug(f"Finished task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str, specify_collection_id: Optional[int],
