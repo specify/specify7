@@ -90,7 +90,7 @@ msgstr "Non"
 #: components/TreeView/Actions.tsx:419
 #: components/TreeView/AddRank.tsx:54
 #: components/TreeView/CreateTree.tsx:150
-#: components/TreeView/CreateTree.tsx:337
+#: components/TreeView/CreateTree.tsx:336
 #: components/TreeView/CreateTree.tsx:582
 #: components/WbActions/WbRevert.tsx:39
 #: components/WbActions/WbRollback.tsx:62
@@ -878,8 +878,8 @@ msgstr "Exporter"
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:151
-#: components/TreeView/CreateTree.tsx:311
-#: components/TreeView/CreateTree.tsx:339
+#: components/TreeView/CreateTree.tsx:310
+#: components/TreeView/CreateTree.tsx:338
 #. Used in: Components > Attachments > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Tree View > Create Tree
 #, fuzzy
 msgid "import"
