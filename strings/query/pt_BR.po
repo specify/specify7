@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-02-27 15:09+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-02-27 15:10+0000\n"
+"Last-Translator: Caroline Denis <caroline.denis@specifysoftware.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/query/pt_BR/>\n"
 "Language: pt_BR\n"
@@ -104,9 +104,8 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
-#, fuzzy
 msgid "queryDeleteIncomplete"
-msgstr "A definição da consulta contém campos incompletos."
+msgstr "A definição da consulta contém campos incompletos"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:173
@@ -116,9 +115,8 @@ msgstr "Existem campos incompletos na definição da consulta. Deseja removê-lo
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:186
-#, fuzzy
 msgid "queryUnloadProtect"
-msgstr "A definição de consulta nova ou modificada não foi salva."
+msgstr "A definição de consulta nova ou modificada não foi salva"
 
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:267
@@ -141,9 +139,8 @@ msgstr "{recordSetTable:string} Criado"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:153
-#, fuzzy
 msgid "missingCoordinatesForKml"
-msgstr "Não foi possível exportar para KML."
+msgstr "Não foi possível exportar para KML"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:156
@@ -324,11 +321,10 @@ msgstr "Como"
 
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:432
-#, fuzzy
 msgid "likeDescription"
 msgstr ""
 "Use \"%\" para corresponder a qualquer número de caracteres.\n"
-"Use \"_\" para corresponder a um único caractere."
+"Use \"_\" para corresponder a um único caractere"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:439
@@ -478,15 +474,13 @@ msgstr "Exportar consulta para definição de DwCA"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
-#, fuzzy
 msgid "exportQueryAsReport"
-msgstr "Defina o relatório com base na consulta."
+msgstr "Defina o relatório com base na consulta"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
-#, fuzzy
 msgid "exportQueryAsLabel"
-msgstr "Defina o rótulo com base na consulta."
+msgstr "Defina o rótulo com base na consulta"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
@@ -671,24 +665,20 @@ msgstr "Formatar como: {commaSeparatedFormats:string}"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:209
-#, fuzzy
 msgid "unsavedChangesInQuery"
-msgstr "A consulta contém alterações não salvas."
+msgstr "A consulta contém alterações não salvas"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:212
-#, fuzzy
 msgid "unsavedChangesInQueryDescription"
-msgstr "Salve a consulta antes de executar a edição em lote."
+msgstr "Salve a consulta antes de executar a edição em lote"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:173
-#, fuzzy
 msgid "noPreparationsToReturn"
-msgstr "Não há itens pendentes para devolver."
+msgstr "Não há itens pendentes para devolver"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
-#, fuzzy
 msgid "itemsReturned"
-msgstr "Os itens foram devolvidos."
+msgstr "Os itens foram devolvidos"
