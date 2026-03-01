@@ -5,8 +5,8 @@ import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { localized } from '../../utils/types';
 import type { RA } from '../../utils/types';
+import { localized } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -59,7 +59,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: CatalogToken[] = [];
+  const tokens: readonly CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -85,7 +85,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: Array<readonly [number, number]> = [];
+    const ranges: readonly (readonly [number, number])[] = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -207,7 +207,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: number[] = [];
+  const collectionObjectIds: readonly number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
@@ -367,7 +367,7 @@ function BatchIdentifyDialog({
       if (!(target instanceof Element)) return;
       const link = target.closest(
         'a.print\\:hidden[target="_blank"]'
-      ) as HTMLAnchorElement | null;
+      ) ;
       if (link === null) return;
       const match = collectionObjectViewPathRe.exec(link.href);
       if (match === null) return;
