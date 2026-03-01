@@ -10,15 +10,6 @@ export const batchIdentifyText = createDictionary({
   batchIdentify: {
     'en-us': 'Batch Identify',
   },
-  catalogNumbers: {
-    'en-us': 'Catalog Numbers',
-  },
-  recordSet: {
-    'en-us': 'Record Set',
-  },
-  collectionObjects: {
-    'en-us': 'Collection Objects',
-  },
   instructions: {
     'en-us':
       'Enter catalog numbers using any non-numeric delimiters (commas, spaces, text prefixes, etc.). Use a dash to declare numeric ranges like 0001 - 0150.',

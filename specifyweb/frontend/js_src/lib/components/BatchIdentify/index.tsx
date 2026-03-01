@@ -14,6 +14,7 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
@@ -268,6 +269,12 @@ function BatchIdentifyDialog({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const { validationRef, setValidation } = useValidation<HTMLTextAreaElement>();
+  const catalogNumberLabel = getField(
+    tables.CollectionObject,
+    'catalogNumber'
+  ).label;
+  const collectionObjectLabel = tables.CollectionObject.label;
+  const recordSetLabel = tables.RecordSet.label;
 
   const [step, setStep] = React.useState<Step>('catalogNumbers');
   const [catalogNumbers, setCatalogNumbers] = React.useState('');
@@ -638,7 +645,7 @@ function BatchIdentifyDialog({
                 disabled={isResolving || isLiveValidating}
                 onClick={(): void => setIsRecordSetDialogOpen(true)}
               >
-                {batchIdentifyText.recordSet()}
+                {recordSetLabel}
               </Button.Secondary>
               <Button.Info
                 disabled={
@@ -677,10 +684,10 @@ function BatchIdentifyDialog({
         {step === 'catalogNumbers' ? (
           <div className="flex flex-col gap-2">
             <p>{batchIdentifyText.instructions()}</p>
-            <p className="font-semibold">{batchIdentifyText.catalogNumbers()}</p>
+            <p className="font-semibold">{catalogNumberLabel}</p>
             <p>
               {commonText.countLine({
-                resource: batchIdentifyText.catalogNumbers(),
+                resource: catalogNumberLabel,
                 count: catalogNumberRanges.length,
               })}
             </p>
@@ -713,13 +720,13 @@ function BatchIdentifyDialog({
           <div className="flex h-full min-h-0 flex-col gap-2">
             <p>
               {commonText.countLine({
-                resource: batchIdentifyText.catalogNumbers(),
+                resource: catalogNumberLabel,
                 count: catalogNumberRanges.length,
               })}
             </p>
             <p>
               {commonText.countLine({
-                resource: batchIdentifyText.collectionObjects(),
+                resource: collectionObjectLabel,
                 count: collectionObjectIds.length,
               })}
             </p>
