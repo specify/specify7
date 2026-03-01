@@ -1,3 +1,4 @@
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
@@ -138,6 +139,16 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       enabled: () => userInformation.isadmin,
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
+    },
+  },
+  [commonText.tools()]: {
+    batchIdentify: {
+      title: batchIdentifyText.batchIdentify(),
+      url: '/specify/overlay/batch-identify/',
+      icon: icons.batchEdit,
+      enabled: () =>
+        hasTablePermission('CollectionObject', 'read') &&
+        hasTablePermission('Determination', 'create'),
     },
   },
   [headerText.documentation()]: {
