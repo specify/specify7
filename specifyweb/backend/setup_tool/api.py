@@ -88,7 +88,7 @@ def get_setup_resource_progress() -> dict:
 
 def is_config_tool_running() -> bool:
     """Returns true if the System Configuration Tool is responsible for the setup tasks running
-    Guessed based on the existence of >1 divisions/disicplines/collections existing."""
+    Guessed based on the existence of more than one divisions/disicplines/collections."""
     return models.Division.objects.count() > 1 or \
         models.Discipline.objects.count() > 1 or \
         models.Collection.objects.count() > 1 or \
