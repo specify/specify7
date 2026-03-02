@@ -133,19 +133,17 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
-  [commonText.import()]: {
+  [commonText.tools()]: {
     localityUpdate: {
       title: headerText.localityUpdateTool(),
       enabled: () => userInformation.isadmin,
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
     },
-  },
-  [commonText.tools()]: {
     batchIdentify: {
       title: batchIdentifyText.batchIdentify(),
       url: '/specify/overlay/batch-identify/',
-      icon: icons.batchEdit,
+      icon: icons.clipboardCopy,
       enabled: () =>
         hasTablePermission('CollectionObject', 'read') &&
         hasTablePermission('Determination', 'create'),

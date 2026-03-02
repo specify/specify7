@@ -14,10 +14,6 @@ export const batchIdentifyText = createDictionary({
     'en-us':
       'Enter catalog numbers using any non-numeric delimiters (commas, spaces, text prefixes, etc.). Use a dash to declare numeric ranges like 0001 - 0150.',
   },
-  determinationInstructions: {
-    'en-us':
-      'Create the determination that will be applied to all matched collection objects.',
-  },
   catalogNumbersNotFound: {
     'en-us': 'Catalog Numbers Not Found',
   },

@@ -678,7 +678,7 @@ function BatchIdentifyDialog({
           container: dialogClassNames.extraWideContainer,
         }}
         header={batchIdentifyText.batchIdentify()}
-        icon={icons.batchEdit}
+        icon={icons.clipboardCopy}
         onClose={handleClose}
       >
         {step === 'catalogNumbers' ? (
@@ -717,20 +717,7 @@ function BatchIdentifyDialog({
             )}
           </div>
         ) : (
-          <div className="flex h-full min-h-0 flex-col gap-2">
-            <p>
-              {commonText.countLine({
-                resource: catalogNumberLabel,
-                count: catalogNumberRanges.length,
-              })}
-            </p>
-            <p>
-              {commonText.countLine({
-                resource: collectionObjectLabel,
-                count: collectionObjectIds.length,
-              })}
-            </p>
-            <p>{batchIdentifyText.determinationInstructions()}</p>
+          <div className="flex h-full min-h-0 flex-1 flex-col gap-3">
             {unmatchedCatalogNumbers.length > 0 && (
               <div className="space-y-1">
                 <H3>{batchIdentifyText.catalogNumbersNotFound()}</H3>
@@ -739,9 +726,10 @@ function BatchIdentifyDialog({
                 ))}
               </div>
             )}
-            <div className="grid min-h-0 flex-1 grid-rows-[minmax(20rem,1fr)_minmax(18rem,1fr)] gap-2">
-              <div className="min-h-0 overflow-auto rounded border border-gray-300 dark:border-neutral-700">
+            <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(16rem,1fr)] gap-3">
+              <div className="min-h-0 overflow-hidden rounded border border-gray-300 dark:border-neutral-700">
                 <ResourceView
+                  className="h-auto"
                   dialog={false}
                   isDependent
                   isSubForm={false}
