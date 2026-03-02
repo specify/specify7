@@ -267,6 +267,23 @@ class AnyCharPart extends Part {
   }
 }
 
+class VariableLengthAnyCharPart extends Part {
+  public readonly type = 'anychar';
+  
+  private readonly minSize: number;
+  private readonly maxSize: number;
+
+  public constructor(options: PartOptions & { minSize: number; maxSize: number }) {
+    super(options);
+    this.minSize = options.minSize;
+    this.maxSize = options.maxSize;
+  }
+
+  public get regex(): LocalizedString {
+    return localized(`.{${this.minSize},${this.maxSize}}`);
+  }
+}
+
 class RegexPart extends Part {
   public readonly type = 'regex';
 
@@ -318,8 +335,10 @@ export class CatalogNumberString extends UiFormatter {
       true,
       commonText.none(),
       [
-        new AnyCharPart({
+        new VariableLengthAnyCharPart({
           size: 32,
+          minSize: 0,
+          maxSize: 32,
           placeholder: localized(''),
           autoIncrement: false,
           byYear: false,
