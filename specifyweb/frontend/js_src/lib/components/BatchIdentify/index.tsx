@@ -273,7 +273,6 @@ function BatchIdentifyDialog({
     tables.CollectionObject,
     'catalogNumber'
   ).label;
-  const collectionObjectLabel = tables.CollectionObject.label;
   const recordSetLabel = tables.RecordSet.label;
 
   const [step, setStep] = React.useState<Step>('catalogNumbers');
@@ -685,12 +684,6 @@ function BatchIdentifyDialog({
           <div className="flex flex-col gap-2">
             <p>{batchIdentifyText.instructions()}</p>
             <p className="font-semibold">{catalogNumberLabel}</p>
-            <p>
-              {commonText.countLine({
-                resource: catalogNumberLabel,
-                count: catalogNumberRanges.length,
-              })}
-            </p>
             <AutoGrowTextArea
               className="font-mono"
               forwardRef={validationRef}
@@ -727,12 +720,12 @@ function BatchIdentifyDialog({
               </div>
             )}
             <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(16rem,1fr)] gap-3">
-              <div className="min-h-0 overflow-hidden rounded border border-gray-300 dark:border-neutral-700">
+              <div className="min-h-0 overflow-hidden">
                 <ResourceView
                   className="h-auto"
                   dialog={false}
                   isDependent
-                  isSubForm={false}
+                  isSubForm
                   resource={determination}
                   onAdd={undefined}
                   onClose={handleClose}
