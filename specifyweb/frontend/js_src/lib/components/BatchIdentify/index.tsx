@@ -3,6 +3,7 @@ import React from 'react';
 import { useValidation } from '../../hooks/useValidation';
 import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
+import { queryText } from '../../localization/query';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -28,7 +29,6 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
-import { queryText } from '../../localization/query';
 import { OverlayContext } from '../Router/Router';
 import { useSearchDialog } from '../SearchDialog';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
@@ -59,7 +59,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: CatalogToken[] = [];
+  const tokens: readonly CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -85,7 +85,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: [number, number][] = [];
+    const ranges: readonly (readonly [number, number])[] = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -207,7 +207,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: number[] = [];
+  const collectionObjectIds: readonly number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
