@@ -190,7 +190,7 @@ const buildPreviewFields = (
     filters: [
       {
         ...queryFilterDefaults,
-        type: 'true',
+        type: 'trueOrNull',
         startValue: '',
       },
     ],
