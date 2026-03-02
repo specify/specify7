@@ -4,6 +4,7 @@
 
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
@@ -30,6 +31,7 @@ export const fetchContext = Promise.all([
     filterArray(
       xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
         (formatter, index) => {
+          console.log(formatter);
           const resolvedFormatter = resolveFieldFormatter(formatter, index);
           return resolvedFormatter === undefined
             ? undefined
@@ -48,10 +50,12 @@ export function resolveFieldFormatter(
   index: number
 ): UiFormatter | undefined {
   if (typeof formatter.external === 'string') {
-    return parseJavaClassName(formatter.external) ===
-      'CatalogNumberUIFieldFormatter'
-      ? new CatalogNumberNumeric()
-      : undefined;
+    return parseJavaClassName(formatter.external) === 'CatalogNumberUIFieldFormatter'
+        ? new CatalogNumberNumeric()
+        : (parseJavaClassName(formatter.external) === 'CatalogNumberStringUIFieldFormatter' 
+          ? new CatalogNumberString()
+          : undefined
+        );
   } else {
     const parts = filterArray(
       formatter.parts.map((part) =>
@@ -305,6 +309,27 @@ export class CatalogNumberNumeric extends UiFormatter {
       tables.CollectionObject,
       tables.CollectionObject?.getLiteralField('catalogNumber'),
       'CatalogNumberNumeric'
+    );
+  }
+}
+
+export class CatalogNumberString extends UiFormatter {
+  public constructor() {
+    super(
+      true,
+      commonText.none(),
+      [
+        new AnyCharPart({
+          size: 32,
+          placeholder: localized(''),
+          autoIncrement: false,
+          byYear: false,
+          regexPlaceholder: undefined,
+        }),
+      ],
+      tables.CollectionObject,
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'CatalogNumberString'
     );
   }
 }
