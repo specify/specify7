@@ -48,7 +48,9 @@ def get_setup_progress() -> dict:
     """Returns a dictionary of the status of the database setup."""
     # Check if setup is currently in progress
     active_setup_task, busy = get_active_setup_task()
-    busy = busy or is_config_task_running()
+    config_tasks_running = is_config_task_running()
+
+    busy = busy or (config_tasks_running and not is_config_tool_running())
 
     completed_resources = None
     last_error = None
@@ -83,6 +85,14 @@ def get_setup_resource_progress() -> dict:
         "collection": models.Collection.objects.exists(),
         "specifyUser": models.Specifyuser.objects.exists(),
     }
+
+def is_config_tool_running() -> bool:
+    """Returns true if the System Configuration Tool is responsible for the setup tasks running
+    Guessed based on the existence of >1 divisions/disicplines/collections existing."""
+    return models.Division.objects.count() > 1 or \
+        models.Discipline.objects.count() > 1 or \
+        models.Collection.objects.count() > 1 or \
+        models.Specifyuser.objects.count() > 1
 
 def _guided_setup_condition(request) -> bool:
     from specifyweb.specify.models import Specifyuser
@@ -473,11 +483,6 @@ def create_tree(name: str, data: dict) -> dict:
                 setattr(discipline, tree_field_name, treedef.id)
                 discipline.save()
 
-        # Optionally preload tree
-        # NOTE: You probably do not want to do this during the initial setup, as there are still resources missing.
-        # if preload_tree:
-        #     if discipline is not None:
-        #         start_preload_default_tree(name, discipline.id, None, treedef.id, None, preload_tree_file)
         return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)
