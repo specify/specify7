@@ -14,7 +14,6 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { createResource } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
@@ -29,6 +28,7 @@ import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
+import { queryText } from '../../localization/query';
 import { OverlayContext } from '../Router/Router';
 import { useSearchDialog } from '../SearchDialog';
 import { RecordSetsDialog } from '../Toolbar/RecordSets';
@@ -59,7 +59,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: readonly CatalogToken[] = [];
+  const tokens: CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -85,7 +85,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: readonly (readonly [number, number])[] = [];
+    const ranges: [number, number][] = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -207,7 +207,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: readonly number[] = [];
+  const collectionObjectIds: number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
@@ -269,11 +269,8 @@ function BatchIdentifyDialog({
 }): JSX.Element {
   const loading = React.useContext(LoadingContext);
   const { validationRef, setValidation } = useValidation<HTMLTextAreaElement>();
-  const catalogNumberLabel = getField(
-    tables.CollectionObject,
-    'catalogNumber'
-  ).label;
   const recordSetLabel = tables.RecordSet.label;
+  const canCreateRecordSet = hasToolPermission('recordSets', 'create');
 
   const [step, setStep] = React.useState<Step>('catalogNumbers');
   const [catalogNumbers, setCatalogNumbers] = React.useState('');
@@ -289,6 +286,11 @@ function BatchIdentifyDialog({
   const [createdRecordSet, setCreatedRecordSet] = React.useState<
     SerializedResource<RecordSet> | undefined
   >(undefined);
+  const [identifiedCollectionObjectIds, setIdentifiedCollectionObjectIds] =
+    React.useState<RA<number>>([]);
+  const [isCreatingRecordSet, setIsCreatingRecordSet] = React.useState(false);
+  const [isBrowseAfterIdentifyOpen, setIsBrowseAfterIdentifyOpen] =
+    React.useState(false);
   const [showSuccessDialog, setShowSuccessDialog] = React.useState(false);
   const [resolvedCollectionObjectIds, setResolvedCollectionObjectIds] =
     React.useState<RA<number>>([]);
@@ -364,7 +366,7 @@ function BatchIdentifyDialog({
     (event: React.MouseEvent): void => {
       const target = event.target;
       if (!(target instanceof Element)) return;
-      const link = target.closest(
+      const link = target.closest<HTMLAnchorElement>(
         'a.print\\:hidden[target="_blank"]'
       ) ;
       if (link === null) return;
@@ -584,11 +586,9 @@ function BatchIdentifyDialog({
           },
           errorMode: 'dismissible',
         })
-          .then(async ({ data }) => {
-            const recordSet = await createBatchIdentifyRecordSet(
-              data.collectionObjectIds
-            ).catch(() => undefined);
-            setCreatedRecordSet(recordSet);
+          .then(({ data }) => {
+            setCreatedRecordSet(undefined);
+            setIdentifiedCollectionObjectIds(f.unique(data.collectionObjectIds));
             setShowSuccessDialog(true);
           })
           .finally(() => setIsIdentifying(false))
@@ -596,6 +596,28 @@ function BatchIdentifyDialog({
     },
     [collectionObjectIds, isIdentifying, loading, determination]
   );
+
+  const handleCreateRecordSetAfterIdentify = React.useCallback((): void => {
+    if (
+      isCreatingRecordSet ||
+      identifiedCollectionObjectIds.length === 0 ||
+      typeof createdRecordSet === 'object'
+    )
+      return;
+    setIsCreatingRecordSet(true);
+    loading(
+      createBatchIdentifyRecordSet(identifiedCollectionObjectIds)
+        .then((recordSet) => {
+          if (typeof recordSet === 'object') setCreatedRecordSet(recordSet);
+        })
+        .finally(() => setIsCreatingRecordSet(false))
+    );
+  }, [
+    isCreatingRecordSet,
+    identifiedCollectionObjectIds,
+    createdRecordSet,
+    loading,
+  ]);
 
   const previewExtraButtons = React.useMemo(
     () => (
@@ -617,20 +639,76 @@ function BatchIdentifyDialog({
 
   if (showSuccessDialog)
     return (
-      <Dialog
-        buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-        header={batchIdentifyText.batchIdentify()}
-        onClose={handleClose}
-      >
-        <div className="flex flex-col gap-2">
-          <p>{batchIdentifyText.successMessage()}</p>
-          {typeof createdRecordSet === 'object' ? (
-            <Link.NewTab href={`/specify/record-set/${createdRecordSet.id}/`}>
-              {localized(createdRecordSet.name)}
-            </Link.NewTab>
-          ) : undefined}
-        </div>
-      </Dialog>
+      <>
+        <Dialog
+          buttons={
+            <>
+              {canCreateRecordSet && (
+                <Button.Secondary
+                  disabled={
+                    isCreatingRecordSet ||
+                    identifiedCollectionObjectIds.length === 0 ||
+                    typeof createdRecordSet === 'object'
+                  }
+                  onClick={handleCreateRecordSetAfterIdentify}
+                >
+                  {queryText.createRecordSet({
+                    recordSetTable: recordSetLabel,
+                  })}
+                </Button.Secondary>
+              )}
+              <Button.Info
+                disabled={identifiedCollectionObjectIds.length === 0}
+                onClick={(): void => setIsBrowseAfterIdentifyOpen(true)}
+              >
+                {queryText.browseInForms()}
+              </Button.Info>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            </>
+          } 
+          className={{
+            container: dialogClassNames.narrowContainer,
+          }}
+          dimensionsKey={false}
+          header={batchIdentifyText.batchIdentify()}
+          icon={icons.clipboardCopy}
+          onClose={handleClose}
+        >
+          <div className="flex flex-col gap-2">
+            <p>{batchIdentifyText.successMessage()}</p>
+            {typeof createdRecordSet === 'object' ? (
+              <Link.NewTab href={`/specify/record-set/${createdRecordSet.id}/`}>
+                {localized(createdRecordSet.name)}
+              </Link.NewTab>
+            ) : undefined}
+          </div>
+        </Dialog>
+        {isBrowseAfterIdentifyOpen && (
+          <ReadOnlyContext.Provider value>
+            <RecordSelectorFromIds
+              canRemove={false}
+              defaultIndex={0}
+              dialog="modal"
+              ids={identifiedCollectionObjectIds}
+              isDependent={false}
+              isInRecordSet={false}
+              newResource={undefined}
+              table={tables.CollectionObject}
+              title={commonText.colonLine({
+                label: batchIdentifyText.batchIdentify(),
+                value: tables.CollectionObject.label,
+              })}
+              totalCount={identifiedCollectionObjectIds.length}
+              onAdd={undefined}
+              onClone={undefined}
+              onClose={(): void => setIsBrowseAfterIdentifyOpen(false)}
+              onDelete={undefined}
+              onSaved={f.void}
+              onSlide={undefined}
+            />
+          </ReadOnlyContext.Provider>
+        )}
+      </>
     );
 
   return (
@@ -640,12 +718,13 @@ function BatchIdentifyDialog({
           step === 'catalogNumbers' ? (
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-              <Button.Secondary
+              <span className="-ml-2 flex-1" />
+              <Button.Info
                 disabled={isResolving || isLiveValidating}
                 onClick={(): void => setIsRecordSetDialogOpen(true)}
               >
                 {recordSetLabel}
-              </Button.Secondary>
+              </Button.Info>
               <Button.Info
                 disabled={
                   catalogNumberRanges.length === 0 ||
@@ -660,22 +739,27 @@ function BatchIdentifyDialog({
             </>
           ) : (
             <>
-              <Button.Info onClick={(): void => setStep('catalogNumbers')}>
+              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+              <span className="-ml-2 flex-1" />
+              <Button.Secondary onClick={(): void => setStep('catalogNumbers')}>
                 {commonText.back()}
-              </Button.Info>
+              </Button.Secondary>
               <Button.Info
                 disabled={collectionObjectIds.length === 0 || isIdentifying}
                 onClick={handleIdentify}
               >
                 {batchIdentifyText.identify()}
               </Button.Info>
-              <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           )
         }
         className={{
-          container: dialogClassNames.extraWideContainer,
+          container:
+            step === 'catalogNumbers'
+              ? dialogClassNames.narrowContainer
+              : dialogClassNames.extraWideContainer,
         }}
+        dimensionsKey={`batch-identify-${step}`}
         header={batchIdentifyText.batchIdentify()}
         icon={icons.clipboardCopy}
         onClose={handleClose}
@@ -683,12 +767,11 @@ function BatchIdentifyDialog({
         {step === 'catalogNumbers' ? (
           <div className="flex flex-col gap-2">
             <p>{batchIdentifyText.instructions()}</p>
-            <p className="font-semibold">{catalogNumberLabel}</p>
             <AutoGrowTextArea
               className="font-mono"
               forwardRef={validationRef}
               placeholder={batchIdentifyText.placeholder()}
-              rows={12}
+              rows={8}
               spellCheck={false}
               value={catalogNumbers}
               onBlur={(): void => scheduleLiveValidation(true)}
@@ -722,7 +805,6 @@ function BatchIdentifyDialog({
             <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(16rem,1fr)] gap-3">
               <div className="min-h-0 overflow-hidden">
                 <ResourceView
-                  className="h-auto"
                   dialog={false}
                   isDependent
                   isSubForm
@@ -738,18 +820,20 @@ function BatchIdentifyDialog({
                 className="flex min-h-0 overflow-hidden rounded border border-gray-300 dark:border-neutral-700"
                 onClickCapture={handlePreviewPopOutClick}
               >
-                <QueryResultsWrapper
-                  createRecordSet={undefined}
-                  extraButtons={previewExtraButtons}
-                  fields={previewFields}
-                  forceCollection={undefined}
-                  queryResource={previewQuery}
-                  queryRunCount={previewRunCount}
-                  recordSetId={undefined}
-                  selectedRows={[selectedPreviewRows, setSelectedPreviewRows]}
-                  table={tables.CollectionObject}
-                  onReRun={f.void}
-                />
+                <ReadOnlyContext.Provider value>
+                  <QueryResultsWrapper
+                    createRecordSet={undefined}
+                    extraButtons={previewExtraButtons}
+                    fields={previewFields}
+                    forceCollection={undefined}
+                    queryResource={previewQuery}
+                    queryRunCount={previewRunCount}
+                    recordSetId={undefined}
+                    selectedRows={[selectedPreviewRows, setSelectedPreviewRows]}
+                    table={tables.CollectionObject}
+                    onReRun={f.void}
+                  />
+                </ReadOnlyContext.Provider>
               </div>
             </div>
           </div>
