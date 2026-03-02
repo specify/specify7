@@ -38,4 +38,10 @@ export const batchIdentifyText = createDictionary({
   previewQueryName: {
     'en-us': 'Batch Identify Preview',
   },
+  unknownTaxonTree: {
+    'en-us': 'Unknown Taxon Tree',
+  },
+  collectionObjectTypes: {
+    'en-us': 'Collection Object Types',
+  },
 });

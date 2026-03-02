@@ -4,6 +4,7 @@ import { useValidation } from '../../hooks/useValidation';
 import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import { resourcesText } from '../../localization/resources';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
@@ -37,6 +38,14 @@ type BatchIdentifyResolveResponse = {
   readonly collectionObjectIds: RA<number>;
   readonly currentDeterminationIds: RA<number>;
   readonly unmatchedCatalogNumbers: RA<string>;
+  readonly hasMixedTaxonTrees: boolean;
+  readonly taxonTreeGroups: RA<{
+    readonly taxonTreeDefId: number | null;
+    readonly taxonTreeName: string | null;
+    readonly collectionObjectIds: RA<number>;
+    readonly catalogNumbers: RA<string>;
+    readonly collectionObjectTypeNames: RA<string>;
+  }>;
 };
 
 type BatchIdentifySaveResponse = {
@@ -59,7 +68,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: readonly CatalogToken[] = [];
+  const tokens: CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -85,7 +94,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: readonly (readonly [number, number])[] = [];
+    const ranges: [number, number][] = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -207,7 +216,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: readonly number[] = [];
+  const collectionObjectIds: number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
@@ -298,6 +307,10 @@ function BatchIdentifyDialog({
     React.useState('');
   const [unmatchedCatalogNumbers, setUnmatchedCatalogNumbers] = React.useState<
     RA<string>
+  >([]);
+  const [hasMixedTaxonTrees, setHasMixedTaxonTrees] = React.useState(false);
+  const [taxonTreeGroups, setTaxonTreeGroups] = React.useState<
+    BatchIdentifyResolveResponse['taxonTreeGroups']
   >([]);
   const [previewRunCount, setPreviewRunCount] = React.useState(0);
   const [selectedPreviewRows, setSelectedPreviewRows] = React.useState<
@@ -436,6 +449,8 @@ function BatchIdentifyDialog({
           setValidatedCatalogNumbersKey(entriesKey);
           setResolvedCollectionObjectIds(data.collectionObjectIds);
           setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
+          setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
+          setTaxonTreeGroups(data.taxonTreeGroups);
         })
         .catch(() => undefined)
         .finally(() => {
@@ -490,6 +505,8 @@ function BatchIdentifyDialog({
     if (catalogNumberRanges.length === 0) {
       setUnmatchedCatalogNumbers([]);
       setResolvedCollectionObjectIds([]);
+      setHasMixedTaxonTrees(false);
+      setTaxonTreeGroups([]);
       setValidatedCatalogNumbersKey(catalogNumbersKey);
       return;
     }
@@ -525,6 +542,8 @@ function BatchIdentifyDialog({
           (recordSetCollectionObjectIds) => {
             setUnmatchedCatalogNumbers([]);
             setResolvedCollectionObjectIds([]);
+            setHasMixedTaxonTrees(false);
+            setTaxonTreeGroups([]);
             setValidatedCatalogNumbersKey('');
             proceedWithCollectionObjects(recordSetCollectionObjectIds);
           }
@@ -535,10 +554,11 @@ function BatchIdentifyDialog({
   );
 
   const handleNext = React.useCallback((): void => {
-    if (catalogNumberRanges.length === 0 || isResolving || isLiveValidating) return;
+    if (catalogNumberRanges.length === 0 || isResolving) return;
 
     if (validatedCatalogNumbersKey === catalogNumbersKey) {
       if (unmatchedCatalogNumbers.length > 0) return;
+      if (hasMixedTaxonTrees) return;
       proceedWithCollectionObjects(resolvedCollectionObjectIds);
       return;
     }
@@ -549,6 +569,9 @@ function BatchIdentifyDialog({
         setValidatedCatalogNumbersKey(catalogNumbersKey);
         setResolvedCollectionObjectIds(data.collectionObjectIds);
         setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
+        setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
+        setTaxonTreeGroups(data.taxonTreeGroups);
+        if (data.hasMixedTaxonTrees) return;
         if (data.unmatchedCatalogNumbers.length > 0) {
           setCollectionObjectIds([]);
           setStep('catalogNumbers');
@@ -561,10 +584,10 @@ function BatchIdentifyDialog({
   }, [
     catalogNumberRanges,
     isResolving,
-    isLiveValidating,
     validatedCatalogNumbersKey,
     catalogNumbersKey,
     unmatchedCatalogNumbers,
+    hasMixedTaxonTrees,
     proceedWithCollectionObjects,
     resolvedCollectionObjectIds,
     loading,
@@ -729,7 +752,6 @@ function BatchIdentifyDialog({
                 disabled={
                   catalogNumberRanges.length === 0 ||
                   isResolving ||
-                  isLiveValidating ||
                   unmatchedCatalogNumbers.length > 0
                 }
                 onClick={handleNext}
@@ -771,7 +793,7 @@ function BatchIdentifyDialog({
               className="font-mono"
               forwardRef={validationRef}
               placeholder={batchIdentifyText.placeholder()}
-              rows={8}
+              rows={4}
               spellCheck={false}
               value={catalogNumbers}
               onBlur={(): void => scheduleLiveValidation(true)}
@@ -779,10 +801,42 @@ function BatchIdentifyDialog({
                 setCatalogNumbers(value);
                 setUnmatchedCatalogNumbers([]);
                 setResolvedCollectionObjectIds([]);
+                setHasMixedTaxonTrees(false);
+                setTaxonTreeGroups([]);
                 setValidatedCatalogNumbersKey('');
               }}
             />
             {isLiveValidating && <p>{batchIdentifyText.validatingCatalogNumbers()}</p>}
+            {hasMixedTaxonTrees && (
+              <div className="space-y-1">
+                <p>{resourcesText.selectDeterminationTaxon()}</p>
+                {taxonTreeGroups.map((group) => (
+                  <div
+                    key={group.taxonTreeDefId ?? 'none'}
+                    className="space-y-1 rounded border border-gray-300 p-2 dark:border-neutral-700"
+                  >
+                    <p className="font-semibold">
+                      {(group.taxonTreeName ??
+                        batchIdentifyText.unknownTaxonTree()) +
+                        ` (${group.collectionObjectIds.length})`}
+                    </p>
+                    <p>
+                      {commonText.colonLine({
+                        label: batchIdentifyText.collectionObjectTypes(),
+                        value: group.collectionObjectTypeNames.join(', '),
+                      })}
+                    </p>
+                    <Button.Info
+                      onClick={(): void =>
+                        proceedWithCollectionObjects(group.collectionObjectIds)
+                      }
+                    >
+                      {commonText.select()}
+                    </Button.Info>
+                  </div>
+                ))}
+              </div>
+            )}
             {unmatchedCatalogNumbers.length > 0 && (
               <div className="mt-2 space-y-1">
                 <H3>{batchIdentifyText.catalogNumbersNotFound()}</H3>

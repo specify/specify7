@@ -145,6 +145,7 @@ def _fetch_collection_objects_by_catalog_ranges(
         Collectionobject.objects.filter(collectionmemberid=collection_id)
         .exclude(catalognumber__isnull=True)
         .exclude(catalognumber='')
+        .select_related('collectionobjecttype__taxontreedef')
         .annotate(catalog_number_int=Cast('catalognumber', IntegerField()))
         .filter(_build_catalog_query(catalog_ranges))
         .order_by('catalog_number_int', 'id')
@@ -229,6 +230,96 @@ def _parse_collection_object_ids(request_data: dict[str, Any]) -> list[int]:
 
     return deduplicated_ids
 
+
+def _resolve_collection_object_taxon_tree_def_id(
+    collection_object: Collectionobject,
+    fallback_taxon_tree_def_id: int | None,
+) -> int | None:
+    return (
+        collection_object.collectionobjecttype.taxontreedef_id
+        if collection_object.collectionobjecttype is not None
+        else fallback_taxon_tree_def_id
+    )
+
+
+def _resolve_collection_object_taxon_tree_name(
+    collection_object: Collectionobject,
+    fallback_taxon_tree_name: str | None,
+) -> str | None:
+    return (
+        collection_object.collectionobjecttype.taxontreedef.name
+        if collection_object.collectionobjecttype is not None
+        else fallback_taxon_tree_name
+    )
+
+
+def _has_single_effective_collection_object_taxon_tree(
+    collection_objects: Iterable[Collectionobject],
+    fallback_taxon_tree_def_id: int | None,
+) -> bool:
+    effective_taxon_tree_def_ids = {
+        _resolve_collection_object_taxon_tree_def_id(
+            collection_object,
+            fallback_taxon_tree_def_id,
+        )
+        for collection_object in collection_objects
+    }
+    if len(effective_taxon_tree_def_ids) == 0:
+        return True
+    if None in effective_taxon_tree_def_ids:
+        return False
+    return len(effective_taxon_tree_def_ids) == 1
+
+
+def _build_taxon_tree_groups(
+    collection_objects: Iterable[Collectionobject],
+    fallback_taxon_tree_def_id: int | None,
+    fallback_taxon_tree_name: str | None,
+) -> list[dict[str, Any]]:
+    grouped: dict[int | None, dict[str, Any]] = {}
+    for collection_object in collection_objects:
+        tree_def_id = _resolve_collection_object_taxon_tree_def_id(
+            collection_object,
+            fallback_taxon_tree_def_id,
+        )
+        tree_name = _resolve_collection_object_taxon_tree_name(
+            collection_object,
+            fallback_taxon_tree_name,
+        )
+        group = grouped.setdefault(
+            tree_def_id,
+            {
+                'taxonTreeDefId': tree_def_id,
+                'taxonTreeName': tree_name,
+                'collectionObjectIds': [],
+                'catalogNumbers': [],
+                'collectionObjectTypeNames': set(),
+            },
+        )
+        group['collectionObjectIds'].append(collection_object.id)
+        if isinstance(collection_object.catalognumber, str):
+            group['catalogNumbers'].append(collection_object.catalognumber)
+
+        collection_object_type_name = (
+            collection_object.collectionobjecttype.name
+            if collection_object.collectionobjecttype is not None
+            else None
+        )
+        if isinstance(collection_object_type_name, str):
+            group['collectionObjectTypeNames'].add(collection_object_type_name)
+        else:
+            group['collectionObjectTypeNames'].add('Default Collection Object Type')
+
+    groups = sorted(
+        grouped.values(),
+        key=lambda group: (group['taxonTreeName'] is None, group['taxonTreeName'] or ''),
+    )
+    for group in groups:
+        group['collectionObjectIds'] = sorted(group['collectionObjectIds'])
+        group['catalogNumbers'] = sorted(group['catalogNumbers'])
+        group['collectionObjectTypeNames'] = sorted(group['collectionObjectTypeNames'])
+    return groups
+
 @login_maybe_required
 @require_POST
 def batch_identify_resolve(request: http.HttpRequest):
@@ -254,6 +345,19 @@ def batch_identify_resolve(request: http.HttpRequest):
         include_current_determinations=not validate_only,
         max_results=_MAX_RESOLVE_COLLECTION_OBJECTS,
     )
+    has_mixed_taxon_trees = not _has_single_effective_collection_object_taxon_tree(
+        collection_objects,
+        request.specify_collection.discipline.taxontreedef_id,
+    )
+    taxon_tree_groups = _build_taxon_tree_groups(
+        collection_objects,
+        request.specify_collection.discipline.taxontreedef_id,
+        (
+            request.specify_collection.discipline.taxontreedef.name
+            if request.specify_collection.discipline.taxontreedef is not None
+            else None
+        ),
+    )
     matched_catalog_numbers = _fetch_matched_catalog_numbers(
         request.specify_collection.id, catalog_ranges
     )
@@ -274,6 +378,8 @@ def batch_identify_resolve(request: http.HttpRequest):
             'collectionObjectIds': collection_object_ids,
             'currentDeterminationIds': current_determination_ids,
             'unmatchedCatalogNumbers': unmatched_catalog_numbers,
+            'hasMixedTaxonTrees': has_mixed_taxon_trees,
+            'taxonTreeGroups': taxon_tree_groups,
         }
     )
 
@@ -304,12 +410,15 @@ def batch_identify(request: http.HttpRequest):
             {'error': "'determination' must be an object."}, status=400
         )
 
-    existing_collection_object_ids = set(
+    collection_objects = list(
         Collectionobject.objects.filter(
             collectionmemberid=request.specify_collection.id,
             id__in=collection_object_ids,
-        ).values_list('id', flat=True)
+        ).select_related('collectionobjecttype__taxontreedef')
     )
+    existing_collection_object_ids = {
+        collection_object.id for collection_object in collection_objects
+    }
     missing_collection_object_ids = [
         collection_object_id
         for collection_object_id in collection_object_ids
@@ -321,6 +430,21 @@ def batch_identify(request: http.HttpRequest):
                 'error': (
                     'One or more collection object IDs do not exist or are not in'
                     ' the active collection.'
+                )
+            },
+            status=400,
+        )
+
+    if not _has_single_effective_collection_object_taxon_tree(
+        collection_objects,
+        request.specify_collection.discipline.taxontreedef_id,
+    ):
+        return http.JsonResponse(
+            {
+                'error': (
+                    'Selected collection objects must all use collection object'
+                    ' types in the same taxon tree, or all default to the'
+                    " discipline's taxon tree."
                 )
             },
             status=400,
