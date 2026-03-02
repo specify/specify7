@@ -31,7 +31,6 @@ export const fetchContext = Promise.all([
     filterArray(
       xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
         (formatter, index) => {
-          console.log(formatter);
           const resolvedFormatter = resolveFieldFormatter(formatter, index);
           return resolvedFormatter === undefined
             ? undefined
