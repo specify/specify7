@@ -17,7 +17,11 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { createResource, getResourceApiUrl } from '../DataModel/resource';
+import {
+  createResource,
+  getResourceApiUrl,
+  strictIdFromUrl,
+} from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
@@ -69,7 +73,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: readonly CatalogToken[] = [];
+  const tokens: CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -95,7 +99,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: readonly (readonly [number, number])[] = [];
+    const ranges: [number, number][] = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -217,7 +221,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: readonly number[] = [];
+  const collectionObjectIds: number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
@@ -318,6 +322,8 @@ function BatchIdentifyDialog({
   >([]);
   const [selectedTaxonTreeDefUri, setSelectedTaxonTreeDefUri] =
     React.useState<string | undefined>(undefined);
+  const [searchTreeCollectionObjectTypeIds, setSearchTreeCollectionObjectTypeIds] =
+    React.useState<RA<number> | undefined>(undefined);
   const [previewRunCount, setPreviewRunCount] = React.useState(0);
   const [selectedPreviewRows, setSelectedPreviewRows] = React.useState<
     ReadonlySet<number>
@@ -348,22 +354,112 @@ function BatchIdentifyDialog({
     [catalogNumberEntries]
   );
 
+  React.useEffect(() => {
+    if (selectedTaxonTreeDefUri === undefined) {
+      setSearchTreeCollectionObjectTypeIds(undefined);
+      return;
+    }
+    const selectedTaxonTreeDefId = strictIdFromUrl(selectedTaxonTreeDefUri);
+    let isCancelled = false;
+    setSearchTreeCollectionObjectTypeIds(undefined);
+    void fetchCollection('CollectionObjectType', {
+      domainFilter: true,
+      limit: 0,
+      orderBy: 'id',
+      taxonTreeDef: selectedTaxonTreeDefId,
+    })
+      .then(({ records }) => {
+        if (isCancelled) return;
+        setSearchTreeCollectionObjectTypeIds(records.map(({ id }) => id));
+      })
+      .catch(() => {
+        if (isCancelled) return;
+        setSearchTreeCollectionObjectTypeIds([]);
+      });
+    return () => {
+      isCancelled = true;
+    };
+  }, [selectedTaxonTreeDefUri]);
+
+  const searchDialogExtraFilters = React.useMemo(() => {
+    if (selectedTaxonTreeDefUri === undefined) return undefined;
+    if (searchTreeCollectionObjectTypeIds === undefined) return undefined;
+    return [
+      {
+        field: 'collectionObjectType',
+        queryBuilderFieldPath: ['collectionObjectType', 'id'],
+        isRelationship: true,
+        isNot: false,
+        operation: 'in',
+        value:
+          searchTreeCollectionObjectTypeIds.length === 0
+            ? '-1'
+            : searchTreeCollectionObjectTypeIds.join(','),
+      },
+    ] as const;
+  }, [selectedTaxonTreeDefUri, searchTreeCollectionObjectTypeIds]);
+
+  const isSearchTreeFilterLoading =
+    selectedTaxonTreeDefUri !== undefined &&
+    searchTreeCollectionObjectTypeIds === undefined;
+
   const handleAddCollectionObjects = React.useCallback(
     (resources: RA<{ readonly id: number }>): void => {
-      const mergedCollectionObjectIds = f.unique([
-        ...collectionObjectIds,
-        ...resources.map(({ id }) => id),
-      ]);
-      if (mergedCollectionObjectIds.length === collectionObjectIds.length) return;
-      setCollectionObjectIds(mergedCollectionObjectIds);
-      setSelectedPreviewRows(new Set<number>());
-      setPreviewRunCount((count) => count + 1);
+      const selectedIds = resources.map(({ id }) => id);
+      if (selectedIds.length === 0) return;
+
+      const applyIds = (candidateIds: RA<number>): void => {
+        const mergedCollectionObjectIds = f.unique([
+          ...collectionObjectIds,
+          ...candidateIds,
+        ]);
+        if (mergedCollectionObjectIds.length === collectionObjectIds.length) return;
+        setCollectionObjectIds(mergedCollectionObjectIds);
+        setSelectedPreviewRows(new Set<number>());
+        setPreviewRunCount((count) => count + 1);
+      };
+
+      if (
+        selectedTaxonTreeDefUri === undefined ||
+        searchTreeCollectionObjectTypeIds === undefined
+      ) {
+        applyIds(selectedIds);
+        return;
+      }
+
+      const allowedTypeIds = new Set(searchTreeCollectionObjectTypeIds);
+      loading(
+        fetchCollection(
+          'CollectionObject',
+          {
+            domainFilter: true,
+            limit: 0,
+          },
+          {
+            id__in: selectedIds.join(','),
+          }
+        ).then(({ records }) => {
+          const allowedIds = records
+            .filter(({ collectionObjectType }) => {
+              if (typeof collectionObjectType !== 'string') return false;
+              const typeId = strictIdFromUrl(collectionObjectType);
+              return allowedTypeIds.has(typeId);
+            })
+            .map(({ id }) => id);
+          applyIds(allowedIds);
+        })
+      );
     },
-    [collectionObjectIds]
+    [
+      collectionObjectIds,
+      loading,
+      searchTreeCollectionObjectTypeIds,
+      selectedTaxonTreeDefUri,
+    ]
   );
 
   const { searchDialog, showSearchDialog } = useSearchDialog({
-    extraFilters: undefined,
+    extraFilters: searchDialogExtraFilters as never,
     forceCollection: undefined,
     multiple: true,
     table: tables.CollectionObject,
@@ -668,7 +764,11 @@ function BatchIdentifyDialog({
   const previewExtraButtons = React.useMemo(
     () => (
       <>
-        <DataEntry.Search disabled={isIdentifying} onClick={showSearchDialog} />
+        <DataEntry.Search
+          disabled={isIdentifying || isSearchTreeFilterLoading}
+          onClick={showSearchDialog}
+        />
+        
         <DataEntry.Remove
           disabled={selectedPreviewRowsCount === 0 || isIdentifying}
           onClick={handleRemoveSelectedCollectionObjects}
@@ -677,6 +777,7 @@ function BatchIdentifyDialog({
     ),
     [
       isIdentifying,
+      isSearchTreeFilterLoading,
       showSearchDialog,
       selectedPreviewRowsCount,
       handleRemoveSelectedCollectionObjects,
