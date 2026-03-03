@@ -17,7 +17,7 @@ import { Link } from '../Atoms/Link';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { createResource } from '../DataModel/resource';
+import { createResource, getResourceApiUrl } from '../DataModel/resource';
 import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { RecordSet } from '../DataModel/types';
@@ -28,6 +28,7 @@ import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { hasToolPermission } from '../Permissions/helpers';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
+import { TreeDefinitionContext } from '../QueryComboBox/useTreeData';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import { OverlayContext } from '../Router/Router';
@@ -260,6 +261,9 @@ const createBatchIdentifyRecordSet = async (
   });
 };
 
+const createDetermination = () =>
+  new tables.Determination.Resource().set('isCurrent', true);
+
 export function BatchIdentifyOverlay(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   return (
@@ -312,13 +316,13 @@ function BatchIdentifyDialog({
   const [taxonTreeGroups, setTaxonTreeGroups] = React.useState<
     BatchIdentifyResolveResponse['taxonTreeGroups']
   >([]);
+  const [selectedTaxonTreeDefUri, setSelectedTaxonTreeDefUri] =
+    React.useState<string | undefined>(undefined);
   const [previewRunCount, setPreviewRunCount] = React.useState(0);
   const [selectedPreviewRows, setSelectedPreviewRows] = React.useState<
     ReadonlySet<number>
   >(new Set());
-  const [determination] = React.useState(
-    () => new tables.Determination.Resource().set('isCurrent', true)
-  );
+  const [determination, setDetermination] = React.useState(createDetermination);
   const [previewQuery] = React.useState(createBatchIdentifyPreviewQuery);
   const liveValidationRequestTokenRef = React.useRef(0);
   const liveValidationTimeoutRef = React.useRef<
@@ -418,7 +422,13 @@ function BatchIdentifyDialog({
   );
 
   const proceedWithCollectionObjects = React.useCallback(
-    (resolvedIds: RA<number>): void => {
+    (resolvedIds: RA<number>, taxonTreeDefId?: number | null): void => {
+      setDetermination(createDetermination());
+      setSelectedTaxonTreeDefUri(
+        typeof taxonTreeDefId === 'number'
+          ? getResourceApiUrl('TaxonTreeDef', taxonTreeDefId)
+          : undefined
+      );
       setCollectionObjectIds(resolvedIds);
       setSelectedPreviewRows(new Set<number>());
       if (resolvedIds.length === 0) {
@@ -430,6 +440,12 @@ function BatchIdentifyDialog({
     },
     []
   );
+
+  const handleBackToCatalogNumbers = React.useCallback((): void => {
+    setDetermination(createDetermination());
+    setSelectedTaxonTreeDefUri(undefined);
+    setStep('catalogNumbers');
+  }, []);
 
   const runLiveValidation = React.useCallback(
     (entries: RA<string>, entriesKey: string): void => {
@@ -559,7 +575,10 @@ function BatchIdentifyDialog({
     if (validatedCatalogNumbersKey === catalogNumbersKey) {
       if (unmatchedCatalogNumbers.length > 0) return;
       if (hasMixedTaxonTrees) return;
-      proceedWithCollectionObjects(resolvedCollectionObjectIds);
+      proceedWithCollectionObjects(
+        resolvedCollectionObjectIds,
+        taxonTreeGroups[0]?.taxonTreeDefId
+      );
       return;
     }
 
@@ -577,7 +596,10 @@ function BatchIdentifyDialog({
           setStep('catalogNumbers');
           return;
         }
-        proceedWithCollectionObjects(data.collectionObjectIds);
+        proceedWithCollectionObjects(
+          data.collectionObjectIds,
+          data.taxonTreeGroups[0]?.taxonTreeDefId
+        );
       })
         .finally(() => setIsResolving(false))
     );
@@ -588,6 +610,7 @@ function BatchIdentifyDialog({
     catalogNumbersKey,
     unmatchedCatalogNumbers,
     hasMixedTaxonTrees,
+    taxonTreeGroups,
     proceedWithCollectionObjects,
     resolvedCollectionObjectIds,
     loading,
@@ -763,7 +786,7 @@ function BatchIdentifyDialog({
             <>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
               <span className="-ml-2 flex-1" />
-              <Button.Secondary onClick={(): void => setStep('catalogNumbers')}>
+              <Button.Secondary onClick={handleBackToCatalogNumbers}>
                 {commonText.back()}
               </Button.Secondary>
               <Button.Info
@@ -828,7 +851,10 @@ function BatchIdentifyDialog({
                     </p>
                     <Button.Info
                       onClick={(): void =>
-                        proceedWithCollectionObjects(group.collectionObjectIds)
+                        proceedWithCollectionObjects(
+                          group.collectionObjectIds,
+                          group.taxonTreeDefId
+                        )
                       }
                     >
                       {commonText.select()}
@@ -858,17 +884,19 @@ function BatchIdentifyDialog({
             )}
             <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(16rem,1fr)] gap-3">
               <div className="min-h-0 overflow-hidden">
-                <ResourceView
-                  dialog={false}
-                  isDependent
-                  isSubForm
-                  resource={determination}
-                  onAdd={undefined}
-                  onClose={handleClose}
-                  onDeleted={undefined}
-                  onSaved={undefined}
-                  onSaving={undefined}
-                />
+                <TreeDefinitionContext.Provider value={selectedTaxonTreeDefUri}>
+                  <ResourceView
+                    dialog={false}
+                    isDependent
+                    isSubForm
+                    resource={determination}
+                    onAdd={undefined}
+                    onClose={handleClose}
+                    onDeleted={undefined}
+                    onSaved={undefined}
+                    onSaving={undefined}
+                  />
+                </TreeDefinitionContext.Provider>
               </div>
               <div
                 className="flex min-h-0 overflow-hidden rounded border border-gray-300 dark:border-neutral-700"
