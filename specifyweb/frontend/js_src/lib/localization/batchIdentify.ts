@@ -17,6 +17,9 @@ export const batchIdentifyText = createDictionary({
   catalogNumbersNotFound: {
     'en-us': 'Catalog Numbers Not Found',
   },
+  catalogNumbersDifferentType: {
+    'en-us': 'Catalog Numbers Ignored Due To Different Collection Object Type',
+  },
   identify: {
     'en-us': 'Identify',
   },

@@ -43,6 +43,7 @@ type BatchIdentifyResolveResponse = {
   readonly collectionObjectIds: RA<number>;
   readonly currentDeterminationIds: RA<number>;
   readonly unmatchedCatalogNumbers: RA<string>;
+  readonly differingTypeCatalogNumbers: RA<string>;
   readonly hasMixedTaxonTrees: boolean;
   readonly taxonTreeGroups: RA<{
     readonly taxonTreeDefId: number | null;
@@ -73,7 +74,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: readonly CatalogToken[] = [];
+  const tokens: CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -99,7 +100,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: readonly (readonly [number, number])[] = [];
+    const ranges: Array<readonly [number, number]> = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -221,7 +222,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: readonly number[] = [];
+  const collectionObjectIds: number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
@@ -316,6 +317,8 @@ function BatchIdentifyDialog({
   const [unmatchedCatalogNumbers, setUnmatchedCatalogNumbers] = React.useState<
     RA<string>
   >([]);
+  const [differingTypeCatalogNumbers, setDifferingTypeCatalogNumbers] =
+    React.useState<RA<string>>([]);
   const [hasMixedTaxonTrees, setHasMixedTaxonTrees] = React.useState(false);
   const [taxonTreeGroups, setTaxonTreeGroups] = React.useState<
     BatchIdentifyResolveResponse['taxonTreeGroups']
@@ -561,6 +564,7 @@ function BatchIdentifyDialog({
           setValidatedCatalogNumbersKey(entriesKey);
           setResolvedCollectionObjectIds(data.collectionObjectIds);
           setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
+          setDifferingTypeCatalogNumbers(data.differingTypeCatalogNumbers);
           setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
           setTaxonTreeGroups(data.taxonTreeGroups);
         })
@@ -616,6 +620,7 @@ function BatchIdentifyDialog({
 
     if (catalogNumberRanges.length === 0) {
       setUnmatchedCatalogNumbers([]);
+      setDifferingTypeCatalogNumbers([]);
       setResolvedCollectionObjectIds([]);
       setHasMixedTaxonTrees(false);
       setTaxonTreeGroups([]);
@@ -653,6 +658,7 @@ function BatchIdentifyDialog({
         fetchRecordSetCollectionObjectIds(recordSet.id).then(
           (recordSetCollectionObjectIds) => {
             setUnmatchedCatalogNumbers([]);
+            setDifferingTypeCatalogNumbers([]);
             setResolvedCollectionObjectIds([]);
             setHasMixedTaxonTrees(false);
             setTaxonTreeGroups([]);
@@ -670,6 +676,7 @@ function BatchIdentifyDialog({
 
     if (validatedCatalogNumbersKey === catalogNumbersKey) {
       if (unmatchedCatalogNumbers.length > 0) return;
+      if (differingTypeCatalogNumbers.length > 0) return;
       if (hasMixedTaxonTrees) return;
       proceedWithCollectionObjects(
         resolvedCollectionObjectIds,
@@ -684,9 +691,11 @@ function BatchIdentifyDialog({
         setValidatedCatalogNumbersKey(catalogNumbersKey);
         setResolvedCollectionObjectIds(data.collectionObjectIds);
         setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
+        setDifferingTypeCatalogNumbers(data.differingTypeCatalogNumbers);
         setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
         setTaxonTreeGroups(data.taxonTreeGroups);
         if (data.hasMixedTaxonTrees) return;
+        if (data.differingTypeCatalogNumbers.length > 0) return;
         if (data.unmatchedCatalogNumbers.length > 0) {
           setCollectionObjectIds([]);
           setStep('catalogNumbers');
@@ -705,6 +714,7 @@ function BatchIdentifyDialog({
     validatedCatalogNumbersKey,
     catalogNumbersKey,
     unmatchedCatalogNumbers,
+    differingTypeCatalogNumbers,
     hasMixedTaxonTrees,
     taxonTreeGroups,
     proceedWithCollectionObjects,
@@ -876,7 +886,8 @@ function BatchIdentifyDialog({
                 disabled={
                   catalogNumberRanges.length === 0 ||
                   isResolving ||
-                  unmatchedCatalogNumbers.length > 0
+                  unmatchedCatalogNumbers.length > 0 ||
+                  differingTypeCatalogNumbers.length > 0
                 }
                 onClick={handleNext}
               >
@@ -924,6 +935,7 @@ function BatchIdentifyDialog({
               onValueChange={(value): void => {
                 setCatalogNumbers(value);
                 setUnmatchedCatalogNumbers([]);
+                setDifferingTypeCatalogNumbers([]);
                 setResolvedCollectionObjectIds([]);
                 setHasMixedTaxonTrees(false);
                 setTaxonTreeGroups([]);
@@ -972,6 +984,14 @@ function BatchIdentifyDialog({
                 ))}
               </div>
             )}
+            {differingTypeCatalogNumbers.length > 0 && (
+              <div className="mt-2 space-y-1">
+                <H3>{batchIdentifyText.catalogNumbersDifferentType()}</H3>
+                {differingTypeCatalogNumbers.map((catalogNumber, index) => (
+                  <p key={index}>{catalogNumber}</p>
+                ))}
+              </div>
+            )}
           </div>
         ) : (
           <div className="flex h-full min-h-0 flex-1 flex-col gap-3">
@@ -979,6 +999,14 @@ function BatchIdentifyDialog({
               <div className="space-y-1">
                 <H3>{batchIdentifyText.catalogNumbersNotFound()}</H3>
                 {unmatchedCatalogNumbers.map((catalogNumber, index) => (
+                  <p key={index}>{catalogNumber}</p>
+                ))}
+              </div>
+            )}
+            {differingTypeCatalogNumbers.length > 0 && (
+              <div className="space-y-1">
+                <H3>{batchIdentifyText.catalogNumbersDifferentType()}</H3>
+                {differingTypeCatalogNumbers.map((catalogNumber, index) => (
                   <p key={index}>{catalogNumber}</p>
                 ))}
               </div>

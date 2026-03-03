@@ -1,6 +1,7 @@
 import json
 import re
 from collections.abc import Iterable
+from collections import Counter
 from typing import Any, Literal
 
 from django import http
@@ -203,6 +204,29 @@ def _extract_current_determination_ids(collection_objects: Iterable[Collectionob
         current_determination_ids.append(int(current_determination_match.group(1)))
     return current_determination_ids
 
+def _filter_collection_objects_to_majority_type(
+    collection_objects: Iterable[Collectionobject],
+) -> tuple[list[Collectionobject], list[str]]:
+    collection_objects_list = list(collection_objects)
+    if len(collection_objects_list) <= 1:
+        return collection_objects_list, []
+
+    type_counts = Counter(
+        collection_object.collectionobjecttype_id
+        for collection_object in collection_objects_list
+    )
+    majority_type_id = max(type_counts, key=type_counts.get)
+
+    retained_collection_objects: list[Collectionobject] = []
+    differing_type_catalog_numbers: list[str] = []
+    for collection_object in collection_objects_list:
+        if collection_object.collectionobjecttype_id == majority_type_id:
+            retained_collection_objects.append(collection_object)
+        elif isinstance(collection_object.catalognumber, str):
+            differing_type_catalog_numbers.append(collection_object.catalognumber)
+
+    return retained_collection_objects, differing_type_catalog_numbers
+
 def _parse_collection_object_ids(request_data: dict[str, Any]) -> list[int]:
     collection_object_ids = request_data.get('collectionObjectIds')
     if not isinstance(collection_object_ids, list):
@@ -357,6 +381,10 @@ def _build_taxon_tree_groups(
                                         'type': 'array',
                                         'items': {'type': 'string'},
                                     },
+                                    'differingTypeCatalogNumbers': {
+                                        'type': 'array',
+                                        'items': {'type': 'string'},
+                                    },
                                     'hasMixedTaxonTrees': {'type': 'boolean'},
                                     'taxonTreeGroups': {
                                         'type': 'array',
@@ -403,6 +431,7 @@ def _build_taxon_tree_groups(
                                     'collectionObjectIds',
                                     'currentDeterminationIds',
                                     'unmatchedCatalogNumbers',
+                                    'differingTypeCatalogNumbers',
                                     'hasMixedTaxonTrees',
                                     'taxonTreeGroups',
                                 ],
@@ -453,6 +482,7 @@ def batch_identify_resolve(request: http.HttpRequest):
         include_current_determinations=not validate_only,
         max_results=_MAX_RESOLVE_COLLECTION_OBJECTS,
     )
+    collection_objects, differing_type_catalog_numbers = _filter_collection_objects_to_majority_type(collection_objects)
     has_mixed_taxon_trees = not _has_single_effective_collection_object_taxon_tree(
         collection_objects,
         request.specify_collection.discipline.taxontreedef_id,
@@ -486,6 +516,7 @@ def batch_identify_resolve(request: http.HttpRequest):
             'collectionObjectIds': collection_object_ids,
             'currentDeterminationIds': current_determination_ids,
             'unmatchedCatalogNumbers': unmatched_catalog_numbers,
+            'differingTypeCatalogNumbers': differing_type_catalog_numbers,
             'hasMixedTaxonTrees': has_mixed_taxon_trees,
             'taxonTreeGroups': taxon_tree_groups,
         }
@@ -615,6 +646,9 @@ def batch_identify(request: http.HttpRequest):
             },
             status=400,
         )
+
+    collection_objects, _ = _filter_collection_objects_to_majority_type(collection_objects)
+    collection_object_ids = [collection_object.id for collection_object in collection_objects]
 
     if not _has_single_effective_collection_object_taxon_tree(
         collection_objects,
