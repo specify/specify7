@@ -13,7 +13,7 @@ from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.api.calculated_fields import calculate_extra_fields
 from specifyweb.specify.api.crud import post_resource
 from specifyweb.specify.models import Collectionobject, Determination
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, openapi
 
 _RESOURCE_URI_ID_RE = re.compile(r'/(\d+)/?$')
 _MAX_RESOLVE_COLLECTION_OBJECTS = 1000
@@ -162,9 +162,7 @@ def _fetch_collection_objects_by_catalog_ranges(
         queryset = queryset[:max_results]
     return list(queryset)
 
-def _fetch_matched_catalog_numbers(
-    collection_id: int, catalog_ranges: Iterable[tuple[int, int]]
-) -> set[int]:
+def _fetch_matched_catalog_numbers(collection_id: int, catalog_ranges: Iterable[tuple[int, int]]) -> set[int]:
     return {
         catalog_number
         for catalog_number in Collectionobject.objects.filter(
@@ -178,9 +176,7 @@ def _fetch_matched_catalog_numbers(
         if isinstance(catalog_number, int)
     }
 
-def _extract_current_determination_ids(
-    collection_objects: Iterable[Collectionobject],
-) -> list[int]:
+def _extract_current_determination_ids(collection_objects: Iterable[Collectionobject]) -> list[int]:
     current_determination_ids: list[int] = []
     for collection_object in collection_objects:
         determinations = getattr(collection_object, 'prefetched_determinations', [])
@@ -230,7 +226,6 @@ def _parse_collection_object_ids(request_data: dict[str, Any]) -> list[int]:
 
     return deduplicated_ids
 
-
 def _resolve_collection_object_taxon_tree_def_id(
     collection_object: Collectionobject,
     fallback_taxon_tree_def_id: int | None,
@@ -241,7 +236,6 @@ def _resolve_collection_object_taxon_tree_def_id(
         else fallback_taxon_tree_def_id
     )
 
-
 def _resolve_collection_object_taxon_tree_name(
     collection_object: Collectionobject,
     fallback_taxon_tree_name: str | None,
@@ -251,7 +245,6 @@ def _resolve_collection_object_taxon_tree_name(
         if collection_object.collectionobjecttype is not None
         else fallback_taxon_tree_name
     )
-
 
 def _has_single_effective_collection_object_taxon_tree(
     collection_objects: Iterable[Collectionobject],
@@ -269,7 +262,6 @@ def _has_single_effective_collection_object_taxon_tree(
     if None in effective_taxon_tree_def_ids:
         return False
     return len(effective_taxon_tree_def_ids) == 1
-
 
 def _build_taxon_tree_groups(
     collection_objects: Iterable[Collectionobject],
@@ -320,6 +312,122 @@ def _build_taxon_tree_groups(
         group['collectionObjectTypeNames'] = sorted(group['collectionObjectTypeNames'])
     return groups
 
+@openapi(
+    schema={
+        'post': {
+            'requestBody': {
+                'required': True,
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'catalogNumbers': {
+                                    'type': 'array',
+                                    'items': {'type': 'string'},
+                                },
+                                'validateOnly': {'type': 'boolean'},
+                            },
+                            'required': ['catalogNumbers'],
+                            'additionalProperties': False,
+                        }
+                    }
+                },
+            },
+            'responses': {
+                '200': {
+                    'description': (
+                        'Resolved collection objects and validation details for'
+                        ' catalog number input.'
+                    ),
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {
+                                    'collectionObjectIds': {
+                                        'type': 'array',
+                                        'items': {'type': 'integer'},
+                                    },
+                                    'currentDeterminationIds': {
+                                        'type': 'array',
+                                        'items': {'type': 'integer'},
+                                    },
+                                    'unmatchedCatalogNumbers': {
+                                        'type': 'array',
+                                        'items': {'type': 'string'},
+                                    },
+                                    'hasMixedTaxonTrees': {'type': 'boolean'},
+                                    'taxonTreeGroups': {
+                                        'type': 'array',
+                                        'items': {
+                                            'type': 'object',
+                                            'properties': {
+                                                'taxonTreeDefId': {
+                                                    'oneOf': [
+                                                        {'type': 'integer'},
+                                                        {'type': 'null'},
+                                                    ]
+                                                },
+                                                'taxonTreeName': {
+                                                    'oneOf': [
+                                                        {'type': 'string'},
+                                                        {'type': 'null'},
+                                                    ]
+                                                },
+                                                'collectionObjectIds': {
+                                                    'type': 'array',
+                                                    'items': {'type': 'integer'},
+                                                },
+                                                'catalogNumbers': {
+                                                    'type': 'array',
+                                                    'items': {'type': 'string'},
+                                                },
+                                                'collectionObjectTypeNames': {
+                                                    'type': 'array',
+                                                    'items': {'type': 'string'},
+                                                },
+                                            },
+                                            'required': [
+                                                'taxonTreeDefId',
+                                                'taxonTreeName',
+                                                'collectionObjectIds',
+                                                'catalogNumbers',
+                                                'collectionObjectTypeNames',
+                                            ],
+                                            'additionalProperties': False,
+                                        },
+                                    },
+                                },
+                                'required': [
+                                    'collectionObjectIds',
+                                    'currentDeterminationIds',
+                                    'unmatchedCatalogNumbers',
+                                    'hasMixedTaxonTrees',
+                                    'taxonTreeGroups',
+                                ],
+                                'additionalProperties': False,
+                            }
+                        }
+                    },
+                },
+                '400': {
+                    'description': 'Invalid request payload.',
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {'error': {'type': 'string'}},
+                                'required': ['error'],
+                                'additionalProperties': False,
+                            }
+                        }
+                    },
+                },
+            },
+        }
+    }
+)
 @login_maybe_required
 @require_POST
 def batch_identify_resolve(request: http.HttpRequest):
@@ -383,6 +491,79 @@ def batch_identify_resolve(request: http.HttpRequest):
         }
     )
 
+@openapi(
+    schema={
+        'post': {
+            'requestBody': {
+                'required': True,
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
+                                'collectionObjectIds': {
+                                    'type': 'array',
+                                    'items': {'type': 'integer'},
+                                },
+                                'determination': {
+                                    'type': 'object',
+                                    'additionalProperties': True,
+                                },
+                            },
+                            'required': ['collectionObjectIds', 'determination'],
+                            'additionalProperties': False,
+                        }
+                    }
+                },
+            },
+            'responses': {
+                '200': {
+                    'description': (
+                        'Created determination records for all selected collection'
+                        ' objects.'
+                    ),
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {
+                                    'createdCount': {'type': 'integer'},
+                                    'collectionObjectIds': {
+                                        'type': 'array',
+                                        'items': {'type': 'integer'},
+                                    },
+                                    'determinationIds': {
+                                        'type': 'array',
+                                        'items': {'type': 'integer'},
+                                    },
+                                },
+                                'required': [
+                                    'createdCount',
+                                    'collectionObjectIds',
+                                    'determinationIds',
+                                ],
+                                'additionalProperties': False,
+                            }
+                        }
+                    },
+                },
+                '400': {
+                    'description': 'Invalid request payload.',
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {'error': {'type': 'string'}},
+                                'required': ['error'],
+                                'additionalProperties': False,
+                            }
+                        }
+                    },
+                },
+            },
+        }
+    }
+)
 @login_maybe_required
 @require_POST
 @transaction.atomic
