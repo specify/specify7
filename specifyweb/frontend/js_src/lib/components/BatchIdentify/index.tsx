@@ -74,7 +74,7 @@ const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: CatalogToken[] = [];
+  const tokens: readonly CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -100,7 +100,7 @@ const parseCatalogNumberRanges = (
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
     const tokens = tokenizeCatalogEntry(entry);
-    const ranges: Array<readonly [number, number]> = [];
+    const ranges: readonly (readonly [number, number])[] = [];
     let index = 0;
     while (index < tokens.length) {
       const token = tokens[index];
@@ -222,7 +222,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: number[] = [];
+  const collectionObjectIds: readonly number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
