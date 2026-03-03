@@ -171,14 +171,14 @@ const buildPreviewFields = (
   },
   {
     id: 4,
-    mappingPath: ['determinations', '#1', 'preferredTaxon', 'name'],
+    mappingPath: ['determinations', '#1', 'preferredTaxon', 'fullname'],
     sortType: undefined,
     isDisplay: true,
     filters: [anyFilter],
   },
   {
     id: 5,
-    mappingPath: ['determinations', '#1', 'taxon', 'name'],
+    mappingPath: ['determinations', '#1', 'taxon', 'fullname'],
     sortType: undefined,
     isDisplay: true,
     filters: [anyFilter],
