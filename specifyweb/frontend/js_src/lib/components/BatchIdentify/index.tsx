@@ -71,7 +71,8 @@ type BatchIdentifySaveResponse = {
 type Step = 'catalogNumbers' | 'determination';
 
 const liveValidationDebounceMs = 1000;
-const collectionObjectViewPathRe = /\/specify\/view\/collectionobject\/(\d+)\/?$/i;
+const collectionObjectViewPathRe =
+  /\/specify\/view\/collectionobject\/(\d+)\/?$/i;
 
 const queryFilterDefaults = {
   isNot: false,
@@ -169,7 +170,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: number[] = [];
+  const collectionObjectIds: readonly number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
@@ -242,12 +243,13 @@ function BatchIdentifyDialog({
   const [isIdentifying, setIsIdentifying] = React.useState(false);
   const [isResolving, setIsResolving] = React.useState(false);
   const [isLiveValidating, setIsLiveValidating] = React.useState(false);
-  const [isRecordSetDialogOpen, setIsRecordSetDialogOpen] = React.useState(false);
+  const [isRecordSetDialogOpen, setIsRecordSetDialogOpen] =
+    React.useState(false);
   const [isVerificationDialogOpen, setIsVerificationDialogOpen] =
     React.useState<number>();
-  const [collectionObjectIds, setCollectionObjectIds] = React.useState<RA<number>>(
-    []
-  );
+  const [collectionObjectIds, setCollectionObjectIds] = React.useState<
+    RA<number>
+  >([]);
   const [createdRecordSet, setCreatedRecordSet] = React.useState<
     SerializedResource<RecordSet> | undefined
   >(undefined);
@@ -268,13 +270,15 @@ function BatchIdentifyDialog({
   const [taxonTreeGroups, setTaxonTreeGroups] = React.useState<
     BatchIdentifyResolveResponse['taxonTreeGroups']
   >([]);
-  const [recordSetMixedTreeGroups, setRecordSetMixedTreeGroups] = React.useState<
-    BatchIdentifyResolveResponse['taxonTreeGroups']
-  >([]);
-  const [selectedTaxonTreeDefUri, setSelectedTaxonTreeDefUri] =
-    React.useState<string | undefined>(undefined);
-  const [searchTreeCollectionObjectTypeIds, setSearchTreeCollectionObjectTypeIds] =
-    React.useState<RA<number> | undefined>(undefined);
+  const [recordSetMixedTreeGroups, setRecordSetMixedTreeGroups] =
+    React.useState<BatchIdentifyResolveResponse['taxonTreeGroups']>([]);
+  const [selectedTaxonTreeDefUri, setSelectedTaxonTreeDefUri] = React.useState<
+    string | undefined
+  >(undefined);
+  const [
+    searchTreeCollectionObjectTypeIds,
+    setSearchTreeCollectionObjectTypeIds,
+  ] = React.useState<RA<number> | undefined>(undefined);
   const [previewRunCount, setPreviewRunCount] = React.useState(0);
   const [selectedPreviewRows, setSelectedPreviewRows] = React.useState<
     ReadonlySet<number>
@@ -364,7 +368,8 @@ function BatchIdentifyDialog({
           ...collectionObjectIds,
           ...candidateIds,
         ]);
-        if (mergedCollectionObjectIds.length === collectionObjectIds.length) return;
+        if (mergedCollectionObjectIds.length === collectionObjectIds.length)
+          return;
         setCollectionObjectIds(mergedCollectionObjectIds);
         setSelectedPreviewRows(new Set<number>());
         setPreviewRunCount((count) => count + 1);
@@ -432,7 +437,7 @@ function BatchIdentifyDialog({
       if (!(target instanceof Element)) return;
       const link = target.closest<HTMLAnchorElement>(
         'a.print\\:hidden[target="_blank"]'
-      ) ;
+      );
       if (link === null) return;
       const match = collectionObjectViewPathRe.exec(link.href);
       if (match === null) return;
@@ -456,15 +461,18 @@ function BatchIdentifyDialog({
         readonly errorMode?: 'dismissible' | 'silent';
       } = {}
     ): Promise<BatchIdentifyResolveResponse> =>
-      ajax<BatchIdentifyResolveResponse>('/api/specify/batch_identify/resolve/', {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: {
-          catalogNumbers: entries,
-          validateOnly: options.validateOnly === true,
-        },
-        errorMode: options.errorMode ?? 'dismissible',
-      }).then(({ data }) => data),
+      ajax<BatchIdentifyResolveResponse>(
+        '/api/specify/batch_identify/resolve/',
+        {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: {
+            catalogNumbers: entries,
+            validateOnly: options.validateOnly === true,
+          },
+          errorMode: options.errorMode ?? 'dismissible',
+        }
+      ).then(({ data }) => data),
     []
   );
 
@@ -592,12 +600,7 @@ function BatchIdentifyDialog({
       return;
     }
     scheduleLiveValidation(false);
-  }, [
-    step,
-    catalogNumberRanges,
-    scheduleLiveValidation,
-    catalogNumbersKey,
-  ]);
+  }, [step, catalogNumberRanges, scheduleLiveValidation, catalogNumbersKey]);
 
   React.useEffect(() => {
     if (step !== 'catalogNumbers') return;
@@ -620,7 +623,7 @@ function BatchIdentifyDialog({
       setIsRecordSetDialogOpen(false);
       loading(
         fetchRecordSetCollectionObjectIds(recordSet.id).then(
-          (recordSetCollectionObjectIds) => {
+          async (recordSetCollectionObjectIds) => {
             if (recordSetCollectionObjectIds.length === 0) {
               setRecordSetMixedTreeGroups([]);
               setIsRecordSetDialogOpen(true);
@@ -671,23 +674,24 @@ function BatchIdentifyDialog({
 
     setIsResolving(true);
     loading(
-      resolveCatalogNumbers(catalogNumberEntries).then((data) => {
-        setValidatedCatalogNumbersKey(catalogNumbersKey);
-        setResolvedCollectionObjectIds(data.collectionObjectIds);
-        setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
-        setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
-        setTaxonTreeGroups(data.taxonTreeGroups);
-        if (data.hasMixedTaxonTrees) return;
-        if (data.unmatchedCatalogNumbers.length > 0) {
-          setCollectionObjectIds([]);
-          setStep('catalogNumbers');
-          return;
-        }
-        proceedWithCollectionObjects(
-          data.collectionObjectIds,
-          data.taxonTreeGroups[0]?.taxonTreeDefId
-        );
-      })
+      resolveCatalogNumbers(catalogNumberEntries)
+        .then((data) => {
+          setValidatedCatalogNumbersKey(catalogNumbersKey);
+          setResolvedCollectionObjectIds(data.collectionObjectIds);
+          setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
+          setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
+          setTaxonTreeGroups(data.taxonTreeGroups);
+          if (data.hasMixedTaxonTrees) return;
+          if (data.unmatchedCatalogNumbers.length > 0) {
+            setCollectionObjectIds([]);
+            setStep('catalogNumbers');
+            return;
+          }
+          proceedWithCollectionObjects(
+            data.collectionObjectIds,
+            data.taxonTreeGroups[0]?.taxonTreeDefId
+          );
+        })
         .finally(() => setIsResolving(false))
     );
   }, [
@@ -705,30 +709,27 @@ function BatchIdentifyDialog({
     catalogNumberEntries,
   ]);
 
-  const handleIdentify = React.useCallback(
-    (): void => {
-      if (collectionObjectIds.length === 0 || isIdentifying) return;
-      setIsIdentifying(true);
-      loading(
-        ajax<BatchIdentifySaveResponse>('/api/specify/batch_identify/', {
-          method: 'POST',
-          headers: { Accept: 'application/json' },
-          body: {
-            collectionObjectIds,
-            determination: serializeResource(determination),
-          },
-          errorMode: 'dismissible',
+  const handleIdentify = React.useCallback((): void => {
+    if (collectionObjectIds.length === 0 || isIdentifying) return;
+    setIsIdentifying(true);
+    loading(
+      ajax<BatchIdentifySaveResponse>('/api/specify/batch_identify/', {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: {
+          collectionObjectIds,
+          determination: serializeResource(determination),
+        },
+        errorMode: 'dismissible',
+      })
+        .then(({ data }) => {
+          setCreatedRecordSet(undefined);
+          setIdentifiedCollectionObjectIds(f.unique(data.collectionObjectIds));
+          setShowSuccessDialog(true);
         })
-          .then(({ data }) => {
-            setCreatedRecordSet(undefined);
-            setIdentifiedCollectionObjectIds(f.unique(data.collectionObjectIds));
-            setShowSuccessDialog(true);
-          })
-          .finally(() => setIsIdentifying(false))
-      );
-    },
-    [collectionObjectIds, isIdentifying, loading, determination]
-  );
+        .finally(() => setIsIdentifying(false))
+    );
+  }, [collectionObjectIds, isIdentifying, loading, determination]);
 
   const handleCreateRecordSetAfterIdentify = React.useCallback((): void => {
     if (
@@ -759,7 +760,7 @@ function BatchIdentifyDialog({
           disabled={isIdentifying || isSearchTreeFilterLoading}
           onClick={showSearchDialog}
         />
-        
+
         <DataEntry.Remove
           disabled={selectedPreviewRowsCount === 0 || isIdentifying}
           onClick={handleRemoveSelectedCollectionObjects}
@@ -803,7 +804,7 @@ function BatchIdentifyDialog({
               </Button.Info>
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
-          } 
+          }
           className={{
             container: dialogClassNames.narrowContainer,
           }}
@@ -921,7 +922,9 @@ function BatchIdentifyDialog({
                 setValidatedCatalogNumbersKey('');
               }}
             />
-            {isLiveValidating && <p>{batchIdentifyText.validatingCatalogNumbers()}</p>}
+            {isLiveValidating && (
+              <p>{batchIdentifyText.validatingCatalogNumbers()}</p>
+            )}
             {hasMixedTaxonTrees && (
               <div className="space-y-1">
                 <p>{resourcesText.selectDeterminationTaxon()}</p>
@@ -931,9 +934,10 @@ function BatchIdentifyDialog({
                     key={group.taxonTreeDefId ?? 'none'}
                   >
                     <p className="font-semibold">
-                      {`${group.taxonTreeName ??
-                        batchIdentifyText.unknownTaxonTree() 
-                        } (${group.collectionObjectIds.length})`}
+                      {`${
+                        group.taxonTreeName ??
+                        batchIdentifyText.unknownTaxonTree()
+                      } (${group.collectionObjectIds.length})`}
                     </p>
                     <p>
                       {commonText.colonLine({
@@ -1039,7 +1043,8 @@ function BatchIdentifyDialog({
                 <p key={group.taxonTreeDefId ?? 'none'}>
                   {commonText.colonLine({
                     label:
-                      group.taxonTreeName ?? batchIdentifyText.unknownTaxonTree(),
+                      group.taxonTreeName ??
+                      batchIdentifyText.unknownTaxonTree(),
                     value: String(group.collectionObjectIds.length),
                   })}
                 </p>

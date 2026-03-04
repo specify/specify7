@@ -16,7 +16,7 @@ describe('parseCatalogNumberEntries', () => {
 describe('tokenizeCatalogEntry', () => {
   test('treats non-numeric characters as delimiters except dash', () => {
     expect(tokenizeCatalogEntry('SEMC000271806,SEMC000687972;000601108')).toEqual(
-      [271806, 687972, 601108]
+      [271_806, 687_972, 601_108]
     );
   });
 
@@ -32,9 +32,9 @@ describe('parseCatalogNumberRanges', () => {
         'SEMC000271806 SEMC000687972 SEMC000601108',
       ])
     ).toEqual([
-      [271806, 271806],
-      [687972, 687972],
-      [601108, 601108],
+      [271_806, 271_806],
+      [687_972, 687_972],
+      [601_108, 601_108],
     ]);
   });
 
