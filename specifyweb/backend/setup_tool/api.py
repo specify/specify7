@@ -22,6 +22,8 @@ from specifyweb.backend.setup_tool.picklist_defaults import create_default_pickl
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.app_resource_defaults import ensure_discipline_resource_dir
 from specifyweb.backend.setup_tool.setup_tasks import (
+    get_collections_with_busy_config as _get_collections_with_busy_config,
+    is_collection_config_busy,
     setup_database_background,
     get_active_setup_task,
     get_last_setup_error,
@@ -343,7 +345,7 @@ def create_collection(data, run_fix_schema_config_async: bool = True):
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
         if run_fix_schema_config_async:
-            queue_fix_schema_config_background()
+            queue_fix_schema_config_background(new_collection.id)
         else:
             fix_schema_config()
         
@@ -518,6 +520,12 @@ def get_config_resource_progress(running_task_names: Optional[list[str]] = None)
     active_task_names = set(running_task_names or [])
     return _get_config_resource_progress_from_active_names(active_task_names)
 
+
+def get_collections_with_busy_config(collection_ids) -> set[int]:
+    """Returns collection ids that still have active tracked config tasks."""
+    return _get_collections_with_busy_config(collection_ids)
+
+
 def get_config_progress(collection_id: Optional[int] = None) -> dict:
     """Returns a dict of the status of config/setup related background tasks"""
     try:
@@ -525,7 +533,11 @@ def get_config_progress(collection_id: Optional[int] = None) -> dict:
     except MissingWorkerError:
         running_task_names = []
 
-    busy = is_config_task_running(running_task_names)
+    busy = (
+        is_collection_config_busy(collection_id)
+        if collection_id is not None
+        else is_config_task_running(running_task_names)
+    )
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)
 

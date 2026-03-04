@@ -5,7 +5,6 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
-from datetime import timedelta
 from typing import List
 
 from django.conf import settings
@@ -38,7 +37,7 @@ from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
-from specifyweb.backend.setup_tool.api import get_config_progress, is_config_task_running
+from specifyweb.backend.setup_tool.api import get_collections_with_busy_config, get_config_progress
 
 
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -647,15 +646,14 @@ def get_server_time(request):
 
 
 def _filter_collections_not_ready_for_config_task(collections):
-    if not is_config_task_running():
+    busy_collection_ids = get_collections_with_busy_config(c.id for c in collections)
+    if not busy_collection_ids:
         return collections
 
-    # If config tasks are running, filter out newly created collections.
-    fifteen_minutes_ago = timezone.now() - timedelta(minutes=15)
     return [
         c
         for c in collections
-        if c.timestampcreated is None or c.timestampcreated <= fifteen_minutes_ago
+        if c.id not in busy_collection_ids
     ]
 
 

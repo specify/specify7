@@ -4,7 +4,7 @@ A Celery task for setting up the database in the background.
 
 from django.db import transaction
 from specifyweb.celery_tasks import app
-from typing import Tuple, Optional
+from typing import Iterable, Optional, Tuple
 from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resource_defaults
@@ -12,12 +12,72 @@ from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tr
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
-from specifyweb.backend.redis_cache.store import set_string, get_string
-from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
+from specifyweb.backend.redis_cache.store import (
+    add_to_set,
+    delete_key,
+    get_string,
+    remove_from_set,
+    set_members,
+    set_string,
+)
+from specifyweb.backend.setup_tool.redis import (
+    ACTIVE_TASK_REDIS_KEY,
+    ACTIVE_TASK_TTL,
+    COLLECTION_TASK_IDS_REDIS_KEY,
+    LAST_ERROR_REDIS_KEY,
+)
 
 from uuid import uuid4
 import logging
 logger = logging.getLogger(__name__)
+
+ACTIVE_CELERY_STATES = frozenset(("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS"))
+
+def _collection_task_ids_key(collection_id: int) -> str:
+    return COLLECTION_TASK_IDS_REDIS_KEY.replace("{collection_id}", str(collection_id))
+
+def _track_collection_task(collection_id: Optional[int], task_id: str) -> None:
+    if collection_id is None:
+        return
+    add_to_set(_collection_task_ids_key(collection_id), task_id)
+
+def _untrack_collection_task(collection_id: Optional[int], task_id: Optional[str]) -> None:
+    if collection_id is None or task_id is None:
+        return
+    key = _collection_task_ids_key(collection_id)
+    remove_from_set(key, task_id)
+    if not set_members(key):
+        delete_key(key)
+
+def _is_task_active(task_id: str) -> bool:
+    return app.AsyncResult(task_id).state in ACTIVE_CELERY_STATES
+
+def is_collection_config_busy(collection_id: Optional[int]) -> bool:
+    if collection_id is None:
+        return False
+
+    key = _collection_task_ids_key(collection_id)
+    task_ids = set_members(key)
+    if not task_ids:
+        return False
+
+    inactive_task_ids = []
+    for task_id in task_ids:
+        if _is_task_active(task_id):
+            return True
+        inactive_task_ids.append(task_id)
+
+    remove_from_set(key, *inactive_task_ids)
+    if not set_members(key):
+        delete_key(key)
+    return False
+
+def get_collections_with_busy_config(collection_ids: Iterable[int]) -> set[int]:
+    return {
+        collection_id
+        for collection_id in collection_ids
+        if is_collection_config_busy(collection_id)
+    }
 
 def setup_database_background(data: dict) -> str:
     # Clear any previous error logs.
@@ -38,9 +98,15 @@ def setup_database_background(data: dict) -> str:
     
     return task.id
 
-def queue_fix_schema_config_background() -> str:
+def queue_fix_schema_config_background(collection_id: Optional[int] = None) -> str:
     """Queue fix_schema_config to run asynchronously and return the task id"""
-    task = fix_schema_config_task.apply_async()
+    task_id = str(uuid4())
+    _track_collection_task(collection_id, task_id)
+    try:
+        task = fix_schema_config_task.apply_async(args=[collection_id], task_id=task_id)
+    except Exception:
+        _untrack_collection_task(collection_id, task_id)
+        raise
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
@@ -171,9 +237,13 @@ def setup_database_task(self, data: dict):
         raise
 
 @app.task(bind=True)
-def fix_schema_config_task(self):
+def fix_schema_config_task(self, collection_id: Optional[int] = None):
     """Run schema config migration fixups in a background worker"""
-    fix_schema_config()
+    task_id = getattr(self.request, "id", None)
+    try:
+        fix_schema_config()
+    finally:
+        _untrack_collection_task(collection_id, task_id)
 
 def get_last_setup_error() -> Optional[str]:
     err = get_string(LAST_ERROR_REDIS_KEY)
