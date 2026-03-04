@@ -337,7 +337,7 @@ export const Select = wrap<
       props.required === true &&
       (props.multiple === true ||
         (typeof props.size === 'number' && props.size > 1))
-        ? ' bg-blue-100 dark:bg-blue-900'
+        ? 'bg-[#4d3c2f] dark:bg-[#e0e2b9]'
         : ''
     }`,
     ...withHandleBlur(props.onBlur),

@@ -97,7 +97,7 @@ export function FilePicker({
               ? 'ring-brand-200 dark:ring-brand-400 bg-white ring dark:bg-neutral-700'
               : ''
           }
-          ${isFocused ? '!ring ring-blue-500' : ''}
+          ${isFocused ? '!ring ring-[#e0e2b9]' : ''}
         `}
         ref={filePickerButton}
       >

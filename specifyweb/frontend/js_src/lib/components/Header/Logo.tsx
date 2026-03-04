@@ -23,57 +23,65 @@ export function Logo({
     <h1 className="contents">
       <a
         className={`
-      flex items-center gap-2
-      ${isCollapsed ? 'p-2' : 'p-4'}
-      ${isHorizontal ? '' : 'flex-col'}
-    `}
+          flex items-center mb-4
+          ${isHorizontal ? '' : 'flex-col'}
+        `}
         href="/specify/"
       >
-        {/* Both logos are loaded to prevent flickering on collapse/expand */}
+        {/* Expanded logo */}
         <img
           alt=""
           className={`
-        hover:animate-hue-rotate
-        ${isCollapsed ? 'hidden' : ''}
-      `}
-          src="/static/img/logo.svg"
+            hover:animate-hue-rotate
+            max-w-full h-auto object-contain
+            ${isCollapsed ? 'hidden' : ''}
+          `}
+          src="/static/img/new_logo.png"
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
+
+        {/* Collapsed logo */}
         <img
           alt=""
           className={`
-      hover:animate-hue-rotate
-      ${isCollapsed ? '' : 'hidden'}
-      ${isHorizontal ? 'w-10' : ''}
-    `}
-          src="/static/img/short_logo.svg"
+            hover:animate-hue-rotate
+            max-w-full h-auto object-contain
+            ${isCollapsed ? '' : 'hidden'}
+            ${isHorizontal ? 'w-10' : ''}
+          `}
+          src="/static/img/new_short_logo.png"
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
+
         {logo === '' ? (
           ''
         ) : (
           <img
             alt=""
-            className={`hover:animate-hue-rotate max-h-[theme(spacing.24)]
-        max-w-[theme(spacing.24)]
-        ${isCollapsed ? 'hidden' : ''}
-      `}
+            className={`
+              hover:animate-hue-rotate
+              max-w-full h-auto object-contain
+              ${isCollapsed ? 'hidden' : ''}
+            `}
             src={logo}
           />
         )}
+
         {collapsedLogo === '' ? (
           ''
         ) : (
           <img
             alt=""
-            className={`hover:animate-hue-rotate max-h-[theme(spacing.16)]
-      max-w-[theme(spacing.16)]
-      ${isCollapsed ? '' : 'hidden'}
-      ${isHorizontal ? 'w-10' : ''}
-    `}
+            className={`
+              hover:animate-hue-rotate
+              max-w-full h-auto object-contain
+              ${isCollapsed ? '' : 'hidden'}
+              ${isHorizontal ? 'w-10' : ''}
+            `}
             src={collapsedLogo}
           />
         )}
+
         <span className="sr-only">{commonText.goToHomepage()}</span>
       </a>
     </h1>

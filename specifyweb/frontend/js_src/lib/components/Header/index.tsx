@@ -99,23 +99,11 @@ export function Header({
   return (
     <header
       className={`
-        hover:[&_a.link]:text-brand-300 flex [z-index:1]
-        dark:border-neutral-700 dark:bg-neutral-900 print:hidden
+        flex [z-index:1]
+        hover:[&_a.link]:text-[#4d3c2f] 
+        bg-[#6b813d] print:hidden w-40
         ${isHorizontal ? '' : 'flex-col'}
-        ${
-          position === 'left'
-            ? 'dark:border-r'
-            : position === 'top'
-              ? 'dark:border-b'
-              : position === 'right'
-                ? 'dark:border-l'
-                : 'dark:border-t'
-        }
-        ${
-          isMenuLight
-            ? 'bg-gray-100 shadow-md shadow-gray-400'
-            : 'border-neutral-700 bg-neutral-800'
-        }
+        text-[#6b813d]
       `}
     >
       <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />
@@ -206,17 +194,12 @@ export function MenuButton({
   readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
   const [position] = userPreferences.use('header', 'appearance', 'position');
-  const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
-  const isDarkMode = useDarkMode();
-  const isSideBarDark = isDarkMode || isSideBarLight === 'dark';
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
     ${
       isActive
-        ? 'bg-brand-300 !text-white'
-        : isSideBarDark
-          ? 'text-white'
-          : 'text-gray-700'
+        ? `bg-[#e0e2b9] !text-[#4d3c2f]`     
+        : 'text-[#e0e2b9]'              
     }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}

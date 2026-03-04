@@ -154,7 +154,7 @@ export function Categories({
                 checkEmptyItems
                   ? ''
                   : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] 
-                     shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 
+                      transition hover:border-[#6b813d]
                      ${typeof handleAdd === 'function' ? 'gap-2 p-4' : ''}`
               }
               key={categoryIndex}

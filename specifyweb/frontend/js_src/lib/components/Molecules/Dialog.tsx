@@ -514,7 +514,7 @@ export function Dialog({
       >
         <div className="flex items-center gap-2">
           {resolvedIcon === undefined ? undefined : (
-            <span className="text-blue-500">{resolvedIcon}</span>
+            <span className="text-[#e0e2b9]">{resolvedIcon}</span>
           )}
           <h2 className={headerClassName} id={id('header')}>
             {header}

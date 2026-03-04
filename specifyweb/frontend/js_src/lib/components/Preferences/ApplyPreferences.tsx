@@ -95,10 +95,20 @@ export function SetCssVariables(): null {
         'appearance',
         'accentColor2'
       ),
+      darkAccentColor2: userPreferences.get(
+        'general',
+        'appearance',
+        'darkAccentColor2'
+      ),
       accentColor3: userPreferences.get(
         'general',
         'appearance',
         'accentColor3'
+      ),
+      darkAccentColor3: userPreferences.get(
+        'general',
+        'appearance',
+        'darkAccentColor3'
       ),
       accentColor4: userPreferences.get(
         'general',
@@ -248,13 +258,13 @@ export function SetCssVariables(): null {
 
   React.useEffect(
     () =>
-      document.body.style.setProperty('--accent-color-200', prefs.accentColor2),
+      document.body.style.setProperty('--accent-color-200', darkMode ? prefs.darkAccentColor2 : prefs.accentColor2),
     [prefs.accentColor2]
   );
 
   React.useEffect(
     () =>
-      document.body.style.setProperty('--accent-color-300', prefs.accentColor3),
+      document.body.style.setProperty('--accent-color-300', darkMode ? prefs.darkAccentColor3 : prefs.accentColor3),
     [prefs.accentColor3]
   );
 

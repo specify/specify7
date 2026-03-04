@@ -30,6 +30,7 @@ import {
 import { titlePosition } from '../Molecules/Tooltips';
 import { scrollIntoView } from '../TreeView/helpers';
 import { emptyMapping } from './mappingHelpers';
+import { useDarkMode } from '../Preferences/Hooks';
 
 type Properties =
   /*
@@ -269,23 +270,24 @@ function Option({
   hasIcon = true,
   hasArrow = true,
 }: CustomSelectElementOptionProps): JSX.Element {
+  const isDarkMode = useDarkMode();
   const classes = ['p-1 flex items-center gap-1'];
 
   if ((!isEnabled || isDefault) && !isRelationship)
     classes.push(
       '!cursor-not-allowed dark:text-white',
-      'bg-[color:var(--custom-select-b1)]'
+      `${isDarkMode? 'bg-[#9a963a])]': 'bg-[#9a963a]'}`
     );
   else
     classes.push(
-      'hover:bg-[color:var(--custom-select-b2)]',
-      'focus:bg-[color:var(--custom-select-b2)]'
+      `${isDarkMode? 'hover:bg-[#9a963a]' : 'hover:bg-[#9a963a]'}`,
+      `${isDarkMode? 'focus:bg-[#9a963a]' : 'focus:bg-[#9a963a]'}`
     );
 
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      '!bg-[color:var(--custom-select-accent)]'
+      `${isDarkMode ?'!bg-[#9a963a]' : '!bg-[#6b813d]'}`
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
@@ -370,7 +372,7 @@ function OptionGroup({
       {typeof selectGroupLabel === 'string' && (
         <header
           aria-hidden
-          className="cursor-auto bg-[color:var(--custom-select-b2)] px-1"
+          className={`cursor-auto !bg-[#9a963a] px-1`}
         >
           {selectGroupLabel}
         </header>
@@ -545,7 +547,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          border-brand-300 bg-brand-100 dark:bg-brand-500 flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
+          border-brand-300 bg-[#6b813d] dark:bg-[#6b813d] flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >
         {has('icon') && (

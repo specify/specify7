@@ -234,7 +234,7 @@ export type WelcomePageMode =
   | 'default'
   | 'embeddedWebpage'
   | 'taxonTiles';
-export const defaultWelcomePageImage = '/static/img/splash_screen.svg';
+export const defaultWelcomePageImage = '/static/img/splash_screen_new.png';
 const welcomePageModes: PreferenceItem<WelcomePageMode> = {
   title: preferencesText.content(),
   requiresReload: false,

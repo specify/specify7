@@ -69,7 +69,7 @@ export function Notifications({
           'aria-live': 'polite',
           className:
             unreadCount > 0 && !isOpen
-              ? '[&:not(:hover)]:!text-brand-300 [&:not(:hover)]:dark:!text-brand-400'
+              ? `[&:not(:hover)]:!text-[#6b813d] [&:not(:hover)]:dark:!text-[#9a963a]`
               : undefined,
           disabled: notificationCount === 0,
         }}

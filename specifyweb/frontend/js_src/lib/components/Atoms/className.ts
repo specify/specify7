@@ -20,7 +20,7 @@ dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
-  rounded p-4 shadow-gray-400 shadow-2xl`;
+  rounded p-4`;
 const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
@@ -88,11 +88,11 @@ export const className = {
   dataEntryGrid: 'data-entry-grid',
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
-  dataEntryAdd: '!text-green-700 print:hidden',
+  dataEntryAdd: '!text-[#6b813d] print:hidden',
   dataEntryView: '!text-cyan-400 print:hidden',
-  dataEntryEdit: '!text-orange-400 print:hidden',
+  dataEntryEdit: '!text-[#6b813d] print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
-  dataEntrySearch: '!text-blue-500 print:hidden',
+  dataEntrySearch: '!text-[blue-500] print:hidden',
   dataEntryRemove: '!text-red-700 print:hidden',
   dataEntryVisit: '!text-blue-700 print:hidden',
 } as const;
