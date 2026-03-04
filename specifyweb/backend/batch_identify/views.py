@@ -458,6 +458,177 @@ def _build_taxon_tree_groups(
                         'schema': {
                             'type': 'object',
                             'properties': {
+                                'collectionObjectIds': {
+                                    'type': 'array',
+                                    'items': {'type': 'integer'},
+                                }
+                            },
+                            'required': ['collectionObjectIds'],
+                            'additionalProperties': False,
+                        }
+                    }
+                },
+            },
+            'responses': {
+                '200': {
+                    'description': (
+                        'Validated collection objects for Batch Identify and'
+                        ' grouped them by effective taxon tree.'
+                    ),
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {
+                                    'collectionObjectIds': {
+                                        'type': 'array',
+                                        'items': {'type': 'integer'},
+                                    },
+                                    'hasMixedTaxonTrees': {'type': 'boolean'},
+                                    'taxonTreeGroups': {
+                                        'type': 'array',
+                                        'items': {
+                                            'type': 'object',
+                                            'properties': {
+                                                'taxonTreeDefId': {
+                                                    'oneOf': [
+                                                        {'type': 'integer'},
+                                                        {'type': 'null'},
+                                                    ]
+                                                },
+                                                'taxonTreeName': {
+                                                    'oneOf': [
+                                                        {'type': 'string'},
+                                                        {'type': 'null'},
+                                                    ]
+                                                },
+                                                'collectionObjectIds': {
+                                                    'type': 'array',
+                                                    'items': {'type': 'integer'},
+                                                },
+                                                'catalogNumbers': {
+                                                    'type': 'array',
+                                                    'items': {'type': 'string'},
+                                                },
+                                                'collectionObjectTypeNames': {
+                                                    'type': 'array',
+                                                    'items': {'type': 'string'},
+                                                },
+                                            },
+                                            'required': [
+                                                'taxonTreeDefId',
+                                                'taxonTreeName',
+                                                'collectionObjectIds',
+                                                'catalogNumbers',
+                                                'collectionObjectTypeNames',
+                                            ],
+                                            'additionalProperties': False,
+                                        },
+                                    },
+                                },
+                                'required': [
+                                    'collectionObjectIds',
+                                    'hasMixedTaxonTrees',
+                                    'taxonTreeGroups',
+                                ],
+                                'additionalProperties': False,
+                            }
+                        }
+                    },
+                },
+                '400': {
+                    'description': 'Invalid request payload.',
+                    'content': {
+                        'application/json': {
+                            'schema': {
+                                'type': 'object',
+                                'properties': {'error': {'type': 'string'}},
+                                'required': ['error'],
+                                'additionalProperties': False,
+                            }
+                        }
+                    },
+                },
+            },
+        }
+    }
+)
+@login_maybe_required
+@require_POST
+def batch_identify_validate_record_set(request: http.HttpRequest):
+    check_table_permissions(
+        request.specify_collection, request.specify_user, Collectionobject, 'read'
+    )
+
+    try:
+        request_data = json.loads(request.body)
+    except json.JSONDecodeError:
+        return http.JsonResponse({'error': 'Invalid JSON body.'}, status=400)
+
+    try:
+        collection_object_ids = _parse_collection_object_ids(request_data)
+    except ValueError as error:
+        return http.JsonResponse({'error': str(error)}, status=400)
+
+    collection_objects = list(
+        Collectionobject.objects.filter(
+            collectionmemberid=request.specify_collection.id,
+            id__in=collection_object_ids,
+        )
+        .select_related('collectionobjecttype__taxontreedef')
+        .order_by('id')
+    )
+    existing_collection_object_ids = {
+        collection_object.id for collection_object in collection_objects
+    }
+    missing_collection_object_ids = [
+        collection_object_id
+        for collection_object_id in collection_object_ids
+        if collection_object_id not in existing_collection_object_ids
+    ]
+    if len(missing_collection_object_ids) > 0:
+        return http.JsonResponse(
+            {
+                'error': (
+                    'One or more collection object IDs do not exist or are not in'
+                    ' the active collection.'
+                )
+            },
+            status=400,
+        )
+
+    has_mixed_taxon_trees = not _has_single_effective_collection_object_taxon_tree(
+        collection_objects,
+        request.specify_collection.discipline.taxontreedef_id,
+    )
+    taxon_tree_groups = _build_taxon_tree_groups(
+        collection_objects,
+        request.specify_collection.discipline.taxontreedef_id,
+        (
+            request.specify_collection.discipline.taxontreedef.name
+            if request.specify_collection.discipline.taxontreedef is not None
+            else None
+        ),
+    )
+
+    return http.JsonResponse(
+        {
+            'collectionObjectIds': [collection_object.id for collection_object in collection_objects],
+            'hasMixedTaxonTrees': has_mixed_taxon_trees,
+            'taxonTreeGroups': taxon_tree_groups,
+        }
+    )
+
+@openapi(
+    schema={
+        'post': {
+            'requestBody': {
+                'required': True,
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'object',
+                            'properties': {
                                 'catalogNumbers': {
                                     'type': 'array',
                                     'items': {'type': 'string'},

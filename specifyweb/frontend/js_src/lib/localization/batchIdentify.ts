@@ -44,4 +44,15 @@ export const batchIdentifyText = createDictionary({
   collectionObjectTypes: {
     'en-us': 'Collection Object Types',
   },
+  invalidRecordSetTitle: {
+    'en-us': 'Invalid Record Set',
+  },
+  invalidRecordSetMessage: {
+    'en-us':
+      'The selected record set contains collection objects from more than one taxon tree.',
+  },
+  invalidRecordSetInstructions: {
+    'en-us':
+      'Choose a different record set, or edit the query used to create this record set so all collection objects use the same taxon tree.',
+  },
 });
