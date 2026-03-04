@@ -956,6 +956,7 @@ msgstr "Zurücksetzen"
 msgid "select"
 msgstr "Auswählen"
 
+#: components/FieldFormatters/index.ts:336
 #: components/PickLists/definitions.ts:54
 #: components/Preferences/Renderers.tsx:162
 #: components/SchemaConfig/Components.tsx:77
@@ -966,7 +967,7 @@ msgstr "Auswählen"
 #: components/Security/PreviewComponents.tsx:190
 #: components/Security/RoleTemplate.tsx:111
 #: components/SetupTool/setupResources.ts:93
-#. Used in: Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template ⬤ Components > Setup Tool > Setup Resources
+#. Used in: Components > Field Formatters > Index ⬤ Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template ⬤ Components > Setup Tool > Setup Resources
 msgid "none"
 msgstr "Keine"
 

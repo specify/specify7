@@ -776,7 +776,7 @@ msgstr "L'élément a été supprimé avec succès."
 msgid "dateRange"
 msgstr "(Plage : {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:296
+#: components/FieldFormatters/index.ts:316
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue numérique"

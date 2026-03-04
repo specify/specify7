@@ -820,7 +820,7 @@ msgstr "El artículo fue eliminado exitosamente."
 msgid "dateRange"
 msgstr "(Rango: {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:296
+#: components/FieldFormatters/index.ts:316
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "catalogNumberNumericFormatter"

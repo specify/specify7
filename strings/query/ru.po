@@ -565,7 +565,7 @@ msgstr "Месяцы"
 msgid "years"
 msgstr "Годы"
 
-#: components/FieldFormatters/index.ts:326
+#: components/FieldFormatters/index.ts:369
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "year"

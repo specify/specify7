@@ -322,7 +322,7 @@ msgstr "Заголовок"
 msgid "default"
 msgstr "По умолчанию"
 
-#: components/FieldFormatters/index.ts:332
+#: components/FieldFormatters/index.ts:375
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
@@ -667,37 +667,37 @@ msgstr "(несоответствующий)"
 msgid "value"
 msgstr "Значение"
 
-#: components/FieldFormatters/index.ts:325
+#: components/FieldFormatters/index.ts:368
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "constant"
 msgstr "Постоянный"
 
-#: components/FieldFormatters/index.ts:327
+#: components/FieldFormatters/index.ts:370
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "alpha"
 msgstr "Альфа"
 
-#: components/FieldFormatters/index.ts:328
+#: components/FieldFormatters/index.ts:371
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "numeric"
 msgstr "Числовой"
 
-#: components/FieldFormatters/index.ts:329
+#: components/FieldFormatters/index.ts:372
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "alphanumeric"
 msgstr "Буквенно-цифровой"
 
-#: components/FieldFormatters/index.ts:330
+#: components/FieldFormatters/index.ts:373
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "anychar"
 msgstr "Любой персонаж"
 
-#: components/FieldFormatters/index.ts:331
+#: components/FieldFormatters/index.ts:374
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "regex"
