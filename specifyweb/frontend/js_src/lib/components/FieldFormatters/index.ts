@@ -4,6 +4,7 @@
 
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
@@ -48,10 +49,12 @@ export function resolveFieldFormatter(
   index: number
 ): UiFormatter | undefined {
   if (typeof formatter.external === 'string') {
-    return parseJavaClassName(formatter.external) ===
-      'CatalogNumberUIFieldFormatter'
-      ? new CatalogNumberNumeric()
-      : undefined;
+    return parseJavaClassName(formatter.external) === 'CatalogNumberUIFieldFormatter'
+        ? new CatalogNumberNumeric()
+        : (parseJavaClassName(formatter.external) === 'CatalogNumberStringUIFieldFormatter' 
+          ? new CatalogNumberString()
+          : undefined
+        );
   } else {
     const parts = filterArray(
       formatter.parts.map((part) =>
@@ -264,6 +267,23 @@ class AnyCharPart extends Part {
   }
 }
 
+class VariableLengthAnyCharPart extends Part {
+  public readonly type = 'anychar';
+  
+  private readonly minSize: number;
+  private readonly maxSize: number;
+
+  public constructor(options: PartOptions & { minSize: number; maxSize: number }) {
+    super(options);
+    this.minSize = options.minSize;
+    this.maxSize = options.maxSize;
+  }
+
+  public get regex(): LocalizedString {
+    return localized(`.{${this.minSize},${this.maxSize}}`);
+  }
+}
+
 class RegexPart extends Part {
   public readonly type = 'regex';
 
@@ -305,6 +325,29 @@ export class CatalogNumberNumeric extends UiFormatter {
       tables.CollectionObject,
       tables.CollectionObject?.getLiteralField('catalogNumber'),
       'CatalogNumberNumeric'
+    );
+  }
+}
+
+export class CatalogNumberString extends UiFormatter {
+  public constructor() {
+    super(
+      true,
+      commonText.none(),
+      [
+        new VariableLengthAnyCharPart({
+          size: 32,
+          minSize: 0,
+          maxSize: 32,
+          placeholder: localized(''),
+          autoIncrement: false,
+          byYear: false,
+          regexPlaceholder: undefined,
+        }),
+      ],
+      tables.CollectionObject,
+      tables.CollectionObject?.getLiteralField('catalogNumber'),
+      'CatalogNumberString'
     );
   }
 }

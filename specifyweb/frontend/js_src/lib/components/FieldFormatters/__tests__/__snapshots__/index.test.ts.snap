@@ -224,6 +224,26 @@ exports[`field formatters are fetched and parsed correctly 1`] = `
     "table": "[table CollectionObject]",
     "title": "CatalogNumberNumericRegex",
   },
+  "CatalogNumberString": CatalogNumberString {
+    "field": "[literalField CollectionObject.catalogNumber]",
+    "isSystem": true,
+    "name": "CatalogNumberString",
+    "originalIndex": 0,
+    "parts": [
+      VariableLengthAnyCharPart {
+        "autoIncrement": false,
+        "byYear": false,
+        "maxSize": 32,
+        "minSize": 0,
+        "placeholder": "",
+        "regexPlaceholder": undefined,
+        "size": 32,
+        "type": "anychar",
+      },
+    ],
+    "table": "[table CollectionObject]",
+    "title": "None",
+  },
   "Date": UiFormatter {
     "field": undefined,
     "isSystem": true,
