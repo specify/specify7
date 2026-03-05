@@ -67,11 +67,18 @@ def get_setup_progress() -> dict:
         completed_resources = get_setup_resource_progress()
         last_error = get_last_setup_error()
 
+    if not busy:
+        setup_complete = _setup_resources_complete(completed_resources)
+        if active_setup_task is not None or not setup_complete:
+            busy = is_config_task_running()
     return {
         "resources": completed_resources,
         "last_error": last_error,
         "busy": busy,
     }
+
+def _setup_resources_complete(completed_resources: dict) -> bool:
+    return all(bool(resource_ready) for resource_ready in completed_resources.values())
 
 def get_setup_resource_progress() -> dict:
     """Returns a dictionary of the status of database setup resources."""
