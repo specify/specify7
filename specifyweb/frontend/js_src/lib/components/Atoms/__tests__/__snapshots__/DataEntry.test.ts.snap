@@ -106,7 +106,7 @@ exports[` renders without errors 5`] = `
 <DocumentFragment>
   <button
     aria-label="Search"
-    class="icon link rounded !text-blue-500 print:hidden "
+    class="icon link rounded !text-brand-400 print:hidden "
     title="Search"
     type="button"
   >
@@ -265,7 +265,7 @@ exports[`DataEntry.visit no resource 2`] = `
 <DocumentFragment>
   <a
     aria-label="Open in New Tab"
-    class="link !text-blue-700 print:hidden "
+    class="link !text-green-700 print:hidden "
     href="RESOURCE_VIEW_URL"
     rel="noopener"
     target="_blank"
