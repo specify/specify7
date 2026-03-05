@@ -92,7 +92,7 @@ export const className = {
   dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
-  dataEntrySearch: '!text-blue-500 print:hidden',
+  dataEntrySearch: '!text-brand-400 print:hidden',
   dataEntryRemove: '!text-red-700 print:hidden',
-  dataEntryVisit: '!text-blue-700 print:hidden',
+  dataEntryVisit: '!text-green-700 print:hidden',
 } as const;
