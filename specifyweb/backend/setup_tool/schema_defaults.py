@@ -3,11 +3,17 @@ from specifyweb.specify.migration_utils.update_schema_config import update_table
 from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
 from specifyweb.specify.models import Discipline
+from django.db import transaction
+from celery.exceptions import MaxRetriesExceededError
 
 from pathlib import Path
+from uuid import uuid4
 
 import logging
 logger = logging.getLogger(__name__)
+
+SCHEMA_DEFAULTS_MISSING_DISCIPLINE_RETRY_DELAY_SEC = 2
+SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES = 5
 
 def apply_schema_defaults(discipline: Discipline):
     """
@@ -59,11 +65,33 @@ def apply_schema_defaults(discipline: Discipline):
 
 def queue_apply_schema_defaults_background(discipline_id: int) -> str:
     """Queue apply_schema_defaults to run asynchronously and return the task id."""
-    task = apply_schema_defaults_task.apply_async(args=[discipline_id])
-    return task.id
+    task_id = str(uuid4())
 
-@app.task(bind=True)
+    # Dispatch only after the discipline row is committed so workers can read it.
+    transaction.on_commit(
+        lambda: apply_schema_defaults_task.apply_async(
+            args=[discipline_id],
+            task_id=task_id,
+        )
+    )
+    return task_id
+
+@app.task(bind=True, max_retries=SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES)
 def apply_schema_defaults_task(self, discipline_id: int):
     """Run schema localization defaults for one discipline in a background worker."""
-    discipline = Discipline.objects.get(id=discipline_id)
+    try:
+        discipline = Discipline.objects.get(id=discipline_id)
+    except Discipline.DoesNotExist as exc:
+        try:
+            raise self.retry(
+                exc=exc,
+                countdown=SCHEMA_DEFAULTS_MISSING_DISCIPLINE_RETRY_DELAY_SEC,
+            )
+        except MaxRetriesExceededError:
+            logger.error(
+                "Skipping schema defaults. Discipline %s does not exist after %s retries.",
+                discipline_id,
+                SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES,
+            )
+            return
     apply_schema_defaults(discipline)
