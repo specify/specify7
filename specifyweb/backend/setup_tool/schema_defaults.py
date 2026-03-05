@@ -16,7 +16,9 @@ logger = logging.getLogger(__name__)
 ACTIVE_CELERY_STATES = frozenset(("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS"))
 
 def _discipline_task_ids_key(discipline_id: int) -> str:
-    return DISCIPLINE_TASK_IDS_REDIS_KEY.replace("{discipline_id}", str(discipline_id))
+    return DISCIPLINE_TASK_IDS_REDIS_KEY.replace(
+        "{discipline_id}", f"({{database}},{discipline_id})"
+    )
 
 def _track_discipline_task(discipline_id: int, task_id: str) -> None:
     add_to_set(_discipline_task_ids_key(discipline_id), task_id)

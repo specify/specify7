@@ -34,7 +34,9 @@ logger = logging.getLogger(__name__)
 ACTIVE_CELERY_STATES = frozenset(("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS"))
 
 def _collection_task_ids_key(collection_id: int) -> str:
-    return COLLECTION_TASK_IDS_REDIS_KEY.replace("{collection_id}", str(collection_id))
+    return COLLECTION_TASK_IDS_REDIS_KEY.replace(
+        "{collection_id}", f"({{database}},{collection_id})"
+    )
 
 def _track_collection_task(collection_id: Optional[int], task_id: str) -> None:
     if collection_id is None:
