@@ -297,8 +297,8 @@ msgstr "Choose Parent Rank"
 msgid "moveItems"
 msgstr "Move Items"
 
-#: components/TreeView/CreateTree.tsx:140
-#: components/TreeView/CreateTree.tsx:153
+#: components/TreeView/CreateTree.tsx:141
+#: components/TreeView/CreateTree.tsx:154
 #. Used in: Components > Tree View > Create Tree
 msgid "addTree"
 msgstr "Add Tree"
@@ -384,22 +384,22 @@ msgstr "Rocks"
 msgid "meteorites"
 msgstr "Meteorites"
 
-#: components/TreeView/CreateTree.tsx:420
+#: components/TreeView/CreateTree.tsx:422
 #. Used in: Components > Tree View > Create Tree
 msgid "emptyTrees"
 msgstr "Empty Trees"
 
-#: components/TreeView/CreateTree.tsx:462
+#: components/TreeView/CreateTree.tsx:464
 #. Used in: Components > Tree View > Create Tree
 msgid "populatedTrees"
 msgstr "Populated Trees"
 
-#: components/TreeView/CreateTree.tsx:589
+#: components/TreeView/CreateTree.tsx:591
 #. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationStarted"
 msgstr "Default Tree Creation Started"
 
-#: components/TreeView/CreateTree.tsx:601
+#: components/TreeView/CreateTree.tsx:603
 #. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationStartedDescription"
 msgstr ""
@@ -426,7 +426,7 @@ msgstr "Default tree creation was cancelled."
 msgid "defaultTreeTaskCompleted"
 msgstr "Default tree creation completed successfully."
 
-#: components/TreeView/CreateTree.tsx:595
+#: components/TreeView/CreateTree.tsx:597
 #. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationProgress"
 msgstr "Creating tree record {current:number|formatted}/{total:number|formatted}"
@@ -436,25 +436,25 @@ msgstr "Creating tree record {current:number|formatted}/{total:number|formatted}
 msgid "defaultTreeCreationLoadingMessage"
 msgstr "Default tree creation is in progress, please wait..."
 
-#: components/TreeView/CreateTree.tsx:504
+#: components/TreeView/CreateTree.tsx:506
 #. Used in: Components > Tree View > Create Tree
 msgid "missingRanks"
 msgstr "Missing Ranks"
 
-#: components/TreeView/CreateTree.tsx:508
+#: components/TreeView/CreateTree.tsx:510
 #. Used in: Components > Tree View > Create Tree
 msgid "missingRanksDescription"
 msgstr ""
 "The populated tree you selected to download contains records in ranks that "
 "are missing from your tree."
 
-#: components/TreeView/CreateTree.tsx:516
+#: components/TreeView/CreateTree.tsx:518
 #. Used in: Components > Tree View > Create Tree
 msgid "createMissingRanks"
 msgstr "Should the missing ranks be created?"
 
 #: components/SetupTool/SetupForm.tsx:320
-#: components/TreeView/CreateTree.tsx:474
+#: components/TreeView/CreateTree.tsx:476
 #. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 msgid "source"
 msgstr "Source"

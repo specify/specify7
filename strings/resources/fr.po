@@ -370,7 +370,7 @@ msgstr "Titre"
 msgid "default"
 msgstr "Défaut"
 
-#: components/FieldFormatters/index.ts:375
+#: components/FieldFormatters/index.ts:382
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
@@ -752,37 +752,37 @@ msgstr "(non conforme)"
 msgid "value"
 msgstr "Valeur"
 
-#: components/FieldFormatters/index.ts:368
+#: components/FieldFormatters/index.ts:375
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "constant"
 msgstr "Constante"
 
-#: components/FieldFormatters/index.ts:370
+#: components/FieldFormatters/index.ts:377
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "alpha"
 msgstr "Alpha"
 
-#: components/FieldFormatters/index.ts:371
+#: components/FieldFormatters/index.ts:378
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "numeric"
 msgstr "Numérique"
 
-#: components/FieldFormatters/index.ts:372
+#: components/FieldFormatters/index.ts:379
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "alphanumeric"
 msgstr "alphanumérique"
 
-#: components/FieldFormatters/index.ts:373
+#: components/FieldFormatters/index.ts:380
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "anychar"
 msgstr "N'importe quel personnage"
 
-#: components/FieldFormatters/index.ts:374
+#: components/FieldFormatters/index.ts:381
 #. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "regex"

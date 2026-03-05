@@ -317,7 +317,7 @@ msgstr "Назва"
 msgid "default"
 msgstr "За замовчуванням"
 
-#: components/FieldFormatters/index.ts:375
+#: components/FieldFormatters/index.ts:382
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
@@ -642,32 +642,32 @@ msgstr "(невідповідний)"
 msgid "value"
 msgstr "Значення"
 
-#: components/FieldFormatters/index.ts:368
+#: components/FieldFormatters/index.ts:375
 #. Used in: Components > Field Formatters > Index
 msgid "constant"
 msgstr "Постійна"
 
-#: components/FieldFormatters/index.ts:370
+#: components/FieldFormatters/index.ts:377
 #. Used in: Components > Field Formatters > Index
 msgid "alpha"
 msgstr "Альфа"
 
-#: components/FieldFormatters/index.ts:371
+#: components/FieldFormatters/index.ts:378
 #. Used in: Components > Field Formatters > Index
 msgid "numeric"
 msgstr "Числовий"
 
-#: components/FieldFormatters/index.ts:372
+#: components/FieldFormatters/index.ts:379
 #. Used in: Components > Field Formatters > Index
 msgid "alphanumeric"
 msgstr "Буквено-цифровий"
 
-#: components/FieldFormatters/index.ts:373
+#: components/FieldFormatters/index.ts:380
 #. Used in: Components > Field Formatters > Index
 msgid "anychar"
 msgstr "Будь-який символ"
 
-#: components/FieldFormatters/index.ts:374
+#: components/FieldFormatters/index.ts:381
 #. Used in: Components > Field Formatters > Index
 msgid "regex"
 msgstr "Регулярний вираз"

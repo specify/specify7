@@ -18,7 +18,7 @@ msgstr "Specify 7"
 
 #: components/Preferences/UserDefinitions.tsx:2050
 #: components/SetupTool/SetupOverview.tsx:85
-#: components/TreeView/CreateTree.tsx:499
+#: components/TreeView/CreateTree.tsx:501
 #: components/WorkBench/DataSetMeta.tsx:294
 #: utils/parser/definitions.ts:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -89,9 +89,9 @@ msgstr "No"
 #: components/TreeView/Actions.tsx:403
 #: components/TreeView/Actions.tsx:419
 #: components/TreeView/AddRank.tsx:54
-#: components/TreeView/CreateTree.tsx:150
-#: components/TreeView/CreateTree.tsx:336
-#: components/TreeView/CreateTree.tsx:582
+#: components/TreeView/CreateTree.tsx:151
+#: components/TreeView/CreateTree.tsx:338
+#: components/TreeView/CreateTree.tsx:584
 #: components/WbActions/WbRevert.tsx:39
 #: components/WbActions/WbRollback.tsx:62
 #: components/WbActions/WbUpload.tsx:101
@@ -277,8 +277,8 @@ msgstr "Create"
 #: components/Toolbar/QueryTablesWrapper.tsx:156
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:407
-#: components/TreeView/CreateTree.tsx:497
-#: components/TreeView/CreateTree.tsx:585
+#: components/TreeView/CreateTree.tsx:499
+#: components/TreeView/CreateTree.tsx:587
 #: components/WbActions/WbNoUploadPlan.tsx:43
 #: components/WbActions/index.tsx:212
 #: components/WbActions/index.tsx:223
@@ -850,8 +850,8 @@ msgstr "Export"
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:151
-#: components/TreeView/CreateTree.tsx:310
-#: components/TreeView/CreateTree.tsx:338
+#: components/TreeView/CreateTree.tsx:312
+#: components/TreeView/CreateTree.tsx:340
 #. Used in: Components > Attachments > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Tree View > Create Tree
 msgid "import"
 msgstr "Import"
@@ -954,7 +954,7 @@ msgstr "Reset"
 msgid "select"
 msgstr "Select"
 
-#: components/FieldFormatters/index.ts:336
+#: components/FieldFormatters/index.ts:343
 #: components/PickLists/definitions.ts:54
 #: components/Preferences/Renderers.tsx:162
 #: components/SchemaConfig/Components.tsx:77
