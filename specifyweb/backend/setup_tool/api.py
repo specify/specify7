@@ -5,9 +5,11 @@ These will be called in the correct order by the background setup task in setup_
 
 import json
 from typing import Optional
+from datetime import timedelta
 from django.http import (JsonResponse)
 from django.db.models import Max
 from django.db import transaction
+from django.utils import timezone
 
 from specifyweb.backend.permissions.models import UserPolicy
 
@@ -42,6 +44,7 @@ logger = logging.getLogger(__name__)
 
 APP_VERSION = "7"
 SCHEMA_VERSION = "2.10"
+CONFIG_TASK_COLLECTION_BLOCK_WINDOW = timedelta(minutes=15)
 
 class SetupError(Exception):
     """Raised by any setup tasks."""
@@ -67,16 +70,18 @@ def get_setup_progress() -> dict:
         completed_resources = get_setup_resource_progress()
         last_error = get_last_setup_error()
 
-    has_incomplete_resources = not all(completed_resources.values())
-    if has_incomplete_resources:
-        # During initial setup, include tracked config/setup tasks in busy state.
-        busy = busy or _tracked_setup_tasks_busy() or is_config_task_running()
-
+    if not busy:
+        setup_complete = _setup_resources_complete(completed_resources)
+        if active_setup_task is not None or not setup_complete:
+            busy = is_config_task_running()
     return {
         "resources": completed_resources,
         "last_error": last_error,
         "busy": busy,
     }
+
+def _setup_resources_complete(completed_resources: dict) -> bool:
+    return all(bool(resource_ready) for resource_ready in completed_resources.values())
 
 def get_setup_resource_progress() -> dict:
     """Returns a dictionary of the status of database setup resources."""
@@ -559,11 +564,9 @@ def get_config_progress(collection_id: Optional[int] = None) -> dict:
     except MissingWorkerError:
         running_task_names = []
 
-    busy = (
-        is_collection_config_busy(collection_id)
-        if collection_id is not None
-        else is_config_task_running(running_task_names) or _tracked_setup_tasks_busy()
-    )
+    busy = is_config_task_running(running_task_names)
+    if busy and collection_id is not None:
+        busy = _is_new_collection_in_time_window(collection_id)
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)
 
@@ -572,3 +575,15 @@ def get_config_progress(collection_id: Optional[int] = None) -> dict:
         "last_error": last_error,
         "busy": busy,
     }
+
+def _is_new_collection_in_time_window(collection_id: int) -> bool:
+    """Return True when a newly created collection is still in the new collection time window."""
+    from specifyweb.specify.models import Collection
+
+    collection = Collection.objects.filter(id=collection_id).only("timestampcreated").first()
+    if collection is None:
+        return False
+    if collection.timestampcreated is None:
+        return False
+
+    return collection.timestampcreated > timezone.now() - CONFIG_TASK_COLLECTION_BLOCK_WINDOW

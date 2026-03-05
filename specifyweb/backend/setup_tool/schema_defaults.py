@@ -3,56 +3,17 @@ from specifyweb.specify.migration_utils.update_schema_config import update_table
 from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
 from specifyweb.specify.models import Discipline
-from specifyweb.backend.redis_cache.store import add_to_set, delete_key, remove_from_set, set_members
-from specifyweb.backend.setup_tool.redis import DISCIPLINE_TASK_IDS_REDIS_KEY
+from django.db import transaction
+from celery.exceptions import MaxRetriesExceededError
 
 from pathlib import Path
-from typing import Optional
 from uuid import uuid4
 
 import logging
 logger = logging.getLogger(__name__)
 
-ACTIVE_CELERY_STATES = frozenset(("PENDING", "RECEIVED", "STARTED", "RETRY", "PROGRESS"))
-
-def _discipline_task_ids_key(discipline_id: int) -> str:
-    return DISCIPLINE_TASK_IDS_REDIS_KEY.replace(
-        "{discipline_id}", f"({{database}},{discipline_id})"
-    )
-
-def _track_discipline_task(discipline_id: int, task_id: str) -> None:
-    add_to_set(_discipline_task_ids_key(discipline_id), task_id)
-
-def _untrack_discipline_task(discipline_id: Optional[int], task_id: Optional[str]) -> None:
-    if discipline_id is None or task_id is None:
-        return
-    key = _discipline_task_ids_key(discipline_id)
-    remove_from_set(key, task_id)
-    if not set_members(key):
-        delete_key(key)
-
-def _is_task_active(task_id: str) -> bool:
-    return app.AsyncResult(task_id).state in ACTIVE_CELERY_STATES
-
-def is_discipline_setup_busy(discipline_id: Optional[int]) -> bool:
-    if discipline_id is None:
-        return False
-
-    key = _discipline_task_ids_key(discipline_id)
-    task_ids = set_members(key)
-    if not task_ids:
-        return False
-
-    inactive_task_ids = []
-    for task_id in task_ids:
-        if _is_task_active(task_id):
-            return True
-        inactive_task_ids.append(task_id)
-
-    remove_from_set(key, *inactive_task_ids)
-    if not set_members(key):
-        delete_key(key)
-    return False
+SCHEMA_DEFAULTS_MISSING_DISCIPLINE_RETRY_DELAY_SEC = 2
+SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES = 5
 
 def apply_schema_defaults(discipline: Discipline):
     """
@@ -104,20 +65,32 @@ def apply_schema_defaults(discipline: Discipline):
 def queue_apply_schema_defaults_background(discipline_id: int) -> str:
     """Queue apply_schema_defaults to run asynchronously and return the task id."""
     task_id = str(uuid4())
-    _track_discipline_task(discipline_id, task_id)
-    try:
-        task = apply_schema_defaults_task.apply_async(args=[discipline_id], task_id=task_id)
-    except Exception:
-        _untrack_discipline_task(discipline_id, task_id)
-        raise
-    return task.id
 
-@app.task(bind=True)
+    # Dispatch only after the discipline row is committed so workers can read it.
+    transaction.on_commit(
+        lambda: apply_schema_defaults_task.apply_async(
+            args=[discipline_id],
+            task_id=task_id,
+        )
+    )
+    return task_id
+
+@app.task(bind=True, max_retries=SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES)
 def apply_schema_defaults_task(self, discipline_id: int):
     """Run schema localization defaults for one discipline in a background worker."""
-    task_id = getattr(self.request, "id", None)
     try:
         discipline = Discipline.objects.get(id=discipline_id)
-        apply_schema_defaults(discipline)
-    finally:
-        _untrack_discipline_task(discipline_id, task_id)
+    except Discipline.DoesNotExist as exc:
+        try:
+            raise self.retry(
+                exc=exc,
+                countdown=SCHEMA_DEFAULTS_MISSING_DISCIPLINE_RETRY_DELAY_SEC,
+            )
+        except MaxRetriesExceededError:
+            logger.error(
+                "Skipping schema defaults. Discipline %s does not exist after %s retries.",
+                discipline_id,
+                SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES,
+            )
+            return
+    apply_schema_defaults(discipline)
