@@ -6,7 +6,8 @@ import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
-import { defaultWelcomePageImage } from '../Preferences/Renderers';
+import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
+import { useDarkMode } from '../Preferences/Hooks';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
 
@@ -73,12 +74,13 @@ function WelcomeScreenContent(): JSX.Element {
 
 function DefaultSplashScreen(): JSX.Element {
   const hueDifference = useHueDifference();
+  const isDarkMode = useDarkMode();
   return (
     <div className="relative">
       <img
         alt=""
         className="w-[800px]"
-        src={defaultWelcomePageImage}
+        src={getDefaultWelcomePageImage(isDarkMode)}
         style={{ filter: `hue-rotate(${hueDifference}deg)` }}
       />
       {/* The following gradients in the divs are here to apply a fade out effect on the image */}
