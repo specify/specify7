@@ -106,7 +106,7 @@ exports[` renders without errors 5`] = `
 <DocumentFragment>
   <button
     aria-label="Search"
-    class="icon link rounded !text-brand-400 print:hidden "
+    class="icon link rounded !text-blue-100 print:hidden "
     title="Search"
     type="button"
   >
