@@ -97,7 +97,7 @@ export function CreateTree<
   >(undefined);
 
   const connectedCollection = getSystemInfo().collection;
-  const connectedDiscipline = getSystemInfo().discipline;
+  const discipline = getSystemInfo().discipline;
 
   // Start default tree creation
   const handleClick = async (
@@ -108,7 +108,7 @@ export function CreateTree<
       resource.file,
       resource.mappingFile,
       connectedCollection,
-      connectedDiscipline,
+      discipline,
       resource.rows,
       resource.title,
       undefined,
