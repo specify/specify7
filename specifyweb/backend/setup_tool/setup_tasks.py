@@ -203,7 +203,8 @@ def setup_database_task(self, data: dict):
             logger.info('Creating collection')
             collection_result = api.create_collection(
                 data['collection'],
-                run_fix_schema_config_async=False
+                run_fix_schema_config_async=False,
+                require_discipline_ready=False,
             )
             collection_id = collection_result.get('collection_id')
             update_progress()

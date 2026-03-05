@@ -4,5 +4,7 @@ ACTIVE_TASK_REDIS_KEY = "specify:{database}:setup:active_task_id"
 ACTIVE_TASK_TTL = 60*60*2 # setup should be less than 2 hours
 # Keep track of config/setup celery task ids by collection.
 COLLECTION_TASK_IDS_REDIS_KEY = "specify:{database}:setup:collection:{collection_id}:task_ids"
+# Keep track of discipline setup celery task ids by discipline.
+DISCIPLINE_TASK_IDS_REDIS_KEY = "specify:{database}:setup:discipline:{discipline_id}:task_ids"
 # Keep track of last error.
 LAST_ERROR_REDIS_KEY = "specify:{database}:setup:last_error"

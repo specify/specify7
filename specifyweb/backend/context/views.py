@@ -305,6 +305,9 @@ def collection(request):
         set_collection_cookie(response, collection.id)
         return response
     else:
+        available_collections = _filter_collections_not_ready_for_config_task(
+            available_collections
+        )
         response = dict(
             available=[obj_to_data(c) for c in available_collections],
             current=(current and int(current))

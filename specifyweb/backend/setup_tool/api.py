@@ -16,6 +16,7 @@ from specifyweb.specify import models
 from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
 from specifyweb.backend.setup_tool.schema_defaults import (
     apply_schema_defaults,
+    is_discipline_setup_busy,
     queue_apply_schema_defaults_background,
 )
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
@@ -50,7 +51,6 @@ def get_setup_progress() -> dict:
     """Returns a dictionary of the status of the database setup."""
     # Check if setup is currently in progress
     active_setup_task, busy = get_active_setup_task()
-    busy = busy or is_config_task_running()
 
     completed_resources = None
     last_error = None
@@ -66,6 +66,11 @@ def get_setup_progress() -> dict:
     if completed_resources is None:
         completed_resources = get_setup_resource_progress()
         last_error = get_last_setup_error()
+
+    has_incomplete_resources = not all(completed_resources.values())
+    if has_incomplete_resources:
+        # During initial setup, include tracked config/setup tasks in busy state.
+        busy = busy or _tracked_setup_tasks_busy() or is_config_task_running()
 
     return {
         "resources": completed_resources,
@@ -302,7 +307,11 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     except Exception as e:
         raise SetupError(e)
 
-def create_collection(data, run_fix_schema_config_async: bool = True):
+def create_collection(
+    data,
+    run_fix_schema_config_async: bool = True,
+    require_discipline_ready: bool = True,
+):
     from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
@@ -326,6 +335,11 @@ def create_collection(data, run_fix_schema_config_async: bool = True):
         data['discipline'] = discipline
     else:
         raise SetupError("No discipline available")
+
+    if require_discipline_ready and is_discipline_setup_busy(discipline.id):
+        raise SetupError(
+            "This discipline is still being created. Please wait for background setup tasks to finish before creating a collection."
+        )
     
     # The discipline needs a Taxon Tree in order for the Collection Object Type to be created.
     if not discipline.taxontreedef_id:
@@ -491,6 +505,18 @@ CONFIG_TASKS = frozenset({
     "specifyweb.backend.setup_tool.schema_defaults.apply_schema_defaults_task",
 })
 
+
+def _tracked_setup_tasks_busy() -> bool:
+    """True if any tracked collection/discipline setup task is active."""
+    if any(
+        is_discipline_setup_busy(discipline_id)
+        for discipline_id in Discipline.objects.values_list('id', flat=True)
+    ):
+        return True
+    collection_ids = models.Collection.objects.values_list('id', flat=True)
+    return bool(_get_collections_with_busy_config(collection_ids))
+
+
 def _task_name_to_progress_key(task_name: str) -> str:
     """Convert a task function name into a camelCase progress key."""
     task_function_name = task_name.rsplit(".", 1)[-1]
@@ -536,7 +562,7 @@ def get_config_progress(collection_id: Optional[int] = None) -> dict:
     busy = (
         is_collection_config_busy(collection_id)
         if collection_id is not None
-        else is_config_task_running(running_task_names)
+        else is_config_task_running(running_task_names) or _tracked_setup_tasks_busy()
     )
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)
