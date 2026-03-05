@@ -46,11 +46,19 @@ const config: Config = {
       colors: {
         // Specify brand colors
         brand: {
+          /*
+          TODO: Revert to variables
           100: 'var(--accent-color-100)',
           200: 'var(--accent-color-200)',
           300: 'var(--accent-color-300)',
           400: 'var(--accent-color-400)',
           500: 'var(--accent-color-500)',
+          */
+          100: '#d4d8bf',
+          200: '#a4af83',
+          300: '#86965e',
+          400: '#6b813d',
+          500: '#596c32',
         },
         // Some in-between shades:
         gray: {
@@ -68,6 +76,15 @@ const config: Config = {
         neutral: {
           350: 'hsl(0deg 0% 73%)',
         },
+        blue: {
+          100: '#0074B5',
+        },
+        cream: {
+          100: '#e0e2b9',
+        },
+        brown: {
+          100: '#4e3e32',
+        }
       },
       spacing: {
         'table-icon': '1.25rem',
