@@ -20,7 +20,7 @@ dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
-  rounded p-4 shadow-gray-400 shadow-2xl`;
+  rounded p-4 shadow-gray-400 outline outline-1 outline-gray-300 dark:outline-neutral-800`;
 const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
