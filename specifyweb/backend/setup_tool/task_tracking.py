@@ -35,6 +35,11 @@ def _collection_tasks_key(collection_id: int) -> str:
 def _discipline_tasks_key(discipline_id: int) -> str:
     return DISCIPLINE_TASKS_REDIS_KEY.replace("{discipline_id}", str(discipline_id))
 
+def _remove_task_ids_and_delete_empty_key(key: str, *task_ids: str) -> None:
+    remove_from_set(key, *task_ids)
+    if len(set_members(key)) == 0:
+        delete_key(key)
+
 def queue_collection_background_task(collection_id: int, task_id: str) -> None:
     try:
         add_to_set(_collection_tasks_key(collection_id), task_id)
@@ -47,10 +52,7 @@ def queue_collection_background_task(collection_id: int, task_id: str) -> None:
 
 def finish_collection_background_task(collection_id: int, task_id: str) -> None:
     try:
-        key = _collection_tasks_key(collection_id)
-        remove_from_set(key, task_id)
-        if len(set_members(key)) == 0:
-            delete_key(key)
+        _remove_task_ids_and_delete_empty_key(_collection_tasks_key(collection_id), task_id)
     except Exception:
         logger.warning(
             "Failed to clear tracked collection task %s for collection %s.",
@@ -70,10 +72,7 @@ def queue_discipline_background_task(discipline_id: int, task_id: str) -> None:
 
 def finish_discipline_background_task(discipline_id: int, task_id: str) -> None:
     try:
-        key = _discipline_tasks_key(discipline_id)
-        remove_from_set(key, task_id)
-        if len(set_members(key)) == 0:
-            delete_key(key)
+        _remove_task_ids_and_delete_empty_key(_discipline_tasks_key(discipline_id), task_id)
     except Exception:
         logger.warning(
             "Failed to clear tracked discipline task %s for discipline %s.",
@@ -101,9 +100,7 @@ def _active_task_ids_from_redis_key(key: str) -> set[str]:
             active_task_ids.add(task_id)
 
         if finished_task_ids:
-            remove_from_set(key, *finished_task_ids)
-            if len(set_members(key)) == 0:
-                delete_key(key)
+            _remove_task_ids_and_delete_empty_key(key, *finished_task_ids)
 
         return active_task_ids
     except Exception:

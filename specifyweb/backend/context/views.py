@@ -42,8 +42,7 @@ from specifyweb.backend.setup_tool.api import (
     filter_ready_collections_for_config_tasks,
     filter_ready_disciplines_for_config_tasks,
 )
-
-
+   
 def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
@@ -619,8 +618,7 @@ def viewsets(request):
                            file not in FORM_RESOURCE_EXCLUDED_LST, all_files))
 
     return HttpResponse(json.dumps(viewsets), content_type="application/json")
-
-
+  
 def view_helper(request, limit):
     if 'collectionid' in request.GET:
         # Allow a URL parameter to override the logged in collection.
@@ -647,16 +645,13 @@ def remote_prefs(request):
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
-
-
+  
 def _filter_collections_not_ready_for_config_task(collections):
     return filter_ready_collections_for_config_tasks(collections)
-
-
+  
 def _filter_disciplines_not_ready_for_config_task(disciplines):
     return filter_ready_disciplines_for_config_tasks(disciplines)
-
-
+  
 def _build_system_data(*, filter_not_ready_collections: bool):
     institution = Institution.objects.get()
     divisions = list(Division.objects.all())
@@ -805,8 +800,7 @@ def get_endpoint_tags(endpoint):
 
     list = [endpoint[method]['tags'] for method in methods]
     return [item for sublist in list for item in sublist]  # flatten the list
-
-
+  
 def get_tags(endpoints):
 
     tag_names = [get_endpoint_tags(endpoint) for endpoint in endpoints.values()]
@@ -933,8 +927,7 @@ def get_endpoints(
                 prefix + path,
                 preparams + params
             )
-
-
+  
 def generate_openapi_for_endpoints(all_endpoints=False): # pragma: no cover
     """Returns a JSON description of endpoints.
 

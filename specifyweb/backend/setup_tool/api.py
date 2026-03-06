@@ -528,7 +528,6 @@ def get_config_resource_progress(running_task_names: Optional[list[str]] = None)
     active_task_names = set(running_task_names or [])
     return _get_config_resource_progress_from_active_names(active_task_names)
 
-
 def is_collection_busy_for_config_tasks(
     collection_id: int,
     discipline_id: Optional[int] = None,
@@ -540,10 +539,8 @@ def is_collection_busy_for_config_tasks(
         discipline_id = collection.discipline_id
     return not is_collection_ready_for_config_tasks(collection_id, discipline_id)
 
-
 def is_discipline_busy_for_config_tasks(discipline_id: int) -> bool:
     return not is_discipline_ready_for_config_tasks(discipline_id)
-
 
 def filter_ready_collections_for_config_tasks(collections: list) -> list:
     return [
@@ -552,14 +549,12 @@ def filter_ready_collections_for_config_tasks(collections: list) -> list:
         if not is_collection_busy_for_config_tasks(collection.id, collection.discipline_id)
     ]
 
-
 def filter_ready_disciplines_for_config_tasks(disciplines: list) -> list:
     return [
         discipline
         for discipline in disciplines
         if not is_discipline_busy_for_config_tasks(discipline.id)
     ]
-
 
 def get_config_progress(collection_id: Optional[int] = None) -> dict:
     """Returns a dict of the status of config/setup related background tasks"""
