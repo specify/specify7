@@ -978,8 +978,8 @@ function BatchIdentifyDialog({
                 ))}
               </div>
             )}
-            <div className="grid min-h-0 flex-1 grid-rows-[auto_minmax(16rem,1fr)] gap-3">
-              <div className="min-h-0 overflow-hidden">
+            <div className="grid min-h-0 flex-1 grid-rows-[minmax(0,1fr)_minmax(16rem,1fr)] gap-3">
+              <div className="min-h-0 overflow-y-auto">
                 <TreeDefinitionContext.Provider value={selectedTaxonTreeDefUri}>
                   <ResourceView
                     dialog={false}

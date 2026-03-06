@@ -45,7 +45,7 @@ export const batchIdentifyText = createDictionary({
     'en-us': 'Collection Object Types',
   },
   invalidRecordSetTitle: {
-    'en-us': 'Invalid Record Set',
+    'en-us': 'Mixed Record Set',
   },
   invalidRecordSetMessage: {
     'en-us':
