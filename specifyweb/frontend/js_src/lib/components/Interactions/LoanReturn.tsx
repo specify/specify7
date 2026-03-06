@@ -11,7 +11,6 @@ import { replaceItem } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
-import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { tables } from '../DataModel/tables';
 import type { Loan, LoanPreparation } from '../DataModel/types';
@@ -20,6 +19,7 @@ import { autoGenerateViewDefinition } from '../Forms/generateFormDefinition';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
+import { getField } from '../DataModel/helpers';
 import {
   PrepReturnRow,
   updateResolvedChanged,
