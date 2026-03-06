@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-03-06 16:10+0000\n"
-"Last-Translator: Deleted User <mgorpinic2005@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "welcome/uk/>\n"
 "Language: uk\n"
@@ -110,7 +110,7 @@ msgstr "Версія бази даних:"
 #: components/SchemaViewer/index.tsx:44
 #, fuzzy
 msgid "schemaVersion"
-msgstr "Версія схеми БД"
+msgstr "Схема бази даних"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
