@@ -251,10 +251,13 @@ class DefaultTreeContext():
 
                 # Store the ids of the nodes were created in this batch
                 created_names = [n.name for n in nodes_to_create]
+                placeholders = ",".join(["%s"] * len(created_names))
                 created_nodes = self.tree_node_model.objects.filter(
                     definition=self.tree_def,
                     definitionitem=rank,
-                    name__in=created_names
+                ).extra(
+                    where=[f"BINARY name IN ({placeholders})"],
+                    params=created_names
                 )
                 self.created[rank_id].update({n.name: n.id for n in created_nodes})
 
