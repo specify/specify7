@@ -6,10 +6,12 @@ from . import views
 urlpatterns = [
     # check if the db is new at login
     re_path(r'^setup_progress/$', views.get_setup_progress),
+    re_path(r'^config_progress/$', views.get_config_progress),
 
     re_path(r'^setup_database/create/$', views.setup_database_view),
 
-    re_path(r'^discipline_and_trees/create/$', views.create_discipline_and_trees)
+    re_path(r'^discipline_and_trees/create/$', views.create_discipline_and_trees),
+    re_path(r'^running_worker_tasks/$', views.get_running_worker_tasks),
 
     # These urls are functional but unused by the setup process. The API can be used instead.
     # re_path(r'^institution/create/$', views.create_institution_view),

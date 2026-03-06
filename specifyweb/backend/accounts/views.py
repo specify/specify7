@@ -1,4 +1,5 @@
 import base64
+from datetime import timedelta
 import hashlib
 import hmac
 import json
@@ -16,7 +17,7 @@ from django.db import connection
 from django.db.models import Max
 from django.shortcuts import render
 from django.template.response import TemplateResponse
-from django.utils import crypto
+from django.utils import crypto, timezone
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
 from typing import cast
@@ -294,6 +295,7 @@ def choose_collection(request) -> http.HttpResponse:
     id to the user if one is provided.
     """
     from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
+    from specifyweb.backend.setup_tool.api import is_config_task_running
 
     
     from specifyweb.specify.api.serializers import obj_to_data, toJson
@@ -318,7 +320,15 @@ def choose_collection(request) -> http.HttpResponse:
     )
 
     available_collections = users_collections_for_sp7(request.specify_user.id)
-
+    if is_config_task_running():
+        # If config tasks are running, filter out newly created collections
+        fifteen_minutes_ago = timezone.now() - timedelta(minutes=15)
+        available_collections = [
+            c
+            for c in available_collections
+            if c.timestampcreated is None or c.timestampcreated <= fifteen_minutes_ago
+        ]
+    
     if len(available_collections) == 1:
         set_collection_cookie(redirect_resp, available_collections[0].id)
         return redirect_resp

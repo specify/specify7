@@ -5,9 +5,11 @@ These will be called in the correct order by the background setup task in setup_
 
 import json
 from typing import Optional
+from datetime import timedelta
 from django.http import (JsonResponse)
 from django.db.models import Max
 from django.db import transaction
+from django.utils import timezone
 
 from specifyweb.backend.permissions.models import UserPolicy
 
@@ -20,6 +22,7 @@ from specifyweb.backend.setup_tool.schema_defaults import (
 )
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
+from specifyweb.backend.setup_tool.app_resource_defaults import ensure_discipline_resource_dir
 from specifyweb.backend.setup_tool.setup_tasks import (
     setup_database_background,
     get_active_setup_task,
@@ -27,7 +30,7 @@ from specifyweb.backend.setup_tool.setup_tasks import (
     set_last_setup_error,
     queue_fix_schema_config_background,
 )
-from specifyweb.celery_tasks import MissingWorkerError
+from specifyweb.celery_tasks import MissingWorkerError, get_running_worker_task_names
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
@@ -38,6 +41,7 @@ logger = logging.getLogger(__name__)
 
 APP_VERSION = "7"
 SCHEMA_VERSION = "2.10"
+CONFIG_TASK_COLLECTION_BLOCK_WINDOW = timedelta(minutes=15)
 
 class SetupError(Exception):
     """Raised by any setup tasks."""
@@ -63,11 +67,18 @@ def get_setup_progress() -> dict:
         completed_resources = get_setup_resource_progress()
         last_error = get_last_setup_error()
 
+    if not busy:
+        setup_complete = _setup_resources_complete(completed_resources)
+        if active_setup_task is not None or not setup_complete:
+            busy = is_config_task_running()
     return {
         "resources": completed_resources,
         "last_error": last_error,
         "busy": busy,
     }
+
+def _setup_resources_complete(completed_resources: dict) -> bool:
+    return all(bool(resource_ready) for resource_ready in completed_resources.values())
 
 def get_setup_resource_progress() -> dict:
     """Returns a dictionary of the status of database setup resources."""
@@ -215,7 +226,7 @@ def create_division(data):
 def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     from specifyweb.specify.models import (
         Division, Datatype, Geographytreedef,
-        Geologictimeperiodtreedef, Taxontreedef, Tectonicunittreedef, Lithostrattreedef
+        Geologictimeperiodtreedef, Taxontreedef
     )
 
     # Check if discipline_id is provided and already exists
@@ -223,7 +234,16 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     if existing_id:
         existing_discipline = Discipline.objects.filter(id=existing_id).first()
         if existing_discipline:
+            ensure_discipline_resource_dir(existing_discipline)
             return {"discipline_id": existing_discipline.id}
+
+    # Guard against duplicate discipline names across divisions
+    discipline_name = data.get('name')
+    if isinstance(discipline_name, str):
+        normalized_name = discipline_name.strip()
+        data['name'] = normalized_name
+        if normalized_name and Discipline.objects.filter(name__iexact=normalized_name).exists():
+            raise SetupError(f"A discipline named '{normalized_name}' already exists.")
 
     # Resolve division
     division_url = data.get('division')
@@ -236,11 +256,13 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     
     # Ensure required foreign key objects exist
     datatype = Datatype.objects.last() or Datatype.objects.create(id=1, name='Biota')
-    geographytreedef_url = data.pop('geographytreedef_1', None)
-    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef_1', None)
+    geographytreedef_url = data.pop('geographytreedef', None)
+    geographytreedef_id = data.pop('geographytreedef_id', None)
+    geologictimeperiodtreedef_url = data.pop('geologictimeperiodtreedef', None)
+    geologictimeperiodtreedef_id = data.pop('geologictimeperiodtreedef_id', None)
 
-    geographytreedef = resolve_uri_or_fallback(geographytreedef_url, None, Geographytreedef)
-    geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, None, Geologictimeperiodtreedef)
+    geographytreedef = resolve_uri_or_fallback(geographytreedef_url, geographytreedef_id, Geographytreedef)
+    geologictimeperiodtreedef = resolve_uri_or_fallback(geologictimeperiodtreedef_url, geologictimeperiodtreedef_id, Geologictimeperiodtreedef)
 
     if geologictimeperiodtreedef is None:
         raise SetupError("A Geography tree and Chronostratigraphy tree must exist before creating a discipline.")
@@ -268,6 +290,7 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     # Create new Discipline
     try:
         new_discipline = Discipline.objects.create(**data)
+        ensure_discipline_resource_dir(new_discipline)
 
         # Create Splocalecontainers for all datamodel tables
         if run_apply_schema_defaults_async:
@@ -448,11 +471,15 @@ def create_tree(name: str, data: dict) -> dict:
 
         treedef = start_default_tree_from_configuration(name, kwargs, ranks)
 
-        # Set as the primary tree in the discipline if its the first one
+        # Set as the primary tree in the institution/discipline if its the first one
+        tree_field_name = f'{name.lower()}treedef_id'
+        if use_institution and institution:
+            if getattr(institution, tree_field_name) is None:
+                setattr(institution, tree_field_name, treedef.id)
+                institution.save()
         if use_discipline and discipline:
-            field_name = f'{name.lower()}treedef_id'
-            if getattr(discipline, field_name) is None:
-                setattr(discipline, field_name, treedef.id)
+            if getattr(discipline, tree_field_name) is None:
+                setattr(discipline, tree_field_name, treedef.id)
                 discipline.save()
 
         # Optionally preload tree
@@ -463,3 +490,70 @@ def create_tree(name: str, data: dict) -> dict:
         return {'treedef_id': treedef.id}
     except Exception as e:
         raise SetupError(e)
+
+CONFIG_TASKS = frozenset({
+    "specifyweb.backend.trees.defaults.create_default_tree_task",
+    "specifyweb.backend.setup_tool.setup_tasks.setup_database_task",
+    "specifyweb.backend.setup_tool.setup_tasks.fix_schema_config_task",
+    "specifyweb.backend.setup_tool.schema_defaults.apply_schema_defaults_task",
+})
+
+def _task_name_to_progress_key(task_name: str) -> str:
+    """Convert a task function name into a camelCase progress key."""
+    task_function_name = task_name.rsplit(".", 1)[-1]
+    parts = task_function_name.split("_")
+    return parts[0] + "".join(part.title() for part in parts[1:])
+
+def _get_config_resource_progress_from_active_names(active_task_names: set[str]) -> dict:
+    """Return config task booleans from a set of active task names"""
+    return {
+        _task_name_to_progress_key(task_name): task_name in active_task_names
+        for task_name in sorted(CONFIG_TASKS)
+    }
+
+def is_config_task_running(running_task_names: Optional[list[str]] = None) -> bool:
+    """Returns whether any setup or config related Celery task is currently active"""
+    if running_task_names is None:
+        try:
+            running_task_names = get_running_worker_task_names()
+        except MissingWorkerError:
+            return False
+
+    active_task_names = set(running_task_names)
+    return not CONFIG_TASKS.isdisjoint(active_task_names)
+
+def get_config_resource_progress(running_task_names: Optional[list[str]] = None) -> dict:
+    """Returns a dictionary of config task activity by task type"""
+    active_task_names = set(running_task_names or [])
+    return _get_config_resource_progress_from_active_names(active_task_names)
+
+def get_config_progress(collection_id: Optional[int] = None) -> dict:
+    """Returns a dict of the status of config/setup related background tasks"""
+    try:
+        running_task_names = get_running_worker_task_names()
+    except MissingWorkerError:
+        running_task_names = []
+
+    busy = is_config_task_running(running_task_names)
+    if busy and collection_id is not None:
+        busy = _is_new_collection_in_time_window(collection_id)
+    last_error = None
+    completed_resources = get_config_resource_progress(running_task_names)
+
+    return {
+        "resources": completed_resources,
+        "last_error": last_error,
+        "busy": busy,
+    }
+
+def _is_new_collection_in_time_window(collection_id: int) -> bool:
+    """Return True when a newly created collection is still in the new collection time window."""
+    from specifyweb.specify.models import Collection
+
+    collection = Collection.objects.filter(id=collection_id).only("timestampcreated").first()
+    if collection is None:
+        return False
+    if collection.timestampcreated is None:
+        return False
+
+    return collection.timestampcreated > timezone.now() - CONFIG_TASK_COLLECTION_BLOCK_WINDOW

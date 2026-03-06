@@ -21,13 +21,13 @@
           "rank": 20
         },
         {
-          "name": "Division",
+          "name": "Phylum",
           "enforced": true,
           "infullname": false,
           "rank": 30
         },
         {
-          "name": "Subdivision",
+          "name": "Subphylum",
           "enforced": false,
           "infullname": false,
           "rank": 40

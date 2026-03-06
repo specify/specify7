@@ -1,5 +1,12 @@
 from typing import Optional
-from specifyweb.specify.models import Spappresource, Spappresourcedata, Spappresourcedir, Specifyuser
+
+from specifyweb.specify.models import (
+    Discipline,
+    Spappresource,
+    Spappresourcedata,
+    Spappresourcedir,
+    Specifyuser,
+)
 import logging
 logger = logging.getLogger(__name__)
 
@@ -31,3 +38,72 @@ def create_global_prefs(user: Optional[Specifyuser] = None) -> None:
         spappresource=resource,
         data=b''
     )
+
+def ensure_discipline_resource_dir(discipline: Discipline) -> Spappresourcedir:
+    """
+    Ensure a discipline-level app resource directory exists
+    """
+    existing_dir, _, _ = _ensure_discipline_resource_dir(discipline)
+    return existing_dir
+
+def _ensure_discipline_resource_dir(
+    discipline: Discipline,
+) -> tuple[Spappresourcedir, bool, bool]:
+    """
+    Ensure a discipline-level app resource directory exists.
+
+    Returns a tuple of (directory, created, updated).
+    """
+    existing_dir = (
+        Spappresourcedir.objects.filter(
+            discipline=discipline,
+            collection__isnull=True,
+            specifyuser__isnull=True,
+            usertype__isnull=True,
+            ispersonal=False
+        )
+        .first()
+    )
+
+    if existing_dir is None:
+        return (
+            Spappresourcedir.objects.create(
+            discipline=discipline,
+            disciplinetype=discipline.type,
+            ispersonal=False,
+            ),
+            True,
+            False,
+        )
+
+    was_updated = False
+    if existing_dir.disciplinetype != discipline.type:
+        existing_dir.disciplinetype = discipline.type
+        existing_dir.save(update_fields=['disciplinetype'])
+        was_updated = True
+
+    return existing_dir, False, was_updated
+
+def ensure_all_discipline_resource_dirs() -> dict[str, int]:
+    """
+    Ensure every discipline has a discipline-scoped app resource directory.
+
+    Returns summary counts for auditability.
+    """
+    total = 0
+    created = 0
+    updated = 0
+
+    for discipline in Discipline.objects.only('id', 'type'):
+        total += 1
+        _, was_created, was_updated = _ensure_discipline_resource_dir(discipline)
+        if was_created:
+            created += 1
+        if was_updated:
+            updated += 1
+
+    return {
+        'total_disciplines': total,
+        'created': created,
+        'updated': updated,
+    }

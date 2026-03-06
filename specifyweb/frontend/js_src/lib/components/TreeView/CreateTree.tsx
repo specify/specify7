@@ -97,6 +97,7 @@ export function CreateTree<
   >(undefined);
 
   const connectedCollection = getSystemInfo().collection;
+  const discipline = getSystemInfo().discipline;
 
   // Start default tree creation
   const handleClick = async (
@@ -107,7 +108,7 @@ export function CreateTree<
       resource.file,
       resource.mappingFile,
       connectedCollection,
-      resource.discipline,
+      discipline,
       resource.rows,
       resource.title,
       undefined,
@@ -232,6 +233,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
   >(undefined);
 
   const connectedCollection = getSystemInfo().collection;
+  const connectedDiscipline = getSystemInfo().discipline;
 
   const handleClick = async (
     resource: TaxonFileDefaultDefinition,
@@ -281,7 +283,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
       resource.file,
       resource.mappingFile,
       connectedCollection,
-      resource.discipline,
+      connectedDiscipline,
       resource.rows,
       resource.title,
       treeDefId,
@@ -354,6 +356,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
                   setIsTreeCreationStarted(false);
                   setTreeCreationTaskId(undefined);
                   setIsActive(0);
+                  globalThis.location.reload();
                 }}
                 onStopped={() => {
                   setIsTreeCreationStarted(false);

@@ -170,3 +170,17 @@ def create_discipline_and_trees(request):
 def get_setup_progress(request):
     """Returns a dictionary of the status of the database setup."""
     return http.JsonResponse(api.get_setup_progress())
+
+@require_GET
+def get_config_progress(request):
+    """Returns a dictionary of the status of config/setup background tasks"""
+    return http.JsonResponse(api.get_config_progress())
+
+@require_GET
+def get_running_worker_tasks(request):
+    """Returns all currently running Celery task names"""
+    try:
+        return http.JsonResponse({"running_tasks": api.get_running_worker_task_names()})
+    except Exception as e:
+        logger.exception(str(e))
+        return http.JsonResponse({"error": "An internal server error occurred."}, status=500)

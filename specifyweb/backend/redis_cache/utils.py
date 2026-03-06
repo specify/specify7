@@ -12,6 +12,20 @@ def redis_connection(decode_responses=True):
         raise ValueError("Redis is not correctly configured", redis_host, redis_port)
     return Redis(host=redis_host, port=redis_port, db=redis_db_index, decode_responses=decode_responses)
 
+@overload
+def format_key(key: str) -> str: ...
+
+@overload
+def format_key(key: bytes) -> bytes: ...
+
+def format_key(key: str | bytes) -> str | bytes:
+    """Formats key to avoid collisions when specify instances are sharing a cache.
+    Expected format: specify:{database}:app:name"""
+    if isinstance(key, bytes):
+        return key
+    db_name = getattr(settings, "DATABASE_NAME")
+    return key.format(database=db_name)
+
 def _delete_key(key: str):
     host = redis_connection()
     host.delete(key)
@@ -46,6 +60,12 @@ def _add_to_set(key: str, *elements: str):
         return 0
     host = redis_connection(decode_responses=True)
     return host.sadd(key, *elements)
+
+def _remove_from_set(key: str, *elements: str) -> int:
+    if len(elements) <= 0:
+        return 0
+    host = redis_connection(decode_responses=True)
+    return host.srem(key, *elements)
 
 def _set_elements(key: str) -> set:
     host = redis_connection(decode_responses=True)

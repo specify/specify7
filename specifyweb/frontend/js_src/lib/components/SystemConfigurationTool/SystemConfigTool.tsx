@@ -46,7 +46,7 @@ export function SystemConfigurationTool(): JSX.Element | null {
   const refreshAllInfo = React.useCallback(
     async () =>
       load<InstitutionData>(
-        `/context/all_system_data.json?cb=${Date.now()}`,
+        `/context/all_system_config_data.json?cb=${Date.now()}`,
         'application/json'
       ).then(setAllInfo),
     []

@@ -13,17 +13,11 @@ from specifyweb.specify.management.commands.run_key_migration_functions import f
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 from specifyweb.backend.redis_cache.store import set_string, get_string
+from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
 
 from uuid import uuid4
 import logging
 logger = logging.getLogger(__name__)
-
-# Keep track of the currently running setup task. There should only ever be one.
-# Also defined separately in setup_tool/apps.py
-ACTIVE_TASK_REDIS_KEY = "specify:setup:active_task_id"
-ACTIVE_TASK_TTL = 60*60*2 # setup should be less than 2 hours
-# Keep track of last error.
-LAST_ERROR_REDIS_KEY = "specify:setup:last_error"
 
 def setup_database_background(data: dict) -> str:
     # Clear any previous error logs.
@@ -105,12 +99,12 @@ def setup_database_task(self, data: dict):
 
             discipline_type = data['discipline'].get('type', '')
             is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
-            
+            default_tree = DEFAULT_TREE.copy()
 
             # if is_paleo_geo:
             # Create an empty chronostrat tree no matter what because discipline needs it.
             logger.info('Creating Chronostratigraphy tree')
-            default_chronostrat_tree = DEFAULT_TREE.copy()
+            default_chronostrat_tree = default_tree.copy()
             default_chronostrat_tree['fullnamedirection'] = -1
             chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
             chronostrat_treedef_id = chronostrat_result.get('treedef_id')
@@ -123,15 +117,15 @@ def setup_database_task(self, data: dict):
             logger.info('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
             discipline_id = discipline_result.get('discipline_id')
-            DEFAULT_TREE['discipline_id'] = discipline_id
+            default_tree['discipline_id'] = discipline_id
             update_progress()
 
             if is_paleo_geo:
                 logger.info('Creating Lithostratigraphy tree')
-                api.create_lithostrat_tree(DEFAULT_TREE.copy())
+                api.create_lithostrat_tree(default_tree.copy())
 
                 logger.info('Creating Tectonic Unit tree')
-                api.create_tectonicunit_tree(DEFAULT_TREE.copy())
+                api.create_tectonicunit_tree(default_tree.copy())
 
             logger.info('Creating taxon tree')
             if data['taxontreedef'].get('discipline_id') is None:
@@ -197,13 +191,23 @@ def create_discipline_and_trees_task(data: dict):
         with transaction.atomic():
             logger.debug('## CREATING DISCIPLINE AND TREES WITH SETTINGS:##')
             logger.debug(data)
+            
+            discipline_type = data['discipline'].get('type', '')
+            is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
+            default_tree = DEFAULT_TREE.copy()
+
+            logger.info('Creating Chronostratigraphy tree')
+            default_chronostrat_tree = default_tree.copy()
+            default_chronostrat_tree['fullnamedirection'] = -1
+            chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
+            chronostrat_treedef_id = chronostrat_result.get('treedef_id')
+            data['discipline']['geologictimeperiodtreedef_id'] = chronostrat_treedef_id
 
             logger.info('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
             discipline_id = discipline_result.get('discipline_id')
+            default_tree['discipline_id'] = discipline_id
             logger.debug(discipline_id)
-            discipline_type = data['discipline'].get('type', '')
-            is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
 
             # Ensure discipline id is set for tree creation
             if isinstance(data.get('geographytreedef'), dict):
@@ -223,11 +227,11 @@ def create_discipline_and_trees_task(data: dict):
             tectonicunit_id = None
             if is_paleo_geo:
                 logger.info('Creating Lithostratigraphy tree')
-                lithostrat_result = api.create_lithostrat_tree(DEFAULT_TREE.copy())
+                lithostrat_result = api.create_lithostrat_tree(default_tree.copy())
                 lithostrat_id = lithostrat_result.get('lithostrattreedef_id')
 
                 logger.info('Creating Tectonic Unit tree')
-                tectonicunit_result = api.create_tectonicunit_tree(DEFAULT_TREE.copy())
+                tectonicunit_result = api.create_tectonicunit_tree(default_tree.copy())
                 tectonicunit_id = tectonicunit_result.get('tectonicunittreedef_id')
 
             Discipline.objects.filter(id=discipline_id).update(
@@ -235,17 +239,22 @@ def create_discipline_and_trees_task(data: dict):
                 taxontreedef_id=taxon_treedef_id,
                 lithostrattreedef_id=lithostrat_id,
                 tectonicunittreedef_id=tectonicunit_id,
+                geologictimeperiodtreedef_id=chronostrat_treedef_id,
             )
         
         # Pre-load trees
         logger.info('Starting default tree downloads')
-        if data['taxontreedef'].get('preload'):
+        if is_paleo_geo:
             transaction.on_commit(lambda: start_preload_default_tree(
-                'Taxon', discipline_id, None, taxon_treedef_id, None, data['taxontreedef'].get('preloadfile'), True
+                'Geologictimeperiod', discipline_id, None, chronostrat_treedef_id, None, None, False
             ))
         if data['geographytreedef'].get('preload'):
             transaction.on_commit(lambda: start_preload_default_tree(
                 'Geography', discipline_id, None, geography_treedef_id, None, data['geographytreedef'].get('preloadfile'), False
+            ))
+        if data['taxontreedef'].get('preload'):
+            transaction.on_commit(lambda: start_preload_default_tree(
+                'Taxon', discipline_id, None, taxon_treedef_id, None, data['taxontreedef'].get('preloadfile'), True
             ))
     except Exception as e:
         logger.exception(f'Error creating discipline: {e}')

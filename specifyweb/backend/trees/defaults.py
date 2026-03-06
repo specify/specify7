@@ -6,19 +6,18 @@ import time
 from requests.exceptions import ChunkedEncodingError, ConnectionError
 
 from django.db import transaction
+from django.conf import settings
 
 from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
-from specifyweb.backend.redis_cache.store import get_string, set_string
+from specifyweb.backend.redis_cache.store import add_to_set, remove_from_set, set_members
+from specifyweb.backend.trees.redis import ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY
 
 import logging
 logger = logging.getLogger(__name__)
-
-# Also defined separately in trees/apps.py
-ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY = "specify:trees:active_tree_creation"
 
 class RankConfiguration(TypedDict):
     name: str
@@ -314,18 +313,23 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
             parent_id = None
             parent = buffered
         else:
+            # Add new node to buffer
             data = {
                 'name': record_name,
                 'fullname': record_name,
                 'definition': tree_def,
                 'definitionitem': tree_def_item,
                 'rankid': tree_def_item.rankid,
-                **defaults
             }
+            if hasattr(tree_node_model, 'isaccepted'):
+                data['isaccepted'] = True
+            data.update(defaults)
+            
             if parent is not None:
                 data['parent'] = parent
             elif parent_id is not None:
                 data['parent_id'] = parent_id
+
             obj = tree_node_model(**data)
             obj = context.add_node_to_buffer(obj, tree_def_item.rankid, row_id)
 
@@ -335,28 +339,18 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 
 def queue_create_default_tree_task(task_id):
     """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
-    current_list = get_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY) or ''
-    if len(current_list) > 0:
-        new_list = f'{current_list}:{task_id}'
-    else:
-        new_list = f'{task_id}'
-    logger.debug(f'Active tree creation tasks: {str(current_list)}')
-    set_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, new_list, time_to_live=60*60*2)
+    add_to_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
+    logger.debug(f"Queued task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
 
-def get_active_create_default_tree_tasks() -> str:
-    current_list = get_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY) or ''
-    tasks = current_list.split(':')
-    logger.debug(f'Active tree creation tasks: {str(current_list)}')
-    return tasks
+def get_active_create_default_tree_tasks() -> list[str]:
+    tasks = set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
+    logger.debug(f"Active tree creation tasks: {tasks}")
+    return list(tasks)
 
 def finish_create_default_tree_task(task_id):
     """Clear a finished tree creation task from redis cache."""
-    tasks = get_active_create_default_tree_tasks()
-    tasks = [task for task in tasks if task != task_id]
-    new_list = ':'.join(tasks)
-    logger.debug(f'Active tree creation tasks: {str(new_list)}')
-
-    set_string(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, new_list, time_to_live=60*60*2)
+    remove_from_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
+    logger.debug(f"Finished task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str, specify_collection_id: Optional[int],

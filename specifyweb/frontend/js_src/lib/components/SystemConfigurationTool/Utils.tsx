@@ -26,7 +26,7 @@ export type InstitutionData = {
 let institutionData: InstitutionData;
 
 export const fetchAllSystemData = load<InstitutionData>(
-  '/context/all_system_data.json',
+  '/context/all_system_config_data.json',
   'application/json'
 ).then((data: InstitutionData) => {
   institutionData = data;

@@ -392,45 +392,45 @@ function DialogForm({
 const handleEditResource = (
   resource: SpecifyResource<any>,
   refreshAllInfo: () => Promise<void>
-): JSX.Element | null => (
-  hasTablePermission(resource.specifyTable.name, 'update') ? 
-  <div className="flex items-center">
-    <ResourceLink
-      component={Link.Default}
-      props={{}}
-      resource={resource}
-      resourceView={{
-        onDeleted: async () => {
-          await refreshAllInfo();
-        },
-        onSaved: async () => {
-          await refreshAllInfo();
-        },
-      }}
-    >
-      {icons.pencil}
-      {commonText.edit()}
-    </ResourceLink>
-  </div> : null
-);
+): JSX.Element | null =>
+  hasTablePermission(resource.specifyTable.name, 'update') ? (
+    <div className="flex items-center">
+      <ResourceLink
+        component={Link.Default}
+        props={{}}
+        resource={resource}
+        resourceView={{
+          onDeleted: async () => {
+            await refreshAllInfo();
+          },
+          onSaved: async () => {
+            await refreshAllInfo();
+          },
+        }}
+      >
+        {icons.pencil}
+        {commonText.edit()}
+      </ResourceLink>
+    </div>
+  ) : null;
 
 const addButton = (
   createResource: () => void,
-  table: typeof tables[keyof typeof tables]
-): JSX.Element | null => (
-  hasTablePermission(table.name, 'create') ? 
-  <Button.LikeLink
-    className="flex items-center gap-2 mb-2"
-    onClick={() => {
-      createResource();
-    }}
-  >
-    <span className="flex items-center gap-1">
-      {icons.plus}
-      {`${setupToolText.hierarchyAddNew()} ${tableLabel(table.name)}`}
-    </span>
-  </Button.LikeLink> : null
-);
+  table: (typeof tables)[keyof typeof tables]
+): JSX.Element | null =>
+  hasTablePermission(table.name, 'create') ? (
+    <Button.LikeLink
+      className="flex items-center gap-2 mb-2"
+      onClick={() => {
+        createResource();
+      }}
+    >
+      <span className="flex items-center gap-1">
+        {icons.plus}
+        {`${setupToolText.hierarchyAddNew()} ${tableLabel(table.name)}`}
+      </span>
+    </Button.LikeLink>
+  ) : null;
 
 export function Hierarchy({
   institution,

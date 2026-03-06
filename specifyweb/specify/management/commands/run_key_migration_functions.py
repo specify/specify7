@@ -95,6 +95,18 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
     ]
     log_and_run(funcs, stdout)
 
+def fix_app_resource_dirs(stdout: WriteToStdOut | None = None):
+    from specifyweb.backend.setup_tool.app_resource_defaults import ensure_all_discipline_resource_dirs
+
+    results = ensure_all_discipline_resource_dirs()
+    if stdout is not None:
+        stdout(
+            "Ensured discipline app resource directories: "
+            f"total={results['total_disciplines']}, "
+            f"created={results['created']}, "
+            f"updated={results['updated']}"
+        )
+
 def apply_default_uniqueness_rules_to_disciplines(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
@@ -150,6 +162,7 @@ class Command(BaseCommand):
             "fix_permissions": fix_permissions,
             "fix_business_rules": fix_business_rules,
             "fix_schema_config": fix_schema_config,
+            "fix_app_resource_dirs": fix_app_resource_dirs,
             "fix_tectonic_ranks": fix_tectonic_ranks,
             "fix_misc": fix_misc,
         }
