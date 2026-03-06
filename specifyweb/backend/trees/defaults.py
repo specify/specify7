@@ -243,8 +243,6 @@ class DefaultTreeContext():
                 # Create node if its parent has been created
                 if getattr(node.parent, 'pk', None) is not None or getattr(node, 'parent_id', None) is not None:
                     nodes_to_create.append(node)
-                    if node.name == "?abi?skiite":
-                        print("?abi?skiite FOUND")
                 else:
                     logger.warning(f"Could not create {node.name} because a valid parent could not be resolved. {parent_id}, {str(parent)}")
 
