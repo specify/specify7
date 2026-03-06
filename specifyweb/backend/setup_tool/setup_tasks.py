@@ -14,6 +14,10 @@ from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOL
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 from specifyweb.backend.redis_cache.store import set_string, get_string
 from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
+from specifyweb.backend.setup_tool.task_tracking import (
+    queue_collection_background_task,
+    finish_collection_background_task,
+)
 
 from uuid import uuid4
 import logging
@@ -38,9 +42,12 @@ def setup_database_background(data: dict) -> str:
     
     return task.id
 
-def queue_fix_schema_config_background() -> str:
+def queue_fix_schema_config_background(collection_id: Optional[int] = None) -> str:
     """Queue fix_schema_config to run asynchronously and return the task id"""
-    task = fix_schema_config_task.apply_async()
+    args = [collection_id] if collection_id is not None else []
+    task = fix_schema_config_task.apply_async(args=args)
+    if collection_id is not None:
+        queue_collection_background_task(collection_id, task.id)
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
@@ -171,9 +178,13 @@ def setup_database_task(self, data: dict):
         raise
 
 @app.task(bind=True)
-def fix_schema_config_task(self):
+def fix_schema_config_task(self, collection_id: Optional[int] = None):
     """Run schema config migration fixups in a background worker"""
-    fix_schema_config()
+    try:
+        fix_schema_config()
+    finally:
+        if collection_id is not None:
+            finish_collection_background_task(collection_id, self.request.id)
 
 def get_last_setup_error() -> Optional[str]:
     err = get_string(LAST_ERROR_REDIS_KEY)
