@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-02-27 00:09+0000\n"
+"PO-Revision-Date: 2026-03-06 16:38+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/pt_BR/>\n"
@@ -9,12 +9,12 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 5.16.1-dev\n"
+"X-Generator: Weblate 5.17-dev\n"
 
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:65
 #: components/Router/Routes.tsx:488
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
 msgstr "Bem-vindo"
@@ -119,28 +119,28 @@ msgstr "Especifique a versão 6:"
 msgid "databaseVersion"
 msgstr "Versão do banco de dados:"
 
-#: components/SchemaViewer/index.tsx:44
 #. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:44
 #, fuzzy
 msgid "schemaVersion"
-msgstr "Versão do esquema do banco de dados"
+msgstr "Esquema do banco de dados"
 
-#: components/HomePage/AboutSpecify.tsx:107
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:107
 #: components/HomePage/AboutSpecify.tsx:113
 #, fuzzy
 msgid "databaseName"
 msgstr "Nome do banco de dados:"
 
-#: components/HomePage/AboutSpecify.tsx:128
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:128
 #: components/HomePage/AboutSpecify.tsx:138
 #, fuzzy
 msgid "browser"
 msgstr "Navegador:"
 
-#: components/HomePage/AboutSpecify.tsx:111
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:111
 #: components/HomePage/AboutSpecify.tsx:117
 #, fuzzy
 msgid "databaseCreationDate"
