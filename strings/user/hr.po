@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-02-10 22:43+0000\n"
+"PO-Revision-Date: 2026-03-06 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/user/"
 "hr/>\n"
@@ -9,9 +9,9 @@ msgstr ""
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=UTF-8\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.16-dev\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.17-dev\n"
 
 #. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
@@ -720,3 +720,15 @@ msgstr "Dodaj ulogu"
 #, fuzzy
 msgid "addUser"
 msgstr "Dodaj korisnika"
+
+#. Used in: Components > System Configuration Tool > System Config Tool
+#: components/SystemConfigurationTool/SystemConfigTool.tsx:69
+#, fuzzy
+msgid "systemConfigurationTool"
+msgstr "Alat za konfiguraciju sustava"
+
+#. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:90
+#, fuzzy
+msgid "systemConfig"
+msgstr "Konfiguracija sustava"
