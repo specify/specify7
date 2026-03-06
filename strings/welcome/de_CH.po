@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-03-06 16:10+0000\n"
-"Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/de_CH/>\n"
 "Language: de_CH\n"
@@ -110,7 +110,7 @@ msgstr "Datenbankversion:"
 #: components/SchemaViewer/index.tsx:44
 #, fuzzy
 msgid "schemaVersion"
-msgstr "Datenbankschema-Version"
+msgstr "Datenbankschema"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
