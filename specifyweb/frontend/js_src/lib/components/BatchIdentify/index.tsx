@@ -170,7 +170,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: readonly number[] = [];
+  const collectionObjectIds: number[] = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
