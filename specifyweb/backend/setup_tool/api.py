@@ -5,11 +5,9 @@ These will be called in the correct order by the background setup task in setup_
 
 import json
 from typing import Optional
-from datetime import timedelta
 from django.http import (JsonResponse)
 from django.db.models import Max
 from django.db import transaction
-from django.utils import timezone
 
 from specifyweb.backend.permissions.models import UserPolicy
 
@@ -18,15 +16,12 @@ from specifyweb.specify import models
 from specifyweb.backend.setup_tool.utils import normalize_keys, resolve_uri_or_fallback
 from specifyweb.backend.setup_tool.schema_defaults import (
     apply_schema_defaults,
-    is_discipline_setup_busy,
     queue_apply_schema_defaults_background,
 )
 from specifyweb.backend.setup_tool.picklist_defaults import create_default_picklists
 from specifyweb.backend.setup_tool.prep_type_defaults import create_default_prep_types
 from specifyweb.backend.setup_tool.app_resource_defaults import ensure_discipline_resource_dir
 from specifyweb.backend.setup_tool.setup_tasks import (
-    get_collections_with_busy_config as _get_collections_with_busy_config,
-    is_collection_config_busy,
     setup_database_background,
     get_active_setup_task,
     get_last_setup_error,
@@ -35,6 +30,10 @@ from specifyweb.backend.setup_tool.setup_tasks import (
 )
 from specifyweb.celery_tasks import MissingWorkerError, get_running_worker_task_names
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
+from specifyweb.backend.setup_tool.task_tracking import (
+    is_collection_ready_for_config_tasks,
+    is_discipline_ready_for_config_tasks,
+)
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, fix_schema_config
@@ -44,7 +43,6 @@ logger = logging.getLogger(__name__)
 
 APP_VERSION = "7"
 SCHEMA_VERSION = "2.10"
-CONFIG_TASK_COLLECTION_BLOCK_WINDOW = timedelta(minutes=15)
 
 class SetupError(Exception):
     """Raised by any setup tasks."""
@@ -312,11 +310,7 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     except Exception as e:
         raise SetupError(e)
 
-def create_collection(
-    data,
-    run_fix_schema_config_async: bool = True,
-    require_discipline_ready: bool = True,
-):
+def create_collection(data, run_fix_schema_config_async: bool = True):
     from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
@@ -340,11 +334,6 @@ def create_collection(
         data['discipline'] = discipline
     else:
         raise SetupError("No discipline available")
-
-    if require_discipline_ready and is_discipline_setup_busy(discipline.id):
-        raise SetupError(
-            "This discipline is still being created. Please wait for background setup tasks to finish before creating a collection."
-        )
     
     # The discipline needs a Taxon Tree in order for the Collection Object Type to be created.
     if not discipline.taxontreedef_id:
@@ -364,7 +353,7 @@ def create_collection(
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
         if run_fix_schema_config_async:
-            queue_fix_schema_config_background(new_collection.id)
+            queue_fix_schema_config_background(collection_id=new_collection.id)
         else:
             fix_schema_config()
         
@@ -510,18 +499,6 @@ CONFIG_TASKS = frozenset({
     "specifyweb.backend.setup_tool.schema_defaults.apply_schema_defaults_task",
 })
 
-
-def _tracked_setup_tasks_busy() -> bool:
-    """True if any tracked collection/discipline setup task is active."""
-    if any(
-        is_discipline_setup_busy(discipline_id)
-        for discipline_id in Discipline.objects.values_list('id', flat=True)
-    ):
-        return True
-    collection_ids = models.Collection.objects.values_list('id', flat=True)
-    return bool(_get_collections_with_busy_config(collection_ids))
-
-
 def _task_name_to_progress_key(task_name: str) -> str:
     """Convert a task function name into a camelCase progress key."""
     task_function_name = task_name.rsplit(".", 1)[-1]
@@ -552,9 +529,36 @@ def get_config_resource_progress(running_task_names: Optional[list[str]] = None)
     return _get_config_resource_progress_from_active_names(active_task_names)
 
 
-def get_collections_with_busy_config(collection_ids) -> set[int]:
-    """Returns collection ids that still have active tracked config tasks."""
-    return _get_collections_with_busy_config(collection_ids)
+def is_collection_busy_for_config_tasks(
+    collection_id: int,
+    discipline_id: Optional[int] = None,
+) -> bool:
+    if discipline_id is None:
+        collection = models.Collection.objects.filter(id=collection_id).only("discipline_id").first()
+        if collection is None:
+            return False
+        discipline_id = collection.discipline_id
+    return not is_collection_ready_for_config_tasks(collection_id, discipline_id)
+
+
+def is_discipline_busy_for_config_tasks(discipline_id: int) -> bool:
+    return not is_discipline_ready_for_config_tasks(discipline_id)
+
+
+def filter_ready_collections_for_config_tasks(collections: list) -> list:
+    return [
+        collection
+        for collection in collections
+        if not is_collection_busy_for_config_tasks(collection.id, collection.discipline_id)
+    ]
+
+
+def filter_ready_disciplines_for_config_tasks(disciplines: list) -> list:
+    return [
+        discipline
+        for discipline in disciplines
+        if not is_discipline_busy_for_config_tasks(discipline.id)
+    ]
 
 
 def get_config_progress(collection_id: Optional[int] = None) -> dict:
@@ -564,9 +568,11 @@ def get_config_progress(collection_id: Optional[int] = None) -> dict:
     except MissingWorkerError:
         running_task_names = []
 
-    busy = is_config_task_running(running_task_names)
-    if busy and collection_id is not None:
-        busy = _is_new_collection_in_time_window(collection_id)
+    busy = (
+        is_config_task_running(running_task_names)
+        if collection_id is None
+        else is_collection_busy_for_config_tasks(collection_id)
+    )
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)
 
@@ -575,15 +581,3 @@ def get_config_progress(collection_id: Optional[int] = None) -> dict:
         "last_error": last_error,
         "busy": busy,
     }
-
-def _is_new_collection_in_time_window(collection_id: int) -> bool:
-    """Return True when a newly created collection is still in the new collection time window."""
-    from specifyweb.specify.models import Collection
-
-    collection = Collection.objects.filter(id=collection_id).only("timestampcreated").first()
-    if collection is None:
-        return False
-    if collection.timestampcreated is None:
-        return False
-
-    return collection.timestampcreated > timezone.now() - CONFIG_TASK_COLLECTION_BLOCK_WINDOW

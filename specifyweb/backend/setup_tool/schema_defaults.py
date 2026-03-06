@@ -2,6 +2,7 @@ from specifyweb.specify.models_utils.models_by_table_id import model_names_by_ta
 from specifyweb.specify.migration_utils.update_schema_config import update_table_schema_config_with_defaults
 from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
+from .task_tracking import queue_discipline_background_task, finish_discipline_background_task
 from specifyweb.specify.models import Discipline
 from django.db import transaction
 from celery.exceptions import MaxRetriesExceededError
@@ -62,16 +63,21 @@ def apply_schema_defaults(discipline: Discipline):
             description=table_description,
             defaults=table_defaults,
         )
+
 def queue_apply_schema_defaults_background(discipline_id: int) -> str:
     """Queue apply_schema_defaults to run asynchronously and return the task id."""
     task_id = str(uuid4())
 
     # Dispatch only after the discipline row is committed so workers can read it.
-    transaction.on_commit(
-        lambda: apply_schema_defaults_task.apply_async(
+    def enqueue() -> None:
+        async_result = apply_schema_defaults_task.apply_async(
             args=[discipline_id],
             task_id=task_id,
         )
+        queue_discipline_background_task(discipline_id, async_result.id)
+
+    transaction.on_commit(
+        enqueue
     )
     return task_id
 
@@ -92,5 +98,9 @@ def apply_schema_defaults_task(self, discipline_id: int):
                 discipline_id,
                 SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES,
             )
+            finish_discipline_background_task(discipline_id, self.request.id)
             return
-    apply_schema_defaults(discipline)
+    try:
+        apply_schema_defaults(discipline)
+    finally:
+        finish_discipline_background_task(discipline_id, self.request.id)

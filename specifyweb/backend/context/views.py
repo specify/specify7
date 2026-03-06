@@ -37,7 +37,11 @@ from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
-from specifyweb.backend.setup_tool.api import get_collections_with_busy_config, get_config_progress
+from specifyweb.backend.setup_tool.api import (
+    get_config_progress,
+    filter_ready_collections_for_config_tasks,
+    filter_ready_disciplines_for_config_tasks,
+)
 
 
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -305,9 +309,6 @@ def collection(request):
         set_collection_cookie(response, collection.id)
         return response
     else:
-        available_collections = _filter_collections_not_ready_for_config_task(
-            available_collections
-        )
         response = dict(
             available=[obj_to_data(c) for c in available_collections],
             current=(current and int(current))
@@ -649,15 +650,11 @@ def get_server_time(request):
 
 
 def _filter_collections_not_ready_for_config_task(collections):
-    busy_collection_ids = get_collections_with_busy_config(c.id for c in collections)
-    if not busy_collection_ids:
-        return collections
+    return filter_ready_collections_for_config_tasks(collections)
 
-    return [
-        c
-        for c in collections
-        if c.id not in busy_collection_ids
-    ]
+
+def _filter_disciplines_not_ready_for_config_task(disciplines):
+    return filter_ready_disciplines_for_config_tasks(disciplines)
 
 
 def _build_system_data(*, filter_not_ready_collections: bool):
@@ -667,6 +664,7 @@ def _build_system_data(*, filter_not_ready_collections: bool):
     collections = list(Collection.objects.all())
 
     if filter_not_ready_collections:
+        disciplines = _filter_disciplines_not_ready_for_config_task(disciplines)
         collections = _filter_collections_not_ready_for_config_task(collections)
 
     discipline_map = {}

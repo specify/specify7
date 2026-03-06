@@ -294,7 +294,8 @@ def choose_collection(request) -> http.HttpResponse:
     id to the user if one is provided.
     """
     from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
-    from specifyweb.backend.setup_tool.api import get_collections_with_busy_config
+    from specifyweb.backend.setup_tool.api import filter_ready_collections_for_config_tasks
+
     
     from specifyweb.specify.api.serializers import obj_to_data, toJson
 
@@ -318,8 +319,7 @@ def choose_collection(request) -> http.HttpResponse:
     )
 
     available_collections = users_collections_for_sp7(request.specify_user.id)
-    busy_collection_ids = get_collections_with_busy_config(c.id for c in available_collections)
-    available_collections = [c for c in available_collections if c.id not in busy_collection_ids]
+    available_collections = filter_ready_collections_for_config_tasks(available_collections)
     
     if len(available_collections) == 1:
         set_collection_cookie(redirect_resp, available_collections[0].id)
