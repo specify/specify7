@@ -287,12 +287,6 @@ msgid "downloadAsJson"
 msgstr "Preuzmi kao JSON"
 
 #. Used in: Components > Schema Viewer > Index
-#: components/SchemaViewer/index.tsx:64
-#, fuzzy
-msgid "downloadAsXml"
-msgstr "Preuzmi kao XML"
-
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:77
 #, fuzzy
 msgid "downloadAsTsv"
