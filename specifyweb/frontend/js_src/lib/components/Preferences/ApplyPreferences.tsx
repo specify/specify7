@@ -105,11 +105,6 @@ export function SetCssVariables(): null {
         'appearance',
         'accentColor4'
       ),
-      accentColor5: userPreferences.get(
-        'general',
-        'appearance',
-        'accentColor5'
-      ),
       saveButtonColor: userPreferences.get(
         'general',
         darkMode ? 'buttonDark' : 'buttonLight',

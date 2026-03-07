@@ -545,7 +545,8 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          border-brand-300 bg-brand-100 dark:bg-brand-500 flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
+          border-brand-400 bg-brand-100 dark:bg-brand-400
+          flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >
         {has('icon') && (

@@ -50,15 +50,13 @@ const config: Config = {
           200: 'var(--accent-color-200)',
           300: 'var(--accent-color-300)',
           400: 'var(--accent-color-400)',
-          500: 'var(--accent-color-500)',
         },
         // Specify brand colors:
         specify: {
           100: '#d4d8bf',
           200: '#a4af83',
           300: '#86965e',
-          400: '#6b813d',
-          500: '#596c32',
+          400: '#598137',
         },
         // Some in-between shades:
         gray: {
