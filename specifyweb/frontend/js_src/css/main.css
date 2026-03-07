@@ -17,10 +17,12 @@
 
   body.dark {
     color-scheme: dark;
+    @apply text-white;
   }
 
   body:not(.dark) {
     color-scheme: light;
+    @apply text-black;
   }
 
   body.no-rounded-corners *:not(.rounded-full) {
