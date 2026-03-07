@@ -21,9 +21,9 @@ export function AttachmentPreview({
   return (
     <div
       className={`
-        flex items-center justify-center rounded bg-white shadow-md
-        shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400
-        dark:bg-black
+        flex items-center justify-center rounded bg-white
+        outline outline-1 outline-gray-300 transition
+        dark:bg-black dark:outline-neutral-800
       `}
     >
       <button type="button" onClick={handleOpen}>

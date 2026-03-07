@@ -32,7 +32,7 @@ exports[`AppResourcesTab dialog render 1`] = `
       class="flex items-center gap-2"
     >
       <span
-        class="text-blue-500"
+        class="text-brand-300"
       >
         <span
           aria-hidden="true"

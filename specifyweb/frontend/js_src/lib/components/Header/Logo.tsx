@@ -17,6 +17,7 @@ export function Logo({
     'appearance',
     'customLogoCollapsed'
   );
+  const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
   const hueDifference = useHueDifference();
 
   return (
@@ -36,7 +37,11 @@ export function Logo({
         hover:animate-hue-rotate
         ${isCollapsed ? 'hidden' : ''}
       `}
-          src="/static/img/logo.svg"
+          src={
+            isSideBarLight === 'light'
+              ? '/static/img/logo_dark.svg'
+              : '/static/img/logo.svg'
+          }
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
         <img

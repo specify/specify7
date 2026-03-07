@@ -35,7 +35,7 @@ export const loadingBar = (
     <div
       aria-hidden
       className={`
-        h-7 animate-bounce rounded bg-gradient-to-r from-orange-400 to-amber-200
+        h-7 animate-bounce rounded bg-gradient-to-r from-brand-300 to-brand-200
       `}
     />
   </div>

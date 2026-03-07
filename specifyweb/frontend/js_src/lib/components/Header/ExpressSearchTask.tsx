@@ -229,7 +229,7 @@ function TableResult({
     <details>
       <summary
         className={`
-          link bg-brand-200 dark:bg-brand-500 hover:dark:!bg-brand-400 list-item
+          link bg-brand-200 dark:bg-brand-400 hover:dark:!bg-brand-400 list-item
           rounded p-1.5 hover:!text-white
         `}
       >

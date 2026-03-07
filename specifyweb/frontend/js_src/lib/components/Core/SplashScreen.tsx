@@ -2,6 +2,7 @@ import React from 'react';
 
 import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
+import { useDarkMode } from '../Preferences/Hooks';
 
 export function SplashScreen({
   children,
@@ -9,6 +10,7 @@ export function SplashScreen({
   readonly children: React.ReactNode;
 }): JSX.Element {
   const hueDifference = useHueDifference();
+  const isDarkMode = useDarkMode();
   return (
     <div
       className={`
@@ -19,7 +21,7 @@ export function SplashScreen({
       <div
         className={`
           flex w-full flex-col gap-4 rounded bg-gray-100 p-16
-          shadow-2xl dark:bg-neutral-800 sm:max-w-md
+          outline outline-1 outline-gray-300 dark:outline-neutral-800 dark:bg-neutral-800 sm:max-w-md
         `}
       >
         <header className="pb-2">
@@ -27,7 +29,7 @@ export function SplashScreen({
           <img
             alt=""
             className="max-w-xs hover:animate-hue-rotate"
-            src="/static/img/logo.svg"
+            src={isDarkMode ? '/static/img/logo.svg' : '/static/img/logo_dark.svg'}
             style={{ filter: `hue-rotate(${hueDifference}deg)` }}
           />
         </header>
