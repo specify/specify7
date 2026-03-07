@@ -1,5 +1,7 @@
 import React from 'react';
+import type { LocalizedString } from 'typesafe-i18n';
 
+import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { AutoComplete } from '../Molecules/AutoComplete';
 
@@ -17,6 +19,7 @@ export function SpecifyUserAutoComplete({
   onChange: handleChange,
 }: {
   readonly startValue: string;
+  readonly label?: LocalizedString;
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element {
   const valueRef = React.useRef<string>(startValue);
@@ -25,11 +28,12 @@ export function SpecifyUserAutoComplete({
   return (
     <div className="flex items-center">
       <AutoComplete<string>
-        aria-label={undefined}
         delay={0}
         disabled={handleChange === undefined}
         filterItems
         inputProps={{
+          'aria-label': label,
+          title: label,
           onBlur: (): void =>
             handleChange?.(
               items.find(

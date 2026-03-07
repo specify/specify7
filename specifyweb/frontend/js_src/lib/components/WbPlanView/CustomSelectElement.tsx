@@ -536,6 +536,7 @@ export function CustomSelectElement({
 
   const id = useId('listbox');
   const { validationRef } = useValidation(validation);
+  const hasValidationMessage = (validation ?? '').length > 0;
 
   let header: JSX.Element | undefined;
   let preview: JSX.Element | undefined;
@@ -569,8 +570,7 @@ export function CustomSelectElement({
     preview = (
       // Not tabbable because keyboard events are handled separately
       <button
-        aria-controls={id('options')}
-        aria-describedby={id('validation')}
+        aria-describedby={hasValidationMessage ? id('validation') : undefined}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
@@ -689,7 +689,8 @@ export function CustomSelectElement({
       );
 
   const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
-  const customSelectOptions = (Boolean(unmapOption) || groups) && (
+  const hasOptions = Boolean(unmapOption) || Boolean(groups);
+  const customSelectOptions = hasOptions && (
     <div
       aria-label={selectLabel}
       aria-orientation="vertical"
@@ -841,7 +842,7 @@ export function CustomSelectElement({
          * Not sure if there is a simpler way that is at least this good until
          * <selectmenu> is wildly supported.
          */
-        (validation ?? '').length > 0 && (
+        hasValidationMessage && (
           <div
             // Place the browser's tooltip at bottom center
             className="sr-only bottom-0 top-[unset] flex w-full justify-center"
@@ -850,6 +851,7 @@ export function CustomSelectElement({
               // Associate validation message with the listbox
               id={id('validation')}
               defaultValue={validation}
+              aria-label={validation}
               // Announce validation message to screen readers
               aria-live="polite"
               // Act as an error message, not an input

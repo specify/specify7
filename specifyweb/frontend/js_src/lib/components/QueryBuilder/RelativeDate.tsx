@@ -143,8 +143,18 @@ function DateSplit({
         components={{
           count: (size) => (
             <Input.Integer
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
               min={0}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={size}
               onBlur={commitChange}
               onValueChange={(value): void => {
@@ -158,7 +168,17 @@ function DateSplit({
           ),
           length: (type) => (
             <Select
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={type}
               onBlur={commitChange}
               onValueChange={(newValue) => {
@@ -174,7 +194,17 @@ function DateSplit({
           ),
           direction: (direction) => (
             <Select
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={direction}
               onBlur={commitChange}
               onValueChange={(newValue): void => {
