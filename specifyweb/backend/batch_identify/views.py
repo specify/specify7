@@ -13,6 +13,7 @@ from .view_helpers import (
     MAX_RESOLVE_COLLECTION_OBJECTS,
     build_taxon_tree_groups,
     extract_current_determination_ids,
+    extract_matched_catalog_number_identifiers,
     fetch_collection_objects_by_catalog_requests,
     fetch_collection_objects_by_ids,
     fetch_matched_catalog_number_identifiers,
@@ -127,11 +128,20 @@ def batch_identify_resolve(request: http.HttpRequest):
         ),
     )
     
-    matched_catalog_numbers, matched_year_based_catalog_numbers = fetch_matched_catalog_number_identifiers(
-        request.specify_collection.id,
-        numeric_ranges,
-        year_based_ranges,
-    )
+    if len(collection_objects) < MAX_RESOLVE_COLLECTION_OBJECTS:
+        (
+            matched_catalog_numbers,
+            matched_year_based_catalog_numbers,
+        ) = extract_matched_catalog_number_identifiers(collection_objects)
+    else:
+        (
+            matched_catalog_numbers,
+            matched_year_based_catalog_numbers,
+        ) = fetch_matched_catalog_number_identifiers(
+            request.specify_collection.id,
+            numeric_ranges,
+            year_based_ranges,
+        )
 
     collection_object_ids = [collection_object.id for collection_object in collection_objects]
     current_determination_ids = (

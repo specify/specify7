@@ -241,7 +241,6 @@ function BatchIdentifyDialog({
   const [step, setStep] = React.useState<Step>('catalogNumbers');
   const [catalogNumbers, setCatalogNumbers] = React.useState('');
   const [isIdentifying, setIsIdentifying] = React.useState(false);
-  const [isResolving, setIsResolving] = React.useState(false);
   const [isLiveValidating, setIsLiveValidating] = React.useState(false);
   const [isRecordSetDialogOpen, setIsRecordSetDialogOpen] =
     React.useState(false);
@@ -308,6 +307,8 @@ function BatchIdentifyDialog({
     () => catalogNumberEntries.join('\n'),
     [catalogNumberEntries]
   );
+  const isCatalogNumbersVerified =
+    validatedCatalogNumbersKey === catalogNumbersKey;
 
   React.useEffect(() => {
     if (selectedTaxonTreeDefUri === undefined) {
@@ -660,53 +661,27 @@ function BatchIdentifyDialog({
   }, []);
 
   const handleNext = React.useCallback((): void => {
-    if (catalogNumberRanges.length === 0 || isResolving) return;
-
-    if (validatedCatalogNumbersKey === catalogNumbersKey) {
-      if (unmatchedCatalogNumbers.length > 0) return;
-      if (hasMixedTaxonTrees) return;
-      proceedWithCollectionObjects(
-        resolvedCollectionObjectIds,
-        taxonTreeGroups[0]?.taxonTreeDefId
-      );
+    if (
+      catalogNumberRanges.length === 0 ||
+      isLiveValidating ||
+      !isCatalogNumbersVerified
+    )
       return;
-    }
-
-    setIsResolving(true);
-    loading(
-      resolveCatalogNumbers(catalogNumberEntries)
-        .then((data) => {
-          setValidatedCatalogNumbersKey(catalogNumbersKey);
-          setResolvedCollectionObjectIds(data.collectionObjectIds);
-          setUnmatchedCatalogNumbers(data.unmatchedCatalogNumbers);
-          setHasMixedTaxonTrees(data.hasMixedTaxonTrees);
-          setTaxonTreeGroups(data.taxonTreeGroups);
-          if (data.hasMixedTaxonTrees) return;
-          if (data.unmatchedCatalogNumbers.length > 0) {
-            setCollectionObjectIds([]);
-            setStep('catalogNumbers');
-            return;
-          }
-          proceedWithCollectionObjects(
-            data.collectionObjectIds,
-            data.taxonTreeGroups[0]?.taxonTreeDefId
-          );
-        })
-        .finally(() => setIsResolving(false))
+    if (unmatchedCatalogNumbers.length > 0) return;
+    if (hasMixedTaxonTrees) return;
+    proceedWithCollectionObjects(
+      resolvedCollectionObjectIds,
+      taxonTreeGroups[0]?.taxonTreeDefId
     );
   }, [
     catalogNumberRanges,
-    isResolving,
-    validatedCatalogNumbersKey,
-    catalogNumbersKey,
+    isLiveValidating,
+    isCatalogNumbersVerified,
     unmatchedCatalogNumbers,
     hasMixedTaxonTrees,
     taxonTreeGroups,
     proceedWithCollectionObjects,
     resolvedCollectionObjectIds,
-    loading,
-    resolveCatalogNumbers,
-    catalogNumberEntries,
   ]);
 
   const handleIdentify = React.useCallback((): void => {
@@ -859,7 +834,7 @@ function BatchIdentifyDialog({
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <span className="-ml-2 flex-1" />
               <Button.Info
-                disabled={isResolving || isLiveValidating}
+                disabled={isLiveValidating}
                 onClick={(): void => setIsRecordSetDialogOpen(true)}
               >
                 {recordSetLabel}
@@ -867,7 +842,8 @@ function BatchIdentifyDialog({
               <Button.Info
                 disabled={
                   catalogNumberRanges.length === 0 ||
-                  isResolving ||
+                  isLiveValidating ||
+                  !isCatalogNumbersVerified ||
                   unmatchedCatalogNumbers.length > 0
                 }
                 onClick={handleNext}
