@@ -88,11 +88,11 @@ export const className = {
   dataEntryGrid: 'data-entry-grid',
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
-  dataEntryAdd: '!text-green-700 print:hidden',
+  dataEntryAdd: '!text-specify-500 print:hidden',
   dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-100 print:hidden',
   dataEntryRemove: '!text-red-700 print:hidden',
-  dataEntryVisit: '!text-green-700 print:hidden',
+  dataEntryVisit: '!text-specify-500 print:hidden',
 } as const;
