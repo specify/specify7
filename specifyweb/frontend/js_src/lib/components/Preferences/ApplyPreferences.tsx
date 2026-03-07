@@ -261,12 +261,6 @@ export function SetCssVariables(): null {
 
   React.useEffect(
     () =>
-      document.body.style.setProperty('--accent-color-500', prefs.accentColor5),
-    [prefs.accentColor5]
-  );
-
-  React.useEffect(
-    () =>
       document.body.style.setProperty(
         '--save-button-color',
         prefs.saveButtonColor

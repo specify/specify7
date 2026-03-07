@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import { AutoComplete } from '../Molecules/AutoComplete';
 
