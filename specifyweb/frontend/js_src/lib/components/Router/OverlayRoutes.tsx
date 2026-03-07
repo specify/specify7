@@ -2,6 +2,7 @@ import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -72,6 +73,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../DataEntryTables').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
+          ),
+      },
+      {
+        path: 'batch-identify',
+        title: batchIdentifyText.batchIdentify(),
+        element: () =>
+          import('../BatchIdentify').then(
+            ({ BatchIdentifyOverlay }) => BatchIdentifyOverlay
           ),
       },
       {

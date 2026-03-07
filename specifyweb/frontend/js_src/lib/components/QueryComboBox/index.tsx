@@ -558,7 +558,8 @@ export function QueryComboBox({
                                             isNot: false,
                                             value: startValue,
                                           }
-                                        : fieldName === 'taxonTreeDefId'
+                                        : fieldName === 'taxonTreeDefId' ||
+                                            fieldName === 'definitionId'
                                           ? {
                                               field: 'definition',
                                               queryBuilderFieldPath: [
