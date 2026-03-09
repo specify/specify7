@@ -5,7 +5,6 @@ Defines the resources that are provided by this subsystem
 import json
 import os
 import re
-from datetime import timedelta
 from typing import List
 
 from django.conf import settings
@@ -38,9 +37,12 @@ from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
 from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
-from specifyweb.backend.setup_tool.api import get_config_progress, is_config_task_running
-
-
+from specifyweb.backend.setup_tool.api import (
+    get_config_progress,
+    filter_ready_collections_for_config_tasks,
+    filter_ready_disciplines_for_config_tasks,
+)
+   
 def set_collection_cookie(response, collection_id): # pragma: no cover
     response.set_cookie('collection', str(collection_id), max_age=365*24*60*60)
 
@@ -616,8 +618,7 @@ def viewsets(request):
                            file not in FORM_RESOURCE_EXCLUDED_LST, all_files))
 
     return HttpResponse(json.dumps(viewsets), content_type="application/json")
-
-
+  
 def view_helper(request, limit):
     if 'collectionid' in request.GET:
         # Allow a URL parameter to override the logged in collection.
@@ -644,21 +645,13 @@ def remote_prefs(request):
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
-
-
+  
 def _filter_collections_not_ready_for_config_task(collections):
-    if not is_config_task_running():
-        return collections
-
-    # If config tasks are running, filter out newly created collections.
-    fifteen_minutes_ago = timezone.now() - timedelta(minutes=15)
-    return [
-        c
-        for c in collections
-        if c.timestampcreated is None or c.timestampcreated <= fifteen_minutes_ago
-    ]
-
-
+    return filter_ready_collections_for_config_tasks(collections)
+  
+def _filter_disciplines_not_ready_for_config_task(disciplines):
+    return filter_ready_disciplines_for_config_tasks(disciplines)
+  
 def _build_system_data(*, filter_not_ready_collections: bool):
     institution = Institution.objects.get()
     divisions = list(Division.objects.all())
@@ -666,6 +659,7 @@ def _build_system_data(*, filter_not_ready_collections: bool):
     collections = list(Collection.objects.all())
 
     if filter_not_ready_collections:
+        disciplines = _filter_disciplines_not_ready_for_config_task(disciplines)
         collections = _filter_collections_not_ready_for_config_task(collections)
 
     discipline_map = {}
@@ -806,8 +800,7 @@ def get_endpoint_tags(endpoint):
 
     list = [endpoint[method]['tags'] for method in methods]
     return [item for sublist in list for item in sublist]  # flatten the list
-
-
+  
 def get_tags(endpoints):
 
     tag_names = [get_endpoint_tags(endpoint) for endpoint in endpoints.values()]
@@ -934,8 +927,7 @@ def get_endpoints(
                 prefix + path,
                 preparams + params
             )
-
-
+  
 def generate_openapi_for_endpoints(all_endpoints=False): # pragma: no cover
     """Returns a JSON description of endpoints.
 
