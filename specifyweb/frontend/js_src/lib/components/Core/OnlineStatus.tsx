@@ -34,7 +34,7 @@ export function OnlineStatus(): JSX.Element | null {
   return isOnline ? (
     showOnlineStatus ? (
       <div className={className}>
-        <span aria-hidden className="h-3 w-3 rounded-full bg-specify-500" />
+        <span aria-hidden className="h-3 w-3 rounded-full bg-specify-400" />
         <p>{mainText.online()}</p>
       </div>
     ) : null
