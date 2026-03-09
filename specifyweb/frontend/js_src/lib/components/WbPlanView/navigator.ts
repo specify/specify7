@@ -46,12 +46,12 @@ import {
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
 
-const geoPaleoDisciplines = [
+const geoPaleoDisciplines: readonly string[] = [
   'geology',
   'invertpaleo',
   'vertpaleo',
   'paleobotany',
-] as const;
+];
 
 type NavigationCallbackPayload = {
   readonly table: SpecifyTable;
