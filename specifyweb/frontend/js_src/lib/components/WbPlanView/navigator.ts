@@ -46,6 +46,13 @@ import {
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
 
+const geoPaleoDisciplines = [
+  'geology',
+  'invertpaleo',
+  'vertpaleo',
+  'paleobotany',
+] as const;
+
 type NavigationCallbackPayload = {
   readonly table: SpecifyTable;
   readonly parentRelationship?: Relationship;
@@ -131,12 +138,6 @@ function navigator({
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
   const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
-  const geoPaleoDisciplines = [
-    'geology',
-    'invertpaleo',
-    'vertpaleo',
-    'paleobotany',
-  ];
   const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
 
   if (
@@ -559,7 +560,6 @@ export function getMappingLineData({
 
             const disciplineType =
               getSystemInfo().discipline_type?.toLowerCase();
-            const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
             if (
               field.name === 'age' &&
               !geoPaleoDisciplines.includes(disciplineType)
