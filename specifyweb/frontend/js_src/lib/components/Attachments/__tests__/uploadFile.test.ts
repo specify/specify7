@@ -16,10 +16,10 @@ describe('uploadFile', () => {
     readonly upload: {
       readonly addEventListener: jest.Mock;
     };
-    readyState: number;
-    status: number;
-    responseText: string;
-    timeout: number;
+    readonly readyState: number;
+    readonly status: number;
+    readonly responseText: string;
+    readonly timeout: number;
   };
 
   let nextEvent: EventName = 'readystatechange';
@@ -30,7 +30,7 @@ describe('uploadFile', () => {
 
     return {
       open: jest.fn(),
-      send: jest.fn((..._args: unknown[]) => listeners[nextEvent]?.()),
+      send: jest.fn((..._args: readonly unknown[]) => listeners[nextEvent]?.()),
       addEventListener: jest.fn((eventName: EventName, callback: () => void) => {
         listeners[eventName] = callback;
       }),
