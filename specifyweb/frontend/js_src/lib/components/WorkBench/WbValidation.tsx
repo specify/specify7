@@ -11,13 +11,13 @@ import {
   formatToManyIndex,
   formatTreeRank,
 } from '../WbPlanView/mappingHelpers';
+import { ATTACHMENTS_COLUMN } from './attachmentHelpers';
 import type { WbCellCounts, WbMeta } from './CellMeta';
 import type { UploadResult } from './resultsParser';
 import {
   resolveAttachmentValidationMessage,
   resolveValidationMessage,
 } from './resultsParser';
-import { ATTACHMENTS_COLUMN } from './attachmentHelpers';
 import type { Workbench } from './WbView';
 
 type Records = WritableArray<
