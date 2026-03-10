@@ -278,14 +278,14 @@ function Option({
     );
   else
     classes.push(
-      'hover:bg-[color:var(--custom-select-b2)]',
-      'focus:bg-[color:var(--custom-select-b2)]'
+      'hover:bg-brand-100 dark:hover:bg-brand-300',
+      'focus:bg-brand-100 dark:focus:bg-brand-400'
     );
 
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      '!bg-[color:var(--custom-select-accent)]'
+      '!bg-brand-100 dark:!bg-brand-400'
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
@@ -370,7 +370,7 @@ function OptionGroup({
       {typeof selectGroupLabel === 'string' && (
         <header
           aria-hidden
-          className="cursor-auto bg-[color:var(--custom-select-b2)] px-1"
+          className="cursor-auto bg-brand-100 dark:bg-brand-400 px-1"
         >
           {selectGroupLabel}
         </header>
@@ -546,7 +546,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          border-brand-400 bg-brand-100 dark:bg-brand-400
+          border-brand-400 bg-brand-400 text-white dark:bg-brand-400
           flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >

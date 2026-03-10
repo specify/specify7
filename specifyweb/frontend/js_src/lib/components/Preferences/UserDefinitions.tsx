@@ -344,7 +344,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor1(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#d4d8bf',
+            defaultValue: '#e0e2b9',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),

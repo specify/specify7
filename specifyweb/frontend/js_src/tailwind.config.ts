@@ -77,9 +77,6 @@ const config: Config = {
         blue: {
           100: '#0074B5',
         },
-        cream: {
-          100: '#e0e2b9',
-        },
         brown: {
           100: '#4e3e32',
         }

@@ -4,7 +4,7 @@ exports[` renders without errors 1`] = `
 <DocumentFragment>
   <button
     aria-label="Add"
-    class="icon link rounded !text-specify-500 print:hidden "
+    class="icon link rounded !text-brand-400 print:hidden "
     title="Add"
     type="button"
   >
@@ -265,7 +265,7 @@ exports[`DataEntry.visit no resource 2`] = `
 <DocumentFragment>
   <a
     aria-label="Open in New Tab"
-    class="link !text-specify-500 print:hidden "
+    class="link !text-brand-400 print:hidden "
     href="RESOURCE_VIEW_URL"
     rel="noopener"
     target="_blank"

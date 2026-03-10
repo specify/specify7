@@ -67,7 +67,7 @@ export const className = {
   dangerButton: `${dialogIconTriggers.error} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--danger-button-color)] text-white`,
   infoButton: `${dialogIconTriggers.info} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white`,
   warningButton: `${dialogIconTriggers.warning} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
-  successButton: `${dialogIconTriggers.success} hover:brightness-90 dark:hover:brightness-150 bg-specify-400 text-white`,
+  successButton: `${dialogIconTriggers.success} hover:brightness-90 dark:hover:brightness-150 bg-brand-400 text-white`,
   saveButton: `hover:brightness-90 dark:hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
@@ -88,11 +88,11 @@ export const className = {
   dataEntryGrid: 'data-entry-grid',
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
-  dataEntryAdd: '!text-specify-500 print:hidden',
+  dataEntryAdd: '!text-brand-400 print:hidden',
   dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
   dataEntrySearch: '!text-blue-100 print:hidden',
   dataEntryRemove: '!text-red-700 print:hidden',
-  dataEntryVisit: '!text-specify-500 print:hidden',
+  dataEntryVisit: '!text-brand-400 print:hidden',
 } as const;

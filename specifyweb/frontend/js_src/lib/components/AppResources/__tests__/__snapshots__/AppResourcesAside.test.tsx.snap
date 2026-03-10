@@ -197,7 +197,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                   href="/specify/resources/create/discipline_3/"
                 >
                   <span
-                    class="!text-specify-500 print:hidden"
+                    class="!text-brand-400 print:hidden"
                   >
                     <svg
                       aria-hidden="true"
@@ -279,7 +279,7 @@ exports[`AppResourcesAside (expanded case) expanded case 2`] = `
                       href="/specify/resources/create/collection_4/"
                     >
                       <span
-                        class="!text-specify-500 print:hidden"
+                        class="!text-brand-400 print:hidden"
                       >
                         <svg
                           aria-hidden="true"
