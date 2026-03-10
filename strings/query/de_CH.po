@@ -237,13 +237,13 @@ msgstr "{recordSetTable:string} erstellen"
 msgid "saveAs"
 msgstr "Speichern unter"
 
-#: components/WbPlanView/navigator.ts:447
+#: components/WbPlanView/navigator.ts:448
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyRank"
 msgstr "(beliebiger Rang)"
 
-#: components/WbPlanView/navigator.ts:399
+#: components/WbPlanView/navigator.ts:400
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "anyTree"
@@ -304,13 +304,13 @@ msgstr "Negieren"
 msgid "showButtonDescription"
 msgstr "In den Ergebnissen anzeigen"
 
-#: components/WbPlanView/navigator.ts:504
+#: components/WbPlanView/navigator.ts:505
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "aggregatedInline"
 msgstr "(aggregiert)"
 
-#: components/WbPlanView/navigator.ts:505
+#: components/WbPlanView/navigator.ts:506
 #. Used in: Components > Wb Plan View > Navigator
 #, fuzzy
 msgid "formattedInline"
