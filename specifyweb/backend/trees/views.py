@@ -715,8 +715,8 @@ def create_default_tree_view(request):
     
     data = json.loads(request.body)
 
-    tree_discipline_name = data.get('disciplineName', None)
-    if not tree_discipline_name:
+    requested_discipline_name = data.get('disciplineName', None)
+    if not requested_discipline_name:
         return http.JsonResponse({'error': 'Discipline name was not provided.'}, status=400)
 
     collection_name = data.get('collectionName', None)
@@ -728,23 +728,19 @@ def create_default_tree_view(request):
     else:
         collection = request.specify_collection
     
-    logged_in_discipline_name = collection.discipline.name
-    # logged_in_discipline_name = request.user.logindisciplinename
-
-    discipline = spmodels.Discipline.objects.filter(name=tree_discipline_name).first()
+    # Scope new trees to the current collection's discipline
+    discipline = collection.discipline
     if not discipline:
-        discipline = spmodels.Discipline.objects.filter(name=logged_in_discipline_name).first()
-        if not discipline:
-            discipline = spmodels.Discipline.objects.all().first()
+        return http.JsonResponse({'error': 'Collection discipline was not found.'}, status=404)
 
     url = data.get('url', None)
 
-    tree_name = data.get('treeName', tree_discipline_name.capitalize())
+    tree_name = data.get('treeName', requested_discipline_name.capitalize())
     
     tree_type = 'taxon'
-    if tree_discipline_name in SPECIFY_TREES:
+    if requested_discipline_name.lower() in SPECIFY_TREES:
         # non-taxon tree
-        tree_type = tree_discipline_name.lower()
+        tree_type = requested_discipline_name.lower()
         tree_name = TREE_NAMES.get(tree_type)
 
     row_count = data.get('rowCount', None)
@@ -774,7 +770,7 @@ def create_default_tree_view(request):
 
     task_id = str(uuid4())
     async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_type, request.specify_collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
+        args=[url, discipline.id, tree_type, collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
         task_id=f"create_default_tree_{tree_type}_{task_id}",
         taskid=task_id
     )
