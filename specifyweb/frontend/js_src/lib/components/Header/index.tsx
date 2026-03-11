@@ -114,7 +114,7 @@ export function Header({
         ${
           isMenuLight
             ? 'border-neutral-300 bg-gray-100'
-            : 'border-neutral-700 bg-brown-100'
+            : 'bg-brown-100'
         }
       `}
     >
