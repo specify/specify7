@@ -78,7 +78,7 @@ const config: Config = {
           100: '#0074B5',
         },
         brown: {
-          100: '#4e3e32',
+          100: '#4e3f32',
         }
       },
       spacing: {

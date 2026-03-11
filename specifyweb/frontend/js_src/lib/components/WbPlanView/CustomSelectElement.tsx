@@ -546,7 +546,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          border-brand-400 bg-brand-400 text-white dark:bg-brand-400
+          border-brand-300 bg-brand-100 dark:bg-brand-400
           flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >

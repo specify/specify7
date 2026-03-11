@@ -99,22 +99,22 @@ export function Header({
   return (
     <header
       className={`
-        hover:[&_a.link]:text-brand-100 hover:[&_button.link]:text-brand-100
+        hover:text-brand-300
         flex [z-index:1]
         dark:border-neutral-700 dark:bg-neutral-900 print:hidden
         ${isHorizontal ? '' : 'flex-col'}
         ${
           position === 'left'
-            ? 'dark:border-r'
+            ? 'border-r'
             : position === 'top'
-              ? 'dark:border-b'
+              ? 'border-b'
               : position === 'right'
-                ? 'dark:border-l'
-                : 'dark:border-t'
+                ? 'border-l'
+                : 'border-t'
         }
         ${
           isMenuLight
-            ? 'bg-gray-100 shadow-md shadow-gray-400'
+            ? 'border-neutral-300 bg-gray-100'
             : 'border-neutral-700 bg-brown-100 text-white'
         }
       `}

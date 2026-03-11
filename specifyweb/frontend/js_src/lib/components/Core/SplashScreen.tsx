@@ -21,7 +21,7 @@ export function SplashScreen({
       <div
         className={`
           flex w-full flex-col gap-4 rounded bg-gray-100 p-16
-          outline outline-1 outline-gray-300 dark:outline-neutral-800 dark:bg-neutral-800 sm:max-w-md
+          outline outline-1 outline-neutral-300 dark:outline-neutral-800 dark:bg-neutral-800 sm:max-w-md
         `}
       >
         <header className="pb-2">

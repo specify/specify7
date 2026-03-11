@@ -22,7 +22,7 @@ export function AttachmentPreview({
     <div
       className={`
         flex items-center justify-center rounded bg-white
-        outline outline-1 outline-gray-300 transition
+        outline outline-1 outline-neutral-300 transition
         dark:bg-black dark:outline-neutral-800
       `}
     >
