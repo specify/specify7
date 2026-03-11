@@ -37,6 +37,7 @@ from specifyweb.backend.setup_tool.task_tracking import (
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, fix_schema_config
+from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 
 import logging
 logger = logging.getLogger(__name__)
@@ -279,6 +280,14 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
         'geographytreedef_id': geographytreedef.id,
         'geologictimeperiodtreedef_id': geologictimeperiodtreedef.id
     })
+
+    paleo_context_child_table = data.get('paleocontextchildtable', None)
+    if paleo_context_child_table is None:
+        discipline_type = data.get('type')
+        if discipline_type in PALEO_DISCIPLINES:
+            data['paleocontextchildtable'] = 'collectingevent'
+        elif discipline_type in GEOLOGY_DISCIPLINES:
+            data['paleocontextchildtable'] = 'collectionobject'
 
     # Assign new Discipline ID
     max_id = Discipline.objects.aggregate(Max('id'))['id__max'] or 0
