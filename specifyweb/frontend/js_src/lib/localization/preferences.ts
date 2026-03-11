@@ -944,15 +944,6 @@ export const preferencesText = createDictionary({
     'de-ch': 'Akzentfarbe 4',
     'pt-br': 'Cor de destaque 4',
   },
-  accentColor5: {
-    'en-us': 'Accent color 5',
-    'ru-ru': 'Акцентный цвет 5',
-    'es-es': 'Color de acento 5',
-    'fr-fr': "Couleur d'accent 5",
-    'uk-ua': 'Акцентний колір 5',
-    'de-ch': 'Akzentfarbe 5',
-    'pt-br': 'Cor de destaque 5',
-  },
   spreadsheet: {
     'en-us': 'Spreadsheet',
     'ru-ru': 'Электронная таблица',
