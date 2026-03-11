@@ -17,7 +17,7 @@ auditing.audit_field_updates=true
 
 def create_app_resource_defaults() -> None:
     """Adds initial app resource files to the database."""
-    create_global_prefs()
+    # create_global_prefs() # Replacing globabl prefs with remote to avoid user confusion
     create_remote_prefs()
 
 def create_global_prefs(user: Optional[Specifyuser] = None) -> None:
