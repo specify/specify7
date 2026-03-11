@@ -49,12 +49,13 @@ export function resolveFieldFormatter(
   index: number
 ): UiFormatter | undefined {
   if (typeof formatter.external === 'string') {
-    return parseJavaClassName(formatter.external) === 'CatalogNumberUIFieldFormatter'
-        ? new CatalogNumberNumeric()
-        : (parseJavaClassName(formatter.external) === 'CatalogNumberStringUIFieldFormatter' 
-          ? new CatalogNumberString()
-          : undefined
-        );
+    return parseJavaClassName(formatter.external) ===
+      'CatalogNumberUIFieldFormatter'
+      ? new CatalogNumberNumeric()
+      : parseJavaClassName(formatter.external) ===
+          'CatalogNumberStringUIFieldFormatter'
+        ? new CatalogNumberString()
+        : undefined;
   } else {
     const parts = filterArray(
       formatter.parts.map((part) =>
@@ -269,11 +270,17 @@ class AnyCharPart extends Part {
 
 class VariableLengthAnyCharPart extends Part {
   public readonly type = 'anychar';
-  
+
   private readonly minSize: number;
+
   private readonly maxSize: number;
 
-  public constructor(options: PartOptions & { minSize: number; maxSize: number }) {
+  public constructor(
+    options: PartOptions & {
+      readonly minSize: number;
+      readonly maxSize: number;
+    }
+  ) {
     super(options);
     this.minSize = options.minSize;
     this.maxSize = options.maxSize;
