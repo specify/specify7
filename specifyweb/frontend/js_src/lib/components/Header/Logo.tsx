@@ -2,8 +2,8 @@ import React from 'react';
 
 import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
-import { userPreferences } from '../Preferences/userPreferences';
 import { useDarkMode } from '../Preferences/Hooks';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function Logo({
   isCollapsed,
