@@ -99,7 +99,6 @@ export function Header({
   return (
     <header
       className={`
-        hover:text-brand-300
         flex [z-index:1]
         dark:border-neutral-700 dark:bg-neutral-900 print:hidden
         ${isHorizontal ? '' : 'flex-col'}
@@ -115,7 +114,7 @@ export function Header({
         ${
           isMenuLight
             ? 'border-neutral-300 bg-gray-100'
-            : 'border-neutral-700 bg-brown-100 text-white'
+            : 'border-neutral-700 bg-brown-100'
         }
       `}
     >
@@ -216,8 +215,8 @@ export function MenuButton({
       isActive
         ? 'bg-brand-400 !text-white'
         : isSideBarDark
-          ? 'text-white'
-          : 'text-gray-700'
+          ? 'text-white hover:!text-brand-100'
+          : 'text-gray-700 hover:!text-brand-300'
     }
     ${className.ariaHandled}
     ${extraProps?.className ?? ''}

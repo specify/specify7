@@ -53,7 +53,7 @@ const config: Config = {
         },
         // Specify brand colors:
         specify: {
-          100: '#d4d8bf',
+          100: '#E0E2B9',
           200: '#a4af83',
           300: '#86965e',
           400: '#598137',

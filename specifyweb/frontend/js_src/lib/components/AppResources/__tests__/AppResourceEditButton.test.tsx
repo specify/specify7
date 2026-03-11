@@ -70,18 +70,18 @@ describe('AppResourceEditButton', () => {
 
     const dialog = getByRole('dialog');
     expect(dialog.innerHTML).toMatchInlineSnapshot(`
-      "<div class=\\"
-                flex items-center gap-2 md:gap-4
-                -m-4 cursor-move p-4
-                flex-wrap
-              \\" id=\\"modal-0-handle\\"><div class=\\"flex items-center gap-2\\"><h2 class=\\"font-semibold text-black dark:text-white text-xl\\" id=\\"modal-0-header\\">TestTitle</h2></div></div><div class=\\"
-                  dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
-                  text-gray-700 flex flex-col gap-2
-                \\" id=\\"modal-0-content\\"></div><div class=\\"flex gap-2 justify-end\\"><span class=\\"-ml-2 flex-1\\"></span><button class=\\"button rounded cursor-pointer active:brightness-80 px-4 py-2
-          disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-          dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
-      dark:text-gray-100\\" type=\\"button\\">Close</button></div>"
-    `);
+"<div class=\\"
+          flex items-center gap-2 md:gap-4
+          -m-4 cursor-move p-4
+          flex-wrap
+        \\" id=\\"modal-0-handle\\"><div class=\\"flex items-center gap-2\\"><h2 class=\\"font-semibold text-black dark:text-white text-xl\\" id=\\"modal-0-header\\">TestTitle</h2></div></div><div class=\\"
+            dark:text-neutral-350 -mx-1 flex-1 overflow-y-auto px-1 py-4
+            text-gray-700 flex flex-col gap-2
+          \\" id=\\"modal-0-content\\"></div><div class=\\"flex gap-2 justify-end\\"><span class=\\"-ml-2 flex-1\\"></span><button class=\\"button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100\\" type=\\"button\\">Close</button></div>"
+`);
 
     expect(handleDeleted).not.toHaveBeenCalled();
   });

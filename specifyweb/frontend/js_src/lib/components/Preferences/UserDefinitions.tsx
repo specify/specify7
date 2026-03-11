@@ -396,7 +396,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.dangerButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#b91c1c',
+            defaultValue: '#b72f2f',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),

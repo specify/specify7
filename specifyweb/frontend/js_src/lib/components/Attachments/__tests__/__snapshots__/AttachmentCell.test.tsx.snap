@@ -62,7 +62,7 @@ exports[`AttachmentCell simple render 1`] = `
     <div
       class="
         flex items-center justify-center rounded bg-white
-        outline outline-1 outline-gray-300 transition
+        outline outline-1 outline-neutral-300 transition
         dark:bg-black dark:outline-neutral-800
       "
     >
