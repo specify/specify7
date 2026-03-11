@@ -3,6 +3,7 @@ import React from 'react';
 import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
 import { userPreferences } from '../Preferences/userPreferences';
+import { useDarkMode } from '../Preferences/Hooks';
 
 export function Logo({
   isCollapsed,
@@ -18,6 +19,7 @@ export function Logo({
     'customLogoCollapsed'
   );
   const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
+  const isDarkMode = useDarkMode();
   const hueDifference = useHueDifference();
 
   return (
@@ -38,9 +40,9 @@ export function Logo({
         ${isCollapsed ? 'hidden' : ''}
       `}
           src={
-            isSideBarLight === 'light'
-              ? '/static/img/logo_dark.svg'
-              : '/static/img/logo.svg'
+            isDarkMode || isSideBarLight !== 'light'
+              ? '/static/img/logo.svg'
+              : '/static/img/logo_dark.svg'
           }
           style={{ filter: `hue-rotate(${hueDifference}deg)` }}
         />
