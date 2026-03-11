@@ -49,8 +49,8 @@ msgstr "Проверить"
 msgid "validation"
 msgstr "Проверка"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -278,12 +278,12 @@ msgstr "Сохранение..."
 msgid "wbUnloadProtect"
 msgstr "Изменения в этом наборе данных не были сохранены."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "Нет соответствующей записи для таблицы обязательного соответствия."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -476,7 +476,7 @@ msgstr "Набор данных был удален другим сеансом.
 msgid "includeDmsSymbols"
 msgstr "Включить символы DMS"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "uploadResults"
 msgstr "Результаты загрузки"

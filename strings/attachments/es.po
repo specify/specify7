@@ -26,8 +26,8 @@ msgstr ""
 #: components/Router/Routes.tsx:493
 #: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:131
-#: components/WbImportAttachments/index.tsx:188
-#: components/WbImportAttachments/index.tsx:222
+#: components/WbImportAttachments/index.tsx:193
+#: components/WbImportAttachments/index.tsx:227
 #: components/WbToolkit/index.tsx:73
 #: components/WorkBench/WbAttachmentsPreview.tsx:115
 #: components/WorkBench/WbAttachmentsPreview.tsx:302
@@ -46,9 +46,9 @@ msgstr "Escala"
 #: components/Attachments/Plugin.tsx:41
 #: components/Attachments/Plugin.tsx:151
 #: components/Attachments/index.tsx:54
-#: components/AttachmentsBulkImport/Upload.tsx:251
-#: components/AttachmentsBulkImport/Upload.tsx:258
-#: components/WbImportAttachments/index.tsx:191
+#: components/AttachmentsBulkImport/Upload.tsx:257
+#: components/AttachmentsBulkImport/Upload.tsx:264
+#: components/WbImportAttachments/index.tsx:196
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Servidor de adjuntos no disponible"
@@ -66,7 +66,7 @@ msgid "orderBy"
 msgstr "Ordenar por"
 
 #: components/Attachments/Plugin.tsx:155
-#: components/WbImportAttachments/index.tsx:197
+#: components/WbImportAttachments/index.tsx:202
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
 msgstr "Subiendo…"
@@ -212,12 +212,12 @@ msgstr "ID del archivo adjunto"
 msgid "choosePath"
 msgstr "Seleccione la ruta"
 
-#: components/AttachmentsBulkImport/Upload.tsx:241
+#: components/AttachmentsBulkImport/Upload.tsx:247
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "beginAttachmentUpload"
 msgstr "¿Comenzar a cargar archivos adjuntos?"
 
-#: components/AttachmentsBulkImport/Upload.tsx:244
+#: components/AttachmentsBulkImport/Upload.tsx:250
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "beginUploadDescription"
 msgstr "Interrumpido. Reintentando en [X25X]"
@@ -317,7 +317,7 @@ msgstr "Detenido por el usuario"
 #: components/Router/OverlayRoutes.tsx:237
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
-#: components/WbImportAttachments/index.tsx:219
+#: components/WbImportAttachments/index.tsx:224
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 msgid "importAttachments"
 msgstr "Importar archivos adjuntos"
@@ -376,7 +376,7 @@ msgid "rollbackResults"
 msgstr "Resultados de reversión"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:146
-#: components/AttachmentsBulkImport/Upload.tsx:268
+#: components/AttachmentsBulkImport/Upload.tsx:274
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 msgid "resultValue"
 msgstr ""

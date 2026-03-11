@@ -37,8 +37,8 @@ msgstr "Validate"
 msgid "validation"
 msgstr "Validation"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -266,12 +266,12 @@ msgstr "Saving..."
 msgid "wbUnloadProtect"
 msgstr "Changes to this Data Set have not been Saved."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "No matching record for must-match table."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -456,7 +456,7 @@ msgstr "Data Set was deleted by another session."
 msgid "includeDmsSymbols"
 msgstr "Include DMS Symbols"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "uploadResults"
 msgstr "Upload Results"

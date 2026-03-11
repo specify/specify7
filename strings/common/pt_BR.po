@@ -168,9 +168,9 @@ msgstr "Criar"
 #: components/AttachmentsBulkImport/Import.tsx:415
 #: components/AttachmentsBulkImport/Rollback.tsx:115
 #: components/AttachmentsBulkImport/Rollback.tsx:142
-#: components/AttachmentsBulkImport/Upload.tsx:235
-#: components/AttachmentsBulkImport/Upload.tsx:249
-#: components/AttachmentsBulkImport/Upload.tsx:264
+#: components/AttachmentsBulkImport/Upload.tsx:241
+#: components/AttachmentsBulkImport/Upload.tsx:255
+#: components/AttachmentsBulkImport/Upload.tsx:270
 #: components/BatchEdit/MissingRanks.tsx:42
 #: components/BatchEdit/QueryError.tsx:23
 #: components/BatchEdit/index.tsx:206
@@ -505,7 +505,7 @@ msgstr "Ferramentas"
 msgid "loading"
 msgstr "Carregando…"
 
-#: components/AttachmentsBulkImport/Upload.tsx:271
+#: components/AttachmentsBulkImport/Upload.tsx:277
 #: components/AttachmentsBulkImport/utils.ts:457
 #: components/WorkBench/DataSetMeta.tsx:301
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
@@ -771,7 +771,7 @@ msgstr "Nenhum resultado encontrado"
 msgid "searchQuery"
 msgstr "Consulta de pesquisa"
 
-#: components/Attachments/attachments.ts:122
+#: components/Attachments/attachments.ts:123
 #: components/HomePage/AboutSpecify.tsx:178
 #: components/HomePage/AboutSpecify.tsx:204
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify

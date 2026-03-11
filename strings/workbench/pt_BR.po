@@ -52,8 +52,8 @@ msgstr "Validar"
 msgid "validation"
 msgstr "Validação"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -325,7 +325,7 @@ msgstr "Salvando..."
 msgid "wbUnloadProtect"
 msgstr "As alterações feitas neste conjunto de dados não foram salvas."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
@@ -333,7 +333,7 @@ msgstr ""
 "Não foi encontrado nenhum registro correspondente na tabela de "
 "correspondência obrigatória."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
@@ -562,7 +562,7 @@ msgstr "O conjunto de dados foi excluído por outra sessão."
 msgid "includeDmsSymbols"
 msgstr "Incluir símbolos DMS"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "uploadResults"

@@ -49,8 +49,8 @@ msgstr "Validar"
 msgid "validation"
 msgstr "Validación"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -281,12 +281,12 @@ msgstr "Ahorro..."
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "No hay registro que coincida en tabla de coincidencia obligada."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -480,7 +480,7 @@ msgstr "Otra sesión ha eliminado el conjunro de datos."
 msgid "includeDmsSymbols"
 msgstr "Incluir Símbolos DMS"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "uploadResults"
 msgstr "Cargar Resultados"

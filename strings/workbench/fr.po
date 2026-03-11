@@ -48,8 +48,8 @@ msgstr "Valider"
 msgid "validation"
 msgstr "Validation"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -288,14 +288,14 @@ msgstr ""
 "Les modifications apportées à cet ensemble de données n'ont pas été "
 "enregistrées."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr ""
 "Aucun enregistrement correspondant pour la table à correspondance "
 "obligatoire."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -498,7 +498,7 @@ msgstr "L'ensemble de données a été supprimé par une autre session."
 msgid "includeDmsSymbols"
 msgstr "Inclure les symboles DMS"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "uploadResults"

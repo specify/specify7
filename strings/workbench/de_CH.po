@@ -51,8 +51,8 @@ msgstr "Validieren"
 msgid "validation"
 msgstr "Validierung"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -322,13 +322,13 @@ msgstr "Speichern..."
 msgid "wbUnloadProtect"
 msgstr "Die Änderungen an diesem Datensatz wurden nicht gespeichert."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Kein passender Datensatz für die Tabelle „muss übereinstimmen“."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
@@ -553,7 +553,7 @@ msgstr "Der Datensatz wurde von einer anderen Sitzung gelöscht."
 msgid "includeDmsSymbols"
 msgstr "DMS-Symbole einbeziehen"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "uploadResults"

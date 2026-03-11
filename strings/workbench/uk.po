@@ -48,8 +48,8 @@ msgstr "Перевірити"
 msgid "validation"
 msgstr "Перевірка"
 
-#: components/AttachmentsBulkImport/Upload.tsx:211
-#: components/AttachmentsBulkImport/Upload.tsx:237
+#: components/AttachmentsBulkImport/Upload.tsx:217
+#: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
@@ -277,12 +277,12 @@ msgstr "Збереження..."
 msgid "wbUnloadProtect"
 msgstr "Зміни в цьому наборі даних не збережено."
 
-#: components/WorkBench/WbValidation.tsx:313
+#: components/WorkBench/WbValidation.tsx:329
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "Немає відповідного запису для таблиці обов’язкової відповідності."
 
-#: components/WorkBench/WbValidation.tsx:342
+#: components/WorkBench/WbValidation.tsx:358
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -471,7 +471,7 @@ msgstr "Набір даних видалено іншим сеансом."
 msgid "includeDmsSymbols"
 msgstr "Додайте символи DMS"
 
-#: components/AttachmentsBulkImport/Upload.tsx:265
+#: components/AttachmentsBulkImport/Upload.tsx:271
 #. Used in: Components > Attachments Bulk Import > Upload
 msgid "uploadResults"
 msgstr "План завантаження"
