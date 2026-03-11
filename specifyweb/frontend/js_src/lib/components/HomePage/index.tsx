@@ -6,8 +6,8 @@ import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
-import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { useDarkMode } from '../Preferences/Hooks';
+import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
 
