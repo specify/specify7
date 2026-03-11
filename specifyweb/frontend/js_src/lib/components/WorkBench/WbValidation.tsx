@@ -234,11 +234,16 @@ export class WbValidation {
     let columns: RA<string> = normalizeColumns(initialColumns.filter(Boolean));
     let physicalColumns = resolvePhysicalColumns(columns);
 
-    if (typeof inferColumnsCallback === 'function' && physicalColumns.length === 0) {
+    if (
+      typeof inferColumnsCallback === 'function' &&
+      physicalColumns.length === 0
+    ) {
       columns = normalizeColumns(inferColumnsCallback());
       physicalColumns = resolvePhysicalColumns(columns);
       if (physicalColumns.length === 0)
-        physicalColumns = resolvePhysicalColumns(this.workbench.dataset.columns);
+        physicalColumns = resolvePhysicalColumns(
+          this.workbench.dataset.columns
+        );
     }
 
     return physicalColumns;
