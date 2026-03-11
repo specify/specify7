@@ -79,7 +79,7 @@ function DefaultSplashScreen(): JSX.Element {
     <div className="relative">
       <img
         alt=""
-        className="w-[1200px]"
+        className="w-[800px]"
         src={getDefaultWelcomePageImage(isDarkMode)}
         style={{ filter: `hue-rotate(${hueDifference}deg)` }}
       />
