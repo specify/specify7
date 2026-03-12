@@ -19,6 +19,7 @@ import { fetchResource, idFromUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { fetchUserPermissions } from '../Permissions/index';
 import { QueryComboBox } from '../QueryComboBox';
 import type { UserAgents } from './UserHooks';
 
@@ -60,15 +61,21 @@ export function MissingAgentsDialog({
       async () =>
         typeof userAgents === 'object'
           ? Promise.all(
-              userAgents.map(async ({ divisionId, ...rest }) =>
-                fetchResource('Division', divisionId).then((division) => ({
-                  division,
-                  isRequired:
-                    response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
-                      divisionId
-                    ) === true,
-                  ...rest,
-                }))
+              Array.from(
+                new Set(userAgents.flatMap(({ collections }) => collections))
+              ).map(async (collectionId) => fetchUserPermissions(collectionId))
+            ).then(async () =>
+              Promise.all(
+                userAgents.map(async ({ divisionId, ...rest }) =>
+                  fetchResource('Division', divisionId).then((division) => ({
+                    division,
+                    isRequired:
+                      response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
+                        divisionId
+                      ) === true,
+                    ...rest,
+                  }))
+                )
               )
             ).then((userAgents) =>
               Array.from(userAgents).sort(
