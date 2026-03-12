@@ -44,11 +44,13 @@ export function MissingAgentsDialog({
   userAgents,
   userId,
   onClose: handleClose,
+  onSaved: handleSaved,
   response: initialResponse,
 }: {
   readonly userAgents: UserAgents | undefined;
   readonly userId: number;
   readonly onClose: () => void;
+  readonly onSaved?: () => void;
   readonly response: SetAgentsResponse;
 }): JSX.Element | null {
   const [response, setResponse] = React.useState(initialResponse);
@@ -122,7 +124,7 @@ export function MissingAgentsDialog({
                 }).then(({ data, status }) =>
                   status === Http.BAD_REQUEST
                     ? setResponse(JSON.parse(data))
-                    : handleClose()
+                    : (handleSaved ?? handleClose)()
                 )
               )
         }
