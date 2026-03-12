@@ -237,11 +237,11 @@ function UserView({
     '/admin/user/invite_link',
     'create'
   );
-  const userAgentsReadState = !hasTablePermission('Agent', 'read')
-    ? 'missingAgentRead'
-    : !hasTablePermission('Discipline', 'read')
-      ? 'missingDisciplineRead'
-      : 'full';
+  const userAgentsReadState = hasTablePermission('Agent', 'read')
+    ? hasTablePermission('Discipline', 'read')
+      ? 'full'
+      : 'missingDisciplineRead'
+    : 'missingAgentRead';
   const canSeeInstitutionalPolicies = hasDerivedPermission(
     '/permissions/institutional_policies/user',
     'read'
@@ -356,8 +356,8 @@ function UserView({
                   <CollectionAccess
                     collectionId={collectionId}
                     isSuperAdmin={isSuperAdmin}
-                    userAgentsReadState={userAgentsReadState}
                     userAgents={userAgents}
+                    userAgentsReadState={userAgentsReadState}
                     userPolicies={userPolicies}
                     onChange={setUserPolicies}
                     onChangedAgent={handleChangedAgent}
@@ -667,11 +667,11 @@ function UserView({
                 response={state.response}
                 userAgents={state.userAgents}
                 userId={userResource.id}
+                onClose={(): void => setState({ type: 'Main' })}
                 onSaved={(): void => {
                   setVersion((version) => version + 1);
                   setState({ type: 'Main' });
                 }}
-                onClose={(): void => setState({ type: 'Main' })}
               />
             </ProtectedAction>
           </ProtectedTable>
