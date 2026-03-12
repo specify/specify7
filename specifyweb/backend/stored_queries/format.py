@@ -218,18 +218,27 @@ class ObjectFormatter:
         # Helper function to apply only string-ish transforms with no numeric casts
         def apply_stringish(expr):
             e = expr
+
             if fieldNodeAttrib.get('trimzeros') == 'true':
-                numeric_str = cast(cast(e, types.Numeric(65)), types.String())
-                e = case(
-                    (e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), numeric_str),
-                    else_=cast(e, types.String()),
-                )
+                e = cast(e, types.String())
+
+                # remove leading zeros
+                e = func.regexp_replace(e, r'^(-?)0+([0-9])', r'\1\2')
+
+                # remove trailing zeros after decimal
+                e = func.regexp_replace(e, r'(\.[0-9]*?)0+$', r'\1')
+
+                # remove trailing decimal point
+                e = func.regexp_replace(e, r'\.$', '')
+
             fmt = fieldNodeAttrib.get('format')
             if fmt is not None:
                 e = self.pseudo_sprintf(fmt, e)
+
             sep = fieldNodeAttrib.get('sep')
             if sep is not None:
                 e = concat(sep, e)
+
             return e
 
         stringish_expr = apply_stringish(raw_expr)
