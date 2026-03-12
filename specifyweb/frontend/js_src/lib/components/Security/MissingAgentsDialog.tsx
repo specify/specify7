@@ -62,26 +62,29 @@ export function MissingAgentsDialog({
         typeof userAgents === 'object'
           ? Promise.all(
               Array.from(
-                new Set(userAgents.flatMap(({ collections }) => collections))
-              ).map(async (collectionId) => fetchUserPermissions(collectionId))
-            ).then(async () =>
-              Promise.all(
-                userAgents.map(async ({ divisionId, ...rest }) =>
-                  fetchResource('Division', divisionId).then((division) => ({
-                    division,
-                    isRequired:
-                      response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
-                        divisionId
-                      ) === true,
-                    ...rest,
-                  }))
-                )
-              )
-            ).then((userAgents) =>
-              Array.from(userAgents).sort(
-                sortFunction(({ division }) => division.name)
+                new Set(userAgents.flatMap(({ collections }) => collections)),
+                async (collectionId) => fetchUserPermissions(collectionId)
               )
             )
+              .then(async () =>
+                Promise.all(
+                  userAgents.map(async ({ divisionId, ...rest }) =>
+                    fetchResource('Division', divisionId).then((division) => ({
+                      division,
+                      isRequired:
+                        response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
+                          divisionId
+                        ) === true,
+                      ...rest,
+                    }))
+                  )
+                )
+              )
+              .then((userAgents) =>
+                Array.from(userAgents).sort(
+                  sortFunction(({ division }) => division.name)
+                )
+              )
           : undefined,
       [userAgents, response]
     ),
