@@ -1,473 +1,484 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-06 18:10+0000\n"
+"PO-Revision-Date: 2026-03-12 06:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) "
-"<https://hosted.weblate.org/projects/specify-7/setupTool/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/setupTool/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.17-dev\n"
 
-#: components/SetupTool/index.tsx:232
 #. Used in: Components > Setup Tool > Index
+#: components/SetupTool/index.tsx:232
 #, fuzzy
 msgid "guidedSetup"
-msgstr ""
+msgstr "Configuração guiada"
 
-#: components/SetupTool/index.tsx:304
 #. Used in: Components > Setup Tool > Index
+#: components/SetupTool/index.tsx:304
 #, fuzzy
 msgid "setupProgress"
-msgstr ""
+msgstr "Progresso:"
 
-#: components/SetupTool/index.tsx:253
 #. Used in: Components > Setup Tool > Index
+#: components/SetupTool/index.tsx:253
 #, fuzzy
 msgid "overview"
-msgstr ""
+msgstr "Visão geral"
 
+#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:239
 #: components/SetupTool/index.tsx:243
-#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "settingUp"
-msgstr ""
+msgstr "Configurando o banco de dados..."
 
-#: components/SetupTool/index.tsx:244
 #. Used in: Components > Setup Tool > Index
+#: components/SetupTool/index.tsx:244
 #, fuzzy
 msgid "creating"
-msgstr ""
+msgstr "Criando o"
 
-#: components/SetupTool/index.tsx:312
 #. Used in: Components > Setup Tool > Index
+#: components/SetupTool/index.tsx:312
 #, fuzzy
 msgid "setupError"
-msgstr ""
+msgstr "Ocorreu um erro durante a última tentativa de configuração."
 
-#: components/SetupTool/setupResources.ts:157
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:157
 #, fuzzy
 msgid "institution"
-msgstr ""
+msgstr "Instituição"
 
-#: components/SetupTool/setupResources.ts:158
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:158
 #, fuzzy
 msgid "institutionDescription"
-msgstr ""
+msgstr "Insira as informações da instituição."
 
-#: components/SetupTool/setupResources.ts:164
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:164
 #, fuzzy
 msgid "institutionName"
-msgstr ""
+msgstr "Nome"
 
-#: components/SetupTool/setupResources.ts:165
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:165
 #, fuzzy
 msgid "institutionNameDescription"
 msgstr ""
+"O nome completo e oficial da instituição (por exemplo, \"Instituto de "
+"Biodiversidade da Universidade do Kansas\")."
 
-#: components/SetupTool/setupResources.ts:171
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:171
 #, fuzzy
 msgid "institutionCode"
-msgstr ""
+msgstr "Código"
 
-#: components/SetupTool/setupResources.ts:172
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:172
 #, fuzzy
 msgid "institutionCodeDescription"
 msgstr ""
+"Um código ou acrônimo curto e exclusivo para a instituição (por exemplo, "
+"\"KUBI\")."
 
-#: components/SetupTool/setupResources.ts:178
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:178
 #, fuzzy
 msgid "institutionAddress"
-msgstr ""
+msgstr "Endereço"
 
-#: components/SetupTool/setupResources.ts:180
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:180
 #, fuzzy
 msgid "institutionAddressDescription"
-msgstr ""
+msgstr "Endereço da instituição. Opcional."
 
-#: components/SetupTool/setupResources.ts:228
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:228
 #, fuzzy
 msgid "institutionIsAccessionGlobal"
-msgstr ""
+msgstr "Definir Adesão Globalmente"
 
-#: components/SetupTool/setupResources.ts:229
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:229
 #, fuzzy
 msgid "institutionIsAccessionGlobalDescription"
 msgstr ""
+"O escopo global permite compartilhar acervos entre todas as divisões. O "
+"escopo divisional garante que os acervos sejam específicos para cada divisão."
 
-#: components/SetupTool/setupResources.ts:185
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:185
 #, fuzzy
 msgid "address"
-msgstr ""
+msgstr "Endereço"
 
-#: components/SetupTool/setupResources.ts:186
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:186
 #, fuzzy
 msgid "addressDescription"
-msgstr ""
+msgstr "O endereço da instituição."
 
-#: components/SetupTool/setupResources.ts:191
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:191
 #, fuzzy
 msgid "addressCity"
-msgstr ""
+msgstr "Cidade"
 
-#: components/SetupTool/setupResources.ts:192
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:192
 #, fuzzy
 msgid "addressCityDescription"
-msgstr ""
+msgstr "A cidade onde a instituição está localizada."
 
-#: components/SetupTool/setupResources.ts:198
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:198
 #, fuzzy
 msgid "addressState"
-msgstr ""
+msgstr "Província/Estado"
 
-#: components/SetupTool/setupResources.ts:199
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:199
 #, fuzzy
 msgid "addressStateDescription"
-msgstr ""
+msgstr "O estado ou província."
 
-#: components/SetupTool/setupResources.ts:205
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:205
 #, fuzzy
 msgid "addressCountry"
-msgstr ""
+msgstr "País"
 
-#: components/SetupTool/setupResources.ts:206
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:206
 #, fuzzy
 msgid "addressCountryDescription"
-msgstr ""
+msgstr "O país."
 
-#: components/SetupTool/setupResources.ts:212
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:212
 #, fuzzy
 msgid "addressPostalCode"
-msgstr ""
+msgstr "CEP / Código Postal"
 
-#: components/SetupTool/setupResources.ts:213
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:213
 #, fuzzy
 msgid "addressPostalCodeDescription"
-msgstr ""
+msgstr "O código postal."
 
-#: components/SetupTool/setupResources.ts:219
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:219
 #, fuzzy
 msgid "addressPhone1"
-msgstr ""
+msgstr "Telefone"
 
-#: components/SetupTool/setupResources.ts:220
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:220
 #, fuzzy
 msgid "addressPhone1Description"
-msgstr ""
+msgstr "Um número de telefone para contato."
 
+#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:240
 #: components/SetupTool/setupResources.ts:308
 #: components/SetupTool/setupResources.ts:345
-#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "treeRanks"
-msgstr ""
+msgstr "Classificações da árvore"
 
-#: components/SetupTool/SetupForm.tsx:398
 #. Used in: Components > Setup Tool > Setup Form
+#: components/SetupTool/SetupForm.tsx:398
 #, fuzzy
 msgid "rank"
-msgstr ""
+msgstr "Classificação"
 
+#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:267
 #: components/SetupTool/setupResources.ts:322
 #: components/SetupTool/setupResources.ts:391
-#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "fullNameDirection"
-msgstr ""
+msgstr "Nome completo Direção"
 
+#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 #: components/SetupTool/setupResources.ts:330
 #: components/SetupTool/setupResources.ts:400
 #: components/TreeView/Tree.tsx:299
-#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 #, fuzzy
 msgid "preloadTree"
-msgstr ""
+msgstr "Preencher a árvore com registros padrão"
 
+#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:331
 #: components/SetupTool/setupResources.ts:401
 #: components/SetupTool/setupResources.ts:408
-#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "preloadTreeDescription"
-msgstr ""
+msgstr "Baixe os registros padrão para esta árvore."
 
-#: components/SetupTool/setupResources.ts:407
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:407
 #, fuzzy
 msgid "treeToPreload"
-msgstr ""
+msgstr "Árvore para baixar:"
 
-#: components/SetupTool/SetupForm.tsx:302
 #. Used in: Components > Setup Tool > Setup Form
+#: components/SetupTool/SetupForm.tsx:302
 #, fuzzy
 msgid "selectATree"
-msgstr ""
+msgstr "Selecione uma árvore"
 
-#: components/SetupTool/setupResources.ts:117
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:117
 #, fuzzy
 msgid "include"
-msgstr ""
+msgstr "Incluir"
 
-#: components/SetupTool/setupResources.ts:118
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:118
 #, fuzzy
 msgid "includeDescription"
-msgstr ""
+msgstr "Inclua os locais do Nível na definição da árvore."
 
-#: components/SetupTool/setupResources.ts:126
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:126
 #, fuzzy
 msgid "enforced"
-msgstr ""
+msgstr "Aplicado"
 
-#: components/SetupTool/setupResources.ts:127
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:127
 #, fuzzy
 msgid "enforcedDescription"
 msgstr ""
+"A opção \"Is Enforced\" garante que o nível não possa ser ignorado ao "
+"adicionar nós em níveis inferiores da árvore."
 
-#: components/SetupTool/setupResources.ts:135
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:135
 #, fuzzy
 msgid "inFullName"
-msgstr ""
+msgstr "Nome completo"
 
-#: components/SetupTool/setupResources.ts:136
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:136
 #, fuzzy
 msgid "inFullNameDescription"
 msgstr ""
+"\"Está no nome completo\" inclui o nível ao construir uma expressão de nome "
+"completo, que pode ser consultada e usada em relatórios."
 
-#: components/SetupTool/setupResources.ts:143
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:143
 #, fuzzy
 msgid "fullNameSeparator"
-msgstr ""
+msgstr "Separador"
 
-#: components/SetupTool/setupResources.ts:144
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:144
 #, fuzzy
 msgid "fullNameSeparatorDescription"
 msgstr ""
+"O separador é o caractere que separa os níveis ao exibir o nome completo."
 
-#: components/SetupTool/setupResources.ts:236
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:236
 #, fuzzy
 msgid "storageTree"
-msgstr ""
+msgstr "Árvore de armazenamento"
 
-#: components/SetupTool/setupResources.ts:304
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:304
 #, fuzzy
 msgid "geographyTree"
-msgstr ""
+msgstr "Árvore Geográfica"
 
-#: components/SetupTool/setupResources.ts:340
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:340
 #, fuzzy
 msgid "taxonTree"
-msgstr ""
+msgstr "Árvore taxonômica"
 
-#: components/SetupTool/setupResources.ts:277
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:277
 #, fuzzy
 msgid "division"
-msgstr ""
+msgstr "Divisão"
 
-#: components/SetupTool/setupResources.ts:279
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:279
 #, fuzzy
 msgid "divisionName"
-msgstr ""
+msgstr "Nome"
 
-#: components/SetupTool/setupResources.ts:280
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:280
 #, fuzzy
 msgid "divisionAbbrev"
-msgstr ""
+msgstr "Abreviação"
 
-#: components/SetupTool/setupResources.ts:285
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:285
 #, fuzzy
 msgid "discipline"
-msgstr ""
+msgstr "Disciplina"
 
-#: components/SetupTool/setupResources.ts:296
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:296
 #, fuzzy
 msgid "disciplineName"
-msgstr ""
+msgstr "Nome"
 
-#: components/SetupTool/setupResources.ts:289
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:289
 #, fuzzy
 msgid "disciplineType"
-msgstr ""
+msgstr "Tipo"
 
-#: components/SetupTool/setupResources.ts:420
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:420
 #, fuzzy
 msgid "collectionName"
-msgstr ""
+msgstr "Nome da coleção"
 
-#: components/SetupTool/setupResources.ts:426
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:426
 #, fuzzy
 msgid "collectionCode"
-msgstr ""
+msgstr "Código"
 
-#: components/SetupTool/setupResources.ts:432
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:432
 #, fuzzy
 msgid "collectionCatalogNumFormatName"
-msgstr ""
+msgstr "Formato do número de catálogo"
 
-#: components/SetupTool/setupResources.ts:442
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:442
 #, fuzzy
 msgid "specifyUser"
-msgstr ""
+msgstr "Especificar usuário"
 
-#: components/SetupTool/setupResources.ts:460
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:460
 #, fuzzy
 msgid "specifyUserName"
-msgstr ""
+msgstr "Nome de usuário"
 
-#: components/SetupTool/setupResources.ts:461
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:461
 #, fuzzy
 msgid "specifyUserNameDescription"
-msgstr ""
+msgstr "O nome de usuário da conta de administrador principal."
 
-#: components/SetupTool/setupResources.ts:467
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:467
 #, fuzzy
 msgid "specifyUserPassword"
-msgstr ""
+msgstr "Senha"
 
-#: components/SetupTool/setupResources.ts:468
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:468
 #, fuzzy
 msgid "specifyUserPasswordDescription"
-msgstr ""
+msgstr "A senha da conta."
 
-#: components/SetupTool/setupResources.ts:473
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:473
 #, fuzzy
 msgid "specifyUserConfirmPassword"
-msgstr ""
+msgstr "Confirme sua senha"
 
-#: components/SetupTool/setupResources.ts:474
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:474
 #, fuzzy
 msgid "specifyUserConfirmPasswordDescription"
-msgstr ""
+msgstr "A senha deve ser a mesma que foi inserida acima."
 
-#: components/SetupTool/setupResources.ts:446
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:446
 #, fuzzy
 msgid "specifyUserFirstName"
-msgstr ""
+msgstr "Primeiro nome"
 
-#: components/SetupTool/setupResources.ts:447
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:447
 #, fuzzy
 msgid "specifyUserFirstNameDescription"
-msgstr ""
+msgstr "Primeiro nome do agente associado à conta. Opcional."
 
-#: components/SetupTool/setupResources.ts:453
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:453
 #, fuzzy
 msgid "specifyUserLastName"
-msgstr ""
+msgstr "Sobrenome"
 
-#: components/SetupTool/setupResources.ts:454
 #. Used in: Components > Setup Tool > Setup Resources
+#: components/SetupTool/setupResources.ts:454
 #, fuzzy
 msgid "specifyUserLastNameDescription"
-msgstr ""
+msgstr "Sobrenome do agente associado à conta."
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:597
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:597
 #, fuzzy
 msgid "addNewGeographyTree"
-msgstr ""
+msgstr "Adicionar nova árvore geográfica"
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:615
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:615
 #, fuzzy
 msgid "addNewTaxonTree"
-msgstr ""
+msgstr "Adicionar nova árvore taxonômica"
 
+#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:189
 #: components/SystemConfigurationTool/Hierarchy.tsx:714
 #: components/SystemConfigurationTool/Hierarchy.tsx:719
-#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchyStructureTitle"
-msgstr ""
+msgstr "Veja a hierarquia institucional."
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:193
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:193
 #, fuzzy
 msgid "hierarchyStructureHint"
-msgstr ""
+msgstr "Clique em qualquer bloco para abrir o formulário de edição."
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:197
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:197
 #, fuzzy
 msgid "hierarchySwitchToHorizontal"
-msgstr ""
+msgstr "Mudar para o modo horizontal"
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:198
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:198
 #, fuzzy
 msgid "hierarchySwitchToVertical"
-msgstr ""
+msgstr "Mudar para a vertical"
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:430
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:430
 #, fuzzy
 msgid "hierarchyAddNew"
-msgstr ""
+msgstr "Adicionar"
 
-#: components/SystemConfigurationTool/Hierarchy.tsx:204
 #. Used in: Components > System Configuration Tool > Hierarchy
+#: components/SystemConfigurationTool/Hierarchy.tsx:204
 #, fuzzy
 msgid "hierarchyDiagram"
-msgstr ""
+msgstr "Hierarquia Institucional"
 
-#: components/SetupTool/SetupForm.tsx:182
 #. Used in: Components > Setup Tool > Setup Form
+#: components/SetupTool/SetupForm.tsx:182
 #, fuzzy
 msgid "emptyTaxonTree"
-msgstr ""
+msgstr "Uma árvore taxonômica vazia será criada."
