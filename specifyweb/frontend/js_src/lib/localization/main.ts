@@ -78,7 +78,7 @@ export const mainText = createDictionary({
   },
   errorOccurred: {
     'en-us': 'We are sorry, something has gone wrong',
-    'ru-ru': 'Извините, что-то пошло не так.',
+    'ru-ru': 'Приносим свои извинения, произошла ошибка.',
     'es-es': 'Lo sentimos, algo ha ido mal',
     'fr-fr': "Nous sommes désolés, quelque chose s'est mal passé",
     'uk-ua': 'Вибачте, щось пішло не так',
@@ -91,7 +91,7 @@ export const mainText = createDictionary({
     'uk-ua': 'Натисніть, щоб переглянути деталі',
     'de-ch': 'Klicken Sie hier, um Details anzuzeigen.',
     'fr-fr': 'Cliquez pour voir les détails',
-    'ru-ru': 'Нажмите, чтобы увидеть подробности',
+    'ru-ru': 'Нажмите, чтобы посмотреть подробности',
     'pt-br': 'Clique para ver os detalhes',
   },
   errorOccurredDescription: {
@@ -114,7 +114,7 @@ export const mainText = createDictionary({
     'en-us':
       'To avoid corrupting data records, you need to start again from a safe spot--the Home page.',
     'ru-ru':
-      'Чтобы избежать повреждения записей данных, вам необходимо начать заново с безопасного места — с домашней страницы.',
+      'Чтобы избежать повреждения данных, необходимо начать заново с безопасного места — с главной страницы.',
     'es-es':
       'Para evitar corromper los registros de datos, debe comenzar de nuevo desde un lugar seguro: la página de inicio.',
     'fr-fr':
@@ -180,7 +180,7 @@ export const mainText = createDictionary({
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes will be lost if you leave this page.',
     'ru-ru':
-      'Несохраненные изменения будут утеряны, если вы покинете эту страницу.',
+      'Несохраненные изменения будут потеряны, если вы покинете эту страницу.',
     'es-es': 'Los cambios no guardados se perderán si abandona esta página.',
     'fr-fr':
       'Les modifications non enregistrées seront perdues si vous quittez cette page.',

@@ -2354,6 +2354,11 @@ exports[`getMainTableFields 1`] = `
     "name",
   ],
   "CommonNameTxCitation": [],
+  "Component": [
+    "catalogNumber",
+    "role",
+    "uniqueIdentifier",
+  ],
   "ConservDescription": [
     "shortDesc",
     "units",
@@ -2822,6 +2827,7 @@ exports[`getMainTableFields 1`] = `
   ],
   "Storage": [
     "name",
+    "uniqueIdentifier",
   ],
   "StorageAttachment": [],
   "StorageTreeDef": [

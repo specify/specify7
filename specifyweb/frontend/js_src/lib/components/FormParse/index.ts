@@ -34,7 +34,6 @@ import {
   setLogContext,
 } from '../Errors/logContext';
 import { cacheableUrl } from '../InitialContext';
-import { getPref } from '../InitialContext/remotePrefs';
 import { formatUrl } from '../Router/queryString';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
 import { toSimpleXmlNode, xmlToJson } from '../Syncer/xmlToJson';
@@ -532,11 +531,7 @@ export async function parseFormDefinition(
 }
 
 function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
-  const definition =
-    getColumnDefinition(
-      viewDefinition,
-      getPref('form.definition.columnSource')
-    ) ?? getColumnDefinition(viewDefinition, undefined);
+  const definition = getColumnDefinition(viewDefinition, undefined);
   // Specify 7 handles forms without column definition fine, so no need to warn for this
   return definition ?? getParsedAttribute(viewDefinition, 'colDef') ?? '';
 }

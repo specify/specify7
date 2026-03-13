@@ -15,6 +15,7 @@ import '../../../css/workbench.css';
 import type { HotTable } from '@handsontable/react';
 import type Handsontable from 'handsontable';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
@@ -30,6 +31,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { resourceEvents } from '../DataModel/resource';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -84,6 +86,20 @@ export function WbView({
         ? [Array.from(dataset.columns).fill(null)]
         : dataset.rows,
     [dataset]
+  );
+  // Switch to home page on dataset deleted if current dataset is deleted
+  const navigate = useNavigate();
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (
+          resource.specifyTable.name === 'Spdataset' &&
+          resource.id === dataset.id
+        ) {
+          navigate('/specify/', { replace: true });
+        }
+      }),
+    [dataset.id]
   );
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);

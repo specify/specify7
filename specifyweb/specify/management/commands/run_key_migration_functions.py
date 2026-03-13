@@ -48,7 +48,18 @@ def fix_cots(stdout: WriteToStdOut | None = None):
     log_and_run(funcs, stdout)
 
 def fix_schema_config(stdout: WriteToStdOut | None = None):
+    def apply_schema_overrides_for_all_disciplines(_apps):
+        from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults_task
+        Discipline = _apps.get_model('specify', 'Discipline')
+        for discipline in Discipline.objects.all():
+            if stdout is not None:
+                stdout(
+                    f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
+                )
+            apply_schema_defaults_task.run(discipline.id)
+
     funcs = [
+        # usc.update_all_table_schema_config_with_defaults,
         usc.create_geo_table_schema_config_with_defaults, # specify 0002
         usc.create_cotype_splocalecontaineritem, # specify 0003
         usc.create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
@@ -73,9 +84,28 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.remove_collectionobject_parentco, # specify 0029
         usc.add_quantities_gift, # specify 0032
         usc.update_paleo_desc, # specify 0033
-        usc.update_accession_date_fields # specify 0034
+        usc.update_accession_date_fields, # specify 0034
+        usc.update_loan_and_gift_agent_fields, # specify 0039
+        usc.update_loan_and_gift_agents, # specify 0039
+        usc.componets_schema_config_migrations, # specify 0040
+        usc.create_discipline_type_picklist, # specify 0042
+        usc.update_discipline_type_splocalecontaineritem, # specify 0042
+        apply_schema_overrides_for_all_disciplines,
+        usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
+
+def fix_app_resource_dirs(stdout: WriteToStdOut | None = None):
+    from specifyweb.backend.setup_tool.app_resource_defaults import ensure_all_discipline_resource_dirs
+
+    results = ensure_all_discipline_resource_dirs()
+    if stdout is not None:
+        stdout(
+            "Ensured discipline app resource directories: "
+            f"total={results['total_disciplines']}, "
+            f"created={results['created']}, "
+            f"updated={results['updated']}"
+        )
 
 def apply_default_uniqueness_rules_to_disciplines(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -132,6 +162,7 @@ class Command(BaseCommand):
             "fix_permissions": fix_permissions,
             "fix_business_rules": fix_business_rules,
             "fix_schema_config": fix_schema_config,
+            "fix_app_resource_dirs": fix_app_resource_dirs,
             "fix_tectonic_ranks": fix_tectonic_ranks,
             "fix_misc": fix_misc,
         }

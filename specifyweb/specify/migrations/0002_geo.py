@@ -72,11 +72,12 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        create_default_collection_types(apps)
-        create_default_discipline_for_tree_defs(apps)
+        db_alias = schema_editor.connection.alias or 'migrator'
+        create_default_collection_types(apps, using=db_alias)
+        create_default_discipline_for_tree_defs(apps, using=db_alias)
         usc.create_geo_table_schema_config_with_defaults(apps)
-        create_cogtype_type_picklist(apps)
-        set_discipline_for_taxon_treedefs(apps)
+        create_cogtype_type_picklist(apps, using=db_alias)
+        set_discipline_for_taxon_treedefs(apps, using=db_alias)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
         revert_cogtype_type_picklist(apps)

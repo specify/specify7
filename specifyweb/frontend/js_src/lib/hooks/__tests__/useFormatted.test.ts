@@ -15,6 +15,15 @@ describe('useFormatted', () => {
     { objects: [], meta: { limit: 20, offset: 0, total_count: 0 } }
   );
 
+  overrideAjax('/api/specify/component/?catalognumber=7&domainfilter=true', {
+    objects: [],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 0,
+    },
+  });
+
   test('sets the formatted value initially', () => {
     const collectionObject = new tables.CollectionObject.Resource({
       catalogNumber: '5',

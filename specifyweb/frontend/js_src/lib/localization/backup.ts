@@ -33,7 +33,7 @@ export const backupText = createDictionary({
     'es-es': 'Se encontró una copia de seguridad anterior:',
     'fr-fr': 'Une sauvegarde précédente a été trouvée :',
     'pt-br': 'Foi encontrado um backup anterior:',
-    'ru-ru': 'Найдена предыдущая резервная копия:',
+    'ru-ru': 'Была найдена предыдущая резервная копия:',
     'uk-ua': 'Знайдено попередню резервну копію:',
   },
   previousNone: {
@@ -63,7 +63,7 @@ export const backupText = createDictionary({
     'es-es': 'Esta copia de seguridad se creó el {date:string}',
     'fr-fr': 'Cette sauvegarde a été créée sur {date:string}',
     'pt-br': 'Este backup foi criado em {date:string}',
-    'ru-ru': 'Эта резервная копия была создана {date:string}',
+    'ru-ru': 'Эта резервная копия была создана на {date:string}',
     'uk-ua': 'Цю резервну копію було створено {date:string}',
   },
   checkPreviousFailed: {
@@ -82,7 +82,7 @@ export const backupText = createDictionary({
     'es-es': 'Error al iniciar la copia de seguridad.',
     'fr-fr': 'Échec du démarrage de la sauvegarde.',
     'pt-br': 'Falha ao iniciar o backup.',
-    'ru-ru': 'Резервный запуск не удался.',
+    'ru-ru': 'Запуск резервного копирования не удался.',
     'uk-ua': 'Не вдалося запустити резервне копіювання.',
   },
   databaseBackupCompleted: {
@@ -100,7 +100,7 @@ export const backupText = createDictionary({
     'es-es': 'Error en la copia de seguridad de la base de datos.',
     'fr-fr': 'La sauvegarde de la base de données a échoué.',
     'pt-br': 'O backup do banco de dados falhou.',
-    'ru-ru': 'Сбой резервного копирования базы данных.',
+    'ru-ru': 'Резервное копирование базы данных не удалось.',
     'uk-ua': 'Не вдалося створити резервну копію бази даних.',
   },
   compressing: {

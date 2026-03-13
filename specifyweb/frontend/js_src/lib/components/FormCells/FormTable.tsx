@@ -28,6 +28,7 @@ import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
+import { shouldBeToOne } from '../FormSliders/helpers';
 import { getCollectionPref } from '../InitialContext/remotePrefs';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
@@ -157,9 +158,17 @@ export function FormTable<SCHEMA extends AnySchema>({
     lastRow?.focus();
   }, [resources]);
 
-  const isToOne = !relationshipIsToMany(relationship);
+  const isSystemConfigResource =
+    (relationship.relatedTable.name === 'Collection' &&
+      relationship.name === 'collections') ||
+    (relationship.relatedTable.name === 'Discipline' &&
+      relationship.name === 'disciplines');
 
-  const disableAdding = isToOne && resources.length > 0;
+  const isToOne =
+    !relationshipIsToMany(relationship) || shouldBeToOne(relationship);
+
+  const disableAdding =
+    (isToOne && resources.length > 0) || isSystemConfigResource;
 
   const header = commonText.countLine({
     resource: relationship.label,
@@ -203,7 +212,8 @@ export function FormTable<SCHEMA extends AnySchema>({
         resource.cid,
         Boolean(
           resource.specifyTable.name === 'Preparation' &&
-            collectionPreparationPref
+            collectionPreparationPref &&
+            resource.isNew()
         ),
       ])
     )

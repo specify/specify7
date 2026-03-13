@@ -1,3 +1,5 @@
+import { attachmentsText } from '../../localization/attachments';
+import { interactionsText } from '../../localization/interactions';
 import { statsText } from '../../localization/stats';
 import { today } from '../../utils/relativeDate';
 import type { RA } from '../../utils/types';
@@ -43,7 +45,7 @@ export const statsSpec: StatsSpec = {
             },
           },
           preparations: {
-            label: statsText.preparations(),
+            label: interactionsText.preparations(),
             spec: {
               type: 'QueryStat',
               querySpec: {
@@ -83,10 +85,10 @@ export const statsSpec: StatsSpec = {
         },
       },
       preparations: {
-        label: statsText.preparations(),
+        label: interactionsText.preparations(),
         items: {
           phantomItem: {
-            label: statsText.preparations(),
+            label: interactionsText.preparations(),
             spec: {
               type: 'BackEndStat',
               pathToValue: undefined,
@@ -154,7 +156,7 @@ export const statsSpec: StatsSpec = {
             },
           },
           openLoansCount: {
-            label: statsText.openLoans(),
+            label: statsText.openLoansStat(),
             spec: {
               type: 'QueryStat',
               querySpec: {
@@ -503,7 +505,7 @@ export const statsSpec: StatsSpec = {
         },
       },
       attachments: {
-        label: statsText.attachments(),
+        label: attachmentsText.attachments(),
         items: {
           collectionObjectsWithAttachments: {
             label: statsText.collectionObjectsWithAttachments(),

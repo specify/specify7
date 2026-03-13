@@ -594,13 +594,13 @@ export const wbText = createDictionary({
     'de-ch':
       'Überprüfen Sie den Datensatz und die Mauszeigerhinweise für jede Fehlerzelle. Nehmen Sie anschließend die entsprechenden Korrekturen vor. Speichern Sie die Daten und versuchen Sie es erneut mit {type:string}.',
     'es-es':
-      'Valide el conjunto de datos y revise las sugerencias que aparecen al pasar el ratón por encima de cada celda con error; a continuación, realice las correcciones pertinentes. Guarde y vuelva a intentarlo {type:string}.',
+      'Valide el conjunto de datos y revise las sugerencias al pasar el ratón por cada celda con error. Luego, realice las correcciones pertinentes. Guarde y vuelva a intentar la operación {type:string}.',
     'fr-fr':
       "Validez l'ensemble de données et consultez les infobulles pour chaque cellule d'erreur, puis effectuez les corrections nécessaires. Enregistrez et réessayez {type:string}.",
     'pt-br':
       'Valide o conjunto de dados e revise as dicas ao passar o mouse para cada célula com erro e, em seguida, faça as correções apropriadas. Salve e tente novamente o {type:string}.',
     'ru-ru':
-      'Проверьте набор данных и просмотрите подсказки при наведении курсора на каждую ячейку с ошибкой, затем внесите необходимые исправления. Сохраните и повторите попытку {type:string}.',
+      'Проверьте набор данных и просмотрите подсказки при наведении курсора мыши на каждую ячейку с ошибкой, затем внесите соответствующие исправления. Сохраните и повторите попытку {type:string}.',
     'uk-ua':
       'Перевірте набір даних і перегляньте підказки під час наведення курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть і повторіть спробу {type:string}.',
   },
@@ -1267,7 +1267,7 @@ export const wbText = createDictionary({
     'de-ch': 'Zeitstempel Hochgeladen',
     'es-es': 'Marca de tiempo cargada',
     'fr-fr': 'Horodatage de la mise en ligne',
-    'ru-ru': 'Временная метка загружена',
+    'ru-ru': 'Отметка времени Загружено',
     'uk-ua': 'Мітка часу завантажено',
     'pt-br': 'Carimbo de data/hora enviado',
   },
@@ -1443,13 +1443,13 @@ export const wbText = createDictionary({
     'es-es': 'Archivos adjuntos para la fila {row:number}:',
     'fr-fr': 'Pièces jointes pour la ligne {row:number} :',
     'pt-br': 'Anexos para a linha {row:number}:',
-    'ru-ru': 'Навесное оборудование для ряда {row:number}:',
+    'ru-ru': 'Приложения для строки {row:number}:',
     'uk-ua': 'Вкладення для рядка {row:number}:',
   },
   detachWindow: {
     'en-us': 'Detach Window',
     'de-ch': 'Fenster abnehmen',
-    'es-es': 'Ventana desmontable',
+    'es-es': 'Separar ventana',
     'fr-fr': 'Détacher la fenêtre',
     'pt-br': 'Janela destacável',
     'ru-ru': 'Отсоединить окно',
@@ -1458,7 +1458,7 @@ export const wbText = createDictionary({
   attachWindow: {
     'en-us': 'Attach Window',
     'de-ch': 'Fenster anbringen',
-    'es-es': 'Ventana adjunta',
+    'es-es': 'Adjuntar ventana',
     'fr-fr': 'Fenêtre attachée',
     'pt-br': 'Anexar janela',
     'ru-ru': 'Прикрепить окно',
@@ -1467,7 +1467,7 @@ export const wbText = createDictionary({
   updatedCells: {
     'en-us': 'Updated Cells',
     'de-ch': 'Aktualisierte Zellen',
-    'es-es': 'Celdas actualizadas',
+    'es-es': 'Células actualizadas',
     'fr-fr': 'Cellules mises à jour',
     'pt-br': 'Células atualizadas',
     'ru-ru': 'Обновленные ячейки',
@@ -1476,10 +1476,10 @@ export const wbText = createDictionary({
   deletedCells: {
     'en-us': 'Deleted Cells',
     'de-ch': 'Gelöschte Zellen',
-    'es-es': 'Celdas eliminadas',
+    'es-es': 'Células eliminadas',
     'fr-fr': 'Cellules supprimées',
     'pt-br': 'Células excluídas',
-    'ru-ru': 'Удаленные ячейки',
+    'ru-ru': 'Удаленные клетки',
     'uk-ua': 'Видалені клітинки',
   },
   affectedResults: {
@@ -1488,7 +1488,7 @@ export const wbText = createDictionary({
     'es-es': 'Registros afectados',
     'fr-fr': 'Enregistrements concernés',
     'pt-br': 'Registros afetados',
-    'ru-ru': 'Записи, затронутые',
+    'ru-ru': 'Затронутые записи',
     'uk-ua': 'Зафіксовані записи',
   },
   potentialAffectedResults: {
@@ -1497,7 +1497,7 @@ export const wbText = createDictionary({
     'es-es': 'Registros potenciales afectados',
     'fr-fr': 'Des enregistrements potentiels ont été affectés.',
     'pt-br': 'Registros potencialmente afetados',
-    'ru-ru': 'Потенциально затронутые записи',
+    'ru-ru': 'Возможные затронутые записи',
     'uk-ua': 'Потенційно постраждалі записи',
   },
   wbAffectedDescription: {
@@ -1514,7 +1514,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Anzahl der neuen Datensätze, die in jeder Tabelle betroffen wären:',
     'es-es':
-      'Número de nuevos registros que se verían afectados en cada tabla:',
+      'Número de registros nuevos que se verían afectados en cada tabla:',
     'fr-fr':
       'Nombre de nouveaux enregistrements qui seraient affectés dans chaque table :',
     'pt-br': 'Número de novos registros que seriam afetados em cada tabela:',
@@ -1528,7 +1528,7 @@ export const wbText = createDictionary({
     'es-es': 'Registros creados',
     'fr-fr': 'Enregistrements créés',
     'pt-br': 'Registros criados',
-    'ru-ru': 'Записи созданы',
+    'ru-ru': 'Созданы записи',
     'uk-ua': 'Створені записи',
   },
   recordsUpdated: {
@@ -1537,37 +1537,36 @@ export const wbText = createDictionary({
     'es-es': 'Registros actualizados',
     'fr-fr': 'Mise à jour des enregistrements',
     'pt-br': 'Registros atualizados',
-    'ru-ru': 'Записи обновлены',
+    'ru-ru': 'Записи обновлены.',
     'uk-ua': 'Записи оновлено',
   },
   recordsDeleted: {
     'en-us': 'Records deleted (not including dependents)',
     'de-ch': 'Gelöschte Datensätze (ohne Angehörige)',
-    'es-es': 'Registros eliminados (sin incluir a los dependientes)',
+    'es-es': 'Registros eliminados (sin incluir dependientes)',
     'fr-fr': "Enregistrements supprimés (à l'exclusion des personnes à charge)",
     'pt-br': 'Registros excluídos (exceto dependentes)',
-    'ru-ru': 'Удаленные записи (без учета иждивенцев)',
+    'ru-ru': 'Удаленные записи (за исключением записей о иждивенцах)',
     'uk-ua': 'Записи видалено (без урахування утриманців)',
   },
   recordsMatchedAndChanged: {
     'en-us': 'Related records matched to different records',
     'de-ch':
       'Verwandte Datensätze wurden verschiedenen Datensätzen zugeordnet.',
-    'es-es':
-      'Los registros relacionados coincidieron con registros diferentes.',
+    'es-es': 'Registros relacionados coincidentes con diferentes registros',
     'fr-fr':
       'Enregistrements associés correspondant à des enregistrements différents',
     'pt-br': 'Registros relacionados correspondem a registros diferentes.',
-    'ru-ru': 'Связанные записи, сопоставленные с разными записями',
+    'ru-ru': 'Связанные записи сопоставлены с различными записями',
     'uk-ua': 'Пов’язані записи, що відповідають іншим записам',
   },
   matchAndChanged: {
     'en-us': 'Matched and changed cells',
     'de-ch': 'Übereinstimmende und veränderte Zellen',
-    'es-es': 'Celdas coincidentes y modificadas',
+    'es-es': 'Células coincidentes y modificadas',
     'fr-fr': 'Cellules appariées et modifiées',
     'pt-br': 'Células correspondentes e alteradas',
-    'ru-ru': 'Совпадающие и измененные ячейки',
+    'ru-ru': 'Сопоставленные и измененные клетки',
     'uk-ua': 'Зіставлені та змінені клітинки',
   },
 } as const);

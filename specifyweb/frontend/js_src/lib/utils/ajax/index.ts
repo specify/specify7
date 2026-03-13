@@ -56,6 +56,13 @@ const safeMethods: ReadonlySet<AjaxMethod> = new Set([
   'HEAD',
 ]);
 
+const testAjaxMockPromise: Promise<
+  (typeof import('../../tests/ajax'))['ajaxMock'] | undefined
+> =
+  process.env.NODE_ENV === 'test'
+    ? import('../../tests/ajax').then(({ ajaxMock }) => ajaxMock)
+    : Promise.resolve(undefined);
+
 export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
   readonly method?: AjaxMethod;
   /**
@@ -110,8 +117,10 @@ export async function ajax<RESPONSE_TYPE = string>(
    */
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
-    const { ajaxMock } = await import('../../tests/ajax');
-    return ajaxMock(url, {
+    const ajaxMock = await testAjaxMockPromise;
+    if (typeof ajaxMock !== 'function')
+      throw new Error('Failed to initialize ajax test mock');
+    return ajaxMock<RESPONSE_TYPE>(url, {
       headers: { Accept: accept, ...headers },
       method,
       expectedErrors,

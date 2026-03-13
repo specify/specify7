@@ -1,12 +1,32 @@
-from typing import Tuple, List
 from django.db.models import Q, Count, Model
 
 import specifyweb.specify.models as spmodels
 from specifyweb.specify.datamodel import datamodel, Table
 
+import logging
+logger = logging.getLogger(__name__)
+
 lookup = lambda tree: (tree.lower() + 'treedef')
 
 SPECIFY_TREES = {"taxon", "storage", "geography", "geologictimeperiod", "lithostrat", 'tectonicunit'}
+
+TREE_ROOT_NODES = {
+    'taxon': 'Life',
+    'storage': 'Root',
+    'geography': "Earth",
+    'geologictimeperiod': 'Time',
+    'lithostrat': 'Earth',
+    'tectonicunit': 'Root'
+}
+
+TREE_NAMES = {
+    'taxon': 'Taxon',
+    'storage': 'Storage',
+    'geography': "Geography",
+    'geologictimeperiod': 'Chronostratigraphy',
+    'lithostrat': 'Lithostratigraphy',
+    'tectonicunit': 'Tectonic Unit'
+}
 
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
@@ -85,3 +105,4 @@ def get_models(name: str):
     tree_node_model = getattr(spmodels, name.lower().title())
     
     return tree_def_model, tree_rank_model, tree_node_model
+
