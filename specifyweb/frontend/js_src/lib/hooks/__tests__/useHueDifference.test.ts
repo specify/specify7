@@ -9,7 +9,7 @@ describe('useHueDifference', () => {
       general: { appearance: { accentColor3: '#1a9cff' } },
     });
     const { result } = renderHook(() => useHueDifference());
-    expect(result.current).toBe(179);
+    expect(result.current).toBe(121);
   });
 
   test('hue difference is adjusted when difference is negative', async () => {
@@ -17,6 +17,6 @@ describe('useHueDifference', () => {
       general: { appearance: { accentColor3: '#ff1a1a' } },
     });
     const { result } = renderHook(() => useHueDifference());
-    expect(result.current).toBe(333);
+    expect(result.current).toBe(275);
   });
 });

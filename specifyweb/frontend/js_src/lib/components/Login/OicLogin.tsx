@@ -60,7 +60,7 @@ export function OicLogin({
           value={data.providers[0].provider}
         />
         {data.providers.map(({ provider, title }) => (
-          <Button.Fancy
+          <Button.BorderedGray
             key={provider}
             onClick={(): void => {
               if (providerRef.current === null) return;
@@ -69,7 +69,7 @@ export function OicLogin({
             }}
           >
             {title}
-          </Button.Fancy>
+          </Button.BorderedGray>
         ))}
         {data.inviteToken === '' && (
           <Link.Fancy
@@ -81,7 +81,7 @@ export function OicLogin({
           </Link.Fancy>
         )}
         <input name="next" type="hidden" value={nextUrl} />
-        <Submit.Fancy className="sr-only">{userText.logIn()}</Submit.Fancy>
+        <Submit.Secondary className="sr-only">{userText.logIn()}</Submit.Secondary>
       </Form>
     </SplashScreen>
   );
