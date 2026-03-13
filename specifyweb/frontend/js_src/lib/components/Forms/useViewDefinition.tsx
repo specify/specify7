@@ -64,11 +64,11 @@ export function useViewDefinition({
           fetchView(attachmentView),
         ]);
         const viewWithId =
-          specificView?.viewsetId != null
-            ? specificView
-            : genericView?.viewsetId != null
-              ? genericView
-              : undefined;
+          specificView?.viewsetId == null
+            ? genericView?.viewsetId == null
+              ? undefined
+              : genericView
+            : specificView;
         return {
           ...webOnlyViews()[attachmentView],
           table,
@@ -78,8 +78,7 @@ export function useViewDefinition({
           viewSetId: viewWithId?.viewsetId ?? undefined,
           isAttachmentPlugin: true,
         };
-      }
-      else if (useGeneratedForm)
+      } else if (useGeneratedForm)
         return autoGenerateViewDefinition(table, formType, mode);
       const resolvedViewName = viewName ?? table.view;
       return fetchViewDefinition(resolvedViewName, table, formType, mode)
@@ -113,7 +112,7 @@ const fetchViewDefinition = async (
   fetchView(
     viewName === originalAttachmentsView ? 'ObjectAttachment' : viewName
   )
-    .then((viewDefinition) =>
+    .then(async (viewDefinition) =>
       typeof viewDefinition === 'object'
         ? parseViewDefinition(viewDefinition, formType, mode, table)
         : undefined
