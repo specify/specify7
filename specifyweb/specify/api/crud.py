@@ -11,6 +11,8 @@ from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
@@ -188,6 +190,82 @@ def make_default_deleter(collection=None, agent=None):
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 
+def is_discipline(obj) -> bool:
+    return getattr(getattr(obj, "_meta", None), "model_name", "") == "discipline"
+
+def get_discipline_delete_guard_blockers(discipline) -> list[dict[str, Any]]:
+    """
+    Returns discipline blockers for deleting disciplines in the configuration tool.
+    A discipline can be deleted only when it has no associated collections and no associated users.
+    """
+    if not is_discipline(discipline):
+        return []
+
+    # Collection association blocks deletion
+    collection_ids = sorted(
+        discipline.collections.values_list("id", flat=True)
+    )
+
+    # User association blocks deletion:
+    # - users with collection-level policies in this discipline
+    # - users with roles in collections in this discipline
+    # - users with discipline-scoped app resource directories
+    # - users owning discipline task semaphores
+    from specifyweb.backend.permissions.models import UserPolicy, UserRole
+    user_ids = set(
+        UserPolicy.objects.filter(
+            collection__discipline=discipline,
+            specifyuser__isnull=False,
+        ).values_list("specifyuser_id", flat=True)
+    )
+    user_ids.update(
+        UserRole.objects.filter(
+            role__collection__discipline=discipline
+        ).values_list("specifyuser_id", flat=True)
+    )
+    user_ids.update(
+        models.Spappresourcedir.objects.filter(
+            discipline=discipline,
+            specifyuser__isnull=False,
+        ).values_list("specifyuser_id", flat=True)
+    )
+    user_ids.update(
+        models.Sptasksemaphore.objects.filter(
+            discipline=discipline,
+            owner__isnull=False,
+        ).values_list("owner_id", flat=True)
+    )
+    sorted_user_ids = sorted(user_ids)
+
+    blockers: list[dict[str, Any]] = []
+    if collection_ids:
+        blockers.append(
+            {
+                "table": "Collection",
+                "field": "discipline",
+                "ids": collection_ids,
+            }
+        )
+    if sorted_user_ids:
+        blockers.append(
+            {
+                "table": "Specifyuser",
+                "field": "discipline",
+                "ids": sorted_user_ids,
+            }
+        )
+    return blockers
+
+def prepare_discipline_for_delete(obj) -> None:
+    """
+    Detach discipline owned tree defs before deletion so tree preload data
+    does not block deleting an empty discipline.
+    """
+    if not is_discipline(obj):
+        return
+
+    for tree_def_model in DISCIPLINE_TREE_MODELS:
+        tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
 
 @transaction.atomic
 def put_resource(collection, agent, name: str, id, version, data: dict[str, Any]):
@@ -308,8 +386,22 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(obj, (make_default_deleter(collection, agent)), version)
+    if is_discipline(obj):
+        guard_blockers = get_discipline_delete_guard_blockers(obj)
+        if guard_blockers:
+            raise BusinessRuleException(
+                "Discipline cannot be deleted while it has associated users or collections."
+            )
+        clean_predelete = prepare_discipline_for_delete
+    else:
+        clean_predelete = None
 
+    return delete_obj(
+        obj,
+        make_default_deleter(collection, agent),
+        version,
+        clean_predelete=clean_predelete,
+    )
 
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data

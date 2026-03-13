@@ -2,6 +2,9 @@ from django.test import Client
 import json
 
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.specify import models
+from specifyweb.specify.api.crud import delete_resource
 
 def _url(obj):
     return f"/delete_blockers/delete_blockers/{obj._meta.model_name}/{obj.id}/"
@@ -63,3 +66,108 @@ class TestDeleteBlockers(GeographyTree):
         
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
+
+    def _create_discipline_with_owned_trees(self, name='Disposable Discipline'):
+        placeholder_geo = models.Geographytreedef.objects.create(name=f'{name} placeholder geo')
+        placeholder_geo_time = models.Geologictimeperiodtreedef.objects.create(
+            name=f'{name} placeholder geotime'
+        )
+
+        discipline = models.Discipline.objects.create(
+            name=name,
+            type='paleobotany',
+            division=self.division,
+            datatype=self.datatype,
+            geographytreedef=placeholder_geo,
+            geologictimeperiodtreedef=placeholder_geo_time,
+        )
+
+        geography_tree = models.Geographytreedef.objects.create(
+            name=f'{name} geography',
+            discipline=discipline,
+        )
+        geography_rank = models.Geographytreedefitem.objects.create(
+            name='Planet',
+            rankid=0,
+            treedef=geography_tree,
+        )
+        models.Geography.objects.create(
+            name='Earth',
+            rankid=0,
+            definition=geography_tree,
+            definitionitem=geography_rank,
+        )
+
+        geotime_tree = models.Geologictimeperiodtreedef.objects.create(
+            name=f'{name} geotime',
+            discipline=discipline,
+        )
+        geotime_rank = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Root',
+            rankid=0,
+            treedef=geotime_tree,
+        )
+        models.Geologictimeperiod.objects.create(
+            name='Root',
+            rankid=0,
+            definition=geotime_tree,
+            definitionitem=geotime_rank,
+        )
+
+        taxon_tree = models.Taxontreedef.objects.create(
+            name=f'{name} taxon',
+            discipline=discipline,
+        )
+        taxon_rank = models.Taxontreedefitem.objects.create(
+            name='Life',
+            rankid=0,
+            treedef=taxon_tree,
+        )
+        models.Taxon.objects.create(
+            name='Life',
+            rankid=0,
+            definition=taxon_tree,
+            definitionitem=taxon_rank,
+        )
+
+        discipline.geographytreedef = geography_tree
+        discipline.geologictimeperiodtreedef = geotime_tree
+        discipline.taxontreedef = taxon_tree
+        discipline.save()
+        return discipline
+
+    def test_discipline_blocked_when_has_collections(self):
+        blockers = self._get_blockers(self.discipline)
+        self._assertSame(
+            blockers,
+            [dict(table='Collection', field='discipline', ids=[self.collection.id])],
+        )
+
+    def test_discipline_blocked_when_has_users(self):
+        discipline = self._create_discipline_with_owned_trees('User Blocked Discipline')
+        models.Spappresourcedir.objects.create(
+            discipline=discipline,
+            specifyuser=self.specifyuser,
+            ispersonal=False,
+        )
+
+        blockers = self._get_blockers(discipline)
+        self._assertSame(
+            blockers,
+            [dict(table='Specifyuser', field='discipline', ids=[self.specifyuser.id])],
+        )
+
+        with self.assertRaises(BusinessRuleException):
+            delete_resource(
+                self.collection, self.agent, 'discipline', discipline.id, discipline.version
+            )
+
+    def test_discipline_without_users_or_collections_can_be_deleted(self):
+        discipline = self._create_discipline_with_owned_trees('Deletable Discipline')
+        blockers = self._get_blockers(discipline)
+        self._assertSame(blockers, [])
+
+        delete_resource(
+            self.collection, self.agent, 'discipline', discipline.id, discipline.version
+        )
+        self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
