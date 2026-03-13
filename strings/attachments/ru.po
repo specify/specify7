@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-12 06:09+0000\n"
+"PO-Revision-Date: 2026-03-14 00:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "attachments/ru/>\n"
@@ -157,7 +157,7 @@ msgstr "Отменено"
 #: components/AttachmentsBulkImport/utils.ts:467
 #, fuzzy
 msgid "frontEndInterruption"
-msgstr "{action:string} выполнялся в момент прерывания."
+msgstr "{action:string} выполнялся, когда произошло прерывание."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:462
