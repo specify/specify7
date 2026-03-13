@@ -584,7 +584,6 @@ class Attachment(models.Model):
             models.Index(fields=['scopeid'], name='AttchScopeIDIDX'),
             models.Index(fields=['scopetype'], name='AttchScopeTypeIDX'),
             models.Index(fields=['guid'], name='AttchmentGuidIDX'),
-            models.Index(fields=['origfilename'], name='attachment_origfilename_idx'),
         ]
 
     
@@ -7971,9 +7970,6 @@ class Relativeage(models.Model):
     class Meta:
         db_table = 'relativeage'
         ordering = ()
-        indexes = [
-            models.Index(fields=['verbatimname'], name='relativeage_verbatimname_idx'),
-        ]
 
     save = partialmethod(custom_save)
 

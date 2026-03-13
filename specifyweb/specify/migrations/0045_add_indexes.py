@@ -9,7 +9,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        # AgentIdentifier
+        # Agentidentifier
         migrations.AddIndex(
             model_name='agentidentifier',
             index=models.Index(
@@ -20,28 +20,28 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='agentidentifier',
             index=models.Index(
-                fields=['identifierType'],
+                fields=['identifiertype'],
                 name='agentidentifier_identifiertype_idx',
             ),
         ),
 
-        # AgentSpecialty
+        # Agentspecialty
         migrations.AddIndex(
             model_name='agentspecialty',
             index=models.Index(
-                fields=['orderNumber'],
+                fields=['ordernumber'],
                 name='agentspecialty_ordernumber_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='agentspecialty',
             index=models.Index(
-                fields=['specialtyName'],
+                fields=['specialtyname'],
                 name='agentspecialty_specialtyname_idx',
             ),
         ),
 
-        # AgentVariant
+        # Agentvariant
         migrations.AddIndex(
             model_name='agentvariant',
             index=models.Index(
@@ -50,25 +50,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # Attachment
-        migrations.AddIndex(
-            model_name='attachment',
-            index=models.Index(
-                fields=['origFilename'],
-                name='attachment_origfilename_idx',
-            ),
-        ),
-
-        # Spdataset (attachmentdataset)
-        migrations.AddIndex(
-            model_name='spdataset',
-            index=models.Index(
-                fields=['name'],
-                name='spdataset_name_idx',
-            ),
-        ),
-
-        # AttachmentMetadata
+        # Attachmentmetadata
         migrations.AddIndex(
             model_name='attachmentmetadata',
             index=models.Index(
@@ -81,12 +63,12 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='author',
             index=models.Index(
-                fields=['orderNumber'],
+                fields=['ordernumber'],
                 name='author_ordernumber_idx',
             ),
         ),
 
-        # CollectionObject
+        # Collectionobject
         migrations.AddIndex(
             model_name='collectionobject',
             index=models.Index(
@@ -97,37 +79,12 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='collectionobject',
             index=models.Index(
-                fields=['projectNumber'],
+                fields=['projectnumber'],
                 name='collectionobject_projectnumber_idx',
             ),
         ),
 
-        # CollectionObjectGroup
-        migrations.AddIndex(
-            model_name='collectionobjectgroup',
-            index=models.Index(
-                fields=['guid'],
-                name='collectionobjectgroup_guid_idx',
-            ),
-        ),
-        migrations.AddIndex(
-            model_name='collectionobjectgroup',
-            index=models.Index(
-                fields=['name'],
-                name='collectionobjectgroup_name_idx',
-            ),
-        ),
-
-        # CollectionObjectGroupType
-        migrations.AddIndex(
-            model_name='collectionobjectgrouptype',
-            index=models.Index(
-                fields=['name'],
-                name='collectionobjectgroupt_name_idx',
-            ),
-        ),
-
-        # CollectionObjectProperty
+        # Collectionobjectproperty
         migrations.AddIndex(
             model_name='collectionobjectproperty',
             index=models.Index(
@@ -136,16 +93,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # CollectionObjectType
-        migrations.AddIndex(
-            model_name='collectionobjecttype',
-            index=models.Index(
-                fields=['name'],
-                name='collectionobjecttype_name_idx',
-            ),
-        ),
-
-        # CollectionRelType
+        # Collectionreltype
         migrations.AddIndex(
             model_name='collectionreltype',
             index=models.Index(
@@ -154,16 +102,16 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # ExchangeIn
+        # Exchangein
         migrations.AddIndex(
             model_name='exchangein',
             index=models.Index(
-                fields=['exchangeInNumber'],
+                fields=['exchangeinnumber'],
                 name='exchangein_exchangeinnumber_idx',
             ),
         ),
 
-        # ExsiccataItem
+        # Exsiccataitem
         migrations.AddIndex(
             model_name='exsiccataitem',
             index=models.Index(
@@ -176,7 +124,7 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='geography',
             index=models.Index(
-                fields=['commonName'],
+                fields=['commonname'],
                 name='geography_commonname_idx',
             ),
         ),
@@ -190,19 +138,19 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='geography',
             index=models.Index(
-                fields=['highestChildNodeNumber'],
+                fields=['highestchildnodenumber'],
                 name='geography_highchildnodenumb_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='geography',
             index=models.Index(
-                fields=['nodeNumber'],
+                fields=['nodenumber'],
                 name='geography_nodenumber_idx',
             ),
         ),
 
-        # GeographyTreeDef
+        # Geographytreedef
         migrations.AddIndex(
             model_name='geographytreedef',
             index=models.Index(
@@ -211,7 +159,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # GeographyTreeDefItem
+        # Geographytreedefitem
         migrations.AddIndex(
             model_name='geographytreedefitem',
             index=models.Index(
@@ -220,23 +168,23 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # GeologicTimePeriod
+        # Geologictimeperiod
         migrations.AddIndex(
             model_name='geologictimeperiod',
             index=models.Index(
-                fields=['highestChildNodeNumber'],
+                fields=['highestchildnodenumber'],
                 name='geotime_highchildnodenumb_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='geologictimeperiod',
             index=models.Index(
-                fields=['nodeNumber'],
+                fields=['nodenumber'],
                 name='geotime_nodenumber_idx',
             ),
         ),
 
-        # GeologicTimePeriodTreeDef
+        # Geologictimeperiodtreedef
         migrations.AddIndex(
             model_name='geologictimeperiodtreedef',
             index=models.Index(
@@ -245,7 +193,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # GeologicTimePeriodTreeDefItem
+        # Geologictimeperiodtreedefitem
         migrations.AddIndex(
             model_name='geologictimeperiodtreedefitem',
             index=models.Index(
@@ -254,16 +202,16 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # InstitutionNetwork
+        # Institutionnetwork
         migrations.AddIndex(
             model_name='institutionnetwork',
             index=models.Index(
-                fields=['altName'],
+                fields=['altname'],
                 name='institutionnetwork_altname_idx',
             ),
         ),
 
-        # LatLonPolygon
+        # Latlonpolygon
         migrations.AddIndex(
             model_name='latlonpolygon',
             index=models.Index(
@@ -272,23 +220,23 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # LithoStrat
+        # Lithostrat
         migrations.AddIndex(
             model_name='lithostrat',
             index=models.Index(
-                fields=['highestChildNodeNumber'],
+                fields=['highestchildnodenumber'],
                 name='lithostrat_highchildnodenumb_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='lithostrat',
             index=models.Index(
-                fields=['nodeNumber'],
+                fields=['nodenumber'],
                 name='lithostrat_nodenumber_idx',
             ),
         ),
 
-        # LithoStratTreeDef
+        # Lithostrattreedef
         migrations.AddIndex(
             model_name='lithostrattreedef',
             index=models.Index(
@@ -297,7 +245,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # LithoStratTreeDefItem
+        # Lithostrattreedefitem
         migrations.AddIndex(
             model_name='lithostrattreedefitem',
             index=models.Index(
@@ -315,16 +263,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # LocalityUpdateRowResult
-        migrations.AddIndex(
-            model_name='localityupdaterowresult',
-            index=models.Index(
-                fields=['rownumber'],
-                name='locupdaterow_rownumber_idx',
-            ),
-        ),
-
-        # MaterialSample
+        # Materialsample
         migrations.AddIndex(
             model_name='materialsample',
             index=models.Index(
@@ -333,16 +272,16 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # MorphBankView
+        # Morphbankview
         migrations.AddIndex(
             model_name='morphbankview',
             index=models.Index(
-                fields=['viewName'],
+                fields=['viewname'],
                 name='morphbankview_viewname_idx',
             ),
         ),
 
-        # OtherIdentifier
+        # Otheridentifier
         migrations.AddIndex(
             model_name='otheridentifier',
             index=models.Index(
@@ -351,39 +290,30 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # PickList
+        # Picklist
         migrations.AddIndex(
             model_name='picklist',
             index=models.Index(
-                fields=['fieldName'],
+                fields=['fieldname'],
                 name='picklist_fieldname_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='picklist',
             index=models.Index(
-                fields=['filterFieldName'],
+                fields=['filterfieldname'],
                 name='picklist_filterfieldname_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='picklist',
             index=models.Index(
-                fields=['tableName'],
+                fields=['tablename'],
                 name='picklist_tablename_idx',
             ),
         ),
 
-        # PreparationProperty
-        migrations.AddIndex(
-            model_name='preparationproperty',
-            index=models.Index(
-                fields=['guid'],
-                name='preparationprop_guid_idx',
-            ),
-        ),
-
-        # PrepType
+        # Preptype
         migrations.AddIndex(
             model_name='preptype',
             index=models.Index(
@@ -392,141 +322,111 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # ReferenceWork
+        # Preparationproperty
+        migrations.AddIndex(
+            model_name='preparationproperty',
+            index=models.Index(
+                fields=['guid'],
+                name='preparationprop_guid_idx',
+            ),
+        ),
+
+        # Referencework
         migrations.AddIndex(
             model_name='referencework',
             index=models.Index(
-                fields=['libraryNumber'],
+                fields=['librarynumber'],
                 name='referencework_librarynumber_idx',
             ),
         ),
 
-        # RelativeAge
-        migrations.AddIndex(
-            model_name='relativeage',
-            index=models.Index(
-                fields=['verbatimName'],
-                name='relativeage_verbatimname_idx',
-            ),
-        ),
-
-        # SpAuditLogField
+        # Spauditlogfield
         migrations.AddIndex(
             model_name='spauditlogfield',
             index=models.Index(
-                fields=['fieldName'],
+                fields=['fieldname'],
                 name='spauditlogfield_fieldname_idx',
             ),
         ),
 
-        # Spdataset (again; same as above, safe but redundant if both kept)
-        # (Kept single index definition above.)
-
-        # SpecifyUser
-        migrations.AddIndex(
-            model_name='specifyuser',
-            index=models.Index(
-                fields=['name'],
-                name='specifyuser_name_idx',
-            ),
-        ),
-
-        # SpExportSchema
+        # Spexportschema
         migrations.AddIndex(
             model_name='spexportschema',
             index=models.Index(
-                fields=['schemaName'],
+                fields=['schemaname'],
                 name='spexportschema_schemaname_idx',
             ),
         ),
 
-        # SpExportSchemaItem
+        # Spexportschemaitem
         migrations.AddIndex(
             model_name='spexportschemaitem',
             index=models.Index(
-                fields=['fieldName'],
+                fields=['fieldname'],
                 name='spexpschemaitem_fieldname_idx',
             ),
         ),
 
-        # SpExportSchemaItemMapping
+        # Spexportschemaitemmapping
         migrations.AddIndex(
             model_name='spexportschemaitemmapping',
             index=models.Index(
-                fields=['exportedFieldName'],
+                fields=['exportedfieldname'],
                 name='spexpschemaitemmap_expfield_idx',
             ),
         ),
 
-        # SpExportSchemaMapping
+        # Spexportschemamapping
         migrations.AddIndex(
             model_name='spexportschemamapping',
             index=models.Index(
-                fields=['mappingName'],
+                fields=['mappingname'],
                 name='spexpschemamap_mappingname_idx',
             ),
         ),
 
-        # SpFieldValueDefault
+        # Spfieldvaluedefault
         migrations.AddIndex(
             model_name='spfieldvaluedefault',
             index=models.Index(
-                fields=['fieldName'],
+                fields=['fieldname'],
                 name='spfieldvaluedef_fieldname_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='spfieldvaluedefault',
             index=models.Index(
-                fields=['tableName'],
+                fields=['tablename'],
                 name='spfieldvaluedef_tablename_idx',
             ),
         ),
 
-        # LibraryRole (splibraryrole)
-        migrations.AddIndex(
-            model_name='libraryrole',
-            index=models.Index(
-                fields=['name'],
-                name='libraryrole_name_idx',
-            ),
-        ),
-
-        # SpLocaleContainer
+        # Splocalecontainer
         migrations.AddIndex(
             model_name='splocalecontainer',
             index=models.Index(
-                fields=['pickListName'],
+                fields=['picklistname'],
                 name='splocalecont_picklistname_idx',
             ),
         ),
 
-        # SpLocaleContainerItem
+        # Splocalecontaineritem
         migrations.AddIndex(
             model_name='splocalecontaineritem',
             index=models.Index(
-                fields=['pickListName'],
+                fields=['picklistname'],
                 name='splocalecontitem_picklist_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='splocalecontaineritem',
             index=models.Index(
-                fields=['webLinkName'],
+                fields=['weblinkname'],
                 name='splocalecontitem_weblink_idx',
             ),
         ),
 
-        # SpMerging
-        migrations.AddIndex(
-            model_name='spmerging',
-            index=models.Index(
-                fields=['name'],
-                name='spmerging_name_idx',
-            ),
-        ),
-
-        # SpPermission
+        # Sppermission
         migrations.AddIndex(
             model_name='sppermission',
             index=models.Index(
@@ -535,7 +435,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # SpPrincipal
+        # Spprincipal
         migrations.AddIndex(
             model_name='spprincipal',
             index=models.Index(
@@ -544,46 +444,46 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # SpQuery
+        # Spquery
         migrations.AddIndex(
             model_name='spquery',
             index=models.Index(
-                fields=['contextName'],
+                fields=['contextname'],
                 name='spquery_contextname_idx',
             ),
         ),
 
-        # SpQueryField
+        # Spqueryfield
         migrations.AddIndex(
             model_name='spqueryfield',
             index=models.Index(
-                fields=['fieldName'],
+                fields=['fieldname'],
                 name='spqueryfield_fieldname_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='spqueryfield',
             index=models.Index(
-                fields=['formatName'],
+                fields=['formatname'],
                 name='spqueryfield_formatname_idx',
             ),
         ),
 
-        # Role (sprole)
-        migrations.AddIndex(
-            model_name='role',
-            index=models.Index(
-                fields=['name'],
-                name='role_name_idx',
-            ),
-        ),
-
-        # SpViewSetObj
+        # Spviewsetobj
         migrations.AddIndex(
             model_name='spviewsetobj',
             index=models.Index(
-                fields=['fileName'],
+                fields=['filename'],
                 name='spviewsetobj_filename_idx',
+            ),
+        ),
+
+        # Specifyuser
+        migrations.AddIndex(
+            model_name='specifyuser',
+            index=models.Index(
+                fields=['name'],
+                name='specifyuser_name_idx',
             ),
         ),
 
@@ -591,19 +491,19 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='storage',
             index=models.Index(
-                fields=['highestChildNodeNumber'],
+                fields=['highestchildnodenumber'],
                 name='storage_highchildnodenumb_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='storage',
             index=models.Index(
-                fields=['nodeNumber'],
+                fields=['nodenumber'],
                 name='storage_nodenumber_idx',
             ),
         ),
 
-        # StorageTreeDef
+        # Storagetreedef
         migrations.AddIndex(
             model_name='storagetreedef',
             index=models.Index(
@@ -612,7 +512,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # StorageTreeDefItem
+        # Storagetreedefitem
         migrations.AddIndex(
             model_name='storagetreedefitem',
             index=models.Index(
@@ -625,33 +525,33 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='taxon',
             index=models.Index(
-                fields=['cultivarName'],
+                fields=['cultivarname'],
                 name='taxon_cultivarname_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='taxon',
             index=models.Index(
-                fields=['groupNumber'],
+                fields=['groupnumber'],
                 name='taxon_groupnumber_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='taxon',
             index=models.Index(
-                fields=['highestChildNodeNumber'],
+                fields=['highestchildnodenumber'],
                 name='taxon_highchildnodenumb_idx',
             ),
         ),
         migrations.AddIndex(
             model_name='taxon',
             index=models.Index(
-                fields=['nodeNumber'],
+                fields=['nodenumber'],
                 name='taxon_nodenumber_idx',
             ),
         ),
 
-        # TaxonTreeDef
+        # Taxontreedef
         migrations.AddIndex(
             model_name='taxontreedef',
             index=models.Index(
@@ -660,7 +560,7 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # TaxonTreeDefItem
+        # Taxontreedefitem
         migrations.AddIndex(
             model_name='taxontreedefitem',
             index=models.Index(
@@ -669,11 +569,72 @@ class Migration(migrations.Migration):
             ),
         ),
 
-        # TectonicUnit
+        # Voucherrelationship
+        migrations.AddIndex(
+            model_name='voucherrelationship',
+            index=models.Index(
+                fields=['vouchernumber'],
+                name='voucherrel_vouchernumber_idx',
+            ),
+        ),
+
+        # Collectionobjecttype
+        migrations.AddIndex(
+            model_name='collectionobjecttype',
+            index=models.Index(
+                fields=['name'],
+                name='collectionobjecttype_name_idx',
+            ),
+        ),
+
+        # Collectionobjectgrouptype
+        migrations.AddIndex(
+            model_name='collectionobjectgrouptype',
+            index=models.Index(
+                fields=['name'],
+                name='collectionobjectgroupt_name_idx',
+            ),
+        ),
+
+        # Collectionobjectgroup
+        migrations.AddIndex(
+            model_name='collectionobjectgroup',
+            index=models.Index(
+                fields=['guid'],
+                name='collectionobjectgroup_guid_idx',
+            ),
+        ),
+        migrations.AddIndex(
+            model_name='collectionobjectgroup',
+            index=models.Index(
+                fields=['name'],
+                name='collectionobjectgroup_name_idx',
+            ),
+        ),
+
+        # Tectonicunittreedef
+        migrations.AddIndex(
+            model_name='tectonicunittreedef',
+            index=models.Index(
+                fields=['name'],
+                name='tectunitdef_name_idx',
+            ),
+        ),
+
+        # Tectonicunittreedefitem
+        migrations.AddIndex(
+            model_name='tectonicunittreedefitem',
+            index=models.Index(
+                fields=['name'],
+                name='tectunitdefitem_name_idx',
+            ),
+        ),
+
+        # Tectonicunit
         migrations.AddIndex(
             model_name='tectonicunit',
             index=models.Index(
-                fields=['fullName'],
+                fields=['fullname'],
                 name='tectonicunit_fullname_idx',
             ),
         ),
@@ -687,7 +648,7 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='tectonicunit',
             index=models.Index(
-                fields=['highestChildNodeNumber'],
+                fields=['highestchildnodenumber'],
                 name='tectonicunit_highchildnumb_idx',
             ),
         ),
@@ -701,35 +662,8 @@ class Migration(migrations.Migration):
         migrations.AddIndex(
             model_name='tectonicunit',
             index=models.Index(
-                fields=['nodeNumber'],
+                fields=['nodenumber'],
                 name='tectonicunit_nodenumber_idx',
-            ),
-        ),
-
-        # TectonicUnitTreeDef
-        migrations.AddIndex(
-            model_name='tectonicunittreedef',
-            index=models.Index(
-                fields=['name'],
-                name='tectunitdef_name_idx',
-            ),
-        ),
-
-        # TectonicUnitTreeDefItem
-        migrations.AddIndex(
-            model_name='tectonicunittreedefitem',
-            index=models.Index(
-                fields=['name'],
-                name='tectunitdefitem_name_idx',
-            ),
-        ),
-
-        # VoucherRelationship
-        migrations.AddIndex(
-            model_name='voucherrelationship',
-            index=models.Index(
-                fields=['voucherNumber'],
-                name='voucherrel_vouchernumber_idx',
             ),
         ),
     ]
