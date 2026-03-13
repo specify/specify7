@@ -24,7 +24,6 @@ import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { attachmentView } from '../FormParse/webOnlyViews';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
@@ -440,7 +439,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             collapsedViewDefinition.mode === 'search'
                           }
                         >
-                          {collapsedViewDefinition.name === attachmentView ? (
+                          {collapsedViewDefinition.isAttachmentPlugin ? (
                             <div className="flex gap-8" role="cell">
                               <Attachment resource={resource} />
                             </div>
