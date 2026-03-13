@@ -162,7 +162,7 @@ function CollectionObjectFieldPreferenceItem({
 /**
  * Have to be careful as preferences may be used before schema is loaded
  */
-const tableLabel = (tableName: keyof Tables): LocalizedString =>
+export const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
 
 export const userPreferenceDefinitions = {

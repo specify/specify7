@@ -150,7 +150,6 @@ export function useUserAgents(
               ? fetchCollection(
                   'Agent',
                   {
-                    limit: 1,
                     specifyUser: userId,
                     domainFilter: false,
                   },

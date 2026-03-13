@@ -142,6 +142,11 @@ export function AttachmentUpload({
   >('main');
 
   const loading = React.useContext(LoadingContext);
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
 
   React.useEffect(() => {
     if (upload !== 'confirmed' || baseTableName === undefined) return;
@@ -174,8 +179,9 @@ export function AttachmentUpload({
         uploadAttachmentSpec: uploadable.uploadTokenSpec,
         dryRun,
         triggerRetry,
+        attachmentIsPublicDefault,
       }),
-    [baseTableName]
+    [baseTableName, attachmentIsPublicDefault]
   );
   const [uploadedCount, setUploadedCount] = React.useState<number | undefined>(
     undefined
@@ -282,8 +288,10 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
   uploadAttachmentSpec,
   dryRun,
   triggerRetry,
+  attachmentIsPublicDefault = false,
 }: WrappedActionProps<KEY> & {
   readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly attachmentIsPublicDefault?: boolean;
 }): Promise<PartialUploadableFileSpec> {
   const getUploadableCommited = ({
     status,
@@ -328,12 +336,6 @@ async function uploadFileWrapped<KEY extends keyof Tables>({
     });
 
   if (dryRun) return getUploadableCommited({ status: record });
-
-  const [attachmentIsPublicDefault] = collectionPreferences.use(
-    'general',
-    'attachments',
-    'attachment.is_public_default'
-  );
 
   /*
    * TODO: Make this smarter if it causes performance problems.
