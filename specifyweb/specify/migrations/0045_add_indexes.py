@@ -21,7 +21,7 @@ class Migration(migrations.Migration):
             model_name='agentidentifier',
             index=models.Index(
                 fields=['identifiertype'],
-                name='agentidentifier_identifiertype_idx',
+                name='agid_identifiertype_idx',
             ),
         ),
 
@@ -37,7 +37,7 @@ class Migration(migrations.Migration):
             model_name='agentspecialty',
             index=models.Index(
                 fields=['specialtyname'],
-                name='agentspecialty_specialtyname_idx',
+                name='agsp_specialtyname_idx',
             ),
         ),
 
@@ -80,7 +80,7 @@ class Migration(migrations.Migration):
             model_name='collectionobject',
             index=models.Index(
                 fields=['projectnumber'],
-                name='collectionobject_projectnumber_idx',
+                name='colobj_projectnumber_idx',
             ),
         ),
 
@@ -107,7 +107,7 @@ class Migration(migrations.Migration):
             model_name='exchangein',
             index=models.Index(
                 fields=['exchangeinnumber'],
-                name='exchangein_exchangeinnumber_idx',
+                name='exchin_exchinnum_idx',
             ),
         ),
 
@@ -139,7 +139,7 @@ class Migration(migrations.Migration):
             model_name='geography',
             index=models.Index(
                 fields=['highestchildnodenumber'],
-                name='geography_highchildnodenumb_idx',
+                name='geography_hchnodenum_idx',
             ),
         ),
         migrations.AddIndex(
@@ -225,7 +225,7 @@ class Migration(migrations.Migration):
             model_name='lithostrat',
             index=models.Index(
                 fields=['highestchildnodenumber'],
-                name='lithostrat_highchildnodenumb_idx',
+                name='lithostrat_hchnode_idx',
             ),
         ),
         migrations.AddIndex(
@@ -336,7 +336,7 @@ class Migration(migrations.Migration):
             model_name='referencework',
             index=models.Index(
                 fields=['librarynumber'],
-                name='referencework_librarynumber_idx',
+                name='refwork_librarynum_idx',
             ),
         ),
 
@@ -372,7 +372,7 @@ class Migration(migrations.Migration):
             model_name='spexportschemaitemmapping',
             index=models.Index(
                 fields=['exportedfieldname'],
-                name='spexpschemaitemmap_expfield_idx',
+                name='spexpitemmap_expfld_idx',
             ),
         ),
 
@@ -592,7 +592,7 @@ class Migration(migrations.Migration):
             model_name='collectionobjectgrouptype',
             index=models.Index(
                 fields=['name'],
-                name='collectionobjectgroupt_name_idx',
+                name='colobjgrouptype_name_idx',
             ),
         ),
 

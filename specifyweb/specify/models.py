@@ -433,7 +433,7 @@ class Agentidentifier(models.Model):
         ordering = ()
         indexes = [
             models.Index(fields=['identifier'], name='agentidentifier_identifier_idx'),
-            models.Index(fields=['identifiertype'], name='agentidentifier_identifiertype_idx'),
+            models.Index(fields=['identifiertype'], name='agid_identifiertype_idx'),
         ]
 
     
@@ -463,7 +463,7 @@ class Agentspecialty(models.Model):
         unique_together = (('agent', 'ordernumber'),)
         indexes = [
             models.Index(fields=['ordernumber'], name='agentspecialty_ordernumber_idx'),
-            models.Index(fields=['specialtyname'], name='agentspecialty_specialtyname_idx'),
+            models.Index(fields=['specialtyname'], name='agsp_specialtyname_idx'),
         ]
 
     
@@ -1529,7 +1529,7 @@ class Collectionobject(models.Model):
             models.Index(fields=['guid'], name='ColObjGuidIDX'),
             models.Index(fields=['collectionmemberid'], name='COColMemIDX'),
             models.Index(fields=['name'], name='collectionobject_name_idx'),
-            models.Index(fields=['projectnumber'], name='collectionobject_projectnumber_idx'),
+            models.Index(fields=['projectnumber'], name='colobj_projectnumber_idx'),
         ]
 
     
@@ -3140,7 +3140,7 @@ class Exchangein(models.Model):
         indexes = [
             models.Index(fields=['exchangedate'], name='ExchangeDateIDX'),
             models.Index(fields=['descriptionofmaterial'], name='DescriptionOfMaterialIDX'),
-            models.Index(fields=['exchangeinnumber'], name='exchangein_exchangeinnumber_idx'),
+            models.Index(fields=['exchangeinnumber'], name='exchin_exchinnum_idx'),
         ]
 
     
@@ -3718,7 +3718,7 @@ class Geography(model_extras.Geography):
             models.Index(fields=['fullname'], name='GeoFullNameIDX'),
             models.Index(fields=['commonname'], name='geography_commonname_idx'),
             models.Index(fields=['guid'], name='geography_guid_idx'),
-            models.Index(fields=['highestchildnodenumber'], name='geography_highchildnodenumb_idx'),
+            models.Index(fields=['highestchildnodenumber'], name='geography_hchnodenum_idx'),
             models.Index(fields=['nodenumber'], name='geography_nodenumber_idx'),
         ]
 
@@ -4343,7 +4343,7 @@ class Lithostrat(model_extras.Lithostrat):
             models.Index(fields=['name'], name='LithoNameIDX'),
             models.Index(fields=['fullname'], name='LithoFullNameIDX'),
             models.Index(fields=['guid'], name='LithoGuidIDX'),
-            models.Index(fields=['highestchildnodenumber'], name='lithostrat_highchildnodenumb_idx'),
+            models.Index(fields=['highestchildnodenumber'], name='lithostrat_hchnode_idx'),
             models.Index(fields=['nodenumber'], name='lithostrat_nodenumber_idx'),
         ]
 
@@ -5796,7 +5796,7 @@ class Referencework(models.Model):
             models.Index(fields=['publisher'], name='RefWrkPublisherIDX'),
             models.Index(fields=['guid'], name='RefWrkGuidIDX'),
             models.Index(fields=['isbn'], name='ISBNIDX'),
-            models.Index(fields=['librarynumber'], name='referencework_librarynumber_idx'),
+            models.Index(fields=['librarynumber'], name='refwork_librarynum_idx'),
         ]
 
     
@@ -6221,7 +6221,7 @@ class Spexportschemaitemmapping(models.Model):
         db_table = 'spexportschemaitemmapping'
         ordering = ()
         indexes = [
-            models.Index(fields=['exportedfieldname'], name='spexpschemaitemmap_expfield_idx'),
+            models.Index(fields=['exportedfieldname'], name='spexpitemmap_expfld_idx'),
         ]
 
     
@@ -7802,7 +7802,7 @@ class Collectionobjectgrouptype(models.Model):
         db_table = 'collectionobjectgrouptype'
         ordering = ()
         indexes = [
-            models.Index(fields=['name'], name='collectionobjectgroupt_name_idx'),
+            models.Index(fields=['name'], name='colobjgrouptype_name_idx'),
         ]
     
     save = partialmethod(custom_save)
