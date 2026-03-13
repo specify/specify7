@@ -226,6 +226,7 @@ function Attachments({
                 max={maxScale}
                 min={minScale}
                 type="range"
+                className="accent-brand-400"
                 value={scale}
                 onValueChange={(value): void =>
                   setScale(Number.parseInt(value))
