@@ -239,6 +239,20 @@ def _allow_adding_child_to_synonymized_parent(node, collection=None, user=None):
     collection_prefs_dict = _get_collection_preferences(collection, user)
     tree_management_pref = collection_prefs_dict.get('treeManagement', {})
 
+    expand_synonymization_actions = tree_management_pref.get(
+        'expand_synonymization_actions', {}
+    ) if isinstance(tree_management_pref, dict) else {}
+
+    if isinstance(expand_synonymization_actions, dict):
+        pref_key_variants = (
+            node.specify_model.name,
+            node.specify_model.name.lower(),
+        )
+        for pref_key in pref_key_variants:
+            pref_value = expand_synonymization_actions.get(pref_key)
+            if isinstance(pref_value, bool):
+                return pref_value
+
     synonymized = tree_management_pref.get('synonymized', {}) \
         if isinstance(tree_management_pref, dict) else {}
 
