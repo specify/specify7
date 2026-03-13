@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-12 06:09+0000\n"
+"PO-Revision-Date: 2026-03-14 00:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/forms/pt_BR/>\n"
@@ -809,7 +809,7 @@ msgstr "Grade"
 #: components/FormMeta/index.tsx:199
 #, fuzzy
 msgid "subviewConfiguration"
-msgstr "Subvista"
+msgstr "Subvisualização"
 
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
@@ -822,7 +822,7 @@ msgstr "Desativar o modo somente leitura"
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #, fuzzy
 msgid "enableReadOnly"
-msgstr "Ativar modo somente leitura"
+msgstr "Ativar o modo somente leitura"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:75
