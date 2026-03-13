@@ -5,10 +5,12 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
+import {ajax} from "../../utils/ajax";
 import { f } from '../../utils/functools';
 import { type GetSet, type RA } from '../../utils/types';
 import { Container, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -93,6 +95,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     resultsRef,
     displayedFields,
   } = props;
+
+  React.useEffect(() => {
+    if (queryResource?.get('id') && (props.totalCount ?? 0)>0)  {
+      fetchAllRecordIDs(queryResource, () => {}).catch(() => {});
+    }
+  }, [queryResource?.get('id'), props.totalCount]);
 
   const {
     results: [results, setResults],
@@ -199,6 +207,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
   const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
+  const loading = React.useContext(LoadingContext);
+
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
       <div className="flex items-center items-stretch gap-2">
@@ -221,7 +231,51 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           >
             {interactionsText.deselectAll()}
           </Button.Small>
+
+          
         )}
+       {/* Buttons for select All and invert selection*/}
+        {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 10_000_000 && queryResource?.get("id") && (
+          <Button.Small
+    onClick={(): void => {
+      loading(
+        fetchAllRecordIDs(queryResource, loading)
+          .then((allIDs) => {
+            setSelectedRows(new Set(allIDs));
+            handleSelected?.(allIDs);
+          })
+          .catch((error) => {
+            console.error('Error fetching all IDs:', error);
+          })
+      );
+    }}
+  >
+    {interactionsText.selectAll()}
+  </Button.Small>
+        )}
+          {(totalCount ?? 0) > 0 && (totalCount ?? 0) < 3_000_000 && queryResource?.get("id") && (
+          <Button.Small
+          onClick={(): void => {
+            loading(
+              fetchAllRecordIDs(queryResource,loading)
+              .then((allIDs) => {
+                      if (!loadedResults) return;
+                      const invertedSelection = new Set( Array.from(allIDs).filter(id => !(selectedRows.has(id))));
+                      setSelectedRows(invertedSelection);
+                      handleSelected?.(Array.from(invertedSelection));
+                
+              })
+              .catch((error) => {
+                console.error("Error fetchign all IDs", error);
+              })
+            );
+  
+          }}
+          >
+            {interactionsText.invertSelection()}
+          </Button.Small>
+          )}
+
         <div className="-ml-2 flex-1" />
         {displayedFields.length > 0 &&
         visibleFieldSpecs.length > 0 &&
@@ -256,13 +310,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                       ? undefined
                       : queryResource?.get('name')
                   }
-                  recordIds={(): RA<number> =>
-                    loadedResults
-                      .filter((result) =>
-                        selectedRows.has(result[queryIdField] as number)
-                      )
-                      .map((result) => result[queryIdField] as number)
-                  }
+                  recordIds={(): RA<number> => {
+                    const queryId = queryResource?.get('id');
+                    if (queryId && storedRecordIDs.has(queryId)) {
+                      const allIDs = storedRecordIDs.get(queryId)!;
+                      return allIDs.filter((id) => selectedRows.has(id));
+                    }
+                    return Array.from(selectedRows);
+                  }}
+
                   saveComponent={recordSetFromQueryLoading}
                 />
               ) : (
@@ -478,4 +534,48 @@ export function canMerge(table: SpecifyTable): boolean {
     table.name !== 'CollectingEvent' &&
     canMerge;
   return canMergeOtherTables || canMergePaleoContext || canMergeCollectingEvent;
+}
+
+const storedRecordIDs = new Map<number, RA<number>>();
+
+async function fetchAllRecordIDs(
+queryResource: SpecifyResource<SpQuery> | undefined,
+  loading: (promise: Promise<unknown>) => void
+): Promise<RA<number>> {
+
+  const queryId = queryResource!.get('id');
+
+  if (!queryResource) {
+    throw new Error('Query resource is undefined');
+  }
+
+  if (storedRecordIDs.has(queryId)) {
+    return storedRecordIDs.get(queryId)!;
+  }
+
+  return new Promise<RA<number>>((resolve, reject) => {
+    loading(
+      (async () => {
+        try {
+          console.log('Fetching all IDs for query');
+           const startTime = performance.now();
+           const {data} = await ajax<{readonly ids: RA<number>}>(
+            `/stored_query/query/${queryId}/ids/`,
+            {
+              headers: { Accept: 'application/json' },
+             errorMode: "visible",
+           }  
+          );
+
+          const elapsed = ((performance.now() - startTime) / 1000).toFixed(2);
+          console.log(`Fetched ${data.ids.length} IDs in ${elapsed} seconds`);
+
+          storedRecordIDs.set(queryId, data.ids);
+          resolve(data.ids);
+        } catch (error) {
+          reject(error);
+        }
+      })()
+    );
+  });
 }
