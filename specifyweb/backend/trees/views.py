@@ -182,17 +182,22 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
 
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
-    child_count = (
-        select(func.count(child._id))
-        .where(child.ParentID == node._id)
-        .correlate(node)
-        .scalar_subquery()
+    child_counts = (
+        select(
+            child.ParentID.label("parent_id"),
+            func.count(child._id).label("child_count"),
+        )
+        .group_by(child.ParentID)
+        .subquery()
     )
-    synonyms = (
-        select(group_concat(distinct(synonym.fullName), separator=", "))
-        .where(synonym.AcceptedID == node._id)
-        .correlate(node)
-        .scalar_subquery()
+    synonym_names = (
+        select(
+            synonym.AcceptedID.label("accepted_id"),
+            group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        )
+        .where(synonym.AcceptedID.is_not(None))
+        .group_by(synonym.AcceptedID)
+        .subquery()
     )
 
     cols = [
@@ -205,13 +210,15 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
         node.AcceptedID.label("accepted_id"),
         accepted.fullName.label("accepted_fullname"),
         (node.author if include_author else literal("NULL")).label("author"),
-        child_count.label("child_count"),
-        synonyms.label("synonyms"),
+        func.coalesce(child_counts.c.child_count, 0).label("child_count"),
+        synonym_names.c.synonyms.label("synonyms"),
     ]
 
     query = (
         select(*cols)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
+        .outerjoin(child_counts, child_counts.c.parent_id == node._id)
+        .outerjoin(synonym_names, synonym_names.c.accepted_id == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
         .order_by(orderby)
