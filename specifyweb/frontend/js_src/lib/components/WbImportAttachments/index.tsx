@@ -138,7 +138,7 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
     setFileUploadProgress(0);
 
     return Promise.resolve()
-      .then(() =>
+      .then(async () =>
         Promise.all(
           uploadFiles(files, setFileUploadProgress, attachmentIsPublicDefault)
         )
