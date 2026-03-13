@@ -5,7 +5,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0041_add_missing_schema_after_reorganization'),
+        ('specify', '0044_alter_deletion_cascade'),
     ]
 
     operations = [
