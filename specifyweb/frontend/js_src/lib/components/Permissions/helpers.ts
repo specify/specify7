@@ -30,12 +30,15 @@ export function hasTablePermission(
 ): boolean {
   const isReadOnly = getCache('forms', 'readOnlyMode') ?? false;
   if (isReadOnly && action !== 'read') return false;
+  const permissionsForCollection = getTablePermissions()[collectionId];
   if (
-    getTablePermissions()[collectionId][tableNameToResourceName(tableName)][
-      action
-    ]
+    permissionsForCollection?.[tableNameToResourceName(tableName)]?.[action]
   )
     return true;
+  if (permissionsForCollection === undefined) {
+    f.log(`Permissions for collection ${collectionId} are not loaded`);
+    return false;
+  }
   console.log(`No permission to ${action} ${tableName}`);
   return false;
 }
@@ -49,7 +52,7 @@ export const hasPermission = <
 ): boolean =>
   resource === '%' && action === '%'
     ? userInformation.isadmin
-    : getOperationPermissions()[collectionId][resource][action]
+    : getOperationPermissions()[collectionId]?.[resource]?.[action]
       ? true
       : (f.log(`No permission to ${action.toString()} ${resource}`) ?? false);
 
@@ -78,7 +81,7 @@ export const hasDerivedPermission = <
   action: keyof ReturnType<typeof getDerivedPermissions>[number][RESOURCE],
   collectionId = schema.domainLevelIds.collection
 ): boolean =>
-  getDerivedPermissions()[collectionId][resource][action]
+  getDerivedPermissions()[collectionId]?.[resource]?.[action]
     ? true
     : (f.log(`No permission to ${action.toString()} ${resource}`) ?? false);
 
