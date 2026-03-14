@@ -28,21 +28,27 @@ export function QueryLineFilter({
   readonly onChange: ((newValue: string) => void) | undefined;
 }): JSX.Element | null {
   const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
+  const isCatalogNumberInFilter =
+    filter.type === 'in' &&
+    terminatingField?.isRelationship === false &&
+    terminatingField.table.name === 'CollectionObject' &&
+    terminatingField.name === 'catalogNumber';
 
-  const parser = queryFieldFilterSpecs[filter.type].hasParser
-    ? originalParser
-    : ({
-        ...removeKey(
-          originalParser,
-          'pattern',
-          'min',
-          'step',
-          'formatters',
-          'parser',
-          'validators'
-        ),
-        type: 'text',
-      } as const);
+  const parser =
+    queryFieldFilterSpecs[filter.type].hasParser && !isCatalogNumberInFilter
+      ? originalParser
+      : ({
+          ...removeKey(
+            originalParser,
+            'pattern',
+            'min',
+            'step',
+            'formatters',
+            'parser',
+            'validators'
+          ),
+          type: 'text',
+        } as const);
 
   const [pickListItems] = useAsyncState(
     React.useCallback(
