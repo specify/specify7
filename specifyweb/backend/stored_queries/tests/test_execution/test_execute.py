@@ -248,3 +248,41 @@ class TestExecute(SQLAlchemySetup):
         )
 
         self.assertEqual(result_count_only, dict(count=2))
+
+    def test_in_operator_supports_catalog_number_ranges(self):
+        self._update(self.collection, dict(catalognumformatname="CatalogNumberNumeric"))
+
+        expected_ids = []
+        for co, number in zip(
+            self.collectionobjects,
+            ("33040", "33043", "33049", "352000", "352026"),
+        ):
+            canonical = number.zfill(9)
+            self._update(co, dict(catalognumber=canonical))
+            expected_ids.append(co.id)
+
+        table, query_fields = make_query_fields_test(
+            "Collectionobject", [["catalognumber"]]
+        )
+        query_fields = [
+            query_fields[0]._replace(
+                op_num=10,
+                value="33043-33049, 352000-26, 33040",
+            )
+        ]
+
+        with TestExecute.test_session_context() as session:
+            result = execute(
+                session,
+                self.collection,
+                self.specifyuser,
+                table.tableId,
+                distinct=False,
+                series=False,
+                count_only=False,
+                field_specs=query_fields,
+                limit=0,
+                offset=0,
+            )
+
+        self.assertCountEqual([row[0] for row in result["results"]], expected_ids)
