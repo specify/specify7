@@ -270,6 +270,7 @@ class SeparatorField(Field):
         return self.wild_regexp()
 
 class CNNField(NumericField):
+    # CNN stands fo Catalog Number Numeric, Specify's numeric catalog number formatter
     def __new__(cls):
         return NumericField.__new__(cls, size=9, inc=9)
 

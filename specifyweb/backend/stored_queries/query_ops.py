@@ -7,6 +7,8 @@ from typing import Literal
 from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
 from specifyweb.specify.utils.uiformatters import CNNField, FormatMismatch, UIFormatter
 
+CATALOG_NUMBER_RANGE_RE = re.compile(r"^\s*([0-9]+)\s*-\s*([0-9]+)\s*$")
+
 QUERYFIELD_OPERATION_NUMBER = Literal[
     0,  # Like
     1,  # Equals
@@ -112,9 +114,66 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         values = [self.format(v.strip()) for v in value.split(",")[:2]]
         return field.between(*values)
 
+    def _is_single_cnn_formatter(self):
+        return (
+            self.uiformatter is not None
+            and len(self.uiformatter.fields) == 1
+            and isinstance(self.uiformatter.fields[0], CNNField) # Catalog Number Numeric formatted field
+        )
+
+    def _parse_catalog_number_range(self, value: str):
+        """Parse a catalog number range for the IN operator. ex. 33043-33049"""
+        if self.uiformatter is None:
+            return None
+        match = CATALOG_NUMBER_RANGE_RE.match(value)
+        if match is None:
+            return None
+        start_raw, end_raw = match.groups()
+
+        try:
+            start = self.uiformatter.canonicalize(self.uiformatter.parse(start_raw))
+        except FormatMismatch:
+            return None
+
+        if len(end_raw) < len(start_raw):
+            end = f"{start[:-len(end_raw)]}{end_raw}"
+        else:
+            try:
+                end = self.uiformatter.canonicalize(self.uiformatter.parse(end_raw))
+            except FormatMismatch:
+                return None
+
+        return tuple(sorted((start, end)))
+
     def op_in(self, field, values):
         if hasattr(values, "split"):
-            values = [self.format(v.strip()) for v in values.split(",")]
+            split_values = [v.strip() for v in values.split(",")]
+            if (
+                self._is_single_cnn_formatter()
+                and isinstance(field.type, sqlalchemy.types.String)
+            ):
+                exact_values = []
+                ranges = []
+                for value in split_values:
+                    parsed = self._parse_catalog_number_range(value)
+                    if parsed is None:
+                        exact_values.append(self.format(value))
+                    else:
+                        start, end = parsed
+                        if start == end:
+                            exact_values.append(start)
+                        else:
+                            ranges.append((start, end))
+
+                predicates = [field.in_(exact_values)] if len(exact_values) > 0 else []
+                predicates.extend(field.between(start, end) for (start, end) in ranges)
+                if len(predicates) == 0:
+                    return field.in_([])
+                if len(predicates) == 1:
+                    return predicates[0]
+                return sqlalchemy.or_(*predicates)
+
+            values = [self.format(v) for v in split_values]
         return field.in_(values)
 
     def op_contains(self, field, value):
@@ -133,11 +192,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return (field == False) | (field == None)
 
     def op_startswith(self, field, value):
-        if (
-            self.uiformatter is not None
-            and isinstance(self.uiformatter.fields[0], CNNField)
-            and len(self.uiformatter.fields) == 1
-        ):
+        if self._is_single_cnn_formatter():
             value = value.lstrip("0")
             return field.op("REGEXP")("^0*" + value)
         else:
