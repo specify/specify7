@@ -36,14 +36,22 @@ DISCIPLINE_DIRS = {
     "invertebrate": "invertebrate",
     "geology": "geology",
 }
+DISCIPLINE_NAMES = {
+    'fish': 'Ichthyology',
+    'herpetology': 'Herpetology',
+    'paleobotany': 'Paleobotany',
+    'invertpaleo': 'Invertebrate Paleontology',
+    'vertpaleo': 'Vertebrate Paleontology',
+    'bird': 'Ornithology',
+    'mammal': 'Mammalogy',
+    'insect': 'Entomology',
+    'botany': 'Botany',
+    'invertebrate': 'Invertebrate Zoology',
+    'geology': 'Geology',
+}
 
 FORM_RESOURCE_EXCLUDED_LST = [
-    "fish/fishbase.views.xml",
-    "accessions/accessions.views.xml",
     "backstop/system.views.xml",
-    "backstop/editorpanel.views.xml",
-    "backstop/gbif.views.xml",
-    "backstop/preferences.views.xml",
 ]
 
 # get_app_resource is the main interface provided by this module

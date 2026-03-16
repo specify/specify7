@@ -417,8 +417,13 @@ class QueryFieldSpec(
                 op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
 
+            NULL_SAFE_NEGATE_OPS = {1, 10, 11}
+
             if negate:
-                predicate = null_safe_not(mod_orm_field or orm_field, f)
+                if op_num in NULL_SAFE_NEGATE_OPS:
+                    predicate = null_safe_not(mod_orm_field or orm_field, f)
+                else:
+                    predicate = sql.not_(f)
             else:
                 predicate = f
         else:

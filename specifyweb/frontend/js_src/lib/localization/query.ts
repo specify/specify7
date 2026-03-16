@@ -670,7 +670,7 @@ export const queryText = createDictionary({
     'fr-fr': "Requête d'exportation pour la définition DwCA",
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
-    'pt-br': 'Exportar consulta para definição de DwCA',
+    'pt-br': 'Consulta de exportação para definição de DwCA',
   },
   exportQueryAsReport: {
     'en-us': 'Define report based on query',
@@ -856,7 +856,7 @@ export const queryText = createDictionary({
     'es-es':
       'La consulta que importó contiene tablas a las que no tiene acceso de lectura:',
     'fr-fr':
-      "La requête que vous avez importée contient des tables auxquelles vous n'avez pas accès en lecture :",
+      "La requête que vous avez importée contient des tables auxquelles vous n'avez pas d'accès en lecture :",
     'ru-ru':
       'В импортированном вами запросе содержатся таблицы, к которым у вас нет доступа на чтение:',
     'uk-ua':
