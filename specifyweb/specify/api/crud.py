@@ -6,7 +6,7 @@ from typing import Any, Dict
 from collections.abc import Callable
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
-from django.db.models import Model, F
+from django.db.models import Model, F, Q, Subquery
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
@@ -247,16 +247,90 @@ def get_discipline_delete_guard_blockers(discipline) -> list[dict[str, Any]]:
             )
     return blockers
 
+def _raw_delete_queryset(queryset) -> None:
+    queryset._raw_delete(queryset.db)
+
+def delete_discipline_owned_setup_data(obj) -> None:
+    """
+    Remove discipline-scoped setup/config rows in bulk before the final
+    discipline delete so Django doesn't need to build one large collector graph.
+    """
+    if not is_discipline(obj):
+        return
+
+    from specifyweb.backend.businessrules.models import (
+        UniquenessRule,
+        UniquenessRuleField,
+    )
+
+    schema_ids = models.Spexportschema.objects.filter(
+        discipline_id=obj.id
+    ).values("id")
+    export_item_ids = models.Spexportschemaitem.objects.filter(
+        spexportschema_id__in=Subquery(schema_ids)
+    ).values("id")
+    _raw_delete_queryset(
+        models.Spexportschemaitemmapping.objects.filter(
+            exportschemaitem_id__in=Subquery(export_item_ids)
+        )
+    )
+    _raw_delete_queryset(
+        models.Spexportschema_exportmapping.objects.filter(
+            spexportschema_id__in=Subquery(schema_ids)
+        )
+    )
+    _raw_delete_queryset(
+        models.Spexportschemaitem.objects.filter(
+            spexportschema_id__in=Subquery(schema_ids)
+        )
+    )
+    _raw_delete_queryset(models.Spexportschema.objects.filter(discipline_id=obj.id))
+
+    container_ids = models.Splocalecontainer.objects.filter(
+        discipline_id=obj.id
+    ).values("id")
+    item_ids = models.Splocalecontaineritem.objects.filter(
+        container_id__in=Subquery(container_ids)
+    ).values("id")
+    _raw_delete_queryset(
+        models.Splocaleitemstr.objects.filter(
+            Q(containerdesc_id__in=Subquery(container_ids))
+            | Q(containername_id__in=Subquery(container_ids))
+            | Q(itemdesc_id__in=Subquery(item_ids))
+            | Q(itemname_id__in=Subquery(item_ids))
+        )
+    )
+    _raw_delete_queryset(
+        models.Splocalecontaineritem.objects.filter(
+            container_id__in=Subquery(container_ids)
+        )
+    )
+    _raw_delete_queryset(models.Splocalecontainer.objects.filter(discipline_id=obj.id))
+
+    rule_ids = UniquenessRule.objects.filter(discipline_id=obj.id).values("id")
+    _raw_delete_queryset(
+        UniquenessRuleField.objects.filter(
+            uniquenessrule_id__in=Subquery(rule_ids)
+        )
+    )
+    _raw_delete_queryset(UniquenessRule.objects.filter(discipline_id=obj.id))
+
+    _raw_delete_queryset(models.Spappresourcedir.objects.filter(discipline_id=obj.id))
+    _raw_delete_queryset(models.Sptasksemaphore.objects.filter(discipline_id=obj.id))
+    _raw_delete_queryset(models.Autonumschdsp.objects.filter(discipline_id=obj.id))
+
 def prepare_discipline_for_delete(obj) -> None:
     """
-    Detach discipline owned tree defs before deletion so tree preload data
-    does not block deleting an empty discipline.
+    Detach discipline owned tree defs and bulk delete discipline-scoped setup
+    data before deletion so empty disciplines delete quickly.
     """
     if not is_discipline(obj):
         return
 
     for tree_def_model in DISCIPLINE_TREE_MODELS:
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
+
+    delete_discipline_owned_setup_data(obj)
 
 @transaction.atomic
 def put_resource(collection, agent, name: str, id, version, data: dict[str, Any]):
