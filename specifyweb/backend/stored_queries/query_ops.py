@@ -1,4 +1,5 @@
 import re
+from datetime import date
 import sqlalchemy
 from sqlalchemy.orm.query import Query
 from collections import namedtuple
@@ -173,9 +174,34 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         if self.uiformatter is None:
             return None
 
+        year_field = self.uiformatter.fields[0]
         separator_field = self.uiformatter.fields[1]
         numeric_field = self.uiformatter.fields[2]
         separator = separator_field.value
+        numeric_only_match = CATALOG_NUMBER_RANGE_RE.match(value)
+        if numeric_only_match is not None:
+            start_raw, end_raw = numeric_only_match.groups()
+            if (
+                len(start_raw) > numeric_field.size
+                or len(end_raw) > numeric_field.size
+            ):
+                return None
+
+            current_year = f"{date.today().year:0{year_field.size}d}"
+            start_numeric = start_raw.zfill(numeric_field.size)
+            start = self.uiformatter.canonicalize(
+                (current_year, separator_field.value, start_numeric)
+            )
+            end_numeric = (
+                f"{start_numeric[:-len(end_raw)]}{end_raw}"
+                if len(end_raw) < len(start_numeric)
+                else end_raw
+            )
+            end = self.uiformatter.canonicalize(
+                (current_year, separator_field.value, end_numeric)
+            )
+            return tuple(sorted((start, end)))
+
         range_pattern = (
             rf"^\s*(?P<start>{self.uiformatter.parse_regexp()[1:-1]})"
             rf"\s*{re.escape(separator)}\s*(?P<end>.+?)\s*$"
