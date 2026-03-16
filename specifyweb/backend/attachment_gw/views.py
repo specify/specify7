@@ -307,6 +307,50 @@ def proxy(request):
         (chunk for chunk in response.iter_content(512 * 1024)),
         content_type=response.headers['Content-Type'])
 
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "attachmentlocations": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "URL locations of the attachments to download",
+                            },
+                            "origfilenames": {
+                                "type": "array",
+                                "items": {"type": "string"},
+                                "description": "Original attachment filenames of the attachments to be downloaded",
+                            },
+                            "recordsetid": {
+                                "type": "integer",
+                                "description": "Optional. Will download all attachmends in the recordset. Using this will ignore all other properties.",
+                            },
+                        },
+                        "required": ["attachmentlocations", "origfilenames"],
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "A zip file containing all requested attachments.",
+                "content": {
+                    "application/octet-stream": {
+                        "schema": {
+                            "type": "string",
+                            "format": "binary",
+                        }
+                    }
+                },
+            },
+        }
+    }
+})
 @require_POST
 @login_maybe_required
 @never_cache
