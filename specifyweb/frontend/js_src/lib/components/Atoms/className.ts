@@ -68,7 +68,7 @@ export const className = {
   infoButton: `${dialogIconTriggers.info} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white`,
   warningButton: `${dialogIconTriggers.warning} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
   successButton: `${dialogIconTriggers.success} hover:brightness-90 dark:hover:brightness-150 bg-brand-400 text-white`,
-  saveButton: `hover:brightness-90 dark:hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
+  saveButton: `hover:brightness-90 dark:hover:brightness-125 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,
