@@ -205,11 +205,11 @@
   }
 
   progress::-webkit-progress-value {
-    @apply bg-brand-200 dark:bg-brand-400 rounded;
+    @apply bg-brand-300 dark:bg-brand-400 rounded;
   }
 
   progress::-moz-progress-bar {
-    @apply bg-brand-200 dark:bg-brand-400 rounded;
+    @apply bg-brand-300 dark:bg-brand-400 rounded;
   }
 
   /*
