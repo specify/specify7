@@ -408,7 +408,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
-    'pt-br': 'Sempre solicitando a seleção da coleção',
+    'pt-br': 'Sempre solicitando a escolha da coleção',
   },
   treeEditor: {
     'en-us': 'Tree Editor',
@@ -1249,7 +1249,7 @@ export const preferencesText = createDictionary({
   animateTransitions: {
     'en-us': 'Animate transitions',
     'ru-ru': 'Анимированные переходы',
-    'es-es': 'Transiciones animadas',
+    'es-es': 'Animar transiciones',
     'fr-fr': 'Animer les transitions',
     'uk-ua': 'Анімація переходів',
     'de-ch': 'Übergänge animieren',
@@ -1557,7 +1557,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
+    'de-ch': 'Suche mit Berücksichtigung der Groß- und Kleinschreibung',
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
   },
@@ -2047,7 +2047,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Permite aplicar los siguientes filtros a los campos de texto: Mayor que, Menor que, Mayor o igual que y Menor o igual que',
     'fr-fr':
-      "Permet d'appliquer les filtres suivants aux champs de texte : Supérieur à, Inférieur à, Supérieur ou égal à et Inférieur ou égal à",
+      "Permet d'appliquer les filtres suivants aux champs de texte : supérieur à, inférieur à, supérieur ou égal à et inférieur ou égal à",
     'pt-br':
       'Permite que os seguintes filtros sejam aplicados aos campos de texto: Maior que, Menor que, Maior ou igual a e Menor ou igual a.',
     'ru-ru':

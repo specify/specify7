@@ -753,7 +753,7 @@ export const attachmentsText = createDictionary({
     'en-us':
       'This controls whether or not new attachments added to this collection are flagged as "Public" by default. Public attachments will automatically be visible on a Specify Web Portal. This setting can be overridden on a per-attachment basis and does not affect existing attachments.',
     'de-ch':
-      'Diese Einstellung legt fest, ob neu hinzugefügte Anhänge in dieser Sammlung standardmäßig als „öffentlich“ gekennzeichnet werden. Öffentliche Anhänge sind automatisch im Webportal sichtbar. Diese Einstellung kann für jeden Anhang einzeln angepasst werden und hat keine Auswirkungen auf bereits vorhandene Anhänge.',
+      'Diese Einstellung legt fest, ob neu hinzugefügte Anhänge dieser Sammlung standardmäßig als „öffentlich“ gekennzeichnet werden. Öffentliche Anhänge sind automatisch im Specific-Webportal sichtbar. Diese Einstellung kann für jeden Anhang einzeln angepasst werden und hat keine Auswirkungen auf bereits vorhandene Anhänge.',
     'es-es':
       'Esto controla si los nuevos archivos adjuntos añadidos a esta colección se marcan como "Públicos" de forma predeterminada. Los archivos adjuntos públicos serán visibles automáticamente en un portal web específico. Esta configuración se puede anular para cada archivo adjunto y no afecta a los existentes.',
     'fr-fr':

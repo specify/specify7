@@ -217,7 +217,14 @@ model_names_by_table_id = {
     1026:'Tectonicunittreedefitem',
     1027:'Tectonicunit', 
     1028:'Spdatasetattachment', 
-    1029: 'Component'
+    1029: 'Component',
+    1030:'Autonumschcoll',
+    1031:'Autonumschdiv',
+    1032:'Autonumschdsp',
+    1033:'Project_colobj',
+    1034:'Spexportschema_exportmapping',
+    1035:'Specifyuser_spprincipal',
+    1036:'Spprincipal_sppermission',
 }
 
 model_names_by_app = {
@@ -448,7 +455,14 @@ model_names_by_app = {
         'Tectonicunittreedef',
         'Tectonicunittreedefitem',
         'Tectonicunit', 
-        'Component'
+        'Component',
+        'Autonumschcoll',
+        'Autonumschdiv',
+        'Autonumschdsp',
+        'Project_colobj',
+        'Spexportschema_exportmapping',
+        'Specifyuser_spprincipal',
+        'Spprincipal_sppermission',
     }
 }
 

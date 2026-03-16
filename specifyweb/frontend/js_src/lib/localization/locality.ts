@@ -535,7 +535,7 @@ export const localityText = createDictionary({
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
-    'de-ch': 'Der Prozess zur Aktualisierung der Ortsdaten wurde gestartet.',
+    'de-ch': 'Der Aktualisierungsprozess der Ortsdaten wurde gestartet.',
     'es-es': 'El proceso de actualización de localidad ha comenzado',
     'fr-fr':
       'Le processus de mise à jour des données de localisation a commencé.',

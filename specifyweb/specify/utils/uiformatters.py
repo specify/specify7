@@ -142,30 +142,10 @@ class UIFormatter(NamedTuple):
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         return group_filter(objs).order_by('-' + fieldname)
 
-    def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: int | None=None):
-        with_year = self.fillin_year(vals, year)
-        fieldname = self.field_name.lower()
-
-        filtered_objs = self._autonumber_queryset(collection, model, fieldname, with_year)
-        # At this point the query for the autonumber is defined but not yet executed.
-
-        # The actual lookup and setting of the autonumbering value
-        # is thunked so that it can be executed in context of locked tables.
-        def apply_autonumbering_to(obj):
-            try:
-                biggest = filtered_objs[0] # actual lookup occurs here
-            except IndexError:
-                filled_vals = self.fill_vals_no_prior(with_year)
-            else:
-                filled_vals = self.fill_vals_after(getattr(biggest, fieldname))
-
-            # And here the new value is assigned to the object.  It is
-            # the callers responsibilty to save the object within the
-            # same locked tables context because there maybe multiple
-            # autonumber fields.
-            setattr(obj, self.field_name.lower(), ''.join(filled_vals))
-
-        return apply_autonumbering_to
+    def apply_autonumbering(self, collection, obj, vals: Sequence[str]):
+        field_name = self.field_name.lower()
+        field_value = self.autonumber_now(collection, obj.__class__, vals)
+        setattr(obj, field_name, field_value)
 
     def fill_vals_after(self, prior: str) -> list[str]:
 
@@ -192,14 +172,17 @@ class UIFormatter(NamedTuple):
     def canonicalize(self, values: Sequence[str]) -> str:
         return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
 
-    def apply_scope(self, collection):
+    def apply_scope(self, collection, autonumbering_lock_dispatcher = None) -> ScopedFormatter:
+        from specifyweb.specify.utils.autonumbering import highest_autonumbering_value
         def parser(table: Table, value: str) -> str:
             parsed = self.parse(value)
             if self.needs_autonumber(parsed):
-                canonicalized = self.autonumber_now(
+                canonicalized = highest_autonumbering_value(
                     collection,
                     getattr(models, table.django_name),
-                    parsed
+                    self,
+                    parsed,
+                    get_lock_dispatcher=autonumbering_lock_dispatcher
                 )
             else:
                 canonicalized = self.canonicalize(parsed)

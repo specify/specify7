@@ -218,7 +218,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.',
     'de-ch':
-      'Das „Tabellenformat“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern angezeigt werden. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
+      'Die „Tabellenformatierung“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern dargestellt werden. Sie bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
     'es-es':
       'El "Formato de tabla" controla cómo se muestran los datos de una tabla específica en los resultados de consultas, las exportaciones y los cuadros combinados de consultas. Determina los campos que se mostrarán y su orden. El formato condicional se puede configurar según un valor del registro.',
     'fr-fr':
@@ -940,7 +940,7 @@ export const resourcesText = createDictionary({
       'Ein im Vorfeld ausgetauschter Eintrag kann nicht gelöscht werden.',
     'es-es': 'No se puede eliminar un intercambio en preparación',
     'fr-fr': 'Un échange en cours de préparation ne peut pas être supprimé.',
-    'pt-br': 'Uma troca realizada em preparação não pode ser excluída.',
+    'pt-br': 'Um item trocado em preparação não pode ser excluído.',
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
   },

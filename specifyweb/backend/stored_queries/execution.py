@@ -51,7 +51,6 @@ class QuerySort:
     def by_id(sort_id: QUREYFIELD_SORT_T):
         return QuerySort.SORT_TYPES[sort_id]
 
-
 def DefaultQueryFormatterProps():
     return ObjectFormatterProps(
         format_agent_type=False,

@@ -162,6 +162,12 @@ export function IntegratedRecordSelector({
     [parentContext, relationship]
   );
 
+  const isSystemConfigResource =
+    (relationship.relatedTable.name === 'Collection' &&
+      relationship.name === 'collections') ||
+    (relationship.relatedTable.name === 'Discipline' &&
+      relationship.name === 'disciplines');
+
   const isCOJO =
     relationship.relatedTable.name === 'CollectionObjectGroupJoin' &&
     relationship.name === 'children';
@@ -261,7 +267,8 @@ export function IntegratedRecordSelector({
                           disabled={
                             isReadOnly ||
                             (isToOne && collection.models.length > 0) ||
-                            isTaxonTreeDefItemTable
+                            isTaxonTreeDefItemTable ||
+                            isSystemConfigResource
                           }
                           onClick={showSearchDialog}
                         />
@@ -283,7 +290,8 @@ export function IntegratedRecordSelector({
                             disabled={
                               isReadOnly ||
                               (isToOne && collection.models.length > 0) ||
-                              isTaxonTreeDefItemTable
+                              isTaxonTreeDefItemTable ||
+                              isSystemConfigResource
                             }
                             onClick={(): void => {
                               const resource =
@@ -341,7 +349,8 @@ export function IntegratedRecordSelector({
                             resource === undefined ||
                             (renderedResourceId !== undefined &&
                               resource?.id === renderedResourceId) ||
-                            disableRemove
+                            disableRemove ||
+                            isSystemConfigResource
                           }
                           onClick={(): void => {
                             if (isAttachmentTable) {

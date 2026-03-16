@@ -134,7 +134,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Ajouter un objet non associé',
     'uk-ua': "Додати непов'язаний елемент",
     'de-ch': 'Nicht assoziierter Gegenstand hinzufügen',
-    'pt-br': 'Adicionar item não associado',
+    'pt-br': 'Adicionar item não relacionado',
   },
   preparations: {
     'en-us': 'Preparations',
@@ -152,7 +152,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
     'uk-ua': 'У цьому контексті препарати не можна повернути.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
-    'pt-br': 'Neste contexto, as preparações não podem ser devolvidas.',
+    'pt-br': 'Neste contexto, os produtos não podem ser devolvidos.',
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',

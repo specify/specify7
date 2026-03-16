@@ -289,7 +289,7 @@ export const wbPlanText = createDictionary({
     'es-es':
       'A este mapeo de datos le faltan uno o más campos de datos requeridos para cargar por su configuración de Especificar. Agregue las asignaciones faltantes que se muestran o guarde este plan de carga como inacabado.',
     'fr-fr':
-      'Il manque un ou plusieurs champs de données requis pour le chargement selon votre configuration. Ajoutez les correspondances manquantes indiquées ou enregistrez ce plan de chargement comme inachevé.',
+      'Il manque un ou plusieurs champs de données requis pour le chargement selon votre configuration. Ajoutez les correspondances manquantes ou enregistrez ce plan de chargement comme inachevé.',
     'uk-ua':
       'У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні для завантаження вашою конфігурацією Specify. Додайте відсутні відображення або збережіть цей план завантаження як незавершений.',
     'de-ch':

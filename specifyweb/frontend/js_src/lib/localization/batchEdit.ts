@@ -102,7 +102,8 @@ export const batchEditText = createDictionary({
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
-    'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
+    'de-ch':
+      'Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich.',
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes',
     'fr-fr':
@@ -119,7 +120,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes',
     'fr-fr':
-      "Utilisez le générateur de requêtes pour créer un nouvel ensemble de données d'édition par lots",
+      "Utilisez le générateur de requêtes pour créer un nouvel ensemble de données d'édition par lots.",
     'pt-br':
       'Use o construtor de consultas para criar um novo conjunto de dados para edição em lote.',
     'ru-ru':
@@ -231,7 +232,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Comprometerse',
     'fr-fr': "S'engager",
     'pt-br': 'Comprometer-se',
-    'ru-ru': 'Пожертвование',
+    'ru-ru': 'Совершение',
     'uk-ua': 'Здійснення',
   },
   beStatusCommit: {
@@ -404,7 +405,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Habilitar relaciones',
     'fr-fr': 'Favoriser les relations',
     'pt-br': 'Promover relacionamentos',
-    'ru-ru': 'Обеспечьте развитие отношений',
+    'ru-ru': 'Развивайте отношения',
     'uk-ua': "Увімкнути зв'язки",
   },
   enableRelationshipsDescription: {
