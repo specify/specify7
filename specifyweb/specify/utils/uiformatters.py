@@ -270,7 +270,7 @@ class SeparatorField(Field):
         return self.wild_regexp()
 
 class CNNField(NumericField):
-    # CNN stands fo Catalog Number Numeric, Specify's numeric catalog number formatter
+    # CNN stands for Catalog Number Numeric, Specify's numeric catalog number formatter.
     def __new__(cls):
         return NumericField.__new__(cls, size=9, inc=9)
 
@@ -283,12 +283,18 @@ class CNNField(NumericField):
 def get_uiformatter_by_name(collection, user, formatter_name: str) -> UIFormatter | None:
     xml, _, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
-    if node is None: return None
+    if node is None:
+        return None
     external = node.find('external')
     if external is not None and external.text is not None:
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
-            return UIFormatter('CollectionObject', 'CatalogNumber', [CNNField()], formatter_name)
+            return UIFormatter(
+                'CollectionObject',
+                'CatalogNumber',
+                [CNNField()],
+                formatter_name,
+            )
         else:
             return None
     else:
@@ -344,10 +350,20 @@ def get_uiformatters(collection, obj, user) -> list[UIFormatter]:
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
-def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter | None:
+def get_uiformatter(
+    collection,
+    tablename: str,
+    fieldname: str,
+    format_name: str | None = None,
+    user=None,
+) -> UIFormatter | None:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
-        return get_catalognumber_format(collection, None, None)
+        return (
+            get_uiformatter_by_name(collection, user, format_name)
+            if format_name is not None
+            else get_catalognumber_format(collection, None, user)
+        )
 
     try:
         field_format = Item.objects.get(
@@ -360,10 +376,12 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter |
     else:
         return get_uiformatter_by_name(collection, None, field_format)
 
-def get_catalognumber_format(collection, format_name: str | None, user) -> UIFormatter:
-    if format_name: 
-         formatter = get_uiformatter_by_name(collection, user, format_name)
-         if formatter:
+def get_catalognumber_format(
+    collection, format_name: str | None, user
+) -> UIFormatter | None:
+    if format_name:
+        formatter = get_uiformatter_by_name(collection, user, format_name)
+        if formatter:
             return formatter
 
     return get_uiformatter_by_name(collection, user, collection.catalognumformatname)

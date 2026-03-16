@@ -5,7 +5,14 @@ from collections import namedtuple
 from typing import Literal
 
 from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
-from specifyweb.specify.utils.uiformatters import CNNField, FormatMismatch, UIFormatter
+from specifyweb.specify.utils.uiformatters import (
+    CNNField,
+    FormatMismatch,
+    NumericField,
+    SeparatorField,
+    UIFormatter,
+    YearField,
+)
 
 CATALOG_NUMBER_RANGE_RE = re.compile(r"^\s*([0-9]+)\s*-\s*([0-9]+)\s*$")
 
@@ -118,11 +125,27 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return (
             self.uiformatter is not None
             and len(self.uiformatter.fields) == 1
-            and isinstance(self.uiformatter.fields[0], CNNField) # Catalog Number Numeric formatted field
+            # Catalog Number Numeric formatted field.
+            and isinstance(self.uiformatter.fields[0], CNNField)
         )
 
-    def _parse_catalog_number_range(self, value: str):
-        """Parse a catalog number range for the IN operator. ex. 33043-33049"""
+    def _is_year_numeric_catalog_number_formatter(self):
+        return (
+            self.uiformatter is not None
+            and len(self.uiformatter.fields) == 3
+            and isinstance(self.uiformatter.fields[0], YearField)
+            and isinstance(self.uiformatter.fields[1], SeparatorField)
+            and isinstance(self.uiformatter.fields[2], NumericField)
+        )
+
+    def _supports_catalog_number_ranges(self):
+        return (
+            self._is_single_cnn_formatter()
+            or self._is_year_numeric_catalog_number_formatter()
+        )
+
+    def _parse_numeric_catalog_number_range(self, value: str):
+        """Parse a numeric catalog number range for the IN operator."""
         if self.uiformatter is None:
             return None
         match = CATALOG_NUMBER_RANGE_RE.match(value)
@@ -145,11 +168,74 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
 
         return tuple(sorted((start, end)))
 
+    def _parse_year_numeric_catalog_number_range(self, value: str):
+        """Parse a year-based catalog number range. ex. 2025-000001-10"""
+        if self.uiformatter is None:
+            return None
+
+        separator_field = self.uiformatter.fields[1]
+        numeric_field = self.uiformatter.fields[2]
+        separator = separator_field.value
+        range_pattern = (
+            rf"^\s*(?P<start>{self.uiformatter.parse_regexp()[1:-1]})"
+            rf"\s*{re.escape(separator)}\s*(?P<end>.+?)\s*$"
+        )
+        match = re.match(
+            range_pattern,
+            value,
+        )
+        if match is None:
+            return None
+
+        start_raw = match.group("start")
+        end_raw = match.group("end").strip()
+        try:
+            start_parts = self.uiformatter.parse(start_raw)
+        except FormatMismatch:
+            return None
+
+        start = self.uiformatter.canonicalize(start_parts)
+        start_prefix_parts = start_parts[:-1]
+        start_numeric = start_parts[-1]
+        start_prefix = "".join(
+            formatter_field.canonicalize(part)
+            for formatter_field, part in zip(
+                self.uiformatter.fields[:-1], start_prefix_parts
+            )
+        )
+
+        if end_raw.isdigit() and 0 < len(end_raw) <= numeric_field.size:
+            end_numeric = (
+                f"{start_numeric[:-len(end_raw)]}{end_raw}"
+                if len(end_raw) < len(start_numeric)
+                else end_raw
+            )
+            end = f"{start_prefix}{end_numeric}"
+        else:
+            try:
+                end_parts = self.uiformatter.parse(end_raw)
+            except FormatMismatch:
+                return None
+
+            if end_parts[:-1] != start_prefix_parts:
+                return None
+
+            end = self.uiformatter.canonicalize(end_parts)
+
+        return tuple(sorted((start, end)))
+
+    def _parse_catalog_number_range(self, value: str):
+        if self._is_single_cnn_formatter():
+            return self._parse_numeric_catalog_number_range(value)
+        if self._is_year_numeric_catalog_number_formatter():
+            return self._parse_year_numeric_catalog_number_range(value)
+        return None
+
     def op_in(self, field, values):
         if hasattr(values, "split"):
             split_values = [v.strip() for v in values.split(",")]
             if (
-                self._is_single_cnn_formatter()
+                self._supports_catalog_number_ranges()
                 and isinstance(field.type, sqlalchemy.types.String)
             ):
                 exact_values = []
