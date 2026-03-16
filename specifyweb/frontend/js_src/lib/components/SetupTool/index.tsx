@@ -16,6 +16,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
+import { useDarkMode } from '../Preferences/Hooks';
 import type { InstitutionData } from '../SystemConfigurationTool/Utils';
 import type {
   TaxonFileDefaultDefinition,
@@ -32,7 +33,6 @@ import { SetupOverview } from './SetupOverview';
 import { resources, stepOrder } from './setupResources';
 import type { ResourceFormData, SetupProgress, SetupResponse } from './types';
 import { nestAllResources } from './utils';
-import { useDarkMode } from '../Preferences/Hooks';
 
 const SETUP_POLLING_INTERVAL = 3000;
 
@@ -230,7 +230,9 @@ export function SetupTool({
           <img
             alt="Specify Logo"
             className="w-auto h-12 mx-auto"
-            src={isDarkMode ? '/static/img/logo.svg' : '/static/img/logo_dark.svg'}
+            src={
+              isDarkMode ? '/static/img/logo.svg' : '/static/img/logo_dark.svg'
+            }
           />
           <H2 className="text-2xl">{setupToolText.guidedSetup()}</H2>
         </div>
