@@ -12,9 +12,16 @@ import { resolvePickListItem } from './FieldFilterSpec';
 import type { QueryField } from './helpers';
 import { useQueryFieldFilterSpecs } from './useQueryFieldFilterSpecs';
 
+const supportedCatalogNumberRangeFormatters = new Set([
+  'CatalogNumber',
+  'CatalogNumberAlphaNumByYear',
+  'CatalogNumberNumeric',
+]);
+
 export function QueryLineFilter({
   filter,
   fieldName,
+  formatterName,
   terminatingField,
   parser: originalParser,
   enforceLengthLimit,
@@ -22,6 +29,7 @@ export function QueryLineFilter({
 }: {
   readonly filter: QueryField['filters'][number];
   readonly fieldName: string;
+  readonly formatterName: string | undefined;
   readonly terminatingField: LiteralField | Relationship | undefined;
   readonly parser: Parser;
   readonly enforceLengthLimit: boolean;
@@ -32,7 +40,8 @@ export function QueryLineFilter({
     filter.type === 'in' &&
     terminatingField?.isRelationship === false &&
     terminatingField.table.name === 'CollectionObject' &&
-    terminatingField.name === 'catalogNumber';
+    terminatingField.name === 'catalogNumber' &&
+    supportedCatalogNumberRangeFormatters.has(formatterName ?? '');
 
   const parser =
     queryFieldFilterSpecs[filter.type].hasParser && !isCatalogNumberInFilter
