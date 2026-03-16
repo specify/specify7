@@ -201,41 +201,7 @@ def get_discipline_delete_guard_blockers(discipline) -> list[dict[str, Any]]:
     if not is_discipline(discipline):
         return []
 
-    # Collection association blocks deletion
-    collection_ids = sorted(
-        discipline.collections.values_list("id", flat=True)
-    )
-
-    # User association blocks deletion:
-    # - users with collection-level policies in this discipline
-    # - users with roles in collections in this discipline
-    # - users with discipline-scoped app resource directories
-    # - users owning discipline task semaphores
-    from specifyweb.backend.permissions.models import UserPolicy, UserRole
-    user_ids = set(
-        UserPolicy.objects.filter(
-            collection__discipline=discipline,
-            specifyuser__isnull=False,
-        ).values_list("specifyuser_id", flat=True)
-    )
-    user_ids.update(
-        UserRole.objects.filter(
-            role__collection__discipline=discipline
-        ).values_list("specifyuser_id", flat=True)
-    )
-    user_ids.update(
-        models.Spappresourcedir.objects.filter(
-            discipline=discipline,
-            specifyuser__isnull=False,
-        ).values_list("specifyuser_id", flat=True)
-    )
-    user_ids.update(
-        models.Sptasksemaphore.objects.filter(
-            discipline=discipline,
-            owner__isnull=False,
-        ).values_list("owner_id", flat=True)
-    )
-    sorted_user_ids = sorted(user_ids)
+    collection_ids = sorted(discipline.collections.values_list("id", flat=True))
 
     blockers: list[dict[str, Any]] = []
     if collection_ids:
@@ -246,14 +212,39 @@ def get_discipline_delete_guard_blockers(discipline) -> list[dict[str, Any]]:
                 "ids": collection_ids,
             }
         )
-    if sorted_user_ids:
-        blockers.append(
-            {
-                "table": "Specifyuser",
-                "field": "discipline",
-                "ids": sorted_user_ids,
-            }
-        )
+        return blockers
+
+    discipline_scoped_user_blockers = (
+        (
+            "Spappresourcedir",
+            "specifyuser",
+            sorted(
+                models.Spappresourcedir.objects.filter(
+                    discipline=discipline,
+                    specifyuser__isnull=False,
+                ).values_list("id", flat=True)
+            ),
+        ),
+        (
+            "Sptasksemaphore",
+            "owner",
+            sorted(
+                models.Sptasksemaphore.objects.filter(
+                    discipline=discipline,
+                    owner__isnull=False,
+                ).values_list("id", flat=True)
+            ),
+        ),
+    )
+    for table_name, field_name, blocker_ids in discipline_scoped_user_blockers:
+        if blocker_ids:
+            blockers.append(
+                {
+                    "table": table_name,
+                    "field": field_name,
+                    "ids": blocker_ids,
+                }
+            )
     return blockers
 
 def prepare_discipline_for_delete(obj) -> None:
