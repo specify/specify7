@@ -20,7 +20,7 @@ exports[`Link.Danger renders without errors 1`] = `
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-error hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--danger-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-error hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--danger-button-color)] text-white"
     href="#"
   >
     Close
@@ -83,7 +83,7 @@ exports[`Link.Info renders without errors 1`] = `
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white"
     href="#"
   >
     Close
@@ -146,7 +146,7 @@ exports[`Link.Small custom variant 1`] = `
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 a dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 a dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white"
     href="#"
   />
 </DocumentFragment>
@@ -170,7 +170,7 @@ exports[`Link.Success renders without errors 1`] = `
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:brightness-90 dark:hover:brightness-150 bg-brand-400 text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:brightness-90 dark:hover:brightness-140 bg-brand-400 text-white"
     href="#"
   >
     Close
@@ -183,7 +183,7 @@ exports[`Link.Warning renders without errors 1`] = `
   <a
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-warning hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--warning-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-warning hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--warning-button-color)] text-white"
     href="#"
   >
     Close
