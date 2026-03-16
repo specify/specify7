@@ -3,13 +3,14 @@ For uploading tree records.
 """
 
 import logging
-from typing import Any, NamedTuple, Union, Optional
+from typing import Any, NamedTuple, Union, Optional, Callable
 
 from django.db import transaction, IntegrityError
 from typing_extensions import TypedDict
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models
+from specifyweb.specify.utils.autonumbering import AutonumberingLockDispatcher
 from specifyweb.backend.workbench.upload.clone import clone_record
 from specifyweb.backend.workbench.upload.predicates import (
     SPECIAL_TREE_FIELDS_TO_SKIP,
@@ -149,11 +150,15 @@ class TreeRecord(NamedTuple):
     ranks: dict[str | TreeRankRecord, dict[str, ColumnOptions]]
 
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedTreeRecord":
         from .scoping import apply_scoping_to_treerecord as apply_scoping
 
-        return apply_scoping(self, collection, context)
+        return apply_scoping(self, collection, context, lock_dispatcher=lock_dispatcher)
 
     def get_cols(self) -> set[str]:
         return {
@@ -196,6 +201,7 @@ class ScopedTreeRecord(NamedTuple):
     batch_edit_pack: dict[str, Any] | None
     scoped_cotypes: Any
     cotype_column: str | None
+    component_type_column: str | None
 
     def disambiguate(self, disambiguation: DA) -> "ScopedTreeRecord":
         return (
@@ -363,6 +369,9 @@ class ScopedTreeRecord(NamedTuple):
         if result:
             return result
 
+        result = self._validate_trees_with_component_type(row, targeted_treedef_ids)
+        if result: return result
+
         return None
 
     # Handle cases where there are multiple or no treedefs
@@ -392,7 +401,6 @@ class ScopedTreeRecord(NamedTuple):
         def find_cotype_in_row(row: Row):
             if isinstance(self.cotype_column, str) and self.cotype_column in row:
                 return row[self.cotype_column]
-
             return None
 
         def get_cotype_tree_def(cotype_name: str):
@@ -411,8 +419,32 @@ class ScopedTreeRecord(NamedTuple):
         # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
         if len(treedefs_in_row) > 0 and cotype_treedef_id == list(treedefs_in_row)[0]:
             return None
+        return self, WorkBenchParseFailure('invalidCotype', {}, self.cotype_column)
 
-        return self, WorkBenchParseFailure("invalidCotype", {}, self.cotype_column)
+    # Ensure component type has same taxontreedef for ranks in row
+    def _validate_trees_with_component_type(self, row: Row, treedefs_in_row: set[int]):
+        if self.name.lower() != "taxon" or self.component_type_column is None:
+            return None
+        
+        def find_component_type_in_row(row: Row):
+            if isinstance(self.component_type_column, str) and self.component_type_column in row:
+                return row[self.component_type_column]
+            return None
+        def get_component_type_tree_def(component_type_name: str):
+            component_types = self.scoped_cotypes.filter(name=component_type_name)
+            return component_types[0].taxontreedef.id if len(component_types) > 0 else None
+    
+        component_type_value = find_component_type_in_row(row)
+        if not component_type_value: return None
+
+        component_type_treedef_id = get_component_type_tree_def(component_type_value)
+        if not component_type_treedef_id: return None
+
+        # Check only the first treedef assuming all ranks belong to same tree
+        # Validation for multiple ranks is done before this in _handle_multiple_or_no_treedefs
+        if len(treedefs_in_row) > 0 and component_type_treedef_id == list(treedefs_in_row)[0]:
+            return None
+        return self, WorkBenchParseFailure('invalidComponentType', {}, self.component_type_column)
 
     def bind(
         self,
@@ -464,9 +496,13 @@ class ScopedTreeRecord(NamedTuple):
 
 class MustMatchTreeRecord(TreeRecord):
     def apply_scoping(
-        self, collection, context: ScopeContext | None = None, row=None
+        self,
+        collection,
+        context: ScopeContext | None = None,
+        row=None,
+        lock_dispatcher: Callable[[], AutonumberingLockDispatcher] | None = None
     ) -> "ScopedMustMatchTreeRecord":
-        s = super().apply_scoping(collection, context, row)
+        s = super().apply_scoping(collection, context, row, lock_dispatcher=lock_dispatcher)
         return ScopedMustMatchTreeRecord(*s)
 
 

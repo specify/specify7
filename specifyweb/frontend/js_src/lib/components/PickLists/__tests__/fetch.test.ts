@@ -162,10 +162,22 @@ describe('fetchPickListItems', () => {
   });
 
   test('Picklistitems unscoped for sp7_scope_table_picklists', async () => {
-    const remotePrefs = await import('../../InitialContext/remotePrefs');
-    jest
-      .spyOn(remotePrefs, 'getCollectionPref')
-      .mockImplementation(() => false);
+    const { collectionPreferences } = await import(
+      '../../Preferences/collectionPreferences'
+    );
+
+    const originalRaw = collectionPreferences.getRaw();
+
+    collectionPreferences.setRaw({
+      ...originalRaw,
+      general: {
+        ...originalRaw.general,
+        pickLists: {
+          ...originalRaw.general?.pickLists,
+          sp7_scope_table_picklists: false,
+        },
+      },
+    });
 
     const picklist = deserializeResource(
       addMissingFields('PickList', {

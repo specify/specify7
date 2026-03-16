@@ -15,6 +15,7 @@ import { Input, Label } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Dialog } from '../Molecules/Dialog';
+import { hasPermission } from '../Permissions/helpers';
 import {
   allAppResources,
   countAppResources,
@@ -34,11 +35,25 @@ export function AppResourcesFilters({
     'filters'
   );
 
+  const hasCollectionPrefEditPermission = hasPermission(
+    '/preferences/collection',
+    'edit_collection'
+  );
+
   const showAllResources = isAllAppResourceTypes(filters.appResources);
+
+  const filteredAppResources = React.useMemo(
+    () =>
+      hasCollectionPrefEditPermission
+        ? allAppResources
+        : allAppResources.filter((type) => type !== 'collectionPreferences'),
+    [hasCollectionPrefEditPermission]
+  );
+
   const handleToggleResources = (): void =>
     setFilters({
       ...filters,
-      appResources: showAllResources ? [] : allAppResources,
+      appResources: showAllResources ? [] : filteredAppResources,
     });
 
   const [isOpen, handleOpen, handleClose] = useBooleanState();
@@ -63,7 +78,9 @@ export function AppResourcesFilters({
             setFilters({
               viewSets: false,
               appResources:
-                filters.viewSets || !showAllResources ? allAppResources : [],
+                filters.viewSets || !showAllResources
+                  ? filteredAppResources
+                  : [],
             })
           }
         >
@@ -116,7 +133,7 @@ export function AppResourcesFilters({
                 {commonText.countLine({
                   resource: resourcesText.appResources(),
                   count: countAppResources(initialResources, {
-                    appResources: allAppResources,
+                    appResources: filteredAppResources,
                     viewSets: false,
                   }),
                 })}

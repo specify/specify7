@@ -30,44 +30,45 @@ def create_default_collection_types(apps):
         collection.collectionobjecttype = cot
         collection.save()
 
-def create_default_discipline_for_tree_defs(apps):
+def create_default_discipline_for_tree_defs(apps, using='default'):
     Discipline = apps.get_model('specify', 'Discipline')
     Institution = apps.get_model('specify', 'Institution')
 
-    for discipline in Discipline.objects.all():
+    # Use the specified DB alias for all queries
+    for discipline in Discipline.objects.using(using).all():
         geography_tree_def = discipline.geographytreedef
         if geography_tree_def and geography_tree_def.discipline_id is None:
             geography_tree_def.discipline = discipline
-            geography_tree_def.save()
+            geography_tree_def.save(using=using)
 
         geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
         if geologic_time_period_tree_def and geologic_time_period_tree_def.discipline_id is None:
             geologic_time_period_tree_def.discipline = discipline
-            geologic_time_period_tree_def.save()
+            geologic_time_period_tree_def.save(using=using)
 
         lithostrat_tree_def = discipline.lithostrattreedef
         if lithostrat_tree_def and lithostrat_tree_def.discipline_id is None:
             lithostrat_tree_def.discipline = discipline
-            lithostrat_tree_def.save()
+            lithostrat_tree_def.save(using=using)
 
         taxon_tree_def = discipline.taxontreedef
         if taxon_tree_def and taxon_tree_def.discipline_id is None:
             taxon_tree_def.discipline = discipline
-            taxon_tree_def.save()
+            taxon_tree_def.save(using=using)
 
-    for institution in Institution.objects.all():
+    for institution in Institution.objects.using(using).all():
         storage_tree_def = institution.storagetreedef
-        if storage_tree_def.institution_id is None:
+        if storage_tree_def and storage_tree_def.institution_id is None:
             storage_tree_def.institution = institution
-            storage_tree_def.save()
+            storage_tree_def.save(using=using)
 
-def create_cogtype_type_picklist(apps):
+def create_cogtype_type_picklist(apps, using='default'):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
 
-    for collection in Collection.objects.all():
-        cog_type_picklist, _ = Picklist.objects.get_or_create(
+    for collection in Collection.objects.using(using).all():
+        cog_type_picklist, _ = Picklist.objects.using(using).get_or_create(
             name='SystemCOGTypes', # Default Collection Object Group Types
             type=0,
             collection=collection,
@@ -77,7 +78,7 @@ def create_cogtype_type_picklist(apps):
             }
         )
         for cog_type in DEFAULT_COG_TYPES:
-            Picklistitem.objects.get_or_create(
+            Picklistitem.objects.using(using).get_or_create(
                 title=cog_type,
                 value=cog_type,
                 picklist=cog_type_picklist
@@ -106,18 +107,18 @@ def create_cotype_picklist(apps):
             }
         )
 
-def set_discipline_for_taxon_treedefs(apps):
+def set_discipline_for_taxon_treedefs(apps, using='default'):
     Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
     Taxontreedef = apps.get_model('specify', 'Taxontreedef')
 
-    collection_object_types = Collectionobjecttype.objects.filter(
+    collection_object_types = Collectionobjecttype.objects.using(using).filter(
         taxontreedef__discipline__isnull=True
     ).annotate(
         discipline=F('collection__discipline')
     )
 
     for cot in collection_object_types:
-        Taxontreedef.objects.filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
+        Taxontreedef.objects.using(using).filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
 
 def fix_taxon_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')

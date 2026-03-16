@@ -19,7 +19,10 @@ import { Submit } from '../Atoms/Submit';
 import type { EagerDataSet } from '../AttachmentsBulkImport/Import';
 import { LoadingContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
+import type { Spdataset } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import { DateElement } from '../Molecules/DateElement';
@@ -144,6 +147,11 @@ export function DataSetMeta({
                     expectedErrors: [Http.NOT_FOUND, Http.NO_CONTENT],
                   }).then(() => {
                     setIsDeleted(true);
+                    const resource = {
+                      id: dataset.id,
+                      specifyTable: tables.Spdataset,
+                    } as SpecifyResource<Spdataset>;
+                    resourceEvents.trigger('deleted', resource);
                   })
                 );
               }}

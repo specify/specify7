@@ -9,7 +9,7 @@ export const fullDateFormat = (): string =>
 export const monthFormat = (): string =>
   getPref('ui.formatting.scrmonthformat');
 
-export function formatDateForBackEnd(date: Date) {
+export function formatDateForBackEnd(date: Date): string {
   const year = date.getFullYear();
   const month = (date.getMonth() + 1).toString();
   const day = date.getDate().toString();

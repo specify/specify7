@@ -21,11 +21,16 @@ import type {
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
+import { FieldFormattersEditor } from '../FieldFormatters/Editor';
+import { fieldFormattersSpec } from '../FieldFormatters/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
-import { UserPreferencesEditor } from '../Preferences/Editor';
+import {
+  CollectionPreferencesEditor,
+  UserPreferencesEditor,
+} from '../Preferences/Editor';
 import { useDarkMode } from '../Preferences/Hooks';
 import type { BaseSpec } from '../Syncer';
 import type { SimpleXmlNode } from '../Syncer/xmlToJson';
@@ -154,7 +159,7 @@ export const visualAppResourceEditors = f.store<
     json: AppResourceTextEditor,
   },
   collectionPreferences: {
-    // FEATURE: add visual editor
+    visual: CollectionPreferencesEditor,
     json: AppResourceTextEditor,
   },
   leafletLayers: undefined,
@@ -168,7 +173,10 @@ export const visualAppResourceEditors = f.store<
     visual: WebLinkEditor,
     xml: generateXmlEditor(webLinksSpec),
   },
-  uiFormatters: undefined,
+  uiFormatters: {
+    visual: FieldFormattersEditor,
+    xml: generateXmlEditor(fieldFormattersSpec),
+  },
   dataObjectFormatters: {
     visual: DataObjectFormatter,
     xml: generateXmlEditor(formattersSpec),

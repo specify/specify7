@@ -11,8 +11,9 @@ from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
 from specifyweb.specify.models_utils.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, datamodel
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
+from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
@@ -160,10 +161,27 @@ class TreeRankQuery(Relationship):
         # Treedef id included to make it easier to pass it to batch edit
         return f"{self.treedef_name}{RANK_KEY_DELIMITER}{self.name}{RANK_KEY_DELIMITER}{self.treedef_id}"
 
+def null_safe_not(field_expr, predicate):
+
+    """Return a NOT clause that still matches NULL values on the target field.
+
+    SQL's ``NOT IN`` and similar predicates exclude rows where the filtered column
+    is ``NULL``. Historical Specify 6 behaviour (and user expectation) is to keep
+    those "empty" rows when a negated filter is applied.  This helper wraps the
+    negated predicate in an OR that explicitly re-includes NULL rows for the
+    relevant field expression.
+
+    """
+    if predicate is None or isinstance(predicate, Query):
+        return predicate
+    target = field_expr if field_expr is not None else getattr(predicate, "left", None)
+    if target is None:
+        return sql.not_(predicate)
+    return sql.or_(target.is_(None), sql.not_(predicate))
+
 
 QueryNode = Field | Relationship | TreeRankQuery
 FieldSpecJoinPath = tuple[QueryNode]
-
 
 class QueryFieldSpec(
     namedtuple(
@@ -382,6 +400,7 @@ class QueryFieldSpec(
 
             query_op = QueryOps(uiformatter)
             op = query_op.by_op_num(op_num)
+            mod_orm_field = orm_field
             if query_op.is_precalculated(op_num):
                 f = op(
                     orm_field, value, query, is_strict=strict
@@ -398,7 +417,15 @@ class QueryFieldSpec(
                 op, mod_orm_field, value = apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
                 f = op(mod_orm_field, value)
 
-            predicate = sql.not_(f) if negate else f
+            NULL_SAFE_NEGATE_OPS = {1, 10, 11}
+
+            if negate:
+                if op_num in NULL_SAFE_NEGATE_OPS:
+                    predicate = null_safe_not(mod_orm_field or orm_field, f)
+                else:
+                    predicate = sql.not_(f)
+            else:
+                predicate = f
         else:
             predicate = None
 
@@ -458,17 +485,26 @@ class QueryFieldSpec(
                     cycle_detector,
                 )
         else:
-            query, orm_model, table, field = self.build_join(query, self.join_path)
-            if isinstance(field, TreeRankQuery):
-                tree_rank_idx = self.join_path.index(field)
+            tree_rank_idxs = [i for i, n in enumerate(self.join_path) if isinstance(n, TreeRankQuery)]
+            if tree_rank_idxs:
+                tree_rank_idx = tree_rank_idxs[0]
+                prefix = self.join_path[:tree_rank_idx] # up to (but not including) the tree-rank node
+                tree_rank_node = self.join_path[tree_rank_idx]
+                suffix = self.join_path[tree_rank_idx + 1 :] # field after the rank, e.g., "Name"
+
+                # Join only the prefix to obtain the correct starting alias (e.g., HostTaxon)
+                query, orm_model, table, _ = self.build_join(query, prefix)
+
+                # Build the CASE/joins for the tree rank starting at that alias
                 query, orm_field, field, table = query.handle_tree_field(
                     orm_model,
                     table,
-                    field,
-                    self.join_path[tree_rank_idx + 1 :],
+                    tree_rank_node,
+                    suffix,
                     self,
                 )
             else:
+                query, orm_model, table, field = self.build_join(query, self.join_path)
                 try:
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)
@@ -517,10 +553,12 @@ def parse_dates(date_str):
 
 def apply_special_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
+    cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
 
     if parent_inheritance_pref: 
         op, orm_field, value = parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
-    else: 
+
+    if cog_inheritance_pref: 
         op, orm_field, value = cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection, user)
 
     # Special handling for timestamp fields since the Query Builder provides a plain date string (YYYY-MM-DD) instead of a full datetime.
@@ -580,7 +618,6 @@ def cog_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uif
         table.name == "CollectionObject"
         and field.name == "catalogNumber"
         and op_num == 1
-        and get_cat_num_inheritance_setting(collection, user)
     ):
         sibling_ids = cog_primary_co_sibling_ids(value, collection)
         if sibling_ids:
@@ -616,30 +653,39 @@ def cog_primary_co_sibling_ids(cat_num, collection):
 
 def parent_inheritance_filter_cases(orm_field, field, table, value, op, op_num, uiformatter, collection=None, user=None):
     if (
-        table.name == "CollectionObject"
+        table.name == "Component"
         and field.name == "catalogNumber"
         and op_num == 1
-        and get_parent_cat_num_inheritance_setting(collection, user)
     ):
         components_ids = co_components_ids(value, collection)
         if components_ids:
-            # Modify the query to filter operation and values for component collection objects
+            # Modify the query to filter operation and values for component
             value = ','.join(components_ids)
-            orm_field = getattr(sq_CollectionObject, 'collectionObjectId')
+            orm_field = getattr(sq_Component, 'componentId')
             op = QueryOps(uiformatter).by_op_num(10)
 
     return op, orm_field, value
 
 def co_components_ids(cat_num, collection):
     # Get the collection object with the given catalog number
-    parentcomponent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
-    if not parentcomponent:
+    coparent = Collectionobject.objects.filter(catalognumber=cat_num, collection=collection).first()
+
+    if not coparent:
         return []
+    
+    # Get component objects with the same cat num than the CO parent
+    components_with_cat_num = Component.objects.filter(catalognumber=cat_num)
 
-    # Get component objects directly from the related name
-    components = parentcomponent.components.filter(catalognumber=None)
+    # Get component objects directly from the parent CO
+    empty_cat_num_components = coparent.components.filter(catalognumber=None)
 
-    # Get their IDs
-    target_component_co_ids = components.values_list('id', flat=True)
+    # Get component ids
+    ids_with_cat_num = components_with_cat_num.values_list('id', flat=True)
+    ids_with_no_cat_num = empty_cat_num_components.values_list('id', flat=True)
 
-    return [str(i) for i in [parentcomponent.id] + list(target_component_co_ids)]
+    # Combine all IDs and add the parent ID, convert to strings and remove duplicates
+    all_ids = {str(coparent.id)}
+    all_ids.update(str(i) for i in ids_with_cat_num)
+    all_ids.update(str(i) for i in ids_with_no_cat_num)
+
+    return list(all_ids)

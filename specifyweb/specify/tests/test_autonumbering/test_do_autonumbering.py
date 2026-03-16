@@ -137,7 +137,7 @@ class TestDoAutonumbering(TestAutonumberingContext):
             collection=second_collection, catalognumber="#########"
         )
 
-        do_autonumbering(self.collection, third_co_different_collection, fields)
+        do_autonumbering(second_collection, third_co_different_collection, fields)
         third_co_different_collection.refresh_from_db()
         # This third CO must be created now.
         self.assertIsNotNone(third_co_different_collection.id)
@@ -158,7 +158,7 @@ class TestDoAutonumbering(TestAutonumberingContext):
             collection=third_collection, catalognumber="#########"
         )
 
-        do_autonumbering(self.collection, fourth_co_irrelevant_collection, fields)
+        do_autonumbering(third_collection, fourth_co_irrelevant_collection, fields)
 
         fourth_co_irrelevant_collection.refresh_from_db()
         # This CO must be created now.

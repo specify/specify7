@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
-import { formatterToParser } from '../../utils/parser/definitions';
+import { fieldFormatterToParser } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { Select } from '../Atoms/Form';
 import { genericTables } from '../DataModel/tables';
@@ -145,7 +145,7 @@ function QueryLineFilterWrapper({
   const parser =
     (terminatingField === undefined || fieldFormatter === undefined
       ? undefined
-      : formatterToParser(terminatingField, fieldFormatter)) ??
+      : fieldFormatterToParser(terminatingField, fieldFormatter)) ??
     fieldMeta.parser;
 
   return (
