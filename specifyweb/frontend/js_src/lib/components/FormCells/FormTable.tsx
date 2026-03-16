@@ -148,8 +148,7 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
 
-  const isTreeTable =
-    collection!.table.specifyTable.name.includes('Tree');
+  const isTreeTable = collection!.table.specifyTable.name.includes('Tree');
 
   React.useEffect(() => {
     if (addedResource.current === undefined) return;
@@ -507,49 +506,51 @@ export function FormTable<SCHEMA extends AnySchema>({
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'update'
                       )) &&
-                      !disableRemove && (renderedResourceId === undefined || renderedResourceId === resource.id) ? (
-                        /*
-                         * Check condition for tree table delete button, since new resources do not have id yet 
-                         * alternates between DeleteButton logic with save blcokers and simple remove button for new, and unsaved resources
-                         */
-                        resource.id !== undefined &&
-                        resource.id !== null && isTreeTable
-                        ? (
-                      <DeleteButton
-                      component ={Button.Small}
-                      deferred
-                      isIcon
-                      resource ={resource}
-                      onDeleted = {(): void => {
-                        if (typeof handleDelete === 'function') {
-                          handleDelete(resource);
-                        }
-              
-                      }}
-                      >
-                        {(onClick, disabled):JSX.Element => (
-                          <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        disabled={disabled}
-                        title={commonText.remove()}
-                        onClick={onClick}
-                      >
-                        {icons.trash}
-                      </Button.Small>
-                        )}
+                    !disableRemove &&
+                    (renderedResourceId === undefined ||
+                      renderedResourceId === resource.id) ? (
+                      /*
+                       * Check condition for tree table delete button, since new resources do not have id yet
+                       * alternates between DeleteButton logic with save blcokers and simple remove button for new, and unsaved resources
+                       */
+                      resource.id !== undefined &&
+                      resource.id !== null &&
+                      isTreeTable ? (
+                        <DeleteButton
+                          component={Button.Small}
+                          deferred
+                          isIcon
+                          resource={resource}
+                          onDeleted={(): void => {
+                            if (typeof handleDelete === 'function') {
+                              handleDelete(resource);
+                            }
+                          }}
+                        >
+                          {(onClick, disabled): JSX.Element => (
+                            <Button.Small
+                              aria-label={commonText.remove()}
+                              className="h-full"
+                              disabled={disabled}
+                              title={commonText.remove()}
+                              onClick={onClick}
+                            >
+                              {icons.trash}
+                            </Button.Small>
+                          )}
                         </DeleteButton>
-                    ) : (
-                      <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        title={commonText.remove()}
-                        onClick={(): void => {handleDelete(resource)
-                        }}
-                      >
-                        {icons.trash}
-                      </Button.Small>
-                    )
+                      ) : (
+                        <Button.Small
+                          aria-label={commonText.remove()}
+                          className="h-full"
+                          title={commonText.remove()}
+                          onClick={(): void => {
+                            handleDelete(resource);
+                          }}
+                        >
+                          {icons.trash}
+                        </Button.Small>
+                      )
                     ) : undefined}
                     {isExpanded[resource.cid] === true && (
                       <FormMeta

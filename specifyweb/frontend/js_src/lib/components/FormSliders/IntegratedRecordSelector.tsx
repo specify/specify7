@@ -7,6 +7,7 @@ import { commonText } from '../../localization/common';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { DataEntry } from '../Atoms/DataEntry';
 import { ReadOnlyContext } from '../Core/Contexts';
 import type { CollectionFetchFilters } from '../DataModel/collection';
@@ -23,6 +24,7 @@ import { COJODialog } from '../FormCells/COJODialog';
 import { FormTableCollection } from '../FormCells/FormTableCollection';
 import type { FormType } from '../FormParse';
 import type { SubViewSortField } from '../FormParse/cells';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { augmentMode, ResourceView } from '../Forms/ResourceView';
 import { useFirstFocus } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
@@ -35,8 +37,6 @@ import { AttachmentsCollection } from './AttachmentsCollection';
 import { AttachmentWarningDeletion } from './AttachmentWarningDeletion';
 import { shouldBeToOne } from './helpers';
 import { RecordSelectorFromCollection } from './RecordSelectorFromCollection';
-import { DeleteButton } from '../Forms/DeleteButton';
-import { className } from '../Atoms/className'; 
 
 /** A wrapper for RecordSelector to integrate with Backbone.Collection */
 
@@ -139,8 +139,7 @@ export function IntegratedRecordSelector({
   const isAttachmentTable =
     collection.table.specifyTable.name.includes('Attachment');
 
-  const isTreeTable =
-    collection.table.specifyTable.name.includes('Tree');
+  const isTreeTable = collection.table.specifyTable.name.includes('Tree');
 
   const subviewContext = React.useContext(SubViewContext);
   const parentContext = React.useMemo(
@@ -321,13 +320,17 @@ export function IntegratedRecordSelector({
                       {hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'read'
-                      ) && typeof handleRemove === 'function' && resource !== undefined ? (
-                        isTreeTable && resource.id !== undefined && resource.id !== null ? (
+                      ) &&
+                      typeof handleRemove === 'function' &&
+                      resource !== undefined ? (
+                        isTreeTable &&
+                        resource.id !== undefined &&
+                        resource.id !== null ? (
                           <DeleteButton
                             deferred={true}
                             isIcon={true}
-                            resource ={resource}
-                            onDeleted ={(): void => {
+                            resource={resource}
+                            onDeleted={(): void => {
                               handleRemove('minusButton');
                             }}
                           >
@@ -344,22 +347,22 @@ export function IntegratedRecordSelector({
                         ) : (
                           <DataEntry.Remove
                             disabled={
-                            isReadOnly ||
-                            collection.models.length === 0 ||
-                            resource === undefined ||
-                            (renderedResourceId !== undefined &&
-                              resource?.id === renderedResourceId) ||
-                            disableRemove ||
-                            isSystemConfigResource
-                          }
-                          onClick={(): void => {
-                            if (isAttachmentTable) {
-                              handleWarning();
-                            } else {
-                              handleRemove('minusButton');
+                              isReadOnly ||
+                              collection.models.length === 0 ||
+                              resource === undefined ||
+                              (renderedResourceId !== undefined &&
+                                resource?.id === renderedResourceId) ||
+                              disableRemove ||
+                              isSystemConfigResource
                             }
-                          }}
-                        />
+                            onClick={(): void => {
+                              if (isAttachmentTable) {
+                                handleWarning();
+                              } else {
+                                handleRemove('minusButton');
+                              }
+                            }}
+                          />
                         )
                       ) : undefined}
                       <span
