@@ -99,7 +99,7 @@ export function useValidation<T extends Input = Input>(
 
       /*
        * Empty string clears validation error
-       * ssimple check for HTML validation through hasNativeErrors, and prevents both Validators being active simultaneously
+       * simple check for HTML validation through hasNativeErrors, and prevents both Validators being active simultaneously
        */
       if (hasNativeErrors(input)) {
         input.setCustomValidity('');
