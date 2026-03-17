@@ -22,7 +22,7 @@ type SerializedLayer = {
 type Layers<LAYER> = RR<'baseMaps' | 'overlays', IR<LAYER>>;
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.8.10/leaflet-layers.json';
+  '/static/config/common/leaflet-layers.json';
 
 /**
  * Optional filters to apply to a layer
@@ -47,7 +47,7 @@ export const preferredOverlay = 'Labels and boundaries';
  *    leafletLayersEndpoint (defined above)
  *  * User didn't define a resource file `leaflet-layers`
  *
- * On any updates to this file, you should also update the one at
+ * On any updates to the checked-in fallback config, you should also update
  * leafletLayersEndpoint
  *
  * Documentation:
