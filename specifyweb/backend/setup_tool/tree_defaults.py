@@ -21,8 +21,8 @@ DEFAULT_TREE_RANKS_FILES = {
 }
 DEFAULT_TAXON_TREE_LIST_URL = '/static/config/default_trees/taxonfiles.json'
 DEFAULT_TREE_URLS = {
-    'Geography': 'default_trees/geonames.csv',
-    'Geologictimeperiod': 'default_trees/GeologicTimePeriod.csv',
+    'Geography': 'default_trees/geonames.csv.gz',
+    'Geologictimeperiod': 'default_trees/GeologicTimePeriod.csv.gz',
 }
 DEFAULT_TREE_MAPPING_URLS = {
     'Geography': 'default_trees/mapping_files/geography.json',

@@ -1,4 +1,5 @@
 import csv
+import gzip
 import json
 import time
 from pathlib import Path
@@ -25,6 +26,10 @@ def _resolve_config_path(relative_path: str) -> Optional[Path]:
         candidate.relative_to(config_root)
     except ValueError:
         return None
+    if not candidate.is_file() and candidate.suffix == '.csv':
+        gz_candidate = candidate.with_name(f'{candidate.name}.gz')
+        if gz_candidate.is_file():
+            return gz_candidate
     return candidate
 
 
@@ -110,7 +115,8 @@ def stream_default_tree_csv(source: str) -> Iterator[Dict[str, str]]:
     if local_path is not None:
         if not local_path.is_file():
             raise FileNotFoundError(f'Default tree CSV file not found: {local_path}')
-        with local_path.open('r', encoding='utf-8-sig', newline='') as file_handle:
+        open_file = gzip.open if local_path.suffix == '.gz' else Path.open
+        with open_file(local_path, 'rt', encoding='utf-8-sig', newline='') as file_handle:
             yield from csv.DictReader(file_handle)
         return
 
