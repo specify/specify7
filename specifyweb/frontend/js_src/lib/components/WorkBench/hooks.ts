@@ -44,15 +44,19 @@ export function useHotHooks({
      */
     afterInit: function () {
       if (workbench.hot === undefined) return;
-      
+
       // Add aria-label to corner header cell (intersection of row/column headers)
-      const cornerHeader = workbench.hot.rootElement.querySelector('.ht_clone_top_inline_start_corner th');
+      const cornerHeader = workbench.hot.rootElement.querySelector(
+        '.ht_clone_top_inline_start_corner th'
+      );
       if (cornerHeader && !cornerHeader.textContent?.trim()) {
         cornerHeader.setAttribute('aria-label', 'Row and column headers');
       }
-      
+
       // Add aria-labels to any other empty th elements in headers
-      const emptyHeaders = workbench.hot.rootElement.querySelectorAll('thead th:not([aria-label])');
+      const emptyHeaders = workbench.hot.rootElement.querySelectorAll(
+        'thead th:not([aria-label])'
+      );
       emptyHeaders.forEach((th: Element) => {
         if (!th.textContent?.trim() && th instanceof HTMLElement) {
           th.setAttribute('aria-label', 'Header cell');

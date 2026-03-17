@@ -29,7 +29,9 @@ export function SplashScreen({
           <img
             alt=""
             className="max-w-xs hover:animate-hue-rotate"
-            src={isDarkMode ? '/static/img/logo.svg' : '/static/img/logo_dark.svg'}
+            src={
+              isDarkMode ? '/static/img/logo.svg' : '/static/img/logo_dark.svg'
+            }
             style={{ filter: `hue-rotate(${hueDifference}deg)` }}
           />
         </header>

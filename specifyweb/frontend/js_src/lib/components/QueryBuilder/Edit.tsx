@@ -205,7 +205,9 @@ function QueryExport({
         }
       >
         <Input.Text
-          aria-label={asLabel ? headerText.labelName() : headerText.reportName()}
+          aria-label={
+            asLabel ? headerText.labelName() : headerText.reportName()
+          }
           maxLength={getMaxLength()}
           placeholder={
             asLabel ? headerText.labelName() : headerText.reportName()

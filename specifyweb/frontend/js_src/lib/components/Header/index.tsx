@@ -111,11 +111,7 @@ export function Header({
                 ? 'border-l'
                 : 'border-t'
         }
-        ${
-          isMenuLight
-            ? 'border-neutral-300 bg-gray-100'
-            : 'bg-brown-100'
-        }
+        ${isMenuLight ? 'border-neutral-300 bg-gray-100' : 'bg-brown-100'}
       `}
     >
       <Logo isCollapsed={isCollapsed} isHorizontal={isHorizontal} />

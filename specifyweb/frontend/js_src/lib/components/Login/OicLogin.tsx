@@ -81,7 +81,9 @@ export function OicLogin({
           </Link.Fancy>
         )}
         <input name="next" type="hidden" value={nextUrl} />
-        <Submit.Secondary className="sr-only">{userText.logIn()}</Submit.Secondary>
+        <Submit.Secondary className="sr-only">
+          {userText.logIn()}
+        </Submit.Secondary>
       </Form>
     </SplashScreen>
   );

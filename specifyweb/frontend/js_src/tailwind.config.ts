@@ -79,7 +79,7 @@ const config: Config = {
         },
         brown: {
           100: '#4e3f32',
-        }
+        },
       },
       spacing: {
         'table-icon': '1.25rem',

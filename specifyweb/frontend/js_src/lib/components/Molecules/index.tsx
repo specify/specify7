@@ -49,7 +49,6 @@ const LoadingBar = () => {
 
 export const loadingBar = <LoadingBar />;
 
-
 /**
  * Add a JSX.Element in between JSX.Elements.
  *
