@@ -1,0 +1,112 @@
+[
+  {
+    "discipline": "fish",
+    "title": "Ichthyology",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_actinopterygii.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_actinopterygii.json",
+    "src": "Catalog of Life 2021",
+    "size": 5821850,
+    "rows": 37959,
+    "description": "Actinopterygii: 488 families; 4908 genera; 32513 species."
+  },
+  {
+    "discipline": "herpetology",
+    "title": "Herpetology",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_amphibia_reptilia.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_amphibia_reptilia.json",
+    "src": "Catalog of Life 2021",
+    "size": 3986066,
+    "rows": 24731,
+    "description": "Amphibs: 75 families; 565 genera; 8054 species. Reptiles: 91 families; 1224 genera; 11570 species; 3140 subspecies."
+  },
+  {
+    "discipline": "bird",
+    "title": "Aves",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_aves.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_aves.json",
+    "src": "Catalog of Life 2021",
+    "size": 6723988,
+    "rows": 34039,
+    "description": "Aves: 230 families; 2254 genera; 10521 species; 20988 subspecies."
+  },
+  {
+    "discipline": "insect",
+    "title": "Entomology",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2008_orthoptera.csv",
+    "mappingFile": "https://files.specifysoftware.org/treerows/col2008_orthoptera.json",
+    "src": "Catalog of Life 2008",
+    "size": 9502720,
+    "rows": 25604,
+    "description": "Order Orthoptera only: 40 families; 4320 genera; 23042 species."
+  },
+  {
+    "discipline": "botany",
+    "title": "Botany (Bryophyta)",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_bryophyta.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_bryophyta.json",
+    "src": "Catalog of Life 2021",
+    "size": 2219282,
+    "rows": 14426,
+    "description": "Phylum Bryophyta only: 96 families; 941 genera; 13362 species."
+  },
+  {
+    "discipline": "botany",
+    "title": "Fungi",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_fungi.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_fungi.json",
+    "src": "Catalog of Life 2021",
+    "size": 25417818,
+    "rows": 159229,
+    "description": "Fungi: 870 families; 11847 genera; 146154 species; 47 subspecies."
+  },
+  {
+    "discipline": "mammal",
+    "title": "Mammalogy",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_mammalia.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_mammalia.json",
+    "src": "Catalog of Life 2021",
+    "size": 2417890,
+    "rows": 13557,
+    "description": "146 families; 1151 genera; 4832 species."
+  },
+  {
+    "discipline": "invertebrate",
+    "title": "Invertebrate Zoology",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_mollusca.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_mollusca.json",
+    "src": "Catalog of Life 2021",
+    "size": 11614254,
+    "rows": 79277,
+    "description": "Phyla Mollusca: 1600 families; 14083 genera; 112144 species; 8580 subspecies."
+  },
+  {
+    "discipline": "botany",
+    "title": "Polypodiopsida",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_polypodiopsida.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_polypodiopsida.json",
+    "src": "Catalog of Life 2021",
+    "size": 2177153,
+    "rows": 13072,
+    "description": "Polypodiopsida: fern allies."
+  },
+  {
+    "discipline": "botany",
+    "title": "Tracheophyta",
+    "coverage": "",
+    "file": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/col2021_tracheophyta.csv",
+    "mappingFile": "https://specify-software-public.s3.us-east-1.amazonaws.com/default_trees/mapping_files/col2021_tracheophyta.json",
+    "src": "Catalog of Life 2021",
+    "size": 62080445,
+    "rows": 395041,
+    "description": "Tracheophyta: vascular plants."
+  }
+]

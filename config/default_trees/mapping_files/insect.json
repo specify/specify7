@@ -1,0 +1,91 @@
+{
+	"all_columns": ["kingdom","phylum","class","order","superfamily","family","genus","species","subspecies","species author","species source","species lsid","species common name","family common name","subspecies author","subspecies source","subspecies lsid","subspecies common name"],
+	"ranks": [
+		{
+			"name": "Kingdom",
+			"rank": 10,
+			"column": "kingdom",
+			"fields": {
+				"name": "kingdom"
+			}
+		},
+		{
+			"name": "Phylum",
+			"rank": 30,
+			"column": "phylum",
+			"fields": {
+				"name": "phylum"
+			}
+		},
+		{
+			"name": "Class",
+			"rank": 60,
+			"column": "class",
+			"fields": {
+				"name": "class"
+			}
+		},
+		{
+			"name": "Order",
+			"rank": 100,
+			"column": "order",
+			"fields": {
+				"name": "order"
+			}
+		},
+		{
+			"name": "Superfamily",
+			"rank": 130,
+			"enforced": false,
+			"column": "superfamily",
+			"fields": {
+				"name": "superfamily"
+			}
+		},
+		{
+			"name": "Family",
+			"rank": 140,
+			"column": "family",
+			"fields": {
+				"name": "family",
+				"commonname": "family common name"
+			}
+		},
+		{
+			"name": "Genus",
+			"rank": 180,
+			"infullname": true,
+			"column": "genus",
+			"fields": {
+				"name": "genus"
+			}
+		},
+		{
+			"name": "Species",
+			"rank": 220,
+			"infullname": true,
+			"column": "species",
+			"fields": {
+				"name": "species",
+				"author": "species author",
+				"source": "species source",
+				"lsid": "species lsid",
+				"commonname": "species common name"
+			}
+		},
+		{
+			"name": "Subspecies",
+			"rank": 230,
+			"infullname": true,
+			"enforced": false,
+			"column": "subspecies",
+			"fields": {
+				"name": "subspecies",
+				"author": "subspecies author",
+				"source": "subspecies source",
+				"lsid": "subspecies lsid",
+				"commonname": "subspecies common name"
+			}
+		}
+	]
+}

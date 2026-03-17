@@ -1,0 +1,94 @@
+{
+    "all_columns": [
+        "kingdom",
+        "phylum",
+        "class",
+        "order",
+        "family",
+        "genus",
+        "species",
+        "subspecies",
+        "family common name",
+        "species author",
+        "species source",
+        "species common name",
+        "subspecies author",
+        "subspecies source",
+        "subspecies common name"
+    ],
+    "ranks": [
+        {
+            "name": "Kingdom",
+            "rank": 10,
+            "column": "kingdom",
+            "fields": {
+                "name": "kingdom"
+            }
+        },
+        {
+            "name": "Phylum",
+            "rank": 30,
+            "column": "phylum",
+            "fields": {
+                "name": "phylum"
+            }
+        },
+        {
+            "name": "Class",
+            "rank": 60,
+            "column": "class",
+            "fields": {
+                "name": "class"
+            }
+        },
+        {
+            "name": "Order",
+            "rank": 100,
+            "column": "order",
+            "fields": {
+                "name": "order"
+            }
+        },
+        {
+            "name": "Family",
+            "rank": 140,
+            "column": "family",
+            "fields": {
+                "name": "family"
+            }
+        },
+        {
+            "name": "Genus",
+            "rank": 180,
+            "column": "genus",
+            "infullname": true,
+            "fields": {
+                "name": "genus"
+            }
+        },
+        {
+            "name": "Species",
+            "rank": 220,
+            "column": "species",
+            "infullname": true,
+            "fields": {
+                "name": "species",
+                "author": "species author",
+                "source": "species source",
+                "commonname": "species common name"
+            }
+        },
+        {
+            "name": "Subspecies",
+            "rank": 230,
+            "column": "subspecies",
+            "infullname": true,
+            "fields": {
+                "name": "subspecies",
+                "author": "subspecies author",
+                "source": "subspecies source",
+                "commonname": "subspecies common name"
+            }
+        }
+    ]
+}

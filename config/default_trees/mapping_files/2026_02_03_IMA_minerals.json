@@ -1,0 +1,21 @@
+{
+	"all_columns": ["Mineral Name","Mineral Name (plain)","Valence Chemistry","IMA Chemistry","IMA Number","Country of Type Locality","IMA Status","isMineral"],
+	"root": {
+		"name": "Root"
+	},
+	"ranks": [
+		{
+			"name": "Minerals",
+			"rank": 10,
+			"column": "Mineral Name",
+			"fields": {
+				"name": "Mineral Name (plain)",
+                "text10": "Valence Chemistry",
+                "text14": "IMA Chemistry",
+                "text12": "IMA Number",
+                "text13": "Country of Type Locality",
+                "text11": "IMA Status"
+			}
+		}
+	]
+}
