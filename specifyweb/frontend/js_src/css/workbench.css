@@ -161,7 +161,7 @@
 }
 
 .htCommentTextArea {
-  @apply cursor-auto dark:border-none dark:bg-neutral-800 dark:text-white;
+  @apply cursor-auto dark:border-none dark:bg-neutral-800 dark:text-white bg-black;
 }
 
 .htCommentCell:after {
