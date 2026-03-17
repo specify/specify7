@@ -446,7 +446,7 @@ export function Mapper(props: {
             <Button.Small
               className={
                 state.mappingsAreValidated
-                  ? 'bg-green-400 dark:bg-green-700'
+                  ? 'bg-brand-400 dark:bg-brand-400'
                   : undefined
               }
               disabled={state.lines.every(

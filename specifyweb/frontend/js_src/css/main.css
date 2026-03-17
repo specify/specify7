@@ -17,10 +17,12 @@
 
   body.dark {
     color-scheme: dark;
+    @apply text-white;
   }
 
   body:not(.dark) {
     color-scheme: light;
+    @apply text-black;
   }
 
   body.no-rounded-corners *:not(.rounded-full) {
@@ -101,7 +103,7 @@
 
   [type='checkbox'],
   [type='radio'] {
-    @apply text-brand-200 dark:text-brand-400 cursor-pointer focus:border-none focus:!ring-2
+    @apply text-brand-300 dark:text-brand-400 cursor-pointer focus:border-none focus:!ring-2
       focus:!ring-offset-0;
   }
 
@@ -192,7 +194,7 @@
   }
 
   .icon {
-    @apply active:bg-brand-100 dark:active:bg-brand-500
+    @apply active:bg-brand-100 dark:active:bg-brand-400
       disabled:!cursor-not-allowed disabled:!text-gray-400
       disabled:hover:!text-gray-400 disabled:dark:!text-neutral-600
       disabled:hover:dark:!text-neutral-600;
@@ -203,11 +205,11 @@
   }
 
   progress::-webkit-progress-value {
-    @apply bg-brand-200 dark:bg-brand-400 rounded;
+    @apply bg-brand-300 dark:bg-brand-400 rounded;
   }
 
   progress::-moz-progress-bar {
-    @apply bg-brand-200 dark:bg-brand-400 rounded;
+    @apply bg-brand-300 dark:bg-brand-400 rounded;
   }
 
   /*

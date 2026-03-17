@@ -205,11 +205,13 @@ function QueryExport({
         }
       >
         <Input.Text
+          aria-label={asLabel ? headerText.labelName() : headerText.reportName()}
           maxLength={getMaxLength()}
           placeholder={
             asLabel ? headerText.labelName() : headerText.reportName()
           }
           required
+          title={asLabel ? headerText.labelName() : headerText.reportName()}
           value={name}
           onValueChange={(value): void => setName(value)}
         />
