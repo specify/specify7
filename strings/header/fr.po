@@ -97,12 +97,16 @@ msgstr ""
 msgid "localityUpdateTool"
 msgstr "Outil de mise à jour de la localisation"
 
-#: components/QueryBuilder/Edit.tsx:210
+#: components/QueryBuilder/Edit.tsx:208
+#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:214
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Outils administratifs"
 
-#: components/QueryBuilder/Edit.tsx:210
+#: components/QueryBuilder/Edit.tsx:208
+#: components/QueryBuilder/Edit.tsx:211
+#: components/QueryBuilder/Edit.tsx:214
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Nom du rapport"
@@ -246,10 +250,10 @@ msgstr "API Opérations"
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
 #: components/Header/userToolDefinitions.ts:143
-#: components/Preferences/UserDefinitions.tsx:631
+#: components/Preferences/UserDefinitions.tsx:623
 #: components/Preferences/index.tsx:65
 #: components/Preferences/index.tsx:71
-#: components/SetupTool/index.tsx:280
+#: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"

@@ -1,33 +1,33 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/SetupTool/index.tsx:232
+#: components/SetupTool/index.tsx:237
 #. Used in: Components > Setup Tool > Index
 msgid "guidedSetup"
 msgstr "Guided Setup"
 
-#: components/SetupTool/index.tsx:304
+#: components/SetupTool/index.tsx:309
 #. Used in: Components > Setup Tool > Index
 msgid "setupProgress"
 msgstr "Progress:"
 
-#: components/SetupTool/index.tsx:253
+#: components/SetupTool/index.tsx:258
 #. Used in: Components > Setup Tool > Index
 msgid "overview"
 msgstr "Overview"
 
-#: components/SetupTool/index.tsx:239
-#: components/SetupTool/index.tsx:243
+#: components/SetupTool/index.tsx:244
+#: components/SetupTool/index.tsx:248
 #. Used in: Components > Setup Tool > Index
 msgid "settingUp"
 msgstr "Setting up the database..."
 
-#: components/SetupTool/index.tsx:244
+#: components/SetupTool/index.tsx:249
 #. Used in: Components > Setup Tool > Index
 msgid "creating"
 msgstr "Creating the"
 
-#: components/SetupTool/index.tsx:312
+#: components/SetupTool/index.tsx:317
 #. Used in: Components > Setup Tool > Index
 msgid "setupError"
 msgstr "An error occurred during the last setup attempt."

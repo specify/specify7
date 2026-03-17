@@ -4,7 +4,7 @@ msgstr "Content-Type: text/plain\n"
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:75
-#: components/Preferences/UserDefinitions.tsx:2131
+#: components/Preferences/UserDefinitions.tsx:2123
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
@@ -14,7 +14,7 @@ msgstr "App Resources"
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
-#: components/Preferences/UserDefinitions.tsx:916
+#: components/Preferences/UserDefinitions.tsx:908
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 msgid "formDefinition"
 msgstr "Form Definition"
@@ -287,7 +287,7 @@ msgid "failedParsingXml"
 msgstr "Failed to parse XML"
 
 #: components/Formatters/Element.tsx:102
-#: components/QueryBuilder/FieldFilterSpec.tsx:554
+#: components/QueryBuilder/FieldFilterSpec.tsx:557
 #: components/Statistics/StatsPageEditing.tsx:61
 #. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec ⬤ Components > Statistics > Stats Page Editing
 msgid "name"

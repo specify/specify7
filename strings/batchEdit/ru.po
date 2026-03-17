@@ -14,7 +14,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:189
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2256
+#: components/Preferences/UserDefinitions.tsx:2248
 #: components/Router/OverlayRoutes.tsx:254
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -30,7 +30,7 @@ msgstr "Пакетное редактирование"
 msgid "batchEditPrefs"
 msgstr "Настройки пакетного редактирования"
 
-#: components/Preferences/UserDefinitions.tsx:2262
+#: components/Preferences/UserDefinitions.tsx:2254
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "numberOfRecords"
@@ -86,13 +86,13 @@ msgstr ""
 "Используйте конструктор запросов для создания нового набора данных для "
 "пакетного редактирования."
 
-#: components/Preferences/UserDefinitions.tsx:2285
+#: components/Preferences/UserDefinitions.tsx:2277
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollback"
 msgstr "Показать кнопку отката"
 
-#: components/Preferences/UserDefinitions.tsx:2290
+#: components/Preferences/UserDefinitions.tsx:2282
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showRollbackDescription"
@@ -239,13 +239,13 @@ msgstr ""
 "(Наборы данных, отредактированные в пакетном режиме, нельзя редактировать "
 "после отката — только для чтения)"
 
-#: components/Preferences/UserDefinitions.tsx:2277
+#: components/Preferences/UserDefinitions.tsx:2269
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationships"
 msgstr "Развивайте отношения"
 
-#: components/Preferences/UserDefinitions.tsx:2282
+#: components/Preferences/UserDefinitions.tsx:2274
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationshipsDescription"

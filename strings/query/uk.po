@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15.1\n"
 
-#: components/Preferences/UserDefinitions.tsx:2259
+#: components/Preferences/UserDefinitions.tsx:2251
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1768
+#: components/Preferences/UserDefinitions.tsx:1760
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -58,18 +58,18 @@ msgstr "Новий запит"
 msgid "searchFields"
 msgstr "Пошукові поля"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:424
+#: components/QueryBuilder/FieldFilterSpec.tsx:427
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "any"
 msgstr "Будь-який"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:339
-#: components/QueryBuilder/FieldFilterSpec.tsx:389
+#: components/QueryBuilder/FieldFilterSpec.tsx:342
+#: components/QueryBuilder/FieldFilterSpec.tsx:392
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "startValue"
 msgstr "Початкове значення"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:350
+#: components/QueryBuilder/FieldFilterSpec.tsx:353
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "endValue"
 msgstr "Кінцеве значення"
@@ -272,101 +272,101 @@ msgstr "(узагальнено)"
 msgid "formattedInline"
 msgstr "(відформатований)"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:431
+#: components/QueryBuilder/FieldFilterSpec.tsx:434
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "like"
 msgstr "Люблю"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:432
+#: components/QueryBuilder/FieldFilterSpec.tsx:435
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 msgid "likeDescription"
 msgstr ""
 "Використовуйте \"%\", щоб відповідати будь-якій кількості символів.\n"
 "Використовуйте \"_\", щоб відповідати одному символу"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:439
+#: components/QueryBuilder/FieldFilterSpec.tsx:442
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "equal"
 msgstr "Рівні"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:447
+#: components/QueryBuilder/FieldFilterSpec.tsx:450
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterThan"
 msgstr "Більш чим"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:455
+#: components/QueryBuilder/FieldFilterSpec.tsx:458
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessThan"
 msgstr "Менше ніж"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:463
+#: components/QueryBuilder/FieldFilterSpec.tsx:466
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "greaterOrEqualTo"
 msgstr "Більше або дорівнює"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:471
+#: components/QueryBuilder/FieldFilterSpec.tsx:474
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "lessOrEqualTo"
 msgstr "Менше або дорівнює"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:479
+#: components/QueryBuilder/FieldFilterSpec.tsx:482
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "true"
 msgstr "правда"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:486
+#: components/QueryBuilder/FieldFilterSpec.tsx:489
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "false"
 msgstr "помилковий"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:540
+#: components/QueryBuilder/FieldFilterSpec.tsx:543
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "trueOrNull"
 msgstr "True або Empty"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:547
+#: components/QueryBuilder/FieldFilterSpec.tsx:550
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "falseOrNull"
 msgstr "False або Empty"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:493
+#: components/QueryBuilder/FieldFilterSpec.tsx:496
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "between"
 msgstr "Між"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:501
+#: components/QueryBuilder/FieldFilterSpec.tsx:504
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "in"
 msgstr "в"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:502
+#: components/QueryBuilder/FieldFilterSpec.tsx:505
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "inDescription"
 msgstr "Список значень, розділених комами"
 
-#: components/Preferences/UserDefinitions.tsx:1558
-#: components/QueryBuilder/FieldFilterSpec.tsx:509
+#: components/Preferences/UserDefinitions.tsx:1550
+#: components/QueryBuilder/FieldFilterSpec.tsx:512
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "contains"
 msgstr "Містить"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:533
+#: components/QueryBuilder/FieldFilterSpec.tsx:536
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "empty"
 msgstr "Порожній"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:345
+#: components/QueryBuilder/FieldFilterSpec.tsx:348
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "and"
 msgstr "і"
 
-#: components/Preferences/UserDefinitions.tsx:1554
-#: components/QueryBuilder/FieldFilterSpec.tsx:517
+#: components/Preferences/UserDefinitions.tsx:1546
+#: components/QueryBuilder/FieldFilterSpec.tsx:520
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 msgid "startsWith"
 msgstr "Починається з"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:525
+#: components/QueryBuilder/FieldFilterSpec.tsx:528
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "endsWith"
 msgstr "Закінчується на"
@@ -386,7 +386,7 @@ msgstr "або"
 msgid "yes"
 msgstr "Так"
 
-#: components/QueryBuilder/ResultsTable.tsx:202
+#: components/QueryBuilder/ResultsTable.tsx:203
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 msgid "queryResults"
@@ -451,32 +451,32 @@ msgstr ""
 "Значення поля задовге. Максимальна дозволена довжина "
 "{maxLength:number|formatted}"
 
-#: components/QueryBuilder/RelativeDate.tsx:186
+#: components/QueryBuilder/RelativeDate.tsx:216
 #. Used in: Components > Query Builder > Relative Date
 msgid "future"
 msgstr "в майбутньому"
 
-#: components/QueryBuilder/RelativeDate.tsx:185
+#: components/QueryBuilder/RelativeDate.tsx:215
 #. Used in: Components > Query Builder > Relative Date
 msgid "past"
 msgstr "в минулому"
 
-#: components/QueryBuilder/RelativeDate.tsx:169
+#: components/QueryBuilder/RelativeDate.tsx:189
 #. Used in: Components > Query Builder > Relative Date
 msgid "days"
 msgstr "днів"
 
-#: components/QueryBuilder/RelativeDate.tsx:170
+#: components/QueryBuilder/RelativeDate.tsx:190
 #. Used in: Components > Query Builder > Relative Date
 msgid "weeks"
 msgstr "тижнів"
 
-#: components/QueryBuilder/RelativeDate.tsx:171
+#: components/QueryBuilder/RelativeDate.tsx:191
 #. Used in: Components > Query Builder > Relative Date
 msgid "months"
 msgstr "Місяці"
 
-#: components/QueryBuilder/RelativeDate.tsx:172
+#: components/QueryBuilder/RelativeDate.tsx:192
 #. Used in: Components > Query Builder > Relative Date
 msgid "years"
 msgstr "років"
@@ -486,7 +486,13 @@ msgstr "років"
 msgid "year"
 msgstr "рік"
 
-#: components/QueryBuilder/RelativeDate.tsx:190
+#: components/QueryBuilder/RelativeDate.tsx:146
+#: components/QueryBuilder/RelativeDate.tsx:153
+#: components/QueryBuilder/RelativeDate.tsx:171
+#: components/QueryBuilder/RelativeDate.tsx:177
+#: components/QueryBuilder/RelativeDate.tsx:197
+#: components/QueryBuilder/RelativeDate.tsx:203
+#: components/QueryBuilder/RelativeDate.tsx:220
 #. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 msgid "relativeDate"
 msgstr ""
@@ -526,7 +532,7 @@ msgid "scrollToEditor"
 msgstr "Перейдіть до редактора"
 
 #: components/LocalityUpdate/Status.tsx:308
-#: components/QueryBuilder/ResultsTable.tsx:187
+#: components/QueryBuilder/ResultsTable.tsx:188
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 msgid "viewRecords"
 msgstr "Переглянути записи"
@@ -538,7 +544,7 @@ msgstr "Переглянути записи"
 msgid "chooseFormatter"
 msgstr "Виберіть форматер"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:562
+#: components/QueryBuilder/FieldFilterSpec.tsx:565
 #. Used in: Components > Query Builder > Field Filter Spec
 msgid "range"
 msgstr "Діапазон"

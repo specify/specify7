@@ -25,13 +25,13 @@ msgid "password"
 msgstr "Password"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:596
+#: components/QueryComboBox/index.tsx:597
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "You do not have access to this collection"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:599
+#: components/QueryComboBox/index.tsx:600
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
@@ -584,8 +584,8 @@ msgstr ""
 msgid "accountSetupOptions"
 msgstr "Account Setup Options"
 
-#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:9
 #: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
+#: components/QueryBuilder/SpecifyUserAutoComplete.tsx:11
 #. Used in: Components > Query Builder > Specify User Auto Complete
 msgid "currentUser"
 msgstr "Current User"

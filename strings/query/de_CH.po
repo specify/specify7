@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15.1\n"
 
-#: components/Preferences/UserDefinitions.tsx:2259
+#: components/Preferences/UserDefinitions.tsx:2251
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:75
 #: components/Reports/RecordSets.tsx:95
@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Abfragen"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1768
+#: components/Preferences/UserDefinitions.tsx:1760
 #: components/SearchDialog/index.tsx:242
 #: components/SearchDialog/index.tsx:386
 #: components/Security/registry.ts:210
@@ -60,20 +60,20 @@ msgstr "Neue Anfrage"
 msgid "searchFields"
 msgstr "Durchsuchte Felder"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:424
+#: components/QueryBuilder/FieldFilterSpec.tsx:427
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "any"
 msgstr "Beliebig"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:339
-#: components/QueryBuilder/FieldFilterSpec.tsx:389
+#: components/QueryBuilder/FieldFilterSpec.tsx:342
+#: components/QueryBuilder/FieldFilterSpec.tsx:392
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "startValue"
 msgstr "Startwert"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:350
+#: components/QueryBuilder/FieldFilterSpec.tsx:353
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "endValue"
@@ -316,13 +316,13 @@ msgstr "(aggregiert)"
 msgid "formattedInline"
 msgstr "(formatiert)"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:431
+#: components/QueryBuilder/FieldFilterSpec.tsx:434
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "like"
 msgstr "Wie"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:432
+#: components/QueryBuilder/FieldFilterSpec.tsx:435
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "likeDescription"
@@ -330,105 +330,105 @@ msgstr ""
 "Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.\n"
 "Verwenden Sie „_“, um ein einzelnes Zeichen zu finden."
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:439
+#: components/QueryBuilder/FieldFilterSpec.tsx:442
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "equal"
 msgstr "Gleich"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:447
+#: components/QueryBuilder/FieldFilterSpec.tsx:450
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "greaterThan"
 msgstr "Größer als"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:455
+#: components/QueryBuilder/FieldFilterSpec.tsx:458
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "lessThan"
 msgstr "Weniger als"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:463
+#: components/QueryBuilder/FieldFilterSpec.tsx:466
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "greaterOrEqualTo"
 msgstr "Größer oder gleich"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:471
+#: components/QueryBuilder/FieldFilterSpec.tsx:474
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "lessOrEqualTo"
 msgstr "Kleiner oder gleich"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:479
+#: components/QueryBuilder/FieldFilterSpec.tsx:482
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "true"
 msgstr "WAHR"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:486
+#: components/QueryBuilder/FieldFilterSpec.tsx:489
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "false"
 msgstr "FALSCH"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:540
+#: components/QueryBuilder/FieldFilterSpec.tsx:543
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "trueOrNull"
 msgstr "Wahr oder leer"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:547
+#: components/QueryBuilder/FieldFilterSpec.tsx:550
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "falseOrNull"
 msgstr "Falsch oder leer"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:493
+#: components/QueryBuilder/FieldFilterSpec.tsx:496
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "between"
 msgstr "Zwischen"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:501
+#: components/QueryBuilder/FieldFilterSpec.tsx:504
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "in"
 msgstr "In"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:502
+#: components/QueryBuilder/FieldFilterSpec.tsx:505
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "inDescription"
 msgstr "Eine durch Kommas getrennte Liste von Werten"
 
-#: components/Preferences/UserDefinitions.tsx:1558
-#: components/QueryBuilder/FieldFilterSpec.tsx:509
+#: components/Preferences/UserDefinitions.tsx:1550
+#: components/QueryBuilder/FieldFilterSpec.tsx:512
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "contains"
 msgstr "Enthält"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:533
+#: components/QueryBuilder/FieldFilterSpec.tsx:536
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "empty"
 msgstr "Leer"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:345
+#: components/QueryBuilder/FieldFilterSpec.tsx:348
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "and"
 msgstr "Und"
 
-#: components/Preferences/UserDefinitions.tsx:1554
-#: components/QueryBuilder/FieldFilterSpec.tsx:517
+#: components/Preferences/UserDefinitions.tsx:1546
+#: components/QueryBuilder/FieldFilterSpec.tsx:520
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "startsWith"
 msgstr "Beginnt mit"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:525
+#: components/QueryBuilder/FieldFilterSpec.tsx:528
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "endsWith"
@@ -451,7 +451,7 @@ msgstr "oder"
 msgid "yes"
 msgstr "Ja"
 
-#: components/QueryBuilder/ResultsTable.tsx:202
+#: components/QueryBuilder/ResultsTable.tsx:203
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 #, fuzzy
@@ -528,34 +528,34 @@ msgstr ""
 "Der Feldwert ist zu lang. Die maximal zulässige Länge beträgt "
 "{maxLength:number|formatted}."
 
-#: components/QueryBuilder/RelativeDate.tsx:186
+#: components/QueryBuilder/RelativeDate.tsx:216
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "future"
 msgstr "in der Zukunft"
 
-#: components/QueryBuilder/RelativeDate.tsx:185
+#: components/QueryBuilder/RelativeDate.tsx:215
 #. Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "past"
 msgstr "in der Vergangenheit"
 
-#: components/QueryBuilder/RelativeDate.tsx:169
+#: components/QueryBuilder/RelativeDate.tsx:189
 #. Used in: Components > Query Builder > Relative Date
 msgid "days"
 msgstr "Tage"
 
-#: components/QueryBuilder/RelativeDate.tsx:170
+#: components/QueryBuilder/RelativeDate.tsx:190
 #. Used in: Components > Query Builder > Relative Date
 msgid "weeks"
 msgstr "Wochen"
 
-#: components/QueryBuilder/RelativeDate.tsx:171
+#: components/QueryBuilder/RelativeDate.tsx:191
 #. Used in: Components > Query Builder > Relative Date
 msgid "months"
 msgstr "Monate"
 
-#: components/QueryBuilder/RelativeDate.tsx:172
+#: components/QueryBuilder/RelativeDate.tsx:192
 #. Used in: Components > Query Builder > Relative Date
 msgid "years"
 msgstr "Jahre"
@@ -566,7 +566,13 @@ msgstr "Jahre"
 msgid "year"
 msgstr "Jahr"
 
-#: components/QueryBuilder/RelativeDate.tsx:190
+#: components/QueryBuilder/RelativeDate.tsx:146
+#: components/QueryBuilder/RelativeDate.tsx:153
+#: components/QueryBuilder/RelativeDate.tsx:171
+#: components/QueryBuilder/RelativeDate.tsx:177
+#: components/QueryBuilder/RelativeDate.tsx:197
+#: components/QueryBuilder/RelativeDate.tsx:203
+#: components/QueryBuilder/RelativeDate.tsx:220
 #. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 #, fuzzy
 msgid "relativeDate"
@@ -613,7 +619,7 @@ msgid "scrollToEditor"
 msgstr "Zum Editor scrollen"
 
 #: components/LocalityUpdate/Status.tsx:308
-#: components/QueryBuilder/ResultsTable.tsx:187
+#: components/QueryBuilder/ResultsTable.tsx:188
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #, fuzzy
 msgid "viewRecords"
@@ -627,7 +633,7 @@ msgstr "Datensätze anzeigen"
 msgid "chooseFormatter"
 msgstr "Formatierer auswählen"
 
-#: components/QueryBuilder/FieldFilterSpec.tsx:562
+#: components/QueryBuilder/FieldFilterSpec.tsx:565
 #. Used in: Components > Query Builder > Field Filter Spec
 #, fuzzy
 msgid "range"

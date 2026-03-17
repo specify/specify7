@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.15-dev\n"
 
-#: components/Preferences/UserDefinitions.tsx:2093
+#: components/Preferences/UserDefinitions.tsx:2085
 #: components/WbToolkit/DevShowPlan.tsx:119
 #: components/WorkBench/WbView.tsx:236
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
@@ -41,8 +41,8 @@ msgstr ""
 msgid "unmappedColumn"
 msgstr "Coluna não mapeada"
 
-#: components/WbPlanView/CustomSelectElement.tsx:617
-#: components/WbPlanView/CustomSelectElement.tsx:646
+#: components/WbPlanView/CustomSelectElement.tsx:618
+#: components/WbPlanView/CustomSelectElement.tsx:647
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #, fuzzy
 msgid "notSelected"
@@ -72,7 +72,7 @@ msgstr "Comportamento de correspondência:"
 msgid "columnMapping"
 msgstr "Mapeamento de colunas"
 
-#: components/WbPlanView/CustomSelectElement.tsx:888
+#: components/WbPlanView/CustomSelectElement.tsx:891
 #: components/WbPlanView/LineComponents.tsx:210
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 #, fuzzy

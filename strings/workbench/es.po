@@ -12,7 +12,7 @@ msgstr ""
 "X-Generator: Weblate 5.15-dev\n"
 
 #: components/Header/menuItemDefinitions.ts:94
-#: components/Preferences/UserDefinitions.tsx:1956
+#: components/Preferences/UserDefinitions.tsx:1948
 #: components/Router/OverlayRoutes.tsx:151
 #: components/WbUtils/datasetVariants.tsx:30
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
@@ -97,7 +97,7 @@ msgstr "Rellenar hacia Arriba"
 msgid "revert"
 msgstr "Revertir"
 
-#: components/Preferences/UserDefinitions.tsx:1962
+#: components/Preferences/UserDefinitions.tsx:1954
 #: components/WbActions/WbValidate.tsx:58
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 msgid "dataCheck"
@@ -109,7 +109,7 @@ msgstr "Verificar Datos"
 msgid "dataCheckOn"
 msgstr "Verificar Datos: ON"
 
-#: components/Preferences/UserDefinitions.tsx:1963
+#: components/Preferences/UserDefinitions.tsx:1955
 #. Used in: Components > Preferences > User Definitions
 msgid "dataCheckDescription"
 msgstr ""
@@ -149,7 +149,7 @@ msgstr "Valor a sustituir"
 msgid "searchResults"
 msgstr "Buscar resultados"
 
-#: components/WbUtils/Navigation.tsx:97
+#: components/WbUtils/Navigation.tsx:100
 #. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Pinchar para alternar visibilidad"
@@ -281,12 +281,12 @@ msgstr "Ahorro..."
 msgid "wbUnloadProtect"
 msgstr "Los cambios a este conjunto de datos no se han guardado."
 
-#: components/WorkBench/WbValidation.tsx:329
+#: components/WorkBench/WbValidation.tsx:334
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "No hay registro que coincida en tabla de coincidencia obligada."
 
-#: components/WorkBench/WbValidation.tsx:358
+#: components/WorkBench/WbValidation.tsx:363
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
@@ -592,44 +592,44 @@ msgid "delimiter"
 msgstr "Delimitador:"
 
 #: components/Molecules/CsvFilePicker.tsx:172
-#: components/Preferences/UserDefinitions.tsx:1825
-#: components/Preferences/UserDefinitions.tsx:2070
+#: components/Preferences/UserDefinitions.tsx:1817
+#: components/Preferences/UserDefinitions.tsx:2062
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "comma"
 msgstr "Coma"
 
 #: components/Molecules/CsvFilePicker.tsx:174
-#: components/Preferences/UserDefinitions.tsx:1833
-#: components/Preferences/UserDefinitions.tsx:2078
+#: components/Preferences/UserDefinitions.tsx:1825
+#: components/Preferences/UserDefinitions.tsx:2070
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "semicolon"
 msgstr "Punto y coma"
 
 #: components/Molecules/CsvFilePicker.tsx:173
-#: components/Preferences/UserDefinitions.tsx:1829
-#: components/Preferences/UserDefinitions.tsx:2074
+#: components/Preferences/UserDefinitions.tsx:1821
+#: components/Preferences/UserDefinitions.tsx:2066
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "tab"
 msgstr "Pestaña"
 
 #: components/Molecules/CsvFilePicker.tsx:175
-#: components/Preferences/UserDefinitions.tsx:1837
-#: components/Preferences/UserDefinitions.tsx:2082
+#: components/Preferences/UserDefinitions.tsx:1829
+#: components/Preferences/UserDefinitions.tsx:2074
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "space"
 msgstr "Espacio"
 
 #: components/Molecules/CsvFilePicker.tsx:176
-#: components/Preferences/UserDefinitions.tsx:1841
-#: components/Preferences/UserDefinitions.tsx:2086
+#: components/Preferences/UserDefinitions.tsx:1833
+#: components/Preferences/UserDefinitions.tsx:2078
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "pipe"
 msgstr "Tubo"
 
 #: components/Molecules/CsvFilePicker.tsx:212
-#: components/Preferences/UserDefinitions.tsx:750
-#: components/Preferences/UserDefinitions.tsx:771
-#: components/Preferences/UserDefinitions.tsx:792
+#: components/Preferences/UserDefinitions.tsx:742
+#: components/Preferences/UserDefinitions.tsx:763
+#: components/Preferences/UserDefinitions.tsx:784
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "determineAutomatically"
 msgstr "Determinar automáticamente"

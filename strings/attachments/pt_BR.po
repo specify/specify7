@@ -21,7 +21,7 @@ msgstr ""
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
-#: components/Preferences/UserDefinitions.tsx:1434
+#: components/Preferences/UserDefinitions.tsx:1426
 #: components/Router/Routes.tsx:190
 #: components/Router/Routes.tsx:493
 #: components/Statistics/StatsSpec.tsx:508
@@ -64,7 +64,7 @@ msgstr "Configure seu servidor de anexos."
 
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
-#: components/Preferences/UserDefinitions.tsx:1421
+#: components/Preferences/UserDefinitions.tsx:1413
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "orderBy"
@@ -310,24 +310,24 @@ msgstr "Procure mais anexos"
 msgid "hideForm"
 msgstr "Ocultar formulário"
 
-#: components/Preferences/UserDefinitions.tsx:1471
+#: components/Preferences/UserDefinitions.tsx:1463
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
 msgstr "Recolher formulário por padrão"
 
-#: components/Preferences/UserDefinitions.tsx:1472
+#: components/Preferences/UserDefinitions.tsx:1464
 #. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefaultDescription"
 msgstr ""
 "Se deve ou não recolher o formulário de anexos por padrão ao visualizar "
 "anexos existentes."
 
-#: components/Preferences/UserDefinitions.tsx:1463
+#: components/Preferences/UserDefinitions.tsx:1455
 #. Used in: Components > Preferences > User Definitions
 msgid "showControls"
 msgstr "Mostrar controles de anexos"
 
-#: components/Preferences/UserDefinitions.tsx:1464
+#: components/Preferences/UserDefinitions.tsx:1456
 #. Used in: Components > Preferences > User Definitions
 msgid "showControlsDescription"
 msgstr ""

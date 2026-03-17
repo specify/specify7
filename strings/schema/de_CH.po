@@ -29,7 +29,7 @@ msgstr "Tabelle"
 msgid "tables"
 msgstr "Tabellen"
 
-#: components/Preferences/UserDefinitions.tsx:891
+#: components/Preferences/UserDefinitions.tsx:883
 #: components/WbPlanView/MapperComponents.tsx:452
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
@@ -41,7 +41,7 @@ msgid "withoutTable"
 msgstr "Ohne Tisch"
 
 #: components/Header/userToolDefinitions.ts:68
-#: components/Preferences/UserDefinitions.tsx:834
+#: components/Preferences/UserDefinitions.tsx:826
 #: components/Router/Routes.tsx:397
 #: components/SchemaConfig/Components.tsx:30
 #: components/SchemaConfig/Languages.tsx:36
