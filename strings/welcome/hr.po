@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-06 16:09+0000\n"
+"PO-Revision-Date: 2026-03-17 02:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "welcome/hr/>\n"
@@ -80,9 +80,9 @@ msgstr ""
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Specify 7, Autorska prava 2025, Sveučilišni centar za istraživanje u "
-"Kansasu. Specify dolazi BEZ APSOLUTNO NIKAKVOG JAMSTVA. Ovo je besplatni "
-"softver otvorenog koda licenciran pod GNU General Public License v2."
+"Specify 7, autorsko pravo 2025., Sveučilišni centar za istraživanje u "
+"Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver "
+"otvorenog koda licenciran pod GNU General Public License v2."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
