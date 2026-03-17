@@ -674,12 +674,6 @@ msgid "accentColor4"
 msgstr "Akcentna boja 4"
 
 #. Used in: Components > Preferences > User Definitions
-#: components/Preferences/UserDefinitions.tsx:376
-#, fuzzy
-msgid "accentColor5"
-msgstr "Akcentna boja 5"
-
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1972
 #, fuzzy
 msgid "spreadsheet"
