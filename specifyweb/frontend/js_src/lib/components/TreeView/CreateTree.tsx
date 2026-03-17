@@ -60,9 +60,7 @@ export type TreeCreationProgressInfo = {
 };
 
 export async function fetchDefaultTrees(): Promise<TaxonFileDefaultList> {
-  const response = await fetch(
-    'https://files.specifysoftware.org/taxonfiles/taxonfiles.json'
-  );
+  const response = await fetch('/static/config/default_trees/taxonfiles.json');
   if (!response.ok) {
     throw new Error(
       `Failed to fetch default trees: ${response.status} ${response.statusText}`
