@@ -7,9 +7,9 @@
 
 import React from 'react';
 
+import { useHueDifference } from '../../hooks/useHueDifference';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import { useHueDifference } from '../../hooks/useHueDifference';
 
 export const loadingGif = (
   <div className="hover:animate-hue-rotate [.reduce-motion_&]:animate-hue-rotate">
@@ -31,7 +31,7 @@ export const loadingGif = (
  * This must be accompanied by a label since loading bar is hidden from screen
  * readers
  */
-const LoadingBar = () => {
+function LoadingBar() {
   const hueDifference = useHueDifference();
 
   return (
@@ -45,7 +45,7 @@ const LoadingBar = () => {
       />
     </div>
   );
-};
+}
 
 export const loadingBar = <LoadingBar />;
 
