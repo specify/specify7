@@ -97,16 +97,16 @@ msgstr ""
 msgid "localityUpdateTool"
 msgstr "Tool zur Aktualisierung der Ortsinformationen"
 
-#: components/QueryBuilder/Edit.tsx:208
-#: components/QueryBuilder/Edit.tsx:211
-#: components/QueryBuilder/Edit.tsx:214
+#: components/QueryBuilder/Edit.tsx:209
+#: components/QueryBuilder/Edit.tsx:213
+#: components/QueryBuilder/Edit.tsx:216
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Etikett Name"
 
-#: components/QueryBuilder/Edit.tsx:208
-#: components/QueryBuilder/Edit.tsx:211
-#: components/QueryBuilder/Edit.tsx:214
+#: components/QueryBuilder/Edit.tsx:209
+#: components/QueryBuilder/Edit.tsx:213
+#: components/QueryBuilder/Edit.tsx:216
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Name des Berichts"

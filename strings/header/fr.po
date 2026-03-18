@@ -97,16 +97,16 @@ msgstr ""
 msgid "localityUpdateTool"
 msgstr "Outil de mise à jour de la localisation"
 
-#: components/QueryBuilder/Edit.tsx:208
-#: components/QueryBuilder/Edit.tsx:211
-#: components/QueryBuilder/Edit.tsx:214
+#: components/QueryBuilder/Edit.tsx:209
+#: components/QueryBuilder/Edit.tsx:213
+#: components/QueryBuilder/Edit.tsx:216
 #. Used in: Components > Query Builder > Edit
 msgid "labelName"
 msgstr "Outils administratifs"
 
-#: components/QueryBuilder/Edit.tsx:208
-#: components/QueryBuilder/Edit.tsx:211
-#: components/QueryBuilder/Edit.tsx:214
+#: components/QueryBuilder/Edit.tsx:209
+#: components/QueryBuilder/Edit.tsx:213
+#: components/QueryBuilder/Edit.tsx:216
 #. Used in: Components > Query Builder > Edit
 msgid "reportName"
 msgstr "Nom du rapport"
