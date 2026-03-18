@@ -22,6 +22,8 @@ def delete_blockers(request, model, id):
     using = router.db_for_write(obj.__class__, instance=obj)
 
     if obj._meta.model_name == 'discipline': # Special case for discipline
+        if not request.specify_user.is_admin():
+            return http.HttpResponseForbidden('Specifyuser must be an institution admin')
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
             result = guard_blockers
