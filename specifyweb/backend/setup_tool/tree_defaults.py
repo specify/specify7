@@ -2,9 +2,9 @@ from django.db.models import Model as DjangoModel
 from typing import Type, Optional
 from pathlib import Path
 from uuid import uuid4
-import requests
 
 from .utils import load_json_from_file
+from specifyweb.backend.trees.default_tree_files import load_default_tree_json
 from specifyweb.backend.trees.defaults import initialize_default_tree, create_default_tree_task, queue_create_default_tree_task
 from specifyweb.backend.trees.utils import TREE_NAMES
 
@@ -21,12 +21,12 @@ DEFAULT_TREE_RANKS_FILES = {
 }
 DEFAULT_TAXON_TREE_LIST_URL = 'https://files.specifysoftware.org/taxonfiles/taxonfiles.json'
 DEFAULT_TREE_URLS = {
-    'Geography': 'https://files.specifysoftware.org/geographyfiles/geonames.csv',
-    'Geologictimeperiod': 'https://files.specifysoftware.org/chronostratfiles/GeologicTimePeriod.csv',
+    'Geography': 'default_trees/geonames.csv',
+    'Geologictimeperiod': 'default_trees/GeologicTimePeriod.csv',
 }
 DEFAULT_TREE_MAPPING_URLS = {
-    'Geography': 'https://files.specifysoftware.org/treerows/geography.json',
-    'Geologictimeperiod': 'https://files.specifysoftware.org/treerows/geologictimeperiod.json',
+    'Geography': 'default_trees/mapping_files/geography.json',
+    'Geologictimeperiod': 'default_trees/mapping_files/geologictimeperiod.json',
 }
 
 def start_default_tree_from_configuration(tree_type: str, kwargs: dict, user_rank_cfg: dict):
@@ -113,9 +113,7 @@ def start_preload_default_tree(tree_type: str, discipline_id: Optional[int], col
             logger.warning(f'Can\'t preload tree, no default tree URLs for {tree_discipline_name} tree.')
             return
 
-        resp = requests.get(mapping_url)
-        resp.raise_for_status()
-        tree_cfg = resp.json()
+        tree_cfg = load_default_tree_json(mapping_url)
 
         task_id = str(uuid4())
         async_result = create_default_tree_task.apply_async(
