@@ -56,7 +56,7 @@ msgstr "Os valores de {values:string} devem ser únicos para {fieldName:string}"
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Os valores de {values:string} devem ser exclusivos do banco de dados."
 
-#: components/Forms/DeleteButton.tsx:125
+#: components/Forms/DeleteButton.tsx:143
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
@@ -81,15 +81,15 @@ msgstr "Nenhum registro vinculado"
 msgid "recordUsedDescription"
 msgstr "Este recurso está atualmente vinculado aos seguintes registros:"
 
-#: components/Forms/DeleteButton.tsx:82
-#: components/Forms/DeleteButton.tsx:90
-#: components/Forms/DeleteButton.tsx:180
+#: components/Forms/DeleteButton.tsx:100
+#: components/Forms/DeleteButton.tsx:108
+#: components/Forms/DeleteButton.tsx:198
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlocked"
 msgstr "Excluir bloqueado"
 
-#: components/Forms/DeleteButton.tsx:183
+#: components/Forms/DeleteButton.tsx:201
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
@@ -133,7 +133,7 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Data inválida"
 
-#: components/Forms/DeleteButton.tsx:151
+#: components/Forms/DeleteButton.tsx:169
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
@@ -204,8 +204,8 @@ msgid "invalidNumericPicklistValue"
 msgstr "Somente valores numéricos são suportados neste {pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:116
-#: components/FormCells/FormTable.tsx:284
-#: components/FormCells/FormTable.tsx:618
+#: components/FormCells/FormTable.tsx:287
+#: components/FormCells/FormTable.tsx:648
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy

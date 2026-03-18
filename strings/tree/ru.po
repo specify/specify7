@@ -304,7 +304,7 @@ msgstr "Косвенный {collectionObjectTable:string} подсчет"
 msgid "editRanks"
 msgstr "Редактировать ранги"
 
-#: components/Forms/DeleteButton.tsx:168
+#: components/Forms/DeleteButton.tsx:186
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "resourceToDelete"

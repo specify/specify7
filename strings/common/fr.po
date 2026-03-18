@@ -36,9 +36,9 @@ msgstr "Non"
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
 #: components/FormSliders/RecordSelectorFromIds.tsx:276
-#: components/Forms/DeleteButton.tsx:108
-#: components/Forms/DeleteButton.tsx:120
-#: components/Forms/DeleteButton.tsx:145
+#: components/Forms/DeleteButton.tsx:126
+#: components/Forms/DeleteButton.tsx:138
+#: components/Forms/DeleteButton.tsx:163
 #: components/Forms/ResourceView.tsx:388
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
@@ -181,7 +181,7 @@ msgstr "Créer"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:589
+#: components/FormCells/FormTable.tsx:619
 #: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -211,7 +211,7 @@ msgstr "Créer"
 #: components/Formatters/Element.tsx:87
 #: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/DataTask.tsx:134
-#: components/Forms/DeleteButton.tsx:176
+#: components/Forms/DeleteButton.tsx:194
 #: components/Forms/ResourceView.tsx:224
 #: components/Forms/ResourceView.tsx:391
 #: components/Forms/Save.tsx:302
@@ -395,9 +395,9 @@ msgstr "Ouvrir"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:185
 #: components/Formatters/Element.tsx:82
-#: components/Forms/DeleteButton.tsx:82
-#: components/Forms/DeleteButton.tsx:97
-#: components/Forms/DeleteButton.tsx:142
+#: components/Forms/DeleteButton.tsx:100
+#: components/Forms/DeleteButton.tsx:115
+#: components/Forms/DeleteButton.tsx:160
 #: components/Molecules/SyncAttachmentPicker.tsx:87
 #: components/Notifications/Notifications.tsx:166
 #: components/PickLists/definitions.ts:45
@@ -448,7 +448,7 @@ msgstr "Outils"
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:282
+#: components/FormCells/FormTable.tsx:285
 #: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:84
@@ -457,7 +457,7 @@ msgstr "Outils"
 #: components/Formatters/Preview.tsx:108
 #: components/Formatters/Preview.tsx:155
 #: components/Forms/BaseResourceView.tsx:61
-#: components/Forms/DeleteButton.tsx:122
+#: components/Forms/DeleteButton.tsx:140
 #: components/Forms/SubView.tsx:175
 #: components/Forms/SubView.tsx:242
 #: components/HomePage/AboutSpecify.tsx:155
@@ -526,9 +526,12 @@ msgstr "Téléchargé"
 #: components/ExportFeed/Editor.tsx:157
 #: components/FieldFormatters/Parts.tsx:222
 #: components/FieldFormatters/Parts.tsx:223
-#: components/FormCells/FormTable.tsx:507
-#: components/FormCells/FormTable.tsx:519
+#: components/FormCells/FormTable.tsx:532
+#: components/FormCells/FormTable.tsx:535
+#: components/FormCells/FormTable.tsx:544
+#: components/FormCells/FormTable.tsx:546
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
+#: components/FormSliders/IntegratedRecordSelector.tsx:342
 #: components/Formatters/Fields.tsx:215
 #: components/Formatters/Fields.tsx:216
 #: components/QueryBuilder/Components.tsx:167
@@ -543,7 +546,7 @@ msgstr "Téléchargé"
 #: components/Statistics/StatsPageEditing.tsx:38
 #: components/Statistics/StatsResult.tsx:62
 #: components/Toolbar/ListEdit.tsx:150
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Field Formatters > Parts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Field Formatters > Parts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 msgid "remove"
 msgstr "Retirer"
 
@@ -696,8 +699,8 @@ msgstr "(s'ouvre dans un nouvel onglet)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:249
-#: components/FormCells/FormTable.tsx:492
 #: components/FormCells/FormTable.tsx:495
+#: components/FormCells/FormTable.tsx:498
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 #, fuzzy
 msgid "openInNewTab"
@@ -711,7 +714,7 @@ msgstr "Ouvrir dans un nouvel onglet"
 msgid "goToHomepage"
 msgstr "Accéder à la page d'accueil"
 
-#: components/FormCells/FormTable.tsx:365
+#: components/FormCells/FormTable.tsx:368
 #: components/QueryBuilder/Edit.tsx:93
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #, fuzzy
@@ -948,10 +951,10 @@ msgstr "Copier dans le presse-papiers"
 msgid "selected"
 msgstr "Choisi"
 
-#: components/FormCells/FormTable.tsx:320
-#: components/FormCells/FormTable.tsx:416
-#: components/FormCells/FormTable.tsx:418
-#: components/FormSliders/IntegratedRecordSelector.tsx:110
+#: components/FormCells/FormTable.tsx:323
+#: components/FormCells/FormTable.tsx:419
+#: components/FormCells/FormTable.tsx:421
+#: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:243
 #: components/Header/index.tsx:154
 #: components/Molecules/AutoComplete.tsx:543
@@ -966,9 +969,9 @@ msgstr "Développer"
 msgid "expandAll"
 msgstr "Développer tout"
 
-#: components/FormCells/FormTable.tsx:376
-#: components/FormCells/FormTable.tsx:378
-#: components/FormSliders/IntegratedRecordSelector.tsx:110
+#: components/FormCells/FormTable.tsx:379
+#: components/FormCells/FormTable.tsx:381
+#: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Header/index.tsx:154
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 #, fuzzy
@@ -1030,7 +1033,7 @@ msgstr "Aucun disponible"
 #: components/Attachments/RecordSetAttachment.tsx:163
 #: components/Attachments/index.tsx:179
 #: components/Attachments/index.tsx:188
-#: components/FormCells/FormTable.tsx:173
+#: components/FormCells/FormTable.tsx:176
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
 #: components/Forms/DeleteBlocked.tsx:90
@@ -1112,7 +1115,7 @@ msgstr "{header:string} :"
 msgid "colonLine"
 msgstr "{label:string} : {value:string}"
 
-#: components/Forms/DeleteButton.tsx:167
+#: components/Forms/DeleteButton.tsx:185
 #: components/Statistics/DeleteCategory.tsx:54
 #: components/WorkBench/DataSetMeta.tsx:263
 #: components/WorkBench/DataSetMeta.tsx:277

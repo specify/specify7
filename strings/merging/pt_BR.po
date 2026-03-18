@@ -173,8 +173,8 @@ msgstr "Tentar mesclar novamente."
 msgid "mergingWentWrong"
 msgstr "Algo deu errado durante o processo de fusão."
 
-#: components/Forms/DeleteButton.tsx:110
-#: components/Forms/DeleteButton.tsx:114
+#: components/Forms/DeleteButton.tsx:128
+#: components/Forms/DeleteButton.tsx:132
 #: components/Merging/Usages.tsx:19
 #: components/Merging/Usages.tsx:52
 #: components/Molecules/LinkedRecords.tsx:44

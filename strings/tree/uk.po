@@ -259,7 +259,7 @@ msgstr "Непрямий підрахунок {collectionObjectTable:string}"
 msgid "editRanks"
 msgstr "Редагувати ранги"
 
-#: components/Forms/DeleteButton.tsx:168
+#: components/Forms/DeleteButton.tsx:186
 #. Used in: Components > Forms > Delete Button
 msgid "resourceToDelete"
 msgstr "Це призведе до остаточного видалення наступного ресурсу"

@@ -49,7 +49,7 @@ msgstr "Les valeurs de {values:string} doivent être uniques à {fieldName:strin
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Les valeurs de {values:string} doivent être uniques à la base de données"
 
-#: components/Forms/DeleteButton.tsx:125
+#: components/Forms/DeleteButton.tsx:143
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
@@ -72,14 +72,14 @@ msgstr "Aucun enregistrement lié"
 msgid "recordUsedDescription"
 msgstr "Cette ressource est actuellement liée aux enregistrements suivants :"
 
-#: components/Forms/DeleteButton.tsx:82
-#: components/Forms/DeleteButton.tsx:90
-#: components/Forms/DeleteButton.tsx:180
+#: components/Forms/DeleteButton.tsx:100
+#: components/Forms/DeleteButton.tsx:108
+#: components/Forms/DeleteButton.tsx:198
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlocked"
 msgstr "Suppression bloquée"
 
-#: components/Forms/DeleteButton.tsx:183
+#: components/Forms/DeleteButton.tsx:201
 #. Used in: Components > Forms > Delete Button
 msgid "deleteBlockedDescription"
 msgstr ""
@@ -119,7 +119,7 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Date invalide"
 
-#: components/Forms/DeleteButton.tsx:151
+#: components/Forms/DeleteButton.tsx:169
 #. Used in: Components > Forms > Delete Button
 msgid "deleteConfirmation"
 msgstr ""
@@ -181,8 +181,8 @@ msgstr ""
 "{pickListTable:string}"
 
 #: components/Attachments/Plugin.tsx:116
-#: components/FormCells/FormTable.tsx:284
-#: components/FormCells/FormTable.tsx:618
+#: components/FormCells/FormTable.tsx:287
+#: components/FormCells/FormTable.tsx:648
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 msgid "noData"
