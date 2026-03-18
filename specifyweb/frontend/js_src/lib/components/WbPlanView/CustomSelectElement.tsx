@@ -849,8 +849,8 @@ export function CustomSelectElement({
           >
             <input
               // Associate validation message with the listbox
-              id={id('validation')}
               defaultValue={validation}
+              id={id('validation')}
               aria-label={validation}
               // Announce validation message to screen readers
               aria-live="polite"
