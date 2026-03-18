@@ -149,9 +149,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const loadedResults = (
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
   ) as RA<QueryResultRow> | undefined;
-  
+
   /* eslint-disable functional/prefer-readonly-type */
-  const deletingRef = React.useRef<Set<number>>(new Set()); // Track recent deleted IDs to prevent duplicate deletion 
+  const deletingRef = React.useRef<Set<number>>(new Set()); // Track recent deleted IDs to prevent duplicate deletion
 
   // TEST: try deleting while records are being fetched
   /**
@@ -161,7 +161,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     (recordId: number): void => {
       if (deletingRef.current.has(recordId)) return; // Prevents duplicate deletion calls for the same record
       deletingRef.current.add(recordId);
-      
+
       let removeCount = 0;
       function newResults(results: RA<QueryResultRow | undefined> | undefined) {
         if (!Array.isArray(results) || totalCount === undefined) return;
@@ -179,7 +179,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         return;
       }
       setTotalCount((totalCount) =>
-        totalCount === undefined ? undefined : Math.max(0, totalCount - removeCount)
+        totalCount === undefined
+          ? undefined
+          : Math.max(0, totalCount - removeCount)
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
         new Set(Array.from(selectedRows).filter((id) => id !== recordId));
@@ -428,7 +430,7 @@ function TableHeaderCell({
 
   return (
     <div
-      className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
+      className="bg-brand-100 dark:bg-brand-400 sticky z-[2] w-full
         min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >

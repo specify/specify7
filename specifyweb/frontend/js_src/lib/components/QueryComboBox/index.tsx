@@ -401,7 +401,6 @@ export function QueryComboBox({
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
         <AutoComplete<string>
-          aria-label={undefined}
           disabled={
             !isLoaded ||
             isReadOnly ||
@@ -417,10 +416,12 @@ export function QueryComboBox({
           filterItems={false}
           forwardRef={validationRef}
           inputProps={{
+            'aria-label': field.label,
             id,
             required: isRequired,
             title:
-              typeof typeSearch === 'object' ? typeSearch.title : undefined,
+              (typeof typeSearch === 'object' ? typeSearch.title : undefined) ??
+              field.label,
             ...getValidationAttributes(parser),
             type: 'text',
             [titlePosition]: 'top',
