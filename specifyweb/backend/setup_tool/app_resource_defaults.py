@@ -10,9 +10,15 @@ from specifyweb.specify.models import (
 import logging
 logger = logging.getLogger(__name__)
 
+DEFAULT_REMOTE_PREFS = b'''ui.formatting.scrdateformat=yyyy-MM-dd
+auditing.do_audits=true
+auditing.audit_field_updates=true
+'''
+
 def create_app_resource_defaults() -> None:
-    """Adds initial app resource files to the database. Only Global Preferences need to be created."""
-    create_global_prefs()
+    """Adds initial app resource files to the database."""
+    # create_global_prefs() # Replacing globabl prefs with remote to avoid user confusion
+    create_remote_prefs()
 
 def create_global_prefs(user: Optional[Specifyuser] = None) -> None:
     """Create a blank Global Prefs file."""
@@ -37,6 +43,31 @@ def create_global_prefs(user: Optional[Specifyuser] = None) -> None:
     Spappresourcedata.objects.create(
         spappresource=resource,
         data=b''
+    )
+
+def create_remote_prefs(user: Optional[Specifyuser] = None) -> None:
+    """Create a default Remote Preferences file."""
+    directory, _ = Spappresourcedir.objects.get_or_create(
+        usertype='Prefs',
+        defaults={
+            'ispersonal': False
+        }
+    )
+
+    # This function is intended to be used during setup, so there should be one user.
+    # DBs created in Specify 6 set specifyuser to NULL for remote prefs.
+    admin_user = user or Specifyuser.objects.first()
+
+    resource = Spappresource.objects.create(
+        spappresourcedir=directory,
+        specifyuser=admin_user,
+        level=0,
+        name='preferences'
+    )
+
+    Spappresourcedata.objects.create(
+        spappresource=resource,
+        data=DEFAULT_REMOTE_PREFS
     )
 
 def ensure_discipline_resource_dir(discipline: Discipline) -> Spappresourcedir:

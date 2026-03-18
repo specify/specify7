@@ -14,6 +14,10 @@ from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOL
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 from specifyweb.backend.redis_cache.store import set_string, get_string
 from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
+from specifyweb.backend.setup_tool.task_tracking import (
+    queue_collection_background_task,
+    finish_collection_background_task,
+)
 
 from uuid import uuid4
 import logging
@@ -38,9 +42,12 @@ def setup_database_background(data: dict) -> str:
     
     return task.id
 
-def queue_fix_schema_config_background() -> str:
+def queue_fix_schema_config_background(collection_id: Optional[int] = None) -> str:
     """Queue fix_schema_config to run asynchronously and return the task id"""
-    task = fix_schema_config_task.apply_async()
+    args = [collection_id] if collection_id is not None else []
+    task = fix_schema_config_task.apply_async(args=args)
+    if collection_id is not None:
+        queue_collection_background_task(collection_id, task.id)
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
@@ -73,9 +80,17 @@ DEFAULT_TREE = {
     'ranks': {}
 }
 
+
+def _required_treedef_id(tree_result: dict, tree_name: str) -> int:
+    treedef_id = tree_result.get('treedef_id')
+    if treedef_id is None:
+        raise ValueError(f'{tree_name} tree creation did not return treedef_id')
+    return treedef_id
+
 @app.task(bind=True)
 def setup_database_task(self, data: dict):
     """Execute all database setup steps in order."""
+    from specifyweb.specify.models import Discipline
     self.update_state(state='STARTED', meta={'progress': api.get_setup_resource_progress()})
     def update_progress():
         self.update_state(state='STARTED', meta={'progress': api.get_setup_resource_progress()})
@@ -107,12 +122,12 @@ def setup_database_task(self, data: dict):
             default_chronostrat_tree = default_tree.copy()
             default_chronostrat_tree['fullnamedirection'] = -1
             chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
-            chronostrat_treedef_id = chronostrat_result.get('treedef_id')
+            chronostrat_treedef_id = _required_treedef_id(chronostrat_result, 'Geologictimeperiod')
 
             logger.info('Creating geography tree')
             uses_global_geography_tree = data['institution'].get('issinglegeographytree', False)
             geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=uses_global_geography_tree)
-            geography_treedef_id = geography_result.get('treedef_id')
+            geography_treedef_id = _required_treedef_id(geography_result, 'Geography')
 
             logger.info('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
@@ -120,18 +135,30 @@ def setup_database_task(self, data: dict):
             default_tree['discipline_id'] = discipline_id
             update_progress()
 
+            lithostrat_treedef_id = None
+            tectonicunit_treedef_id = None
             if is_paleo_geo:
                 logger.info('Creating Lithostratigraphy tree')
-                api.create_lithostrat_tree(default_tree.copy())
+                lithostrat_result = api.create_lithostrat_tree(default_tree.copy())
+                lithostrat_treedef_id = _required_treedef_id(lithostrat_result, 'Lithostrat')
 
                 logger.info('Creating Tectonic Unit tree')
-                api.create_tectonicunit_tree(default_tree.copy())
+                tectonicunit_result = api.create_tectonicunit_tree(default_tree.copy())
+                tectonicunit_treedef_id = _required_treedef_id(tectonicunit_result, 'Tectonicunit')
 
             logger.info('Creating taxon tree')
             if data['taxontreedef'].get('discipline_id') is None:
                 data['taxontreedef']['discipline_id'] = discipline_id
             taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
-            taxon_treedef_id = taxon_result.get('treedef_id')
+            taxon_treedef_id = _required_treedef_id(taxon_result, 'Taxon')
+
+            Discipline.objects.filter(id=discipline_id).update(
+                geographytreedef_id=geography_treedef_id,
+                taxontreedef_id=taxon_treedef_id,
+                geologictimeperiodtreedef_id=chronostrat_treedef_id,
+                lithostrattreedef_id=lithostrat_treedef_id,
+                tectonicunittreedef_id=tectonicunit_treedef_id,
+            )
             update_progress()
 
             logger.info('Creating collection')
@@ -171,9 +198,13 @@ def setup_database_task(self, data: dict):
         raise
 
 @app.task(bind=True)
-def fix_schema_config_task(self):
+def fix_schema_config_task(self, collection_id: Optional[int] = None):
     """Run schema config migration fixups in a background worker"""
-    fix_schema_config()
+    try:
+        fix_schema_config()
+    finally:
+        if collection_id is not None:
+            finish_collection_background_task(collection_id, self.request.id)
 
 def get_last_setup_error() -> Optional[str]:
     err = get_string(LAST_ERROR_REDIS_KEY)
@@ -200,7 +231,7 @@ def create_discipline_and_trees_task(data: dict):
             default_chronostrat_tree = default_tree.copy()
             default_chronostrat_tree['fullnamedirection'] = -1
             chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
-            chronostrat_treedef_id = chronostrat_result.get('treedef_id')
+            chronostrat_treedef_id = _required_treedef_id(chronostrat_result, 'Geologictimeperiod')
             data['discipline']['geologictimeperiodtreedef_id'] = chronostrat_treedef_id
 
             logger.info('Creating discipline')
@@ -217,22 +248,22 @@ def create_discipline_and_trees_task(data: dict):
 
             logger.info('Creating geography tree')
             geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=False)
-            geography_treedef_id = geography_result.get('treedef_id')
+            geography_treedef_id = _required_treedef_id(geography_result, 'Geography')
 
             logger.info('Creating taxon tree')
             taxon_result = api.create_taxon_tree(data['taxontreedef'].copy())
-            taxon_treedef_id = taxon_result.get('treedef_id')
+            taxon_treedef_id = _required_treedef_id(taxon_result, 'Taxon')
 
             lithostrat_id = None
             tectonicunit_id = None
             if is_paleo_geo:
                 logger.info('Creating Lithostratigraphy tree')
                 lithostrat_result = api.create_lithostrat_tree(default_tree.copy())
-                lithostrat_id = lithostrat_result.get('lithostrattreedef_id')
+                lithostrat_id = _required_treedef_id(lithostrat_result, 'Lithostrat')
 
                 logger.info('Creating Tectonic Unit tree')
                 tectonicunit_result = api.create_tectonicunit_tree(default_tree.copy())
-                tectonicunit_id = tectonicunit_result.get('tectonicunittreedef_id')
+                tectonicunit_id = _required_treedef_id(tectonicunit_result, 'Tectonicunit')
 
             Discipline.objects.filter(id=discipline_id).update(
                 geographytreedef_id=geography_treedef_id,

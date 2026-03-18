@@ -1,16 +1,12 @@
-from typing import Any, Callable, List, Dict, Iterator, Optional, TypedDict, NotRequired
+from typing import Dict, Optional, TypedDict, NotRequired
 import json
-import requests
-import csv
-import time
-from requests.exceptions import ChunkedEncodingError, ConnectionError
 
 from django.db import transaction
-from django.conf import settings
 
 from specifyweb.backend.notifications.models import Message
 from specifyweb.celery_tasks import LogErrorsTask, app
 import specifyweb.specify.models as spmodels
+from specifyweb.backend.trees.default_tree_files import stream_default_tree_csv
 from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.redis_cache.store import add_to_set, remove_from_set, set_members
@@ -251,10 +247,13 @@ class DefaultTreeContext():
 
                 # Store the ids of the nodes were created in this batch
                 created_names = [n.name for n in nodes_to_create]
+                placeholders = ",".join(["%s"] * len(created_names))
                 created_nodes = self.tree_node_model.objects.filter(
                     definition=self.tree_def,
                     definitionitem=rank,
-                    name__in=created_names
+                ).extra(
+                    where=[f"BINARY name IN ({placeholders})"],
+                    params=created_names
                 )
                 self.created[rank_id].update({n.name: n.id for n in created_nodes})
 
@@ -429,7 +428,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
                 total_rows = row_count-2
             progress(0, total_rows)
             
-            for row in stream_csv_from_url(url):
+            for row in stream_default_tree_csv(url):
                 add_default_tree_record(context, row, tree_cfg, current)
                 context.flush()
                 progress(1, 0)
@@ -465,59 +464,3 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
         )
     
     finish_create_default_tree_task(f'create_default_tree_{tree_type}_{existing_tree_def_id or self.request.id}')
-
-def stream_csv_from_url(url: str) -> Iterator[Dict[str, str]]:
-    """
-    Streams a taxon CSV from a URL. Yields each row.
-    """
-    chunk_size = 8192
-    max_retries = 10
-
-    def lines_iter() -> Iterator[str]:
-        # Streams data from the server in -chunks-, yields -lines-.
-        buffer = b""
-        bytes_downloaded = 0
-        retries = 0
-
-        headers = {}
-        while True:
-            # Request data starting from the last downloaded bytes
-            if bytes_downloaded > 0:
-                headers['Range'] = f'bytes={bytes_downloaded}-'
-
-            try:
-                with requests.get(url, stream=True, timeout=(5, 30), headers=headers) as resp:
-                    resp.raise_for_status()
-                    for chunk in resp.iter_content(chunk_size=chunk_size):
-                        chunk_length = len(chunk)
-                        if chunk_length == 0:
-                            continue
-                        buffer += chunk
-                        bytes_downloaded += chunk_length
-                        
-                        # Extract all lines from chunk
-                        while True:
-                            new_line_index = buffer.find(b'\n')
-                            if new_line_index == -1: break
-                            line = buffer[:new_line_index + 1] # extract line
-                            buffer = buffer[new_line_index + 1 :] # clear read buffer
-                            yield line.decode('utf-8-sig', errors='replace')
-
-                    if buffer:
-                        # yield last line
-                        yield buffer.decode('utf-8-sig', errors='replace')
-                    return
-            except (ChunkedEncodingError, ConnectionError) as e:
-                # Trigger retry
-                if retries < max_retries:
-                    retries += 1
-                    time.sleep(2 ** retries)
-                    continue
-                raise
-            except Exception:
-                raise
-
-    reader = csv.DictReader(lines_iter())
-    
-    for row in reader:
-        yield row
