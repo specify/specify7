@@ -160,16 +160,16 @@ function Wrapped({
               value={csrfToken ?? ''}
             />
             <input name="next" type="hidden" value={nextUrl} />
-            <Submit.Fancy forwardRef={submitRef}>
+            <Submit.Secondary forwardRef={submitRef}>
               {commonText.open()}
-            </Submit.Fancy>
+            </Submit.Secondary>
           </>
         ) : (
           <>
             <ErrorMessage>
               <span>{userText.noAccessToCollections()}</span>
             </ErrorMessage>
-            <Button.Fancy
+            <Button.BorderedGray
               onClick={(): void =>
                 loading(
                   ping('/accounts/logout/').then(() =>
@@ -181,7 +181,7 @@ function Wrapped({
               }
             >
               {userText.logIn()}
-            </Button.Fancy>
+            </Button.BorderedGray>
           </>
         )}
       </Form>
