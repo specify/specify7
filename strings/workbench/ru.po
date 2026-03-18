@@ -834,7 +834,7 @@ msgstr "{node:string} {author:string} (в {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Приложения для строки {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:340
+#: components/WorkBench/WbAttachmentsPreview.tsx:338
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "detachWindow"

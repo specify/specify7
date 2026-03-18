@@ -972,7 +972,7 @@ msgstr "{node:string} {author:string} (in {parent:string})"
 msgid "attachmentsForRow"
 msgstr "Anhänge für Zeile {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:340
+#: components/WorkBench/WbAttachmentsPreview.tsx:338
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "detachWindow"
