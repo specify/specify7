@@ -267,7 +267,7 @@ msgstr "Створити"
 #: components/SpecifyNetwork/Table.tsx:113
 #: components/SpecifyNetwork/index.tsx:80
 #: components/Statistics/AddStatDialog.tsx:75
-#: components/Statistics/ResultsDialog.tsx:74
+#: components/Statistics/ResultsDialog.tsx:75
 #: components/Statistics/StatsPageEditing.tsx:43
 #: components/Toolbar/BackupDatabase.tsx:81
 #: components/Toolbar/BackupStatus.tsx:76
@@ -344,7 +344,7 @@ msgstr "Видалити незіставлені стовпці"
 #: components/Security/MissingAgentsDialog.tsx:94
 #: components/Security/Role.tsx:213
 #: components/Security/UserCollections.tsx:72
-#: components/Statistics/ResultsDialog.tsx:84
+#: components/Statistics/ResultsDialog.tsx:85
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:594
 #: components/SystemConfigurationTool/Hierarchy.tsx:371
@@ -364,7 +364,7 @@ msgstr "зберегти"
 #: components/Merging/CompareSubView.tsx:184
 #: components/Molecules/AutoComplete.tsx:524
 #: components/PickLists/index.tsx:280
-#: components/QueryBuilder/Wrapped.tsx:484
+#: components/QueryBuilder/Wrapped.tsx:486
 #: components/SchemaConfig/Format.tsx:299
 #: components/SchemaConfig/Format.tsx:349
 #: components/SchemaConfig/Format.tsx:394

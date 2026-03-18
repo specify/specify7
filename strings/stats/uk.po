@@ -181,19 +181,19 @@ msgstr "Визначено об'єкти колекції"
 msgid "lastRefreshed"
 msgstr "Останнє оновлення"
 
-#: components/Statistics/hooks.tsx:375
+#: components/Statistics/hooks.tsx:376
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "categoryName"
 msgstr "Назва категорії"
 
-#: components/Statistics/hooks.tsx:376
+#: components/Statistics/hooks.tsx:377
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "itemName"
 msgstr "Назва елемента"
 
-#: components/Statistics/hooks.tsx:377
+#: components/Statistics/hooks.tsx:378
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "itemValue"

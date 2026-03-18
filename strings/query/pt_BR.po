@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/Preferences/UserDefinitions.tsx:2251
 #: components/QueryBuilder/Header.tsx:97
-#: components/QueryBuilder/Toolbar.tsx:75
+#: components/QueryBuilder/Toolbar.tsx:88
 #: components/Reports/RecordSets.tsx:95
 #: components/Toolbar/RecordSetEdit.tsx:52
 #: components/TreeView/Actions.tsx:95
@@ -45,7 +45,7 @@ msgid "queryBuilder"
 msgstr "Construtor de consultas"
 
 #: components/QueryBuilder/Export.tsx:103
-#: components/QueryBuilder/index.tsx:129
+#: components/QueryBuilder/index.tsx:130
 #: components/Router/OverlayRoutes.tsx:129
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
@@ -113,7 +113,7 @@ msgstr "A definição da consulta contém campos incompletos."
 msgid "queryDeleteIncompleteDescription"
 msgstr "Existem campos incompletos na definição da consulta. Deseja removê-los?"
 
-#: components/QueryBuilder/Wrapped.tsx:186
+#: components/QueryBuilder/Wrapped.tsx:188
 #. Used in: Components > Query Builder > Wrapped
 msgid "queryUnloadProtect"
 msgstr "A definição de consulta nova ou modificada não foi salva."
@@ -184,29 +184,34 @@ msgstr ""
 msgid "treeQueryName"
 msgstr "{tableName:string} usando \"{nodeFullName:string}\""
 
-#: components/QueryBuilder/Wrapped.tsx:487
+#: components/QueryBuilder/Wrapped.tsx:489
 #. Used in: Components > Query Builder > Wrapped
 #, fuzzy
 msgid "newButtonDescription"
 msgstr "Adicionar novo campo"
 
-#: components/QueryBuilder/Toolbar.tsx:72
+#: components/QueryBuilder/Toolbar.tsx:85
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "countOnly"
 msgstr "Contar"
 
-#: components/QueryBuilder/Toolbar.tsx:68
+#: components/QueryBuilder/Toolbar.tsx:72
 #. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "distinct"
 msgstr "Distinto"
 
-#: components/QueryBuilder/Toolbar.tsx:54
+#: components/QueryBuilder/Toolbar.tsx:58
 #. Used in: Components > Query Builder > Toolbar
 #, fuzzy
 msgid "series"
 msgstr "Série"
+
+#: components/QueryBuilder/Toolbar.tsx:81
+#. Used in: Components > Query Builder > Toolbar
+msgid "searchSynonyms"
+msgstr ""
 
 #: components/QueryBuilder/Export.tsx:175
 #. Used in: Components > Query Builder > Export

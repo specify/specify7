@@ -19,7 +19,7 @@ msgstr "Formulare"
 
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:271
-#: components/Statistics/ResultsDialog.tsx:68
+#: components/Statistics/ResultsDialog.tsx:69
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Klone"

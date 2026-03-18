@@ -180,19 +180,19 @@ msgstr "Sammlungsobjekte ermittelt"
 msgid "lastRefreshed"
 msgstr "Zuletzt aktualisiert"
 
-#: components/Statistics/hooks.tsx:375
+#: components/Statistics/hooks.tsx:376
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "categoryName"
 msgstr "Kategoriename"
 
-#: components/Statistics/hooks.tsx:376
+#: components/Statistics/hooks.tsx:377
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "itemName"
 msgstr "Artikelname"
 
-#: components/Statistics/hooks.tsx:377
+#: components/Statistics/hooks.tsx:378
 #. Used in: Components > Statistics > Hooks
 #, fuzzy
 msgid "itemValue"

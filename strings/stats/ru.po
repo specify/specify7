@@ -165,17 +165,17 @@ msgstr "Объекты коллекции определены"
 msgid "lastRefreshed"
 msgstr "Последнее обновление"
 
-#: components/Statistics/hooks.tsx:375
+#: components/Statistics/hooks.tsx:376
 #. Used in: Components > Statistics > Hooks
 msgid "categoryName"
 msgstr "Название категории"
 
-#: components/Statistics/hooks.tsx:376
+#: components/Statistics/hooks.tsx:377
 #. Used in: Components > Statistics > Hooks
 msgid "itemName"
 msgstr "Название предмета"
 
-#: components/Statistics/hooks.tsx:377
+#: components/Statistics/hooks.tsx:378
 #. Used in: Components > Statistics > Hooks
 msgid "itemValue"
 msgstr "Стоимость товара"
