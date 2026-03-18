@@ -24,7 +24,6 @@ import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { attachmentView } from '../FormParse/webOnlyViews';
 import { DeleteButton } from '../Forms/DeleteButton';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
