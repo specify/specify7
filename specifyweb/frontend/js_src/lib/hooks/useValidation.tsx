@@ -2,7 +2,10 @@ import React from 'react';
 
 import { InFormEditorContext } from '../components/FormEditor/Context';
 import type { Input } from '../components/Forms/validationHelpers';
-import { hasNativeErrors, isInputTouched } from '../components/Forms/validationHelpers';
+import {
+  hasNativeErrors,
+  isInputTouched,
+} from '../components/Forms/validationHelpers';
 import { listen } from '../utils/events';
 import type { RA } from '../utils/types';
 
