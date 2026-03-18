@@ -37,9 +37,9 @@ msgstr "Nein"
 #: components/FormEditor/Create.tsx:67
 #: components/FormEditor/Create.tsx:261
 #: components/FormSliders/RecordSelectorFromIds.tsx:276
-#: components/Forms/DeleteButton.tsx:126
-#: components/Forms/DeleteButton.tsx:138
-#: components/Forms/DeleteButton.tsx:163
+#: components/Forms/DeleteButton.tsx:122
+#: components/Forms/DeleteButton.tsx:134
+#: components/Forms/DeleteButton.tsx:159
 #: components/Forms/ResourceView.tsx:388
 #: components/Header/ChooseCollection.tsx:26
 #: components/Header/ExpressSearchTask.tsx:49
@@ -180,7 +180,7 @@ msgstr "Erstellen"
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
-#: components/FormCells/FormTable.tsx:619
+#: components/FormCells/FormTable.tsx:618
 #: components/FormCommands/ShowTransactions.tsx:118
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
@@ -210,7 +210,7 @@ msgstr "Erstellen"
 #: components/Formatters/Element.tsx:87
 #: components/Forms/BulkCarryForward.tsx:287
 #: components/Forms/DataTask.tsx:134
-#: components/Forms/DeleteButton.tsx:194
+#: components/Forms/DeleteButton.tsx:190
 #: components/Forms/ResourceView.tsx:224
 #: components/Forms/ResourceView.tsx:391
 #: components/Forms/Save.tsx:302
@@ -394,9 +394,9 @@ msgstr "Öffnen"
 
 #: components/FormSliders/RecordSelectorFromIds.tsx:185
 #: components/Formatters/Element.tsx:82
-#: components/Forms/DeleteButton.tsx:100
-#: components/Forms/DeleteButton.tsx:115
-#: components/Forms/DeleteButton.tsx:160
+#: components/Forms/DeleteButton.tsx:96
+#: components/Forms/DeleteButton.tsx:111
+#: components/Forms/DeleteButton.tsx:156
 #: components/Molecules/SyncAttachmentPicker.tsx:87
 #: components/Notifications/Notifications.tsx:166
 #: components/PickLists/definitions.ts:45
@@ -445,7 +445,7 @@ msgstr "Tools"
 #: components/Core/Contexts.tsx:125
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
-#: components/FormCells/FormTable.tsx:285
+#: components/FormCells/FormTable.tsx:284
 #: components/FormCommands/ShowTransactions.tsx:65
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:84
@@ -454,7 +454,7 @@ msgstr "Tools"
 #: components/Formatters/Preview.tsx:108
 #: components/Formatters/Preview.tsx:155
 #: components/Forms/BaseResourceView.tsx:61
-#: components/Forms/DeleteButton.tsx:140
+#: components/Forms/DeleteButton.tsx:136
 #: components/Forms/SubView.tsx:175
 #: components/Forms/SubView.tsx:242
 #: components/HomePage/AboutSpecify.tsx:155
@@ -523,10 +523,10 @@ msgstr "Hochgeladen"
 #: components/ExportFeed/Editor.tsx:157
 #: components/FieldFormatters/Parts.tsx:222
 #: components/FieldFormatters/Parts.tsx:223
-#: components/FormCells/FormTable.tsx:532
-#: components/FormCells/FormTable.tsx:535
-#: components/FormCells/FormTable.tsx:544
-#: components/FormCells/FormTable.tsx:546
+#: components/FormCells/FormTable.tsx:531
+#: components/FormCells/FormTable.tsx:534
+#: components/FormCells/FormTable.tsx:543
+#: components/FormCells/FormTable.tsx:545
 #: components/FormPlugins/CollectionRelOneToMany.tsx:136
 #: components/FormSliders/IntegratedRecordSelector.tsx:342
 #: components/Formatters/Fields.tsx:215
@@ -692,8 +692,8 @@ msgstr "(Öffnet sich in einer neuen Registerkarte)"
 #: components/Atoms/DataEntry.tsx:175
 #: components/Atoms/DataEntry.tsx:178
 #: components/Attachments/Viewer.tsx:249
-#: components/FormCells/FormTable.tsx:495
-#: components/FormCells/FormTable.tsx:498
+#: components/FormCells/FormTable.tsx:494
+#: components/FormCells/FormTable.tsx:497
 #. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
 msgid "openInNewTab"
 msgstr "Öffnet sich in einer neuen Registerkarte"
@@ -706,7 +706,7 @@ msgstr "Öffnet sich in einer neuen Registerkarte"
 msgid "goToHomepage"
 msgstr "Zur Startseite gehen"
 
-#: components/FormCells/FormTable.tsx:368
+#: components/FormCells/FormTable.tsx:367
 #: components/QueryBuilder/Edit.tsx:93
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 msgid "actions"
@@ -916,9 +916,9 @@ msgstr "In Zwischenablage kopieren"
 msgid "selected"
 msgstr "Ausgewählt"
 
-#: components/FormCells/FormTable.tsx:323
-#: components/FormCells/FormTable.tsx:419
-#: components/FormCells/FormTable.tsx:421
+#: components/FormCells/FormTable.tsx:322
+#: components/FormCells/FormTable.tsx:418
+#: components/FormCells/FormTable.tsx:420
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Formatters/Definitions.tsx:243
 #: components/Header/index.tsx:154
@@ -932,8 +932,8 @@ msgstr "Aufklappen"
 msgid "expandAll"
 msgstr "Alle aufklappen"
 
-#: components/FormCells/FormTable.tsx:379
-#: components/FormCells/FormTable.tsx:381
+#: components/FormCells/FormTable.tsx:378
+#: components/FormCells/FormTable.tsx:380
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Header/index.tsx:154
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
@@ -990,7 +990,7 @@ msgstr "Keine Verfügbar"
 #: components/Attachments/RecordSetAttachment.tsx:163
 #: components/Attachments/index.tsx:179
 #: components/Attachments/index.tsx:188
-#: components/FormCells/FormTable.tsx:176
+#: components/FormCells/FormTable.tsx:175
 #: components/Formatters/Types.tsx:55
 #: components/Formatters/Types.tsx:59
 #: components/Forms/DeleteBlocked.tsx:90
@@ -1068,7 +1068,7 @@ msgstr "{header:string}:"
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
-#: components/Forms/DeleteButton.tsx:185
+#: components/Forms/DeleteButton.tsx:181
 #: components/Statistics/DeleteCategory.tsx:54
 #: components/WorkBench/DataSetMeta.tsx:263
 #: components/WorkBench/DataSetMeta.tsx:277

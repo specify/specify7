@@ -248,7 +248,7 @@ msgstr "Indirect {collectionObjectTable:string} Count"
 msgid "editRanks"
 msgstr "Edit Ranks"
 
-#: components/Forms/DeleteButton.tsx:186
+#: components/Forms/DeleteButton.tsx:182
 #. Used in: Components > Forms > Delete Button
 msgid "resourceToDelete"
 msgstr "This will permanently delete the following resource"

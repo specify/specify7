@@ -301,7 +301,7 @@ msgstr "Contagem indireta {collectionObjectTable:string}"
 msgid "editRanks"
 msgstr "Editar classificações"
 
-#: components/Forms/DeleteButton.tsx:186
+#: components/Forms/DeleteButton.tsx:182
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "resourceToDelete"

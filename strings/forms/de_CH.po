@@ -53,7 +53,7 @@ msgstr "Die Werte von {values:string} müssen für {fieldName:string} eindeutig 
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Die Werte von {values:string} müssen innerhalb der Datenbank eindeutig sein."
 
-#: components/Forms/DeleteButton.tsx:143
+#: components/Forms/DeleteButton.tsx:139
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
@@ -78,15 +78,15 @@ msgstr "Keine verknüpften Datensätze"
 msgid "recordUsedDescription"
 msgstr "Diese Ressource ist derzeit mit folgenden Datensätzen verknüpft:"
 
-#: components/Forms/DeleteButton.tsx:100
-#: components/Forms/DeleteButton.tsx:108
-#: components/Forms/DeleteButton.tsx:198
+#: components/Forms/DeleteButton.tsx:96
+#: components/Forms/DeleteButton.tsx:104
+#: components/Forms/DeleteButton.tsx:194
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlocked"
 msgstr "Löschen blockiert"
 
-#: components/Forms/DeleteButton.tsx:201
+#: components/Forms/DeleteButton.tsx:197
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteBlockedDescription"
@@ -130,7 +130,7 @@ msgstr ""
 msgid "invalidDate"
 msgstr "Ungültiges Datum"
 
-#: components/Forms/DeleteButton.tsx:169
+#: components/Forms/DeleteButton.tsx:165
 #. Used in: Components > Forms > Delete Button
 #, fuzzy
 msgid "deleteConfirmation"
@@ -200,9 +200,9 @@ msgstr "Ungültiger Datentyp"
 msgid "invalidNumericPicklistValue"
 msgstr "In diesem {pickListTable:string} werden nur numerische Werte unterstützt."
 
-#: components/Attachments/Plugin.tsx:116
-#: components/FormCells/FormTable.tsx:287
-#: components/FormCells/FormTable.tsx:648
+#: components/Attachments/Plugin.tsx:117
+#: components/FormCells/FormTable.tsx:286
+#: components/FormCells/FormTable.tsx:647
 #: components/Forms/BaseResourceView.tsx:106
 #. Used in: Components > Attachments > Plugin ⬤ Components > Form Cells > Form Table ⬤ Components > Forms > Base Resource View
 #, fuzzy

@@ -33,8 +33,8 @@ msgstr "Attachments"
 msgid "scale"
 msgstr "Scale"
 
-#: components/Attachments/Plugin.tsx:41
-#: components/Attachments/Plugin.tsx:151
+#: components/Attachments/Plugin.tsx:42
+#: components/Attachments/Plugin.tsx:164
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
@@ -55,7 +55,7 @@ msgstr "Setup your attachment server"
 msgid "orderBy"
 msgstr "Order By"
 
-#: components/Attachments/Plugin.tsx:155
+#: components/Attachments/Plugin.tsx:168
 #: components/WbImportAttachments/index.tsx:202
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"

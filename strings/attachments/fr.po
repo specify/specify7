@@ -43,8 +43,8 @@ msgstr "Pièces jointes"
 msgid "scale"
 msgstr "Échelle"
 
-#: components/Attachments/Plugin.tsx:41
-#: components/Attachments/Plugin.tsx:151
+#: components/Attachments/Plugin.tsx:42
+#: components/Attachments/Plugin.tsx:164
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
@@ -65,7 +65,7 @@ msgstr "Configurez votre serveur de pièces jointes"
 msgid "orderBy"
 msgstr "Trier par"
 
-#: components/Attachments/Plugin.tsx:155
+#: components/Attachments/Plugin.tsx:168
 #: components/WbImportAttachments/index.tsx:202
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
