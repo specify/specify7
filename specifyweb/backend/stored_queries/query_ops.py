@@ -160,7 +160,11 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
             return None
 
         if len(end_raw) < len(start_raw):
-            end = f"{start[:-len(end_raw)]}{end_raw}"
+            end = self._resolve_shortened_numeric_end(
+                start,
+                end_raw,
+                self.uiformatter.canonicalize(self.uiformatter.parse(end_raw)),
+            )
         else:
             try:
                 end = self.uiformatter.canonicalize(self.uiformatter.parse(end_raw))
@@ -168,6 +172,19 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
                 return None
 
         return tuple(sorted((start, end)))
+
+    def _resolve_shortened_numeric_end(
+        self, start_numeric: str, end_raw: str, literal_end_numeric: str
+    ) -> str:
+        borrowed_end_numeric = f"{start_numeric[:-len(end_raw)]}{end_raw}"
+        literal_span = abs(int(start_numeric) - int(literal_end_numeric))
+        borrowed_span = abs(int(start_numeric) - int(borrowed_end_numeric))
+
+        return (
+            literal_end_numeric
+            if literal_span <= borrowed_span
+            else borrowed_end_numeric
+        )
 
     def _parse_year_numeric_catalog_number_range(self, value: str):
         """Parse a year-based catalog number range. ex. 2025-000001-10"""
@@ -192,10 +209,11 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
             start = self.uiformatter.canonicalize(
                 (current_year, separator_field.value, start_numeric)
             )
-            end_numeric = (
-                f"{start_numeric[:-len(end_raw)]}{end_raw}"
-                if len(end_raw) < len(start_numeric)
-                else end_raw
+            literal_end_numeric = end_raw.zfill(numeric_field.size)
+            end_numeric = self._resolve_shortened_numeric_end(
+                start_numeric,
+                end_raw,
+                literal_end_numeric,
             )
             end = self.uiformatter.canonicalize(
                 (current_year, separator_field.value, end_numeric)
@@ -231,10 +249,10 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         )
 
         if end_raw.isdigit() and 0 < len(end_raw) <= numeric_field.size:
-            end_numeric = (
-                f"{start_numeric[:-len(end_raw)]}{end_raw}"
-                if len(end_raw) < len(start_numeric)
-                else end_raw
+            end_numeric = self._resolve_shortened_numeric_end(
+                start_numeric,
+                end_raw,
+                end_raw.zfill(numeric_field.size),
             )
             end = f"{start_prefix}{end_numeric}"
         else:

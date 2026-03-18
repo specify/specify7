@@ -1,3 +1,5 @@
+from datetime import date
+
 from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
 from specifyweb.backend.stored_queries.execution import execute
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
@@ -291,6 +293,21 @@ class TestExecute(SQLAlchemySetup):
 
         self.assertCountEqual([row[0] for row in result["results"]], expected_ids)
 
+    def test_in_operator_supports_descending_numeric_shorthand_ranges(self):
+        self._update(self.collection, dict(catalognumformatname="CatalogNumberNumeric"))
+
+        Collectionobject.objects.all().delete()
+        collectionobjects = self.make_co(10)
+        for number, co in enumerate(collectionobjects, start=1):
+            self._update(co, dict(catalognumber=str(number).zfill(9)))
+
+        result = self._execute_catalog_number_in_query("6-1, 10-7")
+
+        self.assertCountEqual(
+            [row[0] for row in result["results"]],
+            [co.id for co in collectionobjects],
+        )
+
     def test_in_operator_supports_year_catalog_number_ranges(self):
         self._update(self.collection, dict(catalognumformatname="CatalogNumber"))
         self._set_catalog_numbers(
@@ -310,6 +327,24 @@ class TestExecute(SQLAlchemySetup):
         self.assertCountEqual(
             [row[0] for row in result["results"]],
             [co.id for co in self.collectionobjects[:4]],
+        )
+
+    def test_in_operator_supports_year_catalog_number_descending_shorthand(self):
+        current_year = date.today().year
+
+        self._update(
+            self.collection, dict(catalognumformatname="CatalogNumberAlphaNumByYear")
+        )
+        Collectionobject.objects.all().delete()
+        collectionobjects = self.make_co(10)
+        for number, co in enumerate(collectionobjects, start=1):
+            self._update(co, dict(catalognumber=f"{current_year}-{number:06d}"))
+
+        result = self._execute_catalog_number_in_query("6-1, 10-7")
+
+        self.assertCountEqual(
+            [row[0] for row in result["results"]],
+            [co.id for co in collectionobjects],
         )
 
     def test_in_operator_uses_selected_catalog_number_formatter(self):
