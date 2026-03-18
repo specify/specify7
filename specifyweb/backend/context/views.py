@@ -57,11 +57,14 @@ def users_collections_for_sp6(cursor, user_id): # pragma: no cover
 
     return list(cursor.fetchall())
 
+def has_collection_access(collection_id: int, user_id: int) -> bool:
+    return query_pt(collection_id, user_id, CollectionAccessPT.access).allowed
+
 def users_collections_for_sp7(userid: int) -> list: # pragma: no cover
     return [
         c
         for c in Collection.objects.all()
-        if query_pt(c.id, userid, CollectionAccessPT.access).allowed
+        if has_collection_access(c.id, userid)
     ]
 
 def set_users_collections_for_sp6(cursor, user, collectionids): # pragma: no cover

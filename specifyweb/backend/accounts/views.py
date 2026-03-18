@@ -27,6 +27,7 @@ from specifyweb.backend.accounts.forms_types import CollectionChoiceField
 from specifyweb.backend.accounts.permissions_types import InviteLinkPT, SetPasswordPT, SetUserAgentsPT, Sp6AdminPT, UserOICProvidersPT
 from specifyweb.backend.accounts.types import ExternalUser, InviteToken, OAuthLogin, ProviderConf, ProviderInfo
 from specifyweb.middleware.general import require_GET, require_http_methods
+from specifyweb.backend.context.views import has_collection_access, set_collection_cookie, users_collections_for_sp7
 
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify import models as spmodels
@@ -294,7 +295,6 @@ def choose_collection(request) -> http.HttpResponse:
     through here, we also use the opportunity to associate an external
     id to the user if one is provided.
     """
-    from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
     from specifyweb.backend.setup_tool.api import filter_ready_collections_for_config_tasks
 
     
@@ -615,7 +615,7 @@ def set_admin_status(request, userid):
         "responses": {
             "201": {"description": "The auth token was successfully generated", },
             "400": {"description": "One of the required keys was not supplied, or one or more keys were supplied incorrectly"},
-            "403": {"description": "The provided credentials were incorrect"},
+            "403": {"description": "The provided credentials were incorrect, or the user does not have access to the collection"},
             "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
         }
     },
@@ -641,7 +641,7 @@ def acquire_auth_token(request):
 
     user = authenticate(username=username, password=password)
 
-    if user is None:
+    if user is None or not has_collection_access(collection.id, user.id):
         return http.HttpResponseForbidden()
 
     token = generate_auth_token(user, collection.id, expires_in=expires_in)

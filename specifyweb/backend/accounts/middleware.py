@@ -1,11 +1,10 @@
-import jwt
-
-from django.contrib.auth import login, authenticate
 from django.utils.functional import SimpleLazyObject
+from django.core.exceptions import PermissionDenied
 
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.backend.accounts.auth_token_utils import get_token_from_request, token_is_revoked
+from specifyweb.backend.context.views import has_collection_access
 
 def get_agent(request):
     try:
@@ -25,6 +24,12 @@ class JWTAuthMiddleware:
             return self.get_response(request)
         user_id = token["sub"]
         collection_id = token["collection"]
+        
+        # This shouldn't happen in practice as this is also enforced when the
+        # tokens are generated, but just in case a token is forged this
+        # prevents users from accessing Collections they shouldn't
+        if not has_collection_access(collection_id, user_id):
+            raise PermissionDenied()
 
         request.specify_collection = SimpleLazyObject(lambda: Collection.objects.get(id=collection_id))
         lazy_user = SimpleLazyObject(lambda: Specifyuser.objects.get(id=user_id))
