@@ -77,3 +77,7 @@ Redis_Type = Literal["none", "string", "list", "set", "hash", "stream", "vectors
 def _redis_type(key: str) -> Redis_Type:
     host = redis_connection(decode_responses=True)
     return host.type(key)
+
+def _key_exists(key: str) -> bool:
+    host = redis_connection(decode_responses=True)
+    return host.exists(key)

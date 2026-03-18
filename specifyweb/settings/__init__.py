@@ -231,6 +231,7 @@ MIDDLEWARE = [
     'django.middleware.common.CommonMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'specifyweb.backend.accounts.middleware.JWTAuthMiddleware',
     'specifyweb.backend.context.middleware.ContextMiddleware',
     'specifyweb.backend.permissions.middleware.PermissionsMiddleware',
     'specifyweb.middleware.general.GeneralMiddleware',

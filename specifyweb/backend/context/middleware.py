@@ -54,9 +54,15 @@ class ContextMiddleware:
         self.get_response = get_response
 
     def __call__(self, request):
-        request.specify_collection = SimpleLazyObject(lambda: get_cached('_cached_collection', get_collection, request))
-        request.specify_user_agent = SimpleLazyObject(lambda: get_cached('_cached_agent', get_agent, request))
-        request.specify_user       = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
+        # These can be set by middleware "higher" in the chain/before this one,
+        # particularly when using a different authentiation scheme, such as via
+        # JWT Auth token
+        if not hasattr(request, "specify_collection"):
+            request.specify_collection = SimpleLazyObject(lambda: get_cached('_cached_collection', get_collection, request))
+        if not hasattr(request, "specify_user_agent"):
+            request.specify_user_agent = SimpleLazyObject(lambda: get_cached('_cached_agent', get_agent, request))
+        if not hasattr(request, "specify_user"):
+            request.specify_user       = SimpleLazyObject(lambda: get_cached('_cached_specify_user', get_user, request))
 
         return self.get_response(request)
 
