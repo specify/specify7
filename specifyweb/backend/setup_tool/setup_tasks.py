@@ -227,7 +227,7 @@ def create_discipline_and_trees_task(data: dict):
             is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
             default_tree = DEFAULT_TREE.copy()
 
-            # The discipline will temporarily use the first existing trees, the new trees are attached at the end.
+            # The discipline will temporarily use last created trees, the new trees are attached at the end.
             logger.info('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
             discipline_id = discipline_result.get('discipline_id')
