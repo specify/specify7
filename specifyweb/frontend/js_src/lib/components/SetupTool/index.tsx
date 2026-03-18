@@ -16,6 +16,7 @@ import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { loadingBar } from '../Molecules';
+import { useDarkMode } from '../Preferences/Hooks';
 import type { InstitutionData } from '../SystemConfigurationTool/Utils';
 import type {
   TaxonFileDefaultDefinition,
@@ -218,16 +219,20 @@ export function SetupTool({
     institutionData,
   });
 
+  const isDarkMode = useDarkMode();
+
   const id = useId('setup-tool');
 
   return (
     <div className="w-full flex flex-col h-full min-h-0">
       <header className="w-full bg-white dark:bg-neutral-900 border-b border-gray-200 dark:border-neutral-700 relative z-20">
-        <div className="w-full flex flex-col items-center justify-center gap-2 py-3">
+        <div className="w-full flex flex-col items-center justify-center gap-2 py-3 outline outline-gray-300 dark:outline-neutral-800">
           <img
-            alt=""
+            alt="Specify Logo"
             className="w-auto h-12 mx-auto"
-            src="/static/img/logo.svg"
+            src={
+              isDarkMode ? '/static/img/logo.svg' : '/static/img/logo_dark.svg'
+            }
           />
           <H2 className="text-2xl">{setupToolText.guidedSetup()}</H2>
         </div>

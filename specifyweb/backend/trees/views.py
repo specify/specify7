@@ -7,7 +7,6 @@ from typing import Iterator, Literal, TypedDict, Any, Dict
 from django.db import connection, transaction
 from django.http import HttpResponse
 from django.views.decorators.http import require_POST
-import requests
 from specifyweb.backend.trees.tree_mutations import perm_target
 from specifyweb.specify.views import login_maybe_required, openapi
 from sqlalchemy import distinct
@@ -28,6 +27,7 @@ from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
 from specifyweb.backend.stored_queries.group_concat import group_concat
 from specifyweb.backend.notifications.models import Message
 
+from specifyweb.backend.trees.default_tree_files import load_default_tree_json
 from specifyweb.backend.trees.utils import get_search_filters
 from specifyweb.backend.trees.defaults import create_default_tree_task, queue_create_default_tree_task, get_active_create_default_tree_tasks
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
@@ -759,9 +759,7 @@ def create_default_tree_view(request):
     mapping_url = data.get('mappingUrl', None)
     if mapping_url:
         try:
-            resp = requests.get(mapping_url)
-            resp.raise_for_status()
-            tree_cfg = resp.json()
+            tree_cfg = load_default_tree_json(mapping_url)
         except Exception:
             return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
     try:
@@ -918,12 +916,11 @@ def default_tree_mapping(request) -> http.HttpResponse:
     """Retrieves a default populated tree's mapping from a url"""
     # TODO: Reuse code from create_default_tree
     data = json.loads(request.body)
+    tree_cfg = data.get('mapping', None)
     mapping_url = data.get("mappingUrl")
     if mapping_url:
         try:
-            resp = requests.get(mapping_url)
-            resp.raise_for_status()
-            tree_cfg = resp.json()
+            tree_cfg = load_default_tree_json(mapping_url)
         except Exception:
             return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
     try:

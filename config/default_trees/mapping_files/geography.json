@@ -1,0 +1,60 @@
+{
+  "all_columns": [
+    "Continent",
+    "Country",
+    "State",
+    "County",
+    "GeographyCode",
+    "CentroidLat",
+    "CentroidLon"
+  ],
+  "root": {
+    "name": "Earth"
+  },
+  "ranks": [
+    {
+      "name": "Continent",
+      "rank": 100,
+      "column": "Continent",
+      "fields": {
+        "name": "Continent",
+        "geographycode": "GeographyCode",
+        "centroidlat": "CentroidLat",
+        "centroidlon": "CentroidLon"
+      }
+    },
+    {
+      "name": "Country",
+      "rank": 200,
+      "column": "Country",
+      "fields": {
+        "name": "Country",
+        "geographycode": "GeographyCode",
+        "centroidlat": "CentroidLat",
+        "centroidlon": "CentroidLon"
+      }
+    },
+    {
+      "name": "State",
+      "rank": 300,
+      "column": "State",
+      "fields": {
+        "name": "State",
+        "geographycode": "GeographyCode",
+        "centroidlat": "CentroidLat",
+        "centroidlon": "CentroidLon"
+      }
+    },
+    {
+      "name": "County",
+      "rank": 400,
+      "column": "County",
+      "fields": {
+        "name": "County",
+        "geographycode": "GeographyCode",
+        "centroidlat": "CentroidLat",
+        "centroidlon": "CentroidLon"
+      }
+    }
+  ]
+}

@@ -9,6 +9,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
+import { useHueDifference } from '../../hooks/useHueDifference';
 
 export const loadingGif = (
   <div className="hover:animate-hue-rotate [.reduce-motion_&]:animate-hue-rotate">
@@ -30,16 +31,23 @@ export const loadingGif = (
  * This must be accompanied by a label since loading bar is hidden from screen
  * readers
  */
-export const loadingBar = (
-  <div className="pt-5 hover:animate-hue-rotate">
-    <div
-      aria-hidden
-      className={`
-        h-7 animate-bounce rounded bg-gradient-to-r from-orange-400 to-amber-200
-      `}
-    />
-  </div>
-);
+const LoadingBar = () => {
+  const hueDifference = useHueDifference();
+
+  return (
+    <div className="flex justify-center hover:animate-hue-rotate [.reduce-motion_&]:animate-hue-rotate">
+      <img
+        alt=""
+        aria-hidden
+        className="h-10 w-10 [.motion-normal_&]:animate-spin [.motion-normal_&]:[animation-duration:2s]"
+        src="/static/img/short_logo.svg"
+        style={{ filter: `hue-rotate(${hueDifference}deg)` }}
+      />
+    </div>
+  );
+};
+
+export const loadingBar = <LoadingBar />;
 
 /**
  * Add a JSX.Element in between JSX.Elements.

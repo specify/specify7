@@ -5,7 +5,20 @@ exports[`Button.BorderedGray renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
+dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
+    disabled:ring-gray-400 disabled:dark:ring-neutral-500"
+    type="button"
+  />
+</DocumentFragment>
+`;
+
+exports[`Button.BorderedGray renders without errors 2`] = `
+<DocumentFragment>
+  <button
+    class="button rounded cursor-pointer active:brightness-80 px-4 py-2
+    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
 dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500"
     type="button"
@@ -18,7 +31,7 @@ exports[`Button.Danger renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-error hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--danger-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-error hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--danger-button-color)] text-white"
     type="button"
   />
 </DocumentFragment>
@@ -54,7 +67,7 @@ exports[`Button.Info renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white"
     type="button"
   />
 </DocumentFragment>
@@ -69,24 +82,12 @@ exports[`Button.LikeLink renders without errors 1`] = `
 </DocumentFragment>
 `;
 
-exports[`Button.LikeLink renders without errors 2`] = `
-<DocumentFragment>
-  <button
-    class="button rounded cursor-pointer active:brightness-80 px-4 py-2
-    disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
-    hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center"
-    type="button"
-  />
-</DocumentFragment>
-`;
-
 exports[`Button.Secondary renders without errors 1`] = `
 <DocumentFragment>
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
 dark:text-gray-100"
     type="button"
   />
@@ -98,7 +99,7 @@ exports[`Button.Small custom variant 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 a dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 a dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white"
     type="button"
   />
 </DocumentFragment>
@@ -109,7 +110,7 @@ exports[`Button.Small default variant 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm !py-1 !px-2 button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
 dark:text-gray-100 ring-1 ring-gray-400 shadow-sm dark:ring-0
     disabled:ring-gray-400 disabled:dark:ring-neutral-500"
     type="button"
@@ -122,7 +123,7 @@ exports[`Button.Success renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--success-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:brightness-90 dark:hover:brightness-140 bg-brand-400 text-white"
     type="button"
   />
 </DocumentFragment>
@@ -133,7 +134,7 @@ exports[`Button.Warning renders without errors 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-warning hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--warning-button-color)] text-white"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-warning hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--warning-button-color)] text-white"
     type="button"
   />
 </DocumentFragment>
@@ -144,7 +145,7 @@ exports[`DialogButton closes the dialog 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
 dark:text-gray-100"
     type="button"
   >
