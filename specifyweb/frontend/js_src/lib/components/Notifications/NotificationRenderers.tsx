@@ -23,6 +23,7 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
+import { setupToolText } from '../../localization/setupTool';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -390,6 +391,13 @@ export const notificationRenderers: IR<
       <>
         <p>{treeText.defaultTreeTaskCompleted()}</p>
         {notification.payload.name}
+      </>
+    );
+  },
+  'collection-creation-starting'(notification) {
+    return (
+      <>
+        <p>{setupToolText.collectionCreationStarted()}</p>
       </>
     );
   },

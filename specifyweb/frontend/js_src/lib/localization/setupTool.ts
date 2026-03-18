@@ -280,4 +280,7 @@ export const setupToolText = createDictionary({
   emptyTaxonTree: {
     'en-us': 'An empty taxon tree will be created',
   },
+  collectionCreationStarted: {
+    'en-us': 'The newly created collection is being set up. Please allow up to 15 minutes for it to become available.',
+  }
 } as const);

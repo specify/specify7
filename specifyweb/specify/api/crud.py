@@ -4,6 +4,7 @@
 import logging
 from typing import Any, Dict
 from collections.abc import Callable
+import json
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
@@ -65,7 +66,12 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
         if not agent.specifyuser.is_admin():
             raise PermissionsException("Specifyuser must be an instituion admin")
         check_table_permissions(collection, agent, model, "create")
-        result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
+        result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data)) 
+        if model_name == 'collection' and agent.specify_user is not None:
+            # Send notification to show that the collection is still being created.
+            models.Message.objects.create(user_id=agent.specify_user.id, content=json.dumps({
+                'type': 'collection-creation-starting'
+            }))
         return model.objects.filter(id=result[f'{model_name}_id']).first()
 
     data = cleanData(model, data, parent_relationship)
