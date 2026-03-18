@@ -234,7 +234,12 @@ export type WelcomePageMode =
   | 'default'
   | 'embeddedWebpage'
   | 'taxonTiles';
-export const defaultWelcomePageImage = '/static/img/splash_screen.svg';
+
+export function getDefaultWelcomePageImage(isDarkMode: boolean): string {
+  return isDarkMode
+    ? '/static/img/splash_screen_dark.svg'
+    : '/static/img/splash_screen.svg';
+}
 const welcomePageModes: PreferenceItem<WelcomePageMode> = {
   title: preferencesText.content(),
   requiresReload: false,
