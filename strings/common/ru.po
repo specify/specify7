@@ -70,11 +70,11 @@ msgstr "Нет"
 #: components/SearchDialog/SelectRecordSet.tsx:133
 #: components/SearchDialog/index.tsx:239
 #: components/Security/ImportExport.tsx:81
-#: components/Security/MissingAgentsDialog.tsx:91
+#: components/Security/MissingAgentsDialog.tsx:103
 #: components/Security/Role.tsx:195
 #: components/Security/Role.tsx:221
 #: components/Security/RoleTemplate.tsx:93
-#: components/Security/User.tsx:452
+#: components/Security/User.tsx:460
 #: components/SetupTool/SetupForm.tsx:329
 #: components/Statistics/DeleteCategory.tsx:41
 #: components/Statistics/index.tsx:592
@@ -248,7 +248,7 @@ msgstr "Создать"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:596
+#: components/QueryComboBox/index.tsx:607
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -258,9 +258,9 @@ msgstr "Создать"
 #: components/SearchDialog/index.tsx:369
 #: components/Security/Role.tsx:198
 #: components/Security/SetPassword.tsx:36
-#: components/Security/User.tsx:456
-#: components/Security/User.tsx:667
-#: components/Security/UserCollections.tsx:70
+#: components/Security/User.tsx:464
+#: components/Security/User.tsx:681
+#: components/Security/UserCollections.tsx:71
 #: components/Security/UserInviteLink.tsx:55
 #: components/SpecifyNetwork/Overlay.tsx:118
 #: components/SpecifyNetwork/Table.tsx:27
@@ -341,9 +341,9 @@ msgstr "Удаление неотображенных столбцов"
 #: components/Reports/Report.tsx:313
 #: components/SchemaConfig/Components.tsx:42
 #: components/SchemaConfig/TableUniquenessRules.tsx:141
-#: components/Security/MissingAgentsDialog.tsx:94
+#: components/Security/MissingAgentsDialog.tsx:106
 #: components/Security/Role.tsx:213
-#: components/Security/UserCollections.tsx:72
+#: components/Security/UserCollections.tsx:73
 #: components/Statistics/ResultsDialog.tsx:85
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:594
@@ -478,7 +478,7 @@ msgstr "Инструменты"
 #: components/QueryBuilder/QueryLineFilter.tsx:75
 #: components/QueryBuilder/Results.tsx:212
 #: components/QueryBuilder/Results.tsx:213
-#: components/QueryComboBox/index.tsx:434
+#: components/QueryComboBox/index.tsx:445
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
@@ -492,8 +492,8 @@ msgstr "Инструменты"
 #: components/Security/Preview.tsx:104
 #: components/Security/RoleTemplate.tsx:169
 #: components/Security/RoleTemplate.tsx:208
-#: components/Security/UserCollections.tsx:126
-#: components/Security/UserCollections.tsx:278
+#: components/Security/UserCollections.tsx:127
+#: components/Security/UserCollections.tsx:293
 #: components/Security/UserComponents.tsx:89
 #: components/Security/UserComponents.tsx:165
 #: components/SkeletonLoaders/Skeleton.tsx:8

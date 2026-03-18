@@ -394,7 +394,7 @@ msgstr "Поле обязательно для заполнения."
 
 #: components/ExportFeed/Editor.tsx:399
 #: components/ExportFeed/Editor.tsx:403
-#: components/QueryComboBox/index.tsx:192
+#: components/QueryComboBox/index.tsx:193
 #: utils/parser/__tests__/definitions.test.ts:203
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221

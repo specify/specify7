@@ -35,13 +35,13 @@ msgid "password"
 msgstr "Mot de passe"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:597
+#: components/QueryComboBox/index.tsx:608
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "Vous n'avez pas accès à cette collection"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:600
+#: components/QueryComboBox/index.tsx:611
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
@@ -71,25 +71,25 @@ msgstr "Nouveau mot de passe"
 msgid "repeatPassword"
 msgstr "Répéter le nouveau mot de passe"
 
-#: components/Core/Main.tsx:95
+#: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:28
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Se déconnecter"
 
-#: components/Security/MissingAgentsDialog.tsx:99
+#: components/Security/MissingAgentsDialog.tsx:111
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setUserAgents"
 msgstr "Définir les agents utilisateurs"
 
-#: components/Core/Main.tsx:102
+#: components/Core/Main.tsx:104
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgent"
 msgstr "L'utilisateur actuel n'a pas d'agent attribué."
 
-#: components/Core/Main.tsx:105
+#: components/Core/Main.tsx:107
 #. Used in: Components > Core > Main
 #, fuzzy
 msgid "noAgentDescription"
@@ -205,7 +205,7 @@ msgstr ""
 
 #: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:198
+#: components/QueryComboBox/index.tsx:199
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
@@ -274,7 +274,7 @@ msgid "makeAdmin"
 msgstr "Créer un administrateur"
 
 #: components/Security/AdminStatusPlugin.tsx:50
-#: components/Security/UserCollections.tsx:128
+#: components/Security/UserCollections.tsx:129
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #, fuzzy
 msgid "saveUserFirst"
@@ -331,7 +331,7 @@ msgstr "Confirmer"
 msgid "collections"
 msgstr "Collections"
 
-#: components/Security/UserCollections.tsx:76
+#: components/Security/UserCollections.tsx:77
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "configureCollectionAccess"
@@ -380,7 +380,7 @@ msgstr "Politiques d'autorisation des rôles"
 msgid "userPolicies"
 msgstr "Politiques d'autorisation des utilisateurs"
 
-#: components/Security/User.tsx:388
+#: components/Security/User.tsx:396
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "customUserPolices"
@@ -453,7 +453,7 @@ msgstr "Cette collection"
 msgid "allActions"
 msgstr "Toutes les actions"
 
-#: components/Security/UserCollections.tsx:260
+#: components/Security/UserCollections.tsx:275
 #. Used in: Components > Security > User Collections
 msgid "collectionAccess"
 msgstr "Autoriser l'accès à la collection"
@@ -538,23 +538,37 @@ msgstr ""
 "Pensez à définir un mot de passe pour cet utilisateur. Les utilisateurs "
 "sans mot de passe ne pourront pas se connecter"
 
-#: components/Security/UserCollections.tsx:133
+#: components/Security/UserCollections.tsx:134
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "setCollections"
 msgstr "Collections d'ensembles"
 
-#: components/Security/MissingAgentsDialog.tsx:153
+#: components/Security/MissingAgentsDialog.tsx:165
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "agentInUse"
 msgstr "Cet agent est déjà associé à un autre utilisateur."
 
-#: components/Security/MissingAgentsDialog.tsx:102
+#: components/Security/MissingAgentsDialog.tsx:114
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setAgentsBeforeProceeding"
 msgstr "Veuillez configurer les agents suivants avant de continuer :"
+
+#: components/Security/UserCollections.tsx:249
+#. Used in: Components > Security > User Collections
+msgid "cannotReadAgentsForUserAssignment"
+msgstr ""
+"Impossible de charger les agents attribués, car vous n'avez pas "
+"l'autorisation de lire les enregistrements Agent."
+
+#: components/Security/UserCollections.tsx:251
+#. Used in: Components > Security > User Collections
+msgid "cannotReadDisciplinesForUserAssignment"
+msgstr ""
+"Impossible de charger complètement les agents attribués, car vous n'avez "
+"pas l'autorisation de lire les enregistrements Discipline."
 
 #: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
@@ -595,7 +609,7 @@ msgstr "Supprimer le rôle qui a des utilisateurs ?"
 msgid "deleteRoleWithUsersDescription"
 msgstr "Les utilisateurs ne seront pas supprimés, mais ils perdront ce rôle."
 
-#: components/Security/User.tsx:305
+#: components/Security/User.tsx:312
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "institutionPolicies"
@@ -603,12 +617,12 @@ msgstr ""
 "Politiques institutionnelles personnalisées (s'appliquent à toutes les "
 "collections assignées)"
 
-#: components/Security/User.tsx:668
+#: components/Security/User.tsx:682
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdmin"
 msgstr "Impossible de supprimer le statut d'administrateur de l'établissement"
 
-#: components/Security/User.tsx:671
+#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
 msgid "cantRemoveLastAdminDescription"
 msgstr ""
@@ -647,7 +661,7 @@ msgstr ""
 "(Certaines politiques qui s'appliquent uniquement au niveau de "
 "l'établissement ne sont pas présentes ici au niveau de la collection.)"
 
-#: components/Security/User.tsx:262
+#: components/Security/User.tsx:269
 #. Used in: Components > Security > User
 #, fuzzy
 msgid "accountSetupOptions"
