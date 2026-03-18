@@ -227,13 +227,7 @@ def create_discipline_and_trees_task(data: dict):
             is_paleo_geo = discipline_type in PALEO_DISCIPLINES or discipline_type in GEOLOGY_DISCIPLINES
             default_tree = DEFAULT_TREE.copy()
 
-            logger.info('Creating Chronostratigraphy tree')
-            default_chronostrat_tree = default_tree.copy()
-            default_chronostrat_tree['fullnamedirection'] = -1
-            chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
-            chronostrat_treedef_id = _required_treedef_id(chronostrat_result, 'Geologictimeperiod')
-            data['discipline']['geologictimeperiodtreedef_id'] = chronostrat_treedef_id
-
+            # The discipline will temporarily use the first existing trees, the new trees are attached at the end.
             logger.info('Creating discipline')
             discipline_result = api.create_discipline(data['discipline'])
             discipline_id = discipline_result.get('discipline_id')
@@ -241,10 +235,20 @@ def create_discipline_and_trees_task(data: dict):
             logger.debug(discipline_id)
 
             # Ensure discipline id is set for tree creation
+            if isinstance(data.get('geologictimeperiodtreedef'), dict):
+                data['geologictimeperiodtreedef']['discipline_id'] = data['geologictimeperiodtreedef'].get('discipline_id') or discipline_id
             if isinstance(data.get('geographytreedef'), dict):
                 data['geographytreedef']['discipline_id'] = data['geographytreedef'].get('discipline_id') or discipline_id
             if isinstance(data.get('taxontreedef'), dict):
                 data['taxontreedef']['discipline_id'] = data['taxontreedef'].get('discipline_id') or discipline_id
+
+            logger.info('Creating Chronostratigraphy tree')
+            default_chronostrat_tree = default_tree.copy()
+            default_chronostrat_tree['fullnamedirection'] = -1
+            logger.info(default_chronostrat_tree)
+            chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
+            chronostrat_treedef_id = _required_treedef_id(chronostrat_result, 'Geologictimeperiod')
+            data['discipline']['geologictimeperiodtreedef_id'] = chronostrat_treedef_id
 
             logger.info('Creating geography tree')
             geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=False)
