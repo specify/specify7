@@ -3,37 +3,37 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-02-26 15:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/tree/"
-"hr/>\n"
+"Language-Team: Croatian "
+"<https://hosted.weblate.org/projects/specify-7/tree/hr/>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
-"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Type: text/plain; charset=utf-8\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.16.1-dev\n"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:54
 #: components/Router/OverlayRoutes.tsx:79
+#: components/SetupTool/SetupForm.tsx:330
 #: components/Toolbar/TreeRepair.tsx:42
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
 #, fuzzy
 msgid "trees"
-msgstr "Drveće"
+msgstr ""
 
-#. Used in: Components > Data Model > Tree Business Rules
 #: components/DataModel/treeBusinessRules.ts:72
+#. Used in: Components > Data Model > Tree Business Rules
 #, fuzzy
 msgid "badStructure"
-msgstr "Loša struktura stabla."
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:165
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "move"
-msgstr "Potez"
+msgstr ""
 
-#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 #: components/Merging/CompareField.tsx:216
 #: components/Merging/CompareField.tsx:218
 #: components/Merging/index.tsx:365
@@ -43,541 +43,523 @@ msgstr "Potez"
 #: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:186
+#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 #, fuzzy
 msgid "merge"
-msgstr "Spojiti"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "undoSynonymy"
-msgstr "Poništi sinonimiju"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "synonymize"
-msgstr "Sinonimiziraj"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:408
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailed"
-msgstr "Operacija nije uspjela"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:411
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "actionFailedDescription"
-msgstr "Operacija nije mogla biti dovršena zbog sljedećih pogrešaka:"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:430
 #: components/TreeView/Actions.tsx:443
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNode"
-msgstr "Premjesti čvor"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:153
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "addChild"
-msgstr "Dodaj dijete"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:388
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNodeHere"
-msgstr "Premjesti \"{nodeName:string}\" ovdje"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:362
-#, fuzzy
-msgid "cantMoveToSynonym"
-msgstr "Ne mogu se premjestiti na sinonim"
-
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:390
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveNodePreparationsHere"
-msgstr "Premjestite sve pripreme \"{nodeName:string}\" ovdje"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:455
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveMessage"
 msgstr ""
-"Čvor {treeName:string} \"{nodeName:string}\" bit će smješten, zajedno sa "
-"svim svojim potomcima, pod novim roditeljem \"{parentName:string}\"."
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:461
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeBulkMoveMessage"
 msgstr ""
-"Pripreme čvora {treeName:string} \"{nodeName:string}\" bit će smještene pod "
-"novu lokaciju \"{parentName:string}\"."
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:361
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMoveHere"
-msgstr "Ovaj čvor stabla ne može se premjestiti ovdje"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:368
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeHere"
-msgstr "Ovaj čvor stabla nije moguće spojiti ovdje"
+msgstr ""
 
+#: components/TreeView/Actions.tsx:362
 #. Used in: Components > Tree View > Actions
+#, fuzzy
+msgid "cantMoveToSynonym"
+msgstr ""
+
 #: components/TreeView/Actions.tsx:369
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantMergeIntoSynonym"
-msgstr "Ne može se spojiti u sinonime"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:372
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "cantSynonymizeSynonym"
-msgstr "Ne može se sinonimizirati sa sinonimom"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:341
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "nodeMoveHintMessage"
-msgstr "Odaberite novog roditelja za \"{nodeName:string}\""
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:434
 #: components/TreeView/Actions.tsx:447
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNode"
-msgstr "Spoji čvor"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:436
-#: components/TreeView/Actions.tsx:449
-#, fuzzy
-msgid "synonymizeNode"
-msgstr "Sinonimiziraj čvor"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:396
-#, fuzzy
-msgid "makeSynonym"
-msgstr "Učini {nodeName:string} sinonimom za {synonymName:string}"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:347
-#, fuzzy
-msgid "synonymizeNodeHintMessage"
-msgstr "Odaberite cilj za koji će se \"{nodeName:string}\" sinonimizirati"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:473
-#, fuzzy
-msgid "synonymizeMessage"
 msgstr ""
-"Čvor {treeName:string} \"{nodeName:string}\" bit će sinonim za \""
-"{synonymName:string}\"."
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:394
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHere"
-msgstr "Spoji \"{nodeName:string}\" ovdje"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:343
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeHintMessage"
-msgstr "Odaberite novi cilj za \"{nodeName:string}\" koji će se spojiti s"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:345
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
-"Odaberite novi cilj za pripreme \"{nodeName:string}\" koje će se premjestiti "
-"u"
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:467
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "mergeNodeMessage"
 msgstr ""
-"Sve reference na čvor {treeName:string} \"{nodeName:string}\" bit će "
-"zamijenjene s \"{parentName:string}\", a svi potomci \"{nodeName:string}\" "
-"bit će premješteni u \"{parentName:string}\", a svi potomci koji se "
-"podudaraju po imenu i rangu bit će rekurzivno spojeni."
 
+#: components/TreeView/Actions.tsx:436
+#: components/TreeView/Actions.tsx:449
 #. Used in: Components > Tree View > Actions
+#, fuzzy
+msgid "synonymizeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:396
+#. Used in: Components > Tree View > Actions
+#, fuzzy
+msgid "makeSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:347
+#. Used in: Components > Tree View > Actions
+#, fuzzy
+msgid "synonymizeNodeHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:473
+#. Used in: Components > Tree View > Actions
+#, fuzzy
+msgid "synonymizeMessage"
+msgstr ""
+
 #: components/TreeView/Actions.tsx:400
 #: components/TreeView/Actions.tsx:437
 #: components/TreeView/Actions.tsx:450
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "desynonymizeNode"
-msgstr "Desinonimiziraj čvor"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:350
 #: components/TreeView/Actions.tsx:478
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "desynonymizeNodeMessage"
 msgstr ""
-"\"{nodeName:string}\" više neće biti sinonim za \"{synonymName:string}\"."
 
-#. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:253
 #: components/TreeView/Row.tsx:271
+#. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "acceptedName"
-msgstr "Preferirano: {name:string}"
+msgstr ""
 
-#. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:257
+#. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "synonyms"
-msgstr "Sinonimi: {names:string}"
+msgstr ""
 
-#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:155
+#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "treeViewTitle"
-msgstr "{treeName:string} Stablo"
+msgstr ""
 
-#. Used in: Components > Tree View > Search
 #: components/TreeView/Search.tsx:70
 #: components/TreeView/Search.tsx:71
 #: components/TreeView/Search.tsx:72
+#. Used in: Components > Tree View > Search
 #, fuzzy
 msgid "searchTreePlaceholder"
-msgstr "Stablo pretraživanja"
+msgstr ""
 
-#. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:233
+#. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "opened"
-msgstr "Otvoreno"
+msgstr ""
 
-#. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:234
+#. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "closed"
-msgstr "Zatvoreno"
+msgstr ""
 
-#. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:231
+#. Used in: Components > Tree View > Row
 #, fuzzy
 msgid "leafNode"
-msgstr "Čvor lista"
+msgstr ""
 
-#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:212
+#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "nodeStats"
-msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
+msgstr ""
 
-#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:211
+#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "leafNodeStats"
-msgstr "({directCount:number|formatted})"
+msgstr ""
 
-#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:196
+#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Izravno {collectionObjectTable:string} brojanje"
+msgstr ""
 
-#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:204
+#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #, fuzzy
 msgid "indirectCollectionObjectCount"
-msgstr "Neizravno {collectionObjectTable:string} brojanje"
+msgstr ""
 
+#: components/TreeView/Tree.tsx:244
 #. Used in: Components > Tree View > Tree
-#: components/TreeView/Tree.tsx:185
 #, fuzzy
 msgid "editRanks"
-msgstr "Uredi rangove"
+msgstr ""
 
+#: components/Forms/DeleteButton.tsx:182
 #. Used in: Components > Forms > Delete Button
-#: components/Forms/DeleteButton.tsx:168
 #, fuzzy
 msgid "resourceToDelete"
-msgstr "Ovim će se trajno izbrisati sljedeći resurs"
+msgstr ""
 
-#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:408
+#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "associatedNodesOnly"
-msgstr "Prikaži samo čvorove s povezanim objektima"
+msgstr ""
 
-#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:340
+#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "splitView"
-msgstr "Podijeljeni prikaz"
+msgstr ""
 
-#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:346
+#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "horizontal"
-msgstr "Horizontalno"
+msgstr ""
 
-#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:346
+#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "vertical"
-msgstr "Vertikalno"
+msgstr ""
 
-#. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:355
+#. Used in: Components > Tree View > Index
 #, fuzzy
 msgid "synchronize"
-msgstr "Sinkroniziraj"
+msgstr ""
 
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:64
-#: components/TreeView/CreateTree.tsx:77
-#, fuzzy
-msgid "addTree"
-msgstr "Dodaj stablo"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:292
-#: components/TreeView/index.tsx:294
-#, fuzzy
-msgid "treePicker"
-msgstr "Berač drveća"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:413
-#, fuzzy
-msgid "botany"
-msgstr "Botanika"
-
-#. Used in: Components > Tree View > Add Rank
 #: components/TreeView/AddRank.tsx:47
 #: components/TreeView/AddRank.tsx:95
+#. Used in: Components > Tree View > Add Rank
 #, fuzzy
 msgid "addNewRank"
-msgstr "Dodaj novi rang"
+msgstr ""
 
-#. Used in: Components > Tree View > Add Rank
 #: components/TreeView/AddRank.tsx:66
 #: components/TreeView/AddRank.tsx:71
+#. Used in: Components > Tree View > Add Rank
 #, fuzzy
 msgid "chooseParentRank"
-msgstr "Odaberite roditeljski rang"
+msgstr ""
 
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:176
 #: components/TreeView/Actions.tsx:432
 #: components/TreeView/Actions.tsx:445
+#. Used in: Components > Tree View > Actions
 #, fuzzy
 msgid "moveItems"
-msgstr "Premještanje stavki"
+msgstr ""
 
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:469
+#: components/TreeView/CreateTree.tsx:141
+#: components/TreeView/CreateTree.tsx:154
+#. Used in: Components > Tree View > Create Tree
 #, fuzzy
-msgid "herpetology"
-msgstr "Herpetologija"
+msgid "addTree"
+msgstr ""
 
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:491
+#: components/TreeView/index.tsx:292
+#: components/TreeView/index.tsx:294
+#. Used in: Components > Tree View > Index
 #, fuzzy
-msgid "ichthyology"
-msgstr "Ihtiologija"
+msgid "treePicker"
+msgstr ""
 
+#: components/TreeView/defaults.ts:431
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:441
+#, fuzzy
+msgid "botany"
+msgstr ""
+
+#: components/TreeView/defaults.ts:458
+#. Used in: Components > Tree View > Defaults
 #, fuzzy
 msgid "entomology"
-msgstr "Entomologija"
+msgstr ""
 
+#: components/TreeView/defaults.ts:485
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:515
+#, fuzzy
+msgid "herpetology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:506
+#. Used in: Components > Tree View > Defaults
+#, fuzzy
+msgid "ichthyology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:529
+#. Used in: Components > Tree View > Defaults
 #, fuzzy
 msgid "invertpaleo"
-msgstr "Paleontologija beskralježnjaka"
+msgstr ""
 
+#: components/TreeView/defaults.ts:547
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:534
 #, fuzzy
 msgid "invertzoo"
-msgstr "Zoologija beskralježnjaka"
+msgstr ""
 
+#: components/TreeView/defaults.ts:571
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:559
 #, fuzzy
 msgid "mammalogy"
-msgstr "Nauka o sisarima"
+msgstr ""
 
+#: components/TreeView/defaults.ts:589
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:578
 #, fuzzy
 msgid "ornithology"
-msgstr "Ornitologija"
+msgstr ""
 
+#: components/TreeView/defaults.ts:609
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:599
 #, fuzzy
 msgid "paleobot"
-msgstr "Paleobotanika"
+msgstr ""
 
+#: components/TreeView/defaults.ts:627
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:618
 #, fuzzy
 msgid "vascplant"
-msgstr "Vaskularne biljke"
+msgstr ""
 
+#: components/TreeView/defaults.ts:653
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:645
 #, fuzzy
 msgid "vertpaleo"
-msgstr "Paleontologija kralježnjaka"
+msgstr ""
 
+#: components/TreeView/defaults.ts:704
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:700
 #, fuzzy
 msgid "emptyTree"
-msgstr "Prazno stablo"
+msgstr ""
 
+#: components/TreeView/defaults.ts:669
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:662
 #, fuzzy
 msgid "minerals"
-msgstr "Minerali"
+msgstr ""
 
+#: components/TreeView/defaults.ts:684
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:679
 #, fuzzy
 msgid "rocks"
-msgstr "Stijene"
+msgstr ""
 
+#: components/TreeView/defaults.ts:677
 #. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:671
 #, fuzzy
 msgid "meteorites"
-msgstr "Meteoriti"
-
-#. Used in: Components > Preferences > Collection Definitions
-#: components/Preferences/CollectionDefinitions.tsx:62
-#, fuzzy
-msgid "treeManagement"
-msgstr "Upravljanje drvećem"
-
-#. Used in: Components > Preferences > Collection Definitions
-#: components/Preferences/CollectionDefinitions.tsx:65
-#, fuzzy
-msgid "synonymizedNodes"
-msgstr "Proširi ponašanje sinonima"
-
-#. Used in: Components > Preferences > Collection Definitions
-#: components/Preferences/CollectionDefinitions.tsx:66
-#, fuzzy
-msgid "synonymizedNodesDescription"
 msgstr ""
-"Ako je omogućeno, ovo korisnicima omogućuje dodavanje djece sinonimiziranim "
-"roditeljima i sinonimizaciju čvora s djecom."
 
+#: components/TreeView/CreateTree.tsx:422
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:420
 #, fuzzy
 msgid "emptyTrees"
-msgstr "Prazna stabla"
+msgstr ""
 
+#: components/TreeView/CreateTree.tsx:464
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:462
 #, fuzzy
 msgid "populatedTrees"
-msgstr "Naseljena stabla"
+msgstr ""
 
+#: components/TreeView/CreateTree.tsx:591
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:589
 #, fuzzy
 msgid "defaultTreeCreationStarted"
-msgstr "Započeto je stvaranje zadanog stabla"
+msgstr ""
 
+#: components/TreeView/CreateTree.tsx:603
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:601
 #, fuzzy
 msgid "defaultTreeCreationStartedDescription"
 msgstr ""
-"Stablo će se stvoriti u pozadini. Bit ćete obaviješteni kada bude dovršeno."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:367
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "defaultTreeTaskStarted"
-msgstr "Započet je proces stvaranja zadanog stabla."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:375
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "defaultTreeTaskFailed"
-msgstr "Izrada zadanog stabla nije uspjela."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:383
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "defaultTreeTaskCancelled"
-msgstr "Izrada zadanog stabla je otkazana."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:391
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "defaultTreeTaskCompleted"
-msgstr "Izrada zadanog stabla uspješno je dovršena."
+msgstr ""
 
+#: components/TreeView/CreateTree.tsx:597
 #. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:595
 #, fuzzy
 msgid "defaultTreeCreationProgress"
 msgstr ""
-"Izrada zapisa stabla {current:number|formatted}/{total:number|formatted}"
 
-#. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:281
+#. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "defaultTreeCreationLoadingMessage"
-msgstr "Izrada zadanog stabla je u tijeku, molimo pričekajte..."
+msgstr ""
 
+#: components/TreeView/CreateTree.tsx:506
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:504
 #, fuzzy
 msgid "missingRanks"
-msgstr "Nedostajući rangovi"
+msgstr ""
 
+#: components/TreeView/CreateTree.tsx:510
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:508
 #, fuzzy
 msgid "missingRanksDescription"
 msgstr ""
-"Popunjeno stablo koje ste odabrali za preuzimanje sadrži zapise u rangovima "
-"koji nedostaju u vašem stablu."
 
+#: components/TreeView/CreateTree.tsx:518
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:516
 #, fuzzy
 msgid "createMissingRanks"
-msgstr "Treba li stvoriti nedostajuće redove?"
+msgstr ""
 
-#. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 #: components/SetupTool/SetupForm.tsx:320
-#: components/TreeView/CreateTree.tsx:474
+#: components/TreeView/CreateTree.tsx:476
+#. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 #, fuzzy
 msgid "source"
-msgstr "Izvor"
+msgstr ""
 
-#. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:288
 #: components/TreeView/Tree.tsx:290
 #: components/TreeView/Tree.tsx:294
+#. Used in: Components > Tree View > Tree
 #, fuzzy
 msgid "initializeEmptyTree"
-msgstr "Inicijaliziraj prazno stablo"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:62
+#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
+msgid "treeManagement"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:65
+#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
+msgid "synonymizedNodes"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:66
+#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
+msgid "synonymizedNodesDescription"
+msgstr ""
