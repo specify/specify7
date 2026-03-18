@@ -31,9 +31,7 @@ export function hasTablePermission(
   const isReadOnly = getCache('forms', 'readOnlyMode') ?? false;
   if (isReadOnly && action !== 'read') return false;
   const permissionsForCollection = getTablePermissions()[collectionId];
-  if (
-    permissionsForCollection?.[tableNameToResourceName(tableName)]?.[action]
-  )
+  if (permissionsForCollection?.[tableNameToResourceName(tableName)]?.[action])
     return true;
   if (permissionsForCollection === undefined) {
     f.log(`Permissions for collection ${collectionId} are not loaded`);
