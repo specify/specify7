@@ -5,7 +5,7 @@ exports[`AppResourceLoad simple render 1`] = `
   <button
     class="button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--success-button-color)] text-white whitespace-nowrap"
+    dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm dialog-icon-success hover:brightness-90 dark:hover:brightness-140 bg-brand-400 text-white whitespace-nowrap"
     type="button"
   >
     Load File
