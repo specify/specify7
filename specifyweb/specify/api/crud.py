@@ -49,6 +49,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
+    from specifyweb.backend.notifications.models import Message
     CREATE_MODEL_REDIRECTS: Dict[str, Callable[[dict], dict]] = {
         'institution': create_institution,
         'division': create_division,
@@ -67,9 +68,9 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
             raise PermissionsException("Specifyuser must be an instituion admin")
         check_table_permissions(collection, agent, model, "create")
         result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data)) 
-        if model_name == 'collection' and agent.specify_user is not None:
+        if model_name == 'collection' and agent.specifyuser is not None:
             # Send notification to show that the collection is still being created.
-            models.Message.objects.create(user_id=agent.specify_user.id, content=json.dumps({
+            Message.objects.create(user_id=agent.specifyuser.id, content=json.dumps({
                 'type': 'collection-creation-starting'
             }))
         return model.objects.filter(id=result[f'{model_name}_id']).first()
