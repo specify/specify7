@@ -298,9 +298,9 @@ export function renderFormFieldFactory({
             // Taxon tree selection
             <Label.Block title={description}>
               {label}
-              <Button.Fancy onClick={handleTreeDialogOpen}>
+              <Button.BorderedGray onClick={handleTreeDialogOpen}>
                 {setupToolText.selectATree()}
-              </Button.Fancy>
+              </Button.BorderedGray>
               {(() => {
                 // Display the selected tree
                 const selectedTree = getFormValue(
