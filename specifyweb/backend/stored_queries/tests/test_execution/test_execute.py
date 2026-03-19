@@ -25,6 +25,7 @@ class TestExecute(SQLAlchemySetup):
                 self.collection,
                 self.specifyuser,
                 table.tableId,
+                search_synonymy=False,
                 distinct=False,
                 series=False,
                 count_only=False,
