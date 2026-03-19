@@ -332,7 +332,13 @@ def user(request):
         obj_to_data(c)
         for c in available_collections
     ]
-    data['agent'] = obj_to_data(request.specify_user_agent) if request.specify_user_agent != None else None
+    current_agent = (
+        obj_to_data(request.specify_user_agent)
+        if request.specify_user_agent is not None
+        else None
+    )
+    data['agent'] = current_agent
+    data['current_agent'] = current_agent
 
     if settings.RO_MODE or not request.user.is_authenticated:
         data['usertype'] = "readonly"
