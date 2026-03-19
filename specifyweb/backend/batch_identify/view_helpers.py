@@ -3,23 +3,20 @@ from collections.abc import Iterable
 from typing import Any, Literal
 
 from django.db.models import IntegerField, Prefetch, Q
-from django.db.models.functions import Cast, Right, Substr
+from django.db.models.functions import Cast
 
 from specifyweb.specify.models import Collectionobject, Determination
 
 _YEAR_CATALOG_NUMBER_DELIMITERS = '-/|._:; *$%#@'
 _YEAR_CATALOG_NUMBER_DELIMITER_CLASS = re.escape(_YEAR_CATALOG_NUMBER_DELIMITERS)
 _STORED_YEAR_CATALOG_NUMBER_RE = re.compile(
-    rf'^(?P<year>\d{{4}})[{_YEAR_CATALOG_NUMBER_DELIMITER_CLASS}]+(?P<number>\d{{6}})$'
+    rf'(?<!\d)(?P<year>\d{{4}})[{_YEAR_CATALOG_NUMBER_DELIMITER_CLASS}]+(?P<number>\d+)$'
 )
 _ENTRY_YEAR_CATALOG_NUMBER_RE = re.compile(
-    rf'(?<!\d)(?P<year>\d{{4}})[{_YEAR_CATALOG_NUMBER_DELIMITER_CLASS}]+(?P<number>\d{{6}})(?!\d)'
+    rf'(?<!\d)(?P<year>\d{{4}})[{_YEAR_CATALOG_NUMBER_DELIMITER_CLASS}]+(?P<number>\d+)(?!\d)'
 )
 MAX_RESOLVE_COLLECTION_OBJECTS = 1000
 _NUMERIC_CATALOG_NUMBER_QUERY_REGEX = r'^[0-9]+$'
-_YEAR_BASED_CATALOG_NUMBER_QUERY_REGEX = (
-    rf'^[0-9]{{4}}[{_YEAR_CATALOG_NUMBER_DELIMITER_CLASS}]+[0-9]{{6}}$'
-)
 _METADATA_KEYS = {
     'id',
     'resource_uri',
@@ -29,6 +26,10 @@ _METADATA_KEYS = {
 }
 
 CatalogToken = int | Literal['-']
+YearBasedCatalogRange = tuple[int, int, int]
+
+def _is_possible_catalog_year(year: int) -> bool:
+    return 1000 <= year <= 2999
 
 def _tokenize_catalog_entry(entry: str) -> list[CatalogToken]:
     tokens: list[CatalogToken] = []
@@ -53,23 +54,29 @@ def _tokenize_catalog_entry(entry: str) -> list[CatalogToken]:
 
 def parse_catalog_number_requests(
     entries: Iterable[str],
-) -> tuple[list[tuple[int, int]], dict[int, list[tuple[int, int]]]]:
+) -> tuple[list[tuple[int, int]], dict[int, list[YearBasedCatalogRange]]]:
     numeric_ranges: list[tuple[int, int]] = []
-    year_based_ranges: dict[int, list[tuple[int, int]]] = {}
+    year_based_ranges: dict[int, list[YearBasedCatalogRange]] = {}
 
     for raw_entry in entries:
         entry = raw_entry.strip()
         if entry == '':
             continue
 
-        year_matches = list(_ENTRY_YEAR_CATALOG_NUMBER_RE.finditer(entry))
+        year_matches = [
+            match
+            for match in _ENTRY_YEAR_CATALOG_NUMBER_RE.finditer(entry)
+            if _is_possible_catalog_year(int(match.group('year')))
+        ]
         if len(year_matches) > 0:
             index = 0
             while index < len(year_matches):
                 current_match = year_matches[index]
                 year = int(current_match.group('year'))
-                start = int(current_match.group('number'))
+                start_text = current_match.group('number')
+                start = int(start_text)
                 end = start
+                width = len(start_text)
 
                 if index + 1 < len(year_matches):
                     next_match = year_matches[index + 1]
@@ -77,12 +84,14 @@ def parse_catalog_number_requests(
                         int(next_match.group('year')) == year
                         and '-' in entry[current_match.end() : next_match.start()]
                     ):
-                        end = int(next_match.group('number'))
+                        end_text = next_match.group('number')
+                        end = int(end_text)
+                        width = max(width, len(end_text))
                         index += 1
 
                 if start > end:
                     start, end = end, start
-                year_based_ranges.setdefault(year, []).append((start, end))
+                year_based_ranges.setdefault(year, []).append((start, end, width))
                 index += 1
 
         entry_segments: list[str] = []
@@ -138,42 +147,57 @@ def _build_catalog_query(ranges: Iterable[tuple[int, int]]) -> Q:
             )
     return Q(catalognumber__regex=_NUMERIC_CATALOG_NUMBER_QUERY_REGEX) & range_query
 
-def _build_year_based_catalog_query(
-    year_based_ranges: dict[int, list[tuple[int, int]]]
+def _build_year_based_catalog_candidate_query(
+    year_based_ranges: dict[int, list[YearBasedCatalogRange]]
 ) -> Q:
     query = Q()
-    for year, ranges in year_based_ranges.items():
-        sequence_query = Q()
-        for start, end in ranges:
-            if start == end:
-                sequence_query |= Q(catalog_sequence_int=start)
-            else:
-                sequence_query |= Q(
-                    catalog_sequence_int__gte=start, catalog_sequence_int__lte=end
-                )
-        query |= (
-            Q(
-                catalognumber__regex=_YEAR_BASED_CATALOG_NUMBER_QUERY_REGEX,
-                catalog_year_int=year,
+    for year in year_based_ranges:
+        query |= Q(
+            catalognumber__regex=(
+                rf'(^|.*[^0-9]){year}[{_YEAR_CATALOG_NUMBER_DELIMITER_CLASS}]+[0-9]+$'
             )
-            & sequence_query
         )
     return query
 
-def _build_catalog_number_query(
-    numeric_ranges: list[tuple[int, int]],
-    year_based_ranges: dict[int, list[tuple[int, int]]],
-) -> Q:
-    query = Q()
-    if len(numeric_ranges) > 0:
-        query |= _build_catalog_query(numeric_ranges)
-    if len(year_based_ranges) > 0:
-        query |= _build_year_based_catalog_query(year_based_ranges)
-    return query
+def _extract_year_based_catalog_identifier(
+    catalog_number: str,
+) -> tuple[int, int, int] | None:
+    year_match = _STORED_YEAR_CATALOG_NUMBER_RE.search(catalog_number)
+    if year_match is None:
+        return None
+
+    year = int(year_match.group('year'))
+    if not _is_possible_catalog_year(year):
+        return None
+
+    number_text = year_match.group('number')
+    return year, int(number_text), len(number_text)
+
+def _matches_year_based_ranges(
+    year_based_ranges: dict[int, list[YearBasedCatalogRange]],
+    catalog_number: str,
+) -> bool:
+    identifier = _extract_year_based_catalog_identifier(catalog_number)
+    if identifier is None:
+        return False
+
+    year, sequence_number, _width = identifier
+    return any(
+        start <= sequence_number <= end
+        for start, end, _range_width in year_based_ranges.get(year, [])
+    )
+
+def _sort_collection_objects(
+    collection_objects: Iterable[Collectionobject],
+) -> list[Collectionobject]:
+    return sorted(
+        collection_objects,
+        key=lambda collection_object: (collection_object.catalognumber, collection_object.id),
+    )
 
 def find_unmatched_catalog_numbers(
     numeric_ranges: Iterable[tuple[int, int]],
-    year_based_ranges: dict[int, list[tuple[int, int]]],
+    year_based_ranges: dict[int, list[YearBasedCatalogRange]],
     matched_catalog_numbers: set[int],
     matched_year_based_catalog_numbers: set[tuple[int, int]],
 ) -> list[str]:
@@ -182,11 +206,15 @@ def find_unmatched_catalog_numbers(
         requested_numbers.update(range(start, end + 1))
 
     requested_year_based_numbers: set[tuple[int, int]] = set()
+    requested_year_based_widths: dict[tuple[int, int], int] = {}
     for year, ranges in year_based_ranges.items():
-        for start, end in ranges:
-            requested_year_based_numbers.update(
-                (year, number) for number in range(start, end + 1)
-            )
+        for start, end, width in ranges:
+            for number in range(start, end + 1):
+                requested_year_based_numbers.add((year, number))
+                requested_year_based_widths[(year, number)] = max(
+                    requested_year_based_widths.get((year, number), 0),
+                    width,
+                )
 
     unmatched_numeric_numbers = sorted(
         requested_numbers - matched_catalog_numbers,
@@ -198,7 +226,10 @@ def find_unmatched_catalog_numbers(
 
     return [
         *(str(number) for number in unmatched_numeric_numbers),
-        *(f'{year:04d}-{number:06d}' for year, number in unmatched_year_based_numbers),
+        *(
+            f'{year:04d}-{number:0{requested_year_based_widths[(year, number)]}d}'
+            for year, number in unmatched_year_based_numbers
+        ),
     ]
 
 def sanitize_determination_payload(payload: dict[str, Any]) -> dict[str, Any]:
@@ -225,7 +256,7 @@ def parse_validate_only(request_data: dict[str, Any]) -> bool:
 def fetch_collection_objects_by_catalog_requests(
     collection_id: int,
     numeric_ranges: list[tuple[int, int]],
-    year_based_ranges: dict[int, list[tuple[int, int]]],
+    year_based_ranges: dict[int, list[YearBasedCatalogRange]],
     include_current_determinations: bool = True,
     max_results: int | None = None,
 ) -> list[Collectionobject]:
@@ -243,18 +274,6 @@ def fetch_collection_objects_by_catalog_requests(
             'collectionobjecttype__taxontreedef__name',
         )
     )
-    if len(numeric_ranges) > 0:
-        queryset = queryset.annotate(
-            catalog_number_int=Cast('catalognumber', IntegerField())
-        )
-    if len(year_based_ranges) > 0:
-        queryset = queryset.annotate(
-            catalog_year_int=Cast(Substr('catalognumber', 1, 4), IntegerField()),
-            catalog_sequence_int=Cast(Right('catalognumber', 6), IntegerField()),
-        )
-    queryset = queryset.filter(
-        _build_catalog_number_query(numeric_ranges, year_based_ranges)
-    ).order_by('catalognumber', 'id')
     if include_current_determinations:
         queryset = queryset.prefetch_related(
             Prefetch(
@@ -263,9 +282,29 @@ def fetch_collection_objects_by_catalog_requests(
                 to_attr='prefetched_determinations',
             )
         )
+
+    collection_objects_by_id: dict[int, Collectionobject] = {}
+    if len(numeric_ranges) > 0:
+        numeric_queryset = (
+            queryset.annotate(catalog_number_int=Cast('catalognumber', IntegerField()))
+            .filter(_build_catalog_query(numeric_ranges))
+            .order_by('catalognumber', 'id')
+        )
+        for collection_object in numeric_queryset:
+            collection_objects_by_id[collection_object.id] = collection_object
+
+    if len(year_based_ranges) > 0:
+        year_queryset = queryset.filter(
+            _build_year_based_catalog_candidate_query(year_based_ranges)
+        ).order_by('catalognumber', 'id')
+        for collection_object in year_queryset:
+            if _matches_year_based_ranges(year_based_ranges, collection_object.catalognumber):
+                collection_objects_by_id[collection_object.id] = collection_object
+
+    collection_objects = _sort_collection_objects(collection_objects_by_id.values())
     if isinstance(max_results, int):
-        queryset = queryset[:max_results]
-    return list(queryset)
+        collection_objects = collection_objects[:max_results]
+    return collection_objects
 
 def fetch_collection_objects_by_ids(
     collection_id: int,
@@ -293,7 +332,7 @@ def fetch_collection_objects_by_ids(
 def fetch_matched_catalog_number_identifiers(
     collection_id: int,
     numeric_ranges: list[tuple[int, int]],
-    year_based_ranges: dict[int, list[tuple[int, int]]],
+    year_based_ranges: dict[int, list[YearBasedCatalogRange]],
 ) -> tuple[set[int], set[tuple[int, int]]]:
     base_queryset = (
         Collectionobject.objects.filter(collectionmemberid=collection_id)
@@ -315,16 +354,22 @@ def fetch_matched_catalog_number_identifiers(
 
     matched_year_based_numbers: set[tuple[int, int]] = set()
     if len(year_based_ranges) > 0:
-        matched_year_based_numbers = {
-            (catalog_year, catalog_sequence)
-            for catalog_year, catalog_sequence in base_queryset.annotate(
-                catalog_year_int=Cast(Substr('catalognumber', 1, 4), IntegerField()),
-                catalog_sequence_int=Cast(Right('catalognumber', 6), IntegerField()),
-            )
-            .filter(_build_year_based_catalog_query(year_based_ranges))
-            .values_list('catalog_year_int', 'catalog_sequence_int')
-            if isinstance(catalog_year, int) and isinstance(catalog_sequence, int)
-        }
+        for catalog_number in (
+            base_queryset.filter(
+                _build_year_based_catalog_candidate_query(year_based_ranges)
+            ).values_list('catalognumber', flat=True)
+        ):
+            if not isinstance(catalog_number, str):
+                continue
+            identifier = _extract_year_based_catalog_identifier(catalog_number)
+            if identifier is None:
+                continue
+            year, sequence_number, _width = identifier
+            if any(
+                start <= sequence_number <= end
+                for start, end, _range_width in year_based_ranges.get(year, [])
+            ):
+                matched_year_based_numbers.add((year, sequence_number))
 
     return matched_numeric_numbers, matched_year_based_numbers
 
@@ -343,13 +388,12 @@ def extract_matched_catalog_number_identifiers(
             matched_numeric_numbers.add(int(catalog_number))
             continue
 
-        year_match = _STORED_YEAR_CATALOG_NUMBER_RE.match(catalog_number)
-        if year_match is None:
+        identifier = _extract_year_based_catalog_identifier(catalog_number)
+        if identifier is None:
             continue
 
-        matched_year_based_numbers.add(
-            (int(year_match.group('year')), int(year_match.group('number')))
-        )
+        year, sequence_number, _width = identifier
+        matched_year_based_numbers.add((year, sequence_number))
 
     return matched_numeric_numbers, matched_year_based_numbers
 
