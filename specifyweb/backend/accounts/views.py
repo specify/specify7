@@ -614,7 +614,7 @@ def set_admin_status(request, userid):
             }
         },
         "responses": {
-            "201": {
+            "200": {
                 "description": "The access token was successfully generated",
                 "content": {
                     "application/json": {
