@@ -40,6 +40,15 @@ def get_collection(request):
         if user is None:
             return qs.all()[0]
         user_collections = users_collections_for_sp7(user.id)
+        # Blegh, if the user doesn't have permission to any collections, use
+        # the default behavior of the first collection.
+        # Essentially, put the burden of authorization on the view: which is
+        # much easier to slip-up and make a mistake in (especially if the
+        # author is acting on implicit assumptions about security at the time
+        # of the view)
+        # TODO: handle such cases in this middleware.
+        if len(user_collections) <= 0:
+            return qs.all()[0]
         return user_collections[0]
     else:
         return qs.get(id=collection_id)
