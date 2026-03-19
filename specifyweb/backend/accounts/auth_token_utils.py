@@ -21,7 +21,7 @@ AUTH_JWT_DECODE_OPTIONS = {
 
 AUTH_TOKEN_ALGORITHMS = ["HS256"]
 
-def generate_auth_token(user, collection_id: int, expires_in: int = DEFAULT_AUTH_LIFESPAN_SECONDS):
+def generate_access_token(user, collection_id: int, expires_in: int = DEFAULT_AUTH_LIFESPAN_SECONDS):
     jti = str(uuid.uuid4())
 
     jwt_payload = {
@@ -36,7 +36,7 @@ def generate_auth_token(user, collection_id: int, expires_in: int = DEFAULT_AUTH
     return token
 
 
-def revoke_auth_token(token: dict):
+def revoke_access_token(token: dict):
     """
     Accepts and revokes a decoded JWT Auth Token.
     Specifically, stores the token in a "blacklist" in Redis for the remaining

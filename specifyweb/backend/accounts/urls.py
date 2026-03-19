@@ -13,8 +13,8 @@ urlpatterns = [
     # OpenId Connect callback endpoint:
     path('oic_callback/', views.oic_callback),
 
-    path('token/', views.acquire_auth_token),
-    path('token/revoke/', views.revoke_auth_token),
+    path('token/', views.acquire_access_token),
+    path('token/revoke/', views.revoke_access_token),
 
     path(
         'logout/',

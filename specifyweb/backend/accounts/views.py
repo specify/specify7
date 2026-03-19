@@ -37,7 +37,7 @@ from specifyweb.specify.models import Specifyuser, Collection
 from django.views.decorators.http import require_POST
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
-from specifyweb.backend.accounts.auth_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_auth_token, revoke_auth_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
+from specifyweb.backend.accounts.auth_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_access_token, revoke_access_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
 from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
@@ -581,11 +581,12 @@ def set_admin_status(request, userid):
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
 
+
 @openapi(schema={
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Obtain an auhtorization token that can be used with the API",
+            "description": "Obtain an access token that can be used with the API",
             "content": {
                 "application/x-www-form-urlencoded": {
                     "schema": {
@@ -613,7 +614,25 @@ def set_admin_status(request, userid):
             }
         },
         "responses": {
-            "201": {"description": "The auth token was successfully generated", },
+            "201": {
+                "description": "The access token was successfully generated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                },
+                                "expires_in": {
+                                    "type": "int",
+                                    "description": "The number of seconds the access token is live for."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
             "400": {"description": "One of the required keys was not supplied, or one or more keys were supplied incorrectly"},
             "403": {"description": "The provided credentials were incorrect, or the user does not have access to the collection"},
             "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
@@ -622,7 +641,7 @@ def set_admin_status(request, userid):
 })
 @require_POST
 @csrf_exempt
-def acquire_auth_token(request):
+def acquire_access_token(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
     collection_id = request.POST.get("collectionid")
@@ -644,38 +663,42 @@ def acquire_auth_token(request):
     if user is None or not has_collection_access(collection.id, user.id):
         return http.HttpResponseForbidden()
 
-    token = generate_auth_token(user, collection.id, expires_in=expires_in)
+    token = generate_access_token(user, collection.id, expires_in=expires_in)
 
     # TODO: lower default expiry time and also issue refresh tokens that can be
     # used to re-issue auth tokens
     # Issue refresh tokens as HTTP-only cookies? Need to keep CSRF protection
     # and replay attacks in mind. Maybe just store them in Redis...
-    response = http.JsonResponse({"auth_token": token})
-    return response
+    response = {
+        "access_token": token,
+        "expires_in": expires_in
+    }
+    return http.JsonResponse(response)
+
 
 @openapi(schema={
     'post': {
         "requestBody": {
             "required": True,
-            "description": "Revoke a previously granted authorization token",
+            "description": "Revoke a previously granted access token",
             "content": {
                 "application/x-www-form-urlencoded": {
                     "schema": {
                         "type": "object",
                         "properties": {
-                            "token": {
+                            "access_token": {
                                 "type": "string",
-                                "description": "The JWT Auth token to revoke"
+                                "description": "The JWT Access token to revoke"
                             },
                         },
-                        "required": ['token'],
+                        "required": ['access_token'],
                         'additionalProperties': False
                     }
                 }
             }
         },
         "responses": {
-            "204": {"description": "The auth token was revoked"},
+            "204": {"description": "The access token was revoked"},
             "400": {"description": "The provided token is already invalid or could not be validated"},
             "403": {"description": "The user was not logged-in when making a request to the endpoint"},
             "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
@@ -684,15 +707,15 @@ def acquire_auth_token(request):
 })
 @require_POST
 @login_maybe_required
-def revoke_auth_token(request):
-    encoded_token = request.POST.get("token")
+def revoke_access_token(request):
+    encoded_token = request.POST.get("access_token")
 
     try:
-        token = jwt.decode(encoded_token, settings.SECRET_KEY, options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
+        token = jwt.decode(encoded_token, settings.SECRET_KEY,
+                           options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
     except jwt.exceptions.InvalidTokenError:
         return http.HttpResponseBadRequest()
 
     revoke_token(token)
 
     return http.HttpResponse('', status=204)
-
