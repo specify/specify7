@@ -1,5 +1,6 @@
 from django.utils.functional import SimpleLazyObject
 from django.core.exceptions import PermissionDenied
+from django.http import HttpResponse
 
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.api.filter_by_col import filter_by_collection
@@ -20,8 +21,15 @@ class JWTAuthMiddleware:
     
     def __call__(self, request):
         token = get_token_from_request(request)
-        if token == False or token_is_revoked(token):
+        # The request doesn't have an access token, so pass through
+        if token is None:
             return self.get_response(request)
+
+        # There was an access token in the request, but it was invalid or
+        # revoked. Stop here and return a 401 Unauthorized
+        if token == False or token_is_revoked(token):
+            return HttpResponse('Invalid access token', status_code=401)
+
         user_id = token["sub"]
         collection_id = token["collection"]
         

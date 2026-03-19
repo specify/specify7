@@ -53,11 +53,11 @@ def revoke_access_token(token: dict):
     blacklist_ttl = expires_at - current_time
     set_string(f"revoked:{jti}", "true", time_to_live=blacklist_ttl)
 
-def get_token_from_request(request) -> Literal[False] | dict:
+def get_token_from_request(request) -> Literal[False] | None | dict:
     auth_header = request.headers.get("Authorization")
     if auth_header is None or not auth_header.startswith("Bearer "):
-        return False
-    
+        return None
+
     encoded_token = auth_header.split(" ")[1]
 
     try:
