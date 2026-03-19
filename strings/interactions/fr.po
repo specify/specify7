@@ -42,13 +42,13 @@ msgstr ""
 msgid "tableLabelRecords"
 msgstr "{tableLabel:string} enregistrements"
 
-#: components/Interactions/InteractionDialog.tsx:579
-#: components/Interactions/InteractionDialog.tsx:591
+#: components/Interactions/InteractionDialog.tsx:578
+#: components/Interactions/InteractionDialog.tsx:588
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "Aucune préparation n'a été trouvée pour les enregistrements suivants :"
 
-#: components/Interactions/InteractionDialog.tsx:601
+#: components/Interactions/InteractionDialog.tsx:597
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr ""

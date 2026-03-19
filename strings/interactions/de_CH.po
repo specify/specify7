@@ -45,14 +45,14 @@ msgstr ""
 msgid "tableLabelRecords"
 msgstr "{tableLabel:string} Datensätze"
 
-#: components/Interactions/InteractionDialog.tsx:579
-#: components/Interactions/InteractionDialog.tsx:591
+#: components/Interactions/InteractionDialog.tsx:578
+#: components/Interactions/InteractionDialog.tsx:588
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotFoundFor"
 msgstr "Für die folgenden Datensätze wurden keine Vorbereitungen gefunden:"
 
-#: components/Interactions/InteractionDialog.tsx:601
+#: components/Interactions/InteractionDialog.tsx:597
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotAvailableFor"

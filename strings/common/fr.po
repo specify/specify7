@@ -480,7 +480,7 @@ msgstr "Outils"
 #: components/Permissions/FormatError.tsx:174
 #: components/Preferences/Renderers.tsx:118
 #: components/QueryBuilder/Formatter.tsx:178
-#: components/QueryBuilder/QueryLineFilter.tsx:75
+#: components/QueryBuilder/QueryLineFilter.tsx:90
 #: components/QueryBuilder/Results.tsx:212
 #: components/QueryBuilder/Results.tsx:213
 #: components/QueryComboBox/index.tsx:445
@@ -909,8 +909,8 @@ msgid "id"
 msgstr "IDENTIFIANT"
 
 #: components/Attachments/index.tsx:163
-#: components/QueryBuilder/QueryLineFilters.tsx:171
-#: components/QueryBuilder/QueryLineFilters.tsx:179
+#: components/QueryBuilder/QueryLineFilters.tsx:176
+#: components/QueryBuilder/QueryLineFilters.tsx:184
 #. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Query Line Filters
 #, fuzzy
 msgid "filter"
