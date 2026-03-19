@@ -9,7 +9,6 @@ import { schema } from '../DataModel/schema';
 import type { Tables } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
-import { formatUrl } from '../Router/queryString';
 import type { toolDefinitions } from '../Security/registry';
 import {
   partsToResourceName,
@@ -18,6 +17,7 @@ import {
 } from '../Security/utils';
 import type { tableActions } from './definitions';
 import { FormatPermissionError } from './FormatError';
+import { redirectToLoginWithResume } from '../../utils/authResume';
 import {
   hasPermission,
   hasTablePermission,
@@ -230,11 +230,7 @@ export function PermissionError({
       buttons={userText.logIn()}
       forceToTop
       header={userText.sessionTimeOut()}
-      onClose={(): void =>
-        globalThis.location.assign(
-          formatUrl('/accounts/login/', { next: globalThis.location.href })
-        )
-      }
+      onClose={(): void => redirectToLoginWithResume()}
     >
       {userText.sessionTimeOutDescription()}
     </Dialog>

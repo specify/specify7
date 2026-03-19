@@ -1,5 +1,6 @@
 import React from 'react';
 
+import { useAuthResume } from '../../hooks/useAuthResume';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
@@ -13,6 +14,10 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { throttle } from '../../utils/utils';
+import {
+  consumeAuthResumePayload,
+  currentAuthResumeUrl,
+} from '../../utils/authResume';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -49,6 +54,13 @@ import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
+import {
+  queryBuilderFlagsFromQuery,
+  queryBuilderFlagsRequireSave,
+  type QueryBuilderResumePayload,
+  queryBuilderResumeKind,
+  restoreQueryBuilderState,
+} from './authResume';
 import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
@@ -100,6 +112,12 @@ function Wrapped({
     readonly isSeries: boolean | null;
   }) => void;
 }): JSX.Element {
+  const restoredSnapshot = React.useRef(
+    consumeAuthResumePayload<QueryBuilderResumePayload>(
+      queryBuilderResumeKind,
+      currentAuthResumeUrl()
+    )
+  ).current;
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
 
@@ -107,10 +125,10 @@ function Wrapped({
 
   const table = getTableById(query.contextTableId);
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
-    new Set()
+    () => new Set(restoredSnapshot?.selectedRows ?? [])
   );
 
-  const buildInitialState = React.useCallback(
+  const baseInitialState = React.useMemo(
     () =>
       getInitialState({
         query,
@@ -118,7 +136,12 @@ function Wrapped({
         table,
         autoRun,
       }),
-    [queryResource, table, autoRun]
+    [query, queryResource, table, autoRun]
+  );
+
+  const initialState = React.useMemo(
+    () => restoreQueryBuilderState(baseInitialState, restoredSnapshot),
+    [baseInitialState, restoredSnapshot]
   );
 
   const [showMappingView = true, _] = useCachedState(
@@ -133,14 +156,23 @@ function Wrapped({
   const [saveRequired, setSaveRequired] = React.useState(false);
 
   React.useEffect(() => {
-    const initialState = buildInitialState();
     dispatch({
       type: 'ResetStateAction',
       state: initialState,
     });
-    initialFields.current = JSON.stringify(initialState.fields);
-  }, [buildInitialState]);
+    initialFields.current = JSON.stringify(baseInitialState.fields);
+  }, [baseInitialState, initialState]);
   useErrorContext('state', state);
+
+  React.useEffect(() => {
+    if (restoredSnapshot === undefined) return;
+    setQuery({
+      ...query,
+      ...restoredSnapshot.query,
+    });
+    if (queryBuilderFlagsRequireSave(query, restoredSnapshot))
+      setSaveRequired(true);
+  }, []);
 
   const checkForChanges = React.useMemo(
     () =>
@@ -182,6 +214,22 @@ function Wrapped({
   );
 
   const promptToSave = saveRequired && !isEmbedded;
+
+  useAuthResume(() =>
+    state === pendingState || (!promptToSave && state.queryRunCount === 0)
+      ? undefined
+      : {
+          version: 1,
+          createdAt: Date.now(),
+          kind: queryBuilderResumeKind,
+          url: currentAuthResumeUrl(),
+          payload: {
+            query: queryBuilderFlagsFromQuery(query),
+            selectedRows: [...selectedRows],
+            state,
+          },
+        }
+  );
 
   const unsetUnloadProtect = useUnloadProtect(
     promptToSave,

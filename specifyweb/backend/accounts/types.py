@@ -22,6 +22,7 @@ class OAuthLogin(TypedDict):
     state: str
     provider: str
     provider_conf: ProviderConf
+    next: str
 
 class ExternalUser(TypedDict):
     """Information passed through a session variable to associate the

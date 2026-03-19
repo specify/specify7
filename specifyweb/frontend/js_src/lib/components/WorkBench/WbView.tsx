@@ -17,6 +17,7 @@ import type Handsontable from 'handsontable';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
+import { useAuthResume } from '../../hooks/useAuthResume';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
@@ -25,6 +26,10 @@ import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
+import {
+  consumeAuthResumePayload,
+  currentAuthResumeUrl,
+} from '../../utils/authResume';
 import type { GetSet, RA } from '../../utils/types';
 import { clamp } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
@@ -40,6 +45,12 @@ import { WbUtilsComponent } from '../WbUtils';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
 import { usesAttachments } from './attachmentHelpers';
+import {
+  applyBatchEditChanges,
+  batchEditResumeKind,
+  collectBatchEditChanges,
+  type BatchEditResumePayload,
+} from './authResume';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
@@ -80,12 +91,23 @@ export function WbView({
   readonly onDatasetDeleted: () => void;
   readonly triggerDatasetRefresh: () => void;
 }): JSX.Element {
+  const restoredSnapshot = React.useRef(
+    dataset.isupdate
+      ? consumeAuthResumePayload<BatchEditResumePayload>(
+          batchEditResumeKind,
+          currentAuthResumeUrl()
+        )
+      : undefined
+  ).current;
+
   const data = React.useMemo<RA<RA<string | null>>>(
     () =>
       dataset.rows.length === 0
         ? [Array.from(dataset.columns).fill(null)]
-        : dataset.rows,
-    [dataset]
+        : dataset.isupdate && restoredSnapshot !== undefined
+          ? applyBatchEditChanges(dataset.rows, restoredSnapshot.changes)
+          : dataset.rows,
+    [dataset, restoredSnapshot]
   );
   // Switch to home page on dataset deleted if current dataset is deleted
   const navigate = useNavigate();
@@ -120,8 +142,14 @@ export function WbView({
   const throttleRate = Math.ceil(clamp(10, data.length / 10, 2000));
 
   const [hasUnsavedChanges, spreadsheetChanged, spreadsheetUpToDate] =
-    useBooleanState();
+    useBooleanState((restoredSnapshot?.changes.length ?? 0) > 0);
   useUnloadProtect(hasUnsavedChanges, wbText.wbUnloadProtect());
+
+  const initialRowsRef = React.useRef(dataset.rows.map((row) => [...row]));
+  React.useEffect(() => {
+    if (!hasUnsavedChanges)
+      initialRowsRef.current = dataset.rows.map((row) => [...row]);
+  }, [dataset.rows, hasUnsavedChanges]);
 
   const [cellCounts, setCellCounts] = React.useState<WbCellCounts>({
     newCells: 0,
@@ -203,6 +231,46 @@ export function WbView({
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
   const hasBatchEditRolledBack = dataset.rolledback && dataset.isupdate;
+
+  React.useEffect(() => {
+    if (!dataset.isupdate || hot === undefined || restoredSnapshot === undefined)
+      return;
+
+    restoredSnapshot.changes.forEach(({ row, col }) => {
+      const originalValue = dataset.rows[row]?.[col];
+      workbench.cells.setCellMeta(
+        row,
+        col,
+        'originalValue',
+        originalValue ?? undefined
+      );
+      workbench.cells.recalculateIsModifiedState(row, col, {
+        visualRow: hot.toVisualRow(row),
+        visualCol: hot.toVisualColumn(col),
+      });
+    });
+
+    workbench.cells.updateCellInfoStats();
+    hot.render();
+  }, [dataset.isupdate, dataset.rows, hot, restoredSnapshot, workbench]);
+
+  useAuthResume(() => {
+    if (!dataset.isupdate) return undefined;
+
+    const changes = collectBatchEditChanges(
+      initialRowsRef.current,
+      workbench.data
+    );
+    return changes.length === 0
+      ? undefined
+      : {
+          version: 1,
+          createdAt: Date.now(),
+          kind: batchEditResumeKind,
+          url: currentAuthResumeUrl(),
+          payload: { changes },
+        };
+  });
 
   return (
     <ReadOnlyContext.Provider

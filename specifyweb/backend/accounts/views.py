@@ -40,12 +40,43 @@ from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
 
+def _normalize_next_url(next_url: str) -> str:
+    prefix = '/accounts/choose_collection/?next='
+    return (
+        unquote_plus(next_url[len(prefix):])
+        if next_url.startswith(prefix)
+        else next_url
+    )
+
+def _redirect_with_next(path: str, next_url: str) -> http.HttpResponseRedirect:
+    return http.HttpResponseRedirect(
+        path if len(next_url) == 0 else f'{path}?{urlencode({"next": next_url})}'
+    )
+
+def _legacy_login_redirect(next_url: str) -> http.HttpResponseRedirect:
+    return _redirect_with_next(
+        '/accounts/legacy_login/',
+        (
+            '/accounts/choose_collection/'
+            if len(next_url) == 0
+            else f'/accounts/choose_collection/?{urlencode({"next": next_url})}'
+        ),
+    )
+
+def _get_next_url(
+    request: http.HttpRequest, oauth_login: OAuthLogin | None = None
+) -> str:
+    if request.method == 'POST':
+        return request.POST.get('next', '')
+    return request.GET.get('next', oauth_login['next'] if oauth_login else '')
+
 @require_http_methods(['GET', 'POST'])
 def oic_login(request: http.HttpRequest) -> http.HttpResponse:
     """Initiates the OpenId Connect login process by providing the list of
     available providers, then redirecting to the one chosen.
     """
     if request.method == 'POST':
+        next_url = _normalize_next_url(_get_next_url(request))
         provider = request.POST['provider']
         provider_info_dict = settings.OAUTH_LOGIN_PROVIDERS[provider]
         assert is_provider_info(provider_info_dict), "provider_info_dict does not match ProviderInfo structure"
@@ -65,6 +96,7 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
             'state': state,
             'provider': provider,
             'provider_conf': provider_conf,
+            'next': next_url,
         }
         request.session['oauth_login'] = oauth_login
 
@@ -82,7 +114,11 @@ def oic_login(request: http.HttpRequest) -> http.HttpResponse:
         {'provider': p, 'title': d['title']}
         for p, d in settings.OAUTH_LOGIN_PROVIDERS.items()
     ]
-    return render(request, "oic_login.html", context={'providers': providers})
+    return render(
+        request,
+        "oic_login.html",
+        context={'providers': providers, 'next': _get_next_url(request)},
+    )
 
 @openapi(schema={
     "get": {
@@ -121,12 +157,20 @@ def oic_providers(request: http.HttpRequest) -> http.HttpResponse:
 @require_GET
 def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     """Handles the return callback from the OIC identity provider. """
-    oauth_login: OAuthLogin = request.session['oauth_login']
-    del request.session['oauth_login'] # not really necessary, but might as well clean up.
-    assert crypto.constant_time_compare(request.GET['state'], oauth_login['state'])
+    oauth_login: OAuthLogin | None = request.session.pop('oauth_login', None)
+    next_url = _normalize_next_url(_get_next_url(request, oauth_login))
+
+    if oauth_login is None:
+        logger.warning('OAuth callback received without session state.')
+        return _redirect_with_next('/accounts/login/', next_url)
+
+    if not crypto.constant_time_compare(request.GET.get('state', ''), oauth_login['state']):
+        logger.warning('OAuth callback received mismatched state.')
+        return _redirect_with_next('/accounts/login/', next_url)
+
     if 'error' in request.GET:
         logger.error('OAuth error: %s', request.GET)
-        return http.HttpResponseRedirect('/accounts/login/')
+        return _redirect_with_next('/accounts/login/', next_url)
 
     provider = oauth_login['provider']
     provider_conf: ProviderConf = oauth_login['provider_conf']
@@ -168,7 +212,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
         )
         del request.session['invite_token']
         login(request, user, backend='django.contrib.auth.backends.ModelBackend')
-        return http.HttpResponseRedirect('/accounts/choose_collection/')
+        return _redirect_with_next('/accounts/choose_collection/', next_url)
 
     try:
         spuserexternalid = Spuserexternalid.objects.get(provider=provider, providerid=str(ext_user['sub']))
@@ -183,7 +227,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
             'idtoken': ext_user,
         }
         request.session['external_user'] = external_user
-        return http.HttpResponseRedirect('/accounts/legacy_login/')
+        return _legacy_login_redirect(next_url)
 
     if not spuserexternalid.enabled:
         return http.HttpResponse("Logins with this identity are disabled.", content_type="text/plain")
@@ -195,7 +239,7 @@ def oic_callback(request: http.HttpRequest) -> http.HttpResponse:
     login(request,
           cast(AbstractBaseUser, spuserexternalid.specifyuser),
           backend='django.contrib.auth.backends.ModelBackend')
-    return http.HttpResponseRedirect('/accounts/choose_collection')
+    return _redirect_with_next('/accounts/choose_collection/', next_url)
 
 @require_GET
 @login_maybe_required
