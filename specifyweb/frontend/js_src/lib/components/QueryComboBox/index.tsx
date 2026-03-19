@@ -46,6 +46,7 @@ import {
   getRelatedCollectionId,
   makeComboBoxQuery,
   pendingValueToResource,
+  scopeNewResourceToCollection,
   useQueryComboBoxDefaults,
 } from './helpers';
 import type { TypeSearch } from './spec';
@@ -221,6 +222,7 @@ export function QueryComboBox({
     typeof collectionRelationships === 'object' && typeof resource === 'object'
       ? getRelatedCollectionId(collectionRelationships, resource, field.name)
       : undefined;
+  const targetCollectionId = forceCollection ?? relatedCollectionId;
 
   const loading = React.useContext(LoadingContext);
   const handleOpenRelated = (isReadOnly: boolean): void =>
@@ -247,6 +249,15 @@ export function QueryComboBox({
   const relatedTable =
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
+
+  const createPendingResource = React.useCallback(
+    async () =>
+      scopeNewResourceToCollection(
+        pendingValueToResource(field, typeSearch, pendingValueRef.current),
+        targetCollectionId
+      ),
+    [field, typeSearch, targetCollectionId]
+  );
 
   // Used to fetch again tree def if the component type changes
   const componentType =
@@ -381,7 +392,7 @@ export function QueryComboBox({
 
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedTable.name) &&
-    hasTablePermission(field.relatedTable.name, 'create');
+    hasTablePermission(field.relatedTable.name, 'create', targetCollectionId);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
@@ -446,14 +457,14 @@ export function QueryComboBox({
               ? (): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
-                    : setState({
-                        type: 'AddResourceState',
-                        resource: pendingValueToResource(
-                          field,
-                          typeSearch,
-                          pendingValueRef.current
-                        ),
-                      })
+                    : loading(
+                        createPendingResource().then((pendingResource) =>
+                          setState({
+                            type: 'AddResourceState',
+                            resource: pendingResource,
+                          })
+                        )
+                      )
               : undefined
           }
         />
@@ -481,14 +492,14 @@ export function QueryComboBox({
                   onClick={(): void =>
                     state.type === 'AddResourceState'
                       ? setState({ type: 'MainState' })
-                      : setState({
-                          type: 'AddResourceState',
-                          resource: pendingValueToResource(
-                            field,
-                            typeSearch,
-                            pendingValueRef.current
-                          ),
-                        })
+                      : loading(
+                          createPendingResource().then((pendingResource) =>
+                            setState({
+                              type: 'AddResourceState',
+                              resource: pendingResource,
+                            })
+                          )
+                        )
                   }
                 />
               ) : undefined}
@@ -653,7 +664,7 @@ export function QueryComboBox({
         {state.type === 'SearchState' ? (
           <SearchDialog
             extraFilters={state.extraConditions}
-            forceCollection={forceCollection ?? relatedCollectionId}
+            forceCollection={targetCollectionId}
             multiple={false}
             searchView={searchView}
             table={relatedTable}
