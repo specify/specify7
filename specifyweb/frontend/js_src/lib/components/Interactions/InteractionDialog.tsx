@@ -575,19 +575,37 @@ export function InteractionDialog({
               <div className="mt-2 space-y-2">
                 {state.missing.length > 0 && (
                   <div>
-                    <H3>{interactionsText.preparationsNotFoundFor()}</H3>
+                    <H3>
+                      {interactionsText.preparationsNotFoundFor()}
+                    </H3>
                     {state.missing.map((problem, index) => (
                       <p key={index}>{problem}</p>
                     ))}
                   </div>
                 )}
-                {state.unavailableBis.length > 0 && (
-                  <div>
-                    <H3>{interactionsText.preparationsNotAvailableFor()}</H3>
-                    {state.unavailableBis.map((problem, index) => (
-                      <p key={index}>{problem}</p>
-                    ))}
-                  </div>
+                {state.type === 'MissingState' && (
+                  <>
+                    {state.missing.length > 0 && (
+                      <>
+                        <H3>
+                          {interactionsText.preparationsNotFoundFor()}
+                        </H3>
+                        {state.missing.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
+                    {state.unavailableBis.length > 0 && (
+                      <>
+                        <H3>
+                          {interactionsText.preparationsNotAvailableFor()}
+                        </H3>
+                        {state.unavailableBis.map((problem, index) => (
+                          <p key={index}>{problem}</p>
+                        ))}
+                      </>
+                    )}
+                  </>
                 )}
               </div>
             )}
