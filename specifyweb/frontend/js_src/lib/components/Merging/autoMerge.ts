@@ -54,6 +54,20 @@ export function autoMerge(
   );
 }
 
+export async function buildInitialMergedResource(
+  table: SpecifyTable,
+  resources: RA<SerializedResource<AnySchema>>,
+  shouldAutoPopulate: boolean,
+  targetId?: number
+): Promise<SerializedResource<AnySchema>> {
+  return (shouldAutoPopulate
+    ? await postMergeResource(
+        resources,
+        autoMerge(table, resources, false, targetId)
+      )
+    : autoMerge(table, resources, true, targetId)) as SerializedResource<AnySchema>;
+}
+
 /**
  * Sort from newest to oldest
  */
