@@ -645,13 +645,18 @@ def acquire_access_token(request):
     username = request.POST.get("username")
     password = request.POST.get("password")
     collection_id = request.POST.get("collectionid")
-    expires_in = request.POST.get("expires", DEFAULT_AUTH_LIFESPAN_SECONDS)
+    raw_expires_in = request.POST.get("expires", DEFAULT_AUTH_LIFESPAN_SECONDS)
 
     if None in (username, password, collection_id):
         return http.HttpResponseBadRequest(f"username, password, and collection are required")
 
-    if not isinstance(expires_in, int) or expires_in <= 0:
-        return http.HttpResponseBadRequest(f"Invalid expiry time for token")
+    try:
+        expires_in = int(raw_expires_in)
+        if expires_in <= 0:
+            return http.HttpResponseBadRequest(f"Invalid expiry time")
+    except ValueError:
+        return http.HttpResponseBadRequest(f"Expiry time could be parsed as integer")
+
 
     try:
         collection = Collection.objects.get(id=collection_id)
