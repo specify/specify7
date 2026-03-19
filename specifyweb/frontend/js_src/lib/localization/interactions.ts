@@ -261,7 +261,7 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Повернена сума',
     'de-ch': 'Zurückgegebene Anzahl',
     'pt-br': 'Valor devolvido',
-  },  
+  },
   resolvedAmount: {
     'en-us': 'Resolved Amount',
     'ru-ru': 'Решенная сумма',
