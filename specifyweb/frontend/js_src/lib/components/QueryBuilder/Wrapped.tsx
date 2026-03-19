@@ -1,23 +1,23 @@
 import React from 'react';
 
-import { useAuthResume } from '../../hooks/useAuthResume';
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAuthResume } from '../../hooks/useAuthResume';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useCachedState } from '../../hooks/useCachedState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
+import {
+  consumeAuthResumePayload,
+  currentAuthResumeUrl,
+} from '../../utils/authResume';
 import { smoothScroll } from '../../utils/dom';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { throttle } from '../../utils/utils';
-import {
-  consumeAuthResumePayload,
-  currentAuthResumeUrl,
-} from '../../utils/authResume';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form } from '../Atoms/Form';
@@ -47,6 +47,13 @@ import {
 import { getMappingLineData } from '../WbPlanView/navigator';
 import { navigatorSpecs } from '../WbPlanView/navigatorSpecs';
 import { datasetVariants } from '../WbUtils/datasetVariants';
+import {
+  type QueryBuilderResumePayload,
+  queryBuilderFlagsFromQuery,
+  queryBuilderFlagsRequireSave,
+  queryBuilderResumeKind,
+  restoreQueryBuilderState,
+} from './authResume';
 import { CheckReadAccess } from './CheckReadAccess';
 import { MakeRecordSetButton } from './Components';
 import { IsQueryBasicContext, useQueryViewPref } from './Context';
@@ -54,13 +61,6 @@ import { QueryExportButtons } from './Export';
 import { QueryFields } from './Fields';
 import { QueryFromMap } from './FromMap';
 import { QueryHeader } from './Header';
-import {
-  queryBuilderFlagsFromQuery,
-  queryBuilderFlagsRequireSave,
-  type QueryBuilderResumePayload,
-  queryBuilderResumeKind,
-  restoreQueryBuilderState,
-} from './authResume';
 import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
@@ -225,7 +225,7 @@ function Wrapped({
           url: currentAuthResumeUrl(),
           payload: {
             query: queryBuilderFlagsFromQuery(query),
-            selectedRows: [...selectedRows],
+            selectedRows: Array.from(selectedRows),
             state,
           },
         }

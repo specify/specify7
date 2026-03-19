@@ -9,9 +9,8 @@ export type AuthResumeSnapshot<PAYLOAD = unknown> = {
 const storageKey = 'specify7-auth-resume';
 const maxAge = 12 * 60 * 60 * 1000;
 
-let currentProvider:
-  | (() => AuthResumeSnapshot | undefined)
-  | undefined = undefined;
+let currentProvider: (() => AuthResumeSnapshot | undefined) | undefined =
+  undefined;
 
 function getSessionStorage(): Storage | undefined {
   try {
@@ -31,7 +30,9 @@ function writeSnapshot(snapshot: AuthResumeSnapshot | undefined): void {
   sessionStorage.setItem(storageKey, JSON.stringify(snapshot));
 }
 
-function parseSnapshot(rawValue: string | null): AuthResumeSnapshot | undefined {
+function parseSnapshot(
+  rawValue: string | null
+): AuthResumeSnapshot | undefined {
   if (rawValue === null) return undefined;
   try {
     const parsed = JSON.parse(rawValue) as Partial<AuthResumeSnapshot>;

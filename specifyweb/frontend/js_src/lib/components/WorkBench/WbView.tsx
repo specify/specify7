@@ -17,8 +17,8 @@ import type Handsontable from 'handsontable';
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
 
-import { useAuthResume } from '../../hooks/useAuthResume';
 import { useUnloadProtect } from '../../hooks/navigation';
+import { useAuthResume } from '../../hooks/useAuthResume';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { attachmentsText } from '../../localization/attachments';
@@ -46,10 +46,10 @@ import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
 import { usesAttachments } from './attachmentHelpers';
 import {
+  type BatchEditResumePayload,
   applyBatchEditChanges,
   batchEditResumeKind,
   collectBatchEditChanges,
-  type BatchEditResumePayload,
 } from './authResume';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
@@ -145,10 +145,12 @@ export function WbView({
     useBooleanState((restoredSnapshot?.changes.length ?? 0) > 0);
   useUnloadProtect(hasUnsavedChanges, wbText.wbUnloadProtect());
 
-  const initialRowsRef = React.useRef(dataset.rows.map((row) => [...row]));
+  const initialRowsRef = React.useRef(
+    dataset.rows.map((row) => Array.from(row))
+  );
   React.useEffect(() => {
     if (!hasUnsavedChanges)
-      initialRowsRef.current = dataset.rows.map((row) => [...row]);
+      initialRowsRef.current = dataset.rows.map((row) => Array.from(row));
   }, [dataset.rows, hasUnsavedChanges]);
 
   const [cellCounts, setCellCounts] = React.useState<WbCellCounts>({
@@ -233,7 +235,11 @@ export function WbView({
   const hasBatchEditRolledBack = dataset.rolledback && dataset.isupdate;
 
   React.useEffect(() => {
-    if (!dataset.isupdate || hot === undefined || restoredSnapshot === undefined)
+    if (
+      !dataset.isupdate ||
+      hot === undefined ||
+      restoredSnapshot === undefined
+    )
       return;
 
     restoredSnapshot.changes.forEach(({ row, col }) => {

@@ -16,7 +16,7 @@ export function collectBatchEditChanges(
   originalRows: RA<RA<string | null>>,
   currentRows: RA<RA<string | null>>
 ): RA<BatchEditResumeChange> {
-  const changes: BatchEditResumeChange[] = [];
+  const changes: readonly BatchEditResumeChange[] = [];
   for (const [rowIndex, currentRow] of currentRows.entries()) {
     const originalRow = originalRows[rowIndex];
     if (originalRow === undefined) continue;
@@ -37,7 +37,7 @@ export function applyBatchEditChanges(
   rows: RA<RA<string | null>>,
   changes: RA<BatchEditResumeChange>
 ): RA<RA<string | null>> {
-  const restoredRows = rows.map((row) => [...row]);
+  const restoredRows = rows.map((row) => Array.from(row));
   changes.forEach(({ row, col, value }) => {
     if (restoredRows[row] !== undefined) restoredRows[row][col] = value;
   });

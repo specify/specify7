@@ -2,6 +2,7 @@ import React from 'react';
 
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
+import { redirectToLoginWithResume } from '../../utils/authResume';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import type { AnyTree } from '../DataModel/helperTypes';
@@ -17,7 +18,6 @@ import {
 } from '../Security/utils';
 import type { tableActions } from './definitions';
 import { FormatPermissionError } from './FormatError';
-import { redirectToLoginWithResume } from '../../utils/authResume';
 import {
   hasPermission,
   hasTablePermission,
