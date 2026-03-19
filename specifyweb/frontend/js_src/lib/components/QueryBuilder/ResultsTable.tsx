@@ -165,6 +165,7 @@ function Row({
             role="cell"
           >
             <Input.Checkbox
+              aria-label={commonText.select()}
               checked={isSelected}
               /* Ignore click event, as click would be handled by onClick on row */
               onChange={f.undefined}

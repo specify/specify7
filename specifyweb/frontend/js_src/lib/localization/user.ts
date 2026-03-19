@@ -902,6 +902,38 @@ export const userText = createDictionary({
     'fr-fr': 'Veuillez configurer les agents suivants avant de continuer :',
     'pt-br': 'Por favor, configure os seguintes agentes antes de prosseguir:',
   },
+  cannotReadAgentsForUserAssignment: {
+    'en-us':
+      'Unable to load assigned agents because you do not have read access to Agent records.',
+    'ru-ru':
+      'Не удалось загрузить назначенных агентов, поскольку у вас нет доступа на чтение записей Agent.',
+    'es-es':
+      'No se pueden cargar los agentes asignados porque no tiene acceso de lectura a los registros de Agent.',
+    'uk-ua':
+      'Не вдалося завантажити призначених агентів, оскільки у вас немає доступу на читання записів Agent.',
+    'de-ch':
+      'Zugewiesene Agenten konnten nicht geladen werden, da Sie keinen Lesezugriff auf Agent-Datensätze haben.',
+    'fr-fr':
+      "Impossible de charger les agents attribués, car vous n'avez pas l'autorisation de lire les enregistrements Agent.",
+    'pt-br':
+      'Não foi possível carregar os agentes atribuídos porque você não tem acesso de leitura aos registros de Agent.',
+  },
+  cannotReadDisciplinesForUserAssignment: {
+    'en-us':
+      'Unable to fully load assigned agents because you do not have read access to Discipline records.',
+    'ru-ru':
+      'Не удалось полностью загрузить назначенных агентов, поскольку у вас нет доступа на чтение записей Discipline.',
+    'es-es':
+      'No se pueden cargar por completo los agentes asignados porque no tiene acceso de lectura a los registros de Discipline.',
+    'uk-ua':
+      'Не вдалося повністю завантажити призначених агентів, оскільки у вас немає доступу на читання записів Discipline.',
+    'de-ch':
+      'Zugewiesene Agenten konnten nicht vollständig geladen werden, da Sie keinen Lesezugriff auf Discipline-Datensätze haben.',
+    'fr-fr':
+      "Impossible de charger complètement les agents attribués, car vous n'avez pas l'autorisation de lire les enregistrements Discipline.",
+    'pt-br':
+      'Não foi possível carregar totalmente os agentes atribuídos porque você não tem acesso de leitura aos registros de Discipline.',
+  },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
     'es-es': 'Proveedores de identidad externos:',
