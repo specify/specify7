@@ -84,9 +84,10 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
     [index]
   );
 
-  const isToOne = field === undefined 
-    ? false
-    : !relationshipIsToMany(field) || shouldBeToOne(field);
+  const isToOne =
+    field === undefined
+      ? false
+      : !relationshipIsToMany(field) || shouldBeToOne(field);
 
   const handleResourcesSelected = React.useMemo(
     () =>

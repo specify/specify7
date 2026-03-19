@@ -39,6 +39,32 @@ export function useHotHooks({
 
   return {
     /*
+     * Add accessibility labels to empty table header cells
+     * This ensures screen readers can properly announce the structure
+     */
+    afterInit() {
+      if (workbench.hot === undefined) return;
+
+      // Add aria-label to corner header cell (intersection of row/column headers)
+      const cornerHeader = workbench.hot.rootElement.querySelector(
+        '.ht_clone_top_inline_start_corner th'
+      );
+      if (cornerHeader && !cornerHeader.textContent?.trim()) {
+        cornerHeader.setAttribute('aria-label', 'Row and column headers');
+      }
+
+      // Add aria-labels to any other empty th elements in headers
+      const emptyHeaders = workbench.hot.rootElement.querySelectorAll(
+        'thead th:not([aria-label])'
+      );
+      emptyHeaders.forEach((th: Element) => {
+        if (!th.textContent?.trim() && th instanceof HTMLElement) {
+          th.setAttribute('aria-label', 'Header cell');
+        }
+      });
+    },
+
+    /*
      * After cell is rendered, we need to reApply metaData classes
      * NOTE:
      * .issues are handled automatically by the comments plugin.
