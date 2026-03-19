@@ -89,15 +89,28 @@ class ObjectFormatter:
             return None
 
         def getFormatterFromSchema() -> Element:
-
-            try:
-                formatter_name = Splocalecontainer.objects.get(
-                    name=specify_model.name.lower(),
-                    schematype=0,
-                    discipline=self.collection.discipline
-                ).format
-            except Splocalecontainer.DoesNotExist:
+            containers = Splocalecontainer.objects.filter(
+                name=specify_model.name.lower(),
+                schematype=0,
+                discipline=self.collection.discipline,
+            ).order_by('-timestampmodified', '-id')
+            container_count = containers.count()
+            if container_count == 0:
                 return None
+
+            formatter_name = (
+                containers.exclude(format__isnull=True)
+                .exclude(format='')
+                .values_list('format', flat=True)
+                .first()
+            )
+            if container_count > 1:
+                logger.warning(
+                    "Multiple Splocalecontainer rows found for %s in discipline %s using formatter %r",
+                    specify_model.name.lower(),
+                    self.collection.discipline_id,
+                    formatter_name,
+                )
 
             if formatter_name:
                 return lookup_name(formatter_name)
