@@ -1,11 +1,11 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
