@@ -625,7 +625,7 @@ def set_admin_status(request, userid):
                                     "type": "string"
                                 },
                                 "expires_in": {
-                                    "type": "int",
+                                    "type": "integer",
                                     "description": "The number of seconds the access token is live for."
                                 }
                             }
