@@ -3,11 +3,11 @@ Adds information about the specify user to incoming requests
 """
 
 from django.conf import settings
-from django.http import HttpResponseBadRequest
 from django.utils.functional import SimpleLazyObject
 
 from specifyweb.specify.api.filter_by_col import filter_by_collection
 from specifyweb.specify.models import Collection, Specifyuser, Agent
+from specifyweb.backend.context.views import users_collections_for_sp7
 
 
 def get_cached(attr, func, request):
@@ -31,7 +31,16 @@ def get_collection(request):
     try:
         collection_id = int(request.COOKIES.get('collection', ''))
     except ValueError:
-        return qs.all()[0]
+        """
+        If the collection cookie is not set, try and scope the request to a
+        collection the user has access to.
+        If the user can't be inferred, default to the first collection.
+        """
+        user = request.specify_user
+        if user is None:
+            return qs.all()[0]
+        user_collections = users_collections_for_sp7(user.id)
+        return user_collections[0]
     else:
         return qs.get(id=collection_id)
 
