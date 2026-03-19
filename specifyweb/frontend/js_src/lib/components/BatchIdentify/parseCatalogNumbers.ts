@@ -2,8 +2,8 @@ import type { RA } from '../../utils/types';
 
 type CatalogToken = number | '-';
 const yearCatalogNumberDelimiters = '-/|._:; *$%#@';
-const yearCatalogNumberDelimiterClass = yearCatalogNumberDelimiters.replace(
-  /[[\]\\^$.*+?(){}|/-]/g,
+const yearCatalogNumberDelimiterClass = yearCatalogNumberDelimiters.replaceAll(
+  /[$()*+\-./?[\\\]^{|}]/g,
   '\\$&'
 );
 const entryYearCatalogNumberRe = new RegExp(
@@ -20,7 +20,7 @@ export const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 export const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: CatalogToken[] = [];
+  const tokens: readonly CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -44,9 +44,9 @@ export const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
 const stripYearCatalogNumberMatches = (entry: string): string => {
   let segments = '';
   let cursor = 0;
-  const yearMatches = [...entry.matchAll(entryYearCatalogNumberRe)].filter(
-    (match) => isPossibleCatalogYear(Number(match.groups?.year ?? ''))
-  );
+  const yearMatches = Array.from(
+    entry.matchAll(entryYearCatalogNumberRe)
+  ).filter((match) => isPossibleCatalogYear(Number(match.groups?.year ?? '')));
   for (const match of yearMatches) {
     const start = match.index ?? 0;
     const matchedText = match[0];
@@ -62,9 +62,11 @@ export const parseCatalogNumberRanges = (
   entries: RA<string>
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
-    const ranges: Array<readonly [number, number]> = [];
-    const yearMatches = [...entry.matchAll(entryYearCatalogNumberRe)].filter(
-      (match) => isPossibleCatalogYear(Number(match.groups?.year ?? ''))
+    const ranges: readonly (readonly [number, number])[] = [];
+    const yearMatches = Array.from(
+      entry.matchAll(entryYearCatalogNumberRe)
+    ).filter((match) =>
+      isPossibleCatalogYear(Number(match.groups?.year ?? ''))
     );
 
     let yearMatchIndex = 0;
@@ -75,8 +77,11 @@ export const parseCatalogNumberRanges = (
       const nextMatch = yearMatches[yearMatchIndex + 1];
       if (
         typeof nextMatch?.index === 'number' &&
-        Number(nextMatch.groups?.year ?? '') === Number(match.groups?.year ?? '') &&
-        entry.slice((match.index ?? 0) + match[0].length, nextMatch.index).includes('-')
+        Number(nextMatch.groups?.year ?? '') ===
+          Number(match.groups?.year ?? '') &&
+        entry
+          .slice((match.index ?? 0) + match[0].length, nextMatch.index)
+          .includes('-')
       ) {
         end = Number(nextMatch.groups?.number ?? '');
         yearMatchIndex += 1;
