@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.15.2\n"
 
-#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:70
 #: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
@@ -32,12 +32,24 @@ msgstr "Додати елементи"
 msgid "recordReturn"
 msgstr "{table:string} Повернення"
 
-#: components/Interactions/InteractionDialog.tsx:578
+#: components/FormCommands/ShowTransactions.tsx:83
+#. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
+msgid "noInteractions"
+msgstr ""
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:131
+#. 🟥Example: Loan records. Used in: Components > Form Commands > Show Transactions
+msgid "tableLabelRecords"
+msgstr "{tableLabel:string} записи"
+
+#: components/Interactions/InteractionDialog.tsx:579
+#: components/Interactions/InteractionDialog.tsx:591
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "Для наступних записів не знайдено жодних підготовчих матеріалів:"
 
-#: components/Interactions/InteractionDialog.tsx:586
+#: components/Interactions/InteractionDialog.tsx:601
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr "У наступних записах відсутні препарати принаймні для одного типу препарату:"
@@ -172,26 +184,6 @@ msgstr "Вирішена сума"
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}': {resource:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:136
-#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
-msgid "resolvedLoans"
-msgstr "Вирішено записів {loanTable:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:125
-#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
-msgid "openLoans"
-msgstr "Відкрити записи {loanTable:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:147
-#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
-msgid "gifts"
-msgstr "{giftTable:string} записи"
-
-#: components/FormCommands/ShowTransactions.tsx:159
-#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
-msgid "exchanges"
-msgstr "Записи {exhangeInTable:string} / {exhangeOutTable:string}"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row

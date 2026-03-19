@@ -11,7 +11,7 @@ msgstr ""
 "X-Generator: Weblate 4.18-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:70
 #: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
@@ -31,12 +31,24 @@ msgstr "Add Items"
 msgid "recordReturn"
 msgstr "{table:string} Return"
 
-#: components/Interactions/InteractionDialog.tsx:578
+#: components/FormCommands/ShowTransactions.tsx:83
+#. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
+msgid "noInteractions"
+msgstr "There are no interactions linked to this preparation."
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:131
+#. 🟥Example: Loan records. Used in: Components > Form Commands > Show Transactions
+msgid "tableLabelRecords"
+msgstr "{tableLabel:string} records"
+
+#: components/Interactions/InteractionDialog.tsx:579
+#: components/Interactions/InteractionDialog.tsx:591
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "No preparations were found for the following records:"
 
-#: components/Interactions/InteractionDialog.tsx:586
+#: components/Interactions/InteractionDialog.tsx:601
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr ""
@@ -172,26 +184,6 @@ msgstr "Resolved Amount"
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:136
-#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
-msgid "resolvedLoans"
-msgstr "Resolved {loanTable:string} records"
-
-#: components/FormCommands/ShowTransactions.tsx:125
-#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
-msgid "openLoans"
-msgstr "Open {loanTable:string} records"
-
-#: components/FormCommands/ShowTransactions.tsx:147
-#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
-msgid "gifts"
-msgstr "{giftTable:string} records"
-
-#: components/FormCommands/ShowTransactions.tsx:159
-#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
-msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} records"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row

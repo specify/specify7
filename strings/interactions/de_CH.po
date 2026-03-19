@@ -12,7 +12,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.15.2\n"
 
-#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:70
 #: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
@@ -34,13 +34,25 @@ msgstr "Elemente hinzufügen"
 msgid "recordReturn"
 msgstr "{table:string} Rückkehr"
 
-#: components/Interactions/InteractionDialog.tsx:578
+#: components/FormCommands/ShowTransactions.tsx:83
+#. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
+msgid "noInteractions"
+msgstr ""
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:131
+#. 🟥Example: Loan records. Used in: Components > Form Commands > Show Transactions
+msgid "tableLabelRecords"
+msgstr "{tableLabel:string} Datensätze"
+
+#: components/Interactions/InteractionDialog.tsx:579
+#: components/Interactions/InteractionDialog.tsx:591
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotFoundFor"
 msgstr "Für die folgenden Datensätze wurden keine Vorbereitungen gefunden:"
 
-#: components/Interactions/InteractionDialog.tsx:586
+#: components/Interactions/InteractionDialog.tsx:601
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "preparationsNotAvailableFor"
@@ -179,30 +191,6 @@ msgstr "Gelöste Anzahl"
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:136
-#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "resolvedLoans"
-msgstr "Aufgelöste {loanTable:string}-Datensätze"
-
-#: components/FormCommands/ShowTransactions.tsx:125
-#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "openLoans"
-msgstr "{loanTable:string}-Datensätze öffnen"
-
-#: components/FormCommands/ShowTransactions.tsx:147
-#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "gifts"
-msgstr "{giftTable:string}-Datensätze"
-
-#: components/FormCommands/ShowTransactions.tsx:159
-#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} Datensätze"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row

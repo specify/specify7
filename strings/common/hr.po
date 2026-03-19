@@ -188,7 +188,7 @@ msgstr ""
 #: components/ExportFeed/Dwca.tsx:128
 #: components/ExportFeed/ForceUpdate.tsx:23
 #: components/FormCells/FormTable.tsx:618
-#: components/FormCommands/ShowTransactions.tsx:118
+#: components/FormCommands/ShowTransactions.tsx:69
 #: components/FormCommands/index.tsx:96
 #: components/FormCommands/index.tsx:118
 #: components/FormCommands/index.tsx:145
@@ -465,7 +465,8 @@ msgstr ""
 #: components/Core/__tests__/Contexts.test.tsx:76
 #: components/Core/__tests__/Contexts.test.tsx:87
 #: components/FormCells/FormTable.tsx:284
-#: components/FormCommands/ShowTransactions.tsx:65
+#: components/FormCommands/ShowTransactions.tsx:76
+#: components/FormCommands/ShowTransactions.tsx:124
 #: components/FormFields/ComboBox.tsx:131
 #: components/FormFields/Field.tsx:84
 #: components/FormPlugins/CollectionRelOneToMany.tsx:158
@@ -586,11 +587,10 @@ msgstr ""
 msgid "search"
 msgstr ""
 
-#: components/FormCommands/ShowTransactions.tsx:48
 #: components/Reports/index.tsx:201
 #: components/SearchDialog/index.tsx:305
 #: components/WorkBench/WbAttachmentsPreview.tsx:118
-#. Used in: Components > Form Commands > Show Transactions ⬤ Components > Reports > Index ⬤ Components > Search Dialog > Index ⬤ Components > Work Bench > Wb Attachments Preview
+#. Used in: Components > Reports > Index ⬤ Components > Search Dialog > Index ⬤ Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "noResults"
 msgstr ""

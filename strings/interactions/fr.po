@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.15.2\n"
 
-#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:70
 #: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
@@ -31,22 +31,34 @@ msgstr "Ajouter des objets"
 msgid "recordReturn"
 msgstr "{table:string} Retour"
 
-#: components/Interactions/InteractionDialog.tsx:578
+#: components/FormCommands/ShowTransactions.tsx:83
+#. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
+msgid "noInteractions"
+msgstr ""
+
+#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:131
+#. 🟥Example: Loan records. Used in: Components > Form Commands > Show Transactions
+msgid "tableLabelRecords"
+msgstr "{tableLabel:string} enregistrements"
+
+#: components/Interactions/InteractionDialog.tsx:579
+#: components/Interactions/InteractionDialog.tsx:591
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
-msgstr "Aucune préparation n'a été trouvée pour les enregistrements suivants :"
+msgstr "Aucune préparation n'a été trouvée pour les enregistrements suivants :"
 
-#: components/Interactions/InteractionDialog.tsx:586
+#: components/Interactions/InteractionDialog.tsx:601
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr ""
 "Aucune préparation n'est disponible pour au moins un type de préparation "
-"dans les enregistrements suivants :"
+"dans les enregistrements suivants :"
 
 #: components/Interactions/InteractionDialog.tsx:568
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "problemsFound"
-msgstr "Il y a des problèmes avec la saisie :"
+msgstr "Il y a des problèmes avec la saisie :"
 
 #: components/Interactions/InteractionDialog.tsx:497
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
@@ -174,31 +186,7 @@ msgstr "Montant résolu"
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 #, fuzzy
 msgid "prepReturnFormatter"
-msgstr "{tableName:string} : {resource:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:136
-#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "resolvedLoans"
-msgstr "Enregistrements {loanTable:string} résolus"
-
-#: components/FormCommands/ShowTransactions.tsx:125
-#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "openLoans"
-msgstr "Ouvrir les enregistrements {loanTable:string}"
-
-#: components/FormCommands/ShowTransactions.tsx:147
-#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "gifts"
-msgstr "{giftTable:string} enregistrements"
-
-#: components/FormCommands/ShowTransactions.tsx:159
-#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
-#, fuzzy
-msgid "exchanges"
-msgstr "{exhangeInTable:string} / {exhangeOutTable:string} enregistrements"
+msgstr "{tableName:string} : {resource:string}"
 
 #: components/Interactions/PrepReturnRow.tsx:41
 #. Used in: Components > Interactions > Prep Return Row
@@ -260,7 +248,7 @@ msgstr "Créer {table:string}"
 #. Used in: Components > Interactions > Interaction Dialog
 #, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Aucun de ces enregistrements n'est préparé. Souhaitez-vous continuer ?"
+msgstr "Aucun de ces enregistrements n'est préparé. Souhaitez-vous continuer ?"
 
 #: components/BatchEdit/MissingRanks.tsx:44
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
