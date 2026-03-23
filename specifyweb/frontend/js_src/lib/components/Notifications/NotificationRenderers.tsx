@@ -394,7 +394,7 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'collection-creation-starting'(notification) {
+  'collection-creation-starting'() {
     return (
       <>
         <p>{setupToolText.collectionCreationStarted()}</p>
