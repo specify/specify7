@@ -248,7 +248,6 @@ def create_discipline_and_trees_task(data: dict):
             logger.info(default_chronostrat_tree)
             chronostrat_result = api.create_geologictimeperiod_tree(default_chronostrat_tree)
             chronostrat_treedef_id = _required_treedef_id(chronostrat_result, 'Geologictimeperiod')
-            data['discipline']['geologictimeperiodtreedef_id'] = chronostrat_treedef_id
 
             logger.info('Creating geography tree')
             geography_result = api.create_geography_tree(data['geographytreedef'].copy(), global_tree=False)
