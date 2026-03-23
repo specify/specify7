@@ -7,11 +7,13 @@ from collections.abc import Callable
 import json
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
-from django.db.models import Model, F
+from django.db.models import Model, F, Q, Subquery
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
@@ -195,6 +197,147 @@ def make_default_deleter(collection=None, agent=None):
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 
+def is_discipline(obj) -> bool:
+    return getattr(getattr(obj, "_meta", None), "model_name", "") == "discipline"
+
+def get_discipline_delete_guard_blockers(discipline) -> list[dict[str, Any]]:
+    """
+    Returns discipline blockers for deleting disciplines in the configuration tool.
+    A discipline can be deleted only when it has no associated collections and no associated users.
+    """
+    if not is_discipline(discipline):
+        return []
+
+    collection_ids = sorted(discipline.collections.values_list("id", flat=True))
+
+    blockers: list[dict[str, Any]] = []
+    if collection_ids:
+        blockers.append(
+            {
+                "table": "Collection",
+                "field": "discipline",
+                "ids": collection_ids,
+            }
+        )
+        return blockers
+
+    discipline_scoped_user_blockers = (
+        (
+            "Spappresourcedir",
+            "specifyuser",
+            sorted(
+                models.Spappresourcedir.objects.filter(
+                    discipline=discipline,
+                    specifyuser__isnull=False,
+                ).values_list("id", flat=True)
+            ),
+        ),
+        (
+            "Sptasksemaphore",
+            "owner",
+            sorted(
+                models.Sptasksemaphore.objects.filter(
+                    discipline=discipline,
+                    owner__isnull=False,
+                ).values_list("id", flat=True)
+            ),
+        ),
+    )
+    for table_name, field_name, blocker_ids in discipline_scoped_user_blockers:
+        if blocker_ids:
+            blockers.append(
+                {
+                    "table": table_name,
+                    "field": field_name,
+                    "ids": blocker_ids,
+                }
+            )
+    return blockers
+
+def _raw_delete_queryset(queryset) -> None:
+    queryset._raw_delete(queryset.db)
+
+def delete_discipline_owned_setup_data(obj) -> None:
+    """
+    Remove discipline-scoped setup/config rows in bulk before the final
+    discipline delete so Django doesn't need to build one large collector graph.
+    """
+    if not is_discipline(obj):
+        return
+
+    from specifyweb.backend.businessrules.models import (
+        UniquenessRule,
+        UniquenessRuleField,
+    )
+
+    schema_ids = models.Spexportschema.objects.filter(
+        discipline_id=obj.id
+    ).values("id")
+    export_item_ids = models.Spexportschemaitem.objects.filter(
+        spexportschema_id__in=Subquery(schema_ids)
+    ).values("id")
+    _raw_delete_queryset(
+        models.Spexportschemaitemmapping.objects.filter(
+            exportschemaitem_id__in=Subquery(export_item_ids)
+        )
+    )
+    _raw_delete_queryset(
+        models.Spexportschema_exportmapping.objects.filter(
+            spexportschema_id__in=Subquery(schema_ids)
+        )
+    )
+    _raw_delete_queryset(
+        models.Spexportschemaitem.objects.filter(
+            spexportschema_id__in=Subquery(schema_ids)
+        )
+    )
+    _raw_delete_queryset(models.Spexportschema.objects.filter(discipline_id=obj.id))
+
+    container_ids = models.Splocalecontainer.objects.filter(
+        discipline_id=obj.id
+    ).values("id")
+    item_ids = models.Splocalecontaineritem.objects.filter(
+        container_id__in=Subquery(container_ids)
+    ).values("id")
+    _raw_delete_queryset(
+        models.Splocaleitemstr.objects.filter(
+            Q(containerdesc_id__in=Subquery(container_ids))
+            | Q(containername_id__in=Subquery(container_ids))
+            | Q(itemdesc_id__in=Subquery(item_ids))
+            | Q(itemname_id__in=Subquery(item_ids))
+        )
+    )
+    _raw_delete_queryset(
+        models.Splocalecontaineritem.objects.filter(
+            container_id__in=Subquery(container_ids)
+        )
+    )
+    _raw_delete_queryset(models.Splocalecontainer.objects.filter(discipline_id=obj.id))
+
+    rule_ids = UniquenessRule.objects.filter(discipline_id=obj.id).values("id")
+    _raw_delete_queryset(
+        UniquenessRuleField.objects.filter(
+            uniquenessrule_id__in=Subquery(rule_ids)
+        )
+    )
+    _raw_delete_queryset(UniquenessRule.objects.filter(discipline_id=obj.id))
+
+    _raw_delete_queryset(models.Spappresourcedir.objects.filter(discipline_id=obj.id))
+    _raw_delete_queryset(models.Sptasksemaphore.objects.filter(discipline_id=obj.id))
+    _raw_delete_queryset(models.Autonumschdsp.objects.filter(discipline_id=obj.id))
+
+def prepare_discipline_for_delete(obj) -> None:
+    """
+    Detach discipline owned tree defs and bulk delete discipline-scoped setup
+    data before deletion so empty disciplines delete quickly.
+    """
+    if not is_discipline(obj):
+        return
+
+    for tree_def_model in DISCIPLINE_TREE_MODELS:
+        tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
+
+    delete_discipline_owned_setup_data(obj)
 
 @transaction.atomic
 def put_resource(collection, agent, name: str, id, version, data: dict[str, Any]):
@@ -315,8 +458,22 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
-    return delete_obj(obj, (make_default_deleter(collection, agent)), version)
+    if is_discipline(obj):
+        guard_blockers = get_discipline_delete_guard_blockers(obj)
+        if guard_blockers:
+            raise BusinessRuleException(
+                "Discipline cannot be deleted while it has associated users or collections."
+            )
+        clean_predelete = prepare_discipline_for_delete
+    else:
+        clean_predelete = None
 
+    return delete_obj(
+        obj,
+        make_default_deleter(collection, agent),
+        version,
+        clean_predelete=clean_predelete,
+    )
 
 def get_collection(logged_in_collection, model, checker: ReadPermChecker, control_params=GetCollectionForm.defaults, params={}) -> CollectionPayload:
     from specifyweb.specify.api.serializers import _obj_to_data
