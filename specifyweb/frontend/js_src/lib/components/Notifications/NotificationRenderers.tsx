@@ -6,6 +6,7 @@ import { backupText } from '../../localization/backup';
 import { localityText } from '../../localization/locality';
 import { mergingText } from '../../localization/merging';
 import { notificationsText } from '../../localization/notifications';
+import { setupToolText } from '../../localization/setupTool';
 import { treeText } from '../../localization/tree';
 import { StringToJsx } from '../../localization/utils';
 import type { IR, RA } from '../../utils/types';
@@ -23,7 +24,6 @@ import { mergingQueryParameter } from '../Merging/queryString';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { formatUrl } from '../Router/queryString';
-import { setupToolText } from '../../localization/setupTool';
 
 export type GenericNotification = {
   readonly messageId: string;
@@ -396,9 +396,7 @@ export const notificationRenderers: IR<
   },
   'collection-creation-starting'() {
     return (
-      <>
-        <p>{setupToolText.collectionCreationStarted()}</p>
-      </>
+      <p>{setupToolText.collectionCreationStarted()}</p>
     );
   },
   default(notification) {
