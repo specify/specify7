@@ -221,15 +221,18 @@ class ObjectFormatter:
 
             if fieldNodeAttrib.get('trimzeros') == 'true':
                 e = cast(e, types.String())
+                trimmed = e
 
                 # remove leading zeros
-                e = func.regexp_replace(e, r'^(-?)0+([0-9])', r'\1\2')
+                trimmed = func.regexp_replace(trimmed, r'^(-?)0+([0-9])', r'\1\2')
 
                 # remove trailing zeros after decimal
-                e = func.regexp_replace(e, r'(\.[0-9]*?)0+$', r'\1')
+                trimmed = func.regexp_replace(trimmed, r'(\.[0-9]*?)0+$', r'\1')
 
                 # remove trailing decimal point
-                e = func.regexp_replace(e, r'\.$', '')
+                trimmed = func.regexp_replace(trimmed, r'\.$', '')
+
+                e = case((e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), trimmed), else_=e)
 
             fmt = fieldNodeAttrib.get('format')
             if fmt is not None:
