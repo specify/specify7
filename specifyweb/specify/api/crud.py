@@ -329,6 +329,7 @@ def prepare_discipline_for_delete(obj) -> None:
 
     for tree_def_model in DISCIPLINE_TREE_MODELS:
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
+
     delete_discipline_owned_setup_data(obj)
 
 @transaction.atomic

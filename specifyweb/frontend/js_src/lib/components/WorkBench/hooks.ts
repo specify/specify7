@@ -42,7 +42,7 @@ export function useHotHooks({
      * Add accessibility labels to empty table header cells
      * This ensures screen readers can properly announce the structure
      */
-    afterInit: function () {
+    afterInit() {
       if (workbench.hot === undefined) return;
 
       // Add aria-label to corner header cell (intersection of row/column headers)
