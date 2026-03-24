@@ -724,6 +724,13 @@ export const preferencesText = createDictionary({
     'de-ch': 'Autor im Baum anzeigen',
     'pt-br': 'Mostrar autor',
   },
+  queryButtonTaxonField: {
+    'en-us': 'Field used by Taxon Query button',
+  },
+  queryButtonTaxonFieldDescription: {
+    'en-us':
+      'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
