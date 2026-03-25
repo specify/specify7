@@ -928,3 +928,19 @@ def default_tree_mapping(request) -> http.HttpResponse:
         return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
 
     return http.JsonResponse(tree_cfg)
+
+@login_maybe_required
+@require_POST
+@transaction.atomic
+def get_db_encoding(request):
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT @@character_set_database;")
+    row = cursor.fetchone()
+
+    encoding = row[0] if row else None
+
+    return http.HttpResponse(
+        json.dumps({"encoding": encoding}),
+        content_type='application/json'
+    )

@@ -460,8 +460,23 @@ export function PopulatedTreeList({
         ? treeOptions.filter((r) => r.discipline === discipline)
         : treeOptions;
 
-  const encoding = document.characterSet
-  const isUTF8 = encoding === "UTF-8"
+  const fetchDbEncoding = async () =>
+    ajax<{ encoding: string }>('/db_encoding/', {
+      headers: { Accept: 'application/json' },
+      method: 'GET',
+    }).then(({ data }) => data.encoding);
+
+  const [encoding, setEncoding] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    fetchDbEncoding().then((encoding) => {
+      setEncoding(encoding)
+    })
+  }, [])
+
+  const isUTF8 =
+    encoding !== null &&
+    ['utf8', 'utf8mb4'].includes(encoding.toLowerCase())
 
   return (
     <Ul className="flex flex-col gap-2">
