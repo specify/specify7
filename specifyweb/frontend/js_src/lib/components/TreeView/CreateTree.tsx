@@ -489,6 +489,8 @@ export function PopulatedTreeList({
             const isBlockedGeoTree =
               resource.title === 'Geology (Minerals)' && !isUTF8
 
+            const encodingFormat = typeof encoding === 'string' ? encoding : ''
+
             if (isBlockedGeoTree) {
               return (
                 <li key={index}>
@@ -497,7 +499,7 @@ export function PopulatedTreeList({
                   </Button.LikeLink>
 
                   <div className="text-xs text-gray-500 break-words">
-                    {treeText.utf8EncodingWarning({ encoding })}
+                    {treeText.utf8EncodingWarning({ encoding: encodingFormat})}
                   </div>
 
                   <Link.NewTab href="https://discourse.specifysoftware.org/t/convert-a-specify-database-to-utf-8/3467">
