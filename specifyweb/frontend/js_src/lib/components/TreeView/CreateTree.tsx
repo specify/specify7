@@ -461,7 +461,7 @@ export function PopulatedTreeList({
         : treeOptions;
 
   const fetchDbEncoding = async () =>
-    ajax<{ encoding: string }>('/db_encoding/', {
+    ajax<{ encoding: string }>(`/trees/db_encoding/`, {
       headers: { Accept: 'application/json' },
       method: 'GET',
     }).then(({ data }) => data.encoding);
@@ -477,6 +477,7 @@ export function PopulatedTreeList({
   const isUTF8 =
     encoding !== null &&
     ['utf8', 'utf8mb4'].includes(encoding.toLowerCase())
+    console.log(encoding)
 
   return (
     <Ul className="flex flex-col gap-2">
