@@ -96,7 +96,7 @@ function PreparationReturn({
   const loanReturnPreparation = React.useRef(
     new tables.LoanReturnPreparation.Resource({
       returneddate: getDateInputValue(new Date()),
-      receivedby: userInformation.agent.resource_uri,
+      receivedby: userInformation.currentCollectionAgent?.resource_uri,
     })
   );
   const [state, setState] = React.useState<RA<PrepReturnRowState>>(() =>
