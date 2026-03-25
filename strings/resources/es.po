@@ -699,7 +699,7 @@ msgstr "Configurar campo"
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
-msgstr "Recortar ceros iniciales"
+msgstr ""
 
 #: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields

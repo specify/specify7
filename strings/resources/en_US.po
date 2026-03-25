@@ -606,7 +606,7 @@ msgstr "Configure field"
 #: components/Formatters/Fields.tsx:381
 #. Used in: Components > Formatters > Fields
 msgid "trimZeros"
-msgstr "Trim Leading Zeros"
+msgstr "Trim Zeros"
 
 #: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields

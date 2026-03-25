@@ -726,7 +726,7 @@ msgstr "Configurar campo"
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
-msgstr "Eliminar zeros à esquerda"
+msgstr ""
 
 #: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields
