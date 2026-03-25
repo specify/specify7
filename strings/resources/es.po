@@ -619,31 +619,31 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr "El registro primario CO no se puede eliminar."
 
-#: components/DataModel/businessRuleDefs.ts:797
+#: components/DataModel/businessRuleDefs.ts:801
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Una preparación prestada no se puede eliminar"
 
-#: components/DataModel/businessRuleDefs.ts:805
+#: components/DataModel/businessRuleDefs.ts:809
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Una preparación dotada no se puede eliminar"
 
-#: components/DataModel/businessRuleDefs.ts:813
+#: components/DataModel/businessRuleDefs.ts:817
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Una preparación desechada no se puede eliminar"
 
-#: components/DataModel/businessRuleDefs.ts:821
+#: components/DataModel/businessRuleDefs.ts:825
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "No se puede eliminar una preparación intercambiada"
 
-#: components/DataModel/businessRuleDefs.ts:829
+#: components/DataModel/businessRuleDefs.ts:833
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
@@ -675,13 +675,13 @@ msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso "
 "para otro componente u objeto de colección en esta colección."
 
-#: components/DataModel/businessRuleDefs.ts:772
+#: components/DataModel/businessRuleDefs.ts:776
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "La preparación se utiliza en un préstamo."
 
-#: components/DataModel/businessRuleDefs.ts:765
+#: components/DataModel/businessRuleDefs.ts:769
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"

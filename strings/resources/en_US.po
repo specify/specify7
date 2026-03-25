@@ -538,27 +538,27 @@ msgstr ""
 msgid "deletePrimaryRecord"
 msgstr "Primary record CO cannot be deleted."
 
-#: components/DataModel/businessRuleDefs.ts:797
+#: components/DataModel/businessRuleDefs.ts:801
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteLoanedPrep"
 msgstr "A loaned preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:805
+#: components/DataModel/businessRuleDefs.ts:809
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteGiftedPrep"
 msgstr "A gifted preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:813
+#: components/DataModel/businessRuleDefs.ts:817
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteDisposedPrep"
 msgstr "A disposed preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:821
+#: components/DataModel/businessRuleDefs.ts:825
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeOutPrep"
 msgstr "A exchanged out preparation cannot be deleted"
 
-#: components/DataModel/businessRuleDefs.ts:829
+#: components/DataModel/businessRuleDefs.ts:833
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "A exchanged in preparation cannot be deleted"
@@ -586,12 +586,12 @@ msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} is already in use "
 "for another Component or Collection Object in this collection."
 
-#: components/DataModel/businessRuleDefs.ts:772
+#: components/DataModel/businessRuleDefs.ts:776
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationUsedInLoan"
 msgstr "The preparation is used in a loan."
 
-#: components/DataModel/businessRuleDefs.ts:765
+#: components/DataModel/businessRuleDefs.ts:769
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "preparationIsNegative"
 msgstr "Preparation count cannot be negative"
