@@ -31,6 +31,7 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
+import { Link } from '../Atoms/Link';
 
 export type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -459,24 +460,71 @@ export function PopulatedTreeList({
         ? treeOptions.filter((r) => r.discipline === discipline)
         : treeOptions;
 
+  const fetchDatabaseEncoding = async () =>
+      ajax<{ readonly encoding: string }>(`/trees/db_encoding/`, {
+        headers: { Accept: 'application/json' },
+        method: 'GET',
+      }).then(({ data }) => data.encoding);
+
+  const [encoding, setEncoding] = React.useState<string | null>(null)
+
+  React.useEffect(() => {
+    fetchDatabaseEncoding().then((encoding) => {
+      setEncoding(encoding)
+    })
+  }, [])
+
+  const isUTF8 =
+    encoding !== null &&
+    ['utf8', 'utf8mb4'].includes(encoding.toLowerCase())
+
   return (
     <Ul className="flex flex-col gap-2">
       <H2>{treeText.populatedTrees()}</H2>
       {displayedOptions === undefined
         ? undefined
-        : displayedOptions.map((resource, index) => (
-            <li key={index}>
-              <Button.LikeLink onClick={(): void => handleClick(resource)}>
-                {localized(resource.title)}
-              </Button.LikeLink>
-              <div className="text-xs text-gray-500">
-                {resource.description}
-              </div>
-              <div className="text-xs text-gray-400 italic">
-                {`${treeText.source()}: ${resource.src}`}
-              </div>
-            </li>
-          ))}
+        : displayedOptions.map((resource, index) => 
+          {
+            const isBlockedGeoTree =
+              resource.title === 'Geology (Minerals)' && !isUTF8
+
+            const encodingFormat = typeof encoding === 'string' ? encoding : ''
+
+            if (isBlockedGeoTree) {
+              return (
+                <li key={index}>
+                  <Button.LikeLink onClick={undefined}>
+                    {localized(resource.title)}
+                  </Button.LikeLink>
+
+                  <div className="text-xs text-gray-500 break-words">
+                    {treeText.utf8EncodingWarning({ encoding: encodingFormat})}
+                  </div>
+
+                  <Link.NewTab href="https://discourse.specifysoftware.org/t/convert-a-specify-database-to-utf-8/3467">
+                    {treeText.resolveEncoding()}
+                  </Link.NewTab>
+                </li>
+              )
+            }
+
+            return (
+              <li key={index}>
+                <Button.LikeLink onClick={(): void => handleClick(resource)}>
+                  {localized(resource.title)}
+                </Button.LikeLink>
+
+                <div className="text-xs text-gray-500">
+                  {resource.description}
+                </div>
+
+                <div className="text-xs text-gray-400 italic">
+                  {`${treeText.source()}: ${resource.src}`}
+                </div>
+              </li>
+            )
+          }
+          )}
     </Ul>
   );
 }
