@@ -15,6 +15,7 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
@@ -31,7 +32,6 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
-import { Link } from '../Atoms/Link';
 
 export type TaxonFileDefaultDefinition = {
   readonly discipline: string;
