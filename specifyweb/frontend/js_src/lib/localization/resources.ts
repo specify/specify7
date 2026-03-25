@@ -1020,13 +1020,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Налаштувати поле',
   },
   trimZeros: {
-    'en-us': 'Trim Leading Zeros',
-    'de-ch': 'Führende Nullen entfernen',
-    'es-es': 'Recortar ceros iniciales',
-    'fr-fr': 'Supprimer les zéros non significatifs',
-    'pt-br': 'Eliminar zeros à esquerda',
-    'ru-ru': 'Обрезка ведущих нулей',
-    'uk-ua': 'Видалити початкові нулі',
+    'en-us': 'Trim Zeros',
   },
   trimZerosDescription: {
     'en-us': 'Remove leading zeros from numeric values.',
