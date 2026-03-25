@@ -772,9 +772,10 @@ export const treeText = createDictionary({
       'Якщо це ввімкнено, користувачі можуть додавати дочірні елементи до синонімізованих батьківських елементів та синонімізувати вузол з дочірніми елементами.',
   },
   utf8EncodingWarning: {
-    'en-us': 'This tree data cannot be imported in your database because it contains UTF-8 characters and this database uses {encoding:string}'
+    'en-us':
+      'This tree data cannot be imported in your database because it contains UTF-8 characters and this database uses {encoding:string}',
   },
   resolveEncoding: {
-    'en-us': 'How to resolve:'
-  }
+    'en-us': 'How to resolve:',
+  },
 } as const);

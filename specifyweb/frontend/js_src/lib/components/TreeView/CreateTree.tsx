@@ -15,6 +15,7 @@ import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { Link } from '../Atoms/Link';
 import { LoadingContext } from '../Core/Contexts';
 import type {
   AnySchema,
@@ -31,7 +32,6 @@ import type { TreeInformation } from '../InitialContext/treeRanks';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog } from '../Molecules/Dialog';
 import { defaultTreeDefs } from './defaults';
-import { Link } from '../Atoms/Link';
 
 export type TaxonFileDefaultDefinition = {
   readonly discipline: string;
@@ -460,8 +460,8 @@ export function PopulatedTreeList({
         ? treeOptions.filter((r) => r.discipline === discipline)
         : treeOptions;
 
-  const fetchDbEncoding = async () =>
-      ajax<{ encoding: string }>(`/trees/db_encoding/`, {
+  const fetchDatabaseEncoding = async () =>
+      ajax<{ readonly encoding: string }>(`/trees/db_encoding/`, {
         headers: { Accept: 'application/json' },
         method: 'GET',
       }).then(({ data }) => data.encoding);
@@ -469,7 +469,7 @@ export function PopulatedTreeList({
   const [encoding, setEncoding] = React.useState<string | null>(null)
 
   React.useEffect(() => {
-    fetchDbEncoding().then((encoding) => {
+    fetchDatabaseEncoding().then((encoding) => {
       setEncoding(encoding)
     })
   }, [])
