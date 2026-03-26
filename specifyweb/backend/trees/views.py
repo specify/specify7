@@ -929,7 +929,6 @@ def default_tree_mapping(request) -> http.HttpResponse:
 
     return http.JsonResponse(tree_cfg)
 
-@login_maybe_required
 def get_db_encoding(request):
     cursor = connection.cursor()
 
