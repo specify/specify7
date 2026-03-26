@@ -60,13 +60,13 @@ msgstr "Не удалось проверить предыдущую резерв
 msgid "startFailed"
 msgstr "Запуск резервного копирования не удался."
 
-#: components/Notifications/NotificationRenderers.tsx:336
+#: components/Notifications/NotificationRenderers.tsx:337
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
 msgstr "Резервное копирование базы данных завершено."
 
-#: components/Notifications/NotificationRenderers.tsx:352
+#: components/Notifications/NotificationRenderers.tsx:353
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"

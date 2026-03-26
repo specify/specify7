@@ -138,31 +138,31 @@ msgstr "Слияние прошло успешно."
 msgid "merging"
 msgstr "Слияние"
 
-#: components/Notifications/NotificationRenderers.tsx:160
+#: components/Notifications/NotificationRenderers.tsx:161
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
 msgstr "Процесс слияния начался."
 
-#: components/Notifications/NotificationRenderers.tsx:215
+#: components/Notifications/NotificationRenderers.tsx:216
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
 msgstr "Процесс слияния успешно завершен."
 
-#: components/Notifications/NotificationRenderers.tsx:177
+#: components/Notifications/NotificationRenderers.tsx:178
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
 msgstr "Процесс слияния завершился неудачей."
 
-#: components/Notifications/NotificationRenderers.tsx:195
+#: components/Notifications/NotificationRenderers.tsx:196
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Процесс слияния отменен."
 
-#: components/Notifications/NotificationRenderers.tsx:180
+#: components/Notifications/NotificationRenderers.tsx:181
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"

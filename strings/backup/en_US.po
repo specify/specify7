@@ -41,12 +41,12 @@ msgstr "Failed to check previous backup."
 msgid "startFailed"
 msgstr "Backup start failed."
 
-#: components/Notifications/NotificationRenderers.tsx:336
+#: components/Notifications/NotificationRenderers.tsx:337
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupCompleted"
 msgstr "Database backup completed."
 
-#: components/Notifications/NotificationRenderers.tsx:352
+#: components/Notifications/NotificationRenderers.tsx:353
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupFailed"
 msgstr "Database backup failed."

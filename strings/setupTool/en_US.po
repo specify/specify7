@@ -396,3 +396,10 @@ msgstr "Institutional Hierarchy"
 #. Used in: Components > Setup Tool > Setup Form
 msgid "emptyTaxonTree"
 msgstr "An empty taxon tree will be created"
+
+#: components/Notifications/NotificationRenderers.tsx:399
+#. Used in: Components > Notifications > Notification Renderers
+msgid "collectionCreationStarted"
+msgstr ""
+"The newly created collection is being set up. It may take some time for the "
+"collection to become available."

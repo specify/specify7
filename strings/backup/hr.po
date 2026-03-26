@@ -61,13 +61,13 @@ msgstr ""
 msgid "startFailed"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:336
+#: components/Notifications/NotificationRenderers.tsx:337
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
 msgstr ""
 
-#: components/Notifications/NotificationRenderers.tsx:352
+#: components/Notifications/NotificationRenderers.tsx:353
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"

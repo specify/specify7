@@ -472,3 +472,8 @@ msgstr ""
 #, fuzzy
 msgid "emptyTaxonTree"
 msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:399
+#. Used in: Components > Notifications > Notification Renderers
+msgid "collectionCreationStarted"
+msgstr ""

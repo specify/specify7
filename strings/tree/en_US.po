@@ -406,22 +406,22 @@ msgstr ""
 "The tree will be created in the background. You will be notified once it is "
 "completed."
 
-#: components/Notifications/NotificationRenderers.tsx:367
+#: components/Notifications/NotificationRenderers.tsx:368
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskStarted"
 msgstr "The default tree creation process has started."
 
-#: components/Notifications/NotificationRenderers.tsx:375
+#: components/Notifications/NotificationRenderers.tsx:376
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskFailed"
 msgstr "Default tree creation failed."
 
-#: components/Notifications/NotificationRenderers.tsx:383
+#: components/Notifications/NotificationRenderers.tsx:384
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskCancelled"
 msgstr "Default tree creation was cancelled."
 
-#: components/Notifications/NotificationRenderers.tsx:391
+#: components/Notifications/NotificationRenderers.tsx:392
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskCompleted"
 msgstr "Default tree creation completed successfully."

@@ -228,7 +228,7 @@ msgid "localityUpdateProgressing"
 msgstr "Importation de l'ensemble de données de localité"
 
 #: components/LocalityUpdate/utils.ts:34
-#: components/Notifications/NotificationRenderers.tsx:295
+#: components/Notifications/NotificationRenderers.tsx:296
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParsed"
@@ -236,28 +236,28 @@ msgstr "Ensemble de données de mise à jour de la localité analysé"
 
 #: components/LocalityUpdate/Status.tsx:470
 #: components/LocalityUpdate/utils.ts:38
-#: components/Notifications/NotificationRenderers.tsx:263
+#: components/Notifications/NotificationRenderers.tsx:264
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailed"
 msgstr "Échec de la mise à jour de la localisation"
 
 #: components/LocalityUpdate/utils.ts:39
-#: components/Notifications/NotificationRenderers.tsx:239
+#: components/Notifications/NotificationRenderers.tsx:240
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParseFailure"
 msgstr "Échec de l'analyse de la mise à jour de la localité"
 
 #: components/LocalityUpdate/utils.ts:40
-#: components/Notifications/NotificationRenderers.tsx:284
+#: components/Notifications/NotificationRenderers.tsx:285
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Mise à jour locale annulée"
 
 #: components/LocalityUpdate/utils.ts:41
-#: components/Notifications/NotificationRenderers.tsx:307
+#: components/Notifications/NotificationRenderers.tsx:308
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateSucceeded"
@@ -324,33 +324,33 @@ msgstr ""
 "Le nombre suivant d'enregistrements {localityTableLabel: string} a été mis "
 "à jour et d'enregistrements {geoCoordDetailTableLabel: string} a été créé :"
 
-#: components/Notifications/NotificationRenderers.tsx:227
+#: components/Notifications/NotificationRenderers.tsx:228
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateStarted"
 msgstr "Le processus de mise à jour des données de localisation a commencé."
 
 #: components/LocalityUpdate/Status.tsx:339
-#: components/Notifications/NotificationRenderers.tsx:309
+#: components/Notifications/NotificationRenderers.tsx:310
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateResults"
 msgstr "Résultats de la mise à jour locale"
 
 #: components/LocalityUpdate/Status.tsx:400
-#: components/Notifications/NotificationRenderers.tsx:241
-#: components/Notifications/NotificationRenderers.tsx:265
+#: components/Notifications/NotificationRenderers.tsx:242
+#: components/Notifications/NotificationRenderers.tsx:266
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailureResults"
 msgstr "Résultats de l'échec de la mise à jour de la localisation"
 
-#: components/Notifications/NotificationRenderers.tsx:229
-#: components/Notifications/NotificationRenderers.tsx:253
-#: components/Notifications/NotificationRenderers.tsx:275
-#: components/Notifications/NotificationRenderers.tsx:286
-#: components/Notifications/NotificationRenderers.tsx:297
-#: components/Notifications/NotificationRenderers.tsx:326
+#: components/Notifications/NotificationRenderers.tsx:230
+#: components/Notifications/NotificationRenderers.tsx:254
+#: components/Notifications/NotificationRenderers.tsx:276
+#: components/Notifications/NotificationRenderers.tsx:287
+#: components/Notifications/NotificationRenderers.tsx:298
+#: components/Notifications/NotificationRenderers.tsx:327
 #. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "taskId"
