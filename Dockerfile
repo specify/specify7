@@ -230,18 +230,17 @@ EOF
 RUN echo "import os \nDEBUG = os.getenv('SP7_DEBUG', '').lower() == 'true'\n" \
         > settings/debug.py
 
-RUN cat <<'EOF' > settings/secret_key.py
+RUN cat <<EOF > settings/secret_key.py
 import os
-import secrets
+DEFAULT_KEY="$(cat /dev/urandom | tr -dc 'a-zA-Z0-9' | head -c 50)"
+CURRENT_KEY=os.getenv("SECRET_KEY")
 
-current_key = os.getenv('SECRET_KEY')
-
-if current_key is None or current_key.strip() == "" or current_key.strip().replace(" ", "_") == "change_this_to_some_unique_random_string":
-    new_key = secrets.token_hex(16)
+if CURRENT_KEY is None or CURRENT_KEY.strip() == "" or CURRENT_KEY.strip().replace(" ", "_") == "change_this_to_some_unique_random_string":
+    new_key = DEFAULT_KEY
 else:
-    new_key = current_key
+    new_key = CURRENT_KEY
 
-SECRET_KEY = new_key
+SECRET_KEY=new_key
 EOF
 
 ENV LC_ALL=C.UTF-8
