@@ -141,6 +141,11 @@ function QueryLineFilterWrapper({
     filter.fieldFormat === undefined
       ? undefined
       : getUiFormatters()[filter.fieldFormat];
+  const formatterName =
+    filter.fieldFormat ??
+    (terminatingField?.isRelationship === false
+      ? terminatingField.getFormat()
+      : undefined);
 
   const parser =
     (terminatingField === undefined || fieldFormatter === undefined
@@ -237,6 +242,7 @@ function QueryLineFilterWrapper({
             enforceLengthLimit={enforceLengthLimit}
             fieldName={mappingPathToString(mappingPath)}
             filter={filter}
+            formatterName={formatterName}
             parser={parser}
             terminatingField={terminatingField}
             onChange={
