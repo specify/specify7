@@ -287,7 +287,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
         record_name = row.get(rank_mapping.get('column', rank_name)) # Record's name is in the <rank_name> column.
 
         if not record_name:
-            break # This row doesn't contain a record for this rank. Assume this is the end of the row.    
+            continue # This row doesn't contain a record for this rank.
 
         defaults = {}
         for model_field, csv_col in fields_mapping.items():
