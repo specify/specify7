@@ -314,13 +314,14 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
         if tree_def_item is None:
             continue
         
-        rank_mapping = tree_cfg['ranks'][index]
-        is_last = (index == rank_count)
-        if index < rank_count-1:
+        # Check if this is the last node in this row.
+        # If so, do not attempt to de-duplicate it. Non-parent nodes are allowed to share names.
+        is_last = (index == rank_count-1)
+        if not is_last and index < rank_count-1:
             next_rank_mapping = tree_cfg['ranks'][index+1]
-            rank_name = next_rank_mapping['name']
-            record_name = row.get(next_rank_mapping.get('column', rank_name))
-            if not record_name:
+            next_rank_name = next_rank_mapping['name']
+            next_record_name = row.get(next_rank_mapping.get('column', next_rank_name))
+            if not next_record_name:
                 is_last = True
 
         # Create the node at this rank if it isn't already there.
