@@ -133,9 +133,14 @@ class RankMappingConfiguration(TypedDict):
     fullnameseparator: NotRequired[str]
     fields: Dict[str, str]
 
+class TreeConfiguration(TypedDict):
+    all_columns: list[str]
+    ranks: list[RankMappingConfiguration]
+    root: NotRequired[dict]
+
 class DefaultTreeContext():
     """Context for a default tree creation task"""
-    def __init__(self, tree_type: str, tree_def, tree_cfg: dict[str, RankMappingConfiguration], create_missing_ranks: bool):
+    def __init__(self, tree_type: str, tree_def, tree_cfg: TreeConfiguration, create_missing_ranks: bool):
         self.tree_type = tree_type
         self.tree_def = tree_def
 
@@ -209,7 +214,7 @@ class DefaultTreeContext():
         self.counter += 1
         if not (force or self.counter > self.batch_size):
             return
-        logger.debug(f"Batch creating {self.batch_size} rows.")
+        logger.debug(f"Batch creating {self.counter} rows.")
         
         # Go through ranks in ascending order and bulk create nodes
         ordered_rank_ids = sorted(self.buffers.keys())
@@ -261,7 +266,7 @@ class DefaultTreeContext():
 
         self.counter = 0
 
-def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: dict[str, RankMappingConfiguration], row_id: int):
+def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: TreeConfiguration, row_id: int):
     """
     Given one CSV row and a column mapping / rank configuration dictionary,
     walk through the 'ranks' in order, creating or updating each tree record and linking
@@ -273,14 +278,16 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
     parent_id = None
     rank_id = 10
 
-    for rank_mapping in tree_cfg['ranks']:
+    rank_count = len(tree_cfg['ranks'])
+    for index in range(rank_count):
+        rank_mapping = tree_cfg['ranks'][index]
         rank_name = rank_mapping['name']
         fields_mapping = rank_mapping['fields']
 
         record_name = row.get(rank_mapping.get('column', rank_name)) # Record's name is in the <rank_name> column.
 
         if not record_name:
-            continue # This row doesn't contain a record for this rank.        
+            break # This row doesn't contain a record for this rank. Assume this is the end of the row.    
 
         defaults = {}
         for model_field, csv_col in fields_mapping.items():
@@ -301,14 +308,24 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: di
 
         if tree_def_item is None:
             continue
+        
+        # Check if this is the last node in this row.
+        # If so, do not attempt to de-duplicate it. Non-parent nodes are allowed to share names.
+        is_last = (index == rank_count-1)
+        if not is_last and index < rank_count-1:
+            next_rank_mapping = tree_cfg['ranks'][index+1]
+            next_rank_name = next_rank_mapping['name']
+            next_record_name = row.get(next_rank_mapping.get('column', next_rank_name))
+            if not next_record_name:
+                is_last = True
 
         # Create the node at this rank if it isn't already there.
         buffered = context.get_node_in_buffer(tree_def_item.rankid, record_name)
         existing_id = context.get_existing_node_id(tree_def_item.rankid, record_name)
-        if existing_id is not None:
+        if not is_last and existing_id is not None:
             parent_id = existing_id
             parent = None
-        elif buffered is not None:
+        elif not is_last and buffered is not None:
             parent_id = None
             parent = buffered
         else:
