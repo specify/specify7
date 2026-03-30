@@ -18,6 +18,7 @@ import { javaTypeToHuman } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
+import { DwCSection } from './DwCSection';
 
 export function SchemaConfigField({
   schemaData,
@@ -64,6 +65,7 @@ export function SchemaConfigField({
           onValueChange={(value): void => handleChange('desc', value)}
         />
       </Label.Block>
+      <DwCSection/>
       <Label.Block>
         {schemaText.fieldLength()}
         <Input.Integer isReadOnly value={field.length ?? ''} />
