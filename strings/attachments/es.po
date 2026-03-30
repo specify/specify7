@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 12:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
@@ -437,7 +437,7 @@ msgstr "Eliminación de archivos adjuntos"
 #: components/Preferences/CollectionDefinitions.tsx:50
 #, fuzzy
 msgid "publicDefault"
-msgstr "Hacer que los archivos adjuntos sean públicos de forma predeterminada"
+msgstr "Hacer públicos los archivos adjuntos por defecto"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:51
@@ -445,7 +445,7 @@ msgstr "Hacer que los archivos adjuntos sean públicos de forma predeterminada"
 msgid "publicDefaultDescription"
 msgstr ""
 "Esto controla si los nuevos archivos adjuntos añadidos a esta colección se "
-"marcan como \"Públicos\" de forma predeterminada. Los archivos adjuntos "
-"públicos serán visibles automáticamente en un portal web específico. Esta "
-"configuración se puede anular para cada archivo adjunto y no afecta a los "
-"existentes."
+"marcan como \"Públicos\" por defecto. Los archivos adjuntos públicos serán "
+"visibles automáticamente en un portal web específico. Esta configuración se "
+"puede modificar para cada archivo adjunto individualmente y no afecta a los "
+"archivos adjuntos existentes."
