@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/user/"
 "ru/>\n"
@@ -316,13 +316,15 @@ msgstr "Учетные записи пользователей"
 #: components/Security/Institution.tsx:140
 #, fuzzy
 msgid "institutionUsers"
-msgstr "Учетные записи пользователей, определенные в этом {institutionTable:string}"
+msgstr ""
+"Учетные записи пользователей, определенные в этом {institutionTable:string}"
 
 #. Used in: Components > Security > Collection
 #: components/Security/Collection.tsx:151
 #, fuzzy
 msgid "collectionUsers"
-msgstr "Учетные записи пользователей, назначенные этому {collectionTable:string}"
+msgstr ""
+"Учетные записи пользователей, назначенные этому {collectionTable:string}"
 
 #. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #: components/Security/SetPassword.tsx:40
@@ -738,3 +740,19 @@ msgstr "Инструмент настройки системы"
 #, fuzzy
 msgid "systemConfig"
 msgstr "Конфигурация системы"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:249
+#, fuzzy
+msgid "cannotReadAgentsForUserAssignment"
+msgstr ""
+"Не удается загрузить назначенных агентов, поскольку у вас нет доступа на "
+"чтение к записям агентов."
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:251
+#, fuzzy
+msgid "cannotReadDisciplinesForUserAssignment"
+msgstr ""
+"Не удается полностью загрузить назначенных агентов, поскольку у вас нет "
+"доступа на чтение к записям о дисциплинарных нарушениях."
