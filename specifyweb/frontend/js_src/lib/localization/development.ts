@@ -18,7 +18,7 @@ export const developmentText = createDictionary({
     'de-ch': 'Crash Report Visualizer',
     'ru-ru': 'Визуализатор отчетов о ДТП',
     'pt-br': 'Visualizador de Relatórios de Acidentes',
-    'hr-hr': '',
+    'hr-hr': 'Vizualizator izvješća o padu programa',
   },
   downloadAsHtml: {
     'en-us': 'Download as HTML',
@@ -28,7 +28,7 @@ export const developmentText = createDictionary({
     'uk-ua': 'Завантажити як HTML',
     'de-ch': 'Als HTML-Datei herunterladen',
     'pt-br': 'Baixar como HTML',
-    'hr-hr': '',
+    'hr-hr': 'Preuzmi kao HTML',
   },
   details: {
     'en-us': 'Details',
@@ -38,6 +38,6 @@ export const developmentText = createDictionary({
     'uk-ua': 'Подробиці',
     'de-ch': 'Details',
     'pt-br': 'Detalhes',
-    'hr-hr': '',
+    'hr-hr': 'Detalji',
   },
 } as const);

@@ -15,7 +15,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Edição em lote',
     'ru-ru': 'Пакетное редактирование',
     'uk-ua': 'Пакетне редагування',
-    'hr-hr': '',
+    'hr-hr': 'Skupno uređivanje',
   },
   batchEditPrefs: {
     'en-us': 'Batch Edit Preferences',
@@ -25,7 +25,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Preferências de edição em lote',
     'ru-ru': 'Настройки пакетного редактирования',
     'uk-ua': 'Налаштування пакетного редагування',
-    'hr-hr': '',
+    'hr-hr': 'Postavke grupnog uređivanja',
   },
   numberOfRecords: {
     'en-us': 'Number of records selected from the query',
@@ -35,7 +35,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Número de registros selecionados na consulta',
     'ru-ru': 'Количество записей, выбранных из запроса.',
     'uk-ua': 'Кількість записів, вибраних із запиту',
-    'hr-hr': '',
+    'hr-hr': 'Broj zapisa odabranih iz upita',
   },
   removeField: {
     'en-us':
@@ -52,7 +52,8 @@ export const batchEditText = createDictionary({
       'Поле не поддерживается для пакетного редактирования. Либо удалите поле, либо скройте его.',
     'uk-ua':
       'Поле не підтримується для пакетного редагування. Видаліть поле або приховайте його.',
-    'hr-hr': '',
+    'hr-hr':
+      'Polje nije podržano za skupno uređivanje. Uklonite polje ili ga sakrijte.',
   },
   addTreeRank: {
     'en-us':
@@ -69,7 +70,8 @@ export const batchEditText = createDictionary({
       'Следующие ранги будут добавлены к запросу для обеспечения возможности пакетного редактирования.',
     'uk-ua':
       'Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування',
-    'hr-hr': '',
+    'hr-hr':
+      'Sljedeći rangovi bit će dodani upitu kako bi se omogućilo skupno uređivanje',
   },
   pickTreesToFilter: {
     'en-us':
@@ -86,7 +88,8 @@ export const batchEditText = createDictionary({
       'Выбранный(е) ранг(и) встречается(ются) в нескольких деревьях. Выберите дерево(я) для пакетного редактирования.',
     'uk-ua':
       'Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування',
-    'hr-hr': '',
+    'hr-hr':
+      'Odabrani rang(ovi) nalaze se u više stabala. Odaberite stablo(a) za skupno uređivanje',
   },
   datasetName: {
     'en-us': '{queryName:string} {datePart:string}',
@@ -96,7 +99,7 @@ export const batchEditText = createDictionary({
     'pt-br': '{queryName:string} {datePart:string}',
     'ru-ru': '{queryName:string} {datePart:string}',
     'uk-ua': "{queryName:string} {datePart:string}'",
-    'hr-hr': '',
+    'hr-hr': '{queryName:string} {datePart:string}',
   },
   errorInQuery: {
     'en-us': 'Following errors were found in the query',
@@ -106,7 +109,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Os seguintes erros foram encontrados na consulta.',
     'ru-ru': 'В запросе были обнаружены следующие ошибки.',
     'uk-ua': 'У запиті виявлено такі помилки',
-    'hr-hr': '',
+    'hr-hr': 'U upitu su pronađene sljedeće greške',
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
@@ -119,7 +122,7 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Для пакетного редактирования запроса требуются дополнительные ранги.',
     'uk-ua': 'Запит потребує додаткових рангів для пакетного редагування',
-    'hr-hr': '',
+    'hr-hr': 'Upit zahtijeva dodatne rangove za skupno uređivanje',
   },
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
@@ -135,7 +138,8 @@ export const batchEditText = createDictionary({
       'Используйте конструктор запросов для создания нового набора данных для пакетного редактирования.',
     'uk-ua':
       'Використовуйте конструктор запитів для створення нового набору даних для пакетного редагування',
-    'hr-hr': '',
+    'hr-hr':
+      'Pomoću alata za izradu upita napravite novi skup podataka za grupno uređivanje',
   },
   showRollback: {
     'en-us': 'Show rollback button',
@@ -145,7 +149,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Mostrar botão de reversão',
     'ru-ru': 'Показать кнопку отката',
     'uk-ua': 'Показати кнопку відкату',
-    'hr-hr': '',
+    'hr-hr': 'Prikaži gumb za vraćanje',
   },
   showRollbackDescription: {
     'en-us':
@@ -162,7 +166,8 @@ export const batchEditText = createDictionary({
       'Функция отката в пакетном редактировании является экспериментальной. Эта настройка скроет кнопку.',
     'uk-ua':
       'Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр приховає кнопку',
-    'hr-hr': '',
+    'hr-hr':
+      'Vraćanje u skupnom uređivanju je eksperimentalna značajka. Ova će postavka sakriti gumb',
   },
   commit: {
     'en-us': 'Commit',
@@ -172,7 +177,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Comprometer-se',
     'ru-ru': 'Совершить',
     'uk-ua': 'Здійснити',
-    'hr-hr': '',
+    'hr-hr': 'Potvrdi',
   },
   startCommitDescription: {
     'en-us':
@@ -189,7 +194,8 @@ export const batchEditText = createDictionary({
       'При сохранении набора данных будут обновляться, добавляться и удаляться данные из электронной таблицы в указанную базу данных.',
     'uk-ua':
       'Запис набору даних призведе до оновлення, додавання та видалення даних з електронної таблиці до бази даних Specify.',
-    'hr-hr': '',
+    'hr-hr':
+      'Potvrdom skupa podataka ažurirat će se, dodavati i brisati podaci iz proračunske tablice u bazu podataka Specify.',
   },
   startRevertDescription: {
     'en-us':
@@ -206,7 +212,8 @@ export const batchEditText = createDictionary({
       'Откат набора данных приведет к повторному обновлению значений, удалению созданных записей и созданию новых записей.',
     'uk-ua':
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів',
-    'hr-hr': '',
+    'hr-hr':
+      'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
   },
   commitSuccessfulDescription: {
     'en-us':
@@ -223,7 +230,8 @@ export const batchEditText = createDictionary({
       'Нажмите кнопку «Результаты», чтобы увидеть количество затронутых записей в каждой таблице базы данных.',
     'uk-ua':
       'Натисніть кнопку «Результати», щоб побачити кількість записів, на які вплинула зміна, у кожній таблиці бази даних',
-    'hr-hr': '',
+    'hr-hr':
+      'Kliknite gumb "Rezultati" da biste vidjeli broj pogođenih zapisa u svakoj tablici baze podataka',
   },
   dateSetRevertDescription: {
     'en-us':
@@ -240,7 +248,8 @@ export const batchEditText = createDictionary({
       'Этот восстановленный набор данных сохранен, однако его нельзя редактировать. Пожалуйста, повторно выполните запрос.',
     'uk-ua':
       'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит',
-    'hr-hr': '',
+    'hr-hr':
+      'Ovaj vraćeni skup podataka je spremljen, međutim, ne može se uređivati. Ponovno pokrenite upit.',
   },
   committing: {
     'en-us': 'Committing',
@@ -250,7 +259,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Comprometer-se',
     'ru-ru': 'Совершение',
     'uk-ua': 'Здійснення',
-    'hr-hr': '',
+    'hr-hr': 'Počinjanje',
   },
   beStatusCommit: {
     'en-us': 'Data Set Commit Status',
@@ -260,7 +269,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Status de confirmação do conjunto de dados',
     'ru-ru': 'Статус фиксации набора данных',
     'uk-ua': 'Стан фіксації набору даних',
-    'hr-hr': '',
+    'hr-hr': 'Status potvrđivanja skupa podataka',
   },
   startCommit: {
     'en-us': 'Begin Data Set Commit?',
@@ -270,7 +279,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Iniciar confirmação do conjunto de dados?',
     'ru-ru': 'Начало фиксации набора данных?',
     'uk-ua': 'Почати фіксацію набору даних?',
-    'hr-hr': '',
+    'hr-hr': 'Započeti potvrđivanje skupa podataka?',
   },
   commitErrors: {
     'en-us': 'Commit Failed due to Error Cells',
@@ -280,7 +289,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Falha na confirmação devido a células com erro.',
     'ru-ru': 'Фиксация не удалась из-за ошибок в ячейках.',
     'uk-ua': 'Не вдалося виконати фіксацію через комірки з помилками',
-    'hr-hr': '',
+    'hr-hr': 'Potvrda nije uspjela zbog ćelija s pogreškom',
   },
   commitErrorsDescription: {
     'en-us': 'The Commit failed due to one or more cell value errors.',
@@ -296,7 +305,8 @@ export const batchEditText = createDictionary({
       'Операция фиксации не удалась из-за одной или нескольких ошибок в значениях ячеек.',
     'uk-ua':
       'Фіксацію не вдалося виконати через одну або декілька помилок у значенні клітинки.',
-    'hr-hr': '',
+    'hr-hr':
+      'Potvrda nije uspjela zbog jedne ili više pogrešaka u vrijednosti ćelije.',
   },
   commitCancelled: {
     'en-us': 'Commit Cancelled',
@@ -306,7 +316,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Compromisso cancelado',
     'ru-ru': 'Подтверждение отменено',
     'uk-ua': 'Зміна фіксації',
-    'hr-hr': '',
+    'hr-hr': 'Potvrda otkazana',
   },
   commitCancelledDescription: {
     'en-us': 'Commit Cancelled Description',
@@ -316,7 +326,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Descrição do Compromisso Cancelado',
     'ru-ru': 'Подтверждение отменено Описание',
     'uk-ua': 'Опис скасованого підтвердження',
-    'hr-hr': '',
+    'hr-hr': 'Opis otkazanog potvrđivanja',
   },
   commitSuccessful: {
     'en-us': 'Commit Completed with No Errors',
@@ -326,7 +336,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Commit concluído sem erros.',
     'ru-ru': 'Фиксация изменений завершена без ошибок.',
     'uk-ua': 'Коміт завершено без помилок',
-    'hr-hr': '',
+    'hr-hr': 'Potvrda završena bez grešaka',
   },
   batchEditRecordSetName: {
     'en-us': 'BE commit of "{dataSet:string}"',
@@ -336,7 +346,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Confirmação BE de "{dataSet:string}"',
     'ru-ru': 'BE commit of "{dataSet:string}"',
     'uk-ua': 'BE коміт "{dataSet:string}"',
-    'hr-hr': '',
+    'hr-hr': 'BE potvrda od "{dataSet:string}"',
   },
   deferForMatch: {
     'en-us': 'Use only visible fields for match',
@@ -346,7 +356,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Use apenas os campos visíveis para correspondência.',
     'ru-ru': 'Для сопоставления используйте только видимые поля.',
     'uk-ua': 'Використовувати лише видимі поля для збігу',
-    'hr-hr': '',
+    'hr-hr': 'Koristite samo vidljiva polja za podudaranje',
   },
   deferForMatchDescription: {
     'en-us':
@@ -363,7 +373,8 @@ export const batchEditText = createDictionary({
       'Если значение равно true, невидимые поля базы данных не будут использоваться для сопоставления. Значение по умолчанию — {default:boolean}',
     'uk-ua':
       'Якщо значення true, невидимі поля бази даних не використовуватимуться для зіставлення. Значення за замовчуванням — {default:boolean}',
-    'hr-hr': '',
+    'hr-hr':
+      'Ako je vrijednost true, nevidljiva polja baze podataka neće se koristiti za podudaranje. Zadana vrijednost je {default:boolean}',
   },
   deferForNullCheck: {
     'en-us': 'Use only visible fields for empty record check',
@@ -377,7 +388,7 @@ export const batchEditText = createDictionary({
       'Usar apenas os campos visíveis para verificação de registro vazio.',
     'ru-ru': 'Для проверки на пустую запись используйте только видимые поля.',
     'uk-ua': 'Використовуйте лише видимі поля для перевірки порожніх записів',
-    'hr-hr': '',
+    'hr-hr': 'Koristite samo vidljiva polja za provjeru praznih zapisa',
   },
   deferForNullCheckDescription: {
     'en-us':
@@ -394,7 +405,8 @@ export const batchEditText = createDictionary({
       'Если значение равно true, невидимые поля базы данных не будут использоваться для определения того, пуста запись или нет. Значение по умолчанию — {default: boolean}.',
     'uk-ua':
       'Якщо значення true, невидимі поля бази даних не використовуватимуться для визначення того, чи є запис порожнім. Значення за замовчуванням: {default: boolean}',
-    'hr-hr': '',
+    'hr-hr':
+      'Ako je vrijednost true, nevidljiva polja baze podataka neće se koristiti za određivanje je li zapis prazan ili ne. Zadana vrijednost je {default: boolean}',
   },
   batchEditDisabled: {
     'en-us':
@@ -411,7 +423,8 @@ export const batchEditText = createDictionary({
       'Пакетное редактирование отключено для системных таблиц и таблиц иерархии областей видимости.',
     'uk-ua':
       'Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії області видимості',
-    'hr-hr': '',
+    'hr-hr':
+      'Skupno uređivanje onemogućeno je za sistemske tablice i tablice hijerarhije opsega',
   },
   cannotEditAfterRollback: {
     'en-us':
@@ -428,7 +441,8 @@ export const batchEditText = createDictionary({
       '(Наборы данных, отредактированные в пакетном режиме, нельзя редактировать после отката — только для чтения)',
     'uk-ua':
       '(Набори даних пакетного редагування не можна редагувати після відкату – лише для читання)',
-    'hr-hr': '',
+    'hr-hr':
+      '(Skupni skupovi podataka za skupno uređivanje ne mogu se uređivati nakon vraćanja na prethodno stanje - samo za čitanje)',
   },
   enableRelationships: {
     'en-us': 'Enable relationships',
@@ -438,7 +452,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Promover relacionamentos',
     'ru-ru': 'Развивайте отношения',
     'uk-ua': "Увімкнути зв'язки",
-    'hr-hr': '',
+    'hr-hr': 'Omogući odnose',
   },
   enableRelationshipsDescription: {
     'en-us':
@@ -455,7 +469,8 @@ export const batchEditText = createDictionary({
       'Позволяет пакетно редактировать связи базовой таблицы. Откат отключен, если связи включены.',
     'uk-ua':
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
-    'hr-hr': '',
+    'hr-hr':
+      'Omogućuje skupno uređivanje odnosa osnovne tablice. Vraćanje unatrag je onemogućeno kada su odnosi omogućeni.',
   },
   commitDataSet: {
     'en-us': 'Commit Data Set',
@@ -465,7 +480,7 @@ export const batchEditText = createDictionary({
     'pt-br': 'Conjunto de dados de confirmação',
     'ru-ru': 'Набор данных для фиксации',
     'uk-ua': 'Набір даних для фіксації',
-    'hr-hr': '',
+    'hr-hr': 'Potvrdi skup podataka',
   },
   warningBatchEditText: {
     'en-us':
@@ -482,6 +497,7 @@ export const batchEditText = createDictionary({
       'Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может вызвать задержки или временную недоступность некоторых функций для указанных пользователей. Пожалуйста, учтите влияние на их опыт использования сайта. Это действие необратимо.',
     'uk-ua':
       'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для певних користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати',
-    'hr-hr': '',
+    'hr-hr':
+      'Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete u obzir utjecaj na njihovo iskustvo. Ova se radnja ne može poništiti.',
   },
 } as const);
