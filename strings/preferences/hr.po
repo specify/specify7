@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-17 02:09+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian "
-"<https://hosted.weblate.org/projects/specify-7/preferences/hr/>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"preferences/hr/>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,32 +13,33 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17-dev\n"
 
+#. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Preferences/index.tsx:103
 #: components/Router/Routes.tsx:381
-#. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "preferences"
-msgstr ""
+msgstr "Postavke"
 
-#: components/Header/userToolDefinitions.ts:54
 #. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:54
 #, fuzzy
 msgid "customization"
-msgstr ""
+msgstr "Prilagođavanje"
 
+#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 #: components/AppResources/types.tsx:93
 #: components/Header/userToolDefinitions.ts:56
-#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 #, fuzzy
 msgid "userPreferences"
-msgstr ""
+msgstr "Korisničke postavke"
 
-#: components/AppResources/types.tsx:103
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:103
 #, fuzzy
 msgid "defaultUserPreferences"
-msgstr ""
+msgstr "Zadane korisničke postavke"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:31
 #: components/Preferences/UserDefinitions.tsx:170
 #: components/Preferences/UserDefinitions.tsx:610
@@ -48,68 +49,68 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1763
 #: components/Preferences/UserDefinitions.tsx:1951
 #: components/Preferences/UserDefinitions.tsx:2266
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "general"
-msgstr ""
+msgstr "General"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:173
 #: components/Preferences/UserDefinitions.tsx:927
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "ui"
-msgstr ""
+msgstr "Korisničko sučelje"
 
-#: components/Preferences/UserDefinitions.tsx:184
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:184
 #, fuzzy
 msgid "theme"
-msgstr ""
+msgstr "Tema"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:191
 #: components/Preferences/UserDefinitions.tsx:226
 #: components/Preferences/UserDefinitions.tsx:248
 #: components/Preferences/UserDefinitions.tsx:269
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "useSystemSetting"
-msgstr ""
+msgstr "Koristi sistemske postavke"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:192
 #: components/Preferences/UserDefinitions.tsx:227
 #: components/Preferences/UserDefinitions.tsx:249
 #: components/Preferences/UserDefinitions.tsx:270
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "inheritOsSettings"
-msgstr ""
+msgstr "Kopira vrijednost iz postavki vašeg operativnog sustava"
 
+#. 🟥Light mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:196
 #: components/Preferences/UserDefinitions.tsx:213
-#. 🟥Light mode. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "light"
-msgstr ""
+msgstr "Svjetlo"
 
+#. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:200
 #: components/Preferences/UserDefinitions.tsx:210
-#. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dark"
-msgstr ""
+msgstr "Tamno"
 
-#: components/Preferences/UserDefinitions.tsx:218
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:218
 #, fuzzy
 msgid "reduceMotion"
-msgstr ""
+msgstr "Smanjite kretanje"
 
-#: components/Preferences/UserDefinitions.tsx:219
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:219
 #, fuzzy
 msgid "reduceMotionDescription"
-msgstr ""
+msgstr "Onemogućite nebitne animacije i prijelaze."
 
+#. Used in: Components > Preferences > User Definitions ⬤ Preferences > __tests__ > Threshold Rank
 #: components/Preferences/UserDefinitions.tsx:1580
 #: components/Preferences/UserDefinitions.tsx:1619
 #: components/Preferences/UserDefinitions.tsx:1649
@@ -117,157 +118,162 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1713
 #: components/Preferences/UserDefinitions.tsx:1745
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#. Used in: Components > Preferences > User Definitions ⬤ Preferences > __tests__ > Threshold Rank
 #, fuzzy
 msgid "rankThreshold"
-msgstr ""
+msgstr "Prikaži broj objekata ispod"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1581
 #: components/Preferences/UserDefinitions.tsx:1620
 #: components/Preferences/UserDefinitions.tsx:1650
 #: components/Preferences/UserDefinitions.tsx:1682
 #: components/Preferences/UserDefinitions.tsx:1714
 #: components/Preferences/UserDefinitions.tsx:1746
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "rankThresholdDescription"
-msgstr ""
+msgstr "Prikaži broj povezanih objekata kolekcije za sve rangove ispod ovog."
 
-#: components/Preferences/UserDefinitions.tsx:240
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:240
 #, fuzzy
 msgid "reduceTransparency"
-msgstr ""
+msgstr "Smanjite transparentnost"
 
-#: components/Preferences/UserDefinitions.tsx:241
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:241
 #, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
+"Treba li onemogućiti prozirne pozadine za komponente korisničkog sučelja kad "
+"god je to moguće (npr. zaglavlja tablica u prikazu stabla)."
 
-#: components/Preferences/UserDefinitions.tsx:262
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:262
 #, fuzzy
 msgid "contrast"
-msgstr ""
+msgstr "Kontrast"
 
-#: components/Preferences/UserDefinitions.tsx:274
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:274
 #, fuzzy
 msgid "increase"
-msgstr ""
+msgstr "Povećati"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:231
 #: components/Preferences/UserDefinitions.tsx:253
 #: components/Preferences/UserDefinitions.tsx:278
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "reduce"
-msgstr ""
+msgstr "Smanjiti"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:235
 #: components/Preferences/UserDefinitions.tsx:257
 #: components/Preferences/UserDefinitions.tsx:282
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noPreference"
-msgstr ""
+msgstr "Bez preferencija"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:287
 #: components/Preferences/UserDefinitions.tsx:930
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "fontSize"
-msgstr ""
+msgstr "Veličina fonta"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:307
 #: components/Preferences/UserDefinitions.tsx:942
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "fontFamily"
-msgstr ""
+msgstr "Obitelj fontova"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:308
 #: components/Preferences/UserDefinitions.tsx:943
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
+"Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako "
+"nije na popisu. Podržan je i popis fontova odvojen zarezima, gdje će se "
+"svaki sljedeći font koristiti ako prethodni nije dostupan."
 
+#. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:201
 #: components/Preferences/Renderers.tsx:203
 #: components/Preferences/Renderers.tsx:225
-#. Used in: Components > Preferences > Renderers
 #, fuzzy
 msgid "defaultFont"
-msgstr ""
+msgstr "(zadani font)"
 
-#: components/Preferences/UserDefinitions.tsx:951
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:951
 #, fuzzy
 msgid "maxFormWidth"
-msgstr ""
+msgstr "Maksimalna širina obrasca"
 
-#: components/Preferences/UserDefinitions.tsx:1007
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1007
 #, fuzzy
 msgid "fieldBackgrounds"
-msgstr ""
+msgstr "Pozadina polja"
 
-#: components/Preferences/UserDefinitions.tsx:1010
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1010
 #, fuzzy
 msgid "fieldBackground"
-msgstr ""
+msgstr "Pozadina polja"
 
-#: components/Preferences/UserDefinitions.tsx:1018
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1018
 #, fuzzy
 msgid "disabledFieldBackground"
-msgstr ""
+msgstr "Pozadina polja za osobe s invaliditetom"
 
-#: components/Preferences/UserDefinitions.tsx:1026
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1026
 #, fuzzy
 msgid "invalidFieldBackground"
-msgstr ""
+msgstr "Nevažeća pozadina polja"
 
-#: components/Preferences/UserDefinitions.tsx:1034
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1034
 #, fuzzy
 msgid "requiredFieldBackground"
-msgstr ""
+msgstr "Pozadina obaveznog polja"
 
-#: components/Preferences/UserDefinitions.tsx:1042
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1042
 #, fuzzy
 msgid "darkFieldBackground"
-msgstr ""
+msgstr "Pozadina polja (tamna tema)"
 
-#: components/Preferences/UserDefinitions.tsx:1050
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1050
 #, fuzzy
 msgid "darkDisabledFieldBackground"
-msgstr ""
+msgstr "Pozadina onemogućenog polja (tamna tema)"
 
-#: components/Preferences/UserDefinitions.tsx:1058
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1058
 #, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr ""
+msgstr "Nevažeća pozadina polja (tamna tema)"
 
-#: components/Preferences/UserDefinitions.tsx:1066
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1066
 #, fuzzy
 msgid "darkRequiredFieldBackground"
-msgstr ""
+msgstr "Pozadina obaveznog polja (tamna tema)"
 
-#: components/Preferences/UserDefinitions.tsx:519
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:519
 #, fuzzy
 msgid "dialogs"
-msgstr ""
+msgstr "Dijalozi"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:124
 #: components/Preferences/CollectionDefinitions.tsx:294
 #: components/Preferences/UserDefinitions.tsx:325
@@ -276,275 +282,282 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1865
 #: components/Preferences/UserDefinitions.tsx:2126
 #: components/Preferences/UserDefinitions.tsx:2181
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "appearance"
-msgstr ""
+msgstr "Izgled"
 
-#: components/Preferences/UserDefinitions.tsx:385
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:385
 #, fuzzy
 msgid "buttonsLight"
-msgstr ""
+msgstr "Tipke (svjetlosni način rada)"
 
-#: components/Preferences/UserDefinitions.tsx:446
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:446
 #, fuzzy
 msgid "buttonsDark"
-msgstr ""
+msgstr "Gumbi (tamni način rada)"
 
-#: components/Preferences/UserDefinitions.tsx:530
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:530
 #, fuzzy
 msgid "translucentDialog"
-msgstr ""
+msgstr "Prozirni dijalozi"
 
-#: components/Preferences/UserDefinitions.tsx:531
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:531
 #, fuzzy
 msgid "translucentDialogDescription"
-msgstr ""
+msgstr "Imaju li dijalozi prozirnu pozadinu."
 
-#: components/Preferences/UserDefinitions.tsx:1404
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1404
 #, fuzzy
 msgid "alwaysPrompt"
-msgstr ""
+msgstr "Uvijek se traži odabir kolekcije"
 
-#: components/Preferences/UserDefinitions.tsx:1475
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1475
 #, fuzzy
 msgid "treeEditor"
-msgstr ""
+msgstr "Uređivač stabla"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1564
 #: components/Preferences/UserDefinitions.tsx:1596
 #: components/Preferences/UserDefinitions.tsx:1633
 #: components/Preferences/UserDefinitions.tsx:1665
 #: components/Preferences/UserDefinitions.tsx:1697
 #: components/Preferences/UserDefinitions.tsx:1729
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "treeAccentColor"
-msgstr ""
+msgstr "Boja naglaska na drvetu"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1572
 #: components/Preferences/UserDefinitions.tsx:1604
 #: components/Preferences/UserDefinitions.tsx:1641
 #: components/Preferences/UserDefinitions.tsx:1673
 #: components/Preferences/UserDefinitions.tsx:1705
 #: components/Preferences/UserDefinitions.tsx:1737
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "synonymColor"
-msgstr ""
+msgstr "Sinonimna boja"
 
-#: components/Preferences/UserDefinitions.tsx:2088
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2088
 #, fuzzy
 msgid "showNewDataSetWarning"
-msgstr ""
+msgstr "Prikaži upozorenje o novom skupu podataka"
 
-#: components/Preferences/UserDefinitions.tsx:2089
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2089
 #, fuzzy
 msgid "showNewDataSetWarningDescription"
-msgstr ""
+msgstr "Prikaži informativnu poruku prilikom izrade novog skupa podataka."
 
-#: components/Preferences/UserDefinitions.tsx:646
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:646
 #, fuzzy
 msgid "header"
-msgstr ""
+msgstr "Navigacijski izbornik"
 
-#: components/Preferences/UserDefinitions.tsx:507
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:507
 #, fuzzy
 msgid "application"
-msgstr ""
+msgstr "Primjena"
 
-#: components/Preferences/UserDefinitions.tsx:510
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:510
 #, fuzzy
 msgid "allowDismissingErrors"
-msgstr ""
+msgstr "Dopusti odbacivanje poruka o pogreškama"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:522
 #: components/Preferences/UserDefinitions.tsx:850
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "updatePageTitle"
-msgstr ""
+msgstr "Ažuriraj naslov stranice"
 
-#: components/Preferences/UserDefinitions.tsx:523
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:523
 #, fuzzy
 msgid "updatePageTitleDescription"
 msgstr ""
+"Treba li ažurirati naslov stranice kako bi odgovarao zaglavlju dijaloga."
 
-#: components/Preferences/UserDefinitions.tsx:851
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:851
 #, fuzzy
 msgid "updatePageTitleFormDescription"
-msgstr ""
+msgstr "Treba li ažurirati naslov stranice kako bi odgovarao trenutnom zapisu."
 
-#: components/Preferences/UserDefinitions.tsx:1166
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1166
 #, fuzzy
 msgid "queryComboBox"
-msgstr ""
+msgstr "Kombinirani okvir upita"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1121
 #: components/Preferences/UserDefinitions.tsx:1169
 #: components/Preferences/UserDefinitions.tsx:1539
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "searchAlgorithm"
-msgstr ""
+msgstr "Algoritam pretraživanja"
 
-#: components/Preferences/UserDefinitions.tsx:1189
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1189
 #, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr ""
+msgstr "Algoritam pretraživanja (za odnose s tablicama stabla)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1128
 #: components/Preferences/UserDefinitions.tsx:1176
 #: components/Preferences/UserDefinitions.tsx:1196
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "startsWithInsensitive"
-msgstr ""
+msgstr "Počinje s (ne razlikuje velika i mala slova)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1129
 #: components/Preferences/UserDefinitions.tsx:1177
 #: components/Preferences/UserDefinitions.tsx:1197
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "startsWithDescription"
-msgstr ""
+msgstr "Traži vrijednosti koje počinju zadanim nizom upita."
 
-#: components/Preferences/UserDefinitions.tsx:1133
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1133
 #, fuzzy
 msgid "startsWithCaseSensitive"
-msgstr ""
+msgstr "Počinje s (razlikuje velika i mala slova)"
 
-#: components/Preferences/UserDefinitions.tsx:1135
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1135
 #, fuzzy
 msgid "startsWithCaseSensitiveDescription"
-msgstr ""
+msgstr "Traži vrijednosti koje počinju zadanim nizom upita."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1139
 #: components/Preferences/UserDefinitions.tsx:1181
 #: components/Preferences/UserDefinitions.tsx:1201
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "containsInsensitive"
-msgstr ""
+msgstr "Sadrži (ne razlikuje velika i mala slova)"
 
-#: components/Preferences/UserDefinitions.tsx:1144
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1144
 #, fuzzy
 msgid "containsCaseSensitive"
-msgstr ""
+msgstr "Sadrži (osjetljivo na velika i mala slova)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1140
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "containsDescription"
 msgstr ""
+"Traži vrijednosti koje sadrže zadani niz upita (ne razlikuje velika i mala "
+"slova)."
 
-#: components/Preferences/UserDefinitions.tsx:1145
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1145
 #, fuzzy
 msgid "containsCaseSensitiveDescription"
 msgstr ""
+"Traži vrijednosti koje sadrže zadani niz upita (osjetljivo na velika i mala "
+"slova)."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "containsSecondDescription"
 msgstr ""
+"Može se koristiti _ za pronalaženje bilo kojeg pojedinačnog znaka ili % za "
+"pronalaženje bilo kojeg broja znakova."
 
-#: components/Preferences/UserDefinitions.tsx:1150
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1150
 #, fuzzy
 msgid "highlightMatch"
-msgstr ""
+msgstr "Označi odgovarajući podniz"
 
-#: components/Preferences/UserDefinitions.tsx:830
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:830
 #, fuzzy
 msgid "languageDescription"
-msgstr ""
+msgstr "Određuje natpise polja, napomene o korištenju i natpise tablica."
 
-#: components/Preferences/UserDefinitions.tsx:545
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:545
 #, fuzzy
 msgid "showDialogIcon"
-msgstr ""
+msgstr "Prikaži ikonu u zaglavlju"
 
-#: components/Preferences/UserDefinitions.tsx:299
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:299
 #, fuzzy
 msgid "scaleInterface"
-msgstr ""
+msgstr "Sučelje skale"
 
-#: components/Preferences/UserDefinitions.tsx:300
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:300
 #, fuzzy
 msgid "scaleInterfaceDescription"
-msgstr ""
+msgstr "Prilagodite sučelje veličini fonta."
 
-#: components/Preferences/UserDefinitions.tsx:1612
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1612
 #, fuzzy
 msgid "displayAuthor"
-msgstr ""
+msgstr "Prikaži autora u stablu"
 
-#: components/Preferences/UserDefinitions.tsx:607
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:607
 #, fuzzy
 msgid "welcomePage"
-msgstr ""
+msgstr "Početna stranica"
 
+#. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 #: components/Errors/JsonError.tsx:65
 #: components/Preferences/Renderers.tsx:244
 #: components/Preferences/UserDefinitions.tsx:620
-#. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "content"
-msgstr ""
+msgstr "Sadržaj"
 
-#: components/Preferences/Renderers.tsx:251
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:251
 #, fuzzy
 msgid "defaultImage"
-msgstr ""
+msgstr "Navedite logotip"
 
-#: components/Preferences/Renderers.tsx:259
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:259
 #, fuzzy
 msgid "customImage"
-msgstr ""
+msgstr "Prilagođena slika"
 
-#: components/Preferences/Renderers.tsx:265
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:265
 #, fuzzy
 msgid "embeddedWebpage"
-msgstr ""
+msgstr "Ugrađena web stranica"
 
-#: components/Preferences/Renderers.tsx:266
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:266
 #, fuzzy
 msgid "embeddedWebpageDescription"
-msgstr ""
+msgstr "URL stranice koja bi bila ugrađena na početnu stranicu:"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:582
 #: components/Preferences/UserDefinitions.tsx:840
 #: components/Preferences/UserDefinitions.tsx:1429
@@ -554,872 +567,913 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1926
 #: components/Preferences/UserDefinitions.tsx:2138
 #: components/Preferences/UserDefinitions.tsx:2199
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "behavior"
-msgstr ""
+msgstr "Ponašanje"
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:192
 #: components/Preferences/CollectionDefinitions.tsx:232
-#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "inheritance"
-msgstr ""
+msgstr "Nasljeđivanje"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1766
 #: components/Preferences/UserDefinitions.tsx:2096
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "noRestrictionsMode"
-msgstr ""
+msgstr "Način rada bez ograničenja"
 
-#: components/Preferences/UserDefinitions.tsx:2099
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2099
 #, fuzzy
 msgid "noRestrictionsModeWbDescription"
-msgstr ""
+msgstr "Omogućuje prijenos podataka u bilo koje polje u bilo kojoj tablici."
 
-#: components/Preferences/UserDefinitions.tsx:1769
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1769
 #, fuzzy
 msgid "noRestrictionsModeQueryDescription"
-msgstr ""
+msgstr "Omogućuje upite podataka iz bilo kojeg polja u bilo kojoj tablici."
 
-#: components/Preferences/UserDefinitions.tsx:2102
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2102
 #, fuzzy
 msgid "noRestrictionsModeWarning"
 msgstr ""
+"UPOZORENJE: omogućavanje ovoga može dovesti do gubitka podataka ili "
+"oštećenja baze podataka. Molimo vas da znate što radite."
 
-#: components/Preferences/index.tsx:306
 #. Used in: Components > Preferences > Index
+#: components/Preferences/index.tsx:306
 #, fuzzy
 msgid "adminsOnlyPreference"
-msgstr ""
+msgstr "Nemate dopuštenje za promjenu ove opcije"
 
-#: components/Preferences/UserDefinitions.tsx:1798
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1798
 #, fuzzy
 msgid "stickyScrolling"
-msgstr ""
+msgstr "Ljepljiva traka za pomicanje"
 
-#: components/Preferences/UserDefinitions.tsx:1079
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1079
 #, fuzzy
 msgid "foreground"
-msgstr ""
+msgstr "Prednji plan"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:328
 #: components/Preferences/UserDefinitions.tsx:1087
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "background"
-msgstr ""
+msgstr "Pozadina"
 
-#: components/Preferences/UserDefinitions.tsx:205
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:205
 #, fuzzy
 msgid "sidebarTheme"
-msgstr ""
+msgstr "Tema bočne trake"
 
-#: components/Preferences/UserDefinitions.tsx:1095
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1095
 #, fuzzy
 msgid "darkForeground"
-msgstr ""
+msgstr "Prednji plan (tamna tema)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:336
 #: components/Preferences/UserDefinitions.tsx:1103
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "darkBackground"
-msgstr ""
+msgstr "Pozadina (tamna tema)"
 
-#: components/Preferences/UserDefinitions.tsx:344
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:344
 #, fuzzy
 msgid "accentColor1"
-msgstr ""
+msgstr "Akcentna boja 1"
 
-#: components/Preferences/UserDefinitions.tsx:352
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:352
 #, fuzzy
 msgid "accentColor2"
-msgstr ""
+msgstr "Akcentna boja 2"
 
-#: components/Preferences/UserDefinitions.tsx:360
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:360
 #, fuzzy
 msgid "accentColor3"
-msgstr ""
+msgstr "Akcentna boja 3"
 
-#: components/Preferences/UserDefinitions.tsx:368
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:368
 #, fuzzy
 msgid "accentColor4"
-msgstr ""
+msgstr "Akcentna boja 4"
 
-#: components/Preferences/UserDefinitions.tsx:1964
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1964
 #, fuzzy
 msgid "spreadsheet"
-msgstr ""
+msgstr "Proračunska tablica"
 
-#: components/Preferences/UserDefinitions.tsx:1967
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1967
 #, fuzzy
 msgid "minSpareRows"
-msgstr ""
+msgstr "Broj praznih redaka na kraju"
 
-#: components/Preferences/UserDefinitions.tsx:1978
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1978
 #, fuzzy
 msgid "autoWrapCols"
-msgstr ""
+msgstr "Prelazak na drugu stranu prilikom dolaska do rubnog stupca"
 
-#: components/Preferences/UserDefinitions.tsx:1985
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1985
 #, fuzzy
 msgid "autoWrapRows"
-msgstr ""
+msgstr "Prelazak na drugu stranu kada se dođe do rubnog reda"
 
-#: components/Preferences/UserDefinitions.tsx:2026
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2026
 #, fuzzy
 msgid "enterBeginsEditing"
-msgstr ""
+msgstr "Tipka Enter započinje uređivanje ćelije"
 
-#: components/Preferences/UserDefinitions.tsx:1992
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1992
 #, fuzzy
 msgid "tabMoveDirection"
-msgstr ""
+msgstr "Smjer kretanja kada je pritisnuta tipka <key>Tab</key>"
 
-#: components/Preferences/UserDefinitions.tsx:1993
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1993
 #, fuzzy
 msgid "tabMoveDirectionDescription"
 msgstr ""
+"U suprotnom smjeru možete se pomicati pritiskom na <key>Shift</key>+<key>"
+"Tab</key>."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2000
 #: components/Preferences/UserDefinitions.tsx:2017
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "column"
-msgstr ""
+msgstr "Kolona"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 #: components/LocalityUpdate/Status.tsx:376
 #: components/LocalityUpdate/Status.tsx:419
 #: components/Preferences/UserDefinitions.tsx:2004
 #: components/Preferences/UserDefinitions.tsx:2021
-#. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "row"
-msgstr ""
+msgstr "Red"
 
-#: components/Preferences/UserDefinitions.tsx:2009
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2009
 #, fuzzy
 msgid "enterMoveDirection"
-msgstr ""
+msgstr "Smjer kretanja kada se pritisne tipka <key>Enter</key>"
 
-#: components/Preferences/UserDefinitions.tsx:2010
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2010
 #, fuzzy
 msgid "enterMoveDirectionDescription"
 msgstr ""
+"U suprotnom smjeru možete se pomicati pritiskom na <key>Shift</key>+<key>"
+"Enter</key>."
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:34
 #: components/Preferences/UserDefinitions.tsx:2035
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "filterPickLists"
-msgstr ""
+msgstr "Filtriranje stavki s popisa za odabir"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1810
 #: components/Preferences/UserDefinitions.tsx:2055
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "exportFileDelimiter"
-msgstr ""
+msgstr "Razdjelnik izvozne datoteke"
 
-#: components/Preferences/UserDefinitions.tsx:1838
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1838
 #, fuzzy
 msgid "exportCsvUtf8Bom"
-msgstr ""
+msgstr "Dodajte UTF-8 BOM u izvoze CSV datoteka"
 
-#: components/Preferences/UserDefinitions.tsx:1840
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1840
 #, fuzzy
 msgid "exportCsvUtf8BomDescription"
 msgstr ""
+"Dodaje BOM (oznaku redoslijeda bajtova) izvezenim CSV datotekama kako bi se "
+"osiguralo da razni programi (Excel, OpenRefine itd.) ispravno prepoznaju i "
+"prikazuju datoteku, sprječavajući probleme sa posebnim znakovima i "
+"formatiranjem."
 
-#: components/Preferences/UserDefinitions.tsx:2046
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2046
 #, fuzzy
 msgid "caseSensitive"
-msgstr ""
+msgstr "Razlikuje velika i mala slova"
 
-#: components/Preferences/UserDefinitions.tsx:2050
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2050
 #, fuzzy
 msgid "caseInsensitive"
-msgstr ""
+msgstr "Neosjetljivo na velika i mala slova"
 
-#: components/Preferences/UserDefinitions.tsx:1778
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1778
 #, fuzzy
 msgid "showNoReadTables"
-msgstr ""
+msgstr "Prikaži tablice bez pristupa \"Čitanje\""
 
-#: components/Preferences/UserDefinitions.tsx:2112
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2112
 #, fuzzy
 msgid "showNoAccessTables"
-msgstr ""
+msgstr "Prikaži tablice bez pristupa \"Izradi\""
 
-#: components/Preferences/UserDefinitions.tsx:843
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:843
 #, fuzzy
 msgid "textAreaAutoGrow"
-msgstr ""
+msgstr "Tekstualni okviri se automatski povećavaju"
 
-#: components/Preferences/UserDefinitions.tsx:1929
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1929
 #, fuzzy
 msgid "clearQueryFilters"
-msgstr ""
+msgstr "Poništi filtere upita"
 
-#: components/Preferences/UserDefinitions.tsx:1930
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1930
 #, fuzzy
 msgid "clearQueryFiltersDescription"
-msgstr ""
+msgstr "Briše sve filtere upita prilikom pokretanja izvješća iz obrasca."
 
-#: components/Preferences/UserDefinitions.tsx:1937
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1937
 #, fuzzy
 msgid "queryParamtersFromForm"
-msgstr ""
+msgstr "Prikaz filtera upita prilikom pokretanja izvješća iz obrasca"
 
-#: components/Preferences/UserDefinitions.tsx:1157
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1157
 #, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr ""
+msgstr "Omogući automatsko dovršavanje da raste koliko god je potrebno"
 
-#: components/Preferences/UserDefinitions.tsx:858
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:858
 #, fuzzy
 msgid "tableNameInTitle"
-msgstr ""
+msgstr "Uključite naziv tablice u naslov stranice preglednika"
 
-#: components/Preferences/UserDefinitions.tsx:865
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:865
 #, fuzzy
 msgid "focusFirstField"
-msgstr ""
+msgstr "Fokusiraj prvo polje"
 
-#: components/Preferences/UserDefinitions.tsx:2202
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2202
 #, fuzzy
 msgid "doubleClickZoom"
-msgstr ""
+msgstr "Dvaput kliknite za zumiranje"
 
-#: components/Preferences/UserDefinitions.tsx:2209
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2209
 #, fuzzy
 msgid "closePopupOnClick"
-msgstr ""
+msgstr "Zatvori skočni prozor vanjskim klikom"
 
-#: components/Preferences/UserDefinitions.tsx:2216
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2216
 #, fuzzy
 msgid "animateTransitions"
-msgstr ""
+msgstr "Animiraj prijelaze"
 
-#: components/Preferences/UserDefinitions.tsx:2223
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2223
 #, fuzzy
 msgid "panInertia"
-msgstr ""
+msgstr "Inercija paniranja"
 
-#: components/Preferences/UserDefinitions.tsx:2230
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2230
 #, fuzzy
 msgid "mouseDrags"
-msgstr ""
+msgstr "Povlačenje miša"
 
-#: components/Preferences/UserDefinitions.tsx:2237
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2237
 #, fuzzy
 msgid "scrollWheelZoom"
-msgstr ""
+msgstr "Zumiranje kotačićem za pomicanje"
 
-#: components/Preferences/UserDefinitions.tsx:911
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:911
 #, fuzzy
 msgid "flexibleColumnWidth"
-msgstr ""
+msgstr "Fleksibilna širina stupca"
 
-#: components/Preferences/UserDefinitions.tsx:918
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:918
 #, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr ""
+msgstr "Fleksibilna širina stupca mreže podprikaza"
 
-#: components/Preferences/UserDefinitions.tsx:552
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:552
 #, fuzzy
 msgid "closeOnEsc"
-msgstr ""
+msgstr "Zatvori pritiskom tipke <key>ESC</key>"
 
-#: components/Preferences/UserDefinitions.tsx:559
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:559
 #, fuzzy
 msgid "closeOnOutsideClick"
-msgstr ""
+msgstr "Zatvori vanjskim klikom"
 
-#: components/Preferences/UserDefinitions.tsx:977
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:977
 #, fuzzy
 msgid "specifyNetworkBadge"
-msgstr ""
+msgstr "Navedite mrežnu značku"
 
-#: components/Preferences/UserDefinitions.tsx:984
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:984
 #, fuzzy
 msgid "useAccessibleFullDatePicker"
-msgstr ""
+msgstr "Koristite pristupačan alat za odabir cijelog datuma"
 
-#: components/Preferences/UserDefinitions.tsx:991
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:991
 #, fuzzy
 msgid "useAccessibleMonthPicker"
-msgstr ""
+msgstr "Koristite pristupačan alat za odabir mjeseca"
 
-#: components/Preferences/UserDefinitions.tsx:998
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:998
 #, fuzzy
 msgid "rightAlignNumberFields"
-msgstr ""
+msgstr "Desno poravnanje numeričkih polja"
 
-#: components/Preferences/UserDefinitions.tsx:376
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:376
 #, fuzzy
 msgid "roundedCorners"
-msgstr ""
+msgstr "Zaobljeni kutovi"
 
-#: components/Preferences/UserDefinitions.tsx:963
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:963
 #, fuzzy
 msgid "showSubviewBorders"
-msgstr ""
+msgstr "Prikaži obrube oko podprikaza"
 
-#: components/Preferences/UserDefinitions.tsx:970
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:970
 #, fuzzy
 msgid "limitMaxFieldWidth"
-msgstr ""
+msgstr "Ograniči maksimalnu širinu polja"
 
-#: components/Preferences/UserDefinitions.tsx:1868
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1868
 #, fuzzy
 msgid "condenseQueryResults"
-msgstr ""
+msgstr "Sažeti rezultati upita"
 
-#: components/Preferences/UserDefinitions.tsx:538
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:538
 #, fuzzy
 msgid "blurContentBehindDialog"
-msgstr ""
+msgstr "Zamuti sadržaj iza dijaloga"
 
-#: components/Preferences/UserDefinitions.tsx:1414
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1414
 #, fuzzy
 msgid "collectionSortOrderDescription"
-msgstr ""
+msgstr "Ovo određuje vizualni redoslijed kolekcija."
 
-#: components/Preferences/UserDefinitions.tsx:1221
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1221
 #, fuzzy
 msgid "recordSetRecordToOpen"
-msgstr ""
+msgstr "Snimanje za otvaranje prema zadanim postavkama"
 
-#: components/Preferences/UserDefinitions.tsx:585
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:585
 #, fuzzy
 msgid "altClickToSupressNewTab"
 msgstr ""
+"<key>{altKeyName:string}</key>+<key>Kliknite</key> za potiskivanje nove "
+"kartice"
 
-#: components/Preferences/UserDefinitions.tsx:586
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:586
 #, fuzzy
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
+"<key>{altKeyName:string}</key>+<key>Kliknite</key> na poveznicu koja se "
+"obično otvara u novoj kartici kako biste je otvorili u trenutnoj kartici."
 
-#: components/Preferences/UserDefinitions.tsx:892
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:892
 #, fuzzy
 msgid "makeFormDialogsModal"
-msgstr ""
+msgstr "Zasivi pozadinu dijaloga obrasca"
 
-#: components/Preferences/UserDefinitions.tsx:1481
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1481
 #, fuzzy
 msgid "autoScrollTree"
-msgstr ""
+msgstr "Automatsko pomicanje stabla do fokusiranog čvora"
 
-#: components/Preferences/UserDefinitions.tsx:1497
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1497
 #, fuzzy
 msgid "sortByField"
-msgstr ""
+msgstr "Poredaj po polju"
 
-#: components/Preferences/UserDefinitions.tsx:2141
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2141
 #, fuzzy
 msgid "lineWrap"
-msgstr ""
+msgstr "Prelom retka"
 
-#: components/Preferences/UserDefinitions.tsx:2148
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2148
 #, fuzzy
 msgid "indentSize"
-msgstr ""
+msgstr "Veličina uvlake"
 
-#: components/Preferences/UserDefinitions.tsx:2160
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2160
 #, fuzzy
 msgid "indentWithTab"
-msgstr ""
+msgstr "Uvlačenje s <key>Tab</key>"
 
-#: components/Preferences/UserDefinitions.tsx:872
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:872
 #, fuzzy
 msgid "formHeaderFormat"
-msgstr ""
+msgstr "Format zaglavlja obrasca"
 
-#: components/Preferences/UserDefinitions.tsx:879
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:879
 #, fuzzy
 msgid "iconAndTableName"
-msgstr ""
+msgstr "Ikona i naziv tablice"
 
-#: components/Preferences/UserDefinitions.tsx:887
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:887
 #, fuzzy
 msgid "tableIcon"
-msgstr ""
+msgstr "Ikona tablice"
 
-#: components/Preferences/UserDefinitions.tsx:1243
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1243
 #, fuzzy
 msgid "maxHeight"
-msgstr ""
+msgstr "Maksimalna visina"
 
-#: components/Preferences/UserDefinitions.tsx:1113
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1113
 #, fuzzy
 msgid "autoComplete"
-msgstr ""
+msgstr "Automatsko dovršavanje"
 
-#: components/Preferences/UserDefinitions.tsx:1488
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1488
 #, fuzzy
 msgid "searchCaseSensitive"
-msgstr ""
+msgstr "Pretraživanje koje razlikuje velika i mala slova"
 
-#: components/Preferences/UserDefinitions.tsx:1521
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1521
 #, fuzzy
 msgid "searchField"
-msgstr ""
+msgstr "Polje za pretraživanje"
 
-#: components/Preferences/UserDefinitions.tsx:710
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:710
 #, fuzzy
 msgid "createInteractions"
-msgstr ""
+msgstr "Stvaranje interakcije"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:714
 #: components/Preferences/UserDefinitions.tsx:725
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "tableIdentifier"
-msgstr ""
+msgstr "{tableName:string} identifikator"
 
-#: components/Preferences/UserDefinitions.tsx:735
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:735
 #, fuzzy
 msgid "useSpaceAsDelimiter"
-msgstr ""
+msgstr "Koristite razmak kao razdjelnik"
 
-#: components/Preferences/UserDefinitions.tsx:756
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:756
 #, fuzzy
 msgid "useCommaAsDelimiter"
-msgstr ""
+msgstr "Koristite zarez kao razdjelnik"
 
-#: components/Preferences/UserDefinitions.tsx:777
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:777
 #, fuzzy
 msgid "useNewLineAsDelimiter"
-msgstr ""
+msgstr "Koristite novi redak kao razdjelnik"
 
-#: components/Preferences/UserDefinitions.tsx:798
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:798
 #, fuzzy
 msgid "useCustomDelimiters"
-msgstr ""
+msgstr "Koristite prilagođene razdjelnike"
 
-#: components/Preferences/UserDefinitions.tsx:799
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:799
 #, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
+"Popis razdjelnika koje treba koristiti, uz one definirane gore. Stavite "
+"jedan razdjelnik po retku."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:743
 #: components/Preferences/UserDefinitions.tsx:764
 #: components/Preferences/UserDefinitions.tsx:785
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "detectAutomaticallyDescription"
-msgstr ""
+msgstr "Automatsko otkrivanje na temelju formata kataloškog broja."
 
-#: components/Preferences/CollectionDefinitions.tsx:269
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:269
 #, fuzzy
 msgid "uniqueness"
-msgstr ""
+msgstr "Jedinstvenost"
 
+#. 🟥Verb. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:747
 #: components/Preferences/UserDefinitions.tsx:768
 #: components/Preferences/UserDefinitions.tsx:789
-#. 🟥Verb. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "use"
-msgstr ""
+msgstr "Koristiti"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:751
 #: components/Preferences/UserDefinitions.tsx:772
 #: components/Preferences/UserDefinitions.tsx:793
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dontUse"
-msgstr ""
+msgstr "Ne koristite"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:652
 #: components/Preferences/UserDefinitions.tsx:664
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "position"
-msgstr ""
+msgstr "Položaj"
 
-#: components/Preferences/UserDefinitions.tsx:658
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:658
 #, fuzzy
 msgid "top"
-msgstr ""
+msgstr "Vrh"
 
-#: components/Preferences/UserDefinitions.tsx:660
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:660
 #, fuzzy
 msgid "bottom"
-msgstr ""
+msgstr "Dno"
 
-#: components/Preferences/UserDefinitions.tsx:657
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:657
 #, fuzzy
 msgid "left"
-msgstr ""
+msgstr "Lijevo"
 
-#: components/Preferences/UserDefinitions.tsx:659
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:659
 #, fuzzy
 msgid "right"
-msgstr ""
+msgstr "Pravo"
 
-#: components/Preferences/UserDefinitions.tsx:595
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:595
 #, fuzzy
 msgid "showUnsavedIndicator"
-msgstr ""
+msgstr "Prikaži indikator nespremljenih promjena"
 
-#: components/Preferences/UserDefinitions.tsx:596
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:596
 #, fuzzy
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
+"Prikaži \"*\" u naslovu kartice kada postoje nespremljene promjene u "
+"trenutnoj kartici."
 
-#: components/Preferences/UserDefinitions.tsx:1893
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1893
 #, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
+"Automatski popuni spojeni zapis vrijednostima iz duplikata prilikom "
+"otvaranja dijaloga za spajanje."
 
-#: components/Preferences/UserDefinitions.tsx:1906
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1906
 #, fuzzy
 msgid "autoCreateVariants"
-msgstr ""
+msgstr "Automatski stvori {agentVariantTable:string} zapise"
 
-#: components/Preferences/UserDefinitions.tsx:1910
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1910
 #, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
+"Prilikom spajanja agenata, automatski kreirajte {agentVariantTable:string} "
+"zapise na temelju varijacija imena/prezimena."
 
+#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/AppResources/types.tsx:111
 #: components/Header/userToolDefinitions.ts:61
 #: components/Preferences/index.tsx:102
 #: components/Router/Routes.tsx:389
-#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "collectionPreferences"
-msgstr ""
+msgstr "Postavke kolekcije"
 
-#: components/Preferences/UserDefinitions.tsx:573
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:573
 #, fuzzy
 msgid "rememberDialogSizes"
-msgstr ""
+msgstr "Zapamti veličine dijaloških prozora"
 
-#: components/Preferences/UserDefinitions.tsx:566
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:566
 #, fuzzy
 msgid "rememberDialogPositions"
-msgstr ""
+msgstr "Zapamti položaje dijaloških prozora"
 
-#: components/Preferences/UserDefinitions.tsx:1432
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1432
 #, fuzzy
 msgid "autoPlayMedia"
-msgstr ""
+msgstr "Automatska reprodukcija medija"
 
-#: components/Preferences/UserDefinitions.tsx:316
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:316
 #, fuzzy
 msgid "useCustomTooltips"
-msgstr ""
+msgstr "Koristite moderne opise alata"
 
-#: components/Preferences/UserDefinitions.tsx:1209
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1209
 #, fuzzy
 msgid "alwaysUseQueryBuilder"
 msgstr ""
+"Uvijek koristite pretragu alata za izradu upita unutar obrasca za "
+"pretraživanje"
 
-#: components/Preferences/UserDefinitions.tsx:2129
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2129
 #, fuzzy
 msgid "localizeResourceNames"
-msgstr ""
+msgstr "Lokalizirajte nazive prepoznatih resursa aplikacije"
 
-#: components/Preferences/UserDefinitions.tsx:2167
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2167
 #, fuzzy
 msgid "splitLongXml"
-msgstr ""
+msgstr "Podijelite duge retke XML-a u više redaka"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:108
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:108
 #, fuzzy
 msgid "url"
-msgstr ""
+msgstr "URL"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:102
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:102
 #, fuzzy
 msgid "pickAttachment"
-msgstr ""
+msgstr "Odaberite prilog"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:130
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:130
 #, fuzzy
 msgid "attachmentFailed"
-msgstr ""
+msgstr "Učitavanje privitka nije uspjelo."
 
-#: components/Molecules/SyncAttachmentPicker.tsx:75
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:75
 #, fuzzy
 msgid "pickImage"
-msgstr ""
+msgstr "Odaberite sliku"
 
-#: components/Preferences/UserDefinitions.tsx:675
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:675
 #, fuzzy
 msgid "customLogo"
-msgstr ""
+msgstr "URL proširene slike"
 
-#: components/Preferences/UserDefinitions.tsx:683
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:683
 #, fuzzy
 msgid "customLogoCollapsed"
-msgstr ""
+msgstr "URL sažete slike"
 
-#: components/Preferences/UserDefinitions.tsx:680
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:680
 #, fuzzy
 msgid "customLogoDescription"
 msgstr ""
+"URL slike koja bi se prikazivala pored logotipa Navedi u navigacijskom "
+"izborniku."
 
-#: components/Preferences/UserDefinitions.tsx:1875
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1875
 #, fuzzy
 msgid "showLineNumber"
-msgstr ""
+msgstr "Prikaži broj retka rezultata upita"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:388
 #: components/Preferences/UserDefinitions.tsx:449
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "saveButtonColor"
-msgstr ""
+msgstr "Boja gumba za spremanje"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:428
 #: components/Preferences/UserDefinitions.tsx:489
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "secondaryButtonColor"
-msgstr ""
+msgstr "Boja sekundarnog gumba"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:436
 #: components/Preferences/UserDefinitions.tsx:497
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "secondaryLightButtonColor"
-msgstr ""
+msgstr "Boja tipke sekundarnog svjetla"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:396
 #: components/Preferences/UserDefinitions.tsx:457
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "dangerButtonColor"
-msgstr ""
+msgstr "Boja gumba za opasnost"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:412
 #: components/Preferences/UserDefinitions.tsx:473
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "infoButtonColor"
-msgstr ""
+msgstr "Boja gumba s informacijama"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:404
 #: components/Preferences/UserDefinitions.tsx:465
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "warningButtonColor"
-msgstr ""
+msgstr "Boja gumba za upozorenje"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:420
 #: components/Preferences/UserDefinitions.tsx:481
-#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "successButtonColor"
-msgstr ""
+msgstr "Boja gumba za uspjeh"
 
-#: components/Preferences/UserDefinitions.tsx:899
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:899
 #, fuzzy
 msgid "openAsReadOnly"
-msgstr ""
+msgstr "Otvori sve zapise u načinu rada samo za čitanje"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:297
 #: components/Preferences/UserDefinitions.tsx:1848
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "displayBasicView"
-msgstr ""
+msgstr "Prikaži osnovni prikaz"
 
-#: components/Preferences/UserDefinitions.tsx:1855
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1855
 #, fuzzy
 msgid "showComparisonOperatorsForString"
-msgstr ""
+msgstr "Prikaži operatore usporedbe za tekstualna polja"
 
-#: components/Preferences/UserDefinitions.tsx:1856
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1856
 #, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
+"Omogućuje primjenu sljedećih filtera na tekstualna polja: Veće od, Manje od, "
+"Veće ili jednako i Manje od ili jednako"
 
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
-#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "basicView"
-msgstr ""
+msgstr "Osnovni prikaz"
 
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
-#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #, fuzzy
 msgid "detailedView"
-msgstr ""
+msgstr "Detaljan prikaz"
 
-#: components/Preferences/UserDefinitions.tsx:1439
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1439
 #, fuzzy
 msgid "attachmentPreviewMode"
-msgstr ""
+msgstr "Način pregleda privitka"
 
-#: components/Preferences/UserDefinitions.tsx:1446
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1446
 #, fuzzy
 msgid "fullResolution"
-msgstr ""
+msgstr "Puna rezolucija"
 
-#: components/Preferences/UserDefinitions.tsx:1450
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1450
 #, fuzzy
 msgid "thumbnail"
-msgstr ""
+msgstr "Sličica"
 
-#: components/Preferences/UserDefinitions.tsx:613
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:613
 #, fuzzy
 msgid "addSearchBarHomePage"
-msgstr ""
+msgstr "Dodajte traku za pretraživanje na početnu stranicu"
 
-#: components/Preferences/CollectionDefinitions.tsx:206
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:206
 #, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
+"Samo zapisi {collectionObjectTableName: string} bez {catalogNumberFieldName: "
+"string} naslijedit će jedan od primarnog {collectionObjectTableName: string} "
+"u {collectionObjectGroupTableName: string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:196
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:196
 #, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
+"Omogući nasljeđivanje {catalogNumberFieldName: string} za "
+"{collectionObjectGroupTableName: string} objekte iste klase"
 
-#: components/Preferences/CollectionDefinitions.tsx:236
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:236
 #, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
+"Omogući nasljeđivanje {catalogNumberFieldName: string} za zapise "
+"{componentTableName: string}"
 
-#: components/Preferences/CollectionDefinitions.tsx:273
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:273
 #, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
+"Nametnite jedinstvenost za polje {catalogNumberFieldName: string} u "
+"{componentTableName: string} i {collectionObjectTableName: string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:37
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:37
 #, fuzzy
 msgid "scopeEntireTablePicklists"
-msgstr ""
+msgstr "Popisi za odabir \"Cijela tablica\""
 
-#: components/Preferences/CollectionDefinitions.tsx:38
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:38
 #, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
+"Ako je omogućeno, popisi za odabir tipa \"Cijela tablica\" prikazivat će "
+"samo stavke koje se koriste unutar trenutne kolekcije."
 
-#: components/Preferences/CollectionDefinitions.tsx:244
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:244
 #, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
+"Samo će zapisi {componentTableName: string} bez {catalogNumberFieldName: "
+"string} naslijediti jedan od svog roditelja {collectionObjectTableName: "
+"string}."
