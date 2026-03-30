@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:12+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/resources/pt_BR/>\n"
@@ -150,10 +150,10 @@ msgstr "Formatadores de Campo"
 #, fuzzy
 msgid "fieldFormattersDescription"
 msgstr ""
-"O “Formato de Campo” controla como os dados de um campo específico da "
-"tabela são exibidos nos resultados de consultas, exportações e formulários. "
-"Ele gerencia a numeração automática e a composição das várias partes que "
-"definem o campo."
+"O “Formato de Campo” controla como os dados de um campo específico da tabela "
+"são exibidos nos resultados de consultas, exportações e formulários. Ele "
+"gerencia a numeração automática e a composição das várias partes que definem "
+"o campo."
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:168
@@ -192,10 +192,10 @@ msgstr "Agregação de tabelas"
 msgid "aggregatorDescription"
 msgstr ""
 "A “Agregação de Tabelas” controla como vários registros de tabelas são "
-"consolidados em uma única string de texto. O formato da tabela, o "
-"separador, o sufixo, o campo de classificação e o limite de visualização do "
-"registro são personalizáveis. Essa configuração pode ser exibida nos "
-"resultados da consulta e nos formatos de tabela."
+"consolidados em uma única string de texto. O formato da tabela, o separador, "
+"o sufixo, o campo de classificação e o limite de visualização do registro "
+"são personalizáveis. Essa configuração pode ser exibida nos resultados da "
+"consulta e nos formatos de tabela."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
@@ -499,9 +499,8 @@ msgstr ""
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
-"Este recurso pertence a uma coleção/disciplina diferente daquela em que "
-"você está atualmente. Recomenda-se trocar de coleção antes de editar este "
-"recurso."
+"Este recurso pertence a uma coleção/disciplina diferente daquela em que você "
+"está atualmente. Recomenda-se trocar de coleção antes de editar este recurso."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
@@ -699,8 +698,8 @@ msgstr ""
 #, fuzzy
 msgid "catalogNumberAlreadyUsed"
 msgstr ""
-"{catalogNumberFieldName: string} {catalogNumber: string} já está em uso "
-"para outro componente ou objeto de coleção nesta coleção."
+"{catalogNumberFieldName: string} {catalogNumber: string} já está em uso para "
+"outro componente ou objeto de coleção nesta coleção."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:772
@@ -726,7 +725,7 @@ msgstr "Configurar campo"
 #: components/Formatters/Fields.tsx:381
 #, fuzzy
 msgid "trimZeros"
-msgstr ""
+msgstr "Remover zeros"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:375
