@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:23+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/"
 "fr/>\n"
@@ -147,8 +147,8 @@ msgstr "Fusionner « {nodeName:string} » ici"
 #, fuzzy
 msgid "mergeNodeHintMessage"
 msgstr ""
-"Sélectionnez une nouvelle cible pour que « {nodeName:string} » soit "
-"fusionné dans"
+"Sélectionnez une nouvelle cible pour que « {nodeName:string} » soit fusionné "
+"dans"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:345
@@ -163,11 +163,11 @@ msgstr ""
 #, fuzzy
 msgid "mergeNodeMessage"
 msgstr ""
-"Toutes les références au nœud {treeName:string} \"{nodeName:string}\" "
-"seront remplacées par \"{parentName:string}\", et tous les descendants de "
-"\"{nodeName:string}\" seront déplacés vers \"{parentName:string}\" avec "
-"tous les descendants correspondant en nom et en rang étant eux-mêmes "
-"fusionnés de manière récursive."
+"Toutes les références au nœud {treeName:string} \"{nodeName:string}\" seront "
+"remplacées par \"{parentName:string}\", et tous les descendants de \""
+"{nodeName:string}\" seront déplacés vers \"{parentName:string}\" avec tous "
+"les descendants correspondant en nom et en rang étant eux-mêmes fusionnés de "
+"manière récursive."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:436
@@ -191,8 +191,8 @@ msgstr "Sélectionnez une cible pour que « {nodeName:string} » soit synonymi
 #, fuzzy
 msgid "synonymizeMessage"
 msgstr ""
-"Le nœud {treeName:string} «{nodeName:string}» sera rendu synonyme de "
-"«{synonymName:string}»."
+"Le nœud {treeName:string} «{nodeName:string}» sera rendu synonyme de «"
+"{synonymName:string}»."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:400
@@ -444,7 +444,7 @@ msgstr ""
 #: components/Notifications/NotificationRenderers.tsx:367
 #, fuzzy
 msgid "defaultTreeTaskStarted"
-msgstr "Le processus de création de l'arborescence par défaut a démarré."
+msgstr "Le processus de création d'arbre par défaut a démarré."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:375
@@ -483,7 +483,7 @@ msgstr ""
 #: components/TreeView/CreateTree.tsx:506
 #, fuzzy
 msgid "missingRanks"
-msgstr "Rangs manquants"
+msgstr "Grades manquants"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:510
@@ -532,5 +532,4 @@ msgstr "Développer le comportement des synonymes"
 msgid "synonymizedNodesDescription"
 msgstr ""
 "Si cette option est activée, elle permet aux utilisateurs d'ajouter des "
-"enfants à des parents synonymisés et de synonymiser un nœud avec ses "
-"enfants."
+"enfants à des parents synonymisés et de synonymiser un nœud avec ses enfants."
