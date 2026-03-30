@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:12+0000\n"
+"PO-Revision-Date: 2026-03-30 14:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/user/"
 "es/>\n"
@@ -631,3 +631,19 @@ msgstr "Herramienta de configuración del sistema"
 #, fuzzy
 msgid "systemConfig"
 msgstr "Configuración del sistema"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:249
+#, fuzzy
+msgid "cannotReadAgentsForUserAssignment"
+msgstr ""
+"No se pueden cargar los agentes asignados porque no tiene permisos de "
+"lectura para los registros de agentes."
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:251
+#, fuzzy
+msgid "cannotReadDisciplinesForUserAssignment"
+msgstr ""
+"No se pueden cargar completamente los agentes asignados porque no tiene "
+"acceso de lectura a los registros de disciplina."
