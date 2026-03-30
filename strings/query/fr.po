@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -99,8 +99,8 @@ msgstr "Enregistrer la requête sous..."
 #, fuzzy
 msgid "saveClonedQueryDescription"
 msgstr ""
-"La requête sera enregistrée sous un nouveau nom, la requête actuelle "
-"restant inchangée."
+"La requête sera enregistrée sous un nouveau nom, la requête actuelle restant "
+"inchangée."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
@@ -180,8 +180,8 @@ msgstr "{value:string} (valeur actuelle, non valide)"
 #, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
-"Requête : \"{queryName:string}\" sur {recordSetTable:string} : "
-"\"{recordSetName:string}\""
+"Requête : \"{queryName:string}\" sur {recordSetTable:string} : \""
+"{recordSetName:string}\""
 
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:213
@@ -580,22 +580,23 @@ msgstr "Année"
 #, fuzzy
 msgid "relativeDate"
 msgstr ""
-"<count>{size:number}</count> <length>{type:string}</length> "
-"<direction>{direction:string}</direction>"
+"<count>{size:number}</count> <length>{type:string}</length> <direction>"
+"{direction:string}</direction>"
 
 #. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
 #, fuzzy
 msgid "importHiddenFields"
-msgstr "Les champs suivants sont masqués dans la requête que vous avez importée :"
+msgstr ""
+"Les champs suivants sont masqués dans la requête que vous avez importée :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
 #, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
-"La requête que vous avez importée contient des tables auxquelles vous "
-"n'avez pas d'accès en lecture :"
+"La requête que vous avez importée contient des tables auxquelles vous n'avez "
+"pas accès en lecture :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
@@ -701,3 +702,9 @@ msgstr "Il n'y a aucun article non résolu à retourner"
 #: components/QueryBuilder/LoanReturn.tsx:226
 msgid "itemsReturned"
 msgstr "Les articles ont été retournés"
+
+#. Used in: Components > Query Builder > Toolbar
+#: components/QueryBuilder/Toolbar.tsx:81
+#, fuzzy
+msgid "searchSynonyms"
+msgstr "Rechercher des synonymes"
