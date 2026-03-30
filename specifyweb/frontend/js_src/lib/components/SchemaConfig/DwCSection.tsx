@@ -52,7 +52,7 @@ const terms = jsonTerms.dwc.terms;
             </div>
 
             {isOpen && 
-                <div className="ml-3 space-y-4">
+                <div className="space-y-4">
                     {terms.map((termObj, index) => {
                     const iri = Object.keys(termObj)[0];
                     const term = termObj[iri];
