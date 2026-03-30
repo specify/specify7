@@ -240,7 +240,7 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.',
     'de-ch':
-      'Die „Tabellenformatierung“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern dargestellt werden. Sie bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
+      'Das „Tabellenformat“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern angezeigt werden. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
     'es-es':
       'El "Formato de tabla" controla cómo se muestran los datos de una tabla específica en los resultados de consultas, las exportaciones y los cuadros combinados de consultas. Determina los campos que se mostrarán y su orden. El formato condicional se puede configurar según un valor del registro.',
     'fr-fr':
@@ -250,7 +250,7 @@ export const resourcesText = createDictionary({
     'uk-ua':
       '«Формат таблиці» керує тим, як дані з певної таблиці відображаються в результатах запитів, експорті та комбінованих полях запитів. Він визначає поля для відображення та їх порядок. Умовне форматування можна налаштувати на основі значення в записі.',
     'pt-br':
-      'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consulta. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
+      'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consultas. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
     'hr-hr': '',
   },
   aggregator: {
@@ -1146,8 +1146,7 @@ export const resourcesText = createDictionary({
   formatterPreviewUnavailable: {
     'en-us': 'Preview for formatter of this type is not available',
     'de-ch': 'Eine Vorschau für diesen Formatierertyp ist nicht verfügbar.',
-    'es-es':
-      'La vista previa para el formateador de este tipo no está disponible',
+    'es-es': 'La vista previa para este tipo de formateador no está disponible',
     'fr-fr': "L'aperçu pour ce type de formateur n'est pas disponible.",
     'pt-br':
       'A pré-visualização para formatadores deste tipo não está disponível.',

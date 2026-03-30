@@ -507,11 +507,11 @@ export const queryText = createDictionary({
     'en-us':
       'Use "%" to match any number of characters.\n\nUse "_" to match a single character',
     'ru-ru':
-      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
+      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
     'es-es':
       'Usar "%" para hacer coincidir cualquier número de caracteres.\n\nUsar "_" para hacer coincidir un solo carácter',
     'fr-fr':
-      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
+      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
     'uk-ua':
       'Використовуйте "%", щоб відповідати будь-якій кількості символів.\n\nВикористовуйте "_", щоб відповідати одному символу',
     'de-ch':
@@ -686,7 +686,7 @@ export const queryText = createDictionary({
     'es-es': 'Termina con',
     'fr-fr': 'Se termine par',
     'pt-br': 'Termina com',
-    'ru-ru': 'Заканчивается',
+    'ru-ru': 'Заканчивается на',
     'uk-ua': 'Закінчується на',
     'hr-hr': '',
   },
@@ -747,7 +747,7 @@ export const queryText = createDictionary({
     'fr-fr': "Requête d'exportation pour la définition DwCA",
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
-    'pt-br': 'Consulta de exportação para definição de DwCA',
+    'pt-br': 'Exportar consulta para definição de DwCA',
     'hr-hr': '',
   },
   exportQueryAsReport: {
@@ -1055,7 +1055,7 @@ export const queryText = createDictionary({
   primaryCatalogNumberInheritance: {
     'en-us': '{collectionObjectTableName: string}',
     'de-ch': '{collectionObjectTableName: string}',
-    'es-es': '{collectionObjectTableName: cadena}',
+    'es-es': '{collectionObjectTableName: string}',
     'fr-fr': '{collectionObjectTableName: chaîne}',
     'pt-br': '{collectionObjectTableName: string}',
     'ru-ru': '{collectionObjectTableName: string}',
@@ -1065,7 +1065,7 @@ export const queryText = createDictionary({
   parentCatalogNumberInheritance: {
     'en-us': '{componentTableName: string}',
     'de-ch': '{componentTableName: string}',
-    'es-es': '{nombreDeTablaDeComponente: cadena}',
+    'es-es': '{componentTableName: string}',
     'fr-fr': '{componentTableName: chaîne}',
     'pt-br': '{componentTableName: string}',
     'ru-ru': '{componentTableName: string}',
@@ -1078,7 +1078,7 @@ export const queryText = createDictionary({
     'de-ch':
       '{componentTableName: string} & {collectionObjectTableName: string}',
     'es-es':
-      '{nombreDeTablaDeComponentes: cadena} y {nombreDeTablaDeObjetosDeColección: cadena}',
+      '{componentTableName: string} y {collectionObjectTableName: string}',
     'fr-fr':
       '{componentTableName: chaîne} et {collectionObjectTableName: chaîne}',
     'pt-br':

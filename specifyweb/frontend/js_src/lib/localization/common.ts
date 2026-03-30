@@ -850,7 +850,7 @@ export const commonText = createDictionary({
     'es-es': 'Selección masiva',
     'de-ch': 'Mehrfachauswahl',
     'fr-fr': 'Sélection en masse',
-    'ru-ru': 'Выбор группы',
+    'ru-ru': 'Выбор партии',
     'uk-ua': 'Масовий вибір',
     'pt-br': 'Seleção em massa',
     'hr-hr': '',

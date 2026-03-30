@@ -164,7 +164,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Spécifiez la version 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
-    'pt-br': 'Especificar versão 6:',
+    'pt-br': 'Especifique a versão 6:',
     'hr-hr': '',
   },
   databaseVersion: {
@@ -179,12 +179,12 @@ export const welcomeText = createDictionary({
   },
   schemaVersion: {
     'en-us': 'Database Schema',
-    'ru-ru': 'Версия схемы базы данных',
-    'es-es': 'Versión del Esquema de base de datos',
-    'fr-fr': 'Version du schéma de base de données',
-    'uk-ua': 'Версія схеми БД',
-    'de-ch': 'Datenbankschema-Version',
-    'pt-br': 'Versão do esquema do banco de dados',
+    'ru-ru': 'Схема базы данных',
+    'es-es': 'Esquema de la base de datos',
+    'fr-fr': 'Schéma de base de données',
+    'uk-ua': 'Схема бази даних',
+    'de-ch': 'Datenbankschema',
+    'pt-br': 'Esquema do banco de dados',
     'hr-hr': '',
   },
   databaseName: {

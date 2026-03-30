@@ -280,7 +280,7 @@ export const userText = createDictionary({
     'de-ch':
       'Sie haben über das aktuell angemeldete Konto keinen Zugriff auf {collectionTable:string}-Dateien, die diese Ressource enthalten.',
     'pt-br':
-      'Você não tem acesso a nenhum {collectionTable:string} que contenha este recurso através da conta atualmente conectada.',
+      'Você não tem acesso a nenhum {collectionTable:string} que contenha este recurso por meio da conta atualmente conectada.',
     'hr-hr': '',
   },
   resourceInaccessible: {
@@ -1238,22 +1238,22 @@ export const userText = createDictionary({
   },
   systemConfigurationTool: {
     'en-us': 'System Configuration Tool',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
+    'de-ch': 'Systemkonfigurationstool',
+    'es-es': 'Herramienta de configuración del sistema',
+    'fr-fr': 'Outil de configuration système',
     'hr-hr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'pt-br': 'Ferramenta de Configuração do Sistema',
+    'ru-ru': 'Инструмент настройки системы',
+    'uk-ua': 'Інструмент конфігурації системи',
   },
   systemConfig: {
     'en-us': 'System Config',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
+    'de-ch': 'Systemkonfiguration',
+    'es-es': 'Configuración del sistema',
+    'fr-fr': 'Configuration système',
     'hr-hr': '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'pt-br': 'Configuração do sistema',
+    'ru-ru': 'Конфигурация системы',
+    'uk-ua': 'Конфігурація системи',
   },
 } as const);

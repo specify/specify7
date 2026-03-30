@@ -355,7 +355,7 @@ export const wbText = createDictionary({
     'es-es': '¿Comenzar reversión del conjunto de datos?',
     'fr-fr': "Commencer la restauration de l'ensemble de données ?",
     'uk-ua': 'Почати відкат набору даних?',
-    'de-ch': 'Datensatz zurücksetzen?',
+    'de-ch': 'Datensatz-Rollback starten?',
     'pt-br': 'Iniciar reversão do conjunto de dados?',
     'hr-hr': '',
   },
@@ -1073,7 +1073,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпортуйте файл, щоб створити новий набір даних',
     'de-ch':
-      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
+      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen.',
     'pt-br': 'Importe um arquivo para criar um novo conjunto de dados.',
     'hr-hr': '',
   },

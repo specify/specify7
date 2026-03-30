@@ -222,7 +222,7 @@ export const schemaText = createDictionary({
   manyToMany: {
     'en-us': 'many-to-many',
     'ru-ru': 'многие ко многим',
-    'es-es': 'de muchos a muchos',
+    'es-es': 'muchos a muchos',
     'fr-fr': 'plusieurs à plusieurs',
     'uk-ua': 'багато-до-багатьох',
     'de-ch': 'Viele zu viele',
@@ -262,7 +262,7 @@ export const schemaText = createDictionary({
   uiFormattersForField: {
     'en-us': 'Field Formatters for {fieldLabel:string}',
     'de-ch': 'Feldformatierer für {fieldLabel:string}',
-    'es-es': 'Formateadores de campos para {fieldLabel:string}',
+    'es-es': 'Formateadores de campo para {fieldLabel:string}',
     'fr-fr': 'Formateurs de champs pour {fieldLabel:string}',
     'pt-br': 'Formatadores de campo para {fieldLabel:string}',
     'ru-ru': 'Форматирование полей для {fieldLabel:string}',
@@ -412,7 +412,7 @@ export const schemaText = createDictionary({
   databaseSchema: {
     'en-us': 'Database Schema',
     'ru-ru': 'Схема базы данных',
-    'es-es': 'Esquema de base de datos',
+    'es-es': 'Esquema de la base de datos',
     'fr-fr': 'Schéma de base de données',
     'uk-ua': 'Схема бази даних',
     'de-ch': 'Datenbankschema',
@@ -441,7 +441,7 @@ export const schemaText = createDictionary({
   },
   goToTop: {
     'en-us': 'Go to top',
-    'es-es': 'Ir arriba',
+    'es-es': 'Ir al inicio',
     'fr-fr': 'Retour en haut',
     'uk-ua': 'Перейти на початок',
     'de-ch': 'Nach oben',
@@ -472,7 +472,7 @@ export const schemaText = createDictionary({
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
     'de-ch': 'Eindeutigkeitsregeln',
-    'es-es': 'Reglas de unicidad',
+    'es-es': 'Reglas de singularidad',
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
     'uk-ua': 'Правила унікальності',
@@ -591,7 +591,7 @@ export const schemaText = createDictionary({
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
-    'de-ch': 'Benutzerdefiniertes Feldformat',
+    'de-ch': 'Format für benutzerdefinierte Felder',
     'es-es': 'Formato de campo personalizado',
     'fr-fr': 'Format de champ personnalisé',
     'ru-ru': 'Формат пользовательского поля',

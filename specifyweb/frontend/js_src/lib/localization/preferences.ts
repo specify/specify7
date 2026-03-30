@@ -479,7 +479,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Synonyme couleur',
     'uk-ua': 'Синонім кольору',
     'de-ch': 'Synonymfarbe',
-    'pt-br': 'Cor (Sinônimo)',
+    'pt-br': 'Cor (sinônimo)',
     'hr-hr': '',
   },
   showNewDataSetWarning: {
@@ -2241,7 +2241,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Permite aplicar los siguientes filtros a los campos de texto: Mayor que, Menor que, Mayor o igual que y Menor o igual que',
     'fr-fr':
-      "Permet d'appliquer les filtres suivants aux champs de texte : supérieur à, inférieur à, supérieur ou égal à et inférieur ou égal à",
+      "Permet d'appliquer les filtres suivants aux champs de texte : Supérieur à, Inférieur à, Supérieur ou égal à et Inférieur ou égal à",
     'pt-br':
       'Permite que os seguintes filtros sejam aplicados aos campos de texto: Maior que, Menor que, Maior ou igual a e Menor ou igual a.',
     'ru-ru':
@@ -2316,7 +2316,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Nur {collectionObjectTableName: string}-Datensätze ohne {catalogNumberFieldName: string} erben einen solchen vom primären {collectionObjectTableName: string} in einer {collectionObjectGroupTableName: string}.',
     'es-es':
-      'Solo los registros {collectionObjectTableName: string} sin un {catalogNumberFieldName: string} heredarán uno del {collectionObjectTableName: string} principal en un {collectionObjectGroupTableName: string}.',
+      'Solo los registros {collectionObjectTableName: string} que no tengan un {catalogNumberFieldName: string} heredarán uno del {collectionObjectTableName: string} principal en un {collectionObjectGroupTableName: string}.',
     'fr-fr':
       "Seuls les enregistrements {collectionObjectTableName: string} sans {catalogNumberFieldName: string} hériteront d'un {collectionObjectTableName: string} principal dans un {collectionObjectGroupTableName: string}.",
     'pt-br':
@@ -2333,7 +2333,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Aktivieren Sie die Vererbung von {catalogNumberFieldName: string} für die Geschwistertabellen {collectionObjectGroupTableName: string}.',
     'es-es':
-      'Habilitar la herencia de {catalogNumberFieldName: string} para los hermanos {collectionObjectGroupTableName: string}',
+      'Habilitar la herencia de {catalogNumberFieldName: string} para los elementos hermanos de {collectionObjectGroupTableName: string}',
     'fr-fr':
       "Activer l'héritage de {catalogNumberFieldName: string} pour les éléments frères de {collectionObjectGroupTableName: string}",
     'pt-br':
@@ -2350,7 +2350,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Aktivieren Sie die Vererbung von {catalogNumberFieldName: string} für {componentTableName: string}-Datensätze.',
     'es-es':
-      'Habilitar la herencia de {catalogNumberFieldName: string} para los registros de {componentTableName: string}',
+      'Habilitar la herencia de {catalogNumberFieldName: string} para los registros {componentTableName: string}',
     'fr-fr':
       "Activer l'héritage {catalogNumberFieldName: string} pour les enregistrements {componentTableName: string}",
     'pt-br':
@@ -2367,7 +2367,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Erzwinge die Eindeutigkeit des Feldes {catalogNumberFieldName: string} in den Tabellen {componentTableName: string} und {collectionObjectTableName: string}.',
     'es-es':
-      'Aplicar unicidad para el campo {catalogNumberFieldName: string} en {componentTableName: string} y {collectionObjectTableName: string}.',
+      'Garantizar la unicidad del campo {catalogNumberFieldName: string} en {componentTableName: string} y {collectionObjectTableName: string}.',
     'fr-fr':
       "Imposer l'unicité du champ {catalogNumberFieldName: string} entre {componentTableName: string} et {collectionObjectTableName: string}.",
     'pt-br':
@@ -2411,7 +2411,7 @@ export const preferencesText = createDictionary({
     'de-ch':
       'Nur Datensätze mit dem Namen {componentTableName: string}, die kein {catalogNumberFieldName: string} aufweisen, erben ein solches von ihrem übergeordneten Datensatz {collectionObjectTableName: string}.',
     'es-es':
-      'Solo los registros {componentTableName: string} sin un {catalogNumberFieldName: string} heredarán uno de su padre {collectionObjectTableName: string}.',
+      'Solo los registros {componentTableName: string} que no tengan un {catalogNumberFieldName: string} heredarán uno de su padre {collectionObjectTableName: string}.',
     'fr-fr':
       'Seuls les enregistrements {componentTableName: string} sans {catalogNumberFieldName: string} hériteront de celui de leur {collectionObjectTableName: string} parent.',
     'pt-br':
