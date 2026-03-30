@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:23+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/tree/"
 "es/>\n"
@@ -413,7 +413,7 @@ msgstr "Árboles poblados"
 #: components/TreeView/CreateTree.tsx:591
 #, fuzzy
 msgid "defaultTreeCreationStarted"
-msgstr "Se inició la creación del árbol predeterminado"
+msgstr "Creación de árbol predeterminada iniciada"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:603
@@ -421,7 +421,7 @@ msgstr "Se inició la creación del árbol predeterminado"
 msgid "defaultTreeCreationStartedDescription"
 msgstr ""
 "El árbol se creará en segundo plano. Recibirás una notificación cuando esté "
-"completo."
+"terminado."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:367
@@ -433,7 +433,7 @@ msgstr "Se ha iniciado el proceso de creación del árbol predeterminado."
 #: components/Notifications/NotificationRenderers.tsx:375
 #, fuzzy
 msgid "defaultTreeTaskFailed"
-msgstr "Error en la creación del árbol predeterminado."
+msgstr "Falló la creación del árbol predeterminado."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:383
@@ -458,28 +458,27 @@ msgstr ""
 #: components/TreeView/Tree.tsx:281
 #, fuzzy
 msgid "defaultTreeCreationLoadingMessage"
-msgstr ""
-"La creación del árbol predeterminado está en progreso, por favor espere..."
+msgstr "La creación del árbol predeterminado está en curso, por favor espere..."
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:506
 #, fuzzy
 msgid "missingRanks"
-msgstr "Rangos faltantes"
+msgstr "Rangos desaparecidos"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:510
 #, fuzzy
 msgid "missingRanksDescription"
 msgstr ""
-"El árbol poblado que usted seleccionó para descargar contiene registros en "
-"rangos que faltan en su árbol."
+"El árbol genealógico que seleccionaste para descargar contiene registros en "
+"rangos que faltan en tu árbol."
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:518
 #, fuzzy
 msgid "createMissingRanks"
-msgstr "¿Se deberían crear los rangos que faltan?"
+msgstr "¿Deberían crearse los rangos que faltan?"
 
 #. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 #: components/SetupTool/SetupForm.tsx:320
