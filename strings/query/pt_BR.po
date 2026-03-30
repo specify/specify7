@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/query/pt_BR/>\n"
@@ -175,8 +175,8 @@ msgstr "{value:string} (valor atual inválido)"
 #, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
-"Consulta: \"{queryName:string}\" em {recordSetTable:string}: "
-"\"{recordSetName:string}\""
+"Consulta: \"{queryName:string}\" em {recordSetTable:string}: \""
+"{recordSetName:string}\""
 
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:213
@@ -571,8 +571,8 @@ msgstr "Ano"
 #, fuzzy
 msgid "relativeDate"
 msgstr ""
-"<count>{size:number}</count> <length>{type:string}</length> "
-"<direction>{direction:string}</direction>"
+"<count>{size:number}</count> <length>{type:string}</length> <direction>"
+"{direction:string}</direction>"
 
 #. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
@@ -690,3 +690,9 @@ msgstr "Não há itens pendentes para devolver."
 #: components/QueryBuilder/LoanReturn.tsx:226
 msgid "itemsReturned"
 msgstr "Os itens foram devolvidos."
+
+#. Used in: Components > Query Builder > Toolbar
+#: components/QueryBuilder/Toolbar.tsx:81
+#, fuzzy
+msgid "searchSynonyms"
+msgstr "Pesquisar sinônimos"
