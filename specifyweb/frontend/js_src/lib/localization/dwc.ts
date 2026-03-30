@@ -7,6 +7,6 @@
 import { createDictionary } from './utils';
 
 export const darwinCoreText = createDictionary({
-    darwinCore: 
-    {'en-us': 'Darwin Core'}
-})
+  darwinCore: { 'en-us': 'Darwin Core' },
+  noDwCTerm: { 'en-us': 'No Darwin Core terms mapped to this field.' },
+});

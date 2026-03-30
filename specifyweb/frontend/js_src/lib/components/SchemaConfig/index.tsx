@@ -133,6 +133,7 @@ export function SchemaConfigMain(): JSX.Element {
             <SchemaConfigField
               field={table.getField(item.name)!}
               item={item}
+              tableName={table.name}
               schemaData={schemaData}
               onChange={(field, value): void =>
                 setItem(index, {
