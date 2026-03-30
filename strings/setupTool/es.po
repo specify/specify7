@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "setupTool/es/>\n"
@@ -484,3 +484,11 @@ msgstr "Jerarquía institucional"
 #, fuzzy
 msgid "emptyTaxonTree"
 msgstr "Se creará un árbol de taxones vacío"
+
+#. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:399
+#, fuzzy
+msgid "collectionCreationStarted"
+msgstr ""
+"La colección recién creada se está configurando. Puede que tarde un tiempo "
+"en estar disponible."
