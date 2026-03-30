@@ -17,6 +17,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Ласкаво просимо',
     'de-ch': 'Willkommen',
     'pt-br': 'Bem-vindo',
+    'hr-hr': '',
   },
   aboutSpecify: {
     'en-us': 'About Specify 7',
@@ -26,6 +27,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Про Specify 7',
     'de-ch': 'Über Specify 7',
     'pt-br': 'Sobre Especificar 7',
+    'hr-hr': '',
   },
   downloadInformation: {
     'en-us': 'Download Information',
@@ -35,6 +37,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'À propos de Spécifier 7',
     'uk-ua': 'Про Specify 7',
     'pt-br': 'Informações para download',
+    'hr-hr': '',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -44,6 +47,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Taxon Tiles',
     'de-ch': 'Taxon-Kacheln',
     'pt-br': 'Blocos de táxon',
+    'hr-hr': '',
   },
   taxonTilesDescription: {
     'en-us':
@@ -60,6 +64,7 @@ export const welcomeText = createDictionary({
       'Zeigt Taxa mit {count:number|formatted} oder mehr {collectionObjectTable:string} Datensätzen',
     'pt-br':
       'Exibindo táxons com {count:number|formatted} ou mais registros {collectionObjectTable:string}',
+    'hr-hr': '',
   },
   fullAddress: {
     'en-us':
@@ -76,6 +81,7 @@ export const welcomeText = createDictionary({
       'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'pt-br':
       'Consórcio de Coleções Específicas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA',
+    'hr-hr': '',
   },
   disclosure: {
     'en-us':
@@ -92,6 +98,7 @@ export const welcomeText = createDictionary({
       "Die Specify-Software ist ein Produkt des Specify Collections Consortiums, das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu den Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, University of Michigan. Das Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S. Steuerstatus des University of Kansas Center for Research. Specify wurde von 1996 bis 2018 durch Zuschüsse der U.S. National Science Foundation unterstützt.",
     'pt-br':
       "O software Specify é um produto do Specify Collections Consortium, que é governado e financiado por suas instituições membros. Os membros fundadores do Consórcio incluem: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas e University of Michigan. O Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos EUA (NSF).",
+    'hr-hr': '',
   },
   licence: {
     'en-us':
@@ -108,6 +115,7 @@ export const welcomeText = createDictionary({
       'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.',
     'pt-br':
       'Specify 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v2.',
+    'hr-hr': '',
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -117,6 +125,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Інформація про систему',
     'de-ch': 'Systeminformationen',
     'pt-br': 'Informações do sistema',
+    'hr-hr': '',
   },
   specifyVersion: {
     'en-us': 'Specify 7 Version:',
@@ -126,6 +135,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
     'pt-br': 'Especificar versão 7:',
+    'hr-hr': '',
   },
   gitSha: {
     'en-us': 'Git SHA:',
@@ -135,6 +145,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Git SHA:',
     'de-ch': 'Git SHA:',
     'pt-br': 'SHA do Git:',
+    'hr-hr': '',
   },
   buildDate: {
     'en-us': 'Build Date:',
@@ -144,6 +155,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Дата збірки:',
     'de-ch': 'Datum des Builds:',
     'pt-br': 'Data de compilação:',
+    'hr-hr': '',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
@@ -153,6 +165,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
     'pt-br': 'Especificar versão 6:',
+    'hr-hr': '',
   },
   databaseVersion: {
     'en-us': 'Database Version:',
@@ -162,6 +175,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Версія бази даних:',
     'de-ch': 'Datenbankversion:',
     'pt-br': 'Versão do banco de dados:',
+    'hr-hr': '',
   },
   schemaVersion: {
     'en-us': 'Database Schema',
@@ -171,6 +185,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Версія схеми БД',
     'de-ch': 'Datenbankschema-Version',
     'pt-br': 'Versão do esquema do banco de dados',
+    'hr-hr': '',
   },
   databaseName: {
     'en-us': 'Database Name:',
@@ -180,6 +195,7 @@ export const welcomeText = createDictionary({
     'uk-ua': "Ім'я бази даних:",
     'de-ch': 'Datenbank-Name:',
     'pt-br': 'Nome do banco de dados:',
+    'hr-hr': '',
   },
   browser: {
     'en-us': 'Browser:',
@@ -189,6 +205,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Браузер:',
     'de-ch': 'Browser:',
     'pt-br': 'Navegador:',
+    'hr-hr': '',
   },
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
@@ -198,5 +215,6 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Дата створення БД:',
     'de-ch': 'Datenbank Erstelldatum:',
     'pt-br': 'Data de criação do banco de dados:',
+    'hr-hr': '',
   },
 } as const);

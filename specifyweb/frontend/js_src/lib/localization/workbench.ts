@@ -17,6 +17,7 @@ export const wbText = createDictionary({
     'uk-ua': 'WorkBench',
     'de-ch': 'WorkBench',
     'pt-br': 'Bancada de trabalho',
+    'hr-hr': '',
   },
   uploadPlan: {
     'en-us': 'Upload Plan',
@@ -27,6 +28,7 @@ export const wbText = createDictionary({
     'ru-ru': 'План загрузки',
     'uk-ua': 'План завантаження',
     'pt-br': 'Plano de upload',
+    'hr-hr': '',
   },
   rollback: {
     'en-us': 'Roll Back',
@@ -36,6 +38,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Відкат',
     'de-ch': 'Zurückrollen',
     'pt-br': 'Reverter',
+    'hr-hr': '',
   },
   validate: {
     'en-us': 'Validate',
@@ -45,6 +48,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірити',
     'de-ch': 'Validieren',
     'pt-br': 'Validar',
+    'hr-hr': '',
   },
   validation: {
     'en-us': 'Validation',
@@ -54,6 +58,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка',
     'de-ch': 'Validierung',
     'pt-br': 'Validação',
+    'hr-hr': '',
   },
   upload: {
     'en-us': 'Upload',
@@ -63,6 +68,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Вавантаження',
     'de-ch': 'Hochladen',
     'pt-br': 'Carregar',
+    'hr-hr': '',
   },
   rollingBack: {
     'en-us': 'Rolling Back',
@@ -72,6 +78,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Відкат назад',
     'de-ch': 'Zurückrollen',
     'pt-br': 'Revertendo',
+    'hr-hr': '',
   },
   uploading: {
     'en-us': 'Uploading',
@@ -81,6 +88,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Завантаження',
     'de-ch': 'Hochladen',
     'pt-br': 'Carregando',
+    'hr-hr': '',
   },
   validating: {
     'en-us': 'Validating',
@@ -90,6 +98,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка',
     'de-ch': 'Validierung',
     'pt-br': 'Validação',
+    'hr-hr': '',
   },
   disambiguate: {
     'en-us': 'Disambiguate',
@@ -99,6 +108,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Усунути неоднозначність',
     'de-ch': 'Begriffsklärung',
     'pt-br': 'Desambiguar',
+    'hr-hr': '',
   },
   fillDown: {
     'en-us': 'Fill Down',
@@ -108,6 +118,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Заповнити вниз',
     'de-ch': 'Nach unten füllen',
     'pt-br': 'Preencha até o final',
+    'hr-hr': '',
   },
   fillUp: {
     'en-us': 'Fill Up',
@@ -117,6 +128,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Заповнити',
     'de-ch': 'Auffüllen',
     'pt-br': 'Encha',
+    'hr-hr': '',
   },
   revert: {
     'en-us': 'Revert',
@@ -126,6 +138,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Повернути',
     'de-ch': 'Zurücksetzen',
     'pt-br': 'Reverter',
+    'hr-hr': '',
   },
   dataCheck: {
     'en-us': 'Live Validation',
@@ -135,6 +148,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка даних',
     'de-ch': 'Live-Validierung',
     'pt-br': 'Validação em tempo real',
+    'hr-hr': '',
   },
   dataCheckOn: {
     'en-us': 'Live Validation: On',
@@ -144,6 +158,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка даних: увімкнено',
     'de-ch': 'Live-Validierung: Ein',
     'pt-br': 'Validação ao vivo: Ligado',
+    'hr-hr': '',
   },
   dataCheckDescription: {
     'en-us':
@@ -160,6 +175,7 @@ export const wbText = createDictionary({
       'Зауважте, що перевірка в реальному часі є експериментальною функцією і не замінює звичайну перевірку.',
     'pt-br':
       'Observação: a validação em tempo real é um recurso experimental e não substitui a validação regular.',
+    'hr-hr': '',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -169,6 +185,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Змінити власника',
     'de-ch': 'Eigentümer ändern',
     'pt-br': 'Alterar proprietário',
+    'hr-hr': '',
   },
   convertCoordinates: {
     'en-us': 'Convert Coordinates',
@@ -178,6 +195,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перетворення координат',
     'de-ch': 'Koordinaten umrechnen',
     'pt-br': 'Converter coordenadas',
+    'hr-hr': '',
   },
   navigation: {
     'en-us': 'Navigation',
@@ -187,6 +205,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Навігація',
     'de-ch': 'Navigation',
     'pt-br': 'Navegação',
+    'hr-hr': '',
   },
   replace: {
     'en-us': 'Replace',
@@ -196,6 +215,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Замінити',
     'de-ch': 'Ersetzen',
     'pt-br': 'Substituir',
+    'hr-hr': '',
   },
   replacementValue: {
     'en-us': 'Replacement value',
@@ -205,6 +225,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Відновна вартість',
     'de-ch': 'Wiederbeschaffungswert',
     'pt-br': 'Valor de substituição',
+    'hr-hr': '',
   },
   searchResults: {
     'en-us': 'Search Results',
@@ -214,6 +235,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Результати пошуку',
     'de-ch': 'Suchergebnisse',
     'pt-br': 'Resultados da pesquisa',
+    'hr-hr': '',
   },
   clickToToggle: {
     'en-us': 'Click to toggle visibility',
@@ -223,6 +245,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Натисніть, щоб увімкнути видимість',
     'de-ch': 'Klicken Sie hier, um die Sichtbarkeit umzuschalten.',
     'pt-br': 'Clique para alternar a visibilidade.',
+    'hr-hr': '',
   },
   configureSearchReplace: {
     'en-us': 'Configure Search & Replace',
@@ -232,6 +255,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Налаштувати пошук і заміну',
     'de-ch': 'Suchen und Ersetzen konfigurieren',
     'pt-br': 'Configurar Busca e Substituição',
+    'hr-hr': '',
   },
   modifiedCells: {
     'en-us': 'Modified Cells',
@@ -241,6 +265,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Модифіковані клітини',
     'de-ch': 'Modifizierte Zellen',
     'pt-br': 'Células Modificadas',
+    'hr-hr': '',
   },
   newCells: {
     'en-us': 'New Cells',
@@ -250,6 +275,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Нові клітини',
     'de-ch': 'Neue Zellen',
     'pt-br': 'Novas células',
+    'hr-hr': '',
   },
   errorCells: {
     'en-us': 'Error Cells',
@@ -259,6 +285,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Комірки помилок',
     'de-ch': 'Fehlerzellen',
     'pt-br': 'Células com erro',
+    'hr-hr': '',
   },
   dataEditor: {
     'en-us': 'Data Editor',
@@ -268,6 +295,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Редактор даних',
     'de-ch': 'Dateneditor',
     'pt-br': 'Editor de Dados',
+    'hr-hr': '',
   },
   noDisambiguationResults: {
     'en-us': 'Unable to disambiguate',
@@ -277,6 +305,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Неможливо усунути неоднозначність',
     'de-ch': 'Nicht eindeutig bestimmbar',
     'pt-br': 'Não foi possível desambiguar.',
+    'hr-hr': '',
   },
   noDisambiguationResultsDescription: {
     'en-us':
@@ -293,6 +322,7 @@ export const wbText = createDictionary({
       'Keiner der übereinstimmenden Datensätze existiert derzeit in der Datenbank. Dies kann vorkommen, wenn alle übereinstimmenden Datensätze seit der Validierung gelöscht wurden oder wenn alle Übereinstimmungen in Bezug auf andere Datensätze in diesem Datensatz mehrdeutig sind. Im letzteren Fall müssen Sie dem Datensatz Felder und Werte hinzufügen, um die Mehrdeutigkeit aufzulösen.',
     'pt-br':
       'Nenhum dos registros correspondentes existe atualmente no banco de dados. Isso pode ocorrer se todos os registros correspondentes foram excluídos desde o processo de validação ou se todas as correspondências forem ambíguas em relação a outros registros neste conjunto de dados. Neste último caso, você precisará adicionar campos e valores ao conjunto de dados para resolver a ambiguidade.',
+    'hr-hr': '',
   },
   disambiguateMatches: {
     'en-us': 'Disambiguate Multiple Record Matches',
@@ -303,6 +333,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Усуньте неоднозначність збігів кількох записів',
     'de-ch': 'Mehrere Datensätze auflösen',
     'pt-br': 'Desambiguar múltiplas correspondências de registros',
+    'hr-hr': '',
   },
   applyAllUnavailable: {
     'en-us': '"Apply All" is not available while Data Check is in progress.',
@@ -316,6 +347,7 @@ export const wbText = createDictionary({
       'Die Option „Alle anwenden“ ist während der Datenprüfung nicht verfügbar.',
     'pt-br':
       'A opção "Aplicar tudo" não está disponível enquanto a verificação de dados estiver em andamento.',
+    'hr-hr': '',
   },
   beginRollback: {
     'en-us': 'Begin Data Set Roll Back?',
@@ -325,6 +357,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Почати відкат набору даних?',
     'de-ch': 'Datensatz zurücksetzen?',
     'pt-br': 'Iniciar reversão do conjunto de dados?',
+    'hr-hr': '',
   },
   beginRollbackDescription: {
     'en-us':
@@ -341,6 +374,7 @@ export const wbText = createDictionary({
       'Durch das Zurücksetzen werden die neuen Datensätze, die dieses Dataset der Specify-Datenbank hinzugefügt hat, entfernt. Der gesamte Rollback-Vorgang wird abgebrochen, falls hochgeladene Daten seit ihrem Hochladen von anderen Datensätzen referenziert (wiederverwendet) wurden.',
     'pt-br':
       'A reversão removerá os novos registros de dados que este Conjunto de Dados adicionou ao banco de dados especificado. A reversão será totalmente cancelada se algum dos dados carregados tiver sido referenciado (reutilizado) por outros registros de dados desde o seu carregamento.',
+    'hr-hr': '',
   },
   startUpload: {
     'en-us': 'Begin Data Set Upload?',
@@ -350,6 +384,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Почати завантаження набору даних?',
     'de-ch': 'Daten-Upload starten?',
     'pt-br': 'Iniciar o carregamento do conjunto de dados?',
+    'hr-hr': '',
   },
   startUploadDescription: {
     'en-us':
@@ -364,6 +399,7 @@ export const wbText = createDictionary({
       'Durch das Hochladen des Datensatzes werden die Daten der Specify-Datenbank hinzugefügt.',
     'pt-br':
       'O carregamento do conjunto de dados adicionará os dados ao banco de dados especificado.',
+    'hr-hr': '',
   },
   deleteDataSet: {
     'en-us': 'Delete this Data Set?',
@@ -373,6 +409,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Видалити цей набір даних?',
     'de-ch': 'Diesen Datensatz löschen?',
     'pt-br': 'Excluir este conjunto de dados?',
+    'hr-hr': '',
   },
   deleteDataSetDescription: {
     'en-us':
@@ -389,6 +426,7 @@ export const wbText = createDictionary({
       'Durch das Löschen eines Datensatzes werden dieser und sein Upload-Plan endgültig entfernt. Datenzuordnungen können dann nicht mehr für andere Datensätze wiederverwendet werden. Nach dem Löschen ist außerdem keine Wiederherstellung des hochgeladenen Datensatzes mehr möglich.',
     'pt-br':
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu plano de upload. Os mapeamentos de dados não estarão mais disponíveis para reutilização com outros conjuntos de dados. Além disso, após a exclusão, a reversão não estará mais disponível para um conjunto de dados carregado.',
+    'hr-hr': '',
   },
   dataSetDeleted: {
     'en-us': 'Data Set successfully deleted',
@@ -398,6 +436,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних успішно видалено',
     'de-ch': 'Datensatz erfolgreich gelöscht',
     'pt-br': 'Conjunto de dados excluído com sucesso',
+    'hr-hr': '',
   },
   dataSetDeletedDescription: {
     'en-us': 'Data Set successfully deleted.',
@@ -407,6 +446,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних успішно видалено.',
     'de-ch': 'Datensatz erfolgreich gelöscht.',
     'pt-br': 'Conjunto de dados excluído com sucesso.',
+    'hr-hr': '',
   },
   revertChanges: {
     'en-us': 'Revert Unsaved Changes?',
@@ -416,6 +456,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Скасувати незбережені зміни?',
     'de-ch': 'Nicht gespeicherte Änderungen rückgängig machen?',
     'pt-br': 'Reverter alterações não salvas?',
+    'hr-hr': '',
   },
   revertChangesDescription: {
     'en-us':
@@ -432,6 +473,7 @@ export const wbText = createDictionary({
       'Durch diese Aktion werden alle Änderungen verworfen, die seit dem letzten Speichern am Datensatz vorgenommen wurden.',
     'pt-br':
       'Esta ação descartará todas as alterações feitas no conjunto de dados desde a última vez que foi salvo.',
+    'hr-hr': '',
   },
   saving: {
     'en-us': 'Saving...',
@@ -441,6 +483,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Збереження...',
     'de-ch': 'Speichern...',
     'pt-br': 'Salvando...',
+    'hr-hr': '',
   },
   wbUnloadProtect: {
     'en-us': 'Changes to this Data Set have not been Saved.',
@@ -451,6 +494,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Зміни в цьому наборі даних не збережено.',
     'de-ch': 'Die Änderungen an diesem Datensatz wurden nicht gespeichert.',
     'pt-br': 'As alterações feitas neste conjunto de dados não foram salvas.',
+    'hr-hr': '',
   },
   noMatchErrorMessage: {
     'en-us': 'No matching record for must-match table.',
@@ -464,6 +508,7 @@ export const wbText = createDictionary({
     'de-ch': 'Kein passender Datensatz für die Tabelle „muss übereinstimmen“.',
     'pt-br':
       'Não foi encontrado nenhum registro correspondente na tabela de correspondência obrigatória.',
+    'hr-hr': '',
   },
   matchedMultipleErrorMessage: {
     'en-us':
@@ -480,6 +525,7 @@ export const wbText = createDictionary({
       'Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen überein, und die Übereinstimmung muss vor dem Hochladen geklärt werden.',
     'pt-br':
       'Este valor corresponde a dois ou mais registros existentes no banco de dados e a correspondência deve ser desambiguada antes do carregamento.',
+    'hr-hr': '',
   },
   validationNoErrors: {
     'en-us': 'Validate Completed with No Errors',
@@ -489,6 +535,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка завершена без помилок',
     'de-ch': 'Validierung erfolgreich abgeschlossen (keine Fehler)',
     'pt-br': 'Validação concluída sem erros',
+    'hr-hr': '',
   },
   validationNoErrorsDescription: {
     'en-us':
@@ -505,6 +552,7 @@ export const wbText = createDictionary({
       'Bei der Validierung wurden keine Fehler festgestellt, die Datei kann nun in die Datenbank hochgeladen werden.',
     'pt-br':
       'A validação não encontrou erros, o arquivo está pronto para ser carregado no banco de dados.',
+    'hr-hr': '',
   },
   validationReEditWarning: {
     'en-us':
@@ -521,6 +569,7 @@ export const wbText = createDictionary({
       'Hinweis: Wenn dieser Datensatz bearbeitet und erneut gespeichert wird, sollte die Validierung vor dem Hochladen erneut ausgeführt werden, um sicherzustellen, dass keine Fehler entstanden sind.',
     'pt-br':
       'Observação: Se este conjunto de dados for editado e salvo novamente, a validação deverá ser executada novamente antes do upload para verificar se não foram introduzidos erros.',
+    'hr-hr': '',
   },
   validationErrors: {
     'en-us': 'Validate Completed with Errors',
@@ -530,6 +579,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка виконана з помилками',
     'de-ch': 'Validierung mit Fehlern abgeschlossen',
     'pt-br': 'Validação concluída com erros',
+    'hr-hr': '',
   },
   validationErrorsDescription: {
     'en-us': 'Validation found errors in the Data Set.',
@@ -539,6 +589,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірка виявила помилки в наборі даних.',
     'de-ch': 'Bei der Validierung wurden Fehler im Datensatz festgestellt.',
     'pt-br': 'A validação encontrou erros no conjunto de dados.',
+    'hr-hr': '',
   },
   uploadSuccessful: {
     'en-us': 'Upload Completed with No Errors',
@@ -548,6 +599,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Завантаження завершено без помилок',
     'de-ch': 'Upload erfolgreich abgeschlossen',
     'pt-br': 'Envio concluído sem erros.',
+    'hr-hr': '',
   },
   uploadSuccessfulDescription: {
     'en-us':
@@ -564,6 +616,7 @@ export const wbText = createDictionary({
       'Klicken Sie auf die Schaltfläche „Ergebnisse“, um die Anzahl der neu hinzugefügten Datensätze in jeder Datenbanktabelle anzuzeigen.',
     'pt-br':
       'Clique no botão "Resultados" para ver o número de novos registros adicionados a cada tabela do banco de dados.',
+    'hr-hr': '',
   },
   uploadErrors: {
     'en-us': 'Upload Failed due to Error Cells',
@@ -573,6 +626,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Помилка завантаження через клітинки помилок',
     'de-ch': 'Upload aufgrund fehlerhafter Zellen fehlgeschlagen',
     'pt-br': 'O carregamento falhou devido a células com erro.',
+    'hr-hr': '',
   },
   uploadErrorsDescription: {
     'en-us': 'The upload failed due to one or more cell value errors.',
@@ -587,6 +641,7 @@ export const wbText = createDictionary({
       'Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen.',
     'pt-br':
       'O carregamento falhou devido a um ou mais erros nos valores das células.',
+    'hr-hr': '',
   },
   uploadErrorsSecondDescription: {
     'en-us':
@@ -603,6 +658,7 @@ export const wbText = createDictionary({
       'Проверьте набор данных и просмотрите подсказки при наведении курсора мыши на каждую ячейку с ошибкой, затем внесите соответствующие исправления. Сохраните и повторите попытку {type:string}.',
     'uk-ua':
       'Перевірте набір даних і перегляньте підказки під час наведення курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть і повторіть спробу {type:string}.',
+    'hr-hr': '',
   },
   dataSetRollback: {
     'en-us': 'Data Set was rolled back successfully',
@@ -612,6 +668,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних успішно повернуто',
     'de-ch': 'Der Datensatz wurde erfolgreich zurückgesetzt.',
     'pt-br': 'O conjunto de dados foi revertido com sucesso.',
+    'hr-hr': '',
   },
   dataSetRollbackDescription: {
     'en-us':
@@ -628,6 +685,7 @@ export const wbText = createDictionary({
       'Dieser zurückgesetzte Datensatz ist gespeichert und kann bearbeitet oder erneut hochgeladen werden.',
     'pt-br':
       'Este conjunto de dados revertido foi salvo e pode ser editado ou reenviado.',
+    'hr-hr': '',
   },
   validationCanceled: {
     'en-us': 'Validation Cancelled',
@@ -637,6 +695,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірку скасовано',
     'de-ch': 'Validierung abgebrochen',
     'pt-br': 'Validação cancelada',
+    'hr-hr': '',
   },
   validationCanceledDescription: {
     'en-us': 'Data Set Validation cancelled.',
@@ -646,6 +705,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перевірку набору даних скасовано.',
     'de-ch': 'Die Validierung des Datensatzes wurde abgebrochen.',
     'pt-br': 'Validação do conjunto de dados cancelada.',
+    'hr-hr': '',
   },
   rollbackCanceled: {
     'en-us': 'Rollback Cancelled',
@@ -655,6 +715,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Відкат скасовано',
     'de-ch': 'Rollback abgebrochen',
     'pt-br': 'Reversão cancelada',
+    'hr-hr': '',
   },
   rollbackCanceledDescription: {
     'en-us': 'Data Set Rollback cancelled.',
@@ -664,6 +725,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Відкат набору даних скасовано.',
     'de-ch': 'Datensatz-Rollback abgebrochen.',
     'pt-br': 'Reversão do conjunto de dados cancelada.',
+    'hr-hr': '',
   },
   uploadCanceled: {
     'en-us': 'Upload Cancelled',
@@ -673,6 +735,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Téléchargement annulé',
     'uk-ua': 'Завантаження скасовано',
     'pt-br': 'Envio cancelado',
+    'hr-hr': '',
   },
   uploadCanceledDescription: {
     'en-us': 'Data Set Upload cancelled.',
@@ -682,6 +745,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Завантаження набору даних скасовано.',
     'de-ch': 'Der Upload des Datensatzes wurde abgebrochen.',
     'pt-br': 'Envio do conjunto de dados cancelado.',
+    'hr-hr': '',
   },
   coordinateConverter: {
     'en-us': 'Geocoordinate Format',
@@ -691,6 +755,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Формат геокоординат',
     'de-ch': 'Geokoordinatenformat',
     'pt-br': 'Formato de geocoordenadas',
+    'hr-hr': '',
   },
   coordinateConverterDescription: {
     'en-us': 'Choose a preferred Geocoordinate format',
@@ -700,6 +765,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Виберіть потрібний формат геокоординат',
     'de-ch': 'Wählen Sie ein bevorzugtes Geokoordinatenformat.',
     'pt-br': 'Escolha um formato de geocoordenadas de sua preferência.',
+    'hr-hr': '',
   },
   emptyStringInline: {
     comment: `
@@ -713,6 +779,7 @@ export const wbText = createDictionary({
     'uk-ua': '(порожній рядок)',
     'de-ch': '(leerer String)',
     'pt-br': '(cadeia vazia)',
+    'hr-hr': '',
   },
   wbUploadedUnavailable: {
     'en-us': 'The data set must be validated or uploaded',
@@ -722,6 +789,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних має бути перевірений або завантажений',
     'de-ch': 'Der Datensatz muss validiert oder hochgeladen werden.',
     'pt-br': 'O conjunto de dados deve ser validado ou carregado.',
+    'hr-hr': '',
   },
   wbValidateUnavailable: {
     'en-us':
@@ -738,6 +806,7 @@ export const wbText = createDictionary({
       'Bevor dieser Datensatz validiert werden kann, muss ein Upload-Plan definiert werden.',
     'pt-br':
       'É necessário definir um plano de upload antes que este conjunto de dados possa ser validado.',
+    'hr-hr': '',
   },
   unavailableWhileEditing: {
     'en-us': 'This action requires all changes to be saved',
@@ -748,6 +817,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Ця дія вимагає збереження всіх змін',
     'de-ch': 'Diese Aktion erfordert, dass alle Änderungen gespeichert werden.',
     'pt-br': 'Esta ação requer que todas as alterações sejam salvas.',
+    'hr-hr': '',
   },
   uploadUnavailableWhileHasErrors: {
     'en-us': 'Upload is unavailable while some cells have validation errors',
@@ -763,6 +833,7 @@ export const wbText = createDictionary({
       'Der Upload ist nicht möglich, da einige Zellen Validierungsfehler aufweisen.',
     'pt-br':
       'O carregamento não está disponível enquanto algumas células apresentarem erros de validação.',
+    'hr-hr': '',
   },
   unavailableWhileViewingResults: {
     'en-us': 'This action is unavailable while viewing the upload results',
@@ -776,6 +847,7 @@ export const wbText = createDictionary({
       'Diese Aktion ist beim Anzeigen der Upload-Ergebnisse nicht verfügbar.',
     'pt-br':
       'Esta ação não está disponível enquanto você visualiza os resultados do upload.',
+    'hr-hr': '',
   },
   unavailableWhileValidating: {
     'en-us': 'This action is unavailable while Data Check is in progress',
@@ -787,6 +859,7 @@ export const wbText = createDictionary({
     'de-ch': 'Diese Aktion ist während der Datenprüfung nicht verfügbar.',
     'pt-br':
       'Esta ação não está disponível enquanto a verificação de dados estiver em andamento.',
+    'hr-hr': '',
   },
   unavailableWithoutLocality: {
     'en-us': 'This tool requires locality columns to be mapped',
@@ -799,6 +872,7 @@ export const wbText = createDictionary({
     'de-ch': 'Dieses Tool erfordert die Zuordnung von Lokalisierungsspalten.',
     'pt-br':
       'Esta ferramenta requer que as colunas de localidade sejam mapeadas.',
+    'hr-hr': '',
   },
   unavailableWhenUploaded: {
     'en-us': 'This tool does not work with uploaded Data Sets',
@@ -809,6 +883,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Цей інструмент не працює із завантаженими наборами даних',
     'de-ch': 'Dieses Tool funktioniert nicht mit hochgeladenen Datensätzen.',
     'pt-br': 'Esta ferramenta não funciona com conjuntos de dados carregados.',
+    'hr-hr': '',
   },
   dataSetDeletedOrNotFound: {
     'en-us': 'Data Set was deleted by another session.',
@@ -818,6 +893,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Набір даних видалено іншим сеансом.',
     'de-ch': 'Der Datensatz wurde von einer anderen Sitzung gelöscht.',
     'pt-br': 'O conjunto de dados foi excluído por outra sessão.',
+    'hr-hr': '',
   },
   includeDmsSymbols: {
     'en-us': 'Include DMS Symbols',
@@ -827,6 +903,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Додайте символи DMS',
     'de-ch': 'DMS-Symbole einbeziehen',
     'pt-br': 'Incluir símbolos DMS',
+    'hr-hr': '',
   },
   uploadResults: {
     'en-us': 'Upload Results',
@@ -836,6 +913,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Télécharger les résultats',
     'uk-ua': 'План завантаження',
     'pt-br': 'Resultados da Carregamento',
+    'hr-hr': '',
   },
   noUploadResultsAvailable: {
     'en-us': 'No upload results are available for this cell',
@@ -846,6 +924,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Для цієї клітинки немає результатів завантаження',
     'de-ch': 'Für diese Zelle sind keine Upload-Ergebnisse verfügbar.',
     'pt-br': 'Não há resultados de upload disponíveis para esta célula.',
+    'hr-hr': '',
   },
   navigationOptions: {
     'en-us': 'Navigation Options',
@@ -855,6 +934,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Параметри навігації',
     'de-ch': 'Navigationsoptionen',
     'pt-br': 'Opções de navegação',
+    'hr-hr': '',
   },
   cursorPriority: {
     'en-us': 'Cursor Priority',
@@ -864,6 +944,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Пріоритет курсору',
     'de-ch': 'Cursorpriorität',
     'pt-br': 'Prioridade do cursor',
+    'hr-hr': '',
   },
   columnFirst: {
     'en-us': 'Column first',
@@ -873,6 +954,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Colonne en premier',
     'uk-ua': 'Колонка перша',
     'pt-br': 'Coluna primeiro',
+    'hr-hr': '',
   },
   rowFirst: {
     'en-us': 'Row first',
@@ -882,6 +964,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перший ряд',
     'de-ch': 'Erste Reihe',
     'pt-br': 'Primeira fila',
+    'hr-hr': '',
   },
   searchOptions: {
     'en-us': 'Search Options',
@@ -891,6 +974,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Параметри пошуку',
     'de-ch': 'Suchoptionen',
     'pt-br': 'Opções de pesquisa',
+    'hr-hr': '',
   },
   findEntireCellsOnly: {
     'en-us': 'Find entire cells only',
@@ -900,6 +984,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Знайти лише цілі клітини',
     'de-ch': 'Finde nur ganze Zellen',
     'pt-br': 'Encontre apenas células inteiras',
+    'hr-hr': '',
   },
   matchCase: {
     'en-us': 'Match case',
@@ -909,6 +994,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Відмінок сірника',
     'de-ch': 'Streichholzgehäuse',
     'pt-br': 'estojo de fósforo',
+    'hr-hr': '',
   },
   useRegularExpression: {
     'en-us': 'Use regular expression',
@@ -918,6 +1004,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Використовуйте регулярний вираз',
     'de-ch': 'Regulären Ausdruck verwenden',
     'pt-br': 'Use expressões regulares',
+    'hr-hr': '',
   },
   liveUpdate: {
     'en-us': 'Live search',
@@ -927,6 +1014,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Живий пошук',
     'de-ch': 'Live-Suche',
     'pt-br': 'Busca ao vivo',
+    'hr-hr': '',
   },
   replaceOptions: {
     'en-us': 'Replace Options',
@@ -936,6 +1024,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Параметри заміни',
     'de-ch': 'Ersetzen Sie die Optionen',
     'pt-br': 'Opções de substituição',
+    'hr-hr': '',
   },
   replaceMode: {
     'en-us': 'Replace Mode',
@@ -945,6 +1034,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Режим заміни',
     'de-ch': 'Ersetzungsmodus',
     'pt-br': 'Modo de substituição',
+    'hr-hr': '',
   },
   replaceAll: {
     'en-us': 'Replace all matches',
@@ -954,6 +1044,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Замінити всі збіги',
     'de-ch': 'Ersetzen Sie alle Übereinstimmungen',
     'pt-br': 'Substitua todas as correspondências',
+    'hr-hr': '',
   },
   replaceNext: {
     'en-us': 'Replace next occurrence',
@@ -963,6 +1054,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Замінити наступне входження',
     'de-ch': 'Ersetze das nächste Vorkommen',
     'pt-br': 'Substituir próxima ocorrência',
+    'hr-hr': '',
   },
   importDataSet: {
     'en-us': 'Import Data Set',
@@ -972,6 +1064,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Імпорт набору даних',
     'de-ch': 'Importdatensatz',
     'pt-br': 'Conjunto de dados de importação',
+    'hr-hr': '',
   },
   wbImportHeader: {
     'en-us': 'Import a File to Create a New Data Set',
@@ -982,6 +1075,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
     'pt-br': 'Importe um arquivo para criar um novo conjunto de dados.',
+    'hr-hr': '',
   },
   previewDataSet: {
     'en-us': 'Preview Dataset',
@@ -991,6 +1085,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Попередній перегляд набору даних',
     'de-ch': 'Vorschau-Datensatz',
     'pt-br': 'Conjunto de dados de pré-visualização',
+    'hr-hr': '',
   },
   errorImporting: {
     'en-us': 'The following error(s) occurred while importing the file:',
@@ -1001,6 +1096,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Під час імпортування файлу виникли такі помилки:',
     'de-ch': 'Beim Importieren der Datei sind folgende Fehler aufgetreten:',
     'pt-br': 'Ocorreram os seguintes erros ao importar o arquivo:',
+    'hr-hr': '',
   },
   corruptFile: {
     'en-us': 'The file {fileName:string} is corrupt or contains no data!',
@@ -1012,6 +1108,7 @@ export const wbText = createDictionary({
     'de-ch':
       'Die Datei {fileName:string} ist beschädigt oder enthält keine Daten!',
     'pt-br': 'O arquivo {fileName:string} está corrompido ou não contém dados!',
+    'hr-hr': '',
   },
   characterEncoding: {
     'en-us': 'Character encoding:',
@@ -1021,6 +1118,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Кодування символів:',
     'de-ch': 'Zeichenkodierung:',
     'pt-br': 'Codificação de caracteres:',
+    'hr-hr': '',
   },
   delimiter: {
     'en-us': 'Delimiter:',
@@ -1030,6 +1128,7 @@ export const wbText = createDictionary({
     'uk-ua': 'роздільник:',
     'de-ch': 'Trennzeichen:',
     'pt-br': 'Delimitador:',
+    'hr-hr': '',
   },
   comma: {
     'en-us': 'Comma',
@@ -1039,6 +1138,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Кома',
     'de-ch': 'Komma',
     'pt-br': 'Vírgula',
+    'hr-hr': '',
   },
   semicolon: {
     'en-us': 'Semicolon',
@@ -1048,6 +1148,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Крапка з комою',
     'de-ch': 'Semikolon',
     'pt-br': 'Ponto e vírgula',
+    'hr-hr': '',
   },
   tab: {
     'en-us': 'Tab',
@@ -1057,6 +1158,7 @@ export const wbText = createDictionary({
     'uk-ua': 'вкладка',
     'de-ch': 'Tab',
     'pt-br': 'Aba',
+    'hr-hr': '',
   },
   space: {
     'en-us': 'Space',
@@ -1066,6 +1168,7 @@ export const wbText = createDictionary({
     'uk-ua': 'космос',
     'de-ch': 'Raum',
     'pt-br': 'Espaço',
+    'hr-hr': '',
   },
   pipe: {
     'en-us': 'Pipe',
@@ -1075,6 +1178,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Труба',
     'de-ch': 'Rohr',
     'pt-br': 'Cano',
+    'hr-hr': '',
   },
   determineAutomatically: {
     'en-us': 'Determine automatically',
@@ -1084,6 +1188,7 @@ export const wbText = createDictionary({
     'de-ch': 'Automatisch bestimmen',
     'fr-fr': 'Déterminer automatiquement',
     'pt-br': 'Determinar automaticamente',
+    'hr-hr': '',
   },
   chooseDataSetName: {
     'en-us': 'Name for New Data Set:',
@@ -1093,6 +1198,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Nom du nouvel ensemble de données :',
     'uk-ua': 'Назва нового набору даних:',
     'pt-br': 'Nome para o novo conjunto de dados:',
+    'hr-hr': '',
   },
   firstRowIsHeader: {
     'en-us': 'First Row is Header:',
@@ -1102,6 +1208,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Перший рядок – заголовок:',
     'de-ch': 'Erste Zeile ist die Überschrift:',
     'pt-br': 'A primeira linha é o cabeçalho:',
+    'hr-hr': '',
   },
   importFile: {
     'en-us': 'Import file',
@@ -1111,6 +1218,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Імпорт файлу',
     'de-ch': 'Importdatei',
     'pt-br': 'Arquivo de importação',
+    'hr-hr': '',
   },
   columnName: {
     'en-us': 'Column {columnIndex:number}',
@@ -1120,6 +1228,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Стовпчик {columnIndex:number}',
     'de-ch': 'Spalte {columnIndex:number}',
     'pt-br': 'Coluna {columnIndex:number}',
+    'hr-hr': '',
   },
   newDataSetName: {
     'en-us': 'New Data Set {date}',
@@ -1129,6 +1238,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Новий набір даних {date}',
     'de-ch': 'Neuer Datensatz {date}',
     'pt-br': 'Novo conjunto de dados {date}',
+    'hr-hr': '',
   },
   dataSets: {
     'en-us': '{variant:string} Data Sets',
@@ -1138,6 +1248,7 @@ export const wbText = createDictionary({
     'pt-br': '{variant:string} Conjuntos de dados',
     'ru-ru': '{variant:string} Наборы данных',
     'uk-ua': '{variant:string} Набори даних',
+    'hr-hr': '',
   },
   wbsDialogEmpty: {
     'en-us': 'Currently no Data Sets exist.',
@@ -1147,6 +1258,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Наразі не існує наборів даних.',
     'de-ch': 'Derzeit existieren keine Datensätze.',
     'pt-br': 'Atualmente não existem conjuntos de dados.',
+    'hr-hr': '',
   },
   createDataSetInstructions: {
     'en-us': 'Use "Import a file" or "Create New" to make a new one.',
@@ -1162,6 +1274,7 @@ export const wbText = createDictionary({
       'Verwenden Sie „Datei importieren“ oder „Neu erstellen“, um eine neue Datei zu erstellen.',
     'pt-br':
       'Use "Importar um arquivo" ou "Criar novo" para criar um novo arquivo.',
+    'hr-hr': '',
   },
   createNew: {
     'en-us': 'Create New',
@@ -1171,6 +1284,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Створити новий',
     'de-ch': 'Neu erstellen',
     'pt-br': 'Criar novo',
+    'hr-hr': '',
   },
   dataSetMeta: {
     'en-us': 'Data Set Properties',
@@ -1180,6 +1294,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Властивості набору даних',
     'de-ch': 'Eigenschaften des Datensatzes',
     'pt-br': 'Propriedades do conjunto de dados',
+    'hr-hr': '',
   },
   dataSetName: {
     'en-us': 'Data Set Name',
@@ -1189,6 +1304,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Назва набору даних',
     'de-ch': 'Name des Datensatzes',
     'pt-br': 'Nome do conjunto de dados',
+    'hr-hr': '',
   },
   numberOfRows: {
     'en-us': 'Number of rows',
@@ -1198,6 +1314,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Кількість рядів',
     'de-ch': 'Anzahl der Zeilen',
     'pt-br': 'Número de linhas',
+    'hr-hr': '',
   },
   numberOfColumns: {
     'en-us': 'Number of columns',
@@ -1207,6 +1324,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Кількість стовпців',
     'de-ch': 'Anzahl der Spalten',
     'pt-br': 'Número de colunas',
+    'hr-hr': '',
   },
   importedFileName: {
     'en-us': 'Import file name',
@@ -1216,6 +1334,7 @@ export const wbText = createDictionary({
     'uk-ua': "Імпортувати ім'я файлу",
     'de-ch': 'Name der Importdatei',
     'pt-br': 'Nome do arquivo de importação',
+    'hr-hr': '',
   },
   noFileName: {
     'en-us': '(no file name)',
@@ -1225,6 +1344,7 @@ export const wbText = createDictionary({
     'uk-ua': '(без імені файлу)',
     'de-ch': '(kein Dateiname)',
     'pt-br': '(sem nome de arquivo)',
+    'hr-hr': '',
   },
   changeDataSetOwner: {
     'en-us': 'Change Data Set Owner',
@@ -1234,6 +1354,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Змінити власника набору даних',
     'de-ch': 'Datensatzbesitzer ändern',
     'pt-br': 'Alterar o proprietário do conjunto de dados',
+    'hr-hr': '',
   },
   changeDataSetOwnerDescription: {
     'en-us': 'Select New Owner:',
@@ -1243,6 +1364,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Виберіть нового власника:',
     'de-ch': 'Neuen Besitzer auswählen:',
     'pt-br': 'Selecionar Novo Proprietário:',
+    'hr-hr': '',
   },
   dataSetOwnerChanged: {
     'en-us': 'Data Set owner changed',
@@ -1252,6 +1374,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Змінено власника набору даних',
     'de-ch': 'Datensatzbesitzer geändert',
     'pt-br': 'O proprietário do conjunto de dados foi alterado.',
+    'hr-hr': '',
   },
   dataSet: {
     'en-us': 'Data Set',
@@ -1261,6 +1384,7 @@ export const wbText = createDictionary({
     'de-ch': 'Datensatz',
     'fr-fr': 'Ensemble de données',
     'pt-br': 'Conjunto de dados',
+    'hr-hr': '',
   },
   dataSetTimestampUploaded: {
     'en-us': 'Timestamp Uploaded',
@@ -1270,6 +1394,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Отметка времени Загружено',
     'uk-ua': 'Мітка часу завантажено',
     'pt-br': 'Carimbo de data/hora enviado',
+    'hr-hr': '',
   },
   dataSetUploadedLabel: {
     'en-us': '(Uploaded, Read-Only)',
@@ -1279,6 +1404,7 @@ export const wbText = createDictionary({
     'uk-ua': '(Завантажено, лише для читання)',
     'de-ch': '(Hochgeladen, schreibgeschützt)',
     'pt-br': '(Carregado, somente leitura)',
+    'hr-hr': '',
   },
   wbStatusUnupload: {
     'en-us': 'Data Set Rollback Status',
@@ -1288,6 +1414,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Статус відкату набору даних',
     'de-ch': 'Status der Datensatz-Rollback-Funktion',
     'pt-br': 'Status de reversão do conjunto de dados',
+    'hr-hr': '',
   },
   wbStatusUpload: {
     'en-us': 'Data Set Upload Status',
@@ -1297,6 +1424,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Під час [X22X] сталася помилка',
     'de-ch': 'Status des Datensatz-Uploads',
     'pt-br': 'Status do upload do conjunto de dados',
+    'hr-hr': '',
   },
   wbStatusValidation: {
     'en-us': 'Data Set Validation Status',
@@ -1306,6 +1434,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Статус перевірки набору даних',
     'de-ch': 'Validierungsstatus des Datensatzes',
     'pt-br': 'Status de Validação do Conjunto de Dados',
+    'hr-hr': '',
   },
   aborting: {
     'en-us': 'Aborting...',
@@ -1315,6 +1444,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Переривання...',
     'de-ch': 'Abbruch...',
     'pt-br': 'Abortando...',
+    'hr-hr': '',
   },
   wbStatusAbortFailed: {
     'en-us': 'Failed aborting {operationName:string}. Please try again later',
@@ -1330,6 +1460,7 @@ export const wbText = createDictionary({
       'Abbruch fehlgeschlagen {operationName:string}. Bitte versuchen Sie es später erneut.',
     'pt-br':
       'Falha ao abortar {operationName:string}. Tente novamente mais tarde.',
+    'hr-hr': '',
   },
   wbStatusOperationNoProgress: {
     comment: 'E.x, Validating...',
@@ -1340,6 +1471,7 @@ export const wbText = createDictionary({
     'uk-ua': "{operationName:string}'...",
     'de-ch': '{operationName:string}...',
     'pt-br': '{operationName:string}...',
+    'hr-hr': '',
   },
   wbStatusOperationProgress: {
     comment: 'E.x, Validating row 999/1,000',
@@ -1357,6 +1489,7 @@ export const wbText = createDictionary({
       '{operationName:string} Zeile {current:number|formatted}/{total:number|formatted}',
     'pt-br':
       '{operationName:string} linha {current:number|formatted}/{total:number|formatted}',
+    'hr-hr': '',
   },
   wbStatusPendingDescription: {
     'en-us': '{operationName:string} of this Data Set should begin shortly.',
@@ -1372,6 +1505,7 @@ export const wbText = createDictionary({
       '{operationName:string} dieses Datensatzes sollte in Kürze beginnen.',
     'pt-br':
       '{operationName:string} deste conjunto de dados deve começar em breve.',
+    'hr-hr': '',
   },
   wbStatusPendingSecondDescription: {
     'en-us':
@@ -1388,6 +1522,7 @@ export const wbText = createDictionary({
       'Wenn diese Meldung länger als 30 Sekunden angezeigt wird, ist der Prozess {operationName:string} mit einem anderen Datensatz beschäftigt. Bitte versuchen Sie es später erneut.',
     'pt-br':
       'Se esta mensagem persistir por mais de 30 segundos, o processo {operationName:string} está ocupado com outro conjunto de dados. Tente novamente mais tarde.',
+    'hr-hr': '',
   },
   stop: {
     'en-us': 'Stop',
@@ -1397,6 +1532,7 @@ export const wbText = createDictionary({
     'uk-ua': 'СТІЙ',
     'de-ch': 'Stoppen',
     'pt-br': 'Parar',
+    'hr-hr': '',
   },
   wbStatusError: {
     'en-us': 'Error occurred during {operationName:string}',
@@ -1406,6 +1542,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Під час {operationName:string} сталася помилка',
     'de-ch': 'Fehler während {operationName:string}',
     'pt-br': 'Ocorreu um erro durante {operationName:string}',
+    'hr-hr': '',
   },
   updatingTrees: {
     'en-us': 'Updating trees...',
@@ -1415,6 +1552,7 @@ export const wbText = createDictionary({
     'uk-ua': 'Оновлення дерев...',
     'de-ch': 'Bäume werden aktualisiert...',
     'pt-br': 'Atualizando árvores...',
+    'hr-hr': '',
   },
   recordSetName: {
     comment: `
@@ -1427,6 +1565,7 @@ export const wbText = createDictionary({
     'uk-ua': 'WB завантаження "{dataSet:string}"',
     'de-ch': 'WB-Upload von "{dataSet:string}"',
     'pt-br': 'Upload WB de "{dataSet:string}"',
+    'hr-hr': '',
   },
   ambiguousTaxaChild: {
     'en-us': '{node:string} {author:string} (in {parent:string})',
@@ -1436,6 +1575,7 @@ export const wbText = createDictionary({
     'fr-fr': '{node:string} {author:string} (dans {parent:string})',
     'uk-ua': '{node:string} {author:string} (у {parent:string})',
     'pt-br': '{node:string} {author:string} (em {parent:string})',
+    'hr-hr': '',
   },
   attachmentsForRow: {
     'en-us': 'Attachments for row {row:number}:',
@@ -1445,6 +1585,7 @@ export const wbText = createDictionary({
     'pt-br': 'Anexos para a linha {row:number}:',
     'ru-ru': 'Приложения для строки {row:number}:',
     'uk-ua': 'Вкладення для рядка {row:number}:',
+    'hr-hr': '',
   },
   detachWindow: {
     'en-us': 'Detach Window',
@@ -1454,6 +1595,7 @@ export const wbText = createDictionary({
     'pt-br': 'Janela destacável',
     'ru-ru': 'Отсоединить окно',
     'uk-ua': 'Від’єднати вікно',
+    'hr-hr': '',
   },
   attachWindow: {
     'en-us': 'Attach Window',
@@ -1463,6 +1605,7 @@ export const wbText = createDictionary({
     'pt-br': 'Anexar janela',
     'ru-ru': 'Прикрепить окно',
     'uk-ua': 'Прикріпити вікно',
+    'hr-hr': '',
   },
   updatedCells: {
     'en-us': 'Updated Cells',
@@ -1472,6 +1615,7 @@ export const wbText = createDictionary({
     'pt-br': 'Células atualizadas',
     'ru-ru': 'Обновленные ячейки',
     'uk-ua': 'Оновлені комірки',
+    'hr-hr': '',
   },
   deletedCells: {
     'en-us': 'Deleted Cells',
@@ -1481,6 +1625,7 @@ export const wbText = createDictionary({
     'pt-br': 'Células excluídas',
     'ru-ru': 'Удаленные клетки',
     'uk-ua': 'Видалені клітинки',
+    'hr-hr': '',
   },
   affectedResults: {
     'en-us': 'Records affected',
@@ -1490,6 +1635,7 @@ export const wbText = createDictionary({
     'pt-br': 'Registros afetados',
     'ru-ru': 'Затронутые записи',
     'uk-ua': 'Зафіксовані записи',
+    'hr-hr': '',
   },
   potentialAffectedResults: {
     'en-us': 'Potential records affected',
@@ -1499,6 +1645,7 @@ export const wbText = createDictionary({
     'pt-br': 'Registros potencialmente afetados',
     'ru-ru': 'Возможные затронутые записи',
     'uk-ua': 'Потенційно постраждалі записи',
+    'hr-hr': '',
   },
   wbAffectedDescription: {
     'en-us': 'Number of new records affected in each table:',
@@ -1508,6 +1655,7 @@ export const wbText = createDictionary({
     'pt-br': 'Número de novos registros afetados em cada tabela:',
     'ru-ru': 'Количество новых записей, затронутых в каждой таблице:',
     'uk-ua': 'Кількість нових записів, на які впливає кожна таблиця:',
+    'hr-hr': '',
   },
   wbAffectedPotentialDescription: {
     'en-us': 'Number of new records that would be affected in each table:',
@@ -1521,6 +1669,7 @@ export const wbText = createDictionary({
     'ru-ru':
       'Количество новых записей, которые будут затронуты в каждой таблице:',
     'uk-ua': 'Кількість нових записів у кожній таблиці, на які це вплине:',
+    'hr-hr': '',
   },
   recordsCreated: {
     'en-us': 'Records created',
@@ -1530,6 +1679,7 @@ export const wbText = createDictionary({
     'pt-br': 'Registros criados',
     'ru-ru': 'Созданы записи',
     'uk-ua': 'Створені записи',
+    'hr-hr': '',
   },
   recordsUpdated: {
     'en-us': 'Records updated',
@@ -1539,6 +1689,7 @@ export const wbText = createDictionary({
     'pt-br': 'Registros atualizados',
     'ru-ru': 'Записи обновлены.',
     'uk-ua': 'Записи оновлено',
+    'hr-hr': '',
   },
   recordsDeleted: {
     'en-us': 'Records deleted (not including dependents)',
@@ -1548,6 +1699,7 @@ export const wbText = createDictionary({
     'pt-br': 'Registros excluídos (exceto dependentes)',
     'ru-ru': 'Удаленные записи (за исключением записей о иждивенцах)',
     'uk-ua': 'Записи видалено (без урахування утриманців)',
+    'hr-hr': '',
   },
   recordsMatchedAndChanged: {
     'en-us': 'Related records matched to different records',
@@ -1559,6 +1711,7 @@ export const wbText = createDictionary({
     'pt-br': 'Registros relacionados correspondem a registros diferentes.',
     'ru-ru': 'Связанные записи сопоставлены с различными записями',
     'uk-ua': 'Пов’язані записи, що відповідають іншим записам',
+    'hr-hr': '',
   },
   matchAndChanged: {
     'en-us': 'Matched and changed cells',
@@ -1568,5 +1721,6 @@ export const wbText = createDictionary({
     'pt-br': 'Células correspondentes e alteradas',
     'ru-ru': 'Сопоставленные и измененные клетки',
     'uk-ua': 'Зіставлені та змінені клітинки',
+    'hr-hr': '',
   },
 } as const);
