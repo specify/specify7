@@ -1,10 +1,10 @@
 import React from 'react';
 import { Label } from '../Atoms/Form';
-import { darwinCoreText } from '../../localization/DwC';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import jsonTerms from '../../data/dwcTerms.json';
+import { darwinCoreText } from '../../localization/dwc';
 
 
 export function DwCSection({
