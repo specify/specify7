@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
@@ -416,19 +416,19 @@ msgstr "Configurar tablas de consulta visibles"
 #: components/QueryBuilder/Edit.tsx:148
 #, fuzzy
 msgid "exportQueryForDwca"
-msgstr "Consulta de exportación para la definición de DwCA"
+msgstr "Exportar consulta para la definición de DwCA"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
 #, fuzzy
 msgid "exportQueryAsReport"
-msgstr "Definir informe basado en consulta"
+msgstr "Definir informe en función de la consulta"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
 #, fuzzy
 msgid "exportQueryAsLabel"
-msgstr "Definir etiqueta según consulta"
+msgstr "Definir etiqueta en función de la consulta"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
@@ -440,25 +440,25 @@ msgstr "Fusión de árboles"
 #: components/PickLists/definitions.ts:47
 #, fuzzy
 msgid "treeMove"
-msgstr "Movimiento de árbol"
+msgstr "Traslado de árboles"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:48
 #, fuzzy
 msgid "treeSynonymize"
-msgstr "Árbol Sinónimos"
+msgstr "Árbol Sinonimizar"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
 #, fuzzy
 msgid "treeDesynonymize"
-msgstr "Desinonimizar árboles"
+msgstr "Árbol Dessinonimar"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:50
 #, fuzzy
 msgid "treeBulkMove"
-msgstr "Movimiento masivo de árboles"
+msgstr "Traslado masivo de árboles"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:118
@@ -517,8 +517,8 @@ msgstr "Año"
 #, fuzzy
 msgid "relativeDate"
 msgstr ""
-"<count>{size:number}</count> <length>{type:string}</length> "
-"<direction>{direction:string}</direction>"
+"<count>{size:number}</count> <length>{type:string}</length> <direction>"
+"{direction:string}</direction>"
 
 #. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
@@ -531,7 +531,7 @@ msgstr "Los siguientes campos están ocultos en la consulta que importó:"
 #, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
-"La consulta que importó contiene tablas a las que no tiene acceso de "
+"La consulta que importaste contiene tablas a las que no tienes acceso de "
 "lectura:"
 
 #. Used in: Components > Query Builder > Check Read Access
@@ -556,7 +556,7 @@ msgstr "Cambiar a absoluto"
 #: components/QueryBuilder/Header.tsx:105
 #, fuzzy
 msgid "scrollToEditor"
-msgstr "Desplazarse al editor"
+msgstr "Desplácese hasta el editor"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:308
@@ -571,7 +571,7 @@ msgstr "Ver registros"
 #: components/QueryBuilder/Formatter.tsx:202
 #, fuzzy
 msgid "chooseFormatter"
-msgstr "Elija el formateador"
+msgstr "Seleccione el formateador"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:565
@@ -615,19 +615,19 @@ msgstr "{componentTableName: string} y {collectionObjectTableName: string}"
 #: components/QueryBuilder/Formatter.tsx:127
 #, fuzzy
 msgid "formatInputAs"
-msgstr "Formato como: {commaSeparatedFormats:string}"
+msgstr "Formatear como: {commaSeparatedFormats:string}"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:209
 #, fuzzy
 msgid "unsavedChangesInQuery"
-msgstr "La consulta tiene cambios sin guardar"
+msgstr "La consulta tiene cambios sin guardar."
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:212
 #, fuzzy
 msgid "unsavedChangesInQueryDescription"
-msgstr "Guarde la consulta antes de ejecutar la edición por lotes"
+msgstr "Guarde la consulta antes de ejecutar la edición por lotes."
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:173
@@ -638,3 +638,9 @@ msgstr "No hay items sin resolver para devolver"
 #: components/QueryBuilder/LoanReturn.tsx:226
 msgid "itemsReturned"
 msgstr "Los items han sido devueltos"
+
+#. Used in: Components > Query Builder > Toolbar
+#: components/QueryBuilder/Toolbar.tsx:81
+#, fuzzy
+msgid "searchSynonyms"
+msgstr "Buscar sinónimos"
