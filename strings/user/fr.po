@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/"
 "fr/>\n"
@@ -109,8 +109,8 @@ msgstr "Bonjour, {userName:string} !"
 msgid "oicWelcomeMessage"
 msgstr ""
 "Vous avez été invité à associer un identifiant externe à votre compte "
-"utilisateur Specify. Cela vous permettra de vous connecter à Specify avec "
-"le fournisseur de votre choix."
+"utilisateur Specify. Cela vous permettra de vous connecter à Specify avec le "
+"fournisseur de votre choix."
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:80
@@ -165,8 +165,8 @@ msgstr "Le mot de passe était incorrect."
 #, fuzzy
 msgid "noAccessToResource"
 msgstr ""
-"Vous n'avez accès à aucun {collectionTable:string} contenant cette "
-"ressource via le compte actuellement connecté."
+"Vous n'avez accès à aucun {collectionTable:string} contenant cette ressource "
+"via le compte actuellement connecté."
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:71
@@ -233,7 +233,8 @@ msgstr ""
 #: components/Forms/DataTask.tsx:138
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
-msgstr "Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule"
+msgstr ""
+"Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule"
 
 #. Used in: Components > Permissions > Format Error
 #: components/Permissions/FormatError.tsx:120
@@ -685,3 +686,19 @@ msgstr "Outil de configuration système"
 #, fuzzy
 msgid "systemConfig"
 msgstr "Configuration système"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:249
+#, fuzzy
+msgid "cannotReadAgentsForUserAssignment"
+msgstr ""
+"Impossible de charger les agents assignés car vous ne disposez pas des "
+"droits de lecture sur les enregistrements des agents."
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:251
+#, fuzzy
+msgid "cannotReadDisciplinesForUserAssignment"
+msgstr ""
+"Impossible de charger complètement les agents assignés car vous n'avez pas "
+"accès en lecture aux dossiers disciplinaires."
