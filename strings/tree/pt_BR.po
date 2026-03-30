@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:23+0000\n"
+"PO-Revision-Date: 2026-03-30 14:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/tree/pt_BR/>\n"
@@ -179,8 +179,8 @@ msgstr ""
 msgid "mergeNodeMessage"
 msgstr ""
 "Todas as referências ao nó {treeName:string} \"{nodeName:string}\" serão "
-"substituídas por \"{parentName:string}\", e todos os descendentes de "
-"\"{nodeName:string}\" serão movidos para \"{parentName:string}\", com "
+"substituídas por \"{parentName:string}\", e todos os descendentes de \""
+"{nodeName:string}\" serão movidos para \"{parentName:string}\", com "
 "quaisquer descendentes correspondentes em nome e classificação sendo eles "
 "próprios mesclados recursivamente."
 
@@ -224,7 +224,8 @@ msgstr "Dessinonizar nó"
 #: components/TreeView/Actions.tsx:478
 #, fuzzy
 msgid "desynonymizeNodeMessage"
-msgstr "\"{nodeName:string}\" deixará de ser sinônimo de \"{synonymName:string}\"."
+msgstr ""
+"\"{nodeName:string}\" deixará de ser sinônimo de \"{synonymName:string}\"."
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:253
