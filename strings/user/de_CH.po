@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:12+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/user/de_CH/>\n"
@@ -110,9 +110,9 @@ msgstr "Hallo, {userName:string}!"
 #, fuzzy
 msgid "oicWelcomeMessage"
 msgstr ""
-"Sie wurden eingeladen, ein externes Login mit Ihrem Specify-Benutzerkonto "
-"zu verknüpfen. Dadurch können Sie sich zukünftig mit Ihrem gewählten "
-"Anbieter bei Specify anmelden."
+"Sie wurden eingeladen, ein externes Login mit Ihrem Specify-Benutzerkonto zu "
+"verknüpfen. Dadurch können Sie sich zukünftig mit Ihrem gewählten Anbieter "
+"bei Specify anmelden."
 
 #. Used in: Components > Login > Oic Login
 #: components/Login/OicLogin.tsx:80
@@ -177,8 +177,8 @@ msgstr ""
 #, fuzzy
 msgid "resourceInaccessible"
 msgstr ""
-"Auf die angeforderte Ressource kann nicht zugegriffen werden, während Sie "
-"in der aktuellen Sammlung angemeldet sind."
+"Auf die angeforderte Ressource kann nicht zugegriffen werden, während Sie in "
+"der aktuellen Sammlung angemeldet sind."
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:74
@@ -555,8 +555,8 @@ msgstr ""
 #, fuzzy
 msgid "noProvidersForUserInviteLink"
 msgstr ""
-"Es ist kein externer Identitätsanbieter konfiguriert. Sie können einen "
-"unter „7 Servereinstellungen angeben“ konfigurieren."
+"Es ist kein externer Identitätsanbieter konfiguriert. Sie können einen unter "
+"„7 Servereinstellungen angeben“ konfigurieren."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
@@ -650,7 +650,8 @@ msgstr "Institutionsadministratorstatus kann nicht entfernt werden"
 #: components/Security/User.tsx:671
 #, fuzzy
 msgid "cantRemoveLastAdminDescription"
-msgstr "Es muss mindestens einen Institutionsadministrator in der Institution geben."
+msgstr ""
+"Es muss mindestens einen Institutionsadministrator in der Institution geben."
 
 #. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #: components/FormEditor/Editor.tsx:74
@@ -725,3 +726,19 @@ msgstr "Systemkonfigurationstool"
 #, fuzzy
 msgid "systemConfig"
 msgstr "Systemkonfiguration"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:249
+#, fuzzy
+msgid "cannotReadAgentsForUserAssignment"
+msgstr ""
+"Die zugewiesenen Agenten konnten nicht geladen werden, da Sie keinen "
+"Lesezugriff auf die Agentendatensätze haben."
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:251
+#, fuzzy
+msgid "cannotReadDisciplinesForUserAssignment"
+msgstr ""
+"Die zugewiesenen Agenten konnten nicht vollständig geladen werden, da Sie "
+"keinen Lesezugriff auf die Disziplinarakten haben."
