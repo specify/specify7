@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:12+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/user/pt_BR/>\n"
@@ -50,8 +50,8 @@ msgstr "Você não tem acesso a esta coleção."
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
 msgstr ""
-"A conta atualmente conectada não tem acesso à coleção "
-"{collectionName:string}."
+"A conta atualmente conectada não tem acesso à coleção {collectionName:string}"
+"."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
 #: components/Header/userToolDefinitions.ts:42
@@ -188,8 +188,8 @@ msgstr ""
 #, fuzzy
 msgid "resourceInaccessible"
 msgstr ""
-"O recurso solicitado não pode ser acessado enquanto você estiver conectado "
-"à coleção atual."
+"O recurso solicitado não pode ser acessado enquanto você estiver conectado à "
+"coleção atual."
 
 #. Used in: Components > Forms > Other Collection View
 #: components/Forms/OtherCollectionView.tsx:74
@@ -248,7 +248,8 @@ msgstr ""
 #: components/Forms/DataTask.tsx:138
 #, fuzzy
 msgid "emptyRecordSetsReadOnly"
-msgstr "Não é possível abrir {recordSetTable:string} vazio no modo somente leitura."
+msgstr ""
+"Não é possível abrir {recordSetTable:string} vazio no modo somente leitura."
 
 #. Used in: Components > Permissions > Format Error
 #: components/Permissions/FormatError.tsx:120
@@ -433,8 +434,8 @@ msgstr "Perfil de permissões do usuário (somente leitura)"
 #, fuzzy
 msgid "outOfDateWarning"
 msgstr ""
-"Observação: a pré-visualização pode estar desatualizada. Salve as "
-"alterações para atualizar a pré-visualização."
+"Observação: a pré-visualização pode estar desatualizada. Salve as alterações "
+"para atualizar a pré-visualização."
 
 #. Used in: Components > Security > Preview Components
 #: components/Security/PreviewComponents.tsx:173
@@ -564,8 +565,8 @@ msgstr ""
 #, fuzzy
 msgid "noProvidersForUserInviteLink"
 msgstr ""
-"Nenhum provedor de identidade externo está configurado. Você pode "
-"configurar alguns em Especificar 7 configurações do servidor."
+"Nenhum provedor de identidade externo está configurado. Você pode configurar "
+"alguns em Especificar 7 configurações do servidor."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:243
@@ -734,3 +735,19 @@ msgstr "Ferramenta de Configuração do Sistema"
 #, fuzzy
 msgid "systemConfig"
 msgstr "Configuração do sistema"
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:249
+#, fuzzy
+msgid "cannotReadAgentsForUserAssignment"
+msgstr ""
+"Não foi possível carregar os agentes atribuídos porque você não tem "
+"permissão de leitura para acessar os registros de agentes."
+
+#. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:251
+#, fuzzy
+msgid "cannotReadDisciplinesForUserAssignment"
+msgstr ""
+"Não foi possível carregar completamente os agentes atribuídos porque você "
+"não tem acesso de leitura aos registros disciplinares."
