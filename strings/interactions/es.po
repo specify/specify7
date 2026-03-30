@@ -178,27 +178,6 @@ msgstr "Cantidad resuelta"
 msgid "prepReturnFormatter"
 msgstr "{tableName:string}: {resource:string}"
 
-#. 🟥Example: Resolved Loan records. Used in: Components > Form Commands > Show Transactions
-#: components/FormCommands/ShowTransactions.tsx:136
-msgid "resolvedLoans"
-msgstr "Registros {loanTable:string} resueltos"
-
-#. 🟥Example: Open Loan records. Used in: Components > Form Commands > Show Transactions
-#: components/FormCommands/ShowTransactions.tsx:125
-msgid "openLoans"
-msgstr "Abrir {loanTable:string} registros"
-
-#. 🟥Example: Gift records. Used in: Components > Form Commands > Show Transactions
-#: components/FormCommands/ShowTransactions.tsx:147
-msgid "gifts"
-msgstr "{giftTable:string} registros"
-
-#. 🟥Example: Exchange In / Exchnage Out records. Used in: Components > Form Commands > Show Transactions
-#: components/FormCommands/ShowTransactions.tsx:159
-#, fuzzy
-msgid "exchanges"
-msgstr "Registros {exhangeInTable:string} / {exhangeOutTable:string}"
-
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:41
 #, fuzzy
