@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 14:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/resources/de_CH/>\n"
@@ -663,8 +663,8 @@ msgstr ""
 #, fuzzy
 msgid "invalidNameTaxon"
 msgstr ""
-"{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der "
-"mit {typeName: string} verknüpft ist."
+"{taxonName: string} gehört nicht zum {taxonTableLabel: string}-Baum, der mit "
+"{typeName: string} verknüpft ist."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:236
@@ -700,7 +700,7 @@ msgstr "Feld konfigurieren"
 #: components/Formatters/Fields.tsx:381
 #, fuzzy
 msgid "trimZeros"
-msgstr ""
+msgstr "Nullen trimmen"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:375
