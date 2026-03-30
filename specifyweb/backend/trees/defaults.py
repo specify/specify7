@@ -182,20 +182,24 @@ class DefaultTreeContext():
         # Buffers for batches
         self.rankid_map = {rank.rankid: rank for rank in ranks}
         self.buffers = {rank.rankid: {} for rank in ranks}
+        self.buffer_lookups = {rank.rankid: {} for rank in ranks}
         self.created = {rank.rankid: {} for rank in ranks}
+        self.highest_rank = 0
 
     def add_node_to_buffer(self, node, rank_id, row_id):
         """Add node to the current batch of nodes to be created"""
         if rank_id not in self.buffers:
             self.buffers[rank_id] = {}
+            self.buffer_lookups[rank_id] = {}
             self.created[rank_id] = {}
         self.buffers[rank_id][row_id] = node
+        self.buffer_lookups[rank_id][row_id] = node
         return node
 
     def get_node_in_buffer(self, rank_id: int, name: str):
         """Gets a node if its already in the current batch's buffer. Prevents duplication within a batch."""
         # Check for node in buffer, return node
-        buffer = self.buffers.get(rank_id, {})
+        buffer = self.buffer_lookups.get(rank_id, {})
         for node in buffer.values():
             if node.name == name:
                 return node
@@ -263,6 +267,7 @@ class DefaultTreeContext():
                 self.created[rank_id].update({n.name: n.id for n in created_nodes})
 
             self.buffers[rank_id] = {}
+            self.buffer_lookups[rank_id] = {}
 
         self.counter = 0
 
@@ -278,6 +283,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
     parent_id = None
     rank_id = 10
 
+    highest_rank = 0
     rank_count = len(tree_cfg['ranks'])
     for index in range(rank_count):
         rank_mapping = tree_cfg['ranks'][index]
@@ -318,6 +324,9 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             next_record_name = row.get(next_rank_mapping.get('column', next_rank_name))
             if not next_record_name:
                 is_last = True
+        
+        if is_last:
+            highest_rank = tree_def_item.rankid
 
         # Create the node at this rank if it isn't already there.
         buffered = context.get_node_in_buffer(tree_def_item.rankid, record_name)
@@ -352,6 +361,17 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             parent = obj
             parent_id = None
         rank_id += 10
+
+    # Clear all higher-rank buffers, since they are no longer relevant
+    # This will prevent a node from being parented to an incorrect parent with the same name
+    # TODO: This still doesn't work, there must be a bug somewhere
+    if highest_rank < context.highest_rank:
+        logger.debug(f"Clearing buffers for ranks > {highest_rank}")
+        for id in list(context.buffer_lookups.keys()):
+            if id > highest_rank:
+                context.buffer_lookups[id] = {}
+        context.highest_rank = highest_rank
+    context.highest_rank = max(highest_rank, context.highest_rank)
 
 def queue_create_default_tree_task(task_id):
     """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
