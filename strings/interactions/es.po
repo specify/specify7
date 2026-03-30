@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-29 20:10+0000\n"
+"PO-Revision-Date: 2026-03-30 12:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "interactions/es/>\n"
@@ -254,3 +254,16 @@ msgstr "Continuar"
 #, fuzzy
 msgid "notAvailable"
 msgstr "No disponible"
+
+#. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:83
+#, fuzzy
+msgid "noInteractions"
+msgstr "No existen interacciones relacionadas con esta preparación."
+
+#. 🟥Example: Loan records. Used in: Components > Form Commands > Show Transactions
+#: components/FormCommands/ShowTransactions.tsx:119
+#: components/FormCommands/ShowTransactions.tsx:131
+#, fuzzy
+msgid "tableLabelRecords"
+msgstr "{tableLabel:string} registros"

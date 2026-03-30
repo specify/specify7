@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 12:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/forms/"
 "ru/>\n"
@@ -88,7 +88,8 @@ msgstr "Удалить заблокированный"
 #: components/Forms/DeleteButton.tsx:183
 #, fuzzy
 msgid "deleteBlockedDescription"
-msgstr "Ресурс не может быть удален, поскольку на него ссылаются следующие ресурсы:"
+msgstr ""
+"Ресурс не может быть удален, поскольку на него ссылаются следующие ресурсы:"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
@@ -181,8 +182,8 @@ msgstr "Добавить в {pickListTable:string}?"
 #, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
-"Добавить значение \"{value:string}\" к {pickListTable:string} с именем "
-"\"{pickListName:string}\"?"
+"Добавить значение \"{value:string}\" к {pickListTable:string} с именем \""
+"{pickListName:string}\"?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
@@ -363,8 +364,8 @@ msgstr ""
 #, fuzzy
 msgid "wrongTableForCommand"
 msgstr ""
-"Данная команда не может быть использована в форме {currentTable:string}. "
-"Она может быть использована только в форме {correctTable:string}."
+"Данная команда не может быть использована в форме {currentTable:string}. Она "
+"может быть использована только в форме {correctTable:string}."
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:208

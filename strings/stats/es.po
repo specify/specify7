@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-18 16:11+0000\n"
+"PO-Revision-Date: 2026-03-30 12:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/stats/"
 "es/>\n"
@@ -257,13 +257,13 @@ msgstr "Porcentaje Capturado"
 #: components/Statistics/DeleteCategory.tsx:49
 #, fuzzy
 msgid "deleteWarning"
-msgstr "¿Estás seguro que deseas eliminar la categoría?"
+msgstr "¿Estás seguro de que quieres eliminar la categoría?"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:55
 #, fuzzy
 msgid "categoryToDelete"
-msgstr "Esto eliminará permanentemente la siguiente categoría"
+msgstr "Esto eliminará permanentemente la siguiente categoría."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:127
