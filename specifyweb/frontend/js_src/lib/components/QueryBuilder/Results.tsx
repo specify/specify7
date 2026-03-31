@@ -150,12 +150,18 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     undefinedResult === -1 ? results : results?.slice(0, undefinedResult)
   ) as RA<QueryResultRow> | undefined;
 
+  /* eslint-disable functional/prefer-readonly-type */
+  const deletingRef = React.useRef<Set<number>>(new Set()); // Track recent deleted IDs to prevent duplicate deletion
+
   // TEST: try deleting while records are being fetched
   /**
    * Note: this may be called with a recordId that is not part of query results
    */
   const handleDelete = React.useCallback(
     (recordId: number): void => {
+      if (deletingRef.current.has(recordId)) return; // Prevents duplicate deletion calls for the same record
+      deletingRef.current.add(recordId);
+
       let removeCount = 0;
       function newResults(results: RA<QueryResultRow | undefined> | undefined) {
         if (!Array.isArray(results) || totalCount === undefined) return;
@@ -167,13 +173,20 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         return newResults;
       }
       setResults(newResults(results));
-      if (removeCount === 0) return;
+      // Delete deletingRef if no records are able to be removed
+      if (removeCount === 0) {
+        deletingRef.current.delete(recordId);
+        return;
+      }
       setTotalCount((totalCount) =>
-        totalCount === undefined ? undefined : totalCount - removeCount
+        totalCount === undefined
+          ? undefined
+          : Math.max(0, totalCount - removeCount)
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
         new Set(Array.from(selectedRows).filter((id) => id !== recordId));
       setSelectedRows(newSelectedRows(selectedRows));
+      setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
     },
     [setResults, setTotalCount, totalCount]
   );
@@ -417,7 +430,7 @@ function TableHeaderCell({
 
   return (
     <div
-      className="bg-brand-100 dark:bg-brand-500 sticky z-[2] w-full
+      className="bg-brand-100 dark:bg-brand-400 sticky z-[2] w-full
         min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >

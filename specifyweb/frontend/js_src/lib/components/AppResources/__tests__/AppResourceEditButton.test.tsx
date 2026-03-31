@@ -79,7 +79,7 @@ describe('AppResourceEditButton', () => {
                   text-gray-700 flex flex-col gap-2
                 \\" id=\\"modal-0-content\\"></div><div class=\\"flex gap-2 justify-end\\"><span class=\\"-ml-2 flex-1\\"></span><button class=\\"button rounded cursor-pointer active:brightness-80 px-4 py-2
           disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
-          dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+          dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm button hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
       dark:text-gray-100\\" type=\\"button\\">Close</button></div>"
     `);
 

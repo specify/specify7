@@ -140,6 +140,7 @@ LANGUAGES = [
     ('es-es', 'español'),
     ('de-ch', 'deutsch (schweiz)'),
     ('pt-br', 'português (brasil)'),
+    ('hr-hr', 'hrvatski'),
 ]
 
 SITE_ID = 1
@@ -255,6 +256,7 @@ SPECIFY_APPS  = [
     'specifyweb.backend.workbench',
     'specifyweb.backend.notifications',
     'specifyweb.backend.export',
+    'specifyweb.backend.setup_tool',
     'specifyweb.backend.raven_placeholder' if RAVEN_CONFIG is None else 'raven.contrib.django.raven_compat',
     'specifyweb.backend.stats',
     'specifyweb.backend.inheritance',

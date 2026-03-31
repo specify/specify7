@@ -86,6 +86,17 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/security/',
       icon: icons.fingerPrint,
     },
+    systemConfigurationTool: {
+      title: userText.systemConfig(),
+      enabled: () =>
+        userInformation.isadmin &&
+        hasToolPermission('resources', 'read') &&
+        hasTablePermission('Discipline', 'read') &&
+        hasTablePermission('Collection', 'read') &&
+        hasTablePermission('SpecifyUser', 'read'),
+      url: '/specify/system-configuration/',
+      icon: icons.library,
+    },
     repairTree: {
       title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',

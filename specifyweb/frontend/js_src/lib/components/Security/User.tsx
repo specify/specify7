@@ -75,6 +75,7 @@ import {
   UserIdentityProviders,
   UserRoles,
 } from './UserComponents';
+import type { UserAgents } from './UserHooks';
 import { useCollectionRoles, useUserAgents, useUserRoles } from './UserHooks';
 import { UserInviteLink } from './UserInviteLink';
 import {
@@ -214,6 +215,7 @@ function UserView({
         'SettingAgents',
         {
           readonly response: SetAgentsResponse;
+          readonly userAgents: UserAgents | undefined;
         }
       >
     | State<'Main'>
@@ -235,6 +237,11 @@ function UserView({
     '/admin/user/invite_link',
     'create'
   );
+  const userAgentsReadState = hasTablePermission('Agent', 'read')
+    ? hasTablePermission('Discipline', 'read')
+      ? 'full'
+      : 'missingDisciplineRead'
+    : 'missingAgentRead';
   const canSeeInstitutionalPolicies = hasDerivedPermission(
     '/permissions/institutional_policies/user',
     'read'
@@ -350,6 +357,7 @@ function UserView({
                     collectionId={collectionId}
                     isSuperAdmin={isSuperAdmin}
                     userAgents={userAgents}
+                    userAgentsReadState={userAgentsReadState}
                     userPolicies={userPolicies}
                     onChange={setUserPolicies}
                     onChangedAgent={handleChangedAgent}
@@ -505,6 +513,7 @@ function UserView({
                         ? setState({
                             type: 'SettingAgents',
                             response: JSON.parse(data),
+                            userAgents,
                           })
                         : Array.isArray(institutionPolicies) &&
                             changedInstitutionPolicies
@@ -536,6 +545,7 @@ function UserView({
                                   setState({
                                     type: 'SettingAgents',
                                     response: JSON.parse(data),
+                                    userAgents,
                                   });
                               } else return true;
                               return undefined;
@@ -655,9 +665,13 @@ function UserView({
             <ProtectedAction action="update" resource="/admin/user/agents">
               <MissingAgentsDialog
                 response={state.response}
-                userAgents={userAgents}
+                userAgents={state.userAgents}
                 userId={userResource.id}
                 onClose={(): void => setState({ type: 'Main' })}
+                onSaved={(): void => {
+                  setVersion((version) => version + 1);
+                  setState({ type: 'Main' });
+                }}
               />
             </ProtectedAction>
           </ProtectedTable>

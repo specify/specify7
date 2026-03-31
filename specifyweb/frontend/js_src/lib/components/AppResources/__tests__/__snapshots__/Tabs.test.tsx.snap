@@ -18,7 +18,7 @@ exports[`Tabs first tab selected, and then second 1`] = `
   button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
     dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
-  dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white
+  dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white
 "
       id="headlessui-tabs-tab-:r0:"
       role="tab"
@@ -78,7 +78,7 @@ exports[`Tabs first tab selected, and then second 2`] = `
   button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
     dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
-  dialog-icon-info hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white
+  dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white
 "
       id="headlessui-tabs-tab-:r0:"
       role="tab"

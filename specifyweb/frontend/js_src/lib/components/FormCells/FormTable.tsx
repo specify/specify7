@@ -24,7 +24,7 @@ import type { Collection, SpecifyTable } from '../DataModel/specifyTable';
 import type { CollectionObjectGroup } from '../DataModel/types';
 import { FormMeta } from '../FormMeta';
 import type { FormCellDefinition, SubViewSortField } from '../FormParse/cells';
-import { attachmentView } from '../FormParse/webOnlyViews';
+import { DeleteButton } from '../Forms/DeleteButton';
 import { SpecifyForm } from '../Forms/SpecifyForm';
 import { SubViewContext } from '../Forms/SubView';
 import { propsToFormMode, useViewDefinition } from '../Forms/useViewDefinition';
@@ -147,6 +147,8 @@ export function FormTable<SCHEMA extends AnySchema>({
 
   const rowsRef = React.useRef<HTMLDivElement | null>(null);
 
+  const isTreeTable = collection!.table.specifyTable.name.includes('Tree');
+
   React.useEffect(() => {
     if (addedResource.current === undefined) return;
     const resourceIndex = resources.indexOf(addedResource.current);
@@ -158,9 +160,17 @@ export function FormTable<SCHEMA extends AnySchema>({
     lastRow?.focus();
   }, [resources]);
 
+  const isSystemConfigResource =
+    (relationship.relatedTable.name === 'Collection' &&
+      relationship.name === 'collections') ||
+    (relationship.relatedTable.name === 'Discipline' &&
+      relationship.name === 'disciplines');
+
   const isToOne =
     !relationshipIsToMany(relationship) || shouldBeToOne(relationship);
-  const disableAdding = isToOne && resources.length > 0;
+
+  const disableAdding =
+    (isToOne && resources.length > 0) || isSystemConfigResource;
 
   const header = commonText.countLine({
     resource: relationship.label,
@@ -432,7 +442,7 @@ export function FormTable<SCHEMA extends AnySchema>({
                             collapsedViewDefinition.mode === 'search'
                           }
                         >
-                          {collapsedViewDefinition.name === attachmentView ? (
+                          {collapsedViewDefinition.isAttachmentPlugin ? (
                             <div className="flex gap-8" role="cell">
                               <Attachment resource={resource} />
                             </div>
@@ -494,25 +504,52 @@ export function FormTable<SCHEMA extends AnySchema>({
                       hasTablePermission(
                         relationship.relatedTable.name,
                         isDependent ? 'delete' : 'update'
-                      )) ? (
-                      <Button.Small
-                        aria-label={commonText.remove()}
-                        className="h-full"
-                        disabled={
-                          (!resource.isNew() &&
-                            !hasTablePermission(
-                              resource.specifyTable.name,
-                              isDependent ? 'delete' : 'update'
-                            )) ||
-                          (renderedResourceId !== undefined &&
-                            resource.id === renderedResourceId) ||
-                          disableRemove
-                        }
-                        title={commonText.remove()}
-                        onClick={(): void => handleDelete(resource)}
-                      >
-                        {icons.trash}
-                      </Button.Small>
+                      )) &&
+                    !disableRemove &&
+                    (renderedResourceId === undefined ||
+                      renderedResourceId === resource.id) ? (
+                      /*
+                       * Check condition for tree table delete button, since new resources do not have id yet
+                       * alternates between DeleteButton logic with save blcokers and simple remove button for new, and unsaved resources
+                       */
+                      resource.id !== undefined &&
+                      resource.id !== null &&
+                      isTreeTable ? (
+                        <DeleteButton
+                          component={Button.Small}
+                          deferred
+                          isIcon
+                          resource={resource}
+                          onDeleted={(): void => {
+                            if (typeof handleDelete === 'function') {
+                              handleDelete(resource);
+                            }
+                          }}
+                        >
+                          {(onClick, disabled): JSX.Element => (
+                            <Button.Small
+                              aria-label={commonText.remove()}
+                              className="h-full"
+                              disabled={disabled}
+                              title={commonText.remove()}
+                              onClick={onClick}
+                            >
+                              {icons.trash}
+                            </Button.Small>
+                          )}
+                        </DeleteButton>
+                      ) : (
+                        <Button.Small
+                          aria-label={commonText.remove()}
+                          className="h-full"
+                          title={commonText.remove()}
+                          onClick={(): void => {
+                            handleDelete(resource);
+                          }}
+                        >
+                          {icons.trash}
+                        </Button.Small>
+                      )
                     ) : undefined}
                     {isExpanded[resource.cid] === true && (
                       <FormMeta
