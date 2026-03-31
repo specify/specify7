@@ -6,6 +6,7 @@ import { Link } from '../Atoms/Link';
 import jsonTerms from '../../data/dwcTerms.json';
 import { darwinCoreText } from '../../localization/dwc';
 import { Tables } from '../DataModel/types';
+import { localized } from '../../utils/types';
 
 export function DwCSection({
   tableName,
@@ -76,7 +77,7 @@ export function DwCSection({
                     <div className="text-sm mb-1 mt-2">
                       <span className="font-semibold">IRI:</span>
                       <Link.NewTab href={iri} className="ml-1">
-                        {iri}
+                        {localized(iri)}
                       </Link.NewTab>
                     </div>
 
