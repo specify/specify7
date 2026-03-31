@@ -100,7 +100,7 @@ msgstr "No"
 #: components/WbPlanView/MapperComponents.tsx:333
 #: components/WbPlanView/MapperComponents.tsx:359
 #: components/WbPlanView/State.tsx:94
-#: components/WbToolkit/ChangeOwner.tsx:86
+#: components/WbToolkit/ChangeOwner.tsx:87
 #: components/WbToolkit/CoordinateConverter.tsx:227
 #: components/WorkBench/DataSetMeta.tsx:163
 #: components/WorkBench/Disambiguation.tsx:40
@@ -287,7 +287,7 @@ msgstr "Create"
 #: components/WbPlanView/MapperComponents.tsx:428
 #: components/WbPlanView/MapperComponents.tsx:556
 #: components/WbPlanView/State.tsx:34
-#: components/WbToolkit/ChangeOwner.tsx:76
+#: components/WbToolkit/ChangeOwner.tsx:77
 #: components/WbToolkit/DevShowPlan.tsx:86
 #: components/WbToolkit/GeoLocate.tsx:143
 #: components/WorkBench/AdvancedSearch.tsx:107
@@ -433,7 +433,7 @@ msgstr "Previous"
 msgid "tool"
 msgstr "Tool"
 
-#: components/WbToolkit/index.tsx:93
+#: components/WbToolkit/index.tsx:92
 #: components/WorkBench/WbView.tsx:231
 #. Used in: Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
 msgid "tools"
@@ -842,7 +842,7 @@ msgstr "Ordinal"
 #: components/SchemaConfig/Tables.tsx:39
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:90
-#: components/WbToolkit/index.tsx:117
+#: components/WbToolkit/index.tsx:116
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
 msgid "export"
 msgstr "Export"

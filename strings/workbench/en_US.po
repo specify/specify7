@@ -104,8 +104,8 @@ msgstr ""
 "Note, live validation is an experimental feature and is not a substitute "
 "for regular validation."
 
-#: components/WbToolkit/ChangeOwner.tsx:41
-#: components/WbToolkit/ChangeOwner.tsx:88
+#: components/WbToolkit/ChangeOwner.tsx:38
+#: components/WbToolkit/ChangeOwner.tsx:89
 #. Used in: Components > Wb Toolkit > Change Owner
 msgid "changeOwner"
 msgstr "Change Owner"
@@ -408,8 +408,8 @@ msgstr "An Upload Plan needs to defined before this Data Set can be Validated"
 #: components/WbActions/WbUpload.tsx:69
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
-#: components/WbToolkit/ChangeOwner.tsx:38
-#: components/WbToolkit/index.tsx:114
+#: components/WbToolkit/ChangeOwner.tsx:35
+#: components/WbToolkit/index.tsx:113
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "This action requires all changes to be saved"
@@ -692,18 +692,18 @@ msgstr "Import file name"
 msgid "noFileName"
 msgstr "(no file name)"
 
-#: components/WbToolkit/ChangeOwner.tsx:92
+#: components/WbToolkit/ChangeOwner.tsx:93
 #. Used in: Components > Wb Toolkit > Change Owner
 msgid "changeDataSetOwner"
 msgstr "Change Data Set Owner"
 
-#: components/WbToolkit/ChangeOwner.tsx:109
+#: components/WbToolkit/ChangeOwner.tsx:110
 #. Used in: Components > Wb Toolkit > Change Owner
 msgid "changeDataSetOwnerDescription"
 msgstr "Select New Owner:"
 
-#: components/WbToolkit/ChangeOwner.tsx:77
-#: components/WbToolkit/ChangeOwner.tsx:80
+#: components/WbToolkit/ChangeOwner.tsx:78
+#: components/WbToolkit/ChangeOwner.tsx:81
 #. Used in: Components > Wb Toolkit > Change Owner
 msgid "dataSetOwnerChanged"
 msgstr "Data Set owner changed"
