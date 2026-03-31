@@ -1184,3 +1184,16 @@ library_roles = openapi(schema={
         }
     }
 })(LibraryRoles.as_view())
+
+def list_sp6_perms(request, userid: int):
+    user = Specifyuser.objects.get(id=userid)
+
+    cursor = connection.cursor()
+    cursor.execute("""
+    SELECT usr.name, pri.groupType, pri.Name, pri.userGroupScopeID
+    FROM specifyuser_spprincipal tog
+    JOIN spprincipal pri ON pri.SpPrincipalID=tog.SpPrincipalID
+    JOIN specifyuser usr ON usr.SpecifyUserID=tog.SpecifyUserID AND usr.SpecifyUserID=%s
+    """, [user.id])
+    rows = cursor.fetchall()
+    return http.JsonResponse(rows, safe=False)

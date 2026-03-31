@@ -16,4 +16,6 @@ urlpatterns = [
     path('registry/', views.policy_registry),
     path('query/', views.query_view),
     path('list_admins/', views.list_admins),
+
+    path('list_six_perms/<int:userid>/', views.list_sp6_perms)
 ]
