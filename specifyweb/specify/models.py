@@ -3304,8 +3304,8 @@ class Exportdataset(models.Model):
     lastexported = models.DateTimeField(blank=True, null=True, unique=False, db_column='LastExported', db_index=False)
 
     # Relationships: Many-to-One
-    metadata = models.ForeignKey('Spappresource', db_column='Metadata', related_name='exportdatasets', null=True, on_delete=models.SET_NULL)
-    coremapping = models.ForeignKey('Schemamapping', db_column='CoreMapping', related_name='exportdatasets', null=False, on_delete=protect_with_blockers)
+    metadata = models.ForeignKey('SpAppResource', db_column='MetadataID', related_name='exportdatasets', null=True, on_delete=models.SET_NULL)
+    coremapping = models.ForeignKey('SchemaMapping', db_column='CoreMappingID', related_name='exportdatasets', null=False, on_delete=protect_with_blockers)
     collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='exportdatasets', null=False, on_delete=protect_with_blockers)
 
     class Meta:

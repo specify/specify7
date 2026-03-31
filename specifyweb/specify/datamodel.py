@@ -3520,8 +3520,8 @@ datamodel = Datamodel(tables=[
         Index(name='ExportDatasetCollectionIDX', column_names=['CollectionID'])
     ],
     relationships=[
-        Relationship(name='metadata', type='many-to-one', required=False, relatedModelName='Spappresource', column='Metadata', otherSideName='exportDatasets'),
-        Relationship(name='coreMapping', type='many-to-one', required=True, relatedModelName='Schemamapping', column='CoreMapping', otherSideName='exportDatasets'),
+        Relationship(name='metadata', type='many-to-one', required=False, relatedModelName='SpAppResource', column='MetadataID', otherSideName='exportDatasets'),
+        Relationship(name='coreMapping', type='many-to-one', required=True, relatedModelName='SchemaMapping', column='CoreMappingID', otherSideName='exportDatasets'),
         Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID', otherSideName='exportDatasets')
     ],
     fieldAliases=[]
