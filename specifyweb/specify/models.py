@@ -5823,6 +5823,52 @@ class Repositoryagreementattachment(models.Model):
     
     save = partialmethod(custom_save)
 
+class Schemamapping(models.Model):
+    specify_model = datamodel.get_table_strict('schemamapping')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='schemamappingid')
+
+    # Fields
+    contextname = models.CharField(blank=False, max_length=64, null=False, unique=False, db_column='ContextName', db_index=False)
+    contexttableid = models.SmallIntegerField(blank=False, null=False, unique=False, db_column='ContextTableId', db_index=False)
+    countonly = models.BooleanField(blank=True, null=True, unique=False, db_column='CountOnly', db_index=False, default=False)
+    formatauditrecids = models.BooleanField(blank=True, null=True, unique=False, db_column='FormatAuditRecIds', db_index=False)
+    isfavorite = models.BooleanField(blank=True, null=True, unique=False, db_column='IsFavorite', db_index=False)
+    name = models.CharField(blank=False, max_length=256, null=False, unique=False, db_column='Name', db_index=False)
+    ordinal = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Ordinal', db_index=False)
+    remarks = models.TextField(blank=True, null=True, unique=False, db_column='Remarks', db_index=False)
+    searchsynonymy = models.BooleanField(blank=True, null=True, unique=False, db_column='SearchSynonymy', db_index=False)
+    selectdistinct = models.BooleanField(blank=True, null=True, unique=False, db_column='SelectDistinct', db_index=False)
+    smushed = models.BooleanField(blank=True, null=True, unique=False, db_column='Smushed', db_index=False, default=False)
+    sqlstr = models.TextField(blank=True, null=True, unique=False, db_column='SqlStr', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
+    version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
+    mapping_type = models.CharField(blank=False, max_length=16, null=False, unique=False, db_column='MappingType', db_index=False,)
+    is_default = models.BooleanField(blank=False, default=False, unique=False, db_column='IsDefault', db_index=False,)
+
+    # Relationships: Many-to-One
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='schemamappings', null=False, on_delete=protect_with_blockers)
+
+    # One-to-one relationship to Spquery
+    query = models.OneToOneField(
+        'Schemamappings',
+        on_delete=models.CASCADE,
+        db_column='SchemamappingsID',
+        related_name='schema_mapping'
+    )
+    class Meta:
+        db_table = 'schemamapping'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='SchemaMappingNameIDX')
+        ]
+
+    
+    save = partialmethod(custom_save)
 class Shipment(models.Model):
     specify_model = datamodel.get_table_strict('shipment')
 
