@@ -116,7 +116,7 @@ function InterationWithPreps({
             <div className="flex">
               <TableIcon label name={tables[tableName].name} />
               <span className="p-1" />
-              {interactionsText.tableLabelRecords({
+              {(interactionsText.tableLabelRecords as any)({
                 tableLabel: tables[tableName].label,
               })}
             </div>
@@ -128,7 +128,7 @@ function InterationWithPreps({
           <div className="flex">
             <TableIcon label name={tables[tableName].name} />
             <span className="p-1" />
-            {`${interactionsText.tableLabelRecords({
+            {`${(interactionsText.tableLabelRecords as any)({
               tableLabel: tables[tableName].label,
             })} (${formatNumber(relatedInteractionIds.length)})`}
           </div>

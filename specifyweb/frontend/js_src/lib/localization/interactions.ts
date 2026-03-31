@@ -443,15 +443,15 @@ export const interactionsText = createDictionary({
     'hr-hr': 'Nije dostupno',
   },
   resolvedLoans: {
-    'es-es': 'Registros {loanTable:string} resueltos',
+    'en-us': 'Registros {loanTable:string} resueltos',
   },
   openLoans: {
-    'es-es': 'Abrir {loanTable:string} registros',
+    'en-us': 'Abrir {loanTable:string} registros',
   },
   gifts: {
-    'es-es': '{giftTable:string} registros',
+    'en-us': '{giftTable:string} registros',
   },
   exchanges: {
-    'es-es': 'Registros {exhangeInTable:string} / {exhangeOutTable:string}',
+    'en-us': 'Registros {exhangeInTable:string} / {exhangeOutTable:string}',
   },
 } as const);
