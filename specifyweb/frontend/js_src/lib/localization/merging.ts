@@ -17,7 +17,7 @@ export const mergingText = createDictionary({
     'fr-fr': "Fusion d'enregistrements",
     'uk-ua': "Об'єднання записів",
     'pt-br': 'Fusão de Registros',
-    'hr-hr': '',
+    'hr-hr': 'Spajanje zapisa',
   },
   mergeRecords: {
     'en-us': 'Merge Records',
@@ -27,7 +27,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Fusionner les enregistrements',
     'uk-ua': 'Об’єднати записи',
     'pt-br': 'Mesclar registros',
-    'hr-hr': '',
+    'hr-hr': 'Spoji zapise',
   },
   mergedRecord: {
     'en-us': 'Merged Record',
@@ -37,7 +37,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Enregistrement fusionné',
     'uk-ua': 'Об’єднаний запис',
     'pt-br': 'Registro consolidado',
-    'hr-hr': '',
+    'hr-hr': 'Spojeni zapis',
   },
   showConflictingFieldsOnly: {
     'en-us': 'Show conflicting fields only',
@@ -47,7 +47,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Afficher uniquement les champs en conflit',
     'uk-ua': 'Показувати лише конфліктуючі поля',
     'pt-br': 'Mostrar apenas os campos conflitantes',
-    'hr-hr': '',
+    'hr-hr': 'Prikaži samo konfliktna polja',
   },
   newMergedRecord: {
     'en-us': 'New merged record',
@@ -57,7 +57,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Nouvel enregistrement fusionné',
     'uk-ua': "Новий об'єднаний запис",
     'pt-br': 'Novo registro consolidado',
-    'hr-hr': '',
+    'hr-hr': 'Novi spojeni zapis',
   },
   duplicateRecord: {
     'en-us': 'Preview {index:number|formatted}',
@@ -67,7 +67,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Aperçu {index:number|formatted}',
     'uk-ua': 'Попередній перегляд {index:number|formatted}',
     'pt-br': 'Pré-visualização {index:number|formatted}',
-    'hr-hr': '',
+    'hr-hr': 'Pregled {index:number|formatted}',
   },
   nRecords: {
     'en-us': '{count:number|formatted} records',
@@ -77,7 +77,7 @@ export const mergingText = createDictionary({
     'fr-fr': '{count:number|formatted} enregistrements',
     'uk-ua': '{count:number|formatted} записи',
     'pt-br': '{count:number|formatted} registros',
-    'hr-hr': '',
+    'hr-hr': '{count:number|formatted} zapisi',
   },
   subViewControls: {
     'en-us': 'Sub-view Controls',
@@ -87,7 +87,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Commandes de sous-vue',
     'uk-ua': 'Елементи керування вкладеним переглядом',
     'pt-br': 'Controles de subvisualização',
-    'hr-hr': '',
+    'hr-hr': 'Kontrole podprikaza',
   },
   mergeFields: {
     comment: 'Example: "Merge Addresses"',
@@ -98,7 +98,7 @@ export const mergingText = createDictionary({
     'fr-fr': 'Fusionner {field:string}',
     'uk-ua': "Об'єднати {field:string}",
     'pt-br': 'Mesclar {field:string}',
-    'hr-hr': '',
+    'hr-hr': 'Spoji {field:string}',
   },
   autoPopulate: {
     'en-us': 'Auto-populate',
@@ -108,7 +108,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Автоматическое заполнение',
     'uk-ua': 'Автоматичне заповнення',
     'pt-br': 'Preenchimento automático',
-    'hr-hr': '',
+    'hr-hr': 'Automatsko popunjavanje',
   },
   dismissFromMerging: {
     'en-us': 'Dismiss from merging',
@@ -118,7 +118,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Отклонить от слияния',
     'uk-ua': 'Відхилити від об’єднання',
     'pt-br': 'Remover da fusão',
-    'hr-hr': '',
+    'hr-hr': 'Odbaci spajanje',
   },
   agentContainsGroupDescription: {
     'en-us': 'Agents contain group members',
@@ -128,7 +128,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Агенты включают в себя членов группы.',
     'uk-ua': 'Об’єднаний запис',
     'pt-br': 'Os agentes contêm membros do grupo',
-    'hr-hr': '',
+    'hr-hr': 'Agenti sadrže članove grupe',
   },
   recordNotBeMergedReason: {
     'en-us': 'The following records cannot be merged. Reason:',
@@ -140,7 +140,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Следующие записи не могут быть объединены. Причина:',
     'uk-ua': 'Наступні записи не можна об’єднати. Причина:',
     'pt-br': 'Os seguintes registros não podem ser mesclados. Motivo:',
-    'hr-hr': '',
+    'hr-hr': 'Sljedeće zapise nije moguće spojiti. Razlog:',
   },
   someCannotBeMerged: {
     'en-us': 'Some records cannot be merged',
@@ -150,7 +150,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Некоторые записи невозможно объединить.',
     'uk-ua': "Деякі записи неможливо об'єднати",
     'pt-br': 'Alguns registros não podem ser mesclados.',
-    'hr-hr': '',
+    'hr-hr': 'Neki zapisi se ne mogu spojiti',
   },
   mergeOthers: {
     'en-us': 'Merge others',
@@ -160,7 +160,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Объединить другие',
     'uk-ua': 'Об’єднати інші',
     'pt-br': 'Mescle outros',
-    'hr-hr': '',
+    'hr-hr': 'Spoji ostale',
   },
   warningMergeText: {
     'en-us':
@@ -177,7 +177,8 @@ export const mergingText = createDictionary({
       'Перш ніж продовжити, зауважте, що наступна дія може перешкодити іншим користувачам. Ця дія може призвести до затримок або тимчасової недоступності певних функцій для користувачів Specify. Будь ласка, врахуйте вплив на їхній досвід. Це об’єднання не можна скасувати',
     'pt-br':
       'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Essa ação pode causar atrasos ou indisponibilidade temporária de certos recursos para os usuários especificados. Considere o impacto na experiência deles. Essa mesclagem não pode ser desfeita.',
-    'hr-hr': '',
+    'hr-hr':
+      'Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete u obzir utjecaj na njihovo iskustvo. Ovo spajanje nije moguće poništiti.',
   },
   mergeFailed: {
     'en-us': 'Merge Failed',
@@ -187,7 +188,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Слияние не удалось.',
     'uk-ua': 'Не вдалося злити',
     'pt-br': 'A fusão falhou.',
-    'hr-hr': '',
+    'hr-hr': 'Spajanje nije uspjelo',
   },
   mergeSucceeded: {
     'en-us': 'Merge Succeeded',
@@ -197,7 +198,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Слияние прошло успешно.',
     'uk-ua': 'Злиття виконано',
     'pt-br': 'Fusão bem-sucedida',
-    'hr-hr': '',
+    'hr-hr': 'Spajanje je uspjelo',
   },
   merging: {
     'en-us': 'Merging',
@@ -207,7 +208,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Слияние',
     'uk-ua': 'Злиття',
     'pt-br': 'Fusão',
-    'hr-hr': '',
+    'hr-hr': 'Spajanje',
   },
   mergingHasStarted: {
     'en-us': 'The merge process has started.',
@@ -217,7 +218,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Процесс слияния начался.',
     'uk-ua': 'Процес об’єднання розпочато.',
     'pt-br': 'O processo de fusão foi iniciado.',
-    'hr-hr': '',
+    'hr-hr': 'Proces spajanja je započeo.',
   },
   mergingHasSucceeded: {
     'en-us': 'The merge process has succeeded.',
@@ -227,7 +228,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Процесс слияния успешно завершен.',
     'uk-ua': 'Процес об’єднання завершився успішно.',
     'pt-br': 'O processo de fusão foi concluído com sucesso.',
-    'hr-hr': '',
+    'hr-hr': 'Proces spajanja je uspio.',
   },
   mergingHasFailed: {
     'en-us': 'The merge process has failed.',
@@ -237,7 +238,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Процесс слияния завершился неудачей.',
     'uk-ua': 'Помилка процесу об’єднання.',
     'pt-br': 'O processo de mesclagem falhou.',
-    'hr-hr': '',
+    'hr-hr': 'Proces spajanja nije uspio.',
   },
   mergingHasBeenCanceled: {
     'en-us': 'The merge process has been cancelled.',
@@ -247,7 +248,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Процесс слияния отменен.',
     'uk-ua': 'Процес об’єднання скасовано.',
     'pt-br': 'O processo de fusão foi cancelado.',
-    'hr-hr': '',
+    'hr-hr': 'Proces spajanja je otkazan.',
   },
   retryMerge: {
     'en-us': 'Retry merge.',
@@ -257,7 +258,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Повторить слияние.',
     'uk-ua': 'Повторити об’єднання.',
     'pt-br': 'Tentar mesclar novamente.',
-    'hr-hr': '',
+    'hr-hr': 'Ponovi pokušaj spajanja.',
   },
   mergingWentWrong: {
     'en-us': 'Something went wrong during the merging process.',
@@ -267,7 +268,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'В процессе слияния что-то пошло не так.',
     'uk-ua': "Під час процесу об'єднання сталася помилка.",
     'pt-br': 'Algo deu errado durante o processo de fusão.',
-    'hr-hr': '',
+    'hr-hr': 'Nešto je pošlo po zlu tijekom procesa spajanja.',
   },
   linkedRecords: {
     'en-us': 'Linked Records',
@@ -277,6 +278,6 @@ export const mergingText = createDictionary({
     'ru-ru': 'Связанные записи',
     'uk-ua': "Пов'язані записи",
     'pt-br': 'Registros vinculados',
-    'hr-hr': '',
+    'hr-hr': 'Povezani zapisi',
   },
 } as const);
