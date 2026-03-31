@@ -225,7 +225,8 @@ model_names_by_table_id = {
     1034:'Spexportschema_exportmapping',
     1035:'Specifyuser_spprincipal',
     1036:'Spprincipal_sppermission',
-    # 1037: 'Schemamapping'
+    # 1037: 'Schemamapping',
+    # 1038: 'Exportdataset'
 }
 
 model_names_by_app = {

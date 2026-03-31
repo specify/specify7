@@ -3288,6 +3288,36 @@ class Exchangeoutprep(models.Model):
     
     save = partialmethod(custom_save)
 
+class Exportdataset(models.Model):
+    specify_model = datamodel.get_table_strict('exportdataset')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='exportdatasetid')
+
+    # Fields
+    exportname = models.CharField(blank=False, max_length=255, null=False, unique=True, db_column='ExportName', db_index=False)
+    filename = models.CharField(blank=False, max_length=255, null=False, unique=True, db_column='FileName', db_index=False)
+    rss = models.BooleanField(blank=True, null=True, unique=False, db_column='RSS', db_index=False, default=False)
+    frequency = models.IntegerField(blank=True, null=True, unique=False, db_column='Frequency', db_index=False)
+    timestampcreated = models.DateTimeField(blank=False, null=False, unique=False, db_column='TimestampCreated', db_index=False, default=timezone.now)
+    timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now)
+    lastexported = models.DateTimeField(blank=True, null=True, unique=False, db_column='LastExported', db_index=False)
+
+    # Relationships: Many-to-One
+    metadata = models.ForeignKey('Spappresource', db_column='Metadata', related_name='exportdatasets', null=True, on_delete=models.SET_NULL)
+    coremapping = models.ForeignKey('Schemamapping', db_column='CoreMapping', related_name='exportdatasets', null=False, on_delete=protect_with_blockers)
+    collection = models.ForeignKey('Collection', db_column='CollectionID', related_name='exportdatasets', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'exportdataset'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['exportname'], name='ExportNameIDX'),
+            models.Index(fields=['filename'], name='FileNameIDX'),
+            models.Index(fields=['collection'], name='ExportDatasetCollectionIDX')
+        ]
+
+    save = partialmethod(custom_save)
 class Exsiccata(models.Model):
     specify_model = datamodel.get_table_strict('exsiccata')
 
