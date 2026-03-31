@@ -16,7 +16,7 @@ class Migration(migrations.Migration):
         migrations.CreateModel(
             name='Exportdataset',
             fields=[
-                ('id', models.AutoField(db_column='exportdatasetid', primary_key=True, serialize=False)),
+                ('id', models.AutoField(db_column='ExportDatasetID', primary_key=True, serialize=False)),
                 ('exportname', models.CharField(db_column='ExportName', max_length=255, unique=True)),
                 ('filename', models.CharField(db_column='FileName', max_length=255, unique=True)),
                 ('rss', models.BooleanField(blank=True, db_column='RSS', default=False, null=True)),
