@@ -25,7 +25,8 @@ class Migration(migrations.Migration):
                 ('timestampmodified', models.DateTimeField(blank=True, db_column='TimestampModified', default=django.utils.timezone.now, null=True)),
                 ('lastexported', models.DateTimeField(blank=True, db_column='LastExported', null=True)),
                 ('collection', models.ForeignKey(db_column='CollectionID', on_delete=specifyweb.specify.models.protect_with_blockers, related_name='exportdatasets', to='specify.collection')),
-                ('metadata', models.ForeignKey(db_column='Metadata', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='exportdatasets', to='specify.spappresource')),
+                ('metadata', models.ForeignKey(db_column='MetadataID', null=True, on_delete=django.db.models.deletion.SET_NULL, related_name='exportdatasets', to='specify.spappresource')),
+                ('coremapping', models.ForeignKey(db_column='CoreMappingID', related_name='exportdatasets', null=False, on_delete=specifyweb.specify.models.protect_with_blockers, to='specify.schemamapping')),
             ],
             options={
                 'db_table': 'exportdataset',
