@@ -5450,6 +5450,9 @@ export type SpQueryField = {
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
+    readonly term: string | null;
+    readonly isStatic: boolean | null;
+    readonly staticValue: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
