@@ -3499,6 +3499,34 @@ datamodel = Datamodel(tables=[
         searchDialog='ExsiccataSearch'
     ),
     Table(
+    classname='edu.ku.brc.specify.datamodel.ExportDataset',
+    table='exportdataset',
+    tableId=1038,
+    idColumn='ExportDataSetID',
+    idFieldName='exportDataSetId',
+    idField=IdField(name='exportDataSetId', column='ExportDataSetID', type='java.lang.Integer'),
+    fields=[
+        Field(name='exportName', column='ExportName', indexed=True, unique=True, required=True, type='java.lang.String', length=255),
+        Field(name='fileName', column='FileName', indexed=True, unique=True, required=True, type='java.lang.String', length=255),
+        Field(name='rss', column='RSS', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+        Field(name='frequency', column='Frequency', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+        Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
+        Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
+        Field(name='lastExported', column='LastExported', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
+    ],
+    indexes=[
+        Index(name='ExportNameIDX', column_names=['ExportName']),
+        Index(name='FileNameIDX', column_names=['FileName']),
+        Index(name='ExportDatasetCollectionIDX', column_names=['CollectionID'])
+    ],
+    relationships=[
+        Relationship(name='metadata', type='many-to-one', required=False, relatedModelName='SpAppResource', column='MetadataID', otherSideName='exportDatasets'),
+        Relationship(name='coreMapping', type='many-to-one', required=True, relatedModelName='SchemaMapping', column='CoreMappingID', otherSideName='exportDatasets'),
+        Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID', otherSideName='exportDatasets')
+    ],
+    fieldAliases=[]
+),
+    Table(
         classname='edu.ku.brc.specify.datamodel.ExsiccataItem',
         table='exsiccataitem',
         tableId=104,

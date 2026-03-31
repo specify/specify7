@@ -1370,6 +1370,7 @@ export type Collection = {
     readonly rightSideRelTypes: RA<CollectionRelType>;
     readonly technicalContacts: RA<Agent>;
     readonly userGroups: RA<SpPrincipal>;
+    readonly exportdatasets: RA<ExportDataset>;
   };
 };
 export type CollectionObject = {
@@ -2932,6 +2933,26 @@ export type ExchangeOutPrep = {
     readonly exchangeOut: ExchangeOut | null;
     readonly modifiedByAgent: Agent | null;
     readonly preparation: Preparation | null;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
+export type ExportDataset = {
+  readonly tableName: 'ExportDataset';
+  readonly fields: {
+    readonly exportName: string;
+    readonly fileName: string;
+    readonly rss: boolean | null;
+    readonly frequency: number | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+    readonly lastExported: string | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly metadata: SpAppResource | null;
+    readonly coreMapping: SchemaMapping;
+    readonly collection: Collection;
   };
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
@@ -4998,7 +5019,9 @@ export type SchemaMapping = {
     readonly specifyUser: SpecifyUser;
   };
   readonly toManyDependent: RR<never, never>;
-  readonly toManyIndependent: RR<never, never>;
+  readonly toManyIndependent: {
+    readonly exportdatasets: RA<ExportDataset>;
+  };
 };
 export type Shipment = {
   readonly tableName: 'Shipment';
@@ -5062,6 +5085,7 @@ export type SpAppResource = {
   readonly toManyIndependent: {
     readonly spAppResourceDatas: RA<SpAppResourceData>;
     readonly spReports: RA<SpReport>;
+    readonly exportdatasets: RA<ExportDataset>;
   };
 };
 export type SpAppResourceData = {
