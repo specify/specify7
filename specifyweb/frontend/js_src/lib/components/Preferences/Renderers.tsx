@@ -230,10 +230,10 @@ export function FontFamilyPreferenceItem({
 }
 
 export type WelcomePageMode =
+  | 'critterless'
   | 'customImage'
   | 'default'
   | 'embeddedWebpage'
-  | 'critterless'
   | 'taxonTiles';
 
 export function getDefaultWelcomePageImage(isDarkMode: boolean): string {
