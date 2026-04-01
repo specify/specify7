@@ -2177,7 +2177,6 @@ def create_establishmentmeans_picklist(apps, using='default'):
             name=ESTABLISHMENTMEANS_PICKLIST_NAME,
             type=0,
             collection=collection,
-            limit=7,
             defaults={
                 "issystem": True,
                 "readonly": True,

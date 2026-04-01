@@ -10,15 +10,15 @@ class Migration(migrations.Migration):
         ('specify', '0044_alter_deletion_cascade'),
     ]
 
-    def consolidated_python_django_migration_operations(apps, schema_editor):
+    def apply_migration(apps, schema_editor):
         usc.hide_dwc_fields(apps, schema_editor)
         usc.create_establishmentmeans_picklist(apps, schema_editor)
-        usc.update_establishmentmeans_splocalecontaineritem(apps, schema_editor)
+        usc.update_establishmentmeans_splocalecontaineritem(apps)
     
-    def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
+    def revert_migration(apps, schema_editor):
         usc.reverse_hide_dwc_fields(apps, schema_editor)
-        usc.revert_establishmentmeans_picklist(apps, schema_editor)
-        usc.revert_establishmentmeans_splocalecontaineritem(apps, schema_editor)
+        usc.revert_establishmentmeans_picklist(apps)
+        usc.revert_establishmentmeans_splocalecontaineritem(apps)
 
     operations = [
         migrations.AddField(
@@ -30,5 +30,10 @@ class Migration(migrations.Migration):
             model_name='collectionobject',
             name='establishmentmeans',
             field=models.CharField(blank=True, db_column='EstablishmentMeans', max_length=64, null=True),
+        ),
+        migrations.RunPython(
+            apply_migration,
+            revert_migration,
+            atomic=True,
         ),
     ]
