@@ -1709,6 +1709,8 @@ class Collectionobjectattribute(models.Model):
     yesno7 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo7', db_index=False)
     yesno8 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo8', db_index=False)
     yesno9 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo9', db_index=False)
+    lifestage = models.CharField(blank=True, null=True, max_length=64, db_column='LifeStage', db_index=False)
+    sex = models.CharField(blank=True, null=True, max_length=64, db_column='Sex', db_index=False)
 
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)

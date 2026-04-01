@@ -2192,12 +2192,29 @@ def update_schema_config_fields(apps, schema_editor=None):
                 name=field_name
             ).update(ishidden=hidden)
 
-            # assign picklist
-            Splocalecontaineritem.objects.filter(
-                container__name=table_name,
-                container__schematype=0,
-                name=field_name,
-            ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
+            # assign establishmentmeans picklist
+            if table_name == 'collectionobject' and field_name == 'establishmentmeans':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
+
+            # assign lifestage picklist
+            if table_name == 'collectionobjectattribute' and field_name == 'lifestage':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname='LifeStage', isrequired=True)
+
+            # assign sex picklist
+            if table_name == 'collectionobjectattribute' and field_name == 'sex':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname='Sex', isrequired=True)
 
             # update description
             Splocaleitemstr.objects.filter(

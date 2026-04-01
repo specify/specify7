@@ -1813,7 +1813,9 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo7', column='YesNo7', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo8', column='YesNo8', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo9', column='YesNo9', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo9', column='YesNo9', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='lifestage', column='LifeStage', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='sex', column='Sex', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='COLOBJATTRSColMemIDX', column_names=['CollectionMemberID'])

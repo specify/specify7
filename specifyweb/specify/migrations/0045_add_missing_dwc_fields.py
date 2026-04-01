@@ -29,6 +29,16 @@ class Migration(migrations.Migration):
             name='establishmentmeans',
             field=models.CharField(blank=True, db_column='EstablishmentMeans', max_length=64, null=True),
         ),
+        migrations.AddField(
+            model_name='collectionobjectattribute',
+            name='lifestage',
+            field=models.CharField(blank=True, db_column='LifeStage', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='collectionobjectattribute',
+            name='sex',
+            field=models.CharField(blank=True, db_column='Sex', max_length=64, null=True),
+        ),
         migrations.RunPython(
             apply_migration,
             revert_migration,

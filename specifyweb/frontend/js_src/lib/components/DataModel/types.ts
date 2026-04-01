@@ -1652,6 +1652,8 @@ export type CollectionObjectAttribute = {
     readonly yesNo7: boolean | null;
     readonly yesNo8: boolean | null;
     readonly yesNo9: boolean | null;
+    readonly lifeStage: string | null;
+    readonly sex: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
