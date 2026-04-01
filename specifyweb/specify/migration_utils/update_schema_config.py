@@ -2301,14 +2301,14 @@ def revert_update_schema_config_fields(apps, schema_editor=None):
                 itemdesc__container__name=table_name,
                 itemdesc__container__schematype=0,
                 itemdesc__name=field_name
-            ).update(text=None)
+            ).update(text=field_name)
 
             # Revert picklist
             Splocalecontaineritem.objects.filter(
                 container__name=table_name,
                 container__schematype=0,
                 name=field_name,
-            ).update(picklistname=None, isrequired=None)
+            ).update(picklistname=None, isrequired=False)
 
             # Revert label 
             Splocaleitemstr.objects.filter(
