@@ -233,6 +233,7 @@ export type WelcomePageMode =
   | 'customImage'
   | 'default'
   | 'embeddedWebpage'
+  | 'critterless'
   | 'taxonTiles';
 
 export function getDefaultWelcomePageImage(isDarkMode: boolean): string {
@@ -249,6 +250,10 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     {
       value: 'default',
       title: preferencesText.defaultImage(),
+    },
+    {
+      value: 'critterless',
+      title: preferencesText.critterless(),
     },
     {
       value: 'taxonTiles',
