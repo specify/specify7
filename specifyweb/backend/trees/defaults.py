@@ -1,4 +1,4 @@
-from typing import Dict, Optional, TypedDict, NotRequired
+from typing import Dict, Optional, TypedDict, NotRequired, Union
 import json
 
 from django.db import transaction
@@ -149,6 +149,9 @@ class DefaultTreeContext():
         self.tree_cfg = tree_cfg
         if create_missing_ranks:
             self.create_missing_ranks()
+
+        self.local_count = 0
+        self.local_id_field = 'text1'
         
         self.create_rank_map()
         self.root_parent = self.tree_node_model.objects.filter(
@@ -181,8 +184,11 @@ class DefaultTreeContext():
         self.tree_def_item_map = {rank.name: rank for rank in ranks}
         # Buffers for batches
         self.rankid_map = {rank.rankid: rank for rank in ranks}
+        # All node objects to be created in this batch, separated by rank
         self.buffers = {rank.rankid: {} for rank in ranks}
-        self.buffer_lookups = {rank.rankid: {} for rank in ranks}
+        # Contains all nodes that can be parents at the current row. Name -> Object or database ID.
+        self.parent_lookup = {rank.rankid: {} for rank in ranks}
+        # IDs of nodes commited to the database. Local ID -> Database ID
         self.created = {rank.rankid: {} for rank in ranks}
         self.highest_rank = 0
 
@@ -190,28 +196,17 @@ class DefaultTreeContext():
         """Add node to the current batch of nodes to be created"""
         if rank_id not in self.buffers:
             self.buffers[rank_id] = {}
-            self.buffer_lookups[rank_id] = {}
+            self.parent_lookup[rank_id] = {}
             self.created[rank_id] = {}
         self.buffers[rank_id][row_id] = node
-        self.buffer_lookups[rank_id][row_id] = node
+        self.parent_lookup[rank_id][node.name] = node
         return node
 
-    def get_node_in_buffer(self, rank_id: int, name: str):
+    def get_existing_parent(self, rank_id: int, name: str) -> Union[object, int, None]:
         """Gets a node if its already in the current batch's buffer. Prevents duplication within a batch."""
         # Check for node in buffer, return node
-        buffer = self.buffer_lookups.get(rank_id, {})
-        for node in buffer.values():
-            if node.name == name:
-                return node
-        return None
-    
-    def get_existing_node_id(self, rank_id: int, name: str) -> Optional[int]:
-        """Gets a node's id if it has already been created. Prevents duplication across an entire import."""
-        # Check for existing id, return id
-        created_in_rank = self.created.get(rank_id)
-        if created_in_rank:
-            return created_in_rank.get(name)
-        return None
+        lookup = self.parent_lookup.get(rank_id, {})
+        return lookup.get(name, None)
 
     def flush(self, force=False):
         """Flushes this batch's buffer if the batch is complete. Bulk creates the nodes in a complete batch."""
@@ -237,7 +232,7 @@ class DefaultTreeContext():
                 parent = getattr(node, 'parent', None)
                 parent_id = getattr(node, 'parent_id', None)
                 if parent is not None and getattr(parent, 'pk', None) is None:
-                    saved_parent_id = self.created[parent.rankid].get(parent.name)
+                    saved_parent_id = self.created[parent.rankid].get(getattr(parent, self.local_id_field))
                     # Handle root
                     if not saved_parent_id and parent.name == getattr(self.root_parent, 'name', None):
                         saved_parent_id = self.root_parent.id
@@ -255,19 +250,27 @@ class DefaultTreeContext():
                 self.tree_node_model.objects.bulk_create(nodes_to_create, ignore_conflicts=True)
 
                 # Store the ids of the nodes were created in this batch
-                created_names = [n.name for n in nodes_to_create]
-                placeholders = ",".join(["%s"] * len(created_names))
+                created_local_ids = [getattr(n, self.local_id_field) for n in nodes_to_create]
                 created_nodes = self.tree_node_model.objects.filter(
                     definition=self.tree_def,
                     definitionitem=rank,
-                ).extra(
-                    where=[f"BINARY name IN ({placeholders})"],
-                    params=created_names
+                    **{f"{self.local_id_field}__in": created_local_ids}
                 )
-                self.created[rank_id].update({n.name: n.id for n in created_nodes})
+                self.created[rank_id].update({getattr(n, self.local_id_field): n.id for n in created_nodes})
+                
+                # parent_lookup still contains unsaved objects. Replace them with IDs.
+                sorted_created_nodes = sorted(
+                    created_nodes,
+                    key=lambda n: getattr(n, self.local_id_field),
+                    reverse=True
+                )
+                for node in sorted_created_nodes:
+                    local_id = getattr(node, self.local_id_field)
+                    name = node.name
+                    self.parent_lookup[rank_id][name] = self.created[rank_id].get(local_id)
+
 
             self.buffers[rank_id] = {}
-            self.buffer_lookups[rank_id] = {}
 
         self.counter = 0
 
@@ -281,7 +284,6 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
     tree_def = context.tree_def
     parent = context.root_parent
     parent_id = None
-    rank_id = 10
 
     highest_rank = 0
     rank_count = len(tree_cfg['ranks'])
@@ -329,14 +331,16 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             highest_rank = tree_def_item.rankid
 
         # Create the node at this rank if it isn't already there.
-        buffered = context.get_node_in_buffer(tree_def_item.rankid, record_name)
-        existing_id = context.get_existing_node_id(tree_def_item.rankid, record_name)
-        if not is_last and existing_id is not None:
-            parent_id = existing_id
-            parent = None
-        elif not is_last and buffered is not None:
-            parent_id = None
-            parent = buffered
+        existing = context.get_existing_parent(tree_def_item.rankid, record_name)
+        if not is_last and existing is not None:
+            if type(existing) is int:
+                # Use parent's true id
+                parent_id = existing
+                parent = None
+            else:
+                # Unsaved parent, use the object directly (It will be replaced with the true id when buffer is flushed)
+                parent_id = None
+                parent = existing
         else:
             # Add new node to buffer
             data = {
@@ -349,27 +353,36 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             if hasattr(tree_node_model, 'isaccepted'):
                 data['isaccepted'] = True
             data.update(defaults)
+
+            # Add a unique identifier in this import context (to be deleted when tree is finalized)
+            # This will be used to query this exact node again once its saved
+            context.local_count += 1
+            data[context.local_id_field] = context.local_count
             
             if parent is not None:
                 data['parent'] = parent
             elif parent_id is not None:
                 data['parent_id'] = parent_id
 
+            logger.debug(data)
+
             obj = tree_node_model(**data)
             obj = context.add_node_to_buffer(obj, tree_def_item.rankid, row_id)
 
             parent = obj
             parent_id = None
-        rank_id += 10
 
     # Clear all higher-rank buffers, since they are no longer relevant
     # This will prevent a node from being parented to an incorrect parent with the same name
-    # TODO: This still doesn't work, there must be a bug somewhere
+    # TODO: This should work in theory, but it still doesn't work, there must be a bug somewhere in the implementation
+    logger.debug("---------------------------")
+    logger.debug(highest_rank)
+    logger.debug(context.parent_lookup)
     if highest_rank < context.highest_rank:
         logger.debug(f"Clearing buffers for ranks > {highest_rank}")
-        for id in list(context.buffer_lookups.keys()):
+        for id in list(context.parent_lookup.keys()):
             if id > highest_rank:
-                context.buffer_lookups[id] = {}
+                context.parent_lookup[id] = {}
         context.highest_rank = highest_rank
     context.highest_rank = max(highest_rank, context.highest_rank)
 
