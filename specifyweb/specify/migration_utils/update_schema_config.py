@@ -2138,6 +2138,17 @@ ESTABLISHMENTMEANS_ITEMS = [
 ]
 ESTABLISHMENTMEANS_PICKLIST_NAME = 'EstablishmentMeans'
 
+EVENTTYPE_ITEMS = [
+    'Sample',
+    'Observation',
+    'Site Visit',
+    'Biotic Interaction',
+    'Expedition',
+    'Survey',
+    'Project'
+]
+EVENTTYPE_PICKLIST_NAME = 'EventType'
+
 def create_establishmentmeans_picklist(apps, using='default'):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
@@ -2174,6 +2185,43 @@ def revert_establishmentmeans_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
     Picklist.objects.filter(name=ESTABLISHMENTMEANS_PICKLIST_NAME).delete()
+
+def create_eventtype_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=EVENTTYPE_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": False,
+                "sizelimit": 10,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for eventtype in EVENTTYPE_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=eventtype,
+                        title=eventtype,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_eventtype_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=EVENTTYPE_PICKLIST_NAME).delete()
 
 def update_schema_config_fields(apps, schema_editor=None):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
@@ -2215,6 +2263,14 @@ def update_schema_config_fields(apps, schema_editor=None):
                     container__schematype=0,
                     name=field_name,
                 ).update(picklistname='Sex', isrequired=True)
+
+            # assign event type picklist
+            if table_name == 'collectinevent' and field_name == 'eventtype':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=EVENTTYPE_PICKLIST_NAME, isrequired=True)
 
             # update description
             Splocaleitemstr.objects.filter(

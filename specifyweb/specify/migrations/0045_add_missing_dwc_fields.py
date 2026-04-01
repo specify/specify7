@@ -12,10 +12,12 @@ class Migration(migrations.Migration):
 
     def apply_migration(apps, schema_editor):
         usc.create_establishmentmeans_picklist(apps, schema_editor)
+        usc.create_eventtype_picklist(apps, schema_editor)
         usc.update_schema_config_fields(apps, schema_editor)
     
     def revert_migration(apps, schema_editor):
         usc.revert_establishmentmeans_picklist(apps)
+        usc.revert_eventtype_picklist(apps)
         usc.revert_update_schema_config_fields(apps)
 
     operations = [
@@ -38,6 +40,21 @@ class Migration(migrations.Migration):
             model_name='collectionobjectattribute',
             name='sex',
             field=models.CharField(blank=True, db_column='Sex', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='collectingevent',
+            name='associatedtaxa',
+            field=models.CharField(blank=True, db_column='AssociatedTaxa', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='collectingevent',
+            name='eventtype',
+            field=models.CharField(blank=True, db_column='EventType', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='collectingevent',
+            name='habitat',
+            field=models.CharField(blank=True, db_column='Habitat', max_length=64, null=True),
         ),
         migrations.RunPython(
             apply_migration,

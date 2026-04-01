@@ -1053,7 +1053,10 @@ datamodel = Datamodel(tables=[
             Field(name='verbatimDate', column='VerbatimDate', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='verbatimLocality', column='VerbatimLocality', indexed=False, unique=False, required=False, type='text', length=2048),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte')
+            Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte'),
+            Field(name='associatedTaxa', column='AssociatedTaxa', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='habitat', column='Habitat', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='eventType', column='EventType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='CEStationFieldNumberIDX', column_names=['StationFieldNumber']),

@@ -474,5 +474,10 @@ MIGRATION_0045_FIELDS = {
     'CollectionObjectAttribute': [
         ('lifestage','Life Stage', 'The age class or life stage of the organism at the time the occurrence was recorded.', True),
         ('sex', 'Sex', 'The sex of the biological individual(s) represented in the occurrence.', True)
+    ],
+    'CollectinEvent': [   
+        ('associatedtaxa', 'Associated Taxa', 'A list of taxa associated with this occurrence (e.g., host, parasite, or habitat associate). Best practice is to separate values with a pipe.', True), 
+        ('habitat', 'Habitat', 'A category or description of the habitat in which the Event occurred.', True),
+        ('eventtype', 'Event Type', 'The nature of the event (e.g., "survey", "opportunistic").', True)
     ]
 }

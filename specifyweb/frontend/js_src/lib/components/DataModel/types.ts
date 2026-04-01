@@ -1021,6 +1021,9 @@ export type CollectingEvent = {
     readonly verbatimLocality: string | null;
     readonly version: number | null;
     readonly visibility: number | null;
+    readonly associatedTaxa: string | null;
+    readonly habitat: string | null;
+    readonly eventType: string | null;
   };
   readonly toOneDependent: {
     readonly collectingEventAttribute: CollectingEventAttribute | null;

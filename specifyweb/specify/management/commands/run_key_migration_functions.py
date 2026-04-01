@@ -93,7 +93,8 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         apply_schema_overrides_for_all_disciplines,
         usc.deduplicate_schema_config_orm,
         usc.create_establishmentmeans_picklist,
-        usc.update_schema_config_fields
+        usc.update_schema_config_fields,
+        usc.create_eventtype_picklist,
     ]
     log_and_run(funcs, stdout)
 

@@ -989,6 +989,9 @@ class Collectingevent(models.Model):
     verbatimlocality = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimLocality', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
+    associatedtaxa = models.CharField(blank=True, null=True, max_length=64, db_column='AssociatedTaxa', db_index=False)
+    habitat = models.CharField(blank=True, null=True, max_length=64, db_column='Habitat', db_index=False)
+    eventtype = models.CharField(blank=True, null=True, max_length=64, db_column='EventType', db_index=False)
 
     # Relationships: Many-to-One
     collectingeventattribute = models.ForeignKey('CollectingEventAttribute', db_column='CollectingEventAttributeID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
