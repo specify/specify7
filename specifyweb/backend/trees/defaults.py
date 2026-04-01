@@ -256,7 +256,7 @@ class DefaultTreeContext():
                     definitionitem=rank,
                     **{f"{self.local_id_field}__in": created_local_ids}
                 )
-                self.created[rank_id].update({getattr(n, self.local_id_field): n.id for n in created_nodes})
+                self.created[rank_id].update({int(getattr(n, self.local_id_field)): n.id for n in created_nodes})
                 
                 # parent_lookup still contains unsaved objects. Replace them with IDs.
                 sorted_created_nodes = sorted(
@@ -375,9 +375,6 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
     # Clear all higher-rank buffers, since they are no longer relevant
     # This will prevent a node from being parented to an incorrect parent with the same name
     # TODO: This should work in theory, but it still doesn't work, there must be a bug somewhere in the implementation
-    logger.debug("---------------------------")
-    logger.debug(highest_rank)
-    logger.debug(context.parent_lookup)
     if highest_rank < context.highest_rank:
         logger.debug(f"Clearing buffers for ranks > {highest_rank}")
         for id in list(context.parent_lookup.keys()):
