@@ -92,9 +92,8 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.update_discipline_type_splocalecontaineritem, # specify 0042
         apply_schema_overrides_for_all_disciplines,
         usc.deduplicate_schema_config_orm,
-        usc.hide_dwc_fields,
         usc.create_establishmentmeans_picklist,
-        usc.update_establishmentmeans_splocalecontaineritem
+        usc.update_schema_config_fields
     ]
     log_and_run(funcs, stdout)
 

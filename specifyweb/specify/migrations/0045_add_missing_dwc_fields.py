@@ -11,14 +11,12 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.hide_dwc_fields(apps, schema_editor)
         usc.create_establishmentmeans_picklist(apps, schema_editor)
-        usc.update_establishmentmeans_splocalecontaineritem(apps)
+        usc.update_schema_config_fields(apps, schema_editor)
     
     def revert_migration(apps, schema_editor):
-        usc.reverse_hide_dwc_fields(apps, schema_editor)
         usc.revert_establishmentmeans_picklist(apps)
-        usc.revert_establishmentmeans_splocalecontaineritem(apps)
+        usc.revert_update_schema_config_fields(apps)
 
     operations = [
         migrations.AddField(

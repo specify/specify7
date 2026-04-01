@@ -50,7 +50,7 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0040_FIELDS,
     MIGRATION_0040_UPDATE_FIELDS,
     MIGRATION_0040_HIDDEN_FIELDS,
-    MIGRATION_0045_HIDDEN_FIELDS
+    MIGRATION_0045_FIELDS
 )
 
 logger = logging.getLogger(__name__)
@@ -2127,35 +2127,6 @@ def revert_discipline_type_splocalecontaineritem(apps):
         name="type",
     ).update(picklistname=None, isrequired=None)
 
-def hide_dwc_fields(apps, schema_editor=None):
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-
-    for table, fields in MIGRATION_0045_HIDDEN_FIELDS.items():
-        Splocalecontaineritem.objects.filter(
-            container__name=table.lower(),
-            container__schematype=0,
-            name__in=list(map(lambda f: f.lower(), fields))
-        ).update(ishidden=True)
-
-def reverse_hide_dwc_fields(apps, schema_editor=None):
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Discipline = apps.get_model('specify', 'Discipline')
-
-    for discipline in Discipline.objects.all():
-        for table, fields in MIGRATION_0045_HIDDEN_FIELDS.items():
-            containers = Splocalecontainer.objects.filter(
-                name=table.lower(),
-                discipline_id=discipline.id,
-            )
-            for container in containers:
-                for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
-                        container=container,
-                        name=field_name.lower()
-                    )
-                    items.update(ishidden=True)
-
 ESTABLISHMENTMEANS_ITEMS = [
     'native (indigenous)',
     'native: reintroduced',
@@ -2204,20 +2175,78 @@ def revert_establishmentmeans_picklist(apps):
 
     Picklist.objects.filter(name=ESTABLISHMENTMEANS_PICKLIST_NAME).delete()
 
-def update_establishmentmeans_splocalecontaineritem(apps):
-    Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
+def update_schema_config_fields(apps, schema_editor=None):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    Splocalecontaineritem.objects.filter(
-        container__name="collectionobject",
-        container__schematype=0,
-        name="establishmentmeans",
-    ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
+    for table, fields in MIGRATION_0045_FIELDS.items():
+        table_name = table.lower()
 
-def revert_establishmentmeans_splocalecontaineritem(apps):
-    Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
+        for field_name, label, desc, hidden in fields:
+            field_name = field_name.lower()
 
-    Splocalecontaineritem.objects.filter(
-        container__name="collectionobject",
-        container__schematype=0,
-        name="establishmentmeans",
-    ).update(picklistname=None, isrequired=None)
+            # update the single remaining row
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name
+            ).update(ishidden=hidden)
+
+            # assign picklist
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name,
+            ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
+
+            # update description
+            Splocaleitemstr.objects.filter(
+                itemdesc__container__name=table_name,
+                itemdesc__container__schematype=0,
+                itemdesc__name=field_name
+            ).update(text=desc)
+
+            # update label
+            Splocaleitemstr.objects.filter(
+                itemname__container__name=table_name,
+                itemname__container__schematype=0,
+                itemname__name=field_name
+            ).update(text=label)
+
+def revert_update_schema_config_fields(apps, schema_editor=None):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0045_FIELDS.items():
+        table_name = table.lower()
+
+        for field_name, label, desc, hidden in fields:
+            field_name = field_name.lower()
+
+            # Revert description 
+            Splocaleitemstr.objects.filter(
+                itemdesc__container__name=table_name,
+                itemdesc__container__schematype=0,
+                itemdesc__name=field_name
+            ).update(text=None)
+
+            # Revert picklist
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name,
+            ).update(picklistname=None, isrequired=None)
+
+            # Revert label 
+            Splocaleitemstr.objects.filter(
+                itemname__container__name=table_name,
+                itemname__container__schematype=0,
+                itemname__name=field_name
+            ).update(text=field_name)
+
+            # Revert hidden flag
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name
+            ).update(ishidden=False)

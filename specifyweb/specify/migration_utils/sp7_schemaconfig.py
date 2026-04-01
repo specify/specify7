@@ -456,6 +456,19 @@ MIGRATION_0040_HIDDEN_FIELDS = {
     'Component': ['componentid','verbatimname','role', 'proportion','uniqueidentifier','text1','text2','text3', 'text4','text5','text6', 'yesno1','yesno2','yesno3','yesno4','yesno5','yesno6','integer1','integer2','integer3','integer4','integer5','integer6','number1', 'number2','number3','number4','number5','number6','version','collectionobject', 'absoluteages', 'relativeages', 'identifieddate', 'identifiedby']
 }
 
-MIGRATION_0045_HIDDEN_FIELDS = {
-    'CollectionObject': ['disposition','establishmentmeans']
+MIGRATION_0045_FIELDS = {
+    'CollectionObject': [
+        (
+            'disposition',
+            'Disposition',
+            'The verbatim state of an object with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".',
+            True
+        ),
+        (
+            'establishmentmeans',
+            'Establishment Means',
+            'Provides information about whether an organism or organisms have been introduced to a given place and time through the direct or indirect activity of modern humans.',
+            True
+        ),
+    ],
 }
