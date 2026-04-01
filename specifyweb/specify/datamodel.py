@@ -1564,6 +1564,8 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='disposition', column='Disposition', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='establishmentMeans', column='EstablishmentMeans', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='FieldNumberIDX', column_names=['FieldNumber']),

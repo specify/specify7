@@ -1479,6 +1479,8 @@ class Collectionobject(models.Model):
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
     yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
+    disposition = models.CharField(blank=True, null=True, max_length=64, db_column='Disposition', db_index=False)
+    establishmentmeans = models.CharField(blank=True, null=True, max_length=64, db_column='EstablishmentMeans', db_index=False)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)

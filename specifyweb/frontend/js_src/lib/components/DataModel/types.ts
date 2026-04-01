@@ -1439,6 +1439,8 @@ export type CollectionObject = {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
     readonly yesNo6: boolean | null;
+    readonly disposition: string | null;
+    readonly establishmentMeans: string | null;
   };
   readonly toOneDependent: {
     readonly cojo: CollectionObjectGroupJoin | null;

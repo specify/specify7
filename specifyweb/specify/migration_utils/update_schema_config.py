@@ -50,6 +50,7 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0040_FIELDS,
     MIGRATION_0040_UPDATE_FIELDS,
     MIGRATION_0040_HIDDEN_FIELDS,
+    MIGRATION_0045_HIDDEN_FIELDS
 )
 
 logger = logging.getLogger(__name__)
@@ -2124,4 +2125,100 @@ def revert_discipline_type_splocalecontaineritem(apps):
         container__name="discipline",
         container__schematype=0,
         name="type",
+    ).update(picklistname=None, isrequired=None)
+
+def hide_dwc_fields(apps, schema_editor=None):
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0045_HIDDEN_FIELDS.items():
+        Splocalecontaineritem.objects.filter(
+            container__name=table.lower(),
+            container__schematype=0,
+            name__in=list(map(lambda f: f.lower(), fields))
+        ).update(ishidden=True)
+
+def reverse_hide_dwc_fields(apps, schema_editor=None):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    for discipline in Discipline.objects.all():
+        for table, fields in MIGRATION_0045_HIDDEN_FIELDS.items():
+            containers = Splocalecontainer.objects.filter(
+                name=table.lower(),
+                discipline_id=discipline.id,
+            )
+            for container in containers:
+                for field_name in fields:
+                    items = Splocalecontaineritem.objects.filter(
+                        container=container,
+                        name=field_name.lower()
+                    )
+                    items.update(ishidden=True)
+
+ESTABLISHMENTMEANS_ITEMS = [
+    'native (indigenous)',
+    'native: reintroduced',
+    'introduced (alien, exotic, non-native, nonindigenous)',
+    'introduced: assisted colonisation',
+    'vagrant (casual)',
+    'uncertain (unknown, cryptogenic)',
+    'native: endemic'
+]
+ESTABLISHMENTMEANS_PICKLIST_NAME = 'EstablishmentMeans'
+
+def create_establishmentmeans_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=ESTABLISHMENTMEANS_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            limit=7,
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": 7,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for means in ESTABLISHMENTMEANS_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=means,
+                        title=means,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_establishmentmeans_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=ESTABLISHMENTMEANS_PICKLIST_NAME).delete()
+
+def update_establishmentmeans_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
+
+    Splocalecontaineritem.objects.filter(
+        container__name="collectionobject",
+        container__schematype=0,
+        name="establishmentmeans",
+    ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
+
+def revert_establishmentmeans_splocalecontaineritem(apps):
+    Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
+
+    Splocalecontaineritem.objects.filter(
+        container__name="collectionobject",
+        container__schematype=0,
+        name="establishmentmeans",
     ).update(picklistname=None, isrequired=None)
