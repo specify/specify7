@@ -1,7 +1,3 @@
-import type {
-  X2jOptionsOptional,
-  XmlBuilderOptionsOptional,
-} from 'fast-xml-parser';
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
 import { postProcessXml } from '../../components/Syncer/xmlToString';
@@ -79,14 +75,11 @@ export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
 /**
  * It's important to use the same setting for parser and builder
  */
-const parserBuilderSettings: Pick<
-  XmlBuilderOptionsOptional,
-  keyof X2jOptionsOptional & keyof XmlBuilderOptionsOptional
-> = {
+const parserBuilderSettings = {
   ignoreAttributes: false,
   preserveOrder: true,
   commentPropName: '#comment',
-};
+} as const;
 
 /**
  * XML parser to use when running in Node.js
