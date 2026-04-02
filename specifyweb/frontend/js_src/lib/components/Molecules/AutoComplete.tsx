@@ -99,6 +99,7 @@ export function AutoComplete<T>({
     | 'aria-controls'
     | 'aria-expanded'
     | 'disabled'
+    | 'defaultValue'
     | 'onChange'
     | 'onClick'
     | 'onKeyDown'
@@ -373,7 +374,7 @@ export function AutoComplete<T>({
   }, [currentValue]);
 
   return (
-    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
+    <Combobox<AutoCompleteItem<T> | string | undefined, 'div'>
       as="div"
       className="relative w-full"
       disabled={disabled}
@@ -388,7 +389,7 @@ export function AutoComplete<T>({
         else handleChanged(value);
       }}
     >
-      <Combobox.Input<'input'>
+      <Combobox.Input<AutoCompleteItem<T> | string | null | undefined, 'input'>
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
@@ -398,7 +399,9 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        displayValue={(item: AutoCompleteItem<T> | null): string =>
+        displayValue={(
+          item: AutoCompleteItem<T> | string | null | undefined
+        ): string =>
           typeof item === 'string'
             ? item
             : typeof item?.label === 'string'
