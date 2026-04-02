@@ -1,10 +1,5 @@
 import React from 'react';
-import {
-  act,
-  screen,
-  waitFor,
-  within,
-} from '@testing-library/react';
+import { act, screen, waitFor, within } from '@testing-library/react';
 
 import { mount } from '../../../tests/reactUtils';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
