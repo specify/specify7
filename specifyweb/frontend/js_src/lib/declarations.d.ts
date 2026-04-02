@@ -2,8 +2,7 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type * as H from 'history';
-import type { To } from 'history';
+import type { Location, To } from 'react-router';
 
 import type { SafeLocationState } from './components/Router/RouterState';
 import type { IR, RA, RR, ValueOf } from './utils/types';
@@ -96,11 +95,8 @@ declare module 'react-router' {
     }
   ) => void;
 
-  export declare function useLocation(): H.Location<SafeLocationState>;
-}
-
-declare module 'history' {
   export type SafeLocation = Location<SafeLocationState>;
+  export declare function useLocation(): SafeLocation;
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

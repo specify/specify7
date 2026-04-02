@@ -1,9 +1,10 @@
 import { act, waitFor } from '@testing-library/react';
-import type { SafeLocation } from 'history';
 import React from 'react';
+import type { SafeLocation } from 'react-router';
 import * as Router from 'react-router-dom';
 
 import { mount } from '../../tests/reactUtils';
+import { testRouterFuture } from '../../tests/utils';
 import { useSearchParameter } from '../navigation';
 
 let mockNavigate: jest.Mock;
@@ -62,7 +63,10 @@ describe('useSearchParameter', () => {
     const onSetterSet = jest.fn();
 
     mount(
-      <Router.MemoryRouter initialEntries={[initialEntry]}>
+      <Router.MemoryRouter
+        future={testRouterFuture}
+        initialEntries={[initialEntry]}
+      >
         <TestSearchParameter
           rawName="records"
           onSetterSet={onSetterSet}
@@ -81,7 +85,10 @@ describe('useSearchParameter', () => {
     const onSetterSet = jest.fn();
 
     mount(
-      <Router.MemoryRouter initialEntries={[initialEntry]}>
+      <Router.MemoryRouter
+        future={testRouterFuture}
+        initialEntries={[initialEntry]}
+      >
         <TestSearchParameter
           rawName="records"
           onSetterSet={onSetterSet}
@@ -122,7 +129,10 @@ describe('useSearchParameter', () => {
     const onSetterSet = jest.fn();
 
     mount(
-      <Router.MemoryRouter initialEntries={[initialEntry]}>
+      <Router.MemoryRouter
+        future={testRouterFuture}
+        initialEntries={[initialEntry]}
+      >
         <TestSearchParameter
           rawName={undefined}
           onSetterSet={onSetterSet}
@@ -145,7 +155,10 @@ describe('useSearchParameter', () => {
     const onSetterSet = jest.fn();
 
     mount(
-      <Router.MemoryRouter initialEntries={[initialEntry]}>
+      <Router.MemoryRouter
+        future={testRouterFuture}
+        initialEntries={[initialEntry]}
+      >
         <TestSearchParameter
           rawName="records"
           onSetterSet={onSetterSet}
