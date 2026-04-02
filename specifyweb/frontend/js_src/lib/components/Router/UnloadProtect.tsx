@@ -1,6 +1,6 @@
 import React from 'react';
-import { useBlocker } from 'react-router';
 import type { SafeLocation } from 'react-router';
+import { useBlocker } from 'react-router';
 
 import { commonText } from '../../localization/common';
 import { mainText } from '../../localization/main';
