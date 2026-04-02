@@ -5,27 +5,12 @@ import type {
   RenderOptions,
   RenderResult,
 } from '@testing-library/react';
-import { act, render } from '@testing-library/react';
+import { render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup/setup';
 import React from 'react';
 
 import type { IR } from '../utils/types';
-
-const wrapUserEvent = (user: UserEvent): UserEvent =>
-  new Proxy(user, {
-    get(target, property, receiver) {
-      const value = Reflect.get(target, property, receiver);
-      if (typeof value !== 'function') return value;
-      return async (...args: Array<unknown>) => {
-        let result: unknown;
-        await act(async () => {
-          result = await value.apply(target, args);
-        });
-        return result;
-      };
-    },
-  }) as UserEvent;
 
 /**
  * A wrapper for render() with userEvents setup function
@@ -41,7 +26,7 @@ export const mount = <
   readonly user: UserEvent;
 } => ({
   ...render(ui, options),
-  user: wrapUserEvent(userEvent.setup()),
+  user: userEvent.setup(),
 });
 
 /**

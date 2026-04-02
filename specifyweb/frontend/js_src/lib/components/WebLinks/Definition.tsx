@@ -46,6 +46,7 @@ export function WebLinkDefinition({
         {item.parts.map((part, index) => (
           <li key={index}>
             <Select
+              placeholder={resourcesText.type()}
               value={part.type}
               onValueChange={(type): void =>
                 handleChange(

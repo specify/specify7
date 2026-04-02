@@ -4,7 +4,6 @@ import type { SafeLocation } from 'react-router';
 import * as Router from 'react-router-dom';
 
 import { mount } from '../../tests/reactUtils';
-import { testRouterFuture } from '../../tests/utils';
 import { useSearchParameter } from '../navigation';
 
 let mockNavigate: jest.Mock;
@@ -64,7 +63,7 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={testRouterFuture}
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
       >
         <TestSearchParameter
@@ -86,7 +85,7 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={testRouterFuture}
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
       >
         <TestSearchParameter
@@ -130,7 +129,7 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={testRouterFuture}
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
       >
         <TestSearchParameter
@@ -156,7 +155,7 @@ describe('useSearchParameter', () => {
 
     mount(
       <Router.MemoryRouter
-        future={testRouterFuture}
+        future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
         initialEntries={[initialEntry]}
       >
         <TestSearchParameter

@@ -2,7 +2,7 @@
  * Fixes for various issues with default TypeScript declaration fils
  */
 
-import type { Location, To } from 'react-router';
+import type { Location as RouterLocation, To } from 'react-router';
 
 import type { SafeLocationState } from './components/Router/RouterState';
 import type { IR, RA, RR, ValueOf } from './utils/types';
@@ -79,6 +79,8 @@ declare global {
 
 // Make router state more type safe
 declare module 'react-router' {
+  export type SafeLocation = RouterLocation<SafeLocationState>;
+
   export type SafeNavigateFunction = (
     to: To,
     options?: {
@@ -95,8 +97,7 @@ declare module 'react-router' {
     }
   ) => void;
 
-  export type SafeLocation = Location<SafeLocationState>;
-  export declare function useLocation(): SafeLocation;
+  export declare function useLocation(): RouterLocation<SafeLocationState>;
 }
 
 /* eslint-enable @typescript-eslint/method-signature-style */

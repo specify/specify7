@@ -3,7 +3,6 @@ import * as Router from 'react-router-dom';
 
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
-import { testRouterFuture } from '../../../tests/utils';
 import type { RA } from '../../../utils/types';
 import type { AppResourcesConformation } from '../Aside';
 import { AppResourcesAside } from '../Aside';
@@ -129,7 +128,7 @@ describe('AppResourcesAside (expanded case)', () => {
     const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } =
       mount(
         <Router.MemoryRouter
-          future={testRouterFuture}
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
           initialEntries={['/specify/resources/']}
         >
           <AppResourcesAside

@@ -120,7 +120,7 @@ export function makeTreeMap(container: SVGElement, rawRoot: PairedNode) {
 
   const svg = select(container);
 
-  treemap<PairedNode>()
+  treemap()
     .tile(treemapBinary)
     .size([container.clientWidth, container.clientHeight])
     .round(true)(root);

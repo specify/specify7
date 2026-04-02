@@ -111,11 +111,6 @@ function createName(input: RA<unknown>, index: number): string {
   return `#${index + 1}`;
 }
 
-export const testRouterFuture = {
-  v7_startTransition: true,
-  v7_relativeSplatPath: true,
-} as const;
-
 export function TestComponentWrapperRouter({
   initialEntries,
   path,
@@ -129,7 +124,7 @@ export function TestComponentWrapperRouter({
 }) {
   return (
     <Router.MemoryRouter
-      future={testRouterFuture}
+      future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
       initialEntries={initialEntries}
     >
       <Router.Routes>

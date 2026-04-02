@@ -1,6 +1,6 @@
 import type {
-  X2jOptions,
-  XmlBuilderOptions,
+  X2jOptionsOptional,
+  XmlBuilderOptionsOptional,
 } from 'fast-xml-parser';
 import { XMLBuilder, XMLParser } from 'fast-xml-parser';
 
@@ -80,8 +80,8 @@ export const toUnparsedNode = (node: ParsedNode): ParsedDom[number] =>
  * It's important to use the same setting for parser and builder
  */
 const parserBuilderSettings: Pick<
-  XmlBuilderOptions,
-  keyof X2jOptions & keyof XmlBuilderOptions
+  XmlBuilderOptionsOptional,
+  keyof X2jOptionsOptional & keyof XmlBuilderOptionsOptional
 > = {
   ignoreAttributes: false,
   preserveOrder: true,
