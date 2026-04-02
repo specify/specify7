@@ -1,4 +1,10 @@
 import React from 'react';
+import {
+  act,
+  screen,
+  waitFor,
+  within,
+} from '@testing-library/react';
 
 import { mount } from '../../../tests/reactUtils';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
@@ -19,16 +25,22 @@ describe('ChronoChart', () => {
 
     const button = getAllByRole('button')[0];
 
-    await user.click(button);
+    await act(async () => {
+      await user.click(button);
+    });
 
-    const dialog = getAllByRole('dialog')[0];
+    const dialog = await screen.findByRole('dialog');
 
     expect(dialog).toMatchSnapshot();
 
-    const closeButton = getAllByRole('button')[4];
+    const closeButton = within(dialog).getByRole('button', {
+      name: /close/i,
+    });
 
-    await user.click(closeButton);
+    await act(async () => {
+      await user.click(closeButton);
+    });
 
-    expect(() => getAllByRole('dialog')).toThrow();
+    await waitFor(() => expect(screen.queryByRole('dialog')).toBeNull());
   });
 });

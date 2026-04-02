@@ -2,6 +2,7 @@ import type { IR } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
 
 const dictionary: IR<boolean> = {
+  print: false,
   '(prefers-reduced-motion: reduce)': false,
   '(prefers-contrast: more)': false,
   '(prefers-color-scheme: dark)': true,
