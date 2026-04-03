@@ -211,7 +211,6 @@ class DefaultTreeContext():
     def clear_parent_lookup(self, highest_rank: int):
         """Clears all higher-rank buffers, since they are no longer relevant"""
         # This will prevent a node from being parented to an incorrect parent with the same name
-        self.clear_ranks()
         if highest_rank < self.highest_rank:
             for id in list(self.parent_lookup.keys()):
                 if id > highest_rank:
@@ -351,7 +350,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
 
         # Create the node at this rank if it isn't already there.
         existing = context.get_existing_parent(tree_def_item.rankid, record_name)
-        if not is_last and existing is not None:
+        if existing is not None:
             if type(existing) is int:
                 # Use parent's true id
                 parent_id = existing
