@@ -229,7 +229,7 @@ class DefaultTreeContext():
     def flush(self, force=False):
         """Flushes this batch's buffer if the batch is complete. Bulk creates the nodes in a complete batch."""
         self.counter += 1
-        if not (force or self.counter >= self.batch_size):
+        if not (force or self.counter > self.batch_size):
             return
         logger.debug(f"Batch creating {self.counter} rows.")
         
