@@ -44,6 +44,11 @@ class Migration(migrations.Migration):
             field=models.CharField(blank=True, db_column='Sex', max_length=64, null=True),
         ),
         migrations.AddField(
+            model_name='collectionobjectattribute',
+            name='behavior',
+            field=models.CharField(blank=True, db_column='Behavior', max_length=64, null=True),
+        ),
+        migrations.AddField(
             model_name='collectingevent',
             name='associatedtaxa',
             field=models.CharField(blank=True, db_column='AssociatedTaxa', max_length=64, null=True),

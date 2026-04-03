@@ -473,7 +473,8 @@ MIGRATION_0045_FIELDS = {
     ],
     'CollectionObjectAttribute': [
         ('lifestage','Life Stage', 'The age class or life stage of the organism at the time the occurrence was recorded.', True),
-        ('sex', 'Sex', 'The sex of the biological individual(s) represented in the occurrence.', True)
+        ('sex', 'Sex', 'The sex of the biological individual(s) represented in the occurrence.', True),
+        ('behavior', 'Behavior', 'A description of the behavior shown by the subject at the time the Occurrence was recorded. Recommended best practice is to use a controlled vocabulary.', True)
     ],
     'CollectingEvent': [   
         ('associatedtaxa', 'Associated Taxa', 'A list of taxa associated with this occurrence (e.g., host, parasite, or habitat associate). Best practice is to separate values with a pipe.', True), 

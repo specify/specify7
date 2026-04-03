@@ -1820,6 +1820,7 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo9', column='YesNo9', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='lifeStage', column='LifeStage', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
             Field(name='sex', column='Sex', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='behavior', column='Behavior', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='COLOBJATTRSColMemIDX', column_names=['CollectionMemberID'])
