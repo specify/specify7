@@ -1,13 +1,5 @@
-@import url('../node_modules/handsontable/dist/handsontable.full.css');
-
-/* Show table icons in column headers */
-.htCore thead th > .relative {
-  @apply flex items-center justify-center;
-}
-
-.htCore .colHeader {
-  @apply !contents;
-}
+@import 'handsontable/styles/handsontable.css';
+@import 'handsontable/styles/ht-theme-classic.css';
 
 .handsontable .columnSorting {
   @apply leading-5;
@@ -116,6 +108,34 @@
   @apply text-inherit;
   font-family: inherit;
   font-size: inherit;
+}
+
+.ht-root-wrapper {
+  font-family: inherit;
+  font-size: inherit;
+}
+
+.dark .ht-theme-classic {
+  color-scheme: dark;
+  --ht-border-color: theme('colors.neutral.500');
+  --ht-foreground-color: theme('colors.white');
+  --ht-foreground-secondary-color: theme('colors.neutral.400');
+  --ht-background-color: theme('colors.neutral.800');
+  --ht-background-secondary-color: theme('colors.neutral.900');
+  --ht-placeholder-color: theme('colors.blue.500');
+  --ht-read-only-color: theme('colors.neutral.400');
+  --ht-disabled-color: theme('colors.neutral.500');
+  --ht-header-background-color: theme('colors.neutral.900');
+  --ht-header-foreground-color: theme('colors.white');
+  --ht-header-highlighted-background-color: theme('colors.neutral.800');
+  --ht-header-row-background-color: theme('colors.neutral.900');
+  --ht-header-row-highlighted-background-color: theme('colors.neutral.800');
+  --ht-cell-editor-background-color: theme('colors.neutral.600');
+  --ht-cell-editor-foreground-color: theme('colors.white');
+  --ht-menu-border-color: theme('colors.neutral.500');
+  --ht-menu-shadow-color: theme('colors.neutral.500');
+  --ht-scrollbar-track-color: theme('colors.neutral.900');
+  --ht-scrollbar-thumb-color: theme('colors.neutral.500');
 }
 
 /* Handsontable dark mode */
