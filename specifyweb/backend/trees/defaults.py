@@ -229,7 +229,7 @@ class DefaultTreeContext():
     def flush(self, force=False):
         """Flushes this batch's buffer if the batch is complete. Bulk creates the nodes in a complete batch."""
         self.counter += 1
-        if not (force or self.counter > self.batch_size):
+        if not (force or self.counter >= self.batch_size):
             return
         logger.debug(f"Batch creating {self.counter} rows.")
         
@@ -350,7 +350,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
 
         # Create the node at this rank if it isn't already there.
         existing = context.get_existing_parent(tree_def_item.rankid, record_name)
-        if existing is not None:
+        if not is_last and existing is not None:
             if type(existing) is int:
                 # Use parent's true id
                 parent_id = existing
