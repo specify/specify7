@@ -2258,13 +2258,13 @@ def create_basisofrecord_picklist(apps, using='default'):
         if created:
             ordinal = 1
             items = []
-            for eventtype in BASISOFRECORD_ITEMS:
+            for record in BASISOFRECORD_ITEMS:
                 items.append(
                     Picklistitem(
                         picklist=picklist,
                         ordinal=ordinal,
-                        value=eventtype,
-                        title=eventtype,
+                        value=record,
+                        title=record,
                     )
                 )
                 ordinal += 1
