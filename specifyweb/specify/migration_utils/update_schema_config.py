@@ -2322,6 +2322,50 @@ def revert_attachmenttype_picklist(apps):
 
     Picklist.objects.filter(name=ATTACHMENTTYPE_PICKLIST_NAME).delete()
 
+INSTITUTIONLICENSE_PICKLIST_NAME = [
+    'http://creativecommons.org/publicdomain/zero/1.0/',
+    'http://creativecommons.org/licenses/by/4.0/',
+    'http://creativecommons.org/licenses/by-nc/4.0/',
+]
+INSTITUTIONLICENSE_PICKLIST_NAME = 'Institution License Name'
+
+def create_institutionlicense_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=INSTITUTIONLICENSE_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": 3,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for licenseName in INSTITUTIONLICENSE_PICKLIST_NAME:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=licenseName,
+                        title=licenseName,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_institutionlicense_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=INSTITUTIONLICENSE_PICKLIST_NAME).delete()
+
 def update_schema_config_fields(apps, schema_editor=None):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -2386,6 +2430,14 @@ def update_schema_config_fields(apps, schema_editor=None):
                     container__schematype=0,
                     name=field_name,
                 ).update(picklistname=ATTACHMENTTYPE_PICKLIST_NAME, isrequired=True)
+
+            # assign institution license name picklist
+            if table_name == 'institution' and field_name == 'license':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=INSTITUTIONLICENSE_PICKLIST_NAME, isrequired=True)
 
             # update description
             Splocaleitemstr.objects.filter(

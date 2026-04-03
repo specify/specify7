@@ -4357,7 +4357,9 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='uri', column='Uri', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='datasetName', column='DatasetName', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='rightsHolder', column='RightsHolder', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='InstNameIDX', column_names=['Name']),

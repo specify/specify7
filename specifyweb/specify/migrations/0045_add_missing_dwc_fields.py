@@ -15,6 +15,7 @@ class Migration(migrations.Migration):
         usc.create_eventtype_picklist(apps, schema_editor)
         usc.create_basisofrecord_picklist(apps, schema_editor)
         usc.create_attachmenttype_picklist(apps, schema_editor)
+        usc.create_institutionlicense_picklist(apps, schema_editor)
         usc.update_schema_config_fields(apps, schema_editor)
     
     def revert_migration(apps, schema_editor):
@@ -22,6 +23,7 @@ class Migration(migrations.Migration):
         usc.revert_eventtype_picklist(apps)
         usc.revert_basisofrecord_picklist(apps)
         usc.revert_attachmenttype_picklist(apps)
+        usc.revert_institutionlicense_picklist(apps)
         usc.revert_update_schema_config_fields(apps)
 
     operations = [
@@ -84,6 +86,16 @@ class Migration(migrations.Migration):
             model_name='preparation',
             name='disposition',
             field=models.CharField(blank=True, db_column='Disposition', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='institution',
+            name='rightsholder',
+            field=models.CharField(blank=True, db_column='RightsHolder', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='institution',
+            name='datasetname',
+            field=models.CharField(blank=True, db_column='DatasetName', max_length=64, null=True),
         ),
         migrations.RunPython(
             apply_migration,

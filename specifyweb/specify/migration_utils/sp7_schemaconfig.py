@@ -482,18 +482,23 @@ MIGRATION_0045_FIELDS = {
         ('eventtype', 'Event Type', 'The nature of the event (e.g., "survey", "opportunistic").', True)
     ],
     'Collection': [
-        ('basisofrecord', 'BasisOfRecord', 'The specific nature of the data record. Recommended best practice is to use a controlled vocabulary such as the set of local names of the identifiers for classes in Darwin Core.', True)
+        ('basisofrecord', 'Basis Of Record', 'The specific nature of the data record. Recommended best practice is to use a controlled vocabulary such as the set of local names of the identifiers for classes in Darwin Core.', True)
     ],
     'LocalityDetail': [
-        ('verbatimdepth', 'VerbatimDepth', 'The original description of the depth below the local surface.', True)
+        ('verbatimdepth', 'Verbatim Depth', 'The original description of the depth below the local surface.', True)
     ],
     'Determination': [
-        ('identificationverificationstatus', 'IdentificationVerificationStatus', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
+        ('identificationverificationstatus', 'Identification Verification Status', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
     ],
     'Preparation': [
         ('disposition', 'Disposition', 'The verbatim state of an entity with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".', True)
     ],
     'Attachment': [
-        ('type', 'Type', 'Type', True)
+        ('type', 'Type', 'Type', False)
+    ],
+    'Institution': [
+        ('rightsholder', 'Rights Holder', 'A person or organization owning or managing rights over the resource.', True),
+        ('datasetname', 'Dataset Name', 'The name identifying the data set from which the record was derived.', True),
+        ('license', 'License', 'A legal document giving official permission to do something with the resource. Recommended best practice is to identify the license using a URI (e.g. http://creativecommons.org/publicdomain/zero/1.0/).', True)
     ]
 }

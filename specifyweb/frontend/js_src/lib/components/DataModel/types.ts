@@ -3597,6 +3597,8 @@ export type Institution = {
     readonly timestampModified: string | null;
     readonly uri: string | null;
     readonly version: number | null;
+    readonly rightsHolder: string | null;
+    readonly datasetName: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

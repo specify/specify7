@@ -4127,6 +4127,8 @@ class Institution(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     uri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Uri', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
+    datasetname = models.CharField(blank=True, null=True, max_length=64, db_column='DatasetName', db_index=False)
+    rightsholder = models.CharField(blank=True, null=True, max_length=64, db_column='RightsHolder', db_index=False)
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='insitutions', null=True, on_delete=protect_with_blockers)
