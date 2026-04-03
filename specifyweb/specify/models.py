@@ -2807,6 +2807,7 @@ class Determination(models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
+    identificationverificationstatus = models.CharField(blank=True, null=True, max_length=64, db_column='IdentificationVerificationStatus', db_index=False)
 
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='determinations', null=False, on_delete=models.CASCADE)

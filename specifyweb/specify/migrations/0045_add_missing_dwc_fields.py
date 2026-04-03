@@ -73,6 +73,11 @@ class Migration(migrations.Migration):
             name='verbatimdepth',
             field=models.CharField(blank=True, db_column='VerbatimDepth', max_length=64, null=True),
         ),
+        migrations.AddField(
+            model_name='determination',
+            name='identificationverificationStatus',
+            field=models.CharField(blank=True, db_column='IdentificationVerificationStatus', max_length=64, null=True),
+        ),
         migrations.RunPython(
             apply_migration,
             revert_migration,

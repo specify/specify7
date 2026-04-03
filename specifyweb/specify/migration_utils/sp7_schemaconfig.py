@@ -486,5 +486,8 @@ MIGRATION_0045_FIELDS = {
     ],
     'LocalityDetail': [
         ('verbatimdepth', 'VerbatimDepth', 'The original description of the depth below the local surface.', True)
+    ],
+    'Determination': [
+        ('identificationverificationstatus', 'IdentificationVerificationStatus', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
     ]
 }
