@@ -207,6 +207,25 @@ class DefaultTreeContext():
         # Check for node in buffer, return node
         lookup = self.parent_lookup.get(rank_id, {})
         return lookup.get(name, None)
+    
+    def clear_parent_lookup(self, highest_rank: int):
+        """Clears all higher-rank buffers, since they are no longer relevant"""
+        # This will prevent a node from being parented to an incorrect parent with the same name
+        self.clear_ranks()
+        if highest_rank < self.highest_rank:
+            for id in list(self.parent_lookup.keys()):
+                if id > highest_rank:
+                    self.parent_lookup[id] = {}
+            self.highest_rank = highest_rank
+        self.highest_rank = max(highest_rank, self.highest_rank)
+    
+    def finalize(self):
+        """Clears temporary local id values from tree."""
+        self.tree_node_model.objects.filter(
+            definition=self.tree_def
+        ).update(
+            **{f"{self.local_id_field}": None}
+        )
 
     def flush(self, force=False):
         """Flushes this batch's buffer if the batch is complete. Bulk creates the nodes in a complete batch."""
@@ -364,23 +383,14 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             elif parent_id is not None:
                 data['parent_id'] = parent_id
 
-            logger.debug(data)
-
             obj = tree_node_model(**data)
             obj = context.add_node_to_buffer(obj, tree_def_item.rankid, row_id)
 
             parent = obj
             parent_id = None
 
-    # Clear all higher-rank buffers, since they are no longer relevant
-    # This will prevent a node from being parented to an incorrect parent with the same name
-    if highest_rank < context.highest_rank:
-        logger.debug(f"Clearing buffers for ranks > {highest_rank}")
-        for id in list(context.parent_lookup.keys()):
-            if id > highest_rank:
-                context.parent_lookup[id] = {}
-        context.highest_rank = highest_rank
-    context.highest_rank = max(highest_rank, context.highest_rank)
+    # Clear irrelevant parents
+    context.clear_parent_lookup(highest_rank)
 
 def queue_create_default_tree_task(task_id):
     """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
@@ -481,6 +491,7 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
             context.flush(force=True)
 
             # Finalize Tree
+            context.finalize()
             renumber_tree(tree_type)
             set_fullnames(tree_def)
     except Exception as e:
