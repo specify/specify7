@@ -4504,6 +4504,7 @@ export type Preparation = {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
+    readonly disposition: string | null;
   };
   readonly toOneDependent: {
     readonly preparationAttribute: PreparationAttribute | null;

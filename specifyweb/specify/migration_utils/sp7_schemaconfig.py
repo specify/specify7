@@ -489,5 +489,8 @@ MIGRATION_0045_FIELDS = {
     ],
     'Determination': [
         ('identificationverificationstatus', 'IdentificationVerificationStatus', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
+    ],
+    'Preparation': [
+        ('disposition', 'Disposition', 'The verbatim state of an entity with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".', True)
     ]
 }

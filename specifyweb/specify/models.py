@@ -5239,6 +5239,7 @@ class Preparation(model_extras.Preparation):
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
+    disposition = models.CharField(blank=True, null=True, max_length=64, db_column='Disposition', db_index=False)
 
     # Relationships: Many-to-One
     alternatestorage = models.ForeignKey('Storage', db_column='AlternateStorageID', related_name='+', null=True, on_delete=protect_with_blockers)

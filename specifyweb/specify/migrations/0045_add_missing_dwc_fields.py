@@ -78,6 +78,11 @@ class Migration(migrations.Migration):
             name='identificationverificationStatus',
             field=models.CharField(blank=True, db_column='IdentificationVerificationStatus', max_length=64, null=True),
         ),
+        migrations.AddField(
+            model_name='preparation',
+            name='disposition',
+            field=models.CharField(blank=True, db_column='Disposition', max_length=64, null=True),
+        ),
         migrations.RunPython(
             apply_migration,
             revert_migration,
