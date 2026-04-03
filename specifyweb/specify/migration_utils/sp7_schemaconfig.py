@@ -479,5 +479,8 @@ MIGRATION_0045_FIELDS = {
         ('associatedtaxa', 'Associated Taxa', 'A list of taxa associated with this occurrence (e.g., host, parasite, or habitat associate). Best practice is to separate values with a pipe.', True), 
         ('habitat', 'Habitat', 'A category or description of the habitat in which the Event occurred.', True),
         ('eventtype', 'Event Type', 'The nature of the event (e.g., "survey", "opportunistic").', True)
+    ],
+    'Collection': [
+        ('basisofrecord', 'BasisOfRecord', 'The specific nature of the data record. Recommended best practice is to use a controlled vocabulary such as the set of local names of the identifiers for classes in Darwin Core.', True)
     ]
 }

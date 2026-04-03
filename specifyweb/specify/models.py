@@ -1395,6 +1395,7 @@ class Collection(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     webportaluri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebPortalURI', db_index=False)
     websiteuri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebSiteURI', db_index=False)
+    basisofrecord = models.CharField(blank=True, null=True, max_length=64, db_column='BasisOfRecord', db_index=False)
 
     # Relationships: Many-to-One
     admincontact = models.ForeignKey('Agent', db_column='AdminContactID', related_name='+', null=True, on_delete=protect_with_blockers)

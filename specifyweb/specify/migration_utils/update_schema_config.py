@@ -2149,6 +2149,21 @@ EVENTTYPE_ITEMS = [
 ]
 EVENTTYPE_PICKLIST_NAME = 'EventType'
 
+BASISOFRECORD_ITEMS = [
+    'MaterialEntity',
+    'PreservedSpecimen',
+    'FossilSpecimen',
+    'LivingSpecimen',
+    'MaterialSample',
+    'Event',
+    'HumanObservation',
+    'MachineObservation',
+    'Taxon',
+    'Occurrence',
+    'MaterialCitation',
+]
+BASISOFRECORD_PICKLIST_NAME = 'BaisisOfRecord'
+
 def create_establishmentmeans_picklist(apps, using='default'):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
@@ -2223,6 +2238,43 @@ def revert_eventtype_picklist(apps):
 
     Picklist.objects.filter(name=EVENTTYPE_PICKLIST_NAME).delete()
 
+def create_basisofrecord_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=BASISOFRECORD_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": False,
+                "sizelimit": 10,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for eventtype in BASISOFRECORD_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=eventtype,
+                        title=eventtype,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_basisofrecord_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=BASISOFRECORD_PICKLIST_NAME).delete()
+
 def update_schema_config_fields(apps, schema_editor=None):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -2271,6 +2323,14 @@ def update_schema_config_fields(apps, schema_editor=None):
                     container__schematype=0,
                     name=field_name,
                 ).update(picklistname=EVENTTYPE_PICKLIST_NAME, isrequired=True)
+
+            # assign basis of record picklist
+            if table_name == 'collection' and field_name == 'basisofrecord':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=BASISOFRECORD_PICKLIST_NAME, isrequired=True)
 
             # update description
             Splocaleitemstr.objects.filter(

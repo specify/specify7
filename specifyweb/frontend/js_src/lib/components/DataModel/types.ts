@@ -1352,6 +1352,7 @@ export type Collection = {
     readonly version: number | null;
     readonly webPortalURI: string | null;
     readonly webSiteURI: string | null;
+    readonly basisOfRecord: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

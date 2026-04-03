@@ -13,11 +13,13 @@ class Migration(migrations.Migration):
     def apply_migration(apps, schema_editor):
         usc.create_establishmentmeans_picklist(apps, schema_editor)
         usc.create_eventtype_picklist(apps, schema_editor)
+        usc.create_basisofrecord_picklist(apps, schema_editor)
         usc.update_schema_config_fields(apps, schema_editor)
     
     def revert_migration(apps, schema_editor):
         usc.revert_establishmentmeans_picklist(apps)
         usc.revert_eventtype_picklist(apps)
+        usc.revert_basisofrecord_picklist(apps)
         usc.revert_update_schema_config_fields(apps)
 
     operations = [
@@ -55,6 +57,11 @@ class Migration(migrations.Migration):
             model_name='collectingevent',
             name='habitat',
             field=models.CharField(blank=True, db_column='Habitat', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='collection',
+            name='basisofrecord',
+            field=models.CharField(blank=True, db_column='BasisOfRecord', max_length=64, null=True),
         ),
         migrations.RunPython(
             apply_migration,
