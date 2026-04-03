@@ -471,7 +471,7 @@ MIGRATION_0045_FIELDS = {
             True
         ),
     ],
-    'CollectionObjectAttribute': [
+    'CollectionObjectAtt': [
         ('lifestage','Life Stage', 'The age class or life stage of the organism at the time the occurrence was recorded.', True),
         ('sex', 'Sex', 'The sex of the biological individual(s) represented in the occurrence.', True)
     ],

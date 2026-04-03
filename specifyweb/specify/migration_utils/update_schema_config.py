@@ -2249,7 +2249,7 @@ def update_schema_config_fields(apps, schema_editor=None):
                 ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
 
             # assign lifestage picklist
-            if table_name == 'collectionobjectattribute' and field_name == 'lifestage':
+            if table_name == 'collectionobjectatt' and field_name == 'lifestage':
                 Splocalecontaineritem.objects.filter(
                     container__name=table_name,
                     container__schematype=0,
@@ -2257,7 +2257,7 @@ def update_schema_config_fields(apps, schema_editor=None):
                 ).update(picklistname='LifeStage', isrequired=True)
 
             # assign sex picklist
-            if table_name == 'collectionobjectattribute' and field_name == 'sex':
+            if table_name == 'collectionobjectatt' and field_name == 'sex':
                 Splocalecontaineritem.objects.filter(
                     container__name=table_name,
                     container__schematype=0,
@@ -2265,7 +2265,7 @@ def update_schema_config_fields(apps, schema_editor=None):
                 ).update(picklistname='Sex', isrequired=True)
 
             # assign event type picklist
-            if table_name == 'collectinevent' and field_name == 'eventtype':
+            if table_name == 'collectingevent' and field_name == 'eventtype':
                 Splocalecontaineritem.objects.filter(
                     container__name=table_name,
                     container__schematype=0,
