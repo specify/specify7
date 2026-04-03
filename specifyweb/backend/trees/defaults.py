@@ -232,7 +232,7 @@ class DefaultTreeContext():
                 parent = getattr(node, 'parent', None)
                 parent_id = getattr(node, 'parent_id', None)
                 if parent is not None and getattr(parent, 'pk', None) is None:
-                    saved_parent_id = self.created[parent.rankid].get(getattr(parent, self.local_id_field))
+                    saved_parent_id = self.created[parent.rankid].get(int(getattr(parent, self.local_id_field)))
                     # Handle root
                     if not saved_parent_id and parent.name == getattr(self.root_parent, 'name', None):
                         saved_parent_id = self.root_parent.id
@@ -250,7 +250,7 @@ class DefaultTreeContext():
                 self.tree_node_model.objects.bulk_create(nodes_to_create, ignore_conflicts=True)
 
                 # Store the ids of the nodes were created in this batch
-                created_local_ids = [getattr(n, self.local_id_field) for n in nodes_to_create]
+                created_local_ids = [str(getattr(n, self.local_id_field)) for n in nodes_to_create]
                 created_nodes = self.tree_node_model.objects.filter(
                     definition=self.tree_def,
                     definitionitem=rank,
@@ -261,11 +261,11 @@ class DefaultTreeContext():
                 # parent_lookup still contains unsaved objects. Replace them with IDs.
                 sorted_created_nodes = sorted(
                     created_nodes,
-                    key=lambda n: getattr(n, self.local_id_field),
+                    key=lambda n: int(getattr(n, self.local_id_field)),
                     reverse=True
                 )
                 for node in sorted_created_nodes:
-                    local_id = getattr(node, self.local_id_field)
+                    local_id = int(getattr(node, self.local_id_field))
                     name = node.name
                     self.parent_lookup[rank_id][name] = self.created[rank_id].get(local_id)
 
@@ -374,7 +374,6 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
 
     # Clear all higher-rank buffers, since they are no longer relevant
     # This will prevent a node from being parented to an incorrect parent with the same name
-    # TODO: This should work in theory, but it still doesn't work, there must be a bug somewhere in the implementation
     if highest_rank < context.highest_rank:
         logger.debug(f"Clearing buffers for ranks > {highest_rank}")
         for id in list(context.parent_lookup.keys()):
