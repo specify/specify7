@@ -2,7 +2,8 @@
  * Component for the Handsontable React wrapper
  */
 
-import { HotTable } from '@handsontable/react';
+import { HotTable } from '@handsontable/react-wrapper';
+import type { HotTableRef } from '@handsontable/react-wrapper';
 import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
@@ -19,7 +20,7 @@ import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
 import { SvgIcon } from '../Molecules/SvgIcon';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { configureHandsontable } from './handsontable';
+import { configureHandsontable, getHotPlugin } from './handsontable';
 import { useHotHooks } from './hooks';
 import {
   getPhysicalColToMappingCol,
@@ -48,7 +49,7 @@ function WbSpreadsheetComponent({
   onClickDisambiguate: handleClickDisambiguate,
 }: {
   readonly dataset: Dataset;
-  readonly setHotTable: React.RefCallback<HotTable>;
+  readonly setHotTable: React.RefCallback<HotTableRef>;
   readonly hot: Handsontable | undefined;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
@@ -175,10 +176,14 @@ function WbSpreadsheetComponent({
                 fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
                 ['separator_2' as 'redo']: '---------',
                 undo: {
-                  disabled: () => !hot.isUndoAvailable() || isReadOnly,
+                  disabled: () =>
+                    !getHotPlugin(hot, 'undoRedo').isUndoAvailable() ||
+                    isReadOnly,
                 },
                 redo: {
-                  disabled: () => !hot.isRedoAvailable() || isReadOnly,
+                  disabled: () =>
+                    !getHotPlugin(hot, 'undoRedo').isRedoAvailable() ||
+                    isReadOnly,
                 },
               } as const),
         };
@@ -233,6 +238,7 @@ function WbSpreadsheetComponent({
   return (
     <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
+        className="h-full"
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
         colHeaders={colHeaders}
@@ -243,6 +249,7 @@ function WbSpreadsheetComponent({
         enterMoves={enterMoves}
         hiddenColumns={hiddenColumns}
         hiddenRows={hiddenRows}
+        height="100%"
         invalidCellClassName="-"
         language={LANGUAGE}
         licenseKey="non-commercial-and-evaluation"
@@ -257,7 +264,9 @@ function WbSpreadsheetComponent({
         rowHeaders={(index) => String(index + 1)}
         stretchH="all"
         tabMoves={tabMoves}
+        theme="ht-theme-classic"
         contextMenu={contextMenuConfig}
+        width="100%"
         // eslint-disable-next-line functional/prefer-readonly-type
         data={data as (string | null)[][]}
         {...hooks}

@@ -1,6 +1,6 @@
 import type Handsontable from 'handsontable';
 import type { CellChange } from 'handsontable/common';
-import type { Events } from 'handsontable/pluginHooks';
+import type { Events } from 'handsontable/core/hooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
 import React from 'react';
 
@@ -36,6 +36,17 @@ export function useHotHooks({
 }): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   const loading = React.useContext(LoadingContext);
+  const getVisualColFromProperty = React.useCallback(
+    (
+      property: CellChange[1],
+      fallbackVisualCol?: number
+    ): number | undefined => {
+      if (workbench.hot === undefined) return undefined;
+      if (typeof property === 'function') return fallbackVisualCol;
+      return workbench.hot.propToCol<number>(property);
+    },
+    [workbench.hot]
+  );
 
   return {
     /*
@@ -113,7 +124,7 @@ export function useHotHooks({
     beforeValidate: (value, _visualRow, property) => {
       if (Boolean(value) || workbench.hot === undefined) return value;
 
-      const visualCol = workbench.hot.propToCol(property);
+      const visualCol = workbench.hot.propToCol<number>(property);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
 
       return workbench.mappings?.defaultValues[physicalCol] ?? value;
@@ -126,7 +137,7 @@ export function useHotHooks({
       property
     ) => {
       if (workbench.hot === undefined) return;
-      const visualCol = workbench.hot.propToCol(property);
+      const visualCol = workbench.hot.propToCol<number>(property);
 
       const physicalRow = workbench.hot.toPhysicalRow(visualRow);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
@@ -211,8 +222,13 @@ export function useHotHooks({
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
         .filter(
-          ([, property]) =>
-            (property as number) < workbench.dataset.columns.length
+          ([, property]) => {
+            const visualCol = getVisualColFromProperty(property);
+            return (
+              visualCol !== undefined &&
+              visualCol < workbench.dataset.columns.length
+            );
+          }
         );
       if (
         filteredChanges.length === unfilteredChanges.length ||
@@ -220,11 +236,12 @@ export function useHotHooks({
       )
         return true;
       workbench.hot.setDataAtCell(
-        filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
-          visualRow,
-          workbench.hot!.propToCol(property as number),
-          newValue,
-        ]),
+        filteredChanges.flatMap(([visualRow, property, _oldValue, newValue]) => {
+          const visualCol = getVisualColFromProperty(property);
+          return visualCol === undefined
+            ? []
+            : [[visualRow, visualCol, newValue]];
+        }),
         'CopyPaste.paste'
       );
       return false;
@@ -245,19 +262,23 @@ export function useHotHooks({
       )
         return;
       const changes = unfilteredChanges
-        .map(([visualRow, property, oldValue, newValue]) => ({
-          visualRow,
-          visualCol: workbench.hot!.propToCol(property),
-          physicalRow: workbench.hot!.toPhysicalRow(visualRow),
-          physicalCol:
-            typeof property === 'number'
-              ? property
-              : workbench.hot!.toPhysicalColumn(
-                  workbench.hot!.propToCol(property as number | string)
-                ),
-          oldValue,
-          newValue,
-        }))
+        .flatMap(([visualRow, property, oldValue, newValue]) => {
+          const visualCol = getVisualColFromProperty(property);
+          if (visualCol === undefined) return [];
+          return [
+            {
+              visualRow,
+              visualCol,
+              physicalRow: workbench.hot!.toPhysicalRow(visualRow),
+              physicalCol:
+                typeof property === 'number'
+                  ? property
+                  : workbench.hot!.toPhysicalColumn(visualCol),
+              oldValue,
+              newValue,
+            },
+          ];
+        })
         .filter(
           ({ oldValue, newValue, visualCol }) =>
             /*
@@ -286,7 +307,7 @@ export function useHotHooks({
 
       /*
        * Don't clear disambiguation when afterChange is triggered by
-       * hot.undo() from inside of afterUndoRedo()
+       * the undoRedo plugin from inside of afterUndoRedo()
        * FEATURE: consider not clearing disambiguation at all
        */
       if (!workbench.undoRedoIsHandled)
@@ -618,7 +639,7 @@ function afterUndoRedo(
     // HOT doesn't seem to like calling undo from inside of afterUndo
     globalThis.setTimeout(() => {
       workbench.undoRedoIsHandled = true;
-      workbench.hot?.undo();
+      if (workbench.hot !== undefined) getHotPlugin(workbench.hot, 'undoRedo').undo();
       workbench.undoRedoIsHandled = false;
       workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);
