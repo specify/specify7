@@ -2250,8 +2250,8 @@ def create_basisofrecord_picklist(apps, using='default'):
             collection=collection,
             defaults={
                 "issystem": True,
-                "readonly": False,
-                "sizelimit": 10,
+                "readonly": True,
+                "sizelimit": 11,
                 "sorttype": 1,
             }
         )
