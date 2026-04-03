@@ -279,8 +279,7 @@ class DefaultTreeContext():
                 # parent_lookup still contains unsaved objects. Replace them with IDs.
                 sorted_created_nodes = sorted(
                     created_nodes,
-                    key=lambda n: int(getattr(n, self.local_id_field)),
-                    reverse=True
+                    key=lambda n: int(getattr(n, self.local_id_field))
                 )
                 for node in sorted_created_nodes:
                     local_id = int(getattr(node, self.local_id_field))
