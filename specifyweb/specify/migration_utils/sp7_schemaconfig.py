@@ -483,5 +483,8 @@ MIGRATION_0045_FIELDS = {
     ],
     'Collection': [
         ('basisofrecord', 'BasisOfRecord', 'The specific nature of the data record. Recommended best practice is to use a controlled vocabulary such as the set of local names of the identifiers for classes in Darwin Core.', True)
+    ],
+    'LocalityDetail': [
+        ('verbatimdepth', 'VerbatimDepth', 'The original description of the depth below the local surface.', True)
     ]
 }

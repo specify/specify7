@@ -68,6 +68,11 @@ class Migration(migrations.Migration):
             name='basisofrecord',
             field=models.CharField(blank=True, db_column='BasisOfRecord', max_length=64, null=True),
         ),
+        migrations.AddField(
+            model_name='localitydetail',
+            name='verbatimdepth',
+            field=models.CharField(blank=True, db_column='VerbatimDepth', max_length=64, null=True),
+        ),
         migrations.RunPython(
             apply_migration,
             revert_migration,

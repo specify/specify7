@@ -4107,6 +4107,7 @@ export type LocalityDetail = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
+    readonly verbatimDepth: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {

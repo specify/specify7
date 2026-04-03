@@ -4755,7 +4755,7 @@ class Localitydetail(models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
-
+    verbatimdepth = models.CharField(blank=True, null=True, max_length=64, db_column='VerbatimDepth', db_index=False)
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='localitydetails', null=True, on_delete=models.CASCADE)

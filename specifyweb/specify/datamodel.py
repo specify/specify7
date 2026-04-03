@@ -5017,7 +5017,8 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='verbatimDepth', column='VerbatimDepth', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
 
