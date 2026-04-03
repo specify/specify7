@@ -492,5 +492,8 @@ MIGRATION_0045_FIELDS = {
     ],
     'Preparation': [
         ('disposition', 'Disposition', 'The verbatim state of an entity with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".', True)
+    ],
+    'Attachment': [
+        ('type', 'Type', 'Type', True)
     ]
 }

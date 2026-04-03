@@ -95,6 +95,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.update_schema_config_fields,
         usc.create_eventtype_picklist,
         usc.create_basisofrecord_picklist,
+        usc.create_attachmenttype_picklist,
         usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)

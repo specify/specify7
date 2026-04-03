@@ -14,12 +14,14 @@ class Migration(migrations.Migration):
         usc.create_establishmentmeans_picklist(apps, schema_editor)
         usc.create_eventtype_picklist(apps, schema_editor)
         usc.create_basisofrecord_picklist(apps, schema_editor)
+        usc.create_attachmenttype_picklist(apps, schema_editor)
         usc.update_schema_config_fields(apps, schema_editor)
     
     def revert_migration(apps, schema_editor):
         usc.revert_establishmentmeans_picklist(apps)
         usc.revert_eventtype_picklist(apps)
         usc.revert_basisofrecord_picklist(apps)
+        usc.revert_attachmenttype_picklist(apps)
         usc.revert_update_schema_config_fields(apps)
 
     operations = [
