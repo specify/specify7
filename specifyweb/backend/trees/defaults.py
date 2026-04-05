@@ -284,7 +284,9 @@ class DefaultTreeContext():
                 for node in sorted_created_nodes:
                     local_id = int(getattr(node, self.local_id_field))
                     name = node.name
-                    self.parent_lookup[rank_id][name] = self.created[rank_id].get(local_id)
+                    # Check that the name is already in the lookup as to not re-introduce irrelevant parents.
+                    if self.parent_lookup[rank_id].get(name):
+                        self.parent_lookup[rank_id][name] = self.created[rank_id].get(local_id)
 
 
             self.buffers[rank_id] = {}
@@ -344,8 +346,7 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
             if not next_record_name:
                 is_last = True
         
-        if is_last:
-            highest_rank = tree_def_item.rankid
+        highest_rank = tree_def_item.rankid
 
         # Create the node at this rank if it isn't already there.
         existing = context.get_existing_parent(tree_def_item.rankid, record_name)
