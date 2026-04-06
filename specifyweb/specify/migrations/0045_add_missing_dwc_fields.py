@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 from specifyweb.specify.migration_utils import update_schema_config as usc
+import specifyweb.specify.models
 
 
 class Migration(migrations.Migration):
@@ -79,7 +80,7 @@ class Migration(migrations.Migration):
         ),
         migrations.AddField(
             model_name='determination',
-            name='identificationverificationStatus',
+            name='identificationverificationstatus',
             field=models.CharField(blank=True, db_column='IdentificationVerificationStatus', max_length=64, null=True),
         ),
         migrations.AddField(
@@ -96,6 +97,41 @@ class Migration(migrations.Migration):
             model_name='institution',
             name='datasetname',
             field=models.CharField(blank=True, db_column='DatasetName', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='coordinateprecision',
+            field=models.CharField(blank=True, db_column='CoordinatePrecision', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='footprintspatialfit',
+            field=models.DecimalField(blank=True, db_column='FootprintSpatialFit', decimal_places=10, max_digits=22, null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='footprintsrs',
+            field=models.CharField(blank=True, db_column='FootprintSRS', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='footprintwkt',
+            field=models.CharField(blank=True, db_column='FootprintWKT', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='locationaccordingto',
+            field=models.ForeignKey(db_column='LocationAccordingToID', null=True, on_delete=specifyweb.specify.models.protect_with_blockers, related_name='+', to='specify.agent'),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='verbatimcoordinates',
+            field=models.CharField(blank=True, db_column='VerbatimCoordinates', max_length=64, null=True),
+        ),
+        migrations.AddField(
+            model_name='locality',
+            name='verbatimsrs',
+            field=models.CharField(blank=True, db_column='VerbatimSRS', max_length=64, null=True),
         ),
         migrations.RunPython(
             apply_migration,

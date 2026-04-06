@@ -3993,6 +3993,12 @@ export type Locality = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
+    readonly coordinatePrecision: string | null;
+    readonly verbatimCoordinates: string | null;
+    readonly verbatimSRS: string | null;
+    readonly footrintSRS: string | null;
+    readonly footprintWKT: string | null;
+    readonly footprintSpatialFit: number | null;
   };
   readonly toOneDependent: {
     readonly geoCoordDetails: GeoCoordDetail | null;
@@ -4005,6 +4011,7 @@ export type Locality = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
+    readonly locationAccordingTo: Agent | null;
   };
   readonly toManyDependent: {
     readonly latLonpolygons: RA<LatLonPolygon>;

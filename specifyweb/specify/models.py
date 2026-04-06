@@ -4617,6 +4617,12 @@ class Locality(models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
+    coordinateprecision = models.CharField(blank=True, null=True, max_length=64, db_column='CoordinatePrecision', db_index=False)
+    verbatimcoordinates = models.CharField(blank=True, null=True, max_length=64, db_column='VerbatimCoordinates', db_index=False)
+    verbatimsrs = models.CharField(blank=True, null=True, max_length=64, db_column='VerbatimSRS', db_index=False)
+    footprintsrs = models.CharField(blank=True, null=True, max_length=64, db_column='FootprintSRS', db_index=False)
+    footprintwkt = models.CharField(blank=True, null=True, max_length=64, db_column='FootprintWKT', db_index=False)
+    footprintspatialfit = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='FootprintSpatialFit', db_index=False)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4625,6 +4631,7 @@ class Locality(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='localities', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    locationaccordingto = models.ForeignKey('Agent', db_column='LocationAccordingToID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'locality'

@@ -4872,7 +4872,13 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='coordinatePrecision', column='CoordinatePrecision', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='verbatimCoordinates', column='VerbatimCoordinates', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='verbatimSRS', column='VerbatimSRS', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='footprintSRS', column='FootprintSRS', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='footprintWKT', column='FootprintWKT', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='footprintSpatialFit', column='FootprintSpatialFit', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
         ],
         indexes=[
             Index(name='localityNameIDX', column_names=['LocalityName']),
@@ -4894,7 +4900,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='localities'),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
-            Relationship(name='collectingEvents', type='one-to-many', required=False, relatedModelName='collectingEvent', otherSideName='locality')
+            Relationship(name='collectingEvents', type='one-to-many', required=False, relatedModelName='collectingEvent', otherSideName='locality'),
+            Relationship(name='locationAccordingToID', type='many-to-one',required=False, relatedModelName='Agent', column='LocationAccordingToID'),
         ],
         fieldAliases=[
 

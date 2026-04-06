@@ -2322,7 +2322,7 @@ def revert_attachmenttype_picklist(apps):
 
     Picklist.objects.filter(name=ATTACHMENTTYPE_PICKLIST_NAME).delete()
 
-INSTITUTIONLICENSE_PICKLIST_NAME = [
+INSTITUTIONLICENSE_PICKLIST_ITEMS = [
     'http://creativecommons.org/publicdomain/zero/1.0/',
     'http://creativecommons.org/licenses/by/4.0/',
     'http://creativecommons.org/licenses/by-nc/4.0/',
@@ -2349,7 +2349,7 @@ def create_institutionlicense_picklist(apps, using='default'):
         if created:
             ordinal = 1
             items = []
-            for licenseName in INSTITUTIONLICENSE_PICKLIST_NAME:
+            for licenseName in INSTITUTIONLICENSE_PICKLIST_ITEMS:
                 items.append(
                     Picklistitem(
                         picklist=picklist,

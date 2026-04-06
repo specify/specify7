@@ -488,7 +488,7 @@ MIGRATION_0045_FIELDS = {
         ('verbatimdepth', 'Verbatim Depth', 'The original description of the depth below the local surface.', True)
     ],
     'Determination': [
-        ('identificationverificationstatus', 'Identification Verification Status', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
+        ('identificationverificationstatus', 'Identification Precision', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
     ],
     'Preparation': [
         ('disposition', 'Disposition', 'The verbatim state of an entity with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".', True)
@@ -500,5 +500,14 @@ MIGRATION_0045_FIELDS = {
         ('rightsholder', 'Rights Holder', 'A person or organization owning or managing rights over the resource.', True),
         ('datasetname', 'Dataset Name', 'The name identifying the data set from which the record was derived.', True),
         ('license', 'License', 'A legal document giving official permission to do something with the resource. Recommended best practice is to identify the license using a URI (e.g. http://creativecommons.org/publicdomain/zero/1.0/).', True)
+    ],
+    'Locality': [
+        ('coordinateprecision', 'Coordinate Precision', 'A decimal representation of the precision of the coordinates given in the Decimal Latitude and Decimal Longitude.', True),
+        ('verbatimcoordinates', 'Verbatim Coordinates', 'The verbatim original spatial coordinates of the Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in Verbatim SRS and the coordinate system should be stored in Verbatim Coordinate System.', True),
+        ('verbatimsrs', 'Verbatim SRS', 'The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which coordinates given in Verbatim Coordinates are based. Recommended best practice is use the EPSG code.', True),
+        ('footprintsrs', 'Footprint SRS', 'The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geometry given in dwc:footprintWKT is based.', True),
+        ('footprintwkt', 'Footprint WKT', 'A Well-Known Text (WKT) representation of the shape (footprint, geometry) that defines the dcterms:Location. A dcterms:Location may have both a point-radius representation (see dwc:decimalLatitude) and a footprint representation, and they may differ from each other.', True),
+        ('footprintspatialfit', 'Footprint Spatial Fit', 'The ratio of the area of the dwc:footprintWKT to the area of the true (original, or most specific) spatial representation of the dcterms:Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given dwc:footprintWKT does not completely contain the original representation. The dwc:footprintSpatialFit is undefined (and should be left empty) if the original representation is any geometry without area (e.g., a point or polyline) and without uncertainty and the given georeference is not that same geometry (without uncertainty). If both the original and the given georeference are the same point, the dwc:footprintSpatialFit is 1.', True),
+        ('locationaccordingtoID', 'Location According To', 'Information about the source of this Location information. Could be a publication (gazetteer), person s name, organization, etc.', True)
     ]
 }
