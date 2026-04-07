@@ -194,6 +194,64 @@ describe('Collection Object business rules', () => {
       expect(result.current[0]).toStrictEqual([]);
     });
 
+    test('CollectionObject -> determinations: Save is not blocked when collection object type is missing', async () => {
+      const collectionObject = getBaseCollectionObject();
+      collectionObject.set('collectionObjectType', null as never, {
+        silent: true,
+      });
+
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        await collectionObject?.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+      });
+
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
+    test('CollectionObject -> determinations: Missing collection object type clears invalid determination blockers', async () => {
+      const collectionObject = getBaseCollectionObject();
+      collectionObject.set(
+        'collectionObjectType',
+        getResourceApiUrl('CollectionObjectType', 1)
+      );
+
+      const determination =
+        collectionObject.getDependentResource('determinations')?.models[0];
+
+      const { result } = renderHook(() =>
+        useSaveBlockers(determination, tables.Determination.getField('Taxon'))
+      );
+
+      await act(async () => {
+        await collectionObject?.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+      });
+      expect(result.current[0]).toStrictEqual([
+        resourcesText.invalidDeterminationTaxon(),
+      ]);
+
+      collectionObject.set('collectionObjectType', null as never, {
+        silent: true,
+      });
+
+      await act(async () => {
+        await collectionObject?.businessRuleManager?.checkField(
+          'collectionObjectType'
+        );
+      });
+
+      expect(result.current[0]).toStrictEqual([]);
+    });
+
     test('Newly added determinations are current by default', async () => {
       const collectionObject = getBaseCollectionObject();
       const determinations =
