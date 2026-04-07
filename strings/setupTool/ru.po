@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-31 10:11+0000\n"
+"PO-Revision-Date: 2026-04-07 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "setupTool/ru/>\n"
@@ -455,7 +455,7 @@ msgstr "Просмотрите институциональную иерархи
 #: components/SystemConfigurationTool/Hierarchy.tsx:193
 #, fuzzy
 msgid "hierarchyStructureHint"
-msgstr "Щелкните по любому блоку, чтобы открыть форму его редактирования."
+msgstr "Нажмите на любой блок, чтобы открыть форму его редактирования."
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:197
