@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-31 10:11+0000\n"
+"PO-Revision-Date: 2026-04-07 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/setupTool/pt_BR/>\n"
@@ -260,7 +260,7 @@ msgstr "Aplicado"
 msgid "enforcedDescription"
 msgstr ""
 "A opção \"Is Enforced\" garante que o nível não possa ser ignorado ao "
-"adicionar nós em níveis inferiores da árvore."
+"adicionar nós mais abaixo na árvore."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:135
