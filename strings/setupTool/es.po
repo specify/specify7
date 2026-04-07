@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-03-31 10:12+0000\n"
+"PO-Revision-Date: 2026-04-07 08:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "setupTool/es/>\n"
@@ -111,8 +111,8 @@ msgstr "Definir la adhesión a nivel global"
 #, fuzzy
 msgid "institutionIsAccessionGlobalDescription"
 msgstr ""
-"El alcance global permite compartir las accesiones entre todas las "
-"divisiones. El alcance divisional garantiza que las accesiones sean "
+"El alcance global permite compartir las adquisiciones entre todas las "
+"divisiones. El alcance divisional garantiza que las adquisiciones sean "
 "específicas de cada división."
 
 #. Used in: Components > Setup Tool > Setup Resources
@@ -125,7 +125,7 @@ msgstr "DIRECCIÓN"
 #: components/SetupTool/setupResources.ts:186
 #, fuzzy
 msgid "addressDescription"
-msgstr "La dirección de la calle de la institución."
+msgstr "La dirección postal de la institución."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:191
@@ -137,7 +137,7 @@ msgstr "Ciudad"
 #: components/SetupTool/setupResources.ts:192
 #, fuzzy
 msgid "addressCityDescription"
-msgstr "La ciudad donde está ubicada la institución."
+msgstr "La ciudad donde se encuentra la institución."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:198
@@ -207,7 +207,7 @@ msgstr "Rango"
 #: components/SetupTool/setupResources.ts:391
 #, fuzzy
 msgid "fullNameDirection"
-msgstr "Nombre completo Dirección"
+msgstr "Dirección por nombre completo"
 
 #. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 #: components/SetupTool/setupResources.ts:330
@@ -253,29 +253,29 @@ msgstr "Incluir coloca el Nivel en la definición del árbol."
 #: components/SetupTool/setupResources.ts:126
 #, fuzzy
 msgid "enforced"
-msgstr "Obligado"
+msgstr "Aplicado"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
 #, fuzzy
 msgid "enforcedDescription"
 msgstr ""
-"Is Enforced garantiza que no se pueda omitir el nivel al agregar nodos más "
-"abajo en el árbol."
+"La opción \"Is Enforced\" garantiza que no se pueda omitir el nivel al "
+"agregar nodos en niveles inferiores del árbol."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:135
 #, fuzzy
 msgid "inFullName"
-msgstr "En nombre completo"
+msgstr "Nombre completo"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:136
 #, fuzzy
 msgid "inFullNameDescription"
 msgstr ""
-"Is in Full Name incluye el nivel al crear una expresión de nombre completo, "
-"que se puede consultar y usar en informes."
+"La opción \"Está en nombre completo\" incluye el nivel al crear una "
+"expresión de nombre completo, que se puede consultar y utilizar en informes."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:143
@@ -288,8 +288,8 @@ msgstr "Separador"
 #, fuzzy
 msgid "fullNameSeparatorDescription"
 msgstr ""
-"Separador se refiere al carácter que separa los niveles al mostrar el nombre "
-"completo."
+"El término \"separador\" se refiere al carácter que separa los niveles al "
+"mostrar el nombre completo."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:236
@@ -301,13 +301,13 @@ msgstr "Árbol de almacenamiento"
 #: components/SetupTool/setupResources.ts:304
 #, fuzzy
 msgid "geographyTree"
-msgstr "Árbol de geografía"
+msgstr "Árbol geográfico"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:340
 #, fuzzy
 msgid "taxonTree"
-msgstr "Árbol de taxones"
+msgstr "Árbol taxonómico"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:277
@@ -361,7 +361,7 @@ msgstr "Código"
 #: components/SetupTool/setupResources.ts:432
 #, fuzzy
 msgid "collectionCatalogNumFormatName"
-msgstr "Formato de número de catálogo"
+msgstr "Formato del número de catálogo"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:442
@@ -403,7 +403,7 @@ msgstr "confirmar Contraseña"
 #: components/SetupTool/setupResources.ts:474
 #, fuzzy
 msgid "specifyUserConfirmPasswordDescription"
-msgstr "Debe coincidir con la contraseña ingresada anteriormente."
+msgstr "Debe coincidir con la contraseña introducida anteriormente."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:446
@@ -433,13 +433,13 @@ msgstr "El apellido del agente asociado a la cuenta."
 #: components/SystemConfigurationTool/Hierarchy.tsx:597
 #, fuzzy
 msgid "addNewGeographyTree"
-msgstr "Añadir nuevo árbol de geografía"
+msgstr "Agregar nuevo árbol geográfico"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:615
 #, fuzzy
 msgid "addNewTaxonTree"
-msgstr "Añadir nuevo árbol de taxones"
+msgstr "Agregar nuevo árbol taxonómico"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:189
@@ -453,7 +453,7 @@ msgstr "Ver la jerarquía institucional"
 #: components/SystemConfigurationTool/Hierarchy.tsx:193
 #, fuzzy
 msgid "hierarchyStructureHint"
-msgstr "Haga clic en cualquier bloque para abrir su formulario de edición."
+msgstr "Haz clic en cualquier bloque para abrir su formulario de edición."
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:197
@@ -483,7 +483,7 @@ msgstr "Jerarquía institucional"
 #: components/SetupTool/SetupForm.tsx:182
 #, fuzzy
 msgid "emptyTaxonTree"
-msgstr "Se creará un árbol de taxones vacío"
+msgstr "Se creará un árbol taxonómico vacío."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:399
