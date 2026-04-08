@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
@@ -103,6 +104,70 @@ export function SchemaConfigField({
         schemaData={schemaData}
         onFormatted={handleFormatted}
       />
+      <DwcTermSection fieldName={field.name} />
     </SchemaConfigColumn>
+  );
+}
+
+type SchemaTermEntry = {
+  readonly term: string;
+  readonly iri: string;
+  readonly definition: string;
+  readonly mappingPath: string;
+};
+
+function DwcTermSection({
+  fieldName,
+}: {
+  readonly fieldName: string;
+}): JSX.Element {
+  const [terms, setTerms] = React.useState<readonly SchemaTermEntry[]>([]);
+  const [loading, setLoading] = React.useState(true);
+
+  React.useEffect(() => {
+    let cancelled = false;
+    fetch('/export/schema_terms/')
+      .then(async (response) => response.json())
+      .then((data: readonly SchemaTermEntry[]) => {
+        if (!cancelled) {
+          const matched = data.filter((entry) => {
+            const pathParts = entry.mappingPath.split('.');
+            return pathParts[pathParts.length - 1].toLowerCase() === fieldName.toLowerCase();
+          });
+          setTerms(matched);
+          setLoading(false);
+        }
+      })
+      .catch(() => {
+        if (!cancelled) setLoading(false);
+      });
+    return () => {
+      cancelled = true;
+    };
+  }, [fieldName]);
+
+  return (
+    <details className="mt-2">
+      <summary className="cursor-pointer font-semibold">
+        {headerText.darwinCore()}
+      </summary>
+      <div className="mt-1 pl-2">
+        {loading ? (
+          <p className="text-gray-500">Loading...</p>
+        ) : terms.length === 0 ? (
+          <p className="text-gray-500">{headerText.noDwcTerms()}</p>
+        ) : (
+          <ul className="space-y-2">
+            {terms.map((entry) => (
+              <li key={entry.iri} className="text-sm">
+                <div className="font-medium">{entry.term}</div>
+                <div className="font-mono text-xs text-gray-500">{entry.iri}</div>
+                <p className="text-gray-600 dark:text-gray-400">{entry.definition}</p>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </details>
   );
 }

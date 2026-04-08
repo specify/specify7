@@ -13,6 +13,8 @@ export const operationPolicies = {
   '/export/dwca': ['execute'],
   '/export/feed': ['force_update'],
   '/export/backup': ['execute'],
+  '/export/schema_mapping': ['create', 'read', 'update', 'delete'],
+  '/export/export_package': ['create', 'read', 'update', 'delete', 'execute'],
   '/permissions/list_admins': ['read'],
   '/permissions/policies/user': ['read', 'update'],
   '/permissions/user/roles': ['read', 'update'],
@@ -35,10 +37,10 @@ export const operationPolicies = {
   '/tree/edit/storage': [
     'merge',
     'move',
+    'bulk_move',
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
