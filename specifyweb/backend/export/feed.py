@@ -31,11 +31,7 @@ def update_feed(force=False, notify_user: Specifyuser | None = None):
     if feed_resource is None:
         raise MissingFeedResource()
 
-    try:
-        os.makedirs(FEED_DIR)
-    except OSError as e:
-        if e.errno != errno.EEXIST:
-            raise
+    os.makedirs(FEED_DIR, exist_ok=True)
 
     def_tree = ET.fromstring(feed_resource)
     for item_node in def_tree.findall('item'):
@@ -81,6 +77,7 @@ def needs_update(path, days):
     except OSError as e:
         if e.errno != errno.ENOENT:
             raise
+        return True
     else:
         update_interval = 24*60*60 * days
         age = time.time() - mtime
@@ -94,3 +91,32 @@ def create_notification(user: Specifyuser, filename: str | None):
         'type': 'feed-item-updated',
         'file': filename
     }))
+
+
+def update_feed_v2():
+    """Update RSS feed using the new ExportDataSet model.
+
+    For each ExportDataSet with isrss=True and stale export, rebuild
+    cache and regenerate DwCA.
+    """
+    from .models import ExportDataSet
+    from .dwca_from_mapping import make_dwca_from_dataset
+    from django.utils import timezone
+    from datetime import timedelta
+
+    datasets = ExportDataSet.objects.filter(isrss=True)
+    updated = []
+
+    for dataset in datasets:
+        if dataset.frequency and dataset.frequency > 0 and dataset.lastexported:
+            next_update = dataset.lastexported + timedelta(days=dataset.frequency)
+            if timezone.now() < next_update:
+                continue
+
+        try:
+            make_dwca_from_dataset(dataset)
+            updated.append(dataset.exportname)
+        except Exception:
+            logger.exception('Failed to update RSS feed item: %s', dataset.exportname)
+
+    return updated

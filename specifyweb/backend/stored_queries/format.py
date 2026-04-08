@@ -214,6 +214,14 @@ class ObjectFormatter:
                     formatter_field_spec.get_field(),
                     new_expr
                 )
+            elif specify_field.is_temporal() and do_blank_null:
+                # When full field formatting is disabled, still apply
+                # precision-aware date formatting for temporal fields
+                # in display context (do_blank_null=True). Skip for
+                # ORDER BY context (do_blank_null=False) so aggregation
+                # sorts by raw timestamp, not formatted string.
+                # See: https://github.com/specify/specify7/issues/7376
+                new_expr = self._dateformat(specify_field, new_expr)
 
         # Helper function to apply only string-ish transforms with no numeric casts
         def apply_stringish(expr):
@@ -240,7 +248,17 @@ class ObjectFormatter:
 
             sep = fieldNodeAttrib.get('sep')
             if sep is not None:
-                e = concat(sep, e)
+                # For relationship fields, blank_nulls converts NULL to ''.
+                # A plain concat(sep, '') would leak the separator even when
+                # the related object is absent.  Use CASE to suppress the
+                # separator when the formatted value is empty.  See #6406.
+                if formatter_field_spec.is_relationship():
+                    e = case(
+                        (cast(e, types.String()) != literal(''), concat(sep, e)),
+                        else_=e
+                    )
+                else:
+                    e = concat(sep, e)
 
             return e
 
@@ -418,7 +436,8 @@ class ObjectFormatter:
         if specify_field.type == "java.sql.Timestamp":
             return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
-        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+        field_class = getattr(field, 'class_', None)
+        prec_fld = getattr(field_class, specify_field.name + 'Precision', None) if field_class is not None else None
 
         # format_expr = (
         #     case(

@@ -7,7 +7,7 @@ def extract_query(query):
     query_node.set('name', query.name)
     query_node.set('contextTableId', str(query.contexttableid))
 
-    for field in query.fields.all():
+    for field in query.fields.all().iterator(chunk_size=2000):
         field_node = ElementTree.SubElement(query_node, 'field')
         field_node.set('stringId', field.stringid)
         field_node.set('oper', str(field.operstart))

@@ -1,0 +1,526 @@
+{
+  "vocabularies": {
+    "dwc": {
+      "name": "Darwin Core",
+      "abbreviation": "dwc",
+      "vocabularyURI": "http://rs.tdwg.org/dwc/terms/",
+      "description": "Darwin Core standard terms for biodiversity data",
+      "terms": {
+        "http://rs.tdwg.org/dwc/terms/occurrenceID": {
+          "name": "occurrenceID",
+          "description": "An identifier for the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "guid"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/catalogNumber": {
+          "name": "catalogNumber",
+          "description": "An identifier for the record within the data set or collection",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "catalogNumber"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/recordedBy": {
+          "name": "recordedBy",
+          "description": "A person, group, or organization responsible for recording the original Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "collectors", "agent", "lastName"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/individualCount": {
+          "name": "individualCount",
+          "description": "The number of individuals present at the time of the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "countAmt"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/sex": {
+          "name": "sex",
+          "description": "The sex of the biological individual(s) represented in the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/lifeStage": {
+          "name": "lifeStage",
+          "description": "The age class or life stage of the Organism(s) at the time the Occurrence was recorded",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/reproductiveCondition": {
+          "name": "reproductiveCondition",
+          "description": "The reproductive condition of the biological individual(s) represented in the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/behavior": {
+          "name": "behavior",
+          "description": "The behavior shown by the subject at the time the Occurrence was recorded",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/preparations": {
+          "name": "preparations",
+          "description": "A list of preparations and preservation methods for a specimen",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "preparations", "prepType", "name"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/disposition": {
+          "name": "disposition",
+          "description": "The current state of a specimen with respect to the collection identified in collectionCode",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/otherCatalogNumbers": {
+          "name": "otherCatalogNumbers",
+          "description": "A list of previous or alternate fully qualified catalog numbers",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "altCatalogNumber"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/occurrenceRemarks": {
+          "name": "occurrenceRemarks",
+          "description": "Comments or notes about the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": [["CollectionObject", "remarks"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/eventDate": {
+          "name": "eventDate",
+          "description": "The date-time or interval during which an Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "startDate"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/eventTime": {
+          "name": "eventTime",
+          "description": "The time or interval during which an Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "startTime"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/startDayOfYear": {
+          "name": "startDayOfYear",
+          "description": "The earliest integer day of the year on which the Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "startDateNumericDay"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/endDayOfYear": {
+          "name": "endDayOfYear",
+          "description": "The latest integer day of the year on which the Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "endDateNumericDay"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/year": {
+          "name": "year",
+          "description": "The four-digit year in which the Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "startDateNumericYear"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/month": {
+          "name": "month",
+          "description": "The integer month in which the Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "startDateNumericMonth"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/day": {
+          "name": "day",
+          "description": "The integer day of the month on which the Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "startDateNumericDay"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/verbatimEventDate": {
+          "name": "verbatimEventDate",
+          "description": "The verbatim original representation of the date and time information for an Event",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "verbatimDate"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/habitat": {
+          "name": "habitat",
+          "description": "A category or description of the habitat in which the Event occurred",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "collectingEventAttribute", "text1"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/samplingProtocol": {
+          "name": "samplingProtocol",
+          "description": "The names of, references to, or descriptions of the methods or protocols used during an Event",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "method"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/fieldNumber": {
+          "name": "fieldNumber",
+          "description": "An identifier given to the event in the field",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "fieldNumber"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/eventRemarks": {
+          "name": "eventRemarks",
+          "description": "Comments or notes about the Event",
+          "group": "Event",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "remarks"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/continent": {
+          "name": "continent",
+          "description": "The name of the continent in which the Location occurs",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "geography", "continent"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/country": {
+          "name": "country",
+          "description": "The name of the country or major administrative unit in which the Location occurs",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "geography", "country"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/countryCode": {
+          "name": "countryCode",
+          "description": "The standard code for the country in which the Location occurs",
+          "group": "Location",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/stateProvince": {
+          "name": "stateProvince",
+          "description": "The name of the next smaller administrative region than country",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "geography", "state"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/county": {
+          "name": "county",
+          "description": "The full, unabbreviated name of the next smaller administrative region than stateProvince",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "geography", "county"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/municipality": {
+          "name": "municipality",
+          "description": "The full, unabbreviated name of the next smaller administrative region than county",
+          "group": "Location",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/locality": {
+          "name": "locality",
+          "description": "The specific description of the place",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "localityName"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/verbatimLocality": {
+          "name": "verbatimLocality",
+          "description": "The original textual description of the place",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "verbatimLocality"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/minimumElevationInMeters": {
+          "name": "minimumElevationInMeters",
+          "description": "The lower limit of the range of elevation",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "minElevation"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/maximumElevationInMeters": {
+          "name": "maximumElevationInMeters",
+          "description": "The upper limit of the range of elevation",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "maxElevation"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/decimalLatitude": {
+          "name": "decimalLatitude",
+          "description": "The geographic latitude in decimal degrees of the geographic center of a Location",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "latitude1"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/decimalLongitude": {
+          "name": "decimalLongitude",
+          "description": "The geographic longitude in decimal degrees of the geographic center of a Location",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "longitude1"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/geodeticDatum": {
+          "name": "geodeticDatum",
+          "description": "The ellipsoid, geodetic datum, or spatial reference system used in decimalLatitude and decimalLongitude",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "datum"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters": {
+          "name": "coordinateUncertaintyInMeters",
+          "description": "The horizontal distance from the given decimalLatitude and decimalLongitude describing the smallest circle containing the whole of the Location",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "latLongAccuracy"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/verbatimCoordinates": {
+          "name": "verbatimCoordinates",
+          "description": "The verbatim original spatial coordinates of the Location",
+          "group": "Location",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/verbatimLatitude": {
+          "name": "verbatimLatitude",
+          "description": "The verbatim original latitude of the Location",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "verbatimLatitude"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/verbatimLongitude": {
+          "name": "verbatimLongitude",
+          "description": "The verbatim original longitude of the Location",
+          "group": "Location",
+          "mappingPaths": [["CollectionObject", "collectingEvent", "locality", "verbatimLongitude"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/kingdom": {
+          "name": "kingdom",
+          "description": "The full scientific name of the kingdom in which the taxon is classified",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "kingdom"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/phylum": {
+          "name": "phylum",
+          "description": "The full scientific name of the phylum in which the taxon is classified",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "phylum"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/class": {
+          "name": "class",
+          "description": "The full scientific name of the class in which the taxon is classified",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "class"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/order": {
+          "name": "order",
+          "description": "The full scientific name of the order in which the taxon is classified",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "order"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/family": {
+          "name": "family",
+          "description": "The full scientific name of the family in which the taxon is classified",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "family"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/genus": {
+          "name": "genus",
+          "description": "The full scientific name of the genus in which the taxon is classified",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "genus"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/specificEpithet": {
+          "name": "specificEpithet",
+          "description": "The name of the first or species epithet of the scientificName",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "species"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/infraspecificEpithet": {
+          "name": "infraspecificEpithet",
+          "description": "The name of the lowest or terminal infraspecific epithet of the scientificName",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "subspecies"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/taxonRank": {
+          "name": "taxonRank",
+          "description": "The taxonomic rank of the most specific name in the scientificName",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "rankId"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/scientificName": {
+          "name": "scientificName",
+          "description": "The full scientific name, with authorship and date information if known",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "fullName"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship": {
+          "name": "scientificNameAuthorship",
+          "description": "The authorship information for the scientificName",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "author"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/vernacularName": {
+          "name": "vernacularName",
+          "description": "A common or vernacular name",
+          "group": "Taxon",
+          "mappingPaths": [["CollectionObject", "determinations", "taxon", "commonName"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/higherClassification": {
+          "name": "higherClassification",
+          "description": "A list of taxa names terminating at the rank immediately superior to the referenced taxon",
+          "group": "Taxon",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/taxonomicStatus": {
+          "name": "taxonomicStatus",
+          "description": "The status of the use of the scientificName as a label for a taxon",
+          "group": "Taxon",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/basisOfRecord": {
+          "name": "basisOfRecord",
+          "description": "The specific nature of the data record",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/institutionCode": {
+          "name": "institutionCode",
+          "description": "The name or acronym in use by the institution having custody of the object(s) or information referred to in the record",
+          "group": "Record",
+          "mappingPaths": [["CollectionObject", "collection", "institution", "code"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/collectionCode": {
+          "name": "collectionCode",
+          "description": "The name, acronym, coden, or initialism identifying the collection or data set from which the record was derived",
+          "group": "Record",
+          "mappingPaths": [["CollectionObject", "collection", "code"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/datasetName": {
+          "name": "datasetName",
+          "description": "The name identifying the data set from which the record was derived",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/ownerInstitutionCode": {
+          "name": "ownerInstitutionCode",
+          "description": "The name or acronym in use by the institution having ownership of the object(s) or information referred to in the record",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/informationWithheld": {
+          "name": "informationWithheld",
+          "description": "Additional information that exists, but that has not been shared in the given record",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/dataGeneralizations": {
+          "name": "dataGeneralizations",
+          "description": "Actions taken to make the shared data less specific or complete than in its original form",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/identifiedBy": {
+          "name": "identifiedBy",
+          "description": "A person, group, or organization who assigned the Taxon to the subject",
+          "group": "Identification",
+          "mappingPaths": [["CollectionObject", "determinations", "determiner", "lastName"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/dateIdentified": {
+          "name": "dateIdentified",
+          "description": "The date on which the subject was determined as representing the Taxon",
+          "group": "Identification",
+          "mappingPaths": [["CollectionObject", "determinations", "determinedDate"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/identificationRemarks": {
+          "name": "identificationRemarks",
+          "description": "Comments or notes about the Identification",
+          "group": "Identification",
+          "mappingPaths": [["CollectionObject", "determinations", "remarks"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/typeStatus": {
+          "name": "typeStatus",
+          "description": "A list of nomenclatural types applied to the subject",
+          "group": "Identification",
+          "mappingPaths": [["CollectionObject", "determinations", "typeStatusName"]]
+        },
+        "http://rs.tdwg.org/dwc/terms/associatedMedia": {
+          "name": "associatedMedia",
+          "description": "A list of identifiers of media associated with the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/associatedReferences": {
+          "name": "associatedReferences",
+          "description": "A list of identifiers of literature associated with the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/associatedSequences": {
+          "name": "associatedSequences",
+          "description": "A list of identifiers of genetic sequence information associated with the Occurrence",
+          "group": "Occurrence",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/dwc/terms/associatedTaxa": {
+          "name": "associatedTaxa",
+          "description": "A list of identifiers or names of taxa and the associations of this Occurrence to each of them",
+          "group": "Occurrence",
+          "mappingPaths": []
+        }
+      }
+    },
+    "dc": {
+      "name": "Dublin Core",
+      "abbreviation": "dc",
+      "vocabularyURI": "http://purl.org/dc/terms/",
+      "description": "Dublin Core metadata terms",
+      "terms": {
+        "http://purl.org/dc/terms/type": {
+          "name": "type",
+          "description": "The nature or genre of the resource",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://purl.org/dc/terms/modified": {
+          "name": "modified",
+          "description": "The most recent date-time on which the resource was changed",
+          "group": "Record",
+          "mappingPaths": [["CollectionObject", "timestampModified"]]
+        },
+        "http://purl.org/dc/terms/language": {
+          "name": "language",
+          "description": "A language of the resource",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://purl.org/dc/terms/license": {
+          "name": "license",
+          "description": "A legal document giving official permission to do something with the resource",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://purl.org/dc/terms/rightsHolder": {
+          "name": "rightsHolder",
+          "description": "A person or organization owning or managing rights over the resource",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://purl.org/dc/terms/accessRights": {
+          "name": "accessRights",
+          "description": "Information about who can access the resource or an indication of its security status",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://purl.org/dc/terms/bibliographicCitation": {
+          "name": "bibliographicCitation",
+          "description": "A bibliographic reference for the resource",
+          "group": "Record",
+          "mappingPaths": []
+        },
+        "http://purl.org/dc/terms/references": {
+          "name": "references",
+          "description": "A related resource that is referenced, cited, or otherwise pointed to by the described resource",
+          "group": "Record",
+          "mappingPaths": []
+        }
+      }
+    },
+    "ac": {
+      "name": "Audiovisual Core",
+      "abbreviation": "ac",
+      "vocabularyURI": "http://rs.tdwg.org/ac/terms/",
+      "description": "Audiovisual Core terms for multimedia resources",
+      "terms": {
+        "http://rs.tdwg.org/ac/terms/accessURI": {
+          "name": "accessURI",
+          "description": "A URI that uniquely identifies a service that provides a representation of the underlying resource",
+          "group": "Media",
+          "mappingPaths": [["CollectionObject", "collectionObjectAttachments", "attachment", "attachmentLocation"]]
+        },
+        "http://purl.org/dc/terms/format": {
+          "name": "format",
+          "description": "The file format, physical medium, or dimensions of the resource",
+          "group": "Media",
+          "mappingPaths": [["CollectionObject", "collectionObjectAttachments", "attachment", "mimeType"]]
+        },
+        "http://rs.tdwg.org/ac/terms/subtype": {
+          "name": "subtype",
+          "description": "Any type term from the vocabulary of types used that further refines the media type",
+          "group": "Media",
+          "mappingPaths": []
+        },
+        "http://rs.tdwg.org/ac/terms/caption": {
+          "name": "caption",
+          "description": "Text to be displayed together with the media representation",
+          "group": "Media",
+          "mappingPaths": [["CollectionObject", "collectionObjectAttachments", "attachment", "title"]]
+        },
+        "http://rs.tdwg.org/ac/terms/tag": {
+          "name": "tag",
+          "description": "A tag or keyword associated with the media item",
+          "group": "Media",
+          "mappingPaths": []
+        }
+      }
+    }
+  }
+}

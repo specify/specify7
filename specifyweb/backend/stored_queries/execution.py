@@ -71,6 +71,7 @@ class BuildQueryProps(NamedTuple):
     search_synonymy: bool = False
     implicit_or: bool = True
     formatter_props: ObjectFormatterProps = DefaultQueryFormatterProps()
+    date_format_override: str | None = None
 
 
 def set_group_concat_max_len(connection):
@@ -314,6 +315,7 @@ def query_to_csv(
     distinct=False,
     delimiter=",",
     bom=False,
+    date_format_override=None,
 ):
     """Build a sqlalchemy query using the QueryField objects given by
     field_specs and send the results to a CSV file at the given
@@ -328,7 +330,8 @@ def query_to_csv(
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct,
+                        date_format_override=date_format_override),
     )
     query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
@@ -356,7 +359,7 @@ def query_to_csv(
                 ]
                 csv_writer.writerow(encoded)
         else:
-            for row in query.yield_per(1):
+            for row in query.yield_per(2000):
                 if row_filter is not None and not row_filter(row):
                     continue
                 encoded = [
@@ -438,7 +441,7 @@ def query_to_kml(
                 )
                 documentElement.appendChild(placemarkElement)
     else:
-        for row in query.yield_per(1):
+        for row in query.yield_per(2000):
             if row_has_geocoords(coord_cols, row):
                 placemarkElement = createPlacemark(
                     kmlDoc, row, coord_cols, table, captions, host
@@ -945,14 +948,21 @@ def build_query(
     else:
         query_construct_query = session.query(id_field)
     
+    formatter = ObjectFormatter(
+        collection,
+        user,
+        props.replace_nulls,
+        props=props.formatter_props,
+    )
+    if props.date_format_override is not None:
+        formatter.date_format = props.date_format_override
+        from .format import MYSQL_TO_YEAR, MYSQL_TO_MONTH
+        formatter.date_format_year = MYSQL_TO_YEAR.get(props.date_format_override, '%Y')
+        formatter.date_format_month = MYSQL_TO_MONTH.get(props.date_format_override, '%Y-%m')
+
     query = QueryConstruct(
         collection=collection,
-        objectformatter=ObjectFormatter(
-            collection,
-            user,
-            props.replace_nulls,
-            props=props.formatter_props,
-        ),
+        objectformatter=formatter,
         query=query_construct_query
     )
 
