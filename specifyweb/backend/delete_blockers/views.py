@@ -1,6 +1,5 @@
 from django import http
 from django.db import router, transaction
-from django.db.models.deletion import Collector
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import (
@@ -9,6 +8,7 @@ from specifyweb.specify.api.crud import (
     prepare_discipline_for_delete,
 )
 from specifyweb.specify.api.serializers import toJson
+from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.views import login_maybe_required
 
 @login_maybe_required
@@ -39,19 +39,28 @@ def delete_blockers(request, model, id):
 
     return http.HttpResponse(toJson(result), content_type='application/json')
 
-def _collect_delete_blockers(obj, using) -> list[dict]:
-    collector = Collector(using=using)
-    collector.delete_blockers = []
-    collector.collect([obj])
-    return flatten([
-        [
-            {
-                'table': sub_objs[0].__class__.__name__,
-                'field': field.name,
-                'ids': [sub_obj.id for sub_obj in sub_objs]
-            }
-        ] for field, sub_objs in collector.delete_blockers
-    ])
+def _collect_delete_blockers(obj, using, id_limit=100) -> list[dict]:
+    """Find PROTECT-related objects that block deletion of *obj*.
 
-def flatten(l):
-    return [item for sublist in l for item in sublist]
+    Instead of using Django's Collector (which loads every related row
+    into memory), we iterate the model's reverse relations, run a COUNT
+    query for each PROTECT relationship, and fetch at most *id_limit*
+    primary keys.  This keeps memory bounded regardless of how many
+    blocking rows exist (#7515).
+    """
+    result = []
+    for related in obj._meta.related_objects:
+        if related.on_delete is not protect_with_blockers:
+            continue
+        qs = related.related_model.objects.using(using).filter(
+            **{related.field.name: obj.pk})
+        total = qs.count()
+        if total > 0:
+            ids = list(qs.values_list('pk', flat=True)[:id_limit])
+            result.append({
+                'table': related.related_model.__name__,
+                'field': related.field.name,
+                'ids': ids,
+                'total_count': total,
+            })
+    return result
