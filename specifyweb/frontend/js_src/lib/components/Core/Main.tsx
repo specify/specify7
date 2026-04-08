@@ -38,7 +38,9 @@ export function Main({
 }: {
   readonly menuItems: RA<MenuItem>;
 }): JSX.Element {
-  const [hasAgent] = React.useState(userInformation.agent !== null);
+  const [hasAgent] = React.useState(
+    userInformation.currentCollectionAgent !== null
+  );
 
   const mainRef = React.useRef<HTMLElement | null>(null);
   React.useEffect(() => {

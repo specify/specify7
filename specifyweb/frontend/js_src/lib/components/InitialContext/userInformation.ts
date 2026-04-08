@@ -18,22 +18,29 @@ export type UserInformation = SerializedRecord<SpecifyUser> & {
   readonly name: LocalizedString;
   readonly isauthenticated: boolean;
   readonly availableCollections: RA<SerializedResource<Collection>>;
-  readonly agent: SerializedRecord<Agent>;
+  readonly currentCollectionAgent: SerializedRecord<Agent> | null;
+  readonly agent: SerializedRecord<Agent> | null;
 };
 
 const userInfo: Writable<UserInformation> = {} as UserInformation;
 
 export const fetchContext = load<
-  Omit<UserInformation, 'availableCollections'> & {
+  Omit<UserInformation, 'availableCollections' | 'currentCollectionAgent'> & {
     // eslint-disable-next-line @typescript-eslint/naming-convention
     readonly available_collections: RA<SerializedRecord<Collection>>;
+    readonly current_agent?: SerializedRecord<Agent> | null;
   }
 >('/context/user.json', 'application/json').then(
   async ({ available_collections: availableCollections, ...data }) => {
-    Object.entries(data).forEach(([key, value]) => {
+    const currentCollectionAgent = data.current_agent ?? data.agent ?? null;
+    const rest = { ...data };
+    delete rest.current_agent;
+    Object.entries(rest).forEach(([key, value]) => {
       // @ts-expect-error
       userInfo[key as keyof UserInformation] = value;
     });
+    userInfo.currentCollectionAgent = currentCollectionAgent;
+    userInfo.agent = currentCollectionAgent;
     await import('../DataModel/tables').then(
       async ({ fetchContext }) => fetchContext
     );
