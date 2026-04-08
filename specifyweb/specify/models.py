@@ -6427,6 +6427,9 @@ class Spqueryfield(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     isstrict = models.BooleanField(db_column='IsStrict', blank=True, null=True)
+    term = models.CharField(blank=True, max_length=500, null=True, db_column='Term', db_index=False)
+    isstatic = models.BooleanField(blank=True, null=True, db_column='IsStatic', default=False)
+    staticvalue = models.TextField(blank=True, null=True, db_column='StaticValue')
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
