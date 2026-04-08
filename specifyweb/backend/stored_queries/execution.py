@@ -356,7 +356,7 @@ def query_to_csv(
                 ]
                 csv_writer.writerow(encoded)
         else:
-            for row in query.yield_per(1):
+            for row in query.yield_per(2000):
                 if row_filter is not None and not row_filter(row):
                     continue
                 encoded = [
@@ -438,7 +438,7 @@ def query_to_kml(
                 )
                 documentElement.appendChild(placemarkElement)
     else:
-        for row in query.yield_per(1):
+        for row in query.yield_per(2000):
             if row_has_geocoords(coord_cols, row):
                 placemarkElement = createPlacemark(
                     kmlDoc, row, coord_cols, table, captions, host
