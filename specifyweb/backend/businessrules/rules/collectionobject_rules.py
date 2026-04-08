@@ -12,9 +12,14 @@ def collectionobject_pre_save(co):
         co.collectionmemberid = co.collection_id
 
     if co.collectionobjecttype is None:
-        co.collectionobjecttype = get_or_create_default_collection_object_type(
-            co.collection, using=co._state.db or 'default'
-        )
+        if co.collection.collectionobjecttype is not None:
+            co.collectionobjecttype = co.collection.collectionobjecttype
+        elif co.pk is not None:
+            co.collectionobjecttype = (
+                get_or_create_default_collection_object_type(
+                    co.collection, using=co._state.db or 'default'
+                )
+            )
 
     agent = co.createdbyagent
     if agent is not None and agent.specifyuser is not None:

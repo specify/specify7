@@ -35,10 +35,16 @@ def get_or_create_default_collection_object_type(collection: spmodels.Collection
     if collection.collectionobjecttype is not None:
         return collection.collectionobjecttype
 
+    discipline_name = collection.discipline.name
+    taxon_tree_def_id = collection.discipline.taxontreedef_id
+
+    if discipline_name is None or taxon_tree_def_id is None:
+        return None
+
     default_type, _ = spmodels.Collectionobjecttype.objects.using(db).get_or_create(
-        name=collection.discipline.name,
+        name=discipline_name,
         collection=collection,
-        taxontreedef_id=collection.discipline.taxontreedef_id,
+        taxontreedef_id=taxon_tree_def_id,
     )
 
     type(collection).objects.using(db).filter(
