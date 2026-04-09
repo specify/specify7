@@ -77,38 +77,38 @@ theories(whitespaceSensitive, [
 
 test('Key with JSX', () =>
   expect(
-  // eslint-disable-next-line new-cap
-  StringToJsx({
-    string: dictionary.jsx({ parameter: 'a' }),
-    components: {
-      link: (label) => <span>{label}</span>,
-      button: (label) => <p>{label}</p>,
-      br: <br />
-    }
-  })
-).toMatchInlineSnapshot(`
-<>
+    // eslint-disable-next-line new-cap
+    StringToJsx({
+      string: dictionary.jsx({ parameter: 'a' }),
+      components: {
+        link: (label) => <span>{label}</span>,
+        button: (label) => <p>{label}</p>,
+        br: <br />,
+      },
+    })
+  ).toMatchInlineSnapshot(`
   <>
-    <span>
-      A
-    </span>
-  </>
-   a
-  <>
-    <span>
-      B
-    </span>
-  </>
+    <>
+      <span>
+        A
+      </span>
+    </>
+     a
+    <>
+      <span>
+        B
+      </span>
+    </>
 
-  <>
-    <br />
-  </>
+    <>
+      <br />
+    </>
 
-  <>
-    <p>
-      B
-    </p>
+    <>
+      <p>
+        B
+      </p>
+    </>
+     _
   </>
-   _
-</>
 `));
