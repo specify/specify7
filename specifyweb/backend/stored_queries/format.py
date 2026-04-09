@@ -200,6 +200,13 @@ class ObjectFormatter:
                 formatter,
                 aggregator, previous_tables)
 
+            # Unwrap blank_nulls so that apply_stringish sees the raw
+            # expression.  This lets concat(sep, expr) return NULL when the
+            # nested formatter produced NULL, so the outer blank_nulls
+            # correctly suppresses both the value and its separator.
+            # See issue #6406.
+            if isinstance(new_expr, blank_nulls):
+                new_expr = new_expr.clauses.clauses[0]
             raw_expr = new_expr
         else:
             new_query, table, model, specify_field = query.build_join(
