@@ -56,9 +56,9 @@ describe('CreateAppResource', () => {
     await user.click(appResourceButton);
 
     //  This is a lot more cleaner than the inner HTML
-    expect(getByRole('dialog').textContent).toMatchInlineSnapshot(
-      `"Select Resource TypeTypeDocumentationLabelDocumentation(opens in a new tab)ReportDocumentation(opens in a new tab)Default User PreferencesDocumentation(opens in a new tab)Leaflet LayersDocumentation(opens in a new tab)RSS Export FeedDocumentation(opens in a new tab)Express Search ConfigDocumentation(opens in a new tab)Type SearchesDocumentation(opens in a new tab)Web LinksDocumentation(opens in a new tab)Field FormattersDocumentation(opens in a new tab)Record FormattersDocumentation(opens in a new tab)Data Entry TablesDocumentation(opens in a new tab)Interactions TablesDocumentation(opens in a new tab)Other XML ResourceOther JSON ResourceOther Properties ResourceOther ResourceCancel"`
-    );
+    expect(getByRole('dialog').textContent).toMatchInlineSnapshot(`"Select Resource TypeTypeDocumentationLabelDocumentationReportDocumentationDefault User PreferencesDocumentationLeaflet LayersDocumentationRSS Export FeedDocumentationExpress Search ConfigDocumentationType SearchesDocumentationWeb LinksDocumentationField FormattersDocumentationRecord FormattersDocumentationData Entry TablesDocumentationInteractions TablesDocumentationOther XML ResourceOther JSON ResourceOther Properties ResourceOther ResourceCancel"`
+
+);
   });
 
   test('simple Form type (mimetype undefined)', async () => {
