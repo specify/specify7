@@ -370,7 +370,7 @@ function OptionGroup({
       {typeof selectGroupLabel === 'string' && (
         <header
           aria-hidden
-          className="cursor-auto bg-brand-100 dark:bg-brand-400 px-1"
+          className="cursor-auto bg-brand-100 dark:bg-brand-400 dark:text-white px-1"
         >
           {selectGroupLabel}
         </header>
@@ -546,7 +546,7 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          border-brand-300 bg-brand-100 dark:bg-brand-400
+          border-brand-300 bg-brand-100 dark:bg-brand-400 dark:!text-white
           flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >
@@ -849,8 +849,8 @@ export function CustomSelectElement({
           >
             <input
               // Associate validation message with the listbox
-              id={id('validation')}
               defaultValue={validation}
+              id={id('validation')}
               aria-label={validation}
               // Announce validation message to screen readers
               aria-live="polite"
