@@ -20,16 +20,25 @@ import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { queryIdField } from './Results';
 
+const toCellText = (
+  value: JSX.Element | number | string | null | undefined
+): string | undefined =>
+  typeof value === 'string' || typeof value === 'number'
+    ? value.toString()
+    : undefined;
+
 export function QueryResultsTable({
   table,
   fieldSpecs,
   results,
+  wrapQueryResults,
   selectedRows,
   onSelected: handleSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly results: RA<QueryResultRow>;
+  readonly wrapQueryResults: boolean;
   readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
     index: number,
@@ -58,6 +67,7 @@ export function QueryResultsTable({
           recordFormatter={recordFormatter}
           result={result}
           table={table}
+          wrapQueryResults={wrapQueryResults}
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
@@ -75,6 +85,7 @@ function Row({
   recordFormatter,
   isSelected,
   isLast,
+  wrapQueryResults,
   onSelected: handleSelected,
 }: {
   readonly table: SpecifyTable;
@@ -86,6 +97,7 @@ function Row({
   ) => Promise<RA<JSX.Element | string>>;
   readonly isSelected: boolean;
   readonly isLast: boolean;
+  readonly wrapQueryResults: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
@@ -215,22 +227,36 @@ function Row({
           </div>
         </div>
       )}
-      {result
-        .filter((_, index) => index !== queryIdField)
-        .map((value, index) =>
-          fieldSpecs[index].isPhantom ? undefined : (
-            <Cell
-              condenseQueryResults={condenseQueryResults}
-              fieldSpec={
-                formattedValues?.[index] === undefined
-                  ? fieldSpecs[index]
-                  : undefined
-              }
-              key={index}
-              value={formattedValues?.[index] ?? value}
-            />
-          )
-        )}
+      {
+        (() => {
+          /*
+           * Keep the rendered column index contiguous across visible fields so
+           * it matches header indices used for width measuring/resizing.
+           */
+          let visibleColumnIndex = 0;
+          return result
+            .filter((_, index) => index !== queryIdField)
+            .flatMap((value, index) => {
+              if (fieldSpecs[index].isPhantom) return [];
+              const cell = (
+                <Cell
+                  condenseQueryResults={condenseQueryResults}
+                  columnIndex={visibleColumnIndex}
+                  fieldSpec={
+                    formattedValues?.[index] === undefined
+                      ? fieldSpecs[index]
+                      : undefined
+                  }
+                  key={index}
+                  wrapQueryResults={wrapQueryResults}
+                  value={formattedValues?.[index] ?? value}
+                />
+              );
+              visibleColumnIndex += 1;
+              return [cell];
+            });
+        })()
+      }
     </div>
   );
 }
@@ -246,10 +272,14 @@ function Cell({
   fieldSpec,
   value,
   condenseQueryResults,
+  wrapQueryResults,
+  columnIndex,
 }: {
   readonly condenseQueryResults: boolean;
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly value: JSX.Element | number | string | null;
+  readonly wrapQueryResults: boolean;
+  readonly columnIndex: number;
 }): JSX.Element {
   const field = fieldSpec?.getField();
 
@@ -266,26 +296,37 @@ function Cell({
     [field, fieldSpec, value]
   );
 
+  const renderedValue =
+    value === null
+      ? undefined
+      : fieldSpec === undefined || typeof value === 'object'
+        ? value
+        : formatted;
+
+  // Tooltip should preserve the original value when formatter changes display.
+  const titleText = toCellText(value) ?? toCellText(renderedValue);
+  const displayedValue =
+    !wrapQueryResults && typeof renderedValue === 'string'
+      ? renderedValue.split(/\r?\n/u)[0]
+      : renderedValue;
+
   return (
     <div
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
         ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
+        ${
+          wrapQueryResults
+            ? 'whitespace-pre-wrap break-words'
+            : 'overflow-hidden whitespace-nowrap text-ellipsis'
+        }
       `}
+      data-query-results-cell-col={columnIndex}
       role="cell"
-      title={
-        (typeof value === 'string' || typeof value === 'number') &&
-        value !== formatted
-          ? value.toString()
-          : undefined
-      }
+      title={titleText}
     >
-      {value === null
-        ? undefined
-        : fieldSpec === undefined || typeof value === 'object'
-          ? value
-          : formatted}
+      {displayedValue}
     </div>
   );
 }
