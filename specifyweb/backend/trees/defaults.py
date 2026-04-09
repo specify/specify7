@@ -483,8 +483,8 @@ def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str,
                 total_rows = row_count-2
             progress(0, total_rows)
             
-            for row in stream_default_tree_csv(url):
-                add_default_tree_record(context, row, tree_cfg, current)
+            for row_idx, row in enumerate(stream_default_tree_csv(url)):
+                add_default_tree_record(context, row, tree_cfg, row_idx)
                 context.flush()
                 progress(1, 0)
             context.flush(force=True)
