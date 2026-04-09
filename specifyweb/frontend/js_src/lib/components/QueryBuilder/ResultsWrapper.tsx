@@ -22,11 +22,49 @@ import {
   queryFieldsToFieldSpecs,
   unParseQueryFields,
 } from './helpers';
+import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
+
+/**
+ * When series mode (smushed) is active, the backend skips the catalog number
+ * column from its normal position in the SQL SELECT and instead inserts a
+ * catalog number series range at position 1 (right after the ID column).
+ *
+ * This function reorders the frontend fieldSpecs/queryFields arrays so that
+ * the catalog number entry is at index 0 (matching position 1 in the result
+ * data, since position 0 is the ID which is stripped before rendering).
+ *
+ * Without this reordering, column headers become mismatched with data columns.
+ * See: https://github.com/specify/specify7/issues/7086
+ */
+export function reorderFieldSpecsForSeries<
+  T extends { readonly fieldSpec: QueryFieldSpec; readonly field: QueryField },
+>(
+  items: RA<T>,
+  isSeries: boolean,
+  tableName: string
+): RA<T> {
+  if (!isSeries || tableName !== 'CollectionObject') return items;
+
+  const catNumIndex = items.findIndex(
+    (item) =>
+      item.field.mappingPath.length === 1 &&
+      item.field.mappingPath[0] === 'catalogNumber'
+  );
+
+  if (catNumIndex <= 0) return items;
+
+  const catNumItem = items[catNumIndex];
+  return [
+    catNumItem,
+    ...items.slice(0, catNumIndex),
+    ...items.slice(catNumIndex + 1),
+  ];
+}
 
 export function QueryResultsWrapper({
   createRecordSet,
@@ -185,14 +223,21 @@ export function useQueryResultsWrapper({
     const initialData = isCountOnly
       ? Promise.resolve(undefined)
       : runQuery(query, { offset: 0, ...fetchPayload });
-    const fieldSpecsAndFields = queryFieldsToFieldSpecs(
+    const isSeries = queryResource.get('smushed') === true;
+    const rawFieldSpecsAndFields = queryFieldsToFieldSpecs(
       table.name,
       displayedFields
     );
-    const fieldSpecs = fieldSpecsAndFields.map(
-      ([_field, fieldSpec]) => fieldSpec
+    const reordered = reorderFieldSpecsForSeries(
+      rawFieldSpecsAndFields.map(([field, fieldSpec]) => ({
+        field,
+        fieldSpec,
+      })),
+      isSeries,
+      table.name
     );
-    const queryFields = fieldSpecsAndFields.map(([field]) => field);
+    const fieldSpecs = reordered.map(({ fieldSpec }) => fieldSpec);
+    const queryFields = reordered.map(({ field }) => field);
 
     initialData
       .then((initialData) =>
@@ -218,7 +263,7 @@ export function useQueryResultsWrapper({
                    * index differ. Also needs to skip phantom fields (added by locality)
                    */
                   const index = fieldSpecs.indexOf(fieldSpec);
-                  const displayField = displayedFields[index];
+                  const displayField = queryFields[index];
                   const lineIndex = allFields.indexOf(displayField);
                   handleSortChange(
                     replaceItem(
