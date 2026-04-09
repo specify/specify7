@@ -1868,7 +1868,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.condenseQueryResults(),
             requiresReload: false,
             visible: true,
-            defaultValue: true,
+            defaultValue: false,
             type: 'java.lang.Boolean',
           }),
           showLineNumber: definePref<boolean>({

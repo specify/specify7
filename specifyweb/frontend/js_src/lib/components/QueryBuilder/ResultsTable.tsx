@@ -318,8 +318,8 @@ function Cell({
         ${fieldSpec?.parser.type === 'number' ? 'tabular-nums' : ''}
         ${
           wrapQueryResults
-            ? 'min-w-0 overflow-hidden whitespace-pre-wrap break-words'
-            : 'min-w-0 overflow-hidden whitespace-nowrap text-ellipsis'
+            ? 'overflow-hidden whitespace-pre-wrap break-words'
+            : 'overflow-hidden whitespace-nowrap text-ellipsis'
         }
       `}
       data-query-results-cell-col={columnIndex}
