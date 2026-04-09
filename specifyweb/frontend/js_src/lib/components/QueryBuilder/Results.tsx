@@ -163,16 +163,16 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       deletingRef.current.add(recordId);
 
       let removeCount = 0;
-      function newResults(results: RA<QueryResultRow | undefined> | undefined) {
-        if (!Array.isArray(results) || totalCount === undefined) return;
-        const newResults = results.filter(
+      setResults((previousResults) => {
+        if (!Array.isArray(previousResults) || totalCount === undefined)
+          return previousResults;
+        const filtered = previousResults.filter(
           (result) => result?.[queryIdField] !== recordId
         );
-        removeCount = results.length - newResults.length;
-        if (resultsRef !== undefined) resultsRef.current = newResults;
-        return newResults;
-      }
-      setResults(newResults(results));
+        removeCount = previousResults.length - filtered.length;
+        if (resultsRef !== undefined) resultsRef.current = filtered;
+        return filtered;
+      });
       // Delete deletingRef if no records are able to be removed
       if (removeCount === 0) {
         deletingRef.current.delete(recordId);
@@ -183,12 +183,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           ? undefined
           : Math.max(0, totalCount - removeCount)
       );
-      const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
-        new Set(Array.from(selectedRows).filter((id) => id !== recordId));
-      setSelectedRows(newSelectedRows(selectedRows));
+      setSelectedRows(
+        new Set(Array.from(selectedRows).filter((id) => id !== recordId))
+      );
       setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
     },
-    [setResults, setTotalCount, totalCount]
+    [setResults, setTotalCount, totalCount, selectedRows, setSelectedRows]
   );
 
   const [showLineNumber] = userPreferences.use(
