@@ -8,6 +8,8 @@ def apply_absolute_date(query_field):
         return query_field
 
     field_value = query_field.value
+    if field_value is None:
+        return query_field
     new_field_value = ','.join([relative_to_absolute_date(value_split) for value_split in field_value.split(',')])
     return query_field._replace(value=new_field_value)
 

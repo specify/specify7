@@ -126,4 +126,21 @@ theories(generateMappingPathPreview, [
     'Exsiccata - Reference Work - Title',
   ],
   [['TaxonAttribute', ['taxons', '$Family', 'taxonId']], 'Family - ID'],
+  // Issue #6808: Date field components must get distinct labels
+  [
+    ['CollectionObject', ['catalogedDate-fullDate']],
+    'Cataloged Date',
+  ],
+  [
+    ['CollectionObject', ['catalogedDate-day']],
+    'Cataloged Date (Day)',
+  ],
+  [
+    ['CollectionObject', ['catalogedDate-month']],
+    'Cataloged Date (Month)',
+  ],
+  [
+    ['CollectionObject', ['catalogedDate-year']],
+    'Cataloged Date (Year)',
+  ],
 ]);
