@@ -61,7 +61,7 @@ export type TreeCreationProgressInfo = {
 
 export async function fetchDefaultTrees(): Promise<TaxonFileDefaultList> {
   const response = await fetch(
-    'https://files.specifysoftware.org/taxonfiles/taxonfiles.json'
+    'https://files.specifysoftware.org/taxonfiles/beta/taxonfiles.json'
   );
   if (!response.ok) {
     throw new Error(

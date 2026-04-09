@@ -19,7 +19,7 @@ DEFAULT_TREE_RANKS_FILES = {
     'Lithostrat': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'lithostrat_tree.json',
     'Tectonicunit': Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'tectonicunit_tree.json'
 }
-DEFAULT_TAXON_TREE_LIST_URL = 'https://files.specifysoftware.org/taxonfiles/taxonfiles.json'
+DEFAULT_TAXON_TREE_LIST_URL = 'https://files.specifysoftware.org/taxonfiles/beta/taxonfiles.json'
 DEFAULT_TREE_URLS = {
     'Geography': 'default_trees/geonames.csv',
     'Geologictimeperiod': 'default_trees/GeologicTimePeriod.csv',
