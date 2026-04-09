@@ -1,7 +1,6 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { commonText } from '../../localization/common';
 import type { IR, RA, RR } from '../../utils/types';
 import { className } from './className';
 import type { IconProps } from './Icons';
@@ -35,20 +34,23 @@ const linkComponent = <EXTRA_PROPS extends IR<unknown> = RR<never, never>>(
 
 export const Link = {
   Default: linkComponent('Link.Default', className.link),
-  NewTab: linkComponent('Link.NewTab', className.link, (props) => ({
-    ...props,
-    target: '_blank',
-    rel: 'noopener',
-    children: (
-      <>
-        {props.children}
-        <span title={commonText.opensInNewTab()}>
-          <span className="sr-only">{commonText.opensInNewTab()}</span>
-          {icons.externalLink}
-        </span>
-      </>
-    ),
-  })),
+  NewTab: linkComponent('Link.NewTab', className.link, (props) => {
+    const hasChildren = React.Children.count(props.children) > 0;
+    return {
+      ...props,
+      target: '_blank',
+      rel: 'noopener',
+      'aria-label':
+        props['aria-label'] ??
+        (!hasChildren ? props.title ?? props.href : undefined),
+      children: (
+        <>
+          {props.children}
+          <span aria-hidden>{icons.externalLink}</span>
+        </>
+      ),
+    };
+  }),
   Small: linkComponent<{
     /*
      * A class name that is responsible for text and background color
