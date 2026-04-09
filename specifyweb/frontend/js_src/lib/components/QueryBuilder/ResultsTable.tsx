@@ -315,11 +315,11 @@ function Cell({
       className={`
         ${getCellClassName(condenseQueryResults)}
         ${value === null ? 'text-gray-700 dark:text-neutral-500' : ''}
-        ${fieldSpec?.parser.type === 'number' ? 'justify-end tabular-nums' : ''}
+        ${fieldSpec?.parser.type === 'number' ? 'tabular-nums' : ''}
         ${
           wrapQueryResults
-            ? 'whitespace-pre-wrap break-words'
-            : 'overflow-hidden whitespace-nowrap text-ellipsis'
+            ? 'min-w-0 overflow-hidden whitespace-pre-wrap break-words'
+            : 'min-w-0 overflow-hidden whitespace-nowrap text-ellipsis'
         }
       `}
       data-query-results-cell-col={columnIndex}
