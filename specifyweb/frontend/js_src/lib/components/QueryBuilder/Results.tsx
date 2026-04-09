@@ -363,11 +363,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         totalCount !== 0
           ? extraButtons
           : null}
-        {visibleColumns.length > 0 && hasManualColumnResize ? (
-          <Button.Small title="Reset column widths" onClick={resetToAutoSize}>
-            Reset widths
-          </Button.Small>
-        ) : null}
         {Array.isArray(results) &&
         Array.isArray(loadedResults) &&
         results.length > 0 &&
