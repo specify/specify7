@@ -352,7 +352,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor2(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#a4af83',
+            defaultValue: '#ACB389',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
