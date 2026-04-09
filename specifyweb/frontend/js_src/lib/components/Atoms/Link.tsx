@@ -42,7 +42,7 @@ export const Link = {
       rel: 'noopener',
       'aria-label':
         props['aria-label'] ??
-        (!hasChildren ? props.title ?? props.href : undefined),
+        (hasChildren ? undefined : (props.title ?? props.href)),
       children: (
         <>
           {props.children}
