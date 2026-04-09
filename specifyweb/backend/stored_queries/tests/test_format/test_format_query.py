@@ -237,6 +237,75 @@ class FormatterAggregatorTests(SQLAlchemySetup):
                                    "roleASome_number",)]
                                   )
 
+    def test_date_precision_in_formatted_fields(self):
+        """Date fields in object formatters should respect precision.
+
+        When a date has year-only precision (3), the formatted output
+        should show just the year, not the full date.
+        See: https://github.com/specify/specify7/issues/7376
+        """
+        from datetime import date
+
+        formatter_def = """
+        <formatters>
+          <format
+            name="Accession"
+            title="Accession"
+            class="edu.ku.brc.specify.datamodel.Accession"
+            default="true"
+          >
+            <switch single="true">
+              <fields>
+                <field>accessionNumber</field>
+                <field sep=" - ">dateAccessioned</field>
+              </fields>
+            </switch>
+          </format>
+        </formatters>
+        """
+        object_formatter = self.get_formatter(formatter_def)
+
+        # Year-only precision (3): should display as just "2024"
+        accession_year = spmodels.Accession.objects.create(
+            accessionnumber='YEAR-ONLY',
+            division=self.division,
+            dateaccessioned=date(2024, 1, 1),
+            dateaccessionedprecision=3,
+        )
+
+        # Month precision (2): should display as "2024-06" (or locale equivalent)
+        accession_month = spmodels.Accession.objects.create(
+            accessionnumber='MONTH-ONLY',
+            division=self.division,
+            dateaccessioned=date(2024, 6, 1),
+            dateaccessionedprecision=2,
+        )
+
+        # Full precision (1): should display as "2024-03-15"
+        accession_full = spmodels.Accession.objects.create(
+            accessionnumber='FULL-DATE',
+            division=self.division,
+            dateaccessioned=date(2024, 3, 15),
+            dateaccessionedprecision=1,
+        )
+
+        with FormatterAggregatorTests.test_session_context() as session:
+            query = QueryConstruct(
+                collection=self.collection,
+                objectformatter=object_formatter,
+                query=session.query()
+            )
+            query, expr = object_formatter.objformat(query, models.Accession, None)
+            query = query.query.add_columns(models.Accession.accessionNumber, expr)
+            results = {row[0]: row[1] for row in query}
+
+            # Year-only precision: must NOT include month/day
+            self.assertEqual(results['YEAR-ONLY'], 'YEAR-ONLY - 2024')
+            # Month precision: must include month but NOT day
+            self.assertEqual(results['MONTH-ONLY'], 'MONTH-ONLY - 2024-06')
+            # Full precision: must include full date
+            self.assertEqual(results['FULL-DATE'], 'FULL-DATE - 2024-03-15')
+
     def test_relationships_in_switch_fields(self):
         formatter_def = """
         <formatters>
