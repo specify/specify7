@@ -227,36 +227,34 @@ function Row({
           </div>
         </div>
       )}
-      {
-        (() => {
-          /*
-           * Keep the rendered column index contiguous across visible fields so
-           * it matches header indices used for width measuring/resizing.
-           */
-          let visibleColumnIndex = 0;
-          return result
-            .filter((_, index) => index !== queryIdField)
-            .flatMap((value, index) => {
-              if (fieldSpecs[index].isPhantom) return [];
-              const cell = (
-                <Cell
-                  condenseQueryResults={condenseQueryResults}
-                  columnIndex={visibleColumnIndex}
-                  fieldSpec={
-                    formattedValues?.[index] === undefined
-                      ? fieldSpecs[index]
-                      : undefined
-                  }
-                  key={index}
-                  wrapQueryResults={wrapQueryResults}
-                  value={formattedValues?.[index] ?? value}
-                />
-              );
-              visibleColumnIndex += 1;
-              return [cell];
-            });
-        })()
-      }
+      {(() => {
+        /*
+         * Keep the rendered column index contiguous across visible fields so
+         * it matches header indices used for width measuring/resizing.
+         */
+        let visibleColumnIndex = 0;
+        return result
+          .filter((_, index) => index !== queryIdField)
+          .flatMap((value, index) => {
+            if (fieldSpecs[index].isPhantom) return [];
+            const cell = (
+              <Cell
+                columnIndex={visibleColumnIndex}
+                condenseQueryResults={condenseQueryResults}
+                fieldSpec={
+                  formattedValues?.[index] === undefined
+                    ? fieldSpecs[index]
+                    : undefined
+                }
+                key={index}
+                value={formattedValues?.[index] ?? value}
+                wrapQueryResults={wrapQueryResults}
+              />
+            );
+            visibleColumnIndex += 1;
+            return [cell];
+          });
+      })()}
     </div>
   );
 }

@@ -38,10 +38,12 @@ import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
 
-// These values are somewhat arbitrary but are based on testing with real queries.
-// Column widths smaller than 120px tend to cause readability issues, and widths 
-// larger than 600px are usually not helpful since users can just resize columns 
-// manually if they want them wider.
+/*
+ * These values are somewhat arbitrary but are based on testing with real queries.
+ * Column widths smaller than 120px tend to cause readability issues, and widths
+ * larger than 600px are usually not helpful since users can just resize columns
+ * manually if they want them wider.
+ */
 
 const minAutoSizedQueryResultColumnWidth = 120;
 const minManualQueryResultColumnWidth = 60;
@@ -155,9 +157,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
 
-  const [columnWidths, setColumnWidths] = React.useState<Record<number, number>>(
-    {}
-  );
+  const [columnWidths, setColumnWidths] = React.useState<
+    Record<number, number>
+  >({});
   const [hasManualColumnResize, setHasManualColumnResize] =
     React.useState(false);
 
@@ -274,10 +276,20 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   }, [autoSizeColumns]);
 
   React.useEffect(() => {
-    if (!showResults || !Array.isArray(initialData) || visibleColumns.length === 0)
+    if (
+      !showResults ||
+      !Array.isArray(initialData) ||
+      visibleColumns.length === 0
+    )
       return;
     resetToAutoSize();
-  }, [fieldSpecs, initialData, resetToAutoSize, showResults, visibleColumns.length]);
+  }, [
+    fieldSpecs,
+    initialData,
+    resetToAutoSize,
+    showResults,
+    visibleColumns.length,
+  ]);
 
   const handleColumnResizeStart = React.useCallback(
     (columnIndex: number, event: React.MouseEvent<HTMLDivElement>): void => {
@@ -352,10 +364,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           ? extraButtons
           : null}
         {visibleColumns.length > 0 && hasManualColumnResize ? (
-          <Button.Small
-            title="Reset column widths"
-            onClick={resetToAutoSize}
-          >
+          <Button.Small title="Reset column widths" onClick={resetToAutoSize}>
             Reset widths
           </Button.Small>
         ) : null}
@@ -473,10 +482,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                   columnIndex={visibleIndex}
                   fieldSpec={fieldSpec}
                   key={fieldIndex}
+                  sortConfig={sortConfig?.[fieldIndex]}
                   onResizeStart={(event): void =>
                     handleColumnResizeStart(visibleIndex, event)
                   }
-                  sortConfig={sortConfig?.[fieldIndex]}
                   onSortChange={
                     typeof handleSortChange === 'function'
                       ? (sortType): void =>
@@ -496,9 +505,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               results={loadedResults}
-              wrapQueryResults={wrapQueryResults}
               selectedRows={selectedRows}
               table={table}
+              wrapQueryResults={wrapQueryResults}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
