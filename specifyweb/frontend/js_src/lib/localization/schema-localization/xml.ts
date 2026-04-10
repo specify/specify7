@@ -100,5 +100,5 @@ export function nodeUnparseXml(dom: ParsedDom): string {
     format: true,
     suppressUnpairedNode: true,
   });
-  return postProcessXml(parser.build(dom) );
+  return postProcessXml(parser.build(dom));
 }
