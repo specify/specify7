@@ -20,7 +20,7 @@ export const parseCatalogNumberEntries = (rawEntries: string): RA<string> =>
     .filter((entry) => entry.length > 0);
 
 export const tokenizeCatalogEntry = (entry: string): RA<CatalogToken> => {
-  const tokens: CatalogToken[] = [];
+  const tokens: readonly CatalogToken[] = [];
   let currentNumber = '';
 
   for (const character of entry) {
@@ -62,7 +62,7 @@ export const parseCatalogNumberRanges = (
   entries: RA<string>
 ): RA<readonly [number, number]> =>
   entries.flatMap((entry) => {
-    const ranges: Array<readonly [number, number]> = [];
+    const ranges: readonly (readonly [number, number])[] = [];
     const yearMatches = Array.from(
       entry.matchAll(entryYearCatalogNumberRe)
     ).filter((match) =>
