@@ -3,99 +3,99 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-03-31 10:09+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/merging/"
-"fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/merging/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.17-dev\n"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1886
+#. Used in: Components > Preferences > User Definitions
 msgid "recordMerging"
 msgstr "Fusion d'enregistrements"
 
-#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #: components/FormMeta/MergeRecord.tsx:56
 #: components/Merging/index.tsx:90
 #: components/Merging/index.tsx:94
 #: components/Merging/index.tsx:408
 #: components/Merging/index.tsx:421
 #: components/Router/OverlayRoutes.tsx:231
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 msgid "mergeRecords"
 msgstr "Fusionner les enregistrements"
 
-#. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:225
+#. Used in: Components > Merging > Compare Sub View
 msgid "mergedRecord"
 msgstr "Enregistrement fusionné"
 
-#. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:454
+#. Used in: Components > Merging > Index
 msgid "showConflictingFieldsOnly"
 msgstr "Afficher uniquement les champs en conflit"
 
-#. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:190
+#. Used in: Components > Merging > Header
 msgid "newMergedRecord"
 msgstr "Nouvel enregistrement fusionné"
 
-#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #: components/Merging/CompareSubView.tsx:230
 #: components/Merging/Header.tsx:191
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 msgid "duplicateRecord"
 msgstr "Aperçu {index:number|formatted}"
 
-#. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:111
+#. Used in: Components > Merging > Compare Sub View
 msgid "nRecords"
 msgstr "{count:number|formatted} enregistrements"
 
-#. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:425
+#. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "subViewControls"
 msgstr "Commandes de sous-vue"
 
-#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
+#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 msgid "mergeFields"
 msgstr "Fusionner {field:string}"
 
-#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:273
 #: components/Preferences/UserDefinitions.tsx:1892
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 msgid "autoPopulate"
 msgstr "Remplir automatiquement"
 
-#. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:88
+#. Used in: Components > Merging > Header
 msgid "dismissFromMerging"
 msgstr "Interdire la fusion"
 
-#. Used in: Components > Merging > Definitions
 #: components/Merging/definitions.ts:23
+#. Used in: Components > Merging > Definitions
 msgid "agentContainsGroupDescription"
 msgstr "Les agents contiennent les membres de groupe"
 
-#. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
+#. Used in: Components > Merging > Invalid Merge Records
 msgid "recordNotBeMergedReason"
 msgstr "Les enregistrements suivants ne peuvent pas être fusionnés. Raison :"
 
-#. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:93
+#. Used in: Components > Merging > Invalid Merge Records
 msgid "someCannotBeMerged"
 msgstr "Certains enregistrements ne peuvent pas être fusionnés"
 
-#. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
+#. Used in: Components > Merging > Invalid Merge Records
 msgid "mergeOthers"
 msgstr "Fusionner les autres"
 
-#. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:411
+#. Used in: Components > Merging > Index
 msgid "warningMergeText"
 msgstr ""
 "Avant de continuer, veuillez noter que l'action suivante peut interrompre "
@@ -104,53 +104,52 @@ msgstr ""
 "utilisateurs Specify. Veuillez considérer l’impact sur leur expérience. "
 "Cette fusion est irréversible"
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
 #: components/Merging/Status.tsx:25
+#. Used in: Components > Merging > Status
 msgid "mergeFailed"
 msgstr "Échec de la fusion"
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:26
+#. Used in: Components > Merging > Status
 msgid "mergeSucceeded"
 msgstr "Fusion réussie"
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:23
+#. Used in: Components > Merging > Status
 msgid "merging"
 msgstr "Fusion"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:161
+#. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasStarted"
 msgstr "Le processus de fusion a commencé."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:216
+#. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasSucceeded"
 msgstr "Le processus de fusion a réussi."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:178
+#. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasFailed"
 msgstr "Le processus de fusion a échoué."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:196
+#. Used in: Components > Notifications > Notification Renderers
 msgid "mergingHasBeenCanceled"
 msgstr "Le processus de fusion a été annulé."
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:181
+#. Used in: Components > Notifications > Notification Renderers
 msgid "retryMerge"
 msgstr "Réessayez la fusion."
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:144
+#. Used in: Components > Merging > Status
 msgid "mergingWentWrong"
 msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
 
-#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 #: components/Forms/DeleteButton.tsx:124
 #: components/Forms/DeleteButton.tsx:128
 #: components/Merging/Usages.tsx:19
@@ -160,5 +159,6 @@ msgstr "Quelque chose s'est mal passé pendant le processus de fusion."
 #: components/Molecules/LinkedRecords.tsx:90
 #: components/Molecules/LinkedRecords.tsx:94
 #: components/Molecules/LinkedRecords.tsx:129
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 msgid "linkedRecords"
 msgstr "Enregistrements liés"
