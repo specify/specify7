@@ -15,6 +15,8 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import connection, transaction
 from django.db.models.functions import RowNumber
 
+from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
+
 from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
@@ -567,23 +569,95 @@ def update_table_field_schema_config_params(
         setattr(sp_local_container_item, k, v)
     sp_local_container_item.save(update_fields=list(update_params.keys()))
 
+def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    missing_tables: list[str] = []
+    missing_fields: dict[str, list[str]] = {}
+
+    containers = Splocalecontainer.objects.filter(
+        discipline_id=discipline_id,
+        schematype=0,
+    )
+    container_names = set(
+        containers.values_list('name', flat=True)
+    )
+
+    existing_fields_by_table: dict[str, set[str]] = defaultdict(set)
+    for table_name, field_name in Splocalecontaineritem.objects.filter(
+        container__in=containers
+    ).values_list('container__name', 'name'):
+        if table_name and field_name:
+            existing_fields_by_table[table_name].add(field_name.lower())
+
+    for table in datamodel.tables:
+        table_name = table.name
+        table_name_lower = table_name.lower()
+        if table_name_lower not in container_names:
+            missing_tables.append(table_name)
+            missing_fields[table_name] = sorted(
+                field.name for field in table.all_fields if field.name
+            )
+            continue
+
+        existing_fields = existing_fields_by_table.get(table_name_lower, set())
+        missing_in_table = sorted( # sort for better reproducablity
+            field.name
+            for field in table.all_fields
+            if field.name and field.name.lower() not in existing_fields
+        )
+
+        if missing_in_table:
+            missing_fields[table_name] = missing_in_table
+
+    return missing_tables, missing_fields
+
+
+def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, stdout=None):
+    missing_tables, missing_fields = find_missing_schema_config_fields(discipline_id, apps=apps)
+    missing_table_set = set(missing_tables)
+
+    for table_name in missing_tables:
+        if stdout is not None:
+            stdout(f"Creating schema config table container for {table_name}...")
+        update_table_schema_config_with_defaults(table_name, discipline_id, apps=apps)
+
+    for table_name, fields in missing_fields.items():
+        if table_name in missing_table_set:
+            continue
+        for field_name in fields:
+            if stdout is not None:
+                stdout(f"Creating schema config field {table_name}.{field_name}...")
+            update_table_field_schema_config_with_defaults(table_name, discipline_id, field_name, apps=apps)
+
+    return missing_tables, missing_fields
+
 def deduplicate_schema_config_sql(apps=None):
     dedupe_sql = '''
     /*
 
-    This script removes duplicate entries in the `splocalecontaineritem` table
-    based on the combination of `DisciplineID`, `Name`, and `Field Name`.
-    It ensures that only one unique entry remains for each combination,
-    deleting any duplicates along with their associated string entries
-    to maintain schema integrity.
+    This script removes duplicate entries in the `splocalecontaineritem` table.
 
-    This was created to clean up duplicates found in a Swiss database on 2025-01-28.
+    The safe dedupe key is the concrete container row plus the item name:
+    `SpLocaleContainerID` + `Name`.
+
+    Why this matters:
+    - Schema config containers can share the same logical table name inside a
+     discipline while still being distinct rows.
+    - Grouping by discipline + table name + field name can collapse valid rows
+     from different containers that merely happen to share the same name.
+    - Keeping the first row for a specific container/name pair preserves real
+     schema config entries and only removes true duplicates.
+
+    Any duplicate rows are deleted together with their dependent string rows.
 
     */
 
 
-    -- 1. Identify all duplicate Container Item IDs 
-    -- We group by Discipline, Table Name, and Field Name
+    -- 1. Identify all duplicate Container Item IDs
+    -- We group by the concrete container row and the field name.
+    -- Only schema-type 0 containers are eligible for this cleanup.
     -- We keep the record with the lowest ID (rn = 1) and mark the rest (rn > 1)
     CREATE TEMPORARY TABLE container_items_to_delete AS
     SELECT 
@@ -592,11 +666,12 @@ def deduplicate_schema_config_sql(apps=None):
         SELECT 
             slci.SpLocaleContainerItemID,
             ROW_NUMBER() OVER (
-                PARTITION BY slc.DisciplineID, slc.Name, slci.Name 
+                PARTITION BY slci.SpLocaleContainerID, slci.Name 
                 ORDER BY slci.SpLocaleContainerItemID ASC
             ) as rn
         FROM splocalecontaineritem slci
         JOIN splocalecontainer slc ON slci.SpLocaleContainerID = slc.SpLocaleContainerID
+        WHERE slc.SchemaType = 0
     ) sub
     WHERE sub.rn > 1;
 
@@ -622,14 +697,27 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
     ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
 
     with transaction.atomic():
-        # Identify duplicates using Window function
-        # Partition by the container relationship and the item name
-        qs = ContainerItem.objects.annotate(
+        # Identify duplicates using a Window function.
+        # Partition by container_id + item name only.
+        # Only schema type 0 containers (standard schema) are eligible for this cleanup.
+        # The schema type 1 refers to the WorkBench Schema from Specify 6, which has
+        # a different structure and should not be modified by this cleanup.
+        #
+        # Why this key:
+        # - Rows are only true duplicates when they refer to the same concrete
+        #   container row and the same field name.
+        # - Earlier broad grouping by discipline/container-name/field-name could
+        #   collapse valid rows from different containers that happened to share
+        #   names, causing missing Schema Config fields after dedupe.
+        # - This narrower key preserves legitimate rows and only removes
+        #   duplicates that are semantically equivalent.
+        qs = ContainerItem.objects.filter(
+            container__schematype=0,
+        ).annotate(
             rn=Window(
                 expression=RowNumber(),
                 partition_by=[
-                    F('container__discipline'), 
-                    F('container__name'), 
+                    F('container_id'),
                     F('name')
                 ],
                 order_by=F('id').asc()
