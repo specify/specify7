@@ -6,7 +6,16 @@
  */
 
 import React from 'react';
-import NewWindow from 'react-new-window';
+
+const NewWindow = require('react-new-window') as React.ComponentType<{
+  readonly copyStyles?: boolean;
+  readonly title?: string;
+  readonly url?: string;
+  readonly onBlock?: () => void;
+  readonly onOpen?: (window: Window) => void;
+  readonly onUnload?: () => void;
+  readonly children?: React.ReactNode;
+}>;
 
 export function PopupWindow({
   title = '',
@@ -46,7 +55,7 @@ export function PopupWindow({
       title={title}
       url={url}
       onBlock={onBlock}
-      onOpen={(window): void => {
+      onOpen={(window: Window): void => {
         windowRef.current = window;
         onOpen(window);
       }}
