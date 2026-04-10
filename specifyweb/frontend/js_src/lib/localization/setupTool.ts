@@ -182,7 +182,7 @@ export const setupToolText = createDictionary({
     'de-ch':
       'Der globale Geltungsbereich ermöglicht die gemeinsame Nutzung von Zugängen zwischen allen Abteilungen. Der abteilungsbezogene Geltungsbereich stellt sicher, dass Zugänge spezifisch für die jeweilige Abteilung sind.',
     'es-es':
-      'El alcance global permite compartir las accesiones entre todas las divisiones. El alcance divisional garantiza que las accesiones sean específicas de cada división.',
+      'El alcance global permite compartir las adquisiciones entre todas las divisiones. El alcance divisional garantiza que las adquisiciones sean específicas de cada división.',
     'fr-fr':
       'La portée globale permet de partager les acquisitions entre toutes les divisions. La portée divisionnelle garantit que les acquisitions sont spécifiques à chaque division.',
     'hr-hr':
@@ -207,7 +207,7 @@ export const setupToolText = createDictionary({
   addressDescription: {
     'en-us': 'The street address of the institution.',
     'de-ch': 'Die Straßenadresse der Institution.',
-    'es-es': 'La dirección de la calle de la institución.',
+    'es-es': 'La dirección postal de la institución.',
     'fr-fr': "L'adresse de l'établissement.",
     'hr-hr': 'Adresa ustanove.',
     'pt-br': 'O endereço da instituição.',
@@ -227,7 +227,7 @@ export const setupToolText = createDictionary({
   addressCityDescription: {
     'en-us': 'The city where the institution is located.',
     'de-ch': 'Die Stadt, in der sich die Institution befindet.',
-    'es-es': 'La ciudad donde está ubicada la institución.',
+    'es-es': 'La ciudad donde se encuentra la institución.',
     'fr-fr': "La ville où se situe l'institution.",
     'hr-hr': 'Grad u kojem se nalazi ustanova.',
     'pt-br': 'A cidade onde a instituição está localizada.',
@@ -337,7 +337,7 @@ export const setupToolText = createDictionary({
   fullNameDirection: {
     'en-us': 'Full Name Direction',
     'de-ch': 'Vollständiger Name Wegbeschreibung',
-    'es-es': 'Nombre completo Dirección',
+    'es-es': 'Dirección por nombre completo',
     'fr-fr': 'Nom complet Direction',
     'hr-hr': 'Puno ime Smjer',
     'pt-br': 'Nome completo Direção',
@@ -409,7 +409,7 @@ export const setupToolText = createDictionary({
   enforced: {
     'en-us': 'Enforced',
     'de-ch': 'Durchgesetzt',
-    'es-es': 'Obligado',
+    'es-es': 'Aplicado',
     'fr-fr': 'Appliqué',
     'hr-hr': 'Provedeno',
     'pt-br': 'Aplicado',
@@ -422,13 +422,13 @@ export const setupToolText = createDictionary({
     'de-ch':
       'Die Option „Is Enforced“ stellt sicher, dass die Ebene beim Hinzufügen von Knoten weiter unten im Baum nicht übersprungen werden kann.',
     'es-es':
-      'Is Enforced garantiza que no se pueda omitir el nivel al agregar nodos más abajo en el árbol.',
+      'La opción "Is Enforced" garantiza que no se pueda omitir el nivel al agregar nodos en niveles inferiores del árbol.',
     'fr-fr':
       "L'option « Is Enforced » garantit que le niveau ne peut pas être ignoré lors de l'ajout de nœuds plus bas dans l'arbre.",
     'hr-hr':
       'Opcija "Je li provedeno" osigurava da se razina ne može preskočiti prilikom dodavanja čvorova niže u stablu.',
     'pt-br':
-      'A opção "Is Enforced" garante que o nível não possa ser ignorado ao adicionar nós em níveis inferiores da árvore.',
+      'A opção "Is Enforced" garante que o nível não possa ser ignorado ao adicionar nós mais abaixo na árvore.',
     'ru-ru':
       'Функция Is Enforced гарантирует, что этот уровень нельзя пропустить при добавлении узлов, расположенных ниже по дереву.',
     'uk-ua':
@@ -437,7 +437,7 @@ export const setupToolText = createDictionary({
   inFullName: {
     'en-us': 'In Full Name',
     'de-ch': 'Vollständiger Name',
-    'es-es': 'En nombre completo',
+    'es-es': 'Nombre completo',
     'fr-fr': 'Nom complet',
     'hr-hr': 'Puno ime',
     'pt-br': 'Nome completo',
@@ -450,7 +450,7 @@ export const setupToolText = createDictionary({
     'de-ch':
       '„Ist im vollständigen Namen“ beinhaltet die Ebene beim Erstellen eines vollständigen Namensausdrucks, der abgefragt und in Berichten verwendet werden kann.',
     'es-es':
-      'Is in Full Name incluye el nivel al crear una expresión de nombre completo, que se puede consultar y usar en informes.',
+      'La opción "Está en nombre completo" incluye el nivel al crear una expresión de nombre completo, que se puede consultar y utilizar en informes.',
     'fr-fr':
       "L'option « Is in Full Name » inclut le niveau lors de la construction d'une expression de nom complet, qui peut être interrogée et utilisée dans les rapports.",
     'hr-hr':
@@ -478,7 +478,7 @@ export const setupToolText = createDictionary({
     'de-ch':
       'Als Trennzeichen bezeichnet man das Zeichen, das die Ebenen bei der Anzeige des vollständigen Namens trennt.',
     'es-es':
-      'Separador se refiere al carácter que separa los niveles al mostrar el nombre completo.',
+      'El término "separador" se refiere al carácter que separa los niveles al mostrar el nombre completo.',
     'fr-fr':
       "Le séparateur désigne le caractère qui sépare les niveaux lors de l'affichage du nom complet.",
     'hr-hr':
@@ -503,7 +503,7 @@ export const setupToolText = createDictionary({
   geographyTree: {
     'en-us': 'Geography Tree',
     'de-ch': 'Geographiebaum',
-    'es-es': 'Árbol de geografía',
+    'es-es': 'Árbol geográfico',
     'fr-fr': 'Arbre géographique',
     'hr-hr': 'Geografsko stablo',
     'pt-br': 'Árvore Geográfica',
@@ -513,7 +513,7 @@ export const setupToolText = createDictionary({
   taxonTree: {
     'en-us': 'Taxon Tree',
     'de-ch': 'Taxonbaum',
-    'es-es': 'Árbol de taxones',
+    'es-es': 'Árbol taxonómico',
     'fr-fr': 'Arbre taxon',
     'hr-hr': 'Stablo taksona',
     'pt-br': 'Árvore taxonômica',
@@ -603,7 +603,7 @@ export const setupToolText = createDictionary({
   collectionCatalogNumFormatName: {
     'en-us': 'Catalog Number Format',
     'de-ch': 'Katalognummernformat',
-    'es-es': 'Formato de número de catálogo',
+    'es-es': 'Formato del número de catálogo',
     'fr-fr': 'Format du numéro de catalogue',
     'hr-hr': 'Format kataloškog broja',
     'pt-br': 'Formato do número de catálogo',
@@ -673,7 +673,7 @@ export const setupToolText = createDictionary({
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
     'de-ch': 'Muss mit dem oben eingegebenen Passwort übereinstimmen.',
-    'es-es': 'Debe coincidir con la contraseña ingresada anteriormente.',
+    'es-es': 'Debe coincidir con la contraseña introducida anteriormente.',
     'fr-fr': 'Doit correspondre au mot de passe saisi ci-dessus.',
     'hr-hr': 'Mora odgovarati lozinki unesenoj gore.',
     'pt-br': 'A senha deve ser a mesma que foi inserida acima.',
@@ -724,7 +724,7 @@ export const setupToolText = createDictionary({
   addNewGeographyTree: {
     'en-us': 'Add new Geography Tree',
     'de-ch': 'Neuen Geographiebaum hinzufügen',
-    'es-es': 'Añadir nuevo árbol de geografía',
+    'es-es': 'Agregar nuevo árbol geográfico',
     'fr-fr': 'Ajouter un nouvel arbre géographique',
     'hr-hr': 'Dodaj novo geografsko stablo',
     'pt-br': 'Adicionar nova árvore geográfica',
@@ -734,7 +734,7 @@ export const setupToolText = createDictionary({
   addNewTaxonTree: {
     'en-us': 'Add new Taxon Tree',
     'de-ch': 'Neuen Taxonbaum hinzufügen',
-    'es-es': 'Añadir nuevo árbol de taxones',
+    'es-es': 'Agregar nuevo árbol taxonómico',
     'fr-fr': 'Ajouter un nouvel arbre taxonomique',
     'hr-hr': 'Dodaj novo stablo taksona',
     'pt-br': 'Adicionar nova árvore taxonômica',
@@ -756,14 +756,13 @@ export const setupToolText = createDictionary({
     'de-ch':
       'Klicken Sie auf einen beliebigen Block, um dessen Bearbeitungsformular zu öffnen.',
     'es-es':
-      'Haga clic en cualquier bloque para abrir su formulario de edición.',
+      'Haz clic en cualquier bloque para abrir su formulario de edición.',
     'fr-fr':
       "Cliquez sur n'importe quel bloc pour ouvrir son formulaire d'édition.",
     'hr-hr':
       'Kliknite bilo koji blok da biste otvorili njegov obrazac za uređivanje.',
     'pt-br': 'Clique em qualquer bloco para abrir o formulário de edição.',
-    'ru-ru':
-      'Щелкните по любому блоку, чтобы открыть форму его редактирования.',
+    'ru-ru': 'Нажмите на любой блок, чтобы открыть форму его редактирования.',
     'uk-ua': 'Клацніть будь-який блок, щоб відкрити його форму редагування.',
   },
   hierarchySwitchToHorizontal: {
@@ -809,7 +808,7 @@ export const setupToolText = createDictionary({
   emptyTaxonTree: {
     'en-us': 'An empty taxon tree will be created',
     'de-ch': 'Es wird ein leerer Taxonbaum erstellt.',
-    'es-es': 'Se creará un árbol de taxones vacío',
+    'es-es': 'Se creará un árbol taxonómico vacío.',
     'fr-fr': 'Un arbre taxonomique vide sera créé.',
     'hr-hr': 'Bit će kreirano prazno stablo taksona',
     'pt-br': 'Uma árvore taxonômica vazia será criada.',
