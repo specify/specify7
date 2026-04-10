@@ -637,19 +637,26 @@ def deduplicate_schema_config_sql(apps=None):
     dedupe_sql = '''
     /*
 
-    This script removes duplicate entries in the `splocalecontaineritem` table
-    based on the combination of `DisciplineID`, `Name`, and `Field Name`.
-    It ensures that only one unique entry remains for each combination,
-    deleting any duplicates along with their associated string entries
-    to maintain schema integrity.
+    This script removes duplicate entries in the `splocalecontaineritem` table.
 
-    This was created to clean up duplicates found in a Swiss database on 2025-01-28.
+    The safe dedupe key is the concrete container row plus the item name:
+    `SpLocaleContainerID` + `Name`.
+
+    Why this matters:
+    - Schema config containers can share the same logical table name inside a
+     discipline while still being distinct rows.
+    - Grouping by discipline + table name + field name can collapse valid rows
+     from different containers that merely happen to share the same name.
+    - Keeping the first row for a specific container/name pair preserves real
+     schema config entries and only removes true duplicates.
+
+    Any duplicate rows are deleted together with their dependent string rows.
 
     */
 
 
-    -- 1. Identify all duplicate Container Item IDs 
-    -- We group by Discipline, Table Name, and Field Name
+    -- 1. Identify all duplicate Container Item IDs
+    -- We group by the concrete container row and the field name.
     -- We keep the record with the lowest ID (rn = 1) and mark the rest (rn > 1)
     CREATE TEMPORARY TABLE container_items_to_delete AS
     SELECT 
@@ -658,7 +665,7 @@ def deduplicate_schema_config_sql(apps=None):
         SELECT 
             slci.SpLocaleContainerItemID,
             ROW_NUMBER() OVER (
-                PARTITION BY slc.DisciplineID, slc.Name, slci.Name 
+                PARTITION BY slci.SpLocaleContainerID, slci.Name 
                 ORDER BY slci.SpLocaleContainerItemID ASC
             ) as rn
         FROM splocalecontaineritem slci
@@ -688,14 +695,22 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
     ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
 
     with transaction.atomic():
-        # Identify duplicates using Window function
-        # Partition by the container relationship and the item name
+        # Identify duplicates using a Window function.
+        # Partition by container_id + item name only.
+        #
+        # Why this key:
+        # - Rows are only true duplicates when they refer to the same concrete
+        #   container row and the same field name.
+        # - Earlier broad grouping by discipline/container-name/field-name could
+        #   collapse valid rows from different containers that happened to share
+        #   names, causing missing Schema Config fields after dedupe.
+        # - This narrower key preserves legitimate rows and only removes
+        #   duplicates that are semantically equivalent.
         qs = ContainerItem.objects.annotate(
             rn=Window(
                 expression=RowNumber(),
                 partition_by=[
-                    F('container__discipline'), 
-                    F('container__name'), 
+                    F('container_id'),
                     F('name')
                 ],
                 order_by=F('id').asc()
