@@ -657,6 +657,7 @@ def deduplicate_schema_config_sql(apps=None):
 
     -- 1. Identify all duplicate Container Item IDs
     -- We group by the concrete container row and the field name.
+    -- Only schema-type 0 containers are eligible for this cleanup.
     -- We keep the record with the lowest ID (rn = 1) and mark the rest (rn > 1)
     CREATE TEMPORARY TABLE container_items_to_delete AS
     SELECT 
@@ -670,6 +671,7 @@ def deduplicate_schema_config_sql(apps=None):
             ) as rn
         FROM splocalecontaineritem slci
         JOIN splocalecontainer slc ON slci.SpLocaleContainerID = slc.SpLocaleContainerID
+        WHERE slc.SchemaType = 0
     ) sub
     WHERE sub.rn > 1;
 
@@ -697,6 +699,9 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
     with transaction.atomic():
         # Identify duplicates using a Window function.
         # Partition by container_id + item name only.
+        # Only schema type 0 containers (standard schema) are eligible for this cleanup.
+        # The schema type 1 refers to the WorkBench Schema from Specify 6, which has
+        # a different structure and should not be modified by this cleanup.
         #
         # Why this key:
         # - Rows are only true duplicates when they refer to the same concrete
@@ -706,7 +711,9 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
         #   names, causing missing Schema Config fields after dedupe.
         # - This narrower key preserves legitimate rows and only removes
         #   duplicates that are semantically equivalent.
-        qs = ContainerItem.objects.annotate(
+        qs = ContainerItem.objects.filter(
+            container__schematype=0,
+        ).annotate(
             rn=Window(
                 expression=RowNumber(),
                 partition_by=[
