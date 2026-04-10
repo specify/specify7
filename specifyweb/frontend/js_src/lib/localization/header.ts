@@ -500,7 +500,7 @@ export const headerText = createDictionary({
   chronostratigraphicChart: {
     'en-us': 'Chronostratigraphic Chart',
     'de-ch': 'Chronostratigraphische Tabelle',
-    'es-es': 'Carta cronoestratigráfica',
+    'es-es': 'Cuadro cronoestratigráfico',
     'fr-fr': 'Charte chronostratigraphique',
     'pt-br': 'Carta cronoestratigráfica',
     'ru-ru': 'Хроностратиграфическая диаграмма',
