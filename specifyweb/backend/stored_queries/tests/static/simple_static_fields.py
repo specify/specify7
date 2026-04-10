@@ -415,13 +415,19 @@ static_simple_field_spec = [
                     datamodel.get_table_strict("CollectingEvent").get_field_strict(
                         "locality"
                     ),
+                    TreeRankQuery(
+                        **{
+                            "name": "locality",
+                            "relatedModelName": "Locality",
+                            "type": "many-to-one",
+                            "column": "localityId",
+                        }
+                    ),
                 ),
-                "table": datamodel.get_table_strict("CollectingEvent"),
+                "table": datamodel.get_table_strict("Locality"),
                 "date_part": None,
-                "tree_rank": None,
-                "tree_field": datamodel.get_table_strict(
-                    "CollectingEvent"
-                ).get_field_strict("locality"),
+                "tree_rank": "locality",
+                "tree_field": None,
             }
         ),
         op_num=8,

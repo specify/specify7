@@ -312,7 +312,8 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
         apply_default_uniqueness_rules(new_discipline)
 
         # Update tree scoping
-        update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
+        if geologictimeperiodtreedef_url or geologictimeperiodtreedef_id:
+            update_tree_scoping(geologictimeperiodtreedef, new_discipline.id)
 
         return {"discipline_id": new_discipline.id}
 

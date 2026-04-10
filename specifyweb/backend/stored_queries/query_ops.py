@@ -1,11 +1,21 @@
 import re
+from datetime import date
 import sqlalchemy
 from sqlalchemy.orm.query import Query
 from collections import namedtuple
 from typing import Literal
 
 from specifyweb.backend.stored_queries.geology_time import geo_time_query, geo_time_period_query
-from specifyweb.specify.utils.uiformatters import CNNField, FormatMismatch, UIFormatter
+from specifyweb.specify.utils.uiformatters import (
+    CNNField,
+    FormatMismatch,
+    NumericField,
+    SeparatorField,
+    UIFormatter,
+    YearField,
+)
+
+CATALOG_NUMBER_RANGE_RE = re.compile(r"^\s*([0-9]+)\s*-\s*([0-9]+)\s*$")
 
 QUERYFIELD_OPERATION_NUMBER = Literal[
     0,  # Like
@@ -112,9 +122,188 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         values = [self.format(v.strip()) for v in value.split(",")[:2]]
         return field.between(*values)
 
+    def _is_single_cnn_formatter(self):
+        return (
+            self.uiformatter is not None
+            and len(self.uiformatter.fields) == 1
+            # Catalog Number Numeric formatted field.
+            and isinstance(self.uiformatter.fields[0], CNNField)
+        )
+
+    def _is_year_numeric_catalog_number_formatter(self):
+        return (
+            self.uiformatter is not None
+            and len(self.uiformatter.fields) == 3
+            and isinstance(self.uiformatter.fields[0], YearField)
+            and isinstance(self.uiformatter.fields[1], SeparatorField)
+            and isinstance(self.uiformatter.fields[2], NumericField)
+        )
+
+    def _supports_catalog_number_ranges(self):
+        return (
+            self._is_single_cnn_formatter()
+            or self._is_year_numeric_catalog_number_formatter()
+        )
+
+    def _parse_numeric_catalog_number_range(self, value: str):
+        """Parse a numeric catalog number range for the IN operator."""
+        if self.uiformatter is None:
+            return None
+        match = CATALOG_NUMBER_RANGE_RE.match(value)
+        if match is None:
+            return None
+        start_raw, end_raw = match.groups()
+
+        try:
+            start = self.uiformatter.canonicalize(self.uiformatter.parse(start_raw))
+        except FormatMismatch:
+            return None
+
+        if len(end_raw) < len(start_raw):
+            end = self._resolve_shortened_numeric_end(
+                start,
+                end_raw,
+                self.uiformatter.canonicalize(self.uiformatter.parse(end_raw)),
+            )
+        else:
+            try:
+                end = self.uiformatter.canonicalize(self.uiformatter.parse(end_raw))
+            except FormatMismatch:
+                return None
+
+        return tuple(sorted((start, end)))
+
+    def _resolve_shortened_numeric_end(
+        self, start_numeric: str, end_raw: str, literal_end_numeric: str
+    ) -> str:
+        borrowed_end_numeric = f"{start_numeric[:-len(end_raw)]}{end_raw}"
+        literal_span = abs(int(start_numeric) - int(literal_end_numeric))
+        borrowed_span = abs(int(start_numeric) - int(borrowed_end_numeric))
+
+        return (
+            literal_end_numeric
+            if literal_span <= borrowed_span
+            else borrowed_end_numeric
+        )
+
+    def _parse_year_numeric_catalog_number_range(self, value: str):
+        """Parse a year-based catalog number range. ex. 2025-000001-10"""
+        if self.uiformatter is None:
+            return None
+
+        year_field = self.uiformatter.fields[0]
+        separator_field = self.uiformatter.fields[1]
+        numeric_field = self.uiformatter.fields[2]
+        separator = separator_field.value
+        numeric_only_match = CATALOG_NUMBER_RANGE_RE.match(value)
+        if numeric_only_match is not None:
+            start_raw, end_raw = numeric_only_match.groups()
+            if (
+                len(start_raw) > numeric_field.size
+                or len(end_raw) > numeric_field.size
+            ):
+                return None
+
+            current_year = f"{date.today().year:0{year_field.size}d}"
+            start_numeric = start_raw.zfill(numeric_field.size)
+            start = self.uiformatter.canonicalize(
+                (current_year, separator_field.value, start_numeric)
+            )
+            literal_end_numeric = end_raw.zfill(numeric_field.size)
+            end_numeric = self._resolve_shortened_numeric_end(
+                start_numeric,
+                end_raw,
+                literal_end_numeric,
+            )
+            end = self.uiformatter.canonicalize(
+                (current_year, separator_field.value, end_numeric)
+            )
+            return tuple(sorted((start, end)))
+
+        range_pattern = (
+            rf"^\s*(?P<start>{self.uiformatter.parse_regexp()[1:-1]})"
+            rf"\s*{re.escape(separator)}\s*(?P<end>.+?)\s*$"
+        )
+        match = re.match(
+            range_pattern,
+            value,
+        )
+        if match is None:
+            return None
+
+        start_raw = match.group("start")
+        end_raw = match.group("end").strip()
+        try:
+            start_parts = self.uiformatter.parse(start_raw)
+        except FormatMismatch:
+            return None
+
+        start = self.uiformatter.canonicalize(start_parts)
+        start_prefix_parts = start_parts[:-1]
+        start_numeric = start_parts[-1]
+        start_prefix = "".join(
+            formatter_field.canonicalize(part)
+            for formatter_field, part in zip(
+                self.uiformatter.fields[:-1], start_prefix_parts
+            )
+        )
+
+        if end_raw.isdigit() and 0 < len(end_raw) <= numeric_field.size:
+            end_numeric = self._resolve_shortened_numeric_end(
+                start_numeric,
+                end_raw,
+                end_raw.zfill(numeric_field.size),
+            )
+            end = f"{start_prefix}{end_numeric}"
+        else:
+            try:
+                end_parts = self.uiformatter.parse(end_raw)
+            except FormatMismatch:
+                return None
+
+            if end_parts[:-1] != start_prefix_parts:
+                return None
+
+            end = self.uiformatter.canonicalize(end_parts)
+
+        return tuple(sorted((start, end)))
+
+    def _parse_catalog_number_range(self, value: str):
+        if self._is_single_cnn_formatter():
+            return self._parse_numeric_catalog_number_range(value)
+        if self._is_year_numeric_catalog_number_formatter():
+            return self._parse_year_numeric_catalog_number_range(value)
+        return None
+
     def op_in(self, field, values):
         if hasattr(values, "split"):
-            values = [self.format(v.strip()) for v in values.split(",")]
+            split_values = [v.strip() for v in values.split(",")]
+            if (
+                self._supports_catalog_number_ranges()
+                and isinstance(field.type, sqlalchemy.types.String)
+            ):
+                exact_values = []
+                ranges = []
+                for value in split_values:
+                    parsed = self._parse_catalog_number_range(value)
+                    if parsed is None:
+                        exact_values.append(self.format(value))
+                    else:
+                        start, end = parsed
+                        if start == end:
+                            exact_values.append(start)
+                        else:
+                            ranges.append((start, end))
+
+                predicates = [field.in_(exact_values)] if len(exact_values) > 0 else []
+                predicates.extend(field.between(start, end) for (start, end) in ranges)
+                if len(predicates) == 0:
+                    return field.in_([])
+                if len(predicates) == 1:
+                    return predicates[0]
+                return sqlalchemy.or_(*predicates)
+
+            values = [self.format(v) for v in split_values]
         return field.in_(values)
 
     def op_contains(self, field, value):
@@ -133,11 +322,7 @@ class QueryOps(namedtuple("QueryOps", "uiformatter")):
         return (field == False) | (field == None)
 
     def op_startswith(self, field, value):
-        if (
-            self.uiformatter is not None
-            and isinstance(self.uiformatter.fields[0], CNNField)
-            and len(self.uiformatter.fields) == 1
-        ):
+        if self._is_single_cnn_formatter():
             value = value.lstrip("0")
             return field.op("REGEXP")("^0*" + value)
         else:
