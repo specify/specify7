@@ -142,7 +142,7 @@ export const resourcesText = createDictionary({
   rssExportFeed: {
     'en-us': 'RSS Export Feed',
     'ru-ru': 'RSS-канал экспорта',
-    'es-es': 'Fuente de exportación RSS',
+    'es-es': 'Canal de exportación RSS',
     'fr-fr': 'Flux RSS exporté',
     'uk-ua': 'Канал експорту RSS',
     'de-ch': 'RSS-Export-Feed',
@@ -205,7 +205,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Das „Feldformat“ steuert, wie Daten für ein bestimmtes Tabellenfeld in Abfrageergebnissen, Exporten und Formularen angezeigt werden. Es verwaltet die automatische Nummerierung und die Zusammensetzung der verschiedenen Bestandteile, die das Feld definieren.',
     'es-es':
-      'El "Formato de campo" controla cómo se muestran los datos de un campo de tabla específico en los resultados de consultas, exportaciones y formularios. Gestiona la numeración automática y la composición de las distintas partes que definen el campo.',
+      'El "Formato de campo" controla cómo se muestran los datos de un campo de tabla específico en los resultados de las consultas, las exportaciones y los formularios. Gestiona la numeración automática y la composición de las distintas partes que definen el campo.',
     'fr-fr':
       'Le paramètre « Format de champ » détermine l’affichage des données d’un champ de table spécifique dans les résultats de requêtes, les exportations et les formulaires. Il gère la numérotation automatique et la composition des différents éléments qui définissent le champ.',
     'pt-br':
@@ -241,9 +241,9 @@ export const resourcesText = createDictionary({
     'en-us':
       'The “Table Format” controls how data from a specific table is shown in query results, exports, and query combo boxes. It determines the fields to display and their order. Conditional formatting can be configured based on a value in the record.',
     'de-ch':
-      'Das „Tabellenformat“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern angezeigt werden. Es bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
+      'Die „Tabellenformatierung“ steuert, wie Daten aus einer bestimmten Tabelle in Abfrageergebnissen, Exporten und Abfrage-Kombinationsfeldern dargestellt werden. Sie bestimmt die anzuzeigenden Felder und deren Reihenfolge. Die bedingte Formatierung kann basierend auf einem Wert im Datensatz konfiguriert werden.',
     'es-es':
-      'El "Formato de tabla" controla cómo se muestran los datos de una tabla específica en los resultados de consultas, las exportaciones y los cuadros combinados de consultas. Determina los campos que se mostrarán y su orden. El formato condicional se puede configurar según un valor del registro.',
+      'El formato de tabla controla cómo se muestran los datos de una tabla específica en los resultados de las consultas, las exportaciones y los cuadros combinados de consulta. Determina los campos que se mostrarán y su orden. Se puede configurar un formato condicional en función de un valor del registro.',
     'fr-fr':
       "Le format de tableau détermine l'affichage des données d'un tableau spécifique dans les résultats de requêtes, les exportations et les listes déroulantes. Il définit les champs à afficher et leur ordre. Une mise en forme conditionnelle peut être configurée en fonction d'une valeur de l'enregistrement.",
     'ru-ru':
@@ -271,7 +271,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Die „Tabellenaggregation“ steuert, wie mehrere Tabelleneinträge zu einer einzigen Textzeichenfolge zusammengefasst werden. Tabellenformat, Trennzeichen, Suffix, Sortierfeld und die Begrenzung der Datensatzvorschau sind anpassbar. Die Ergebnisse können in Abfrageergebnissen und Tabellenformaten angezeigt werden.',
     'es-es':
-      'La "Agregación de Tablas" controla cómo se consolidan varios registros de tabla en una sola cadena de texto. El formato de tabla, el separador, el sufijo, el campo de ordenación y el límite de vista previa de registros son personalizables. Se pueden mostrar en los resultados de consultas y en los formatos de tabla.',
+      'La opción "Agregación de tabla" controla cómo se consolidan varios registros de tabla en una sola cadena de texto. El formato de tabla, el separador, el sufijo, el campo de ordenación y el límite de vista previa de registros son personalizables. Se puede mostrar en los resultados de la consulta y en los formatos de tabla.',
     'fr-fr':
       "L'option « Agrégation de tables » permet de regrouper les enregistrements de plusieurs tables en une seule chaîne de texte. Le format de la table, le séparateur, le suffixe, le champ de tri et la limite d'affichage des enregistrements sont personnalisables. L'affichage est possible dans les résultats de requêtes et sous forme de tableaux.",
     'ru-ru':
@@ -336,7 +336,7 @@ export const resourcesText = createDictionary({
   selectDefaultFormatter: {
     'en-us': 'Please designate one of the formatters as default',
     'de-ch': 'Bitte legen Sie einen der Formatierer als Standard fest.',
-    'es-es': 'Designe uno de los formateadores como predeterminado',
+    'es-es': 'Por favor, designe uno de los formateadores como predeterminado.',
     'fr-fr': "Veuillez désigner l'un des formateurs comme formateur par défaut",
     'pt-br': 'Por favor, designe um dos formatadores como padrão.',
     'ru-ru':
@@ -347,7 +347,7 @@ export const resourcesText = createDictionary({
   duplicateFormatters: {
     'en-us': 'Record formatter names must be unique',
     'de-ch': 'Die Namen der Datensatzformatierer müssen eindeutig sein.',
-    'es-es': 'Los nombres de los formateadores de registros deben ser únicos',
+    'es-es': 'Los nombres de los formateadores de registros deben ser únicos.',
     'fr-fr': "Les noms des formateurs d'enregistrements doivent être uniques",
     'ru-ru': 'Имена средств форматирования записей должны быть уникальными.',
     'uk-ua': 'Імена форматування записів мають бути унікальними',
@@ -377,7 +377,7 @@ export const resourcesText = createDictionary({
   otherXmlResource: {
     'en-us': 'Other XML Resource',
     'ru-ru': 'Выберите тип ресурса',
-    'es-es': 'Otros recursos XML',
+    'es-es': 'Otro recurso XML',
     'fr-fr': 'Autre ressource XML',
     'uk-ua': 'Інший XML-ресурс',
     'de-ch': 'Andere XML-Ressource',
@@ -387,7 +387,7 @@ export const resourcesText = createDictionary({
   otherJsonResource: {
     'en-us': 'Other JSON Resource',
     'ru-ru': 'Другой ресурс JSON',
-    'es-es': 'Otros recursos JSON',
+    'es-es': 'Otro recurso JSON',
     'fr-fr': 'Autre ressource JSON',
     'uk-ua': 'Інший JSON-ресурс',
     'de-ch': 'Andere JSON-Ressource',
@@ -397,7 +397,7 @@ export const resourcesText = createDictionary({
   otherPropertiesResource: {
     'en-us': 'Other Properties Resource',
     'ru-ru': 'Ресурс «Другие свойства»',
-    'es-es': 'Recursos de otras propiedades',
+    'es-es': 'Otros recursos de propiedades',
     'fr-fr': 'Autres ressources immobilières',
     'uk-ua': 'Ресурс інших властивостей',
     'de-ch': 'Andere Eigenschaften Ressource',
@@ -407,7 +407,7 @@ export const resourcesText = createDictionary({
   otherAppResource: {
     'en-us': 'Other Resource',
     'ru-ru': 'Другой ресурс',
-    'es-es': 'Otros recursos',
+    'es-es': 'Otro recurso',
     'fr-fr': 'Autres ressources',
     'uk-ua': 'Інший ресурс',
     'de-ch': 'Andere Ressource',
@@ -437,7 +437,7 @@ export const resourcesText = createDictionary({
   leafletLayers: {
     'en-us': 'Leaflet Layers',
     'ru-ru': 'Слои листовок',
-    'es-es': 'Capas de los folletos',
+    'es-es': 'Capas de la hoja',
     'fr-fr': 'Couches de feuillets',
     'uk-ua': 'Шари листівок',
     'de-ch': 'Leaflet-Layer',
@@ -487,7 +487,7 @@ export const resourcesText = createDictionary({
   selectResourceType: {
     'en-us': 'Select Resource Type',
     'ru-ru': 'Выберите тип ресурса',
-    'es-es': 'Seleccionar el tipo de recurso',
+    'es-es': 'Seleccione el tipo de recurso.',
     'fr-fr': 'Sélectionner le type de ressource',
     'uk-ua': 'Виберіть тип ресурсу',
     'de-ch': 'Ressourcentyp auswählen',
@@ -518,7 +518,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Failed to parse XML',
     'ru-ru': 'Не удалось разобрать XML',
     'de-ch': 'Fehler beim Parsen des XML-Codes',
-    'es-es': 'No se pudo analizar XML',
+    'es-es': 'Error al analizar el XML',
     'fr-fr': "Échec de l'analyse du XML",
     'uk-ua': 'Не вдалося проаналізувати XML',
     'pt-br': 'Falha ao analisar o XML',
@@ -619,7 +619,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Durchsuchen Sie Ihre Sammlungsdatensätze, um eine Vorschau des Datensatzformatierers anzuzeigen.',
     'es-es':
-      'Busque en sus registros de colección para obtener una vista previa del formateador de registros',
+      'Busque en los registros de su colección para obtener una vista previa del formateador de registros.',
     'fr-fr':
       'Recherchez les enregistrements de votre collection pour prévisualiser le formatage des enregistrements.',
     'ru-ru':
@@ -634,7 +634,7 @@ export const resourcesText = createDictionary({
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
     'de-ch': 'Für diese Ressource ist kein visueller Editor verfügbar.',
-    'es-es': 'El editor visual no está disponible para este recurso',
+    'es-es': 'El editor visual no está disponible para este recurso.',
     'fr-fr': "L'éditeur visuel n'est pas disponible pour cette ressource.",
     'ru-ru': 'Визуальный редактор недоступен для этого ресурса.',
     'uk-ua': 'Візуальний редактор недоступний для цього ресурсу',
@@ -654,7 +654,7 @@ export const resourcesText = createDictionary({
   addDefinition: {
     'en-us': 'Add definition',
     'de-ch': 'Definition hinzufügen',
-    'es-es': 'Añadir definición',
+    'es-es': 'Agregar definición',
     'fr-fr': 'Ajouter une définition',
     'ru-ru': 'Добавить определение',
     'uk-ua': 'Додайте визначення',
@@ -674,7 +674,7 @@ export const resourcesText = createDictionary({
   urlPart: {
     'en-us': 'URL part',
     'de-ch': 'URL-Teil',
-    'es-es': 'Parte de la URL',
+    'es-es': 'parte de la URL',
     'fr-fr': 'partie URL',
     'ru-ru': 'Другой ресурс JSON',
     'uk-ua': 'URL-адреса',
@@ -704,7 +704,7 @@ export const resourcesText = createDictionary({
   selectTableFirst: {
     'en-us': 'Select table first',
     'de-ch': 'Wählen Sie zuerst die Tabelle aus.',
-    'es-es': 'Seleccione la tabla primero',
+    'es-es': 'Primero, seleccione la tabla.',
     'fr-fr': "Sélectionnez d'abord la table",
     'ru-ru': 'Сначала выберите таблицу',
     'uk-ua': 'Спочатку виберіть таблицю',
@@ -727,7 +727,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Dieses Format wird nur verwendet, wenn der Wert des Bedingungsfelds dieser Bedingung entspricht und nicht null ist.',
     'es-es':
-      'Este formato se utilizará solo si el valor del campo de condición es igual a esta condición y no es nulo.',
+      'Este formato se utilizará únicamente si el valor del campo de condición es igual a esta condición y no es nulo.',
     'fr-fr':
       "Ce format ne sera utilisé que si la valeur du champ de condition correspond à cette condition et n'est pas nulle.",
     'ru-ru':
@@ -745,7 +745,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Diese Ressource gehört zu einer anderen Sammlung/Disziplin als der, in der Sie sich aktuell befinden. Es wird empfohlen, die Sammlung zu wechseln, bevor Sie diese Ressource bearbeiten.',
     'es-es':
-      'Este recurso pertenece a una colección/disciplina diferente a la que estás actualmente. Se recomienda cambiar de colección antes de editar este recurso.',
+      'Este recurso pertenece a una colección/disciplina diferente a la que estás utilizando actualmente. Se recomienda cambiar de colección antes de editar este recurso.',
     'fr-fr':
       'Cette ressource appartient à une collection/discipline différente de celle dans laquelle vous vous trouvez actuellement. Il est recommandé de changer de collection avant de modifier cette ressource.',
     'ru-ru':
@@ -820,7 +820,7 @@ export const resourcesText = createDictionary({
   runInCollection: {
     'en-us': 'Run in collection',
     'de-ch': 'In der Sammlung ausführen',
-    'es-es': 'Correr en colección',
+    'es-es': 'Correr en la colección',
     'fr-fr': 'Course dans la collection',
     'ru-ru': 'Запустить в коллекцию',
     'uk-ua': 'Запустити в колекції',
@@ -870,7 +870,7 @@ export const resourcesText = createDictionary({
   saveFormFirst: {
     'en-us': 'Save form first',
     'de-ch': 'Formular zuerst speichern',
-    'es-es': 'Guarde el formulario primero',
+    'es-es': 'Primero, guarda el formulario.',
     'fr-fr': "Enregistrer d'abord",
     'ru-ru': 'Сначала сохраните форму',
     'uk-ua': 'Спочатку збережіть форму',
@@ -923,7 +923,7 @@ export const resourcesText = createDictionary({
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
     'de-ch': 'Zusammenbruch des bedingten Feldes',
-    'es-es': 'Contraer campo condicional',
+    'es-es': 'Campo condicional de colapso',
     'fr-fr': 'Champ conditionnel de réduction',
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
@@ -963,7 +963,7 @@ export const resourcesText = createDictionary({
   cogAddedToItself: {
     'en-us': 'A COG cannot be added to itself.',
     'de-ch': 'Ein COG kann nicht zu sich selbst hinzugefügt werden.',
-    'es-es': 'No se puede agregar un COG a sí mismo.',
+    'es-es': 'Un COG no se puede sumar a sí mismo.',
     'fr-fr': 'Un centre de gravité ne peut pas être ajouté à lui-même.',
     'pt-br': 'Um centro de gravidade (COG) não pode ser adicionado a si mesmo.',
     'ru-ru': 'Точка центра тяжести не может быть прибавлена сама к себе.',
@@ -976,7 +976,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Eine konsolidierte Sammlungsobjektgruppe muss ein primäres untergeordnetes Sammlungsobjekt enthalten.',
     'es-es':
-      'Un grupo de objetos de colección consolidada debe tener un objeto de colección secundario principal',
+      'Un grupo de objetos de colección consolidados debe tener un objeto de colección primario secundario.',
     'fr-fr':
       "Un groupe d'objets de collection consolidée doit avoir un objet de collection enfant principal",
     'pt-br':
@@ -991,7 +991,7 @@ export const resourcesText = createDictionary({
   deletePrimaryRecord: {
     'en-us': 'Primary record CO cannot be deleted.',
     'de-ch': 'Der primäre Datensatz CO kann nicht gelöscht werden.',
-    'es-es': 'El registro primario CO no se puede eliminar.',
+    'es-es': 'El registro principal CO no se puede eliminar.',
     'fr-fr': "L'enregistrement principal CO ne peut pas être supprimé.",
     'pt-br': 'O registro primário CO não pode ser excluído.',
     'ru-ru': 'Первичную запись CO удалить невозможно.',
@@ -1001,7 +1001,7 @@ export const resourcesText = createDictionary({
   deleteLoanedPrep: {
     'en-us': 'A loaned preparation cannot be deleted',
     'de-ch': 'Eine ausgeliehene Zubereitung kann nicht gelöscht werden',
-    'es-es': 'Una preparación prestada no se puede eliminar',
+    'es-es': 'Una preparación prestada no se puede eliminar.',
     'fr-fr': 'Une préparation empruntée ne peut pas être supprimée',
     'pt-br': 'Uma preparação emprestada não pode ser excluída.',
     'ru-ru': 'Заимствованный препарат удалить невозможно.',
@@ -1011,7 +1011,7 @@ export const resourcesText = createDictionary({
   deleteGiftedPrep: {
     'en-us': 'A gifted preparation cannot be deleted',
     'de-ch': 'Eine begabte Vorbereitung kann nicht gelöscht werden',
-    'es-es': 'Una preparación dotada no se puede eliminar',
+    'es-es': 'Una preparación talentosa no se puede eliminar',
     'fr-fr': 'Une préparation offerte ne peut pas être supprimée',
     'pt-br': 'Uma preparação excelente não pode ser apagada.',
     'ru-ru': 'Одарённый препарат удалить невозможно.',
@@ -1021,7 +1021,7 @@ export const resourcesText = createDictionary({
   deleteDisposedPrep: {
     'en-us': 'A disposed preparation cannot be deleted',
     'de-ch': 'Eine verworfene Zubereitung kann nicht gelöscht werden.',
-    'es-es': 'Una preparación desechada no se puede eliminar',
+    'es-es': 'Una preparación desechada no se puede eliminar.',
     'fr-fr': 'Une préparation éliminée ne peut pas être supprimée.',
     'pt-br': 'Uma preparação descartada não pode ser apagada.',
     'ru-ru': 'Утилизированный препарат удалить невозможно.',
@@ -1031,7 +1031,7 @@ export const resourcesText = createDictionary({
   deleteExchangeOutPrep: {
     'en-us': 'A exchanged out preparation cannot be deleted',
     'de-ch': 'Eine ausgetauschte Zubereitung kann nicht gelöscht werden.',
-    'es-es': 'No se puede eliminar una preparación intercambiada',
+    'es-es': 'Una preparación intercambiada no se puede eliminar',
     'fr-fr': 'Une préparation échangée ne peut pas être supprimée',
     'pt-br': 'Uma preparação substituída não pode ser excluída.',
     'ru-ru': 'Заменённый препарат удалить нельзя.',
@@ -1042,9 +1042,9 @@ export const resourcesText = createDictionary({
     'en-us': 'A exchanged in preparation cannot be deleted',
     'de-ch':
       'Ein im Vorfeld ausgetauschter Eintrag kann nicht gelöscht werden.',
-    'es-es': 'No se puede eliminar un intercambio en preparación',
+    'es-es': 'Un intercambio en preparación no se puede eliminar',
     'fr-fr': 'Un échange en cours de préparation ne peut pas être supprimé.',
-    'pt-br': 'Um item trocado em preparação não pode ser excluído.',
+    'pt-br': 'Uma troca realizada em preparação não pode ser excluída.',
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
@@ -1059,7 +1059,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       'Die Bestimmung gehört nicht zum Taxonbaum, der dem Sammlungsobjekttyp zugeordnet ist.',
     'es-es':
-      'La determinación no pertenece al árbol taxonómico asociado con el tipo de objeto de colección',
+      'La determinación no pertenece al árbol taxonómico asociado con el tipo de objeto de colección.',
     'fr-fr':
       "La détermination n'appartient pas à l'arbre taxonomique associé au type d'objet Collection",
     'pt-br':
@@ -1095,7 +1095,7 @@ export const resourcesText = createDictionary({
     'de-ch':
       '{catalogNumberFieldName: string} {catalogNumber: string} wird bereits für eine andere Komponente oder ein anderes Sammlungsobjekt in dieser Sammlung verwendet.',
     'es-es':
-      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro componente u objeto de colección en esta colección.',
+      '{catalogNumberFieldName: string} {catalogNumber: string} ya está en uso para otro Componente u Objeto de Colección en esta colección.',
     'fr-fr':
       '{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé pour un autre composant ou objet de collection dans cette collection.',
     'pt-br':
@@ -1120,7 +1120,7 @@ export const resourcesText = createDictionary({
   preparationIsNegative: {
     'en-us': 'Preparation count cannot be negative',
     'de-ch': 'Die Anzahl der Vorbereitungen darf nicht negativ sein.',
-    'es-es': 'El recuento de preparación no puede ser negativo',
+    'es-es': 'El recuento de preparaciones no puede ser negativo.',
     'fr-fr': 'Le nombre de préparations ne peut pas être négatif.',
     'pt-br': 'A contagem de preparações não pode ser negativa.',
     'ru-ru': 'Количество подготовленных образцов не может быть отрицательным.',
@@ -1150,7 +1150,7 @@ export const resourcesText = createDictionary({
   trimZerosDescription: {
     'en-us': 'Remove leading zeros from numeric values.',
     'de-ch': 'Führende Nullen von numerischen Werten entfernen.',
-    'es-es': 'Eliminar los ceros iniciales de los valores numéricos.',
+    'es-es': 'Elimine los ceros iniciales de los valores numéricos.',
     'fr-fr': 'Supprimer les zéros non significatifs des valeurs numériques.',
     'pt-br': 'Remover zeros à esquerda de valores numéricos.',
     'ru-ru': 'Удалите ведущие нули из числовых значений.',
@@ -1160,7 +1160,8 @@ export const resourcesText = createDictionary({
   formatterPreviewUnavailable: {
     'en-us': 'Preview for formatter of this type is not available',
     'de-ch': 'Eine Vorschau für diesen Formatierertyp ist nicht verfügbar.',
-    'es-es': 'La vista previa para este tipo de formateador no está disponible',
+    'es-es':
+      'La vista previa para este tipo de formateador no está disponible.',
     'fr-fr': "L'aperçu pour ce type de formateur n'est pas disponible.",
     'pt-br':
       'A pré-visualização para formatadores deste tipo não está disponível.',
