@@ -75,9 +75,7 @@ function WelcomeScreenContent(): JSX.Element {
   ) : mode === 'default' ? (
     <DefaultSplashScreen source={getDefaultWelcomePageImage(isDarkMode)} />
   ) : mode === 'critterless' ? (
-    <DefaultSplashScreen
-      source={getCritterlessWelcomePageImage(isDarkMode)}
-    />
+    <DefaultSplashScreen source={getCritterlessWelcomePageImage(isDarkMode)} />
   ) : (
     <img alt="" className="h-full" src={source} />
   );
