@@ -442,16 +442,4 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Не доступно',
     'hr-hr': 'Nije dostupno',
   },
-  resolvedLoans: {
-    'es-es': 'Registros {loanTable:string} resueltos',
-  },
-  openLoans: {
-    'es-es': 'Abrir {loanTable:string} registros',
-  },
-  gifts: {
-    'es-es': '{giftTable:string} registros',
-  },
-  exchanges: {
-    'es-es': 'Registros {exhangeInTable:string} / {exhangeOutTable:string}',
-  },
 } as const);
