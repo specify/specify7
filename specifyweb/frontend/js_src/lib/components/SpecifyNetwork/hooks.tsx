@@ -12,7 +12,8 @@ const emptyBrokerFetchResult: BrokerFetchResult = {
 export function useOccurrence(guid = ''): BrokerFetchResult | undefined {
   return useAsyncState(
     React.useCallback(
-      async () => (guid === '' ? emptyBrokerFetchResult : fetchOccurrence(guid)),
+      async () =>
+        guid === '' ? emptyBrokerFetchResult : fetchOccurrence(guid),
       [guid]
     ),
     false
