@@ -107,6 +107,7 @@ COPY --chown=specify:specify manage.py /opt/specify7/
 COPY --chown=specify:specify docker-entrypoint.sh /opt/specify7/
 COPY --chown=specify:specify Makefile /opt/specify7/
 COPY --chown=specify:specify specifyweb.wsgi /opt/specify7/
+COPY --chown=specify:specify gunicorn.conf.py /opt/specify7/
 COPY --chown=specify:specify config /opt/specify7/config
 COPY --chown=specify:specify sp7_db_setup_check.sh /opt/specify7/
 RUN chmod +x /opt/specify7/sp7_db_setup_check.sh
@@ -276,6 +277,4 @@ FROM run-common AS run
 
 RUN mv specifyweb.wsgi specifyweb_wsgi.py
 
-CMD ["ve/bin/gunicorn", "-w", "3", "-b", "0.0.0.0:8000", "-t", "300", "specifyweb_wsgi"]
-
-
+CMD ["ve/bin/gunicorn", "--config", "./gunicorn.conf.py", "specifyweb_wsgi"]
