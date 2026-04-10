@@ -54,6 +54,13 @@ export const specifyNetworkText = createDictionary({
     'pt-br': 'Por favor, tente pesquisar um registro diferente.',
     'hr-hr': 'Pokušajte pretražiti drugi zapis',
   },
+  brokerUnavailable: {
+    'en-us': 'Specify Network unavailable',
+  },
+  brokerUnavailableDescription: {
+    'en-us':
+      'Specify could not connect to Specify Network. Please try again later.',
+  },
   dataQuality: {
     'en-us': 'Data Quality',
     'de-ch': 'Datenqualität',
