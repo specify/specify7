@@ -239,6 +239,10 @@ function WbSpreadsheetComponent({
     <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
         className="h-full"
+        autoColumnSize={{
+          syncLimit: '100%',
+          useHeaders: true,
+        }}
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
         colHeaders={colHeaders}
@@ -266,6 +270,8 @@ function WbSpreadsheetComponent({
         tabMoves={tabMoves}
         theme="ht-theme-classic"
         contextMenu={contextMenuConfig}
+        viewportColumnRenderingOffset={12}
+        viewportRowRenderingOffset={40}
         width="100%"
         // eslint-disable-next-line functional/prefer-readonly-type
         data={data as (string | null)[][]}
