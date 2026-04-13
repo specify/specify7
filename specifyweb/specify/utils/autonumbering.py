@@ -2,21 +2,18 @@
 Autonumbering logic
 """
 
-import re
-
-from collections import defaultdict
-
 from django.db.models import Value, Case, When
 
 from .uiformatters import UIFormatter, get_uiformatters
 from ..models_utils.lock_tables import LockDispatcher
 import logging
-from typing import MutableMapping, Callable
+from typing import Callable
 from collections.abc import Sequence
 
 from specifyweb.specify.utils.scoping import Scoping
 from specifyweb.specify.datamodel import datamodel
-from specifyweb.backend.redis_cache.connect import RedisConnection, RedisString
+from specifyweb.backend.redis_cache.connect import RedisConnection
+from specifyweb.backend.redis_cache.datatypes import RedisString
 
 logger = logging.getLogger(__name__)
 

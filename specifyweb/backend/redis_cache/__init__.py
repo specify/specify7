@@ -1,6 +1,6 @@
-from .store import (
-    set_bytes,
-    set_string,
-    get_bytes,
-    get_string
+from .connect import RedisConnection
+from .datatypes import (
+    RedisString,
+    RedisSet,
+    RedisList
 )

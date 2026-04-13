@@ -16,8 +16,7 @@ from django.conf import settings
 from django.core.exceptions import PermissionDenied
 
 from specifyweb.specify.models import Specifyuser
-from specifyweb.backend.workbench.upload.auditlog import str_to_bytes
-from specifyweb.backend.redis_cache import set_bytes, get_bytes
+from specifyweb.backend.redis_cache.datatypes import RedisBytes
 
 logger = logging.getLogger(__name__)
 
@@ -91,7 +90,7 @@ def make_token(user, key: bytes):
         "exp": issue_time + TTL
     }
     token: str = jwt.encode(payload, signing_key, algorithm="HS256")
-    set_bytes(key, salt, time_to_live=TTL)
+    RedisBytes().set(key, salt, time_to_live=TTL)
 
     return token
 
@@ -148,7 +147,7 @@ class SupportLoginBackend:
 
         # A key should always be "consumed" and deleted from Redis once used:
         # all suport login tokens are a one-time use
-        salt = get_bytes(key, delete_key=True)
+        salt = RedisBytes().get(key, delete_key=True)
         if salt is None:
             return None
 

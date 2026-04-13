@@ -5,7 +5,8 @@ from django.conf import settings
 from django.db import migrations, models
 
 import specifyweb.specify.models
-from specifyweb.backend.redis_cache.store import delete_key, redis_type, add_to_set, set_members
+from specifyweb.backend.redis_cache.connect import RedisConnection
+from specifyweb.backend.redis_cache.datatypes import RedisSet
 
 """
 WARNING: Data loss may occur if the Redis container is stopped once this
@@ -213,7 +214,7 @@ CREATE TABLE `project_colobj` (
 }
 
 def redis_table_key(table: str):
-    return "specify:{database}:migration:0043:" + table
+    return "migration:0043:" + table
 
 results = dict()
 
@@ -266,16 +267,18 @@ def store_existing_records(connection):
         connection, *LEGACY_MANY_TO_MANY_JOIN_TABLES.keys())
     for existing_table in existing_tables:
         schema = LEGACY_MANY_TO_MANY_JOIN_TABLES[existing_table]
-        if redis_type(redis_table_key(existing_table)) != "set":
-            delete_key(redis_table_key(existing_table))
+        redis_set = RedisSet(redis_table_key(existing_table))
+
+        if redis_set._established.rtype(redis_set.format_key(None)) != "set":
+            redis_set.delete(redis_set.format_key(None))
         existing_records = get_existing_records(
             connection, existing_table, schema)
-        add_to_set(redis_table_key(existing_table), *existing_records)
+        redis_set.add(*existing_records)
 
 
 def migrate_old_records(apps):
     for table in LEGACY_MANY_TO_MANY_JOIN_TABLES.keys():
-        raw_existing_records = set_members(redis_table_key(table))
+        raw_existing_records = RedisSet(redis_table_key(table)).members()
         many_to_many_migration_schema = LEGACY_MANY_TO_MANY_JOIN_TABLES[table]
         app_label, model_label = many_to_many_migration_schema["to"]
         Model = apps.get_model(app_label, model_label)
@@ -287,7 +290,7 @@ def split_iterable(iterable, chunk_size=999):
 
 def migrate_to_legacy(connection):
     for table, table_schema in LEGACY_MANY_TO_MANY_JOIN_TABLES.items():
-        raw_existing_records = tuple(set_members(redis_table_key(table)))
+        raw_existing_records = tuple(RedisSet(redis_table_key(table)).members())
         if len(raw_existing_records) <= 0:
             continue
         columns = {
@@ -317,12 +320,12 @@ def wrapped_migrate_to_legacy(apps, schema_editor):
     connection = schema_editor.connection
     migrate_to_legacy(connection)
     for table_name in LEGACY_MANY_TO_MANY_JOIN_TABLES.keys():
-        delete_key(redis_table_key(table_name))
+        RedisConnection().delete(redis_table_key(table_name))
 
 def wrapped_migrate_old_records(apps, schema_editor):
     migrate_old_records(apps)
     for table_name in LEGACY_MANY_TO_MANY_JOIN_TABLES.keys():
-        delete_key(redis_table_key(table_name))
+        RedisConnection().delete(redis_table_key(table_name))
 
 
 def wrapped_store_records(apps, schema_editor):

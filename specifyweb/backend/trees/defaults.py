@@ -9,7 +9,7 @@ import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.default_tree_files import stream_default_tree_csv
 from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
-from specifyweb.backend.redis_cache.store import add_to_set, remove_from_set, set_members
+from specifyweb.backend.redis_cache.datatypes import RedisSet
 from specifyweb.backend.trees.redis import ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY
 
 import logging
@@ -393,18 +393,20 @@ def add_default_tree_record(context: DefaultTreeContext, row: dict, tree_cfg: Tr
 
 def queue_create_default_tree_task(task_id):
     """Store queued (and active) default tree creation tasks so they can be reliably tracked later."""
-    add_to_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
-    logger.debug(f"Queued task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
+    redis_set = RedisSet(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
+    redis_set.add(task_id)
+    logger.debug(f"Queued task {task_id}. Current tasks: {redis_set.members()}")
 
 def get_active_create_default_tree_tasks() -> list[str]:
-    tasks = set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
+    tasks = RedisSet(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY).members()
     logger.debug(f"Active tree creation tasks: {tasks}")
     return list(tasks)
 
 def finish_create_default_tree_task(task_id):
     """Clear a finished tree creation task from redis cache."""
-    remove_from_set(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY, task_id)
-    logger.debug(f"Finished task {task_id}. Current tasks: {set_members(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)}")
+    redis_set = RedisSet(ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY)
+    redis_set.remove(task_id)
+    logger.debug(f"Finished task {task_id}. Current tasks: {redis_set.members()}")
 
 @app.task(base=LogErrorsTask, bind=True)
 def create_default_tree_task(self, url: str, discipline_id: int, tree_type: str, specify_collection_id: Optional[int],
