@@ -36,6 +36,10 @@ export function useHotHooks({
 }): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   const loading = React.useContext(LoadingContext);
+  const headerMeasureContext = React.useMemo(() => {
+    const canvas = globalThis.document?.createElement('canvas');
+    return canvas?.getContext('2d') ?? null;
+  }, []);
   const getVisualColFromProperty = React.useCallback(
     (
       property: CellChange[1],
@@ -46,6 +50,33 @@ export function useHotHooks({
       return workbench.hot.propToCol<number>(property);
     },
     [workbench.hot]
+  );
+  const getHeaderMinWidth = React.useCallback(
+    (visualCol: number): number => {
+      if (workbench.hot === undefined) return 50;
+      const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
+      if (
+        physicalCol < 0 ||
+        physicalCol >= workbench.dataset.columns.length
+      )
+        return 50;
+
+      const headerLabel = workbench.dataset.columns[physicalCol] ?? '';
+      if (headerMeasureContext !== null) {
+        headerMeasureContext.font =
+          '500 13px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+      }
+      const textWidth =
+        headerMeasureContext?.measureText(headerLabel).width ??
+        headerLabel.length * 7;
+
+      /*
+       * Account for icon, gap, cell padding, and the sorting affordance that
+       * HOT reserves on the right side of sortable headers.
+       */
+      return Math.ceil(textWidth + 56);
+    },
+    [headerMeasureContext, workbench.dataset.columns, workbench.hot]
   );
 
   return {
@@ -541,6 +572,12 @@ export function useHotHooks({
     beforeColumnMove: (_columnIndexes, _finalIndex, dropIndex) =>
       !isResultsOpen &&
       (dropIndex !== undefined || workbench.hot !== undefined),
+
+    modifyColWidth: (width, visualCol) =>
+      Math.max(width, getHeaderMinWidth(visualCol)),
+
+    beforeStretchingColumnWidth: (stretchedWidth, visualCol) =>
+      Math.max(stretchedWidth, getHeaderMinWidth(visualCol)),
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
