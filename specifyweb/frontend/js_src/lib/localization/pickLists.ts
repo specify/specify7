@@ -40,22 +40,14 @@ export const pickListsText = createDictionary({
       'Import picklists from an exported file. Existing picklists with matching names will be updated. Prep Type is excluded.',
   },
   picklistsExportDescription: {
-    'en-us':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'de-ch':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'es-es':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'fr-fr':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'ru-ru':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'uk-ua':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'pt-br':
-      'Select one or more picklists to export. Prep Type is excluded.',
-    'hr-hr':
-      'Select one or more picklists to export. Prep Type is excluded.',
+    'en-us': 'Select one or more picklists to export. Prep Type is excluded.',
+    'de-ch': 'Select one or more picklists to export. Prep Type is excluded.',
+    'es-es': 'Select one or more picklists to export. Prep Type is excluded.',
+    'fr-fr': 'Select one or more picklists to export. Prep Type is excluded.',
+    'ru-ru': 'Select one or more picklists to export. Prep Type is excluded.',
+    'uk-ua': 'Select one or more picklists to export. Prep Type is excluded.',
+    'pt-br': 'Select one or more picklists to export. Prep Type is excluded.',
+    'hr-hr': 'Select one or more picklists to export. Prep Type is excluded.',
   },
   pickListsImportedSuffix: {
     'en-us': 'PickList(s) were imported.',

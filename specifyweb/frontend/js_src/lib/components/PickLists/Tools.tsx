@@ -17,8 +17,8 @@ import { getSystemInfo } from '../InitialContext/systemInfo';
 import { loadingGif } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { downloadFile, FilePicker, fileToText } from '../Molecules/FilePicker';
-import { ToolPermissionDenied } from '../Permissions/PermissionDenied';
 import { hasToolPermission } from '../Permissions/helpers';
+import { ToolPermissionDenied } from '../Permissions/PermissionDenied';
 import { OverlayContext } from '../Router/Router';
 import { fetchPickLists } from './definitions';
 import { clearPickListCaches } from './fetch';
@@ -100,14 +100,14 @@ function PickListsExportDialog(): JSX.Element {
 
   const handleExport = React.useCallback((): void => {
     loading(
-      ajax<string>('/picklist_tool/export/', {
+      ajax('/picklist_tool/export/', {
         method: 'POST',
         headers: { Accept: 'text/plain' },
         body: {
           names: selectedNames,
         },
       })
-        .then(({ data }) =>
+        .then(async ({ data }) =>
           downloadFile(
             buildPickListFileName(),
             new Blob([data], {
@@ -205,7 +205,7 @@ function PickListsImportDialog(): JSX.Element {
     if (file === undefined) return;
     loading(
       fileToText(file)
-        .then((contents) =>
+        .then(async (contents) =>
           ajax<ImportResponse>('/picklist_tool/import/', {
             method: 'POST',
             headers: {
@@ -273,8 +273,8 @@ function PickListsImportDialog(): JSX.Element {
 }
 
 function buildPickListFileName(): string {
-  const collectionName = getSystemInfo().collection.replace(
-    /[^A-Za-z0-9._-]+/gu,
+  const collectionName = getSystemInfo().collection.replaceAll(
+    /[^\w\-.]+/gu,
     '_'
   );
   const date = new Date().toISOString().slice(0, 10);

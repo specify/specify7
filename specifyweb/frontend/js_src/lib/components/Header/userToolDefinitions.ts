@@ -1,7 +1,7 @@
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
-import { preferencesText } from '../../localization/preferences';
 import { pickListsText } from '../../localization/pickLists';
+import { preferencesText } from '../../localization/preferences';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
