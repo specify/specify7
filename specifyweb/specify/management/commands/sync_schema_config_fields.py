@@ -48,7 +48,8 @@ class Command(BaseCommand):
             f"Discipline: {discipline.name} (ID={discipline.id})"
         )
 
-        missing_tables, missing_fields = update_schema.find_missing_schema_config_fields(discipline.id, apps=apps,)
+        missing_tables, missing_fields = update_schema.find_missing_schema_config_fields(
+            discipline.id, apps=apps,)
 
         if not missing_tables and not missing_fields:
             self.stdout.write("No missing schema config fields found.")
@@ -70,7 +71,8 @@ class Command(BaseCommand):
                 self.stdout.write(f"- {table_name}: {joined_fields}")
 
         if not apply_changes:
-            self.stdout.write("Run again with --apply to create missing records.")
+            self.stdout.write(
+                "Run again with --apply to create missing records.")
             return
 
         # Apply changes

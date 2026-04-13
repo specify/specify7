@@ -15,9 +15,7 @@ from django.core.exceptions import MultipleObjectsReturned
 from django.db import connection, transaction
 from django.db.models.functions import RowNumber
 
-from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
-
-from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
     Discipline,

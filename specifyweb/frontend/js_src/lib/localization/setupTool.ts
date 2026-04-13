@@ -11,273 +11,826 @@ import { createDictionary } from './utils';
 export const setupToolText = createDictionary({
   guidedSetup: {
     'en-us': 'Guided Setup',
+    'de-ch': 'Geführte Einrichtung',
+    'es-es': 'Configuración guiada',
+    'fr-fr': 'Configuration guidée',
+    'hr-hr': 'Vođeno postavljanje',
+    'pt-br': 'Configuração guiada',
+    'ru-ru': 'Пошаговая настройка',
+    'uk-ua': 'Кероване налаштування',
   },
-
   setupProgress: {
     'en-us': 'Progress:',
+    'de-ch': 'Fortschritt:',
+    'es-es': 'Progreso:',
+    'fr-fr': 'Progrès:',
+    'hr-hr': 'Napredak:',
+    'pt-br': 'Progresso:',
+    'ru-ru': 'Прогресс:',
+    'uk-ua': 'Прогрес:',
   },
-
   overview: {
     'en-us': 'Overview',
+    'de-ch': 'Überblick',
+    'es-es': 'Descripción general',
+    'fr-fr': 'Aperçu',
+    'hr-hr': 'Pregled',
+    'pt-br': 'Visão geral',
+    'ru-ru': 'Обзор',
+    'uk-ua': 'Огляд',
   },
-
   settingUp: {
     'en-us': 'Setting up the database...',
+    'de-ch': 'Datenbank wird eingerichtet...',
+    'es-es': 'Configurando la base de datos...',
+    'fr-fr': 'Configuration de la base de données...',
+    'hr-hr': 'Postavljanje baze podataka...',
+    'pt-br': 'Configurando o banco de dados...',
+    'ru-ru': 'Настройка базы данных...',
+    'uk-ua': 'Налаштування бази даних...',
   },
-
   creating: {
     'en-us': 'Creating the',
+    'de-ch': 'Die Erstellung der',
+    'es-es': 'Creando el',
+    'fr-fr': 'Créer le',
+    'hr-hr': 'Stvaranje',
+    'pt-br': 'Criando o',
+    'ru-ru': 'Создание',
+    'uk-ua': 'Створення',
   },
-
   setupError: {
     'en-us': 'An error occurred during the last setup attempt.',
+    'de-ch': 'Bei der letzten Einrichtung ist ein Fehler aufgetreten.',
+    'es-es': 'Se produjo un error durante el último intento de configuración.',
+    'fr-fr':
+      "Une erreur s'est produite lors de la dernière tentative d'installation.",
+    'hr-hr': 'Došlo je do pogreške tijekom posljednjeg pokušaja postavljanja.',
+    'pt-br': 'Ocorreu um erro durante a última tentativa de configuração.',
+    'ru-ru': 'При последней попытке настройки произошла ошибка.',
+    'uk-ua': 'Під час останньої спроби налаштування сталася помилка.',
   },
-
-  /**
-   * Field Captions.
-   * These must be defined here because schema captions don't exist during the setup.
-   */
-  // Institution
   institution: {
     'en-us': 'Institution',
+    'de-ch': 'Institution',
+    'es-es': 'Institución',
+    'fr-fr': 'Institution',
+    'hr-hr': 'Institucija',
+    'pt-br': 'Instituição',
+    'ru-ru': 'Учреждение',
+    'uk-ua': 'Установа',
   },
   institutionDescription: {
     'en-us': 'Enter Institution Information.',
+    'de-ch': 'Geben Sie die Informationen zur Institution ein.',
+    'es-es': 'Ingrese la información de la institución.',
+    'fr-fr': "Saisir les informations relatives à l'établissement.",
+    'hr-hr': 'Unesite podatke o ustanovi.',
+    'pt-br': 'Insira as informações da instituição.',
+    'ru-ru': 'Введите информацию об учреждении.',
+    'uk-ua': 'Введіть інформацію про установу.',
   },
   institutionName: {
     'en-us': 'Name',
+    'de-ch': 'Name',
+    'es-es': 'Nombre',
+    'fr-fr': 'Nom',
+    'hr-hr': 'Ime',
+    'pt-br': 'Nome',
+    'ru-ru': 'Имя',
+    'uk-ua': "Ім'я",
   },
   institutionNameDescription: {
     'en-us':
       'The full, official name of the institution (e.g., "University of Kansas Biodiversity Institute").',
+    'de-ch':
+      'Der vollständige, offizielle Name der Institution (z.B. „University of Kansas Biodiversity Institute“).',
+    'es-es':
+      'El nombre completo y oficial de la institución (por ejemplo, "Instituto de Biodiversidad de la Universidad de Kansas").',
+    'fr-fr':
+      "Le nom complet et officiel de l'institution (par exemple, « Institut de biodiversité de l'Université du Kansas »).",
+    'hr-hr':
+      'Puni, službeni naziv ustanove (npr. "Institut za bioraznolikost Sveučilišta u Kansasu").',
+    'pt-br':
+      'O nome completo e oficial da instituição (por exemplo, "Instituto de Biodiversidade da Universidade do Kansas").',
+    'ru-ru':
+      'Полное официальное название учреждения (например, «Институт биоразнообразия Канзасского университета»).',
+    'uk-ua':
+      'Повна офіційна назва установи (наприклад, «Інститут біорізноманіття Канзаського університету»).',
   },
   institutionCode: {
     'en-us': 'Code',
+    'de-ch': 'Code',
+    'es-es': 'Código',
+    'fr-fr': 'Code',
+    'hr-hr': 'Kodirati',
+    'pt-br': 'Código',
+    'ru-ru': 'Код',
+    'uk-ua': 'Код',
   },
   institutionCodeDescription: {
     'en-us':
       'A short, unique code or acronym for the institution (e.g., "KUBI").',
+    'de-ch':
+      'Ein kurzer, eindeutiger Code oder ein Akronym für die Institution (z. B. „KUBI“).',
+    'es-es':
+      'Un código o acrónimo corto y único para la institución (por ejemplo, "KUBI").',
+    'fr-fr':
+      "Un code court et unique ou un acronyme pour l'institution (par exemple, « KUBI »).",
+    'hr-hr':
+      'Kratki, jedinstveni kod ili akronim za instituciju (npr. "KUBI").',
+    'pt-br':
+      'Um código ou acrônimo curto e exclusivo para a instituição (por exemplo, "KUBI").',
+    'ru-ru':
+      'Краткий, уникальный код или аббревиатура учреждения (например, "KUBI").',
+    'uk-ua':
+      'Короткий, унікальний код або абревіатура для установи (наприклад, «KUBI»).',
   },
   institutionAddress: {
     'en-us': 'Address',
+    'de-ch': 'Adresse',
+    'es-es': 'DIRECCIÓN',
+    'fr-fr': 'Adresse',
+    'hr-hr': 'Adresa',
+    'pt-br': 'Endereço',
+    'ru-ru': 'Адрес',
+    'uk-ua': 'Адреса',
   },
   institutionAddressDescription: {
     'en-us': 'The address of the institution. Optional.',
+    'de-ch': 'Die Adresse der Institution. Optional.',
+    'es-es': 'La dirección de la institución. Opcional.',
+    'fr-fr': "Adresse de l'établissement. Facultatif.",
+    'hr-hr': 'Adresa ustanove. Nije obavezno.',
+    'pt-br': 'Endereço da instituição. Opcional.',
+    'ru-ru': 'Адрес учреждения. (Необязательно)',
+    'uk-ua': "Адреса установи. Необов'язково.",
   },
   institutionIsAccessionGlobal: {
     'en-us': 'Define Accession Globally',
+    'de-ch': 'Globale Definition des Beitritts',
+    'es-es': 'Definir la adhesión a nivel global',
+    'fr-fr': "Définir l'adhésion au niveau mondial",
+    'hr-hr': 'Definirajte pristupanje globalno',
+    'pt-br': 'Definir Adesão Globalmente',
+    'ru-ru': 'Определение доступа на глобальном уровне',
+    'uk-ua': 'Визначте приєднання глобально',
   },
   institutionIsAccessionGlobalDescription: {
     'en-us':
       'Global scope allows you to share Accessions between all divisions. Divisional scope ensures Accessions are specific to each division.',
+    'de-ch':
+      'Der globale Geltungsbereich ermöglicht die gemeinsame Nutzung von Zugängen zwischen allen Abteilungen. Der abteilungsbezogene Geltungsbereich stellt sicher, dass Zugänge spezifisch für die jeweilige Abteilung sind.',
+    'es-es':
+      'El alcance global permite compartir las adquisiciones entre todas las divisiones. El alcance divisional garantiza que las adquisiciones sean específicas de cada división.',
+    'fr-fr':
+      'La portée globale permet de partager les acquisitions entre toutes les divisions. La portée divisionnelle garantit que les acquisitions sont spécifiques à chaque division.',
+    'hr-hr':
+      'Globalni opseg omogućuje vam dijeljenje pristupa između svih odjela. Divizijski opseg osigurava da su pristupi specifični za svaki odjel.',
+    'pt-br':
+      'O escopo global permite compartilhar acervos entre todas as divisões. O escopo divisional garante que os acervos sejam específicos para cada divisão.',
+    'ru-ru':
+      'Глобальная область действия позволяет обмениваться данными о поступлении между всеми подразделениями. Область действия на уровне подразделений гарантирует, что данные о поступлении будут специфичны для каждого подразделения.',
+    'uk-ua':
+      'Глобальна область дії дозволяє вам ділитися приєднаннями між усіма підрозділами. Дивізіональна область дії гарантує, що приєднання є специфічними для кожного підрозділу.',
   },
-  /*
-   * InstitutionIsSingleGeographyTree: {
-   *   'en-us': 'Use Single Geography Tree',
-   * },
-   * institutionIsSingleGeographyTreeDescription: {
-   *   'en-us':
-   *     'A global geography tree is shared by all disciplines. Otherwise, geography trees are managed separately within each discipline.',
-   * },
-   */
-
-  // Address
   address: {
     'en-us': 'Address',
+    'de-ch': 'Adresse',
+    'es-es': 'DIRECCIÓN',
+    'fr-fr': 'Adresse',
+    'hr-hr': 'Adresa',
+    'pt-br': 'Endereço',
+    'ru-ru': 'Адрес',
+    'uk-ua': 'Адреса',
   },
   addressDescription: {
     'en-us': 'The street address of the institution.',
+    'de-ch': 'Die Straßenadresse der Institution.',
+    'es-es': 'La dirección postal de la institución.',
+    'fr-fr': "L'adresse de l'établissement.",
+    'hr-hr': 'Adresa ustanove.',
+    'pt-br': 'O endereço da instituição.',
+    'ru-ru': 'Адрес учреждения.',
+    'uk-ua': 'Вулиця та адреса установи.',
   },
   addressCity: {
     'en-us': 'City',
+    'de-ch': 'Stadt',
+    'es-es': 'Ciudad',
+    'fr-fr': 'Ville',
+    'hr-hr': 'Grad',
+    'pt-br': 'Cidade',
+    'ru-ru': 'Город',
+    'uk-ua': 'Місто',
   },
   addressCityDescription: {
     'en-us': 'The city where the institution is located.',
+    'de-ch': 'Die Stadt, in der sich die Institution befindet.',
+    'es-es': 'La ciudad donde se encuentra la institución.',
+    'fr-fr': "La ville où se situe l'institution.",
+    'hr-hr': 'Grad u kojem se nalazi ustanova.',
+    'pt-br': 'A cidade onde a instituição está localizada.',
+    'ru-ru': 'Город, в котором расположено данное учреждение.',
+    'uk-ua': 'Місто, де розташований заклад.',
   },
   addressState: {
     'en-us': 'Province/State',
+    'de-ch': 'Provinz/Bundesland',
+    'es-es': 'Provincia/Estado',
+    'fr-fr': 'Province/État',
+    'hr-hr': 'Pokrajina/Savezna država',
+    'pt-br': 'Província/Estado',
+    'ru-ru': 'Провинция/штат',
+    'uk-ua': 'Провінція/Штат',
   },
   addressStateDescription: {
     'en-us': 'The state or province.',
+    'de-ch': 'Der Staat oder die Provinz.',
+    'es-es': 'El estado o provincia.',
+    'fr-fr': "L'État ou la province.",
+    'hr-hr': 'Država ili pokrajina.',
+    'pt-br': 'O estado ou província.',
+    'ru-ru': 'Штат или провинция.',
+    'uk-ua': 'Штат або провінція.',
   },
   addressCountry: {
     'en-us': 'Country',
+    'de-ch': 'Land',
+    'es-es': 'País',
+    'fr-fr': 'Pays',
+    'hr-hr': 'Zemlja',
+    'pt-br': 'País',
+    'ru-ru': 'Страна',
+    'uk-ua': 'Країна',
   },
   addressCountryDescription: {
     'en-us': 'The country.',
+    'de-ch': 'Das Land.',
+    'es-es': 'El país.',
+    'fr-fr': 'Le pays.',
+    'hr-hr': 'Zemlja.',
+    'pt-br': 'O país.',
+    'ru-ru': 'Страна.',
+    'uk-ua': 'Країна.',
   },
   addressPostalCode: {
     'en-us': 'Zip/Postal Code',
+    'de-ch': 'Postleitzahl',
+    'es-es': 'Código postal',
+    'fr-fr': 'Zip / code postal',
+    'hr-hr': 'Poštanski broj',
+    'pt-br': 'CEP / Código Postal',
+    'ru-ru': 'Почтовый индекс',
+    'uk-ua': 'Поштовий індекс',
   },
   addressPostalCodeDescription: {
     'en-us': 'The postal code.',
+    'de-ch': 'Die Postleitzahl.',
+    'es-es': 'El código postal.',
+    'fr-fr': 'Le code postal.',
+    'hr-hr': 'Poštanski broj.',
+    'pt-br': 'O código postal.',
+    'ru-ru': 'Почтовый индекс.',
+    'uk-ua': 'Поштовий індекс.',
   },
   addressPhone1: {
     'en-us': 'Phone',
+    'de-ch': 'Telefon',
+    'es-es': 'Teléfono',
+    'fr-fr': 'Téléphone',
+    'hr-hr': 'Telefon',
+    'pt-br': 'Telefone',
+    'ru-ru': 'Телефон',
+    'uk-ua': 'Телефон',
   },
   addressPhone1Description: {
     'en-us': 'A contact phone number.',
+    'de-ch': 'Eine Kontakttelefonnummer.',
+    'es-es': 'Un número de teléfono de contacto.',
+    'fr-fr': 'Un numéro de téléphone pour vous contacter.',
+    'hr-hr': 'Kontaktni broj telefona.',
+    'pt-br': 'Um número de telefone para contato.',
+    'ru-ru': 'Контактный номер телефона.',
+    'uk-ua': 'Контактний номер телефону.',
   },
-
-  // Trees
   treeRanks: {
     'en-us': 'Tree Ranks',
+    'de-ch': 'Baumränge',
+    'es-es': 'Rangos de árboles',
+    'fr-fr': 'Arborescence des rangs',
+    'hr-hr': 'Rangovi drveća',
+    'pt-br': 'Classificações da árvore',
+    'ru-ru': 'Ранги деревьев',
+    'uk-ua': 'Ряди дерев',
   },
   rank: {
     'en-us': 'Rank',
+    'de-ch': 'Rang',
+    'es-es': 'Rango',
+    'fr-fr': 'Rang',
+    'hr-hr': 'Rang',
+    'pt-br': 'Classificação',
+    'ru-ru': 'Классифицировать',
+    'uk-ua': 'Ранг',
   },
   fullNameDirection: {
     'en-us': 'Full Name Direction',
+    'de-ch': 'Vollständiger Name Wegbeschreibung',
+    'es-es': 'Dirección por nombre completo',
+    'fr-fr': 'Nom complet Direction',
+    'hr-hr': 'Puno ime Smjer',
+    'pt-br': 'Nome completo Direção',
+    'ru-ru': 'Полное имя Направление',
+    'uk-ua': "Повне ім'я Напрямок",
   },
   preloadTree: {
     'en-us': 'Populate tree with default records',
+    'de-ch': 'Baum mit Standarddatensätzen füllen',
+    'es-es': 'Rellenar el árbol con registros predeterminados',
+    'fr-fr': "Remplir l'arbre avec les enregistrements par défaut",
+    'hr-hr': 'Popuni stablo zadanim zapisima',
+    'pt-br': 'Preencher a árvore com registros padrão',
+    'ru-ru': 'Заполнить дерево записями по умолчанию',
+    'uk-ua': 'Заповнити дерево записами за замовчуванням',
   },
   preloadTreeDescription: {
     'en-us': 'Download default records for this tree.',
+    'de-ch': 'Standarddatensätze für diesen Baum herunterladen.',
+    'es-es': 'Descargar registros predeterminados para este árbol.',
+    'fr-fr': 'Télécharger les enregistrements par défaut pour cet arbre.',
+    'hr-hr': 'Preuzmi zadane zapise za ovo stablo.',
+    'pt-br': 'Baixe os registros padrão para esta árvore.',
+    'ru-ru': 'Загрузить записи по умолчанию для этого дерева.',
+    'uk-ua': 'Завантажити записи за замовчуванням для цього дерева.',
   },
   treeToPreload: {
     'en-us': 'Tree to download:',
+    'de-ch': 'Baum zum Herunterladen:',
+    'es-es': 'Árbol para descargar:',
+    'fr-fr': 'Arbre à télécharger :',
+    'hr-hr': 'Drvo za preuzimanje:',
+    'pt-br': 'Árvore para baixar:',
+    'ru-ru': 'Дерево для скачивания:',
+    'uk-ua': 'Дерево для завантаження:',
   },
   selectATree: {
     'en-us': 'Select a tree',
+    'de-ch': 'Wählen Sie einen Baum aus',
+    'es-es': 'Seleccione un árbol',
+    'fr-fr': 'Sélectionnez un arbre',
+    'hr-hr': 'Odaberite stablo',
+    'pt-br': 'Selecione uma árvore',
+    'ru-ru': 'Выберите дерево',
+    'uk-ua': 'Виберіть дерево',
   },
   include: {
     'en-us': 'Include',
+    'de-ch': 'Enthalten',
+    'es-es': 'Incluir',
+    'fr-fr': 'Inclure',
+    'hr-hr': 'Uključi',
+    'pt-br': 'Incluir',
+    'ru-ru': 'Включать',
+    'uk-ua': 'Включити',
   },
   includeDescription: {
     'en-us': 'Include places the Level in the tree definition.',
+    'de-ch': 'Include platziert die Ebene in der Baumdefinition.',
+    'es-es': 'Incluir coloca el Nivel en la definición del árbol.',
+    'fr-fr':
+      "Inclure les emplacements du niveau dans la définition de l'arbre.",
+    'hr-hr': 'Uključite mjesta Level u definiciji stabla.',
+    'pt-br': 'Inclua os locais do Nível na definição da árvore.',
+    'ru-ru':
+      'Включение этого параметра размещает уровень в определении дерева.',
+    'uk-ua': 'Включити місця рівня у визначення дерева.',
   },
   enforced: {
     'en-us': 'Enforced',
+    'de-ch': 'Durchgesetzt',
+    'es-es': 'Aplicado',
+    'fr-fr': 'Appliqué',
+    'hr-hr': 'Provedeno',
+    'pt-br': 'Aplicado',
+    'ru-ru': 'Принудительное исполнение',
+    'uk-ua': 'Примусово',
   },
   enforcedDescription: {
     'en-us':
       'Is Enforced ensures that the level can not be skipped when adding nodes lower down the tree.',
+    'de-ch':
+      'Die Option „Is Enforced“ stellt sicher, dass die Ebene beim Hinzufügen von Knoten weiter unten im Baum nicht übersprungen werden kann.',
+    'es-es':
+      'La opción "Is Enforced" garantiza que no se pueda omitir el nivel al agregar nodos en niveles inferiores del árbol.',
+    'fr-fr':
+      "L'option « Is Enforced » garantit que le niveau ne peut pas être ignoré lors de l'ajout de nœuds plus bas dans l'arbre.",
+    'hr-hr':
+      'Opcija "Je li provedeno" osigurava da se razina ne može preskočiti prilikom dodavanja čvorova niže u stablu.',
+    'pt-br':
+      'A opção "Is Enforced" garante que o nível não possa ser ignorado ao adicionar nós mais abaixo na árvore.',
+    'ru-ru':
+      'Функция Is Enforced гарантирует, что этот уровень нельзя пропустить при добавлении узлов, расположенных ниже по дереву.',
+    'uk-ua':
+      '«Примусово» гарантує, що рівень не можна пропустити під час додавання вузлів нижче по дереву.',
   },
   inFullName: {
     'en-us': 'In Full Name',
+    'de-ch': 'Vollständiger Name',
+    'es-es': 'Nombre completo',
+    'fr-fr': 'Nom complet',
+    'hr-hr': 'Puno ime',
+    'pt-br': 'Nome completo',
+    'ru-ru': 'Полное имя',
+    'uk-ua': "Повне ім'я",
   },
   inFullNameDescription: {
     'en-us':
       'Is in Full Name includes the level when building a full name expression, which can be queried and used in reports.',
+    'de-ch':
+      '„Ist im vollständigen Namen“ beinhaltet die Ebene beim Erstellen eines vollständigen Namensausdrucks, der abgefragt und in Berichten verwendet werden kann.',
+    'es-es':
+      'La opción "Está en nombre completo" incluye el nivel al crear una expresión de nombre completo, que se puede consultar y utilizar en informes.',
+    'fr-fr':
+      "L'option « Is in Full Name » inclut le niveau lors de la construction d'une expression de nom complet, qui peut être interrogée et utilisée dans les rapports.",
+    'hr-hr':
+      '"Je u punom imenu" uključuje razinu prilikom izrade izraza punog imena, koji se može upitati i koristiti u izvješćima.',
+    'pt-br':
+      '"Está no nome completo" inclui o nível ao construir uma expressão de nome completo, que pode ser consultada e usada em relatórios.',
+    'ru-ru':
+      'Функция «Указание полного имени» включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
+    'uk-ua':
+      '«У повному імені» враховує рівень під час створення виразу повного імені, який можна запитувати та використовувати у звітах.',
   },
   fullNameSeparator: {
     'en-us': 'Separator',
+    'de-ch': 'Separator',
+    'es-es': 'Separador',
+    'fr-fr': 'Séparateur',
+    'hr-hr': 'Separator',
+    'pt-br': 'Separador',
+    'ru-ru': 'Сепаратор',
+    'uk-ua': 'Роздільник',
   },
   fullNameSeparatorDescription: {
     'en-us':
       'Separator refers to the character that separates the levels when displaying the full name.',
+    'de-ch':
+      'Als Trennzeichen bezeichnet man das Zeichen, das die Ebenen bei der Anzeige des vollständigen Namens trennt.',
+    'es-es':
+      'El término "separador" se refiere al carácter que separa los niveles al mostrar el nombre completo.',
+    'fr-fr':
+      "Le séparateur désigne le caractère qui sépare les niveaux lors de l'affichage du nom complet.",
+    'hr-hr':
+      'Razdjelnik se odnosi na znak koji odvaja razine prilikom prikaza punog naziva.',
+    'pt-br':
+      'O separador é o caractere que separa os níveis ao exibir o nome completo.',
+    'ru-ru':
+      'Разделитель — это символ, который разделяет уровни при отображении полного названия.',
+    'uk-ua':
+      'Роздільник – це символ, який розділяє рівні під час відображення повної назви.',
   },
-
-  // Storage Tree
   storageTree: {
     'en-us': 'Storage Tree',
+    'de-ch': 'Speicherbaum',
+    'es-es': 'Árbol de almacenamiento',
+    'fr-fr': 'Arbre de stockage',
+    'hr-hr': 'Stablo skladištenja',
+    'pt-br': 'Árvore de armazenamento',
+    'ru-ru': 'Дерево для хранения',
+    'uk-ua': 'Дерево сховища',
   },
-  // Geography Tree
   geographyTree: {
     'en-us': 'Geography Tree',
+    'de-ch': 'Geographiebaum',
+    'es-es': 'Árbol geográfico',
+    'fr-fr': 'Arbre géographique',
+    'hr-hr': 'Geografsko stablo',
+    'pt-br': 'Árvore Geográfica',
+    'ru-ru': 'Географическое дерево',
+    'uk-ua': 'Географічне дерево',
   },
-  // Taxon Tree
   taxonTree: {
     'en-us': 'Taxon Tree',
+    'de-ch': 'Taxonbaum',
+    'es-es': 'Árbol taxonómico',
+    'fr-fr': 'Arbre taxon',
+    'hr-hr': 'Stablo taksona',
+    'pt-br': 'Árvore taxonômica',
+    'ru-ru': 'Древо таксонов',
+    'uk-ua': 'Дерево таксонів',
   },
-
-  // Division
   division: {
     'en-us': 'Division',
+    'de-ch': 'Division',
+    'es-es': 'División',
+    'fr-fr': 'Division',
+    'hr-hr': 'Podjela',
+    'pt-br': 'Divisão',
+    'ru-ru': 'Разделение',
+    'uk-ua': 'Дивізіон',
   },
   divisionName: {
     'en-us': 'Name',
+    'de-ch': 'Name',
+    'es-es': 'Nombre',
+    'fr-fr': 'Nom',
+    'hr-hr': 'Ime',
+    'pt-br': 'Nome',
+    'ru-ru': 'Имя',
+    'uk-ua': "Ім'я",
   },
   divisionAbbrev: {
     'en-us': 'Abbreviation',
+    'de-ch': 'Abkürzung',
+    'es-es': 'Abreviatura',
+    'fr-fr': 'Abréviation',
+    'hr-hr': 'Kratica',
+    'pt-br': 'Abreviação',
+    'ru-ru': 'Сокращение',
+    'uk-ua': 'Абревіатура',
   },
-
-  // Discipline
   discipline: {
     'en-us': 'Discipline',
+    'de-ch': 'Disziplin',
+    'es-es': 'Disciplina',
+    'fr-fr': 'Discipline',
+    'hr-hr': 'Disciplina',
+    'pt-br': 'Disciplina',
+    'ru-ru': 'Дисциплина',
+    'uk-ua': 'Дисципліна',
   },
   disciplineName: {
     'en-us': 'Name',
+    'de-ch': 'Name',
+    'es-es': 'Nombre',
+    'fr-fr': 'Nom',
+    'hr-hr': 'Ime',
+    'pt-br': 'Nome',
+    'ru-ru': 'Имя',
+    'uk-ua': "Ім'я",
   },
   disciplineType: {
     'en-us': 'Type',
+    'de-ch': 'Typ',
+    'es-es': 'Tipo',
+    'fr-fr': 'Taper',
+    'hr-hr': 'Tip',
+    'pt-br': 'Tipo',
+    'ru-ru': 'Тип',
+    'uk-ua': 'Тип',
   },
-
-  // Collection
   collectionName: {
     'en-us': 'Collection Name',
+    'de-ch': 'Sammlungsname',
+    'es-es': 'Nombre de la colección',
+    'fr-fr': 'Nom de la collection',
+    'hr-hr': 'Naziv zbirke',
+    'pt-br': 'Nome da coleção',
+    'ru-ru': 'Название коллекции',
+    'uk-ua': 'Назва колекції',
   },
   collectionCode: {
     'en-us': 'Code',
+    'de-ch': 'Code',
+    'es-es': 'Código',
+    'fr-fr': 'Code',
+    'hr-hr': 'Kodirati',
+    'pt-br': 'Código',
+    'ru-ru': 'Код',
+    'uk-ua': 'Код',
   },
   collectionCatalogNumFormatName: {
     'en-us': 'Catalog Number Format',
+    'de-ch': 'Katalognummernformat',
+    'es-es': 'Formato del número de catálogo',
+    'fr-fr': 'Format du numéro de catalogue',
+    'hr-hr': 'Format kataloškog broja',
+    'pt-br': 'Formato do número de catálogo',
+    'ru-ru': 'Формат каталожного номера',
+    'uk-ua': 'Формат каталожного номера',
   },
-
-  // Specify User
   specifyUser: {
     'en-us': 'Specify User',
+    'de-ch': 'Benutzer angeben',
+    'es-es': 'Especificar usuario',
+    'fr-fr': "Spécifiez l'utilisateur",
+    'hr-hr': 'Navedite korisnika',
+    'pt-br': 'Especificar usuário',
+    'ru-ru': 'Укажите пользователя',
+    'uk-ua': 'Вказати користувача',
   },
   specifyUserName: {
     'en-us': 'Username',
+    'de-ch': 'Benutzername',
+    'es-es': 'Nombre de usuario',
+    'fr-fr': "Nom d'utilisateur",
+    'hr-hr': 'Korisničko ime',
+    'pt-br': 'Nome de usuário',
+    'ru-ru': 'Имя пользователя',
+    'uk-ua': "Ім'я користувача",
   },
   specifyUserNameDescription: {
     'en-us': 'The username for the primary administrator account.',
+    'de-ch': 'Der Benutzername für das primäre Administratorkonto.',
+    'es-es': 'El nombre de usuario de la cuenta de administrador principal.',
+    'fr-fr': "Nom d'utilisateur du compte administrateur principal.",
+    'hr-hr': 'Korisničko ime za primarni administratorski račun.',
+    'pt-br': 'O nome de usuário da conta de administrador principal.',
+    'ru-ru': 'Имя пользователя для основной учетной записи администратора.',
+    'uk-ua': "Ім'я користувача для основного облікового запису адміністратора.",
   },
   specifyUserPassword: {
     'en-us': 'Password',
+    'de-ch': 'Passwort',
+    'es-es': 'Contraseña',
+    'fr-fr': 'Mot de passe',
+    'hr-hr': 'Lozinka',
+    'pt-br': 'Senha',
+    'ru-ru': 'Пароль',
+    'uk-ua': 'Пароль',
   },
   specifyUserPasswordDescription: {
     'en-us': 'The password for the account.',
+    'de-ch': 'Das Passwort für das Konto.',
+    'es-es': 'La contraseña de la cuenta.',
+    'fr-fr': 'Le mot de passe du compte.',
+    'hr-hr': 'Lozinka za račun.',
+    'pt-br': 'A senha da conta.',
+    'ru-ru': 'Пароль от учетной записи.',
+    'uk-ua': 'Пароль для облікового запису.',
   },
   specifyUserConfirmPassword: {
     'en-us': 'Confirm Password',
+    'de-ch': 'Passwort bestätigen',
+    'es-es': 'confirmar Contraseña',
+    'fr-fr': 'Confirmez le mot de passe',
+    'hr-hr': 'Potvrdite lozinku',
+    'pt-br': 'Confirme sua senha',
+    'ru-ru': 'Подтвердите пароль',
+    'uk-ua': 'Підтвердьте пароль',
   },
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
+    'de-ch': 'Muss mit dem oben eingegebenen Passwort übereinstimmen.',
+    'es-es': 'Debe coincidir con la contraseña introducida anteriormente.',
+    'fr-fr': 'Doit correspondre au mot de passe saisi ci-dessus.',
+    'hr-hr': 'Mora odgovarati lozinki unesenoj gore.',
+    'pt-br': 'A senha deve ser a mesma que foi inserida acima.',
+    'ru-ru': 'Пароль должен совпадать с паролем, введенным выше.',
+    'uk-ua': 'Має збігатися з паролем, введеним вище.',
   },
   specifyUserFirstName: {
     'en-us': 'First Name',
+    'de-ch': 'Vorname',
+    'es-es': 'Nombre de pila',
+    'fr-fr': 'Prénom',
+    'hr-hr': 'Ime',
+    'pt-br': 'Primeiro nome',
+    'ru-ru': 'Имя',
+    'uk-ua': "Ім'я",
   },
   specifyUserFirstNameDescription: {
     'en-us':
       'The first name of the agent associated with the account. Optional.',
+    'de-ch': 'Vorname des mit dem Konto verbundenen Agenten. Optional.',
+    'es-es': 'El nombre del agente asociado a la cuenta. Opcional.',
+    'fr-fr': "Prénom de l'agent associé au compte. Facultatif.",
+    'hr-hr': 'Ime agenta povezanog s računom. Neobavezno.',
+    'pt-br': 'Primeiro nome do agente associado à conta. Opcional.',
+    'ru-ru': 'Имя агента, связанного с учетной записью. Необязательно.',
+    'uk-ua': "Ім'я агента, пов'язаного з обліковим записом. Необов'язково.",
   },
   specifyUserLastName: {
     'en-us': 'Last Name',
+    'de-ch': 'Nachname',
+    'es-es': 'Apellido',
+    'fr-fr': 'Nom de famille',
+    'hr-hr': 'Prezime',
+    'pt-br': 'Sobrenome',
+    'ru-ru': 'Фамилия',
+    'uk-ua': 'Прізвище',
   },
   specifyUserLastNameDescription: {
     'en-us': 'The last name of the agent associated with the account.',
+    'de-ch': 'Der Nachname des mit dem Konto verbundenen Agenten.',
+    'es-es': 'El apellido del agente asociado a la cuenta.',
+    'fr-fr': "Le nom de famille de l'agent associé au compte.",
+    'hr-hr': 'Prezime agenta povezanog s računom.',
+    'pt-br': 'Sobrenome do agente associado à conta.',
+    'ru-ru': 'Фамилия агента, связанного с данным счетом.',
+    'uk-ua': 'Прізвище агента, пов’язаного з обліковим записом.',
   },
-
   addNewGeographyTree: {
     'en-us': 'Add new Geography Tree',
+    'de-ch': 'Neuen Geographiebaum hinzufügen',
+    'es-es': 'Agregar nuevo árbol geográfico',
+    'fr-fr': 'Ajouter un nouvel arbre géographique',
+    'hr-hr': 'Dodaj novo geografsko stablo',
+    'pt-br': 'Adicionar nova árvore geográfica',
+    'ru-ru': 'Добавить новое географическое дерево',
+    'uk-ua': 'Додати нове географічне дерево',
   },
   addNewTaxonTree: {
     'en-us': 'Add new Taxon Tree',
+    'de-ch': 'Neuen Taxonbaum hinzufügen',
+    'es-es': 'Agregar nuevo árbol taxonómico',
+    'fr-fr': 'Ajouter un nouvel arbre taxonomique',
+    'hr-hr': 'Dodaj novo stablo taksona',
+    'pt-br': 'Adicionar nova árvore taxonômica',
+    'ru-ru': 'Добавить новое дерево таксонов',
+    'uk-ua': 'Додати нове дерево таксонів',
   },
-
-  // System Configuration Tool - Hierarchy diagram
   hierarchyStructureTitle: {
     'en-us': 'View the Institutional Hierarchy',
+    'de-ch': 'Institutionelle Hierarchie anzeigen',
+    'es-es': 'Ver la jerarquía institucional',
+    'fr-fr': 'Afficher la hiérarchie institutionnelle',
+    'hr-hr': 'Pogledajte institucionalnu hijerarhiju',
+    'pt-br': 'Veja a hierarquia institucional.',
+    'ru-ru': 'Просмотрите институциональную иерархию',
+    'uk-ua': 'Переглянути інституційну ієрархію',
   },
   hierarchyStructureHint: {
     'en-us': 'Click any block to open its edit form.',
+    'de-ch':
+      'Klicken Sie auf einen beliebigen Block, um dessen Bearbeitungsformular zu öffnen.',
+    'es-es':
+      'Haz clic en cualquier bloque para abrir su formulario de edición.',
+    'fr-fr':
+      "Cliquez sur n'importe quel bloc pour ouvrir son formulaire d'édition.",
+    'hr-hr':
+      'Kliknite bilo koji blok da biste otvorili njegov obrazac za uređivanje.',
+    'pt-br': 'Clique em qualquer bloco para abrir o formulário de edição.',
+    'ru-ru': 'Нажмите на любой блок, чтобы открыть форму его редактирования.',
+    'uk-ua': 'Клацніть будь-який блок, щоб відкрити його форму редагування.',
   },
   hierarchySwitchToHorizontal: {
     'en-us': 'Switch to horizontal',
+    'de-ch': 'In horizontale Ausrichtung wechseln',
+    'es-es': 'Cambiar a horizontal',
+    'fr-fr': 'Passer en mode horizontal',
+    'hr-hr': 'Prebaci na vodoravno',
+    'pt-br': 'Mudar para o modo horizontal',
+    'ru-ru': 'Переключиться в горизонтальное положение',
+    'uk-ua': 'Переключитися на горизонтальне положення',
   },
   hierarchySwitchToVertical: {
     'en-us': 'Switch to vertical',
+    'de-ch': 'In den Vertikalmodus wechseln',
+    'es-es': 'Cambiar a vertical',
+    'fr-fr': 'Passer en mode vertical',
+    'hr-hr': 'Prebaci na vertikalno',
+    'pt-br': 'Mudar para a vertical',
+    'ru-ru': 'Переключиться в вертикальное положение',
+    'uk-ua': 'Перейти на вертикальний режим',
   },
   hierarchyAddNew: {
     'en-us': 'Add',
+    'de-ch': 'Hinzufügen',
+    'es-es': 'Agregar',
+    'fr-fr': 'Ajouter',
+    'hr-hr': 'Dodati',
+    'pt-br': 'Adicionar',
+    'ru-ru': 'Добавлять',
+    'uk-ua': 'Додати',
   },
   hierarchyDiagram: {
     'en-us': 'Institutional Hierarchy',
+    'de-ch': 'Institutionelle Hierarchie',
+    'es-es': 'Jerarquía institucional',
+    'fr-fr': 'Hiérarchie institutionnelle',
+    'hr-hr': 'Institucionalna hijerarhija',
+    'pt-br': 'Hierarquia Institucional',
+    'ru-ru': 'Институциональная иерархия',
+    'uk-ua': 'Інституційна ієрархія',
   },
   emptyTaxonTree: {
     'en-us': 'An empty taxon tree will be created',
+    'de-ch': 'Es wird ein leerer Taxonbaum erstellt.',
+    'es-es': 'Se creará un árbol taxonómico vacío.',
+    'fr-fr': 'Un arbre taxonomique vide sera créé.',
+    'hr-hr': 'Bit će kreirano prazno stablo taksona',
+    'pt-br': 'Uma árvore taxonômica vazia será criada.',
+    'ru-ru': 'Будет создано пустое таксономическое дерево.',
+    'uk-ua': 'Буде створено порожнє дерево таксонів',
+  },
+  collectionCreationStarted: {
+    'en-us':
+      'The newly created collection is being set up. It may take some time for the collection to become available.',
+    'de-ch':
+      'Die neu erstellte Kollektion wird gerade eingerichtet. Es kann einige Zeit dauern, bis die Kollektion verfügbar ist.',
+    'es-es':
+      'La colección recién creada se está configurando. Puede que tarde un tiempo en estar disponible.',
+    'fr-fr':
+      "La nouvelle collection est en cours de création. Il se peut qu'elle ne soit disponible que dans un certain délai.",
+    'hr-hr':
+      'Novoizrađena kolekcija se postavlja. Može proći neko vrijeme dok kolekcija ne postane dostupna.',
+    'pt-br':
+      'A nova coleção está sendo configurada. Pode levar algum tempo até que ela esteja disponível.',
+    'ru-ru':
+      'В настоящее время создаётся новая коллекция. Для того чтобы коллекция стала доступна, может потребоваться некоторое время.',
+    'uk-ua':
+      'Новостворена колекція налаштовується. Може знадобитися деякий час, перш ніж вона стане доступною.',
   },
 } as const);
