@@ -14,6 +14,7 @@ from specifyweb.backend.interactions import urls as interaction_urls
 from specifyweb.backend.notifications import urls as notification_urls
 from specifyweb.backend.permissions import urls as permissions_urls
 from specifyweb.backend.permissions.permissions import skip_collection_access_check
+from specifyweb.backend.picklists_tool import urls as picklists_tool_urls
 from specifyweb.backend.report_runner import urls as report_urls
 from .specify import urls as api_urls
 from specifyweb.backend.backup_tool import urls as backup_urls
@@ -71,6 +72,7 @@ urlpatterns = [
     path('notifications/', include(notification_urls)),
     path('export/', include(export_urls)), # permissions added
     path('permissions/', include(permissions_urls)), # permissions added
+    path('picklist_tool/', include(picklists_tool_urls)),
     # url(r'^testcontext/', include()),
     path('stats/', include(stat_urls)),
     path('setup_tool/', include(setup_tool_urls)),

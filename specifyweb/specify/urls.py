@@ -41,6 +41,9 @@ urlpatterns = [
     # Locality update tool
     re_path(r'^', include('specifyweb.backend.locality_update_tool.urls')),
 
+    # Picklist import/export tool
+    re_path(r'^picklist_tool/', include('specifyweb.backend.picklists_tool.urls')),
+
     # Master key + User management
     re_path(r'^', include('specifyweb.backend.accounts.urls')),
 ]

@@ -35,6 +35,22 @@ import {
 const pickListFetchPromises: R<Promise<SpecifyResource<PickList> | undefined>> =
   {};
 
+export function clearPickListCaches(names?: RA<string>): void {
+  if (names === undefined) {
+    Object.keys(pickListFetchPromises).forEach(
+      (name) => delete pickListFetchPromises[name]
+    );
+    Object.keys(unsafeGetPickLists()).forEach(
+      (name) => delete unsafeGetPickLists()[name]
+    );
+  } else {
+    names.forEach((name) => {
+      delete pickListFetchPromises[name];
+      delete unsafeGetPickLists()[name];
+    });
+  }
+}
+
 export async function fetchPickList(
   pickListName: string
 ): Promise<SpecifyResource<PickList> | undefined> {

@@ -1,6 +1,7 @@
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
+import { pickListsText } from '../../localization/pickLists';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { userText } from '../../localization/user';
@@ -119,6 +120,12 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
   },
   [commonText.export()]: {
+    pickListsExport: {
+      title: pickListsText.picklistsExportTool(),
+      enabled: () => hasToolPermission('pickLists', 'read'),
+      url: '/specify/overlay/picklists-export/',
+      icon: icons.download,
+    },
     makeDwca: {
       title: headerText.makeDwca(),
       enabled: () => hasPermission('/export/dwca', 'execute'),
@@ -133,6 +140,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
   },
   [commonText.import()]: {
+    pickListsImport: {
+      title: pickListsText.picklistsImportTool(),
+      enabled: () =>
+        hasToolPermission('pickLists', 'create') &&
+        hasToolPermission('pickLists', 'update'),
+      url: '/specify/overlay/picklists-import/',
+      icon: icons.upload,
+    },
     localityUpdate: {
       title: headerText.localityUpdateTool(),
       enabled: () => userInformation.isadmin,

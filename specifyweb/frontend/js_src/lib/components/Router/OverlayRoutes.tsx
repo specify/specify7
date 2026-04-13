@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { mergingText } from '../../localization/merging';
+import { pickListsText } from '../../localization/pickLists';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
@@ -44,6 +45,22 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
+          ),
+      },
+      {
+        path: 'picklists-import',
+        title: pickListsText.picklistsImportTool(),
+        element: () =>
+          import('../PickLists/Tools').then(
+            ({ PickListsImportOverlay }) => PickListsImportOverlay
+          ),
+      },
+      {
+        path: 'picklists-export',
+        title: pickListsText.picklistsExportTool(),
+        element: () =>
+          import('../PickLists/Tools').then(
+            ({ PickListsExportOverlay }) => PickListsExportOverlay
           ),
       },
       {
