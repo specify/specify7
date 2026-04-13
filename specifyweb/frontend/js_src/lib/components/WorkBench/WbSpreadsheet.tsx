@@ -2,8 +2,8 @@
  * Component for the Handsontable React wrapper
  */
 
-import { HotTable } from '@handsontable/react-wrapper';
 import type { HotTableRef } from '@handsontable/react-wrapper';
+import { HotTable } from '@handsontable/react-wrapper';
 import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
@@ -238,22 +238,23 @@ function WbSpreadsheetComponent({
   return (
     <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
-        className="h-full"
         autoColumnSize={{
           syncLimit: '100%',
           useHeaders: true,
         }}
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
+        className="h-full"
         colHeaders={colHeaders}
         columns={columns}
         commentedCellClassName="htCommentCell"
         comments={comments}
+        contextMenu={contextMenuConfig}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
+        height="100%"
         hiddenColumns={hiddenColumns}
         hiddenRows={hiddenRows}
-        height="100%"
         invalidCellClassName="-"
         language={LANGUAGE}
         licenseKey="non-commercial-and-evaluation"
@@ -269,7 +270,6 @@ function WbSpreadsheetComponent({
         stretchH="all"
         tabMoves={tabMoves}
         theme="ht-theme-classic"
-        contextMenu={contextMenuConfig}
         viewportColumnRenderingOffset={12}
         viewportRowRenderingOffset={40}
         width="100%"
