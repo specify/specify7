@@ -1,6 +1,20 @@
 @import 'handsontable/styles/handsontable.css';
 @import 'handsontable/styles/ht-theme-classic.css';
 
+.ht-theme-classic,
+.ht-theme-classic-dark,
+.ht-theme-classic-dark-auto {
+  --ht-font-family: inherit;
+  --ht-font-size: 14px;
+  --ht-font-size-small: 12px;
+  --ht-line-height: 20px;
+  --ht-line-height-small: 18px;
+  --ht-font-weight: 500;
+  --ht-header-font-weight: 600;
+  --ht-read-only-color: theme('colors.gray.600');
+  --ht-cell-read-only-background-color: theme('colors.gray.200');
+}
+
 .handsontable .columnSorting {
   @apply leading-5;
 }
@@ -44,7 +58,7 @@
 }
 
 .handsontable .htDimmed {
-  @apply bg-gray-200 dark:bg-neutral-800;
+  @apply !bg-gray-200 !text-gray-600 dark:!bg-neutral-700 dark:!text-neutral-300;
 }
 
 /* Cell navigation */
@@ -123,7 +137,8 @@
   --ht-background-color: theme('colors.neutral.800');
   --ht-background-secondary-color: theme('colors.neutral.900');
   --ht-placeholder-color: theme('colors.blue.500');
-  --ht-read-only-color: theme('colors.neutral.400');
+  --ht-read-only-color: theme('colors.neutral.300');
+  --ht-cell-read-only-background-color: theme('colors.neutral.700');
   --ht-disabled-color: theme('colors.neutral.500');
   --ht-header-background-color: theme('colors.neutral.900');
   --ht-header-foreground-color: theme('colors.white');
