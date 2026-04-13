@@ -153,7 +153,7 @@ function ColumnHeader({
   readonly tableName: string | undefined;
 }): JSX.Element {
   return (
-    <span className="inline-flex items-center gap-1 pl-4">
+    <span className="flex w-full items-center justify-center gap-1">
       {isMapped && tableName !== undefined ? (
         <TableIcon label={false} name={tableName} />
       ) : (
@@ -165,9 +165,7 @@ function ColumnHeader({
           {icons.ban}
         </span>
       )}
-      <span className="wb-header-name columnSorting font-medium">
-        {columnName}
-      </span>
+      <span className="wb-header-name columnSorting">{columnName}</span>
     </span>
   );
 }

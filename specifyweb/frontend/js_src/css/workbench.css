@@ -5,12 +5,12 @@
 .ht-theme-classic-dark,
 .ht-theme-classic-dark-auto {
   --ht-font-family: inherit;
-  --ht-font-size: 14px;
-  --ht-font-size-small: 12px;
-  --ht-line-height: 20px;
-  --ht-line-height-small: 18px;
-  --ht-font-weight: 500;
-  --ht-header-font-weight: 600;
+  --ht-font-size: 13px;
+  --ht-font-size-small: 11px;
+  --ht-line-height: 18px;
+  --ht-line-height-small: 16px;
+  --ht-font-weight: 400;
+  --ht-header-font-weight: 500;
   --ht-read-only-color: theme('colors.gray.600');
   --ht-cell-read-only-background-color: theme('colors.gray.200');
 }
@@ -132,13 +132,13 @@
 .dark .ht-theme-classic {
   color-scheme: dark;
   --ht-border-color: theme('colors.neutral.500');
-  --ht-foreground-color: theme('colors.white');
+  --ht-foreground-color: theme('colors.neutral.100');
   --ht-foreground-secondary-color: theme('colors.neutral.400');
   --ht-background-color: theme('colors.neutral.800');
   --ht-background-secondary-color: theme('colors.neutral.900');
   --ht-placeholder-color: theme('colors.blue.500');
-  --ht-read-only-color: theme('colors.neutral.300');
-  --ht-cell-read-only-background-color: theme('colors.neutral.700');
+  --ht-read-only-color: theme('colors.neutral.400');
+  --ht-cell-read-only-background-color: theme('colors.neutral.600');
   --ht-disabled-color: theme('colors.neutral.500');
   --ht-header-background-color: theme('colors.neutral.900');
   --ht-header-foreground-color: theme('colors.white');
