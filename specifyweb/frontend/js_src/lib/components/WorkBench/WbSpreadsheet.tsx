@@ -266,8 +266,8 @@ function WbSpreadsheetComponent({
         placeholderCellClassName="htPlaceholder"
         readOnly={isReadOnly}
         ref={setHotTable}
-        rowHeights={23}
         rowHeaders={(index) => String(index + 1)}
+        rowHeights={23}
         stretchH="all"
         tabMoves={tabMoves}
         theme="ht-theme-classic"

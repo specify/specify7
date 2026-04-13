@@ -55,10 +55,7 @@ export function useHotHooks({
     (visualCol: number): number => {
       if (workbench.hot === undefined) return 50;
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
-      if (
-        physicalCol < 0 ||
-        physicalCol >= workbench.dataset.columns.length
-      )
+      if (physicalCol < 0 || physicalCol >= workbench.dataset.columns.length)
         return 50;
 
       const headerLabel = workbench.dataset.columns[physicalCol] ?? '';
@@ -252,27 +249,27 @@ export function useHotHooks({
 
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
-        .filter(
-          ([, property]) => {
-            const visualCol = getVisualColFromProperty(property);
-            return (
-              visualCol !== undefined &&
-              visualCol < workbench.dataset.columns.length
-            );
-          }
-        );
+        .filter(([, property]) => {
+          const visualCol = getVisualColFromProperty(property);
+          return (
+            visualCol !== undefined &&
+            visualCol < workbench.dataset.columns.length
+          );
+        });
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
       )
         return true;
       workbench.hot.setDataAtCell(
-        filteredChanges.flatMap(([visualRow, property, _oldValue, newValue]) => {
-          const visualCol = getVisualColFromProperty(property);
-          return visualCol === undefined
-            ? []
-            : [[visualRow, visualCol, newValue]];
-        }),
+        filteredChanges.flatMap(
+          ([visualRow, property, _oldValue, newValue]) => {
+            const visualCol = getVisualColFromProperty(property);
+            return visualCol === undefined
+              ? []
+              : [[visualRow, visualCol, newValue]];
+          }
+        ),
         'CopyPaste.paste'
       );
       return false;
@@ -676,7 +673,8 @@ function afterUndoRedo(
     // HOT doesn't seem to like calling undo from inside of afterUndo
     globalThis.setTimeout(() => {
       workbench.undoRedoIsHandled = true;
-      if (workbench.hot !== undefined) getHotPlugin(workbench.hot, 'undoRedo').undo();
+      if (workbench.hot !== undefined)
+        getHotPlugin(workbench.hot, 'undoRedo').undo();
       workbench.undoRedoIsHandled = false;
       workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);
