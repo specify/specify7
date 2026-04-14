@@ -431,7 +431,9 @@ class ObjectFormatter:
         if specify_field.type == "java.sql.Timestamp":
             return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
-        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+        prec_fld = None
+        if hasattr(field, 'class_'):
+            prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
         # format_expr = (
         #     case(
