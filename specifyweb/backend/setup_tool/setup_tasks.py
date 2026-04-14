@@ -12,7 +12,7 @@ from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tr
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
-from specifyweb.backend.redis_cache.store import set_string, get_string
+from specifyweb.backend.redis_cache.datatypes import RedisString
 from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
 from specifyweb.backend.setup_tool.task_tracking import (
     queue_collection_background_task,
@@ -38,7 +38,7 @@ def setup_database_background(data: dict) -> str:
 
     task = setup_database_task.apply_async(args, task_id=task_id)
 
-    set_string(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
+    RedisString().set(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
     
     return task.id
 
@@ -52,7 +52,7 @@ def queue_fix_schema_config_background(collection_id: Optional[int] = None) -> s
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
     """Return the current setup task if it is active, and also if it is busy."""
-    task_id = get_string(ACTIVE_TASK_REDIS_KEY)
+    task_id = RedisString().get(ACTIVE_TASK_REDIS_KEY)
 
     if not task_id:
         return None, False
@@ -207,13 +207,13 @@ def fix_schema_config_task(self, collection_id: Optional[int] = None):
             finish_collection_background_task(collection_id, self.request.id)
 
 def get_last_setup_error() -> Optional[str]:
-    err = get_string(LAST_ERROR_REDIS_KEY)
+    err = RedisString().get(LAST_ERROR_REDIS_KEY)
     if err == '':
         return None
     return err
 
 def set_last_setup_error(error_text: Optional[str]):
-    set_string(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
+    RedisString().set(LAST_ERROR_REDIS_KEY, error_text or '', time_to_live=60*60*24)
 
 def create_discipline_and_trees_task(data: dict):
     from specifyweb.specify.models import Discipline
