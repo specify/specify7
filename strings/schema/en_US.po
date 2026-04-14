@@ -29,7 +29,7 @@ msgstr "Table Name"
 msgid "withoutTable"
 msgstr "Without Table"
 
-#: components/Header/userToolDefinitions.ts:68
+#: components/Header/userToolDefinitions.ts:69
 #: components/Preferences/UserDefinitions.tsx:826
 #: components/Router/Routes.tsx:397
 #: components/SchemaConfig/Components.tsx:30
@@ -259,7 +259,7 @@ msgstr "Field count"
 msgid "relationshipCount"
 msgstr "Relationship count"
 
-#: components/Header/userToolDefinitions.ts:162
+#: components/Header/userToolDefinitions.ts:171
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
@@ -291,7 +291,7 @@ msgstr "ID Field"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Uniqueness Rules"
 
-#: components/Router/OverlayRoutes.tsx:245
+#: components/Router/OverlayRoutes.tsx:254
 #: components/SchemaConfig/Table.tsx:93
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 msgid "uniquenessRules"

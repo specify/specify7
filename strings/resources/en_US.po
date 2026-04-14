@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
-#: components/Header/userToolDefinitions.ts:75
+#: components/Header/userToolDefinitions.ts:76
 #: components/Preferences/UserDefinitions.tsx:2123
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
@@ -562,6 +562,11 @@ msgstr "A exchanged out preparation cannot be deleted"
 #. Used in: Components > Data Model > Business Rule Defs
 msgid "deleteExchangeInPrep"
 msgstr "A exchanged in preparation cannot be deleted"
+
+#: components/BatchIdentify/index.tsx:906
+#. Used in: Components > Batch Identify > Index
+msgid "selectDeterminationTaxon"
+msgstr "Select one taxon-tree set to continue with:"
 
 #: components/DataModel/businessRuleDefs.ts:196
 #: components/DataModel/__tests__/businessRules.test.ts:182

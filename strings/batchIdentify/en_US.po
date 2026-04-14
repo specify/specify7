@@ -1,0 +1,89 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/BatchIdentify/index.tsx:787
+#: components/BatchIdentify/index.tsx:812
+#: components/BatchIdentify/index.tsx:877
+#: components/Header/userToolDefinitions.ts:144
+#: components/Router/OverlayRoutes.tsx:80
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+msgid "batchIdentify"
+msgstr "Batch Identify"
+
+#: components/BatchIdentify/index.tsx:883
+#. Used in: Components > Batch Identify > Index
+msgid "instructions"
+msgstr ""
+"Enter catalog numbers using any non-numeric delimiters (commas, spaces, "
+"text prefixes, etc.). Use a dash to declare numeric ranges like 0001 - 0150."
+
+#: components/BatchIdentify/index.tsx:940
+#: components/BatchIdentify/index.tsx:951
+#. Used in: Components > Batch Identify > Index
+msgid "catalogNumbersNotFound"
+msgstr "Catalog Numbers Not Found"
+
+#: components/BatchIdentify/index.tsx:865
+#. Used in: Components > Batch Identify > Index
+msgid "identify"
+msgstr "Identify"
+
+#: components/BatchIdentify/index.tsx:792
+#. Used in: Components > Batch Identify > Index
+msgid "successMessage"
+msgstr "All records were identified to the specified taxon."
+
+#: components/BatchIdentify/index.tsx:206
+#. Used in: Components > Batch Identify > Index
+msgid "updatedRecordSet"
+msgstr "Batch Identify Updated Records"
+
+#: components/BatchIdentify/index.tsx:610
+#. Used in: Components > Batch Identify > Index
+msgid "noCatalogNumbersParsed"
+msgstr "Enter at least one numeric catalog number."
+
+#: components/BatchIdentify/index.tsx:902
+#. Used in: Components > Batch Identify > Index
+msgid "validatingCatalogNumbers"
+msgstr "Validating catalog numbers..."
+
+#: components/BatchIdentify/index.tsx:887
+#. Used in: Components > Batch Identify > Index
+msgid "placeholder"
+msgstr "0001 0002 0003 - 0150"
+
+#: components/BatchIdentify/index.tsx:156
+#. Used in: Components > Batch Identify > Index
+msgid "previewQueryName"
+msgstr "Batch Identify Preview"
+
+#: components/BatchIdentify/index.tsx:915
+#: components/BatchIdentify/index.tsx:1023
+#. Used in: Components > Batch Identify > Index
+msgid "unknownTaxonTree"
+msgstr "Unknown Taxon Tree"
+
+#: components/BatchIdentify/index.tsx:920
+#. Used in: Components > Batch Identify > Index
+msgid "collectionObjectTypes"
+msgstr "Collection Object Types"
+
+#: components/BatchIdentify/index.tsx:1012
+#. Used in: Components > Batch Identify > Index
+msgid "invalidRecordSetTitle"
+msgstr "Mixed Record Set"
+
+#: components/BatchIdentify/index.tsx:1016
+#. Used in: Components > Batch Identify > Index
+msgid "invalidRecordSetMessage"
+msgstr ""
+"The selected record set contains collection objects from more than one "
+"taxon tree."
+
+#: components/BatchIdentify/index.tsx:1029
+#. Used in: Components > Batch Identify > Index
+msgid "invalidRecordSetInstructions"
+msgstr ""
+"Choose a different record set, or edit the query used to create this record "
+"set so all collection objects use the same taxon tree."

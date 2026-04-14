@@ -40,7 +40,7 @@ msgstr "Назва таблиці"
 msgid "withoutTable"
 msgstr "Без столу"
 
-#: components/Header/userToolDefinitions.ts:68
+#: components/Header/userToolDefinitions.ts:69
 #: components/Preferences/UserDefinitions.tsx:826
 #: components/Router/Routes.tsx:397
 #: components/SchemaConfig/Components.tsx:30
@@ -270,7 +270,7 @@ msgstr "Кількість полів"
 msgid "relationshipCount"
 msgstr "Кількість зв'язків"
 
-#: components/Header/userToolDefinitions.ts:162
+#: components/Header/userToolDefinitions.ts:171
 #: components/Router/Routes.tsx:45
 #: components/Router/Routes.tsx:49
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes
@@ -302,7 +302,7 @@ msgstr "Поле ідентифікатора"
 msgid "tableUniquenessRules"
 msgstr "{tableName:string} Правила унікальності"
 
-#: components/Router/OverlayRoutes.tsx:245
+#: components/Router/OverlayRoutes.tsx:254
 #: components/SchemaConfig/Table.tsx:93
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 msgid "uniquenessRules"

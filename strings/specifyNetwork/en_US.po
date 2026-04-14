@@ -15,22 +15,32 @@ msgstr "Specify Network"
 msgid "occurrenceOrGuidRequired"
 msgstr "Species Name or GUID must be provided to display this page"
 
-#: components/SpecifyNetwork/Overlay.tsx:119
+#: components/SpecifyNetwork/Overlay.tsx:133
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataError"
 msgstr "Unable to find any data for this request"
 
-#: components/SpecifyNetwork/Overlay.tsx:122
+#: components/SpecifyNetwork/Overlay.tsx:136
 #. Used in: Components > Specify Network > Overlay
 msgid "noDataErrorDescription"
 msgstr "Please try searching for a different record"
 
-#: components/SpecifyNetwork/Table.tsx:51
+#: components/SpecifyNetwork/Overlay.tsx:149
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailable"
+msgstr "Specify Network unavailable"
+
+#: components/SpecifyNetwork/Overlay.tsx:152
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailableDescription"
+msgstr "Specify could not connect to Specify Network. Please try again later."
+
+#: components/SpecifyNetwork/Table.tsx:54
 #. Used in: Components > Specify Network > Table
 msgid "dataQuality"
 msgstr "Data Quality"
 
-#: components/SpecifyNetwork/Table.tsx:64
+#: components/SpecifyNetwork/Table.tsx:67
 #. Used in: Components > Specify Network > Table
 msgid "reportedBy"
 msgstr "Reported by {provider:string}"

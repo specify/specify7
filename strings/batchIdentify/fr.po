@@ -1,0 +1,83 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/BatchIdentify/index.tsx:787
+#: components/BatchIdentify/index.tsx:812
+#: components/BatchIdentify/index.tsx:877
+#: components/Header/userToolDefinitions.ts:144
+#: components/Router/OverlayRoutes.tsx:80
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
+msgid "batchIdentify"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:883
+#. Used in: Components > Batch Identify > Index
+msgid "instructions"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:940
+#: components/BatchIdentify/index.tsx:951
+#. Used in: Components > Batch Identify > Index
+msgid "catalogNumbersNotFound"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:865
+#. Used in: Components > Batch Identify > Index
+msgid "identify"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:792
+#. Used in: Components > Batch Identify > Index
+msgid "successMessage"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:206
+#. Used in: Components > Batch Identify > Index
+msgid "updatedRecordSet"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:610
+#. Used in: Components > Batch Identify > Index
+msgid "noCatalogNumbersParsed"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:902
+#. Used in: Components > Batch Identify > Index
+msgid "validatingCatalogNumbers"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:887
+#. Used in: Components > Batch Identify > Index
+msgid "placeholder"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:156
+#. Used in: Components > Batch Identify > Index
+msgid "previewQueryName"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:915
+#: components/BatchIdentify/index.tsx:1023
+#. Used in: Components > Batch Identify > Index
+msgid "unknownTaxonTree"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:920
+#. Used in: Components > Batch Identify > Index
+msgid "collectionObjectTypes"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:1012
+#. Used in: Components > Batch Identify > Index
+msgid "invalidRecordSetTitle"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:1016
+#. Used in: Components > Batch Identify > Index
+msgid "invalidRecordSetMessage"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:1029
+#. Used in: Components > Batch Identify > Index
+msgid "invalidRecordSetInstructions"
+msgstr ""

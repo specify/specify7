@@ -26,25 +26,35 @@ msgstr "Réseau Specify"
 msgid "occurrenceOrGuidRequired"
 msgstr "Le nom de l'espèce ou le GUID doit être fourni pour afficher cette page."
 
-#: components/SpecifyNetwork/Overlay.tsx:119
+#: components/SpecifyNetwork/Overlay.tsx:133
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Aucune donnée n'a pu être trouvée pour cette requête."
 
-#: components/SpecifyNetwork/Overlay.tsx:122
+#: components/SpecifyNetwork/Overlay.tsx:136
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Veuillez essayer de rechercher un autre enregistrement"
 
-#: components/SpecifyNetwork/Table.tsx:51
+#: components/SpecifyNetwork/Overlay.tsx:149
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailable"
+msgstr ""
+
+#: components/SpecifyNetwork/Overlay.tsx:152
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailableDescription"
+msgstr ""
+
+#: components/SpecifyNetwork/Table.tsx:54
 #. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "dataQuality"
 msgstr "Qualité des données"
 
-#: components/SpecifyNetwork/Table.tsx:64
+#: components/SpecifyNetwork/Table.tsx:67
 #. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "reportedBy"

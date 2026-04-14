@@ -14,7 +14,7 @@ msgid "query"
 msgstr "Query"
 
 #: components/Header/menuItemDefinitions.ts:73
-#: components/Router/OverlayRoutes.tsx:114
+#: components/Router/OverlayRoutes.tsx:123
 #: components/Toolbar/Query.tsx:78
 #: components/Toolbar/Query.tsx:219
 #: components/Toolbar/Query.tsx:221
@@ -24,8 +24,8 @@ msgstr "Queries"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
 #: components/Preferences/UserDefinitions.tsx:1760
-#: components/SearchDialog/index.tsx:242
-#: components/SearchDialog/index.tsx:386
+#: components/SearchDialog/index.tsx:243
+#: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Search Dialog > Index ⬤ Components > Security > Registry
 msgid "queryBuilder"
@@ -33,7 +33,7 @@ msgstr "Query Builder"
 
 #: components/QueryBuilder/Export.tsx:103
 #: components/QueryBuilder/index.tsx:130
-#: components/Router/OverlayRoutes.tsx:129
+#: components/Router/OverlayRoutes.tsx:138
 #: components/Statistics/AddStatDialog.tsx:64
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
@@ -188,10 +188,11 @@ msgstr "Create CSV"
 msgid "createKml"
 msgstr "Create KML"
 
+#: components/BatchIdentify/index.tsx:769
 #: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/WorkBench/RecordSet.tsx:43
-#. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
+#. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
 msgid "createRecordSet"
 msgstr "Create {recordSetTable:string}"
 
@@ -375,7 +376,7 @@ msgid "or"
 msgstr "or"
 
 #: components/SetupTool/SetupOverview.tsx:85
-#: components/TreeView/CreateTree.tsx:503
+#: components/TreeView/CreateTree.tsx:548
 #: utils/__tests__/fieldFormat.test.ts:92
 #: utils/parser/definitions.ts:121
 #. Used in: Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions
@@ -388,9 +389,10 @@ msgstr "Yes"
 msgid "queryResults"
 msgstr "Query Results"
 
+#: components/BatchIdentify/index.tsx:778
 #: components/LocalityUpdate/Status.tsx:321
 #: components/QueryBuilder/ToForms.tsx:43
-#. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
+#. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 msgid "browseInForms"
 msgstr "Browse in Forms"
 

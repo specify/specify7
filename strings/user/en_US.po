@@ -3,7 +3,7 @@ msgstr "Content-Type: text/plain\n"
 
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
-#: components/Header/userToolDefinitions.ts:48
+#: components/Header/userToolDefinitions.ts:49
 #: components/Login/OicLogin.tsx:85
 #: components/Login/index.tsx:199
 #: components/Permissions/PermissionDenied.tsx:230
@@ -25,20 +25,20 @@ msgid "password"
 msgstr "Password"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:608
+#: components/QueryComboBox/index.tsx:609
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "You do not have access to this collection"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:611
+#: components/QueryComboBox/index.tsx:612
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "The currently logged in account does not have access to the "
 "{collectionName:string} collection."
 
-#: components/Header/userToolDefinitions.ts:42
+#: components/Header/userToolDefinitions.ts:43
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
@@ -62,7 +62,7 @@ msgid "repeatPassword"
 msgstr "Repeat new password"
 
 #: components/Core/Main.tsx:97
-#: components/Header/userToolDefinitions.ts:28
+#: components/Header/userToolDefinitions.ts:29
 #. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Log Out"
@@ -110,8 +110,8 @@ msgstr ""
 "password, you can enter them below to associate that user with your "
 "{providerName:string} account for future logins."
 
-#: components/Header/userToolDefinitions.ts:110
-#: components/Router/OverlayRoutes.tsx:174
+#: components/Header/userToolDefinitions.ts:111
+#: components/Router/OverlayRoutes.tsx:183
 #: components/Toolbar/MasterKey.tsx:43
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
@@ -219,7 +219,7 @@ msgstr ""
 "The logged in user has not been given access to any collections in this "
 "database. You must login as another user."
 
-#: components/Header/userToolDefinitions.ts:26
+#: components/Header/userToolDefinitions.ts:27
 #. Used in: Components > Header > User Tool Definitions
 msgid "userAccount"
 msgstr "User Account"
@@ -297,7 +297,7 @@ msgstr "Collections"
 msgid "configureCollectionAccess"
 msgstr "Select user collection access"
 
-#: components/Header/userToolDefinitions.ts:85
+#: components/Header/userToolDefinitions.ts:86
 #: components/Router/Routes.tsx:73
 #: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
@@ -621,7 +621,7 @@ msgstr "Add User"
 msgid "systemConfigurationTool"
 msgstr "System Configuration Tool"
 
-#: components/Header/userToolDefinitions.ts:90
+#: components/Header/userToolDefinitions.ts:91
 #. Used in: Components > Header > User Tool Definitions
 msgid "systemConfig"
 msgstr "System Config"

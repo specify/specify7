@@ -15,7 +15,7 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:61
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
-#: components/Router/OverlayRoutes.tsx:87
+#: components/Router/OverlayRoutes.tsx:96
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 msgid "interactions"
 msgstr "Interactions"
@@ -43,12 +43,11 @@ msgid "tableLabelRecords"
 msgstr "{tableLabel:string} records"
 
 #: components/Interactions/InteractionDialog.tsx:578
-#: components/Interactions/InteractionDialog.tsx:588
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotFoundFor"
 msgstr "No preparations were found for the following records:"
 
-#: components/Interactions/InteractionDialog.tsx:597
+#: components/Interactions/InteractionDialog.tsx:587
 #. Used in: Components > Interactions > Interaction Dialog
 msgid "preparationsNotAvailableFor"
 msgstr ""

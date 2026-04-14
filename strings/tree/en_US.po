@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/Header/menuItemDefinitions.ts:54
-#: components/Router/OverlayRoutes.tsx:79
+#: components/Router/OverlayRoutes.tsx:88
 #: components/SetupTool/SetupForm.tsx:330
 #: components/Toolbar/TreeRepair.tsx:42
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
@@ -297,8 +297,8 @@ msgstr "Choose Parent Rank"
 msgid "moveItems"
 msgstr "Move Items"
 
-#: components/TreeView/CreateTree.tsx:141
-#: components/TreeView/CreateTree.tsx:154
+#: components/TreeView/CreateTree.tsx:142
+#: components/TreeView/CreateTree.tsx:155
 #. Used in: Components > Tree View > Create Tree
 msgid "addTree"
 msgstr "Add Tree"
@@ -384,22 +384,22 @@ msgstr "Rocks"
 msgid "meteorites"
 msgstr "Meteorites"
 
-#: components/TreeView/CreateTree.tsx:422
+#: components/TreeView/CreateTree.tsx:423
 #. Used in: Components > Tree View > Create Tree
 msgid "emptyTrees"
 msgstr "Empty Trees"
 
-#: components/TreeView/CreateTree.tsx:464
+#: components/TreeView/CreateTree.tsx:482
 #. Used in: Components > Tree View > Create Tree
 msgid "populatedTrees"
 msgstr "Populated Trees"
 
-#: components/TreeView/CreateTree.tsx:591
+#: components/TreeView/CreateTree.tsx:636
 #. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationStarted"
 msgstr "Default Tree Creation Started"
 
-#: components/TreeView/CreateTree.tsx:603
+#: components/TreeView/CreateTree.tsx:648
 #. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationStartedDescription"
 msgstr ""
@@ -426,7 +426,7 @@ msgstr "Default tree creation was cancelled."
 msgid "defaultTreeTaskCompleted"
 msgstr "Default tree creation completed successfully."
 
-#: components/TreeView/CreateTree.tsx:597
+#: components/TreeView/CreateTree.tsx:642
 #. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationProgress"
 msgstr "Creating tree record {current:number|formatted}/{total:number|formatted}"
@@ -436,25 +436,25 @@ msgstr "Creating tree record {current:number|formatted}/{total:number|formatted}
 msgid "defaultTreeCreationLoadingMessage"
 msgstr "Default tree creation is in progress, please wait..."
 
-#: components/TreeView/CreateTree.tsx:506
+#: components/TreeView/CreateTree.tsx:551
 #. Used in: Components > Tree View > Create Tree
 msgid "missingRanks"
 msgstr "Missing Ranks"
 
-#: components/TreeView/CreateTree.tsx:510
+#: components/TreeView/CreateTree.tsx:555
 #. Used in: Components > Tree View > Create Tree
 msgid "missingRanksDescription"
 msgstr ""
 "The populated tree you selected to download contains records in ranks that "
 "are missing from your tree."
 
-#: components/TreeView/CreateTree.tsx:518
+#: components/TreeView/CreateTree.tsx:563
 #. Used in: Components > Tree View > Create Tree
 msgid "createMissingRanks"
 msgstr "Should the missing ranks be created?"
 
 #: components/SetupTool/SetupForm.tsx:320
-#: components/TreeView/CreateTree.tsx:476
+#: components/TreeView/CreateTree.tsx:520
 #. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 msgid "source"
 msgstr "Source"
@@ -482,3 +482,15 @@ msgid "synonymizedNodesDescription"
 msgstr ""
 "If enabled, this allows users to add children to synonymized parents and to "
 "synonymize a node with children."
+
+#: components/TreeView/CreateTree.tsx:499
+#. Used in: Components > Tree View > Create Tree
+msgid "utf8EncodingWarning"
+msgstr ""
+"This tree data cannot be imported in your database because it contains "
+"UTF-8 characters and this database uses {encoding:string}"
+
+#: components/TreeView/CreateTree.tsx:503
+#. Used in: Components > Tree View > Create Tree
+msgid "resolveEncoding"
+msgstr "How to resolve:"

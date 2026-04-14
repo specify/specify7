@@ -28,25 +28,35 @@ msgstr "Укажите сеть"
 msgid "occurrenceOrGuidRequired"
 msgstr "Для отображения этой страницы необходимо указать название вида или GUID."
 
-#: components/SpecifyNetwork/Overlay.tsx:119
+#: components/SpecifyNetwork/Overlay.tsx:133
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataError"
 msgstr "Не удалось найти данные по этому запросу."
 
-#: components/SpecifyNetwork/Overlay.tsx:122
+#: components/SpecifyNetwork/Overlay.tsx:136
 #. Used in: Components > Specify Network > Overlay
 #, fuzzy
 msgid "noDataErrorDescription"
 msgstr "Пожалуйста, попробуйте поискать другую запись."
 
-#: components/SpecifyNetwork/Table.tsx:51
+#: components/SpecifyNetwork/Overlay.tsx:149
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailable"
+msgstr ""
+
+#: components/SpecifyNetwork/Overlay.tsx:152
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailableDescription"
+msgstr ""
+
+#: components/SpecifyNetwork/Table.tsx:54
 #. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "dataQuality"
 msgstr "Качество данных"
 
-#: components/SpecifyNetwork/Table.tsx:64
+#: components/SpecifyNetwork/Table.tsx:67
 #. Used in: Components > Specify Network > Table
 #, fuzzy
 msgid "reportedBy"

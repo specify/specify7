@@ -17,13 +17,13 @@ msgstr ""
 msgid "preferences"
 msgstr "Preferences"
 
-#: components/Header/userToolDefinitions.ts:54
+#: components/Header/userToolDefinitions.ts:55
 #. Used in: Components > Header > User Tool Definitions
 msgid "customization"
 msgstr "Customization"
 
 #: components/AppResources/types.tsx:93
-#: components/Header/userToolDefinitions.ts:56
+#: components/Header/userToolDefinitions.ts:57
 #. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 msgid "userPreferences"
 msgstr "User Preferences"
@@ -447,28 +447,33 @@ msgid "welcomePage"
 msgstr "Home Page"
 
 #: components/Errors/JsonError.tsx:65
-#: components/Preferences/Renderers.tsx:244
+#: components/Preferences/Renderers.tsx:245
 #: components/Preferences/UserDefinitions.tsx:620
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 msgid "content"
 msgstr "Content"
 
-#: components/Preferences/Renderers.tsx:251
+#: components/Preferences/Renderers.tsx:252
 #. Used in: Components > Preferences > Renderers
 msgid "defaultImage"
-msgstr "Specify Logo"
+msgstr "Specify Splash"
 
-#: components/Preferences/Renderers.tsx:259
+#: components/Preferences/Renderers.tsx:256
+#. Used in: Components > Preferences > Renderers
+msgid "critterless"
+msgstr "Specify Splash (No Critters)"
+
+#: components/Preferences/Renderers.tsx:264
 #. Used in: Components > Preferences > Renderers
 msgid "customImage"
 msgstr "Custom Image"
 
-#: components/Preferences/Renderers.tsx:265
+#: components/Preferences/Renderers.tsx:270
 #. Used in: Components > Preferences > Renderers
 msgid "embeddedWebpage"
 msgstr "Embedded web page"
 
-#: components/Preferences/Renderers.tsx:266
+#: components/Preferences/Renderers.tsx:271
 #. Used in: Components > Preferences > Renderers
 msgid "embeddedWebpageDescription"
 msgstr "A URL to a page that would be embedded on the home page:"
@@ -1019,7 +1024,7 @@ msgstr ""
 "records based on the variations of first name/last name."
 
 #: components/AppResources/types.tsx:111
-#: components/Header/userToolDefinitions.ts:61
+#: components/Header/userToolDefinitions.ts:62
 #: components/Preferences/index.tsx:102
 #: components/Router/Routes.tsx:389
 #. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
