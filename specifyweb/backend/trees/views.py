@@ -423,6 +423,54 @@ def repair_tree(request, tree: TREE_TABLE):
     extras.renumber_tree(table)
     extras.validate_tree_numbering(table)
 
+@login_maybe_required
+@require_POST
+@transaction.atomic
+def rebuild_fullname(request, tree: TREE_TABLE, id: int):
+    """Rebuild fullname values for the specified tree definition.
+
+    By default only accepted (preferred) nodes are processed. Pass
+    ?rebuild_synonyms=true to also rebuild fullname values for synonym nodes.
+    """
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).rebuild_fullname],
+    )
+
+    rebuild_synonyms = request.GET.get('rebuild_synonyms', 'false').lower() == 'true'
+
+    tree_name = tree.title()
+    treedef = get_object_or_404(f"{tree_name}treedef", id=id)
+
+    accepted_changed = extras.set_fullnames(
+        treedef,
+        null_only=False,
+        include_synonyms=False,
+        synonyms_only=False,
+    )
+
+    synonyms_changed = 0
+    if rebuild_synonyms:
+        synonyms_changed = extras.set_fullnames(
+            treedef,
+            null_only=False,
+            include_synonyms=True,
+            synonyms_only=True,
+        )
+
+    payload = {
+        "success": True,
+        "rebuild_synonyms": rebuild_synonyms,
+        "changed": {
+            "accepted": accepted_changed,
+            "synonyms": synonyms_changed,
+            "total": accepted_changed + synonyms_changed,
+        },
+    }
+
+    return HttpResponse(toJson(payload), content_type="application/json")
+
 @tree_mutation
 def add_root(request, tree, treeid): 
     "Creates a root node in a specific tree."
@@ -555,376 +603,71 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
 
     return result
 
-# class DefaultTreePT(PermissionTarget):
-#     resource = "/tree/default"
-#     update = PermissionTargetAction()
-#     delete = PermissionTargetAction()
+class TaxonMutationPT(PermissionTarget):
+    resource = "/tree/edit/taxon"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
-# Schema definition for the mapping file that is used in default tree creation.
-DEFAULT_TREE_MAPPING_SCHEMA = {
-    "title": "Tree column mapping for default trees",
-    "description": "The mapping of the CSV columns for default tree creation.",
-    "$schema": "http://json-schema.org/schema#",
-    "type": "object",
-    "properties": {
-        "all_columns": {
-            "description": "A list of all the column header names contained in the CSV. The first columns names should correspond the number of ranks defined in this schema.",
-            "type": "array",
-            "items": {
-                "type": "string"
-            }
-        },
-        "ranks": {
-            "description": "An ordered list containing all the ranks to be created.",
-            "type": "array",
-            "minItems": 1,
-            "items": {
-                "description": "A rank's mapping definition.",
-                "type": "object",
-                "properties": {
-                    "name": {"type": "string", "description": "Display name for the rank"},
-                    "enforced": {"type": "boolean", "description": "isEnforced"},
-                    "infullname": {"type": "boolean", "description": "isInFullName"},
-                    "fullnameseparator": {"type": "string", "description": "fullNameSeparator"},
-                    "rank": {"type": "integer", "description": "Rank's rankid"},
-                    "column": {"type": "string", "description": "The CSV column corresponding to this rank"},
-                    "fields": {
-                        "type": "object",
-                        "description": "Mapping of the rank's field names to the CSV columns containing the values.",
-                        "additionalProperties": {"type": "string"}
-                    }
-                },
-                "required": ["name", "column", "fields"],
-                "additionalProperties": False
-            }
-        },
-        "root": {
-            "type": "object",
-            "properties": {
-                "name": {"type": "string"},
-                "fullnameseparator": {"type": "string"}
-            }
-        }
-    },
-    "required": ["ranks"]
-}
-@openapi(schema={
-    "post": {
-        "requestBody": {
-            "required": True,
-            "content": {
-                "application/json": {
-                    "schema": {"$ref": "#/components/schemas/TreeCreationRequest"}
-                }
-            }
-        },
-        "responses": {
-            "201": {
-                "description": 'Default tree created.',
-                "content": {
-                    "application/json": {
-                        "schema": {"$ref": "#/components/schemas/Success"}
-                    }
-                }
-            },
-            "202": {
-                "description": 'Default tree creation started in the background.',
-                "content": {
-                    "application/json": {
-                        "schema": {"$ref": "#/components/schemas/SuccessBackground"}
-                    }
-                }
-            }
-        }
-    }},
-    components={
-        "schemas": {
-            "TreeCreationRequest": {
-                "type": "object",
-                "properties": {
-                    "url": {
-                        "type": "string",
-                        "description": "The URL of the tree CSV file."
-                    },
-                    "treeName": {
-                        "type": "string",
-                        "description": "The name to be used by the new tree.",
-                    },
-                    "disciplineName": {
-                        "type": "string",
-                        "description": "Name of the disicpline the tree belongs to."
-                    },
-                    "collectionName": {
-                        "type": "string",
-                        "description": "The name of the destination collection. The logged in colleciton will be used otherwise."
-                    },
-                    "rowCount": {
-                        "type": "integer",
-                        "description": "The total number of rows contained in the CSV file. Only used for progress tracking."
-                    },
-                    "treeDefId": {
-                        "type": "integer",
-                        "description": "(optional) The ID of the existing tree to import into."
-                    },
-                    "createMissingRanks": {
-                        "type": "boolean",
-                        "description": "(optional) Whether or not to create the ranks included in the downloadable tree."
-                    }
-                },
-                "required": ["url", "disciplineName"],
-                "oneOf": [
-                    {"required": ["mappingUrl"],
-                        "properties": {
-                            "mappingUrl": {
-                                "type": "string",
-                                "description": "The URL of a JSON file describing the column mapping of the CSV data."
-                            },
-                        }},
-                    {"required": ["mapping"],
-                        "properties": {
-                            "mapping": {
-                                "type": "object",
-                                "description": "An object describing the column mapping of the CSV data."
-                            },
-                        }}
-                ]
-            },
-            "SuccessBackground": {
-                "type": "object",
-                "properties": {
-                    "message": {"type": "string"},
-                    "task_id": {"type": "string"}
-                },
-                "required": ["message", "task_id"]
-            },
-            "Success": {
-                "type": "object",
-                "properties": {"message": {"type": "string"}},
-                "required": ["message"]
-            }
-        }
-    })
-@login_maybe_required
-@require_POST
-@transaction.atomic
-def create_default_tree_view(request):
-    """Creates or populates a tree with default records from a CSV file.
-    """
-    # Check permissions in the normal case and for the case of intial database setup.
-    # check_permission_targets(request.specify_collection.id, request.specify_user.id, [DefaultTreePT.create])
-    
-    data = json.loads(request.body)
 
-    requested_discipline_name = data.get('disciplineName', None)
-    if not requested_discipline_name:
-        return http.JsonResponse({'error': 'Discipline name was not provided.'}, status=400)
+class GeographyMutationPT(PermissionTarget):
+    resource = "/tree/edit/geography"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
-    collection_name = data.get('collectionName', None)
-    if collection_name is not None:
-        try:
-            collection = spmodels.Collection.objects.get(collectionname=collection_name)
-        except:
-            return http.JsonResponse({'error': 'Collection was not found.'}, status=404)
-    else:
-        collection = request.specify_collection
-    
-    # Scope new trees to the current collection's discipline
-    discipline = collection.discipline
-    if not discipline:
-        return http.JsonResponse({'error': 'Collection discipline was not found.'}, status=404)
 
-    url = data.get('url', None)
+class StorageMutationPT(PermissionTarget):
+    resource = "/tree/edit/storage"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    bulk_move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
-    tree_name = data.get('treeName', requested_discipline_name.capitalize())
-    
-    tree_type = 'taxon'
-    if requested_discipline_name.lower() in SPECIFY_TREES:
-        # non-taxon tree
-        tree_type = requested_discipline_name.lower()
-        tree_name = TREE_NAMES.get(tree_type)
 
-    row_count = data.get('rowCount', None)
+class GeologictimeperiodMutationPT(PermissionTarget):
+    resource = "/tree/edit/geologictimeperiod"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
-    create_missing_ranks = data.get('createMissingRanks', False)
 
-    if not url:
-        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
-    
-    # Import into an existing tree
-    tree_def_id = data.get('treeDefId')
-    
-    # CSV mapping. Accept the mapping directly or a url to a JSON file containing the mapping.
-    tree_cfg = data.get('mapping', None)
-    mapping_url = data.get('mappingUrl', None)
-    if mapping_url:
-        try:
-            tree_cfg = load_default_tree_json(mapping_url)
-        except Exception:
-            return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
-    try:
-        validate(tree_cfg, DEFAULT_TREE_MAPPING_SCHEMA)
-    except ValidationError as e:
-        return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
+class LithostratMutationPT(PermissionTarget):
+    resource = "/tree/edit/lithostrat"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
-    task_id = str(uuid4())
-    async_result = create_default_tree_task.apply_async(
-        args=[url, discipline.id, tree_type, collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
-        task_id=f"create_default_tree_{tree_type}_{task_id}",
-        taskid=task_id
-    )
-    if tree_def_id:
-        queue_create_default_tree_task(f'create_default_tree_{tree_type.lower()}_{tree_def_id or task_id}')
-    return http.JsonResponse({
-        'message': 'Trees creation started in the background.',
-        'task_id': async_result.id
-    }, status=202)
+class TectonicunitMutationPT(PermissionTarget):
+    resource = "/tree/edit/tectonicunit"
+    merge = PermissionTargetAction()
+    move = PermissionTargetAction()
+    synonymize = PermissionTargetAction()
+    desynonymize = PermissionTargetAction()
+    repair = PermissionTargetAction()
+    rebuild_fullname = PermissionTargetAction()
 
-@openapi(schema={
-    "get": {
-        "parameters": [
-            {
-                "name": "task_id",
-                "in": "path",
-                "required": True,
-                "schema": {"type": "string"},
-                "description": "ID of the default tree creation task"
-            }
-        ],
-        "responses": {
-            "200": {
-                "description": 'Status of the tree creation task',
-                "content": {
-                    "application/json": {
-                        "schema": {"$ref": "#/components/schemas/Progress"}
-                    }
-                }
-            },
-        }
-    }},
-    components={
-        "schemas": {
-            "Progress": {
-                "type": "object",
-                "properties": {
-                    "taskstatus": {
-                        "type": "string",
-                        "description": "Celery task status (PENDING, STARTED, RUNNING, SUCCESS, FAILURE, REVOKED)"
-                    },
-                    "taskprogress": {
-                        "oneOf": [
-                            {"type": "string"},
-                            {
-                                "type": "object",
-                                "description": "Progress info for the task.",
-                                "properties": {
-                                    "current": {"type": "integer", "minimum": 0},
-                                    "total": {"type": "integer", "minimum": 0}
-                                },
-                                "required": ["current", "total"]
-                            }
-                        ],
-                        "description": "Info returned by the task"
-                    },
-                    "taskid": {
-                        "type": "string",
-                        "description": "The id of the task you queried"
-                    },
-                    "active": {
-                        "type": "boolean",
-                        "description": "If you provided an id in the format create_default_tree_[tree_type]_[tree_def_id]. Should only be used if you don't know the real task id."
-                    }
-                },
-                "required": ["taskstatus", "taskid"]
-            }
-        }
-    })
-@require_GET
-def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
-    """Returns the task status for the default tree upload celery task.
-    If you don't know the task id, the format create_default_tree_{tree_type}_{task_id} can be used just to get the active status.
-    Celery task logs are semi-permanent, so ids need to be generated randomly."""
-
-    tasks = get_active_create_default_tree_tasks()
-    result = create_default_tree_task.AsyncResult(task_id)
-
-    status = {
-        'taskstatus': result.status,
-        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
-        'taskid': task_id,
-        'active': task_id in tasks
-    }
-
-    return http.JsonResponse(status)
-
-@openapi(schema={
-    "post": {
-        "parameters": [
-            {
-                "name": "task_id",
-                "in": "path",
-                "required": True,
-                "schema": {"type": "string"},
-                "description": "ID of the default tree creation task to abort"
-            }
-        ],
-        "responses": {
-            "200": {
-                "description": "Task aborted successfully"
-            },
-            "400": {
-                "description": "Error aborting the task",
-                "content": {
-                    "application/json": {
-                        "schema": {
-                            "type": "object",
-                            "properties": {
-                                "error": {
-                                    "type": "string",
-                                    "description": "Error message"
-                                }
-                            },
-                            "required": ["error"]
-                        }
-                    }
-                }
-            }
-        }
-    },
-})
-@require_POST
-def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
-    """Stops a default tree upload celery task"""
-    try:
-        task = create_default_tree_task.AsyncResult(task_id)
-        task.revoke(terminate=True)
-
-        Message.objects.create(user=request.specify_user, content=json.dumps({
-            'type': 'create-default-tree-cancelled',
-            'name': '',
-            'taskid': task_id,
-            'collection_id': request.specify_collection.id,
-        }))
-
-        return http.HttpResponse('', status=204)
-    except Exception as e:
-        return http.JsonResponse({'error': str(e)}, status=400)
-
-@login_maybe_required
-@require_POST
-def default_tree_mapping(request) -> http.HttpResponse:
-    """Retrieves a default populated tree's mapping from a url"""
-    # TODO: Reuse code from create_default_tree
-    data = json.loads(request.body)
-    tree_cfg = data.get('mapping', None)
-    mapping_url = data.get("mappingUrl")
-    if mapping_url:
-        try:
-            tree_cfg = load_default_tree_json(mapping_url)
-        except Exception:
-            return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
-    try:
-        validate(tree_cfg, DEFAULT_TREE_MAPPING_SCHEMA)
-    except ValidationError as e:
-        return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
-
-    return http.JsonResponse(tree_cfg)
+def perm_target(tree):
+    return {
+        'taxon': TaxonMutationPT,
+        'geography': GeographyMutationPT,
+        'storage': StorageMutationPT,
+        'geologictimeperiod': GeologictimeperiodMutationPT,
+        'lithostrat': LithostratMutationPT,
+        'tectonicunit':TectonicunitMutationPT
+    }[tree]
