@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-14 20:12+0000\n"
-"Last-Translator: Deleted User <mgorpinic2005@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
 "Language: uk\n"
@@ -460,7 +460,7 @@ msgstr "Зміст"
 #: components/Preferences/Renderers.tsx:252
 #, fuzzy
 msgid "defaultImage"
-msgstr "Вкажіть логотип"
+msgstr "Вкажіть сплеск"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:256
