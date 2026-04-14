@@ -214,6 +214,15 @@ class ObjectFormatter:
                     formatter_field_spec.get_field(),
                     new_expr
                 )
+            elif specify_field.is_temporal():
+                # When full field formatting is disabled, still apply
+                # precision-aware date formatting for temporal fields.
+                # Without this, date fields in object formatters ignore
+                # precision and display the raw date (e.g. "2024-01-01"
+                # instead of "2024" for year-only precision).
+                # See: https://github.com/specify/specify7/issues/7376
+                new_expr = self._dateformat(specify_field, new_expr)
+                raw_expr = new_expr
 
         # Helper function to apply only string-ish transforms with no numeric casts
         def apply_stringish(expr):
@@ -418,7 +427,8 @@ class ObjectFormatter:
         if specify_field.type == "java.sql.Timestamp":
             return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
-        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+        field_class = getattr(field, 'class_', None)
+        prec_fld = getattr(field_class, specify_field.name + 'Precision', None) if field_class is not None else None
 
         # format_expr = (
         #     case(
