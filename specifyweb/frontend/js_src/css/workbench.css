@@ -73,6 +73,10 @@
   @apply !bg-gray-200 !text-gray-600 dark:!bg-neutral-700 dark:!text-neutral-300;
 }
 
+.handsontable tbody td {
+  white-space: nowrap;
+}
+
 /* Cell navigation */
 
 .wbs-form
