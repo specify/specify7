@@ -46,13 +46,10 @@ describe('ExpressSearchConfigEditor', () => {
   overrideAjax('/express_search/config/', mockConfigResponse);
 
   test('renders loading state initially', async () => {
-    const { getByText, queryByText } = mount(
+    const { getByText } = mount(
       <ExpressSearchConfigEditor 
         onChange={jest.fn()} 
         onSetCleanup={jest.fn()} 
-        directoryKey="" 
-        name="test" 
-        mimetype="text/xml" 
       />
     );
     expect(getByText('Loading...')).toBeInTheDocument();
@@ -68,9 +65,6 @@ describe('ExpressSearchConfigEditor', () => {
       <ExpressSearchConfigEditor 
         onChange={jest.fn()} 
         onSetCleanup={jest.fn()} 
-        directoryKey="" 
-        name="test" 
-        mimetype="test" 
       />
     );
     
@@ -82,9 +76,6 @@ describe('ExpressSearchConfigEditor', () => {
       <ExpressSearchConfigEditor 
         onChange={jest.fn()} 
         onSetCleanup={jest.fn()} 
-        directoryKey="" 
-        name="test" 
-        mimetype="text/xml" 
       />
     );
 
