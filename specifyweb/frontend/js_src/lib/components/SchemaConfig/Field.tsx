@@ -9,7 +9,7 @@ import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { tables } from '../DataModel/tables';
-import type { SpLocaleContainerItem } from '../DataModel/types';
+import type { SpLocaleContainerItem, Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { SchemaConfigColumn } from './Fields';
@@ -18,6 +18,7 @@ import { javaTypeToHuman } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { maxSchemaValueLength } from './Table';
+import { DwCSection } from './DwCSection';
 
 export function SchemaConfigField({
   schemaData,
@@ -25,10 +26,12 @@ export function SchemaConfigField({
   item,
   onChange: handleChange,
   onFormatted: handleFormatted,
+  tableName,
 }: {
   readonly schemaData: SchemaData;
   readonly field: LiteralField | Relationship;
   readonly item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings;
+  readonly tableName: keyof Tables;
   readonly onChange: (
     field: 'desc' | 'isHidden' | 'isRequired' | 'name',
     value: boolean | string
@@ -64,6 +67,7 @@ export function SchemaConfigField({
           onValueChange={(value): void => handleChange('desc', value)}
         />
       </Label.Block>
+      <DwCSection fieldName={field.name} tableName={tableName} />
       <Label.Block>
         {schemaText.fieldLength()}
         <Input.Integer isReadOnly value={field.length ?? ''} />
