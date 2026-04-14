@@ -74,9 +74,16 @@ export function WelcomeView({
   );
 }
 
+function getCritterlessWelcomePageImage(isDarkMode: boolean): string {
+  return isDarkMode
+    ? '/static/img/critterless_splash_screen_dark.svg'
+    : '/static/img/critterless_splash_screen.svg';
+}
+
 function WelcomeScreenContent(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const [source] = userPreferences.use('welcomePage', 'general', 'source');
+  const isDarkMode = useDarkMode();
 
   return mode === 'embeddedWebpage' ? (
     <iframe
@@ -85,21 +92,26 @@ function WelcomeScreenContent(): JSX.Element {
       title={welcomeText.pageTitle()}
     />
   ) : mode === 'default' ? (
-    <DefaultSplashScreen />
+    <DefaultSplashScreen source={getDefaultWelcomePageImage(isDarkMode)} />
+  ) : mode === 'critterless' ? (
+    <DefaultSplashScreen source={getCritterlessWelcomePageImage(isDarkMode)} />
   ) : (
     <img alt="" className="h-full" src={source} />
   );
 }
 
-function DefaultSplashScreen(): JSX.Element {
+function DefaultSplashScreen({
+  source,
+}: {
+  readonly source: string;
+}): JSX.Element {
   const hueDifference = useHueDifference();
-  const isDarkMode = useDarkMode();
   return (
     <div className="relative">
       <img
         alt=""
         className="w-[800px]"
-        src={getDefaultWelcomePageImage(isDarkMode)}
+        src={source}
         style={{ filter: `hue-rotate(${hueDifference}deg)` }}
       />
       {/* The following gradients in the divs are here to apply a fade out effect on the image */}
