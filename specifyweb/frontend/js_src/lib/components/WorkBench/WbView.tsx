@@ -208,9 +208,7 @@ export function WbView({
       hot.refreshDimensions();
       hot.render();
     };
-    const frameId = requestAnimationFrame(() =>
-      requestAnimationFrame(refresh)
-    );
+    const frameId = requestAnimationFrame(() => requestAnimationFrame(refresh));
     return () => {
       canceled = true;
       cancelAnimationFrame(frameId);
