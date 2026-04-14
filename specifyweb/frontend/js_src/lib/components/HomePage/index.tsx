@@ -38,7 +38,7 @@ export function WelcomeView({
       {!hideSearchBar && displaySearchBar && (
         <div className="flex justify-end gap-2 pr-4 pt-4 items-center">
           <Button.BorderedGray
-            title="Configure Express Search"
+            title={commonText.configureExpressSearch()}
             onClick={() => setIsConfigOpen(true)}
             className="!px-2"
           >

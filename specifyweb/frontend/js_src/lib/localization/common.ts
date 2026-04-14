@@ -83,6 +83,16 @@ export const commonText = createDictionary({
     'pt-br': 'Fechar',
     'hr-hr': 'Zatvoriti',
   },
+  configureExpressSearch: {
+    'en-us': 'Configure Express Search',
+    'ru-ru': 'Настроить Express Search',
+    'es-es': 'Configurar Express Search',
+    'fr-fr': 'Configurer Express Search',
+    'uk-ua': 'Налаштувати Express Search',
+    'de-ch': 'Express Search konfigurieren',
+    'pt-br': 'Configurar Express Search',
+    'hr-hr': 'Konfigurirajte Express Search',
+  },
   apply: {
     'en-us': 'Apply',
     'ru-ru': 'Применить',
