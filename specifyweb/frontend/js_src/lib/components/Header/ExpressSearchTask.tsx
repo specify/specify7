@@ -89,7 +89,7 @@ function SearchField({
     <Input.Generic
       aria-label={commonText.search()}
       autoComplete="on"
-      className="flex-1 bg-[color:var(--field-background)]"
+      className="flex-1 bg-[color:var(--field-background)] py-2"
       // Name is for autocomplete purposes only
       name="searchQuery"
       placeholder={commonText.search()}
@@ -144,7 +144,7 @@ export function ExpressSearchView(): JSX.Element {
         </div>
       ) : (
         <>
-          <WelcomeView />
+          <WelcomeView hideSearchBar={true} />
           <div />
         </>
       )}
@@ -229,8 +229,8 @@ function TableResult({
     <details>
       <summary
         className={`
-          link bg-brand-200 dark:bg-brand-400 hover:dark:!bg-brand-400 list-item
-          rounded p-1.5 hover:!text-white
+          link bg-brand-300 dark:bg-brand-400 hover:dark:!bg-brand-400 list-item
+          rounded p-1.5 !text-white
         `}
       >
         {commonText.countLine({
