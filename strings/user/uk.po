@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-10 02:09+0000\n"
+"PO-Revision-Date: 2026-04-14 20:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/user/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/user/"
+"uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,6 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17-dev\n"
 
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 #: components/ChooseCollection/index.tsx:183
 #: components/Header/UserTools.tsx:54
 #: components/Header/userToolDefinitions.ts:49
@@ -20,100 +21,99 @@ msgstr ""
 #: components/Permissions/PermissionDenied.tsx:230
 #: components/Router/EntrypointRouter.tsx:22
 #: components/Router/EntrypointRouter.tsx:27
-#. Used in: Components > Choose Collection > Index ⬤ Components > Header > User Tools ⬤ Components > Header > User Tool Definitions ⬤ Components > Login > Oic Login ⬤ Components > Login > Index ⬤ Components > Permissions > Permission Denied ⬤ Components > Router > Entrypoint Router
 msgid "logIn"
 msgstr "Увійти"
 
-#: components/Login/index.tsx:175
 #. Used in: Components > Login > Index
+#: components/Login/index.tsx:175
 msgid "username"
 msgstr "Ім'я користувача"
 
+#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 #: components/Login/index.tsx:187
 #: components/Security/SetPassword.tsx:54
-#. Used in: Components > Login > Index ⬤ Components > Security > Set Password
 msgid "password"
 msgstr "Пароль"
 
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
 #: components/QueryComboBox/index.tsx:609
-#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "У вас немає доступу до цієї колекції"
 
+#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
 #: components/QueryComboBox/index.tsx:612
-#. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
 "Поточний обліковий запис, у який ви ввійшли, не має доступу до колекції "
 "{collectionName:string}."
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
 #: components/Header/userToolDefinitions.ts:43
 #: components/PasswordChange/index.tsx:99
 #: components/Router/EntrypointRouter.tsx:40
 #: components/Security/SetPassword.tsx:92
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Password Change > Index ⬤ Components > Router > Entrypoint Router ⬤ Components > Security > Set Password
 msgid "changePassword"
 msgstr "Змінити пароль"
 
-#: components/PasswordChange/index.tsx:65
 #. Used in: Components > Password Change > Index
+#: components/PasswordChange/index.tsx:65
 msgid "oldPassword"
 msgstr "Старий пароль"
 
-#: components/PasswordChange/index.tsx:76
 #. Used in: Components > Password Change > Index
+#: components/PasswordChange/index.tsx:76
 msgid "newPassword"
 msgstr "Новий пароль"
 
-#: components/PasswordChange/index.tsx:88
 #. Used in: Components > Password Change > Index
+#: components/PasswordChange/index.tsx:88
 msgid "repeatPassword"
 msgstr "Повторіть новий пароль"
 
+#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
 msgid "logOut"
 msgstr "Вийти"
 
-#: components/Security/MissingAgentsDialog.tsx:111
 #. Used in: Components > Security > Missing Agents Dialog
+#: components/Security/MissingAgentsDialog.tsx:111
 msgid "setUserAgents"
 msgstr "Налаштування агентів користувачів"
 
-#: components/Core/Main.tsx:104
 #. Used in: Components > Core > Main
+#: components/Core/Main.tsx:104
 msgid "noAgent"
 msgstr "Поточному користувачеві не призначено агента"
 
-#: components/Core/Main.tsx:107
 #. Used in: Components > Core > Main
+#: components/Core/Main.tsx:107
 msgid "noAgentDescription"
 msgstr "Будь ласка, увійдіть як адміністратор і призначте агента цьому користувачеві"
 
+#. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 #: components/Login/OicLogin.tsx:46
 #: components/Login/index.tsx:160
-#. Used in: Components > Login > Oic Login ⬤ Components > Login > Index
 msgid "helloMessage"
 msgstr "Привіт, {userName:string}!"
 
-#: components/Login/OicLogin.tsx:48
 #. Used in: Components > Login > Oic Login
+#: components/Login/OicLogin.tsx:48
 msgid "oicWelcomeMessage"
 msgstr ""
 "Вам запропоновано пов’язати зовнішній логін із вашим обліковим записом "
 "користувача Specify. Це дозволить вам надалі входити в Specify за допомогою "
 "обраного вами постачальника."
 
-#: components/Login/OicLogin.tsx:80
 #. Used in: Components > Login > Oic Login
+#: components/Login/OicLogin.tsx:80
 msgid "legacyLogin"
 msgstr "Увійти за допомогою Вказати обліковий запис"
 
-#: components/Login/index.tsx:162
 #. Used in: Components > Login > Index
+#: components/Login/index.tsx:162
 msgid "unknownOicUser"
 msgstr ""
 "Наразі з вашим обліковим записом {providerName:string} не пов’язано жодного "
@@ -121,522 +121,522 @@ msgstr ""
 "«Вказати», ви можете ввести їх нижче, щоб пов’язати цього користувача з "
 "вашим обліковим записом {providerName:string} для майбутніх входів."
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 #: components/Header/userToolDefinitions.ts:111
 #: components/Router/OverlayRoutes.tsx:183
 #: components/Toolbar/MasterKey.tsx:43
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
 msgid "generateMasterKey"
 msgstr "Згенерувати головний ключ"
 
-#: components/Toolbar/MasterKey.tsx:71
 #. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:71
 msgid "userPassword"
 msgstr "Пароль користувача"
 
-#: components/Toolbar/MasterKey.tsx:40
 #. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:40
 msgid "generate"
 msgstr "Згенерувати"
 
-#: components/Toolbar/MasterKey.tsx:98
 #. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:98
 msgid "masterKeyGenerated"
 msgstr "Згенеровано головний ключ"
 
-#: components/Toolbar/MasterKey.tsx:104
 #. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:104
 msgid "masterKeyFieldLabel"
 msgstr "Головний ключ"
 
-#: components/Toolbar/MasterKey.tsx:62
 #. Used in: Components > Toolbar > Master Key
+#: components/Toolbar/MasterKey.tsx:62
 msgid "incorrectPassword"
 msgstr "Пароль був неправильним."
 
-#: components/Forms/OtherCollectionView.tsx:66
 #. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:66
 msgid "noAccessToResource"
 msgstr ""
 "Ви не маєте доступу до жодного {collectionTable:string}, що містить цей "
 "ресурс, через обліковий запис, у який ви зараз увійшли"
 
-#: components/Forms/OtherCollectionView.tsx:71
 #. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:71
 msgid "resourceInaccessible"
 msgstr "Запитаний ресурс недоступний під час входу в поточну колекцію."
 
-#: components/Forms/OtherCollectionView.tsx:74
 #. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:74
 msgid "selectCollection"
 msgstr "Виберіть одну з наступних колекцій:"
 
-#: components/Forms/OtherCollectionView.tsx:92
 #. 🟥Example: You can login to the Collection, to proceed:. Used in: Components > Forms > Other Collection View
+#: components/Forms/OtherCollectionView.tsx:92
 msgid "loginToProceed"
 msgstr "Ви можете увійти до {collectionTable:string}, щоб продовжити:"
 
+#. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
 #: components/Permissions/FormatError.tsx:33
 #: components/Permissions/PermissionDenied.tsx:232
-#. Used in: Components > Permissions > Format Error ⬤ Components > Permissions > Permission Denied
 msgid "sessionTimeOut"
 msgstr "Недостатньо привілеїв"
 
-#: components/Permissions/PermissionDenied.tsx:239
 #. Used in: Components > Permissions > Permission Denied
+#: components/Permissions/PermissionDenied.tsx:239
 msgid "sessionTimeOutDescription"
 msgstr "У вас недостатньо прав для цієї дії, або ваш поточний сеанс завершено."
 
+#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 #: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
 #: components/QueryComboBox/index.tsx:199
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
-#. 🟥Used in field formatter if user doesn't have read access to the related table. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters ⬤ Components > Query Combo Box > Index ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stat Items
 msgid "noPermission"
 msgstr "ДОЗВІЛУ НЕ ПОТРІБНО"
 
+#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 #: components/Forms/DataTask.tsx:135
 #: components/Permissions/PermissionDenied.tsx:223
-#. Used in: Components > Forms > Data Task ⬤ Components > Permissions > Permission Denied
 msgid "permissionDeniedError"
 msgstr "Помилка відмови у доступі"
 
-#: components/Permissions/FormatError.tsx:62
 #. Used in: Components > Permissions > Format Error
+#: components/Permissions/FormatError.tsx:62
 msgid "permissionDeniedDescription"
 msgstr ""
 "У вас немає жодної політики чи ролі, яка б давала вам дозвіл на виконання "
 "наступної дії:"
 
-#: components/Forms/DataTask.tsx:138
 #. Used in: Components > Forms > Data Task
+#: components/Forms/DataTask.tsx:138
 msgid "emptyRecordSetsReadOnly"
 msgstr ""
 "Не вдається відкрити порожній {recordSetTable:string} у режимі лише для "
 "читання"
 
-#: components/Permissions/FormatError.tsx:120
 #. Used in: Components > Permissions > Format Error
+#: components/Permissions/FormatError.tsx:120
 msgid "permissionDeniedForUrl"
 msgstr "Відмовлено в доступі під час доступу до <url />"
 
-#: components/ChooseCollection/index.tsx:170
 #. Used in: Components > Choose Collection > Index
+#: components/ChooseCollection/index.tsx:170
 msgid "noAccessToCollections"
 msgstr ""
 "Користувач, який зареєстрований, не має доступу до жодної колекції в цій "
 "базі даних. Ви повинні увійти як інший користувач."
 
-#: components/Header/userToolDefinitions.ts:27
 #. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:27
 msgid "userAccount"
 msgstr "Обліковий запис користувача"
 
-#: components/Security/AdminStatusPlugin.tsx:84
 #. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:84
 msgid "removeAdmin"
 msgstr "Видалити адміністратора"
 
-#: components/Security/AdminStatusPlugin.tsx:52
 #. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:52
 msgid "canNotRemoveYourself"
 msgstr "Ви не можете скасувати свій власний статус адміністратора"
 
-#: components/Security/AdminStatusPlugin.tsx:84
 #. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:84
 msgid "makeAdmin"
 msgstr "Зробити адміністратором"
 
+#. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #: components/Security/AdminStatusPlugin.tsx:50
 #: components/Security/UserCollections.tsx:129
-#. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 msgid "saveUserFirst"
 msgstr "Спочатку збережіть користувача"
 
-#: components/Security/AdminStatusPlugin.tsx:55
 #. Used in: Components > Security > Admin Status Plugin
+#: components/Security/AdminStatusPlugin.tsx:55
 msgid "mustBeManager"
 msgstr "Спочатку користувача потрібно зберегти як менеджера"
 
+#. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 #: components/AppResources/tree.ts:228
 #: components/Security/CollectionRole.tsx:185
-#. Used in: Components > App Resources > Tree ⬤ Components > Security > Collection Role
 msgid "users"
 msgstr "Облікові записи користувачів"
 
-#: components/Security/Institution.tsx:140
 #. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:140
 msgid "institutionUsers"
 msgstr "Облікові записи користувачів, визначені в цьому {institutionTable:string}"
 
-#: components/Security/Collection.tsx:151
 #. Used in: Components > Security > Collection
+#: components/Security/Collection.tsx:151
 msgid "collectionUsers"
 msgstr "Облікові записи користувачів, призначені цьому {collectionTable:string}"
 
+#. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 #: components/Security/SetPassword.tsx:40
 #: components/Security/SetPassword.tsx:92
 #: components/Security/UserComponents.tsx:191
 #: components/Security/UserComponents.tsx:195
-#. Used in: Components > Security > Set Password ⬤ Components > Security > User Components
 msgid "setPassword"
 msgstr "Встановити пароль"
 
+#. Used in: Components > Security > Set Password ⬤ Components > Setup Tool > Setup Form
 #: components/Security/SetPassword.tsx:29
 #: components/Security/SetPassword.tsx:50
 #: components/SetupTool/SetupForm.tsx:250
 #: components/SetupTool/SetupForm.tsx:273
-#. Used in: Components > Security > Set Password ⬤ Components > Setup Tool > Setup Form
 msgid "passwordsDoNotMatchError"
 msgstr "Паролі не збігаються."
 
-#: components/Security/SetPassword.tsx:65
 #. Used in: Components > Security > Set Password
+#: components/Security/SetPassword.tsx:65
 msgid "confirmPassword"
 msgstr "Підтвердити"
 
-#: components/Toolbar/Security.tsx:133
 #. Used in: Components > Toolbar > Security
+#: components/Toolbar/Security.tsx:133
 msgid "collections"
 msgstr "Колекції"
 
-#: components/Security/UserCollections.tsx:77
 #. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:77
 msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 #: components/Header/userToolDefinitions.ts:86
 #: components/Router/Routes.tsx:73
 #: components/Router/Routes.tsx:179
 #: components/Toolbar/Security.tsx:102
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Toolbar > Security
 msgid "securityPanel"
 msgstr "Безпека та облікові записи"
 
-#: components/Security/Institution.tsx:83
 #. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:83
 msgid "userRoleLibrary"
 msgstr "Бібліотека шаблонів ролей установи"
 
-#: components/Security/ImportExport.tsx:246
 #. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:246
 msgid "userRoles"
 msgstr "Ролі користувачів"
 
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 #: components/Security/CollectionComponents.tsx:122
 #: components/Security/PreviewComponents.tsx:88
-#. Used in: Components > Security > Collection Components ⬤ Components > Security > Preview Components
 msgid "collectionUserRoles"
 msgstr "Ролі користувачів {collectionTable:string}"
 
-#: components/Security/UserComponents.tsx:109
 #. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:109
 msgid "assignedUserRoles"
 msgstr "Призначені ролі користувачів"
 
-#: components/Security/Role.tsx:153
 #. Used in: Components > Security > Role
+#: components/Security/Role.tsx:153
 msgid "rolePolicies"
 msgstr "Політики дозволів для ролей"
 
-#: components/Security/PreviewComponents.tsx:145
 #. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:145
 msgid "userPolicies"
 msgstr "Політики дозволів користувачів"
 
-#: components/Security/User.tsx:396
 #. Used in: Components > Security > User
+#: components/Security/User.tsx:396
 msgid "customUserPolices"
 msgstr "Політики на рівні користувацьких колекцій (стосуються лише цієї колекції)"
 
-#: components/Security/Role.tsx:117
 #. Used in: Components > Security > Role
+#: components/Security/Role.tsx:117
 msgid "role"
 msgstr "Роль"
 
-#: components/Security/PreviewTables.tsx:65
 #. Used in: Components > Security > Preview Tables
+#: components/Security/PreviewTables.tsx:65
 msgid "read"
 msgstr "Читати"
 
-#: components/Security/Preview.tsx:61
 #. Used in: Components > Security > Preview
+#: components/Security/Preview.tsx:61
 msgid "userPermissionPreview"
 msgstr "Профіль дозволів користувача (лише для читання)"
 
-#: components/Security/Preview.tsx:65
 #. Used in: Components > Security > Preview
+#: components/Security/Preview.tsx:65
 msgid "outOfDateWarning"
 msgstr ""
 "Примітка: попередній перегляд може бути застарілим. Збережіть зміни, щоб "
 "оновити попередній перегляд"
 
-#: components/Security/PreviewComponents.tsx:173
 #. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:173
 msgid "allUsers"
 msgstr "Усі користувачі"
 
-#: components/Security/PreviewComponents.tsx:174
 #. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:174
 msgid "thisUser"
 msgstr "Цей користувач"
 
+#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 #: components/Permissions/FormatError.tsx:67
 #: components/Security/PreviewComponents.tsx:91
 #: components/Security/PreviewComponents.tsx:147
-#. Used in: Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "action"
 msgstr "Дія"
 
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 #: components/AttachmentsBulkImport/Import.tsx:209
 #: components/Permissions/FormatError.tsx:68
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
-#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Permissions > Format Error ⬤ Components > Security > Preview Components
 msgid "resource"
 msgstr "Ресурс"
 
-#: components/Security/PreviewComponents.tsx:176
 #. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:176
 msgid "allCollections"
 msgstr "Усі колекції"
 
-#: components/Security/PreviewComponents.tsx:177
 #. Used in: Components > Security > Preview Components
+#: components/Security/PreviewComponents.tsx:177
 msgid "thisCollection"
 msgstr "Ця колекція"
 
-#: components/Security/utils.ts:144
 #. Used in: Components > Security > Utils
+#: components/Security/utils.ts:144
 msgid "allActions"
 msgstr "Усі дії"
 
-#: components/Security/UserCollections.tsx:275
 #. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:275
 msgid "collectionAccess"
 msgstr "Увімкнути доступ до колекції"
 
-#: components/Router/Routes.tsx:150
 #. Used in: Components > Router > Routes
+#: components/Router/Routes.tsx:150
 msgid "createRole"
 msgstr "Створити роль"
 
+#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 #: components/Router/Routes.tsx:99
 #: components/Router/Routes.tsx:158
 #: components/Security/RoleTemplate.tsx:83
-#. Used in: Components > Router > Routes ⬤ Components > Security > Role Template
 msgid "newRole"
 msgstr "Нова роль"
 
-#: components/Security/RoleTemplate.tsx:108
 #. Used in: Components > Security > Role Template
+#: components/Security/RoleTemplate.tsx:108
 msgid "fromLibrary"
 msgstr "З бібліотеки:"
 
-#: components/Security/RoleTemplate.tsx:177
 #. Used in: Components > Security > Role Template
+#: components/Security/RoleTemplate.tsx:177
 msgid "fromExistingRole"
 msgstr "З існуючої ролі:"
 
-#: components/Security/ImportExport.tsx:32
 #. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:32
 msgid "createNewRoles"
 msgstr "Створити нові ролі:"
 
-#: components/Security/ImportExport.tsx:30
 #. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:30
 msgid "updateExistingRoles"
 msgstr "Оновити існуючі ролі:"
 
-#: components/Security/ImportExport.tsx:31
 #. Used in: Components > Security > Import Export
+#: components/Security/ImportExport.tsx:31
 msgid "unchangedRoles"
 msgstr "Незмінні ролі:"
 
-#: components/Security/UserComponents.tsx:86
 #. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:86
 msgid "institutionAdmin"
 msgstr "Адміністратор установи"
 
-#: components/Security/UserInviteLink.tsx:51
 #. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:51
 msgid "createInviteLink"
 msgstr "Створити посилання для запрошення"
 
-#: components/Security/UserInviteLink.tsx:56
 #. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:56
 msgid "userInviteLink"
 msgstr "Посилання для запрошення користувача"
 
-#: components/Security/UserInviteLink.tsx:61
 #. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:61
 msgid "userInviteLinkDescription"
 msgstr ""
 "Надішліть наступне посилання користувачу {userName:string}, щоб дозволити "
 "йому вперше увійти в систему."
 
-#: components/Security/UserInviteLink.tsx:72
 #. Used in: Components > Security > User Invite Link
+#: components/Security/UserInviteLink.tsx:72
 msgid "noProvidersForUserInviteLink"
 msgstr ""
 "Зовнішнього постачальника ідентифікаційних даних не налаштовано. Ви можете "
 "налаштувати деякі з них у розділі «Specify 7 параметрів сервера»"
 
-#: components/Security/UserComponents.tsx:243
 #. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:243
 msgid "legacyPermissions"
 msgstr "Specify 6 дозволів"
 
-#: components/Security/UserComponents.tsx:198
 #. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:198
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
 "Спробуйте встановити пароль для цього користувача. Користувачі без пароля "
 "не зможуть увійти"
 
-#: components/Security/UserCollections.tsx:134
 #. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:134
 msgid "setCollections"
 msgstr "Колекції наборів"
 
-#: components/Security/MissingAgentsDialog.tsx:165
 #. Used in: Components > Security > Missing Agents Dialog
+#: components/Security/MissingAgentsDialog.tsx:165
 msgid "agentInUse"
 msgstr "Цей агент вже пов'язаний з іншим користувачем."
 
-#: components/Security/MissingAgentsDialog.tsx:114
 #. Used in: Components > Security > Missing Agents Dialog
+#: components/Security/MissingAgentsDialog.tsx:114
 msgid "setAgentsBeforeProceeding"
 msgstr "Будь ласка, налаштуйте наступних агентів, перш ніж продовжити:"
 
-#: components/Security/UserCollections.tsx:249
 #. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:249
 #, fuzzy
 msgid "cannotReadAgentsForUserAssignment"
 msgstr ""
 "Не вдалося завантажити призначених агентів, оскільки у вас немає прав на "
 "читання записів агентів."
 
-#: components/Security/UserCollections.tsx:251
 #. Used in: Components > Security > User Collections
+#: components/Security/UserCollections.tsx:251
 #, fuzzy
 msgid "cannotReadDisciplinesForUserAssignment"
 msgstr ""
 "Не вдається повністю завантажити призначених агентів, оскільки у вас немає "
 "доступу для читання записів дисциплінарних питань."
 
-#: components/Security/UserComponents.tsx:211
 #. Used in: Components > Security > User Components
+#: components/Security/UserComponents.tsx:211
 msgid "externalIdentityProviders"
 msgstr "Зовнішні постачальники ідентифікаційних даних:"
 
-#: components/Security/registry.ts:116
 #. Used in: Components > Security > Registry
+#: components/Security/registry.ts:116
 msgid "allTables"
 msgstr "Усі столи"
 
-#: components/Security/Institution.tsx:194
 #. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:194
 msgid "loadingAdmins"
 msgstr "Завантаження адміністраторів..."
 
-#: components/Security/Institution.tsx:158
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:158
 msgid "specifyAdmin"
 msgstr "(Specify 7 Адміністратор)"
 
-#: components/Security/Institution.tsx:162
 #. 🟥Shown next to user name for admin users. Used in: Components > Security > Institution
+#: components/Security/Institution.tsx:162
 msgid "legacyAdmin"
 msgstr "(Specify 6 Адміністратор)"
 
-#: components/Security/Role.tsx:227
 #. Used in: Components > Security > Role
+#: components/Security/Role.tsx:227
 msgid "deleteRoleWithUsers"
 msgstr "Видалити роль, яка має користувачів?"
 
-#: components/Security/Role.tsx:230
 #. Used in: Components > Security > Role
+#: components/Security/Role.tsx:230
 msgid "deleteRoleWithUsersDescription"
 msgstr "Користувачів не буде видалено, але вони втратять цю роль."
 
-#: components/Security/User.tsx:312
 #. Used in: Components > Security > User
+#: components/Security/User.tsx:312
 msgid "institutionPolicies"
 msgstr "Спеціальні правила на рівні установи (стосуються всіх призначених колекцій)"
 
-#: components/Security/User.tsx:682
 #. Used in: Components > Security > User
+#: components/Security/User.tsx:682
 msgid "cantRemoveLastAdmin"
 msgstr "Не вдається видалити статус адміністратора установи"
 
-#: components/Security/User.tsx:685
 #. Used in: Components > Security > User
+#: components/Security/User.tsx:685
 msgid "cantRemoveLastAdminDescription"
 msgstr "У закладі має бути принаймні один адміністратор закладу"
 
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #: components/FormEditor/Editor.tsx:74
 #: components/Security/Policies.tsx:42
-#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToHorizontalLayout"
 msgstr "Перейти до горизонтального розташування"
 
+#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 #: components/FormEditor/Editor.tsx:75
 #: components/Security/Policies.tsx:43
-#. Used in: Components > Form Editor > Editor ⬤ Components > Security > Policies
 msgid "switchToVerticalLayout"
 msgstr "Перейти до вертикального розташування"
 
+#. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 #: components/Security/Preview.tsx:78
 #: components/Security/registry.ts:81
-#. Used in: Components > Security > Preview ⬤ Components > Security > Registry
 msgid "advancedTables"
 msgstr "Розширені таблиці"
 
-#: components/Security/utils.ts:132
 #. Used in: Components > Security > Utils
+#: components/Security/utils.ts:132
 msgid "excludedInstitutionalPolicies"
 msgstr "Виключені інституційні політики:"
 
-#: components/Security/Policies.tsx:169
 #. Used in: Components > Security > Policies
+#: components/Security/Policies.tsx:169
 msgid "excludedInstitutionalPoliciesDescription"
 msgstr ""
 "(Деякі політики, що застосовуються лише на рівні установи, відсутні тут на "
 "рівні колекції.)"
 
-#: components/Security/User.tsx:269
 #. Used in: Components > Security > User
+#: components/Security/User.tsx:269
 msgid "accountSetupOptions"
 msgstr "Параметри налаштування облікового запису"
 
+#. Used in: Components > Query Builder > Specify User Auto Complete
 #: components/QueryBuilder/SpecifyUserAutoComplete.tsx:10
 #: components/QueryBuilder/SpecifyUserAutoComplete.tsx:11
-#. Used in: Components > Query Builder > Specify User Auto Complete
 msgid "currentUser"
 msgstr "Поточний користувач"
 
+#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
 #: components/Security/CollectionComponents.tsx:66
 #: components/Security/CollectionComponents.tsx:71
 #: components/Security/RoleTemplate.tsx:96
-#. Used in: Components > Security > Collection Components ⬤ Components > Security > Role Template
 msgid "addRole"
 msgstr "Додати роль"
 
-#: components/Security/Collection.tsx:215
 #. Used in: Components > Security > Collection
+#: components/Security/Collection.tsx:215
 msgid "addUser"
 msgstr "Додати користувача"
 
-#: components/SystemConfigurationTool/SystemConfigTool.tsx:69
 #. Used in: Components > System Configuration Tool > System Config Tool
+#: components/SystemConfigurationTool/SystemConfigTool.tsx:69
 #, fuzzy
 msgid "systemConfigurationTool"
 msgstr "Інструмент конфігурації системи"
 
-#: components/Header/userToolDefinitions.ts:91
 #. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:91
 #, fuzzy
 msgid "systemConfig"
 msgstr "Конфігурація системи"
