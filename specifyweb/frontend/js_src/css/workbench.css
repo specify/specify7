@@ -11,8 +11,8 @@
     'Segoe UI',
     sans-serif
   );
-  --ht-font-size: 13px;
-  --ht-font-size-small: 11px;
+  --ht-font-size: 100%;
+  --ht-font-size-small: 85%;
   --ht-line-height: 18px;
   --ht-line-height-small: 16px;
   --ht-font-weight: 400;

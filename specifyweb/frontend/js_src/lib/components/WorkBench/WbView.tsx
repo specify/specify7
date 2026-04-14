@@ -232,7 +232,7 @@ export function WbView({
       }
     >
       <section
-        className={`wbs-form ${className.containerFull}`}
+        className={`wbs-form ${className.containerFull} ${className.formStyles}`}
         ref={spreadsheetContainerRef}
       >
         <div
