@@ -4,15 +4,23 @@
 .ht-theme-classic,
 .ht-theme-classic-dark,
 .ht-theme-classic-dark-auto {
-  --ht-font-family: inherit;
+  --ht-font-family: var(
+    --form-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif
+  );
   --ht-font-size: 13px;
   --ht-font-size-small: 11px;
   --ht-line-height: 18px;
   --ht-line-height-small: 16px;
   --ht-font-weight: 400;
   --ht-header-font-weight: 500;
-  --ht-read-only-color: theme('colors.gray.500');
+  --ht-letter-spacing: normal;
+  --ht-read-only-color: theme('colors.gray.600');
   --ht-cell-read-only-background-color: theme('colors.gray.200');
+  --ht-comments-indicator-color: theme('colors.black');
 }
 
 .handsontable .columnSorting {
@@ -57,8 +65,12 @@
   @apply text-black dark:text-white;
 }
 
+.handsontable .wb-unmapped-cell {
+  @apply !bg-gray-200 !text-gray-600 dark:!bg-neutral-700 dark:!text-neutral-300;
+}
+
 .handsontable .htDimmed {
-  @apply !bg-gray-200 !text-gray-500 dark:!bg-neutral-800 dark:!text-gray-500;
+  @apply !bg-gray-200 !text-gray-600 dark:!bg-neutral-700 dark:!text-neutral-300;
 }
 
 /* Cell navigation */
@@ -120,12 +132,12 @@
  */
 .handsontable {
   @apply text-inherit;
-  font-family: inherit;
+  font-family: var(--form-font-family, inherit);
   font-size: inherit;
 }
 
 .ht-root-wrapper {
-  font-family: inherit;
+  font-family: var(--form-font-family, inherit);
   font-size: inherit;
 }
 
@@ -137,8 +149,8 @@
   --ht-background-color: theme('colors.neutral.800');
   --ht-background-secondary-color: theme('colors.neutral.900');
   --ht-placeholder-color: theme('colors.blue.500');
-  --ht-read-only-color: theme('colors.gray.500');
-  --ht-cell-read-only-background-color: theme('colors.neutral.800');
+  --ht-read-only-color: theme('colors.neutral.300');
+  --ht-cell-read-only-background-color: theme('colors.neutral.700');
   --ht-disabled-color: theme('colors.neutral.500');
   --ht-header-background-color: theme('colors.neutral.900');
   --ht-header-foreground-color: theme('colors.white');
@@ -151,6 +163,7 @@
   --ht-menu-shadow-color: theme('colors.neutral.500');
   --ht-scrollbar-track-color: theme('colors.neutral.900');
   --ht-scrollbar-thumb-color: theme('colors.neutral.500');
+  --ht-comments-indicator-color: theme('colors.white');
 }
 
 /* Handsontable dark mode */
@@ -200,7 +213,7 @@
 }
 
 .htCommentCell:after {
-  @apply dark:!border-t-white;
+  @apply !border-t-black dark:!border-t-white;
 }
 
 .handsontableInput {

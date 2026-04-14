@@ -60,8 +60,18 @@ export function useHotHooks({
 
       const headerLabel = workbench.dataset.columns[physicalCol] ?? '';
       if (headerMeasureContext !== null) {
-        headerMeasureContext.font =
-          '500 13px system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        const bodyStyle =
+          globalThis.document === undefined
+            ? undefined
+            : globalThis.getComputedStyle(globalThis.document.body);
+        const fontFamily =
+          bodyStyle?.getPropertyValue('--form-font-family').trim() ||
+          bodyStyle?.fontFamily ||
+          'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        const fontSize =
+          globalThis.getComputedStyle(workbench.hot.rootElement).fontSize ||
+          '13px';
+        headerMeasureContext.font = `500 ${fontSize} ${fontFamily}`;
       }
       const textWidth =
         headerMeasureContext?.measureText(headerLabel).width ??
@@ -112,16 +122,14 @@ export function useHotHooks({
      *
      */
     afterRenderer: (td, visualRow, visualCol, property, _value) => {
-      if (workbench.hot === undefined) {
-        td.classList.add('text-gray-500');
-        return;
-      }
+      if (workbench.hot === undefined) return;
       const physicalRow = workbench.hot.toPhysicalRow(visualRow);
       const physicalCol =
         typeof property === 'number'
           ? property
           : workbench.hot.toPhysicalColumn(visualCol);
       if (physicalCol >= workbench.dataset.columns.length) return;
+      td.classList.remove('wb-unmapped-cell', 'wb-coordinate-cell');
       const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
       const cellMetaToUpdate: RA<keyof WbMeta> = [
         'isModified',
@@ -143,7 +151,7 @@ export function useHotHooks({
         }
       });
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
-        td.classList.add('text-gray-500');
+        td.classList.add('wb-unmapped-cell');
       if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
         td.classList.add('wb-coordinate-cell');
     },
