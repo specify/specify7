@@ -7,7 +7,7 @@ import { queryText } from '../../localization/query';
 import { resourcesText } from '../../localization/resources';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA } from '../../utils/types';
+import type { RA, WritableArray } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
@@ -170,7 +170,7 @@ const fetchRecordSetCollectionObjectIds = async (
   const limit = 2000;
   let offset = 0;
   let totalCount = 0;
-  const collectionObjectIds: readonly number[] = [];
+  const collectionObjectIds: WritableArray<number> = [];
 
   do {
     const { records, totalCount: fetchedTotalCount } = await fetchCollection(
