@@ -1,39 +1,40 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-01-10 10:01+0000\n"
-"Last-Translator: Максим Горпиніч <gorpinicmaksim0@gmail.com>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/preferences/uk/>\n"
+"PO-Revision-Date: 2026-04-14 20:12+0000\n"
+"Last-Translator: Deleted User <mgorpinic2005@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"preferences/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.15.1\n"
+"X-Generator: Weblate 5.17-dev\n"
 
+#. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Preferences/index.tsx:103
 #: components/Router/Routes.tsx:381
-#. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "preferences"
 msgstr "Уподобання"
 
-#: components/Header/userToolDefinitions.ts:55
 #. Used in: Components > Header > User Tool Definitions
+#: components/Header/userToolDefinitions.ts:55
 msgid "customization"
 msgstr "Спеціальнізація"
 
+#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 #: components/AppResources/types.tsx:93
 #: components/Header/userToolDefinitions.ts:57
-#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 msgid "userPreferences"
 msgstr "Налаштування користувача"
 
-#: components/AppResources/types.tsx:103
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:103
 msgid "defaultUserPreferences"
 msgstr "Параметри користувача за умовчанням"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:31
 #: components/Preferences/UserDefinitions.tsx:170
 #: components/Preferences/UserDefinitions.tsx:610
@@ -43,59 +44,59 @@ msgstr "Параметри користувача за умовчанням"
 #: components/Preferences/UserDefinitions.tsx:1763
 #: components/Preferences/UserDefinitions.tsx:1951
 #: components/Preferences/UserDefinitions.tsx:2266
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "general"
 msgstr "Спеціальне зображення"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:173
 #: components/Preferences/UserDefinitions.tsx:927
-#. Used in: Components > Preferences > User Definitions
 msgid "ui"
 msgstr "Інтерфейс користувача"
 
-#: components/Preferences/UserDefinitions.tsx:184
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:184
 msgid "theme"
 msgstr "Тема"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:191
 #: components/Preferences/UserDefinitions.tsx:226
 #: components/Preferences/UserDefinitions.tsx:248
 #: components/Preferences/UserDefinitions.tsx:269
-#. Used in: Components > Preferences > User Definitions
 msgid "useSystemSetting"
 msgstr "Використовуйте налаштування системи"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:192
 #: components/Preferences/UserDefinitions.tsx:227
 #: components/Preferences/UserDefinitions.tsx:249
 #: components/Preferences/UserDefinitions.tsx:270
-#. Used in: Components > Preferences > User Definitions
 msgid "inheritOsSettings"
 msgstr "Копіює значення з налаштувань вашої операційної системи"
 
+#. 🟥Light mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:196
 #: components/Preferences/UserDefinitions.tsx:213
-#. 🟥Light mode. Used in: Components > Preferences > User Definitions
 msgid "light"
 msgstr "світло"
 
+#. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:200
 #: components/Preferences/UserDefinitions.tsx:210
-#. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 msgid "dark"
 msgstr "Темний"
 
-#: components/Preferences/UserDefinitions.tsx:218
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:218
 msgid "reduceMotion"
 msgstr "Зменшити рух"
 
-#: components/Preferences/UserDefinitions.tsx:219
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:219
 msgid "reduceMotionDescription"
 msgstr "Вимкніть необов'язкову анімацію та переходи."
 
+#. Used in: Components > Preferences > User Definitions ⬤ Preferences > __tests__ > Threshold Rank
 #: components/Preferences/UserDefinitions.tsx:1580
 #: components/Preferences/UserDefinitions.tsx:1619
 #: components/Preferences/UserDefinitions.tsx:1649
@@ -103,141 +104,141 @@ msgstr "Вимкніть необов'язкову анімацію та пер�
 #: components/Preferences/UserDefinitions.tsx:1713
 #: components/Preferences/UserDefinitions.tsx:1745
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#. Used in: Components > Preferences > User Definitions ⬤ Preferences > __tests__ > Threshold Rank
 msgid "rankThreshold"
 msgstr "Показати кількість об'єктів нижче"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1581
 #: components/Preferences/UserDefinitions.tsx:1620
 #: components/Preferences/UserDefinitions.tsx:1650
 #: components/Preferences/UserDefinitions.tsx:1682
 #: components/Preferences/UserDefinitions.tsx:1714
 #: components/Preferences/UserDefinitions.tsx:1746
-#. Used in: Components > Preferences > User Definitions
 msgid "rankThresholdDescription"
 msgstr ""
 "Показати кількість об'єктів колекції для всіх рангів, включаючи та нижче "
 "цього."
 
-#: components/Preferences/UserDefinitions.tsx:240
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:240
 msgid "reduceTransparency"
 msgstr "Зменшити прозорість"
 
-#: components/Preferences/UserDefinitions.tsx:241
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:241
 msgid "reduceTransparencyDescription"
 msgstr ""
 "Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли "
 "це можливо (наприклад, заголовки таблиць у перегляді дерева)."
 
-#: components/Preferences/UserDefinitions.tsx:262
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:262
 msgid "contrast"
 msgstr "Контраст"
 
-#: components/Preferences/UserDefinitions.tsx:274
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:274
 msgid "increase"
 msgstr "Збільшити"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:231
 #: components/Preferences/UserDefinitions.tsx:253
 #: components/Preferences/UserDefinitions.tsx:278
-#. Used in: Components > Preferences > User Definitions
 msgid "reduce"
 msgstr "Зменшити"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:235
 #: components/Preferences/UserDefinitions.tsx:257
 #: components/Preferences/UserDefinitions.tsx:282
-#. Used in: Components > Preferences > User Definitions
 msgid "noPreference"
 msgstr "Без переваг"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:287
 #: components/Preferences/UserDefinitions.tsx:930
-#. Used in: Components > Preferences > User Definitions
 msgid "fontSize"
 msgstr "Розмір шрифту"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:307
 #: components/Preferences/UserDefinitions.tsx:942
-#. Used in: Components > Preferences > User Definitions
 msgid "fontFamily"
 msgstr "Сімейство шрифтів"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:308
 #: components/Preferences/UserDefinitions.tsx:943
-#. Used in: Components > Preferences > User Definitions
 msgid "fontFamilyDescription"
 msgstr ""
 "Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо "
 "його немає в списку. Також підтримується розділений комами список шрифтів, "
 "у якому використовуватиметься другий шрифт, якщо перший недоступний тощо."
 
+#. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:201
 #: components/Preferences/Renderers.tsx:203
 #: components/Preferences/Renderers.tsx:225
-#. Used in: Components > Preferences > Renderers
 msgid "defaultFont"
 msgstr "(типовий шрифт)"
 
-#: components/Preferences/UserDefinitions.tsx:951
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:951
 msgid "maxFormWidth"
 msgstr "Максимальна ширина форми"
 
-#: components/Preferences/UserDefinitions.tsx:1007
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1007
 msgid "fieldBackgrounds"
 msgstr "Польові фони"
 
-#: components/Preferences/UserDefinitions.tsx:1010
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1010
 msgid "fieldBackground"
 msgstr "Поле фону"
 
-#: components/Preferences/UserDefinitions.tsx:1018
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1018
 msgid "disabledFieldBackground"
 msgstr "Вимкнений фон поля"
 
-#: components/Preferences/UserDefinitions.tsx:1026
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1026
 msgid "invalidFieldBackground"
 msgstr "Недійсний фон поля"
 
-#: components/Preferences/UserDefinitions.tsx:1034
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1034
 msgid "requiredFieldBackground"
 msgstr "Обов'язковий фон поля"
 
-#: components/Preferences/UserDefinitions.tsx:1042
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1042
 msgid "darkFieldBackground"
 msgstr "Фон поля (темна тема)"
 
-#: components/Preferences/UserDefinitions.tsx:1050
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1050
 msgid "darkDisabledFieldBackground"
 msgstr "Вимкнений фон поля (темна тема)"
 
-#: components/Preferences/UserDefinitions.tsx:1058
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1058
 msgid "darkInvalidFieldBackground"
 msgstr "Гнучка ширина стовпця сітки вкладеного перегляду"
 
-#: components/Preferences/UserDefinitions.tsx:1066
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1066
 msgid "darkRequiredFieldBackground"
 msgstr "Обов’язковий фон поля (темна тема)"
 
-#: components/Preferences/UserDefinitions.tsx:519
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:519
 msgid "dialogs"
 msgstr "Діалоги"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:124
 #: components/Preferences/CollectionDefinitions.tsx:294
 #: components/Preferences/UserDefinitions.tsx:325
@@ -246,241 +247,242 @@ msgstr "Діалоги"
 #: components/Preferences/UserDefinitions.tsx:1865
 #: components/Preferences/UserDefinitions.tsx:2126
 #: components/Preferences/UserDefinitions.tsx:2181
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "appearance"
 msgstr "Зовнішній вигляд"
 
-#: components/Preferences/UserDefinitions.tsx:385
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:385
 msgid "buttonsLight"
 msgstr "Кнопки (світлий режим)"
 
-#: components/Preferences/UserDefinitions.tsx:446
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:446
 msgid "buttonsDark"
 msgstr "Кнопки (темний режим)"
 
-#: components/Preferences/UserDefinitions.tsx:530
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:530
 msgid "translucentDialog"
 msgstr "Напівпрозорі діалоги"
 
-#: components/Preferences/UserDefinitions.tsx:531
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:531
 msgid "translucentDialogDescription"
 msgstr "Чи мають діалоги прозорий фон."
 
-#: components/Preferences/UserDefinitions.tsx:1404
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1404
 msgid "alwaysPrompt"
 msgstr "Завжди підкажуть вибрати колекцію"
 
-#: components/Preferences/UserDefinitions.tsx:1475
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1475
 msgid "treeEditor"
 msgstr "Редактор дерева"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1564
 #: components/Preferences/UserDefinitions.tsx:1596
 #: components/Preferences/UserDefinitions.tsx:1633
 #: components/Preferences/UserDefinitions.tsx:1665
 #: components/Preferences/UserDefinitions.tsx:1697
 #: components/Preferences/UserDefinitions.tsx:1729
-#. Used in: Components > Preferences > User Definitions
 msgid "treeAccentColor"
 msgstr "Колір акценту дерева"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1572
 #: components/Preferences/UserDefinitions.tsx:1604
 #: components/Preferences/UserDefinitions.tsx:1641
 #: components/Preferences/UserDefinitions.tsx:1673
 #: components/Preferences/UserDefinitions.tsx:1705
 #: components/Preferences/UserDefinitions.tsx:1737
-#. Used in: Components > Preferences > User Definitions
 msgid "synonymColor"
 msgstr "Синонім кольору"
 
-#: components/Preferences/UserDefinitions.tsx:2088
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2088
 msgid "showNewDataSetWarning"
 msgstr "Показати попередження про новий набір даних"
 
-#: components/Preferences/UserDefinitions.tsx:2089
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2089
 msgid "showNewDataSetWarningDescription"
 msgstr "Показувати інформаційне повідомлення під час створення нового набору даних."
 
-#: components/Preferences/UserDefinitions.tsx:646
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:646
 msgid "header"
 msgstr "Навігаційне меню"
 
-#: components/Preferences/UserDefinitions.tsx:507
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:507
 msgid "application"
 msgstr "застосування"
 
-#: components/Preferences/UserDefinitions.tsx:510
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:510
 msgid "allowDismissingErrors"
 msgstr "Дозволити закривати повідомлення про помилки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:522
 #: components/Preferences/UserDefinitions.tsx:850
-#. Used in: Components > Preferences > User Definitions
 msgid "updatePageTitle"
 msgstr "Оновити назву сторінки"
 
-#: components/Preferences/UserDefinitions.tsx:523
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:523
 msgid "updatePageTitleDescription"
 msgstr "Чи оновлювати назву сторінки відповідно до заголовка діалогового вікна."
 
-#: components/Preferences/UserDefinitions.tsx:851
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:851
 msgid "updatePageTitleFormDescription"
 msgstr "Чи оновлювати назву сторінки відповідно до поточного запису."
 
-#: components/Preferences/UserDefinitions.tsx:1166
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1166
 msgid "queryComboBox"
 msgstr "Поле зі списком запитів"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1121
 #: components/Preferences/UserDefinitions.tsx:1169
 #: components/Preferences/UserDefinitions.tsx:1539
-#. Used in: Components > Preferences > User Definitions
 msgid "searchAlgorithm"
 msgstr "Алгоритм пошуку"
 
-#: components/Preferences/UserDefinitions.tsx:1189
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1189
 msgid "treeSearchAlgorithm"
 msgstr "Алгоритм пошуку (для зв’язків із деревоподібними таблицями)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1128
 #: components/Preferences/UserDefinitions.tsx:1176
 #: components/Preferences/UserDefinitions.tsx:1196
-#. Used in: Components > Preferences > User Definitions
 msgid "startsWithInsensitive"
 msgstr "Починається з (без урахування регістру)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1129
 #: components/Preferences/UserDefinitions.tsx:1177
 #: components/Preferences/UserDefinitions.tsx:1197
-#. Used in: Components > Preferences > User Definitions
 msgid "startsWithDescription"
 msgstr "Пошук значень, які починаються з заданого рядка запиту."
 
-#: components/Preferences/UserDefinitions.tsx:1133
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1133
 msgid "startsWithCaseSensitive"
 msgstr "Починається з (з урахуванням регістру)"
 
-#: components/Preferences/UserDefinitions.tsx:1135
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1135
 msgid "startsWithCaseSensitiveDescription"
 msgstr "Пошук значень, які починаються з заданого рядка запиту."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1139
 #: components/Preferences/UserDefinitions.tsx:1181
 #: components/Preferences/UserDefinitions.tsx:1201
-#. Used in: Components > Preferences > User Definitions
 msgid "containsInsensitive"
 msgstr "Містить (незалежно від регістру)"
 
-#: components/Preferences/UserDefinitions.tsx:1144
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1144
 msgid "containsCaseSensitive"
 msgstr "Містить (з урахуванням регістру)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1140
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#. Used in: Components > Preferences > User Definitions
 msgid "containsDescription"
 msgstr "Пошук значень, які містять заданий рядок запиту (незалежно від регістру)."
 
-#: components/Preferences/UserDefinitions.tsx:1145
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1145
 msgid "containsCaseSensitiveDescription"
 msgstr "Пошук значень, які містять заданий рядок запиту (з урахуванням регістру)."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#. Used in: Components > Preferences > User Definitions
 msgid "containsSecondDescription"
 msgstr ""
 "Можна використовувати _ для відповідності будь-якому одному символу або % "
 "для відповідності будь-якій кількості символів."
 
-#: components/Preferences/UserDefinitions.tsx:1150
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1150
 msgid "highlightMatch"
 msgstr "Виділіть збіг підрядка"
 
-#: components/Preferences/UserDefinitions.tsx:830
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:830
 msgid "languageDescription"
 msgstr "Визначає підписи полів, примітки щодо використання та підписи таблиць."
 
-#: components/Preferences/UserDefinitions.tsx:545
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:545
 msgid "showDialogIcon"
 msgstr "Показати значок у заголовку"
 
-#: components/Preferences/UserDefinitions.tsx:299
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:299
 msgid "scaleInterface"
 msgstr "Інтерфейс масштабу"
 
-#: components/Preferences/UserDefinitions.tsx:300
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:300
 msgid "scaleInterfaceDescription"
 msgstr "Масштабуйте інтерфейс відповідно до розміру шрифту."
 
-#: components/Preferences/UserDefinitions.tsx:1612
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1612
 msgid "displayAuthor"
 msgstr "Показати автора в дереві"
 
-#: components/Preferences/UserDefinitions.tsx:607
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:607
 msgid "welcomePage"
 msgstr "Домашня сторінка"
 
+#. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 #: components/Errors/JsonError.tsx:65
 #: components/Preferences/Renderers.tsx:245
 #: components/Preferences/UserDefinitions.tsx:620
-#. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 msgid "content"
 msgstr "Зміст"
 
-#: components/Preferences/Renderers.tsx:252
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:252
+#, fuzzy
 msgid "defaultImage"
 msgstr "Вкажіть логотип"
 
-#: components/Preferences/Renderers.tsx:256
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:256
 msgid "critterless"
 msgstr "Без створінь"
 
-#: components/Preferences/Renderers.tsx:264
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:264
 msgid "customImage"
 msgstr "Спеціальне зображення"
 
-#: components/Preferences/Renderers.tsx:270
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:270
 msgid "embeddedWebpage"
 msgstr "Вбудована веб-сторінка"
 
-#: components/Preferences/Renderers.tsx:271
 #. Used in: Components > Preferences > Renderers
+#: components/Preferences/Renderers.tsx:271
 msgid "embeddedWebpageDescription"
 msgstr "URL-адреса сторінки, яка буде вбудована на домашній сторінці:"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:582
 #: components/Preferences/UserDefinitions.tsx:840
 #: components/Preferences/UserDefinitions.tsx:1429
@@ -490,725 +492,724 @@ msgstr "URL-адреса сторінки, яка буде вбудована н
 #: components/Preferences/UserDefinitions.tsx:1926
 #: components/Preferences/UserDefinitions.tsx:2138
 #: components/Preferences/UserDefinitions.tsx:2199
-#. Used in: Components > Preferences > User Definitions
 msgid "behavior"
 msgstr "Поведінка"
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:192
 #: components/Preferences/CollectionDefinitions.tsx:232
-#. Used in: Components > Preferences > Collection Definitions
 msgid "inheritance"
 msgstr "Спадщина"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1766
 #: components/Preferences/UserDefinitions.tsx:2096
-#. Used in: Components > Preferences > User Definitions
 msgid "noRestrictionsMode"
 msgstr "Режим без обмежень"
 
-#: components/Preferences/UserDefinitions.tsx:2099
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2099
 msgid "noRestrictionsModeWbDescription"
 msgstr "Дозволяє завантажувати дані в будь-яке поле будь-якої таблиці."
 
-#: components/Preferences/UserDefinitions.tsx:1769
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1769
 msgid "noRestrictionsModeQueryDescription"
 msgstr "Дозволяє запитувати дані з будь-якого поля будь-якої таблиці."
 
-#: components/Preferences/UserDefinitions.tsx:2102
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2102
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або "
 "пошкодження бази даних. Переконайтеся, що ви знаєте, що робите."
 
-#: components/Preferences/index.tsx:306
 #. Used in: Components > Preferences > Index
+#: components/Preferences/index.tsx:306
 msgid "adminsOnlyPreference"
 msgstr "Ви не маєте дозволу змінювати цей параметр"
 
-#: components/Preferences/UserDefinitions.tsx:1798
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1798
 msgid "stickyScrolling"
 msgstr "Липка смуга прокрутки"
 
-#: components/Preferences/UserDefinitions.tsx:1079
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1079
 msgid "foreground"
 msgstr "Передній план"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:328
 #: components/Preferences/UserDefinitions.tsx:1087
-#. Used in: Components > Preferences > User Definitions
 msgid "background"
 msgstr "Фон"
 
-#: components/Preferences/UserDefinitions.tsx:205
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:205
 msgid "sidebarTheme"
 msgstr "Тема бічної панелі"
 
-#: components/Preferences/UserDefinitions.tsx:1095
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1095
 msgid "darkForeground"
 msgstr "Передній план (темна тема)"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:336
 #: components/Preferences/UserDefinitions.tsx:1103
-#. Used in: Components > Preferences > User Definitions
 msgid "darkBackground"
 msgstr "Фон (темна тема)"
 
-#: components/Preferences/UserDefinitions.tsx:344
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:344
 msgid "accentColor1"
 msgstr "Акцентний колір 1"
 
-#: components/Preferences/UserDefinitions.tsx:352
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:352
 msgid "accentColor2"
 msgstr "Акцентний колір 2"
 
-#: components/Preferences/UserDefinitions.tsx:360
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:360
 msgid "accentColor3"
 msgstr "Акцентний колір 3"
 
-#: components/Preferences/UserDefinitions.tsx:368
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:368
 msgid "accentColor4"
 msgstr "Акцентний колір 4"
 
-#: components/Preferences/UserDefinitions.tsx:1964
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1964
 msgid "spreadsheet"
 msgstr "Електронна таблиця"
 
-#: components/Preferences/UserDefinitions.tsx:1967
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1967
 msgid "minSpareRows"
 msgstr "Кількість порожніх рядків у кінці"
 
-#: components/Preferences/UserDefinitions.tsx:1978
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1978
 msgid "autoWrapCols"
 msgstr "Перейдіть на іншу сторону, коли досягнете краю колонки"
 
-#: components/Preferences/UserDefinitions.tsx:1985
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1985
 msgid "autoWrapRows"
 msgstr "Перейдіть на іншу сторону, коли досягнете крайнього ряду"
 
-#: components/Preferences/UserDefinitions.tsx:2026
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2026
 msgid "enterBeginsEditing"
 msgstr "Клавіша Enter починає редагування клітинки"
 
-#: components/Preferences/UserDefinitions.tsx:1992
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1992
 msgid "tabMoveDirection"
 msgstr "Напрямок руху при натисканні клавіші <key>Tab</key>"
 
-#: components/Preferences/UserDefinitions.tsx:1993
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1993
 msgid "tabMoveDirectionDescription"
 msgstr ""
 "Ви можете рухатися в протилежному напрямку, натискаючи "
 "<key>Shift</key>+<key>Tab</key>."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2000
 #: components/Preferences/UserDefinitions.tsx:2017
-#. Used in: Components > Preferences > User Definitions
 msgid "column"
 msgstr "Колонка"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 #: components/LocalityUpdate/Status.tsx:376
 #: components/LocalityUpdate/Status.tsx:419
 #: components/Preferences/UserDefinitions.tsx:2004
 #: components/Preferences/UserDefinitions.tsx:2021
-#. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 msgid "row"
 msgstr "рядок"
 
-#: components/Preferences/UserDefinitions.tsx:2009
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2009
 msgid "enterMoveDirection"
 msgstr "Напрямок руху, коли натиснуто клавішу <key>Enter</key>"
 
-#: components/Preferences/UserDefinitions.tsx:2010
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2010
 msgid "enterMoveDirectionDescription"
 msgstr ""
 "Ви можете рухатися у протилежному напрямку, натискаючи "
 "<key>Shift</key>+<key>Enter</key>."
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:34
 #: components/Preferences/UserDefinitions.tsx:2035
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "filterPickLists"
 msgstr "Фільтр вибору елементів списку"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1810
 #: components/Preferences/UserDefinitions.tsx:2055
-#. Used in: Components > Preferences > User Definitions
 msgid "exportFileDelimiter"
 msgstr "Роздільник файлу експорту"
 
-#: components/Preferences/UserDefinitions.tsx:1838
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1838
 msgid "exportCsvUtf8Bom"
 msgstr "Додайте специфікацію UTF-8 до експорту файлу CSVу"
 
-#: components/Preferences/UserDefinitions.tsx:1840
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1840
 msgid "exportCsvUtf8BomDescription"
 msgstr "Змушує експорт файлів CSV правильно відображатися в Excel."
 
-#: components/Preferences/UserDefinitions.tsx:2046
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2046
 msgid "caseSensitive"
 msgstr "Чутливий до регістру"
 
-#: components/Preferences/UserDefinitions.tsx:2050
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2050
 msgid "caseInsensitive"
 msgstr "Регістр не враховується"
 
-#: components/Preferences/UserDefinitions.tsx:1778
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1778
 msgid "showNoReadTables"
 msgstr "Показувати таблиці без доступу «Читання»"
 
-#: components/Preferences/UserDefinitions.tsx:2112
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2112
 msgid "showNoAccessTables"
 msgstr "Показувати таблиці без доступу «Створити»"
 
-#: components/Preferences/UserDefinitions.tsx:843
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:843
 msgid "textAreaAutoGrow"
 msgstr "Текстові поля збільшуються автоматично"
 
-#: components/Preferences/UserDefinitions.tsx:1929
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1929
 msgid "clearQueryFilters"
 msgstr "Скинути фільтри запитів"
 
-#: components/Preferences/UserDefinitions.tsx:1930
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1930
 msgid "clearQueryFiltersDescription"
 msgstr "Очищає всі фільтри запитів під час запуску звіту з форми."
 
-#: components/Preferences/UserDefinitions.tsx:1937
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1937
 msgid "queryParamtersFromForm"
 msgstr "Показувати фільтри запитів під час запуску звіту з форми"
 
-#: components/Preferences/UserDefinitions.tsx:1157
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1157
 msgid "autoGrowAutoComplete"
 msgstr "Дозволити автозаповнення розширюватися настільки, наскільки потрібно"
 
-#: components/Preferences/UserDefinitions.tsx:858
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:858
 msgid "tableNameInTitle"
 msgstr "Включіть назву таблиці в заголовок сторінки браузера"
 
-#: components/Preferences/UserDefinitions.tsx:865
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:865
 msgid "focusFirstField"
 msgstr "Перейти до першого поля"
 
-#: components/Preferences/UserDefinitions.tsx:2202
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2202
 msgid "doubleClickZoom"
 msgstr "Двічі клацніть, щоб збільшити"
 
-#: components/Preferences/UserDefinitions.tsx:2209
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2209
 msgid "closePopupOnClick"
 msgstr "Закрити спливаюче вікно при зовнішньому клацанні"
 
-#: components/Preferences/UserDefinitions.tsx:2216
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2216
 msgid "animateTransitions"
 msgstr "Анімація переходів"
 
-#: components/Preferences/UserDefinitions.tsx:2223
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2223
 msgid "panInertia"
 msgstr "Інерція панорами"
 
-#: components/Preferences/UserDefinitions.tsx:2230
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2230
 msgid "mouseDrags"
 msgstr "Виділіть відповідний підрядок"
 
-#: components/Preferences/UserDefinitions.tsx:2237
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2237
 msgid "scrollWheelZoom"
 msgstr "Масштаб колеса прокрутки"
 
-#: components/Preferences/UserDefinitions.tsx:911
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:911
 msgid "flexibleColumnWidth"
 msgstr "Гнучка ширина колонки"
 
-#: components/Preferences/UserDefinitions.tsx:918
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:918
 msgid "flexibleSubGridColumnWidth"
 msgstr "Гнучка ширина стовпця сітки вкладеного перегляду"
 
-#: components/Preferences/UserDefinitions.tsx:552
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:552
 msgid "closeOnEsc"
 msgstr "Закриття натисканням клавіші <key>ESC</key>"
 
-#: components/Preferences/UserDefinitions.tsx:559
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:559
 msgid "closeOnOutsideClick"
 msgstr "Закрийте зовнішнім клацанням"
 
-#: components/Preferences/UserDefinitions.tsx:977
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:977
 msgid "specifyNetworkBadge"
 msgstr "Укажіть значок мережі"
 
-#: components/Preferences/UserDefinitions.tsx:984
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:984
 msgid "useAccessibleFullDatePicker"
 msgstr "Використовуйте доступний повний засіб вибору дати"
 
-#: components/Preferences/UserDefinitions.tsx:991
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:991
 msgid "useAccessibleMonthPicker"
 msgstr "Використовуйте доступний засіб вибору місяця"
 
-#: components/Preferences/UserDefinitions.tsx:998
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:998
 msgid "rightAlignNumberFields"
 msgstr "Вирівнювання по правому краю числових полів"
 
-#: components/Preferences/UserDefinitions.tsx:376
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:376
 msgid "roundedCorners"
 msgstr "Заокруглені кути"
 
-#: components/Preferences/UserDefinitions.tsx:963
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:963
 msgid "showSubviewBorders"
 msgstr "Показати межі навколо підвидів"
 
-#: components/Preferences/UserDefinitions.tsx:970
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:970
 msgid "limitMaxFieldWidth"
 msgstr "Обмеження максимальної ширини поля"
 
-#: components/Preferences/UserDefinitions.tsx:1868
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1868
 msgid "condenseQueryResults"
 msgstr "Згорнути результати запиту"
 
-#: components/Preferences/UserDefinitions.tsx:538
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:538
 msgid "blurContentBehindDialog"
 msgstr "Розмити вміст за діалоговим вікном"
 
-#: components/Preferences/UserDefinitions.tsx:1414
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1414
 msgid "collectionSortOrderDescription"
 msgstr "Це визначає візуальний порядок колекцій."
 
-#: components/Preferences/UserDefinitions.tsx:1221
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1221
 msgid "recordSetRecordToOpen"
 msgstr "Запис відкривається за умовчанням"
 
-#: components/Preferences/UserDefinitions.tsx:585
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:585
 msgid "altClickToSupressNewTab"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Натисніть </key>, щоб закрити нову "
 "вкладку"
 
-#: components/Preferences/UserDefinitions.tsx:586
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:586
 msgid "altClickToSupressNewTabDescription"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Натисніть</key> посилання, яке зазвичай "
 "відкривається в новій вкладці, щоб відкрити його в поточній вкладці."
 
-#: components/Preferences/UserDefinitions.tsx:892
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:892
 msgid "makeFormDialogsModal"
 msgstr "Зробіть діалогові вікна форми сірими фоном"
 
-#: components/Preferences/UserDefinitions.tsx:1481
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1481
 msgid "autoScrollTree"
 msgstr "Автоматичне прокручування дерева до виділеного вузла"
 
-#: components/Preferences/UserDefinitions.tsx:1497
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1497
 msgid "sortByField"
 msgstr "Сортувати за полем"
 
-#: components/Preferences/UserDefinitions.tsx:2141
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2141
 msgid "lineWrap"
 msgstr "Обтікання лініями"
 
-#: components/Preferences/UserDefinitions.tsx:2148
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2148
 msgid "indentSize"
 msgstr "Розмір відступу"
 
-#: components/Preferences/UserDefinitions.tsx:2160
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2160
 msgid "indentWithTab"
 msgstr "Відступ із <key>Tab</key>"
 
-#: components/Preferences/UserDefinitions.tsx:872
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:872
 msgid "formHeaderFormat"
 msgstr "Формат заголовка форми"
 
-#: components/Preferences/UserDefinitions.tsx:879
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:879
 msgid "iconAndTableName"
 msgstr "Значок і назва таблиці"
 
-#: components/Preferences/UserDefinitions.tsx:887
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:887
 msgid "tableIcon"
 msgstr "Значок таблиці"
 
-#: components/Preferences/UserDefinitions.tsx:1243
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1243
 msgid "maxHeight"
 msgstr "Максимальна висота"
 
-#: components/Preferences/UserDefinitions.tsx:1113
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1113
 msgid "autoComplete"
 msgstr "Визначає підписи полів, примітки щодо використання та підписи таблиць"
 
-#: components/Preferences/UserDefinitions.tsx:1488
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1488
 msgid "searchCaseSensitive"
 msgstr "Пошук з урахуванням регістру"
 
-#: components/Preferences/UserDefinitions.tsx:1521
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1521
 msgid "searchField"
 msgstr "Поле пошуку"
 
-#: components/Preferences/UserDefinitions.tsx:710
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:710
 msgid "createInteractions"
 msgstr "Створення взаємодії"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:714
 #: components/Preferences/UserDefinitions.tsx:725
-#. Used in: Components > Preferences > User Definitions
 msgid "tableIdentifier"
 msgstr "Ідентифікатор {tableName:string}"
 
-#: components/Preferences/UserDefinitions.tsx:735
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:735
 msgid "useSpaceAsDelimiter"
 msgstr "Використовуйте пробіл як роздільник"
 
-#: components/Preferences/UserDefinitions.tsx:756
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:756
 msgid "useCommaAsDelimiter"
 msgstr "Використовуйте кому як роздільник"
 
-#: components/Preferences/UserDefinitions.tsx:777
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:777
 msgid "useNewLineAsDelimiter"
 msgstr "Використовуйте новий рядок як роздільник"
 
-#: components/Preferences/UserDefinitions.tsx:798
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:798
 msgid "useCustomDelimiters"
 msgstr "Використовуйте спеціальні роздільники"
 
-#: components/Preferences/UserDefinitions.tsx:799
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:799
 msgid "useCustomDelimitersDescription"
 msgstr ""
 "Список розділювачів для використання на додаток до визначених вище. "
 "Поставте один роздільник на рядок."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:743
 #: components/Preferences/UserDefinitions.tsx:764
 #: components/Preferences/UserDefinitions.tsx:785
-#. Used in: Components > Preferences > User Definitions
 msgid "detectAutomaticallyDescription"
 msgstr "Визначати автоматично на основі формату номера каталогу."
 
-#: components/Preferences/CollectionDefinitions.tsx:269
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:269
 msgid "uniqueness"
 msgstr "Унікальність"
 
+#. 🟥Verb. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:747
 #: components/Preferences/UserDefinitions.tsx:768
 #: components/Preferences/UserDefinitions.tsx:789
-#. 🟥Verb. Used in: Components > Preferences > User Definitions
 msgid "use"
 msgstr "використання"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:751
 #: components/Preferences/UserDefinitions.tsx:772
 #: components/Preferences/UserDefinitions.tsx:793
-#. Used in: Components > Preferences > User Definitions
 msgid "dontUse"
 msgstr "Масштаб колеса прокрутки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:652
 #: components/Preferences/UserDefinitions.tsx:664
-#. Used in: Components > Preferences > User Definitions
 msgid "position"
 msgstr "Позиція"
 
-#: components/Preferences/UserDefinitions.tsx:658
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:658
 msgid "top"
 msgstr "Топ"
 
-#: components/Preferences/UserDefinitions.tsx:660
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:660
 msgid "bottom"
 msgstr "Дно"
 
-#: components/Preferences/UserDefinitions.tsx:657
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:657
 msgid "left"
 msgstr "Ліворуч"
 
-#: components/Preferences/UserDefinitions.tsx:659
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:659
 msgid "right"
 msgstr "правильно"
 
-#: components/Preferences/UserDefinitions.tsx:595
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:595
 msgid "showUnsavedIndicator"
 msgstr "Показати індикатор незбережених змін"
 
-#: components/Preferences/UserDefinitions.tsx:596
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:596
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
 "Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені "
 "зміни."
 
-#: components/Preferences/UserDefinitions.tsx:1893
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1893
 msgid "autoPopulateDescription"
 msgstr ""
 "Автоматичне заповнення об’єднаного запису значеннями з дублікатів під час "
 "відкриття діалогового вікна об’єднання."
 
-#: components/Preferences/UserDefinitions.tsx:1906
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1906
 msgid "autoCreateVariants"
 msgstr "Автоматично створювати записи {agentVariantTable:string}"
 
-#: components/Preferences/UserDefinitions.tsx:1910
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1910
 msgid "autoCreateVariantsDescription"
 msgstr ""
 "Під час об’єднання агентів автоматично створювати записи "
 "{agentVariantTable:string} на основі варіацій імені/прізвища."
 
+#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/AppResources/types.tsx:111
 #: components/Header/userToolDefinitions.ts:62
 #: components/Preferences/index.tsx:102
 #: components/Router/Routes.tsx:389
-#. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > Index ⬤ Components > Router > Routes
 msgid "collectionPreferences"
 msgstr "Налаштування"
 
-#: components/Preferences/UserDefinitions.tsx:573
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:573
 msgid "rememberDialogSizes"
 msgstr "Запам'ятайте розміри діалогових вікон"
 
-#: components/Preferences/UserDefinitions.tsx:566
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:566
 msgid "rememberDialogPositions"
 msgstr "Запам'ятовуйте положення діалогового вікна"
 
-#: components/Preferences/UserDefinitions.tsx:1432
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1432
 msgid "autoPlayMedia"
 msgstr "Автоматичне відтворення медіа"
 
-#: components/Preferences/UserDefinitions.tsx:316
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:316
 msgid "useCustomTooltips"
 msgstr "Використовуйте сучасні підказки"
 
-#: components/Preferences/UserDefinitions.tsx:1209
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1209
 msgid "alwaysUseQueryBuilder"
 msgstr "Завжди використовуйте пошук конструктора запитів у формі пошуку"
 
-#: components/Preferences/UserDefinitions.tsx:2129
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2129
 msgid "localizeResourceNames"
 msgstr "Локалізувати назви розпізнаних ресурсів програми"
 
-#: components/Preferences/UserDefinitions.tsx:2167
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2167
 msgid "splitLongXml"
 msgstr "Розділіть довгі рядки XML на кілька рядків"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:108
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:108
 msgid "url"
 msgstr "URL"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:102
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:102
 msgid "pickAttachment"
 msgstr "Виберіть вкладення"
 
-#: components/Molecules/SyncAttachmentPicker.tsx:130
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:130
 msgid "attachmentFailed"
 msgstr "Не вдалося завантажити вкладений файл."
 
-#: components/Molecules/SyncAttachmentPicker.tsx:75
 #. Used in: Components > Molecules > Sync Attachment Picker
+#: components/Molecules/SyncAttachmentPicker.tsx:75
 msgid "pickImage"
 msgstr "Виберіть зображення"
 
-#: components/Preferences/UserDefinitions.tsx:675
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:675
 msgid "customLogo"
 msgstr "Розширена URL-адреса зображення"
 
-#: components/Preferences/UserDefinitions.tsx:683
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:683
 msgid "customLogoCollapsed"
 msgstr "URL-адреса згорнутого зображення"
 
-#: components/Preferences/UserDefinitions.tsx:680
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:680
 msgid "customLogoDescription"
 msgstr ""
 "URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у "
 "меню навігації."
 
-#: components/Preferences/UserDefinitions.tsx:1875
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1875
 msgid "showLineNumber"
 msgstr "Показати номер рядка результату запиту"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:388
 #: components/Preferences/UserDefinitions.tsx:449
-#. Used in: Components > Preferences > User Definitions
 msgid "saveButtonColor"
 msgstr "Зберегти колір кнопки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:428
 #: components/Preferences/UserDefinitions.tsx:489
-#. Used in: Components > Preferences > User Definitions
 msgid "secondaryButtonColor"
 msgstr "Колір вторинної кнопки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:436
 #: components/Preferences/UserDefinitions.tsx:497
-#. Used in: Components > Preferences > User Definitions
 msgid "secondaryLightButtonColor"
 msgstr "Колір вторинної світлової кнопки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:396
 #: components/Preferences/UserDefinitions.tsx:457
-#. Used in: Components > Preferences > User Definitions
 msgid "dangerButtonColor"
 msgstr "Колір кнопки небезпеки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:412
 #: components/Preferences/UserDefinitions.tsx:473
-#. Used in: Components > Preferences > User Definitions
 msgid "infoButtonColor"
 msgstr "Колір інформаційної кнопки"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:404
 #: components/Preferences/UserDefinitions.tsx:465
-#. Used in: Components > Preferences > User Definitions
 msgid "warningButtonColor"
 msgstr "Колір кнопки попередження"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:420
 #: components/Preferences/UserDefinitions.tsx:481
-#. Used in: Components > Preferences > User Definitions
 msgid "successButtonColor"
 msgstr "Колір кнопки успіху"
 
-#: components/Preferences/UserDefinitions.tsx:899
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:899
 msgid "openAsReadOnly"
 msgstr "Відкрити всі записи в режимі лише для читання"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:297
 #: components/Preferences/UserDefinitions.tsx:1848
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "displayBasicView"
 msgstr "Відобразити базовий вигляд"
 
-#: components/Preferences/UserDefinitions.tsx:1855
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1855
 msgid "showComparisonOperatorsForString"
 msgstr "Показати оператори порівняння для текстових полів"
 
-#: components/Preferences/UserDefinitions.tsx:1856
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1856
 msgid "showComparisonOperatorsDescription"
 msgstr ""
 "Дозволяє застосовувати до текстових полів такі фільтри: «Більше ніж», "
 "«Менше ніж», «Більше або дорівнює» та «Менше або дорівнює»"
 
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
-#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "basicView"
 msgstr "Основний вигляд"
 
+#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
-#. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 msgid "detailedView"
 msgstr "Детальний вигляд"
 
-#: components/Preferences/UserDefinitions.tsx:1439
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1439
 msgid "attachmentPreviewMode"
 msgstr "Режим попереднього перегляду вкладених файлів"
 
-#: components/Preferences/UserDefinitions.tsx:1446
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1446
 msgid "fullResolution"
 msgstr "Повна роздільна здатність"
 
-#: components/Preferences/UserDefinitions.tsx:1450
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1450
 msgid "thumbnail"
 msgstr "Мініатюра"
 
-#: components/Preferences/UserDefinitions.tsx:613
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:613
 msgid "addSearchBarHomePage"
 msgstr "Додайте рядок пошуку на головну сторінку"
 
-#: components/Preferences/CollectionDefinitions.tsx:206
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:206
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
 "Тільки записи {collectionObjectTableName: string} без "
@@ -1216,41 +1217,41 @@ msgstr ""
 "{collectionObjectTableName: string} в {collectionObjectGroupTableName: "
 "string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:196
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:196
 msgid "inheritanceCatNumberPref"
 msgstr ""
 "Увімкнути успадкування основного {catalogNumberFieldName: string} його "
 "порожнім братам і сестрам"
 
-#: components/Preferences/CollectionDefinitions.tsx:236
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:236
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
 "Увімкніть успадкування {catalogNumberFieldName: string} для записів "
 "{componentTableName: string}"
 
-#: components/Preferences/CollectionDefinitions.tsx:273
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:273
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
 "Забезпечити унікальність для поля {catalogNumberFieldName: string} у "
 "{componentTableName: string} та {collectionObjectTableName: string}."
 
-#: components/Preferences/CollectionDefinitions.tsx:37
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:37
 msgid "scopeEntireTablePicklists"
 msgstr "Списки вибору «Уся таблиця»"
 
-#: components/Preferences/CollectionDefinitions.tsx:38
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:38
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
 "Якщо ввімкнено, у списках вибору типу «Уся таблиця» відображатимуться лише "
 "ті елементи, які використовуються в поточній колекції."
 
-#: components/Preferences/CollectionDefinitions.tsx:244
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:244
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
 "Тільки записи {componentTableName: string} без {catalogNumberFieldName: "
