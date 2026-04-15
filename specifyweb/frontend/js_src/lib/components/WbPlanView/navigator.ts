@@ -18,7 +18,6 @@ import type { Tables } from '../DataModel/types';
 import { getSystemInfo } from '../InitialContext/systemInfo';
 import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
-import { isSchemaFieldVisible } from '../../utils/schemaVisibility';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
   MapperComponentData,
@@ -284,6 +283,16 @@ export function getMappingLineData({
     parsedDefaultValue: [emptyMapping, undefined],
   };
 
+  const isFieldVisible = (
+    showHiddenFields: boolean,
+    isHidden: boolean,
+    fieldName: string
+  ): boolean =>
+    showHiddenFields ||
+    !isHidden ||
+    // Show a default field, even if it is hidden
+    fieldName === internalState.parsedDefaultValue[0];
+
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
@@ -521,11 +530,10 @@ export function getMappingLineData({
       const showId =
         internalState.defaultValue === table.idField.name ||
         (generateFieldData === 'all' &&
-          isSchemaFieldVisible(
+          isFieldVisible(
             showHiddenFields,
             table.idField.isHidden,
-            table.idField.name,
-            internalState.parsedDefaultValue[0]
+            table.idField.name
           ));
       const idField = showId
         ? ([
@@ -563,13 +571,12 @@ export function getMappingLineData({
               generateFieldData === 'all' ||
               field.name === internalState.parsedDefaultValue[0];
 
-            isIncluded &&= isSchemaFieldVisible(
+            isIncluded &&= isFieldVisible(
               showHiddenFields,
               spec.useSchemaOverrides
                 ? field.overrides.isHidden
                 : field.isHidden,
-              field.name,
-              internalState.parsedDefaultValue[0]
+              field.name
             );
 
             isIncluded &&=
