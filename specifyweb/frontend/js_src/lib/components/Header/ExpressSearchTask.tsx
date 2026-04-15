@@ -8,6 +8,7 @@ import { useNavigate } from 'react-router-dom';
 import { useSearchParameter } from '../../hooks/navigation';
 import { useId } from '../../hooks/useId';
 import { useTriggerState } from '../../hooks/useTriggerState';
+import { useCachedState } from '../../hooks/useCachedState';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { ajax } from '../../utils/ajax';
@@ -16,6 +17,7 @@ import type { GetSet, IR, RA } from '../../utils/types';
 import { Container, H2, H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Form, Input } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { serializeResource } from '../DataModel/serializers';
@@ -38,6 +40,9 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './MenuContext';
+
+const expressSearchDocumentationUrl =
+  'https://discourse.specifysoftware.org/t/simple-search/185';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -102,12 +107,49 @@ function SearchField({
   );
 }
 
+function ExpressSearchInstructions({
+  onClose,
+}: {
+  readonly onClose: () => void;
+}): JSX.Element {
+  return (
+    <div className="rounded border border-gray-200 bg-gray-50 p-3 text-sm text-gray-700 dark:border-neutral-700 dark:bg-neutral-900 dark:text-gray-200">
+      <div className="flex items-start justify-between gap-4">
+        <p className="font-semibold">
+          {commonText.expressSearchInstructionsTitle()}
+        </p>
+        <div className="flex items-center gap-2">
+          {typeof expressSearchDocumentationUrl === 'string' && (
+            <Link.NewTab href={expressSearchDocumentationUrl}>
+              {headerText.documentation()}
+            </Link.NewTab>
+          )}
+          <Button.Icon
+            icon="x"
+            title={commonText.close()}
+            onClick={onClose}
+          />
+        </div>
+      </div>
+      <ul className="mt-2 space-y-1 list-disc pl-5">
+        <li>{commonText.expressSearchInstructions()}</li>
+        <li>{commonText.expressSearchPhraseExample()}</li>
+        <li>{commonText.expressSearchDateFormats()}</li>
+      </ul>
+    </div>
+  );
+}
+
 export function ExpressSearchView(): JSX.Element {
   const [query = '', setQuery] = useSearchParameter('q');
   const value = useTriggerState(query);
   const [pendingQuery] = value;
   const [isConfigOpen, setIsConfigOpen] = React.useState(false);
   const [configRefreshTrigger, setConfigRefreshTrigger] = React.useState(0);
+  const [showInstructions = true, setShowExpressSearchInstructions] = useCachedState(
+    'expressSearch',
+    'showSearchTips'
+  );
 
   const primaryResults = usePrimarySearch(query, configRefreshTrigger);
   const secondaryResults = useSecondarySearch(query, configRefreshTrigger);
@@ -124,7 +166,17 @@ export function ExpressSearchView(): JSX.Element {
       `}
     >
       <div className="flex flex-col gap-2 p-4">
-        <H2>{headerText.simpleSearch()}</H2>
+        <div className="flex items-center gap-2">
+          <H2>{headerText.simpleSearch()}</H2>
+          <Button.Icon
+            icon="questionCircle"
+            title={commonText.expressSearchInstructionsTitle()}
+            onClick={(): void => setShowExpressSearchInstructions((value) => !value)}
+          />
+        </div>
+        {showInstructions && (
+          <ExpressSearchInstructions onClose={(): void => setShowExpressSearchInstructions(false)} />
+        )}
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <div className="flex items-center gap-2">
             <SearchField value={value} />
