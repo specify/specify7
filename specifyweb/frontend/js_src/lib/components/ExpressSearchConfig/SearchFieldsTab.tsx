@@ -27,6 +27,14 @@ function tableLabel(tableName: string): string {
   );
 }
 
+function isSearchFieldVisible(field: any): boolean {
+  return field.isIndexed === true && field.name !== 'collectionMemberId';
+}
+
+function hasVisibleSearchFields(table: any): boolean {
+  return table.fields.some(isSearchFieldVisible);
+}
+
 export function SearchFieldsTab({
   config,
   schemaMetadata,
@@ -34,17 +42,27 @@ export function SearchFieldsTab({
 }: any) {
   const [selectedTable, setSelectedTable] = React.useState<string | null>(null);
 
+  const visibleTables = React.useMemo(
+    () => (schemaMetadata ?? []).filter(hasVisibleSearchFields),
+    [schemaMetadata]
+  );
+
   // Default selection
   React.useEffect(() => {
-    if (!selectedTable && schemaMetadata?.length > 0) {
-      setSelectedTable(schemaMetadata[0].name);
+    if (!selectedTable && visibleTables.length > 0) {
+      setSelectedTable(visibleTables[0].name);
+    } else if (
+      selectedTable &&
+      !visibleTables.some((table: any) => table.name === selectedTable)
+    ) {
+      setSelectedTable(visibleTables[0]?.name ?? null);
     }
-  }, [schemaMetadata, selectedTable]);
+  }, [visibleTables, selectedTable]);
 
   if (!schemaMetadata || !config)
     return <div>{expressSearchConfigText.loadingMetadata()}</div>;
 
-  const currentTableSchema = schemaMetadata.find(
+  const currentTableSchema = visibleTables.find(
     (t: any) => t.name === selectedTable
   );
   const currentTable = selectedTable
@@ -81,13 +99,14 @@ export function SearchFieldsTab({
       );
       return (
         fieldExistsInSchema && // Only show fields that actually exist in the schema
+        field.name !== 'collectionMemberId' && // Hide system collection field that isn't useful to display
         (isVisibleInXml || // Make sure fields already in displayFields are always visible in the UI regardless of schema visibility settings
           (isSchemaFieldVisible(
             false,
             schemaField?.isHidden ?? false,
             field.name
-          ) && // Only show non-hidden fields
-            !isToManyRelationship)) // Exclude to-many relationships since they can't be displayed in search results currently
+          ) &&
+            !isToManyRelationship))
       );
     })()
   );
@@ -270,7 +289,7 @@ export function SearchFieldsTab({
           {expressSearchConfigText.availableTables()}
         </h4>
         <ul className="space-y-1">
-          {schemaMetadata.map((t: any) => (
+          {visibleTables.map((t: any) => (
             <li
               className={`cursor-pointer p-1 rounded ${selectedTable === t.name ? 'bg-brand-100 dark:bg-brand-400' : 'hover:bg-gray-200 dark:hover:bg-zinc-700'}`}
               key={t.name}
@@ -301,7 +320,7 @@ export function SearchFieldsTab({
             </thead>
             <tbody>
               {currentTableSchema.fields
-                .filter((f: any) => f.isIndexed)
+                .filter(isSearchFieldVisible)
                 .map((f: any) => {
                   const sf = tableConfig?.searchFields.find(
                     (sf: any) => sf.fieldName === f.name
