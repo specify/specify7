@@ -3,114 +3,106 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-14 22:12+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"batchIdentify/fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/batchIdentify/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.17-dev\n"
 
-#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/BatchIdentify/index.tsx:787
 #: components/BatchIdentify/index.tsx:812
 #: components/BatchIdentify/index.tsx:877
 #: components/Header/userToolDefinitions.ts:144
 #: components/Router/OverlayRoutes.tsx:80
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "batchIdentify"
-msgstr "Identification du lot"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:883
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "instructions"
 msgstr ""
-"Saisissez les numéros de catalogue en utilisant n'importe quel délimiteur "
-"non numérique (virgules, espaces, préfixes textuels, etc.). Utilisez un "
-"tiret pour indiquer les plages numériques, par exemple 0001 - 0150."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:940
 #: components/BatchIdentify/index.tsx:951
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "catalogNumbersNotFound"
-msgstr "Numéros de catalogue introuvables"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:865
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "identify"
-msgstr "Identifier"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:792
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "successMessage"
-msgstr "Tous les enregistrements ont été identifiés selon le taxon spécifié."
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:206
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "updatedRecordSet"
-msgstr "Lot Identifier les enregistrements mis à jour"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:610
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "noCatalogNumbersParsed"
-msgstr "Veuillez saisir au moins un numéro de catalogue numérique."
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:902
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "validatingCatalogNumbers"
-msgstr "Validation des numéros de catalogue..."
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:887
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "placeholder"
-msgstr "0001 0002 0003 - 0150"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:156
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "previewQueryName"
-msgstr "Aperçu de l'identification par lot"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:915
 #: components/BatchIdentify/index.tsx:1023
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "unknownTaxonTree"
-msgstr "Arbre taxon inconnu"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:920
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "collectionObjectTypes"
-msgstr "Types d'objets de collection"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1012
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "invalidRecordSetTitle"
-msgstr "Coffret de disques mixtes"
+msgstr ""
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1016
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "invalidRecordSetMessage"
 msgstr ""
-"L'ensemble d'enregistrements sélectionné contient des objets de collection "
-"provenant de plusieurs arbres taxonomiques."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1029
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "invalidRecordSetInstructions"
 msgstr ""
-"Choisissez un autre ensemble d'enregistrements, ou modifiez la requête "
-"utilisée pour créer cet ensemble d'enregistrements afin que tous les objets "
-"de la collection utilisent le même arbre taxonomique."
