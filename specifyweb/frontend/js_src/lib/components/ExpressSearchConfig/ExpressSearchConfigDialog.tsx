@@ -12,11 +12,13 @@ import { commonText } from '../../localization/common';
 interface ExpressSearchConfigDialogProps {
   readonly isOpen: boolean;
   readonly onClose: () => void;
+  readonly onSave?: () => void;
 }
 
 export function ExpressSearchConfigDialog({
   isOpen,
   onClose,
+  onSave,
 }: ExpressSearchConfigDialogProps) {
   const loading = React.useContext(LoadingContext);
   const [activeConfig, setActiveConfig] = React.useState<any>(null);
@@ -33,9 +35,10 @@ export function ExpressSearchConfigDialog({
       }).then(() => {
         setIsDirty(false);
         onClose();
+        onSave?.();
       })
     );
-  }, [activeConfig, loading, onClose]);
+  }, [activeConfig, loading, onClose, onSave]);
 
   const handleChangeJSON = React.useCallback((next: any) => {
     setActiveConfig(next);

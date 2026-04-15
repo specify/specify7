@@ -37,6 +37,7 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './MenuContext';
+import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -105,9 +106,11 @@ export function ExpressSearchView(): JSX.Element {
   const [query = '', setQuery] = useSearchParameter('q');
   const value = useTriggerState(query);
   const [pendingQuery] = value;
+  const [isConfigOpen, setIsConfigOpen] = React.useState(false);
+  const [configRefreshTrigger, setConfigRefreshTrigger] = React.useState(0);
 
-  const primaryResults = usePrimarySearch(query);
-  const secondaryResults = useSecondarySearch(query);
+  const primaryResults = usePrimarySearch(query, configRefreshTrigger);
+  const secondaryResults = useSecondarySearch(query, configRefreshTrigger);
 
   return (
     <Container.Full
@@ -123,7 +126,16 @@ export function ExpressSearchView(): JSX.Element {
       <div className="flex flex-col gap-2 p-4">
         <H2>{headerText.simpleSearch()}</H2>
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
-          <SearchField value={value} />
+          <div className="flex items-center gap-2">
+            <SearchField value={value} />
+            <Button.BorderedGray
+              title={commonText.configureExpressSearch()}
+              onClick={() => setIsConfigOpen(true)}
+              className="!px-2"
+            >
+              {icons.cog}
+            </Button.BorderedGray>
+          </div>
           <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
         </Form>
       </div>
@@ -148,6 +160,11 @@ export function ExpressSearchView(): JSX.Element {
           <div />
         </>
       )}
+      <ExpressSearchConfigDialog
+        isOpen={isConfigOpen}
+        onClose={() => setIsConfigOpen(false)}
+        onSave={() => setConfigRefreshTrigger((value) => value + 1)}
+      />
     </Container.Full>
   );
 }

@@ -19,7 +19,8 @@ export type RawExpressSearchResult = {
 };
 
 export function usePrimarySearch(
-  query: string
+  query: string,
+  refreshTrigger?: number
 ): RA<RawExpressSearchResult> | false | undefined {
   const [primaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(async () => {
@@ -43,7 +44,7 @@ export function usePrimarySearch(
                 ajaxUrl,
               }))
       );
-    }, [query]),
+    }, [query, refreshTrigger]),
     false
   );
   return primaryResults;
@@ -83,7 +84,8 @@ type RelatedTableResult = {
 };
 
 export function useSecondarySearch(
-  query: string
+  query: string,
+  refreshTrigger?: number
 ): RA<RawExpressSearchResult> | false | undefined {
   const [secondaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(async () => {
@@ -148,7 +150,7 @@ export function useSecondarySearch(
             ajaxUrl,
           };
         });
-    }, [query]),
+    }, [query, refreshTrigger]),
     false
   );
   return secondaryResults;
