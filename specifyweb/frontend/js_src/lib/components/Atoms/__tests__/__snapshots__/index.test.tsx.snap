@@ -81,7 +81,7 @@ exports[`H2 renders without errors 1`] = `
 exports[`H3 renders without errors 1`] = `
 <DocumentFragment>
   <h3
-    class="text-gray-500 dark:text-neutral-400"
+    class="text-gray-600 dark:text-neutral-400"
   >
     View
   </h3>
