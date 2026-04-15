@@ -286,7 +286,7 @@ export function ExpressSearchConfigEditor({
   );
 }
 
-export function ExpressSearchConfigResourceEditor(
+export function ExpressSearchConfigEditor(
   props: AppResourceTabProps
 ): JSX.Element {
   return (
