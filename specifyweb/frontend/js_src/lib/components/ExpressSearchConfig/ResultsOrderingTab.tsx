@@ -15,7 +15,7 @@ function tableLabel(tableName: string): string {
   );
 }
 
-export function ResultsOrderingTab({ config, relatedQueriesDefinitions, onChangeConfig }: any) {
+export function ResultsOrderingTab({ config, relatedQueriesDefinitions = [], onChangeConfig }: any) {
   const baseTables = config.tables
     .filter((t: any) => t.searchFields.some((sf: any) => sf.inUse !== false))
     .map((t: any) => ({
@@ -29,7 +29,12 @@ export function ResultsOrderingTab({ config, relatedQueriesDefinitions, onChange
     .filter((rq: any) => rq.isActive)
     .map((rq: any) => {
       const def = relatedQueriesDefinitions.find((def: any) => def.id === rq.id);
-      const title = getExpressSearchQueryTitle(def?.name ?? rq.id) || def?.name || String(rq.id);
+      const title = def?.name ? getExpressSearchQueryTitle(def.name) : undefined;
+
+      if (!def || !title || title === String(def.name)) {
+        return undefined;
+      }
+
       return {
         type: 'query',
         id: rq.id,
@@ -38,7 +43,8 @@ export function ResultsOrderingTab({ config, relatedQueriesDefinitions, onChange
         }),
         displayOrder: rq.displayOrder ?? 1000,
       };
-    });
+    })
+    .filter((item: any): item is { type: string; id: string; label: string; displayOrder: number } => !!item);
 
   const allItems = [...baseTables, ...activeQueries].sort(
     (a, b) => a.displayOrder - b.displayOrder
