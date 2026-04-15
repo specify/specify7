@@ -2,7 +2,6 @@ import logging
 from collections import namedtuple, deque
 
 from sqlalchemy import orm, sql, or_
-from sqlalchemy import inspect
 from sqlalchemy.orm.util import AliasedClass
 from sqlalchemy.inspection import inspect as sa_inspect
 
@@ -30,6 +29,48 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         kwargs['internal_filters'] = []
         return super().__new__(cls, *args, **kwargs)
 
+    def _tree_rank_can_use_subquery(self, table, next_join_path):
+        return (
+            table.name == "Taxon"
+            and
+            len(next_join_path) == 1
+            and not next_join_path[0].is_relationship
+            and not isinstance(next_join_path[0], TreeRankQuery)
+        )
+
+    def _build_tree_rank_scalar_subquery(
+        self,
+        start_alias,
+        mapped_cls,
+        table,
+        next_join_path,
+        treedefitem_params,
+    ):
+        field = next_join_path[0]
+        treedefitem_column = table.name + 'TreeDefItemID'
+        treedef_column = table.name + 'TreeDefID'
+        correlation_target = sa_inspect(start_alias).selectable
+        start_node_number = getattr(start_alias, "nodeNumber")
+
+        ancestor = orm.aliased(mapped_cls)
+        subquery = (
+            sql.select(getattr(ancestor, field.name))
+            .select_from(ancestor)
+            .where(
+                getattr(ancestor, treedefitem_column).in_(tuple(treedefitem_params)),
+                getattr(ancestor, treedef_column) == getattr(start_alias, treedef_column),
+                start_node_number.between(
+                    getattr(ancestor, "nodeNumber"),
+                    getattr(ancestor, "highestChildNodeNumber"),
+                ),
+            )
+            .order_by(getattr(ancestor, "nodeNumber").desc())
+            .limit(1)
+        )
+
+        column = subquery.correlate(correlation_target).scalar_subquery()
+        return column, field, table
+
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
         if query.collection is None:
@@ -49,28 +90,8 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         start_alias = node                       # keep as-is
         mapped_cls = sa_inspect(node).mapper.class_ if is_alias else node
 
-        # Use the specific start anchor in the cache key, so each branch has its own chain
-        cache_key = (start_alias, "TreeRanks")
-
-        if cache_key in query.join_cache:
-            logger.debug("using join cache for %r tree ranks.", start_alias)
-            ancestors, treedefs = query.join_cache[cache_key]
-        else:
-            treedefs = get_treedefs(query.collection, table.name)
-            max_depth = max(depth for _, depth in treedefs)
-
-            # Start ancestry from the provided alias (e.g., HostTaxon alias)
-            ancestors = [start_alias]
-
-            # Build parent chain using aliases of the mapped class
-            for _ in range(max_depth - 1):
-                ancestor = orm.aliased(mapped_cls)
-                query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
-                ancestors.append(ancestor)
-
-            logger.debug("adding to join cache for %r tree ranks.", start_alias)
-            query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache[cache_key] = (ancestors, treedefs)
+        treedefs = get_treedefs(query.collection, table.name)
+        max_depth = max(depth for _, depth in treedefs)
 
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
@@ -85,23 +106,54 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
 
-        def make_tree_field_spec(tree_node):
-            return current_field_spec._replace(
-                root_table=table, # rebasing the query
-                root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
-                join_path=next_join_path, # slicing join path to begin from after the tree
+        if self._tree_rank_can_use_subquery(table, next_join_path):
+            # Restrict the subquery strategy to Taxon, so that the alias disambiguation issue from paths like
+            # PreferredTaxon/HostTaxon are solved without changing SQL shape for other trees like Geography or Storage.
+            column, field, table = self._build_tree_rank_scalar_subquery(
+                start_alias,
+                mapped_cls,
+                table,
+                next_join_path,
+                treedefitem_params,
             )
+        else:
+            # Use the specific start anchor in the cache key, so each branch has its own chain
+            cache_key = (start_alias, "TreeRanks")
 
-        cases = []
-        field = None # just to stop mypy from complaining.
-        for ancestor in ancestors:
-            field_spec = make_tree_field_spec(ancestor)
-            query, orm_field, field, table = field_spec.add_spec_to_query(query)
-            # Field and table won't matter. Rank acts as fork, and these two will be same across siblings
-            for treedefitem_param in treedefitem_params:
-                cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
+            if cache_key in query.join_cache:
+                logger.debug("using join cache for %r tree ranks.", start_alias)
+                ancestors = query.join_cache[cache_key]
+            else:
+                # Start ancestry from the provided alias, like the HostTaxon alias
+                ancestors = [start_alias]
 
-        column = sql.case(cases)
+                # Build parent chain using aliases of the mapped class
+                for _ in range(max_depth - 1):
+                    ancestor = orm.aliased(mapped_cls)
+                    query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
+                    ancestors.append(ancestor)
+
+                logger.debug("adding to join cache for %r tree ranks.", start_alias)
+                query = query._replace(join_cache=query.join_cache.copy())
+                query.join_cache[cache_key] = ancestors
+
+            def make_tree_field_spec(tree_node):
+                return current_field_spec._replace(
+                    root_table=table, # rebasing the query
+                    root_sql_table=tree_node, # this is needed to preserve SQL aliased going to next part
+                    join_path=next_join_path, # slicing join path to begin from after the tree
+                )
+
+            cases = []
+            field = None # just to stop mypy from complaining.
+            for ancestor in ancestors:
+                field_spec = make_tree_field_spec(ancestor)
+                query, orm_field, field, table = field_spec.add_spec_to_query(query)
+                # Field and table won't matter. Rank acts as fork, and these two will be same across siblings
+                for treedefitem_param in treedefitem_params:
+                    cases.append((getattr(ancestor, treedefitem_column) == treedefitem_param, orm_field))
+
+            column = sql.case(cases)
 
         defs_to_filter_on = [def_id for (def_id, _) in treedefs_with_ranks]
         # We don't want to include treedef if the rank is not present.
