@@ -1,11 +1,12 @@
 import React from 'react';
-import { Button } from '../Atoms/Button';
-import { Input } from '../Atoms/Form';
+
 import {
   expressSearchConfigText,
-  getExpressSearchQueryTitle,
   getExpressSearchQueryDescription,
+  getExpressSearchQueryTitle,
 } from '../../localization/expressSearchConfig';
+import { Button } from '../Atoms/Button';
+import { Input } from '../Atoms/Form';
 
 export function RelatedTablesTab({
   config,
@@ -19,7 +20,9 @@ export function RelatedTablesTab({
   const handleToggle = (id: string, isActive: boolean) => {
     const newConfig = JSON.parse(JSON.stringify(config));
     let rq = newConfig.relatedQueries.find((r: any) => r.id === id);
-    if (!rq) {
+    if (rq) {
+      rq.isActive = isActive;
+    } else {
       rq = {
         id,
         isActive,
@@ -27,8 +30,6 @@ export function RelatedTablesTab({
         displayOrder: newConfig.relatedQueries.length,
       };
       newConfig.relatedQueries.push(rq);
-    } else {
-      rq.isActive = isActive;
     }
     onChangeConfig(newConfig);
   };
@@ -37,7 +38,9 @@ export function RelatedTablesTab({
     const newConfig = JSON.parse(JSON.stringify(config));
     inUseQueries.forEach((def: any) => {
       let rq = newConfig.relatedQueries.find((r: any) => r.id === def.id);
-      if (!rq) {
+      if (rq) {
+        rq.isActive = isActive;
+      } else {
         rq = {
           id: def.id,
           isActive,
@@ -45,33 +48,29 @@ export function RelatedTablesTab({
           displayOrder: newConfig.relatedQueries.length,
         };
         newConfig.relatedQueries.push(rq);
-      } else {
-        rq.isActive = isActive;
       }
     });
     onChangeConfig(newConfig);
   };
 
   const selectedQuery =
-    selectedRqId !== null
-      ? inUseQueries.find((q: any) => q.id === selectedRqId)
-      : undefined;
+    selectedRqId === null
+      ? undefined
+      : inUseQueries.find((q: any) => q.id === selectedRqId);
 
   const selectedDescription =
-    selectedQuery != null
-      ?
-        getExpressSearchQueryDescription(selectedQuery.name) ??
+    selectedQuery == null
+      ? expressSearchConfigText.selectRelatedQueryDescription()
+      : (getExpressSearchQueryDescription(selectedQuery.name) ??
         selectedQuery.description ??
-        expressSearchConfigText.noDescriptionAvailable()
-      : expressSearchConfigText.selectRelatedQueryDescription();
+        expressSearchConfigText.noDescriptionAvailable());
 
   const selectedName =
-    selectedQuery != null
-      ?
-        getExpressSearchQueryTitle(selectedQuery.name) ||
+    selectedQuery == null
+      ? null
+      : getExpressSearchQueryTitle(selectedQuery.name) ||
         selectedQuery.name ||
-        String(selectedRqId)
-      : null;
+        String(selectedRqId);
 
   return (
     <div className="flex flex-row gap-4 h-full min-h-[400px]">
@@ -89,15 +88,18 @@ export function RelatedTablesTab({
             const rq = config.relatedQueries.find((r: any) => r.id === def.id);
             const isActive = rq?.isActive ?? false;
             const isSelected = selectedRqId === def.id;
-            const title = getExpressSearchQueryTitle(def.name) || def.name || String(def.id);
+            const title =
+              getExpressSearchQueryTitle(def.name) ||
+              def.name ||
+              String(def.id);
             return (
               <li
-                key={def.id}
                 className={`flex justify-between items-center p-2 rounded cursor-pointer border-b ${
                   isSelected
                     ? 'bg-brand-100 dark:bg-brand-400 dark:!text-white'
                     : 'hover:bg-gray-100 dark:hover:bg-zinc-700'
                 }`}
+                key={def.id}
                 onClick={() => setSelectedRqId(def.id)}
               >
                 <span className="text-sm">{title}</span>

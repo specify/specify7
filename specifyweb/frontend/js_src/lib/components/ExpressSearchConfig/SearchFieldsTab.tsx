@@ -1,48 +1,59 @@
 import React from 'react';
+
+import { expressSearchConfigText } from '../../localization/expressSearchConfig';
+import { isSchemaFieldVisible } from '../../utils/schemaVisibility';
+import { camelToHuman } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Select, Input } from '../Atoms/Form';
+import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { genericTables } from '../DataModel/tables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
-import { camelToHuman } from '../../utils/utils';
-import { isSchemaFieldVisible } from '../../utils/schemaVisibility';
-import { expressSearchConfigText } from '../../localization/expressSearchConfig';
 
 /** Return the localized label for a field, falling back to camelToHuman. */
 function fieldLabel(tableName: string, fieldName: string): string {
   return (
-    (genericTables[tableName as keyof typeof genericTables]?.getField(fieldName)?.label as string | undefined) ??
-    camelToHuman(fieldName)
+    (genericTables[tableName as keyof typeof genericTables]?.getField(fieldName)
+      ?.label as string | undefined) ?? camelToHuman(fieldName)
   );
 }
 
 /** Return the localized label for a table, falling back to camelToHuman. */
 function tableLabel(tableName: string): string {
   return (
-    (genericTables[tableName as keyof typeof genericTables]?.label as string | undefined) ??
-    camelToHuman(tableName)
+    (genericTables[tableName as keyof typeof genericTables]?.label as
+      | string
+      | undefined) ?? camelToHuman(tableName)
   );
 }
 
-export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any) {
+export function SearchFieldsTab({
+  config,
+  schemaMetadata,
+  onChangeConfig,
+}: any) {
   const [selectedTable, setSelectedTable] = React.useState<string | null>(null);
 
-  // default selection
+  // Default selection
   React.useEffect(() => {
     if (!selectedTable && schemaMetadata?.length > 0) {
       setSelectedTable(schemaMetadata[0].name);
     }
   }, [schemaMetadata, selectedTable]);
 
-  if (!schemaMetadata || !config) return <div>{expressSearchConfigText.loadingMetadata()}</div>;
+  if (!schemaMetadata || !config)
+    return <div>{expressSearchConfigText.loadingMetadata()}</div>;
 
-  const currentTableSchema = schemaMetadata.find((t: any) => t.name === selectedTable);
+  const currentTableSchema = schemaMetadata.find(
+    (t: any) => t.name === selectedTable
+  );
   const currentTable = selectedTable
     ? genericTables[selectedTable as keyof typeof genericTables]
     : undefined;
 
-  // ensure table exists in config for rendering purposes
-  let tableConfig = config.tables.find((t: any) => t.tableName === selectedTable);
+  // Ensure table exists in config for rendering purposes
+  let tableConfig = config.tables.find(
+    (t: any) => t.tableName === selectedTable
+  );
   if (!tableConfig && selectedTable) {
     tableConfig = {
       tableName: selectedTable,
@@ -57,9 +68,9 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
       const schemaField = currentTable?.getField(field.name);
       const isToManyRelationship =
         schemaField?.isRelationship === true &&
-        relationshipIsToMany(schemaField as Parameters<
-          typeof relationshipIsToMany
-        >[0]);
+        relationshipIsToMany(
+          schemaField as Parameters<typeof relationshipIsToMany>[0]
+        );
       const isVisibleInXml = tableConfig?.displayFields.some(
         (displayField: any) =>
           displayField.fieldName === field.name && displayField.inUse
@@ -68,18 +79,24 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
         (schemaField: any) => schemaField.name === field.name
       );
       return (
-        fieldExistsInSchema && // only show fields that actually exist in the schema
-        (isVisibleInXml || // make sure fields already in displayFields are always visible in the UI regardless of schema visibility settings
-          (isSchemaFieldVisible(false, schemaField?.isHidden ?? false, field.name) && // only show non-hidden fields
-            !isToManyRelationship)) // exclude to-many relationships since they can't be displayed in search results currently
+        fieldExistsInSchema && // Only show fields that actually exist in the schema
+        (isVisibleInXml || // Make sure fields already in displayFields are always visible in the UI regardless of schema visibility settings
+          (isSchemaFieldVisible(
+            false,
+            schemaField?.isHidden ?? false,
+            field.name
+          ) && // Only show non-hidden fields
+            !isToManyRelationship)) // Exclude to-many relationships since they can't be displayed in search results currently
       );
     })()
   );
 
   const checkedDisplayFields =
-    tableConfig?.displayFields.filter((field: any) => field.inUse !== false) ?? [];
+    tableConfig?.displayFields.filter((field: any) => field.inUse !== false) ??
+    [];
   const uncheckedDisplayFields =
-    tableConfig?.displayFields.filter((field: any) => field.inUse === false) ?? [];
+    tableConfig?.displayFields.filter((field: any) => field.inUse === false) ??
+    [];
   const configuredDisplayFieldNames = new Set(
     (tableConfig?.displayFields ?? []).map((field: any) => field.fieldName)
   );
@@ -91,7 +108,7 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
   const updateDisplayFields = (
     fieldName: string,
     isChecked: boolean,
-    direction?: 'up' | 'down'
+    direction?: 'down' | 'up'
   ): void => {
     const newConfig = JSON.parse(JSON.stringify(config));
     const tConfig = newConfig.tables.find(
@@ -116,7 +133,8 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
       );
       if (currentIndex < 0) return;
 
-      const targetIndex = direction === 'up' ? currentIndex - 1 : currentIndex + 1;
+      const targetIndex =
+        direction === 'up' ? currentIndex - 1 : currentIndex + 1;
       if (targetIndex < 0 || targetIndex >= checkedFields.length) return;
 
       [checkedFields[currentIndex], checkedFields[targetIndex]] = [
@@ -136,7 +154,11 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
         existingField === undefined
           ? { fieldName, inUse: true }
           : { ...existingField, inUse: true };
-      tConfig.displayFields = [...checkedFields, checkedEntry, ...uncheckedFields];
+      tConfig.displayFields = [
+        ...checkedFields,
+        checkedEntry,
+        ...uncheckedFields,
+      ];
     } else {
       const checkedFields = currentDisplayFields.filter(
         (field: any) => field.inUse !== false && field.fieldName !== fieldName
@@ -148,7 +170,11 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
         existingField === undefined
           ? { fieldName, inUse: false }
           : { ...existingField, inUse: false };
-      tConfig.displayFields = [...checkedFields, uncheckedEntry, ...uncheckedFields];
+      tConfig.displayFields = [
+        ...checkedFields,
+        uncheckedEntry,
+        ...uncheckedFields,
+      ];
     }
 
     onChangeConfig(newConfig);
@@ -156,7 +182,9 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
 
   const handleSearchToggle = (fieldName: string, isChecked: boolean) => {
     const newConfig = JSON.parse(JSON.stringify(config));
-    let tConfig = newConfig.tables.find((t: any) => t.tableName === selectedTable);
+    let tConfig = newConfig.tables.find(
+      (t: any) => t.tableName === selectedTable
+    );
     if (!tConfig) {
       tConfig = {
         tableName: selectedTable,
@@ -166,46 +194,70 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
       };
       newConfig.tables.push(tConfig);
     }
-    
-    let sf = tConfig.searchFields.find((f: any) => f.fieldName === fieldName);
+
+    const sf = tConfig.searchFields.find((f: any) => f.fieldName === fieldName);
     if (isChecked) {
-      if (!sf) {
-        tConfig.searchFields.push({ fieldName, inUse: true, order: tConfig.searchFields.length, sortDirection: 'None' });
-      } else {
+      if (sf) {
         sf.inUse = true;
+      } else {
+        tConfig.searchFields.push({
+          fieldName,
+          inUse: true,
+          order: tConfig.searchFields.length,
+          sortDirection: 'None',
+        });
       }
       // Auto-select corresponding display field
-      let df = tConfig.displayFields.find((f: any) => f.fieldName === fieldName);
-      if (!df) {
-        tConfig.displayFields.push({ fieldName, inUse: true });
-      } else {
+      const df = tConfig.displayFields.find(
+        (f: any) => f.fieldName === fieldName
+      );
+      if (df) {
         df.inUse = true;
+      } else {
+        tConfig.displayFields.push({ fieldName, inUse: true });
       }
     } else {
-      if (sf) { sf.inUse = false; }
-      let df = tConfig.displayFields.find((f: any) => f.fieldName === fieldName);
-      if (df) { df.inUse = false; }
+      if (sf) {
+        sf.inUse = false;
+      }
+      const df = tConfig.displayFields.find(
+        (f: any) => f.fieldName === fieldName
+      );
+      if (df) {
+        df.inUse = false;
+      }
     }
-    
+
     onChangeConfig(newConfig);
   };
 
   const handleDisplayToggle = (fieldName: string, isChecked: boolean) => {
-    const sf = tableConfig?.searchFields.find((f: any) => f.fieldName === fieldName);
+    const sf = tableConfig?.searchFields.find(
+      (f: any) => f.fieldName === fieldName
+    );
     // Can't uncheck display if search is checked
     if (!isChecked && sf?.inUse) return;
     updateDisplayFields(fieldName, isChecked);
   };
 
-  const moveDisplayField = (fieldName: string, direction: 'up' | 'down'): void => {
+  const moveDisplayField = (
+    fieldName: string,
+    direction: 'down' | 'up'
+  ): void => {
     updateDisplayFields(fieldName, true, direction);
   };
-  
+
   const handleSortChange = (fieldName: string, sortDirection: string) => {
     const newConfig = JSON.parse(JSON.stringify(config));
-    const tConfig = newConfig.tables.find((t: any) => t.tableName === selectedTable);
-    const sf = tConfig?.searchFields.find((f: any) => f.fieldName === fieldName);
-    if (sf) { sf.sortDirection = sortDirection; }
+    const tConfig = newConfig.tables.find(
+      (t: any) => t.tableName === selectedTable
+    );
+    const sf = tConfig?.searchFields.find(
+      (f: any) => f.fieldName === fieldName
+    );
+    if (sf) {
+      sf.sortDirection = sortDirection;
+    }
     onChangeConfig(newConfig);
   };
 
@@ -213,12 +265,14 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
     <div className="flex flex-row gap-4 h-full min-h-[400px]">
       {/* Left panel: tables */}
       <div className="w-1/4 border rounded p-2 overflow-auto bg-gray-50 dark:bg-zinc-800">
-        <h4 className="font-bold mb-2">{expressSearchConfigText.availableTables()}</h4>
+        <h4 className="font-bold mb-2">
+          {expressSearchConfigText.availableTables()}
+        </h4>
         <ul className="space-y-1">
           {schemaMetadata.map((t: any) => (
             <li
-              key={t.name}
               className={`cursor-pointer p-1 rounded ${selectedTable === t.name ? 'bg-brand-100 dark:bg-brand-400' : 'hover:bg-gray-200 dark:hover:bg-zinc-700'}`}
+              key={t.name}
               onClick={() => setSelectedTable(t.name)}
             >
               {tableLabel(t.name)}
@@ -229,7 +283,9 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
 
       {/* Middle panel: search fields */}
       <div className="w-2/4 border rounded p-2 overflow-auto">
-        <h4 className="font-bold mb-2">{expressSearchConfigText.searchableFields()}</h4>
+        <h4 className="font-bold mb-2">
+          {expressSearchConfigText.searchableFields()}
+        </h4>
         {currentTableSchema && (
           <table className="w-full text-left">
             <thead>
@@ -240,32 +296,51 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
               </tr>
             </thead>
             <tbody>
-              {currentTableSchema.fields.filter((f: any) => f.isIndexed).map((f: any) => {
-                const sf = tableConfig?.searchFields.find((sf: any) => sf.fieldName === f.name);
-                const inUse = sf?.inUse ?? sf !== undefined;
-                return (
-                  <tr key={f.name} className="border-b">
-                    <td className="p-1 text-center">
-                      <Input.Checkbox
-                        checked={inUse}
-                        onChange={(e) => handleSearchToggle(f.name, (e.target as HTMLInputElement).checked)}
-                      />
-                    </td>
-                    <td className="p-1">{fieldLabel(selectedTable!, f.name)}</td>
-                    <td className="p-1">
-                      <Select
-                        value={sf?.sortDirection ?? 'None'}
-                        onChange={(e) => handleSortChange(f.name, e.target.value)}
-                        disabled={!inUse}
-                      >
-                        <option value="None">{expressSearchConfigText.searchNone()}</option>
-                        <option value="Ascending">{expressSearchConfigText.ascendingOrder()}</option>
-                        <option value="Descending">{expressSearchConfigText.descendingOrder()}</option>
-                      </Select>
-                    </td>
-                  </tr>
-                );
-              })}
+              {currentTableSchema.fields
+                .filter((f: any) => f.isIndexed)
+                .map((f: any) => {
+                  const sf = tableConfig?.searchFields.find(
+                    (sf: any) => sf.fieldName === f.name
+                  );
+                  const inUse = sf?.inUse ?? sf !== undefined;
+                  return (
+                    <tr className="border-b" key={f.name}>
+                      <td className="p-1 text-center">
+                        <Input.Checkbox
+                          checked={inUse}
+                          onChange={(e) =>
+                            handleSearchToggle(
+                              f.name,
+                              (e.target as HTMLInputElement).checked
+                            )
+                          }
+                        />
+                      </td>
+                      <td className="p-1">
+                        {fieldLabel(selectedTable!, f.name)}
+                      </td>
+                      <td className="p-1">
+                        <Select
+                          disabled={!inUse}
+                          value={sf?.sortDirection ?? 'None'}
+                          onChange={(e) =>
+                            handleSortChange(f.name, e.target.value)
+                          }
+                        >
+                          <option value="None">
+                            {expressSearchConfigText.searchNone()}
+                          </option>
+                          <option value="Ascending">
+                            {expressSearchConfigText.ascendingOrder()}
+                          </option>
+                          <option value="Descending">
+                            {expressSearchConfigText.descendingOrder()}
+                          </option>
+                        </Select>
+                      </td>
+                    </tr>
+                  );
+                })}
             </tbody>
           </table>
         )}
@@ -273,7 +348,9 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
 
       {/* Right panel: display fields */}
       <div className="w-1/4 border rounded p-2 overflow-auto">
-        <h4 className="font-bold mb-2">{expressSearchConfigText.displayFields()}</h4>
+        <h4 className="font-bold mb-2">
+          {expressSearchConfigText.displayFields()}
+        </h4>
         {currentTable && (
           <div className="space-y-3">
             <ul className="space-y-1">
@@ -287,18 +364,18 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
                 );
                 return (
                   <li
-                    key={f.fieldName}
                     className="flex w-full items-center gap-2"
+                    key={f.fieldName}
                   >
                     <Input.Checkbox
                       checked
+                      disabled={isSearchInUse}
                       onChange={(e) =>
                         handleDisplayToggle(
                           f.fieldName,
                           (e.target as HTMLInputElement).checked
                         )
                       }
-                      disabled={isSearchInUse}
                     />
                     <span className="flex-1 min-w-0">
                       {fieldLabel(selectedTable!, f.fieldName)}
@@ -306,15 +383,21 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
                     <div className="ml-auto flex shrink-0 gap-2">
                       <Button.BorderedGray
                         className="h-8 w-8 p-0"
-                        onClick={(): void => moveDisplayField(f.fieldName, 'up')}
                         disabled={currentIndex === 0}
+                        onClick={(): void =>
+                          moveDisplayField(f.fieldName, 'up')
+                        }
                       >
                         {icons.chevronUp}
                       </Button.BorderedGray>
                       <Button.BorderedGray
                         className="h-8 w-8 p-0"
-                        onClick={(): void => moveDisplayField(f.fieldName, 'down')}
-                        disabled={currentIndex === checkedDisplayFields.length - 1}
+                        disabled={
+                          currentIndex === checkedDisplayFields.length - 1
+                        }
+                        onClick={(): void =>
+                          moveDisplayField(f.fieldName, 'down')
+                        }
                       >
                         {icons.chevronDown}
                       </Button.BorderedGray>
@@ -331,16 +414,16 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
                 );
                 const isSearchInUse = sf?.inUse ?? sf !== undefined;
                 return (
-                  <li key={f.fieldName} className="flex items-center gap-2">
+                  <li className="flex items-center gap-2" key={f.fieldName}>
                     <Input.Checkbox
                       checked={false}
+                      disabled={isSearchInUse}
                       onChange={(e) =>
                         handleDisplayToggle(
                           f.fieldName,
                           (e.target as HTMLInputElement).checked
                         )
                       }
-                      disabled={isSearchInUse}
                     />
                     <span>{fieldLabel(selectedTable!, f.fieldName)}</span>
                   </li>
@@ -352,16 +435,16 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
                 );
                 const isSearchInUse = sf?.inUse ?? sf !== undefined;
                 return (
-                  <li key={f.name} className="flex items-center gap-2">
+                  <li className="flex items-center gap-2" key={f.name}>
                     <Input.Checkbox
                       checked={false}
+                      disabled={isSearchInUse}
                       onChange={(e) =>
                         handleDisplayToggle(
                           f.name,
                           (e.target as HTMLInputElement).checked
                         )
                       }
-                      disabled={isSearchInUse}
                     />
                     <span>{fieldLabel(selectedTable!, f.name)}</span>
                   </li>

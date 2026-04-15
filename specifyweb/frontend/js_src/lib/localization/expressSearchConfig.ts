@@ -83,13 +83,15 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Taxon CollectionObject',
   },
   CollObjToDeterminer_desc: {
-    'en-us': 'Collection objects with current determinations, showing the determined taxon name, taxon common name, and determiner.',
+    'en-us':
+      'Collection objects with current determinations, showing the determined taxon name, taxon common name, and determiner.',
   },
   CollObToLocality: {
     'en-us': 'Collecting Event Locality',
   },
   CollObToLocality_desc: {
-    'en-us': 'Collecting events and their localities, including event dates and geographic coordinates.',
+    'en-us':
+      'Collecting events and their localities, including event dates and geographic coordinates.',
   },
   CollObject: {
     'en-us': 'Collection Object Taxon',
@@ -101,31 +103,36 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Taxon Geography',
   },
   GeoToTaxon_desc: {
-    'en-us': 'Taxa linked to geography records through collection object determinations and collecting event localities.',
+    'en-us':
+      'Taxa linked to geography records through collection object determinations and collecting event localities.',
   },
   ColObjCollectors: {
     'en-us': 'Collection Object Collectors',
   },
   ColObjCollectors_desc: {
-    'en-us': 'Collection objects and the agents who collected them, with collecting event dates.',
+    'en-us':
+      'Collection objects and the agents who collected them, with collecting event dates.',
   },
   AcceptedTaxon: {
     'en-us': 'Taxon Preferred Taxon',
   },
   AcceptedTaxon_desc: {
-    'en-us': 'Taxa with preferred accepted taxon names, excluding records missing accepted taxon links.',
+    'en-us':
+      'Taxa with preferred accepted taxon names, excluding records missing accepted taxon links.',
   },
   SynonymCollObjs: {
     'en-us': 'Collection Object Preferred Taxon',
   },
   SynonymCollObjs_desc: {
-    'en-us': 'Collection objects with determinations that have both an original taxon and a preferred taxon.',
+    'en-us':
+      'Collection objects with determinations that have both an original taxon and a preferred taxon.',
   },
   OtherSynsCollObjs: {
     'en-us': 'Collection Object Taxon (all synonyms)',
   },
   OtherSynsCollObjs_desc: {
-    'en-us': 'Collection objects showing determinations, preferred taxon names, and accepted synonym children names.',
+    'en-us':
+      'Collection objects showing determinations, preferred taxon names, and accepted synonym children names.',
   },
   CurrCollObject: {
     'en-us': 'Collection Object Taxon (determined)',
@@ -167,13 +174,15 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Collection Object Locality',
   },
   LocToCO_desc: {
-    'en-us': 'Localities and the collection objects found at their collecting events.',
+    'en-us':
+      'Localities and the collection objects found at their collecting events.',
   },
   AccessionToCo: {
     'en-us': 'Collection Object Accession',
   },
   AccessionToCo_desc: {
-    'en-us': 'Accessions and their collection objects, filtered to current determinations.',
+    'en-us':
+      'Accessions and their collection objects, filtered to current determinations.',
   },
   AccessionToAgent: {
     'en-us': 'Agent Accession',
@@ -197,13 +206,15 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Collection Object Chronostratigraphy',
   },
   GeoTimePeriodToCO_desc: {
-    'en-us': 'Geologic time periods with collection objects connected through chronostratigraphic contexts.',
+    'en-us':
+      'Geologic time periods with collection objects connected through chronostratigraphic contexts.',
   },
   CollEventToCollectors: {
     'en-us': 'Collector CollectingEvent',
   },
   CollEventToCollectors_desc: {
-    'en-us': 'Collecting events paired with the agents who collected specimens.',
+    'en-us':
+      'Collecting events paired with the agents who collected specimens.',
   },
   AgentExchangeIn: {
     'en-us': 'Exchange In Agent',
@@ -221,13 +232,15 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Collecting Event Geography',
   },
   GeographyCE_desc: {
-    'en-us': 'Collecting events with the geography area of each event locality.',
+    'en-us':
+      'Collecting events with the geography area of each event locality.',
   },
   GeographyCO: {
     'en-us': 'Collection Object Geography',
   },
   GeographyCO_desc: {
-    'en-us': 'Collection objects linked to the geography areas of their collecting event localities.',
+    'en-us':
+      'Collection objects linked to the geography areas of their collecting event localities.',
   },
   GiftCO: {
     'en-us': 'Collection Object Gift',
@@ -257,13 +270,15 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Collection Object Lithostratigraphy',
   },
   LithoStratToCO_desc: {
-    'en-us': 'Lithostratigraphic units and collection objects associated through paleocontext relationships.',
+    'en-us':
+      'Lithostratigraphic units and collection objects associated through paleocontext relationships.',
   },
   PermitToCO: {
     'en-us': 'Collection Object Permit',
   },
   PermitToCO_desc: {
-    'en-us': 'Permits and collection objects tied through accession authorization relationships.',
+    'en-us':
+      'Permits and collection objects tied through accession authorization relationships.',
   },
   PermitIssuedToAgent: {
     'en-us': 'Agent Issued to Permit',
@@ -305,25 +320,28 @@ export const expressSearchConfigText = createDictionary({
     'en-us': 'Collection Object Exchange In',
   },
   ExchangeInCO_desc: {
-    'en-us': 'Incoming exchanges with collection objects in exchanged preparations.',
+    'en-us':
+      'Incoming exchanges with collection objects in exchanged preparations.',
   },
   ExchangeOutCO: {
     'en-us': 'Collection Object Exchange Out',
   },
   ExchangeOutCO_desc: {
-    'en-us': 'Outgoing exchanges with collection objects in exchanged preparations.',
+    'en-us':
+      'Outgoing exchanges with collection objects in exchanged preparations.',
   },
 }) as any;
 
-export function getExpressSearchQueryTitle(id: string | number): string {
+export function getExpressSearchQueryTitle(id: number | string): string {
   const key = String(id);
   const getter = (expressSearchConfigText as Record<string, unknown>)[key];
   return typeof getter === 'function' ? getter() : key;
 }
 
-export function getExpressSearchQueryDescription(id: string | number): string | undefined {
+export function getExpressSearchQueryDescription(
+  id: number | string
+): string | undefined {
   const key = `${String(id)}_desc`;
   const getter = (expressSearchConfigText as Record<string, unknown>)[key];
   return typeof getter === 'function' ? getter() : undefined;
 }
-

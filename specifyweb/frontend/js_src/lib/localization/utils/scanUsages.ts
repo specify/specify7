@@ -299,7 +299,12 @@ export async function scanUsages(
           );
 
         // Matched an import/export destructuring pattern or object destructuring
-        if (followingCharacter === '}' || followingCharacter === ',' || followingCharacter === ':') return;
+        if (
+          followingCharacter === '}' ||
+          followingCharacter === ',' ||
+          followingCharacter === ':'
+        )
+          return;
         // Matched a dictionary identifier in a string literal, expression, or comparison
         if (
           /\s/u.test(followingCharacter) ||
