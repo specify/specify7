@@ -114,19 +114,11 @@ def static_adjustments(
     table: str, wbcols: dict[str, ExtendedColumnOptions], static: dict[str, Any]
 ) -> dict[str, Any]:
     if (
-        table.lower() == "agent"
-        and "agenttype" not in wbcols
-        and "agenttype" not in static
-    ):
-        static = {"agenttype": 1, **static}
-    elif (
         table.lower() == "determination"
         and "iscurrent" not in wbcols
         and "iscurrent" not in static
     ):
         static = {"iscurrent": True, **static}
-    else:
-        static = static
     return static
 
 
@@ -754,6 +746,9 @@ class BoundUploadTable(NamedTuple):
                 else {}
             ),
         }
+
+        if self.current_id is None and self.name.lower() == "agent":
+            new_attrs.setdefault("agenttype", 1)
 
         with transaction.atomic():
             try:

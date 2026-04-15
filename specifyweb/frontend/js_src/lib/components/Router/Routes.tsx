@@ -175,6 +175,14 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'system-configuration',
+    title: userText.securityPanel(),
+    element: () =>
+      import('../SystemConfigurationTool/SystemConfigTool').then(
+        ({ SystemConfigurationTool }) => SystemConfigurationTool
+      ),
+  },
+  {
     path: 'attachments',
     children: [
       {
@@ -374,6 +382,14 @@ export const routes: RA<EnhancedRoute> = [
     element: () =>
       import('../Preferences').then(
         ({ PreferencesWrapper }) => PreferencesWrapper
+      ),
+  },
+  {
+    path: 'collection-preferences',
+    title: preferencesText.collectionPreferences(),
+    element: () =>
+      import('../Preferences').then(
+        ({ CollectionPreferencesWrapper }) => CollectionPreferencesWrapper
       ),
   },
   {

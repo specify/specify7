@@ -50,11 +50,11 @@ exports[`<Select> select multiple calls onValuesChange 1`] = `
   >
     <option />
     <option
-      class="dark:bg-neutral-100"
+      class="dark:bg-neutral-500"
       value="a"
     />
     <option
-      class="dark:bg-neutral-100"
+      class="dark:bg-neutral-500"
       value="b"
     />
   </select>

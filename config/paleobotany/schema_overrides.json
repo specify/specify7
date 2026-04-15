@@ -1,0 +1,20 @@
+{
+  "collectionobjectattribute": {
+    "ishidden": false,
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"positionState": {"ishidden": false, "name": "Position State", "desc": "Position State"}},
+      {"direction": {"ishidden": false, "name": "Direction", "desc": "Direction"}},
+      {"distanceUnits": {"ishidden": false, "name": "Distance Units", "desc": "Distance Units"}},
+      {"bottomDistance": {"ishidden": false, "name": "Bottom Distance", "desc": "Bottom Distance"}},
+      {"topDistance": {"ishidden": false, "name": "Top Distance", "desc": "Top Distance"}}
+    ]
+  },
+  "collectionobject": {
+    "ishidden": false,
+    "desc": "Collection Object",
+    "items": [
+      {"collectionObjectAttribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
+    ]
+  }
+}

@@ -221,7 +221,7 @@ class ObjectFormatter:
             if fieldNodeAttrib.get('trimzeros') == 'true':
                 numeric_str = cast(cast(e, types.Numeric(65)), types.String())
                 e = case(
-                    (e.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), numeric_str),
+                    (e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), numeric_str),
                     else_=cast(e, types.String()),
                 )
             fmt = fieldNodeAttrib.get('format')
@@ -406,7 +406,9 @@ class ObjectFormatter:
         if specify_field.type == "java.sql.Timestamp":
             return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
-        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+        prec_fld = None
+        if hasattr(field, 'class_'):
+            prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
         # format_expr = (
         #     case(
@@ -432,6 +434,8 @@ class ObjectFormatter:
 
     def _fieldformat(self, table: Table, specify_field: Field,
                      field: InstrumentedAttribute | Extract):
+        if self.format_types and specify_field.is_temporal():
+            return self._dateformat(specify_field, field)
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
             # cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
@@ -467,11 +471,15 @@ class ObjectFormatter:
         
         if self.numeric_catalog_number and specify_field is CollectionObject_model.get_field('catalogNumber') \
                 and all_numeric_catnum_formats(self.collection):
+            # Cast to Numeric only if the value is numeric to avoid casting strings like 'F-235694' to 0
             # While the frontend can format the catalogNumber if needed,
             # processes like reports, labels, and query exports generally
             # expect the catalogNumber to be numeric if possible.
             # See https://github.com/specify/specify7/issues/6464
-            return cast(field, types.Numeric(65))
+            return case(
+                [(field.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), cast(field, types.Numeric(65)))],
+                else_=field
+            )
 
         if self.format_types and specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)

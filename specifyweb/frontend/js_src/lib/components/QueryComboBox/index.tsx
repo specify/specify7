@@ -13,7 +13,7 @@ import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
-import { backboneFieldSeparator } from '../DataModel/helpers';
+import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
 import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
@@ -25,10 +25,8 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
-import type {
-  CollectionObject,
-  CollectionObjectType,
-} from '../DataModel/types';
+import type { CollectionObject } from '../DataModel/types';
+import type { CollectionObjectType } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -254,6 +252,10 @@ export function QueryComboBox({
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
 
+  // Used to fetch again tree def if the component type changes
+  const componentType =
+    resource?.specifyTable === tables.Component ? resource?.get('type') : null;
+
   const [fetchedTreeDefinition] = useAsyncState(
     React.useCallback(async () => {
       if (resource?.specifyTable === tables.Determination) {
@@ -269,6 +271,17 @@ export function QueryComboBox({
                 ) => collectionObjectType?.get('taxonTreeDef')
               )
           : undefined;
+      } else if (resource?.specifyTable === tables.Component) {
+        const typeResource = await toTable(resource, 'Component')?.rgetPromise(
+          'type'
+        );
+        if (typeResource === undefined || typeResource === null) {
+          console.warn('Could not scope Component -> name without type', {
+            component: resource,
+          });
+          return undefined;
+        }
+        return typeResource.get('taxonTreeDef');
       } else if (resource?.specifyTable === tables.Taxon) {
         const definition = resource.get('definition');
         const parentDefinition = (
@@ -277,7 +290,11 @@ export function QueryComboBox({
         return definition || parentDefinition;
       }
       return undefined;
-    }, [resource, resource?.collection?.related?.get('collectionObjectType')]),
+    }, [
+      resource,
+      resource?.collection?.related?.get('collectionObjectType'),
+      componentType,
+    ]),
     false
   );
 
@@ -388,7 +405,6 @@ export function QueryComboBox({
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
         <AutoComplete<string>
-          aria-label={undefined}
           disabled={
             !isLoaded ||
             isReadOnly ||
@@ -404,10 +420,12 @@ export function QueryComboBox({
           filterItems={false}
           forwardRef={validationRef}
           inputProps={{
+            'aria-label': field.label,
             id,
             required: isRequired,
             title:
-              typeof typeSearch === 'object' ? typeSearch.title : undefined,
+              (typeof typeSearch === 'object' ? typeSearch.title : undefined) ??
+              field.label,
             ...getValidationAttributes(parser),
             type: 'text',
             [titlePosition]: 'top',

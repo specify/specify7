@@ -141,10 +141,20 @@ function DateSplit({
     <div className="flex flex-row gap-1">
       <StringToJsx
         components={{
-          count: (size) => (
+          count: (_displaySize) => (
             <Input.Integer
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
               min={0}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={size}
               onBlur={commitChange}
               onValueChange={(value): void => {
@@ -156,9 +166,19 @@ function DateSplit({
               }}
             />
           ),
-          length: (type) => (
+          length: (_displayType) => (
             <Select
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={type}
               onBlur={commitChange}
               onValueChange={(newValue) => {
@@ -166,15 +186,25 @@ function DateSplit({
                 handleChanging?.();
               }}
             >
-              <option value="day">{queryText.day()}</option>
-              <option value="week">{queryText.week()}</option>
-              <option value="month">{queryText.month()}</option>
-              <option value="year">{queryText.year()}</option>
+              <option value="day">{queryText.days()}</option>
+              <option value="week">{queryText.weeks()}</option>
+              <option value="month">{queryText.months()}</option>
+              <option value="year">{queryText.years()}</option>
             </Select>
           ),
-          direction: (direction) => (
+          direction: (_displayDirection) => (
             <Select
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={direction}
               onBlur={commitChange}
               onValueChange={(newValue): void => {

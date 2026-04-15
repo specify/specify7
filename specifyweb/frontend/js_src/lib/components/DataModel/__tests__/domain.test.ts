@@ -22,6 +22,18 @@ overrideAjax(
   }
 );
 
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  {
+    objects: [],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 0,
+    },
+  }
+);
+
 describe('getCollectionForResource', () => {
   test('Collection Object', () => {
     const collectionObject = new tables.CollectionObject.Resource({

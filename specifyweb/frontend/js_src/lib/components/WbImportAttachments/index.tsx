@@ -36,6 +36,7 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { Preview } from '../Molecules/FilePicker';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { uniquifyDataSetName } from '../WbImport/helpers';
 import { ChooseName } from '../WbImport/index';
 import {
@@ -67,10 +68,11 @@ export function WbImportAttachmentsView(): JSX.Element {
 
 function uploadFiles(
   files: RA<File>,
-  handleProgress: (progress: (progress: number | undefined) => number) => void
+  handleProgress: (progress: (progress: number | undefined) => number) => void,
+  attachmentIsPublicDefault: boolean
 ): RA<Promise<SpecifyResource<Attachment>>> {
   return files.map(async (file) =>
-    uploadFile(file)
+    uploadFile({ file, attachmentIsPublicDefault })
       .then(async (attachment) =>
         attachment === undefined
           ? Promise.reject(`Upload failed for file ${file.name}`)
@@ -119,6 +121,11 @@ async function saveDataSetAttachments(
 
 function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
   const navigate = useNavigate();
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | undefined
   >(undefined);
@@ -130,7 +137,12 @@ function FilesPicked({ files }: { readonly files: RA<File> }): JSX.Element {
   ): Promise<void> => {
     setFileUploadProgress(0);
 
-    return Promise.all(uploadFiles(files, setFileUploadProgress)) // Upload all selected files/attachments
+    return Promise.resolve()
+      .then(async () =>
+        Promise.all(
+          uploadFiles(files, setFileUploadProgress, attachmentIsPublicDefault)
+        )
+      ) // Upload all selected files/attachments
       .then(async (attachments) =>
         f
           .all({

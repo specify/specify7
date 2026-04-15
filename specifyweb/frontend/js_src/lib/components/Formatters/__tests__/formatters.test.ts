@@ -17,6 +17,15 @@ const { formatField } = exportsForTests;
 
 requireContext();
 
+overrideAjax('/api/specify/component/?catalognumber=&domainfilter=true', {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+});
+
 test('Formatters are fetched and parsed correctly', async () =>
   expect(
     fetchFormatters.then((results) =>

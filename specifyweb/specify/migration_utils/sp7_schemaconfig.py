@@ -180,7 +180,6 @@ MIGRATION_0029_UPDATE_FIELDS = {
     ]
 }
 
-
 MIGRATION_0032_FIELDS = {
     'GiftPreparation': ['quantityResolved', 'quantityReturned'],
 }
@@ -427,4 +426,32 @@ MIGRATION_0038_UPDATE_FIELDS = {
         ('agent4','Agent 4','Agent 4'),
         ('agent5','Agent 5','Agent 5'),
     ]
+}
+
+MIGRATION_0040_TABLES = [
+    ('Component', None),
+]
+
+MIGRATION_0040_FIELDS = {
+    'CollectionObject': ['components'],
+    'Taxon': ['components'],
+    'Agent': ['components'],
+    'RelativeAge': ['component'],
+    'AbsoluteAge': ['component'],
+}
+
+MIGRATION_0040_UPDATE_FIELDS = {
+    'Component': [
+        ('type', 'Type', 'Determines the valid options for component names.'), 
+        ('name', 'Name', 'The name from a taxon tree corresponding to the chosen type.'),
+        ('verbatimName', 'Verbatim Name', 'The original name printed or associated with the component.'),
+        ('role', 'Role', 'Define the role or purpose of the component in the overall collection.'), 
+        ('proportion', 'Proportion', 'Specify the proportion of the component relative to the whole.'),
+        ('uniqueIdentifier', 'Unique Identifier', 'Uniquely identifies each component record'),
+        ('catalogNumber', 'Catalog Number', 'User-assigned identifier for the component'),
+        ],
+}
+
+MIGRATION_0040_HIDDEN_FIELDS = {
+    'Component': ['componentid','verbatimname','role', 'proportion','uniqueidentifier','text1','text2','text3', 'text4','text5','text6', 'yesno1','yesno2','yesno3','yesno4','yesno5','yesno6','integer1','integer2','integer3','integer4','integer5','integer6','number1', 'number2','number3','number4','number5','number6','version','collectionobject', 'absoluteages', 'relativeages', 'identifieddate', 'identifiedby']
 }

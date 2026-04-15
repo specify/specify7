@@ -43,7 +43,7 @@ const getScrollParent = (node: Element | undefined): Element =>
       : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
-  p-0.5 active:bg-brand-100 dark:active:bg-brand-500
+  p-0.5 active:bg-brand-100 dark:active:bg-brand-400
   disabled:cursor-default rounded ${isSelected ? 'text-brand-300' : ''}
   ${isActive ? 'bg-gray-100 dark:bg-neutral-800' : ''}
 `;

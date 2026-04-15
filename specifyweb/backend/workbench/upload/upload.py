@@ -14,6 +14,7 @@ from collections.abc import Sized
 from django.db import transaction
 from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
+from typing import Any, Optional, cast
 
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
@@ -355,6 +356,21 @@ def do_upload(
 
                 # the fact that upload plan is cachable, is invariant across rows.
                 # so, we just apply scoping once. Honestly, see if it causes enough overhead to even warrant caching
+
+                # Added to validate cotype on Component table
+                # Only reorder if this is the Component table
+                component_upload = cast(Any, upload_plan)
+                if component_upload.name == 'Component':
+                    toOne = component_upload.toOne
+
+                    # Only reorder if both keys exist
+                    if 'type' in toOne and 'name' in toOne:
+                        # Temporarily remove them
+                        type_val = toOne.pop('type')
+                        name_val = toOne.pop('name')
+
+                        # Reinsert in desired order: type before name
+                        toOne.update({'type': type_val, 'name': name_val})
 
                 if has_attachments(row):
                     # If there's an attachments column, add attachments to upload plan

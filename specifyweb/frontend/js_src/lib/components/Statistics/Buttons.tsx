@@ -21,7 +21,7 @@ export function StatsAsideButton({
         className={` 
           aria-handled !dark:bg-[color:var(--secondary-light-button-color)] 
           min-w-[theme(spacing.40)] max-w-xs flex-1 !justify-start overflow-x-auto normal-case 
-          ${isCurrent ? '!bg-brand-300 !text-white !ring-brand-300' : ''}
+          ${isCurrent ? '!bg-brand-400 !text-white !ring-brand-300' : ''}
         `}
         onClick={handleClick}
       >
