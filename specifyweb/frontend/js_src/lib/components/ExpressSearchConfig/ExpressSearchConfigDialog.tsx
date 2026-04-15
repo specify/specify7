@@ -1,15 +1,16 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { Button } from '../Atoms/Button';
-import { ExpressSearchConfigEditor } from './ExpressSearchConfigEditor';
-import { ajax } from '../../utils/ajax';
-import { LoadingContext } from '../Core/Contexts';
-import { icons } from '../Atoms/Icons';
-import { expressSearchConfigText } from '../../localization/expressSearchConfig';
-import { commonText } from '../../localization/common';
 
-interface ExpressSearchConfigDialogProps {
+import { commonText } from '../../localization/common';
+import { expressSearchConfigText } from '../../localization/expressSearchConfig';
+import { ajax } from '../../utils/ajax';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { LoadingContext } from '../Core/Contexts';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { ExpressSearchConfigEditor } from './ExpressSearchConfigEditor';
+
+type ExpressSearchConfigDialogProps = {
   readonly isOpen: boolean;
   readonly onClose: () => void;
 }
@@ -49,7 +50,7 @@ export function ExpressSearchConfigDialog({
   const buttons = (
     <div className="flex gap-2">
       <Button.DialogClose>{cancelLabel}</Button.DialogClose>
-      <Button.Success onClick={handleSave} disabled={!isDirty || !activeConfig}>
+      <Button.Success disabled={!isDirty || !activeConfig} onClick={handleSave}>
         {saveLabel}
       </Button.Success>
     </div>
@@ -57,12 +58,12 @@ export function ExpressSearchConfigDialog({
 
   return (
     <Dialog
-      isOpen={isOpen}
-      header={expressSearchConfigText.expressSearchConfigTitle()}
-      onClose={onClose}
       buttons={buttons}
-      icon={icons.cog}
       className={{ container: dialogClassNames.wideContainer }}
+      header={expressSearchConfigText.expressSearchConfigTitle()}
+      icon={icons.cog}
+      isOpen={isOpen}
+      onClose={onClose}
     >
       <ExpressSearchConfigEditor
         onChangeJSON={handleChangeJSON}
