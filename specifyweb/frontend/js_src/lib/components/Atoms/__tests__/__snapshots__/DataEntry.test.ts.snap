@@ -272,13 +272,8 @@ exports[`DataEntry.visit no resource 2`] = `
     title="Open in New Tab"
   >
     <span
-      title="(opens in a new tab)"
+      aria-hidden="true"
     >
-      <span
-        class="sr-only"
-      >
-        (opens in a new tab)
-      </span>
       <svg
         aria-hidden="true"
         class="w-6 h-6 flex-shrink-0"
