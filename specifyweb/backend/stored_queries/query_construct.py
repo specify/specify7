@@ -45,36 +45,30 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         table,
         next_join_path,
         treedefitem_params,
-        max_depth,
     ):
         field = next_join_path[0]
         treedefitem_column = table.name + 'TreeDefItemID'
+        treedef_column = table.name + 'TreeDefID'
         correlation_target = sa_inspect(start_alias).selectable
+        start_node_number = getattr(start_alias, "nodeNumber")
 
-        ancestors = [orm.aliased(mapped_cls)]
-        for _ in range(max_depth - 1):
-            ancestors.append(orm.aliased(mapped_cls))
-
-        cases = []
-        for ancestor in ancestors:
-            orm_field = getattr(ancestor, field.name)
-            for treedefitem_param in treedefitem_params:
-                cases.append(
-                    (
-                        getattr(ancestor, treedefitem_column) == treedefitem_param,
-                        orm_field,
-                    )
-                )
-
-        subquery = sql.select(sql.case(cases)).select_from(ancestors[0])
-        for parent, ancestor in zip(ancestors, ancestors[1:]):
-            subquery = subquery.outerjoin(ancestor, parent.ParentID == ancestor._id)
-
-        column = (
-            subquery.where(ancestors[0]._id == start_alias._id)
-            .correlate(correlation_target)
-            .scalar_subquery()
+        ancestor = orm.aliased(mapped_cls)
+        subquery = (
+            sql.select(getattr(ancestor, field.name))
+            .select_from(ancestor)
+            .where(
+                getattr(ancestor, treedefitem_column).in_(tuple(treedefitem_params)),
+                getattr(ancestor, treedef_column) == getattr(start_alias, treedef_column),
+                start_node_number.between(
+                    getattr(ancestor, "nodeNumber"),
+                    getattr(ancestor, "highestChildNodeNumber"),
+                ),
+            )
+            .order_by(getattr(ancestor, "nodeNumber").desc())
+            .limit(1)
         )
+
+        column = subquery.correlate(correlation_target).scalar_subquery()
         return column, field, table
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
@@ -121,7 +115,6 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
                 table,
                 next_join_path,
                 treedefitem_params,
-                max_depth,
             )
         else:
             # Use the specific start anchor in the cache key, so each branch has its own chain
