@@ -130,8 +130,17 @@
     "worker-loader": "^3.0.8"
   },
   "overrides": {
+    "@eslint/eslintrc": {
+      "minimatch": "3.1.4"
+    },
+    "glob@10.3.10": {
+      "minimatch": "9.0.9"
+    },
     "worker-loader": {
       "loader-utils": "2.0.3"
+    },
+    "typedoc": {
+      "minimatch": "5.1.8"
     },
     "form-data": ">=4.0.4",
     "braces": "^3.0.3"
