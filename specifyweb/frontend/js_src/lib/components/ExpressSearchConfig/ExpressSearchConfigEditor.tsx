@@ -235,7 +235,7 @@ export function ExpressSearchConfigEditor({
   const [tabIndex, setTabIndex] = React.useState(0);
 
   if (!activeConfig || !initialDataResult) {
-    return <div>{expressSearchConfigText.loading()}</div>;
+    return <div>{expressSearchConfigText.loadingConfig()}</div>;
   }
 
   const tabs = {

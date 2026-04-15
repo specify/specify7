@@ -7,13 +7,13 @@
 import { createDictionary } from './utils';
 
 export const expressSearchConfigText = createDictionary({
-  loading: {
+  loadingConfig: {
     'en-us': 'Loading...',
   },
   loadingMetadata: {
     'en-us': 'Loading metadata...',
   },
-  expressSearchConfig: {
+  expressSearchConfigTitle: {
     'en-us': 'Express Search Config',
   },
   searchFieldsTab: {
@@ -31,22 +31,22 @@ export const expressSearchConfigText = createDictionary({
   searchableFields: {
     'en-us': 'Searchable Fields',
   },
-  search: {
+  searchLabel: {
     'en-us': 'Search',
   },
-  field: {
+  fieldName: {
     'en-us': 'Field',
   },
   sortMode: {
     'en-us': 'Sort Mode',
   },
-  none: {
+  searchNone: {
     'en-us': 'None',
   },
-  ascending: {
+  ascendingOrder: {
     'en-us': 'Ascending',
   },
-  descending: {
+  descendingOrder: {
     'en-us': 'Descending',
   },
   displayFields: {
@@ -64,10 +64,10 @@ export const expressSearchConfigText = createDictionary({
   noDisplayItemsConfigured: {
     'en-us': 'No display items configured.',
   },
-  selectAll: {
+  selectAllQueries: {
     'en-us': 'Select All',
   },
-  deselectAll: {
+  deselectAllQueries: {
     'en-us': 'Deselect All',
   },
   noRelatedQueriesAvailable: {

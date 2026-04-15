@@ -58,7 +58,7 @@ export function ExpressSearchConfigDialog({
   return (
     <Dialog
       isOpen={isOpen}
-      header={expressSearchConfigText.expressSearchConfig()}
+      header={expressSearchConfigText.expressSearchConfigTitle()}
       onClose={onClose}
       buttons={buttons}
       icon={icons.cog}

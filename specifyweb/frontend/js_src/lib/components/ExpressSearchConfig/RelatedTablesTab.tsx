@@ -78,10 +78,10 @@ export function RelatedTablesTab({
       <div className="w-1/2 border rounded p-2 overflow-auto">
         <div className="flex gap-2 mb-2">
           <Button.Secondary onClick={() => setAll(true)}>
-            {expressSearchConfigText.selectAll()}
+            {expressSearchConfigText.selectAllQueries()}
           </Button.Secondary>
           <Button.Secondary onClick={() => setAll(false)}>
-            {expressSearchConfigText.deselectAll()}
+            {expressSearchConfigText.deselectAllQueries()}
           </Button.Secondary>
         </div>
         <ul className="space-y-1">

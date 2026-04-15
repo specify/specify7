@@ -234,8 +234,8 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
           <table className="w-full text-left">
             <thead>
               <tr className="border-b">
-                <th className="p-1">{expressSearchConfigText.search()}</th>
-                <th className="p-1">{expressSearchConfigText.field()}</th>
+                <th className="p-1">{expressSearchConfigText.searchLabel()}</th>
+                <th className="p-1">{expressSearchConfigText.fieldName()}</th>
                 <th className="p-1">{expressSearchConfigText.sortMode()}</th>
               </tr>
             </thead>
@@ -258,9 +258,9 @@ export function SearchFieldsTab({ config, schemaMetadata, onChangeConfig }: any)
                         onChange={(e) => handleSortChange(f.name, e.target.value)}
                         disabled={!inUse}
                       >
-                        <option value="None">{expressSearchConfigText.none()}</option>
-                        <option value="Ascending">{expressSearchConfigText.ascending()}</option>
-                        <option value="Descending">{expressSearchConfigText.descending()}</option>
+                        <option value="None">{expressSearchConfigText.searchNone()}</option>
+                        <option value="Ascending">{expressSearchConfigText.ascendingOrder()}</option>
+                        <option value="Descending">{expressSearchConfigText.descendingOrder()}</option>
                       </Select>
                     </td>
                   </tr>
