@@ -8,6 +8,7 @@ import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { genericTables } from '../DataModel/tables';
 import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { TableIcon } from '../Molecules/TableIcon';
 
 /** Return the localized label for a field, falling back to camelToHuman. */
 function fieldLabel(tableName: string, fieldName: string): string {
@@ -275,7 +276,10 @@ export function SearchFieldsTab({
               key={t.name}
               onClick={() => setSelectedTable(t.name)}
             >
-              {tableLabel(t.name)}
+              <div className="flex items-center gap-2">
+                <TableIcon label={false} name={t.name} />
+                <span>{tableLabel(t.name)}</span>
+              </div>
             </li>
           ))}
         </ul>
