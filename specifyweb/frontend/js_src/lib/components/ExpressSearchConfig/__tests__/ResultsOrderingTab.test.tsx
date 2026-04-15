@@ -1,4 +1,5 @@
 import React from 'react';
+
 import { mount } from '../../../tests/reactUtils';
 import { ResultsOrderingTab } from '../ResultsOrderingTab';
 
@@ -24,7 +25,7 @@ describe('ResultsOrderingTab', () => {
       />
     );
 
-    expect(queryByText('Related Query: 8')).toBeNull();
-    expect(container.querySelectorAll('li').length).toBe(1);
+    expect(queryByText('Related Query: 8')).not.toBeInTheDocument();
+    expect(container.querySelectorAll('li')).toHaveLength(1);
   });
 });

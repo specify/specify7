@@ -1,12 +1,13 @@
 import React from 'react';
-import { Button } from '../Atoms/Button';
-import { genericTables } from '../DataModel/tables';
-import { camelToHuman } from '../../utils/utils';
-import { icons } from '../Atoms/Icons';
+
 import {
   expressSearchConfigText,
   getExpressSearchQueryTitle,
 } from '../../localization/expressSearchConfig';
+import { camelToHuman } from '../../utils/utils';
+import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
+import { genericTables } from '../DataModel/tables';
 
 function tableLabel(tableName: string): string {
   return (
@@ -44,22 +45,22 @@ export function ResultsOrderingTab({ config, relatedQueriesDefinitions = [], onC
         displayOrder: rq.displayOrder ?? 1000,
       };
     })
-    .filter((item: any): item is { type: string; id: string; label: string; displayOrder: number } => !!item);
+    .filter(Boolean);
 
   const allItems = [...baseTables, ...activeQueries].sort(
     (a, b) => a.displayOrder - b.displayOrder
   );
 
-  const moveItem = (index: number, direction: 'up' | 'down') => {
+  const moveItem = (index: number, direction: 'down' | 'up') => {
     if (direction === 'up' && index === 0) return;
     if (direction === 'down' && index === allItems.length - 1) return;
 
-    const newItems = [...allItems];
+    const newItems = Array.from(allItems);
     const targetIndex = direction === 'up' ? index - 1 : index + 1;
 
-    const temp = newItems[index];
+    const temporary = newItems[index];
     newItems[index] = newItems[targetIndex];
-    newItems[targetIndex] = temp;
+    newItems[targetIndex] = temporary;
 
     const newConfig = JSON.parse(JSON.stringify(config));
 
@@ -86,17 +87,17 @@ export function ResultsOrderingTab({ config, relatedQueriesDefinitions = [], onC
       <ul className="space-y-2 border rounded p-4 max-w-2xl bg-gray-50 dark:bg-zinc-800 overflow-auto max-h-[600px]">
         {allItems.map((item, index) => (
           <li
-            key={`${item.type}-${item.id}`}
             className="flex justify-between items-center bg-white dark:bg-zinc-700 p-3 border rounded shadow-sm"
+            key={`${item.type}-${item.id}`}
           >
             <span className="font-medium">{item.label}</span>
             <div className="flex gap-2">
-              <Button.BorderedGray onClick={() => moveItem(index, 'up')} disabled={index === 0}>
+              <Button.BorderedGray disabled={index === 0} onClick={() => moveItem(index, 'up')}>
                 {icons.chevronUp}
               </Button.BorderedGray>
               <Button.BorderedGray
-                onClick={() => moveItem(index, 'down')}
                 disabled={index === allItems.length - 1}
+                onClick={() => moveItem(index, 'down')}
               >
                 {icons.chevronDown}
               </Button.BorderedGray>
