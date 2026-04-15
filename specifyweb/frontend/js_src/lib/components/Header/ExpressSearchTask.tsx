@@ -20,6 +20,7 @@ import { icons } from '../Atoms/Icons';
 import { Submit } from '../Atoms/Submit';
 import { serializeResource } from '../DataModel/serializers';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
 import { WelcomeView } from '../HomePage';
 import { Dialog } from '../Molecules/Dialog';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
@@ -37,7 +38,6 @@ import {
   useSecondarySearch,
 } from './ExpressSearchHooks';
 import { useMenuItem } from './MenuContext';
-import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
@@ -129,9 +129,9 @@ export function ExpressSearchView(): JSX.Element {
           <div className="flex items-center gap-2">
             <SearchField value={value} />
             <Button.BorderedGray
+              className="!px-2"
               title={commonText.configureExpressSearch()}
               onClick={() => setIsConfigOpen(true)}
-              className="!px-2"
             >
               {icons.cog}
             </Button.BorderedGray>
@@ -156,7 +156,7 @@ export function ExpressSearchView(): JSX.Element {
         </div>
       ) : (
         <>
-          <WelcomeView hideSearchBar={true} />
+          <WelcomeView hideSearchBar />
           <div />
         </>
       )}
