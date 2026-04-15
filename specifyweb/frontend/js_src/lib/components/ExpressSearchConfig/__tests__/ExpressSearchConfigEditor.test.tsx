@@ -45,6 +45,31 @@ const mockConfigResponse = {
 describe('ExpressSearchConfigEditor', () => {
   overrideAjax('/express_search/config/', mockConfigResponse);
 
+  test('uses provided XML data in app-resource mode', async () => {
+    const onChangeJSON = jest.fn();
+    const xml =
+      '<?xml version="1.0" encoding="UTF-8"?><search><tables><searchtable><tableName>Agent</tableName><displayOrder>0</displayOrder><searchFields><searchfield><fieldName>firstName</fieldName><order>0</order><sortDirection>None</sortDirection></searchfield></searchFields><displayFields><displayfield><fieldName>lastName</fieldName></displayfield></displayFields></searchtable></tables><relatedQueries></relatedQueries></search>';
+
+    mount(
+      <ExpressSearchConfigEditor
+        onChange={jest.fn()}
+        onSetCleanup={jest.fn()}
+        onChangeJSON={onChangeJSON}
+        initialXmlData={xml}
+        useResolvedConfig={false}
+      />
+    );
+
+    await act(async () => {
+      await new Promise((resolve) => setTimeout(resolve, 0));
+    });
+
+    expect(onChangeJSON).toHaveBeenCalled();
+    const latestConfig = onChangeJSON.mock.calls[onChangeJSON.mock.calls.length - 1][0];
+    expect(latestConfig.tables[0].tableName).toBe('Agent');
+    expect(latestConfig.tables[0].searchFields[0].fieldName).toBe('firstName');
+  });
+
   test('renders loading state initially', async () => {
     const { getByText } = mount(
       <ExpressSearchConfigEditor 

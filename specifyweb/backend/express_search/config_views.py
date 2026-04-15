@@ -10,7 +10,7 @@ from django.conf import settings
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.models import datamodel, Spappresourcedata, Spappresourcedir, Spappresource
-from specifyweb.backend.context.app_resource import get_app_resource, get_app_resource_dirs_for_level
+from specifyweb.backend.context.app_resource import get_app_resource, get_app_resource_dirs_for_level, get_usertype
 from specifyweb.backend.permissions.permissions import has_table_permission
 from specifyweb.specify.api.serializers import toJson
 
@@ -268,7 +268,7 @@ def _save_express_search_config(collection, user, xml_str):
             ispersonal=True,
             collection=collection,
             discipline=collection.discipline if collection else None,
-            usertype=user.usertype if user else None,
+            usertype=get_usertype(user),
             specifyuser=user
         )
         
@@ -284,7 +284,9 @@ def _save_express_search_config(collection, user, xml_str):
             name='ExpressSearchConfig',
             mimetype='text/xml',
             description='Express Search Config',
-            spappresourcedir=target_dir
+            spappresourcedir=target_dir,
+            level=0,
+            specifyuser=user,
         )
         Spappresourcedata.objects.create(
             spappresource=app_res,

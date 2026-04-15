@@ -10,6 +10,90 @@ import { SearchFieldsTab } from './SearchFieldsTab';
 import { RelatedTablesTab } from './RelatedTablesTab';
 import { ResultsOrderingTab } from './ResultsOrderingTab';
 
+const UNINITIALIZED_RESOURCE_KEY = '__uninitialized_resource_key__';
+
+function xmlToConfig(xml: string | null | undefined): any {
+  if (typeof xml !== 'string' || xml.trim().length === 0)
+    return { tables: [], relatedQueries: [] };
+
+  try {
+    const parsed = new DOMParser().parseFromString(xml, 'application/xml');
+    if (parsed.getElementsByTagName('parsererror').length > 0)
+      return { tables: [], relatedQueries: [] };
+
+    const getChildText = (
+      parent: Element,
+      tagName: string
+    ): string | undefined => {
+      const child = Array.from(parent.children).find(
+        (element) => element.tagName === tagName
+      );
+      return child?.textContent ?? undefined;
+    };
+
+    const tableElements = Array.from(parsed.getElementsByTagName('searchtable'));
+    const tables = tableElements.map((tableElement) => {
+      const searchFields = Array.from(
+        tableElement.getElementsByTagName('searchfield')
+      ).map((fieldElement) => {
+          const fieldName = getChildText(fieldElement, 'fieldName') ?? '';
+          const orderValue = getChildText(fieldElement, 'order');
+          const sortDirection = getChildText(fieldElement, 'sortDirection') ?? 'None';
+          const order = Number.parseInt(orderValue ?? '0', 10);
+
+          return {
+            fieldName,
+            order: Number.isFinite(order) ? order : 0,
+            sortDirection,
+          };
+        });
+
+        const displayFields = Array.from(tableElement.getElementsByTagName('displayfield')).map(
+          (fieldElement) => ({
+            fieldName: getChildText(fieldElement, 'fieldName') ?? '',
+          })
+        );
+
+        const tableName = getChildText(tableElement, 'tableName') ?? '';
+        const displayOrderValue = getChildText(tableElement, 'displayOrder');
+        const displayOrder = Number.parseInt(displayOrderValue ?? '0', 10);
+
+        return {
+          tableName,
+          displayOrder: Number.isFinite(displayOrder) ? displayOrder : 0,
+          searchFields,
+          displayFields,
+        };
+      });
+
+    const relatedQueries = Array.from(parsed.getElementsByTagName('relatedquery')).map(
+      (queryElement) => {
+      const id = getChildText(queryElement, 'id') ?? '';
+      const displayOrderValue = getChildText(queryElement, 'displayOrder');
+      const displayOrder = Number.parseInt(displayOrderValue ?? '0', 10);
+      const isActiveText =
+        getChildText(queryElement, 'isActive') ??
+        queryElement.getAttribute('isactive') ??
+        'false';
+      const isSystemText =
+        getChildText(queryElement, 'isSystem') ??
+        queryElement.getAttribute('issystem') ??
+        'false';
+
+      return {
+        id,
+        displayOrder: Number.isFinite(displayOrder) ? displayOrder : 0,
+        isActive: isActiveText.toLowerCase() === 'true',
+        isSystem: isSystemText.toLowerCase() === 'true',
+      };
+    });
+
+    return { tables, relatedQueries };
+  } catch {
+    return { tables: [], relatedQueries: [] };
+  }
+}
+
 /** Serialize the in-memory config JSON back to minimal valid XML. */
 function configToXml(config: any): string {
   if (!config)
@@ -22,10 +106,14 @@ function configToXml(config: any): string {
 
   const tables = (config.tables ?? [])
     .map((tbl: any) => {
-      const sfs = (tbl.searchFields ?? [])
+      const activeSearchFields = (tbl.searchFields ?? [])
+        .filter((sf: any) => sf.inUse !== false)
+        .sort((a: any, b: any) => (a.order ?? 0) - (b.order ?? 0));
+
+      const sfs = activeSearchFields
         .map(
-          (sf: any) =>
-            `<searchfield><fieldName>${escape(sf.fieldName)}</fieldName><order>${sf.order ?? 0}</order><sortDirection>${escape(sf.sortDirection ?? 'None')}</sortDirection></searchfield>`
+          (sf: any, index: number) =>
+            `<searchfield><fieldName>${escape(sf.fieldName)}</fieldName><order>${index}</order><sortDirection>${escape(sf.sortDirection ?? 'None')}</sortDirection></searchfield>`
         )
         .join('');
       const dfs = (tbl.displayFields ?? [])
@@ -74,9 +162,15 @@ function normalizeConfigForEditing(config: any): any {
 export function ExpressSearchConfigEditor({
   onChange,
   onChangeJSON,
+  initialXmlData,
+  useResolvedConfig = true,
+  resourceKey,
 }: {
   readonly onChange?: AppResourceTabProps['onChange'];
   readonly onChangeJSON?: (json: any) => void;
+  readonly initialXmlData?: string | null;
+  readonly useResolvedConfig?: boolean;
+  readonly resourceKey?: string;
   readonly onSetCleanup?: AppResourceTabProps['onSetCleanup'];
 }): JSX.Element {
 
@@ -101,14 +195,35 @@ export function ExpressSearchConfigEditor({
   );
 
   const [activeConfig, setActiveConfig] = React.useState<any>(null);
+  const lastInitializedResourceKeyRef = React.useRef<string>(
+    UNINITIALIZED_RESOURCE_KEY
+  );
 
   React.useEffect(() => {
-    if (initialDataResult) {
-      const normalizedConfig = normalizeConfigForEditing(initialDataResult.config);
-      setActiveConfig(normalizedConfig);
-      onChangeJSON?.(normalizedConfig);
+    if (!initialDataResult) return;
+
+    // In app-resource mode, parent updates `data` on every edit.
+    // Re-initializing from that prop causes confusing state resets.
+    if (!useResolvedConfig) {
+      const normalizedResourceKey = resourceKey ?? '__default_resource__';
+      if (lastInitializedResourceKeyRef.current === normalizedResourceKey)
+        return;
+      lastInitializedResourceKeyRef.current = normalizedResourceKey;
     }
-  }, [initialDataResult, onChangeJSON]);
+
+    const baseConfig = useResolvedConfig
+      ? initialDataResult.config
+      : xmlToConfig(initialXmlData);
+    const normalizedConfig = normalizeConfigForEditing(baseConfig);
+    setActiveConfig(normalizedConfig);
+    onChangeJSON?.(normalizedConfig);
+  }, [
+    initialDataResult,
+    onChangeJSON,
+    initialXmlData,
+    useResolvedConfig,
+    resourceKey,
+  ]);
 
   // Stable handler — uses the ref so it never needs to be recreated.
   const handleChangeConfig = React.useCallback((newConfig: any) => {
@@ -160,6 +275,9 @@ export function ExpressSearchConfigResourceEditor(
   return (
     <ExpressSearchConfigEditor
       onChange={props.onChange}
+      initialXmlData={props.data}
+      useResolvedConfig={false}
+      resourceKey={String(props.resource.resource_uri)}
       onSetCleanup={props.onSetCleanup}
     />
   );

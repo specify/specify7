@@ -143,6 +143,7 @@ export async function scanUsages(
 ): Promise<DictionaryUsages | undefined> {
   const debug = mode === 'verbose' ? console.log : () => undefined;
   const warn = mode === 'silent' ? () => undefined : globalWarn;
+  const warnDuplicateValues = mode === 'verbose' ? warn : () => undefined;
 
   const entries = await extractStrings();
 
@@ -404,7 +405,7 @@ export async function scanUsages(
     Object.entries(valueDictionary ?? {})
       .filter(([_valueString, instances]) => instances.length > 1)
       .forEach(([valueString, instances]) => {
-        warn(
+        warnDuplicateValues(
           [
             'Multiple instances of the same value were found for language ',
             `${language} in:\n`,
