@@ -13,6 +13,7 @@ import { icons } from '../Atoms/Icons';
 import { Button } from '../Atoms/Button';
 import { ReactLazy } from '../Router/ReactLazy';
 import { ExpressSearchConfigDialog } from '../ExpressSearchConfig/ExpressSearchConfigDialog';
+import { hasToolPermission } from '../Permissions/helpers';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -32,28 +33,36 @@ export function WelcomeView({
     'addSearchBar'
   );
   const [isConfigOpen, setIsConfigOpen] = React.useState(false);
+  const canEditExpressSearchConfig =
+    hasToolPermission('resources', 'read') &&
+    hasToolPermission('resources', 'create') &&
+    hasToolPermission('resources', 'update');
 
   return (
     <div className="flex h-full flex-col">
       {!hideSearchBar && displaySearchBar && (
         <div className="flex justify-end gap-2 pr-4 pt-4 items-center">
-          <Button.BorderedGray
-            title={commonText.configureExpressSearch()}
-            onClick={() => setIsConfigOpen(true)}
-            className="!px-2"
-          >
-            {icons.cog}
-          </Button.BorderedGray>
+          {canEditExpressSearchConfig && (
+            <Button.BorderedGray
+              title={commonText.configureExpressSearch()}
+              onClick={() => setIsConfigOpen(true)}
+              className="!px-2"
+            >
+              {icons.cog}
+            </Button.BorderedGray>
+          )}
           <SearchForm formId={formId} />
           <Submit.Secondary form={formId}>
             {commonText.search()}
           </Submit.Secondary>
         </div>
       )}
-      <ExpressSearchConfigDialog
-        isOpen={isConfigOpen}
-        onClose={() => setIsConfigOpen(false)}
-      />
+      {canEditExpressSearchConfig && (
+        <ExpressSearchConfigDialog
+          isOpen={isConfigOpen}
+          onClose={() => setIsConfigOpen(false)}
+        />
+      )}
       <div
         className={`
         mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4

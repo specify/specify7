@@ -30,6 +30,7 @@ import { parseQueryFields } from '../QueryBuilder/helpers';
 import { QueryResults } from '../QueryBuilder/Results';
 import { formatUrl, parseUrl } from '../Router/queryString';
 import { OverlayContext } from '../Router/Router';
+import { hasToolPermission } from '../Permissions/helpers';
 import type {
   QueryTableResult,
   RawExpressSearchResult,
@@ -150,6 +151,10 @@ export function ExpressSearchView(): JSX.Element {
     'expressSearch',
     'showSearchTips'
   );
+  const canEditExpressSearchConfig =
+    hasToolPermission('resources', 'read') &&
+    hasToolPermission('resources', 'create') &&
+    hasToolPermission('resources', 'update');
 
   const primaryResults = usePrimarySearch(query, configRefreshTrigger);
   const secondaryResults = useSecondarySearch(query, configRefreshTrigger);
@@ -180,13 +185,15 @@ export function ExpressSearchView(): JSX.Element {
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <div className="flex items-center gap-2">
             <SearchField value={value} />
-            <Button.BorderedGray
-              className="!px-2"
-              title={commonText.configureExpressSearch()}
-              onClick={() => setIsConfigOpen(true)}
-            >
-              {icons.cog}
-            </Button.BorderedGray>
+            {canEditExpressSearchConfig && (
+              <Button.BorderedGray
+                className="!px-2"
+                title={commonText.configureExpressSearch()}
+                onClick={() => setIsConfigOpen(true)}
+              >
+                {icons.cog}
+              </Button.BorderedGray>
+            )}
           </div>
           <Submit.Info className="sr-only">{commonText.search()}</Submit.Info>
         </Form>
@@ -212,11 +219,13 @@ export function ExpressSearchView(): JSX.Element {
           <div />
         </>
       )}
-      <ExpressSearchConfigDialog
-        isOpen={isConfigOpen}
-        onClose={() => setIsConfigOpen(false)}
-        onSave={() => setConfigRefreshTrigger((value) => value + 1)}
-      />
+      {canEditExpressSearchConfig && (
+        <ExpressSearchConfigDialog
+          isOpen={isConfigOpen}
+          onClose={() => setIsConfigOpen(false)}
+          onSave={() => setConfigRefreshTrigger((value) => value + 1)}
+        />
+      )}
     </Container.Full>
   );
 }
