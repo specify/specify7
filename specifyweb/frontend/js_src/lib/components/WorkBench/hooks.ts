@@ -59,6 +59,7 @@ export function useHotHooks({
         return 50;
 
       const headerLabel = workbench.dataset.columns[physicalCol] ?? '';
+      const isMapped = workbench.mappings?.mappedHeaders?.[physicalCol] !== undefined;
       if (headerMeasureContext !== null) {
         const bodyStyle =
           globalThis.document === undefined
@@ -81,9 +82,9 @@ export function useHotHooks({
        * Account for icon, gap, cell padding, and the sorting affordance that
        * HOT reserves on the right side of sortable headers.
        */
-      return Math.ceil(textWidth + 56);
+      return Math.ceil(textWidth + (isMapped ? 60 : 64));
     },
-    [headerMeasureContext, workbench.dataset.columns, workbench.hot]
+    [headerMeasureContext, workbench.dataset.columns, workbench.hot, workbench.mappings]
   );
 
   return {
