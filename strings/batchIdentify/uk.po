@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-16 16:11+0000\n"
+"PO-Revision-Date: 2026-04-16 19:12+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/batchIdentify/uk/>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"batchIdentify/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,98 +12,105 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/BatchIdentify/index.tsx:787
 #: components/BatchIdentify/index.tsx:812
 #: components/BatchIdentify/index.tsx:877
 #: components/Header/userToolDefinitions.ts:144
 #: components/Router/OverlayRoutes.tsx:80
-#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "batchIdentify"
-msgstr ""
+msgstr "Пакетна ідентифікація"
 
-#: components/BatchIdentify/index.tsx:883
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:883
 #, fuzzy
 msgid "instructions"
 msgstr ""
+"Вводьте каталожні номери, використовуючи будь-які нечислові роздільники "
+"(коми, пробіли, текстові префікси тощо). Використовуйте тире для позначення "
+"числових діапазонів, наприклад, 0001–0150."
 
+#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:940
 #: components/BatchIdentify/index.tsx:951
-#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "catalogNumbersNotFound"
-msgstr ""
+msgstr "Номери в каталозі не знайдено"
 
-#: components/BatchIdentify/index.tsx:865
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:865
 #, fuzzy
 msgid "identify"
-msgstr ""
+msgstr "Ідентифікувати"
 
-#: components/BatchIdentify/index.tsx:792
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:792
 #, fuzzy
 msgid "successMessage"
-msgstr ""
+msgstr "Усі записи були ідентифіковані до зазначеного таксону."
 
-#: components/BatchIdentify/index.tsx:206
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:206
 #, fuzzy
 msgid "updatedRecordSet"
-msgstr ""
+msgstr "Пакетна ідентифікація оновлених записів"
 
-#: components/BatchIdentify/index.tsx:610
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:610
 #, fuzzy
 msgid "noCatalogNumbersParsed"
-msgstr ""
+msgstr "Введіть принаймні один числовий каталожний номер."
 
-#: components/BatchIdentify/index.tsx:902
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:902
 #, fuzzy
 msgid "validatingCatalogNumbers"
-msgstr ""
+msgstr "Перевірка каталожних номерів..."
 
-#: components/BatchIdentify/index.tsx:887
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:887
 #, fuzzy
 msgid "placeholder"
-msgstr ""
+msgstr "0001 0002 0003 - 0150"
 
-#: components/BatchIdentify/index.tsx:156
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:156
 #, fuzzy
 msgid "previewQueryName"
-msgstr ""
+msgstr "Попередній перегляд пакетної ідентифікації"
 
+#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:915
 #: components/BatchIdentify/index.tsx:1023
-#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "unknownTaxonTree"
-msgstr ""
+msgstr "Невідоме таксонове дерево"
 
-#: components/BatchIdentify/index.tsx:920
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:920
 #, fuzzy
 msgid "collectionObjectTypes"
-msgstr ""
+msgstr "Типи об'єктів колекції"
 
-#: components/BatchIdentify/index.tsx:1012
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:1012
 #, fuzzy
 msgid "invalidRecordSetTitle"
-msgstr ""
+msgstr "Змішаний набір записів"
 
-#: components/BatchIdentify/index.tsx:1016
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:1016
 #, fuzzy
 msgid "invalidRecordSetMessage"
 msgstr ""
+"Вибраний набір записів містить об'єкти колекції з кількох таксонних дерев."
 
-#: components/BatchIdentify/index.tsx:1029
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:1029
 #, fuzzy
 msgid "invalidRecordSetInstructions"
 msgstr ""
+"Виберіть інший набір записів або відредагуйте запит, який використовувався "
+"для створення цього набору записів, щоб усі об'єкти колекції використовували "
+"одне й те саме дерево таксонів."
