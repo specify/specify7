@@ -36,10 +36,22 @@ export function useHotHooks({
 }): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   const loading = React.useContext(LoadingContext);
+  const visibleColumnsAutoSizeTimeout = React.useRef<
+    ReturnType<typeof globalThis.setTimeout>
+  >();
+  const lastAutoSizedVisibleColumns = React.useRef<string>();
   const headerMeasureContext = React.useMemo(() => {
     const canvas = globalThis.document?.createElement('canvas');
     return canvas?.getContext('2d') ?? null;
   }, []);
+  React.useEffect(
+    () => () => {
+      if (visibleColumnsAutoSizeTimeout.current !== undefined) {
+        clearTimeout(visibleColumnsAutoSizeTimeout.current);
+      }
+    },
+    []
+  );
   const getVisualColFromProperty = React.useCallback(
     (
       property: CellChange[1],
@@ -86,6 +98,47 @@ export function useHotHooks({
     },
     [headerMeasureContext, workbench.dataset.columns, workbench.hot, workbench.mappings]
   );
+  const getAutoSizedWidth = React.useCallback(
+    (visualCol: number, fallbackWidth: number): number => {
+      if (workbench.hot === undefined) return fallbackWidth;
+      return (
+        getHotPlugin(workbench.hot, 'autoColumnSize').getColumnWidth(
+          visualCol,
+          fallbackWidth,
+          true
+        ) ?? fallbackWidth
+      );
+    },
+    [workbench.hot]
+  );
+  const scheduleVisibleColumnsAutoSize = React.useCallback(
+    (force = false): void => {
+      if (workbench.hot === undefined) return;
+      if (visibleColumnsAutoSizeTimeout.current !== undefined) {
+        clearTimeout(visibleColumnsAutoSizeTimeout.current);
+      }
+      visibleColumnsAutoSizeTimeout.current = globalThis.setTimeout(() => {
+        visibleColumnsAutoSizeTimeout.current = undefined;
+        if (workbench.hot === undefined) return;
+        const autoColumnSize = getHotPlugin(workbench.hot, 'autoColumnSize');
+        const firstVisibleColumn = autoColumnSize.getFirstVisibleColumn();
+        const lastVisibleColumn = autoColumnSize.getLastVisibleColumn();
+        if (firstVisibleColumn < 0 || lastVisibleColumn < firstVisibleColumn)
+          return;
+        const visibleColumnKey = `${firstVisibleColumn}:${lastVisibleColumn}`;
+        if (!force && lastAutoSizedVisibleColumns.current === visibleColumnKey)
+          return;
+        lastAutoSizedVisibleColumns.current = visibleColumnKey;
+        autoColumnSize.calculateColumnsWidth(
+          { from: firstVisibleColumn, to: lastVisibleColumn },
+          { from: 0, to: workbench.hot.countRows() - 1 },
+          true
+        );
+        workbench.hot.render();
+      }, 80);
+    },
+    [workbench.hot]
+  );
 
   return {
     /*
@@ -112,7 +165,10 @@ export function useHotHooks({
           th.setAttribute('aria-label', 'Header cell');
         }
       });
+      scheduleVisibleColumnsAutoSize(true);
     },
+
+    afterScrollHorizontally: () => scheduleVisibleColumnsAutoSize(),
 
     /*
      * After cell is rendered, we need to reApply metaData classes
@@ -583,7 +639,11 @@ export function useHotHooks({
       Math.max(width, getHeaderMinWidth(visualCol)),
 
     beforeStretchingColumnWidth: (stretchedWidth, visualCol) =>
-      Math.max(stretchedWidth, getHeaderMinWidth(visualCol)),
+      Math.max(
+        stretchedWidth,
+        getAutoSizedWidth(visualCol, stretchedWidth),
+        getHeaderMinWidth(visualCol)
+      ),
 
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
