@@ -27,7 +27,7 @@ import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
-import { ExpressSearchConfigEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
+import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import {
   CollectionPreferencesEditor,
   UserPreferencesEditor,
@@ -169,7 +169,7 @@ export const visualAppResourceEditors = f.store<
     xml: generateXmlEditor(exportFeedSpec),
   },
   expressSearchConfig: {
-    visual: ExpressSearchConfigEditor,
+    visual: ExpressSearchConfigResourceEditor,
     xml: AppResourceTextEditor,
   },
   typeSearches: undefined,
