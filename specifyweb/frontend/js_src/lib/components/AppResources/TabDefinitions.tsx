@@ -21,13 +21,13 @@ import type {
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
+import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
 import { fieldFormattersSpec } from '../FieldFormatters/spec';
 import { DataObjectFormatter } from '../Formatters';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
-import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import {
   CollectionPreferencesEditor,
   UserPreferencesEditor,
