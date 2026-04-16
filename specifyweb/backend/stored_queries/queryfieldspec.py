@@ -421,7 +421,8 @@ class QueryFieldSpec(
 
             if negate:
                 if op_num in NULL_SAFE_NEGATE_OPS:
-                    predicate = null_safe_not(mod_orm_field or orm_field, f)
+                    field_expr = mod_orm_field if mod_orm_field is not None else orm_field
+                    predicate = null_safe_not(field_expr, f)
                 else:
                     predicate = sql.not_(f)
             else:
