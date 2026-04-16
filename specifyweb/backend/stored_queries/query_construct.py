@@ -19,24 +19,52 @@ def _safe_filter(query):
         return query.first()
     raise Exception(f"Got more than one matching: {list(query)}")
 
+def _taxon_tree_rank_lookup_supported(table, next_join_path):
+    return (
+        table.name == "Taxon"
+        and len(next_join_path) == 1
+        and not next_join_path[0].is_relationship
+        and not isinstance(next_join_path[0], TreeRankQuery)
+    )
+
+def _resolve_tree_rank_items(collection, table, tree_rank: TreeRankQuery):
+    treedefs = get_treedefs(collection, table.name)
+    item_model = getattr(spmodels, table.django_name + "treedefitem")
+
+    treedefs_with_ranks = [
+        (treedef_id, treedefitem_id)
+        for treedef_id, treedefitem_id in (
+            (
+                treedef_id,
+                _safe_filter(
+                    item_model.objects.filter(
+                        treedef_id=treedef_id, name=tree_rank.name
+                    ).values_list("id", flat=True)
+                ),
+            )
+            for treedef_id, _ in treedefs
+            if tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id
+        )
+        if treedefitem_id is not None
+    ]
+    assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
+    return treedefs_with_ranks
+
 class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter query join_cache tree_rank_count internal_filters')):
 
     def __new__(cls, *args, **kwargs):
-        kwargs['join_cache'] = dict()
+        if 'join_cache' not in kwargs:
+            kwargs['join_cache'] = dict()
         # TODO: Use tree_rank_count to implement cases where formatter of taxon is defined with fields from the parent.
         # In that case, the cycle will end (unlike other cyclical cases).
-        kwargs['tree_rank_count'] = 0
-        kwargs['internal_filters'] = []
+        if 'tree_rank_count' not in kwargs:
+            kwargs['tree_rank_count'] = 0
+        if 'internal_filters' not in kwargs:
+            kwargs['internal_filters'] = []
         return super().__new__(cls, *args, **kwargs)
 
-    def _tree_rank_can_use_subquery(self, table, next_join_path):
-        return (
-            table.name == "Taxon"
-            and
-            len(next_join_path) == 1
-            and not next_join_path[0].is_relationship
-            and not isinstance(next_join_path[0], TreeRankQuery)
-        )
+    def _tree_rank_can_use_taxon_lookup(self, table, next_join_path):
+        return _taxon_tree_rank_lookup_supported(table, next_join_path)
 
     def _build_tree_rank_scalar_subquery(
         self,
@@ -71,6 +99,54 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         column = subquery.correlate(correlation_target).scalar_subquery()
         return column, field, table
 
+    def _build_taxon_tree_rank_scalar_subquery(
+        self,
+        start_alias,
+        mapped_cls,
+        table,
+        next_join_path,
+        treedefitem_params,
+        max_depth,
+    ):
+        treedefitem_column = table.name + 'TreeDefItemID'
+        correlation_target = sa_inspect(start_alias).selectable
+        root = orm.aliased(mapped_cls)
+        field = next_join_path[0]
+        ancestors = [root]
+        subquery = sql.select(
+            sql.case(
+                [
+                    (
+                        getattr(ancestor, treedefitem_column).in_(tuple(treedefitem_params)),
+                        getattr(ancestor, field.name),
+                    )
+                    for ancestor in ancestors
+                ],
+                else_=None,
+            )
+        ).select_from(root)
+
+        for _ in range(max_depth - 1):
+            ancestor = orm.aliased(mapped_cls)
+            subquery = subquery.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
+            ancestors.append(ancestor)
+
+        subquery = subquery.with_only_columns(
+            sql.case(
+                [
+                    (
+                        getattr(ancestor, treedefitem_column).in_(tuple(treedefitem_params)),
+                        getattr(ancestor, field.name),
+                    )
+                    for ancestor in ancestors
+                ],
+                else_=None,
+            )
+        ).where(root._id == start_alias._id)
+
+        column = subquery.correlate(correlation_target).scalar_subquery()
+        return column, field, table
+
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
         if query.collection is None:
@@ -92,29 +168,18 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
         treedefs = get_treedefs(query.collection, table.name)
         max_depth = max(depth for _, depth in treedefs)
-
-        item_model = getattr(spmodels, table.django_name + "treedefitem")
-
-        # TODO: optimize out the ranks that appear? cache them
-        treedefs_with_ranks: list[tuple[int, int]] = [
-            (treedef_id, _safe_filter(item_model.objects.filter(treedef_id=treedef_id, name=tree_rank.name).values_list("id", flat=True)))
-            for treedef_id, _ in treedefs
-            # For constructing tree queries for batch edit
-            if (tree_rank.treedef_id is None or tree_rank.treedef_id == treedef_id)
-        ]
-        assert len(treedefs_with_ranks) >= 1, "Didn't find the tree rank across any tree"
+        treedefs_with_ranks = _resolve_tree_rank_items(query.collection, table, tree_rank)
 
         treedefitem_params = [treedefitem_id for (_, treedefitem_id) in treedefs_with_ranks]
 
-        if self._tree_rank_can_use_subquery(table, next_join_path):
-            # Restrict the subquery strategy to Taxon, so that the alias disambiguation issue from paths like
-            # PreferredTaxon/HostTaxon are solved without changing SQL shape for other trees like Geography or Storage.
-            column, field, table = self._build_tree_rank_scalar_subquery(
+        if self._tree_rank_can_use_taxon_lookup(table, next_join_path):
+            column, field, table = self._build_taxon_tree_rank_scalar_subquery(
                 start_alias,
                 mapped_cls,
                 table,
                 next_join_path,
                 treedefitem_params,
+                max_depth,
             )
         else:
             # Use the specific start anchor in the cache key, so each branch has its own chain
