@@ -146,6 +146,13 @@
     "eslint": {
       "file-entry-cache": "^8.0.0"
     },
+    "@types/d3-array": "3.2.1",
+    "@types/d3-dispatch": "3.0.6",
+    "@types/d3-path": "3.1.0",
+    "@types/d3-scale": "4.0.8",
+    "@types/d3-scale-chromatic": "3.0.3",
+    "@types/d3-shape": "3.1.6",
+    "@types/d3-time": "3.0.3",
     "tailwindcss": {
       "sucrase": "^3.35.1"
     },
