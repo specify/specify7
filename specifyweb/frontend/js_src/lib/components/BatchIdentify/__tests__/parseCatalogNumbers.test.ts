@@ -15,9 +15,9 @@ describe('parseCatalogNumberEntries', () => {
 
 describe('tokenizeCatalogEntry', () => {
   test('treats non-numeric characters as delimiters except dash', () => {
-    expect(tokenizeCatalogEntry('SEMC000271806,SEMC000687972;000601108')).toEqual(
-      [271_806, 687_972, 601_108]
-    );
+    expect(
+      tokenizeCatalogEntry('SEMC000271806,SEMC000687972;000601108')
+    ).toEqual([271_806, 687_972, 601_108]);
   });
 
   test('retains dash as a range token', () => {
@@ -28,9 +28,7 @@ describe('tokenizeCatalogEntry', () => {
 describe('parseCatalogNumberRanges', () => {
   test('parses single catalog numbers split by non-numeric delimiters', () => {
     expect(
-      parseCatalogNumberRanges([
-        'SEMC000271806 SEMC000687972 SEMC000601108',
-      ])
+      parseCatalogNumberRanges(['SEMC000271806 SEMC000687972 SEMC000601108'])
     ).toEqual([
       [271_806, 271_806],
       [687_972, 687_972],
