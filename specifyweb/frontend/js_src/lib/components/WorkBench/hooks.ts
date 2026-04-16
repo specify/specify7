@@ -82,7 +82,7 @@ export function useHotHooks({
        * Account for icon, gap, cell padding, and the sorting affordance that
        * HOT reserves on the right side of sortable headers.
        */
-      return Math.ceil(textWidth + (isMapped ? 60 : 64));
+      return Math.ceil(textWidth + (isMapped ? 60 : 72));
     },
     [headerMeasureContext, workbench.dataset.columns, workbench.hot, workbench.mappings]
   );

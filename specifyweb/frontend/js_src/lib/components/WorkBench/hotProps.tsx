@@ -3,10 +3,9 @@ import ReactDOMServer from 'react-dom/server';
 
 import { attachmentsText } from '../../localization/attachments';
 import { wbPlanText } from '../../localization/wbPlan';
-import { icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { getIcon } from '../InitialContext/icons';
-import { TableIcon } from '../Molecules/TableIcon';
+import { tableIconUndefined, TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { getAttachmentsColumn } from '../WorkBench/attachmentHelpers';
@@ -153,19 +152,17 @@ function ColumnHeader({
   readonly tableName: string | undefined;
 }): JSX.Element {
   return (
-    <span className="flex w-full items-center justify-center gap-1">
+    <span className="inline-flex max-w-full items-center gap-1 whitespace-nowrap align-middle">
       {isMapped && tableName !== undefined ? (
         <TableIcon label={false} name={tableName} />
       ) : (
-        <span
-          aria-label={wbPlanText.unmappedColumn()}
-          className="text-red-600"
-          title={wbPlanText.unmappedColumn()}
-        >
-          {icons.ban}
-        </span>
+        React.cloneElement(tableIconUndefined, {
+          'aria-label': wbPlanText.unmappedColumn(),
+          title: wbPlanText.unmappedColumn(),
+          className: `${tableIconUndefined.props.className} flex-shrink-0`,
+        })
       )}
-      <span className="wb-header-name columnSorting">{columnName}</span>
+      <span className="wb-header-name">{columnName}</span>
     </span>
   );
 }

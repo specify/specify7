@@ -23,17 +23,18 @@
   --ht-comments-indicator-color: theme('colors.black');
 }
 
-.handsontable .columnSorting {
+.handsontable .colHeader.columnSorting,
+.handsontable .wb-header-name {
   @apply leading-5;
 }
 
 /* Sorting direction */
-.handsontable .columnSorting::before {
+.handsontable .colHeader.columnSorting::before {
   @apply !static order-2 !mt-1 !bg-center pr-1;
 }
 
 /* Sorting priority index */
-.handsontable .columnSorting::after {
+.handsontable .colHeader.columnSorting::after {
   @apply !static order-2 !mt-2 -ml-2;
 }
 
