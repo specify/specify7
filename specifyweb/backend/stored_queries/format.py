@@ -434,7 +434,11 @@ class ObjectFormatter:
 
     def _fieldformat(self, table: Table, specify_field: Field,
                      field: InstrumentedAttribute | Extract):
-        if self.format_types and specify_field.is_temporal():
+        if (
+            self.format_types
+            and specify_field.is_temporal()
+            and isinstance(field, InstrumentedAttribute)
+        ):
             return self._dateformat(specify_field, field)
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
