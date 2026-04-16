@@ -44,9 +44,10 @@ class ExpressSearchConfigTests(TestCase):
         self.collection.id = 1
         self.collection.discipline = MagicMock()
 
+    @patch('specifyweb.backend.express_search.config_views.has_table_permission', return_value=True)
     @patch('specifyweb.backend.express_search.config_views.get_express_search_config_str')
     @patch('specifyweb.backend.express_search.config_views._get_schema_metadata')
-    def test_get_config(self, mock_schema, mock_get_xml):
+    def test_get_config(self, mock_schema, mock_get_xml, mock_has_table_permission):
         # Mocking the XML response
         mock_get_xml.return_value = '<?xml version="1.0" encoding="UTF-8"?><search><tables><searchtable><tableName>CollectionObject</tableName><displayOrder>0</displayOrder><searchFields><searchfield><fieldName>catalogNumber</fieldName><order>0</order></searchfield></searchFields></searchtable></tables></search>'
         mock_schema.return_value = []
@@ -109,8 +110,10 @@ class ExpressSearchConfigTests(TestCase):
         request.specify_user = self.user
         request.user = self.user
 
-        with self.assertRaises(json.JSONDecodeError):
-            config_api(request)
+        response = config_api(request)
+        self.assertEqual(response.status_code, 400)
+        data = json.loads(response.content)
+        self.assertEqual(data.get('error'), 'Invalid JSON')
 
 
 class TestSynonymyPredicateGrouping(TestCase):
