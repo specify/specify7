@@ -6,9 +6,14 @@ import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { TestComponentWrapperRouter } from '../../../tests/utils';
 import { LoadingContext } from '../../Core/Contexts';
+import type { SerializedResource } from '../../DataModel/helperTypes';
+import type { SpAppResourceDir } from '../../DataModel/types';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
-import { CreateAppResource } from '../Create';
+import { CreateAppResource, exportsForTests } from '../Create';
+import { appResourceTypes } from '../types';
 import { testAppResources } from './testAppResources';
+
+const { buildNewAppResource } = exportsForTests;
 
 requireContext();
 
@@ -96,5 +101,24 @@ describe('CreateAppResource', () => {
     expect(getByRole('dialog').textContent).toMatchInlineSnapshot(
       `"Copy default formsHerpetologyHerpetology > Guest > HerpetologyHerpetology > Manager > HerpetologyBirdBird > Guest > BirdBird > Manager > BirdMammalMammal > Guest > MammalMammal > Manager > MammalVertpaleoVertpaleo > Guest > VertpaleoVertpaleo > Manager > VertpaleoFishFish > Guest > FishFish > Manager > FishInvertebrateInvertebrate > Guest > InvertebrateInvertebrate > Manager > InvertebrateInsect > EntoInsect > Guest > EntoInsect > Manager > EntoBotanyBotany > Guest > BotanyBotany > Manager > BotanyGeologyCommonBackstop > GlobalBackstop > SearchInvertpaleo > PaleoInvertpaleo > Guest > PaleoInvertpaleo > Manager > PaleoNew"`
     );
+  });
+});
+
+describe('buildNewAppResource', () => {
+  const directory = {
+    resource_uri: '/api/specify/spappresourcedir/1/',
+  } as SerializedResource<SpAppResourceDir>;
+
+  // Specify 6 hard-fails on labels whose spappresource.Description is NULL,
+  // so a freshly created resource must carry a non-null description (#824).
+  test('defaults description to the trimmed name', () => {
+    const resource = buildNewAppResource(
+      appResourceTypes.appResources,
+      '  My Label  ',
+      'text/xml',
+      directory
+    );
+    expect(resource.get('name')).toBe('My Label');
+    expect(resource.get('description')).toBe('My Label');
   });
 });
