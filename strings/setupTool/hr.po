@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-15 22:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
-"setupTool/hr/>\n"
+"Language-Team: Croatian "
+"<https://hosted.weblate.org/projects/specify-7/setupTool/hr/>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,479 +13,479 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
-#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:237
+#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "guidedSetup"
 msgstr "Vođeno postavljanje"
 
-#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:309
+#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "setupProgress"
 msgstr "Napredak:"
 
-#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:258
+#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "overview"
 msgstr "Pregled"
 
-#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:244
 #: components/SetupTool/index.tsx:248
+#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "settingUp"
 msgstr "Postavljanje baze podataka..."
 
-#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:249
+#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "creating"
 msgstr "Stvaranje"
 
-#. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:317
+#. Used in: Components > Setup Tool > Index
 #, fuzzy
 msgid "setupError"
 msgstr "Došlo je do pogreške tijekom posljednjeg pokušaja postavljanja."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:157
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institution"
 msgstr "Institucija"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:158
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionDescription"
 msgstr "Unesite podatke o ustanovi."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:164
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionName"
 msgstr "Ime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:165
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionNameDescription"
 msgstr ""
-"Puni, službeni naziv ustanove (npr. \"Institut za bioraznolikost Sveučilišta "
-"u Kansasu\")."
+"Puni, službeni naziv ustanove (npr. \"Institut za bioraznolikost "
+"Sveučilišta u Kansasu\")."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:171
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionCode"
 msgstr "Kodirati"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:172
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionCodeDescription"
 msgstr "Kratki, jedinstveni kod ili akronim za instituciju (npr. \"KUBI\")."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:178
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionAddress"
 msgstr "Adresa"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:180
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionAddressDescription"
 msgstr "Adresa ustanove. Nije obavezno."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:228
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionIsAccessionGlobal"
 msgstr "Definirajte pristupanje globalno"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:229
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "institutionIsAccessionGlobalDescription"
 msgstr ""
 "Globalni opseg omogućuje vam dijeljenje pristupa između svih odjela. "
 "Divizijski opseg osigurava da su pristupi specifični za svaki odjel."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:185
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "address"
 msgstr "Adresa"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:186
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressDescription"
 msgstr "Adresa ustanove."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:191
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressCity"
 msgstr "Grad"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:192
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressCityDescription"
 msgstr "Grad u kojem se nalazi ustanova."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:198
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressState"
 msgstr "Pokrajina/Savezna država"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:199
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressStateDescription"
 msgstr "Država ili pokrajina."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:205
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressCountry"
 msgstr "Zemlja"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:206
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressCountryDescription"
 msgstr "Zemlja."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:212
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressPostalCode"
 msgstr "Poštanski broj"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:213
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressPostalCodeDescription"
 msgstr "Poštanski broj."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:219
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressPhone1"
 msgstr "Telefon"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:220
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "addressPhone1Description"
 msgstr "Kontaktni broj telefona."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:240
 #: components/SetupTool/setupResources.ts:308
 #: components/SetupTool/setupResources.ts:345
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "treeRanks"
 msgstr "Rangovi drveća"
 
-#. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:398
+#. Used in: Components > Setup Tool > Setup Form
 #, fuzzy
 msgid "rank"
 msgstr "Rang"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:267
 #: components/SetupTool/setupResources.ts:322
 #: components/SetupTool/setupResources.ts:391
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "fullNameDirection"
 msgstr "Puno ime Smjer"
 
-#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 #: components/SetupTool/setupResources.ts:330
 #: components/SetupTool/setupResources.ts:400
 #: components/TreeView/Tree.tsx:299
+#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 #, fuzzy
 msgid "preloadTree"
 msgstr "Popuni stablo zadanim zapisima"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:331
 #: components/SetupTool/setupResources.ts:401
 #: components/SetupTool/setupResources.ts:408
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "preloadTreeDescription"
 msgstr "Preuzmi zadane zapise za ovo stablo."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:407
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "treeToPreload"
 msgstr "Drvo za preuzimanje:"
 
-#. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:302
+#. Used in: Components > Setup Tool > Setup Form
 #, fuzzy
 msgid "selectATree"
 msgstr "Odaberite stablo"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:117
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "include"
 msgstr "Uključi"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:118
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "includeDescription"
 msgstr "Uključite mjesta Level u definiciji stabla."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:126
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "enforced"
 msgstr "Provedeno"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "enforcedDescription"
 msgstr ""
 "Opcija \"Je li provedeno\" osigurava da se razina ne može preskočiti "
 "prilikom dodavanja čvorova niže u stablu."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:135
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "inFullName"
 msgstr "Puno ime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:136
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "inFullNameDescription"
 msgstr ""
 "\"Je u punom imenu\" uključuje razinu prilikom izrade izraza punog imena, "
 "koji se može upitati i koristiti u izvješćima."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:143
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "fullNameSeparator"
 msgstr "Separator"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:144
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "fullNameSeparatorDescription"
 msgstr ""
 "Razdjelnik se odnosi na znak koji odvaja razine prilikom prikaza punog "
 "naziva."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:236
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "storageTree"
 msgstr "Stablo skladištenja"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:304
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "geographyTree"
 msgstr "Geografsko stablo"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:340
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "taxonTree"
 msgstr "Stablo taksona"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:277
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "division"
 msgstr "Podjela"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:279
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "divisionName"
 msgstr "Ime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:280
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "divisionAbbrev"
 msgstr "Kratica"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:285
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "discipline"
 msgstr "Disciplina"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:296
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "disciplineName"
 msgstr "Ime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:289
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "disciplineType"
 msgstr "Tip"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:420
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "collectionName"
 msgstr "Naziv zbirke"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:426
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "collectionCode"
 msgstr "Kodirati"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:432
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "collectionCatalogNumFormatName"
 msgstr "Format kataloškog broja"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:442
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUser"
 msgstr "Navedite korisnika"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:460
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserName"
 msgstr "Korisničko ime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:461
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserNameDescription"
 msgstr "Korisničko ime za primarni administratorski račun."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:467
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserPassword"
 msgstr "Lozinka"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:468
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserPasswordDescription"
 msgstr "Lozinka za račun."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:473
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserConfirmPassword"
 msgstr "Potvrdite lozinku"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:474
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserConfirmPasswordDescription"
 msgstr "Mora odgovarati lozinki unesenoj gore."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:446
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserFirstName"
 msgstr "Ime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:447
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserFirstNameDescription"
 msgstr "Ime agenta povezanog s računom. Neobavezno."
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:453
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserLastName"
 msgstr "Prezime"
 
-#. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:454
+#. Used in: Components > Setup Tool > Setup Resources
 #, fuzzy
 msgid "specifyUserLastNameDescription"
 msgstr "Prezime agenta povezanog s računom."
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:597
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "addNewGeographyTree"
 msgstr "Dodaj novo geografsko stablo"
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:615
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "addNewTaxonTree"
 msgstr "Dodaj novo stablo taksona"
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:189
 #: components/SystemConfigurationTool/Hierarchy.tsx:714
 #: components/SystemConfigurationTool/Hierarchy.tsx:719
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchyStructureTitle"
 msgstr "Pogledajte institucionalnu hijerarhiju"
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:193
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchyStructureHint"
 msgstr "Kliknite bilo koji blok da biste otvorili njegov obrazac za uređivanje."
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:197
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchySwitchToHorizontal"
 msgstr "Prebaci na vodoravno"
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:198
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchySwitchToVertical"
 msgstr "Prebaci na vertikalno"
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:430
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchyAddNew"
 msgstr "Dodati"
 
-#. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:204
+#. Used in: Components > System Configuration Tool > Hierarchy
 #, fuzzy
 msgid "hierarchyDiagram"
 msgstr "Institucionalna hijerarhija"
 
-#. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:182
+#. Used in: Components > Setup Tool > Setup Form
 #, fuzzy
 msgid "emptyTaxonTree"
 msgstr "Bit će kreirano prazno stablo taksona"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:399
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "collectionCreationStarted"
 msgstr ""

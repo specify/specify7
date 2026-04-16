@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-15 22:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"welcome/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/welcome/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,39 +12,39 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:73
 #: components/Router/Routes.tsx:488
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Ласкаво просимо"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:154
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:215
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "Про Specify 7"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:56
+#. Used in: Components > Home Page > About Specify
 msgid "downloadInformation"
 msgstr "Про Specify 7"
 
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:260
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Taxon Tiles"
 
-#. Used in: Components > Home Page > Taxon Tiles
 #: components/HomePage/TaxonTiles.tsx:73
+#. Used in: Components > Home Page > Taxon Tiles
 msgid "taxonTilesDescription"
 msgstr ""
 "Показано таксони з {count:number|formatted} або більше "
 "{collectionObjectTable:string} записів"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:79
+#. Used in: Components > Home Page > About Specify
 msgid "fullAddress"
 msgstr ""
 "Укажіть консорціум колекцій <br />\n"
@@ -53,8 +53,8 @@ msgstr ""
 "1345 Jayhawk Blvd. <br />\n"
 "Лоуренс, KS 66045 США"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:91
+#. Used in: Components > Home Page > About Specify
 msgid "disclosure"
 msgstr ""
 "Програмне забезпечення Specify є продуктом консорціуму Specify Collections "
@@ -67,8 +67,8 @@ msgstr ""
 "дослідницького центру Канзаського університету. З 1996 по 2018 рік Specify "
 "підтримувався грантами Національного наукового фонду США."
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
+#. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
 "Укажіть 7, авторське право 2025, Дослідницький центр Канзаського "
@@ -76,53 +76,53 @@ msgstr ""
 "програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General "
 "Public License v2."
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
+#. Used in: Components > Home Page > About Specify
 msgid "systemInformation"
 msgstr "Інформація про систему"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:99
+#. Used in: Components > Home Page > About Specify
 msgid "specifyVersion"
 msgstr "Вкажіть 7 версію:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:100
+#. Used in: Components > Home Page > About Specify
 msgid "gitSha"
 msgstr "Git SHA:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
+#. Used in: Components > Home Page > About Specify
 msgid "buildDate"
 msgstr "Дата збірки:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
+#. Used in: Components > Home Page > About Specify
 msgid "specifySixVersion"
 msgstr "Вкажіть 6 версію:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
+#. Used in: Components > Home Page > About Specify
 msgid "databaseVersion"
 msgstr "Версія бази даних:"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "schemaVersion"
 msgstr "Схема бази даних"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
+#. Used in: Components > Home Page > About Specify
 msgid "databaseName"
 msgstr "Ім'я бази даних:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:128
+#. Used in: Components > Home Page > About Specify
 msgid "browser"
 msgstr "Браузер:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:111
+#. Used in: Components > Home Page > About Specify
 msgid "databaseCreationDate"
 msgstr "Дата створення БД:"
