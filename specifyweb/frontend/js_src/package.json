@@ -130,6 +130,7 @@
     "worker-loader": "^3.0.8"
   },
   "overrides": {
+    "terser-webpack-plugin": "^5.4.0",
     "@eslint/eslintrc": {
       "minimatch": "3.1.4"
     },

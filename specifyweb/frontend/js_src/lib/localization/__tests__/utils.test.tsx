@@ -87,28 +87,28 @@ test('Key with JSX', () =>
       },
     })
   ).toMatchInlineSnapshot(`
-  <>
     <>
-      <span>
-        A
-      </span>
-    </>
-     a
-    <>
-      <span>
-        B
-      </span>
-    </>
+      <>
+        <span>
+          A
+        </span>
+      </>
+       a
+      <>
+        <span>
+          B
+        </span>
+      </>
 
-    <>
-      <br />
-    </>
+      <>
+        <br />
+      </>
 
-    <>
-      <p>
-        B
-      </p>
+      <>
+        <p>
+          B
+        </p>
+      </>
+       _
     </>
-     _
-  </>
-`));
+  `));
