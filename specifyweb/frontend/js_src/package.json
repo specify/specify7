@@ -147,6 +147,7 @@
     },
     "tailwindcss": {
       "sucrase": "^3.35.1"
+    },
     "typedoc": {
       "minimatch": "5.1.8"
     },
