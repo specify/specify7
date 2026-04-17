@@ -394,12 +394,14 @@ class ObjectFormatter:
         if field_spec.get_field() is not None:
             if field_spec.is_temporal() and field_spec.date_part == "Full Date":
                 field = self._dateformat(field_spec.get_field(), field)
-
+            elif field_spec.is_temporal() and field_spec.date_part is not None:
+                # Numeric date_part fields are already derived SQL expressions
+                pass
             elif field_spec.is_relationship():
                 pass
-
             else:
                 field = self._fieldformat(field_spec.table, field_spec.get_field(), field)
+        
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
@@ -434,7 +436,11 @@ class ObjectFormatter:
 
     def _fieldformat(self, table: Table, specify_field: Field,
                      field: InstrumentedAttribute | Extract):
-        if self.format_types and specify_field.is_temporal():
+        if (
+            self.format_types
+            and specify_field.is_temporal()
+            and isinstance(field, InstrumentedAttribute)
+        ):
             return self._dateformat(specify_field, field)
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
