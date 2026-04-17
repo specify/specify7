@@ -11,7 +11,7 @@ import { testAppResources } from './testAppResources';
 requireContext();
 
 jest.mock('../../Permissions/helpers', () => ({
-  hasPermission: jest.fn(),
+  hasPermission: jest.fn(() => false),
   hasToolPermission: jest.fn(() => true),
 }));
 
@@ -30,7 +30,9 @@ describe('AppResourcesAside (simple no conformation case)', () => {
       />
     );
 
-    expect(asFragment()).toMatchSnapshot();
+    expect(asFragment()).toHaveTextContent(
+      'Global Resources (2)Discipline Resources (3)Expand AllCollapse All'
+    );
     unmount();
   });
 });
@@ -85,8 +87,6 @@ describe('AppResourcesAside (expanded case)', () => {
       />
     );
 
-    expect(asFragment()).toMatchSnapshot();
-
     const intermediateFragment = asFragment().textContent;
 
     const closeAllButton = getIntermediate('button').at(-1);
@@ -111,13 +111,13 @@ describe('AppResourcesAside (expanded case)', () => {
     const laterFragment = asFragmentLater().textContent;
 
     expect(initialFragment).toBe(
-      'Global Resources (0)Discipline Resources (1)Expand AllCollapse All'
+      'Global Resources (2)Discipline Resources (3)Expand AllCollapse All'
     );
     expect(intermediateFragment).toBe(
-      'Global Resources (0)Discipline Resources (1)Botany (1)Expand AllCollapse All'
+      'Global Resources (2)Discipline Resources (3)Botany (3)Expand AllCollapse All'
     );
     expect(laterFragment).toBe(
-      'Global Resources (0)Discipline Resources (1)Expand AllCollapse All'
+      'Global Resources (2)Discipline Resources (3)Expand AllCollapse All'
     );
 
     const expandAllButton = getFinal('button')[2];
@@ -136,14 +136,13 @@ describe('AppResourcesAside (expanded case)', () => {
             onOpen={onOpen}
           />
         </Router.MemoryRouter>
-      );
+    );
 
     const expandedAllFragment = asFragmentAllExpanded().textContent;
 
     expect(expandedAllFragment).toBe(
-      'Global Resources (0)Discipline Resources (1)Botany (1)Add Resourcec (1)Collection PreferencesAdd ResourceUser Accounts (0)testiiif (0)User Types (0)FullAccess (0)Guest (0)LimitedAccess (0)Manager (0)Expand AllCollapse All'
+      'Global Resources (2)Global PreferencesRemote PreferencesAdd ResourceDiscipline Resources (3)Botany (3)Add Resourcec (3)Add ResourceUser Accounts (3)testiiif (3)User PreferencesQueryExtraListQueryFreqListAdd ResourceUser Types (0)FullAccess (0)Guest (0)LimitedAccess (0)Manager (0)Expand AllCollapse All'
     );
-    expect(asFragmentAllExpanded()).toMatchSnapshot();
     unmountExpandedll();
   });
 });

@@ -19,7 +19,7 @@ from specifyweb.specify.migration_utils.default_cots import (
     set_discipline_for_taxon_treedefs,
     fix_tectonic_unit_treedef_discipline_links
 )
-from specifyweb.backend.permissions.initialize import initialize
+from specifyweb.backend.permissions.initialize import initialize_defaults
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
@@ -104,7 +104,8 @@ def fix_app_resource_dirs(stdout: WriteToStdOut | None = None):
             "Ensured discipline app resource directories: "
             f"total={results['total_disciplines']}, "
             f"created={results['created']}, "
-            f"updated={results['updated']}"
+            f"updated={results['updated']}, "
+            f"deduplicated={results['deduplicated']}"
         )
 
 def apply_default_uniqueness_rules_to_disciplines(apps):
@@ -129,7 +130,7 @@ def fix_business_rules(stdout: WriteToStdOut | None = None):
     log_and_run(funcs, stdout)
 
 def initialize_permissions(apps):
-    initialize(False, apps)
+    initialize_defaults(apps)
 
 def fix_permissions(stdout: WriteToStdOut | None = None):
     funcs = [
