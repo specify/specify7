@@ -14,6 +14,7 @@ from collections import namedtuple, defaultdict
 from functools import reduce
 
 from django.conf import settings
+from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing, parent_inheritance_post_query_processing
@@ -25,7 +26,7 @@ from specifyweb.specify.utils.uiformatters import CNNField, get_catalognumber_fo
 from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
-from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
+from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id, get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.trees.utils import get_search_filters
 
@@ -34,6 +35,7 @@ from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
+from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
@@ -295,190 +297,6 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     }))
 
 
-def _build_portal_collection_name(collection) -> str:
-    return settings.WEB_ATTACHMENT_COLLECTION or collection.collectionname
-
-
-def _build_image_base_url() -> str:
-    return os.getenv('ASSET_SERVER_URL') or settings.WEB_ATTACHMENT_URL or ''
-
-
-def _schema_localization_or_empty(collection) -> dict[str, Any]:
-    try:
-        return get_schema_localization(collection, 0, 'en-us')
-    except Exception:
-        logger.exception('Failed loading schema localization for web portal export')
-        return {}
-
-
-def _clean_cell(value: Any) -> str:
-    return re.sub("\r|\n", " ", str(value if value is not None else ''))
-
-
-def _dedupe_name(name: str, used_names: set[str]) -> str:
-    candidate = name
-    suffix = 2
-    while candidate in used_names:
-        candidate = f"{name}_{suffix}"
-        suffix += 1
-    used_names.add(candidate)
-    return candidate
-
-
-def _portal_solr_type(query_field: QueryField, collection, user) -> str:
-    fieldspec = query_field.fieldspec
-    field = fieldspec.get_field()
-
-    if field is None or field.is_relationship:
-        return 'string'
-
-    if fieldspec.table.name == 'CollectionObject' and field.name == 'catalogNumber':
-        formatter = get_catalognumber_format(collection, query_field.format_name, user)
-        if (
-            formatter is not None
-            and len(formatter.fields) == 1
-            and isinstance(formatter.fields[0], CNNField)
-        ):
-            return 'pint'
-        return 'string'
-
-    if field.type in ('java.lang.String', 'text'):
-        return 'string'
-    if field.type in ('java.util.Date', 'java.sql.Timestamp'):
-        return 'string'
-    if field.type == 'java.util.Calendar':
-        return 'pint' if fieldspec.date_part in {'Day', 'Month', 'Year'} else 'string'
-    if field.type in ('java.lang.Integer', 'java.lang.Byte', 'java.lang.Short'):
-        return 'pint'
-    if field.type == 'java.lang.Long':
-        return 'plong'
-    if field.type == 'java.lang.Float':
-        return 'pfloat'
-    if field.type in ('java.lang.Double', 'java.math.BigDecimal'):
-        return 'pdouble'
-    if field.type == 'java.lang.Boolean':
-        return 'string'
-    return 'string'
-
-
-def _portal_field_metadata(
-    query_field: QueryField,
-    caption: str,
-    colname: str,
-    index: int,
-    schema_localization: dict[str, Any],
-    collection,
-    user,
-) -> dict[str, Any]:
-    fieldspec = query_field.fieldspec
-    table = fieldspec.table
-    field = fieldspec.get_field()
-
-    table_key = table.name.lower()
-    table_localization = schema_localization.get(table_key, {})
-    item_localization = (
-        table_localization.get('items', {}).get(field.name.lower(), {})
-        if field is not None
-        else {}
-    )
-
-    spfld = field.name if field is not None else table.idFieldName
-    field_type = field.type if field is not None else 'java.lang.String'
-    field_length = field.length if field is not None and field.length is not None else 255
-
-    return {
-        'colname': colname,
-        'solrname': spfld,
-        'solrtype': _portal_solr_type(query_field, collection, user),
-        'title': caption,
-        'type': field_type,
-        'width': field_length,
-        'concept': colname,
-        'concepturl': 'http://rs.tdwg.org/dwc/terms/',
-        'sptable': table_key,
-        'sptabletitle': table_localization.get('name', table.name),
-        'spfld': spfld,
-        'spfldtitle': item_localization.get('name', spfld),
-        'spdescription': item_localization.get('desc', spfld),
-        'colidx': index,
-        'linkify': 'true',
-        'advancedsearch': 'true',
-        'displaycolidx': index,
-    }
-
-
-def _simplify_portal_field_metadata(field_meta: dict[str, Any]) -> dict[str, Any]:
-    simplified = {
-        'colname': field_meta['colname'],
-        'solrname': field_meta['solrname'],
-        'solrtype': field_meta['solrtype'],
-    }
-
-    for key in (
-        'title',
-        'type',
-        'width',
-        'concept',
-        'sptable',
-        'sptabletitle',
-        'spfld',
-        'spfldtitle',
-        'colidx',
-        'linkify',
-        'advancedsearch',
-        'displaycolidx',
-        'treeid',
-        'treerank',
-    ):
-        if key in field_meta:
-            simplified[key] = field_meta[key]
-
-    return simplified
-
-
-def _make_solr_schema_xml(fields: list[dict[str, Any]]) -> str:
-    lines = [
-        '<!-- solr field definitions for SpecifyWebportal1 web portal -->',
-        '<!-- Paste the contents of this file into the solr/conf/schema.xml file. -->',
-    ]
-
-    lines.append(
-        '<field name="contents" type="text_general" indexed="true" stored="false" required="true"/>'
-    )
-    lines.append(
-        '<field name="geoc" type="string" indexed="true" stored="true" required="false"/>'
-    )
-    lines.append(
-        '<field name="img" type="string" indexed="true" stored="true" required="false"/>'
-    )
-
-    emitted: set[str] = {'contents', 'geoc', 'img'}
-    for field in fields:
-        name = str(field['solrname'])
-        if name in emitted:
-            continue
-        emitted.add(name)
-
-        escaped_name = escape(name)
-        solr_type = escape(str(field['solrtype']))
-        required = 'true' if name == 'spid' else 'false'
-        lines.append(
-            f'<field name="{escaped_name}" type="{solr_type}" indexed="true" stored="true" required="{required}"/>'
-        )
-    return "\n".join(lines) + "\n"
-
-
-def _serialize_portal_data(
-    rows: list[list[str]],
-    header: list[str],
-) -> str:
-    output = StringIO()
-    writer = csv.writer(output)
-    writer.writerow(header)
-    writer.writerows(rows)
-    return output.getvalue()
-
-
 def query_to_web_portal_zip(
     session,
     collection,
@@ -490,115 +308,21 @@ def query_to_web_portal_zip(
     recordsetid=None,
     distinct=False,
 ):
-    set_group_concat_max_len(session.connection())
-    query, __ = build_query(
+    return _query_to_web_portal_zip(
         session,
         collection,
         user,
         tableid,
         field_specs,
-        BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+        path,
+        captions,
+        build_query_fn=build_query,
+        build_query_props_cls=BuildQueryProps,
+        apply_special_post_query_processing_fn=apply_special_post_query_processing,
+        set_group_concat_max_len_fn=set_group_concat_max_len,
+        recordsetid=recordsetid,
+        distinct=distinct,
     )
-    query = apply_special_post_query_processing(
-        query,
-        tableid,
-        field_specs,
-        collection,
-        user,
-        should_list_query=False,
-    )
-
-    display_fields = [field_spec for field_spec in field_specs if field_spec.display]
-    effective_captions = captions if captions else [
-        (
-            field_spec.fieldspec.get_field().name
-            if field_spec.fieldspec.get_field() is not None
-            else field_spec.fieldspec.table.name
-        )
-        for field_spec in display_fields
-    ]
-
-    schema_localization = _schema_localization_or_empty(collection)
-
-    used_colnames: set[str] = {'spid'}
-    used_solrnames: set[str] = {'spid'}
-    column_defs: list[tuple[str, str, str, dict[str, Any]]] = []
-    for index, (field_spec, caption) in enumerate(
-        zip(display_fields, effective_captions, strict=False),
-        start=0,
-    ):
-        trimmed_caption = str(caption).strip()
-        base_name = trimmed_caption if trimmed_caption else f'column_{index + 1}'
-        colname = _dedupe_name(base_name, used_colnames)
-
-        field = field_spec.fieldspec.get_field()
-        if field is not None:
-            base_solrname = field.name
-            table_prefix = field_spec.fieldspec.table.name.lower()
-        else:
-            base_solrname = field_spec.fieldspec.table.idFieldName
-            table_prefix = field_spec.fieldspec.table.name.lower()
-
-        if base_solrname in used_solrnames:
-            solrname = _dedupe_name(f'{table_prefix}_{base_solrname}', used_solrnames)
-        else:
-            solrname = _dedupe_name(base_solrname, used_solrnames)
-
-        metadata = _portal_field_metadata(
-            field_spec,
-            trimmed_caption if trimmed_caption else colname,
-            colname,
-            index,
-            schema_localization,
-            collection,
-            user,
-        )
-        metadata['solrname'] = solrname
-        column_defs.append((colname, solrname, metadata['title'], metadata))
-
-    metadata_rows: list[dict[str, Any]] = [
-        {'colname': 'spid', 'solrname': 'spid', 'solrtype': 'string'},
-        *[
-            _simplify_portal_field_metadata(column_def[3])
-            for column_def in column_defs
-        ],
-        {'colname': 'img', 'solrname': 'img', 'solrtype': 'string', 'title': 'image'},
-    ]
-
-    output_rows: list[list[str]] = []
-    data_rows = query if isinstance(query, list) else query.yield_per(1)
-    for row in data_rows:
-        raw_id = row[0] if len(row) > 0 else ''
-        spid = str(uuid.uuid5(uuid.NAMESPACE_URL, f'{tableid}:{raw_id}'))
-        display_values = row[1:] if len(row) > 1 else []
-        cleaned_values = [_clean_cell(value) for value in display_values]
-        contents = '\t'.join(cleaned_values)
-        output_rows.append([spid, contents, '', '', *cleaned_values])
-
-    header = ['spid', 'contents', 'img', 'geoc', *[column_def[1] for column_def in column_defs]]
-    portal_data = _serialize_portal_data(output_rows, header)
-    flds_json = json.dumps(metadata_rows, indent=2)
-    solr_schema = _make_solr_schema_xml(metadata_rows)
-
-    image_info_fields = [column_def[1] for column_def in column_defs[:2]]
-    portal_instance_settings = json.dumps(
-        {
-            'portalInstance': str(uuid.uuid4()),
-            'collectionName': _build_portal_collection_name(collection),
-            'imageBaseUrl': _build_image_base_url(),
-            'imageInfoFlds': ' '.join(image_info_fields),
-        },
-        indent=2,
-    )
-
-    with ZipFile(path, 'w', compression=ZIP_DEFLATED) as archive:
-        archive.writestr('PortalFiles/PortalData.csv', portal_data)
-        archive.writestr('PortalFiles/flds.json', flds_json)
-        archive.writestr(
-            'PortalFiles/PortalInstanceSetting.json',
-            portal_instance_settings,
-        )
-        archive.writestr('PortalFiles/SolrFldSchema.xml', solr_schema)
 
 # def stored_query_to_csv(query_id, collection, user, path):
 #     """Executes a query from the Spquery table with the given id and send
