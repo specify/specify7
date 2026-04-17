@@ -305,14 +305,23 @@ def update_table_schema_config_with_defaults(
             language="en",
         )
 
-        sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
-            name=table_config.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-            ishidden=False,
-            issystem=table.system,
-            version=0,
-        )
+        container_attrs = {
+            "name": table_config.name.lower(),
+            "discipline_id": discipline_id,
+            "schematype": table_config.schema_type
+        }
+
+        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).first()
+
+        if fetched_sp_locale_container is None:
+            sp_local_container = Splocalecontainer.objects.create(**{
+                **container_attrs,
+                "ishidden": False,
+                "issystem": table.system,
+                "version": 0,
+            })
+        else:
+            sp_local_container = fetched_sp_locale_container
 
         if Splocalecontaineritem.objects.filter(
             container=sp_local_container,
@@ -1831,9 +1840,7 @@ def revert_update_accession_date_fields(apps):
                         container=container,
                         name=field_name.lower()
                     )
-                    for item in items:
-                        # If needed, reset ishidden or revert text
-                        pass
+                    # If needed, reset ishidden or revert text
 
     revert_0034_fields(apps)
     revert_0034_schema_config_field_desc(apps)
@@ -1950,9 +1957,7 @@ def revert_loan_and_gift_agents(apps):
                     container=container,
                     name=field_name.lower()
                 )
-                for item in items:
-                    # If needed, reset ishidden or revert text
-                    pass
+                # If needed, reset ishidden or revert text
 
 # ##########################################
 # Used in 0040_components.py
