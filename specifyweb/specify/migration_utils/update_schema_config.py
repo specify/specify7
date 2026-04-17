@@ -8,7 +8,7 @@ from functools import lru_cache
 from pathlib import Path
 
 
-from django.db.models import Q, Count, Window, F
+from django.db.models import Q, Count, Window, F, Exists, OuterRef
 from django.conf import settings
 from django.apps import apps as global_apps
 from django.core.exceptions import MultipleObjectsReturned
@@ -305,14 +305,23 @@ def update_table_schema_config_with_defaults(
             language="en",
         )
 
-        sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
-            name=table_config.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-            ishidden=False,
-            issystem=table.system,
-            version=0,
-        )
+        container_attrs = {
+            "name": table_config.name.lower(),
+            "discipline_id": discipline_id,
+            "schematype": table_config.schema_type
+        }
+
+        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).first()
+
+        if fetched_sp_locale_container is None:
+            sp_local_container = Splocalecontainer.objects.create(**{
+                **container_attrs,
+                "ishidden": False,
+                "issystem": table.system,
+                "version": 0,
+            })
+        else:
+            sp_local_container = fetched_sp_locale_container
 
         if Splocalecontaineritem.objects.filter(
             container=sp_local_container,
@@ -693,11 +702,48 @@ def deduplicate_schema_config_sql(apps=None):
     cursor.close()
 
 def deduplicate_schema_config_orm(apps, schema_editor=None):
+    Container = apps.get_model('specify', 'SpLocaleContainer')
     ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
     ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
 
     with transaction.atomic():
-        # Identify duplicates using a Window function.
+        # Find duplicate SpLocaleContainers
+        # A duplicate should be in the same discipline and have the same name
+        # and schematype
+        # For this query we consider the oldest SpLocaleContainer as the
+        # "cannonical" record, and all later records as the duplicates
+        # We could be a little smarter about this and also check the associated
+        # container items and strings, but this should be minimally sufficient
+        # without sacrificing complexity and speed
+        # See #7988
+        duplicate_containers = Container.objects.filter(schematype=0).annotate(
+            earlier_exists=Exists(
+                Container.objects.filter(
+                    discipline_id=OuterRef('discipline_id'),
+                    schematype=0,
+                    name=OuterRef('name'),
+                    timestampcreated__lt=OuterRef('timestampcreated')
+                )
+            )
+        ).filter(earlier_exists=True)
+
+        # Remove the items and strings shouldn't be strictly neccesary as they
+        # should both cascade if we call duplicate_containers.delete()
+        # But this is the safer option for any edge cases with historical
+        # models in migrations and if we ever decide to change the delete
+        # behavior later down the line
+        # Plus, I don't think the performance impact should be **that**
+        # significantly different...
+        duplicate_items = ContainerItem.objects.filter(container__in=duplicate_containers)
+        ItemStr.objects.filter(itemname__in=duplicate_items).delete()
+        ItemStr.objects.filter(itemdesc__in=duplicate_items).delete()
+        duplicate_items.delete()
+
+        ItemStr.objects.filter(containername__in=duplicate_containers).delete()
+        ItemStr.objects.filter(containerdesc__in=duplicate_containers).delete()
+        duplicate_containers.delete()
+
+        # Identify duplicate container items using a Window function.
         # Partition by container_id + item name only.
         # Only schema type 0 containers (standard schema) are eligible for this cleanup.
         # The schema type 1 refers to the WorkBench Schema from Specify 6, which has
@@ -1831,9 +1877,7 @@ def revert_update_accession_date_fields(apps):
                         container=container,
                         name=field_name.lower()
                     )
-                    for item in items:
-                        # If needed, reset ishidden or revert text
-                        pass
+                    # If needed, reset ishidden or revert text
 
     revert_0034_fields(apps)
     revert_0034_schema_config_field_desc(apps)
@@ -1950,9 +1994,7 @@ def revert_loan_and_gift_agents(apps):
                     container=container,
                     name=field_name.lower()
                 )
-                for item in items:
-                    # If needed, reset ishidden or revert text
-                    pass
+                # If needed, reset ishidden or revert text
 
 # ##########################################
 # Used in 0040_components.py
