@@ -134,6 +134,16 @@ export const notificationsText = createDictionary({
     'pt-br': 'Exportação da consulta para KML concluída.',
     'hr-hr': 'Izvoz upita u KML je završen.',
   },
+  queryExportToWebPortalCompleted: {
+    'en-us': 'Query export to Web Portal completed.',
+    'ru-ru': 'Экспорт запроса в веб-портал завершен.',
+    'es-es': 'La exportación de la consulta al Portal Web se completó.',
+    'fr-fr': 'Exportation de la requête vers le portail Web terminée.',
+    'uk-ua': 'Експорт запиту до веб-порталу завершено.',
+    'de-ch': 'Der Abfrageexport zum Webportal wurde abgeschlossen.',
+    'pt-br': 'A exportação da consulta para o portal web foi concluída.',
+    'hr-hr': 'Izvoz upita na web portal je dovršen.',
+  },
   dataSetOwnershipTransferred: {
     'en-us':
       '<userName /> transferred the ownership of the <dataSetName /> dataset to you.',

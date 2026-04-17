@@ -131,6 +131,22 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'query-export-to-web-portal-complete'(notification) {
+    return (
+      <>
+        {notificationsText.queryExportToWebPortalCompleted()}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
   'dataset-ownership-transferred'(notification) {
     return (
       <StringToJsx

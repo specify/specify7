@@ -18,6 +18,7 @@ from specifyweb.backend.stored_queries.models import Component as sq_Component
 from . import models
 from .query_ops import QueryOps
 from specifyweb.specify.models_utils.load_datamodel import Table, Field, Relationship
+from specifyweb.specify.datamodel import is_tree_table
 
 logger = logging.getLogger(__name__)
 
@@ -259,7 +260,7 @@ class QueryFieldSpec(
         field = node.get_field(extracted_fieldname, strict=False)
 
         tree_rank_name = None
-        if field is None:  # try finding tree
+        if field is None and is_tree_table(node):  # try finding tree only on tree tables
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
                 tree_rank = TreeRankQuery.create(

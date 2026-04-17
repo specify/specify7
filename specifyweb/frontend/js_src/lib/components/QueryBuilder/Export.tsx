@@ -193,6 +193,23 @@ export function QueryExportButtons({
           {queryText.createKml()}
         </QueryButton>
       )}
+      {containsResults &&
+        hasPermission('/querybuilder/query', 'export_webportal') && (
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={(): void =>
+              doQueryExport(
+                '/stored_query/exportwebportal/',
+                undefined,
+                undefined,
+                undefined
+              )
+            }
+          >
+            {queryText.createWebPortalExport()}
+          </QueryButton>
+        )}
     </>
   );
 }
