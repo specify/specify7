@@ -129,7 +129,7 @@ def fix_business_rules(stdout: WriteToStdOut | None = None):
     log_and_run(funcs, stdout)
 
 def initialize_permissions(apps):
-    initialize(False, apps)
+    initialize(False, apps, migrate_sp6_users=False)
 
 def fix_permissions(stdout: WriteToStdOut | None = None):
     funcs = [
