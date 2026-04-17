@@ -13,7 +13,7 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   ./sp7_db_setup_check.sh # Setup db users and run mirgations
   # ve/bin/python manage.py base_specify_migration
   # ve/bin/python manage.py migrate
-  if [ "${RUN_KEY_MIGRATION_FUNCTIONS_ON_STARTUP:-0}" = "1" ]; then
+  if [ "${RUN_KEY_MIGRATION_ON_STARTUP:-0}" = "1" ]; then
     echo "Running key migration functions."
     ve/bin/python manage.py run_key_migration_functions
   fi
