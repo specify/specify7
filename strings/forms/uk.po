@@ -477,7 +477,7 @@ msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
 
 #: components/AttachmentsBulkImport/utils.ts:473
-#: components/Molecules/AutoComplete.tsx:532
+#: components/Molecules/AutoComplete.tsx:533
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
 msgstr "Нічого не знайдено"

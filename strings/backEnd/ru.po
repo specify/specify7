@@ -28,8 +28,8 @@ msgid "failedParsingFloat"
 msgstr "значение \"{value:string}\" не является допустимым числом с плавающей точкой"
 
 #: components/WorkBench/CellMeta.ts:159
-#: components/WorkBench/hooks.ts:149
-#: components/WorkBench/hooks.ts:158
+#: components/WorkBench/hooks.ts:253
+#: components/WorkBench/hooks.ts:262
 #: components/WorkBench/resultsParser.ts:268
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
 msgid "failedParsingPickList"

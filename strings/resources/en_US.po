@@ -52,8 +52,7 @@ msgstr "Discipline Resources"
 #: components/FieldFormatters/Parts.tsx:51
 #: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
-#: components/WebLinks/Definition.tsx:49
-#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition
+#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field
 msgid "type"
 msgstr "Type"
 
@@ -391,8 +390,8 @@ msgstr "Add field"
 msgid "thisField"
 msgstr "This field"
 
-#: components/WebLinks/Definition.tsx:152
-#: components/WebLinks/Definition.tsx:166
+#: components/WebLinks/Definition.tsx:151
+#: components/WebLinks/Definition.tsx:165
 #. Used in: Components > Web Links > Definition
 msgid "selectTableFirst"
 msgstr "Select table first"

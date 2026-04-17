@@ -141,32 +141,32 @@ msgstr "Longitude"
 msgid "toggleFullScreen"
 msgstr "Toggle Full Screen"
 
-#: components/WbToolkit/CoordinateConverter.tsx:82
+#: components/WbToolkit/CoordinateConverter.tsx:83
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degrees"
 msgstr "DD.DDDD (32.7619)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:87
+#: components/WbToolkit/CoordinateConverter.tsx:88
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutes"
 msgstr "DD MMMM (32. 45.714)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:92
+#: components/WbToolkit/CoordinateConverter.tsx:93
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSeconds"
 msgstr "DD MM SS.SS (32 45 42.84)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:97
+#: components/WbToolkit/CoordinateConverter.tsx:98
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesWithDirection"
 msgstr "DD.DDDD N/S/E/W (32.7619 N)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:102
+#: components/WbToolkit/CoordinateConverter.tsx:103
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesWithDirection"
 msgstr "DD MM.MM N/S/E/W (32 45.714 N)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:107
+#: components/WbToolkit/CoordinateConverter.tsx:108
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSecondsWithDirection"
 msgstr "DD MM SS.SS N/S/E/W (32 45 42.84 N)"

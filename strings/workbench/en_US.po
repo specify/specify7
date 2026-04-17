@@ -64,17 +64,17 @@ msgstr "Uploading"
 msgid "validating"
 msgstr "Validating"
 
-#: components/WorkBench/WbSpreadsheet.tsx:168
+#: components/WorkBench/WbSpreadsheet.tsx:169
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Disambiguate"
 
-#: components/WorkBench/WbSpreadsheet.tsx:277
+#: components/WorkBench/WbSpreadsheet.tsx:293
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Fill Down"
 
-#: components/WorkBench/WbSpreadsheet.tsx:277
+#: components/WorkBench/WbSpreadsheet.tsx:293
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
 msgstr "Fill Up"
@@ -110,7 +110,7 @@ msgstr ""
 msgid "changeOwner"
 msgstr "Change Owner"
 
-#: components/WbToolkit/CoordinateConverter.tsx:61
+#: components/WbToolkit/CoordinateConverter.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "convertCoordinates"
 msgstr "Convert Coordinates"
@@ -379,12 +379,12 @@ msgstr "Upload Cancelled"
 msgid "uploadCanceledDescription"
 msgstr "Data Set Upload cancelled."
 
-#: components/WbToolkit/CoordinateConverter.tsx:231
+#: components/WbToolkit/CoordinateConverter.tsx:232
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "coordinateConverter"
 msgstr "Geocoordinate Format"
 
-#: components/WbToolkit/CoordinateConverter.tsx:242
+#: components/WbToolkit/CoordinateConverter.tsx:243
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "coordinateConverterDescription"
 msgstr "Choose a preferred Geocoordinate format"
@@ -421,7 +421,7 @@ msgid "uploadUnavailableWhileHasErrors"
 msgstr "Upload is unavailable while some cells have validation errors"
 
 #: components/WbActions/WbValidate.tsx:45
-#: components/WbToolkit/CoordinateConverter.tsx:55
+#: components/WbToolkit/CoordinateConverter.tsx:56
 #: components/WbToolkit/GeoLocate.tsx:54
 #: components/WbUtils/index.tsx:77
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
@@ -433,14 +433,14 @@ msgstr "This action is unavailable while viewing the upload results"
 msgid "unavailableWhileValidating"
 msgstr "This action is unavailable while Data Check is in progress"
 
-#: components/WbToolkit/CoordinateConverter.tsx:57
+#: components/WbToolkit/CoordinateConverter.tsx:58
 #: components/WbToolkit/GeoLocate.tsx:56
 #: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "This tool requires locality columns to be mapped"
 
-#: components/WbToolkit/CoordinateConverter.tsx:53
+#: components/WbToolkit/CoordinateConverter.tsx:54
 #: components/WbToolkit/GeoLocate.tsx:52
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 msgid "unavailableWhenUploaded"
@@ -451,7 +451,7 @@ msgstr "This tool does not work with uploaded Data Sets"
 msgid "dataSetDeletedOrNotFound"
 msgstr "Data Set was deleted by another session."
 
-#: components/WbToolkit/CoordinateConverter.tsx:267
+#: components/WbToolkit/CoordinateConverter.tsx:268
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "includeDmsSymbols"
 msgstr "Include DMS Symbols"
@@ -461,7 +461,7 @@ msgstr "Include DMS Symbols"
 msgid "uploadResults"
 msgstr "Upload Results"
 
-#: components/WorkBench/WbSpreadsheet.tsx:97
+#: components/WorkBench/WbSpreadsheet.tsx:98
 #. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "No upload results are available for this cell"
