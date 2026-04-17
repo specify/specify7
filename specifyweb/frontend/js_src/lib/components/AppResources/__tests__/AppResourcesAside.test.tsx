@@ -30,7 +30,7 @@ describe('AppResourcesAside (simple no conformation case)', () => {
       />
     );
 
-    expect(asFragment().textContent).toBe(
+    expect(asFragment()).toHaveTextContent(
       'Global Resources (2)Discipline Resources (3)Expand AllCollapse All'
     );
     unmount();
