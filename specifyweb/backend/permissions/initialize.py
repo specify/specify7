@@ -36,12 +36,15 @@ def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
             wipe_permissions(apps)
-        create_admins(apps)
-        create_roles(apps)
+        initialize_defaults(apps)
         if 'test' in ''.join(sys.argv):
             assign_users_to_roles_during_testing(apps)
         else:
             assign_users_to_roles(apps)
+
+def initialize_defaults(apps=apps) -> None:
+    create_admins(apps)
+    create_roles(apps)
 
 def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')

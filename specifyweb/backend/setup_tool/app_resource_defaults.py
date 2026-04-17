@@ -1,4 +1,5 @@
 from typing import Optional
+from django.db.models import Q
 
 from specifyweb.specify.models import (
     Discipline,
@@ -74,46 +75,69 @@ def ensure_discipline_resource_dir(discipline: Discipline) -> Spappresourcedir:
     """
     Ensure a discipline-level app resource directory exists
     """
-    existing_dir, _, _ = _ensure_discipline_resource_dir(discipline)
+    existing_dir, *_ = _ensure_discipline_resource_dir(discipline)
     return existing_dir
 
-def _ensure_discipline_resource_dir(
-    discipline: Discipline,
-) -> tuple[Spappresourcedir, bool, bool]:
-    """
-    Ensure a discipline-level app resource directory exists.
-
-    Returns a tuple of (directory, created, updated).
-    """
-    existing_dir = (
+def _matching_discipline_resource_dirs(discipline: Discipline):
+    return (
         Spappresourcedir.objects.filter(
             discipline=discipline,
             collection__isnull=True,
             specifyuser__isnull=True,
-            usertype__isnull=True,
-            ispersonal=False
+            ispersonal=False,
         )
-        .first()
+        .filter(Q(usertype__isnull=True) | Q(usertype=""))
+        .order_by("id")
     )
 
-    if existing_dir is None:
+def _normalize_discipline_resource_dir(
+    directory: Spappresourcedir,
+    discipline: Discipline,
+) -> bool:
+    update_fields: list[str] = []
+    if directory.usertype == "":
+        directory.usertype = None
+        update_fields.append("usertype")
+    if directory.disciplinetype != discipline.type:
+        directory.disciplinetype = discipline.type
+        update_fields.append("disciplinetype")
+    if update_fields:
+        directory.save(update_fields=update_fields)
+    return bool(update_fields)
+
+
+def _ensure_discipline_resource_dir(
+    discipline: Discipline,
+) -> tuple[Spappresourcedir, bool, bool, int]:
+    """
+    Ensure a discipline-level app resource directory exists.
+
+    Returns a tuple of (directory, created, updated, deduplicated).
+    """
+    existing_dirs = list(_matching_discipline_resource_dirs(discipline))
+
+    if not existing_dirs:
         return (
             Spappresourcedir.objects.create(
-            discipline=discipline,
-            disciplinetype=discipline.type,
-            ispersonal=False,
+                discipline=discipline,
+                disciplinetype=discipline.type,
+                ispersonal=False,
             ),
             True,
             False,
+            0,
         )
 
-    was_updated = False
-    if existing_dir.disciplinetype != discipline.type:
-        existing_dir.disciplinetype = discipline.type
-        existing_dir.save(update_fields=['disciplinetype'])
-        was_updated = True
+    existing_dir = existing_dirs[0]
+    deduplicated = 0
+    for duplicate_dir in existing_dirs[1:]:
+        duplicate_dir.sppersistedappresources.update(spappresourcedir=existing_dir)
+        duplicate_dir.sppersistedviewsets.update(spappresourcedir=existing_dir)
+        duplicate_dir.delete()
+        deduplicated += 1
 
-    return existing_dir, False, was_updated
+    was_updated = _normalize_discipline_resource_dir(existing_dir, discipline)
+    return existing_dir, False, was_updated, deduplicated
 
 def ensure_all_discipline_resource_dirs() -> dict[str, int]:
     """
@@ -124,17 +148,22 @@ def ensure_all_discipline_resource_dirs() -> dict[str, int]:
     total = 0
     created = 0
     updated = 0
+    deduplicated = 0
 
     for discipline in Discipline.objects.only('id', 'type'):
         total += 1
-        _, was_created, was_updated = _ensure_discipline_resource_dir(discipline)
+        _, was_created, was_updated, removed = _ensure_discipline_resource_dir(
+            discipline
+        )
         if was_created:
             created += 1
         if was_updated:
             updated += 1
+        deduplicated += removed
 
     return {
         'total_disciplines': total,
         'created': created,
         'updated': updated,
+        'deduplicated': deduplicated,
     }
