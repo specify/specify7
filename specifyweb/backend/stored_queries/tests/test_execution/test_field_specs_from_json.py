@@ -108,3 +108,13 @@ class TestFieldSpecsFromJson(ApiTests):
         # generate_fields_test_str(query_fields, "static_simple_field_spec")
 
         self.assertEqual(static_simple_field_spec, query_fields)
+
+    def test_non_tree_table_does_not_parse_tree_rank(self):
+        table = datamodel.get_table_strict("CollectionObject")
+        stringid = f"{table.tableId}.collectionobject.NotARealField"
+
+        fieldspec = QueryFieldSpec.from_stringid(stringid, False)
+
+        self.assertFalse(fieldspec.contains_tree_rank())
+        self.assertIsNone(fieldspec.tree_rank)
+        self.assertIsNone(fieldspec.get_field())
