@@ -35,8 +35,10 @@ describe('AppResourcesAside (simple no conformation case)', () => {
   });
 });
 
-// TEST: This should really (also) be a test for filterAppResources, but
-// including this here just cause
+/*
+ * TEST: This should really (also) be a test for filterAppResources, but
+ * including this here just cause
+ */
 describe('Missing Collection Preferences Permission', () => {
   beforeAll(() => {
     jest.clearAllMocks();
