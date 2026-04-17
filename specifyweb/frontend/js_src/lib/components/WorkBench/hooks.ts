@@ -36,9 +36,8 @@ export function useHotHooks({
 }): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   const loading = React.useContext(LoadingContext);
-  const visibleColumnsAutoSizeTimeout = React.useRef<
-    ReturnType<typeof globalThis.setTimeout>
-  >();
+  const visibleColumnsAutoSizeTimeout =
+    React.useRef<ReturnType<typeof globalThis.setTimeout>>();
   const lastAutoSizedVisibleColumns = React.useRef<string>();
   const headerMeasureContext = React.useMemo(() => {
     const canvas = globalThis.document?.createElement('canvas');
@@ -71,7 +70,8 @@ export function useHotHooks({
         return 50;
 
       const headerLabel = workbench.dataset.columns[physicalCol] ?? '';
-      const isMapped = workbench.mappings?.mappedHeaders?.[physicalCol] !== undefined;
+      const isMapped =
+        workbench.mappings?.mappedHeaders?.[physicalCol] !== undefined;
       if (headerMeasureContext !== null) {
         const bodyStyle =
           globalThis.document === undefined
@@ -96,7 +96,12 @@ export function useHotHooks({
        */
       return Math.ceil(textWidth + (isMapped ? 60 : 72));
     },
-    [headerMeasureContext, workbench.dataset.columns, workbench.hot, workbench.mappings]
+    [
+      headerMeasureContext,
+      workbench.dataset.columns,
+      workbench.hot,
+      workbench.mappings,
+    ]
   );
   const getAutoSizedWidth = React.useCallback(
     (visualCol: number, fallbackWidth: number): number => {
