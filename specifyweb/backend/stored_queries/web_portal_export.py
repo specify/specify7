@@ -6,6 +6,7 @@ import re
 import uuid
 from collections import defaultdict
 from io import StringIO
+from itertools import zip_longest
 from typing import Any, Callable
 from urllib.parse import urlsplit, urlunsplit
 from xml.sax.saxutils import escape
@@ -21,10 +22,17 @@ from specifyweb.specify.utils.uiformatters import CNNField, get_catalognumber_fo
 
 
 logger = logging.getLogger(__name__)
+# Filename used by asset server URLs that should be stripped from portal asset paths.
 _ASSET_STORE_FILENAME = 'web_asset_store.xml'
 
 
 def _build_portal_collection_name(collection) -> str:
+    """Return the portal collection name override if configured.
+
+    The export uses either the env var, settings value, or the actual
+    collection name.
+    """
+
     return (
         os.getenv('WEB_ATTACHMENT_COLLECTION')
         or settings.WEB_ATTACHMENT_COLLECTION
@@ -33,6 +41,11 @@ def _build_portal_collection_name(collection) -> str:
 
 
 def _strip_asset_store_xml(url: str) -> str:
+    """Remove the asset store file path from attachment URLs.
+
+    The portal export should expose a clean base asset path, not the
+    internal web asset store XML filename itself. 
+    """
     if not url:
         return ''
 
@@ -49,6 +62,8 @@ def _strip_asset_store_xml(url: str) -> str:
 
 
 def _build_portal_image_base_url() -> str:
+    """Build the base URL that portal image attachments should use."""
+
     raw_url = (os.getenv('ASSET_SERVER_URL') or settings.WEB_ATTACHMENT_URL or '').strip()
     return _strip_asset_store_xml(raw_url)
 
@@ -84,6 +99,11 @@ def _portal_attachment_entry(attachment) -> str:
 
 
 def _portal_attachment_map(tableid: int, record_ids: list[Any]) -> dict[Any, str]:
+    """Collect attachment metadata for portal rows by record id.
+
+    The portal CSV stores image attachments as JSON strings in the "img"
+    column, so we prebuild mapping from record IDs to attachments.
+    """
     if not record_ids:
         return {}
 
@@ -123,9 +143,11 @@ def _dedupe_name(name: str, used_names: set[str]) -> str:
 
 
 def _portal_solr_type(query_field, collection, user) -> str:
+    """Map a query field to the Solr field type used in portal metadata."""
     fieldspec = query_field.fieldspec
     field = fieldspec.get_field()
 
+    # Relationship fields are always emitted as strings for portal search.
     if field is None or field.is_relationship:
         return 'string'
 
@@ -167,6 +189,11 @@ def _portal_field_metadata(
     collection,
     user,
 ) -> dict[str, Any]:
+    """Build the metadata row for one exported portal field.
+
+    This metadata is written to flds.json and is consumed by the portal
+    frontend to build field definitions, sorting, display labels, and linkification.
+    """
     fieldspec = query_field.fieldspec
     table = fieldspec.table
     field = fieldspec.get_field()
@@ -180,7 +207,10 @@ def _portal_field_metadata(
     )
 
     spfld = field.name if field is not None else table.idFieldName
-    field_type = field.type if field is not None else 'java.lang.String'
+    if field is not None and field.is_relationship:
+        field_type = 'java.lang.String'
+    else:
+        field_type = field.type if field is not None else 'java.lang.String'
     field_length = field.length if field is not None and field.length is not None else 255
     solr_type = _portal_solr_type(query_field, collection, user)
     is_linkified = solr_type == 'string' and field_type in ('java.lang.String', 'text')
@@ -207,6 +237,7 @@ def _portal_field_metadata(
 
 
 def _simplify_portal_field_metadata(field_meta: dict[str, Any]) -> dict[str, Any]:
+    """Create the metadata for portal fields."""
     simplified = {
         'colname': field_meta['colname'],
         'solrname': field_meta['solrname'],
@@ -236,6 +267,10 @@ def _simplify_portal_field_metadata(field_meta: dict[str, Any]) -> dict[str, Any
 
 
 def _make_solr_schema_xml(fields: list[dict[str, Any]]) -> str:
+    """Create a minimal Solr schema for exported portal fields.
+
+    It defines the fields that the portal will index and search.
+    """
     lines = [
         '<!-- solr field definitions for SpecifyWebportal1 web portal -->',
         '<!-- Paste the contents of this file into the solr/conf/schema.xml file. -->',
@@ -271,6 +306,11 @@ def _serialize_portal_data(
     rows: list[list[str]],
     header: list[str],
 ) -> str:
+    """Output rows to CSV.
+
+    The web portal expects a standard CSV file with a header row followed by
+    one row per portal record.
+    """
     output = StringIO()
     writer = csv.writer(output)
     writer.writerow(header)
@@ -281,12 +321,14 @@ def _serialize_portal_data(
 def _find_geoc_field_indexes(
     column_defs: list[tuple[str, str, str, dict[str, Any]]],
 ) -> tuple[int | None, int | None, int | None, int | None]:
+    """Locate latitude/longitude columns for geocoding the portal row."""
     lat1_idx = None
     lon1_idx = None
     lat2_idx = None
     lon2_idx = None
 
     for index, (_, __, ___, metadata) in enumerate(column_defs):
+        # Only locality fields are relevant for geocoding.
         if str(metadata.get('sptable', '')).lower() != 'locality':
             continue
 
@@ -310,6 +352,10 @@ def _build_geoc_value(
     lat2_idx: int | None,
     lon2_idx: int | None,
 ) -> str:
+    """Build the 'geoc' column value for portal mapping.
+
+    The portal uses the first valid latitude/longitude pair it finds.
+    """
     def _pair_value(lat_idx: int | None, lon_idx: int | None) -> str:
         if lat_idx is None or lon_idx is None:
             return ''
@@ -343,6 +389,11 @@ def query_to_web_portal_zip(
     recordsetid=None,
     distinct=False,
 ):
+    """Export a stored query as a web portal ZIP package.
+
+    This writes PortalData.csv, flds.json, PortalInstanceSetting.json, and
+    SolrFldSchema.xml into the destination ZIP file.
+    """
     set_group_concat_max_len_fn(session.connection())
     query, __ = build_query_fn(
         session,
@@ -362,14 +413,32 @@ def query_to_web_portal_zip(
     )
 
     display_fields = [field_spec for field_spec in field_specs if field_spec.display]
-    effective_captions = captions if captions else [
-        (
-            field_spec.fieldspec.get_field().name
-            if field_spec.fieldspec.get_field() is not None
-            else field_spec.fieldspec.table.name
-        )
-        for field_spec in display_fields
-    ]
+
+    # Match the exported captions to the actual displayed fields. Captions may
+    # be provided for all query fields, but only display fields are exported.
+    if captions and isinstance(captions, list):
+        if len(captions) == len(display_fields):
+            effective_captions = captions
+        elif len(captions) == len(field_specs):
+            effective_captions = [
+                caption
+                for field_spec, caption in zip(field_specs, captions)
+                if field_spec.display
+            ]
+        else:
+            effective_captions = captions[: len(display_fields)]
+    else:
+        effective_captions = []
+
+    if len(effective_captions) != len(display_fields):
+        effective_captions = [
+            (
+                field_spec.fieldspec.get_field().name
+                if field_spec.fieldspec.get_field() is not None
+                else field_spec.fieldspec.table.name
+            )
+            for field_spec in display_fields
+        ]
 
     schema_localization = _schema_localization_or_empty(collection)
 
@@ -377,7 +446,7 @@ def query_to_web_portal_zip(
     used_solrnames: set[str] = {'spid'}
     column_defs: list[tuple[str, str, str, dict[str, Any]]] = []
     for index, (field_spec, caption) in enumerate(
-        zip(display_fields, effective_captions, strict=False),
+        zip_longest(display_fields, effective_captions, fillvalue=''),
         start=0,
     ):
         trimmed_caption = str(caption).strip()
@@ -409,23 +478,49 @@ def query_to_web_portal_zip(
         metadata['solrname'] = solrname
         column_defs.append((colname, solrname, metadata['title'], metadata))
 
+    # Build the JSON metadata rows used by the portal's field definition store.
+    # The fixed fields spid and img are always included, plus one row per display field.
     metadata_rows: list[dict[str, Any]] = [
-        {'colname': 'spid', 'solrname': 'spid', 'solrtype': 'int'},
+        {
+            'colname': 'spid',
+            'solrname': 'spid',
+            'solrtype': 'int',
+            'title': 'spid',
+            'linkify': False,
+            'colidx': 0,
+            'displaycolidx': 0,
+        },
         *[
             _simplify_portal_field_metadata(column_def[3])
             for column_def in column_defs
         ],
-        {'colname': 'img', 'solrname': 'img', 'solrtype': 'string', 'title': 'image'},
+        {
+            'colname': 'img',
+            'solrname': 'img',
+            'solrtype': 'string',
+            'title': 'image',
+            'linkify': False,
+            'colidx': len(column_defs) + 1,
+            'displaycolidx': len(column_defs) + 1,
+        },
     ]
 
     output_rows: list[list[str]] = []
     geoc_lat1_idx, geoc_lon1_idx, geoc_lat2_idx, geoc_lon2_idx = _find_geoc_field_indexes(column_defs)
     data_rows = query if isinstance(query, list) else list(query.yield_per(1))
     portal_attachments = _portal_attachment_map(tableid, [row[0] for row in data_rows])
+    # The portal frontend expects each row to have the same number of values as the field metadata.
+    # If the query returns too few values, pad with empty strings; if it returns too many,
+    # truncate extras so the CSV header and row data remain aligned.
+    expected_values = len(column_defs)
     for row in data_rows:
         raw_id = row[0] if len(row) > 0 else ''
         spid = str(uuid.uuid5(uuid.NAMESPACE_URL, f'{tableid}:{raw_id}'))
-        display_values = row[1:] if len(row) > 1 else []
+        display_values = list(row[1:] if len(row) > 1 else [])
+        if len(display_values) < expected_values:
+            display_values.extend([''] * (expected_values - len(display_values)))
+        elif len(display_values) > expected_values:
+            display_values = display_values[:expected_values]
         cleaned_values = [_clean_cell(value) for value in display_values]
         contents = '\t'.join(cleaned_values)
         img = portal_attachments.get(str(raw_id), '')
@@ -440,7 +535,9 @@ def query_to_web_portal_zip(
 
     header = ['spid', 'contents', 'img', 'geoc', *[column_def[1] for column_def in column_defs]]
     portal_data = _serialize_portal_data(output_rows, header)
+    # flds.json drives the portal's field definitions and display metadata.
     flds_json = json.dumps(metadata_rows, indent=2)
+    # SolrFldSchema.xml is a minimal schema fragment for the portal's Solr index.
     solr_schema = _make_solr_schema_xml(metadata_rows)
 
     image_info_fields = [column_def[1] for column_def in column_defs[:2]]
