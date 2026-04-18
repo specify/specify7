@@ -57,7 +57,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
                 stdout(
                     f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
                 )
-            apply_schema_defaults_task.run(discipline.id)
+            apply_schema_defaults_task.apply(args=[discipline.id])
 
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
@@ -165,7 +165,7 @@ def fix_business_rules(stdout: WriteToStdOut | None = None):
     log_and_run(funcs, stdout)
 
 def initialize_permissions(apps):
-    initialize(False, apps)
+    initialize(False, apps, migrate_sp6_users=False)
 
 def fix_permissions(stdout: WriteToStdOut | None = None):
     funcs = [
