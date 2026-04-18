@@ -499,9 +499,6 @@ def query_to_web_portal_zip(
             'solrname': 'img',
             'solrtype': 'string',
             'title': 'image',
-            'linkify': False,
-            'colidx': len(column_defs),
-            'displaycolidx': len(column_defs),
         },
     ]
 
