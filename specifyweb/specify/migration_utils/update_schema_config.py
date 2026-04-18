@@ -701,7 +701,7 @@ def deduplicate_schema_config_sql(apps=None):
     cursor.execute(dedupe_sql)
     cursor.close()
 
-def deduplicate_schema_config_orm(apps, schema_editor=None):
+def deduplicate_splocalecontainers(apps):
     Container = apps.get_model('specify', 'SpLocaleContainer')
     ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
     ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
@@ -743,6 +743,11 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
         ItemStr.objects.filter(containerdesc__in=duplicate_containers).delete()
         duplicate_containers.delete()
 
+
+def deduplicate_containeritems_and_strings(apps):
+    ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
+    ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
+    with transaction.atomic():
         # Identify duplicate container items using a Window function.
         # Partition by container_id + item name only.
         # Only schema type 0 containers (standard schema) are eligible for this cleanup.
@@ -784,6 +789,11 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
             print(f"Successfully deleted {len(ids_to_delete)} duplicate schema items.")
         else:
             print("No duplicates found.")
+
+def deduplicate_schema_config_orm(apps, schema_editor=None):
+    with transaction.atomic():
+        deduplicate_splocalecontainers(apps)
+        deduplicate_containeritems_and_strings(apps)
 
 # ##############################################################################
 # Migration schema config helper functions
