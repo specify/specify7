@@ -87,7 +87,9 @@ def _clean_portal_attachment_text(value: Any) -> str:
 def _portal_attachment_entry(attachment) -> str:
     attachment_location = _clean_portal_attachment_text(attachment.attachmentlocation)
     title = _clean_portal_attachment_text(
-        os.path.basename(attachment.origfilename or attachment.attachmentlocation or '')
+        os.path.basename(
+            attachment.title or attachment.origfilename or attachment.attachmentlocation or ''
+        )
     )
     return (
         '{'

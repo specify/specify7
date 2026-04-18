@@ -32,6 +32,7 @@ class TestExportWebPortal(SQLAlchemySetup):
             id = 5291
             attachmentlocation = "sp6896513492722436219.att.JPG"
             origfilename = "29432.JPG"
+            title = "Figure 1"
 
         class FakeJoinRecord:
             collectionobject_id = 123
@@ -65,5 +66,5 @@ class TestExportWebPortal(SQLAlchemySetup):
         )
         self.assertEqual(
             result["123"],
-            '[{AttachmentID:5291,AttachmentLocation:"sp6896513492722436219.att.JPG",Title:"29432.JPG"}]',
+            '[{AttachmentID:5291,AttachmentLocation:"sp6896513492722436219.att.JPG",Title:"Figure 1"}]',
         )
