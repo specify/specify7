@@ -31,6 +31,7 @@ export function QueryResultsTable({
   table,
   fieldSpecs,
   results,
+  showCellEllipsis,
   wrapQueryResults,
   selectedRows,
   onSelected: handleSelected,
@@ -38,6 +39,7 @@ export function QueryResultsTable({
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly results: RA<QueryResultRow>;
+  readonly showCellEllipsis: boolean;
   readonly wrapQueryResults: boolean;
   readonly selectedRows: ReadonlySet<number>;
   readonly onSelected: (
@@ -66,6 +68,7 @@ export function QueryResultsTable({
           lineIndex={showLineNumber ? index : undefined}
           recordFormatter={recordFormatter}
           result={result}
+          showCellEllipsis={showCellEllipsis}
           table={table}
           wrapQueryResults={wrapQueryResults}
           onSelected={(isSelected, isShiftClick): void =>
@@ -85,6 +88,7 @@ function Row({
   recordFormatter,
   isSelected,
   isLast,
+  showCellEllipsis,
   wrapQueryResults,
   onSelected: handleSelected,
 }: {
@@ -97,6 +101,7 @@ function Row({
   ) => Promise<RA<JSX.Element | string>>;
   readonly isSelected: boolean;
   readonly isLast: boolean;
+  readonly showCellEllipsis: boolean;
   readonly wrapQueryResults: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
 }): JSX.Element {
@@ -247,6 +252,7 @@ function Row({
                     : undefined
                 }
                 key={index}
+                showCellEllipsis={showCellEllipsis}
                 value={formattedValues?.[index] ?? value}
                 wrapQueryResults={wrapQueryResults}
               />
@@ -270,12 +276,14 @@ function Cell({
   fieldSpec,
   value,
   condenseQueryResults,
+  showCellEllipsis,
   wrapQueryResults,
   columnIndex,
 }: {
   readonly condenseQueryResults: boolean;
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly value: JSX.Element | number | string | null;
+  readonly showCellEllipsis: boolean;
   readonly wrapQueryResults: boolean;
   readonly columnIndex: number;
 }): JSX.Element {
@@ -317,14 +325,22 @@ function Cell({
         ${
           wrapQueryResults
             ? 'overflow-hidden whitespace-pre-wrap break-words'
-            : 'overflow-hidden whitespace-nowrap text-ellipsis'
+            : showCellEllipsis
+              ? 'overflow-hidden'
+              : 'whitespace-nowrap'
         }
       `}
       data-query-results-cell-col={columnIndex}
       role="cell"
       title={titleText}
     >
-      {displayedValue}
+      {wrapQueryResults ? (
+        <span className="min-w-0 break-words whitespace-pre-wrap">{displayedValue}</span>
+      ) : showCellEllipsis ? (
+        <span className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap block">{displayedValue}</span>
+      ) : (
+        <span className="whitespace-nowrap">{displayedValue}</span>
+      )}
     </div>
   );
 }

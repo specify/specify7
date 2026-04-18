@@ -162,6 +162,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   >({});
   const [hasManualColumnResize, setHasManualColumnResize] =
     React.useState(false);
+  const [showCellEllipsis, setShowCellEllipsis] = React.useState(false);
 
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
@@ -272,7 +273,13 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const resetToAutoSize = React.useCallback((): void => {
     setHasManualColumnResize(false);
     setColumnWidths({});
-    requestAnimationFrame(() => requestAnimationFrame(autoSizeColumns));
+    setShowCellEllipsis(false);
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        autoSizeColumns();
+        requestAnimationFrame(() => setShowCellEllipsis(true));
+      })
+    );
   }, [autoSizeColumns]);
 
   React.useEffect(() => {
@@ -500,6 +507,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               results={loadedResults}
+              showCellEllipsis={showCellEllipsis}
               selectedRows={selectedRows}
               table={table}
               wrapQueryResults={wrapQueryResults}
