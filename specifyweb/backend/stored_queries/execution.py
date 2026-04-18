@@ -35,7 +35,7 @@ from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
-from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip
+from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, _portal_attachment_map
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
