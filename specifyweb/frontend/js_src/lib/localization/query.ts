@@ -363,15 +363,8 @@ export const queryText = createDictionary({
     'pt-br': 'Criar KML',
     'hr-hr': 'Izradi KML',
   },
-  createWebPortalExport: {
-    'en-us': 'Create Web Portal Export',
-    'ru-ru': 'Создать экспорт веб-портала',
-    'es-es': 'Crear exportación de portal web',
-    'fr-fr': 'Créer une exportation pour le portail Web',
-    'uk-ua': 'Створити експорт для веб-порталу',
-    'de-ch': 'Webportal-Export erstellen',
-    'pt-br': 'Criar exportação para portal web',
-    'hr-hr': 'Izradi izvoz za web portal',
+  exportToWebPortal: {
+    'en-us': 'Export to Web Portal',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',

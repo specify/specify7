@@ -194,7 +194,7 @@ export function QueryExportButtons({
         </QueryButton>
       )}
       {containsResults &&
-        hasPermission('/querybuilder/query', 'export_webportal') && (
+        hasPermission('/querybuilder/query', 'export_to_web_portal') && (
           <QueryButton
             disabled={fields.length === 0}
             showConfirmation={showConfirmation}
@@ -207,7 +207,7 @@ export function QueryExportButtons({
               )
             }
           >
-            {queryText.createWebPortalExport()}
+            {queryText.exportToWebPortal()}
           </QueryButton>
         )}
     </>

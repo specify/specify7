@@ -34,7 +34,7 @@ class QueryBuilderPt(PermissionTarget):
     execute = PermissionTargetAction()
     export_csv = PermissionTargetAction()
     export_kml = PermissionTargetAction()
-    export_webportal = PermissionTargetAction()
+    export_to_web_portal = PermissionTargetAction()
     create_recordset = PermissionTargetAction()
 
 def value_from_request(field, get):
@@ -207,11 +207,11 @@ def export_kml(request):
 @require_POST
 @login_maybe_required
 @never_cache
-def export_web_portal(request):
+def export_to_web_portal(request):
     """Executes and returns as ZIP the web portal export package for the query provided as JSON in the POST body."""
     check_permission_targets(request.specify_collection.id, request.specify_user.id, [
         QueryBuilderPt.execute,
-        QueryBuilderPt.export_webportal,
+        QueryBuilderPt.export_to_web_portal,
     ])
     try:
         spquery = json.load(request)
