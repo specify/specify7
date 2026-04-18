@@ -278,6 +278,56 @@ def _serialize_portal_data(
     return output.getvalue()
 
 
+def _find_geoc_field_indexes(
+    column_defs: list[tuple[str, str, str, dict[str, Any]]],
+) -> tuple[int | None, int | None, int | None, int | None]:
+    lat1_idx = None
+    lon1_idx = None
+    lat2_idx = None
+    lon2_idx = None
+
+    for index, (_, __, ___, metadata) in enumerate(column_defs):
+        if str(metadata.get('sptable', '')).lower() != 'locality':
+            continue
+
+        spfld = str(metadata.get('spfld', '')).lower()
+        if spfld == 'latitude1' and lat1_idx is None:
+            lat1_idx = index
+        elif spfld == 'longitude1' and lon1_idx is None:
+            lon1_idx = index
+        elif spfld == 'latitude2' and lat2_idx is None:
+            lat2_idx = index
+        elif spfld == 'longitude2' and lon2_idx is None:
+            lon2_idx = index
+
+    return lat1_idx, lon1_idx, lat2_idx, lon2_idx
+
+
+def _build_geoc_value(
+    cleaned_values: list[str],
+    lat1_idx: int | None,
+    lon1_idx: int | None,
+    lat2_idx: int | None,
+    lon2_idx: int | None,
+) -> str:
+    def _pair_value(lat_idx: int | None, lon_idx: int | None) -> str:
+        if lat_idx is None or lon_idx is None:
+            return ''
+        if lat_idx >= len(cleaned_values) or lon_idx >= len(cleaned_values):
+            return ''
+
+        latitude = cleaned_values[lat_idx].strip()
+        longitude = cleaned_values[lon_idx].strip()
+        if not latitude or not longitude:
+            return ''
+        return f'{latitude} {longitude}'
+
+    primary = _pair_value(lat1_idx, lon1_idx)
+    if primary:
+        return primary
+    return _pair_value(lat2_idx, lon2_idx)
+
+
 def query_to_web_portal_zip(
     session,
     collection,
@@ -369,6 +419,7 @@ def query_to_web_portal_zip(
     ]
 
     output_rows: list[list[str]] = []
+    geoc_lat1_idx, geoc_lon1_idx, geoc_lat2_idx, geoc_lon2_idx = _find_geoc_field_indexes(column_defs)
     data_rows = query if isinstance(query, list) else list(query.yield_per(1))
     portal_attachments = _portal_attachment_map(tableid, [row[0] for row in data_rows])
     for row in data_rows:
@@ -378,7 +429,14 @@ def query_to_web_portal_zip(
         cleaned_values = [_clean_cell(value) for value in display_values]
         contents = '\t'.join(cleaned_values)
         img = portal_attachments.get(str(raw_id), '')
-        output_rows.append([spid, contents, img, '', *cleaned_values])
+        geoc = _build_geoc_value(
+            cleaned_values,
+            geoc_lat1_idx,
+            geoc_lon1_idx,
+            geoc_lat2_idx,
+            geoc_lon2_idx,
+        )
+        output_rows.append([spid, contents, img, geoc, *cleaned_values])
 
     header = ['spid', 'contents', 'img', 'geoc', *[column_def[1] for column_def in column_defs]]
     portal_data = _serialize_portal_data(output_rows, header)
