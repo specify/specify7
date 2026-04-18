@@ -500,8 +500,8 @@ def query_to_web_portal_zip(
             'solrtype': 'string',
             'title': 'image',
             'linkify': False,
-            'colidx': len(column_defs) + 1,
-            'displaycolidx': len(column_defs) + 1,
+            'colidx': len(column_defs),
+            'displaycolidx': len(column_defs),
         },
     ]
 
