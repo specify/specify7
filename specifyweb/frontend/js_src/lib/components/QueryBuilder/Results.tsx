@@ -617,7 +617,9 @@ function TableHeaderCell({
       {typeof columnIndex === 'number' && (
         <div
           aria-label="Resize column"
-          className="absolute -right-1 bottom-0 top-0 z-20 w-3 cursor-col-resize"
+          className="absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize
+            touch-none before:absolute before:inset-y-0 before:right-0
+            before:w-px before:bg-gray-500 before:content-['']"
           role="separator"
           onMouseDown={handleResizeStart}
         />
