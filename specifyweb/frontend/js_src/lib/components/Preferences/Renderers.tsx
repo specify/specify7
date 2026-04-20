@@ -230,6 +230,7 @@ export function FontFamilyPreferenceItem({
 }
 
 export type WelcomePageMode =
+  | 'critterless'
   | 'customImage'
   | 'default'
   | 'embeddedWebpage'
@@ -249,6 +250,10 @@ const welcomePageModes: PreferenceItem<WelcomePageMode> = {
     {
       value: 'default',
       title: preferencesText.defaultImage(),
+    },
+    {
+      value: 'critterless',
+      title: preferencesText.critterless(),
     },
     {
       value: 'taxonTiles',

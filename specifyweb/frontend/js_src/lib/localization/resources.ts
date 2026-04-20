@@ -1049,6 +1049,9 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Обмін, що готується, не можна видалити',
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
   },
+  selectDeterminationTaxon: {
+    'en-us': 'Select one taxon-tree set to continue with:',
+  },
   invalidDeterminationTaxon: {
     'en-us':
       'Determination does not belong to the taxon tree associated with the Collection Object Type',

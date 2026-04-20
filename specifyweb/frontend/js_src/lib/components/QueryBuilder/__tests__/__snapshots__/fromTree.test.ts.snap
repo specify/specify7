@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`queryFromTree 1`] = `
 [
@@ -83,7 +83,7 @@ exports[`queryFromTree 1`] = `
     ],
     "formatauditrecids": false,
     "isfavorite": true,
-    "name": "Collection Object using \\"Los Angeles County\\"",
+    "name": "Collection Object using "Los Angeles County"",
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
@@ -159,7 +159,7 @@ exports[`queryFromTree 1`] = `
     ],
     "formatauditrecids": false,
     "isfavorite": true,
-    "name": "Collection Object using \\"Cabinet 1\\"",
+    "name": "Collection Object using "Cabinet 1"",
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
@@ -235,7 +235,7 @@ exports[`queryFromTree 1`] = `
     ],
     "formatauditrecids": false,
     "isfavorite": true,
-    "name": "Collection Object using \\"Carpiodes velifer\\"",
+    "name": "Collection Object using "Carpiodes velifer"",
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
@@ -311,7 +311,7 @@ exports[`queryFromTree 1`] = `
     ],
     "formatauditrecids": false,
     "isfavorite": true,
-    "name": "Collection Object using \\"Paleocene\\"",
+    "name": "Collection Object using "Paleocene"",
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
@@ -387,7 +387,7 @@ exports[`queryFromTree 1`] = `
     ],
     "formatauditrecids": false,
     "isfavorite": true,
-    "name": "Collection Object using \\"Cretaceous\\"",
+    "name": "Collection Object using "Cretaceous"",
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
@@ -463,7 +463,7 @@ exports[`queryFromTree 1`] = `
     ],
     "formatauditrecids": false,
     "isfavorite": true,
-    "name": "Collection Object using \\"Plate\\"",
+    "name": "Collection Object using "Plate"",
     "ordinal": 32767,
     "searchsynonymy": false,
     "selectdistinct": false,
