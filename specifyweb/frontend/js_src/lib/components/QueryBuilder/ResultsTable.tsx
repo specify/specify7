@@ -335,9 +335,13 @@ function Cell({
       title={titleText}
     >
       {wrapQueryResults ? (
-        <span className="min-w-0 break-words whitespace-pre-wrap">{displayedValue}</span>
+        <span className="min-w-0 break-words whitespace-pre-wrap">
+          {displayedValue}
+        </span>
       ) : showCellEllipsis ? (
-        <span className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap block">{displayedValue}</span>
+        <span className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap block">
+          {displayedValue}
+        </span>
       ) : (
         <span className="whitespace-nowrap">{displayedValue}</span>
       )}
