@@ -4,7 +4,8 @@
 import logging
 from typing import Any, Dict
 from collections.abc import Callable
-from django.db import transaction
+from django.db import transaction, router
+from django.db.models.deletion import Collector
 from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
 from django.http import (HttpResponseServerError, Http404)
@@ -331,6 +332,30 @@ def prepare_discipline_for_delete(obj) -> None:
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
     delete_discipline_owned_setup_data(obj)
 
+def get_delete_cascade_disciplines(obj, using) -> list[models.Discipline]:
+    """
+    Return any disciplines that would be deleted by cascading from obj
+    """
+    collector = Collector(using=using)
+    collector.delete_blockers = []
+    collector.collect([obj])
+
+    disciplines = {
+        candidate.id: candidate
+        for collected_objs in collector.data.values()
+        for candidate in collected_objs
+        if is_discipline(candidate)
+    }
+    return [disciplines[discipline_id] for discipline_id in sorted(disciplines)]
+
+def prepare_delete_cascade_disciplines(obj, using) -> None:
+    """
+    Apply discipline pre-delete cleanup to any discipline reached through
+    a cascading delete from obj.
+    """
+    for discipline in get_delete_cascade_disciplines(obj, using):
+        prepare_discipline_for_delete(discipline)
+
 @transaction.atomic
 def put_resource(collection, agent, name: str, id, version, data: dict[str, Any]):
     return update_obj(collection, agent, name, id, version, data)
@@ -450,6 +475,7 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
+    using = router.db_for_write(obj.__class__, instance=obj)
     if is_discipline(obj):
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
@@ -458,7 +484,8 @@ def delete_resource(collection, agent, name, id, version) -> None:
             )
         clean_predelete = prepare_discipline_for_delete
     else:
-        clean_predelete = None
+        def clean_predelete(delete_obj):
+            prepare_delete_cascade_disciplines(delete_obj, using)
 
     return delete_obj(
         obj,

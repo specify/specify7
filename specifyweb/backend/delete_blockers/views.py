@@ -6,6 +6,7 @@ from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import (
     get_discipline_delete_guard_blockers,
     get_object_or_404,
+    prepare_delete_cascade_disciplines,
     prepare_discipline_for_delete,
 )
 from specifyweb.specify.api.serializers import toJson
@@ -32,8 +33,10 @@ def delete_blockers(request, model, id):
                 result = _collect_delete_blockers(obj, using)
                 transaction.set_rollback(True, using=using)
     else:
-        # Standard delete blockers behavior
-        result = _collect_delete_blockers(obj, using)
+        with transaction.atomic(using=using):
+            prepare_delete_cascade_disciplines(obj, using)
+            result = _collect_delete_blockers(obj, using)
+            transaction.set_rollback(True, using=using)
 
     return http.HttpResponse(toJson(result), content_type='application/json')
 
