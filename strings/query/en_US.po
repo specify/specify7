@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:2251
+#: components/Preferences/UserDefinitions.tsx:2258
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:88
 #: components/Reports/RecordSets.tsx:95
@@ -383,7 +383,7 @@ msgstr "or"
 msgid "yes"
 msgstr "Yes"
 
-#: components/QueryBuilder/ResultsTable.tsx:203
+#: components/QueryBuilder/ResultsTable.tsx:220
 #: components/QueryBuilder/ToForms.tsx:56
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 msgid "queryResults"
@@ -526,7 +526,7 @@ msgid "scrollToEditor"
 msgstr "Scroll to editor"
 
 #: components/LocalityUpdate/Status.tsx:308
-#: components/QueryBuilder/ResultsTable.tsx:188
+#: components/QueryBuilder/ResultsTable.tsx:205
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 msgid "viewRecords"
 msgstr "View records"

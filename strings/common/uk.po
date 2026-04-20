@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Вкажіть 7"
 
-#: components/Preferences/UserDefinitions.tsx:2042
+#: components/Preferences/UserDefinitions.tsx:2049
 #: components/SetupTool/SetupOverview.tsx:85
 #: components/TreeView/CreateTree.tsx:546
 #: components/WorkBench/DataSetMeta.tsx:294
@@ -485,8 +485,8 @@ msgstr "Інструменти"
 #: components/Preferences/Renderers.tsx:118
 #: components/QueryBuilder/Formatter.tsx:178
 #: components/QueryBuilder/QueryLineFilter.tsx:90
-#: components/QueryBuilder/Results.tsx:212
-#: components/QueryBuilder/Results.tsx:213
+#: components/QueryBuilder/Results.tsx:352
+#: components/QueryBuilder/Results.tsx:353
 #: components/QueryComboBox/index.tsx:445
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
@@ -890,7 +890,7 @@ msgstr "ID"
 msgid "filter"
 msgstr "фільтр"
 
-#: components/QueryBuilder/Results.tsx:79
+#: components/QueryBuilder/Results.tsx:99
 #: components/WbActions/index.tsx:123
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 msgid "results"
@@ -962,7 +962,7 @@ msgstr "Скинути"
 
 #: components/BatchIdentify/index.tsx:932
 #: components/FormEditor/Create.tsx:210
-#: components/QueryBuilder/ResultsTable.tsx:168
+#: components/QueryBuilder/ResultsTable.tsx:185
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
 #. Used in: Components > Batch Identify > Index ⬤ Components > Form Editor > Create ⬤ Components > Query Builder > Results Table ⬤ Components > Search Dialog > Index ⬤ Components > Setup Tool > Setup Form
@@ -1053,8 +1053,8 @@ msgstr "{header:string}':"
 #: components/Merging/Header.tsx:213
 #: components/Molecules/FilePicker.tsx:113
 #: components/QueryBuilder/Header.tsx:96
-#: components/QueryBuilder/Results.tsx:208
-#: components/QueryBuilder/ResultsTable.tsx:202
+#: components/QueryBuilder/Results.tsx:348
+#: components/QueryBuilder/ResultsTable.tsx:219
 #: components/QueryBuilder/ToForms.tsx:55
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:42
