@@ -337,7 +337,7 @@ def get_delete_cascade_disciplines(obj, using) -> list[models.Discipline]:
     Return any disciplines that would be deleted by cascading from obj
     """
     collector = Collector(using=using)
-    collector.delete_blockers = []
+    setattr(collector, "delete_blockers", [])
     collector.collect([obj])
 
     disciplines = {
@@ -350,8 +350,7 @@ def get_delete_cascade_disciplines(obj, using) -> list[models.Discipline]:
 
 def prepare_delete_cascade_disciplines(obj, using) -> None:
     """
-    Apply discipline pre-delete cleanup to any discipline reached through
-    a cascading delete from obj.
+    Apply discipline pre-delete cleanup to any discipline reached through a cascading delete from obj
     """
     for discipline in get_delete_cascade_disciplines(obj, using):
         prepare_discipline_for_delete(discipline)

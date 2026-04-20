@@ -42,7 +42,7 @@ def delete_blockers(request, model, id):
 
 def _collect_delete_blockers(obj, using) -> list[dict]:
     collector = Collector(using=using)
-    collector.delete_blockers = []
+    setattr(collector, "delete_blockers", [])
     collector.collect([obj])
     return flatten([
         [
