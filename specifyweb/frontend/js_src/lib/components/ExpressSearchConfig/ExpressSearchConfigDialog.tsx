@@ -26,6 +26,14 @@ export function ExpressSearchConfigDialog({
   const [isDirty, setIsDirty] = React.useState(false);
   const hasLoadedConfig = React.useRef(false);
 
+  React.useEffect(() => {
+    if (!isOpen) {
+      setActiveConfig(null);
+      setIsDirty(false);
+      hasLoadedConfig.current = false;
+    }
+  }, [isOpen]);
+
   const handleSave = React.useCallback(() => {
     if (!activeConfig) return;
     loading(
@@ -68,7 +76,8 @@ export function ExpressSearchConfigDialog({
       isOpen={isOpen}
       onClose={onClose}
     >
-      <ExpressSearchConfigEditor
+        <ExpressSearchConfigEditor
+        key={String(isOpen)}
         onChangeJSON={handleChangeJSON}
       />
     </Dialog>

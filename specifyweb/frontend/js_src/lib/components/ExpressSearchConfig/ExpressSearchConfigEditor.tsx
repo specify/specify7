@@ -196,6 +196,7 @@ export function ExpressSearchConfigEditor({
         ajax('/express_search/config/', {
           method: 'GET',
           headers: { Accept: 'application/json' },
+          cache: 'no-store',
         }).then((res) => res.data as any),
       []
     ),

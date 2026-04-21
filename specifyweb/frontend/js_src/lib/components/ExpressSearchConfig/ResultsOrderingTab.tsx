@@ -74,6 +74,13 @@ export function ResultsOrderingTab({ config, relatedQueriesDefinitions = [], onC
       }
     });
 
+    newConfig.tables.sort(
+      (a: any, b: any) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+    );
+    newConfig.relatedQueries.sort(
+      (a: any, b: any) => (a.displayOrder ?? 0) - (b.displayOrder ?? 0)
+    );
+
     onChangeConfig(newConfig);
   };
 

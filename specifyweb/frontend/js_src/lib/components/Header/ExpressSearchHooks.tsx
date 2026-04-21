@@ -32,6 +32,7 @@ export function usePrimarySearch(
       return ajax<IR<QueryTableResult>>(ajaxUrl, {
         headers: { Accept: 'application/json' },
         expectedErrors: [Http.FORBIDDEN],
+        cache: 'no-store',
       }).then(({ data, status }) =>
         status === Http.FORBIDDEN
           ? false
@@ -50,14 +51,18 @@ export function usePrimarySearch(
   return primaryResults;
 }
 
-const relatedSearchesPromise = contextUnlockedPromise.then(
-  async (entrypoint) =>
-    entrypoint === 'main'
-      ? ajax<RA<string>>('/context/available_related_searches.json', {
-          headers: { Accept: 'application/json' },
-        }).then(({ data }) => data)
-      : foreverFetch<RA<string>>()
-);
+async function fetchRelatedSearches(): Promise<RA<string>> {
+  return contextUnlockedPromise.then(
+    async (entrypoint) =>
+      entrypoint === 'main'
+        ? ajax<RA<string>>('/context/available_related_searches.json', {
+            headers: { Accept: 'application/json' },
+            cache: 'no-store',
+          }).then(({ data }) => data)
+        : foreverFetch<RA<string>>()
+  );
+}
+
 export const expressSearchFetchSize = 40;
 
 type FieldSpec = {
@@ -90,7 +95,7 @@ export function useSecondarySearch(
   const [secondaryResults] = useAsyncState<RA<RawExpressSearchResult> | false>(
     React.useCallback(async () => {
       if (query === '') return false;
-      const relatedSearches = await relatedSearchesPromise;
+      const relatedSearches = await fetchRelatedSearches();
       const results = await Promise.all(
         relatedSearches.map(async (name) => {
           const ajaxUrl = formatUrl('/express_search/related/', {
@@ -101,6 +106,7 @@ export function useSecondarySearch(
           return ajax<RelatedTableResult>(ajaxUrl, {
             headers: { Accept: 'application/json' },
             expectedErrors: [Http.FORBIDDEN],
+            cache: 'no-store',
           }).then(({ data, status }) =>
             status === Http.FORBIDDEN ? undefined : ([ajaxUrl, data] as const)
           );
