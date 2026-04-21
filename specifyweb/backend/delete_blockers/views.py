@@ -5,6 +5,8 @@ from django.db.models.deletion import Collector
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import (
     get_discipline_delete_guard_blockers,
+    get_delete_cascade_discipline_guard_blockers,
+    get_delete_cascade_disciplines,
     get_object_or_404,
     prepare_delete_cascade_disciplines,
     prepare_discipline_for_delete,
@@ -33,10 +35,19 @@ def delete_blockers(request, model, id):
                 result = _collect_delete_blockers(obj, using)
                 transaction.set_rollback(True, using=using)
     else:
-        with transaction.atomic(using=using):
-            prepare_delete_cascade_disciplines(obj, using)
-            result = _collect_delete_blockers(obj, using)
-            transaction.set_rollback(True, using=using)
+        cascade_disciplines = get_delete_cascade_disciplines(obj, using)
+        guard_blockers = get_delete_cascade_discipline_guard_blockers(
+            obj, using, cascade_disciplines
+        )
+        if guard_blockers:
+            result = guard_blockers
+        else:
+            with transaction.atomic(using=using):
+                prepare_delete_cascade_disciplines(
+                    obj, using, cascade_disciplines
+                )
+                result = _collect_delete_blockers(obj, using)
+                transaction.set_rollback(True, using=using)
 
     return http.HttpResponse(toJson(result), content_type='application/json')
 

@@ -248,8 +248,61 @@ def get_discipline_delete_guard_blockers(discipline) -> list[dict[str, Any]]:
             )
     return blockers
 
+def merge_delete_blockers(
+    blockers: list[dict[str, Any]],
+) -> list[dict[str, Any]]:
+    merged: dict[tuple[str, str], set[int]] = {}
+    for blocker in blockers:
+        key = (blocker["table"], blocker["field"])
+        ids = merged.setdefault(key, set())
+        ids.update(int(blocker_id) for blocker_id in blocker["ids"])
+
+    return [
+        {
+            "table": table,
+            "field": field,
+            "ids": sorted(ids),
+        }
+        for (table, field), ids in sorted(merged.items())
+    ]
+
 def _raw_delete_queryset(queryset) -> None:
     queryset._raw_delete(queryset.db)
+
+def delete_discipline_owned_app_resources(obj) -> None:
+    if not is_discipline(obj):
+        return
+
+    resource_dir_ids = models.Spappresourcedir.objects.filter(
+        discipline_id=obj.id
+    ).values("id")
+    app_resource_ids = models.Spappresource.objects.filter(
+        spappresourcedir_id__in=Subquery(resource_dir_ids)
+    ).values("id")
+    viewset_ids = models.Spviewsetobj.objects.filter(
+        spappresourcedir_id__in=Subquery(resource_dir_ids)
+    ).values("id")
+
+    _raw_delete_queryset(
+        models.Spappresourcedata.objects.filter(
+            Q(spappresource_id__in=Subquery(app_resource_ids))
+            | Q(spviewsetobj_id__in=Subquery(viewset_ids))
+        )
+    )
+    _raw_delete_queryset(
+        models.Spreport.objects.filter(appresource_id__in=Subquery(app_resource_ids))
+    )
+    _raw_delete_queryset(
+        models.Spappresource.objects.filter(
+            spappresourcedir_id__in=Subquery(resource_dir_ids)
+        )
+    )
+    _raw_delete_queryset(
+        models.Spviewsetobj.objects.filter(
+            spappresourcedir_id__in=Subquery(resource_dir_ids)
+        )
+    )
+    _raw_delete_queryset(models.Spappresourcedir.objects.filter(discipline_id=obj.id))
 
 def delete_discipline_owned_setup_data(obj) -> None:
     """
@@ -316,7 +369,7 @@ def delete_discipline_owned_setup_data(obj) -> None:
     )
     _raw_delete_queryset(UniquenessRule.objects.filter(discipline_id=obj.id))
 
-    _raw_delete_queryset(models.Spappresourcedir.objects.filter(discipline_id=obj.id))
+    delete_discipline_owned_app_resources(obj)
     _raw_delete_queryset(models.Sptasksemaphore.objects.filter(discipline_id=obj.id))
     _raw_delete_queryset(models.Autonumschdsp.objects.filter(discipline_id=obj.id))
 
@@ -348,11 +401,34 @@ def get_delete_cascade_disciplines(obj, using) -> list[models.Discipline]:
     }
     return [disciplines[discipline_id] for discipline_id in sorted(disciplines)]
 
-def prepare_delete_cascade_disciplines(obj, using) -> None:
+def get_delete_cascade_discipline_guard_blockers(
+    obj,
+    using,
+    disciplines: list[models.Discipline] | None = None,
+) -> list[dict[str, Any]]:
+    if disciplines is None:
+        disciplines = get_delete_cascade_disciplines(obj, using)
+
+    return merge_delete_blockers(
+        [
+            blocker
+            for discipline in disciplines
+            for blocker in get_discipline_delete_guard_blockers(discipline)
+        ]
+    )
+
+def prepare_delete_cascade_disciplines(
+    obj,
+    using,
+    disciplines: list[models.Discipline] | None = None,
+) -> None:
     """
     Apply discipline pre-delete cleanup to any discipline reached through a cascading delete from obj
     """
-    for discipline in get_delete_cascade_disciplines(obj, using):
+    if disciplines is None:
+        disciplines = get_delete_cascade_disciplines(obj, using)
+
+    for discipline in disciplines:
         prepare_discipline_for_delete(discipline)
 
 @transaction.atomic
@@ -483,8 +559,19 @@ def delete_resource(collection, agent, name, id, version) -> None:
             )
         clean_predelete = prepare_discipline_for_delete
     else:
+        cascade_disciplines = get_delete_cascade_disciplines(obj, using)
+        guard_blockers = get_delete_cascade_discipline_guard_blockers(
+            obj, using, cascade_disciplines
+        )
+        if guard_blockers:
+            raise BusinessRuleException(
+                "A cascaded Discipline cannot be deleted while it has associated users or collections."
+            )
+
         def clean_predelete(delete_obj):
-            prepare_delete_cascade_disciplines(delete_obj, using)
+            prepare_delete_cascade_disciplines(
+                delete_obj, using, cascade_disciplines
+            )
 
     return delete_obj(
         obj,
