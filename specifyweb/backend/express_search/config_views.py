@@ -1,20 +1,28 @@
 import json
 import logging
-import os
 import xml.etree.ElementTree as ET
 
 from django.http import HttpResponse, HttpResponseBadRequest
 from django.utils.decorators import method_decorator
-from django.conf import settings
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.specify.models import datamodel, Spappresourcedata, Spappresourcedir, Spappresource
-from specifyweb.backend.context.app_resource import get_app_resource, get_app_resource_dirs_for_level, get_usertype
+from specifyweb.backend.context.app_resource import (
+    get_app_resource,
+    get_app_resource_dirs_for_level,
+    get_usertype,
+    load_resource_at_level,
+)
 from specifyweb.backend.permissions.permissions import has_table_permission
 from specifyweb.specify.api.serializers import toJson
 
 logger = logging.getLogger(__name__)
+
+EMPTY_EXPRESS_SEARCH_CONFIG = (
+    '<?xml version="1.0" encoding="UTF-8"?>'
+    '<search><tables></tables><relatedQueries></relatedQueries></search>'
+)
 
 def parse_config_xml(xml_element):
     """Convert ExpressSearchConfig ElementTree to dict"""
@@ -75,19 +83,25 @@ def get_express_search_config_str(collection, user):
         if isinstance(resource, bytes):
             return resource.decode('utf-8', errors='replace')
         return resource
-    
-    # Try manual fallback if get_app_resource missed it (sometimes registry entries are tricky)
-    try:
-        common_path = os.path.join(settings.SPECIFY_CONFIG_DIR, 'common', 'expresssearchconfig.xml')
-        if os.path.exists(common_path):
-            logger.info("Falling back to manual load of common/expresssearchconfig.xml")
-            with open(common_path, 'r') as f:
-                return f.read()
-    except Exception as e:
-        logger.error(f"Failed manual fallback: {e}")
 
     logger.warning("No ExpressSearchConfig found, returning empty shell")
-    return '<?xml version="1.0" encoding="UTF-8"?><search><tables></tables><relatedQueries></relatedQueries></search>'
+    return EMPTY_EXPRESS_SEARCH_CONFIG
+
+def get_default_express_search_config_str(collection, user):
+    # Recovery path for malformed personal resources. Bypass DB precedence and
+    # use the filesystem defaults that the normal app resource hierarchy would
+    # eventually fall back to.
+    for level in ('UserType', 'Discipline', 'Common', 'Backstop'):
+        res = load_resource_at_level(collection, user, level, 'ExpressSearchConfig')
+        if res:
+            logger.info("Recovered ExpressSearchConfig from %s filesystem level", level)
+            resource = res[0]
+            if isinstance(resource, bytes):
+                return resource.decode('utf-8', errors='replace')
+            return resource
+
+    logger.warning("No fallback ExpressSearchConfig found, returning empty shell")
+    return EMPTY_EXPRESS_SEARCH_CONFIG
 
 @require_http_methods(['GET', 'PUT'])
 @login_maybe_required
@@ -108,11 +122,11 @@ def config_api(request):
             logger.error(f"Error parsing ExpressSearchConfig XML: {e}")
             # Instead of deleting, we fall back to the filesystem default in-memory
             # for this request, but leave the DB record intact.
-            xml_str = get_express_search_config_str(collection, user)
+            xml_str = get_default_express_search_config_str(collection, user)
             try:
                 xml_element = ET.fromstring(xml_str.lstrip('\ufeff').strip())
             except ET.ParseError:
-                xml_element = ET.fromstring('<search><tables></tables><relatedQueries></relatedQueries></search>')
+                xml_element = ET.fromstring(EMPTY_EXPRESS_SEARCH_CONFIG)
         config = parse_config_xml(xml_element)
         
         # Reconciliation
