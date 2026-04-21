@@ -129,7 +129,7 @@ function CustomEditTables({
           ? formsText.configureDataEntryTables()
           : formsText.configureInteractionTables()
       }
-      isNoRestrictionMode={false}
+      showHiddenTables={false}
       tables={tables}
       onChange={handleChange}
       onClose={handleClose}

@@ -361,6 +361,18 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'dataviews',
+    children: [
+      {
+        path: ':tableName',
+        element: () =>
+          import('../DataViews/index').then(
+            ({ TableDataView }) => TableDataView
+          ),
+      },
+    ],
+  },
+  {
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>

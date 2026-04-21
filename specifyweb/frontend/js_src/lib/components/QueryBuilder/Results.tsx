@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useInfiniteScroll } from '../../hooks/useInfiniteScroll';
+import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { commonText } from '../../localization/common';
 import { interactionsText } from '../../localization/interactions';
 import { f } from '../../utils/functools';
@@ -31,7 +32,6 @@ import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
-import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
@@ -99,7 +99,19 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onFetchMore: handleFetchMore,
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
-  } = useFetchQueryResults(props);
+  } = usePaginatedCollection<QueryResultRow | undefined>({
+    initialRecords: initialData,
+    fetchMore: fetchResults,
+    fetchSize: props.fetchSize,
+    totalCount: props.totalCount,
+  });
+
+  // const {
+  //   results: [results, setResults],
+  //   onFetchMore: handleFetchMore,
+  //   totalCount: [totalCount, setTotalCount],
+  //   canFetchMore,
+  // } = useFetchQueryResults(props);
 
   const canMergeTable = canMerge(table);
 
