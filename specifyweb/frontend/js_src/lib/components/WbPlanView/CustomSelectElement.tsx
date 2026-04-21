@@ -239,7 +239,7 @@ export type CustomSelectElementPropsOpenBase = CustomSelectElementPropsBase & {
   readonly onClose?: () => void;
 };
 
-type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
+export type CustomSelectElementPropsOpen = CustomSelectElementPropsOpenBase & {
   readonly customSelectOptionGroups: IR<CustomSelectElementOptionGroupProps>;
   readonly autoMapperSuggestions?: JSX.Element;
 };
@@ -278,14 +278,14 @@ function Option({
     );
   else
     classes.push(
-      'hover:bg-[color:var(--custom-select-b2)]',
-      'focus:bg-[color:var(--custom-select-b2)]'
+      'hover:bg-brand-100 dark:hover:bg-brand-300',
+      'focus:bg-brand-100 dark:focus:bg-brand-400'
     );
 
   if (isDefault)
     classes.push(
       'custom-select-option-selected cursor-auto dark:text-white',
-      '!bg-[color:var(--custom-select-accent)]'
+      '!bg-brand-100 dark:!bg-brand-400'
     );
 
   const tableLabel = getTable(tableName ?? '')?.label;
@@ -370,7 +370,7 @@ function OptionGroup({
       {typeof selectGroupLabel === 'string' && (
         <header
           aria-hidden
-          className="cursor-auto bg-[color:var(--custom-select-b2)] px-1"
+          className="cursor-auto bg-brand-100 dark:bg-brand-400 dark:text-white px-1"
         >
           {selectGroupLabel}
         </header>
@@ -536,6 +536,7 @@ export function CustomSelectElement({
 
   const id = useId('listbox');
   const { validationRef } = useValidation(validation);
+  const hasValidationMessage = (validation ?? '').length > 0;
 
   let header: JSX.Element | undefined;
   let preview: JSX.Element | undefined;
@@ -545,7 +546,8 @@ export function CustomSelectElement({
     header = (
       <header
         className={`
-          border-brand-300 bg-brand-100 dark:bg-brand-500 flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
+          border-brand-300 bg-brand-100 dark:bg-brand-400 dark:!text-white
+          flex items-center gap-x-1 gap-y-2 rounded rounded-b-none border p-2
         `}
       >
         {has('icon') && (
@@ -568,8 +570,7 @@ export function CustomSelectElement({
     preview = (
       // Not tabbable because keyboard events are handled separately
       <button
-        aria-controls={id('options')}
-        aria-describedby={id('validation')}
+        aria-describedby={hasValidationMessage ? id('validation') : undefined}
         aria-expanded={isOpen}
         aria-haspopup="listbox"
         className={`
@@ -688,7 +689,8 @@ export function CustomSelectElement({
       );
 
   const listOfOptionsRef = React.useRef<HTMLDivElement>(null);
-  const customSelectOptions = (Boolean(unmapOption) || groups) && (
+  const hasOptions = Boolean(unmapOption) || Boolean(groups);
+  const customSelectOptions = hasOptions && (
     <div
       aria-label={selectLabel}
       aria-orientation="vertical"
@@ -840,15 +842,16 @@ export function CustomSelectElement({
          * Not sure if there is a simpler way that is at least this good until
          * <selectmenu> is wildly supported.
          */
-        (validation ?? '').length > 0 && (
+        hasValidationMessage && (
           <div
             // Place the browser's tooltip at bottom center
             className="sr-only bottom-0 top-[unset] flex w-full justify-center"
           >
             <input
               // Associate validation message with the listbox
-              id={id('validation')}
               defaultValue={validation}
+              id={id('validation')}
+              aria-label={validation}
               // Announce validation message to screen readers
               aria-live="polite"
               // Act as an error message, not an input

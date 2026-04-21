@@ -9,6 +9,7 @@ import { useNavigate, useParams } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { wbText } from '../../localization/workbench';
@@ -79,14 +80,12 @@ export function DataSetMetaOverlay(): JSX.Element | null {
     true
   );
 
-  const navigate = useNavigate();
-
   return typeof dataset === 'object' ? (
     <WbDataSetMeta
       dataset={dataset}
       onChange={handleClose}
       onClose={handleClose}
-      onDeleted={(): void => navigate('/specify/', { replace: true })}
+      onDeleted={handleClose}
     />
   ) : null;
 }
@@ -192,6 +191,9 @@ export function GenericDataSetsDialog({
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           {canImport() && (
             <>
+              <Link.Info href="/specify/workbench/import-attachments/">
+                {attachmentsText.importAttachments()}
+              </Link.Info>
               <Link.Info href="/specify/workbench/import/">
                 {wbText.importFile()}
               </Link.Info>

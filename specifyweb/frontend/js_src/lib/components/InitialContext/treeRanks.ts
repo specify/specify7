@@ -73,7 +73,7 @@ export const treeRanksPromise = Promise.all([
       readonly definition: SerializedRecord<Tables[`${TREE_NAME}TreeDef`]>;
       readonly ranks: RA<SerializedRecord<Tables[`${TREE_NAME}TreeDefItem`]>>;
     }>;
-  }>('/api/specify_trees/', {
+  }>('/trees/specify_trees/', {
     headers: { Accept: 'application/json' },
   }).then(({ data }) => {
     const treeNames = new Set(

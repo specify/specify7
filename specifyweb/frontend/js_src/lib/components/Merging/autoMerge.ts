@@ -88,7 +88,16 @@ function mergeField(
     resource[field.name],
   ]);
   const values = parentChildValues.map(([_, child]) => child);
-  const nonFalsyValues = f.unique(values.filter(Boolean));
+  const nonFalsyValues = f.unique(
+    values.filter(
+      (value) =>
+        value !== null &&
+        value !== undefined &&
+        value !== '' &&
+        // Preserve zeros and false, but drop NaN
+        value === value
+    )
+  );
   const firstValue = nonFalsyValues[0] ?? values[0];
   if (field.isRelationship)
     if (field.isDependent())
@@ -150,8 +159,9 @@ function mergeField(
     // Pick the longest value
     return (
       Array.from(nonFalsyValues).sort(
-        sortFunction((string) =>
-          typeof string === 'string' ? string.length : 0
+        sortFunction(
+          (string) => (typeof string === 'string' ? string.length : 0),
+          true
         )
       )[0] ?? firstValue
     );
@@ -213,10 +223,15 @@ function mergeDependentField(
   sourceValue: ReturnType<typeof mergeField>
 ): ReturnType<typeof mergeField> {
   const sourceField = strictDependentFields()[fieldName];
-  const sourceResource = resources.find(
+  const matchingResources = resources.filter(
     (resource) => resource[sourceField] === sourceValue
   );
-  return sourceResource?.[fieldName] ?? null;
+  const preferredResource =
+    matchingResources.find((resource) => {
+      const value = resource[fieldName];
+      return value !== null && value !== undefined;
+    }) ?? matchingResources[0];
+  return preferredResource?.[fieldName] ?? null;
 }
 
 /**

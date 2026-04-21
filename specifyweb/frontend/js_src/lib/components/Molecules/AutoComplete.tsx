@@ -31,6 +31,8 @@ export type AutoCompleteItem<T> = {
   readonly data: T;
 };
 
+type AutoCompleteValue<T> = AutoCompleteItem<T> | string | null;
+
 /**
  * Get the nearest scrollable parent.
  * Adapted from https://stackoverflow.com/a/35940276/8584605
@@ -43,7 +45,7 @@ const getScrollParent = (node: Element | undefined): Element =>
       : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
-  p-0.5 active:bg-brand-100 dark:active:bg-brand-500
+  p-0.5 active:bg-brand-100 dark:active:bg-brand-400
   disabled:cursor-default rounded ${isSelected ? 'text-brand-300' : ''}
   ${isActive ? 'bg-gray-100 dark:bg-neutral-800' : ''}
 `;
@@ -373,22 +375,20 @@ export function AutoComplete<T>({
   }, [currentValue]);
 
   return (
-    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
+    <Combobox
       as="div"
       className="relative w-full"
       disabled={disabled}
       nullable
-      value={currentItem}
+      value={currentItem ?? null}
       // Triggers on enter or selects new item
-      onChange={(
-        value: AutoCompleteItem<T> | string | null | undefined
-      ): void => {
-        if (value === null || value === undefined) handleCleared?.();
+      onChange={(value): void => {
+        if (value === null) handleCleared?.();
         else if (typeof value === 'string') handleNewValue?.(value);
         else handleChanged(value);
       }}
     >
-      <Combobox.Input<'input'>
+      <Combobox.Input
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
@@ -398,13 +398,14 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        displayValue={(item: AutoCompleteItem<T> | null): string =>
-          typeof item === 'string'
-            ? item
-            : typeof item?.label === 'string'
-              ? item.label
-              : (item?.searchValue ?? '')
-        }
+        displayValue={(item: unknown): string => {
+          const currentItem = item as AutoCompleteValue<T>;
+          return typeof currentItem === 'string'
+            ? currentItem
+            : typeof currentItem?.label === 'string'
+              ? currentItem.label
+              : (currentItem?.searchValue ?? '');
+        }}
         ref={forwardChildRef}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
@@ -423,7 +424,7 @@ export function AutoComplete<T>({
        * of parents with overflow:hidden
        */}
       <Portal>
-        <Combobox.Options<'ul'>
+        <Combobox.Options
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
@@ -432,7 +433,7 @@ export function AutoComplete<T>({
           ref={dataListRefCallback}
         >
           {isLoading && (
-            <Combobox.Option<'li'>
+            <Combobox.Option
               className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""

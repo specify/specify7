@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Tables with form tables computed correctly 1`] = `
 [
@@ -42,6 +42,7 @@ exports[`Tables with form tables computed correctly 1`] = `
   "[table Collector]",
   "[table CommonNameTx]",
   "[table CommonNameTxCitation]",
+  "[table Component]",
   "[table ConservDescription]",
   "[table ConservDescriptionAttachment]",
   "[table ConservEvent]",

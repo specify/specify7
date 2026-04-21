@@ -8,6 +8,8 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { Relationship } from '../DataModel/specifyField';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { useSearchDialog } from '../SearchDialog';
+import { relationshipIsToMany } from '../WbPlanView/mappingHelpers';
+import { shouldBeToOne } from './helpers';
 import { Slider } from './Slider';
 
 export type RecordSelectorProps<SCHEMA extends AnySchema> = {
@@ -83,7 +85,9 @@ export function useRecordSelector<SCHEMA extends AnySchema>({
   );
 
   const isToOne =
-    field === undefined ? false : !field.type.includes('-to-many');
+    field === undefined
+      ? false
+      : !relationshipIsToMany(field) || shouldBeToOne(field);
 
   const handleResourcesSelected = React.useMemo(
     () =>

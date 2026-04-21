@@ -6,7 +6,7 @@ import { getAppResourceUrl } from '../../utils/ajax/helpers';
 import type { IR, RA, RR } from '../../utils/types';
 import { softFail } from '../Errors/Crash';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -22,7 +22,7 @@ type SerializedLayer = {
 type Layers<LAYER> = RR<'baseMaps' | 'overlays', IR<LAYER>>;
 
 export const leafletLayersEndpoint =
-  'https://files.specifysoftware.org/specify7/7.8.10/leaflet-layers.json';
+  '/static/config/common/leaflet-layers.json';
 
 /**
  * Optional filters to apply to a layer
@@ -47,11 +47,11 @@ export const preferredOverlay = 'Labels and boundaries';
  *    leafletLayersEndpoint (defined above)
  *  * User didn't define a resource file `leaflet-layers`
  *
- * On any updates to this file, you should also update the one at
+ * On any updates to this fallback, you should also update the file at
  * leafletLayersEndpoint
  *
  * Documentation:
- * https://github.com/specify/specify7/wiki/Adding-Custom-Tile-Servers
+ * https://discourse.specifysoftware.org/t/adding-custom-tile-servers-geomap/2593
  *
  * Adding "dark:invert-leaflet-layer' smartly inverts the layer colors when in
  * dark mode
@@ -190,14 +190,14 @@ export const fetchLeafletLayers = async (): Promise<Layers<L.TileLayer>> =>
 const layersPromise: Promise<Layers<SerializedLayer>> =
   contextUnlockedPromise.then(async (entrypoint) =>
     entrypoint === 'main'
-      ? ajax(cachableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
+      ? ajax(cacheableUrl(getAppResourceUrl('leaflet-layers', 'quiet')), {
           headers: { Accept: 'text/plain' },
           errorMode: 'silent',
         })
           .then(async ({ data, status }) =>
             status === Http.NO_CONTENT
               ? ajax<Layers<SerializedLayer>>(
-                  cachableUrl(leafletLayersEndpoint),
+                  cacheableUrl(leafletLayersEndpoint),
                   {
                     headers: { Accept: 'application/json' },
                     errorMode: 'silent',

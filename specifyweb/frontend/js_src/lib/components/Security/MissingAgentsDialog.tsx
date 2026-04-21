@@ -19,6 +19,7 @@ import { fetchResource, idFromUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
 import { hasPermission } from '../Permissions/helpers';
+import { fetchUserPermissions } from '../Permissions/index';
 import { QueryComboBox } from '../QueryComboBox';
 import type { UserAgents } from './UserHooks';
 
@@ -44,11 +45,13 @@ export function MissingAgentsDialog({
   userAgents,
   userId,
   onClose: handleClose,
+  onSaved: handleSaved,
   response: initialResponse,
 }: {
   readonly userAgents: UserAgents | undefined;
   readonly userId: number;
   readonly onClose: () => void;
+  readonly onSaved?: () => void;
   readonly response: SetAgentsResponse;
 }): JSX.Element | null {
   const [response, setResponse] = React.useState(initialResponse);
@@ -58,21 +61,30 @@ export function MissingAgentsDialog({
       async () =>
         typeof userAgents === 'object'
           ? Promise.all(
-              userAgents.map(async ({ divisionId, ...rest }) =>
-                fetchResource('Division', divisionId).then((division) => ({
-                  division,
-                  isRequired:
-                    response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
-                      divisionId
-                    ) === true,
-                  ...rest,
-                }))
-              )
-            ).then((userAgents) =>
-              Array.from(userAgents).sort(
-                sortFunction(({ division }) => division.name)
+              Array.from(
+                new Set(userAgents.flatMap(({ collections }) => collections)),
+                async (collectionId) => fetchUserPermissions(collectionId)
               )
             )
+              .then(async () =>
+                Promise.all(
+                  userAgents.map(async ({ divisionId, ...rest }) =>
+                    fetchResource('Division', divisionId).then((division) => ({
+                      division,
+                      isRequired:
+                        response.MissingAgentForAccessibleCollection?.all_accessible_divisions.includes(
+                          divisionId
+                        ) === true,
+                      ...rest,
+                    }))
+                  )
+                )
+              )
+              .then((userAgents) =>
+                Array.from(userAgents).sort(
+                  sortFunction(({ division }) => division.name)
+                )
+              )
           : undefined,
       [userAgents, response]
     ),
@@ -110,7 +122,7 @@ export function MissingAgentsDialog({
           isReadOnly
             ? undefined
             : loading(
-                ajax(`/api/set_agents/${userId}/`, {
+                ajax(`/accounts/set_agents/${userId}/`, {
                   method: 'POST',
                   headers: {},
                   body: filterArray(
@@ -122,7 +134,7 @@ export function MissingAgentsDialog({
                 }).then(({ data, status }) =>
                   status === Http.BAD_REQUEST
                     ? setResponse(JSON.parse(data))
-                    : handleClose()
+                    : (handleSaved ?? handleClose)()
                 )
               )
         }

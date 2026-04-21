@@ -32,10 +32,11 @@ import {
   overwriteReadOnly,
 } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
+import { Select } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
 import { getField } from '../DataModel/helpers';
 import type { TableFields } from '../DataModel/helperTypes';
-import { genericTables } from '../DataModel/tables';
+import { genericTables, tables } from '../DataModel/tables';
 import type { Collection, Tables } from '../DataModel/types';
 import { error, softError } from '../Errors/assert';
 import type { StatLayout } from '../Statistics/types';
@@ -50,9 +51,14 @@ import {
   defaultFont,
   FontFamilyPreferenceItem,
   HeaderItemsPreferenceItem,
+  ThresholdRank,
   WelcomePageModePreferenceItem,
 } from './Renderers';
-import type { GenericPreferences, PreferencesVisibilityContext } from './types';
+import type {
+  GenericPreferences,
+  PreferenceRendererProps,
+  PreferencesVisibilityContext,
+} from './types';
 import { definePref } from './types';
 import { dataViewsText } from '../../localization/dataViews';
 
@@ -72,10 +78,92 @@ const altKeyName =
     ? 'Option'
     : 'Alt';
 
+const defaultPreparationField = 'barCode';
+const defaultCollectionObjectField = 'catalogNumber';
+
+const isAllowedCollectionObjectField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'catalognumber' ||
+    lowered === 'altcatalognumber' ||
+    lowered === 'fieldnumber' ||
+    lowered === 'guid' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
+const isAllowedPrepField = (name: string): boolean => {
+  const lowered = name.toLowerCase();
+  return (
+    lowered === 'barcode' ||
+    lowered === 'samplenumber' ||
+    lowered === 'samplenum' ||
+    lowered === 'guid' ||
+    lowered === 'uniqueidentifier' ||
+    /^text\d+$/.test(lowered)
+  );
+};
+
+function PreparationFieldPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const options = React.useMemo(
+    () =>
+      (tables.Preparation?.literalFields.length ?? 0) === 0
+        ? [{ value: 'barCode', title: camelToHuman('barCode') }]
+        : tables.Preparation.literalFields
+            .filter(({ name }) => isAllowedPrepField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
+function CollectionObjectFieldPreferenceItem({
+  value,
+  onChange: handleChange,
+}: PreferenceRendererProps<string>): JSX.Element {
+  const options = React.useMemo(
+    () =>
+      (tables.CollectionObject?.literalFields.length ?? 0) === 0
+        ? [{ value: 'catalogNumber', title: camelToHuman('catalogNumber') }]
+        : tables.CollectionObject.literalFields
+            .filter(({ name }) => isAllowedCollectionObjectField(name))
+            .map(({ name, label }) => ({
+              value: name,
+              title: label ?? camelToHuman(name),
+            })),
+    []
+  );
+
+  return (
+    <Select value={value} onValueChange={handleChange}>
+      {options.map(({ value: optionValue, title }) => (
+        <option key={optionValue} value={optionValue}>
+          {title}
+        </option>
+      ))}
+    </Select>
+  );
+}
+
 /**
  * Have to be careful as preferences may be used before schema is loaded
  */
-const tableLabel = (tableName: keyof Tables): LocalizedString =>
+export const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
 
 export const userPreferenceDefinitions = {
@@ -257,7 +345,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor1(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ffcda3',
+            defaultValue: '#e0e2b9',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -265,7 +353,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor2(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ff9742',
+            defaultValue: '#ACB389',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -273,7 +361,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor3(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#ff811a',
+            defaultValue: '#74914A',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -281,15 +369,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor4(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#d15e00',
-            renderer: ColorPickerPreferenceItem,
-            container: 'label',
-          }),
-          accentColor5: definePref({
-            title: preferencesText.accentColor5(),
-            requiresReload: false,
-            visible: true,
-            defaultValue: '#703200',
+            defaultValue: '#687D3B',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -309,7 +389,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.saveButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#ff811a',
+            defaultValue: '#598137',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -317,7 +397,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.dangerButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#b91c1c',
+            defaultValue: '#b72f2f',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -325,7 +405,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.warningButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#f97316',
+            defaultValue: '#598137',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -333,7 +413,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.infoButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#1d4ed8',
+            defaultValue: '#0074B5',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -341,7 +421,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.successButtonColor(),
             requiresReload: false,
             visible: isLightMode,
-            defaultValue: '#166534',
+            defaultValue: '#596c32',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -370,7 +450,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.saveButtonColor(),
             requiresReload: false,
             visible: isDarkMode,
-            defaultValue: '#ff811a',
+            defaultValue: '#77AA49',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -386,7 +466,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.warningButtonColor(),
             requiresReload: false,
             visible: isDarkMode,
-            defaultValue: '#f97316',
+            defaultValue: '#77AA49',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -394,7 +474,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.infoButtonColor(),
             requiresReload: false,
             visible: isDarkMode,
-            defaultValue: '#1d4ed8',
+            defaultValue: '#0074B5',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -540,7 +620,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://github.com/specify/specify7/wiki/Customizing-the-splash-screen">
+              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -621,7 +701,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: () => <>{error('This should not get called')}</>,
             container: 'div',
           }),
@@ -630,6 +710,28 @@ export const userPreferenceDefinitions = {
       createInteractions: {
         title: preferencesText.createInteractions(),
         items: {
+          collectionObjectField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tables.CollectionObject.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultCollectionObjectField,
+            renderer: CollectionObjectFieldPreferenceItem,
+            container: 'label',
+          }),
+          preparationField: definePref<string>({
+            title: () =>
+              preferencesText.tableIdentifier({
+                tableName: tables.Preparation.label,
+              }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: defaultPreparationField,
+            renderer: PreparationFieldPreferenceItem,
+            container: 'label',
+          }),
           useSpaceAsDelimiter: definePref<'auto' | 'false' | 'true'>({
             title: preferencesText.useSpaceAsDelimiter(),
             requiresReload: false,
@@ -715,7 +817,7 @@ export const userPreferenceDefinitions = {
             title: localized('_shownTables'),
             requiresReload: false,
             visible: false,
-            defaultValue: 'legacy',
+            defaultValue: [],
             renderer: f.never,
             container: 'div',
           }),
@@ -857,6 +959,13 @@ export const userPreferenceDefinitions = {
               min: 100,
               max: 10_000,
             },
+          }),
+          showSubviewBorders: definePref<boolean>({
+            title: preferencesText.showSubviewBorders(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
           }),
           limitMaxFieldWidth: definePref<boolean>({
             title: preferencesText.limitMaxFieldWidth(),
@@ -1202,6 +1311,22 @@ export const userPreferenceDefinitions = {
             renderer: f.never,
             container: 'div',
           }),
+          enableBulkCarryForwardRange: definePref<RA<keyof Tables>>({
+            title: localized('_enableBulkCarryForwardRange'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
+          createRecordSetOnBulkCarryForward: definePref<RA<keyof Tables>>({
+            title: localized('_createRecordSetOnBulkCarryForward'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
+          }),
           /*
            * Can temporary disable clone for a given table
            * Since most tables are likely to have carry enabled, this pref is
@@ -1327,6 +1452,22 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          showControls: definePref<boolean>({
+            title: attachmentsText.showControls(),
+            description: attachmentsText.showControlsDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          collapseFormByDefault: definePref<boolean>({
+            title: attachmentsText.collapseFormByDefault(),
+            description: attachmentsText.collapseFormByDefaultDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -1436,6 +1577,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Geography" />
+            ),
+            container: 'label',
+          }),
         },
       },
       taxon: {
@@ -1455,6 +1607,22 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          displayAuthor: definePref<boolean>({
+            title: preferencesText.displayAuthor(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => <ThresholdRank {...props} tableName="Taxon" />,
             container: 'label',
           }),
         },
@@ -1478,6 +1646,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="Storage" />
+            ),
+            container: 'label',
+          }),
         },
       },
       geologicTimePeriod: {
@@ -1497,6 +1676,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="GeologicTimePeriod" />
+            ),
             container: 'label',
           }),
         },
@@ -1520,6 +1710,17 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="LithoStrat" />
+            ),
+            container: 'label',
+          }),
         },
       },
       tectonicUnit: {
@@ -1539,6 +1740,17 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: '#dc2626',
             renderer: ColorPickerPreferenceItem,
+            container: 'label',
+          }),
+          rankThreshold: definePref<number>({
+            title: preferencesText.rankThreshold(),
+            description: preferencesText.rankThresholdDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: 0,
+            renderer: (props) => (
+              <ThresholdRank {...props} tableName="TectonicUnit" />
+            ),
             container: 'label',
           }),
         },
@@ -1667,6 +1879,13 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          wrapQueryResults: definePref<boolean>({
+            title: preferencesText.lineWrap(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -1700,7 +1919,7 @@ export const userPreferenceDefinitions = {
             description: preferencesText.autoPopulateDescription(),
             requiresReload: false,
             visible: 'protected',
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
