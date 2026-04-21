@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-20 02:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-21 21:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "batchIdentify/es/>\n"
 "Language: es\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:80
 #, fuzzy
 msgid "batchIdentify"
-msgstr "Identificador de lote"
+msgstr "Identificar lote"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:883
