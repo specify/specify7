@@ -1050,8 +1050,7 @@ export const resourcesText = createDictionary({
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
   },
   selectDeterminationTaxon: {
-    'en-us':
-      'Select one taxon-tree set to continue with:',
+    'en-us': 'Select one taxon-tree set to continue with:',
   },
   invalidDeterminationTaxon: {
     'en-us':
