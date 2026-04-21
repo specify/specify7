@@ -104,20 +104,13 @@ export const commonText = createDictionary({
     'hr-hr': 'Savjeti za pretraživanje',
   },
   expressSearchInstructions: {
-    'en-us': 'Search indexed text, numbers, or dates; separate words with spaces, use % anywhere, * at the beginning or end, and wrap phrases in quotes for exact multi-word matches.',
-    'ru-ru': 'Ищите индексированный текст, числа или даты; разделяйте слова пробелами, используйте % где угодно, * в начале или конце и берите фразы в кавычки для точных многословных совпадений.',
-    'es-es': 'Busque texto indexado, números o fechas; separe palabras con espacios, use % en cualquier lugar, * al principio o al final, y entre comillas para coincidencias exactas de varias palabras.',
-    'fr-fr': 'Recherchez du texte indexé, des chiffres ou des dates ; séparez les mots par des espaces, utilisez % n’importe où, * au début ou à la fin et mettez les expressions entre guillemets pour des correspondances exactes de plusieurs mots.',
-    'uk-ua': 'Шукайте індексований текст, числа або дати; розділяйте слова пробілами, використовуйте % будь-де, * на початку або в кінці, а фрази беріть у лапки для точних багатослівних збігів.',
-    'de-ch': 'Suchen Sie indexten Text, Zahlen oder Daten; trennen Sie Wörter mit Leerzeichen, verwenden Sie % überall, * am Anfang oder Ende und setzen Sie Phrasen in Anführungszeichen für genaue Mehrworttreffer.',
-    'pt-br': 'Pesquise texto indexado, números ou datas; separe as palavras com espaços, use % em qualquer lugar, * no início ou no fim, e coloque frases entre aspas para correspondências exatas de várias palavras.',
-    'hr-hr': 'Pretražujte indeksirani tekst, brojeve ili datume; razdvojite riječi razmacima, koristite % bilo gdje, * na početku ili kraju i stavite izraze u navodnike za točna višerječna podudaranja.',
+    'en-us': 'Separate multiple search terms with spaces, use % anywhere, * at the beginning or end, and wrap terms in quotes for exact multi-word matches.',
   },
   expressSearchDateFormats: {
     'en-us': 'Dates can be searched using either the YYYY-MM-DD or MM/DD/YYYY format.',
   },
   expressSearchPhraseExample: {
-    'en-us': 'To search a string with spaces, wrap the phrase in quotes, for example "Clinton Lake".',
+    'en-us': 'To search a term with spaces, wrap the phrase in quotes, for example "Clinton Lake".',
   },
   apply: {
     'en-us': 'Apply',
