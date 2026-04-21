@@ -1,6 +1,7 @@
 import json
 from django.test import Client
 
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource
@@ -50,6 +51,41 @@ class TestDeleteBlockers(GeographyTree):
             spexportschema=schema,
             spexportschemamapping=mapping,
         )
+
+    def _create_discipline_with_owned_app_resources(
+        self,
+        discipline,
+        name='Disposable App Resources',
+    ):
+        resource_dir = models.Spappresourcedir.objects.create(
+            discipline=discipline,
+            ispersonal=False,
+        )
+        app_resource = models.Spappresource.objects.create(
+            name=f'{name} Resource',
+            level=0,
+            spappresourcedir=resource_dir,
+            specifyuser=self.specifyuser,
+        )
+        models.Spappresourcedata.objects.create(
+            spappresource=app_resource,
+            data=b'{}',
+        )
+        models.Spreport.objects.create(
+            name=f'{name} Report',
+            appresource=app_resource,
+            specifyuser=self.specifyuser,
+        )
+        viewset = models.Spviewsetobj.objects.create(
+            name=f'{name} Viewset',
+            level=0,
+            spappresourcedir=resource_dir,
+        )
+        models.Spappresourcedata.objects.create(
+            spviewsetobj=viewset,
+            data=b'{}',
+        )
+        return resource_dir
 
     def _create_discipline_with_owned_trees(
         self,
@@ -188,3 +224,61 @@ class TestDeleteBlockers(GeographyTree):
         )
         self.assertFalse(models.Division.objects.filter(id=division.id).exists())
         self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
+
+    def test_division_delete_blockers_ignore_cascaded_discipline_app_resource_rows(self):
+        division = models.Division.objects.create(
+            name='App Resource Division',
+            institution=self.institution,
+        )
+        discipline = self._create_discipline_with_owned_trees(
+            'App Resource Discipline',
+            division=division,
+        )
+        self._create_discipline_with_owned_app_resources(discipline)
+
+        blockers = self._get_blockers(division)
+        self._assertSame(blockers, [])
+
+    def test_delete_division_removes_cascaded_discipline_app_resource_rows(self):
+        division = models.Division.objects.create(
+            name='App Resource Delete Division',
+            institution=self.institution,
+        )
+        discipline = self._create_discipline_with_owned_trees(
+            'App Resource Delete Discipline',
+            division=division,
+        )
+        resource_dir = self._create_discipline_with_owned_app_resources(discipline)
+
+        delete_resource(
+            self.collection, self.agent, 'division', division.id, division.version
+        )
+        self.assertFalse(models.Division.objects.filter(id=division.id).exists())
+        self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
+        self.assertFalse(models.Spappresourcedir.objects.filter(id=resource_dir.id).exists())
+
+    def test_division_delete_blockers_include_cascaded_discipline_user_blockers(self):
+        division = models.Division.objects.create(
+            name='User Blocker Division',
+            institution=self.institution,
+        )
+        discipline = self._create_discipline_with_owned_trees(
+            'User Blocker Discipline',
+            division=division,
+        )
+        resource_dir = models.Spappresourcedir.objects.create(
+            discipline=discipline,
+            specifyuser=self.specifyuser,
+            ispersonal=False,
+        )
+
+        blockers = self._get_blockers(division)
+        self._assertSame(
+            blockers,
+            [dict(table='Spappresourcedir', field='specifyuser', ids=[resource_dir.id])],
+        )
+
+        with self.assertRaises(BusinessRuleException):
+            delete_resource(
+                self.collection, self.agent, 'division', division.id, division.version
+            )
