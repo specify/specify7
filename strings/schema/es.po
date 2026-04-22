@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-20 02:12+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/schema/"
 "es/>\n"
 "Language: es\n"
@@ -170,7 +170,6 @@ msgstr "muchos a muchos"
 #: components/SchemaConfig/Field.tsx:68
 #: components/SchemaViewer/Fields.tsx:64
 #: components/SchemaViewer/schemaToTsv.tsx:28
-#, fuzzy
 msgid "fieldLength"
 msgstr "Longitud"
 
@@ -184,7 +183,6 @@ msgstr "Sólo lectura"
 
 #. Used in: Components > Schema Config > Format
 #: components/SchemaConfig/Format.tsx:67
-#, fuzzy
 msgid "fieldFormat"
 msgstr "Formato de campo"
 
