@@ -4,8 +4,9 @@ from django.http import HttpResponse
 
 from specifyweb.specify.models import Collection, Specifyuser, Agent
 from specifyweb.specify.api.filter_by_col import filter_by_collection
-from specifyweb.backend.accounts.auth_token_utils import get_token_from_request, token_is_revoked
+from specifyweb.backend.accounts.access_token_utils import get_token_from_request, token_is_revoked
 from specifyweb.backend.context.views import has_collection_access
+
 
 def get_agent(request):
     try:
@@ -15,10 +16,11 @@ def get_agent(request):
     except Agent.DoesNotExist:
         return None
 
+
 class JWTAuthMiddleware:
     def __init__(self, get_response):
         self.get_response = get_response
-    
+
     def __call__(self, request):
         token = get_token_from_request(request)
         # The request doesn't have an access token, so pass through
@@ -34,23 +36,27 @@ class JWTAuthMiddleware:
 
         user_id = token["sub"]
         collection_id = token["collection"]
-        
-        # This shouldn't happen in practice as this is also enforced when the
-        # tokens are generated, but just in case a token is forged this
-        # prevents users from accessing Collections they shouldn't
+
+        # This shouldn't happen often in practice as this is also enforced when
+        # the tokens are generated, but just in case a token is forged or the
+        # user's collection access was revoked since the token was generated,
+        # this prevents users from accessing Collections they shouldn't
         if not has_collection_access(collection_id, user_id):
             raise PermissionDenied()
 
-        request.specify_collection = SimpleLazyObject(lambda: Collection.objects.get(id=collection_id))
-        lazy_user = SimpleLazyObject(lambda: Specifyuser.objects.get(id=user_id))
+        request.specify_collection = SimpleLazyObject(
+            lambda: Collection.objects.get(id=collection_id))
+        lazy_user = SimpleLazyObject(
+            lambda: Specifyuser.objects.get(id=user_id))
         request.specify_user = lazy_user
         request.user = lazy_user
-        request.specify_user_agent = SimpleLazyObject(lambda: get_agent(request))
+        request.specify_user_agent = SimpleLazyObject(
+            lambda: get_agent(request))
 
         # We can disable CSRF checks with users authenticated via JWT.
         # This is ONLY because the end user must explicitly pass the auth token
         # as a header, and is not stored within the session, cookies, etc.
-        # Essentially, with CSRF protection disabled for users authenticated 
+        # Essentially, with CSRF protection disabled for users authenticated
         # via token, we have to be careful not to store any auth information in
         # a stateful way within the session
         # e.g., avoid calling django.contrib.auth.login

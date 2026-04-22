@@ -37,7 +37,7 @@ from specifyweb.specify.models import Specifyuser, Collection
 from django.views.decorators.http import require_POST
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
-from specifyweb.backend.accounts.auth_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_access_token, revoke_access_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
+from specifyweb.backend.accounts.access_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_access_token, revoke_access_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
 from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)

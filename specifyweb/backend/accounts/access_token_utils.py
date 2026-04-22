@@ -21,6 +21,7 @@ AUTH_JWT_DECODE_OPTIONS = {
 
 AUTH_TOKEN_ALGORITHMS = ["HS256"]
 
+
 def generate_access_token(user, collection_id: int, expires_in: int = DEFAULT_AUTH_LIFESPAN_SECONDS):
     jti = str(uuid.uuid4())
 
@@ -32,7 +33,8 @@ def generate_access_token(user, collection_id: int, expires_in: int = DEFAULT_AU
         "iat": datetime.now(timezone.utc),
         "exp": datetime.now(timezone.utc) + timedelta(seconds=expires_in)
     }
-    token = jwt.encode(jwt_payload, settings.SECRET_KEY, algorithm=AUTH_TOKEN_ALGORITHMS[0])
+    token = jwt.encode(jwt_payload, settings.SECRET_KEY,
+                       algorithm=AUTH_TOKEN_ALGORITHMS[0])
     return token
 
 
@@ -53,6 +55,7 @@ def revoke_access_token(token: dict):
     blacklist_ttl = expires_at - current_time
     set_string(f"revoked:{jti}", "true", time_to_live=blacklist_ttl)
 
+
 def get_token_from_request(request) -> Literal[False] | None | dict:
     auth_header = request.headers.get("Authorization")
     if auth_header is None or not auth_header.startswith("Bearer "):
@@ -61,7 +64,8 @@ def get_token_from_request(request) -> Literal[False] | None | dict:
     encoded_token = auth_header.split(" ")[1]
 
     try:
-        token = jwt.decode(encoded_token, settings.SECRET_KEY, options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
+        token = jwt.decode(encoded_token, settings.SECRET_KEY,
+                           options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
     except jwt.exceptions.InvalidTokenError:
         return False
     return token
