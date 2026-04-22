@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-21 19:09+0000\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
 "Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
@@ -1138,6 +1138,5 @@ msgstr "Acercar"
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:54
 #: components/Attachments/Viewer.tsx:359
-#, fuzzy
 msgid "unzoom"
-msgstr "Aleja la imagen"
+msgstr "Alejar imagen"
