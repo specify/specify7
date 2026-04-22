@@ -281,7 +281,7 @@ export const headerText = createDictionary({
     'hr-hr': 'Resurs metapodataka',
   },
   simpleSearch: {
-    'en-us': 'Simple Search',
+    'en-us': 'Express Search',
     'ru-ru': 'Экспресс-поиск',
     'es-es': 'Búsqueda sencilla',
     'fr-fr': 'Recherche simple',
