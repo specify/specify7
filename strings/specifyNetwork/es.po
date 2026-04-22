@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-20 02:12+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/es/>\n"
 "Language: es\n"
@@ -37,13 +37,11 @@ msgstr "Intente buscar un registro diferente"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:149
-#, fuzzy
 msgid "brokerUnavailable"
-msgstr "Especificar red no disponible"
+msgstr "Red específica no disponible"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:152
-#, fuzzy
 msgid "brokerUnavailableDescription"
 msgstr ""
 "No se pudo conectar a la red especificada. Inténtelo de nuevo más tarde."
