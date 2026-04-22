@@ -1,0 +1,19 @@
+filename|parsedName
+fake-image-3.jpg|ID_003
+  fake-image-4.png  |  ID_004  
+"fake-image|5.png"|"ID_005|EXTRA"
+"fake-image-6.jpg"| "ID_006"
+fake-image-7.jpg|ID_007
+fake-image-8.jpg|ID_008
+"fake-image-9.jpg"|"ID_009"
+  fake-image-10.png |  ID_010  
+"weird|name|11.jpg"|"ID_011"
+"trailing-space.jpg"|"ID_012"  
+ "leading-space.png" | "ID_013" 
+"quoted,comma.jpg"|ID_014
+fake-image-15.jpg|"ID_015"
+"semi;colon.jpg"|"ID_016"
+"pipe|and,comma.jpg"|"ID_017|EXTRA"
+"quoted-with-\"embedded\".jpg"|"ID_018"
+fake-image-19.jpg|ID_019
+fake-image-20.png|ID_020

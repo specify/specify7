@@ -29,7 +29,6 @@ import {
   parseXls,
   wbImportPreviewSize,
 } from './helpers';
-import { stripFileExtension } from '../../utils/utils';
 
 export function WbImportView(): JSX.Element {
   useMenuItem('workBench');

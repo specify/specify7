@@ -20,14 +20,21 @@ export function ImportFromMappingFile(): JSX.Element {
           // To support mapping file, we just create a new dataset with files. Matching behaviour
           // within dataset takes care of rest
           const attachmentRows: RA<PartialUploadableFileSpec> = rawRows.map(
-            ([fileName, parsedName]) => ({
-              uploadFile: {
-                file: {
-                  name: fileName,
+            ([fileName, parsedName]) => {
+              const trimmedFileName =
+                fileName === undefined ? '' : String(fileName).trim();
+              const trimmedParsedName =
+                parsedName === undefined ? undefined : String(parsedName).trim();
+
+              return {
+                uploadFile: {
+                  file: {
+                    name: trimmedFileName,
+                  },
+                  parsedName: trimmedParsedName,
                 },
-                parsedName,
-              },
-            })
+              };
+            }
           );
           createEmptyAttachmentDataset(
             localized(fileName),
