@@ -144,20 +144,20 @@ msgstr "Choose Metadata resource"
 msgid "metadataResource"
 msgstr "Metadata Resource"
 
-#: components/Header/ExpressSearchTask.tsx:53
-#: components/Header/ExpressSearchTask.tsx:124
+#: components/Header/ExpressSearchTask.tsx:60
+#: components/Header/ExpressSearchTask.tsx:175
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
-msgstr "Simple Search"
+msgstr "Express Search"
 
-#: components/Header/ExpressSearchTask.tsx:134
+#: components/Header/ExpressSearchTask.tsx:205
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Primary Search"
 
-#: components/Header/ExpressSearchTask.tsx:140
+#: components/Header/ExpressSearchTask.tsx:211
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Secondary Search"
@@ -226,13 +226,14 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
+#: components/Header/ExpressSearchTask.tsx:125
 #: components/Header/userToolDefinitions.ts:152
 #: components/Preferences/UserDefinitions.tsx:623
 #: components/Preferences/index.tsx:65
 #: components/Preferences/index.tsx:71
 #: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > Express Search Task ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog
 msgid "documentation"
 msgstr "Documentation"
 

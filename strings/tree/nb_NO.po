@@ -1,0 +1,476 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Header/menuItemDefinitions.ts:54
+#: components/Router/OverlayRoutes.tsx:88
+#: components/SetupTool/SetupForm.tsx:330
+#: components/Toolbar/TreeRepair.tsx:42
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
+msgid "trees"
+msgstr ""
+
+#: components/DataModel/treeBusinessRules.ts:72
+#. Used in: Components > Data Model > Tree Business Rules
+msgid "badStructure"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:165
+#. Used in: Components > Tree View > Actions
+msgid "move"
+msgstr ""
+
+#: components/Merging/CompareField.tsx:216
+#: components/Merging/CompareField.tsx:218
+#: components/Merging/index.tsx:365
+#: components/Merging/index.tsx:370
+#: components/Merging/index.tsx:373
+#: components/SearchDialog/SelectRecordSet.tsx:135
+#: components/SearchDialog/SelectRecordSet.tsx:139
+#: components/Toolbar/MergeRecordSets.tsx:79
+#: components/TreeView/Actions.tsx:186
+#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
+msgid "merge"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:206
+#. Used in: Components > Tree View > Actions
+msgid "undoSynonymy"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:206
+#. Used in: Components > Tree View > Actions
+msgid "synonymize"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:408
+#. Used in: Components > Tree View > Actions
+msgid "actionFailed"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:411
+#. Used in: Components > Tree View > Actions
+msgid "actionFailedDescription"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:430
+#: components/TreeView/Actions.tsx:443
+#. Used in: Components > Tree View > Actions
+msgid "moveNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:153
+#. Used in: Components > Tree View > Actions
+msgid "addChild"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:388
+#. Used in: Components > Tree View > Actions
+msgid "moveNodeHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:390
+#. Used in: Components > Tree View > Actions
+msgid "moveNodePreparationsHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:455
+#. Used in: Components > Tree View > Actions
+msgid "nodeMoveMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:461
+#. Used in: Components > Tree View > Actions
+msgid "nodeBulkMoveMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:361
+#. Used in: Components > Tree View > Actions
+msgid "cantMoveHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:368
+#. Used in: Components > Tree View > Actions
+msgid "cantMergeHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:362
+#. Used in: Components > Tree View > Actions
+msgid "cantMoveToSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:369
+#. Used in: Components > Tree View > Actions
+msgid "cantMergeIntoSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:372
+#. Used in: Components > Tree View > Actions
+msgid "cantSynonymizeSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:341
+#. Used in: Components > Tree View > Actions
+msgid "nodeMoveHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:434
+#: components/TreeView/Actions.tsx:447
+#. Used in: Components > Tree View > Actions
+msgid "mergeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:394
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeHere"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:343
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:345
+#. Used in: Components > Tree View > Actions
+msgid "bulkMoveNodeHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:467
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:436
+#: components/TreeView/Actions.tsx:449
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:396
+#. Used in: Components > Tree View > Actions
+msgid "makeSynonym"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:347
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeNodeHintMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:473
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeMessage"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:400
+#: components/TreeView/Actions.tsx:437
+#: components/TreeView/Actions.tsx:450
+#. Used in: Components > Tree View > Actions
+msgid "desynonymizeNode"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:350
+#: components/TreeView/Actions.tsx:478
+#. Used in: Components > Tree View > Actions
+msgid "desynonymizeNodeMessage"
+msgstr ""
+
+#: components/TreeView/Row.tsx:253
+#: components/TreeView/Row.tsx:271
+#. Used in: Components > Tree View > Row
+msgid "acceptedName"
+msgstr ""
+
+#: components/TreeView/Row.tsx:257
+#. Used in: Components > Tree View > Row
+msgid "synonyms"
+msgstr ""
+
+#: components/TreeView/index.tsx:155
+#. Used in: Components > Tree View > Index
+msgid "treeViewTitle"
+msgstr ""
+
+#: components/TreeView/Search.tsx:70
+#: components/TreeView/Search.tsx:71
+#: components/TreeView/Search.tsx:72
+#. Used in: Components > Tree View > Search
+msgid "searchTreePlaceholder"
+msgstr ""
+
+#: components/TreeView/Row.tsx:233
+#. Used in: Components > Tree View > Row
+msgid "opened"
+msgstr ""
+
+#: components/TreeView/Row.tsx:234
+#. Used in: Components > Tree View > Row
+msgid "closed"
+msgstr ""
+
+#: components/TreeView/Row.tsx:231
+#. Used in: Components > Tree View > Row
+msgid "leafNode"
+msgstr ""
+
+#: components/TreeView/helpers.ts:212
+#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
+msgid "nodeStats"
+msgstr ""
+
+#: components/TreeView/helpers.ts:211
+#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
+msgid "leafNodeStats"
+msgstr ""
+
+#: components/TreeView/helpers.ts:196
+#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
+msgid "directCollectionObjectCount"
+msgstr ""
+
+#: components/TreeView/helpers.ts:204
+#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
+msgid "indirectCollectionObjectCount"
+msgstr ""
+
+#: components/TreeView/Tree.tsx:244
+#. Used in: Components > Tree View > Tree
+msgid "editRanks"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:182
+#. Used in: Components > Forms > Delete Button
+msgid "resourceToDelete"
+msgstr ""
+
+#: components/TreeView/index.tsx:408
+#. Used in: Components > Tree View > Index
+msgid "associatedNodesOnly"
+msgstr ""
+
+#: components/TreeView/index.tsx:340
+#. Used in: Components > Tree View > Index
+msgid "splitView"
+msgstr ""
+
+#: components/TreeView/index.tsx:346
+#. Used in: Components > Tree View > Index
+msgid "horizontal"
+msgstr ""
+
+#: components/TreeView/index.tsx:346
+#. Used in: Components > Tree View > Index
+msgid "vertical"
+msgstr ""
+
+#: components/TreeView/index.tsx:355
+#. Used in: Components > Tree View > Index
+msgid "synchronize"
+msgstr ""
+
+#: components/TreeView/AddRank.tsx:47
+#: components/TreeView/AddRank.tsx:95
+#. Used in: Components > Tree View > Add Rank
+msgid "addNewRank"
+msgstr ""
+
+#: components/TreeView/AddRank.tsx:66
+#: components/TreeView/AddRank.tsx:71
+#. Used in: Components > Tree View > Add Rank
+msgid "chooseParentRank"
+msgstr ""
+
+#: components/TreeView/Actions.tsx:176
+#: components/TreeView/Actions.tsx:432
+#: components/TreeView/Actions.tsx:445
+#. Used in: Components > Tree View > Actions
+msgid "moveItems"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:142
+#: components/TreeView/CreateTree.tsx:155
+#. Used in: Components > Tree View > Create Tree
+msgid "addTree"
+msgstr ""
+
+#: components/TreeView/index.tsx:292
+#: components/TreeView/index.tsx:294
+#. Used in: Components > Tree View > Index
+msgid "treePicker"
+msgstr ""
+
+#: components/TreeView/defaults.ts:431
+#. Used in: Components > Tree View > Defaults
+msgid "botany"
+msgstr ""
+
+#: components/TreeView/defaults.ts:458
+#. Used in: Components > Tree View > Defaults
+msgid "entomology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:485
+#. Used in: Components > Tree View > Defaults
+msgid "herpetology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:506
+#. Used in: Components > Tree View > Defaults
+msgid "ichthyology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:529
+#. Used in: Components > Tree View > Defaults
+msgid "invertpaleo"
+msgstr ""
+
+#: components/TreeView/defaults.ts:547
+#. Used in: Components > Tree View > Defaults
+msgid "invertzoo"
+msgstr ""
+
+#: components/TreeView/defaults.ts:571
+#. Used in: Components > Tree View > Defaults
+msgid "mammalogy"
+msgstr ""
+
+#: components/TreeView/defaults.ts:589
+#. Used in: Components > Tree View > Defaults
+msgid "ornithology"
+msgstr ""
+
+#: components/TreeView/defaults.ts:609
+#. Used in: Components > Tree View > Defaults
+msgid "paleobot"
+msgstr ""
+
+#: components/TreeView/defaults.ts:627
+#. Used in: Components > Tree View > Defaults
+msgid "vascplant"
+msgstr ""
+
+#: components/TreeView/defaults.ts:653
+#. Used in: Components > Tree View > Defaults
+msgid "vertpaleo"
+msgstr ""
+
+#: components/TreeView/defaults.ts:704
+#. Used in: Components > Tree View > Defaults
+msgid "emptyTree"
+msgstr ""
+
+#: components/TreeView/defaults.ts:669
+#. Used in: Components > Tree View > Defaults
+msgid "minerals"
+msgstr ""
+
+#: components/TreeView/defaults.ts:684
+#. Used in: Components > Tree View > Defaults
+msgid "rocks"
+msgstr ""
+
+#: components/TreeView/defaults.ts:677
+#. Used in: Components > Tree View > Defaults
+msgid "meteorites"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:423
+#. Used in: Components > Tree View > Create Tree
+msgid "emptyTrees"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:482
+#. Used in: Components > Tree View > Create Tree
+msgid "populatedTrees"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:636
+#. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationStarted"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:648
+#. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationStartedDescription"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:368
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskStarted"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:376
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskFailed"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:384
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskCancelled"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:392
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskCompleted"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:642
+#. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationProgress"
+msgstr ""
+
+#: components/TreeView/Tree.tsx:281
+#. Used in: Components > Tree View > Tree
+msgid "defaultTreeCreationLoadingMessage"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:551
+#. Used in: Components > Tree View > Create Tree
+msgid "missingRanks"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:555
+#. Used in: Components > Tree View > Create Tree
+msgid "missingRanksDescription"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:563
+#. Used in: Components > Tree View > Create Tree
+msgid "createMissingRanks"
+msgstr ""
+
+#: components/SetupTool/SetupForm.tsx:320
+#: components/TreeView/CreateTree.tsx:520
+#. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
+msgid "source"
+msgstr ""
+
+#: components/TreeView/Tree.tsx:288
+#: components/TreeView/Tree.tsx:290
+#: components/TreeView/Tree.tsx:294
+#. Used in: Components > Tree View > Tree
+msgid "initializeEmptyTree"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:62
+#. Used in: Components > Preferences > Collection Definitions
+msgid "treeManagement"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:65
+#. Used in: Components > Preferences > Collection Definitions
+msgid "synonymizedNodes"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:66
+#. Used in: Components > Preferences > Collection Definitions
+msgid "synonymizedNodesDescription"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:499
+#. Used in: Components > Tree View > Create Tree
+msgid "utf8EncodingWarning"
+msgstr ""
+
+#: components/TreeView/CreateTree.tsx:503
+#. Used in: Components > Tree View > Create Tree
+msgid "resolveEncoding"
+msgstr ""

@@ -1,0 +1,123 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Molecules/AppTitle.tsx:65
+#. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+msgid "appTitle"
+msgstr ""
+
+#: components/Molecules/AppTitle.tsx:64
+#. 🟥Default page title. Used in: Components > Molecules > App Title
+msgid "baseAppTitle"
+msgstr ""
+
+#: components/Formatters/Element.tsx:66
+#: components/Router/NotFoundView.tsx:15
+#: components/Router/NotFoundView.tsx:20
+#: components/Router/RouterUtils.tsx:194
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
+msgid "pageNotFound"
+msgstr ""
+
+#: components/Router/NotFoundView.tsx:25
+#. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+msgid "nothingWasFound"
+msgstr ""
+
+#: components/Router/NotFoundView.tsx:26
+#. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+msgid "pageNotFoundDescription"
+msgstr ""
+
+#: components/Router/NotFoundView.tsx:29
+#. Used in: Components > Router > Not Found View
+msgid "returnToHomepage"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:62
+#: components/Errors/FormatError.tsx:197
+#: components/Errors/FormatError.tsx:227
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+msgid "errorOccurred"
+msgstr ""
+
+#: components/Errors/Toasts.tsx:97
+#. Used in: Components > Errors > Toasts
+msgid "clickToSeeDetails"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:187
+#. Used in: Components > Errors > Error Dialog
+msgid "errorOccurredDescription"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:188
+#. Used in: Components > Errors > Error Dialog
+msgid "criticalErrorOccurredDescription"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:39
+#. Used in: Components > Errors > Error Dialog
+msgid "errorResolutionDescription"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:56
+#. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+msgid "errorResolutionSecondDescription"
+msgstr ""
+
+#: components/Core/__tests__/Contexts.test.tsx:48
+#: components/Errors/ErrorDialog.tsx:196
+#: components/LocalityUpdate/Status.tsx:378
+#: components/LocalityUpdate/Status.tsx:425
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
+msgid "errorMessage"
+msgstr ""
+
+#: components/Router/UnloadProtect.tsx:33
+#. Used in: Components > Router > Unload Protect
+msgid "leavePageConfirmation"
+msgstr ""
+
+#: components/AttachmentsBulkImport/useEagerDataset.ts:109
+#: components/SchemaConfig/TableUniquenessRules.tsx:56
+#: components/SchemaConfig/TableUniquenessRules.tsx:205
+#: components/Security/Role.tsx:89
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
+msgid "leavePageConfirmationDescription"
+msgstr ""
+
+#: components/Router/UnloadProtect.tsx:28
+#. Used in: Components > Router > Unload Protect
+msgid "leave"
+msgstr ""
+
+#: components/Core/VersionMismatch.tsx:27
+#. Used in: Components > Core > Version Mismatch
+msgid "versionMismatch"
+msgstr ""
+
+#: components/Core/VersionMismatch.tsx:31
+#. Used in: Components > Core > Version Mismatch
+msgid "versionMismatchDescription"
+msgstr ""
+
+#: components/Core/VersionMismatch.tsx:36
+#. Used in: Components > Core > Version Mismatch
+msgid "versionMismatchSecondDescription"
+msgstr ""
+
+#: components/Core/VersionMismatch.tsx:39
+#. Used in: Components > Core > Version Mismatch
+msgid "versionMismatchInstructions"
+msgstr ""
+
+#: components/Core/OnlineStatus.tsx:38
+#. Used in: Components > Core > Online Status
+msgid "online"
+msgstr ""
+
+#: components/Core/OnlineStatus.tsx:44
+#. Used in: Components > Core > Online Status
+msgid "offline"
+msgstr ""

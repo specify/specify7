@@ -56,7 +56,7 @@ msgstr "Discipline Resources"
 msgid "type"
 msgstr "Type"
 
-#: components/AppResources/tree.ts:236
+#: components/AppResources/tree.ts:239
 #. Used in: Components > App Resources > Tree
 msgid "userTypes"
 msgstr "User Types"
@@ -266,14 +266,14 @@ msgstr "Visual Editor"
 msgid "selectResourceType"
 msgstr "Select Resource Type"
 
-#: components/AppResources/tree.ts:121
+#: components/AppResources/tree.ts:122
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 msgid "globalPreferences"
 msgstr "Global Preferences"
 
-#: components/AppResources/tree.ts:123
+#: components/AppResources/tree.ts:124
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
 #. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources

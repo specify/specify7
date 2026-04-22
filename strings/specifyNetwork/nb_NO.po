@@ -1,0 +1,117 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Preferences/CollectionDefinitions.tsx:162
+#: components/SpecifyNetwork/index.tsx:81
+#: components/SpecifyNetwork/index.tsx:89
+#: components/SpecifyNetwork/index.tsx:98
+#: components/Statistics/Pages.tsx:7
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
+msgid "specifyNetwork"
+msgstr ""
+
+#: components/SpecifyNetwork/index.tsx:84
+#. Used in: Components > Specify Network > Index
+msgid "occurrenceOrGuidRequired"
+msgstr ""
+
+#: components/SpecifyNetwork/Overlay.tsx:133
+#. Used in: Components > Specify Network > Overlay
+msgid "noDataError"
+msgstr ""
+
+#: components/SpecifyNetwork/Overlay.tsx:136
+#. Used in: Components > Specify Network > Overlay
+msgid "noDataErrorDescription"
+msgstr ""
+
+#: components/SpecifyNetwork/Overlay.tsx:149
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailable"
+msgstr ""
+
+#: components/SpecifyNetwork/Overlay.tsx:152
+#. Used in: Components > Specify Network > Overlay
+msgid "brokerUnavailableDescription"
+msgstr ""
+
+#: components/SpecifyNetwork/Table.tsx:54
+#. Used in: Components > Specify Network > Table
+msgid "dataQuality"
+msgstr ""
+
+#: components/SpecifyNetwork/Table.tsx:67
+#. Used in: Components > Specify Network > Table
+msgid "reportedBy"
+msgstr ""
+
+#: components/SpecifyNetwork/FieldMapper.tsx:109
+#: components/SpecifyNetwork/FieldMapper.tsx:117
+#. Used in: Components > Specify Network > Field Mapper
+msgid "collectionDate"
+msgstr ""
+
+#: components/SpecifyNetwork/Map.tsx:221
+#. Used in: Components > Specify Network > Map
+msgid "mapDescription"
+msgstr ""
+
+#: components/SpecifyNetwork/overlays.ts:140
+#. Used in: Components > Specify Network > Overlays
+msgid "iDigBioDescription"
+msgstr ""
+
+#: components/SpecifyNetwork/overlays.ts:31
+#. Used in: Components > Specify Network > Overlays
+msgid "gbifDescription"
+msgstr ""
+
+#: components/SpecifyNetworkCollection/Setup.tsx:59
+#. Used in: Components > Specify Network Collection > Setup
+msgid "connectToGbif"
+msgstr ""
+
+#: components/SpecifyNetworkCollection/Setup.tsx:62
+#. Used in: Components > Specify Network Collection > Setup
+msgid "searchForInstitution"
+msgstr ""
+
+#: components/SpecifyNetworkCollection/index.tsx:75
+#. Used in: Components > Specify Network Collection > Index
+msgid "institutionDistributionMap"
+msgstr ""
+
+#: components/SpecifyNetworkCollection/index.tsx:149
+#. Used in: Components > Specify Network Collection > Index
+msgid "collectionDistributionMap"
+msgstr ""
+
+#: components/Molecules/Range.tsx:23
+#. Used in: Components > Molecules > Range
+msgid "startYear"
+msgstr ""
+
+#: components/Molecules/Range.tsx:44
+#. Used in: Components > Molecules > Range
+msgid "endYear"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:165
+#. Used in: Components > Preferences > Collection Definitions
+msgid "publishingOrganizationKey"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:167
+#. Used in: Components > Preferences > Collection Definitions
+msgid "publishingOrganizationKeyDescription"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:174
+#. Used in: Components > Preferences > Collection Definitions
+msgid "collectionKey"
+msgstr ""
+
+#: components/Preferences/CollectionDefinitions.tsx:175
+#. Used in: Components > Preferences > Collection Definitions
+msgid "collectionKeyDescription"
+msgstr ""

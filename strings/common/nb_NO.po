@@ -1,0 +1,1162 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/Core/SplashScreen.tsx:28
+#. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
+msgid "specifySeven"
+msgstr ""
+
+#: components/Preferences/UserDefinitions.tsx:2049
+#: components/SetupTool/SetupOverview.tsx:85
+#: components/TreeView/CreateTree.tsx:546
+#: components/WorkBench/DataSetMeta.tsx:294
+#: utils/parser/definitions.ts:122
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
+msgid "no"
+msgstr ""
+
+#: components/AppResources/Create.tsx:67
+#: components/AppResources/Create.tsx:89
+#: components/AppResources/EditorComponents.tsx:118
+#: components/Attachments/Dialog.tsx:73
+#: components/AttachmentsBulkImport/ValidationDialog.tsx:38
+#: components/BatchIdentify/index.tsx:834
+#: components/DataEntryTables/index.tsx:41
+#: components/ExportFeed/ForceUpdate.tsx:33
+#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:58
+#: components/FormCells/COJODialog.tsx:92
+#: components/FormEditor/Create.tsx:67
+#: components/FormEditor/Create.tsx:261
+#: components/FormSliders/RecordSelectorFromIds.tsx:276
+#: components/Forms/DeleteButton.tsx:122
+#: components/Forms/DeleteButton.tsx:134
+#: components/Forms/DeleteButton.tsx:159
+#: components/Forms/ResourceView.tsx:388
+#: components/Header/ChooseCollection.tsx:26
+#: components/Header/ExpressSearchTask.tsx:56
+#: components/Interactions/InteractionDialog.tsx:417
+#: components/Interactions/InteractionsDialog.tsx:54
+#: components/Interactions/LoanReturn.tsx:167
+#: components/Interactions/PrepDialog.tsx:125
+#: components/LocalityUpdate/Status.tsx:145
+#: components/LocalityUpdate/Status.tsx:191
+#: components/Merging/Status.tsx:119
+#: components/Merging/index.tsx:278
+#: components/Merging/index.tsx:384
+#: components/Molecules/LinkedRecords.tsx:88
+#: components/Molecules/LinkedRecords.tsx:100
+#: components/Molecules/SyncAttachmentPicker.tsx:126
+#: components/PickLists/index.tsx:282
+#: components/QueryBuilder/Components.tsx:169
+#: components/QueryBuilder/Edit.tsx:174
+#: components/QueryBuilder/FromMap.tsx:72
+#: components/QueryBuilder/Import.tsx:69
+#: components/QueryBuilder/LoanReturn.tsx:159
+#: components/Reports/Parameters.tsx:86
+#: components/Reports/Report.tsx:200
+#: components/Reports/Report.tsx:227
+#: components/Reports/Report.tsx:312
+#: components/Reports/index.tsx:142
+#: components/Router/UnloadProtect.tsx:26
+#: components/SearchDialog/SelectRecordSet.tsx:133
+#: components/SearchDialog/index.tsx:240
+#: components/Security/ImportExport.tsx:81
+#: components/Security/MissingAgentsDialog.tsx:103
+#: components/Security/Role.tsx:195
+#: components/Security/Role.tsx:221
+#: components/Security/RoleTemplate.tsx:93
+#: components/Security/User.tsx:460
+#: components/SetupTool/SetupForm.tsx:329
+#: components/Statistics/DeleteCategory.tsx:41
+#: components/Statistics/index.tsx:592
+#: components/SystemConfigurationTool/Hierarchy.tsx:369
+#: components/Toolbar/Language.tsx:101
+#: components/Toolbar/MasterKey.tsx:39
+#: components/Toolbar/Query.tsx:77
+#: components/Toolbar/Query.tsx:210
+#: components/Toolbar/RecordSets.tsx:218
+#: components/Toolbar/RecordSets.tsx:257
+#: components/Toolbar/TreeRepair.tsx:97
+#: components/Toolbar/WbsDialog.tsx:191
+#: components/TreeView/Actions.tsx:403
+#: components/TreeView/Actions.tsx:419
+#: components/TreeView/AddRank.tsx:54
+#: components/TreeView/CreateTree.tsx:152
+#: components/TreeView/CreateTree.tsx:339
+#: components/TreeView/CreateTree.tsx:629
+#: components/WbActions/WbRevert.tsx:39
+#: components/WbActions/WbRollback.tsx:62
+#: components/WbActions/WbUpload.tsx:101
+#: components/WbActions/WbUpload.tsx:136
+#: components/WbPlanView/Mapper.tsx:470
+#: components/WbPlanView/MapperComponents.tsx:333
+#: components/WbPlanView/MapperComponents.tsx:359
+#: components/WbPlanView/State.tsx:94
+#: components/WbToolkit/ChangeOwner.tsx:87
+#: components/WbToolkit/CoordinateConverter.tsx:228
+#: components/WorkBench/DataSetMeta.tsx:163
+#: components/WorkBench/Disambiguation.tsx:40
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Batch Identify > Index ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Setup Tool > Setup Form ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
+msgid "cancel"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:859
+#: components/Formatters/List.tsx:115
+#: components/SchemaConfig/Languages.tsx:73
+#: components/SchemaConfig/Tables.tsx:45
+#: components/SetupTool/index.tsx:299
+#. Used in: Components > Batch Identify > Index ⬤ Components > Formatters > List ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables ⬤ Components > Setup Tool > Index
+msgid "back"
+msgstr ""
+
+#: components/ExportFeed/Dwca.tsx:96
+#. Used in: Components > Export Feed > Dwca
+msgid "skip"
+msgstr ""
+
+#: components/FormEditor/Create.tsx:60
+#: components/FormEditor/Create.tsx:262
+#: components/PickLists/definitions.ts:43
+#: components/QueryBuilder/Edit.tsx:175
+#: components/Security/Institution.tsx:104
+#: components/Security/Institution.tsx:185
+#: components/Security/PreviewTables.tsx:66
+#: components/SetupTool/index.tsx:303
+#: components/WbActions/WbNoUploadPlan.tsx:45
+#. Used in: Components > Form Editor > Create ⬤ Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Setup Tool > Index ⬤ Components > Wb Actions > Wb No Upload Plan
+msgid "create"
+msgstr ""
+
+#: components/AppResources/DialogEditor.tsx:54
+#: components/AppResources/EditorComponents.tsx:90
+#: components/AppResources/Filters.tsx:99
+#: components/Atoms/__tests__/Link.test.ts:6
+#: components/Atoms/__tests__/Link.test.ts:7
+#: components/Atoms/__tests__/Link.test.ts:21
+#: components/Atoms/__tests__/Link.test.ts:22
+#: components/Atoms/__tests__/Link.test.ts:23
+#: components/Atoms/__tests__/Link.test.ts:24
+#: components/Atoms/__tests__/Link.test.ts:25
+#: components/Atoms/__tests__/Link.test.ts:26
+#: components/Atoms/__tests__/Link.test.ts:27
+#: components/Atoms/__tests__/Link.test.ts:28
+#: components/Atoms/__tests__/Submit.test.ts:5
+#: components/Atoms/__tests__/Submit.test.ts:6
+#: components/Atoms/__tests__/Submit.test.ts:7
+#: components/Atoms/__tests__/Submit.test.ts:8
+#: components/Atoms/__tests__/Submit.test.ts:9
+#: components/Atoms/__tests__/Submit.test.ts:10
+#: components/Atoms/__tests__/Submit.test.ts:11
+#: components/Attachments/Cell.tsx:146
+#: components/Attachments/ChronoChart.tsx:24
+#: components/Attachments/Dialog.tsx:77
+#: components/Attachments/RecordSetAttachment.tsx:152
+#: components/Attachments/RecordSetAttachment.tsx:220
+#: components/Attachments/index.tsx:53
+#: components/AttachmentsBulkImport/ActionState.tsx:43
+#: components/AttachmentsBulkImport/Datasets.tsx:137
+#: components/AttachmentsBulkImport/Datasets.tsx:265
+#: components/AttachmentsBulkImport/Import.tsx:392
+#: components/AttachmentsBulkImport/Import.tsx:403
+#: components/AttachmentsBulkImport/Import.tsx:415
+#: components/AttachmentsBulkImport/Rollback.tsx:115
+#: components/AttachmentsBulkImport/Rollback.tsx:142
+#: components/AttachmentsBulkImport/Upload.tsx:241
+#: components/AttachmentsBulkImport/Upload.tsx:255
+#: components/AttachmentsBulkImport/Upload.tsx:270
+#: components/BatchEdit/MissingRanks.tsx:42
+#: components/BatchEdit/QueryError.tsx:23
+#: components/BatchEdit/index.tsx:206
+#: components/BatchIdentify/index.tsx:780
+#: components/BatchIdentify/index.tsx:856
+#: components/BatchIdentify/index.tsx:1009
+#: components/Core/VersionMismatch.tsx:23
+#: components/ExportFeed/Dwca.tsx:94
+#: components/ExportFeed/Dwca.tsx:100
+#: components/ExportFeed/Dwca.tsx:128
+#: components/ExportFeed/ForceUpdate.tsx:23
+#: components/FormCells/FormTable.tsx:618
+#: components/FormCommands/ShowTransactions.tsx:69
+#: components/FormCommands/index.tsx:96
+#: components/FormCommands/index.tsx:118
+#: components/FormCommands/index.tsx:145
+#: components/FormEditor/Create.tsx:208
+#: components/FormEditor/Table.tsx:82
+#: components/FormMeta/AutoNumbering.tsx:91
+#: components/FormMeta/CarryForward.tsx:385
+#: components/FormMeta/Definition.tsx:73
+#: components/FormMeta/EditHistory.tsx:53
+#: components/FormMeta/PickListUsages.tsx:44
+#: components/FormMeta/index.tsx:113
+#: components/FormMeta/index.tsx:137
+#: components/FormPlugins/CollectionRelOneToMany.tsx:180
+#: components/FormPlugins/GeoLocate.tsx:112
+#: components/FormPlugins/GeoLocate.tsx:126
+#: components/FormPlugins/Leaflet.tsx:40
+#: components/FormPlugins/PaleoLocation.tsx:57
+#: components/FormPlugins/PaleoLocation.tsx:75
+#: components/FormPlugins/PaleoLocation.tsx:88
+#: components/FormPlugins/index.tsx:198
+#: components/FormPlugins/index.tsx:267
+#: components/FormSliders/AttachmentWarningDeletion.tsx:39
+#: components/FormSliders/AttachmentsCollection.tsx:87
+#: components/FormSliders/RecordSet.tsx:523
+#: components/Formatters/Element.tsx:65
+#: components/Formatters/Element.tsx:87
+#: components/Forms/BulkCarryForward.tsx:287
+#: components/Forms/DataTask.tsx:134
+#: components/Forms/DeleteButton.tsx:190
+#: components/Forms/ResourceView.tsx:224
+#: components/Forms/ResourceView.tsx:391
+#: components/Forms/Save.tsx:302
+#: components/Forms/Save.tsx:338
+#: components/Header/ExpressSearchTask.tsx:130
+#: components/Header/UserTools.tsx:75
+#: components/HomePage/AboutSpecify.tsx:60
+#: components/Interactions/InteractionDialog.tsx:393
+#: components/Interactions/InteractionDialog.tsx:483
+#: components/Interactions/LoanReturn.tsx:71
+#: components/Interactions/PrepDialog.tsx:122
+#: components/Leaflet/Map.tsx:103
+#: components/LocalityUpdate/Status.tsx:156
+#: components/LocalityUpdate/Status.tsx:225
+#: components/LocalityUpdate/Status.tsx:285
+#: components/LocalityUpdate/Status.tsx:368
+#: components/LocalityUpdate/Status.tsx:467
+#: components/LocalityUpdate/Status.tsx:508
+#: components/LocalityUpdate/index.tsx:124
+#: components/Merging/CompareSubView.tsx:201
+#: components/Merging/InvalidMergeRecords.tsx:79
+#: components/Merging/Status.tsx:104
+#: components/Merging/Status.tsx:122
+#: components/Molecules/LinkedRecords.tsx:116
+#: components/Molecules/LinkedRecords.tsx:125
+#: components/Molecules/SyncAttachmentPicker.tsx:101
+#: components/Notifications/Notifications.tsx:89
+#: components/PickLists/index.tsx:251
+#: components/Preferences/index.tsx:157
+#: components/QueryBuilder/CheckReadAccess.tsx:42
+#: components/QueryBuilder/Components.tsx:288
+#: components/QueryBuilder/Edit.tsx:144
+#: components/QueryBuilder/Export.tsx:144
+#: components/QueryBuilder/Export.tsx:152
+#: components/QueryBuilder/Import.tsx:154
+#: components/QueryBuilder/LoanReturn.tsx:156
+#: components/QueryBuilder/LoanReturn.tsx:222
+#: components/QueryBuilder/Save.tsx:66
+#: components/QueryComboBox/index.tsx:608
+#: components/Reports/Report.tsx:51
+#: components/Reports/Report.tsx:60
+#: components/Router/RouterUtils.tsx:193
+#: components/SchemaConfig/Languages.tsx:33
+#: components/SchemaConfig/TableUniquenessRules.tsx:139
+#: components/SchemaConfig/UniquenessRuleRow.tsx:236
+#: components/SearchDialog/index.tsx:370
+#: components/Security/Role.tsx:198
+#: components/Security/SetPassword.tsx:36
+#: components/Security/User.tsx:464
+#: components/Security/User.tsx:681
+#: components/Security/UserCollections.tsx:71
+#: components/Security/UserInviteLink.tsx:55
+#: components/SpecifyNetwork/Overlay.tsx:132
+#: components/SpecifyNetwork/Overlay.tsx:148
+#: components/SpecifyNetwork/Table.tsx:30
+#: components/SpecifyNetwork/Table.tsx:118
+#: components/SpecifyNetwork/index.tsx:80
+#: components/Statistics/AddStatDialog.tsx:75
+#: components/Statistics/ResultsDialog.tsx:75
+#: components/Statistics/StatsPageEditing.tsx:43
+#: components/Toolbar/BackupDatabase.tsx:81
+#: components/Toolbar/BackupStatus.tsx:76
+#: components/Toolbar/BackupStatus.tsx:79
+#: components/Toolbar/Language.tsx:76
+#: components/Toolbar/MasterKey.tsx:97
+#: components/Toolbar/QueryTablesEdit.tsx:73
+#: components/Toolbar/QueryTablesWrapper.tsx:156
+#: components/Toolbar/TreeRepair.tsx:97
+#: components/TreeView/Actions.tsx:407
+#: components/TreeView/CreateTree.tsx:544
+#: components/TreeView/CreateTree.tsx:632
+#: components/WbActions/WbNoUploadPlan.tsx:43
+#: components/WbActions/index.tsx:212
+#: components/WbActions/index.tsx:223
+#: components/WbAttachmentViewer/index.tsx:143
+#: components/WbPlanView/MapperComponents.tsx:212
+#: components/WbPlanView/MapperComponents.tsx:428
+#: components/WbPlanView/MapperComponents.tsx:556
+#: components/WbPlanView/State.tsx:34
+#: components/WbToolkit/ChangeOwner.tsx:77
+#: components/WbToolkit/DevShowPlan.tsx:86
+#: components/WbToolkit/GeoLocate.tsx:143
+#: components/WorkBench/AdvancedSearch.tsx:107
+#: components/WorkBench/DataSetMeta.tsx:130
+#: components/WorkBench/DataSetMeta.tsx:189
+#: components/WorkBench/Results.tsx:85
+#: components/WorkBench/Status.tsx:92
+#: components/WorkBench/WbAttachmentsPreview.tsx:142
+#: components/WorkBench/WbAttachmentsPreview.tsx:341
+#: components/WorkBench/useDisambiguationDialog.tsx:104
+#. Used in: Components > App Resources > Dialog Editor ⬤ Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Atoms > __tests__ > Link ⬤ Atoms > __tests__ > Submit ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Chrono Chart ⬤ Components > Attachments > Dialog ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Batch Edit > Missing Ranks ⬤ Components > Batch Edit > Query Error ⬤ Components > Batch Edit > Index ⬤ Components > Batch Identify > Index ⬤ Components > Core > Version Mismatch ⬤ Components > Export Feed > Dwca ⬤ Components > Export Feed > Force Update ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Commands > Index ⬤ Components > Form Editor > Create ⬤ Components > Form Editor > Table ⬤ Components > Form Meta > Auto Numbering ⬤ Components > Form Meta > Carry Forward ⬤ Components > Form Meta > Definition ⬤ Components > Form Meta > Edit History ⬤ Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Index ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Geo Locate ⬤ Components > Form Plugins > Leaflet ⬤ Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Data Task ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Forms > Save ⬤ Components > Header > Express Search Task ⬤ Components > Header > User Tools ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Leaflet > Map ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Merging > Compare Sub View ⬤ Components > Merging > Invalid Merge Records ⬤ Components > Merging > Status ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Index ⬤ Components > Preferences > Index ⬤ Components > Query Builder > Check Read Access ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > Export ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Query Builder > Save ⬤ Components > Query Combo Box > Index ⬤ Components > Reports > Report ⬤ Components > Router > Router Utils ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Index ⬤ Components > Security > Role ⬤ Components > Security > Set Password ⬤ Components > Security > User ⬤ Components > Security > User Collections ⬤ Components > Security > User Invite Link ⬤ Components > Specify Network > Overlay ⬤ Components > Specify Network > Table ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query Tables Edit ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Toolbar > Tree Repair ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Actions > Index ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Work Bench > Advanced Search ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Results ⬤ Components > Work Bench > Status ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Use Disambiguation Dialog
+msgid "close"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:191
+#: components/HomePage/index.tsx:47
+#. Used in: Components > Header > Express Search Task ⬤ Components > Home Page > Index
+msgid "configureExpressSearch"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:120
+#: components/Header/ExpressSearchTask.tsx:178
+#. Used in: Components > Header > Express Search Task
+msgid "expressSearchInstructionsTitle"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:136
+#. Used in: Components > Header > Express Search Task
+msgid "expressSearchInstructions"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:138
+#. Used in: Components > Header > Express Search Task
+msgid "expressSearchDateFormats"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:137
+#. Used in: Components > Header > Express Search Task
+msgid "expressSearchPhraseExample"
+msgstr ""
+
+#: components/Interactions/LoanReturn.tsx:203
+#: components/Interactions/PrepDialog.tsx:152
+#: components/Security/SetPassword.tsx:37
+#: components/WbPlanView/MapperComponents.tsx:429
+#: components/WbPlanView/MapperComponents.tsx:556
+#: components/WbToolkit/CoordinateConverter.tsx:229
+#: components/WorkBench/Disambiguation.tsx:48
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
+msgid "apply"
+msgstr ""
+
+#: components/WbToolkit/CoordinateConverter.tsx:277
+#: components/WorkBench/Disambiguation.tsx:64
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
+msgid "applyAll"
+msgstr ""
+
+#: components/Interactions/LoanReturn.tsx:186
+#: components/Interactions/PrepDialog.tsx:137
+#: components/Notifications/Notifications.tsx:85
+#. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
+msgid "clearAll"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:68
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "deleteUnmapped"
+msgstr ""
+
+#: components/AttachmentsBulkImport/Datasets.tsx:266
+#: components/AttachmentsBulkImport/Import.tsx:298
+#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:59
+#: components/Forms/Save.tsx:55
+#: components/Preferences/index.tsx:154
+#: components/QueryBuilder/FromMap.tsx:74
+#: components/QueryBuilder/Save.tsx:67
+#: components/Reports/Report.tsx:313
+#: components/SchemaConfig/Components.tsx:42
+#: components/SchemaConfig/TableUniquenessRules.tsx:141
+#: components/Security/MissingAgentsDialog.tsx:106
+#: components/Security/Role.tsx:213
+#: components/Security/UserCollections.tsx:73
+#: components/Statistics/ResultsDialog.tsx:85
+#: components/Statistics/StatsPageEditing.tsx:47
+#: components/Statistics/index.tsx:594
+#: components/SystemConfigurationTool/Hierarchy.tsx:371
+#: components/WbActions/WbSave.tsx:66
+#: components/WbPlanView/Mapper.tsx:479
+#: components/WbToolkit/DevShowPlan.tsx:115
+#: components/WorkBench/DataSetMeta.tsx:191
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Forms > Save ⬤ Components > Preferences > Index ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Save ⬤ Components > Reports > Report ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > User Collections ⬤ Components > Statistics > Results Dialog ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Wb Actions > Wb Save ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Data Set Meta
+msgid "save"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:148
+#: components/ExportFeed/Editor.tsx:137
+#: components/FormSliders/RecordSelectorFromIds.tsx:180
+#: components/Formatters/List.tsx:149
+#: components/Forms/Save.tsx:279
+#: components/Merging/CompareSubView.tsx:184
+#: components/Molecules/AutoComplete.tsx:525
+#: components/PickLists/index.tsx:280
+#: components/QueryBuilder/Wrapped.tsx:486
+#: components/SchemaConfig/Format.tsx:299
+#: components/SchemaConfig/Format.tsx:349
+#: components/SchemaConfig/Format.tsx:394
+#: components/SchemaConfig/Languages.tsx:75
+#: components/SchemaConfig/Table.tsx:178
+#: components/SchemaConfig/UniquenessRuleRow.tsx:298
+#: components/SearchDialog/SelectRecordSet.tsx:135
+#: components/SearchDialog/SelectRecordSet.tsx:139
+#: components/Security/CollectionRole.tsx:207
+#: components/Security/Policies.tsx:184
+#: components/Statistics/Categories.tsx:285
+#: components/Statistics/StatsPageEditing.tsx:48
+#: components/Statistics/index.tsx:636
+#: components/Toolbar/ListEdit.tsx:144
+#: components/WbPlanView/navigator.ts:351
+#: components/WebLinks/Definition.tsx:116
+#: components/WebLinks/List.tsx:50
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
+msgid "add"
+msgstr ""
+
+#: components/ChooseCollection/index.tsx:164
+#. Used in: Components > Choose Collection > Index
+msgid "open"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:185
+#: components/Formatters/Element.tsx:82
+#: components/Forms/DeleteButton.tsx:96
+#: components/Forms/DeleteButton.tsx:111
+#: components/Forms/DeleteButton.tsx:156
+#: components/Molecules/SyncAttachmentPicker.tsx:87
+#: components/Notifications/Notifications.tsx:166
+#: components/PickLists/definitions.ts:45
+#: components/SchemaConfig/UniquenessRuleRow.tsx:188
+#: components/Security/PreviewTables.tsx:68
+#: components/Security/Role.tsx:223
+#: components/Statistics/DeleteCategory.tsx:38
+#: components/TreeView/Actions.tsx:508
+#: components/WorkBench/DataSetMeta.tsx:159
+#: components/WorkBench/DataSetMeta.tsx:185
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
+msgid "delete"
+msgstr ""
+
+#: components/Attachments/Dialog.tsx:128
+#: components/BatchIdentify/index.tsx:851
+#: components/Interactions/InteractionDialog.tsx:531
+#: components/Interactions/InteractionDialog.tsx:560
+#: components/SetupTool/index.tsx:304
+#: components/WbToolkit/GeoLocate.tsx:154
+#: components/WbUtils/Navigation.tsx:115
+#: components/WbUtils/Navigation.tsx:119
+#. Used in: Components > Attachments > Dialog ⬤ Components > Batch Identify > Index ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Setup Tool > Index ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Navigation
+msgid "next"
+msgstr ""
+
+#: components/Attachments/Dialog.tsx:113
+#: components/WbToolkit/GeoLocate.tsx:148
+#: components/WbUtils/Navigation.tsx:82
+#: components/WbUtils/Navigation.tsx:86
+#. Used in: Components > Attachments > Dialog ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Navigation
+msgid "previous"
+msgstr ""
+
+#: components/Security/registry.ts:86
+#. Used in: Components > Security > Registry
+msgid "tool"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:136
+#: components/WbToolkit/index.tsx:92
+#: components/WorkBench/WbView.tsx:246
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb View
+msgid "tools"
+msgstr ""
+
+#: components/Core/ContextLoader.tsx:55
+#: components/Core/Contexts.tsx:125
+#: components/Core/__tests__/Contexts.test.tsx:76
+#: components/Core/__tests__/Contexts.test.tsx:87
+#: components/FormCells/FormTable.tsx:284
+#: components/FormCommands/ShowTransactions.tsx:76
+#: components/FormCommands/ShowTransactions.tsx:124
+#: components/FormFields/ComboBox.tsx:131
+#: components/FormFields/Field.tsx:84
+#: components/FormPlugins/CollectionRelOneToMany.tsx:158
+#: components/FormPlugins/CollectionRelOneToOne.tsx:43
+#: components/Formatters/Preview.tsx:108
+#: components/Formatters/Preview.tsx:155
+#: components/Forms/BaseResourceView.tsx:61
+#: components/Forms/DeleteButton.tsx:136
+#: components/Forms/SubView.tsx:175
+#: components/Forms/SubView.tsx:242
+#: components/HomePage/AboutSpecify.tsx:155
+#: components/HomePage/AboutSpecify.tsx:187
+#: components/HomePage/AboutSpecify.tsx:210
+#: components/Interactions/PrepReturnRow.tsx:93
+#: components/Interactions/PrepReturnRow.tsx:94
+#: components/Interactions/PrepReturnRow.tsx:96
+#: components/Leaflet/index.ts:196
+#: components/Merging/Usages.tsx:49
+#: components/Molecules/AutoComplete.tsx:441
+#: components/Molecules/FormattedResource.tsx:16
+#: components/Molecules/FormattedResource.tsx:31
+#: components/Molecules/LinkedRecords.tsx:49
+#: components/Molecules/LinkedRecords.tsx:64
+#: components/Molecules/LinkedRecords.tsx:102
+#: components/Molecules/index.tsx:25
+#: components/Permissions/FormatError.tsx:147
+#: components/Permissions/FormatError.tsx:174
+#: components/Preferences/Renderers.tsx:118
+#: components/QueryBuilder/Formatter.tsx:178
+#: components/QueryBuilder/QueryLineFilter.tsx:90
+#: components/QueryBuilder/Results.tsx:352
+#: components/QueryBuilder/Results.tsx:353
+#: components/QueryComboBox/index.tsx:445
+#: components/SchemaConfig/Fields.tsx:62
+#: components/SchemaConfig/index.tsx:165
+#: components/SchemaConfig/index.tsx:166
+#: components/SearchDialog/index.tsx:304
+#: components/Security/Collection.tsx:225
+#: components/Security/CollectionComponents.tsx:141
+#: components/Security/CollectionRole.tsx:233
+#: components/Security/Institution.tsx:99
+#: components/Security/Institution.tsx:191
+#: components/Security/Policies.tsx:190
+#: components/Security/Preview.tsx:104
+#: components/Security/RoleTemplate.tsx:169
+#: components/Security/RoleTemplate.tsx:208
+#: components/Security/UserCollections.tsx:127
+#: components/Security/UserCollections.tsx:293
+#: components/Security/UserComponents.tsx:89
+#: components/Security/UserComponents.tsx:165
+#: components/SkeletonLoaders/Skeleton.tsx:8
+#: components/Statistics/Categories.tsx:77
+#: components/Statistics/StatsResult.tsx:57
+#: components/Statistics/StatsResult.tsx:67
+#: components/Statistics/StatsResult.tsx:78
+#: components/Toolbar/BackupDatabase.tsx:89
+#: components/Toolbar/Language.tsx:224
+#: components/Toolbar/Language.tsx:258
+#: components/TreeView/Row.tsx:229
+#: components/WorkBench/Disambiguation.tsx:124
+#. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
+msgid "loading"
+msgstr ""
+
+#: components/AttachmentsBulkImport/Upload.tsx:277
+#: components/AttachmentsBulkImport/utils.ts:457
+#: components/WorkBench/DataSetMeta.tsx:301
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
+msgid "uploaded"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:163
+#: components/ExportFeed/Editor.tsx:155
+#: components/ExportFeed/Editor.tsx:157
+#: components/FieldFormatters/Parts.tsx:222
+#: components/FieldFormatters/Parts.tsx:223
+#: components/FormCells/FormTable.tsx:531
+#: components/FormCells/FormTable.tsx:534
+#: components/FormCells/FormTable.tsx:543
+#: components/FormCells/FormTable.tsx:545
+#: components/FormPlugins/CollectionRelOneToMany.tsx:136
+#: components/FormSliders/IntegratedRecordSelector.tsx:342
+#: components/Formatters/Fields.tsx:215
+#: components/Formatters/Fields.tsx:216
+#: components/QueryBuilder/Components.tsx:167
+#: components/QueryBuilder/FieldFilterTool.tsx:100
+#: components/QueryBuilder/FieldFilterTool.tsx:103
+#: components/QueryBuilder/Line.tsx:297
+#: components/QueryBuilder/Line.tsx:301
+#: components/SchemaConfig/UniquenessRuleRow.tsx:273
+#: components/Security/Policy.tsx:94
+#: components/Security/Policy.tsx:96
+#: components/Security/Role.tsx:182
+#: components/Statistics/StatsPageEditing.tsx:38
+#: components/Statistics/StatsResult.tsx:62
+#: components/Toolbar/ListEdit.tsx:150
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Field Formatters > Parts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
+msgid "remove"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:158
+#: components/Formatters/Preview.tsx:78
+#: components/Header/ExpressSearchTask.tsx:57
+#: components/Header/ExpressSearchTask.tsx:97
+#: components/Header/ExpressSearchTask.tsx:102
+#: components/Header/ExpressSearchTask.tsx:198
+#: components/Header/index.tsx:134
+#: components/HomePage/index.tsx:56
+#: components/SearchDialog/index.tsx:254
+#: components/SearchDialog/index.tsx:259
+#: components/SearchDialog/index.tsx:358
+#: components/WbUtils/index.tsx:60
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
+msgid "search"
+msgstr ""
+
+#: components/Reports/index.tsx:201
+#: components/SearchDialog/index.tsx:306
+#: components/WorkBench/WbAttachmentsPreview.tsx:118
+#. Used in: Components > Reports > Index ⬤ Components > Search Dialog > Index ⬤ Components > Work Bench > Wb Attachments Preview
+msgid "noResults"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:100
+#: components/FormPlugins/LatLongUi.tsx:170
+#: components/FormPlugins/LatLongUi.tsx:173
+#: components/Merging/Header.tsx:112
+#: components/Merging/Header.tsx:122
+#: components/Merging/Usages.tsx:20
+#: components/WorkBench/DataSetMeta.tsx:332
+#. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
+msgid "notApplicable"
+msgstr ""
+
+#: components/AppResources/Create.tsx:231
+#: components/AttachmentsBulkImport/Datasets.tsx:259
+#: components/FormEditor/Create.tsx:69
+#: components/Security/RoleTemplate.tsx:89
+#: components/Statistics/AddStatDialog.tsx:73
+#: components/Toolbar/BackupDatabase.tsx:80
+#: components/Toolbar/Query.tsx:213
+#: components/Toolbar/RecordSets.tsx:223
+#. Used in: Components > App Resources > Create ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Form Editor > Create ⬤ Components > Security > Role Template ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets
+msgid "new"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:150
+#: components/AttachmentsBulkImport/Datasets.tsx:222
+#: components/AttachmentsBulkImport/Datasets.tsx:225
+#: components/AttachmentsBulkImport/Import.tsx:253
+#: components/FormEditor/Create.tsx:160
+#: components/FormMeta/index.tsx:100
+#: components/FormMeta/index.tsx:102
+#: components/Forms/ResourceView.tsx:234
+#: components/Molecules/ResourceLink.tsx:140
+#: components/Reports/index.tsx:258
+#: components/Reports/index.tsx:262
+#: components/SchemaConfig/Format.tsx:278
+#: components/SchemaConfig/Format.tsx:338
+#: components/SchemaConfig/Format.tsx:383
+#: components/SchemaConfig/Table.tsx:165
+#: components/Security/UserComponents.tsx:154
+#: components/Security/UserComponents.tsx:158
+#: components/Statistics/Buttons.tsx:33
+#: components/Statistics/index.tsx:609
+#: components/SystemConfigurationTool/Hierarchy.tsx:412
+#: components/Toolbar/RecordSets.tsx:323
+#: components/Toolbar/WbsDialog.tsx:272
+#: components/Toolbar/WbsDialog.tsx:276
+#: components/TreeView/Actions.tsx:123
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Index ⬤ Components > Forms > Resource View ⬤ Components > Molecules > Resource Link ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Table ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
+msgid "edit"
+msgstr ""
+
+#: components/Reports/Report.tsx:202
+#: components/Security/UserComponents.tsx:188
+#. Used in: Components > Reports > Report ⬤ Components > Security > User Components
+msgid "ignore"
+msgstr ""
+
+#: components/FormSliders/RecordSelectorFromIds.tsx:285
+#: components/Merging/index.tsx:400
+#: components/Toolbar/Language.tsx:108
+#: components/WbActions/WbUpload.tsx:117
+#. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Merging > Index ⬤ Components > Toolbar > Language ⬤ Components > Wb Actions > Wb Upload
+msgid "proceed"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:280
+#. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
+msgid "start"
+msgstr ""
+
+#: components/FormPlugins/LatLongUi.tsx:291
+#. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
+msgid "end"
+msgstr ""
+
+#: components/ExportFeed/ForceUpdate.tsx:46
+#: components/Interactions/InteractionDialog.tsx:530
+#: components/Interactions/InteractionDialog.tsx:559
+#: components/PickLists/definitions.ts:44
+#: components/Security/PreviewTables.tsx:67
+#. 🟥Verb. Used in: Components > Export Feed > Force Update ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Pick Lists > Definitions ⬤ Components > Security > Preview Tables
+msgid "update"
+msgstr ""
+
+#: components/FormPlugins/DatePrecisionPicker.tsx:46
+#: components/WbPlanView/navigator.ts:663
+#. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
+msgid "fullDate"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:149
+#: components/Atoms/__tests__/Button.test.tsx:13
+#: components/Atoms/__tests__/index.test.tsx:7
+#: components/Atoms/__tests__/index.test.tsx:8
+#: components/Atoms/__tests__/index.test.tsx:9
+#: components/Atoms/__tests__/index.test.tsx:10
+#: components/Atoms/__tests__/index.test.tsx:11
+#: components/Atoms/__tests__/index.test.tsx:12
+#: components/Atoms/__tests__/index.test.tsx:13
+#: components/Atoms/__tests__/index.test.tsx:14
+#: components/Atoms/__tests__/index.test.tsx:15
+#: components/Molecules/ResourceLink.tsx:70
+#: components/TreeView/Actions.tsx:123
+#. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
+msgid "view"
+msgstr ""
+
+#: components/Leaflet/index.ts:186
+#: components/Leaflet/index.ts:190
+#: components/Leaflet/index.ts:191
+#: components/WorkBench/WbSpreadsheet.tsx:133
+#: components/WorkBench/WbSpreadsheet.tsx:134
+#. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Leaflet > Index ⬤ Components > Work Bench > Wb Spreadsheet
+msgid "opensInNewTab"
+msgstr ""
+
+#: components/Atoms/DataEntry.tsx:175
+#: components/Atoms/DataEntry.tsx:178
+#: components/Attachments/Viewer.tsx:249
+#: components/FormCells/FormTable.tsx:494
+#: components/FormCells/FormTable.tsx:497
+#. 🟥Used in a button that opens a link in a new tab. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments > Viewer ⬤ Components > Form Cells > Form Table
+msgid "openInNewTab"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:164
+#: components/Header/Logo.tsx:84
+#: components/Permissions/PermissionDenied.tsx:214
+#: components/RouterCommands/CacheBuster.tsx:34
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
+msgid "goToHomepage"
+msgstr ""
+
+#: components/FormCells/FormTable.tsx:367
+#: components/QueryBuilder/Edit.tsx:93
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
+msgid "actions"
+msgstr ""
+
+#: components/ChooseCollection/index.tsx:138
+#: components/Header/ChooseCollection.tsx:27
+#: components/Header/index.tsx:94
+#: components/Preferences/UserDefinitions.tsx:1398
+#: components/Router/EntrypointRouter.tsx:32
+#: components/Router/OverlayRoutes.tsx:64
+#. Used in: Components > Choose Collection > Index ⬤ Components > Header > Choose Collection ⬤ Components > Header > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Entrypoint Router ⬤ Components > Router > Overlay Routes
+msgid "chooseCollection"
+msgstr ""
+
+#: components/Molecules/Sorting.tsx:30
+#: components/Preferences/Renderers.tsx:163
+#. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
+msgid "ascending"
+msgstr ""
+
+#: components/Molecules/Sorting.tsx:31
+#: components/Preferences/Renderers.tsx:178
+#. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
+msgid "descending"
+msgstr ""
+
+#: components/Header/menuItemDefinitions.ts:81
+#: components/Router/OverlayRoutes.tsx:146
+#: components/SearchDialog/SelectRecordSet.tsx:98
+#: components/Security/registry.ts:214
+#: components/Toolbar/RecordSets.tsx:231
+#: components/Toolbar/RecordSets.tsx:258
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
+msgid "recordSets"
+msgstr ""
+
+#: components/Toolbar/RecordSets.tsx:313
+#. Used in: Components > Toolbar > Record Sets
+msgid "recordCount"
+msgstr ""
+
+#: components/FieldFormatters/Parts.tsx:52
+#: components/FieldFormatters/Parts.tsx:138
+#: components/Toolbar/RecordSets.tsx:172
+#. Used in: Components > Field Formatters > Parts ⬤ Components > Toolbar > Record Sets
+msgid "size"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:244
+#. Used in: Components > Header > Express Search Task
+msgid "running"
+msgstr ""
+
+#: components/Header/ExpressSearchTask.tsx:246
+#. Used in: Components > Header > Express Search Task
+msgid "noMatches"
+msgstr ""
+
+#: components/QueryBuilder/FieldFilterSpec.tsx:74
+#: components/QueryBuilder/FieldFilterSpec.tsx:241
+#: components/WbUtils/index.tsx:57
+#: components/WbUtils/index.tsx:62
+#. Used in: Components > Query Builder > Field Filter Spec ⬤ Components > Wb Utils > Index
+msgid "searchQuery"
+msgstr ""
+
+#: components/Attachments/attachments.ts:123
+#: components/HomePage/AboutSpecify.tsx:178
+#: components/HomePage/AboutSpecify.tsx:204
+#. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
+msgid "unknown"
+msgstr ""
+
+#: components/ExportFeed/Editor.tsx:74
+#: components/Login/index.tsx:155
+#: components/Preferences/UserDefinitions.tsx:176
+#: components/Preferences/UserDefinitions.tsx:829
+#: components/SchemaConfig/Languages.tsx:39
+#: components/SchemaConfig/Languages.tsx:93
+#. Used in: Components > Export Feed > Editor ⬤ Components > Login > Index ⬤ Components > Preferences > User Definitions ⬤ Components > Schema Config > Languages
+msgid "language"
+msgstr ""
+
+#: components/SchemaConfig/Languages.tsx:104
+#. Used in: Components > Schema Config > Languages
+msgid "country"
+msgstr ""
+
+#: components/Leaflet/index.ts:188
+#. Used in: Components > Leaflet > Index
+msgid "viewRecord"
+msgstr ""
+
+#: components/AppResources/Aside.tsx:400
+#: components/FormCells/index.tsx:315
+#: components/FormCommands/index.tsx:110
+#: components/FormPlugins/index.tsx:190
+#. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
+msgid "nullInline"
+msgstr ""
+
+#: components/Molecules/FilePicker.tsx:107
+#. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
+msgid "filePickerMessage"
+msgstr ""
+
+#: components/AttachmentsBulkImport/Import.tsx:204
+#: components/Molecules/FilePicker.tsx:114
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
+msgid "selectedFileName"
+msgstr ""
+
+#: components/Attachments/index.tsx:180
+#: components/Attachments/index.tsx:183
+#: components/Security/registry.ts:117
+#: components/Security/registry.ts:145
+#. Used in: Components > Attachments > Index ⬤ Components > Security > Registry
+msgid "all"
+msgstr ""
+
+#: components/Attachments/index.tsx:189
+#: components/Attachments/index.tsx:192
+#. Used in: Components > Attachments > Index
+msgid "unused"
+msgstr ""
+
+#: components/PickLists/definitions.ts:56
+#. Used in: Components > Pick Lists > Definitions
+msgid "ordinal"
+msgstr ""
+
+#: components/Header/userToolDefinitions.ts:122
+#: components/QueryBuilder/Edit.tsx:79
+#: components/SchemaConfig/Tables.tsx:39
+#: components/Security/ImportExport.tsx:252
+#: components/WbToolkit/DevShowPlan.tsx:90
+#: components/WbToolkit/index.tsx:116
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
+msgid "export"
+msgstr ""
+
+#: components/Attachments/index.tsx:239
+#: components/LocalityUpdate/Status.tsx:232
+#: components/LocalityUpdate/index.tsx:135
+#: components/QueryBuilder/Import.tsx:70
+#: components/QueryBuilder/Import.tsx:149
+#: components/Security/ImportExport.tsx:73
+#: components/Security/ImportExport.tsx:86
+#: components/Security/ImportExport.tsx:90
+#: components/Toolbar/QueryTablesWrapper.tsx:151
+#: components/TreeView/CreateTree.tsx:313
+#: components/TreeView/CreateTree.tsx:341
+#. Used in: Components > Attachments > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Tree View > Create Tree
+msgid "import"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:177
+#: components/Errors/Toasts.tsx:103
+#: components/Permissions/PermissionDenied.tsx:218
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
+msgid "dismiss"
+msgstr ""
+
+#: components/DataModel/specifyTable.ts:281
+#: components/ExportFeed/Editor.tsx:194
+#: components/WbPlanView/navigator.ts:542
+#. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
+msgid "id"
+msgstr ""
+
+#: components/Attachments/index.tsx:163
+#: components/QueryBuilder/QueryLineFilters.tsx:176
+#: components/QueryBuilder/QueryLineFilters.tsx:184
+#. Used in: Components > Attachments > Index ⬤ Components > Query Builder > Query Line Filters
+msgid "filter"
+msgstr ""
+
+#: components/QueryBuilder/Results.tsx:99
+#: components/WbActions/index.tsx:123
+#. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
+msgid "results"
+msgstr ""
+
+#: components/Errors/ErrorDialog.tsx:144
+#: components/LocalityUpdate/Status.tsx:464
+#: components/LocalityUpdate/Status.tsx:505
+#: components/Merging/Status.tsx:100
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status
+msgid "downloadErrorMessage"
+msgstr ""
+
+#: components/Molecules/Copy.tsx:29
+#. Used in: Components > Molecules > Copy
+msgid "copied"
+msgstr ""
+
+#: components/Molecules/Copy.tsx:13
+#. Used in: Components > Molecules > Copy
+msgid "copyToClipboard"
+msgstr ""
+
+#: components/Interactions/PrepDialog.tsx:269
+#: components/WbPlanView/CustomSelectElement.tsx:296
+#. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
+msgid "selected"
+msgstr ""
+
+#: components/FormCells/FormTable.tsx:322
+#: components/FormCells/FormTable.tsx:418
+#: components/FormCells/FormTable.tsx:420
+#: components/FormSliders/IntegratedRecordSelector.tsx:112
+#: components/Formatters/Definitions.tsx:243
+#: components/Header/index.tsx:154
+#: components/Molecules/AutoComplete.tsx:544
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
+msgid "expand"
+msgstr ""
+
+#: components/AppResources/Aside.tsx:186
+#. Used in: Components > App Resources > Aside
+msgid "expandAll"
+msgstr ""
+
+#: components/FormCells/FormTable.tsx:378
+#: components/FormCells/FormTable.tsx:380
+#: components/FormSliders/IntegratedRecordSelector.tsx:112
+#: components/Header/index.tsx:154
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
+msgid "collapse"
+msgstr ""
+
+#: components/AppResources/Aside.tsx:189
+#: components/TreeView/index.tsx:322
+#. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
+msgid "collapseAll"
+msgstr ""
+
+#: components/Attachments/ImageViewer.tsx:59
+#: components/Attachments/LeafletImageViewer.tsx:83
+#: components/Attachments/Viewer.tsx:366
+#: components/Preferences/index.tsx:271
+#: components/Statistics/index.tsx:564
+#: components/Toolbar/QueryTablesEdit.tsx:70
+#. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Leaflet Image Viewer ⬤ Components > Attachments > Viewer ⬤ Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
+msgid "reset"
+msgstr ""
+
+#: components/BatchIdentify/index.tsx:932
+#: components/FormEditor/Create.tsx:210
+#: components/QueryBuilder/ResultsTable.tsx:185
+#: components/SearchDialog/index.tsx:379
+#: components/SetupTool/SetupForm.tsx:219
+#. Used in: Components > Batch Identify > Index ⬤ Components > Form Editor > Create ⬤ Components > Query Builder > Results Table ⬤ Components > Search Dialog > Index ⬤ Components > Setup Tool > Setup Form
+msgid "select"
+msgstr ""
+
+#: components/FieldFormatters/index.ts:343
+#: components/PickLists/definitions.ts:54
+#: components/Preferences/Renderers.tsx:162
+#: components/SchemaConfig/Components.tsx:77
+#: components/SchemaConfig/Format.tsx:70
+#: components/Security/Collection.tsx:157
+#: components/Security/ImportExport.tsx:120
+#: components/Security/PreviewComponents.tsx:133
+#: components/Security/PreviewComponents.tsx:190
+#: components/Security/RoleTemplate.tsx:111
+#: components/SetupTool/setupResources.ts:93
+#. Used in: Components > Field Formatters > Index ⬤ Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template ⬤ Components > Setup Tool > Setup Resources
+msgid "none"
+msgstr ""
+
+#: components/SchemaConfig/Components.tsx:73
+#. Used in: Components > Schema Config > Components
+msgid "noneAvailable"
+msgstr ""
+
+#: components/AppResources/Filters.tsx:117
+#: components/AppResources/Filters.tsx:133
+#: components/AppResources/Filters.tsx:159
+#: components/Attachments/RecordSetAttachment.tsx:163
+#: components/Attachments/index.tsx:179
+#: components/Attachments/index.tsx:188
+#: components/FormCells/FormTable.tsx:175
+#: components/Formatters/Types.tsx:55
+#: components/Formatters/Types.tsx:59
+#: components/Forms/DeleteBlocked.tsx:90
+#: components/Forms/DeleteBlocked.tsx:193
+#: components/Header/ExpressSearchTask.tsx:314
+#: components/Toolbar/Query.tsx:220
+#: components/Toolbar/RecordSets.tsx:230
+#: components/WbActions/WbValidate.tsx:53
+#: components/WbUtils/datasetVariants.tsx:29
+#: components/WbUtils/datasetVariants.tsx:88
+#: components/WbUtils/datasetVariants.tsx:104
+#. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Utils > Dataset Variants
+msgid "countLine"
+msgstr ""
+
+#: components/Attachments/RecordSetAttachment.tsx:167
+#. 🟥Example usage: Record Sets (1,234+). Used in: Components > Attachments > Record Set Attachment
+msgid "countLineOrMore"
+msgstr ""
+
+#: components/AppResources/Aside.tsx:250
+#. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
+msgid "jsxCountLine"
+msgstr ""
+
+#: components/ChooseCollection/index.tsx:138
+#: components/Formatters/List.tsx:119
+#: components/HomePage/AboutSpecify.tsx:117
+#: components/HomePage/AboutSpecify.tsx:121
+#: components/HomePage/AboutSpecify.tsx:125
+#: components/Security/RoleTemplate.tsx:182
+#: components/WebLinks/Definition.tsx:44
+#: components/WorkBench/DataSetMeta.tsx:230
+#. 🟥Example usage: "Choose collection:". Used only if there is nothing else on this line after the colon heading. Used in: Components > Choose Collection > Index ⬤ Components > Formatters > List ⬤ Components > Home Page > About Specify ⬤ Components > Security > Role Template ⬤ Components > Web Links > Definition ⬤ Components > Work Bench > Data Set Meta
+msgid "colonHeader"
+msgstr ""
+
+#: components/AttachmentsBulkImport/ActionState.tsx:29
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:159
+#: components/AttachmentsBulkImport/utils.ts:489
+#: components/BatchIdentify/index.tsx:811
+#: components/BatchIdentify/index.tsx:919
+#: components/BatchIdentify/index.tsx:1020
+#: components/FormCells/index.tsx:318
+#: components/FormCommands/index.tsx:128
+#: components/FormPlugins/index.tsx:207
+#: components/FormSliders/RecordSet.tsx:394
+#: components/Formatters/Element.tsx:91
+#: components/Formatters/Formatter.tsx:126
+#: components/Forms/BaseResourceView.tsx:132
+#: components/Forms/Save.tsx:344
+#: components/Leaflet/index.ts:173
+#: components/LocalityUpdate/Status.tsx:522
+#: components/LocalityUpdate/utils.ts:64
+#: components/Merging/Header.tsx:213
+#: components/Molecules/FilePicker.tsx:113
+#: components/QueryBuilder/Header.tsx:96
+#: components/QueryBuilder/Results.tsx:348
+#: components/QueryBuilder/ResultsTable.tsx:219
+#: components/QueryBuilder/ToForms.tsx:55
+#: components/QueryComboBox/spec.ts:72
+#: components/SchemaConfig/Field.tsx:42
+#: components/SchemaConfig/Table.tsx:50
+#: components/SchemaViewer/Fields.tsx:30
+#: components/SchemaViewer/Fields.tsx:37
+#: components/Security/Collection.tsx:131
+#: components/Security/Institution.tsx:73
+#: components/Security/Role.tsx:116
+#: components/TreeView/helpers.ts:195
+#: components/TreeView/helpers.ts:203
+#: components/WorkBench/DataSetMeta.tsx:241
+#: components/WorkBench/DataSetMeta.tsx:248
+#: components/WorkBench/DataSetMeta.tsx:381
+#: components/WorkBench/RemainingLoadingTime.tsx:44
+#: components/WorkBench/Results.tsx:161
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Batch Identify > Index ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
+msgid "colonLine"
+msgstr ""
+
+#: components/Forms/DeleteButton.tsx:181
+#: components/Statistics/DeleteCategory.tsx:54
+#: components/WorkBench/DataSetMeta.tsx:263
+#: components/WorkBench/DataSetMeta.tsx:277
+#: components/WorkBench/DataSetMeta.tsx:300
+#: components/WorkBench/DataSetMeta.tsx:317
+#: components/WorkBench/DataSetMeta.tsx:337
+#: components/WorkBench/DataSetMeta.tsx:347
+#. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Statistics > Delete Category ⬤ Components > Work Bench > Data Set Meta
+msgid "jsxColonLine"
+msgstr ""
+
+#: components/Interactions/PrepDialog.tsx:161
+#. Used in: Components > Interactions > Prep Dialog
+msgid "bulkSelect"
+msgstr ""
+
+#: components/Interactions/LoanReturn.tsx:273
+#. Used in: Components > Interactions > Loan Return
+msgid "bulkReturn"
+msgstr ""
+
+#: components/Interactions/LoanReturn.tsx:287
+#. Used in: Components > Interactions > Loan Return
+msgid "bulkResolve"
+msgstr ""
+
+#: components/WorkBench/RemainingLoadingTime.tsx:45
+#. Used in: Components > Work Bench > Remaining Loading Time
+msgid "timeRemaining"
+msgstr ""
+
+#: components/Molecules/Paginator.tsx:63
+#. Used in: Components > Molecules > Paginator
+msgid "unlimited"
+msgstr ""
+
+#: components/Molecules/SyncAttachmentPicker.tsx:76
+#: components/SpecifyNetworkCollection/index.tsx:71
+#. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
+msgid "change"
+msgstr ""
+
+#: components/Merging/index.tsx:392
+#: components/WbActions/WbUpload.tsx:109
+#. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
+msgid "dontShowAgain"
+msgstr ""
+
+#: components/Molecules/FilePicker.tsx:106
+#: components/WbImportAttachments/index.tsx:54
+#. Used in: Components > Molecules > File Picker ⬤ Components > Wb Import Attachments > Index
+msgid "multipleFilePickerMessage"
+msgstr ""
+
+#: components/Attachments/ImageViewer.tsx:49
+#: components/Attachments/Viewer.tsx:352
+#. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
+msgid "zoom"
+msgstr ""
+
+#: components/Attachments/ImageViewer.tsx:54
+#: components/Attachments/Viewer.tsx:359
+#. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
+msgid "unzoom"
+msgstr ""

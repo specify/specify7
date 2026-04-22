@@ -1,0 +1,393 @@
+msgid ""
+msgstr "Content-Type: text/plain\n"
+
+#: components/SetupTool/index.tsx:237
+#. Used in: Components > Setup Tool > Index
+msgid "guidedSetup"
+msgstr ""
+
+#: components/SetupTool/index.tsx:309
+#. Used in: Components > Setup Tool > Index
+msgid "setupProgress"
+msgstr ""
+
+#: components/SetupTool/index.tsx:258
+#. Used in: Components > Setup Tool > Index
+msgid "overview"
+msgstr ""
+
+#: components/SetupTool/index.tsx:244
+#: components/SetupTool/index.tsx:248
+#. Used in: Components > Setup Tool > Index
+msgid "settingUp"
+msgstr ""
+
+#: components/SetupTool/index.tsx:249
+#. Used in: Components > Setup Tool > Index
+msgid "creating"
+msgstr ""
+
+#: components/SetupTool/index.tsx:317
+#. Used in: Components > Setup Tool > Index
+msgid "setupError"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:157
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institution"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:158
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:164
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:165
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionNameDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:171
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionCode"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:172
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionCodeDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:178
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionAddress"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:180
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionAddressDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:228
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionIsAccessionGlobal"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:229
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "institutionIsAccessionGlobalDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:185
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "address"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:186
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:191
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressCity"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:192
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressCityDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:198
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressState"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:199
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressStateDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:205
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressCountry"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:206
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressCountryDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:212
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressPostalCode"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:213
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressPostalCodeDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:219
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressPhone1"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:220
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "addressPhone1Description"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:240
+#: components/SetupTool/setupResources.ts:308
+#: components/SetupTool/setupResources.ts:345
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "treeRanks"
+msgstr ""
+
+#: components/SetupTool/SetupForm.tsx:398
+#. Used in: Components > Setup Tool > Setup Form
+msgid "rank"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:267
+#: components/SetupTool/setupResources.ts:322
+#: components/SetupTool/setupResources.ts:391
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "fullNameDirection"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:330
+#: components/SetupTool/setupResources.ts:400
+#: components/TreeView/Tree.tsx:299
+#. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
+msgid "preloadTree"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:331
+#: components/SetupTool/setupResources.ts:401
+#: components/SetupTool/setupResources.ts:408
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "preloadTreeDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:407
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "treeToPreload"
+msgstr ""
+
+#: components/SetupTool/SetupForm.tsx:302
+#. Used in: Components > Setup Tool > Setup Form
+msgid "selectATree"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:117
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "include"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:118
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "includeDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:126
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "enforced"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:127
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "enforcedDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:135
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "inFullName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:136
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "inFullNameDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:143
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "fullNameSeparator"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:144
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "fullNameSeparatorDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:236
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "storageTree"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:304
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "geographyTree"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:340
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "taxonTree"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:277
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "division"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:279
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "divisionName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:280
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "divisionAbbrev"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:285
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "discipline"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:296
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "disciplineName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:289
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "disciplineType"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:420
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "collectionName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:426
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "collectionCode"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:432
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "collectionCatalogNumFormatName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:442
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUser"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:460
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:461
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserNameDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:467
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserPassword"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:468
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserPasswordDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:473
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserConfirmPassword"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:474
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserConfirmPasswordDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:446
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserFirstName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:447
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserFirstNameDescription"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:453
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserLastName"
+msgstr ""
+
+#: components/SetupTool/setupResources.ts:454
+#. Used in: Components > Setup Tool > Setup Resources
+msgid "specifyUserLastNameDescription"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:597
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "addNewGeographyTree"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:615
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "addNewTaxonTree"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:189
+#: components/SystemConfigurationTool/Hierarchy.tsx:714
+#: components/SystemConfigurationTool/Hierarchy.tsx:719
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "hierarchyStructureTitle"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:193
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "hierarchyStructureHint"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:197
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "hierarchySwitchToHorizontal"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:198
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "hierarchySwitchToVertical"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:430
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "hierarchyAddNew"
+msgstr ""
+
+#: components/SystemConfigurationTool/Hierarchy.tsx:204
+#. Used in: Components > System Configuration Tool > Hierarchy
+msgid "hierarchyDiagram"
+msgstr ""
+
+#: components/SetupTool/SetupForm.tsx:182
+#. Used in: Components > Setup Tool > Setup Form
+msgid "emptyTaxonTree"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:399
+#. Used in: Components > Notifications > Notification Renderers
+msgid "collectionCreationStarted"
+msgstr ""
