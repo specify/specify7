@@ -68,7 +68,7 @@ const sortPolicies = (policy: typeof operationPolicies) =>
         .sort(sortFunction(([key]) => key))
         .map(([key, actions]) => [
           key,
-          [...actions].sort(sortFunction((action) => action)),
+          Array.from(actions).sort(sortFunction((action) => action)),
         ])
     )
   );
