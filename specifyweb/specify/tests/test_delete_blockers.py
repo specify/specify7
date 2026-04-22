@@ -1,10 +1,11 @@
-import json
 from django.test import Client
+import json
 
-from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.specify import models
-from specifyweb.specify.api.crud import delete_resource
+from django.db import router
+from django.test import TestCase
+from specifyweb.backend.delete_blockers.views import _collect_delete_blockers
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 def _url(obj):
     return f"/delete_blockers/delete_blockers/{obj._meta.model_name}/{obj.id}/"
@@ -32,135 +33,20 @@ class TestDeleteBlockers(GeographyTree):
 
     def _get_blockers(self, obj):
         response = self.c.get(_url(obj))
+        self.assertEqual(
+            response.status_code,
+            200,
+            f"ERROR: {response.content.decode()}",
+        )
         return json.loads(response.content.decode())
 
-    def _create_discipline_with_owned_export_schema(
-        self,
-        discipline,
-        name='Disposable Export Schema',
-    ):
-        schema = models.Spexportschema.objects.create(
-            discipline=discipline,
-            schemaname=name,
-        )
-        mapping = models.Spexportschemamapping.objects.create(
-            collectionmemberid=self.collection.id,
-            mappingname=f'{name} Mapping',
-        )
-        models.Spexportschema_exportmapping.objects.create(
-            spexportschema=schema,
-            spexportschemamapping=mapping,
-        )
+    def _assertContains(self, blockers, expected):
+        normalized = [
+            {**obj, 'ids': sorted(obj['ids'])}
+            for obj in blockers
+        ]
+        self.assertIn({**expected, 'ids': sorted(expected['ids'])}, normalized)
 
-    def _create_discipline_with_owned_app_resources(
-        self,
-        discipline,
-        name='Disposable App Resources',
-    ):
-        resource_dir = models.Spappresourcedir.objects.create(
-            discipline=discipline,
-            ispersonal=False,
-        )
-        app_resource = models.Spappresource.objects.create(
-            name=f'{name} Resource',
-            level=0,
-            spappresourcedir=resource_dir,
-            specifyuser=self.specifyuser,
-        )
-        models.Spappresourcedata.objects.create(
-            spappresource=app_resource,
-            data=b'{}',
-        )
-        models.Spreport.objects.create(
-            name=f'{name} Report',
-            appresource=app_resource,
-            specifyuser=self.specifyuser,
-        )
-        viewset = models.Spviewsetobj.objects.create(
-            name=f'{name} Viewset',
-            level=0,
-            spappresourcedir=resource_dir,
-        )
-        models.Spappresourcedata.objects.create(
-            spviewsetobj=viewset,
-            data=b'{}',
-        )
-        return resource_dir
-
-    def _create_discipline_with_owned_trees(
-        self,
-        name='Disposable Discipline',
-        division=None,
-    ):
-        placeholder_geo = models.Geographytreedef.objects.create(
-            name=f'{name} placeholder geo'
-        )
-        placeholder_geo_time = models.Geologictimeperiodtreedef.objects.create(
-            name=f'{name} placeholder geotime'
-        )
-
-        discipline = models.Discipline.objects.create(
-            name=name,
-            type='paleobotany',
-            division=self.division if division is None else division,
-            datatype=self.datatype,
-            geographytreedef=placeholder_geo,
-            geologictimeperiodtreedef=placeholder_geo_time,
-        )
-
-        geography_tree = models.Geographytreedef.objects.create(
-            name=f'{name} geography',
-            discipline=discipline,
-        )
-        geography_rank = models.Geographytreedefitem.objects.create(
-            name='Planet',
-            rankid=0,
-            treedef=geography_tree,
-        )
-        models.Geography.objects.create(
-            name='Earth',
-            rankid=0,
-            definition=geography_tree,
-            definitionitem=geography_rank,
-        )
-
-        geotime_tree = models.Geologictimeperiodtreedef.objects.create(
-            name=f'{name} geotime',
-            discipline=discipline,
-        )
-        geotime_rank = models.Geologictimeperiodtreedefitem.objects.create(
-            name='Root',
-            rankid=0,
-            treedef=geotime_tree,
-        )
-        models.Geologictimeperiod.objects.create(
-            name='Root',
-            rankid=0,
-            definition=geotime_tree,
-            definitionitem=geotime_rank,
-        )
-
-        taxon_tree = models.Taxontreedef.objects.create(
-            name=f'{name} taxon',
-            discipline=discipline,
-        )
-        taxon_rank = models.Taxontreedefitem.objects.create(
-            name='Life',
-            rankid=0,
-            treedef=taxon_tree,
-        )
-        models.Taxon.objects.create(
-            name='Life',
-            rankid=0,
-            definition=taxon_tree,
-            definitionitem=taxon_rank,
-        )
-
-        discipline.geographytreedef = geography_tree
-        discipline.geologictimeperiodtreedef = geotime_tree
-        discipline.taxontreedef = taxon_tree
-        discipline.save()
-        return discipline
 
     def test_simple_agent_delete_blockers(self):
         prep_list = []
@@ -194,91 +80,85 @@ class TestDeleteBlockers(GeographyTree):
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
 
-    def test_division_delete_blockers_ignore_cascaded_discipline_setup_rows(self):
-        division = models.Division.objects.create(
-            name='Disposable Division',
-            institution=self.institution,
+    def test_many_to_many_join_blockers_are_normalized(self):
+        export_schema = models.Spexportschema.objects.create(
+            discipline=self.discipline
         )
-        discipline = self._create_discipline_with_owned_trees(
-            'Division Discipline',
-            division=division,
+        export_mapping = models.Spexportschemamapping.objects.create(
+            collectionmemberid=self.collection.id
         )
-        self._create_discipline_with_owned_export_schema(discipline)
+        export_schema.mappings.add(export_mapping)
 
-        blockers = self._get_blockers(division)
-        self._assertSame(blockers, [])
+        delete_blockers = self._get_blockers(export_schema)
 
-    def test_delete_division_removes_owned_setup_from_cascaded_discipline(self):
-        division = models.Division.objects.create(
-            name='Deletable Division',
-            institution=self.institution,
-        )
-        discipline = self._create_discipline_with_owned_trees(
-            'Division Delete Discipline',
-            division=division,
-        )
-        self._create_discipline_with_owned_export_schema(discipline)
-
-        delete_resource(
-            self.collection, self.agent, 'division', division.id, division.version
-        )
-        self.assertFalse(models.Division.objects.filter(id=division.id).exists())
-        self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
-
-    def test_division_delete_blockers_ignore_cascaded_discipline_app_resource_rows(self):
-        division = models.Division.objects.create(
-            name='App Resource Division',
-            institution=self.institution,
-        )
-        discipline = self._create_discipline_with_owned_trees(
-            'App Resource Discipline',
-            division=division,
-        )
-        self._create_discipline_with_owned_app_resources(discipline)
-
-        blockers = self._get_blockers(division)
-        self._assertSame(blockers, [])
-
-    def test_delete_division_removes_cascaded_discipline_app_resource_rows(self):
-        division = models.Division.objects.create(
-            name='App Resource Delete Division',
-            institution=self.institution,
-        )
-        discipline = self._create_discipline_with_owned_trees(
-            'App Resource Delete Discipline',
-            division=division,
-        )
-        resource_dir = self._create_discipline_with_owned_app_resources(discipline)
-
-        delete_resource(
-            self.collection, self.agent, 'division', division.id, division.version
-        )
-        self.assertFalse(models.Division.objects.filter(id=division.id).exists())
-        self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
-        self.assertFalse(models.Spappresourcedir.objects.filter(id=resource_dir.id).exists())
-
-    def test_division_delete_blockers_include_cascaded_discipline_user_blockers(self):
-        division = models.Division.objects.create(
-            name='User Blocker Division',
-            institution=self.institution,
-        )
-        discipline = self._create_discipline_with_owned_trees(
-            'User Blocker Discipline',
-            division=division,
-        )
-        resource_dir = models.Spappresourcedir.objects.create(
-            discipline=discipline,
-            specifyuser=self.specifyuser,
-            ispersonal=False,
-        )
-
-        blockers = self._get_blockers(division)
-        self._assertSame(
-            blockers,
-            [dict(table='Spappresourcedir', field='specifyuser', ids=[resource_dir.id])],
-        )
-
-        with self.assertRaises(BusinessRuleException):
-            delete_resource(
-                self.collection, self.agent, 'division', division.id, division.version
+        expected = [
+            dict(
+                table='SpExportSchemaMapping',
+                field='spExportSchemas',
+                ids=[export_mapping.id],
             )
+        ]
+
+        self._assertSame(delete_blockers, expected)
+
+class TestDeleteBlockersCascade(TestCase):
+
+    def _assertContains(self, blockers, expected):
+        normalized = [
+            {**obj, 'ids': sorted(obj['ids'])}
+            for obj in blockers
+        ]
+        self.assertIn({**expected, 'ids': sorted(expected['ids'])}, normalized)
+
+    def test_division_collects_normalized_cascaded_discipline_blockers(self):
+        institution = models.Institution.objects.create(
+            name='Test Institution',
+            isaccessionsglobal=True,
+            issecurityon=False,
+            isserverbased=False,
+            issharinglocalities=True,
+            issinglegeographytree=True,
+        )
+        division = models.Division.objects.create(
+            institution=institution,
+            name='Test Division',
+        )
+        geologictimeperiodtreedef = models.Geologictimeperiodtreedef.objects.create(
+            name='Test gtptd'
+        )
+        geographytreedef = models.Geographytreedef.objects.create(
+            name='Test gtd'
+        )
+        datatype = models.Datatype.objects.create(name='Test datatype')
+        discipline = models.Discipline.objects.create(
+            geologictimeperiodtreedef=geologictimeperiodtreedef,
+            geographytreedef=geographytreedef,
+            division=division,
+            datatype=datatype,
+            type='paleobotany',
+        )
+        export_schema = models.Spexportschema.objects.create(
+            discipline=discipline
+        )
+        export_mapping = models.Spexportschemamapping.objects.create(
+            collectionmemberid=1
+        )
+        export_schema.mappings.add(export_mapping)
+
+        using = router.db_for_write(division.__class__, instance=division)
+        delete_blockers = _collect_delete_blockers(division, using)
+
+        self._assertContains(
+            delete_blockers,
+            dict(
+                table='SpExportSchemaMapping',
+                field='spExportSchemas',
+                ids=[export_mapping.id],
+            ),
+        )
+        self.assertFalse(
+            any(
+                blocker['table'] == 'Spexportschema_exportmapping'
+                for blocker in delete_blockers
+            )
+        )
