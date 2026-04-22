@@ -5823,6 +5823,61 @@ class Repositoryagreementattachment(models.Model):
     
     save = partialmethod(custom_save)
 
+class Schemamapping(models.Model):
+    specify_model = datamodel.get_table_strict('schemamapping')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='schemamappingid')
+
+    # One-to-one relationship to Spquery
+    query = models.OneToOneField(
+        'Spquery',
+        on_delete=models.CASCADE,
+        db_column='queryid',
+        related_name='schemamapping',
+    )
+
+    # Fields
+    mapping_type = models.CharField(
+        blank=False,
+        null=False,
+        unique=False,
+        max_length=16,
+        db_column='MappingType',
+        db_index=False,
+    )
+
+    name = models.CharField(
+        blank=False,
+        null=False,
+        unique=False,
+        max_length=256,
+        db_column='Name',
+        db_index=False,
+    )
+
+    is_default = models.BooleanField(
+        blank=False,
+        null=False,
+        unique=False,
+        default=False,
+        db_column='IsDefault',
+        db_index=False,
+    )
+
+    createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
+    specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='schemamappings', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'schemamapping'
+        ordering = ()
+        indexes = [
+            models.Index(fields=['name'], name='SchemaMappingNameIDX')
+        ]
+
+    save = partialmethod(custom_save)
+
 class Shipment(models.Model):
     specify_model = datamodel.get_table_strict('shipment')
 
