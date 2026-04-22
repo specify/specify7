@@ -236,7 +236,10 @@ class QueryFieldSpec(
         root_table = datamodel.get_table_by_id(int(path.popleft()))
 
         if is_relation:
-            path.pop()
+            extracted_fieldname, _ = extract_date_part(field_name)
+            root_field = root_table.get_field(extracted_fieldname, strict=False)
+            if isinstance(root_field, Relationship):
+                path.pop()
 
         join_path = []
         node = root_table
@@ -381,6 +384,7 @@ class QueryFieldSpec(
         op_num=None,
         negate=False,
         strict=False,
+        formatter=None,
         collection=None,
         user=None
     ):
@@ -394,7 +398,7 @@ class QueryFieldSpec(
                 value = other_field
             else:
                 uiformatter = field and get_uiformatter(
-                    query.collection, table.name, field.name
+                    query.collection, table.name, field.name, formatter, user
                 )
                 value = value
 
@@ -453,7 +457,17 @@ class QueryFieldSpec(
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
         return self.apply_filter(
-            query, orm_field, field, table, value, op_num, negate, strict=strict, collection=collection, user=user
+            query,
+            orm_field,
+            field,
+            table,
+            value,
+            op_num,
+            negate,
+            strict=strict,
+            formatter=formatter,
+            collection=collection,
+            user=user,
         )
 
     def add_spec_to_query(

@@ -1,4 +1,4 @@
-from datetime import datetime
+from datetime import date, datetime
 
 from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
 from specifyweb.backend.stored_queries.execution import execute
@@ -8,6 +8,36 @@ from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
 
 
 class TestExecute(SQLAlchemySetup):
+    def _execute_catalog_number_in_query(self, value, format_name=None):
+        table, query_fields = make_query_fields_test(
+            "Collectionobject", [["catalognumber"]]
+        )
+        query_fields = [
+            query_fields[0]._replace(
+                op_num=10,
+                value=value,
+                format_name=format_name,
+            )
+        ]
+
+        with TestExecute.test_session_context() as session:
+            return execute(
+                session,
+                self.collection,
+                self.specifyuser,
+                table.tableId,
+                search_synonymy=False,
+                distinct=False,
+                series=False,
+                count_only=False,
+                field_specs=query_fields,
+                limit=0,
+                offset=0,
+            )
+
+    def _set_catalog_numbers(self, numbers):
+        for co, number in zip(self.collectionobjects, numbers):
+            self._update(co, dict(catalognumber=number))
 
     def _make_numeric_cos(self):
         Collectionobject.objects.all().delete()
@@ -45,6 +75,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=False,
+                search_synonymy=False,
                 count_only=False,
                 field_specs=query_fields,
                 limit=0,
@@ -77,6 +108,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=False,
+                search_synonymy=False,
                 count_only=True,
                 field_specs=query_fields,
                 limit=0,
@@ -98,6 +130,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=True,
                 series=False,
+                search_synonymy=False,
                 count_only=False,
                 field_specs=query_fields,
                 limit=0,
@@ -133,6 +166,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=True,
                 series=False,
+                search_synonymy=False,
                 count_only=True,
                 field_specs=query_fields,
                 limit=0,
@@ -167,6 +201,7 @@ class TestExecute(SQLAlchemySetup):
                 self.specifyuser,
                 table.tableId,
                 series=False,
+                search_synonymy=False,
                 count_only=False,
                 field_specs=query_fields,
                 limit=3,
@@ -182,6 +217,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=False,
+                search_synonymy=False,
                 count_only=True,
                 field_specs=query_fields,
                 limit=3,
@@ -269,6 +305,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=True,
+                search_synonymy=False,
                 count_only=False,
                 field_specs=query_fields,
                 limit=0,
@@ -282,6 +319,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=True,
+                search_synonymy=False,
                 count_only=True,
                 field_specs=query_fields,
                 limit=0,
@@ -305,3 +343,96 @@ class TestExecute(SQLAlchemySetup):
         )
 
         self.assertEqual(result_count_only, dict(count=2))
+
+    def test_in_operator_supports_catalog_number_ranges(self):
+        self._update(self.collection, dict(catalognumformatname="CatalogNumberNumeric"))
+
+        numbers = ("33040", "33043", "33049", "352000", "352026")
+        self._set_catalog_numbers(number.zfill(9) for number in numbers)
+        expected_ids = [co.id for co in self.collectionobjects[: len(numbers)]]
+
+        result = self._execute_catalog_number_in_query(
+            "33043-33049, 352000-26, 33040"
+        )
+
+        self.assertCountEqual([row[0] for row in result["results"]], expected_ids)
+
+    def test_in_operator_supports_descending_numeric_shorthand_ranges(self):
+        self._update(self.collection, dict(catalognumformatname="CatalogNumberNumeric"))
+
+        Collectionobject.objects.all().delete()
+        collectionobjects = self.make_co(10)
+        for number, co in enumerate(collectionobjects, start=1):
+            self._update(co, dict(catalognumber=str(number).zfill(9)))
+
+        result = self._execute_catalog_number_in_query("6-1, 10-7")
+
+        self.assertCountEqual(
+            [row[0] for row in result["results"]],
+            [co.id for co in collectionobjects],
+        )
+
+    def test_in_operator_supports_year_catalog_number_ranges(self):
+        self._update(self.collection, dict(catalognumformatname="CatalogNumber"))
+        self._set_catalog_numbers(
+            (
+                "2025-000001",
+                "2025-000010",
+                "2025-000028",
+                "2025-000049",
+                "2024-000010",
+            )
+        )
+
+        result = self._execute_catalog_number_in_query(
+            "2025-000001-10, 2025-000028-2025-000049"
+        )
+
+        self.assertCountEqual(
+            [row[0] for row in result["results"]],
+            [co.id for co in self.collectionobjects[:4]],
+        )
+
+    def test_in_operator_supports_year_catalog_number_descending_shorthand(self):
+        current_year = date.today().year
+
+        self._update(
+            self.collection, dict(catalognumformatname="CatalogNumberAlphaNumByYear")
+        )
+        Collectionobject.objects.all().delete()
+        collectionobjects = self.make_co(10)
+        for number, co in enumerate(collectionobjects, start=1):
+            self._update(co, dict(catalognumber=f"{current_year}-{number:06d}"))
+
+        result = self._execute_catalog_number_in_query("6-1, 10-7")
+
+        self.assertCountEqual(
+            [row[0] for row in result["results"]],
+            [co.id for co in collectionobjects],
+        )
+
+    def test_in_operator_uses_selected_catalog_number_formatter(self):
+        self._update(self.collection, dict(catalognumformatname="CatalogNumberNumeric"))
+        self._update(
+            self.collectionobjecttype,
+            dict(catalognumberformatname="CatalogNumberAlphaNumByYear"),
+        )
+        self._set_catalog_numbers(
+            (
+                "2026-000001",
+                "2026-000010",
+                "2025-000010",
+                "000000123",
+                "000000124",
+            )
+        )
+
+        result = self._execute_catalog_number_in_query(
+            "2026-000001-10",
+            format_name="CatalogNumberAlphaNumByYear",
+        )
+
+        self.assertCountEqual(
+            [row[0] for row in result["results"]],
+            [self.collectionobjects[0].id, self.collectionobjects[1].id],
+        )

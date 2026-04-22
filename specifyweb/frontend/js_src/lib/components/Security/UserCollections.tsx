@@ -15,6 +15,7 @@ import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { replaceKey, toggleItem } from '../../utils/utils';
+import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form, Input, Label, Select } from '../Atoms/Form';
@@ -170,6 +171,7 @@ export function CollectionAccess({
   onChangedAgent: handleChangeAgent,
   collectionId,
   userAgents,
+  userAgentsReadState,
   isSuperAdmin,
 }: {
   readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
@@ -179,6 +181,10 @@ export function CollectionAccess({
   readonly onChangedAgent: () => void;
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
+  readonly userAgentsReadState:
+    | 'full'
+    | 'missingAgentRead'
+    | 'missingDisciplineRead';
   readonly isSuperAdmin: boolean;
 }): JSX.Element {
   const hasCollectionAccess =
@@ -241,7 +247,16 @@ export function CollectionAccess({
         : undefined
     );
 
-  const isReadOnly = React.useContext(ReadOnlyContext) || !canAssignAgent;
+  const agentReadWarning =
+    userAgentsReadState === 'missingAgentRead'
+      ? userText.cannotReadAgentsForUserAssignment()
+      : userAgentsReadState === 'missingDisciplineRead'
+        ? userText.cannotReadDisciplinesForUserAssignment()
+        : undefined;
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !canAssignAgent ||
+    userAgentsReadState !== 'full';
   return (
     <div className="flex flex-col gap-4">
       {hasPermission('/permissions/policies/user', 'read', collectionId) &&
@@ -288,6 +303,9 @@ export function CollectionAccess({
           </ReadOnlyContext.Provider>
         ) : (
           <Input.Text disabled value={commonText.loading()} />
+        )}
+        {agentReadWarning !== undefined && (
+          <ErrorMessage className="mt-2">{agentReadWarning}</ErrorMessage>
         )}
       </Label.Block>
     </div>
