@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-20 02:09+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "interactions/es/>\n"
 "Language: es\n"
@@ -33,14 +33,12 @@ msgstr "{table:string} Regresar"
 
 #. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:83
-#, fuzzy
 msgid "noInteractions"
 msgstr "No existen interacciones relacionadas con esta preparación."
 
 #. 🟥Example: Loan records. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:119
 #: components/FormCommands/ShowTransactions.tsx:131
-#, fuzzy
 msgid "tableLabelRecords"
 msgstr "{tableLabel:string} registros"
 
@@ -63,14 +61,12 @@ msgstr "Hay problemas con la entrada:"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:497
-#, fuzzy
 msgid "byChoosingRecordSet"
 msgstr "Elija un {recordSet:string} ({count:number|formatted} disponible)"
 
 #. 🟥Field name is localized. Coming from Schema Configuration. I.e, By entering Catalog Numbers. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:510
 #: components/Interactions/InteractionDialog.tsx:539
-#, fuzzy
 msgid "byEnteringNumbers"
 msgstr "Introduzca {tableName:string} {fieldName:string}s"
 
@@ -133,9 +129,8 @@ msgstr "Resolver"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:170
-#, fuzzy
 msgid "returnAllPreparations"
-msgstr "Devuelva todos los preparativos."
+msgstr "Devuelva todos los preparativos"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:201
@@ -175,14 +170,12 @@ msgstr "Cantidad seleccionada"
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:101
 #: components/Interactions/PrepReturnRow.tsx:105
-#, fuzzy
 msgid "returnedAmount"
 msgstr "Cantidad devuelta"
 
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:121
 #: components/Interactions/PrepReturnRow.tsx:125
-#, fuzzy
 msgid "resolvedAmount"
 msgstr "Cantidad resuelta"
 
