@@ -1,117 +1,169 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-04-22 16:12+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
+"7/specifyNetwork/nb_NO/>\n"
+"Language: nb_NO\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17.1-dev\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:162
 #: components/SpecifyNetwork/index.tsx:81
 #: components/SpecifyNetwork/index.tsx:89
 #: components/SpecifyNetwork/index.tsx:98
 #: components/Statistics/Pages.tsx:7
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
+#, fuzzy
 msgid "specifyNetwork"
-msgstr ""
+msgstr "Spesifiser nettverk"
 
-#: components/SpecifyNetwork/index.tsx:84
 #. Used in: Components > Specify Network > Index
+#: components/SpecifyNetwork/index.tsx:84
+#, fuzzy
 msgid "occurrenceOrGuidRequired"
-msgstr ""
+msgstr "Artsnavn eller GUID må oppgis for å vise denne siden"
 
+#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:133
-#. Used in: Components > Specify Network > Overlay
+#, fuzzy
 msgid "noDataError"
-msgstr ""
+msgstr "Finner ingen data for denne forespørselen"
 
+#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:136
-#. Used in: Components > Specify Network > Overlay
+#, fuzzy
 msgid "noDataErrorDescription"
-msgstr ""
+msgstr "Prøv å søke etter en annen oppføring"
 
+#. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:149
-#. Used in: Components > Specify Network > Overlay
+#, fuzzy
 msgid "brokerUnavailable"
-msgstr ""
+msgstr "Spesifiser nettverk utilgjengelig"
 
-#: components/SpecifyNetwork/Overlay.tsx:152
 #. Used in: Components > Specify Network > Overlay
+#: components/SpecifyNetwork/Overlay.tsx:152
+#, fuzzy
 msgid "brokerUnavailableDescription"
-msgstr ""
+msgstr "Spesifiser kunne ikke koble til Spesifiser nettverk. Prøv igjen senere."
 
+#. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:54
-#. Used in: Components > Specify Network > Table
+#, fuzzy
 msgid "dataQuality"
-msgstr ""
+msgstr "Datakvalitet"
 
-#: components/SpecifyNetwork/Table.tsx:67
 #. Used in: Components > Specify Network > Table
+#: components/SpecifyNetwork/Table.tsx:67
+#, fuzzy
 msgid "reportedBy"
-msgstr ""
+msgstr "Rapportert av {provider:string}"
 
+#. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
-#. Used in: Components > Specify Network > Field Mapper
+#, fuzzy
 msgid "collectionDate"
-msgstr ""
+msgstr "Hente dato"
 
-#: components/SpecifyNetwork/Map.tsx:221
 #. Used in: Components > Specify Network > Map
+#: components/SpecifyNetwork/Map.tsx:221
+#, fuzzy
 msgid "mapDescription"
 msgstr ""
+"Dette kartet viser forekomster av dette taksonet fra iDigBio- og GBIF-"
+"aggregatorene."
 
-#: components/SpecifyNetwork/overlays.ts:140
 #. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:140
+#, fuzzy
 msgid "iDigBioDescription"
 msgstr ""
+"Forekomster registrert i iDigBio vises som runde grønne punkter, bortsett "
+"fra de fra den gjeldende samlingen registrert i iDigBio som er runde røde "
+"punkter. Hvis du zoomer inn på de røde punktene, vises en blå dråpeformet "
+"nål. Ved å klikke på nålen utføres en lokalitetsspørring i Specifice som "
+"viser alle artene i den gjeldende Specifice-databasen samlet inn fra den "
+"lokasjonen."
 
-#: components/SpecifyNetwork/overlays.ts:31
 #. Used in: Components > Specify Network > Overlays
+#: components/SpecifyNetwork/overlays.ts:31
+#, fuzzy
 msgid "gbifDescription"
 msgstr ""
+"For GBIF-data vises individuelle punkter og klynger av punkter som "
+"sekskanter i forskjellige farger, fra gul til oransje til rød. Mørkerøde "
+"sekskanter tilsvarer den tetteste fordeling av innsamlede eksemplarer av den "
+"arten."
 
+#. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
-#. Used in: Components > Specify Network Collection > Setup
+#, fuzzy
 msgid "connectToGbif"
-msgstr ""
+msgstr "Koble til GBIF"
 
-#: components/SpecifyNetworkCollection/Setup.tsx:62
 #. Used in: Components > Specify Network Collection > Setup
+#: components/SpecifyNetworkCollection/Setup.tsx:62
+#, fuzzy
 msgid "searchForInstitution"
-msgstr ""
+msgstr "Søk etter din institusjon:"
 
-#: components/SpecifyNetworkCollection/index.tsx:75
 #. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:75
+#, fuzzy
 msgid "institutionDistributionMap"
 msgstr ""
+"Distribusjonskart over alle digitaliserte eksemplarer kuratert ved din "
+"institusjon"
 
-#: components/SpecifyNetworkCollection/index.tsx:149
 #. Used in: Components > Specify Network Collection > Index
+#: components/SpecifyNetworkCollection/index.tsx:149
+#, fuzzy
 msgid "collectionDistributionMap"
 msgstr ""
+"Distribusjonskart over alle digitaliserte eksemplarer som er kuratert i "
+"samlingen din"
 
+#. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
-#. Used in: Components > Molecules > Range
+#, fuzzy
 msgid "startYear"
-msgstr ""
+msgstr "Startår"
 
-#: components/Molecules/Range.tsx:44
 #. Used in: Components > Molecules > Range
+#: components/Molecules/Range.tsx:44
+#, fuzzy
 msgid "endYear"
-msgstr ""
+msgstr "Sluttår"
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:165
-#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
 msgid "publishingOrganizationKey"
-msgstr ""
+msgstr "GBIF Publishing Organization Key"
 
-#: components/Preferences/CollectionDefinitions.tsx:167
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:167
+#, fuzzy
 msgid "publishingOrganizationKeyDescription"
 msgstr ""
+"GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Angi "
+"nettverksintegrasjon."
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:174
-#. Used in: Components > Preferences > Collection Definitions
+#, fuzzy
 msgid "collectionKey"
-msgstr ""
+msgstr "GBIF-datasettnøkkel"
 
-#: components/Preferences/CollectionDefinitions.tsx:175
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:175
+#, fuzzy
 msgid "collectionKeyDescription"
 msgstr ""
+"GBIF-en «dataSetKey» (en UUID) for denne samlingen, brukt for Angi "
+"nettverksintegrasjon."
