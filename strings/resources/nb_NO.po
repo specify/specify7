@@ -1,652 +1,802 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-04-22 16:11+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
+"7/resources/nb_NO/>\n"
+"Language: nb_NO\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17.1-dev\n"
+"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:76
 #: components/Preferences/UserDefinitions.tsx:2130
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
+#, fuzzy
 msgid "appResources"
-msgstr ""
+msgstr "App-ressurser"
 
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:908
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
+#, fuzzy
 msgid "formDefinition"
-msgstr ""
+msgstr "Skjemadefinisjon"
 
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/types.tsx:35
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
+#, fuzzy
 msgid "formDefinitions"
-msgstr ""
+msgstr "Skjemadefinisjon"
 
-#: components/FormEditor/Create.tsx:265
 #. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:265
+#, fuzzy
 msgid "newViewDefinition"
-msgstr ""
+msgstr "Ny visningsdefinisjon"
 
+#. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
-#. Used in: Components > App Resources > Editor Components
+#, fuzzy
 msgid "loadFile"
-msgstr ""
+msgstr "Last inn fil"
 
+#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
-#. Used in: Components > App Resources > Tree
+#, fuzzy
 msgid "globalResources"
-msgstr ""
+msgstr "Globale ressurser"
 
-#: components/AppResources/tree.ts:47
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:47
+#, fuzzy
 msgid "disciplineResources"
-msgstr ""
+msgstr "Disiplinressurser"
 
+#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field
 #: components/AppResources/Create.tsx:96
 #: components/FieldFormatters/Parts.tsx:51
 #: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
-#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field
+#, fuzzy
 msgid "type"
-msgstr ""
+msgstr "Type"
 
-#: components/AppResources/tree.ts:239
 #. Used in: Components > App Resources > Tree
+#: components/AppResources/tree.ts:239
+#, fuzzy
 msgid "userTypes"
-msgstr ""
+msgstr "Brukertyper"
 
+#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
-#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
+#, fuzzy
 msgid "resources"
-msgstr ""
+msgstr "Ressurser"
 
-#: components/AppResources/Aside.tsx:264
 #. Used in: Components > App Resources > Aside
+#: components/AppResources/Aside.tsx:264
+#, fuzzy
 msgid "subCategories"
-msgstr ""
+msgstr "Underkategorier"
 
+#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:267
-#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
+#, fuzzy
 msgid "addResource"
-msgstr ""
+msgstr "Legg til ressurs"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:30
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "appResource"
-msgstr ""
+msgstr "App-ressurs"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:128
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "rssExportFeed"
-msgstr ""
+msgstr "RSS-eksportfeed"
 
-#: components/ExportFeed/Editor.tsx:102
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:102
+#, fuzzy
 msgid "exports"
-msgstr ""
+msgstr "Eksport"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:136
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "expressSearchConfig"
-msgstr ""
+msgstr "Ekspresssøkkonfigurasjon"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:144
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "typeSearches"
-msgstr ""
+msgstr "Typesøk"
 
-#: components/AppResources/types.tsx:152
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:152
+#, fuzzy
 msgid "webLinks"
-msgstr ""
+msgstr "Nettlenker"
 
+#. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
 #: components/AppResources/types.tsx:160
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
-#. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
+#, fuzzy
 msgid "uiFormatters"
-msgstr ""
+msgstr "Feltformateringer"
 
-#: components/FieldFormatters/Table.tsx:28
 #. Used in: Components > Field Formatters > Table
+#: components/FieldFormatters/Table.tsx:28
+#, fuzzy
 msgid "fieldFormattersDescription"
 msgstr ""
+"«Feltformat» styrer hvordan data for et bestemt tabellfelt vises i "
+"spørreresultater, eksporter og skjemaer. Den administrerer autonummerering "
+"og sammensetningen av ulike deler som definerer feltet."
 
-#: components/AppResources/types.tsx:168
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:168
+#, fuzzy
 msgid "dataObjectFormatters"
-msgstr ""
+msgstr "Record Formaters"
 
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:132
 #: components/Formatters/Fields.tsx:287
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
+#, fuzzy
 msgid "formatter"
-msgstr ""
+msgstr "Tabellformat"
 
-#: components/Formatters/Table.tsx:31
 #. Used in: Components > Formatters > Table
+#: components/Formatters/Table.tsx:31
+#, fuzzy
 msgid "formatterDescription"
 msgstr ""
+"«Tabellformat» styrer hvordan data fra en bestemt tabell vises i "
+"spørreresultater, eksporter og kombinasjonsbokser for spørringer. Det "
+"bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget "
+"formatering kan konfigureres basert på en verdi i posten."
 
-#: components/Formatters/Element.tsx:133
 #. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:133
+#, fuzzy
 msgid "aggregator"
-msgstr ""
+msgstr "Tabellaggregering"
 
-#: components/Formatters/Table.tsx:32
 #. Used in: Components > Formatters > Table
+#: components/Formatters/Table.tsx:32
+#, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
+"«Tabellaggregering» styrer hvordan flere tabellposter konsolideres sammen "
+"til én tekststreng. Tabellformatet, skilletegnet, suffikset, "
+"sorteringsfeltet og forhåndsvisningsgrensen for poster kan tilpasses. Det "
+"kan vises i spørreresultater og tabellformater."
 
-#: components/WebLinks/Definition.tsx:28
 #. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:28
+#, fuzzy
 msgid "formattedResource"
-msgstr ""
+msgstr "Formatert ressurs"
 
+#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:68
-#. Used in: Components > Formatters > List
+#, fuzzy
 msgid "availableFormatters"
-msgstr ""
+msgstr "Tilgjengelige tabellformater"
 
+#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:69
-#. Used in: Components > Formatters > List
+#, fuzzy
 msgid "availableAggregators"
-msgstr ""
+msgstr "Tilgjengelige tabellaggregeringer"
 
-#: components/WebLinks/List.tsx:21
 #. Used in: Components > Web Links > List
+#: components/WebLinks/List.tsx:21
+#, fuzzy
 msgid "availableWebLink"
-msgstr ""
+msgstr "Tilgjengelige nettlenker"
 
-#: components/FieldFormatters/List.tsx:73
 #. Used in: Components > Field Formatters > List
+#: components/FieldFormatters/List.tsx:73
+#, fuzzy
 msgid "availableFieldFormatters"
-msgstr ""
+msgstr "Tilgjengelige feltformateringer"
 
-#: components/Formatters/List.tsx:138
 #. Used in: Components > Formatters > List
+#: components/Formatters/List.tsx:138
+#, fuzzy
 msgid "selectDefaultFormatter"
-msgstr ""
+msgstr "Vennligst angi en av formateringene som standard"
 
-#: components/Formatters/Element.tsx:51
 #. Used in: Components > Formatters > Element
+#: components/Formatters/Element.tsx:51
+#, fuzzy
 msgid "duplicateFormatters"
-msgstr ""
+msgstr "Navn på postformatering må være unike"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:176
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "dataEntryTables"
-msgstr ""
+msgstr "Dataregistreringstabeller"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:184
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "interactionsTables"
-msgstr ""
+msgstr "Interaksjonstabeller"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:191
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "otherXmlResource"
-msgstr ""
+msgstr "Annen XML-ressurs"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:198
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "otherJsonResource"
-msgstr ""
+msgstr "Annen JSON-ressurs"
 
+#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:205
-#. Used in: Components > App Resources > Types
+#, fuzzy
 msgid "otherPropertiesResource"
-msgstr ""
+msgstr "Andre egenskaper Ressurs"
 
-#: components/AppResources/types.tsx:212
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:212
+#, fuzzy
 msgid "otherAppResource"
-msgstr ""
+msgstr "Andre ressurser"
 
-#: components/AppResources/Filters.tsx:63
 #. Used in: Components > App Resources > Filters
+#: components/AppResources/Filters.tsx:63
+#, fuzzy
 msgid "filters"
-msgstr ""
+msgstr "Filtre"
 
+#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:90
 #: components/AppResources/Filters.tsx:91
 #: components/AppResources/Filters.tsx:100
-#. Used in: Components > App Resources > Filters
+#, fuzzy
 msgid "custom"
-msgstr ""
+msgstr "Skikk"
 
-#: components/AppResources/types.tsx:120
 #. Used in: Components > App Resources > Types
+#: components/AppResources/types.tsx:120
+#, fuzzy
 msgid "leafletLayers"
-msgstr ""
+msgstr "Brosjyrelag"
 
+#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:145
-#. Used in: Components > App Resources > Tabs
+#, fuzzy
 msgid "textEditor"
-msgstr ""
+msgstr "Tekstredigerer"
 
+#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:143
-#. Used in: Components > App Resources > Tabs
+#, fuzzy
 msgid "xmlEditor"
-msgstr ""
+msgstr "XML-redigeringsprogram"
 
+#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
-#. Used in: Components > App Resources > Tabs
+#, fuzzy
 msgid "jsonEditor"
-msgstr ""
+msgstr "JSON-redigeringsprogram"
 
-#: components/AppResources/Tabs.tsx:142
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:142
+#, fuzzy
 msgid "visualEditor"
-msgstr ""
+msgstr "Visuell redigerer"
 
+#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
-#. Used in: Components > App Resources > Create
+#, fuzzy
 msgid "selectResourceType"
-msgstr ""
+msgstr "Velg ressurstype"
 
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:122
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
+#, fuzzy
 msgid "globalPreferences"
-msgstr ""
+msgstr "Globale preferanser"
 
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:124
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
+#, fuzzy
 msgid "remotePreferences"
-msgstr ""
+msgstr "Fjerninnstillinger"
 
-#: components/Formatters/index.tsx:99
 #. Used in: Components > Formatters > Index
+#: components/Formatters/index.tsx:99
+#, fuzzy
 msgid "failedParsingXml"
-msgstr ""
+msgstr "Kunne ikke analysere XML"
 
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec ⬤ Components > Statistics > Stats Page Editing
 #: components/Formatters/Element.tsx:102
 #: components/QueryBuilder/FieldFilterSpec.tsx:557
 #: components/Statistics/StatsPageEditing.tsx:61
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec ⬤ Components > Statistics > Stats Page Editing
+#, fuzzy
 msgid "name"
-msgstr ""
+msgstr "Navn"
 
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:169
-#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
+#, fuzzy
 msgid "title"
-msgstr ""
+msgstr "Tittel"
 
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:193
 #: components/Formatters/List.tsx:128
-#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
+#, fuzzy
 msgid "default"
-msgstr ""
+msgstr "Misligholde"
 
+#. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #: components/FieldFormatters/index.ts:382
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
-#. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
+#, fuzzy
 msgid "separator"
-msgstr ""
+msgstr "Separator"
 
+#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
-#. Used in: Components > Formatters > Aggregator
+#, fuzzy
 msgid "suffix"
-msgstr ""
+msgstr "Suffiks"
 
-#: components/Formatters/Aggregator.tsx:54
 #. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:54
+#, fuzzy
 msgid "limit"
-msgstr ""
+msgstr "Begrense"
 
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:73
 #: components/Formatters/Components.tsx:131
 #: components/QueryBuilder/Formatter.tsx:212
-#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
+#, fuzzy
 msgid "defaultInline"
-msgstr ""
+msgstr "(misligholde)"
 
-#: components/Formatters/Aggregator.tsx:85
 #. Used in: Components > Formatters > Aggregator
+#: components/Formatters/Aggregator.tsx:85
+#, fuzzy
 msgid "sortField"
-msgstr ""
+msgstr "Sorteringsfelt"
 
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:74
 #: components/Merging/Header.tsx:164
-#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
+#, fuzzy
 msgid "preview"
-msgstr ""
+msgstr "Forhåndsvisning"
 
-#: components/Formatters/Preview.tsx:75
 #. Used in: Components > Formatters > Preview
+#: components/Formatters/Preview.tsx:75
+#, fuzzy
 msgid "previewExplainer"
-msgstr ""
+msgstr "Søk i samlingspostene dine for å forhåndsvise postformateringen"
 
+#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:40
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
-#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Form Editor > Table ⬤ Components > Formatters > Formatter
+#, fuzzy
 msgid "editorNotAvailable"
-msgstr ""
+msgstr "Visuell redigering er ikke tilgjengelig for denne ressursen"
 
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
-#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
+#, fuzzy
 msgid "definition"
-msgstr ""
+msgstr "Definisjon"
 
+#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
-#. Used in: Components > Formatters > Definitions
+#, fuzzy
 msgid "addDefinition"
-msgstr ""
+msgstr "Legg til definisjon"
 
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:253
-#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
+#, fuzzy
 msgid "deleteDefinition"
-msgstr ""
+msgstr "Slett definisjon"
 
-#: components/WebLinks/Definition.tsx:27
 #. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:27
+#, fuzzy
 msgid "urlPart"
-msgstr ""
+msgstr "URL-delen"
 
+#. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/FieldFormatters/Parts.tsx:90
 #: components/Formatters/Definitions.tsx:213
 #: components/Formatters/Fields.tsx:125
-#. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
+#, fuzzy
 msgid "addField"
-msgstr ""
+msgstr "Legg til felt"
 
-#: components/WebLinks/Definition.tsx:26
 #. Used in: Components > Web Links > Definition
+#: components/WebLinks/Definition.tsx:26
+#, fuzzy
 msgid "thisField"
-msgstr ""
+msgstr "Dette feltet"
 
+#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:151
 #: components/WebLinks/Definition.tsx:165
-#. Used in: Components > Web Links > Definition
+#, fuzzy
 msgid "selectTableFirst"
-msgstr ""
+msgstr "Velg tabell først"
 
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
+#, fuzzy
 msgid "conditionFieldValue"
-msgstr ""
+msgstr "Verdi i betingelsesfeltet"
 
-#: components/Formatters/Definitions.tsx:184
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:184
+#, fuzzy
 msgid "conditionDescription"
 msgstr ""
+"Dette formatet vil bare bli brukt hvis verdien i betingelsesfeltet er lik "
+"denne betingelsen og ikke er null."
 
-#: components/AppResources/Tabs.tsx:165
 #. Used in: Components > App Resources > Tabs
+#: components/AppResources/Tabs.tsx:165
+#, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
+"Denne ressursen tilhører en annen samling/disiplin enn den du er i for "
+"øyeblikket. Det anbefales å bytte samling før du redigerer denne ressursen."
 
-#: components/WebLinks/Element.tsx:82
 #. Used in: Components > Web Links > Element
+#: components/WebLinks/Element.tsx:82
+#, fuzzy
 msgid "thisFieldName"
-msgstr ""
+msgstr "Dette feltnavnet (kun for forhåndsvisning)"
 
+#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:295
-#. Used in: Components > Export Feed > Editor
+#, fuzzy
 msgid "publishEveryDays"
-msgstr ""
+msgstr "Publiser hver N. dag"
 
+#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:292
-#. Used in: Components > Export Feed > Editor
+#, fuzzy
 msgid "publish"
-msgstr ""
+msgstr "Utgi"
 
+#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
-#. Used in: Components > Export Feed > Editor
+#, fuzzy
 msgid "fileName"
-msgstr ""
+msgstr "Filnavn"
 
+#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
-#. Used in: Components > Export Feed > Editor
+#, fuzzy
 msgid "runAsUser"
-msgstr ""
+msgstr "Kjør som bruker"
 
+#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:258
-#. Used in: Components > Export Feed > Editor
+#, fuzzy
 msgid "notifyUser"
-msgstr ""
+msgstr "Send fullføringsvarsel til brukeren"
 
-#: components/ExportFeed/Editor.tsx:273
 #. Used in: Components > Export Feed > Editor
+#: components/ExportFeed/Editor.tsx:273
+#, fuzzy
 msgid "runInCollection"
-msgstr ""
+msgstr "Kjør inn samlingen"
 
+#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
-#. Used in: Components > Form Editor > Create
+#, fuzzy
 msgid "createNewForm"
-msgstr ""
+msgstr "Opprett en ny visningsdefinisjon"
 
+#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
-#. Used in: Components > Form Editor > Create
+#, fuzzy
 msgid "copyFromExistingForm"
-msgstr ""
+msgstr "Kopier eksisterende visningsdefinisjon"
 
-#: components/FormEditor/Create.tsx:84
 #. Used in: Components > Form Editor > Create
+#: components/FormEditor/Create.tsx:84
+#, fuzzy
 msgid "copyDefaultForm"
-msgstr ""
+msgstr "Kopier standardvisningsdefinisjon"
 
-#: components/AppResources/Create.tsx:232
 #. Used in: Components > App Resources > Create
+#: components/AppResources/Create.tsx:232
+#, fuzzy
 msgid "copyDefaultForms"
-msgstr ""
+msgstr "Kopier standardskjemaer"
 
+#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:114
-#. Used in: Components > Form Meta > Index
+#, fuzzy
 msgid "saveFormFirst"
-msgstr ""
+msgstr "Lagre skjemaet først"
 
-#: components/FormMeta/index.tsx:117
 #. Used in: Components > Form Meta > Index
+#: components/FormMeta/index.tsx:117
+#, fuzzy
 msgid "saveFormFirstDescription"
-msgstr ""
+msgstr "Du må lagre dette skjemaet før du redigerer et nytt."
 
-#: components/Formatters/Formatter.tsx:77
 #. Used in: Components > Formatters > Formatter
+#: components/Formatters/Formatter.tsx:77
+#, fuzzy
 msgid "conditionalFormatter"
-msgstr ""
+msgstr "Betinget formatering"
 
-#: components/Formatters/Fields.tsx:136
 #. Used in: Components > Formatters > Fields
+#: components/Formatters/Fields.tsx:136
+#, fuzzy
 msgid "customizeFieldFormatters"
-msgstr ""
+msgstr "Tilpass feltformater"
 
+#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:262
-#. Used in: Components > Formatters > Definitions
+#, fuzzy
 msgid "expandConditionalField"
-msgstr ""
+msgstr "Utvid betinget felt"
 
+#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:178
-#. Used in: Components > Formatters > Definitions
+#, fuzzy
 msgid "collapseConditionalField"
-msgstr ""
+msgstr "Skjul betinget felt"
 
+#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:147
-#. Used in: Components > Formatters > Definitions
+#, fuzzy
 msgid "conditionalFieldValue"
-msgstr ""
+msgstr "Betinget feltverdi"
 
-#: components/Formatters/Definitions.tsx:219
 #. Used in: Components > Formatters > Definitions
+#: components/Formatters/Definitions.tsx:219
+#, fuzzy
 msgid "formatPreview"
-msgstr ""
+msgstr "Forhåndsvisning av format"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:540
 #: components/DataModel/businessRuleDefs.ts:558
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "currentDeterminationRequired"
-msgstr ""
+msgstr "En aktuell avgjørelse er nødvendig."
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:320
 #: components/DataModel/businessRuleDefs.ts:339
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "cogAddedToItself"
-msgstr ""
+msgstr "En COG kan ikke legges til seg selv."
 
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:269
 #: components/DataModel/__tests__/businessRules.test.ts:416
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
+#, fuzzy
 msgid "primaryCogChildRequired"
 msgstr ""
+"En konsolidert samlingsobjektgruppe må ha et primært "
+"samlingsobjektunderordnet"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:357
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deletePrimaryRecord"
-msgstr ""
+msgstr "Primæroppføring CO kan ikke slettes."
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:801
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteLoanedPrep"
-msgstr ""
+msgstr "Et lånt preparat kan ikke slettes"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:809
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteGiftedPrep"
-msgstr ""
+msgstr "En gavepreparat kan ikke slettes"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:817
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteDisposedPrep"
-msgstr ""
+msgstr "Et kassert preparat kan ikke slettes"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:825
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "deleteExchangeOutPrep"
-msgstr ""
+msgstr "Et utskiftet preparat kan ikke slettes"
 
-#: components/DataModel/businessRuleDefs.ts:833
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:833
+#, fuzzy
 msgid "deleteExchangeInPrep"
-msgstr ""
+msgstr "En utveksling som er under forberedelse kan ikke slettes"
 
-#: components/BatchIdentify/index.tsx:906
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:906
+#, fuzzy
 msgid "selectDeterminationTaxon"
-msgstr ""
+msgstr "Velg ett taksontresett for å fortsette med:"
 
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:196
 #: components/DataModel/__tests__/businessRules.test.ts:182
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
+#, fuzzy
 msgid "invalidDeterminationTaxon"
 msgstr ""
+"Bestemmelsen tilhører ikke taksontreet som er knyttet til samlingsobjekttypen"
 
-#: components/DataModel/businessRuleDefs.ts:408
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:408
+#, fuzzy
 msgid "invalidNameTaxon"
 msgstr ""
+"{taxonName: string} tilhører ikke {taxonTableLabel: string}-treet som er "
+"tilknyttet {typeName: string}"
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:236
 #: components/DataModel/businessRuleDefs.ts:471
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "catalogNumberAlreadyUsed"
 msgstr ""
+"{catalogNumberFieldName: string} {catalogNumber: string} er allerede i bruk "
+"for en annen komponent eller et samlingsobjekt i denne samlingen."
 
+#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:776
-#. Used in: Components > Data Model > Business Rule Defs
+#, fuzzy
 msgid "preparationUsedInLoan"
-msgstr ""
+msgstr "Preparatet brukes i et lån."
 
-#: components/DataModel/businessRuleDefs.ts:769
 #. Used in: Components > Data Model > Business Rule Defs
+#: components/DataModel/businessRuleDefs.ts:769
+#, fuzzy
 msgid "preparationIsNegative"
-msgstr ""
+msgstr "Antall forberedelser kan ikke være negativt"
 
+#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:336
 #: components/Formatters/Fields.tsx:337
 #: components/Formatters/Fields.tsx:342
-#. Used in: Components > Formatters > Fields
+#, fuzzy
 msgid "configureField"
-msgstr ""
+msgstr "Konfigurer feltet"
 
+#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:381
-#. Used in: Components > Formatters > Fields
+#, fuzzy
 msgid "trimZeros"
-msgstr ""
+msgstr "Trim nuller"
 
-#: components/Formatters/Fields.tsx:375
 #. Used in: Components > Formatters > Fields
+#: components/Formatters/Fields.tsx:375
+#, fuzzy
 msgid "trimZerosDescription"
-msgstr ""
+msgstr "Fjern innledende nuller fra numeriske verdier."
 
-#: components/FieldFormatters/FieldFormatter.tsx:139
 #. Used in: Components > Field Formatters > Field Formatter
+#: components/FieldFormatters/FieldFormatter.tsx:139
+#, fuzzy
 msgid "formatterPreviewUnavailable"
-msgstr ""
+msgstr "Forhåndsvisning for formatering av denne typen er ikke tilgjengelig"
 
+#. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:150
 #: components/FieldFormatters/FieldFormatter.tsx:178
-#. Used in: Components > Field Formatters > Field Formatter
+#, fuzzy
 msgid "nonConformingInline"
-msgstr ""
+msgstr "(ikke-samsvarende)"
 
+#. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:53
 #: components/FieldFormatters/Parts.tsx:157
-#. Used in: Components > Field Formatters > Parts
+#, fuzzy
 msgid "value"
-msgstr ""
+msgstr "Verdi"
 
+#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:375
-#. Used in: Components > Field Formatters > Index
+#, fuzzy
 msgid "constant"
-msgstr ""
+msgstr "Konstant"
 
+#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:377
-#. Used in: Components > Field Formatters > Index
+#, fuzzy
 msgid "alpha"
-msgstr ""
+msgstr "Alfa"
 
+#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:378
-#. Used in: Components > Field Formatters > Index
+#, fuzzy
 msgid "numeric"
-msgstr ""
+msgstr "Numerisk"
 
+#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:379
-#. Used in: Components > Field Formatters > Index
+#, fuzzy
 msgid "alphanumeric"
-msgstr ""
+msgstr "Alfanumerisk"
 
+#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:380
-#. Used in: Components > Field Formatters > Index
+#, fuzzy
 msgid "anychar"
-msgstr ""
+msgstr "Hvilket som helst tegn"
 
-#: components/FieldFormatters/index.ts:381
 #. Used in: Components > Field Formatters > Index
+#: components/FieldFormatters/index.ts:381
+#, fuzzy
 msgid "regex"
-msgstr ""
+msgstr "Regulært uttrykk"
 
-#: components/FieldFormatters/FieldFormatter.tsx:177
 #. Used in: Components > Field Formatters > Field Formatter
+#: components/FieldFormatters/FieldFormatter.tsx:177
+#, fuzzy
 msgid "exampleField"
-msgstr ""
+msgstr "Eksempelfelt"
 
+#. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:248
 #: components/FieldFormatters/Parts.tsx:250
-#. Used in: Components > Field Formatters > Parts
+#, fuzzy
 msgid "pattern"
-msgstr ""
+msgstr "Mønster"
