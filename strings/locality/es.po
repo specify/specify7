@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-20 02:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "locality/es/>\n"
 "Language: es\n"
@@ -65,9 +65,8 @@ msgstr "{localityTable:string} debe tener coordenadas para ser mapeadas."
 
 #. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:89
-#, fuzzy
 msgid "occurrencePoints"
-msgstr "Patas"
+msgstr "Pines"
 
 #. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:90
@@ -136,7 +135,6 @@ msgstr "Analizado"
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:180
 #: components/FormPlugins/LatLongUi.tsx:268
-#, fuzzy
 msgid "latitude"
 msgstr "Latitud"
 
