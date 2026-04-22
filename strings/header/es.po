@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:13+0000\n"
-"Last-Translator: Deleted User <noreply+48943@weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/header/"
 "es/>\n"
 "Language: es\n"
@@ -165,7 +165,7 @@ msgstr "Recurso de metadatos"
 #: components/Router/Routes.tsx:33
 #, fuzzy
 msgid "simpleSearch"
-msgstr "Búsqueda sencilla"
+msgstr "Búsqueda rápida"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:205
