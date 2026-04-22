@@ -275,6 +275,7 @@ class TestExecute(SQLAlchemySetup):
                 table.tableId,
                 distinct=False,
                 series=False,
+                search_synonymy=False,
                 count_only=False,
                 field_specs=query_fields,
                 limit=0,

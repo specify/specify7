@@ -655,13 +655,14 @@ export function QueryComboBox({
               resource?.set(field.name, state.resource as never);
               setState({ type: 'MainState' });
             }}
-            onSaving={() => {
+            onSaving={(): false | void => {
               handleSavingNewRecord?.(state.resource);
               if (field.isDependent()) {
                 resource?.set(field.name, state.resource as never);
                 setState({ type: 'MainState' });
                 return false;
               }
+              return undefined;
             }}
           />
         ) : undefined}
