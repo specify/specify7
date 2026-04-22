@@ -1,123 +1,171 @@
 msgid ""
-msgstr "Content-Type: text/plain\n"
+msgstr ""
+"Report-Msgid-Bugs-To: support@specifysoftware.org\n"
+"PO-Revision-Date: 2026-04-22 16:10+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
+"7/main/nb_NO/>\n"
+"Language: nb_NO\n"
+"Content-Type: text/plain\n"
+"Plural-Forms: nplurals=2; plural=n != 1;\n"
+"X-Generator: Weblate 5.17.1-dev\n"
+"Content-Transfer-Encoding: 8bit\n"
 
-#: components/Molecules/AppTitle.tsx:65
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:65
+#, fuzzy
 msgid "appTitle"
-msgstr ""
+msgstr "{baseTitle:string} | Spesifiser 7"
 
-#: components/Molecules/AppTitle.tsx:64
 #. 🟥Default page title. Used in: Components > Molecules > App Title
+#: components/Molecules/AppTitle.tsx:64
+#, fuzzy
 msgid "baseAppTitle"
-msgstr ""
+msgstr "Spesifiser 7"
 
+#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 #: components/Formatters/Element.tsx:66
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
 #: components/Router/RouterUtils.tsx:194
-#. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
+#, fuzzy
 msgid "pageNotFound"
-msgstr ""
+msgstr "Siden ble ikke funnet"
 
-#: components/Router/NotFoundView.tsx:25
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:25
+#, fuzzy
 msgid "nothingWasFound"
-msgstr ""
+msgstr "Ups! Ingenting ble funnet"
 
-#: components/Router/NotFoundView.tsx:26
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:26
+#, fuzzy
 msgid "pageNotFoundDescription"
 msgstr ""
+"Siden du leter etter kan ha blitt fjernet, fått navnet endret eller er "
+"midlertidig utilgjengelig."
 
-#: components/Router/NotFoundView.tsx:29
 #. Used in: Components > Router > Not Found View
+#: components/Router/NotFoundView.tsx:29
+#, fuzzy
 msgid "returnToHomepage"
-msgstr ""
+msgstr "Gå tilbake til hjemmesiden"
 
+#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
 #: components/Errors/ErrorDialog.tsx:62
 #: components/Errors/FormatError.tsx:197
 #: components/Errors/FormatError.tsx:227
-#. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
+#, fuzzy
 msgid "errorOccurred"
-msgstr ""
+msgstr "Beklager, noe har gått galt"
 
-#: components/Errors/Toasts.tsx:97
 #. Used in: Components > Errors > Toasts
+#: components/Errors/Toasts.tsx:97
+#, fuzzy
 msgid "clickToSeeDetails"
-msgstr ""
+msgstr "Klikk for å se detaljer"
 
-#: components/Errors/ErrorDialog.tsx:187
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:187
+#, fuzzy
 msgid "errorOccurredDescription"
 msgstr ""
+"Beklager, det ser ut til at du har støtt på en feil i Specifice 7 som vi "
+"kanskje ikke er klar over."
 
-#: components/Errors/ErrorDialog.tsx:188
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:188
+#, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
+"For å unngå å ødelegge dataposter, må du starte på nytt fra et trygt sted – "
+"hjemmesiden."
 
-#: components/Errors/ErrorDialog.tsx:39
 #. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:39
+#, fuzzy
 msgid "errorResolutionDescription"
 msgstr ""
+"Hvis problemet vedvarer, kan du kontakte IT-støtte. Hvis dette er en "
+"Specifice Cloud-database, kan du laste ned feilmeldingen og sende den til "
+"<email />."
 
-#: components/Errors/ErrorDialog.tsx:56
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
+#: components/Errors/ErrorDialog.tsx:56
+#, fuzzy
 msgid "errorResolutionSecondDescription"
 msgstr ""
+"Brukere fra <memberLink>medlemsinstitusjoner</memberLink> kan søke etter "
+"besvarte spørsmål og be om hjelp på vårt <discourseLink>fellesskapsforum</"
+"discourseLink>."
 
+#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
 #: components/Core/__tests__/Contexts.test.tsx:48
 #: components/Errors/ErrorDialog.tsx:196
 #: components/LocalityUpdate/Status.tsx:378
 #: components/LocalityUpdate/Status.tsx:425
-#. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status
+#, fuzzy
 msgid "errorMessage"
-msgstr ""
+msgstr "Feilmelding"
 
-#: components/Router/UnloadProtect.tsx:33
 #. Used in: Components > Router > Unload Protect
+#: components/Router/UnloadProtect.tsx:33
+#, fuzzy
 msgid "leavePageConfirmation"
-msgstr ""
+msgstr "Er du sikker på at du vil forlate denne siden?"
 
+#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
 #: components/AttachmentsBulkImport/useEagerDataset.ts:109
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
 #: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89
-#. Used in: Components > Attachments Bulk Import > Use Eager Dataset ⬤ Components > Schema Config > Table Uniqueness Rules ⬤ Components > Security > Role
+#, fuzzy
 msgid "leavePageConfirmationDescription"
-msgstr ""
+msgstr "Ulagrede endringer vil gå tapt hvis du forlater denne siden."
 
-#: components/Router/UnloadProtect.tsx:28
 #. Used in: Components > Router > Unload Protect
+#: components/Router/UnloadProtect.tsx:28
+#, fuzzy
 msgid "leave"
-msgstr ""
+msgstr "Forlate"
 
+#. Used in: Components > Core > Version Mismatch
 #: components/Core/VersionMismatch.tsx:27
-#. Used in: Components > Core > Version Mismatch
+#, fuzzy
 msgid "versionMismatch"
-msgstr ""
+msgstr "Den angitte versjonen samsvarer ikke med databaseversjonen"
 
-#: components/Core/VersionMismatch.tsx:31
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:31
+#, fuzzy
 msgid "versionMismatchDescription"
 msgstr ""
+"Spesifiser versjon {specifySixVersion:string} samsvarer ikke med "
+"databaseversjonen {databaseVersion:string}."
 
-#: components/Core/VersionMismatch.tsx:36
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:36
+#, fuzzy
 msgid "versionMismatchSecondDescription"
 msgstr ""
+"Enkelte funksjoner i Specifice 7 fungerer kanskje derfor ikke som de skal."
 
-#: components/Core/VersionMismatch.tsx:39
 #. Used in: Components > Core > Version Mismatch
+#: components/Core/VersionMismatch.tsx:39
+#, fuzzy
 msgid "versionMismatchInstructions"
 msgstr ""
+"Instruksjoner for å løse uoverensstemmelser mellom spesifiserte skjemaer"
 
+#. Used in: Components > Core > Online Status
 #: components/Core/OnlineStatus.tsx:38
-#. Used in: Components > Core > Online Status
+#, fuzzy
 msgid "online"
-msgstr ""
+msgstr "på nett"
 
-#: components/Core/OnlineStatus.tsx:44
 #. Used in: Components > Core > Online Status
+#: components/Core/OnlineStatus.tsx:44
+#, fuzzy
 msgid "offline"
-msgstr ""
+msgstr "frakoblet"
