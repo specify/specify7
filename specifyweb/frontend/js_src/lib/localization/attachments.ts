@@ -29,6 +29,12 @@ export const attachmentsText = createDictionary({
     'pt-br': 'Escala',
     'hr-hr': 'Skala',
   },
+  importFromMMappingFile: {
+    'en-us': 'Import from Mapping File',
+  },
+  importMatchingAttachments: {
+    'en-us': 'Import Matching Attachments',
+  },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер прикрепленных файлов недоступен',
