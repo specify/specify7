@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-21 21:09+0000\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
 "Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "setupTool/es/>\n"
@@ -13,90 +13,75 @@ msgstr ""
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:237
-#, fuzzy
 msgid "guidedSetup"
 msgstr "Configuración guiada"
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:309
-#, fuzzy
 msgid "setupProgress"
 msgstr "Progreso:"
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:258
-#, fuzzy
 msgid "overview"
 msgstr "Descripción general"
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:244
 #: components/SetupTool/index.tsx:248
-#, fuzzy
 msgid "settingUp"
-msgstr "Configurando la base de datos..."
+msgstr "Configurando la base de datos…"
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:249
-#, fuzzy
 msgid "creating"
 msgstr "Creando el"
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:317
-#, fuzzy
 msgid "setupError"
 msgstr "Se produjo un error durante el último intento de configuración."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:157
-#, fuzzy
 msgid "institution"
 msgstr "Institución"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:158
-#, fuzzy
 msgid "institutionDescription"
-msgstr "Ingrese la información de la institución."
+msgstr "Introduzca información de la institución."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:164
-#, fuzzy
 msgid "institutionName"
 msgstr "Nombre"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:165
-#, fuzzy
 msgid "institutionNameDescription"
 msgstr ""
-"El nombre completo y oficial de la institución (por ejemplo, \"Instituto de "
-"Biodiversidad de la Universidad de Kansas\")."
+"El nombre completo y oficial de la institución (p.ej., «Instituto de "
+"Biodiversidad de la Universidad de Kansas»)."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:171
-#, fuzzy
 msgid "institutionCode"
 msgstr "Código"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:172
-#, fuzzy
 msgid "institutionCodeDescription"
 msgstr ""
-"Un código o acrónimo corto y único para la institución (por ejemplo, "
-"\"KUBI\")."
+"Un código o acrónimo breve y único para la institución (p.ej., \"KUBI\")."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:178
-#, fuzzy
 msgid "institutionAddress"
 msgstr "Dirección"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:180
-#, fuzzy
 msgid "institutionAddressDescription"
 msgstr "La dirección de la institución. Opcional."
 
@@ -117,7 +102,6 @@ msgstr ""
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:185
-#, fuzzy
 msgid "address"
 msgstr "Dirección"
 
@@ -129,61 +113,51 @@ msgstr "La dirección postal de la institución."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:191
-#, fuzzy
 msgid "addressCity"
 msgstr "Ciudad"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:192
-#, fuzzy
 msgid "addressCityDescription"
 msgstr "La ciudad donde se encuentra la institución."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:198
-#, fuzzy
 msgid "addressState"
 msgstr "Provincia/Estado"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:199
-#, fuzzy
 msgid "addressStateDescription"
 msgstr "El estado o provincia."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:205
-#, fuzzy
 msgid "addressCountry"
 msgstr "País"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:206
-#, fuzzy
 msgid "addressCountryDescription"
 msgstr "El país."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:212
-#, fuzzy
 msgid "addressPostalCode"
 msgstr "Código postal"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:213
-#, fuzzy
 msgid "addressPostalCodeDescription"
 msgstr "El código postal."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:219
-#, fuzzy
 msgid "addressPhone1"
 msgstr "Teléfono"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:220
-#, fuzzy
 msgid "addressPhone1Description"
 msgstr "Un número de teléfono de contacto."
 
