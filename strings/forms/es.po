@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-20 02:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-22 10:09+0000\n"
+"Last-Translator: Francisco Serrador <fserrador@gmail.com>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/forms/"
 "es/>\n"
 "Language: es\n"
@@ -142,7 +142,6 @@ msgstr "Hoy"
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:144
-#, fuzzy
 msgid "todayButtonDescription"
 msgstr "Establecer a la fecha actual"
 
@@ -166,7 +165,6 @@ msgstr "Tipo inválido"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:255
-#, fuzzy
 msgid "invalidNumericPicklistValue"
 msgstr "Solo se admiten valores numéricos en este {pickListTable:string}"
 
