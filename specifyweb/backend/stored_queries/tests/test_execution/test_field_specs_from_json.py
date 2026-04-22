@@ -118,3 +118,14 @@ class TestFieldSpecsFromJson(ApiTests):
         self.assertFalse(fieldspec.contains_tree_rank())
         self.assertIsNone(fieldspec.tree_rank)
         self.assertIsNone(fieldspec.get_field())
+
+    def test_nested_formatted_relation_keeps_legacy_sentinel(self):
+        fieldspec = QueryFieldSpec.from_stringid("1,10,2.locality.locality", True)
+
+        self.assertTrue(fieldspec.contains_tree_rank())
+        self.assertEqual(fieldspec.tree_rank, "locality")
+        self.assertEqual(
+            [node.name for node in fieldspec.join_path],
+            ["collectingEvent", "locality", "locality"],
+        )
+        self.assertIsInstance(fieldspec.get_field(), TreeRankQuery)

@@ -260,7 +260,19 @@ class QueryFieldSpec(
         field = node.get_field(extracted_fieldname, strict=False)
 
         tree_rank_name = None
-        if field is None and is_tree_table(node):  # try finding tree only on tree tables
+        if (
+            field is None
+            and is_relation
+            and not is_tree_table(node)
+            and extracted_fieldname.lower() == table_name.lower() == node.name.lower()
+        ):
+            # Legacy relation stringids like "locality.locality" serialize the current related table as a formatted
+            # step, not as an actual field on that table.
+            # Preserve that sentinel so nested formatted relations keep the same row plan shape, without treating
+            # arbitrary unknown fields on non-tree tables as tree ranks.
+            tree_rank_name = extracted_fieldname
+            join_path.append(TreeRankQuery.create(tree_rank_name, node.name))
+        elif field is None and is_tree_table(node):  # try finding tree only on tree tables
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
                 tree_rank = TreeRankQuery.create(
