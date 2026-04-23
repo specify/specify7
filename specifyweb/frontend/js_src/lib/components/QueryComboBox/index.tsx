@@ -340,8 +340,7 @@ export function QueryComboBox({
                     typeof collectionRelationships === 'object'
                       ? collectionRelationships
                       : undefined,
-                  treeData:
-                    typeof treeData === 'object' ? treeData : undefined,
+                  treeData: typeof treeData === 'object' ? treeData : undefined,
                   relatedTable,
                   subViewRelationship,
                   treeDefinition,
@@ -402,7 +401,11 @@ export function QueryComboBox({
   // FEATURE: use main table field if type search is not defined
   const fetchSource = React.useCallback(
     async (value: string): Promise<RA<AutoCompleteItem<string>>> => {
-      if (!isLoaded || typeof typeSearch !== 'object' || typeof resource !== 'object')
+      if (
+        !isLoaded ||
+        typeof typeSearch !== 'object' ||
+        typeof resource !== 'object'
+      )
         return [];
 
       // Reset pagination on new search
@@ -442,7 +445,9 @@ export function QueryComboBox({
   }, [rowsToItems, runPage, isLoadingMore]);
 
   // Extra items appended via scroll pagination
-  const [extraItems, setExtraItems] = React.useState<RA<AutoCompleteItem<string>>>([]);
+  const [extraItems, setExtraItems] = React.useState<
+    RA<AutoCompleteItem<string>>
+  >([]);
 
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedTable.name) &&
