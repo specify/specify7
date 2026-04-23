@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 20:37+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-24 17:47+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -42,9 +42,8 @@ msgstr "Flytte"
 #: components/SearchDialog/SelectRecordSet.tsx:136
 #: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:186
-#, fuzzy
 msgid "merge"
-msgstr "Fusjonere"
+msgstr "Slå sammen"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
@@ -79,9 +78,8 @@ msgstr "Flytt node"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:153
-#, fuzzy
 msgid "addChild"
-msgstr "Legg til barn"
+msgstr "Legg til undernode"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:388
