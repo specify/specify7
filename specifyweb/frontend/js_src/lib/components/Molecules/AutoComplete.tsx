@@ -430,6 +430,9 @@ export function AutoComplete<T>({
             overflow-y-auto rounded rounded bg-white shadow-lg
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
+          onMouseDown={(e) => {
+                      e.preventDefault();
+                    }}
           ref={dataListRefCallback}
         >
           {isLoading && (
