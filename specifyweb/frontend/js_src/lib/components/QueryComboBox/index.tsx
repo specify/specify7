@@ -41,6 +41,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { QueryComboBoxFilter } from '../SearchDialog';
 import { SearchDialog } from '../SearchDialog';
+import { QUERY_COMBO_BOX_PAGE_SIZE } from './constants';
 import {
   getQueryComboBoxConditions,
   getRelatedCollectionId,
@@ -54,9 +55,6 @@ import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { TreeDefinitionContext } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
-
-// Results are fetched in pages of this size and loaded on scroll.
-export const QUERY_COMBO_BOX_PAGE_SIZE = 50;
 
 /*
  * REFACTOR: split this component

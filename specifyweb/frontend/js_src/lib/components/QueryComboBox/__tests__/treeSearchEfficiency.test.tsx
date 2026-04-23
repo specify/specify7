@@ -10,8 +10,8 @@ import { requireContext } from '../../../tests/helpers';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
+import { QUERY_COMBO_BOX_PAGE_SIZE } from '../constants';
 import { makeComboBoxQuery } from '../helpers';
-import { QUERY_COMBO_BOX_PAGE_SIZE } from '../index';
 
 requireContext();
 
