@@ -62,7 +62,7 @@ class TestExportWebPortal(SQLAlchemySetup):
 
         self.assertEqual(
             fake_join_manager.filter_kwargs,
-            {"collectionobject_id__in": [123]},
+            {"collectionobject_id__in": [123], "attachment__ispublic": True},
         )
         self.assertEqual(
             result["123"],
