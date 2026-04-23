@@ -118,7 +118,12 @@ def _portal_attachment_map(tableid: int, record_ids: list[Any]) -> dict[Any, str
     join_model = apps.get_model(base_model._meta.app_label, join_model_name)
     record_id_field = f'{base_model.__name__.lower()}_id'
 
-    join_records = join_model.objects.filter(**{f'{record_id_field}__in': record_ids}).select_related('attachment')
+    join_records = join_model.objects.filter(
+        **{
+            f'{record_id_field}__in': record_ids,
+            'attachment__ispublic': True,
+        }
+    ).select_related('attachment')
     attachment_entries_by_record_id: dict[str, list[str]] = defaultdict(list)
 
     for join_record in join_records:
