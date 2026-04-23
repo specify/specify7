@@ -374,7 +374,8 @@ export const queryText = createDictionary({
       'Please modify the query so that it returns unique records for each returned row.',
   },
   webPortalExportDuplicateHint: {
-    'en-us': '(Hint: You may need to add a condition for current determination or use an aggregator for preparations or collectors.)',
+    'en-us':
+      '(Hint: You may need to add a condition for current determination or use an aggregator for preparations or collectors.)',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
