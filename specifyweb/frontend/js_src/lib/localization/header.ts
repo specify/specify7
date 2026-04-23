@@ -281,7 +281,7 @@ export const headerText = createDictionary({
     'hr-hr': 'Resurs metapodataka',
   },
   simpleSearch: {
-    'en-us': 'Simple Search',
+    'en-us': 'Express Search',
     'ru-ru': 'Экспресс-поиск',
     'es-es': 'Búsqueda sencilla',
     'fr-fr': 'Recherche simple',
@@ -500,7 +500,7 @@ export const headerText = createDictionary({
   chronostratigraphicChart: {
     'en-us': 'Chronostratigraphic Chart',
     'de-ch': 'Chronostratigraphische Tabelle',
-    'es-es': 'Carta cronoestratigráfica',
+    'es-es': 'Cuadro cronoestratigráfico',
     'fr-fr': 'Charte chronostratigraphique',
     'pt-br': 'Carta cronoestratigráfica',
     'ru-ru': 'Хроностратиграфическая диаграмма',

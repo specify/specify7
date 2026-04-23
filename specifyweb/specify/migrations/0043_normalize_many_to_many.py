@@ -213,7 +213,7 @@ CREATE TABLE `project_colobj` (
 }
 
 def redis_table_key(table: str):
-    return f"migration:0043:{table}"
+    return "specify:{database}:migration:0043:" + table
 
 results = dict()
 

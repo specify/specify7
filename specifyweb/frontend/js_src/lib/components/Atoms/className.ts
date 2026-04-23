@@ -83,7 +83,7 @@ export const className = {
   formStyles,
   limitedWidth: `max-w-[var(--max-field-width)]`,
   headerPrimary: 'font-semibold text-black dark:text-white',
-  headerGray: 'text-gray-500 dark:text-neutral-400',
+  headerGray: 'text-gray-600 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
   formFooter:
