@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-23 15:09+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
-"Content-Transfer-Encoding: 8bit\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:54
@@ -42,9 +42,8 @@ msgstr "Flytte"
 #: components/SearchDialog/SelectRecordSet.tsx:139
 #: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:186
-#, fuzzy
 msgid "merge"
-msgstr "Fusjonere"
+msgstr "Slå sammen"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
@@ -79,9 +78,8 @@ msgstr "Flytt node"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:153
-#, fuzzy
 msgid "addChild"
-msgstr "Legg til barn"
+msgstr "Legg til undernode"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:388
