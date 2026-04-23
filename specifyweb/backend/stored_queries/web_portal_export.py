@@ -144,6 +144,28 @@ def _dedupe_name(name: str, used_names: set[str]) -> str:
     return candidate
 
 
+def _normalize_portal_column_name(name: Any, query_field=None) -> str:
+    """Normalize portal column captions for export.
+
+    Removes names and full name field labels which are not useful
+    in the portal.
+    """
+    normalized = str(name if name is not None else '').strip()
+
+    if query_field is not None:
+        fieldspec = query_field.fieldspec
+        field = fieldspec.get_field()
+        if (
+            fieldspec.tree_rank is not None
+            and field is not None
+            and field.name in {'name', 'fullName'}
+            and ' - ' in normalized
+        ):
+            return normalized.rsplit(' - ', 1)[0].rstrip()
+
+    return normalized
+
+
 def _portal_solr_type(query_field, collection, user) -> str:
     """Map a query field to the Solr field type used in portal metadata."""
     fieldspec = query_field.fieldspec
@@ -467,7 +489,7 @@ def query_to_web_portal_zip(
         zip_longest(display_fields, effective_captions, fillvalue=''),
         start=0,
     ):
-        trimmed_caption = str(caption).strip()
+        trimmed_caption = _normalize_portal_column_name(caption, field_spec)
         base_name = trimmed_caption if trimmed_caption else f'column_{index + 1}'
         colname = _dedupe_name(base_name, used_colnames)
 
