@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
-"resources/hr/>\n"
+"Language-Team: Croatian "
+"<https://hosted.weblate.org/projects/specify-7/resources/hr/>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,180 +13,180 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
-#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:87
 #: components/AppResources/Filters.tsx:134
 #: components/Header/userToolDefinitions.ts:76
 #: components/Preferences/UserDefinitions.tsx:2130
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
+#. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #, fuzzy
 msgid "appResources"
 msgstr "Resursi aplikacije"
 
-#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:908
+#. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "formDefinition"
 msgstr "Definicija obrasca"
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/types.tsx:35
+#. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #, fuzzy
 msgid "formDefinitions"
 msgstr "Definicija obrasca"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "newViewDefinition"
 msgstr "Nova definicija prikaza"
 
-#. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
+#. Used in: Components > App Resources > Editor Components
 #, fuzzy
 msgid "loadFile"
 msgstr "Učitaj datoteku"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
+#. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "globalResources"
 msgstr "Globalni resursi"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:47
+#. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "disciplineResources"
 msgstr "Disciplinski resursi"
 
-#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field
 #: components/AppResources/Create.tsx:96
 #: components/FieldFormatters/Parts.tsx:51
 #: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
+#. Used in: Components > App Resources > Create ⬤ Components > Field Formatters > Parts ⬤ Components > Schema Config > Field
 #, fuzzy
 msgid "type"
 msgstr "Tip"
 
-#. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:239
+#. Used in: Components > App Resources > Tree
 #, fuzzy
 msgid "userTypes"
 msgstr "Vrste korisnika"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
 #: components/AppResources/index.tsx:54
+#. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #, fuzzy
 msgid "resources"
 msgstr "Resursi"
 
-#. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:264
+#. Used in: Components > App Resources > Aside
 #, fuzzy
 msgid "subCategories"
 msgstr "Potkategorije"
 
-#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #: components/AppResources/Aside.tsx:331
 #: components/Router/Routes.tsx:267
+#. Used in: Components > App Resources > Aside ⬤ Components > Router > Routes
 #, fuzzy
 msgid "addResource"
 msgstr "Dodaj resurs"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:30
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "appResource"
 msgstr "Resurs aplikacije"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:128
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "rssExportFeed"
 msgstr "Izvoz RSS feeda"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:102
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "exports"
 msgstr "Izvoz"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:136
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "expressSearchConfig"
 msgstr "Konfiguracija brzog pretraživanja"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:144
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "typeSearches"
 msgstr "Pretraživanja tipova"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:152
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "webLinks"
 msgstr "Web poveznice"
 
-#. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
 #: components/AppResources/types.tsx:160
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
+#. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
 #, fuzzy
 msgid "uiFormatters"
 msgstr "Formateri polja"
 
-#. Used in: Components > Field Formatters > Table
 #: components/FieldFormatters/Table.tsx:28
+#. Used in: Components > Field Formatters > Table
 #, fuzzy
 msgid "fieldFormattersDescription"
 msgstr ""
-"„Format polja“ kontrolira kako se podaci za određeno polje tablice prikazuju "
-"u rezultatima upita, izvozima i obrascima. Upravlja automatskim numeriranjem "
-"i sastavom različitih dijelova koji definiraju polje."
+"„Format polja“ kontrolira kako se podaci za određeno polje tablice "
+"prikazuju u rezultatima upita, izvozima i obrascima. Upravlja automatskim "
+"numeriranjem i sastavom različitih dijelova koji definiraju polje."
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:168
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
 msgstr "Formateri zapisa"
 
-#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #: components/Formatters/Aggregator.tsx:69
 #: components/Formatters/Element.tsx:132
 #: components/Formatters/Fields.tsx:287
+#. Used in: Components > Formatters > Aggregator ⬤ Components > Formatters > Element ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "formatter"
 msgstr "Format tablice"
 
-#. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
+#. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "formatterDescription"
 msgstr ""
 "„Format tablice“ kontrolira kako se podaci iz određene tablice prikazuju u "
-"rezultatima upita, izvozima i kombiniranim okvirima upita. Određuje polja za "
-"prikaz i njihov redoslijed. Uvjetno oblikovanje može se konfigurirati na "
+"rezultatima upita, izvozima i kombiniranim okvirima upita. Određuje polja "
+"za prikaz i njihov redoslijed. Uvjetno oblikovanje može se konfigurirati na "
 "temelju vrijednosti u zapisu."
 
-#. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:133
+#. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "aggregator"
 msgstr "Agregacija tablica"
 
-#. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
+#. Used in: Components > Formatters > Table
 #, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
@@ -195,610 +195,609 @@ msgstr ""
 "sortiranje i ograničenje pregleda zapisa mogu se prilagoditi. Može se "
 "prikazati u rezultatima upita i formatima tablica."
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "formattedResource"
 msgstr "Formatirani resurs"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:68
+#. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableFormatters"
 msgstr "Dostupni formati tablica"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:69
+#. Used in: Components > Formatters > List
 #, fuzzy
 msgid "availableAggregators"
 msgstr "Dostupne agregacije tablica"
 
-#. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:21
+#. Used in: Components > Web Links > List
 #, fuzzy
 msgid "availableWebLink"
 msgstr "Dostupne web poveznice"
 
-#. Used in: Components > Field Formatters > List
 #: components/FieldFormatters/List.tsx:73
+#. Used in: Components > Field Formatters > List
 #, fuzzy
 msgid "availableFieldFormatters"
 msgstr "Dostupni formateri polja"
 
-#. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:138
+#. Used in: Components > Formatters > List
 #, fuzzy
 msgid "selectDefaultFormatter"
 msgstr "Molimo označite jedan od formatera kao zadani"
 
-#. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:51
+#. Used in: Components > Formatters > Element
 #, fuzzy
 msgid "duplicateFormatters"
 msgstr "Imena formatera zapisa moraju biti jedinstvena"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:176
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataEntryTables"
 msgstr "Tablice za unos podataka"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:184
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "interactionsTables"
 msgstr "Tablice interakcija"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:191
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherXmlResource"
 msgstr "Drugi XML resurs"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:198
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherJsonResource"
 msgstr "Drugi JSON resurs"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:205
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Drugi resursi za nekretnine"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:212
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherAppResource"
 msgstr "Drugi resurs"
 
-#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:63
+#. Used in: Components > App Resources > Filters
 #, fuzzy
 msgid "filters"
 msgstr "Filtri"
 
-#. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:90
 #: components/AppResources/Filters.tsx:91
 #: components/AppResources/Filters.tsx:100
+#. Used in: Components > App Resources > Filters
 #, fuzzy
 msgid "custom"
 msgstr "Običaj"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:120
+#. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "leafletLayers"
 msgstr "Slojevi letaka"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:145
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "textEditor"
 msgstr "Uređivač teksta"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:143
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "xmlEditor"
 msgstr "XML uređivač"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "jsonEditor"
 msgstr "JSON uređivač"
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:142
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "visualEditor"
 msgstr "Vizualni uređivač"
 
-#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
+#. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "selectResourceType"
 msgstr "Odaberite vrstu resursa"
 
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:122
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #, fuzzy
 msgid "globalPreferences"
 msgstr "Globalne postavke"
 
-#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #: components/AppResources/tree.ts:124
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:55
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:69
+#. Used in: Components > App Resources > Tree ⬤ App Resources > __tests__ > Disambiguate Global Prefs ⬤ App Resources > __tests__ > Get Global All Resources
 #, fuzzy
 msgid "remotePreferences"
 msgstr "Postavke daljinskog upravljača"
 
-#. Used in: Components > Formatters > Index
 #: components/Formatters/index.tsx:99
+#. Used in: Components > Formatters > Index
 #, fuzzy
 msgid "failedParsingXml"
 msgstr "Nije uspjelo raščlaniti XML"
 
-#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec ⬤ Components > Statistics > Stats Page Editing
 #: components/Formatters/Element.tsx:102
 #: components/QueryBuilder/FieldFilterSpec.tsx:557
 #: components/Statistics/StatsPageEditing.tsx:61
+#. Used in: Components > Formatters > Element ⬤ Components > Query Builder > Field Filter Spec ⬤ Components > Statistics > Stats Page Editing
 #, fuzzy
 msgid "name"
 msgstr "Ime"
 
-#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:169
+#. Used in: Components > Export Feed > Editor ⬤ Components > Formatters > Element
 #, fuzzy
 msgid "title"
 msgstr "Titula"
 
-#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:193
 #: components/Formatters/List.tsx:128
+#. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #, fuzzy
 msgid "default"
 msgstr "Zadano"
 
-#. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #: components/FieldFormatters/index.ts:382
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
+#. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "separator"
 msgstr "Separator"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
+#. Used in: Components > Formatters > Aggregator
 #, fuzzy
 msgid "suffix"
 msgstr "Sufiks"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:54
+#. Used in: Components > Formatters > Aggregator
 #, fuzzy
 msgid "limit"
 msgstr "Ograničiti"
 
-#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:73
 #: components/Formatters/Components.tsx:131
 #: components/QueryBuilder/Formatter.tsx:212
+#. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #, fuzzy
 msgid "defaultInline"
 msgstr "(zadano)"
 
-#. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
+#. Used in: Components > Formatters > Aggregator
 #, fuzzy
 msgid "sortField"
 msgstr "Polje za sortiranje"
 
-#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:74
 #: components/Merging/Header.tsx:164
+#. Used in: Components > Form Editor > Create ⬤ Components > Formatters > Preview ⬤ Components > Merging > Header
 #, fuzzy
 msgid "preview"
 msgstr "Pregled"
 
-#. Used in: Components > Formatters > Preview
 #: components/Formatters/Preview.tsx:75
+#. Used in: Components > Formatters > Preview
 #, fuzzy
 msgid "previewExplainer"
 msgstr "Pretražite zapise svoje zbirke kako biste pregledali formater zapisa"
 
-#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:40
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
+#. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "editorNotAvailable"
 msgstr "Vizualni uređivač nije dostupan za ovaj resurs"
 
-#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
+#. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #, fuzzy
 msgid "definition"
 msgstr "Definicija"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "addDefinition"
 msgstr "Dodaj definiciju"
 
-#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:253
+#. Used in: Components > Form Editor > Editor ⬤ Components > Formatters > Definitions
 #, fuzzy
 msgid "deleteDefinition"
 msgstr "Izbriši definiciju"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "urlPart"
 msgstr "Dio URL-a"
 
-#. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #: components/FieldFormatters/Parts.tsx:90
 #: components/Formatters/Definitions.tsx:213
 #: components/Formatters/Fields.tsx:125
+#. Used in: Components > Field Formatters > Parts ⬤ Components > Formatters > Definitions ⬤ Components > Formatters > Fields
 #, fuzzy
 msgid "addField"
 msgstr "Dodaj polje"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:26
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "thisField"
 msgstr "Ovo polje"
 
-#. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:151
 #: components/WebLinks/Definition.tsx:165
+#. Used in: Components > Web Links > Definition
 #, fuzzy
 msgid "selectTableFirst"
 msgstr "Prvo odaberite tablicu"
 
-#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
+#. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionFieldValue"
 msgstr "Vrijednost polja uvjeta"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:184
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Ovaj format će se koristiti samo ako je vrijednost polja uvjeta jednaka ovom "
-"uvjetu i nije null."
+"Ovaj format će se koristiti samo ako je vrijednost polja uvjeta jednaka "
+"ovom uvjetu i nije null."
 
-#. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:165
+#. Used in: Components > App Resources > Tabs
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
 "Ovaj resurs pripada drugoj zbirci/disciplini od one u kojoj se trenutno "
 "nalazite. Preporučuje se promjena zbirke prije uređivanja ovog resursa."
 
-#. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
+#. Used in: Components > Web Links > Element
 #, fuzzy
 msgid "thisFieldName"
 msgstr "Naziv ovog polja (samo za potrebe pregleda)"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:295
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publishEveryDays"
 msgstr "Objavljuj svakih N dana"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:292
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "publish"
 msgstr "Objaviti"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "fileName"
 msgstr "Naziv datoteke"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runAsUser"
 msgstr "Pokreni kao korisnik"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:258
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "notifyUser"
 msgstr "Pošalji korisniku obavijest o dovršetku"
 
-#. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:273
+#. Used in: Components > Export Feed > Editor
 #, fuzzy
 msgid "runInCollection"
 msgstr "Pokreni u kolekciji"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "createNewForm"
 msgstr "Izradi novu definiciju prikaza"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyFromExistingForm"
 msgstr "Kopiraj postojeću definiciju prikaza"
 
-#. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
+#. Used in: Components > Form Editor > Create
 #, fuzzy
 msgid "copyDefaultForm"
 msgstr "Kopiraj definiciju zadanog prikaza"
 
-#. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:232
+#. Used in: Components > App Resources > Create
 #, fuzzy
 msgid "copyDefaultForms"
 msgstr "Kopiraj zadane obrasce"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:114
+#. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirst"
 msgstr "Prvo spremi obrazac"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:117
+#. Used in: Components > Form Meta > Index
 #, fuzzy
 msgid "saveFormFirstDescription"
 msgstr "Morate spremiti ovaj obrazac prije nego što uredite drugi"
 
-#. Used in: Components > Formatters > Formatter
 #: components/Formatters/Formatter.tsx:77
+#. Used in: Components > Formatters > Formatter
 #, fuzzy
 msgid "conditionalFormatter"
 msgstr "Uvjetni format"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:136
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customizeFieldFormatters"
 msgstr "Prilagodite formate polja"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:262
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "expandConditionalField"
 msgstr "Proširi uvjetno polje"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:178
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "collapseConditionalField"
 msgstr "Sažmi uvjetno polje"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:147
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Vrijednost uvjetnog polja"
 
-#. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:219
+#. Used in: Components > Formatters > Definitions
 #, fuzzy
 msgid "formatPreview"
 msgstr "Pregled formata"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:540
 #: components/DataModel/businessRuleDefs.ts:558
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Potrebna je trenutna odluka."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:320
 #: components/DataModel/businessRuleDefs.ts:339
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "COG se ne može dodati samom sebi."
 
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:269
 #: components/DataModel/__tests__/businessRules.test.ts:416
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "primaryCogChildRequired"
 msgstr ""
 "Konsolidirana grupa objekata kolekcije mora imati primarni podređeni objekt "
 "kolekcije"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:357
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "Primarni zapis CO ne može se izbrisati."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:801
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Posuđeni preparat se ne može izbrisati"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:809
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Poklonjena priprema ne može se izbrisati"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:817
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Odbačeni pripravak ne može se izbrisati"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:825
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Zamijenjeni pripravak ne može se izbrisati"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:833
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
 msgstr "Razmjena u pripremi ne može se izbrisati"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:906
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "selectDeterminationTaxon"
-msgstr "Odaberite jedan skup taksonskog stabla za nastavak:"
+msgstr ""
 
-#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:196
 #: components/DataModel/__tests__/businessRules.test.ts:182
+#. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
 msgid "invalidDeterminationTaxon"
-msgstr ""
-"Determinacija ne pripada stablu taksona povezanom s tipom objekta kolekcije"
+msgstr "Determinacija ne pripada stablu taksona povezanom s tipom objekta kolekcije"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:408
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "invalidNameTaxon"
 msgstr ""
 "{taxonName: string} ne pripada stablu {taxonTableLabel: string} povezanom s "
 "{typeName: string}"
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:236
 #: components/DataModel/businessRuleDefs.ts:471
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "catalogNumberAlreadyUsed"
 msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} se već koristi za "
 "drugu komponentu ili objekt kolekcije u ovoj kolekciji."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:776
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Priprema se koristi u zajmu."
 
-#. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:769
+#. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"
 msgstr "Broj priprema ne može biti negativan"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:336
 #: components/Formatters/Fields.tsx:337
 #: components/Formatters/Fields.tsx:342
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "configureField"
 msgstr "Konfiguriraj polje"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:381
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZeros"
 msgstr "Izbriši nule"
 
-#. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:375
+#. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "trimZerosDescription"
 msgstr "Uklonite vodeće nule iz numeričkih vrijednosti."
 
-#. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:139
+#. Used in: Components > Field Formatters > Field Formatter
 #, fuzzy
 msgid "formatterPreviewUnavailable"
 msgstr "Pregled za formater ove vrste nije dostupan"
 
-#. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:150
 #: components/FieldFormatters/FieldFormatter.tsx:178
+#. Used in: Components > Field Formatters > Field Formatter
 #, fuzzy
 msgid "nonConformingInline"
 msgstr "(neusklađeno)"
 
-#. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:53
 #: components/FieldFormatters/Parts.tsx:157
+#. Used in: Components > Field Formatters > Parts
 #, fuzzy
 msgid "value"
 msgstr "Vrijednost"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:375
+#. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "constant"
 msgstr "Konstanta"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:377
+#. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "alpha"
 msgstr "Alfa"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:378
+#. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "numeric"
 msgstr "Numerički"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:379
+#. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "alphanumeric"
 msgstr "Alfanumerički"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:380
+#. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "anychar"
 msgstr "Bilo koji znak"
 
-#. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:381
+#. Used in: Components > Field Formatters > Index
 #, fuzzy
 msgid "regex"
 msgstr "Regularni izraz"
 
-#. Used in: Components > Field Formatters > Field Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:177
+#. Used in: Components > Field Formatters > Field Formatter
 #, fuzzy
 msgid "exampleField"
 msgstr "Primjer polja"
 
-#. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:248
 #: components/FieldFormatters/Parts.tsx:250
+#. Used in: Components > Field Formatters > Parts
 #, fuzzy
 msgid "pattern"
 msgstr "Uzorak"

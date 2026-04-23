@@ -3,141 +3,122 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:13+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/welcome/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/welcome/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:101
 #: components/Router/Routes.tsx:488
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #, fuzzy
 msgid "pageTitle"
-msgstr "Velkomst"
+msgstr ""
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:154
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:215
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "aboutSpecify"
-msgstr "Om Spesifiser 7"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:56
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "downloadInformation"
-msgstr "Last ned informasjon"
+msgstr ""
 
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:260
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #, fuzzy
 msgid "taxonTiles"
-msgstr "Taxon-fliser"
+msgstr ""
 
-#. Used in: Components > Home Page > Taxon Tiles
 #: components/HomePage/TaxonTiles.tsx:73
+#. Used in: Components > Home Page > Taxon Tiles
 #, fuzzy
 msgid "taxonTilesDescription"
 msgstr ""
-"Viser taxa med {count:number|formatted} eller flere "
-"{collectionObjectTable:string} poster"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:79
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "fullAddress"
 msgstr ""
-"Spesifiser samlingskonsortium <br />\n"
-"Institutt for biodiversitet <br />\n"
-"Universitetet i Kansas <br />\n"
-"1345 Jayhawk Blvd. <br />\n"
-"Lawrence, KS 66045 USA"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:91
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "disclosure"
 msgstr ""
-"Specifice-programvaren er et produkt av Specifice Collections Consortium, "
-"som styres og finansieres av medlemsinstitusjonene. Konsortiets grunnleggere "
-"inkluderer: Commonwealth Scientific and Industrial Research Organisation "
-"(CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium "
-"of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, "
-"University of Kansas og University of Michigan. Konsortiet opererer under "
-"den ideelle organisasjonen 501(c)3, et amerikansk skattesystem, University "
-"of Kansas Center for Research. Specifice ble støttet fra 1996 til 2018 av "
-"tilskudd fra den amerikanske National Science Foundation."
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Specificate 7, Copyright 2025, University of Kansas Center for Research. "
-"Specifice leveres UTEN GARANTI. Dette er gratis programvare med åpen "
-"kildekode lisensiert under GNU General Public License v2."
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "systemInformation"
-msgstr "Systeminformasjon"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:99
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "specifyVersion"
-msgstr "Spesifiser 7-versjon:"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:100
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "gitSha"
-msgstr "Git SHA:"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "buildDate"
-msgstr "Byggedato:"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "specifySixVersion"
-msgstr "Spesifiser 6 versjon:"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "databaseVersion"
-msgstr "Databaseversjon:"
+msgstr ""
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 #, fuzzy
 msgid "schemaVersion"
-msgstr "Databaseskjema"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "databaseName"
-msgstr "Databasenavn:"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:128
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "browser"
-msgstr "Nettleser:"
+msgstr ""
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:111
+#. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "databaseCreationDate"
-msgstr "Dato for opprettelse av database:"
+msgstr ""

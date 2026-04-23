@@ -3,15 +3,14 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/attachments/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/attachments/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 #: components/Attachments/RecordSetAttachment.tsx:161
 #: components/Attachments/RecordSetAttachment.tsx:164
 #: components/Attachments/RecordSetAttachment.tsx:168
@@ -35,480 +34,455 @@ msgstr ""
 #: components/WorkBench/WbAttachmentsPreview.tsx:334
 #: components/WorkBench/WbView.tsx:260
 #: components/WorkBench/hotProps.tsx:75
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 #, fuzzy
 msgid "attachments"
-msgstr "Vedlegg"
+msgstr ""
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:224
+#. Used in: Components > Attachments > Index
 #, fuzzy
 msgid "scale"
-msgstr "Skala"
+msgstr ""
 
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 #: components/Attachments/Plugin.tsx:42
 #: components/Attachments/Plugin.tsx:164
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/WbImportAttachments/index.tsx:196
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "attachmentServerUnavailable"
-msgstr "Vedleggsserveren er ikke tilgjengelig"
+msgstr ""
 
-#. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:57
+#. Used in: Components > Attachments > Index
 #, fuzzy
 msgid "attachmentServerUnavailableDescription"
-msgstr "Konfigurer vedleggsserveren din"
+msgstr ""
 
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1413
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "orderBy"
-msgstr "Bestill etter"
+msgstr ""
 
-#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 #: components/Attachments/Plugin.tsx:168
 #: components/WbImportAttachments/index.tsx:202
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "uploadingInline"
-msgstr "Laster opp…"
+msgstr ""
 
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:176
 #: components/AttachmentsBulkImport/utils.ts:463
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noAttachments"
-msgstr "Det finnes ingen vedlegg"
+msgstr ""
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:147
+#. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecord"
-msgstr "Finner ikke relatert oppføring"
+msgstr ""
 
-#. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:150
+#. Used in: Components > Attachments > Cell
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
-msgstr "Finner ikke en oppføring som dette vedlegget er relatert til."
+msgstr ""
 
-#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:377
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "showForm"
-msgstr "Vis skjema"
+msgstr ""
 
-#. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:51
+#. Used in: Components > Molecules > File Picker
 #, fuzzy
 msgid "multipleFilesSelected"
-msgstr "Flere filer valgt"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:205
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "fileSize"
-msgstr "Filstørrelse"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/Rollback.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:458
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "deleted"
-msgstr "Slettet"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:456
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noFile"
-msgstr "Ingen fil"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "pleaseReselectAllFiles"
-msgstr "Vennligst velg alle filene på nytt før opplasting."
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:455
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "incorrectFormatter"
-msgstr "Feil formatert"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:459
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "alreadyUploaded"
-msgstr "Allerede lastet opp"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:460
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "skipped"
-msgstr "Hoppet over"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:461
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "cancelled"
-msgstr "Avlyst"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:464
 #: components/AttachmentsBulkImport/utils.ts:467
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "frontEndInterruption"
-msgstr "{action:string} var i gang da avbruddet oppsto"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:462
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "matchError"
-msgstr "Samsvarsfeil"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:470
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorReadingFile"
-msgstr "Feil ved lesing av fil"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:472
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "unhandledFatalResourceError"
-msgstr "Ubehandlet fatal ressursfeil:"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:141
+#. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
-msgstr "Datasett for import av vedlegg ({count:number})"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:240
+#. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDataset"
-msgstr "Nytt vedleggsdatasett {date: string}"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:269
+#. Used in: Components > Attachments Bulk Import > Datasets
 #, fuzzy
 msgid "newAttachmentDatasetBase"
-msgstr "Nytt vedleggsdatasett"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:393
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "uploadInterrupted"
-msgstr "Opplasting avbrutt"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:399
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "uploadInterruptedDescription"
 msgstr ""
-"Opplastingen var i gang da det oppsto et avbrudd. Noen filer kan ha blitt "
-"lastet opp."
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:404
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "rollbackInterrupted"
-msgstr "Tilbakerulling avbrutt"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:410
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "rollbackInterruptedDescription"
 msgstr ""
-"Tilbakerullingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt "
-"slettet."
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:227
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "attachmentId"
-msgstr "Vedleggs-ID"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:34
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:41
+#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #, fuzzy
 msgid "choosePath"
-msgstr "Velg sti"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Upload.tsx:247
+#. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "beginAttachmentUpload"
-msgstr "Starte opplasting av vedlegg?"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Upload.tsx:250
+#. Used in: Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-"
-"databasen."
 
-#. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
+#. Used in: Components > Attachments Bulk Import > Action State
 #, fuzzy
 msgid "interrupted"
-msgstr "Avbrutt"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:55
+#. Used in: Components > Attachments Bulk Import > Action State
 #, fuzzy
 msgid "tryNow"
-msgstr "Prøv nå"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:62
+#. Used in: Components > Attachments Bulk Import > Action State
 #, fuzzy
 msgid "interruptedTime"
-msgstr "Avbrutt. Prøver på nytt i {remainingTime:string}"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Rollback
 #: components/AttachmentsBulkImport/Rollback.tsx:137
+#. Used in: Components > Attachments Bulk Import > Rollback
 #, fuzzy
 msgid "rollbackDescription"
 msgstr ""
-"Tilbakerulling vil slette vedleggene fra Specify-databasen og Asset Server"
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:474
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noMatch"
-msgstr "Ingen treff"
+msgstr ""
 
-#. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:179
+#. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "attachmentHaltLimit"
-msgstr "Ingen vedlegg er funnet i de første {halt:number}-postene."
+msgstr ""
 
-#. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:187
+#. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "fetchNextAttachments"
-msgstr "Se etter flere vedlegg"
+msgstr ""
 
-#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:376
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "hideForm"
-msgstr "Skjul skjema"
+msgstr ""
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1463
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "collapseFormByDefault"
-msgstr "Skjul skjema som standard"
+msgstr ""
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1464
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "collapseFormByDefaultDescription"
 msgstr ""
-"Om vedleggsskjemaet skal skjules som standard når eksisterende vedlegg "
-"vises. Hvis vedleggskontrollene er skjult, har denne innstillingen ingen "
-"effekt."
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1455
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showControls"
-msgstr "Vis vedleggskontroller"
+msgstr ""
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1456
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "showControlsDescription"
 msgstr ""
-"Vis eller skjul knappene for å zoome inn, zoome ut, tilbakestille og skjul/"
-"vis skjema for vedlegg når du viser et vedlegg."
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:475
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "multipleMatches"
-msgstr "Flere kamper"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "multipleMatchesClick"
-msgstr "Flere treff. Klikk for å gjøre det mer entydig"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "totalFiles"
-msgstr "Totalt antall filer"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:476
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "correctlyFormatted"
-msgstr "Riktig formatert"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:477
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "stoppedByUser"
-msgstr "Stoppet av bruker"
+msgstr ""
 
-#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #: components/Router/OverlayRoutes.tsx:246
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:224
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "importAttachments"
-msgstr "Importer vedlegg"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:30
+#. Used in: Components > Attachments Bulk Import > Action State
 #, fuzzy
 msgid "onFile"
-msgstr "På fil"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:416
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "duplicateFilesFound"
-msgstr "Duplikatfiler funnet"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:421
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "duplicateFilesDescription"
 msgstr ""
-"Følgende filer er ikke valgt fordi de allerede finnes i dette datasettet."
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:479
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorFetchingRecord"
-msgstr "Feil ved henting av oppføring"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:480
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "errorSavingRecord"
-msgstr "Feil ved lagring av oppføring"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:478
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "interruptionStopped"
-msgstr "Stoppet på grunn av feil ved opplasting av en tidligere fil"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "chooseFilesToGetStarted"
-msgstr "Velg filer eller dra dem hit for å komme i gang."
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "selectIdentifier"
-msgstr "Velg en identifikator som skal matches med filnavnet."
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:224
+#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "progress"
-msgstr "Framgang"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Rollback
 #: components/AttachmentsBulkImport/Rollback.tsx:143
+#. Used in: Components > Attachments Bulk Import > Rollback
 #, fuzzy
 msgid "rollbackResults"
-msgstr "Tilbakerullingsresultater"
+msgstr ""
 
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Rollback.tsx:146
 #: components/AttachmentsBulkImport/Upload.tsx:274
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "resultValue"
 msgstr ""
-"{success: number} av {total: number} vedlegg i datasettet har vært {action: "
-"string}."
 
-#. Used in: Components > Attachments Bulk Import > Rename Data Set
 #: components/AttachmentsBulkImport/RenameDataSet.tsx:32
+#. Used in: Components > Attachments Bulk Import > Rename Data Set
 #, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
-"Hvis du sletter et datasett permanent, fjernes det og opplastingsbanen. "
-"Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for "
-"et opplastet datasett."
 
-#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:481
+#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "attachmentUploadError"
 msgstr ""
-"Feil under opplasting av vedlegg. Vedleggsserveren er kanskje ikke "
-"tilgjengelig, eller det oppsto en feil under lesing av filen."
 
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
 msgid "downloadAll"
-msgstr "Last ned alle"
+msgstr ""
 
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
 msgid "downloadAllDescription"
-msgstr "Last ned alle vedlegg som er funnet"
+msgstr ""
 
-#. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:224
+#. Used in: Components > Attachments > Record Set Attachment
 #, fuzzy
 msgid "createRecordSetToDownloadAll"
 msgstr ""
-"Ikke alle vedleggene er lastet inn. Vennligst opprett et postsett med "
-"søkeresultatene for å laste ned alle vedleggene."
 
-#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #, fuzzy
 msgid "deleteAttachmentWarning"
-msgstr "Er du sikker på at du vil slette dette vedlegget?"
+msgstr ""
 
-#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:57
+#. Used in: Components > Form Sliders > Attachment Warning Deletion
 #, fuzzy
 msgid "attachmentDelition"
-msgstr "Sletting av vedlegg"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:50
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publicDefault"
-msgstr "Gjør vedlegg offentlige som standard"
+msgstr ""
 
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:51
+#. Used in: Components > Preferences > Collection Definitions
 #, fuzzy
 msgid "publicDefaultDescription"
 msgstr ""
-"Dette kontrollerer om nye vedlegg som legges til i denne samlingen skal "
-"flagges som «Offentlige» som standard. Offentlige vedlegg vil automatisk "
-"være synlige på en Specify-nettportal. Denne innstillingen kan overstyres "
-"for hvert vedlegg og påvirker ikke eksisterende vedlegg."

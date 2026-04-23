@@ -3,30 +3,30 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/development/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/development/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:478
+#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #, fuzzy
 msgid "crashReportVisualizer"
-msgstr "Visualisator for krasjrapporter"
+msgstr ""
 
-#. Used in: Components > Developer > Crash Report Visualizer
 #: components/Developer/CrashReportVisualizer.tsx:34
+#. Used in: Components > Developer > Crash Report Visualizer
 #, fuzzy
 msgid "downloadAsHtml"
-msgstr "Last ned som HTML"
+msgstr ""
 
-#. Used in: Components > Developer > Crash Report Mapper ⬤ Components > Specify Network > Map
 #: components/Developer/CrashReportMapper.tsx:168
 #: components/SpecifyNetwork/Map.tsx:228
+#. Used in: Components > Developer > Crash Report Mapper ⬤ Components > Specify Network > Map
 #, fuzzy
 msgid "details"
-msgstr "Detaljer"
+msgstr ""

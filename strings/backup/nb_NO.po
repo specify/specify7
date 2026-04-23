@@ -3,76 +3,76 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/backup/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/backup/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:99
+#. Used in: Components > Toolbar > Backup Status
 #, fuzzy
 msgid "completed"
-msgstr "Sikkerhetskopiering fullført."
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:90
+#. Used in: Components > Toolbar > Backup Status
 #, fuzzy
 msgid "failed"
-msgstr "Sikkerhetskopiering mislyktes."
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:94
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "previousFound"
-msgstr "En tidligere sikkerhetskopi ble funnet:"
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:108
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "previousNone"
-msgstr "Ingen tidligere sikkerhetskopi ble funnet. Starte en ny?"
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:96
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "previousSizeMB"
-msgstr "({size:string} MB)"
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:102
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "lastBackupOn"
-msgstr "Denne sikkerhetskopien ble opprettet på {date:string}"
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:44
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "checkPreviousFailed"
-msgstr "Kunne ikke sjekke forrige sikkerhetskopi."
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:62
+#. Used in: Components > Toolbar > Backup Database
 #, fuzzy
 msgid "startFailed"
-msgstr "Sikkerhetskopieringsstart mislyktes."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:337
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupCompleted"
-msgstr "Sikkerhetskopiering av databasen fullført."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:353
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "databaseBackupFailed"
-msgstr "Sikkerhetskopiering av databasen mislyktes."
+msgstr ""
 
-#. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:106
+#. Used in: Components > Toolbar > Backup Status
 #, fuzzy
 msgid "compressing"
-msgstr "Komprimerer..."
+msgstr ""

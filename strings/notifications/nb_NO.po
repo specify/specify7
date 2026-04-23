@@ -3,46 +3,45 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:11+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/notifications/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/notifications/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:96
+#. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notifications"
-msgstr "Varsler"
+msgstr ""
 
-#. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:42
+#. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notificationsCount"
-msgstr "Varsler: {count:number|formatted}"
+msgstr ""
 
-#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:45
+#. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "notificationsLoading"
-msgstr "Varsler: …"
+msgstr ""
 
-#. Used in: Components > Notifications > Notifications
 #: components/Notifications/Notifications.tsx:125
+#. Used in: Components > Notifications > Notifications
 #, fuzzy
 msgid "mostRecentNotificationsTop"
-msgstr "(Sortert fra nyeste til eldste.)"
+msgstr ""
 
-#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:67
 #: components/Notifications/NotificationRenderers.tsx:97
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "exception"
-msgstr "Feil"
+msgstr ""
 
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 #: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Cell.tsx:80
 #: components/Attachments/Viewer.tsx:241
@@ -53,49 +52,49 @@ msgstr "Feil"
 #: components/Notifications/NotificationRenderers.tsx:344
 #: components/Toolbar/BackupDatabase.tsx:76
 #: components/Toolbar/BackupStatus.tsx:74
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 #, fuzzy
 msgid "download"
-msgstr "Last ned"
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:43
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "feedItemUpdated"
-msgstr "RSS-eksportfeeden er oppdatert."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:61
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "updateFeedFailed"
-msgstr "Oppdatering av eksport av feed mislyktes."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:75
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "dwcaExportCompleted"
-msgstr "DwCA-eksport fullført."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:91
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "dwcaExportFailed"
-msgstr "DwCA-eksport mislyktes."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:105
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "queryExportToCsvCompleted"
-msgstr "Spørreeksport til CSV fullført."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:121
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "queryExportToKmlCompleted"
-msgstr "Spørreeksport til KML fullført."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:147
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "dataSetOwnershipTransferred"
 msgstr ""
-"<userName /> overførte eierskapet av datasettet <dataSetName /> til deg."

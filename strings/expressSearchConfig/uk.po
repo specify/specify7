@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -12,561 +12,537 @@ msgstr ""
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "loadingConfig"
-msgstr "Завантаження..."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "loadingMetadata"
-msgstr "Завантаження метаданих..."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 #, fuzzy
 msgid "expressSearchConfigTitle"
-msgstr "Конфігурація експрес-пошуку"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "searchFieldsTab"
-msgstr "Поля пошуку"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "relatedTablesTab"
-msgstr "Пов'язані таблиці"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "resultsOrderingTab"
-msgstr "Результати сортування"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "availableTables"
-msgstr "Доступні столи"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchableFields"
-msgstr "Поля для пошуку"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchLabel"
-msgstr "Пошук"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "fieldName"
-msgstr "Поле"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "sortMode"
-msgstr "Режим сортування"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchNone"
-msgstr "Жоден"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "ascendingOrder"
-msgstr "Зростаючий"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "descendingOrder"
-msgstr "Спадання"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "displayFields"
-msgstr "Поля відображення"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
-msgstr "Налаштувати порядок результатів"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
-msgstr "Змінити порядок відображення розділів на панелі результатів пошуку."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
-msgstr "Пов'язаний запит: {query:string}"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
-msgstr "Не налаштовано жодних елементів відображення."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectAllQueries"
-msgstr "Вибрати все"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "deselectAllQueries"
-msgstr "Зняти вибір усіх"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
-msgstr "Для вибраних таблиць немає пов’язаних запитів."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
-msgstr "Виберіть пов’язаний запит, щоб переглянути його опис."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noDescriptionAvailable"
-msgstr "Опис відсутній."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer"
-msgstr "Колекція таксонів Об'єкт"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Об'єкти колекції з поточними визначеннями, що показують назву визначеного "
-"таксона, загальну назву таксона та визначник."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObToLocality"
-msgstr "Місце проведення події збору"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObToLocality_desc"
 msgstr ""
-"Збір даних про події та їх місця проведення, включаючи дати подій та "
-"географічні координати."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject"
-msgstr "Таксон об'єкта колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject_desc"
-msgstr "Об'єкти колекції з їхніми визначеними назвами таксонів."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoToTaxon"
-msgstr "Географія таксонів"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Таксони, пов'язані з географічними записами через визначення об'єктів збору "
-"та місцезнаходження подій збору."
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors"
-msgstr "Колекціонери об'єктів колекцій"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors_desc"
-msgstr "Об'єкти колекції та агенти, які їх зібрали, з датами подій збору."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon"
-msgstr "Таксон Бажаний таксон"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon_desc"
 msgstr ""
-"Таксони з бажаними прийнятими назвами таксонів, за винятком записів, у яких "
-"відсутні прийняті зв'язки з таксонами."
 
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs"
-msgstr "Бажаний таксон об'єкта колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs_desc"
 msgstr ""
-"Об'єкти колекції з визначеннями, що мають як оригінальний таксон, так і "
-"переважний таксон."
 
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs"
-msgstr "Таксон об'єкта колекції (усі синоніми)"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs_desc"
 msgstr ""
-"Об'єкти колекції, що показують визначення, бажані назви таксонів та прийняті "
-"назви синонімів-дочірніх об'єктів."
 
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject"
-msgstr "Таксон об'єкта колекції (визначений)"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject_desc"
-msgstr "Об'єкти колекції лише з визначенням їх поточного таксону."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant"
-msgstr "Агент Варіант агента"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant_desc"
-msgstr "Варіанти агентів, пов'язані з їхніми батьківськими записами агентів."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "Agent"
-msgstr "Агент"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "Agent_desc"
-msgstr "Окремі агенти."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentVariant"
-msgstr "Варіант агента"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentVariant_desc"
-msgstr "Записи варіантів агента."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias"
-msgstr "Населений пункт Псевдонім населеного пункту"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias_desc"
 msgstr ""
-"Записи про населені пункти з пов'язаними псевдонімами назв населених пунктів."
 
 #. Used in: 
 #, fuzzy
 msgid "CEToCO"
-msgstr "Подія збору об'єктів колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CEToCO_desc"
-msgstr "Збір подій, пов'язаних з об'єктами колекції."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO"
-msgstr "Місцезнаходження об'єкта колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO_desc"
 msgstr ""
-"Місцевості та предмети колекціонування, знайдені під час їхніх колекційних "
-"заходів."
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo"
-msgstr "Приєднання до об'єкта колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo_desc"
 msgstr ""
-"Приєднання та їхні об'єкти колекцій, відфільтровані за поточними "
-"визначеннями."
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent"
-msgstr "Приєднання агента"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent_desc"
-msgstr "Приєднання та агенти, пов'язані через ролі агентів приєднання."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent"
-msgstr "Агент Борроу"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent_desc"
-msgstr "Позичальники та агенти, пов'язані через ролі агентів-позичальників."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent"
-msgstr "Оцінка агента"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent_desc"
-msgstr "Оцінки та пов'язані з ними агенти."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO"
-msgstr "Хроностратиграфія колекційних об'єктів"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO_desc"
 msgstr ""
-"Геологічні періоди часу з об'єктами колекції, пов'язаними через "
-"хроностратиграфічні контексти."
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors"
-msgstr "Колекціонер CollectingEvent"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors_desc"
-msgstr "Збір подій у парі з агентами, які збирали зразки."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn"
-msgstr "Агент обміну"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn_desc"
-msgstr "Вхідні обміни та матеріали агентів, від яких було отримано."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeOut"
-msgstr "Агент з обміну"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeOut_desc"
-msgstr "Вихідні обміни та агенти, яким було надіслано матеріали."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE"
-msgstr "Збір географії подій"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE_desc"
-msgstr "Збір подій з географічною областю кожного населеного пункту події."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO"
-msgstr "Географія об'єктів колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO_desc"
-msgstr "Об'єкти колекції, пов'язані з географічними зонами місць їх збору."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO"
-msgstr "Подарунок з колекційних предметів"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
 msgstr ""
-"Подарунки з колекційними предметами, доданими до подарункових препаратів."
 
 #. Used in: 
 #, fuzzy
 msgid "GiftAgent"
-msgstr "Подарунок агенту"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GiftAgent_desc"
-msgstr "Подарунки та агенти, пов'язані з цими подарунками."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO"
-msgstr "Позика на предмет колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO_desc"
-msgstr "Кредити з предметами стягнення на етапі підготовки кредитів."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent"
-msgstr "Агентський кредит"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent_desc"
-msgstr "Кредити та агенти, залучені через ролі кредитних агентів."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LithoStratToCO"
-msgstr "Літостратиграфія колекційних об'єктів"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LithoStratToCO_desc"
 msgstr ""
-"Літостратиграфічні одиниці та колекційні об'єкти, пов'язані через "
-"палеоконтекстні зв'язки."
 
 #. Used in: 
 #, fuzzy
 msgid "PermitToCO"
-msgstr "Дозвіл на об'єкт колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitToCO_desc"
 msgstr ""
-"Дозволи та об'єкти колекціонування, пов'язані через відносини авторизації "
-"доступу."
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent"
-msgstr "Агент, виданий для отримання дозволу"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent_desc"
-msgstr "Дозволи та агенти, яким вони були видані."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedByAgent"
-msgstr "Агент, виданий за дозволом"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedByAgent_desc"
-msgstr "Дозволи та агенти, які їх видавали."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ProjectAgent"
-msgstr "Агентський проект"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ProjectAgent_desc"
-msgstr "Проекти та їхні призначені агенти."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "RepoAgreeAgent"
-msgstr "Угода про репозиторій агента"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "RepoAgreeAgent_desc"
-msgstr "Угоди про репозиторство та їхні агенти-джерела."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "StorageCO"
-msgstr "Зберігання об'єктів колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "StorageCO_desc"
-msgstr "Колекційні об'єкти та місця їх зберігання."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "TaxCollObject"
-msgstr "Таксон об'єкта колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "TaxCollObject_desc"
-msgstr "Колекційні об'єкти та записи їх детермінації."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeInCO"
-msgstr "Обмін об'єктами колекції в"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeInCO_desc"
-msgstr "Вхідні обміни з об'єктами колекції в обмінних підготовках."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeOutCO"
-msgstr "Обмін об'єктами колекції"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeOutCO_desc"
-msgstr "Вихідні обміни з об'єктами колекції в обмінних підготовках."
+msgstr ""

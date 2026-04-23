@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/hr/>\n"
+"Language-Team: Croatian "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/hr/>\n"
 "Language: hr\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
@@ -12,561 +12,537 @@ msgstr ""
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "loadingConfig"
-msgstr "Učitavanje..."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "loadingMetadata"
-msgstr "Učitavanje metapodataka..."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 #, fuzzy
 msgid "expressSearchConfigTitle"
-msgstr "Konfiguracija brzog pretraživanja"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "searchFieldsTab"
-msgstr "Polja za pretraživanje"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "relatedTablesTab"
-msgstr "Povezane tablice"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "resultsOrderingTab"
-msgstr "Redoslijed rezultata"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "availableTables"
-msgstr "Dostupni stolovi"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchableFields"
-msgstr "Polja za pretraživanje"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchLabel"
-msgstr "Pretraživanje"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "fieldName"
-msgstr "Polje"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "sortMode"
-msgstr "Način sortiranja"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchNone"
-msgstr "Ništa"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "ascendingOrder"
-msgstr "Uzlazno"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "descendingOrder"
-msgstr "Silazni"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "displayFields"
-msgstr "Polja za prikaz"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
-msgstr "Konfiguriranje redoslijeda rezultata"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr ""
-"Promijenite redoslijed prikaza odjeljaka u oknu s rezultatima pretraživanja."
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
-msgstr "Povezani upit: {query:string}"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
-msgstr "Nema konfiguriranih stavki za prikaz."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectAllQueries"
-msgstr "Odaberi sve"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "deselectAllQueries"
-msgstr "Poništi odabir svega"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
-msgstr "Nema dostupnih povezanih upita za odabrane tablice."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
-msgstr "Odaberite povezani upit da biste vidjeli njegov opis."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noDescriptionAvailable"
-msgstr "Nema dostupnog opisa."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer"
-msgstr "Zbirka taksona Objekt"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Objekti zbirke s trenutnim određenjima, koji prikazuju naziv određenog "
-"taksona, uobičajeni naziv taksona i determinator."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObToLocality"
-msgstr "Mjesto prikupljanja događaja"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObToLocality_desc"
 msgstr ""
-"Prikupljanje podataka o događajima i njihovim lokacijama, uključujući datume "
-"događaja i geografske koordinate."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject"
-msgstr "Takson objekta zbirke"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject_desc"
-msgstr "Objekti kolekcije s njihovim određenim taksonskim imenima."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoToTaxon"
-msgstr "Geografija taksona"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taksoni povezani s geografskim zapisima putem određivanja objekata "
-"prikupljanja i lokaliteta događaja prikupljanja."
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors"
-msgstr "Kolekcionari objekata kolekcija"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors_desc"
 msgstr ""
-"Predmeti prikupljanja i agenti koji su ih prikupili, s datumima događaja "
-"prikupljanja."
 
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon"
-msgstr "Takson Preferirani takson"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon_desc"
 msgstr ""
-"Taksoni s preferiranim prihvaćenim nazivima taksona, isključujući zapise "
-"kojima nedostaju poveznice s prihvaćenim taksonima."
 
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs"
-msgstr "Preferirani takson objekta zbirke"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs_desc"
 msgstr ""
-"Zbirni objekti s determinacijama koje imaju i izvorni takson i preferirani "
-"takson."
 
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs"
-msgstr "Takson objekta zbirke (svi sinonimi)"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs_desc"
 msgstr ""
-"Objekti kolekcije koji prikazuju determinacije, preferirana imena taksona i "
-"prihvaćena imena sinonimne djece."
 
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject"
-msgstr "Takson objekta zbirke (određen)"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject_desc"
-msgstr "Zbirni objekti samo s trenutnim određivanjem taksona."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant"
-msgstr "Varijanta agenta agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant_desc"
-msgstr "Varijante agenata uparene s njihovim matičnim zapisima agenata."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "Agent"
-msgstr "Agent"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "Agent_desc"
-msgstr "Pojedinačni agenti."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentVariant"
-msgstr "Varijanta agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentVariant_desc"
-msgstr "Zapisi varijanti agenta."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias"
-msgstr "Lokalitet Alias lokaliteta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias_desc"
-msgstr "Zapisi o lokalitetima s pridruženim pseudonimima naziva lokaliteta."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CEToCO"
-msgstr "Događaj prikupljanja objekata kolekcije"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CEToCO_desc"
-msgstr "Prikupljanje događaja povezanih s objektima kolekcije."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO"
-msgstr "Mjesto prikupljanja objekata"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO_desc"
 msgstr ""
-"Lokaliteti i predmeti sakupljanja pronađeni na njihovim sakupljačkim "
-"događajima."
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo"
-msgstr "Pristup objektu zbirke"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo_desc"
 msgstr ""
-"Pristupi i njihovi objekti zbirki, filtrirani prema trenutnim određenjima."
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent"
-msgstr "Pristup agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent_desc"
-msgstr "Pristupi i agenti povezani putem uloga agenta za pristup."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent"
-msgstr "Agent Borrow"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent_desc"
-msgstr "Posuđivači i agenti povezani putem uloga agenata posuđivača."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent"
-msgstr "Procjena agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent_desc"
-msgstr "Procjene i njihovi povezani agenti."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO"
-msgstr "Kronostratigrafija zbirke objekata"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO_desc"
 msgstr ""
-"Geološka vremenska razdoblja s objektima zbirki povezanim "
-"kronostratigrafskim kontekstima."
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors"
-msgstr "KolekcionarSakupljanjeDogađaj"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors_desc"
-msgstr "Događaji prikupljanja upareni s agentima koji su prikupljali uzorke."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn"
-msgstr "Agent za zamjenu"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn_desc"
-msgstr "Dolazne razmjene i materijal agenata je primljen od."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeOut"
-msgstr "Agent za razmjenu"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeOut_desc"
-msgstr "Odlazne razmjene i agenti kojima je materijal poslan."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE"
-msgstr "Prikupljanje podataka o geografiji događaja"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE_desc"
-msgstr "Prikupljanje događaja s geografskim područjem svake lokacije događaja."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO"
-msgstr "Geografija objekata zbirke"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO_desc"
 msgstr ""
-"Predmeti zbirke povezani s geografskim područjima mjesta na kojima su se "
-"odvijali događaji zbirke."
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO"
-msgstr "Poklon predmeta za kolekciju"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
-msgstr "Pokloni s predmetima za sakupljanje priloženim uz pripreme poklona."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GiftAgent"
-msgstr "Poklon agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "GiftAgent_desc"
-msgstr "Darovi i agenti povezani s tim darovima."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO"
-msgstr "Zajam predmeta za kolekciju"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO_desc"
-msgstr "Krediti s predmetima naplate na pripremi kredita."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent"
-msgstr "Zajam agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent_desc"
-msgstr "Krediti i agenti uključeni kroz uloge agenata za kredite."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LithoStratToCO"
-msgstr "Litostratigrafija zbirke objekata"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "LithoStratToCO_desc"
 msgstr ""
-"Litostratigrafske jedinice i objekti zbirki povezani paleokontekstnim "
-"odnosima."
 
 #. Used in: 
 #, fuzzy
 msgid "PermitToCO"
-msgstr "Dozvola za predmet sakupljanja"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitToCO_desc"
-msgstr "Dozvole i objekti naplate povezani odnosima autorizacije pristupa."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent"
-msgstr "Agent izdao dozvolu"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent_desc"
-msgstr "Dozvole i agenti kojima su izdane."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedByAgent"
-msgstr "Agent izdao dozvolu"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedByAgent_desc"
-msgstr "Dozvole i agenti koji su ih izdali."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ProjectAgent"
-msgstr "Projekt agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ProjectAgent_desc"
-msgstr "Projekti i njihovi dodijeljeni agenti."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "RepoAgreeAgent"
-msgstr "Ugovor o repozitoriju agenta"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "RepoAgreeAgent_desc"
-msgstr "Sporazumi o repozitoriju i njihovi izvorni agenti."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "StorageCO"
-msgstr "Pohrana objekata kolekcije"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "StorageCO_desc"
-msgstr "Predmeti kolekcije i njihova mjesta pohrane."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "TaxCollObject"
-msgstr "Takson objekta zbirke"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "TaxCollObject_desc"
-msgstr "Zbirni objekti i njihovi taksonomski zapisi o determinaciji."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeInCO"
-msgstr "Razmjena objekata kolekcije u"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeInCO_desc"
-msgstr "Dolazne razmjene s objektima zbirke u razmijenjenim pripremama."
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeOutCO"
-msgstr "Razmjena objekata kolekcije"
+msgstr ""
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeOutCO_desc"
-msgstr "Izlazne razmjene s objektima zbirke u razmijenjenim pripremama."
+msgstr ""

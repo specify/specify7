@@ -3,177 +3,172 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-22 16:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/merging/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/merging/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1893
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "recordMerging"
-msgstr "Sammenslåing av poster"
+msgstr ""
 
-#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #: components/FormMeta/MergeRecord.tsx:56
 #: components/Merging/index.tsx:90
 #: components/Merging/index.tsx:94
 #: components/Merging/index.tsx:408
 #: components/Merging/index.tsx:421
 #: components/Router/OverlayRoutes.tsx:240
+#. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "mergeRecords"
-msgstr "Slå sammen poster"
+msgstr ""
 
-#. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:225
+#. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergedRecord"
-msgstr "Sammenslått post"
+msgstr ""
 
-#. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:454
+#. Used in: Components > Merging > Index
 #, fuzzy
 msgid "showConflictingFieldsOnly"
-msgstr "Vis bare motstridende felt"
+msgstr ""
 
-#. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:190
+#. Used in: Components > Merging > Header
 #, fuzzy
 msgid "newMergedRecord"
-msgstr "Ny sammenslått post"
+msgstr ""
 
-#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #: components/Merging/CompareSubView.tsx:230
 #: components/Merging/Header.tsx:191
+#. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #, fuzzy
 msgid "duplicateRecord"
-msgstr "Forhåndsvisning {index:number|formatted}"
+msgstr ""
 
-#. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:111
+#. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "nRecords"
-msgstr "{count:number|formatted} poster"
+msgstr ""
 
-#. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:425
+#. Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "subViewControls"
-msgstr "Undervisningskontroller"
+msgstr ""
 
-#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
+#. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #, fuzzy
 msgid "mergeFields"
-msgstr "Slå sammen {field:string}"
+msgstr ""
 
-#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:273
 #: components/Preferences/UserDefinitions.tsx:1899
+#. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "autoPopulate"
-msgstr "Automatisk utfylling"
+msgstr ""
 
-#. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:88
+#. Used in: Components > Merging > Header
 #, fuzzy
 msgid "dismissFromMerging"
-msgstr "Avvis fra sammenslåing"
+msgstr ""
 
-#. Used in: Components > Merging > Definitions
 #: components/Merging/definitions.ts:23
+#. Used in: Components > Merging > Definitions
 #, fuzzy
 msgid "agentContainsGroupDescription"
-msgstr "Agenter inneholder gruppemedlemmer"
+msgstr ""
 
-#. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
+#. Used in: Components > Merging > Invalid Merge Records
 #, fuzzy
 msgid "recordNotBeMergedReason"
-msgstr "Følgende poster kan ikke slås sammen. Årsak:"
+msgstr ""
 
-#. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:93
+#. Used in: Components > Merging > Invalid Merge Records
 #, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Enkelte poster kan ikke slås sammen"
+msgstr ""
 
-#. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
+#. Used in: Components > Merging > Invalid Merge Records
 #, fuzzy
 msgid "mergeOthers"
-msgstr "Slå sammen andre"
+msgstr ""
 
-#. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:411
+#. Used in: Components > Merging > Index
 #, fuzzy
 msgid "warningMergeText"
 msgstr ""
-"Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre "
-"andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig "
-"utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan "
-"dette påvirker opplevelsen deres. Denne sammenslåingen kan ikke angres."
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
 #: components/Merging/Status.tsx:25
+#. Used in: Components > Merging > Status
 #, fuzzy
 msgid "mergeFailed"
-msgstr "Sammenslåingen mislyktes"
+msgstr ""
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:26
+#. Used in: Components > Merging > Status
 #, fuzzy
 msgid "mergeSucceeded"
-msgstr "Sammenslåingen var vellykket"
+msgstr ""
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:23
+#. Used in: Components > Merging > Status
 #, fuzzy
 msgid "merging"
-msgstr "Sammenslåing"
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:161
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasStarted"
-msgstr "Sammenslåingsprosessen har startet."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:216
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasSucceeded"
-msgstr "Sammenslåingsprosessen har vært vellykket."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:178
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasFailed"
-msgstr "Sammenslåingsprosessen har mislyktes."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:196
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "mergingHasBeenCanceled"
-msgstr "Sammenslåingsprosessen er avbrutt."
+msgstr ""
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:181
+#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "retryMerge"
-msgstr "Prøv å slå sammen på nytt."
+msgstr ""
 
-#. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:144
+#. Used in: Components > Merging > Status
 #, fuzzy
 msgid "mergingWentWrong"
-msgstr "Noe gikk galt under sammenslåingsprosessen."
+msgstr ""
 
-#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 #: components/Forms/DeleteButton.tsx:124
 #: components/Forms/DeleteButton.tsx:128
 #: components/Merging/Usages.tsx:19
@@ -183,6 +178,7 @@ msgstr "Noe gikk galt under sammenslåingsprosessen."
 #: components/Molecules/LinkedRecords.tsx:90
 #: components/Molecules/LinkedRecords.tsx:94
 #: components/Molecules/LinkedRecords.tsx:129
+#. Used in: Components > Forms > Delete Button ⬤ Components > Merging > Usages ⬤ Components > Molecules > Linked Records
 #, fuzzy
 msgid "linkedRecords"
-msgstr "Tilknyttede poster"
+msgstr ""
