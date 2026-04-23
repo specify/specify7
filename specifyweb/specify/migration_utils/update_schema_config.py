@@ -457,16 +457,26 @@ def update_table_field_schema_config_with_defaults(
         language="en"
     )
 
-    sp_local_container_item, _ = Splocalecontaineritem.objects.get_or_create(
-        name=field_config.name,
-        container=sp_local_container,
-        type=field_config.java_type,
-        ishidden=field_hidden,
-        isrequired=field_required,
-        issystem=table.system,
-        version=0,
-        picklistname=picklist_name
-    )
+    container_item_attrs = {
+        "name": field_config.name,
+        "container": sp_local_container
+    }
+
+    fetched_sp_locale_container_item = Splocalecontaineritem.objects.filter(**container_item_attrs).first()
+
+    if fetched_sp_locale_container_item is None:
+        sp_locale_container_item = Splocalecontaineritem.objects.create(**{
+            **container_item_attrs,
+            "type": field_config.java_type,
+            "ishidden": field_hidden,
+            "isrequired": field_required,
+            "issystem": table.system,
+            "version": 0,
+            "picklistname": picklist_name
+            }
+        )
+    else:
+        sp_locale_container_item = fetched_sp_locale_container_item
 
     itm_str_rows = []
     for k, text in {
@@ -477,7 +487,7 @@ def update_table_field_schema_config_with_defaults(
             "text": text,
             "language": "en",
             "version": 0,
-            k: sp_local_container_item,
+            k: sp_locale_container_item,
         }
         itm_str_rows.append(row)
 
