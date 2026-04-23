@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:09+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-23 12:09+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "common/uk/>\n"
 "Language: uk\n"
@@ -15,7 +15,7 @@ msgstr ""
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:28
 msgid "specifySeven"
-msgstr "Вкажіть 7"
+msgstr "Specify 7"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #: components/Preferences/UserDefinitions.tsx:2049
@@ -24,7 +24,7 @@ msgstr "Вкажіть 7"
 #: components/WorkBench/DataSetMeta.tsx:294
 #: utils/parser/definitions.ts:122
 msgid "no"
-msgstr "Немає"
+msgstr "Ні"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor Components ⬤ Components > Attachments > Dialog ⬤ Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Batch Identify > Index ⬤ Components > Data Entry Tables > Index ⬤ Components > Export Feed > Force Update ⬤ Components > Express Search Config > Express Search Config Dialog ⬤ Components > Form Cells > COJODialog ⬤ Components > Form Editor > Create ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Resource View ⬤ Components > Header > Choose Collection ⬤ Components > Header > Express Search Task ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Locality Update > Status ⬤ Components > Merging > Status ⬤ Components > Merging > Index ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Edit ⬤ Components > Query Builder > From Map ⬤ Components > Query Builder > Import ⬤ Components > Query Builder > Loan Return ⬤ Components > Reports > Parameters ⬤ Components > Reports > Report ⬤ Components > Reports > Index ⬤ Components > Router > Unload Protect ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Search Dialog > Index ⬤ Components > Security > Import Export ⬤ Components > Security > Missing Agents Dialog ⬤ Components > Security > Role ⬤ Components > Security > Role Template ⬤ Components > Security > User ⬤ Components > Setup Tool > Setup Form ⬤ Components > Statistics > Delete Category ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Toolbar > Language ⬤ Components > Toolbar > Master Key ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Tree Repair ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions ⬤ Components > Tree View > Add Rank ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Actions > Wb Revert ⬤ Components > Wb Actions > Wb Rollback ⬤ Components > Wb Actions > Wb Upload ⬤ Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Plan View > State ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Disambiguation
 #: components/AppResources/Create.tsx:67
@@ -325,26 +325,23 @@ msgstr "Поради щодо пошуку"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:136
-#, fuzzy
 msgid "expressSearchInstructions"
 msgstr ""
 "Розділяйте кілька пошукових термінів пробілами, використовуйте % будь-де, * "
-"на початку або в кінці та беріть терміни в лапки для точного збігу кількох "
-"слів."
+"на початку або в кінці та обгорніть терміни в лапки для точного збігу "
+"кількох слів."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:138
-#, fuzzy
 msgid "expressSearchDateFormats"
-msgstr "Дати можна шукати у форматі РРРР-ММ-ДД або ММ/ДД/РРРР."
+msgstr "Дати можна шукати у форматі РРРР-ММ-ДД або у форматі ММ/ДД/РРРР."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:137
-#, fuzzy
 msgid "expressSearchPhraseExample"
 msgstr ""
-"Щоб знайти термін із пробілами, візьміть фразу в лапки, наприклад, «Клінтон-"
-"Лейк»."
+"Щоб знайти термін із пробілами, вставте фразу в лапки, наприклад, \"Clinton "
+"Lake\"."
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/Interactions/LoanReturn.tsx:203
@@ -361,7 +358,7 @@ msgstr "Застосувати"
 #: components/WbToolkit/CoordinateConverter.tsx:277
 #: components/WorkBench/Disambiguation.tsx:64
 msgid "applyAll"
-msgstr "Застосувати все"
+msgstr "Застосувати Все"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 #: components/Interactions/LoanReturn.tsx:186
@@ -398,7 +395,7 @@ msgstr "Видалити незіставлені стовпці"
 #: components/WbToolkit/DevShowPlan.tsx:115
 #: components/WorkBench/DataSetMeta.tsx:191
 msgid "save"
-msgstr "зберегти"
+msgstr "Зберегти"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 #: components/Atoms/DataEntry.tsx:148
@@ -428,12 +425,12 @@ msgstr "зберегти"
 #: components/WebLinks/Definition.tsx:116
 #: components/WebLinks/List.tsx:50
 msgid "add"
-msgstr "додати"
+msgstr "Додати"
 
 #. Used in: Components > Choose Collection > Index
 #: components/ChooseCollection/index.tsx:164
 msgid "open"
-msgstr "ВІДЧИНЕНО"
+msgstr "Відкрити"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > Element ⬤ Components > Forms > Delete Button ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Notifications > Notifications ⬤ Components > Pick Lists > Definitions ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Preview Tables ⬤ Components > Security > Role ⬤ Components > Statistics > Delete Category ⬤ Components > Tree View > Actions ⬤ Components > Work Bench > Data Set Meta
 #: components/FormSliders/RecordSelectorFromIds.tsx:185
@@ -555,14 +552,14 @@ msgstr "Інструменти"
 #: components/TreeView/Row.tsx:229
 #: components/WorkBench/Disambiguation.tsx:124
 msgid "loading"
-msgstr "Завантажуємо…"
+msgstr "Завантажується…"
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Upload.tsx:277
 #: components/AttachmentsBulkImport/utils.ts:457
 #: components/WorkBench/DataSetMeta.tsx:301
 msgid "uploaded"
-msgstr "Завантажено"
+msgstr "Відвантажено"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Field Formatters > Parts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Fields ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Field Filter Tool ⬤ Components > Query Builder > Line ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Security > Policy ⬤ Components > Security > Role ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > List Edit
 #: components/Atoms/DataEntry.tsx:163
@@ -591,7 +588,7 @@ msgstr "Завантажено"
 #: components/Statistics/StatsResult.tsx:62
 #: components/Toolbar/ListEdit.tsx:150
 msgid "remove"
-msgstr "видалити"
+msgstr "Вилучити"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 #: components/Atoms/DataEntry.tsx:158
@@ -614,7 +611,7 @@ msgstr "Пошук"
 #: components/SearchDialog/index.tsx:306
 #: components/WorkBench/WbAttachmentsPreview.tsx:118
 msgid "noResults"
-msgstr "Немає результатів"
+msgstr "Немає Результатів"
 
 #. Used in: Components > Form Plugins > Lat Long Ui ⬤ Components > Merging > Header ⬤ Components > Merging > Usages ⬤ Components > Work Bench > Data Set Meta
 #: components/FormPlugins/LatLongUi.tsx:100
@@ -637,7 +634,7 @@ msgstr "N/A"
 #: components/Toolbar/Query.tsx:213
 #: components/Toolbar/RecordSets.tsx:223
 msgid "new"
-msgstr "новий"
+msgstr "Новий"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Import ⬤ Components > Form Editor > Create ⬤ Components > Form Meta > Index ⬤ Components > Forms > Resource View ⬤ Components > Molecules > Resource Link ⬤ Components > Reports > Index ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Table ⬤ Components > Security > User Components ⬤ Components > Statistics > Buttons ⬤ Components > Statistics > Index ⬤ Components > System Configuration Tool > Hierarchy ⬤ Components > Toolbar > Record Sets ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:150
@@ -679,12 +676,12 @@ msgstr "Ігнорувати"
 #: components/Toolbar/Language.tsx:108
 #: components/WbActions/WbUpload.tsx:117
 msgid "proceed"
-msgstr "Продовжуйте"
+msgstr "Продовжити"
 
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:280
 msgid "start"
-msgstr "старт"
+msgstr "Старт"
 
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:291
@@ -698,13 +695,13 @@ msgstr "Кінець"
 #: components/PickLists/definitions.ts:44
 #: components/Security/PreviewTables.tsx:67
 msgid "update"
-msgstr "оновлення"
+msgstr "Оновити"
 
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
 #: components/WbPlanView/navigator.ts:663
 msgid "fullDate"
-msgstr "Розгорнути все"
+msgstr "Повна Дата"
 
 #. 🟥Verb. Used in: Components > Atoms > Data Entry ⬤ Atoms > __tests__ > Button ⬤ Atoms > __tests__ > Index ⬤ Components > Molecules > Resource Link ⬤ Components > Tree View > Actions
 #: components/Atoms/DataEntry.tsx:149
@@ -739,7 +736,7 @@ msgstr "(відкривається в новій вкладці)"
 #: components/FormCells/FormTable.tsx:494
 #: components/FormCells/FormTable.tsx:497
 msgid "openInNewTab"
-msgstr "Відкрити в новій вкладці"
+msgstr "Відкрити в Новій Вкладці"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > Logo ⬤ Components > Permissions > Permission Denied ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:164
@@ -747,7 +744,7 @@ msgstr "Відкрити в новій вкладці"
 #: components/Permissions/PermissionDenied.tsx:214
 #: components/RouterCommands/CacheBuster.tsx:34
 msgid "goToHomepage"
-msgstr "Перейдіть на домашню сторінку"
+msgstr "Перейти на Домашню Сторінку"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #: components/FormCells/FormTable.tsx:367
@@ -763,19 +760,19 @@ msgstr "Дії"
 #: components/Router/EntrypointRouter.tsx:32
 #: components/Router/OverlayRoutes.tsx:64
 msgid "chooseCollection"
-msgstr "Виберіть колекцію"
+msgstr "Виберіть Колекцію"
 
 #. 🟥As in "Ascending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #: components/Molecules/Sorting.tsx:30
 #: components/Preferences/Renderers.tsx:163
 msgid "ascending"
-msgstr "Висхідний"
+msgstr "Зростаючий"
 
 #. 🟥As in "Descending sort". Used in: Components > Molecules > Sorting ⬤ Components > Preferences > Renderers
 #: components/Molecules/Sorting.tsx:31
 #: components/Preferences/Renderers.tsx:178
 msgid "descending"
-msgstr "Спускається"
+msgstr "Спадаючий"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Registry ⬤ Components > Toolbar > Record Sets
 #: components/Header/menuItemDefinitions.ts:81
@@ -785,12 +782,12 @@ msgstr "Спускається"
 #: components/Toolbar/RecordSets.tsx:231
 #: components/Toolbar/RecordSets.tsx:258
 msgid "recordSets"
-msgstr "Набори рекордів"
+msgstr "Набори Записів"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:313
 msgid "recordCount"
-msgstr "Підрахунок записів"
+msgstr "Кількість Записів"
 
 #. Used in: Components > Field Formatters > Parts ⬤ Components > Toolbar > Record Sets
 #: components/FieldFormatters/Parts.tsx:52
@@ -807,7 +804,7 @@ msgstr "Виконується…"
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:246
 msgid "noMatches"
-msgstr "Немає збігів"
+msgstr "Немає Збігів"
 
 #. Used in: Components > Query Builder > Field Filter Spec ⬤ Components > Wb Utils > Index
 #: components/QueryBuilder/FieldFilterSpec.tsx:74
@@ -815,7 +812,7 @@ msgstr "Немає збігів"
 #: components/WbUtils/index.tsx:57
 #: components/WbUtils/index.tsx:62
 msgid "searchQuery"
-msgstr "Пошуковий запит"
+msgstr "Пошуковий Запит"
 
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
 #: components/Attachments/attachments.ts:123
@@ -842,7 +839,7 @@ msgstr "Країна"
 #. Used in: Components > Leaflet > Index
 #: components/Leaflet/index.ts:188
 msgid "viewRecord"
-msgstr "Переглянути запис"
+msgstr "Переглянути Запис"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/AppResources/Aside.tsx:400
@@ -850,7 +847,7 @@ msgstr "Переглянути запис"
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
 msgid "nullInline"
-msgstr "(нуль)"
+msgstr "(null)"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
@@ -869,7 +866,7 @@ msgstr "Вибраний файл"
 #: components/Security/registry.ts:117
 #: components/Security/registry.ts:145
 msgid "all"
-msgstr "всі"
+msgstr "Всі"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:189
@@ -905,7 +902,7 @@ msgstr "Експорт"
 #: components/TreeView/CreateTree.tsx:313
 #: components/TreeView/CreateTree.tsx:341
 msgid "import"
-msgstr "Масове вирішення"
+msgstr "Імпорт"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
 #: components/Errors/ErrorDialog.tsx:177
@@ -926,7 +923,7 @@ msgstr "ID"
 #: components/QueryBuilder/QueryLineFilters.tsx:176
 #: components/QueryBuilder/QueryLineFilters.tsx:184
 msgid "filter"
-msgstr "фільтр"
+msgstr "Фільтр"
 
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #: components/QueryBuilder/Results.tsx:99
@@ -940,7 +937,7 @@ msgstr "Результати"
 #: components/LocalityUpdate/Status.tsx:505
 #: components/Merging/Status.tsx:100
 msgid "downloadErrorMessage"
-msgstr "Завантажити повідомлення про помилку"
+msgstr "Завантажити Повідомлення про Помилку"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:29
@@ -972,7 +969,7 @@ msgstr "Розгорнути"
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:186
 msgid "expandAll"
-msgstr "Розгорнути все"
+msgstr "Розгорнути Все"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
 #: components/FormCells/FormTable.tsx:378
@@ -986,7 +983,7 @@ msgstr "Згорнути"
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:322
 msgid "collapseAll"
-msgstr "Закрити все"
+msgstr "Згорнути Все"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Leaflet Image Viewer ⬤ Components > Attachments > Viewer ⬤ Components > Preferences > Index ⬤ Components > Statistics > Index ⬤ Components > Toolbar > Query Tables Edit
 #: components/Attachments/ImageViewer.tsx:59
@@ -1020,7 +1017,7 @@ msgstr "Виберіть"
 #: components/Security/RoleTemplate.tsx:111
 #: components/SetupTool/setupResources.ts:93
 msgid "none"
-msgstr "Жодного"
+msgstr "Немає"
 
 #. Used in: Components > Schema Config > Components
 #: components/SchemaConfig/Components.tsx:73
@@ -1047,7 +1044,7 @@ msgstr "Немає доступних"
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
 msgid "countLine"
-msgstr "{resource:string}({count:number|formatted})"
+msgstr "{resource:string} ({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234+). Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:167
@@ -1069,7 +1066,7 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>'"
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:230
 msgid "colonHeader"
-msgstr "{header:string}':"
+msgstr "{header:string}:"
 
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Batch Identify > Index ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index ⬤ Components > Form Sliders > Record Set ⬤ Components > Formatters > Element ⬤ Components > Formatters > Formatter ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Save ⬤ Components > Leaflet > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Merging > Header ⬤ Components > Molecules > File Picker ⬤ Components > Query Builder > Header ⬤ Components > Query Builder > Results ⬤ Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms ⬤ Components > Query Combo Box > Spec ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Security > Collection ⬤ Components > Security > Institution ⬤ Components > Security > Role ⬤ Components > Tree View > Helpers ⬤ Components > Work Bench > Data Set Meta ⬤ Components > Work Bench > Remaining Loading Time ⬤ Components > Work Bench > Results
 #: components/AttachmentsBulkImport/ActionState.tsx:29
@@ -1111,7 +1108,7 @@ msgstr "{header:string}':"
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:161
 msgid "colonLine"
-msgstr "{label:string}: {value:string}'"
+msgstr "{label:string}: {value:string}"
 
 #. 🟥Example usage: "Created by: Full Name" OR "Record Set: Record Set Name". Used in: Components > Forms > Delete Button ⬤ Components > Statistics > Delete Category ⬤ Components > Work Bench > Data Set Meta
 #: components/Forms/DeleteButton.tsx:181
@@ -1128,22 +1125,22 @@ msgstr "{label:string}: <wrap />"
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:161
 msgid "bulkSelect"
-msgstr "Масовий вибір"
+msgstr "Вибір Великої Кількості"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:273
 msgid "bulkReturn"
-msgstr "Масове повернення"
+msgstr "Повернути Велику Кількість"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:287
 msgid "bulkResolve"
-msgstr "Масове вирішення"
+msgstr "Вирішити Велику Кількість"
 
 #. Used in: Components > Work Bench > Remaining Loading Time
 #: components/WorkBench/RemainingLoadingTime.tsx:45
 msgid "timeRemaining"
-msgstr "Час, що залишився"
+msgstr "Залишилося часу"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
@@ -1154,28 +1151,28 @@ msgstr "Необмежений"
 #: components/Molecules/SyncAttachmentPicker.tsx:76
 #: components/SpecifyNetworkCollection/index.tsx:71
 msgid "change"
-msgstr "Зміна"
+msgstr "Змінити"
 
 #. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
 #: components/Merging/index.tsx:392
 #: components/WbActions/WbUpload.tsx:109
 msgid "dontShowAgain"
-msgstr "Не показувати це знову"
+msgstr "Не відображати це знову"
 
 #. Used in: Components > Molecules > File Picker ⬤ Components > Wb Import Attachments > Index
 #: components/Molecules/FilePicker.tsx:106
 #: components/WbImportAttachments/index.tsx:54
 msgid "multipleFilePickerMessage"
-msgstr "Виберіть файли або перетягніть їх сюди"
+msgstr "Оберіть файли або перетягніть їх сюди"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:49
 #: components/Attachments/Viewer.tsx:352
 msgid "zoom"
-msgstr "Збільшити масштаб"
+msgstr "Збільшити Масштаб"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:54
 #: components/Attachments/Viewer.tsx:359
 msgid "unzoom"
-msgstr "Зменшити масштаб"
+msgstr "Зменшити Масштаб"
