@@ -14,7 +14,7 @@ import { filterArray, localized } from '../../utils/types';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
-import type { AnySchema } from '../DataModel/helperTypes';
+import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   fetchResource,
@@ -27,6 +27,7 @@ import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { CollectionObject } from '../DataModel/types';
 import type { CollectionObjectType } from '../DataModel/types';
+import type { SpQuery } from '../DataModel/types';
 import { format, naiveFormatter } from '../Formatters/formatters';
 import type { FormType } from '../FormParse';
 import { ResourceView, RESTRICT_ADDING } from '../Forms/ResourceView';
@@ -315,11 +316,11 @@ export function QueryComboBox({
   const paginationRef = React.useRef({
     hasMore: true,
     offset: 0,
-    queries: [] as RA<ReturnType<typeof serializeResource>>,
+    queries: [] as RA<SerializedResource<SpQuery>>,
   });
 
   const makeQueries = React.useCallback(
-    (value: string) =>
+    (value: string): RA<SerializedResource<SpQuery>> =>
       typeof typeSearch === 'object' && typeof resource === 'object'
         ? typeSearch.searchFields
             .map((fields) =>

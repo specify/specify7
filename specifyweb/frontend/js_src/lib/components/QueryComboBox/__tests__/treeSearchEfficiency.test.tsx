@@ -10,6 +10,7 @@ import { requireContext } from '../../../tests/helpers';
 import { serializeResource } from '../../DataModel/serializers';
 import { tables } from '../../DataModel/tables';
 import { queryFieldFilterSpecs } from '../../QueryBuilder/FieldFilterSpec';
+import { localized } from '../../../utils/types';
 import { QUERY_COMBO_BOX_PAGE_SIZE } from '../constants';
 import { makeComboBoxQuery } from '../helpers';
 
@@ -24,11 +25,11 @@ describe('Tree search efficiency', () => {
       typeSearch: {
         table: tables.Taxon,
         searchFields: [[tables.Taxon.strictGetLiteralField('fullName')]],
-        name: 'Taxon',
-        title: 'Taxon',
-        formatter: '',
+        name: localized('Taxon'),
+        title: localized('Taxon'),
+        formatter: localized(''),
         displayFields: undefined,
-        format: '%s',
+        format: localized('%s'),
       },
       specialConditions: [],
     });
@@ -52,11 +53,11 @@ describe('Tree search efficiency', () => {
       typeSearch: {
         table: tables.Agent,
         searchFields: [[tables.Agent.strictGetLiteralField('lastName')]],
-        name: 'Agent',
-        title: 'Agent',
-        formatter: '',
+        name: localized('Agent'),
+        title: localized('Agent'),
+        formatter: localized(''),
         displayFields: undefined,
-        format: '%s',
+        format: localized('%s'),
       },
       specialConditions: [],
     });
