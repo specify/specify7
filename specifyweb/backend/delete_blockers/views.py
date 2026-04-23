@@ -47,14 +47,18 @@ def _collect_delete_blockers(obj, using, id_limit=100) -> list[dict]:
     blocking rows exist (#7515).
     """
     result = []
-    for related in obj._meta.related_objects:
+    for related in obj._meta.get_fields(include_hidden=True):
+        if not related.auto_created or related.concrete:
+            continue
+        if not (related.one_to_many or related.one_to_one):
+            continue
         if related.on_delete is not protect_with_blockers:
             continue
-        qs = related.related_model.objects.using(using).filter(
+        qs = related.related_model._base_manager.db_manager(using).filter(
             **{related.field.name: obj.pk})
         total = qs.count()
         if total > 0:
-            ids = list(qs.values_list('pk', flat=True)[:id_limit])
+            ids = list(qs.order_by('pk').values_list('pk', flat=True)[:id_limit])
             result.append({
                 'table': related.related_model.__name__,
                 'field': related.field.name,
@@ -62,6 +66,3 @@ def _collect_delete_blockers(obj, using, id_limit=100) -> list[dict]:
                 'total_count': total,
             })
     return result
-
-def flatten(l):
-    return [item for sublist in l for item in sublist]
