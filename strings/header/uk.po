@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-23 16:12+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "header/uk/>\n"
 "Language: uk\n"
@@ -15,7 +15,7 @@ msgstr ""
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:66
 msgid "skipToContent"
-msgstr "Перейти до вмісту"
+msgstr "Перейти до Вмісту"
 
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
@@ -33,13 +33,13 @@ msgstr "Поточна {collectionTable:string}"
 #: components/Header/menuItemDefinitions.ts:43
 #: components/Router/OverlayRoutes.tsx:72
 msgid "dataEntry"
-msgstr "Введення даних"
+msgstr "Введення Даних"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:124
 #: components/Router/OverlayRoutes.tsx:199
 msgid "makeDwca"
-msgstr "Створити архів DwC"
+msgstr "Створити DwC Архів"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 #: components/Header/userToolDefinitions.ts:116
@@ -64,7 +64,7 @@ msgstr "Оновити канал експорту?"
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Оновити всі елементи RSS-експорту?"
+msgstr "Оновити всі елементи RSS-експорту зараз?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
@@ -92,26 +92,26 @@ msgstr "Експорт розпочато. Коли експорт заверш�
 #: components/Header/userToolDefinitions.ts:138
 #: components/LocalityUpdate/index.tsx:83
 msgid "localityUpdateTool"
-msgstr "Інструмент оновлення місцевості"
+msgstr "Інструмент Оновлення Місцевості"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:209
 #: components/QueryBuilder/Edit.tsx:213
 #: components/QueryBuilder/Edit.tsx:216
 msgid "labelName"
-msgstr "Назва бірки"
+msgstr "Назва Мітки"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:209
 #: components/QueryBuilder/Edit.tsx:213
 #: components/QueryBuilder/Edit.tsx:216
 msgid "reportName"
-msgstr "Назва звіту"
+msgstr "Назва Звіту"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:178
 msgid "createLabel"
-msgstr "Створити нову бірку"
+msgstr "Створити нову мітку"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:178
@@ -133,13 +133,13 @@ msgstr "Ремонт дерева завершено."
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
 msgid "choose"
-msgstr "Виберіте"
+msgstr "Обрати"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
 #: components/ExportFeed/Editor.tsx:323
 msgid "chooseDwca"
-msgstr "Виберіть DwCA"
+msgstr "Обрати DwCA"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:213
@@ -150,21 +150,20 @@ msgstr "Ресурси DwCA"
 #: components/ExportFeed/Dwca.tsx:52
 #: components/ExportFeed/Editor.tsx:324
 msgid "chooseMetadataResource"
-msgstr "Виберіть ресурс метаданих"
+msgstr "Виберіть ресурс Метаданих"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
 msgid "metadataResource"
-msgstr "Ресурс метаданих"
+msgstr "Ресурс Метаданих"
 
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 #: components/Header/ExpressSearchTask.tsx:60
 #: components/Header/ExpressSearchTask.tsx:175
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Router/Routes.tsx:33
-#, fuzzy
 msgid "simpleSearch"
-msgstr "Експрес-пошук"
+msgstr "Експрес Пошук"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:205
@@ -179,7 +178,7 @@ msgstr "Вторинний пошук"
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:127
 msgid "menuItems"
-msgstr "Елементи меню"
+msgstr "Елементи Меню"
 
 #. Used in: Components > Header > User Tools ⬤ Components > Preferences > Renderers ⬤ Components > Router > Overlay Routes
 #: components/Header/UserTools.tsx:48
@@ -187,12 +186,12 @@ msgstr "Елементи меню"
 #: components/Preferences/Renderers.tsx:125
 #: components/Router/OverlayRoutes.tsx:44
 msgid "userTools"
-msgstr "Інструменти"
+msgstr "Інструменти Користувача"
 
 #. Used in: Components > Header > User Tools
 #: components/Header/UserTools.tsx:78
 msgid "userToolsForUser"
-msgstr "Інструменти ({userName:string})"
+msgstr "Інструменти Користувача ({userName:string})"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:80
@@ -224,17 +223,17 @@ msgstr ""
 "Переклад цією мовою ще не завершено. Деякі елементи можуть не мати "
 "локалізації або мати неправильну локалізацію. Якщо ви зацікавлені в тому, "
 "щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте "
-"інструкцій.</link>"
+"інструкції.</link>"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:181
 msgid "tableApi"
-msgstr "API таблиць"
+msgstr "API Таблиць"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:186
 msgid "operationsApi"
-msgstr "API операцій"
+msgstr "API Операцій"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > Express Search Task ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog
 #: components/AppResources/Create.tsx:97
@@ -254,17 +253,17 @@ msgstr "Документація"
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:74
 msgid "administration"
-msgstr "Адміністрування"
+msgstr "Інструменти Адміністрування"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:169
 msgid "developers"
-msgstr "Для розробників"
+msgstr "Ресурси Розробників"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:159
 msgid "forum"
-msgstr "Форум"
+msgstr "Форум Підтримки"
 
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes ⬤ Components > Router Commands > Cache Buster
 #: components/Errors/ErrorDialog.tsx:152
@@ -272,7 +271,7 @@ msgstr "Форум"
 #: components/Router/Routes.tsx:459
 #: components/RouterCommands/CacheBuster.tsx:39
 msgid "clearCache"
-msgstr "Очистити кеш браузера"
+msgstr "Очистити Кеш Браузера"
 
 #. Used in: Components > Router Commands > Cache Buster
 #: components/RouterCommands/CacheBuster.tsx:42
@@ -287,4 +286,4 @@ msgstr "Документація"
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:29
 msgid "chronostratigraphicChart"
-msgstr "Хроностратиграфічна діаграма"
+msgstr "Хроностратиграфічна Діаграма"
