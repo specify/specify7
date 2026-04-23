@@ -6,6 +6,7 @@ const dictionary: IR<boolean> = {
   '(prefers-contrast: more)': false,
   '(prefers-color-scheme: dark)': true,
   '(prefers-reduced-transparency: reduce)': false,
+  print: false,
 };
 
 Object.defineProperty(globalThis, 'matchMedia', {

@@ -181,7 +181,7 @@ class RelatedSearch(metaclass=RelatedSearchMeta):
             user,
             self.root.tableId,
             queryfields,
-            props=BuildQueryProps(implicit_or=True),
+            props=BuildQueryProps(implicit_or=False),
         )
 
         if self.distinct:

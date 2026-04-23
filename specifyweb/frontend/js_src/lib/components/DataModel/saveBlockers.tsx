@@ -38,6 +38,9 @@ const blockerEvents = eventListener<{
   readonly change: SpecifyResource<AnySchema>;
 }>();
 
+const hasSameBlockers = (left: RA<string>, right: RA<string>): boolean =>
+  JSON.stringify(left) === JSON.stringify(right);
+
 type Blocker = {
   readonly key: string;
   readonly field: LiteralField | Relationship;
@@ -70,6 +73,11 @@ export function useSaveBlockers(
   field: LiteralField | Relationship | undefined
 ): readonly [RA<string>, (value: RA<string>, blockerKey: string) => void] {
   const [blockers, setBlockers] = React.useState<RA<string>>([]);
+  const blockersRef = React.useRef(blockers);
+
+  React.useEffect(() => {
+    blockersRef.current = blockers;
+  }, [blockers]);
 
   React.useEffect(
     () =>
@@ -82,7 +90,10 @@ export function useSaveBlockers(
             (changedResource !== resource && changedResource !== undefined)
           )
             return;
-          setBlockers(getFieldBlockers(resource, field));
+          const newBlockers = getFieldBlockers(resource, field);
+          if (hasSameBlockers(blockersRef.current, newBlockers)) return;
+          blockersRef.current = newBlockers;
+          setBlockers(newBlockers);
         },
         true
       ),
@@ -102,7 +113,11 @@ export function useSaveBlockers(
               field,
             }
           );
-        } else setSaveBlockers(resource, field, errors, blockerKey);
+        } else {
+          blockersRef.current = f.unique(errors);
+          setBlockers(blockersRef.current);
+          setSaveBlockers(resource, field, blockersRef.current, blockerKey);
+        }
       },
       [resource, field]
     ),
