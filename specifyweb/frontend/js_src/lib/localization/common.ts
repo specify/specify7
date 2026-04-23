@@ -83,6 +83,35 @@ export const commonText = createDictionary({
     'pt-br': 'Fechar',
     'hr-hr': 'Zatvoriti',
   },
+  configureExpressSearch: {
+    'en-us': 'Configure Express Search',
+    'ru-ru': 'Настроить Express Search',
+    'es-es': 'Configurar Express Search',
+    'fr-fr': 'Configurer Express Search',
+    'uk-ua': 'Налаштувати Express Search',
+    'de-ch': 'Express Search konfigurieren',
+    'pt-br': 'Configurar Express Search',
+    'hr-hr': 'Konfigurirajte Express Search',
+  },
+  expressSearchInstructionsTitle: {
+    'en-us': 'Search tips',
+    'ru-ru': 'Советы по поиску',
+    'es-es': 'Consejos de búsqueda',
+    'fr-fr': 'Conseils de recherche',
+    'uk-ua': 'Поради щодо пошуку',
+    'de-ch': 'Suchtipps',
+    'pt-br': 'Dicas de pesquisa',
+    'hr-hr': 'Savjeti za pretraživanje',
+  },
+  expressSearchInstructions: {
+    'en-us': 'Separate multiple search terms with spaces, use % anywhere, * at the beginning or end, and wrap terms in quotes for exact multi-word matches.',
+  },
+  expressSearchDateFormats: {
+    'en-us': 'Dates can be searched using either the YYYY-MM-DD or MM/DD/YYYY format.',
+  },
+  expressSearchPhraseExample: {
+    'en-us': 'To search a term with spaces, wrap the phrase in quotes, for example "Clinton Lake".',
+  },
   apply: {
     'en-us': 'Apply',
     'ru-ru': 'Применить',
