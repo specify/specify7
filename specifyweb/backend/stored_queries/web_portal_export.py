@@ -304,6 +304,22 @@ def _make_solr_schema_xml(fields: list[dict[str, Any]]) -> str:
     return "\n".join(lines) + "\n"
 
 
+def _image_info_fields_from_column_defs(
+    column_defs: list[tuple[str, str, str, dict[str, Any]]],
+) -> list[str]:
+    """Grab the best image info fields."""
+    image_info_fields: list[str] = []
+    target_spflds = {
+        'catalognumber',
+        'fieldnumber',
+        'stationfieldnumber',
+    }
+    for _, solrname, _, metadata in column_defs:
+        if str(metadata.get('spfld', '')).lower() in target_spflds:
+            image_info_fields.append(solrname)
+    return image_info_fields
+
+
 def _serialize_portal_data(
     rows: list[list[str]],
     header: list[str],
@@ -539,7 +555,7 @@ def query_to_web_portal_zip(
     # SolrFldSchema.xml is a minimal schema fragment for the portal's Solr index.
     solr_schema = _make_solr_schema_xml(metadata_rows)
 
-    image_info_fields = [column_def[1] for column_def in column_defs[:2]]
+    image_info_fields = _image_info_fields_from_column_defs(column_defs)
     portal_instance_settings = json.dumps(
         {
             'portalInstance': str(uuid.uuid4()),
