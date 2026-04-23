@@ -235,12 +235,6 @@ class QueryFieldSpec(
         path = deque(path_str.split(","))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
 
-        if is_relation:
-            extracted_fieldname, _ = extract_date_part(field_name)
-            root_field = root_table.get_field(extracted_fieldname, strict=False)
-            if isinstance(root_field, Relationship):
-                path.pop()
-
         join_path = []
         node = root_table
         for elem in path:
@@ -256,6 +250,44 @@ class QueryFieldSpec(
             node = table
 
         extracted_fieldname, date_part = extract_date_part(field_name)
+
+        if is_relation:
+            relation = None
+            if join_path and isinstance(join_path[-1], Relationship):
+                last_relation = join_path[-1]
+                related_table = datamodel.get_table(
+                    last_relation.relatedModelName, strict=True
+                )
+                if related_table.name.lower() == table_name.lower():
+                    relation = last_relation
+
+            if relation is None:
+                relation = node.get_field(extracted_fieldname, strict=False)
+                if isinstance(relation, Relationship):
+                    join_path.append(relation)
+                    node = datamodel.get_table(relation.relatedModelName, strict=True)
+                else:
+                    relation = None
+
+            if relation is not None:
+                result = cls(
+                    root_table=root_table,
+                    root_sql_table=getattr(models, root_table.name),
+                    join_path=tuple(join_path),
+                    table=node,
+                    date_part=None,
+                    tree_rank=None,
+                    tree_field=relation,
+                )
+                logger.debug(
+                    "parsed %s (is_relation %s) to %s. extracted_fieldname = %s",
+                    stringid,
+                    is_relation,
+                    result,
+                    extracted_fieldname,
+                )
+                return result
+
         field = node.get_field(extracted_fieldname, strict=False)
 
         tree_rank_name = None
