@@ -1,158 +1,153 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/uk/>\n"
+"PO-Revision-Date: 2026-04-24 10:09+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"expressSearchConfig/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 5.17.1-dev\n"
 "Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.17.1-dev\n"
 
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
-#. Used in: Components > Express Search Config > Express Search Config Editor
-#, fuzzy
 msgid "loadingConfig"
-msgstr ""
+msgstr "Завантаження..."
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
 #. Used in: Components > Express Search Config > Search Fields Tab
-#, fuzzy
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
 msgid "loadingMetadata"
-msgstr ""
+msgstr "Завантаження мета-даних..."
 
-#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
 #. Used in: Components > Express Search Config > Express Search Config Dialog
-#, fuzzy
+#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
 msgid "expressSearchConfigTitle"
-msgstr ""
+msgstr "Конфігурація Експрес Пошуку"
 
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
-#. Used in: Components > Express Search Config > Express Search Config Editor
-#, fuzzy
 msgid "searchFieldsTab"
-msgstr ""
+msgstr "Пошукові Поля"
 
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
-#. Used in: Components > Express Search Config > Express Search Config Editor
-#, fuzzy
 msgid "relatedTablesTab"
-msgstr ""
+msgstr "Відносні Таблиці"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
 #, fuzzy
 msgid "resultsOrderingTab"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
 #, fuzzy
 msgid "availableTables"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
 #, fuzzy
 msgid "searchableFields"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
 #, fuzzy
 msgid "searchLabel"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
 #, fuzzy
 msgid "fieldName"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
 #, fuzzy
 msgid "sortMode"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
 #, fuzzy
 msgid "searchNone"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
 #, fuzzy
 msgid "ascendingOrder"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
 #, fuzzy
 msgid "descendingOrder"
 msgstr ""
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
 #, fuzzy
 msgid "displayFields"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
 #, fuzzy
 msgid "configureResultsOrdering"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
 #, fuzzy
 msgid "relatedQueryLabel"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
 #, fuzzy
 msgid "noDisplayItemsConfigured"
 msgstr ""
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
 #, fuzzy
 msgid "selectAllQueries"
 msgstr ""
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
 #, fuzzy
 msgid "deselectAllQueries"
 msgstr ""
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
 msgstr ""
 
+#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
-#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
 msgstr ""
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
 #, fuzzy
 msgid "noDescriptionAvailable"
 msgstr ""
