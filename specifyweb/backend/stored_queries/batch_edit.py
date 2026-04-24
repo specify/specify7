@@ -1107,11 +1107,12 @@ def run_batch_edit_query(props: BatchEditProps):
             new_columns.append(index)
 
     # Fill in the gaps with the new columns
-    for index, column in enumerate(visual_order):
-        if column is None:
-            visual_order[index] = new_columns.pop(0)
-            if len(new_columns) == 0:
-                break
+    if new_columns:
+        for index, column in enumerate(visual_order):
+            if column is None:
+                visual_order[index] = new_columns.pop(0)
+                if len(new_columns) == 0:
+                    break
 
     headers = Func.second(key_and_headers)
 
