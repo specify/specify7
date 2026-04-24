@@ -1094,21 +1094,27 @@ def run_batch_edit_query(props: BatchEditProps):
     )
 
     headers_enumerated = enumerate(key_and_headers)
+    logger.info("========== COLUMNS ==========")
+    logger.info(key_and_headers)
+    logger.info(extend_row.columns)
+    logger.info(fields)
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    caption_to_query_field = {caption: query_field for query_field, caption in query_field_caption_lookup.items()}
     visual_order = [None for _ in key_and_headers]
     columns_at_end = []
-    for index, (_, header) in headers_enumerated:
+    for index, (key, header) in headers_enumerated:
         # Find the column's original position if it existed in the origin query
-        query_field = caption_to_query_field.get(header)
-        if query_field in fields:
-            original_place = fields.index(query_field)
+        original_place = key[0]
+        duplicate_count = key[1]
+        if original_place < len(fields):
             visual_order[original_place] = index
         else:
             # New field/column. Add it to the end of the dataset.
             columns_at_end.append(index)
+
+    logger.info("----- ORDER 1 ------")
+    logger.info(visual_order)
 
     # Fill in the gaps with the new columns
     for index, column in enumerate(visual_order):
@@ -1116,6 +1122,9 @@ def run_batch_edit_query(props: BatchEditProps):
             visual_order[index] = columns_at_end.pop(0)
             if len(columns_at_end) == 0:
                 break
+
+    logger.info("----- ORDER 2 ------")
+    logger.info(visual_order)
 
     headers = Func.second(key_and_headers)
 
