@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/attachments/uk/>\n"
+"PO-Revision-Date: 2026-04-24 08:09+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"attachments/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,6 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 #: components/Attachments/RecordSetAttachment.tsx:161
 #: components/Attachments/RecordSetAttachment.tsx:164
 #: components/Attachments/RecordSetAttachment.tsx:168
@@ -35,404 +36,406 @@ msgstr ""
 #: components/WorkBench/WbAttachmentsPreview.tsx:334
 #: components/WorkBench/WbView.tsx:260
 #: components/WorkBench/hotProps.tsx:75
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 msgid "attachments"
-msgstr "Прикріплення"
+msgstr "Вкладення"
 
-#: components/Attachments/index.tsx:224
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:224
 msgid "scale"
-msgstr "масштаб"
+msgstr "Масштаб"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 #: components/Attachments/Plugin.tsx:42
 #: components/Attachments/Plugin.tsx:164
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/WbImportAttachments/index.tsx:196
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
-msgstr "Сервер прикріплень недоступний"
+msgstr "Сервер вкладень недоступний"
 
-#: components/Attachments/index.tsx:57
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:57
 msgid "attachmentServerUnavailableDescription"
-msgstr "Налаштуйте сервер прикріплень"
+msgstr "Налаштуйте ваш сервер вкладень"
 
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1413
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 msgid "orderBy"
-msgstr "Сортувати по"
+msgstr "Сортувати За"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 #: components/Attachments/Plugin.tsx:168
 #: components/WbImportAttachments/index.tsx:202
-#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
 msgid "uploadingInline"
-msgstr "Завантаження…"
+msgstr "Відвантаження…"
 
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:176
 #: components/AttachmentsBulkImport/utils.ts:463
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
-msgstr "Прикріплень нема"
+msgstr "Вкладень немає"
 
-#: components/Attachments/Cell.tsx:147
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:147
 msgid "unableToFindRelatedRecord"
 msgstr "Неможливо знайти відповідний запис"
 
-#: components/Attachments/Cell.tsx:150
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:150
 msgid "unableToFindRelatedRecordDescription"
 msgstr "Не вдалося знайти запис, до якого відноситься це вкладення."
 
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:377
-#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "showForm"
-msgstr "Показати форму"
+msgstr "Показати Форму"
 
-#: components/Molecules/FilePicker.tsx:51
 #. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:51
 msgid "multipleFilesSelected"
-msgstr "Вибрано декілька файлів"
+msgstr "Обрано декілька файлів"
 
-#: components/AttachmentsBulkImport/Import.tsx:205
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:205
 msgid "fileSize"
-msgstr "Розмір файлу"
+msgstr "Розмір Файлу"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/Rollback.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:458
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 msgid "deleted"
 msgstr "Видалено"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:456
-#. Used in: Components > Attachments Bulk Import > Utils
 msgid "noFile"
-msgstr "Немає файлу"
+msgstr "Немає Файлу"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
 msgid "pleaseReselectAllFiles"
-msgstr "Перед завантаженням повторно виберіть усі файли."
+msgstr "Будь-ласка перед відвантаженням повторно виберіть усі файли."
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:455
-#. Used in: Components > Attachments Bulk Import > Utils
 msgid "incorrectFormatter"
-msgstr "Неправильно відформатований"
+msgstr "Неправильно Відформатований"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:459
-#. Used in: Components > Attachments Bulk Import > Utils
 msgid "alreadyUploaded"
-msgstr "Вже завантажено"
+msgstr "Вже Відвантажено"
 
-#: components/AttachmentsBulkImport/utils.ts:460
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:460
 msgid "skipped"
 msgstr "Пропущено"
 
-#: components/AttachmentsBulkImport/utils.ts:461
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:461
 msgid "cancelled"
 msgstr "Скасовано"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:464
 #: components/AttachmentsBulkImport/utils.ts:467
-#. Used in: Components > Attachments Bulk Import > Utils
 msgid "frontEndInterruption"
-msgstr "Виконувався {action:string}, коли сталася перерва"
+msgstr "Виконувався {action:string}, коли сталося переривання"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:462
-#. Used in: Components > Attachments Bulk Import > Utils
 msgid "matchError"
-msgstr "Помилка збігу"
+msgstr "Помилка Збігу"
 
-#: components/AttachmentsBulkImport/utils.ts:470
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:470
 msgid "errorReadingFile"
 msgstr "Помилка читання файлу"
 
-#: components/AttachmentsBulkImport/utils.ts:472
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:472
 msgid "unhandledFatalResourceError"
 msgstr "Необроблена критична помилка ресурсу:"
 
+#. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:141
-#. Used in: Components > Attachments Bulk Import > Datasets
 msgid "attachmentImportDatasetsCount"
-msgstr "Набори даних імпорту вкладених файлів ({count:number})"
+msgstr "Набори Даних Імпорту Вкладених Файлів ({count:number})"
 
+#. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:240
-#. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDataset"
-msgstr "Новий набір даних вкладень {date: string}"
+msgstr "Набір Даних Нового Вкладення {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:269
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:269
 msgid "newAttachmentDatasetBase"
-msgstr "Новий набір даних вкладення"
+msgstr "Набір Даних Нового Вкладення"
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:393
-#. Used in: Components > Attachments Bulk Import > Import
 msgid "uploadInterrupted"
-msgstr "Завантаження перервано"
+msgstr "Завантаження Перервано"
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:399
-#. Used in: Components > Attachments Bulk Import > Import
 msgid "uploadInterruptedDescription"
-msgstr "Під час завантаження виникла перерва. Можливо, деякі файли було завантажено."
+msgstr ""
+"Під час відвантаження виникло переривання. Можливо, деякі файли було "
+"відвантажено."
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:404
-#. Used in: Components > Attachments Bulk Import > Import
 msgid "rollbackInterrupted"
-msgstr "Відкат перервано"
+msgstr "Відкат Перервано"
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:410
-#. Used in: Components > Attachments Bulk Import > Import
 msgid "rollbackInterruptedDescription"
-msgstr "Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені"
+msgstr ""
+"Тривав відкат, коли сталося переривання. Деякі файли могли бути видалені"
 
-#: components/AttachmentsBulkImport/Import.tsx:227
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:227
 msgid "attachmentId"
-msgstr "ID вкладення"
+msgstr "ID Вкладення"
 
+#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:34
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:41
-#. Used in: Components > Attachments Bulk Import > Select Upload Path
 msgid "choosePath"
-msgstr "Виберіть шлях"
+msgstr "Виберіть Шлях"
 
+#. Used in: Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Upload.tsx:247
-#. Used in: Components > Attachments Bulk Import > Upload
 msgid "beginAttachmentUpload"
-msgstr "Почати завантаження вкладених файлів?"
+msgstr "Почати Відвантаження Вкладення?"
 
-#: components/AttachmentsBulkImport/Upload.tsx:250
 #. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:250
 msgid "beginUploadDescription"
 msgstr ""
-"Завантаження вкладень призведе до створення вкладень на сервері активів і в "
+"Відвантаження вкладень призведе до створення вкладень на сервері активів і в "
 "базі даних Specify"
 
+#. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
-#. Used in: Components > Attachments Bulk Import > Action State
 msgid "interrupted"
-msgstr "Перерваний"
+msgstr "Перервано"
 
+#. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:55
-#. Used in: Components > Attachments Bulk Import > Action State
 msgid "tryNow"
-msgstr "Спробуйте зараз"
+msgstr "Спробуйте Зараз"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:62
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:62
 msgid "interruptedTime"
-msgstr "Перерваний. Повторна спроба через {remainingTime:string}"
+msgstr "Перервано. Повторна спроба через {remainingTime:string}"
 
-#: components/AttachmentsBulkImport/Rollback.tsx:137
 #. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:137
 msgid "rollbackDescription"
-msgstr "Відкат видалить вкладення з бази даних Specify і сервера ресурсів"
+msgstr "Відкат видалить вкладення з бази даних Specify і Сервера Активів"
 
-#: components/AttachmentsBulkImport/utils.ts:474
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:474
 msgid "noMatch"
-msgstr "Немає відповідності"
+msgstr "Немає збігу"
 
-#: components/Attachments/RecordSetAttachment.tsx:179
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:179
 msgid "attachmentHaltLimit"
 msgstr "У перших записах {halt:number} вкладень не знайдено."
 
-#: components/Attachments/RecordSetAttachment.tsx:187
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:187
 msgid "fetchNextAttachments"
-msgstr "Шукайте більше вкладень"
+msgstr "Дивіться більше вкладень"
 
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:376
-#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "hideForm"
-msgstr "Сховати форму"
+msgstr "Сховати Форму"
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1463
-#. Used in: Components > Preferences > User Definitions
 msgid "collapseFormByDefault"
-msgstr "Згортати форму за замовчуванням"
+msgstr "Типово згортати форму"
 
-#: components/Preferences/UserDefinitions.tsx:1464
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1464
 msgid "collapseFormByDefaultDescription"
 msgstr ""
-"Згортати чи не згортати форму вкладення за замовчуванням під час перегляду "
-"існуючих вкладень."
+"Типово згортати чи не згортати форму вкладення за замовчуванням під час "
+"перегляду вкладень, що існують. Якщо елементи керування вкладенням сховані, "
+"це налаштування не буде мати ефекту."
 
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1455
-#. Used in: Components > Preferences > User Definitions
 msgid "showControls"
-msgstr "Показувати елементи керування вкладеннями"
+msgstr "Показувати елементи керування вкладенням"
 
-#: components/Preferences/UserDefinitions.tsx:1456
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1456
 msgid "showControlsDescription"
 msgstr ""
-"Показати або приховати кнопки збільшення, зменшення, скидання та "
-"приховування/показу форми у переглядачі вкладень."
+"Показати або приховати кнопки збільшення масштабу, зменшення масштабу, "
+"скидання та приховування/показу форми у переглядачі вкладень."
 
-#: components/AttachmentsBulkImport/utils.ts:475
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:475
 msgid "multipleMatches"
 msgstr "Кілька збігів"
 
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
-#. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "multipleMatchesClick"
-msgstr "Кілька збігів. Натисніть, щоб усунути неоднозначність"
+msgstr "Кілька збігів. Натисніть, щоб Усунути Неоднозначність"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
 msgid "totalFiles"
 msgstr "Всього файлів"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:476
-#. Used in: Components > Attachments Bulk Import > Utils
 msgid "correctlyFormatted"
-msgstr "Правильно відформатований"
+msgstr "Правильно Відформатований"
 
-#: components/AttachmentsBulkImport/utils.ts:477
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:477
 msgid "stoppedByUser"
-msgstr "Зупинено користувачем"
+msgstr "Зупинено Користувачем"
 
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #: components/Router/OverlayRoutes.tsx:246
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:224
-#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 msgid "importAttachments"
-msgstr "Імпорт вкладень"
+msgstr "Імпорт Вкладень"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:30
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:30
 msgid "onFile"
-msgstr "У файлі"
+msgstr "На файлі"
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:416
-#. Used in: Components > Attachments Bulk Import > Import
 msgid "duplicateFilesFound"
-msgstr "Знайдено дублікати файлів"
+msgstr "Знайдено Дублікати Файлів"
 
-#: components/AttachmentsBulkImport/Import.tsx:421
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:421
 msgid "duplicateFilesDescription"
-msgstr "Наступні файли не вибрано, оскільки вони вже існують у цьому наборі даних."
+msgstr ""
+"Наступні файли не обрано, оскільки вони вже існують у цьому наборі даних."
 
-#: components/AttachmentsBulkImport/utils.ts:479
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:479
 msgid "errorFetchingRecord"
 msgstr "Помилка отримання запису"
 
-#: components/AttachmentsBulkImport/utils.ts:480
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:480
 msgid "errorSavingRecord"
 msgstr "Помилка збереження запису"
 
-#: components/AttachmentsBulkImport/utils.ts:478
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:478
 msgid "interruptionStopped"
 msgstr "Зупинено через помилку завантаження попереднього файлу"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
 msgid "chooseFilesToGetStarted"
 msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
 msgid "selectIdentifier"
 msgstr "Виберіть ідентифікатор для відповідності імені файлу."
 
-#: components/AttachmentsBulkImport/Import.tsx:224
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:224
 msgid "progress"
 msgstr "Прогрес"
 
-#: components/AttachmentsBulkImport/Rollback.tsx:143
 #. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:143
 msgid "rollbackResults"
-msgstr "Результати відкату"
+msgstr "Результати Відкату"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Rollback.tsx:146
 #: components/AttachmentsBulkImport/Upload.tsx:274
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 msgid "resultValue"
 msgstr ""
 "{success: number} із {total: number} вкладень у наборі даних було {action: "
 "string}."
 
-#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
 #. Used in: Components > Attachments Bulk Import > Rename Data Set
+#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
-"Видалення набору даних остаточно видаляє його та його шлях завантаження. "
+"Видалення Набору Даних остаточно видаляє його та його Шлях Відвантаження. "
 "Крім того, після видалення відкат більше не буде доступним для "
-"завантаженого набору даних."
+"відвантаженого Набору Даних."
 
-#: components/AttachmentsBulkImport/utils.ts:481
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:481
 msgid "attachmentUploadError"
 msgstr ""
-"Помилка завантаження вкладення. Можливо, сервер вкладень недоступний або "
+"Помилка Відвантаження Вкладення. Можливо, сервер вкладень недоступний або "
 "під час читання файлу сталася помилка."
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 msgid "downloadAll"
-msgstr "Завантажити все"
+msgstr "Завантажити Все"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 msgid "downloadAllDescription"
 msgstr "Завантажити всі знайдені вкладення"
 
-#: components/Attachments/RecordSetAttachment.tsx:224
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:224
 msgid "createRecordSetToDownloadAll"
 msgstr ""
-"Не всі вкладення завантажено. Будь ласка, створіть набір записів "
+"Не всі вкладення було завантажено. Будь ласка, створіть набір записів "
 "результатів запиту, щоб завантажити всі вкладення."
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:60
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:60
 msgid "deleteAttachmentWarning"
 msgstr "Ви впевнені, що хочете видалити цей вкладений файл?"
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 msgid "attachmentDelition"
 msgstr "Видалення вкладень"
 
+#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:50
-#. Used in: Components > Preferences > Collection Definitions
-#, fuzzy
 msgid "publicDefault"
-msgstr "Зробити вкладення загальнодоступними за замовчуванням"
+msgstr "Типово Зробити Вкладення Загальнодоступними"
 
-#: components/Preferences/CollectionDefinitions.tsx:51
 #. Used in: Components > Preferences > Collection Definitions
-#, fuzzy
+#: components/Preferences/CollectionDefinitions.tsx:51
 msgid "publicDefaultDescription"
 msgstr ""
-"Це налаштування контролює, чи нові вкладення, додані до цієї колекції, "
-"позначатимуться як «Публічні» за замовчуванням. Публічні вкладення "
-"автоматично відображатимуться на веб-порталі Specify. Цей параметр можна "
-"змінити для кожного вкладення окремо, і він не впливає на існуючі вкладення."
+"Це контролює, чи нові вкладення, додані до цієї колекції, позначатимуться як "
+"\"Публічні\" типово. Публічні вкладення автоматично відображатимуться на Веб-"
+"Порталі Specify. Цей параметр можна змінити для кожного вкладення окремо, і "
+"він не впливає на вкладення, що вже існують."
