@@ -29,6 +29,32 @@ def log_sqlalchemy_query(query):
     # Run in the storred_queries.execute file, in the execute function, right before the return statement, line 546
     # from specifyweb.specify.utils import log_sqlalchemy_query; log_sqlalchemy_query(query)
 
+def get_or_create_default_collection_object_type(collection: spmodels.Collection, using: str = "default"):
+    db = using or "default"
+
+    if collection.collectionobjecttype is not None:
+        return collection.collectionobjecttype
+
+    discipline_name = collection.discipline.name
+    taxon_tree_def_id = collection.discipline.taxontreedef_id
+
+    if discipline_name is None or taxon_tree_def_id is None:
+        return None
+
+    default_type, _ = spmodels.Collectionobjecttype.objects.using(db).get_or_create(
+        name=discipline_name,
+        collection=collection,
+        taxontreedef_id=taxon_tree_def_id,
+    )
+
+    type(collection).objects.using(db).filter(
+        pk=collection.pk,
+        collectionobjecttype__isnull=True,
+    ).update(collectionobjecttype=default_type)
+    collection.collectionobjecttype = default_type
+
+    return default_type
+
 def create_default_collection_types(apps, using="default"):
     db = using or "default"
 
