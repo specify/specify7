@@ -311,7 +311,7 @@ def update_table_schema_config_with_defaults(
             "schematype": table_config.schema_type
         }
 
-        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).first()
+        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).order_by("id").first()
 
         if fetched_sp_locale_container is None:
             sp_local_container = Splocalecontainer.objects.create(**{
@@ -462,7 +462,7 @@ def update_table_field_schema_config_with_defaults(
         "container": sp_local_container
     }
 
-    fetched_sp_locale_container_item = Splocalecontaineritem.objects.filter(**container_item_attrs).first()
+    fetched_sp_locale_container_item = Splocalecontaineritem.objects.filter(**container_item_attrs).order_by("id").first()
 
     if fetched_sp_locale_container_item is None:
         sp_locale_container_item = Splocalecontaineritem.objects.create(**{
