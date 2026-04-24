@@ -756,8 +756,6 @@ class RowPlanCanonical(NamedTuple):
                 localized_label,
             )
 
-        logger.debug("====== COLUMN ORDER =======")
-        logger.debug(self.columns)
         readonly_fields, readonly_rels = get_readonly_fields(base_table)
         key_and_fields_and_headers = [
             _lookup_in_fields(column.idx, readonly_fields) for column in self.columns
@@ -1094,37 +1092,26 @@ def run_batch_edit_query(props: BatchEditProps):
     )
 
     headers_enumerated = enumerate(key_and_headers)
-    logger.info("========== COLUMNS ==========")
-    logger.info(key_and_headers)
-    logger.info(extend_row.columns)
-    logger.info(fields)
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order = [None for _ in key_and_headers]
-    columns_at_end = []
-    for index, (key, header) in headers_enumerated:
+    visual_order: list[int | None] = [None for _ in key_and_headers]
+    new_columns: list[int] = []
+    for index, (key, _header) in headers_enumerated:
         # Find the column's original position if it existed in the origin query
         original_place = key[0]
-        duplicate_count = key[1]
         if original_place < len(fields):
             visual_order[original_place] = index
         else:
             # New field/column. Add it to the end of the dataset.
-            columns_at_end.append(index)
-
-    logger.info("----- ORDER 1 ------")
-    logger.info(visual_order)
+            new_columns.append(index)
 
     # Fill in the gaps with the new columns
     for index, column in enumerate(visual_order):
         if column is None:
-            visual_order[index] = columns_at_end.pop(0)
-            if len(columns_at_end) == 0:
+            visual_order[index] = new_columns.pop(0)
+            if len(new_columns) == 0:
                 break
-
-    logger.info("----- ORDER 2 ------")
-    logger.info(visual_order)
 
     headers = Func.second(key_and_headers)
 
