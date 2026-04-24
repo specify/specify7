@@ -756,6 +756,8 @@ class RowPlanCanonical(NamedTuple):
                 localized_label,
             )
 
+        logger.debug("====== COLUMN ORDER =======")
+        logger.debug(self.columns)
         readonly_fields, readonly_rels = get_readonly_fields(base_table)
         key_and_fields_and_headers = [
             _lookup_in_fields(column.idx, readonly_fields) for column in self.columns
@@ -1095,9 +1097,33 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order = Func.first(headers_enumerated)
+    caption_to_query_field = {caption: query_field for query_field, caption in query_field_caption_lookup.items()}
+    visual_order = [None for header in key_and_headers]
+    # visual_order = Func.first(headers_enumerated)
+    original_order = enumerate(fields)
+    columns_at_end = []
+    for index, (key, header) in headers_enumerated:
+        query_field = caption_to_query_field.get(header)
+        if query_field in fields:
+            original_place = fields.index(query_field)
+            visual_order[original_place] = index
+        else:
+            columns_at_end.append(key)
+
+    for column, index in enumerate(visual_order):
+        if column is None:
+            visual_order[index] = columns_at_end.pop(0)
+            if len(columns_at_end) == 0:
+                break
 
     headers = Func.second(key_and_headers)
+
+    logger.debug("================ COLUMN ORDER ===============")
+    logger.debug(fields)
+    # logger.debug(query_fields) # Query fields # Includes hidden fields
+    # logger.debug(query_field_caption_lookup) # Query field -> header
+    logger.debug(visual_order)
+    logger.debug(headers)
 
     json_upload_plan = upload_plan.unparse()
     validate(json_upload_plan, schema)
