@@ -1,4 +1,4 @@
-import { screen, waitFor } from '@testing-library/react';
+import { screen } from '@testing-library/react';
 import React from 'react';
 
 import { clearIdStore } from '../../../hooks/useId';
@@ -16,35 +16,42 @@ beforeEach(() => {
 
 describe('RecordSetAttachments', () => {
   test('Download All button is disabled when there are no attachments', async () => {
-    jest.spyOn(console, 'warn').mockImplementation();
+    jest.spyOn(console, 'warn').mockImplementation(() => {});
+
+    const mockRecord = {
+      specifyTable: {
+        name: 'TestTable',
+      },
+      populated: true,
+      rgetCollection: jest.fn().mockResolvedValue({
+        models: [],
+      }),
+    } as any;
 
     const { user } = mount(
       <LoadingContext.Provider value={f.void}>
         <RecordSetAttachments
           name="Test Record Set"
-          recordCount={0}
+          recordCount={1}
           recordSetId={1}
-          records={[]}
+          records={[mockRecord]}
           onFetch={undefined}
         />
       </LoadingContext.Provider>
     );
 
-    // Open the attachments dialog
-    const galleryButton = screen.getByTitle('attachments');
-    await user.click(galleryButton);
-
-    // Wait for the dialog to render with the Download All button
-    await waitFor(() => {
-      expect(
-        screen.getByText('Download All', { exact: false })
-      ).toBeInTheDocument();
+    // Open attachments dialog
+    const galleryButton = screen.getByRole('button', {
+      name: /attachments/i,
     });
 
-    // The Download All button should be disabled when there are no attachments
-    const downloadAllButton = screen.getByText('Download All', {
-      exact: false,
-    }).closest('button')!;
+    await user.click(galleryButton);
+
+    // Assert dialog opens and Download All appears (but disabled)
+    const downloadAllButton = await screen.findByRole('button', {
+      name: /download all/i,
+    });
+
     expect(downloadAllButton).toBeDisabled();
   });
 });
