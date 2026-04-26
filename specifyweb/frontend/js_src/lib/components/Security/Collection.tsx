@@ -108,6 +108,10 @@ export function CollectionView({
    * any explicit collection-level roles or policies assigned.
    */
   const mergedUsers = mergeCollectionUsers(userRoles, usersWithPolicies);
+  const mergedUserIds =
+    typeof mergedUsers === 'object'
+      ? new Set(mergedUsers.map(({ userId }) => userId))
+      : undefined;
   const displayUsers =
     typeof mergedUsers === 'object' && typeof admins === 'object'
       ? [
@@ -115,7 +119,7 @@ export function CollectionView({
           ...admins.adminUsers
             .filter(
               ({ userId }) =>
-                !mergedUsers.some((user) => user.userId === userId)
+                mergedUserIds !== undefined && !mergedUserIds.has(userId)
             )
             .map(({ userId, userName }) => ({
               userId,
