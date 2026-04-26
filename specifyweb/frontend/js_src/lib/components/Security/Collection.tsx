@@ -53,6 +53,56 @@ export type SecurityCollectionOutlet = SecurityOutlet & {
   readonly getSetUserRoles: GetOrSet<UserRoles | undefined>;
 };
 
+export type AdminsShape = {
+  readonly admins: ReadonlySet<number>;
+  readonly adminUsers: ReadonlyArray<{
+    readonly userId: number;
+    readonly userName: LocalizedString;
+  }>;
+};
+
+/**
+ * Computes the displayUsers by merging collection users with institution admin users.
+ * Deduplicates and sorts alphabetically by userName.
+ * Returns mergedUsers unchanged if either argument is undefined.
+ */
+export function computeDisplayUsers(
+  mergedUsers: UserRoles | undefined,
+  admins: AdminsShape | undefined
+): UserRoles | undefined {
+  return typeof mergedUsers === 'object' && typeof admins === 'object'
+    ? [
+        ...mergedUsers,
+        ...admins.adminUsers
+          .filter(
+            ({ userId }) =>
+              !mergedUsers.some((user) => user.userId === userId)
+          )
+          .map(({ userId, userName }) => ({
+            userId,
+            userName,
+            roles: [] as RA<RoleBase>,
+          })),
+      ].sort(sortFunction(({ userName }) => userName))
+    : mergedUsers;
+}
+
+/**
+ * Computes the labels for a user, prepending the institution admin label if applicable.
+ */
+export function computeLabels(
+  admins: AdminsShape | undefined,
+  userId: number,
+  roles: RA<RoleBase>,
+  institutionAdminLabel: LocalizedString
+): ReadonlyArray<LocalizedString> {
+  const isAdmin = admins?.admins.has(userId) === true;
+  return [
+    ...(isAdmin ? [institutionAdminLabel] : []),
+    ...roles.map(({ roleName }) => roleName),
+  ];
+}
+
 export function SecurityCollection(): JSX.Element {
   const { collectionId = '' } = useParams();
   const availableCollections = useAvailableCollections();
@@ -108,26 +158,7 @@ export function CollectionView({
    * any explicit collection-level roles or policies assigned.
    */
   const mergedUsers = mergeCollectionUsers(userRoles, usersWithPolicies);
-  const mergedUserIds =
-    typeof mergedUsers === 'object'
-      ? new Set(mergedUsers.map(({ userId }) => userId))
-      : undefined;
-  const displayUsers =
-    typeof mergedUsers === 'object' && typeof admins === 'object'
-      ? [
-          ...mergedUsers,
-          ...admins.adminUsers
-            .filter(
-              ({ userId }) =>
-                mergedUserIds !== undefined && !mergedUserIds.has(userId)
-            )
-            .map(({ userId, userName }) => ({
-              userId,
-              userName,
-              roles: [] as RA<RoleBase>,
-            })),
-        ].sort(sortFunction(({ userName }) => userName))
-      : mergedUsers;
+  const displayUsers = computeDisplayUsers(mergedUsers, admins);
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -190,12 +221,12 @@ export function CollectionView({
                         const canRead =
                           userId === userInformation.id ||
                           hasTablePermission('SpecifyUser', 'read');
-                        const isAdmin =
-                          admins?.admins.has(userId) === true;
-                        const labels = [
-                          ...(isAdmin ? [userText.institutionAdmin()] : []),
-                          ...roles.map(({ roleName }) => roleName),
-                        ];
+                        const labels = computeLabels(
+                          admins,
+                          userId,
+                          roles,
+                          userText.institutionAdmin()
+                        );
                         const children = (
                           <>
                             {userName}

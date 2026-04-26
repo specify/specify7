@@ -9,61 +9,13 @@
 
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { sortFunction } from '../../../utils/utils';
-import type { RoleBase, UserRoles } from '../Collection';
-
-// ---------------------------------------------------------------------------
-// Helpers that replicate the exact logic introduced in the PR
-// ---------------------------------------------------------------------------
-
-type AdminsShape = {
-  readonly admins: ReadonlySet<number>;
-  readonly adminUsers: ReadonlyArray<{
-    readonly userId: number;
-    readonly userName: LocalizedString;
-  }>;
-};
-
-/**
- * Replicates the displayUsers computation from CollectionView.
- * When either argument is undefined, returns mergedUsers unchanged.
- */
-function computeDisplayUsers(
-  mergedUsers: UserRoles | undefined,
-  admins: AdminsShape | undefined
-): UserRoles | undefined {
-  return typeof mergedUsers === 'object' && typeof admins === 'object'
-    ? [
-        ...mergedUsers,
-        ...admins.adminUsers
-          .filter(
-            ({ userId }) =>
-              !mergedUsers.some((user) => user.userId === userId)
-          )
-          .map(({ userId, userName }) => ({
-            userId,
-            userName,
-            roles: [] as ReadonlyArray<RoleBase>,
-          })),
-      ].sort(sortFunction(({ userName }) => userName))
-    : mergedUsers;
-}
-
-/**
- * Replicates the per-user labels computation from CollectionView.
- */
-function computeLabels(
-  admins: AdminsShape | undefined,
-  userId: number,
-  roles: ReadonlyArray<RoleBase>,
-  institutionAdminLabel: LocalizedString
-): ReadonlyArray<LocalizedString> {
-  const isAdmin = admins?.admins.has(userId) === true;
-  return [
-    ...(isAdmin ? [institutionAdminLabel] : []),
-    ...roles.map(({ roleName }) => roleName),
-  ];
-}
+import {
+  computeDisplayUsers,
+  computeLabels,
+  type AdminsShape,
+  type RoleBase,
+  type UserRoles,
+} from '../Collection';
 
 // ---------------------------------------------------------------------------
 // Test fixtures
