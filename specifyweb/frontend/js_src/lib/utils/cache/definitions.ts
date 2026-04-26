@@ -36,6 +36,9 @@ export type CacheDefinitions = {
   readonly general: {
     readonly clearCacheOnException: boolean;
   };
+  readonly expressSearch: {
+    readonly showSearchTips: boolean;
+  };
   readonly forms: {
     readonly readOnlyMode: boolean;
     readonly useFieldLabels: boolean;

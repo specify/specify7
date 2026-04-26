@@ -352,7 +352,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.accentColor2(),
             requiresReload: false,
             visible: true,
-            defaultValue: '#a4af83',
+            defaultValue: '#ACB389',
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
@@ -1890,6 +1890,13 @@ export const userPreferenceDefinitions = {
           }),
           showLineNumber: definePref<boolean>({
             title: preferencesText.showLineNumber(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          wrapQueryResults: definePref<boolean>({
+            title: preferencesText.lineWrap(),
             requiresReload: false,
             visible: true,
             defaultValue: false,

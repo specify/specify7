@@ -218,18 +218,30 @@ class ObjectFormatter:
         # Helper function to apply only string-ish transforms with no numeric casts
         def apply_stringish(expr):
             e = expr
+
             if fieldNodeAttrib.get('trimzeros') == 'true':
-                numeric_str = cast(cast(e, types.Numeric(65)), types.String())
-                e = case(
-                    (e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), numeric_str),
-                    else_=cast(e, types.String()),
-                )
+                e = cast(e, types.String())
+                trimmed = e
+
+                # remove leading zeros
+                trimmed = func.regexp_replace(trimmed, r'^(-?)0+([0-9])', r'\1\2')
+
+                # remove trailing zeros after decimal
+                trimmed = func.regexp_replace(trimmed, r'(\.[0-9]*?)0+$', r'\1')
+
+                # remove trailing decimal point
+                trimmed = func.regexp_replace(trimmed, r'\.$', '')
+
+                e = case((e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), trimmed), else_=e)
+
             fmt = fieldNodeAttrib.get('format')
             if fmt is not None:
                 e = self.pseudo_sprintf(fmt, e)
+
             sep = fieldNodeAttrib.get('sep')
             if sep is not None:
                 e = concat(sep, e)
+
             return e
 
         stringish_expr = apply_stringish(raw_expr)
@@ -394,19 +406,23 @@ class ObjectFormatter:
         if field_spec.get_field() is not None:
             if field_spec.is_temporal() and field_spec.date_part == "Full Date":
                 field = self._dateformat(field_spec.get_field(), field)
-
+            elif field_spec.is_temporal() and field_spec.date_part is not None:
+                # Numeric date_part fields are already derived SQL expressions
+                pass
             elif field_spec.is_relationship():
                 pass
-
             else:
                 field = self._fieldformat(field_spec.table, field_spec.get_field(), field)
+        
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
         if specify_field.type == "java.sql.Timestamp":
             return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
-        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+        prec_fld = None
+        if hasattr(field, 'class_'):
+            prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
         # format_expr = (
         #     case(
