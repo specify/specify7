@@ -9,7 +9,7 @@ import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { GetOrSet, IR, RA } from '../../utils/types';
 import { defined, localized } from '../../utils/types';
-import { index } from '../../utils/utils';
+import { index, sortFunction } from '../../utils/utils';
 import { Container, Ul } from '../Atoms';
 import { formatConjunction } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
@@ -32,6 +32,7 @@ import {
   useCollectionUserRoles,
   useCollectionUsersWithPolicies,
 } from './CollectionHooks';
+import { useAdmins } from './Institution';
 import type { Role } from './Role';
 import { fetchRoles } from './utils';
 
@@ -99,7 +100,30 @@ export function CollectionView({
   const [userRoles] = getSetUserRoles;
   useErrorContext('userRoles', userRoles);
 
+  const admins = useAdmins();
+
+  /*
+   * Include institution admin users in the collection user list so it is
+   * clear they have power in every collection, even if they don't have
+   * any explicit collection-level roles or policies assigned.
+   */
   const mergedUsers = mergeCollectionUsers(userRoles, usersWithPolicies);
+  const displayUsers =
+    typeof mergedUsers === 'object' && typeof admins === 'object'
+      ? [
+          ...mergedUsers,
+          ...admins.adminUsers
+            .filter(
+              ({ userId }) =>
+                !mergedUsers.some((user) => user.userId === userId)
+            )
+            .map(({ userId, userName }) => ({
+              userId,
+              userName,
+              roles: [] as RA<RoleBase>,
+            })),
+        ].sort(sortFunction(({ userName }) => userName))
+      : mergedUsers;
 
   const navigate = useNavigate();
   const location = useLocation();
@@ -152,24 +176,28 @@ export function CollectionView({
                   collectionTable: tables.Collection.label,
                 })}
               </h4>
-              {typeof mergedUsers === 'object' ? (
-                mergedUsers.length === 0 ? (
+              {typeof displayUsers === 'object' ? (
+                displayUsers.length === 0 ? (
                   commonText.none()
                 ) : (
                   <>
                     <Ul>
-                      {mergedUsers.map(({ userId, userName, roles }) => {
+                      {displayUsers.map(({ userId, userName, roles }) => {
                         const canRead =
                           userId === userInformation.id ||
                           hasTablePermission('SpecifyUser', 'read');
+                        const isAdmin =
+                          admins?.admins.has(userId) === true;
+                        const labels = [
+                          ...(isAdmin ? [userText.institutionAdmin()] : []),
+                          ...roles.map(({ roleName }) => roleName),
+                        ];
                         const children = (
                           <>
                             {userName}
-                            {roles.length > 0 && (
+                            {labels.length > 0 && (
                               <span className="text-gray-500">
-                                {`(${formatConjunction(
-                                  roles.map(({ roleName }) => roleName)
-                                )})`}
+                                {` (${formatConjunction(labels)})`}
                               </span>
                             )}
                           </>
