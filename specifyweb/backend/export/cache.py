@@ -207,3 +207,38 @@ def _infer_column_type(spqueryfield):
                  'code', 'abbreviation', 'datum'):
         return 'VARCHAR(256)'
     return 'TEXT'
+
+
+def cleanup_orphan_caches():
+    """Drop cache tables that have no corresponding SchemaMapping."""
+    from .models import CacheTableMeta
+
+    with connection.cursor() as cursor:
+        cursor.execute(
+            "SELECT table_name FROM information_schema.tables "
+            "WHERE table_name LIKE 'dwc\\_cache\\_%' AND table_schema = DATABASE()"
+        )
+        db_tables = {row[0] for row in cursor.fetchall()}
+
+    tracked_tables = set(CacheTableMeta.objects.values_list('tablename', flat=True))
+    for orphan_table in db_tables - tracked_tables:
+        drop_cache_table(orphan_table)
+
+
+def validate_occurrence_id_uniqueness(mapping, collection):
+    """Check that occurrenceID values are unique in the core cache table.
+
+    Returns list of duplicate occurrenceIDs, or empty list if all unique.
+    """
+    table_name = get_cache_table_name(mapping.id, collection.id)
+    safe_name = re.sub(r'[^a-zA-Z0-9_]', '', table_name)
+
+    try:
+        with connection.cursor() as cursor:
+            cursor.execute(
+                f'SELECT occurrence_id, COUNT(*) as cnt FROM `{safe_name}` '
+                f'GROUP BY occurrence_id HAVING cnt > 1 LIMIT 100'
+            )
+            return [row[0] for row in cursor.fetchall()]
+    except Exception:
+        return []

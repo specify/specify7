@@ -6,6 +6,8 @@ re-exports them under PascalCase aliases for use throughout this package
 and adds the cache-tracking model that's specific to the cache engine.
 """
 from django.db import models
+from django.db.models.signals import post_delete
+from django.dispatch import receiver
 from django.utils import timezone
 
 from specifyweb.specify.models import (
@@ -46,3 +48,14 @@ class CacheTableMeta(models.Model):
         indexes = [
             models.Index(fields=['schemamapping', 'collection'], name='CacheMetaMappingColIDX'),
         ]
+
+
+@receiver(post_delete, sender=SchemaMapping)
+def delete_schema_mapping_cache(sender, instance, **kwargs):
+    """Drop cache table when a SchemaMapping is deleted."""
+    from .cache import drop_cache_table
+    for meta in CacheTableMeta.objects.filter(schemamapping=instance):
+        try:
+            drop_cache_table(meta.tablename)
+        except Exception:
+            pass

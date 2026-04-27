@@ -94,3 +94,34 @@ def create_notification(user: Specifyuser, filename: str | None):
         'type': 'feed-item-updated',
         'file': filename
     }))
+
+
+def update_feed_v2():
+    """Update RSS feed using the new ExportDataSet model.
+
+    For each ExportDataSet with isrss=True and stale export, rebuild
+    cache and regenerate DwCA.
+    """
+    from .models import ExportDataSet
+    from .cache import build_cache_tables
+    from .dwca_from_cache import make_dwca_from_dataset
+    from django.utils import timezone
+    from datetime import timedelta
+
+    datasets = ExportDataSet.objects.filter(isrss=True)
+    updated = []
+
+    for dataset in datasets:
+        if dataset.frequency and dataset.frequency > 0 and dataset.lastexported:
+            next_update = dataset.lastexported + timedelta(days=dataset.frequency)
+            if timezone.now() < next_update:
+                continue
+
+        try:
+            build_cache_tables(dataset)
+            make_dwca_from_dataset(dataset)
+            updated.append(dataset.exportname)
+        except Exception:
+            logger.exception('Failed to update RSS feed item: %s', dataset.exportname)
+
+    return updated
