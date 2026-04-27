@@ -410,6 +410,9 @@ def _batch_reparent_children(children, target, model):
     The renumber_tree step is O(N) but runs in seconds even for large trees,
     and is far faster than the O(N²) per-child approach.
     """
+    if not children:
+        logger.info('batch reparenting 0 children to %s — skipping', target)
+        return
     logger.info('batch reparenting %d children to %s', len(children), target)
     
     child_ids = [child.id for child in children]
