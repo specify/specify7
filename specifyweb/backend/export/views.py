@@ -324,3 +324,100 @@ def clone_mapping(request, mapping_id):
         'isDefault': False,
         'queryId': new_query.id,
     }), content_type='application/json')
+
+
+@require_POST
+@login_maybe_required
+def generate_dwca(request, dataset_id):
+    """Generate a DwCA from an export dataset."""
+    check_permission_targets(None, request.specify_user.id, [ExportPackagePT.execute])
+    from .models import ExportDataSet
+    from .dwca_from_cache import make_dwca_from_dataset
+
+    try:
+        dataset = ExportDataSet.objects.get(id=dataset_id)
+    except ExportDataSet.DoesNotExist:
+        raise Http404
+
+    try:
+        path = make_dwca_from_dataset(dataset)
+        Message.objects.create(
+            user=request.specify_user,
+            content=json.dumps({
+                'type': 'dwca-export-complete',
+                'fileName': dataset.filename,
+                'exportName': dataset.exportname,
+            }),
+        )
+        return HttpResponse(json.dumps({'status': 'ok', 'path': path}),
+                            content_type='application/json')
+    except Exception as e:
+        logger.exception('DwCA generation failed for dataset %s', dataset_id)
+        return HttpResponseBadRequest(json.dumps({'error': str(e)}),
+                                      content_type='application/json')
+
+
+@require_POST
+@login_maybe_required
+def build_cache(request, dataset_id):
+    """Build/rebuild cache tables for an export dataset."""
+    check_permission_targets(None, request.specify_user.id, [ExportPackagePT.execute])
+    from .models import ExportDataSet
+    from .cache import build_cache_tables
+
+    try:
+        dataset = ExportDataSet.objects.get(id=dataset_id)
+    except ExportDataSet.DoesNotExist:
+        raise Http404
+
+    try:
+        build_cache_tables(dataset)
+        return HttpResponse(json.dumps({
+            'status': 'ok', 'datasetId': dataset.id,
+            'exportName': dataset.exportname,
+        }), content_type='application/json')
+    except Exception as e:
+        logger.exception('Cache build failed for dataset %s', dataset_id)
+        return HttpResponseBadRequest(json.dumps({'error': str(e)}),
+                                      content_type='application/json')
+
+
+@require_GET
+@login_maybe_required
+def validate_occurrence_ids(request, mapping_id):
+    """Validate occurrenceID uniqueness in a core mapping's cache table."""
+    check_permission_targets(None, request.specify_user.id, [SchemaMappingPT.read])
+    from .models import SchemaMapping
+    from .cache import validate_occurrence_id_uniqueness
+
+    try:
+        mapping = SchemaMapping.objects.get(id=mapping_id)
+    except SchemaMapping.DoesNotExist:
+        raise Http404
+
+    collection = request.specify_collection
+    duplicates = validate_occurrence_id_uniqueness(mapping, collection)
+    return HttpResponse(json.dumps({
+        'valid': len(duplicates) == 0,
+        'duplicates': duplicates[:20],
+        'totalDuplicates': len(duplicates),
+    }), content_type='application/json')
+
+
+@require_GET
+@login_maybe_required
+def cache_status(request, dataset_id):
+    """Get cache build status for an export dataset."""
+    from .models import ExportDataSet, CacheTableMeta
+
+    try:
+        dataset = ExportDataSet.objects.get(id=dataset_id)
+    except ExportDataSet.DoesNotExist:
+        raise Http404
+
+    meta = CacheTableMeta.objects.filter(schemamapping=dataset.coremapping).first()
+    return HttpResponse(json.dumps({
+        'status': meta.buildstatus if meta else 'idle',
+        'lastBuilt': meta.lastbuilt.isoformat() if meta and meta.lastbuilt else None,
+        'rowCount': meta.rowcount if meta else None,
+    }), content_type='application/json')
