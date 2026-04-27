@@ -868,13 +868,15 @@ def renumber_tree(table: str) -> None:
         return f"CONCAT_WS(',', {parts})"
 
     # Preorder numbering using ROW_NUMBER()
+    # Use existing nodenumber as a secondary tie-breaker so siblings
+    # keep their prior interval order unless explicitly moved.
     sql_preorder = (
         f"UPDATE {table} t\n"
         f"JOIN (\n"
         f"  SELECT id, rn FROM (\n"
         f"    SELECT\n"
         f"      t0.{table}id AS id,\n"
-        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.{table}id) AS rn\n"
+        f"      ROW_NUMBER() OVER (ORDER BY {path_expr(table, depth)}, t0.nodenumber, t0.{table}id) AS rn\n"
         f"    FROM {table} t0\n"
         f"{parent_joins(table, depth)}\n"
         f"  ) ordered\n"
