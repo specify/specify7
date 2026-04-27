@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-27 08:09+0000\n"
+"PO-Revision-Date: 2026-04-27 10:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "expressSearchConfig/uk/>\n"
@@ -399,84 +399,69 @@ msgstr "Об'єкт Колекції Дозвіл"
 #. Used in: 
 msgid "PermitToCO_desc"
 msgstr ""
-"Дозволяє та збирає об'єкти пов'язані через приєднання авторизованих стосунків"
-"(зв'язків)."
+"Дозволи та об'єкти колекції пов'язані через приєднання авторизованих "
+"стосунків(зв'язків)."
 
 #. Used in: 
 msgid "PermitIssuedToAgent"
 msgstr "Агент Виданий для Отримання Дозволу"
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedToAgent_desc"
-msgstr ""
+msgstr "Дозволи та агенти яким вони були видані."
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedByAgent"
-msgstr ""
+msgstr "Агент Виданий за Дозволом"
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedByAgent_desc"
-msgstr ""
+msgstr "Дозволи та агенти які видали їх."
 
 #. Used in: 
-#, fuzzy
 msgid "ProjectAgent"
-msgstr ""
+msgstr "Проєкт Агента"
 
 #. Used in: 
-#, fuzzy
 msgid "ProjectAgent_desc"
-msgstr ""
+msgstr "Проєкт та їх призначені агенти."
 
 #. Used in: 
-#, fuzzy
 msgid "RepoAgreeAgent"
-msgstr ""
+msgstr "Договір Сховища Агенту"
 
 #. Used in: 
-#, fuzzy
 msgid "RepoAgreeAgent_desc"
-msgstr ""
+msgstr "Угоди сховища та походження їх агентів."
 
 #. Used in: 
-#, fuzzy
 msgid "StorageCO"
-msgstr ""
+msgstr "Об'єкт Колекції Сховище"
 
 #. Used in: 
-#, fuzzy
 msgid "StorageCO_desc"
-msgstr ""
+msgstr "Об'єкти колекції та місцезнаходження їх сховищ."
 
 #. Used in: 
-#, fuzzy
 msgid "TaxCollObject"
-msgstr ""
+msgstr "Об'єкт Колекції Таксон"
 
 #. Used in: 
-#, fuzzy
 msgid "TaxCollObject_desc"
-msgstr ""
+msgstr "Об'єкти колекції та їх визначені записи таксону."
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeInCO"
-msgstr ""
+msgstr "Об'єкт Колекції Вхідний Обмін"
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeInCO_desc"
-msgstr ""
+msgstr "Вхідні обміни з об'єктами колекцій в процесі підготовки до обміну."
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeOutCO"
-msgstr ""
+msgstr "Об'єкт Колекції Вихідний Обмін"
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeOutCO_desc"
-msgstr ""
+msgstr "Вихідні обміни з об'єктами колекцій в процесі підготовки до обміну."
