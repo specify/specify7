@@ -1,5 +1,5 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
-from specifyweb.specify.models import Geography, Locality, Taxon, Taxontreedef
+from specifyweb.specify.models import Geography, Locality, Taxon, Taxontreedef, Taxontreedefitem
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.trees.extras import merge, _batch_reparent_children, validate_tree_numbering
 
@@ -204,20 +204,48 @@ class TestBatchReparent(GeographyTree):
         validate_tree_numbering('geography')
 
     def test_batch_reparent_updates_fullnames(self):
-        """Full names reflect the new geographic path after batch reparenting."""
-        # Greene County (MO) has Springfield as a city child
-        # Reparent Greene County from Missouri to Ohio
-        _batch_reparent_children([self.greene], self.ohio, Geography)
+        """Full names reflect the new parent path after batch reparenting."""
+        # Create a taxonomy tree with ranks that include ancestry in fullname.
+        # In the real taxon tree, Genus and Species are the ranks with
+        # isinfullname=True, so Species includes Genus in its fullname.
+        root = Taxon.objects.create(
+            definition=self.taxontreedef,
+            definitionitem=self.taxon_root,
+            name="Life",
+            fullname="Life"
+        )
 
-        # Refresh and check fullnames
-        self.greene.refresh_from_db()
-        self.springmo.refresh_from_db()
+        # Create two Kingdom-level nodes
+        animalia = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        plantae = self.make_taxontree("Plantae", "Kingdom", parent=root)
 
-        # The geography tree definition items don't include parent names
-        # in fullname by default (isinfullname=False), so fullname is just
-        # the node's own name. Verify the fullname is still correct.
-        self.assertEqual("Greene", self.greene.fullname)
-        self.assertEqual("Springfield", self.springmo.fullname)
+        # Enable fullname ancestry for Genus and Species ranks
+        genus_rank = Taxontreedefitem.objects.get(name="Genus")
+        species_rank = Taxontreedefitem.objects.get(name="Species")
+        self._update(genus_rank, dict(isinfullname=True))
+        self._update(species_rank, dict(isinfullname=True))
+
+        # Create a Genus (Canis) under Animalia with two Species
+        canis = self.make_taxontree("Canis", "Genus", parent=animalia)
+        canis_lupus = self.make_taxontree("lupus", "Species", parent=canis)
+        canis_latrans = self.make_taxontree("latrans", "Species", parent=canis)
+
+        # Refresh species to get computed fullnames
+        canis_lupus.refresh_from_db()
+        canis_latrans.refresh_from_db()
+
+        # Before reparenting, Species fullnames should include Canis
+        self.assertEqual("Canislupus", canis_lupus.fullname)
+        self.assertEqual("Canislatrans", canis_latrans.fullname)
+
+        # Reparent the Genus Canis from Animalia to Plantae
+        _batch_reparent_children([canis], plantae, Taxon)
+
+        # Refresh and check Species fullnames still include Canis
+        canis_lupus.refresh_from_db()
+        canis_latrans.refresh_from_db()
+        self.assertEqual("Canislupus", canis_lupus.fullname)
+        self.assertEqual("Canislatrans", canis_latrans.fullname)
 
     def test_batch_reparent_preserves_node_numbers(self):
         """After batch reparenting, all node numbers are valid and unique."""
@@ -300,26 +328,65 @@ class TestBatchReparent(GeographyTree):
         validate_tree_numbering('geography')
 
     def test_batch_reparent_preserves_ordering(self):
-        """Counties maintain their relative ordering after batch reparenting."""
-        # Create additional counties under Missouri
-        boone = self.make_geotree("Boone", "County", parent=self.mo)
-        jasper = self.make_geotree("Jasper", "County", parent=self.mo)
-        platte = self.make_geotree("Platte", "County", parent=self.mo)
+        """Children maintain their relative ordering after batch reparenting."""
+        # Create a taxonomy tree.
+        root = Taxon.objects.create(
+            definition=self.taxontreedef,
+            definitionitem=self.taxon_root,
+            name="Life",
+            fullname="Life"
+        )
 
-        _batch_reparent_children([boone, jasper, platte], self.ohio, Geography)
+        # Create two Kingdom-level nodes
+        animalia = self.make_taxontree("Animalia", "Kingdom", parent=root)
+        plantae = self.make_taxontree("Plantae", "Kingdom", parent=root)
+
+        # Create three real-world Genus-level children under Animalia
+        canis = self.make_taxontree("Canis", "Genus", parent=animalia)
+        felis = self.make_taxontree("Felis", "Genus", parent=animalia)
+        ursus = self.make_taxontree("Ursus", "Genus", parent=animalia)
+
+        # Reparent the three genera from Animalia to Plantae
+        _batch_reparent_children([canis, felis, ursus], plantae, Taxon)
 
         # Refresh all
-        for c in [boone, jasper, platte]:
+        for c in [canis, felis, ursus]:
             c.refresh_from_db()
 
-        # All should be children of Ohio
-        for c in [boone, jasper, platte]:
-            self.assertEqual(c.parent_id, self.ohio.id)
+        # All should be children of Plantae
+        for c in [canis, felis, ursus]:
+            self.assertEqual(c.parent_id, plantae.id)
 
-        # Verify node numbers are nested under Ohio
-        self.ohio.refresh_from_db()
-        for c in [boone, jasper, platte]:
-            self.assertGreaterEqual(c.nodenumber, self.ohio.nodenumber)
-            self.assertLessEqual(c.nodenumber, self.ohio.highestchildnodenumber)
+        # Verify node numbers are nested under Plantae
+        plantae.refresh_from_db()
+        for c in [canis, felis, ursus]:
+            self.assertGreaterEqual(c.nodenumber, plantae.nodenumber)
+            self.assertLessEqual(c.nodenumber, plantae.highestchildnodenumber)
 
-        validate_tree_numbering('geography')
+        # Fetch Plantae's children ordered by nodenumber and verify that
+        # canis, felis, ursus appear in that exact relative order.
+        plantae_children = Taxon.objects.filter(
+            parent=plantae
+        ).order_by('nodenumber').values_list('id', flat=True)
+
+        # Build a list of the child ids in the order they appear
+        child_ids = list(plantae_children)
+
+        # Find the positions of canis, felis, ursus in the ordered list
+        canis_idx = child_ids.index(canis.id)
+        felis_idx = child_ids.index(felis.id)
+        ursus_idx = child_ids.index(ursus.id)
+
+        # Assert that canis, felis, ursus appear in that exact order
+        self.assertLess(canis_idx, felis_idx,
+                        "canis should appear before felis among Plantae's children")
+        self.assertLess(felis_idx, ursus_idx,
+                        "felis should appear before ursus among Plantae's children")
+
+        # Optionally assert they are contiguous (no other children interleaved)
+        self.assertEqual(felis_idx, canis_idx + 1,
+                         "canis and felis should be adjacent among Plantae's children")
+        self.assertEqual(ursus_idx, felis_idx + 1,
+                         "felis and ursus should be adjacent among Plantae's children")
+
+        validate_tree_numbering('taxon')
