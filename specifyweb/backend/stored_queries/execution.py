@@ -3,6 +3,7 @@ import json
 import logging
 import os
 import re
+import traceback
 import uuid
 from io import StringIO
 from xml.sax.saxutils import escape
@@ -268,28 +269,42 @@ def do_export(spquery, collection, user, filename, exporttype, host):
 
     with models.session_context() as session:
         field_specs = fields_from_json(spquery['fields'])
-        if exporttype == 'csv':
-            query_to_csv(session, collection, user, tableid, field_specs, path,
-                         recordsetid=recordsetid, 
-                         captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
-        elif exporttype == 'kml':
-            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
-            message_type = 'query-export-to-kml-complete'
-        elif exporttype == 'webportal':
-            query_to_web_portal_zip(
-                session,
-                collection,
-                user,
-                tableid,
-                field_specs,
-                path,
-                spquery['captions'],
-                recordsetid=recordsetid,
-                distinct=spquery['selectdistinct'],
-            )
-            message_type = 'query-export-to-web-portal-complete'
+        try:
+            if exporttype == 'csv':
+                query_to_csv(session, collection, user, tableid, field_specs, path,
+                             recordsetid=recordsetid, 
+                             captions=spquery['captions'], strip_id=True,
+                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
+                message_type = 'query-export-to-csv-complete'
+            elif exporttype == 'kml':
+                query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
+                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
+                message_type = 'query-export-to-kml-complete'
+            elif exporttype == 'webportal':
+                query_to_web_portal_zip(
+                    session,
+                    collection,
+                    user,
+                    tableid,
+                    field_specs,
+                    path,
+                    spquery['captions'],
+                    recordsetid=recordsetid,
+                    distinct=spquery['selectdistinct'],
+                )
+                message_type = 'query-export-to-webportal-complete'
+        except Exception as e:
+            error_details = {
+                'error': str(e),
+                'traceback': traceback.format_exc(),
+            }
+            message_type = f'query-export-to-{exporttype}-failed'
+            Message.objects.create(user=user, content=json.dumps({
+                'type': message_type,
+                'file': filename,
+                'error': error_details,
+            }))
+            return
 
     Message.objects.create(user=user, content=json.dumps({
         'type': message_type,
