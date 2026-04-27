@@ -72,9 +72,7 @@ type SharedEditPreference = 'cloneAndEdit' | 'editShared';
 
 function getSessionSharedEditPref(): SharedEditPreference | undefined {
   const value = sessionStorage.getItem(SHARED_EDIT_SESSION_KEY);
-  return value === 'cloneAndEdit' || value === 'editShared'
-    ? value
-    : undefined;
+  return value === 'cloneAndEdit' || value === 'editShared' ? value : undefined;
 }
 
 function setSessionSharedEditPref(pref: SharedEditPreference): void {
@@ -312,8 +310,7 @@ export function QueryComboBox({
        */
       const subView = subViewRelationship;
       const canResolveToCollectionObject =
-        subView !== undefined &&
-        subView.table.name === 'CollectionObject';
+        subView !== undefined && subView.table.name === 'CollectionObject';
 
       const queryTable = canResolveToCollectionObject
         ? 'collectionobject'
@@ -347,8 +344,7 @@ export function QueryComboBox({
               return {
                 totalCount: data.meta.total_count,
                 records: data.objects.slice(0, 10).map((obj) => {
-                  const barcode =
-                    obj.catalogNumber ?? obj.catalognumber ?? '';
+                  const barcode = obj.catalogNumber ?? obj.catalognumber ?? '';
                   const objRecord = obj as Record<string, unknown>;
                   const relRaw: unknown =
                     objRecord[subView!.name.toLowerCase()] ??
@@ -360,7 +356,10 @@ export function QueryComboBox({
                     'id' in relRaw
                   ) {
                     relId = (relRaw as { id: number }).id;
-                  } else if (typeof relRaw === 'string' && relRaw.includes('/')) {
+                  } else if (
+                    typeof relRaw === 'string' &&
+                    relRaw.includes('/')
+                  ) {
                     relId = Number.parseInt(
                       relRaw.split('/').filter(Boolean).pop()!,
                       10
@@ -811,13 +810,10 @@ export function QueryComboBox({
           <Dialog
             buttons={
               <>
-                <Button.DialogClose>
-                  {commonText.cancel()}
-                </Button.DialogClose>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
                 <Button.Info
                   onClick={(): void => {
-                    if (rememberChoice)
-                      setSessionSharedEditPref('editShared');
+                    if (rememberChoice) setSessionSharedEditPref('editShared');
                     setState({ type: 'ViewResourceState', isReadOnly: false });
                   }}
                 >
@@ -851,10 +847,12 @@ export function QueryComboBox({
               <table className="mt-2 text-sm w-full">
                 <thead>
                   <tr className="text-left text-xs text-gray-500">
-                    {state.sharingRecords.some((r) => r.parentId !== undefined) && (
+                    {state.sharingRecords.some(
+                      (r) => r.parentId !== undefined
+                    ) && (
                       <th className="pr-4 font-normal">
-                        {state.sharingRecords.find((r) => r.parentTableName)?.parentTableName
-                          ?? resource!.specifyTable.label}
+                        {state.sharingRecords.find((r) => r.parentTableName)
+                          ?.parentTableName ?? resource!.specifyTable.label}
                       </th>
                     )}
                     <th className="font-normal">{field.relatedTable.label}</th>
@@ -863,9 +861,12 @@ export function QueryComboBox({
                 <tbody>
                   {state.sharingRecords.map((record, index) => (
                     <tr key={record.parentId ?? record.sharedId ?? index}>
-                      {state.sharingRecords.some((r) => r.parentId !== undefined) && (
+                      {state.sharingRecords.some(
+                        (r) => r.parentId !== undefined
+                      ) && (
                         <td className="pr-4 py-0.5">
-                          {record.parentId !== undefined && record.parentTableName !== undefined ? (
+                          {record.parentId !== undefined &&
+                          record.parentTableName !== undefined ? (
                             <a
                               className="text-blue-600 underline hover:text-blue-800"
                               href={`/specify/view/${record.parentTableName.toLowerCase()}/${record.parentId}/`}
@@ -900,7 +901,9 @@ export function QueryComboBox({
             )}
             {state.sharingCount > 10 && (
               <p className="mt-1 text-xs text-gray-500">
-                {formsText.andNMore({ count: (state.sharingCount - 10).toString() })}
+                {formsText.andNMore({
+                  count: (state.sharingCount - 10).toString(),
+                })}
               </p>
             )}
             <label className="mt-3 flex items-center gap-2 text-sm cursor-pointer">
