@@ -1,4 +1,5 @@
 import re
+import time
 from contextlib import contextmanager
 import logging
 import json
@@ -8,6 +9,20 @@ from specifyweb.backend.trees.ranks import RankOperation, post_tree_rank_save, p
 from specifyweb.specify.models_utils.model_timestamp import save_auto_timestamp_field_with_override
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
+
+# Timer helper for performance logging
+class _Timer:
+    def __init__(self, label, logger_instance):
+        self.label = label
+        self.logger = logger_instance
+        self.start = None
+    def __enter__(self):
+        self.start = time.time()
+        return self
+    def __exit__(self, *args):
+        elapsed = time.time() - self.start
+        self.logger.info("[TIMER] %s took %.3f seconds", self.label, elapsed)
+
 
 
 from django.db import models, connection
@@ -48,8 +63,9 @@ class Tree(models.Model):
         self.rankid = self.definitionitem.rankid
         self.definition = self.definitionitem.treedef
 
-        prev_self = None if self.id is None \
-                    else model.objects.select_for_update().get(id=self.id)
+        with _Timer(f"Tree.save: select_for_update node id={self.id or 'new'}", logger):
+            prev_self = None if self.id is None \
+                        else model.objects.select_for_update().get(id=self.id)
 
         if prev_self is None:
             self.nodenumber = None
@@ -68,11 +84,13 @@ class Tree(models.Model):
                 return
 
             with validate_node_numbers(self._meta.db_table, revalidate_after=False):
-                adding_node(self, collection, user)
+                with _Timer(f"Tree.save: adding_node for id={self.id or 'new'}", logger):
+                    adding_node(self, collection, user)
                 save()
         elif prev_self.parent_id != self.parent_id:
             with validate_node_numbers(self._meta.db_table):
-                moving_node(self)
+                with _Timer(f"Tree.save: moving_node for id={self.id}", logger):
+                    moving_node(self)
                 save()
         else:
             save()
@@ -114,13 +132,15 @@ class Tree(models.Model):
                  }})
 
         if prev_self is None:
-            set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
+            with _Timer(f"Tree.save: set_fullnames (null_only) for node id={self.id or 'new'}", logger):
+                set_fullnames(self.definition, null_only=True, node_number_range=[self.nodenumber, self.highestchildnodenumber])
         elif (
             prev_self.name != self.name
             or prev_self.definitionitem_id != self.definitionitem_id
             or prev_self.parent_id != self.parent_id
         ):
-            set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
+            with _Timer(f"Tree.save: set_fullnames for node id={self.id}", logger):
+                set_fullnames(self.definition, node_number_range=[self.nodenumber, self.highestchildnodenumber])
 
     def accepted_id_attr(self):
         return f'accepted{self._meta.db_table}_id'
@@ -176,14 +196,17 @@ def open_interval(model, parent_node_number, size):
     The insertion point will be directly after the parent_node_number.
     Returns the instertion point.
     """
+    table_name = model._meta.db_table
     # All intervals to the right of parent node get shifted right by size.
-    model.objects.filter(nodenumber__gt=parent_node_number).update(
-        nodenumber=F('nodenumber')+size,
-        highestchildnodenumber=F('highestchildnodenumber')+size,
-    )
+    with _Timer(f"open_interval: shift right on {table_name} (nn>{parent_node_number}, size={size})", logger):
+        model.objects.filter(nodenumber__gt=parent_node_number).update(
+            nodenumber=F('nodenumber')+size,
+            highestchildnodenumber=F('highestchildnodenumber')+size,
+        )
     # All intervals containing the insertion point get expanded by size.
-    model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
-        .update(highestchildnodenumber=F('highestchildnodenumber')+size)
+    with _Timer(f"open_interval: expand containing on {table_name} (nn<={parent_node_number}, hcnn>={parent_node_number})", logger):
+        model.objects.filter(nodenumber__lte=parent_node_number, highestchildnodenumber__gte=parent_node_number)\
+            .update(highestchildnodenumber=F('highestchildnodenumber')+size)
 
     return parent_node_number + 1
 
@@ -192,20 +215,25 @@ def move_interval(model, old_node_number, old_highest_child_node_number, new_nod
     to a new nodenumber range. There must be a gap of sufficient size
     at the destination. Leaves a gap at the old node number range.
     """
+    table_name = model._meta.db_table
     delta = new_node_number - old_node_number
-    model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
-        .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
+    with _Timer(f"move_interval: shift interval on {table_name} (nn=[{old_node_number},{old_highest_child_node_number}], delta={delta})", logger):
+        model.objects.filter(nodenumber__gte=old_node_number, nodenumber__lte=old_highest_child_node_number)\
+            .update(nodenumber=F('nodenumber')+delta, highestchildnodenumber=F('highestchildnodenumber')+delta)
 
 def close_interval(model, node_number, size):
     """Close a gap where an interval was removed."""
+    table_name = model._meta.db_table
     # All intervals containing the gap get reduced by size.
-    model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
-        .update(highestchildnodenumber=F('highestchildnodenumber')-size)
+    with _Timer(f"close_interval: reduce containing on {table_name} (nn<={node_number}, hcnn>={node_number})", logger):
+        model.objects.filter(nodenumber__lte=node_number, highestchildnodenumber__gte=node_number)\
+            .update(highestchildnodenumber=F('highestchildnodenumber')-size)
     # All intervals to the right of node_number get shifted left by size.
-    model.objects.filter(nodenumber__gt=node_number).update(
-        nodenumber=F('nodenumber')-size,
-        highestchildnodenumber=F('highestchildnodenumber')-size,
-    )
+    with _Timer(f"close_interval: shift left on {table_name} (nn>{node_number}, size={size})", logger):
+        model.objects.filter(nodenumber__gt=node_number).update(
+            nodenumber=F('nodenumber')-size,
+            highestchildnodenumber=F('highestchildnodenumber')-size,
+        )
 
 def _get_collection_preferences(collection=None, user=None):
     import specifyweb.backend.context.app_resource as app_resource
@@ -324,7 +352,7 @@ def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo])
 
 def merge(node, into, agent):
     from specifyweb.specify import models
-    logger.info('merging %s into %s', node, into)
+    logger.info('merging %s (id=%s) into %s (id=%s)', node, node.id, into, into.id)
     model = type(node)
     if not type(into) is model: raise AssertionError(
         f"Unexpected type of node '{into.__class__.__name__}', during merge. Expected '{model.__class__.__name__}'",
@@ -332,7 +360,8 @@ def merge(node, into, agent):
         "nodeModel" : model.__class__.__name__,
         "operation" : "merge",
         "localizationKey" : "invalidNodeType"})
-    target = model.objects.select_for_update().get(id=into.id)
+    with _Timer(f"merge: select_for_update target node id={into.id}", logger):
+        target = model.objects.select_for_update().get(id=into.id)
     if not (node.definition_id == target.definition_id): raise AssertionError("merging across trees", {"localizationKey" : "operationAcrossTrees", "operation": "merge"})
     if into.accepted_id is not None:
         raise TreeBusinessRuleException(
@@ -354,36 +383,51 @@ def merge(node, into, agent):
                 "parentid": into.parent.id,
                 "children": list(into.children.values('id', 'fullname'))
              }})
-    target_children = target.children.select_for_update()
-    for child in node.children.select_for_update():
+    with _Timer(f"merge: select_for_update target_children for node id={into.id}", logger):
+        target_children = target.children.select_for_update()
+    with _Timer(f"merge: select_for_update node.children for node id={node.id}", logger):
+        node_children = list(node.children.select_for_update())
+    logger.info("merge: node id=%s has %d children to process", node.id, len(node_children))
+    for child in node_children:
         matched = [target_child for target_child in target_children
                    if child.name == target_child.name and child.rankid == target_child.rankid]
         if len(matched) > 0:
-            merge(child, matched[0], agent)
+            logger.info("merge: recursively merging child %s (id=%s) into matched child %s (id=%s)",
+                        child, child.id, matched[0], matched[0].id)
+            with _Timer(f"merge: recursive merge child id={child.id} -> matched id={matched[0].id}", logger):
+                merge(child, matched[0], agent)
         else:
+            logger.info("merge: reparenting child %s (id=%s) to target %s (id=%s)",
+                        child, child.id, target, target.id)
             child.parent = target
-            child.save()
+            with _Timer(f"merge: save reparented child id={child.id}", logger):
+                child.save()
    
+    logger.info("merge: deleting source node id=%s after processing %d children", node.id, len(node_children))
     for retry in range(100):
         try:
             id = node.id
-            node.delete()
+            with _Timer(f"merge: delete node id={id} (attempt {retry+1})", logger):
+                node.delete()
             # Seems like this is done for the audit log. Why not log first, and then delete?
             # That way, we don't need to set the ID like below (quite a hack.)
             node.id = id
             mutation_log(TREE_MERGE, node, agent, node.parent,
                         [FieldChangeInfo(field_name=model.specify_model.idFieldName, old_value=node.id, new_value=into.id)])
+            logger.info("merge: successfully deleted source node id=%s", id)
             return
         except ProtectedError as e: 
             """ Cannot delete some instances of TREE because they are referenced 
             through protected foreign keys: 'Table.field', Table.field', ... """
+            logger.info("merge: ProtectedError on delete attempt %d for node id=%s: %s", retry+1, node.id, e.args[0])
             
             regex_matches = re.finditer(r"'(\w+)\.(\w+)'", e.args[0])
             for match in regex_matches:
                 related_model_name, field_name = match.groups()
                 related_model = getattr(models, related_model_name)
                 assert related_model != model or field_name != 'parent', 'children were added during merge'
-                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+                with _Timer(f"merge: update protected ref {related_model_name}.{field_name} for node id={node.id}", logger):
+                    related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
     assert False, "failed to move all referrences to merged tree node"
 
@@ -610,7 +654,12 @@ def set_fullnames(treedef, null_only=False, node_number_range=None):
     )
 
     logger.debug('fullname update sql:\n%s', sql)
-    return cursor.execute(sql)
+    start = time.time()
+    result = cursor.execute(sql)
+    elapsed = time.time() - start
+    logger.info("[TIMER] set_fullnames on %s (null_only=%s, range=%s) took %.3f seconds, affected %d rows",
+                table, null_only, node_number_range, elapsed, cursor.rowcount)
+    return result
 
 def predict_fullname(table, depth, parentid, defitemid, name, reverse=False):
     cursor = connection.cursor()
