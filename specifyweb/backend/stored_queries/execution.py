@@ -293,6 +293,9 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                     distinct=spquery['selectdistinct'],
                 )
                 message_type = 'query-export-to-webportal-complete'
+            else:
+                # This should never happen because the export type is controlled by the backend, but just in case.
+                raise ValueError(f"Unsupported export type: {exporttype}")
         except Exception as e:
             error_details = {
                 'error': str(e),
