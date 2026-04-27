@@ -276,6 +276,7 @@ expected_errors = {
             "attachments": ["dnasequencerunattachment", "dnasequencingrunattachment"]
         }
     },
+    "ExportDataset": {"not_found": ["extensions"]},
     "Discipline": {"not_found": ["numberingSchemes", "userGroups"]},
     "Division": {"not_found": ["numberingSchemes", "userGroups"]},
     "Institution": {"not_found": ["userGroups"]},

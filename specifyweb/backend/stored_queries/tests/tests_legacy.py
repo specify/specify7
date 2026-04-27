@@ -859,6 +859,11 @@ expected_errors = {
       ]
     }
   },
+  "ExportDataset": {
+    "not_found": [
+      "extensions"
+    ]
+  },
   "Discipline": {
     "not_found": [
       "numberingSchemes",
