@@ -299,7 +299,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
         except Exception as e:
             error_details = {
                 'error': str(e),
-                'traceback': traceback.format_exc(),
+                'traceback': traceback.format_exc() if settings.DEBUG else None,
             }
             message_type = f'query-export-to-{exporttype}-failed'
             Message.objects.create(user=user, content=json.dumps({
