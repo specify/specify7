@@ -210,6 +210,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'export-packages',
+        title: headerText.exportPackages(),
+        element: () =>
+          import('../SchemaMapper/ExportPackages/index').then(
+            ({ ExportPackagesOverlay }) => ExportPackagesOverlay
+          ),
+      },
+      {
         path: 'about',
         title: welcomeText.aboutSpecify(),
         element: () =>
