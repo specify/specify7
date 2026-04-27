@@ -3522,7 +3522,27 @@ datamodel = Datamodel(tables=[
     relationships=[
         Relationship(name='metadata', type='many-to-one', required=False, relatedModelName='SpAppResource', column='MetadataID', otherSideName='exportDatasets'),
         Relationship(name='coreMapping', type='many-to-one', required=True, relatedModelName='SchemaMapping', column='CoreMappingID', otherSideName='exportDatasets'),
-        Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID', otherSideName='exportDatasets')
+        Relationship(name='collection', type='many-to-one', required=True, relatedModelName='Collection', column='CollectionID', otherSideName='exportDatasets'),
+        Relationship(name='extensions', type='one-to-many', required=False, relatedModelName='ExportDataSetExtension', otherSideName='exportDataSet')
+    ],
+    fieldAliases=[]
+),
+    Table(
+    classname='edu.ku.brc.specify.datamodel.ExportDataSetExtension',
+    table='exportdatasetextension',
+    tableId=1039,
+    idColumn='ExportDataSetExtensionID',
+    idFieldName='exportDataSetExtensionId',
+    idField=IdField(name='exportDataSetExtensionId', column='ExportDataSetExtensionID', type='java.lang.Integer'),
+    fields=[
+        Field(name='sortOrder', column='SortOrder', indexed=False, unique=False, required=True, type='java.lang.Integer'),
+    ],
+    indexes=[
+        Index(name='ExtensionDatasetIDX', column_names=['ExportDataSetID']),
+    ],
+    relationships=[
+        Relationship(name='exportDataSet', type='many-to-one', required=True, relatedModelName='ExportDataSet', column='ExportDataSetID', otherSideName='extensions'),
+        Relationship(name='schemaMapping', type='many-to-one', required=True, relatedModelName='SchemaMapping', column='SchemaMappingID', otherSideName='exportDataSetExtensions'),
     ],
     fieldAliases=[]
 ),
@@ -6174,6 +6194,7 @@ datamodel = Datamodel(tables=[
         Field(name='mappingType', column='MappingType', indexed=False, unique=False, required=True, type='java.lang.String', length=16),
         Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=256),
         Field(name='isDefault', column='IsDefault', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+        Field(name='vocabulary', column='Vocabulary', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
     ],
     indexes=[
         Index(name='SchemaMappingNameIDX', column_names=['Name'])
@@ -6798,7 +6819,10 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=True, type='java.lang.Boolean')
+            Field(name='isStrict', column='IsStrict', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+            Field(name='term', column='Term', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='isStatic', column='IsStatic', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='staticValue', column='StaticValue', indexed=False, unique=False, required=False, type='text', length=65535),
         ],
         indexes=[
 

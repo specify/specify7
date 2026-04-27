@@ -3318,6 +3318,30 @@ class Exportdataset(models.Model):
         ]
 
     save = partialmethod(custom_save)
+
+class Exportdatasetextension(models.Model):
+    specify_model = datamodel.get_table_strict('exportdatasetextension')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='ExportDataSetExtensionID')
+
+    # Fields
+    sortorder = models.IntegerField(blank=False, null=False, unique=False, default=0, db_column='SortOrder', db_index=False)
+
+    # Relationships: Many-to-One
+    exportdataset = models.ForeignKey('Exportdataset', db_column='ExportDataSetID', related_name='extensions', null=False, on_delete=models.CASCADE)
+    schemamapping = models.ForeignKey('Schemamapping', db_column='SchemaMappingID', related_name='+', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'exportdatasetextension'
+        ordering = ('sortorder',)
+        indexes = [
+            models.Index(fields=['exportdataset'], name='ExtensionDatasetIDX'),
+        ]
+        unique_together = (('exportdataset', 'schemamapping'),)
+
+    save = partialmethod(custom_save)
+
 class Exsiccata(models.Model):
     specify_model = datamodel.get_table_strict('exsiccata')
 
@@ -5895,6 +5919,14 @@ class Schemamapping(models.Model):
         db_index=False,
     )
 
+    vocabulary = models.CharField(
+        blank=True,
+        null=True,
+        max_length=32,
+        db_column='Vocabulary',
+        db_index=False,
+    )
+
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     specifyuser = models.ForeignKey('SpecifyUser', db_column='SpecifyUserID', related_name='schemamappings', null=False, on_delete=protect_with_blockers)
@@ -6512,6 +6544,9 @@ class Spqueryfield(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     isstrict = models.BooleanField(db_column='IsStrict', blank=True, null=True)
+    term = models.CharField(blank=True, null=True, max_length=255, unique=False, db_column='Term')
+    isstatic = models.BooleanField(blank=True, null=True, default=False, db_column='IsStatic')
+    staticvalue = models.TextField(blank=True, null=True, db_column='StaticValue')
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)

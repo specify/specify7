@@ -859,6 +859,24 @@ expected_errors = {
       ]
     }
   },
+  "ExportDataset": {
+    "not_found": [
+      "extensions"
+    ]
+  },
+  "ExportDataSetExtension": {
+    "not_found": [
+      "exportDataSet"
+    ]
+  },
+  "SchemaMapping": {
+    "incorrect_direction": {
+      "query": [
+        "manytoone",
+        "onetoone"
+      ]
+    }
+  },
   "Discipline": {
     "not_found": [
       "numberingSchemes",
