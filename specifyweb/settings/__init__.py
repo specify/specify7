@@ -88,9 +88,10 @@ if DB_ALIAS != "default":
     DATABASES['default'] = deepcopy(DATABASES[DB_ALIAS])
 
 def get_sa_db_url(db_name):
+    from urllib.parse import quote_plus
     return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
-        MASTER_NAME,
-        MASTER_PASSWORD,
+        quote_plus(MASTER_NAME),
+        quote_plus(MASTER_PASSWORD),
         DATABASE_HOST,
         DATABASE_PORT or 3306,
         db_name)
