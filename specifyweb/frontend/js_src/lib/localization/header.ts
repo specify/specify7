@@ -734,7 +734,7 @@ export const headerText = createDictionary({
     'fr-fr': "Mappage occurrenceID requis (verrouillé)",
     'pt-br': 'Mapeamento occurrenceID obrigatório (bloqueado)',
     'ru-ru': 'Обязательное сопоставление occurrenceID (заблокировано)',
-    'uk-ua': 'Обов'язкове зіставлення occurrenceID (заблоковано)',
+    'uk-ua': "Обов'язкове зіставлення occurrenceID (заблоковано)",
     'hr-hr': 'Obavezno mapiranje occurrenceID (zaključano)',
   },
   noDwcTerms: {
