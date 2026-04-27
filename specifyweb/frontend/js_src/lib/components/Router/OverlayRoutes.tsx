@@ -202,6 +202,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'schema-mapper',
+        title: headerText.schemaMapper(),
+        element: () =>
+          import('../SchemaMapper/index').then(
+            ({ SchemaMapperOverlay }) => SchemaMapperOverlay
+          ),
+      },
+      {
         path: 'about',
         title: welcomeText.aboutSpecify(),
         element: () =>
