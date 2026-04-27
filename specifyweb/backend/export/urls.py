@@ -8,4 +8,5 @@ urlpatterns = [
     path('make_dwca/', views.export),
     path('extract_query/<int:query_id>/', views.extract_query),
     path('force_update/', views.force_update),
+    path('schema_terms/', views.get_schema_terms),
 ]
