@@ -1,6 +1,7 @@
 import React from 'react';
 
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { Input, Label } from '../Atoms/Form';
@@ -103,6 +104,14 @@ export function SchemaConfigField({
         schemaData={schemaData}
         onFormatted={handleFormatted}
       />
+      <details className="mt-2">
+        <summary className="cursor-pointer font-semibold">
+          {headerText.darwinCore()}
+        </summary>
+        <div className="mt-1 pl-2">
+          <p className="text-gray-500">{headerText.noDwcTerms()}</p>
+        </div>
+      </details>
     </SchemaConfigColumn>
   );
 }
