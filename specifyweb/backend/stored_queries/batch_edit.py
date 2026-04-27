@@ -1104,8 +1104,7 @@ def run_batch_edit_query(props: BatchEditProps):
             visual_order_groups[original_place].insert(duplicate_index, index)
         else:
             # New field/column. Add it to the end of the dataset.
-            if existing_column is None:
-                visual_order_groups.append([index])
+            visual_order_groups.append([index])
 
     visual_order: list[int] = []
     for bucket in visual_order_groups:
