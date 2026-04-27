@@ -268,8 +268,8 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     message_type = "query-export-to-csv-complete"
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery['fields'])
         try:
+            field_specs = fields_from_json(spquery['fields'])
             if exporttype == 'csv':
                 query_to_csv(session, collection, user, tableid, field_specs, path,
                              recordsetid=recordsetid, 
