@@ -311,7 +311,7 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                 'file': filename,
                 'error': error_details,
             }))
-            return
+            raise
 
     Message.objects.create(user=user, content=json.dumps({
         'type': message_type,
