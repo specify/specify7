@@ -1,7 +1,7 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.models import Geography, Locality, Taxon, Taxontreedef
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
-from specifyweb.backend.trees.extras import merge, _batch_reparent_children, validate_tree_numbering, set_fullnames
+from specifyweb.backend.trees.extras import merge, _batch_reparent_children, validate_tree_numbering
 
 class TestMerge(GeographyTree):
     
@@ -47,12 +47,6 @@ class TestMerge(GeographyTree):
 
         self.assertEqual(context.exception.args[1]['localizationKey'], "nodeOperationToSynonymizedParent")
 
-    def _make_locality(self, geo):
-        return Locality.objects.create(
-            discipline=self.discipline,
-            geography=geo
-        )
-    
     def test_simple_merge(self):
 
         locality_1 = self._make_locality(self.springmo)
@@ -161,12 +155,6 @@ class TestMerge(GeographyTree):
 
 class TestBatchReparent(GeographyTree):
     """Tests for the _batch_reparent_children function used during merge."""
-
-    def _make_locality(self, geo):
-        return Locality.objects.create(
-            discipline=self.discipline,
-            geography=geo
-        )
 
     def test_batch_reparent_single_child(self):
         """A single county can be reparented from Missouri to Ohio."""
