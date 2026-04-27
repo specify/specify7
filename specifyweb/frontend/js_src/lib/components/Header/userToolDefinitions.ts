@@ -131,6 +131,18 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/overlay/force-update-feed/',
       icon: icons.rss,
     },
+    schemaMapper: {
+      title: headerText.schemaMapper(),
+      enabled: () => hasPermission('/export/schema_mapping', 'read'),
+      url: '/specify/overlay/schema-mapper/',
+      icon: icons.documentSearch,
+    },
+    exportPackages: {
+      title: headerText.exportPackages(),
+      enabled: () => hasPermission('/export/export_package', 'read'),
+      url: '/specify/overlay/export-packages/',
+      icon: icons.archive,
+    },
   },
   [commonText.import()]: {
     localityUpdate: {
