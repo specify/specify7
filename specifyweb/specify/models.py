@@ -3318,6 +3318,30 @@ class Exportdataset(models.Model):
         ]
 
     save = partialmethod(custom_save)
+
+class Exportdatasetextension(models.Model):
+    specify_model = datamodel.get_table_strict('exportdatasetextension')
+
+    # ID Field
+    id = models.AutoField(primary_key=True, db_column='ExportDataSetExtensionID')
+
+    # Fields
+    sortorder = models.IntegerField(blank=False, null=False, unique=False, default=0, db_column='SortOrder', db_index=False)
+
+    # Relationships: Many-to-One
+    exportdataset = models.ForeignKey('Exportdataset', db_column='ExportDataSetID', related_name='extensions', null=False, on_delete=models.CASCADE)
+    schemamapping = models.ForeignKey('Schemamapping', db_column='SchemaMappingID', related_name='+', null=False, on_delete=protect_with_blockers)
+
+    class Meta:
+        db_table = 'exportdatasetextension'
+        ordering = ('sortorder',)
+        indexes = [
+            models.Index(fields=['exportdataset'], name='ExtensionDatasetIDX'),
+        ]
+        unique_together = (('exportdataset', 'schemamapping'),)
+
+    save = partialmethod(custom_save)
+
 class Exsiccata(models.Model):
     specify_model = datamodel.get_table_strict('exsiccata')
 
@@ -5892,6 +5916,14 @@ class Schemamapping(models.Model):
         unique=False,
         default=False,
         db_column='IsDefault',
+        db_index=False,
+    )
+
+    vocabulary = models.CharField(
+        blank=True,
+        null=True,
+        max_length=32,
+        db_column='Vocabulary',
         db_index=False,
     )
 
