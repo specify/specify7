@@ -172,6 +172,70 @@ class ExportDataSetTests(MainSetupTearDown, TestCase):
                 exportdataset=ds, schemamapping=ext_mapping, sortorder=2,
             )
 
+    def test_clone_mapping(self):
+        """Clone endpoint creates new SpQuery, SpQueryFields, and SchemaMapping."""
+        original_mapping = self._make_mapping('Original')
+        original_query = original_mapping.query
+
+        # Add query fields to the original query
+        Spqueryfield.objects.create(
+            query=original_query,
+            fieldname='catalogNumber',
+            operstart=0,
+            sorttype=0,
+            position=0,
+            startvalue='',
+            stringid='1.collectionobject.catalogNumber',
+            tablelist='1',
+            term='http://rs.tdwg.org/dwc/terms/catalogNumber',
+        )
+        Spqueryfield.objects.create(
+            query=original_query,
+            fieldname='locality',
+            operstart=0,
+            sorttype=0,
+            position=1,
+            startvalue='',
+            stringid='1.collectionobject.locality',
+            tablelist='1',
+            term='http://rs.tdwg.org/dwc/terms/locality',
+            isstatic=True,
+            staticvalue='Some Place',
+        )
+
+        from django.test import RequestFactory
+        from specifyweb.backend.export.views import clone_mapping
+
+        factory = RequestFactory()
+        request = factory.post(f'/export/clone_mapping/{original_mapping.id}/')
+        request.user = self.specifyuser
+        request.specify_user = self.specifyuser
+
+        # Mock permission check — in tests, permissions are not configured
+        from unittest.mock import patch
+        with patch('specifyweb.backend.export.views.check_permission_targets'):
+            response = clone_mapping(request, original_mapping.id)
+
+        self.assertEqual(response.status_code, 200)
+        import json
+        data = json.loads(response.content)
+        self.assertIn('id', data)
+        self.assertEqual(data['name'], 'Copy of Original')
+        self.assertFalse(data['isDefault'])
+        self.assertNotEqual(data['queryId'], original_query.id)
+
+        # Verify new query has cloned fields
+        new_query = Spquery.objects.get(id=data['queryId'])
+        self.assertEqual(new_query.name, f'Copy of {original_query.name}')
+        self.assertEqual(new_query.fields.count(), 2)
+
+        # Verify field data was cloned
+        cloned_field = new_query.fields.get(position=0)
+        self.assertEqual(cloned_field.term, 'http://rs.tdwg.org/dwc/terms/catalogNumber')
+        cloned_static = new_query.fields.get(position=1)
+        self.assertTrue(cloned_static.isstatic)
+        self.assertEqual(cloned_static.staticvalue, 'Some Place')
+
     def test_cache_table_meta(self):
         mapping = self._make_mapping()
         meta = CacheTableMeta.objects.create(
