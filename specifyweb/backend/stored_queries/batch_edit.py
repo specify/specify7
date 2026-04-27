@@ -1095,24 +1095,21 @@ def run_batch_edit_query(props: BatchEditProps):
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order: list[int | None] = [None for _ in key_and_headers]
-    new_columns: list[int] = []
+    visual_order_groups: list[list[int]] = [[] for _ in visible_fields]
     for index, (key, _header) in headers_enumerated:
         # Find the column's original position if it existed in the origin query
         original_place = key[0]
-        if original_place < len(visible_fields) and visual_order[original_place] is None:
-            visual_order[original_place] = index
+        duplicate_index = key[1]
+        if original_place < len(visible_fields):
+            visual_order_groups[original_place].insert(duplicate_index, index)
         else:
             # New field/column. Add it to the end of the dataset.
-            new_columns.append(index)
+            if existing_column is None:
+                visual_order_groups.append([index])
 
-    # Fill in the gaps with the new columns
-    if new_columns:
-        for index, column in enumerate(visual_order):
-            if column is None:
-                visual_order[index] = new_columns.pop(0)
-                if len(new_columns) == 0:
-                    break
+    visual_order: list[int] = []
+    for bucket in visual_order_groups:
+        visual_order.extend(bucket)
 
     headers = Func.second(key_and_headers)
 
