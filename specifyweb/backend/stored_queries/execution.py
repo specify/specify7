@@ -297,10 +297,14 @@ def do_export(spquery, collection, user, filename, exporttype, host):
                 # This should never happen because the export type is controlled by the backend, but just in case.
                 raise ValueError(f"Unsupported export type: {exporttype}")
         except Exception as e:
-            error_details = {
-                'error': str(e),
-                'traceback': traceback.format_exc() if settings.DEBUG else None,
-            }
+            logger.exception(
+                "Export failed for %s: collection %s, file %s, type %s",
+                user, collection, filename, exporttype,
+            )
+            tb = traceback.format_exc()
+            error_details = {'error': str(e)}
+            if tb:
+                error_details['traceback'] = tb
             message_type = f'query-export-to-{exporttype}-failed'
             Message.objects.create(user=user, content=json.dumps({
                 'type': message_type,
