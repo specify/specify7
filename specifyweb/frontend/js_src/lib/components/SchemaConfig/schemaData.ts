@@ -41,14 +41,21 @@ export type SchemaFormatter = {
   readonly index: number;
 };
 
-type SimpleFieldFormatter = {
+export type SimpleFieldFormatter = {
   readonly name: string;
   readonly isSystem: boolean;
   readonly value: string;
   readonly field: LiteralField | undefined;
   readonly tableName: keyof Tables | undefined;
   readonly index: number;
+  readonly isNumericOnly: boolean;
 };
+
+/**
+ * Formatter part types that produce only numeric characters in their output.
+ * Used to determine if a formatter is safe to assign to numeric fields.
+ */
+const numericSafePartTypes = new Set(['numeric', 'year']);
 
 export const fetchSchemaData = async (): Promise<RawSchemaData> =>
   f.all({
@@ -73,6 +80,10 @@ export const fetchSchemaData = async (): Promise<RawSchemaData> =>
           field: formatter.field,
           tableName: formatter.table?.name,
           index: formatter.originalIndex,
+          isNumericOnly: formatter.parts.every(
+            (part) =>
+              part.type !== undefined && numericSafePartTypes.has(part.type)
+          ),
         }))
         .filter(({ value }) => value)
     ),
