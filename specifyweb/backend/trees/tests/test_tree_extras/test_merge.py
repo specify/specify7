@@ -1,7 +1,7 @@
 from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
 from specifyweb.specify.models import Geography, Locality, Taxon, Taxontreedef
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
-from specifyweb.backend.trees.extras import merge
+from specifyweb.backend.trees.extras import merge, _batch_reparent_children, validate_tree_numbering, set_fullnames
 
 class TestMerge(GeographyTree):
     
@@ -157,3 +157,187 @@ class TestMerge(GeographyTree):
 
         self.assertEqual(self.sangomon.accepted_id, self.greeneoh.id)
         self.assertEqual(self.ill.accepted_id, self.ohio.id)
+
+
+class TestBatchReparent(GeographyTree):
+    """Tests for the _batch_reparent_children function used during merge."""
+
+    def _make_locality(self, geo):
+        return Locality.objects.create(
+            discipline=self.discipline,
+            geography=geo
+        )
+
+    def test_batch_reparent_single_child(self):
+        """A single county can be reparented from Missouri to Ohio."""
+        # Greene County (MO) has Springfield as a city child
+        # Reparent Greene County from Missouri to Ohio
+        _batch_reparent_children([self.greene], self.ohio, Geography)
+
+        # Verify parent changed from Missouri to Ohio
+        self.greene.refresh_from_db()
+        self.assertEqual(self.greene.parent_id, self.ohio.id)
+
+        # Verify Springfield still exists and has correct parent
+        self.springmo.refresh_from_db()
+        self.assertEqual(self.springmo.parent_id, self.greene.id)
+
+        # Verify tree numbering is valid
+        validate_tree_numbering('geography')
+
+    def test_batch_reparent_multiple_counties(self):
+        """Multiple counties can be reparented from one state to another in a single batch."""
+        # Create additional counties under Missouri
+        boone = self.make_geotree("Boone", "County", parent=self.mo)
+        jasper = self.make_geotree("Jasper", "County", parent=self.mo)
+        platte = self.make_geotree("Platte", "County", parent=self.mo)
+
+        _batch_reparent_children([boone, jasper, platte], self.ohio, Geography)
+
+        for county in [boone, jasper, platte]:
+            county.refresh_from_db()
+            self.assertEqual(county.parent_id, self.ohio.id)
+
+        validate_tree_numbering('geography')
+
+    def test_batch_reparent_county_with_cities(self):
+        """A county with its own cities (subtree) is correctly reparented."""
+        # Greene County (MO) has Springfield as a city child
+        # Reparent Greene County from Missouri to Ohio
+        _batch_reparent_children([self.greene], self.ohio, Geography)
+
+        self.greene.refresh_from_db()
+        self.assertEqual(self.greene.parent_id, self.ohio.id)
+
+        # Verify Springfield is still a child of Greene County
+        self.springmo.refresh_from_db()
+        self.assertEqual(self.springmo.parent_id, self.greene.id)
+
+        validate_tree_numbering('geography')
+
+    def test_batch_reparent_updates_fullnames(self):
+        """Full names reflect the new geographic path after batch reparenting."""
+        # Greene County (MO) has Springfield as a city child
+        # Reparent Greene County from Missouri to Ohio
+        _batch_reparent_children([self.greene], self.ohio, Geography)
+
+        # Refresh and check fullnames
+        self.greene.refresh_from_db()
+        self.springmo.refresh_from_db()
+
+        # Greene County's fullname should now include Ohio in its path
+        self.assertIn("Ohio", self.greene.fullname)
+        self.assertIn("Greene", self.greene.fullname)
+
+        # Springfield's fullname should also reflect the new path
+        self.assertIn("Ohio", self.springmo.fullname)
+        self.assertIn("Greene", self.springmo.fullname)
+        self.assertIn("Springfield", self.springmo.fullname)
+
+    def test_batch_reparent_preserves_node_numbers(self):
+        """After batch reparenting, all node numbers are valid and unique."""
+        # Create additional counties under Missouri with cities
+        boone = self.make_geotree("Boone", "County", parent=self.mo)
+        jasper = self.make_geotree("Jasper", "County", parent=self.mo)
+        columbia = self.make_geotree("Columbia", "City", parent=boone)
+        joplin = self.make_geotree("Joplin", "City", parent=jasper)
+
+        _batch_reparent_children([boone, jasper], self.ohio, Geography)
+
+        # Verify node numbers are valid
+        validate_tree_numbering('geography')
+
+        # Verify all nodes have unique nodenumbers
+        nodenumbers = Geography.objects.values_list('nodenumber', flat=True)
+        self.assertEqual(len(nodenumbers), len(set(nodenumbers)))
+
+    def test_batch_reparent_empty_list(self):
+        """Reparenting an empty list should not raise an error."""
+        # This should be a no-op
+        _batch_reparent_children([], self.ohio, Geography)
+
+        # Tree should still be valid
+        validate_tree_numbering('geography')
+
+    def test_batch_reparent_county_and_city_together(self):
+        """A county and a city from different parents can be reparented together."""
+        # Reparent Greene County (MO) and Sangamon County (IL) both to Ohio
+        _batch_reparent_children([self.greene, self.sangomon], self.ohio, Geography)
+
+        self.greene.refresh_from_db()
+        self.sangomon.refresh_from_db()
+
+        self.assertEqual(self.greene.parent_id, self.ohio.id)
+        self.assertEqual(self.sangomon.parent_id, self.ohio.id)
+
+        validate_tree_numbering('geography')
+
+    def test_batch_reparent_within_merge(self):
+        """A merge that triggers batch reparenting works correctly."""
+        # Create additional counties under Missouri
+        boone = self.make_geotree("Boone", "County", parent=self.mo)
+        jasper = self.make_geotree("Jasper", "County", parent=self.mo)
+
+        # Create a matching county under Ohio (same name) - this will be recursively merged
+        greene_oh = self.make_geotree("Greene", "County", parent=self.ohio)
+
+        # Create localities attached to the counties being merged
+        loc_boone = self._make_locality(boone)
+        loc_jasper = self._make_locality(jasper)
+        loc_greene_mo = self._make_locality(self.greene)
+
+        # Merge Missouri into Ohio
+        merge(self.mo, self.ohio, self.agent)
+
+        # Verify Missouri is gone
+        self.assertFalse(Geography.objects.filter(id=self.mo.id).exists())
+
+        # Verify Ohio still exists
+        self.assertTrue(Geography.objects.filter(id=self.ohio.id).exists())
+
+        # Verify the matching Greene County was recursively merged (MO -> OH)
+        self.assertFalse(Geography.objects.filter(id=self.greene.id).exists())
+        greene_oh.refresh_from_db()
+        self.assertEqual(greene_oh.parent_id, self.ohio.id)
+
+        # Verify non-matching counties were batch reparented
+        boone.refresh_from_db()
+        self.assertEqual(boone.parent_id, self.ohio.id)
+        jasper.refresh_from_db()
+        self.assertEqual(jasper.parent_id, self.ohio.id)
+
+        # Verify localities were moved
+        loc_greene_mo.refresh_from_db()
+        self.assertEqual(loc_greene_mo.geography_id, greene_oh.id)
+        loc_boone.refresh_from_db()
+        self.assertEqual(loc_boone.geography_id, boone.id)
+        loc_jasper.refresh_from_db()
+        self.assertEqual(loc_jasper.geography_id, jasper.id)
+
+        # Verify tree numbering is valid
+        validate_tree_numbering('geography')
+
+    def test_batch_reparent_preserves_ordering(self):
+        """Counties maintain their relative ordering after batch reparenting."""
+        # Create additional counties under Missouri
+        boone = self.make_geotree("Boone", "County", parent=self.mo)
+        jasper = self.make_geotree("Jasper", "County", parent=self.mo)
+        platte = self.make_geotree("Platte", "County", parent=self.mo)
+
+        _batch_reparent_children([boone, jasper, platte], self.ohio, Geography)
+
+        # Refresh all
+        for c in [boone, jasper, platte]:
+            c.refresh_from_db()
+
+        # All should be children of Ohio
+        for c in [boone, jasper, platte]:
+            self.assertEqual(c.parent_id, self.ohio.id)
+
+        # Verify node numbers are nested under Ohio
+        self.ohio.refresh_from_db()
+        for c in [boone, jasper, platte]:
+            self.assertGreaterEqual(c.nodenumber, self.ohio.nodenumber)
+            self.assertLessEqual(c.nodenumber, self.ohio.highestchildnodenumber)
+
+        validate_tree_numbering('geography')
