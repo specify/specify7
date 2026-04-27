@@ -52,6 +52,7 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0040_FIELDS,
     MIGRATION_0040_UPDATE_FIELDS,
     MIGRATION_0040_HIDDEN_FIELDS,
+    MIGRATION_0045_FIELDS
 )
 
 logger = logging.getLogger(__name__)
@@ -2149,3 +2150,367 @@ def revert_discipline_type_splocalecontaineritem(apps):
         container__schematype=0,
         name="type",
     ).update(picklistname=None, isrequired=None)
+
+ESTABLISHMENTMEANS_ITEMS = [
+    'native (indigenous)',
+    'native: reintroduced',
+    'introduced (alien, exotic, non-native, nonindigenous)',
+    'introduced: assisted colonisation',
+    'vagrant (casual)',
+    'uncertain (unknown, cryptogenic)',
+    'native: endemic'
+]
+ESTABLISHMENTMEANS_PICKLIST_NAME = 'EstablishmentMeans'
+
+def create_establishmentmeans_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=ESTABLISHMENTMEANS_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": 7,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for means in ESTABLISHMENTMEANS_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=means,
+                        title=means,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_establishmentmeans_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=ESTABLISHMENTMEANS_PICKLIST_NAME).delete()
+
+EVENTTYPE_ITEMS = [
+    'Sample',
+    'Observation',
+    'Site Visit',
+    'Biotic Interaction',
+    'Expedition',
+    'Survey',
+    'Project'
+]
+EVENTTYPE_PICKLIST_NAME = 'EventType'
+
+def create_eventtype_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=EVENTTYPE_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": False,
+                "sizelimit": 10,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for eventtype in EVENTTYPE_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=eventtype,
+                        title=eventtype,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_eventtype_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=EVENTTYPE_PICKLIST_NAME).delete()
+
+BASISOFRECORD_ITEMS = [
+    'MaterialEntity',
+    'PreservedSpecimen',
+    'FossilSpecimen',
+    'LivingSpecimen',
+    'MaterialSample',
+    'Event',
+    'HumanObservation',
+    'MachineObservation',
+    'Taxon',
+    'Occurrence',
+    'MaterialCitation',
+]
+BASISOFRECORD_PICKLIST_NAME = 'BaisisOfRecord'
+
+def create_basisofrecord_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=BASISOFRECORD_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": 11,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for record in BASISOFRECORD_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=record,
+                        title=record,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_basisofrecord_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=BASISOFRECORD_PICKLIST_NAME).delete()
+
+ATTACHMENTTYPE_ITEMS = [
+    'StillImage',
+    'MovingImage',
+    'Sound',
+    'PhysicalObject',
+    'Event',
+    'Text'
+]
+ATTACHMENTTYPE_PICKLIST_NAME = 'Attachment Type'
+
+def create_attachmenttype_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=ATTACHMENTTYPE_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": False,
+                "sizelimit": -1,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for attType in ATTACHMENTTYPE_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=attType,
+                        title=attType,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_attachmenttype_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=ATTACHMENTTYPE_PICKLIST_NAME).delete()
+
+INSTITUTIONLICENSE_PICKLIST_ITEMS = [
+    'http://creativecommons.org/publicdomain/zero/1.0/',
+    'http://creativecommons.org/licenses/by/4.0/',
+    'http://creativecommons.org/licenses/by-nc/4.0/',
+]
+INSTITUTIONLICENSE_PICKLIST_NAME = 'Institution License Name'
+
+def create_institutionlicense_picklist(apps, using='default'):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    Picklistitem = apps.get_model('specify', 'Picklistitem')
+
+    for collection in Collection.objects.all():
+        picklist, created = Picklist.objects.get_or_create(
+            name=INSTITUTIONLICENSE_PICKLIST_NAME,
+            type=0,
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": 3,
+                "sorttype": 1,
+            }
+        )
+        if created:
+            ordinal = 1
+            items = []
+            for licenseName in INSTITUTIONLICENSE_PICKLIST_ITEMS:
+                items.append(
+                    Picklistitem(
+                        picklist=picklist,
+                        ordinal=ordinal,
+                        value=licenseName,
+                        title=licenseName,
+                    )
+                )
+                ordinal += 1
+            Picklistitem.objects.bulk_create(items)
+
+def revert_institutionlicense_picklist(apps):
+    Picklist = apps.get_model('specify', 'Picklist')
+
+    Picklist.objects.filter(name=INSTITUTIONLICENSE_PICKLIST_NAME).delete()
+
+def update_schema_config_fields(apps, schema_editor=None):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0045_FIELDS.items():
+        table_name = table.lower()
+
+        for field_name, label, desc, hidden in fields:
+            field_name = field_name.lower()
+
+            # update the single remaining row
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name
+            ).update(ishidden=hidden)
+
+            # assign establishmentmeans picklist
+            if table_name == 'collectionobject' and field_name == 'establishmentmeans':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=ESTABLISHMENTMEANS_PICKLIST_NAME, isrequired=True)
+
+            # assign lifestage picklist
+            if table_name == 'collectionobjectattribute' and field_name == 'lifestage':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname='LifeStage', isrequired=True)
+
+            # assign sex picklist
+            if table_name == 'collectionobjectattribute' and field_name == 'sex':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname='Sex', isrequired=True)
+
+            # assign event type picklist
+            if table_name == 'collectingevent' and field_name == 'eventtype':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=EVENTTYPE_PICKLIST_NAME, isrequired=True)
+
+            # assign basis of record picklist
+            if table_name == 'collection' and field_name == 'basisofrecord':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=BASISOFRECORD_PICKLIST_NAME, isrequired=True)
+
+            # assign attachment type picklist
+            if table_name == 'attachment' and field_name == 'type':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=ATTACHMENTTYPE_PICKLIST_NAME, isrequired=True)
+
+            # assign institution license name picklist
+            if table_name == 'institution' and field_name == 'license':
+                Splocalecontaineritem.objects.filter(
+                    container__name=table_name,
+                    container__schematype=0,
+                    name=field_name,
+                ).update(picklistname=INSTITUTIONLICENSE_PICKLIST_NAME, isrequired=True)
+
+            # update description
+            Splocaleitemstr.objects.filter(
+                itemdesc__container__name=table_name,
+                itemdesc__container__schematype=0,
+                itemdesc__name=field_name
+            ).update(text=desc)
+
+            # update label
+            Splocaleitemstr.objects.filter(
+                itemname__container__name=table_name,
+                itemname__container__schematype=0,
+                itemname__name=field_name
+            ).update(text=label)
+
+def revert_update_schema_config_fields(apps, schema_editor=None):
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    for table, fields in MIGRATION_0045_FIELDS.items():
+        table_name = table.lower()
+
+        for field_name, label, desc, hidden in fields:
+            field_name = field_name.lower()
+
+            # Revert description 
+            Splocaleitemstr.objects.filter(
+                itemdesc__container__name=table_name,
+                itemdesc__container__schematype=0,
+                itemdesc__name=field_name
+            ).update(text=field_name)
+
+            # Revert picklist
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name,
+            ).update(picklistname=None, isrequired=False)
+
+            # Revert label 
+            Splocaleitemstr.objects.filter(
+                itemname__container__name=table_name,
+                itemname__container__schematype=0,
+                itemname__name=field_name
+            ).update(text=field_name)
+
+            # Revert hidden flag
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name,
+                container__schematype=0,
+                name=field_name
+            ).update(ishidden=False)

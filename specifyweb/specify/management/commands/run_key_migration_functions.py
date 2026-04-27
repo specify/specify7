@@ -91,6 +91,12 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.create_discipline_type_picklist, # specify 0042
         usc.update_discipline_type_splocalecontaineritem, # specify 0042
         apply_schema_overrides_for_all_disciplines,
+        usc.create_establishmentmeans_picklist,
+        usc.update_schema_config_fields,
+        usc.create_eventtype_picklist,
+        usc.create_basisofrecord_picklist,
+        usc.create_attachmenttype_picklist,
+        usc.create_institutionlicense_picklist,
         usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
