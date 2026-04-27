@@ -277,6 +277,8 @@ expected_errors = {
         }
     },
     "ExportDataset": {"not_found": ["extensions"]},
+    "ExportDataSetExtension": {"not_found": ["exportDataSet"]},
+    "SchemaMapping": {"incorrect_direction": {"query": ["manytoone", "onetoone"]}},
     "Discipline": {"not_found": ["numberingSchemes", "userGroups"]},
     "Division": {"not_found": ["numberingSchemes", "userGroups"]},
     "Institution": {"not_found": ["userGroups"]},
