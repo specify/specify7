@@ -1100,7 +1100,7 @@ def run_batch_edit_query(props: BatchEditProps):
     for index, (key, _header) in headers_enumerated:
         # Find the column's original position if it existed in the origin query
         original_place = key[0]
-        if original_place < len(fields) and visual_order[original_place] is None:
+        if original_place < len(visible_fields) and visual_order[original_place] is None:
             visual_order[original_place] = index
         else:
             # New field/column. Add it to the end of the dataset.
