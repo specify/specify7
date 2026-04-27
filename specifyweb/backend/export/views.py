@@ -190,3 +190,24 @@ def extract_query(request, query_id):
     """
     query = Spquery.objects.get(id=query_id)
     return HttpResponse(extract(query), 'text/xml')
+
+class SchemaMappingPT(PermissionTarget):
+    resource = "/export/schema_mapping"
+    create = PermissionTargetAction()
+    read = PermissionTargetAction()
+    update = PermissionTargetAction()
+    delete = PermissionTargetAction()
+
+class ExportPackagePT(PermissionTarget):
+    resource = "/export/export_package"
+    create = PermissionTargetAction()
+    read = PermissionTargetAction()
+    execute = PermissionTargetAction()
+
+@require_GET
+@login_maybe_required
+def get_schema_terms(request):
+    """Serve the DwC schema terms vocabulary as JSON."""
+    terms_path = os.path.join(os.path.dirname(__file__), 'schema_terms.json')
+    with open(terms_path) as f:
+        return HttpResponse(f.read(), content_type='application/json')
