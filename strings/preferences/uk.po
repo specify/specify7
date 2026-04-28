@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-27 10:09+0000\n"
+"PO-Revision-Date: 2026-04-28 08:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/uk/>\n"
@@ -350,19 +350,19 @@ msgstr "Поле зі списком запитів"
 #: components/Preferences/UserDefinitions.tsx:1169
 #: components/Preferences/UserDefinitions.tsx:1539
 msgid "searchAlgorithm"
-msgstr "Алгоритм пошуку"
+msgstr "Алгоритм Пошуку"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1189
 msgid "treeSearchAlgorithm"
-msgstr "Алгоритм пошуку (для зв’язків із деревоподібними таблицями)"
+msgstr "Алгоритм Пошуку (для зв’язків із деревоподібними таблицями)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1128
 #: components/Preferences/UserDefinitions.tsx:1176
 #: components/Preferences/UserDefinitions.tsx:1196
 msgid "startsWithInsensitive"
-msgstr "Починається з (без урахування регістру)"
+msgstr "Починається З (без урахування регістру)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1129
@@ -374,7 +374,7 @@ msgstr "Пошук значень, які починаються з задано
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1133
 msgid "startsWithCaseSensitive"
-msgstr "Починається з (з урахуванням регістру)"
+msgstr "Починається З (з урахуванням регістру)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1135
@@ -416,7 +416,7 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1150
 msgid "highlightMatch"
-msgstr "Виділіть збіг підрядка"
+msgstr "Підсвічувати збіг підрядка"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:830
@@ -431,7 +431,7 @@ msgstr "Показати значок у заголовку"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:299
 msgid "scaleInterface"
-msgstr "Інтерфейс масштабу"
+msgstr "Масштабувати Інтерфейс"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:300
@@ -457,19 +457,18 @@ msgstr "Зміст"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:252
-#, fuzzy
 msgid "defaultImage"
-msgstr "Вкажіть логотип"
+msgstr "Вкажіть Логотип"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:256
 msgid "critterless"
-msgstr "Без створінь"
+msgstr "Вкажіть Логотип (Без тварин)"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:264
 msgid "customImage"
-msgstr "Спеціальне зображення"
+msgstr "Кастомізоване Зображення"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:270
@@ -542,7 +541,7 @@ msgstr "Передній план"
 #: components/Preferences/UserDefinitions.tsx:328
 #: components/Preferences/UserDefinitions.tsx:1087
 msgid "background"
-msgstr "Фон"
+msgstr "Тло"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:205
@@ -558,27 +557,27 @@ msgstr "Передній план (темна тема)"
 #: components/Preferences/UserDefinitions.tsx:336
 #: components/Preferences/UserDefinitions.tsx:1103
 msgid "darkBackground"
-msgstr "Фон (темна тема)"
+msgstr "Тло (темна тема)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:344
 msgid "accentColor1"
-msgstr "Акцентний колір 1"
+msgstr "Колір акценту 1"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:352
 msgid "accentColor2"
-msgstr "Акцентний колір 2"
+msgstr "Колір акценту 2"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:360
 msgid "accentColor3"
-msgstr "Акцентний колір 3"
+msgstr "Колір акценту 3"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:368
 msgid "accentColor4"
-msgstr "Акцентний колір 4"
+msgstr "Колір акценту 4"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1971
@@ -593,12 +592,12 @@ msgstr "Кількість порожніх рядків у кінці"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1985
 msgid "autoWrapCols"
-msgstr "Перейдіть на іншу сторону, коли досягнете краю колонки"
+msgstr "Переходити на іншу сторону, коли досягнете краю колонки"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1992
 msgid "autoWrapRows"
-msgstr "Перейдіть на іншу сторону, коли досягнете крайнього ряду"
+msgstr "Переходити на іншу сторону, коли досягнете крайнього ряду"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2033
@@ -629,7 +628,7 @@ msgstr "Колонка"
 #: components/Preferences/UserDefinitions.tsx:2011
 #: components/Preferences/UserDefinitions.tsx:2028
 msgid "row"
-msgstr "рядок"
+msgstr "Рядок"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2016
@@ -658,12 +657,16 @@ msgstr "Роздільник файлу експорту"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1838
 msgid "exportCsvUtf8Bom"
-msgstr "Додайте специфікацію UTF-8 до експорту файлу CSVу"
+msgstr "Додайте специфікацію UTF-8 BOM до експортів файлу CSV"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1840
 msgid "exportCsvUtf8BomDescription"
-msgstr "Змушує експорт файлів CSV правильно відображатися в Excel."
+msgstr ""
+"Додає BOM (Byte Order Mark) до експортованих CSV файлів, щоб впевнитись, що "
+"файл правильно розпізнаний та відображається в різних програмах (Excel, "
+"OpenRefine, etc.), запобігаючи помилкам із спеціальними символами та з "
+"форматуванням."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2053
@@ -678,12 +681,12 @@ msgstr "Регістр не враховується"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1778
 msgid "showNoReadTables"
-msgstr "Показувати таблиці без доступу «Читання»"
+msgstr "Показувати таблиці без доступу \"Читання\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2119
 msgid "showNoAccessTables"
-msgstr "Показувати таблиці без доступу «Створити»"
+msgstr "Показувати таблиці без доступу \"Створити\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:843
@@ -698,12 +701,12 @@ msgstr "Скинути фільтри запитів"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1937
 msgid "clearQueryFiltersDescription"
-msgstr "Очищає всі фільтри запитів під час запуску звіту з форми."
+msgstr "Очищає всі фільтри запитів під час запуску Звіту з Форми."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1944
 msgid "queryParamtersFromForm"
-msgstr "Показувати фільтри запитів під час запуску звіту з форми"
+msgstr "Показувати фільтри запитів під час запуску Звіту з Форми"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1157
