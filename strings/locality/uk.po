@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-27 10:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"locality/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/locality/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,326 +12,328 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
-#. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:40
 #: components/QueryBuilder/QueryLineTools.tsx:42
+#. Used in: Components > Query Builder > Query Line Tools
 msgid "openMap"
-msgstr "Відкрити карту"
+msgstr "Відкрийте карту"
 
-#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/Leaflet/Map.tsx:112
 #: components/Preferences/UserDefinitions.tsx:2203
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:268
 #: components/WbToolkit/WbLeafletMap.tsx:65
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "geoMap"
-msgstr "GeoMap"
+msgstr "Геокарта"
 
-#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 #: components/QueryBuilder/ToMap.tsx:264
+#. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
 msgid "queryMapSubset"
 msgstr ""
-"GeoMap - Нанесено {plotted:number|formatted} із {total:number|formatted} "
+"GeoMap - нанесено {plotted:number|formatted} із {total:number|formatted} "
 "записів"
 
-#. Used in: Components > Query Builder > To Map
 #: components/QueryBuilder/ToMap.tsx:261
+#. Used in: Components > Query Builder > To Map
 msgid "queryMapAll"
 msgstr "GeoMap - Нанесені записи {plotted:number|formatted}."
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:91
-msgid "polygonBoundaries"
-msgstr "Межі Багатокутників"
-
 #. Used in: Components > Leaflet > Add Ons
+msgid "polygonBoundaries"
+msgstr "Межі багатокутників"
+
 #: components/Leaflet/addOns.ts:92
+#. Used in: Components > Leaflet > Add Ons
 msgid "errorRadius"
-msgstr "Помилковий Радіус"
+msgstr "Радіус помилки"
 
-#. Used in: Components > Form Plugins > Leaflet
 #: components/FormPlugins/Leaflet.tsx:83
-msgid "showMap"
-msgstr "Показати Мапу"
-
 #. Used in: Components > Form Plugins > Leaflet
+msgid "showMap"
+msgstr "Показати карту"
+
 #: components/FormPlugins/Leaflet.tsx:41
+#. Used in: Components > Form Plugins > Leaflet
 msgid "noCoordinates"
 msgstr "Без координат"
 
-#. Used in: Components > Form Plugins > Leaflet
 #: components/FormPlugins/Leaflet.tsx:44
+#. Used in: Components > Form Plugins > Leaflet
 msgid "notEnoughInformationToMap"
-msgstr "{localityTable:string} має мати координати для нанесення на карту."
+msgstr "{localityTable:string} має мати координати для відображення."
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:89
+#. Used in: Components > Leaflet > Add Ons
 msgid "occurrencePoints"
 msgstr "Шпильки"
 
-#. Used in: Components > Leaflet > Add Ons
 #: components/Leaflet/addOns.ts:90
+#. Used in: Components > Leaflet > Add Ons
 msgid "occurrencePolygons"
 msgstr "Багатокутники"
 
-#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
 #: components/WbToolkit/GeoLocate.tsx:60
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 msgid "geoLocate"
 msgstr "GEOLocate"
 
-#. Used in: Components > Form Plugins > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:113
-msgid "geographyRequired"
-msgstr "{geographyTable:string} має бути нанесено на карту"
-
 #. Used in: Components > Form Plugins > Geo Locate
-#: components/FormPlugins/GeoLocate.tsx:118
-msgid "geographyRequiredDescription"
-msgstr "Плагін GeoLocate потребує заповнення поля географії."
+msgid "geographyRequired"
+msgstr "{geographyTable:string} має бути зіставлено"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/GeoLocate.tsx:118
+#. Used in: Components > Form Plugins > Geo Locate
+msgid "geographyRequiredDescription"
+msgstr "Плагін GeoLocate вимагає заповнення поля географії."
+
 #: components/FormPlugins/LatLongUi.tsx:278
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "coordinates"
 msgstr "Координати"
 
-#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:281
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "northWestCorner"
 msgstr "NW Кут"
 
-#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:292
+#. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
 msgid "southEastCorner"
 msgstr "SE Кут"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:251
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "coordinateType"
-msgstr "Тип Координат"
+msgstr "Тип координат"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:262
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "point"
-msgstr "Точка"
+msgstr "точка"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:263
-msgid "line"
-msgstr "Лінія"
-
 #. Used in: Components > Form Plugins > Lat Long Ui
+msgid "line"
+msgstr "лінія"
+
 #: components/FormPlugins/LatLongUi.tsx:264
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "rectangle"
 msgstr "Прямокутник"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:270
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "parsed"
 msgstr "Проаналізовано"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:180
 #: components/FormPlugins/LatLongUi.tsx:268
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "latitude"
 msgstr "Широта"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:193
 #: components/FormPlugins/LatLongUi.tsx:269
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "longitude"
 msgstr "Довгота"
 
-#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #: components/AppResources/Editor.tsx:189
 #: components/AppResources/Editor.tsx:191
 #: components/Leaflet/extend.ts:47
 #: components/Leaflet/extend.ts:48
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 msgid "toggleFullScreen"
-msgstr "Перемкнути Повний Екран"
+msgstr "Перемкнути повний екран"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:83
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degrees"
-msgstr "DD.DDDD (32.7619)"
+msgstr "DD.DDDD (32,7619)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:88
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutes"
-msgstr "DD MMMM (32. 45.714)"
+msgstr "ДД ММММ (32. 45.714)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:93
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSeconds"
-msgstr "DD MM SS.SS (32 45 42.84)"
+msgstr "ДД ММ СС.СС (32 45 42,84)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:98
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesWithDirection"
-msgstr "DD.DDDD Пн/Пд/Сх/Зх (32.7619 Пн)"
+msgstr "DD.DDDD Пн/Пд/З/З (32,7619 Пн)"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:103
-msgid "degreesMinutesWithDirection"
-msgstr "DD MM.MM Пн/Пд/Сх/Зх (32 45.714 Пн)"
-
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+msgid "degreesMinutesWithDirection"
+msgstr "ДД ММ.ХМ Пн/Пд/В/З (32 45,714 Пн)"
+
 #: components/WbToolkit/CoordinateConverter.tsx:108
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "degreesMinutesSecondsWithDirection"
-msgstr "DD MM SS.SS Пн/Пд/Сх/Зх (32 45 42.84 Пн)"
+msgstr "DD MM SS.SS N/S/E/W (32 45 42.84 N)"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:140
-msgid "localityUpdateHeaderError"
-msgstr "Знайдено Помилки в Заголовках Стовпців"
-
 #. Used in: Components > Locality Update > Index
+msgid "localityUpdateHeaderError"
+msgstr "Знайдено помилки в заголовках стовпців"
+
 #: components/LocalityUpdate/index.tsx:151
+#. Used in: Components > Locality Update > Index
 msgid "localityUpdateMissingHeader"
 msgstr "Наступні стовпці є обов’язковими, але відсутні в наборі даних"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:161
+#. Used in: Components > Locality Update > Index
 msgid "localityUpdateUnrecognizedHeaders"
 msgstr ""
 "Наступні стовпці в наборі даних не розпізнаються та ігноруватимуться під "
 "час імпорту"
 
-#. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:169
+#. Used in: Components > Locality Update > Index
 msgid "localityUpdateAcceptedHeaders"
-msgstr "Приймаються лише наступні заголовки"
+msgstr "Приймаються лише такі заголовки"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
+#. Used in: Components > Locality Update > Utils
 msgid "localityUpdateStarting"
-msgstr "Початок Оновлення Місцевості"
+msgstr "Початок оновлення місцевості"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:35
-msgid "localityUpdateParsing"
-msgstr "Розбір Набору Даних Місцевості"
-
 #. Used in: Components > Locality Update > Utils
-#: components/LocalityUpdate/utils.ts:37
-msgid "localityUpdateProgressing"
-msgstr "Імпорт Набору Даних Місцевості"
+msgid "localityUpdateParsing"
+msgstr "Розбір набору даних місцевості"
 
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
+#: components/LocalityUpdate/utils.ts:37
+#. Used in: Components > Locality Update > Utils
+msgid "localityUpdateProgressing"
+msgstr "Імпорт набору даних місцевості"
+
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:296
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateParsed"
-msgstr "Проаналізовано Набір Даних Оновлення Місцевості"
+msgstr "Проаналізовано набір даних оновлення місцевості"
 
-#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:470
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:264
+#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateFailed"
-msgstr "Помилка Оновлення Місцевості"
+msgstr "Помилка оновлення місцевості"
 
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
 #: components/Notifications/NotificationRenderers.tsx:240
-msgid "localityUpdateParseFailure"
-msgstr "Помилка Аналізу Оновлення Місцевості"
-
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
+msgid "localityUpdateParseFailure"
+msgstr "Помилка аналізу оновлення місцевості"
+
 #: components/LocalityUpdate/utils.ts:40
 #: components/Notifications/NotificationRenderers.tsx:285
-msgid "localityUpdateCancelled"
-msgstr "Оновлення Місцевості Скасовано"
-
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
+msgid "localityUpdateCancelled"
+msgstr "Оновлення місцевості скасовано"
+
 #: components/LocalityUpdate/utils.ts:41
 #: components/Notifications/NotificationRenderers.tsx:308
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateSucceeded"
-msgstr "Місцезнаходження Успішно Оновлено"
+msgstr "Місцезнаходження оновлено"
 
-#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:474
 #: components/LocalityUpdate/Status.tsx:512
+#. Used in: Components > Locality Update > Status
 msgid "localityUpdateWentWrong"
-msgstr "Щось пішло не так під час процесу Оновлення Місцевості"
+msgstr "Щось пішло не так під час процесу оновлення місцевості"
 
-#. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:371
+#. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 msgid "localityUpdateParseErrorFileName"
-msgstr "Помилки Оновлення Місцевості - {date:string}"
+msgstr "Помилки оновлення місцевості - {date:string}"
 
-#. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:456
 #: components/LocalityUpdate/Status.tsx:497
+#. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 msgid "localityUpdateCrashFileName"
-msgstr "Оновлення Місцевості {taskId: string} Звіт про Збій - {date: string}"
+msgstr "Оновлення місцевості {taskId: string} Звіт про збій - {date: string}"
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:53
+#. Used in: Components > Locality Update > Utils
 msgid "guidHeaderNotProvided"
-msgstr "Набір даних має містити заголовок 'guid'."
+msgstr "Набір даних має містити заголовок «guid»."
 
-#. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:55
-msgid "noLocalityMatchingGuid"
-msgstr "Немає Місцевості з guid: '{guid:string}'"
-
 #. Used in: Components > Locality Update > Utils
+msgid "noLocalityMatchingGuid"
+msgstr "Немає місцевості з guid: '{guid:string}'"
+
 #: components/LocalityUpdate/utils.ts:59
+#. Used in: Components > Locality Update > Utils
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
-"За допомогою guid: {guid:string} знайдено більше однієї Місцевості. IDs "
-"Місцевості {localityIds: string}"
+"За допомогою guid: {guid:string} знайдено більше одного населеного пункту. "
+"Ідентифікатори населених пунктів: {localityIds: рядок}"
 
-#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:242
+#. Used in: Components > Locality Update > Status
 msgid "localityUpdateEffectCounts"
 msgstr ""
 "Оновлення вплине на таку кількість записів {localityTabelLabel: string} і "
 "буде створено записи {geoCoordDetailTableLabel: string}:"
 
-#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:292
+#. Used in: Components > Locality Update > Status
 msgid "localityUploadedDescription"
 msgstr ""
-"Було оновлено таку кількість записів {localityTabelLabel: string} і створено "
+"Оновлено таку кількість записів {localityTabelLabel: string} і створено "
 "записи {geoCoordDetailTableLabel: string}:"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:228
+#. Used in: Components > Notifications > Notification Renderers
 msgid "localityUpdateStarted"
-msgstr "Розпочато процес Оновлення Місцевості"
+msgstr "Розпочато процес оновлення місцевості"
 
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:339
 #: components/Notifications/NotificationRenderers.tsx:310
-msgid "localityUpdateResults"
-msgstr "Результати Оновлення Місцевості"
-
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
+msgid "localityUpdateResults"
+msgstr "Результати оновлення місцевості"
+
 #: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:242
 #: components/Notifications/NotificationRenderers.tsx:266
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateFailureResults"
-msgstr "Результати Помилки Оновлення Місцевості"
+msgstr "Результати помилки оновлення місцевості"
 
-#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:230
 #: components/Notifications/NotificationRenderers.tsx:254
 #: components/Notifications/NotificationRenderers.tsx:276
 #: components/Notifications/NotificationRenderers.tsx:287
 #: components/Notifications/NotificationRenderers.tsx:298
 #: components/Notifications/NotificationRenderers.tsx:327
+#. Used in: Components > Notifications > Notification Renderers
 msgid "taskId"
-msgstr "ID Завдання"
+msgstr "ID завдання"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:92
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "validLatitude"
 msgstr "Значення широти має бути від -90° до 90°"
 
-#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:93
+#. Used in: Components > Form Plugins > Lat Long Ui
 msgid "validLongitude"
-msgstr "Значення довготи повинно бути між -180° та 180°"
+msgstr ""
+"Оновлення вплине на таку кількість записів {localityTabelLabel: string} і "
+"буде створено записи {geoCoordDetailTableLabel: string}:"

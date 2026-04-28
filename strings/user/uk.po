@@ -36,13 +36,13 @@ msgid "password"
 msgstr "Пароль"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:609
+#: components/QueryComboBox/index.tsx:613
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "У вас немає доступу до цієї колекції"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:612
+#: components/QueryComboBox/index.tsx:616
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
@@ -78,7 +78,7 @@ msgstr "Повторіть новий пароль"
 msgid "logOut"
 msgstr "Вийти"
 
-#: components/Security/MissingAgentsDialog.tsx:111
+#: components/Security/MissingAgentsDialog.tsx:112
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "setUserAgents"
 msgstr "Налаштування агентів користувачів"
@@ -188,7 +188,7 @@ msgstr "У вас недостатньо прав для цієї дії, або
 
 #: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:199
+#: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
@@ -249,7 +249,7 @@ msgid "makeAdmin"
 msgstr "Зробити адміністратором"
 
 #: components/Security/AdminStatusPlugin.tsx:50
-#: components/Security/UserCollections.tsx:129
+#: components/Security/UserCollections.tsx:130
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 msgid "saveUserFirst"
 msgstr "Спочатку збережіть користувача"
@@ -301,7 +301,7 @@ msgstr "Підтвердити"
 msgid "collections"
 msgstr "Колекції"
 
-#: components/Security/UserCollections.tsx:77
+#: components/Security/UserCollections.tsx:78
 #. Used in: Components > Security > User Collections
 msgid "configureCollectionAccess"
 msgstr "Виберіть доступ до колекції користувачів"
@@ -412,7 +412,7 @@ msgstr "Ця колекція"
 msgid "allActions"
 msgstr "Усі дії"
 
-#: components/Security/UserCollections.tsx:275
+#: components/Security/UserCollections.tsx:278
 #. Used in: Components > Security > User Collections
 msgid "collectionAccess"
 msgstr "Увімкнути доступ до колекції"
@@ -495,22 +495,22 @@ msgstr ""
 "Спробуйте встановити пароль для цього користувача. Користувачі без пароля "
 "не зможуть увійти"
 
-#: components/Security/UserCollections.tsx:134
+#: components/Security/UserCollections.tsx:135
 #. Used in: Components > Security > User Collections
 msgid "setCollections"
 msgstr "Колекції наборів"
 
-#: components/Security/MissingAgentsDialog.tsx:165
+#: components/Security/MissingAgentsDialog.tsx:172
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "agentInUse"
 msgstr "Цей агент вже пов'язаний з іншим користувачем."
 
-#: components/Security/MissingAgentsDialog.tsx:114
+#: components/Security/MissingAgentsDialog.tsx:115
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "setAgentsBeforeProceeding"
 msgstr "Будь ласка, налаштуйте наступних агентів, перш ніж продовжити:"
 
-#: components/Security/UserCollections.tsx:249
+#: components/Security/UserCollections.tsx:252
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "cannotReadAgentsForUserAssignment"
@@ -518,7 +518,7 @@ msgstr ""
 "Не вдалося завантажити призначених агентів, оскільки у вас немає прав на "
 "читання записів агентів."
 
-#: components/Security/UserCollections.tsx:251
+#: components/Security/UserCollections.tsx:254
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "cannotReadDisciplinesForUserAssignment"

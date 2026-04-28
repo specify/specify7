@@ -40,14 +40,14 @@ msgid "password"
 msgstr "Lozinka"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:609
+#: components/QueryComboBox/index.tsx:613
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr "Nemate pristup ovoj kolekciji"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:612
+#: components/QueryComboBox/index.tsx:616
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
@@ -87,7 +87,7 @@ msgstr "Ponovite novu lozinku"
 msgid "logOut"
 msgstr "Odjava"
 
-#: components/Security/MissingAgentsDialog.tsx:111
+#: components/Security/MissingAgentsDialog.tsx:112
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setUserAgents"
@@ -218,7 +218,7 @@ msgstr "Nemate dovoljna prava za tu radnju ili je vaša trenutna sesija odjavlje
 
 #: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:199
+#: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
@@ -289,7 +289,7 @@ msgid "makeAdmin"
 msgstr "Postavi kao administrator"
 
 #: components/Security/AdminStatusPlugin.tsx:50
-#: components/Security/UserCollections.tsx:129
+#: components/Security/UserCollections.tsx:130
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #, fuzzy
 msgid "saveUserFirst"
@@ -350,7 +350,7 @@ msgstr "Potvrdi"
 msgid "collections"
 msgstr "Zbirke"
 
-#: components/Security/UserCollections.tsx:77
+#: components/Security/UserCollections.tsx:78
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "configureCollectionAccess"
@@ -481,7 +481,7 @@ msgstr "Ova kolekcija"
 msgid "allActions"
 msgstr "Sve radnje"
 
-#: components/Security/UserCollections.tsx:275
+#: components/Security/UserCollections.tsx:278
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "collectionAccess"
@@ -579,25 +579,25 @@ msgstr ""
 "Razmislite o postavljanju lozinke za ovog korisnika. Korisnici bez lozinke "
 "neće se moći prijaviti."
 
-#: components/Security/UserCollections.tsx:134
+#: components/Security/UserCollections.tsx:135
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "setCollections"
 msgstr "Set kolekcije"
 
-#: components/Security/MissingAgentsDialog.tsx:165
+#: components/Security/MissingAgentsDialog.tsx:172
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "agentInUse"
 msgstr "Ovaj agent je već povezan s drugim korisnikom."
 
-#: components/Security/MissingAgentsDialog.tsx:114
+#: components/Security/MissingAgentsDialog.tsx:115
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setAgentsBeforeProceeding"
 msgstr "Prije nastavka postavite sljedeće agente:"
 
-#: components/Security/UserCollections.tsx:249
+#: components/Security/UserCollections.tsx:252
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "cannotReadAgentsForUserAssignment"
@@ -605,7 +605,7 @@ msgstr ""
 "Nije moguće učitati dodijeljene agente jer nemate pristup za čitanje zapisa "
 "agenata."
 
-#: components/Security/UserCollections.tsx:251
+#: components/Security/UserCollections.tsx:254
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "cannotReadDisciplinesForUserAssignment"

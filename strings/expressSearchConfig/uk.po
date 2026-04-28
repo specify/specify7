@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-27 10:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,456 +12,435 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "loadingConfig"
-msgstr "Завантаження..."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "loadingMetadata"
-msgstr "Завантаження мета-даних..."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 msgid "expressSearchConfigTitle"
-msgstr "Конфігурація Експрес Пошуку"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "searchFieldsTab"
-msgstr "Пошукові Поля"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
-msgid "relatedTablesTab"
-msgstr "Відносні Таблиці"
-
 #. Used in: Components > Express Search Config > Express Search Config Editor
+msgid "relatedTablesTab"
+msgstr ""
+
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "resultsOrderingTab"
-msgstr "Впорядкування Результату"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "availableTables"
-msgstr "Доступні Таблиці"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "searchableFields"
-msgstr "Поля які Можна Шукати"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "searchLabel"
-msgstr "Пошук"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "fieldName"
-msgstr "Поле"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "sortMode"
-msgstr "Режим Сортування"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "searchNone"
-msgstr "Нічого"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "ascendingOrder"
-msgstr "За Зростанням"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
-msgid "descendingOrder"
-msgstr "За Спаданням"
-
 #. Used in: Components > Express Search Config > Search Fields Tab
+msgid "descendingOrder"
+msgstr ""
+
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "displayFields"
-msgstr "Відображати Поля"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "configureResultsOrdering"
-msgstr "Налаштувати Впорядкування Результатів"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "reorderResultsOrderingDescription"
-msgstr "Впорядкувати як секції з'являються в панелі результату пошуку."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
-msgid "relatedQueryLabel"
-msgstr "Відносний Запит: {query:string}"
-
 #. Used in: Components > Express Search Config > Results Ordering Tab
+msgid "relatedQueryLabel"
+msgstr ""
+
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "noDisplayItemsConfigured"
-msgstr "Не налаштоване відображення елементів."
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "selectAllQueries"
-msgstr "Обрати Все"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "deselectAllQueries"
-msgstr "Скасувати Вибір Всього"
+msgstr ""
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
-msgid "noRelatedQueriesAvailable"
-msgstr "Немає відносних запитів доступних для обраних таблиць."
-
 #. Used in: Components > Express Search Config > Related Tables Tab
+msgid "noRelatedQueriesAvailable"
+msgstr ""
+
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
-msgid "selectRelatedQueryDescription"
-msgstr "Оберіть відносний запит, щоб бачити його опис."
-
 #. Used in: Components > Express Search Config > Related Tables Tab
+msgid "selectRelatedQueryDescription"
+msgstr ""
+
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "noDescriptionAvailable"
-msgstr "Опис не доступний."
+msgstr ""
 
 #. Used in: 
 msgid "CollObjToDeterminer"
-msgstr "Об'єкт Колекції Таксону"
+msgstr ""
 
 #. Used in: 
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Колекції об'єктів з поточним визначенням, відображають визначену назву "
-"таксону, звичайну назві таксону, та визначення."
 
 #. Used in: 
 msgid "CollObToLocality"
-msgstr "Збирання Місцевості Події"
+msgstr ""
 
 #. Used in: 
 msgid "CollObToLocality_desc"
 msgstr ""
-"Збирання подій та їх місцевості, включаючи дати подій та географічні "
-"координати."
 
 #. Used in: 
 msgid "CollObject"
-msgstr "Таксон Об'єкт Колекції"
+msgstr ""
 
 #. Used in: 
 msgid "CollObject_desc"
-msgstr "Об'єкти колекції з їх визначеними назвами таксону."
+msgstr ""
 
 #. Used in: 
 msgid "GeoToTaxon"
-msgstr "Географія Таксону"
+msgstr ""
 
 #. Used in: 
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Таксони з'єднані географічними записами через визначення об'єкту колекції та "
-"збирання місцевості події."
 
 #. Used in: 
 msgid "ColObjCollectors"
-msgstr "Збирачі Об'єктів Колекції"
+msgstr ""
 
 #. Used in: 
 msgid "ColObjCollectors_desc"
-msgstr "Об'єкти колекції та агенти які зібрали їх, з датами збирання події."
+msgstr ""
 
 #. Used in: 
 msgid "AcceptedTaxon"
-msgstr "Таксон Бажаного Таксону"
+msgstr ""
 
 #. Used in: 
 msgid "AcceptedTaxon_desc"
 msgstr ""
-"Таксони з бажаними прийнятими назвами таксону, виключаючи записи в яких "
-"відсутнє прийняте з'єднання таксону."
 
 #. Used in: 
 msgid "SynonymCollObjs"
-msgstr "Об'єкт Колекції Бажаного Таксону"
+msgstr ""
 
 #. Used in: 
 msgid "SynonymCollObjs_desc"
 msgstr ""
-"Об'єкти колекції з визначеннями які мають обидва оригінальний таксон та "
-"бажаний таксон."
 
 #. Used in: 
 msgid "OtherSynsCollObjs"
-msgstr "Збирання Таксон Об'єктів (всі синоніми)"
+msgstr ""
 
 #. Used in: 
 msgid "OtherSynsCollObjs_desc"
 msgstr ""
-"Об'єкти колекцій які відображають визначення, бажані назви таксонів, та "
-"прийняті синоніми дочірніх назв."
 
 #. Used in: 
 msgid "CurrCollObject"
-msgstr "Об'єкт Колекції Таксон (визначений)"
+msgstr ""
 
 #. Used in: 
 msgid "CurrCollObject_desc"
-msgstr "Об'єкти колекцій з їх поточним тільки визначенням таксону."
+msgstr ""
 
 #. Used in: 
 msgid "AgentFromAgentVariant"
-msgstr "Агент Варіант Агенту"
+msgstr ""
 
 #. Used in: 
 msgid "AgentFromAgentVariant_desc"
-msgstr "Варіанти агентів зіставлені парами з їх записами предків агенту."
+msgstr ""
 
 #. Used in: 
 msgid "Agent"
-msgstr "Агент"
+msgstr ""
 
 #. Used in: 
 msgid "Agent_desc"
-msgstr "Індивідуальні агенти."
+msgstr ""
 
 #. Used in: 
 msgid "AgentVariant"
-msgstr "Варіанти Агенту"
+msgstr ""
 
 #. Used in: 
 msgid "AgentVariant_desc"
-msgstr "Записи варіанту агенту."
+msgstr ""
 
 #. Used in: 
 msgid "LocalityAlias"
-msgstr "Місцевість Псевдонім Місцевості"
+msgstr ""
 
 #. Used in: 
 msgid "LocalityAlias_desc"
-msgstr "Записи місцевості з асоційованими псевдонімами назв місцевості."
+msgstr ""
 
 #. Used in: 
 msgid "CEToCO"
-msgstr "Об'єкт Колекції Збирає Подію"
+msgstr ""
 
 #. Used in: 
 msgid "CEToCO_desc"
-msgstr "Зібрані події з'єднані до об'єктів колекції."
+msgstr ""
 
 #. Used in: 
 msgid "LocToCO"
-msgstr "Колекція Місцевість Об'єкту"
+msgstr ""
 
 #. Used in: 
 msgid "LocToCO_desc"
-msgstr "Місцевості та об'єкти колекції знайдені в їх зібраних подіях."
+msgstr ""
 
 #. Used in: 
 msgid "AccessionToCo"
-msgstr "Об'єкт Колекції Приєднання"
+msgstr ""
 
 #. Used in: 
 msgid "AccessionToCo_desc"
-msgstr "Приєднання та їх об'єкти колекції, з фільтровані до поточних визначень."
+msgstr ""
 
 #. Used in: 
 msgid "AccessionToAgent"
-msgstr "Агент Приєднання"
+msgstr ""
 
 #. Used in: 
 msgid "AccessionToAgent_desc"
 msgstr ""
-"Приєднання та агенти асоційовані за допомогою ролей агенту з приєднання."
 
 #. Used in: 
 msgid "BorrowToAgent"
-msgstr "Агент Позичення"
+msgstr ""
 
 #. Used in: 
 msgid "BorrowToAgent_desc"
-msgstr "Позичає та агенти з'єднанні через позичання ролей агента."
+msgstr ""
 
 #. Used in: 
 msgid "AppraisalToAgent"
-msgstr "Оцінка Агента"
+msgstr ""
 
 #. Used in: 
 msgid "AppraisalToAgent_desc"
-msgstr "Оцінювання та їх асоційовані агенти."
+msgstr ""
 
 #. Used in: 
 msgid "GeoTimePeriodToCO"
-msgstr "Об'єкт Колекції Хроностратиграфії"
+msgstr ""
 
 #. Used in: 
 msgid "GeoTimePeriodToCO_desc"
 msgstr ""
-"Геологічний період часу з колекцією об'єктів з'єднаних через "
-"хроностратиграфічні вмісти."
 
 #. Used in: 
 msgid "CollEventToCollectors"
-msgstr "Збирач Збирання Події"
+msgstr ""
 
 #. Used in: 
 msgid "CollEventToCollectors_desc"
-msgstr "Збирання подій, які зроблені парами з агентами які зібрали зразки."
+msgstr ""
 
 #. Used in: 
 msgid "AgentExchangeIn"
-msgstr "Вхідний Обмін Агенту"
+msgstr ""
 
 #. Used in: 
 msgid "AgentExchangeIn_desc"
-msgstr "Вхідні обміни та агенти від яких отримали матеріал."
+msgstr ""
 
 #. Used in: 
 msgid "AgentExchangeOut"
-msgstr "Вихідний Обмін Агенту"
+msgstr ""
 
 #. Used in: 
 msgid "AgentExchangeOut_desc"
-msgstr "Вихідні обміни та агенти до яких відправили матеріал."
+msgstr ""
 
 #. Used in: 
 msgid "GeographyCE"
-msgstr "Географія Події Збирання"
+msgstr ""
 
 #. Used in: 
 msgid "GeographyCE_desc"
-msgstr "Події збирання з географічною областю місцевості кожної події."
+msgstr ""
 
 #. Used in: 
 msgid "GeographyCO"
-msgstr "Географічний Об'єкт Колекції"
+msgstr ""
 
 #. Used in: 
 msgid "GeographyCO_desc"
 msgstr ""
-"Об'єкти колекції з'єднані до географічних областей їх місцевості події "
-"збирання."
 
 #. Used in: 
 msgid "GiftCO"
-msgstr "Об'єкт Колекції Подарунок"
+msgstr ""
 
 #. Used in: 
 msgid "GiftCO_desc"
-msgstr "Подарунки з колекцією об'єктів прикріплених до приготувань подарунку."
+msgstr ""
 
 #. Used in: 
 msgid "GiftAgent"
-msgstr "Агент Подарунку"
+msgstr ""
 
 #. Used in: 
 msgid "GiftAgent_desc"
-msgstr "Подарунки та агенти пов'язані з цими подарунками."
+msgstr ""
 
 #. Used in: 
 msgid "LoanCO"
-msgstr "Об'єкт Колекції Позика"
+msgstr ""
 
 #. Used in: 
 msgid "LoanCO_desc"
-msgstr "Позики з об'єктами колекції по підготовці позик."
+msgstr ""
 
 #. Used in: 
 msgid "LoanAgent"
-msgstr "Агент Позики"
+msgstr ""
 
 #. Used in: 
 msgid "LoanAgent_desc"
-msgstr "Позики та агенти залучені через ролі агентів позики."
+msgstr ""
 
 #. Used in: 
 msgid "LithoStratToCO"
-msgstr "Об'єкт Колекції Літостратиграфічний"
+msgstr ""
 
 #. Used in: 
 msgid "LithoStratToCO_desc"
 msgstr ""
-"Літостратиграфічні одиниці та колекції об'єктів пов'язані через стосунки "
-"палео-змісту."
 
 #. Used in: 
 msgid "PermitToCO"
-msgstr "Об'єкт Колекції Дозвіл"
+msgstr ""
 
 #. Used in: 
 msgid "PermitToCO_desc"
 msgstr ""
-"Дозволи та об'єкти колекції пов'язані через приєднання авторизованих "
-"стосунків(зв'язків)."
 
 #. Used in: 
 msgid "PermitIssuedToAgent"
-msgstr "Агент Виданий для Отримання Дозволу"
+msgstr ""
 
 #. Used in: 
 msgid "PermitIssuedToAgent_desc"
-msgstr "Дозволи та агенти яким вони були видані."
+msgstr ""
 
 #. Used in: 
 msgid "PermitIssuedByAgent"
-msgstr "Агент Виданий за Дозволом"
+msgstr ""
 
 #. Used in: 
 msgid "PermitIssuedByAgent_desc"
-msgstr "Дозволи та агенти які видали їх."
+msgstr ""
 
 #. Used in: 
 msgid "ProjectAgent"
-msgstr "Проєкт Агента"
+msgstr ""
 
 #. Used in: 
 msgid "ProjectAgent_desc"
-msgstr "Проєкт та їх призначені агенти."
+msgstr ""
 
 #. Used in: 
 msgid "RepoAgreeAgent"
-msgstr "Договір Сховища Агенту"
+msgstr ""
 
 #. Used in: 
 msgid "RepoAgreeAgent_desc"
-msgstr "Угоди сховища та походження їх агентів."
+msgstr ""
 
 #. Used in: 
 msgid "StorageCO"
-msgstr "Об'єкт Колекції Сховище"
+msgstr ""
 
 #. Used in: 
 msgid "StorageCO_desc"
-msgstr "Об'єкти колекції та місцезнаходження їх сховищ."
+msgstr ""
 
 #. Used in: 
 msgid "TaxCollObject"
-msgstr "Об'єкт Колекції Таксон"
+msgstr ""
 
 #. Used in: 
 msgid "TaxCollObject_desc"
-msgstr "Об'єкти колекції та їх визначені записи таксону."
+msgstr ""
 
 #. Used in: 
 msgid "ExchangeInCO"
-msgstr "Об'єкт Колекції Вхідний Обмін"
+msgstr ""
 
 #. Used in: 
 msgid "ExchangeInCO_desc"
-msgstr "Вхідні обміни з об'єктами колекцій в процесі підготовки до обміну."
+msgstr ""
 
 #. Used in: 
 msgid "ExchangeOutCO"
-msgstr "Об'єкт Колекції Вихідний Обмін"
+msgstr ""
 
 #. Used in: 
 msgid "ExchangeOutCO_desc"
-msgstr "Вихідні обміни з об'єктами колекцій в процесі підготовки до обміну."
+msgstr ""

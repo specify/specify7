@@ -71,7 +71,7 @@ msgstr "Non"
 #: components/SearchDialog/SelectRecordSet.tsx:133
 #: components/SearchDialog/index.tsx:240
 #: components/Security/ImportExport.tsx:81
-#: components/Security/MissingAgentsDialog.tsx:103
+#: components/Security/MissingAgentsDialog.tsx:104
 #: components/Security/Role.tsx:195
 #: components/Security/Role.tsx:221
 #: components/Security/RoleTemplate.tsx:93
@@ -256,7 +256,7 @@ msgstr "Créer"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:608
+#: components/QueryComboBox/index.tsx:612
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -268,7 +268,7 @@ msgstr "Créer"
 #: components/Security/SetPassword.tsx:36
 #: components/Security/User.tsx:464
 #: components/Security/User.tsx:681
-#: components/Security/UserCollections.tsx:71
+#: components/Security/UserCollections.tsx:72
 #: components/Security/UserInviteLink.tsx:55
 #: components/SpecifyNetwork/Overlay.tsx:132
 #: components/SpecifyNetwork/Overlay.tsx:148
@@ -382,9 +382,9 @@ msgstr "Supprimer les colonnes non mappées"
 #: components/Reports/Report.tsx:313
 #: components/SchemaConfig/Components.tsx:42
 #: components/SchemaConfig/TableUniquenessRules.tsx:141
-#: components/Security/MissingAgentsDialog.tsx:106
+#: components/Security/MissingAgentsDialog.tsx:107
 #: components/Security/Role.tsx:213
-#: components/Security/UserCollections.tsx:73
+#: components/Security/UserCollections.tsx:74
 #: components/Statistics/ResultsDialog.tsx:85
 #: components/Statistics/StatsPageEditing.tsx:47
 #: components/Statistics/index.tsx:594
@@ -524,7 +524,7 @@ msgstr "Outils"
 #: components/QueryBuilder/QueryLineFilter.tsx:90
 #: components/QueryBuilder/Results.tsx:352
 #: components/QueryBuilder/Results.tsx:353
-#: components/QueryComboBox/index.tsx:445
+#: components/QueryComboBox/index.tsx:449
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
@@ -538,8 +538,8 @@ msgstr "Outils"
 #: components/Security/Preview.tsx:104
 #: components/Security/RoleTemplate.tsx:169
 #: components/Security/RoleTemplate.tsx:208
-#: components/Security/UserCollections.tsx:127
-#: components/Security/UserCollections.tsx:293
+#: components/Security/UserCollections.tsx:128
+#: components/Security/UserCollections.tsx:305
 #: components/Security/UserComponents.tsx:89
 #: components/Security/UserComponents.tsx:165
 #: components/SkeletonLoaders/Skeleton.tsx:8

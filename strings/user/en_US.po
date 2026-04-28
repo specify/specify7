@@ -25,13 +25,13 @@ msgid "password"
 msgstr "Password"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:609
+#: components/QueryComboBox/index.tsx:613
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDenied"
 msgstr "You do not have access to this collection"
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:612
+#: components/QueryComboBox/index.tsx:616
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 msgid "collectionAccessDeniedDescription"
 msgstr ""
@@ -67,7 +67,7 @@ msgstr "Repeat new password"
 msgid "logOut"
 msgstr "Log Out"
 
-#: components/Security/MissingAgentsDialog.tsx:111
+#: components/Security/MissingAgentsDialog.tsx:112
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "setUserAgents"
 msgstr "Set User Agents"
@@ -181,7 +181,7 @@ msgstr ""
 
 #: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:199
+#: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
@@ -240,7 +240,7 @@ msgid "makeAdmin"
 msgstr "Make Admin"
 
 #: components/Security/AdminStatusPlugin.tsx:50
-#: components/Security/UserCollections.tsx:129
+#: components/Security/UserCollections.tsx:130
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 msgid "saveUserFirst"
 msgstr "Save user first"
@@ -292,7 +292,7 @@ msgstr "Confirm"
 msgid "collections"
 msgstr "Collections"
 
-#: components/Security/UserCollections.tsx:77
+#: components/Security/UserCollections.tsx:78
 #. Used in: Components > Security > User Collections
 msgid "configureCollectionAccess"
 msgstr "Select user collection access"
@@ -401,7 +401,7 @@ msgstr "This collection"
 msgid "allActions"
 msgstr "All Actions"
 
-#: components/Security/UserCollections.tsx:275
+#: components/Security/UserCollections.tsx:278
 #. Used in: Components > Security > User Collections
 msgid "collectionAccess"
 msgstr "Enable Collection Access"
@@ -484,29 +484,29 @@ msgstr ""
 "Consider setting a password for this user. Users without a password won't "
 "be able to sign in"
 
-#: components/Security/UserCollections.tsx:134
+#: components/Security/UserCollections.tsx:135
 #. Used in: Components > Security > User Collections
 msgid "setCollections"
 msgstr "Set Collections"
 
-#: components/Security/MissingAgentsDialog.tsx:165
+#: components/Security/MissingAgentsDialog.tsx:172
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "agentInUse"
 msgstr "This agent is already associated with a different user."
 
-#: components/Security/MissingAgentsDialog.tsx:114
+#: components/Security/MissingAgentsDialog.tsx:115
 #. Used in: Components > Security > Missing Agents Dialog
 msgid "setAgentsBeforeProceeding"
 msgstr "Please set the following agents before proceeding:"
 
-#: components/Security/UserCollections.tsx:249
+#: components/Security/UserCollections.tsx:252
 #. Used in: Components > Security > User Collections
 msgid "cannotReadAgentsForUserAssignment"
 msgstr ""
 "Unable to load assigned agents because you do not have read access to Agent "
 "records."
 
-#: components/Security/UserCollections.tsx:251
+#: components/Security/UserCollections.tsx:254
 #. Used in: Components > Security > User Collections
 msgid "cannotReadDisciplinesForUserAssignment"
 msgstr ""

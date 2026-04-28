@@ -38,14 +38,14 @@ msgid "password"
 msgstr ""
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:181
-#: components/QueryComboBox/index.tsx:609
+#: components/QueryComboBox/index.tsx:613
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDenied"
 msgstr ""
 
 #: components/FormPlugins/CollectionRelOneToMany.tsx:184
-#: components/QueryComboBox/index.tsx:612
+#: components/QueryComboBox/index.tsx:616
 #. Used in: Components > Form Plugins > Collection Rel One To Many ⬤ Components > Query Combo Box > Index
 #, fuzzy
 msgid "collectionAccessDeniedDescription"
@@ -85,7 +85,7 @@ msgstr ""
 msgid "logOut"
 msgstr ""
 
-#: components/Security/MissingAgentsDialog.tsx:111
+#: components/Security/MissingAgentsDialog.tsx:112
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setUserAgents"
@@ -205,7 +205,7 @@ msgstr ""
 
 #: components/Formatters/formatters.ts:197
 #: components/Forms/dataObjFormatters.ts:290
-#: components/QueryComboBox/index.tsx:199
+#: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76
 #: components/Statistics/StatItems.tsx:186
 #: components/Statistics/StatItems.tsx:269
@@ -270,7 +270,7 @@ msgid "makeAdmin"
 msgstr ""
 
 #: components/Security/AdminStatusPlugin.tsx:50
-#: components/Security/UserCollections.tsx:129
+#: components/Security/UserCollections.tsx:130
 #. Used in: Components > Security > Admin Status Plugin ⬤ Components > Security > User Collections
 #, fuzzy
 msgid "saveUserFirst"
@@ -331,7 +331,7 @@ msgstr ""
 msgid "collections"
 msgstr ""
 
-#: components/Security/UserCollections.tsx:77
+#: components/Security/UserCollections.tsx:78
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "configureCollectionAccess"
@@ -460,7 +460,7 @@ msgstr ""
 msgid "allActions"
 msgstr ""
 
-#: components/Security/UserCollections.tsx:275
+#: components/Security/UserCollections.tsx:278
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "collectionAccess"
@@ -552,31 +552,31 @@ msgstr ""
 msgid "setPasswordBeforeSavePrompt"
 msgstr ""
 
-#: components/Security/UserCollections.tsx:134
+#: components/Security/UserCollections.tsx:135
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "setCollections"
 msgstr ""
 
-#: components/Security/MissingAgentsDialog.tsx:165
+#: components/Security/MissingAgentsDialog.tsx:172
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "agentInUse"
 msgstr ""
 
-#: components/Security/MissingAgentsDialog.tsx:114
+#: components/Security/MissingAgentsDialog.tsx:115
 #. Used in: Components > Security > Missing Agents Dialog
 #, fuzzy
 msgid "setAgentsBeforeProceeding"
 msgstr ""
 
-#: components/Security/UserCollections.tsx:249
+#: components/Security/UserCollections.tsx:252
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "cannotReadAgentsForUserAssignment"
 msgstr ""
 
-#: components/Security/UserCollections.tsx:251
+#: components/Security/UserCollections.tsx:254
 #. Used in: Components > Security > User Collections
 #, fuzzy
 msgid "cannotReadDisciplinesForUserAssignment"
