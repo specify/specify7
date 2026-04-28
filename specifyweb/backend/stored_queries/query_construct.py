@@ -29,36 +29,36 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
 
     def handle_tree_field(self, node, table, tree_rank: TreeRankQuery, next_join_path, current_field_spec: QueryFieldSpec):
         query = self
-        if query.collection is None: raise AssertionError( # Not sure it makes sense to query across collections
-            f"No Collection found in Query for {table}",
-            {"table" : table,
-             "localizationKey" : "noCollectionInQuery"}) 
+        if query.collection is None:  # Not sure it makes sense to query across collections
+            raise AssertionError(
+                f"No Collection found in Query for {table}",
+                {"table": table, "localizationKey": "noCollectionInQuery"},
+            )
         logger.info('handling treefield %s rank: %s field: %s', table, tree_rank.name, next_join_path)
 
         treedefitem_column = table.name + 'TreeDefItemID'
         treedef_column = table.name + 'TreeDefID'
 
-        if (table, 'TreeRanks') in query.join_cache:
-            logger.debug("using join cache for %r tree ranks.", table)
-            ancestors, treedefs = query.join_cache[(table, 'TreeRanks')]
+        cache_key = (node, 'TreeRanks')
+        if cache_key in query.join_cache:
+            logger.debug("using join cache for %r tree ranks.", node)
+            ancestors, treedefs = query.join_cache[cache_key]
         else:
-            
             treedefs = get_treedefs(query.collection, table.name)
 
             # We need to take the max here. Otherwise, it is possible that the same rank
             # name may not occur at the same level across tree defs.
             max_depth = max(depth for _, depth in treedefs)
-            
+
             ancestors = [node]
-            for _ in range(max_depth-1):
+            for _ in range(max_depth - 1):
                 ancestor = orm.aliased(node)
                 query = query.outerjoin(ancestor, ancestors[-1].ParentID == ancestor._id)
                 ancestors.append(ancestor)
-        
 
-            logger.debug("adding to join cache for %r tree ranks.", table)
+            logger.debug("adding to join cache for %r tree ranks.", node)
             query = query._replace(join_cache=query.join_cache.copy())
-            query.join_cache[(table, 'TreeRanks')] = (ancestors, treedefs)
+            query.join_cache[cache_key] = (ancestors, treedefs)
 
         item_model = getattr(spmodels, table.django_name + "treedefitem")
 
@@ -96,7 +96,11 @@ class QueryConstruct(namedtuple('QueryConstruct', 'collection objectformatter qu
         # We don't want to include treedef if the rank is not present.
         new_filters = [
             *query.internal_filters,
-            or_(getattr(node, treedef_column).in_(defs_to_filter_on), getattr(node, treedef_column) == None)]
+            or_(
+                getattr(node, treedef_column).in_(defs_to_filter_on),
+                getattr(node, treedef_column).is_(None),
+            ),
+        ]
         query = query._replace(internal_filters=new_filters)
 
         return query, column, field, table
