@@ -206,6 +206,10 @@ function InstitutionView({
 export function useAdmins():
   | {
       readonly admins: ReadonlySet<number>;
+      readonly adminUsers: RA<{
+        readonly userId: number;
+        readonly userName: LocalizedString;
+      }>;
       readonly legacyAdmins: ReadonlySet<number>;
     }
   | undefined {
@@ -227,11 +231,19 @@ export function useAdmins():
               errorMode: 'dismissible',
             }).then(({ data }) => ({
               admins: new Set(data.sp7_admins.map(({ userid }) => userid)),
+              adminUsers: data.sp7_admins.map(({ userid, username }) => ({
+                userId: userid,
+                userName: username,
+              })),
               legacyAdmins: new Set(
                 data.sp6_admins.map(({ userid }) => userid)
               ),
             }))
-          : { admins: new Set<number>(), legacyAdmins: new Set<number>() },
+          : {
+              admins: new Set<number>(),
+              adminUsers: [],
+              legacyAdmins: new Set<number>(),
+            },
       []
     ),
     false
