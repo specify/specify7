@@ -256,10 +256,21 @@ class QueryFieldSpec(
             node = table
 
         extracted_fieldname, date_part = extract_date_part(field_name)
-        field = node.get_field(extracted_fieldname, strict=False)
+        relation_already_in_path = (
+            is_relation
+            and len(join_path) > 0
+            and isinstance(join_path[-1], Relationship)
+            and join_path[-1].type not in {"many-to-one", "one-to-one"}
+            and join_path[-1].name.lower() == extracted_fieldname.lower()
+        )
+        field = (
+            None
+            if relation_already_in_path
+            else node.get_field(extracted_fieldname, strict=False)
+        )
 
         tree_rank_name = None
-        if field is None:  # try finding tree
+        if field is None and not relation_already_in_path:  # try finding tree
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
                 tree_rank = TreeRankQuery.create(
