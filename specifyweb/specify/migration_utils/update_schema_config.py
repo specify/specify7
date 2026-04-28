@@ -234,7 +234,6 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
             key = (r["language"], r[fk_field].pk)
             desired_by_key[key] = r
 
-        rows_to_update = []
         ids_to_delete: set[int] = set()
         to_create = []
         for key, desired_row in desired_by_key.items():
@@ -244,19 +243,11 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
                 to_create.append(Splocaleitemstr(**desired_row))
                 continue
 
-            keeper = existing_for_key[0]
-            if keeper.text != desired_row["text"]:
-                keeper.text = desired_row["text"]
-                rows_to_update.append(keeper)
-
             for duplicate in existing_for_key[1:]:
                 ids_to_delete.add(duplicate.id)
 
         if ids_to_delete:
             Splocaleitemstr.objects.filter(id__in=ids_to_delete).delete()
-
-        if rows_to_update:
-            Splocaleitemstr.objects.bulk_update(rows_to_update, ["text"])
 
         if to_create:
             Splocaleitemstr.objects.bulk_create(to_create)
