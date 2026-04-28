@@ -1,547 +1,581 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:10+0000\n"
+"PO-Revision-Date: 2026-04-28 20:10+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) "
-"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/expressSearchConfig/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
-"Content-Transfer-Encoding: 8bit\n"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
 #, fuzzy
 msgid "loadingConfig"
-msgstr ""
+msgstr "Carregando..."
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
 #, fuzzy
 msgid "loadingMetadata"
-msgstr ""
+msgstr "Carregando metadados..."
 
-#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
 #. Used in: Components > Express Search Config > Express Search Config Dialog
+#: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
 #, fuzzy
 msgid "expressSearchConfigTitle"
-msgstr ""
+msgstr "Configuração de Busca Expressa"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
 #, fuzzy
 msgid "searchFieldsTab"
-msgstr ""
+msgstr "Campos de pesquisa"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
 #, fuzzy
 msgid "relatedTablesTab"
-msgstr ""
+msgstr "Tabelas relacionadas"
 
-#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
 #. Used in: Components > Express Search Config > Express Search Config Editor
+#: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
 #, fuzzy
 msgid "resultsOrderingTab"
-msgstr ""
+msgstr "Ordenação de resultados"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
 #, fuzzy
 msgid "availableTables"
-msgstr ""
+msgstr "Mesas disponíveis"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
 #, fuzzy
 msgid "searchableFields"
-msgstr ""
+msgstr "Campos pesquisáveis"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
 #, fuzzy
 msgid "searchLabel"
-msgstr ""
+msgstr "Procurar"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
 #, fuzzy
 msgid "fieldName"
-msgstr ""
+msgstr "Campo"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
 #, fuzzy
 msgid "sortMode"
-msgstr ""
+msgstr "Modo de classificação"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
 #, fuzzy
 msgid "searchNone"
-msgstr ""
+msgstr "Nenhum"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
 #, fuzzy
 msgid "ascendingOrder"
-msgstr ""
+msgstr "Ascendente"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
 #, fuzzy
 msgid "descendingOrder"
-msgstr ""
+msgstr "Descendente"
 
-#: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
 #. Used in: Components > Express Search Config > Search Fields Tab
+#: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
 #, fuzzy
 msgid "displayFields"
-msgstr ""
+msgstr "Campos de exibição"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
 #, fuzzy
 msgid "configureResultsOrdering"
-msgstr ""
+msgstr "Configurar a ordenação dos resultados"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr ""
+"Reordene a forma como as seções aparecem no painel de resultados da pesquisa."
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
 #, fuzzy
 msgid "relatedQueryLabel"
-msgstr ""
+msgstr "Consulta relacionada: {query:string}"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
 #. Used in: Components > Express Search Config > Results Ordering Tab
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
 #, fuzzy
 msgid "noDisplayItemsConfigured"
-msgstr ""
+msgstr "Nenhum item de exibição configurado."
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
 #, fuzzy
 msgid "selectAllQueries"
-msgstr ""
+msgstr "Selecionar tudo"
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
 #, fuzzy
 msgid "deselectAllQueries"
-msgstr ""
+msgstr "Desmarcar tudo"
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
-msgstr ""
+msgstr "Não há consultas relacionadas disponíveis para as tabelas selecionadas."
 
+#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
-#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
-msgstr ""
+msgstr "Selecione uma consulta relacionada para ver sua descrição."
 
-#: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
 #. Used in: Components > Express Search Config > Related Tables Tab
+#: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
 #, fuzzy
 msgid "noDescriptionAvailable"
-msgstr ""
+msgstr "Nenhuma descrição disponível."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer"
-msgstr ""
+msgstr "Objeto de Coleção Taxon"
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
+"Objetos da coleção com determinações atuais, mostrando o nome do táxon "
+"determinado, o nome comum do táxon e o determinante."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObToLocality"
-msgstr ""
+msgstr "Coletando a localidade do evento"
 
 #. Used in: 
 #, fuzzy
 msgid "CollObToLocality_desc"
 msgstr ""
+"Coletar informações sobre eventos e suas localidades, incluindo datas e "
+"coordenadas geográficas."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject"
-msgstr ""
+msgstr "Taxonomia de Objetos de Coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject_desc"
-msgstr ""
+msgstr "Objetos da coleção com seus respectivos nomes taxonômicos."
 
 #. Used in: 
 #, fuzzy
 msgid "GeoToTaxon"
-msgstr ""
+msgstr "Geografia Taxonômica"
 
 #. Used in: 
 #, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
+"Taxa vinculados a registros geográficos por meio de determinações de objetos "
+"de coleção e localidades de eventos de coleta."
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors"
-msgstr ""
+msgstr "Colecionadores de Objetos de Coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors_desc"
 msgstr ""
+"Objetos da coleção e os agentes que os coletaram, com as respectivas datas "
+"dos eventos de coleta."
 
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon"
-msgstr ""
+msgstr "Táxon Táxon Preferencial"
 
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon_desc"
 msgstr ""
+"Taxa com nomes taxonômicos preferenciais aceitos, excluindo registros sem "
+"vínculos taxonômicos aceitos."
 
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs"
-msgstr ""
+msgstr "Objeto de coleção Taxon preferencial"
 
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs_desc"
 msgstr ""
+"Objetos da coleção com determinações que possuem tanto um táxon original "
+"quanto um táxon preferencial."
 
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs"
-msgstr ""
+msgstr "Taxonomia de Objetos de Coleção (todos os sinônimos)"
 
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs_desc"
 msgstr ""
+"Objetos da coleção que mostram determinações, nomes de táxons preferenciais "
+"e nomes de sinônimos aceitos para os táxons filhos."
 
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject"
-msgstr ""
+msgstr "Taxonomia do objeto da coleção (determinada)"
 
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject_desc"
 msgstr ""
+"Objetos da coleção contendo apenas a sua classificação taxonômica atual."
 
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant"
-msgstr ""
+msgstr "Agente Agente Variante"
 
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant_desc"
 msgstr ""
+"Variantes de agentes emparelhadas com seus respectivos registros de agentes "
+"principais."
 
 #. Used in: 
 #, fuzzy
 msgid "Agent"
-msgstr ""
+msgstr "Agente"
 
 #. Used in: 
 #, fuzzy
 msgid "Agent_desc"
-msgstr ""
+msgstr "Agentes individuais."
 
 #. Used in: 
 #, fuzzy
 msgid "AgentVariant"
-msgstr ""
+msgstr "Variante do Agente"
 
 #. Used in: 
 #, fuzzy
 msgid "AgentVariant_desc"
-msgstr ""
+msgstr "Registros de variantes de agentes."
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias"
-msgstr ""
+msgstr "Localidade Localidade Alias"
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias_desc"
-msgstr ""
+msgstr "Registros de localidades com seus respectivos nomes alternativos."
 
 #. Used in: 
 #, fuzzy
 msgid "CEToCO"
-msgstr ""
+msgstr "Evento de coleta de objetos da coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "CEToCO_desc"
-msgstr ""
+msgstr "Coletando eventos relacionados a objetos da coleção."
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO"
-msgstr ""
+msgstr "Localidade do objeto de coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO_desc"
-msgstr ""
+msgstr "Localidades e objetos de coleção encontrados em seus eventos de coleta."
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo"
-msgstr ""
+msgstr "Acesso ao objeto da coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo_desc"
 msgstr ""
+"Acessões e seus respectivos objetos de coleção, filtrados de acordo com as "
+"determinações atuais."
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent"
-msgstr ""
+msgstr "Acesso do agente"
 
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent_desc"
 msgstr ""
+"Acessos e os agentes associados por meio de funções de agente de acesso."
 
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent"
-msgstr ""
+msgstr "Agente Empréstimo"
 
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent_desc"
 msgstr ""
+"Empréstimos e os agentes vinculados por meio de funções de agente de "
+"empréstimo."
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent"
-msgstr ""
+msgstr "Avaliação do agente"
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent_desc"
-msgstr ""
+msgstr "Avaliações e seus respectivos agentes."
 
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO"
-msgstr ""
+msgstr "Cronoestratigrafia de objetos da coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO_desc"
 msgstr ""
+"Períodos geológicos com objetos de coleção conectados por contextos "
+"cronoestratigráficos."
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors"
-msgstr ""
+msgstr "Colecionador ColecionandoEvento"
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors_desc"
-msgstr ""
+msgstr "Coletando eventos relacionados aos agentes que coletaram as amostras."
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn"
-msgstr ""
+msgstr "Troca no Agente"
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn_desc"
-msgstr ""
+msgstr "Trocas recebidas e material dos agentes."
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeOut"
-msgstr ""
+msgstr "Agente de troca"
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeOut_desc"
-msgstr ""
+msgstr "As trocas de saída e o material dos agentes foram enviados para."
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE"
-msgstr ""
+msgstr "Coletando Geografia de Eventos"
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE_desc"
 msgstr ""
+"Coletar eventos com a área geográfica de cada localidade onde ocorreram."
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO"
-msgstr ""
+msgstr "Geografia de Objetos de Coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO_desc"
 msgstr ""
+"Objetos de coleção vinculados às áreas geográficas dos locais onde foram "
+"coletados."
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO"
-msgstr ""
+msgstr "Objeto de Coleção Presente"
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
-msgstr ""
+msgstr "Presentes com objetos de coleção anexados às embalagens de presentes."
 
 #. Used in: 
 #, fuzzy
 msgid "GiftAgent"
-msgstr ""
+msgstr "Presente do Agente"
 
 #. Used in: 
 #, fuzzy
 msgid "GiftAgent_desc"
-msgstr ""
+msgstr "Doações e os agentes associados a essas doações."
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO"
-msgstr ""
+msgstr "Empréstimo de Objetos de Coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO_desc"
-msgstr ""
+msgstr "Empréstimos com objetos de cobrança em preparativos de empréstimo."
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent"
-msgstr ""
+msgstr "Empréstimo do agente"
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent_desc"
 msgstr ""
+"Empréstimos e os agentes envolvidos por meio de funções de agente de "
+"empréstimo."
 
 #. Used in: 
 #, fuzzy
 msgid "LithoStratToCO"
-msgstr ""
+msgstr "Coleção de objetos Litoestratigrafia"
 
 #. Used in: 
 #, fuzzy
 msgid "LithoStratToCO_desc"
 msgstr ""
+"Unidades litoestratigráficas e objetos de coleção associados por meio de "
+"relações de paleocontexto."
 
 #. Used in: 
 #, fuzzy
 msgid "PermitToCO"
-msgstr ""
+msgstr "Permissão para Colecionar Objetos"
 
 #. Used in: 
 #, fuzzy
 msgid "PermitToCO_desc"
 msgstr ""
+"Permissões e objetos de coleção vinculados por meio de relações de "
+"autorização de aquisição."
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent"
-msgstr ""
+msgstr "Agente autorizado a emitir licença"
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent_desc"
-msgstr ""
+msgstr "Licenças e os agentes a quem foram emitidas."
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedByAgent"
-msgstr ""
+msgstr "Agente Emitido por Permissão"
 
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedByAgent_desc"
-msgstr ""
+msgstr "Licenças e os agentes que as emitiram."
 
 #. Used in: 
 #, fuzzy
 msgid "ProjectAgent"
-msgstr ""
+msgstr "Projeto Agente"
 
 #. Used in: 
 #, fuzzy
 msgid "ProjectAgent_desc"
-msgstr ""
+msgstr "Projetos e seus respectivos agentes designados."
 
 #. Used in: 
 #, fuzzy
 msgid "RepoAgreeAgent"
-msgstr ""
+msgstr "Contrato de Repositório de Agentes"
 
 #. Used in: 
 #, fuzzy
 msgid "RepoAgreeAgent_desc"
-msgstr ""
+msgstr "Acordos de repositório e seus agentes originadores."
 
 #. Used in: 
 #, fuzzy
 msgid "StorageCO"
-msgstr ""
+msgstr "Armazenamento de objetos de coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "StorageCO_desc"
-msgstr ""
+msgstr "Objetos da coleção e seus locais de armazenamento."
 
 #. Used in: 
 #, fuzzy
 msgid "TaxCollObject"
-msgstr ""
+msgstr "Taxonomia de Objetos de Coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "TaxCollObject_desc"
-msgstr ""
+msgstr "Objetos da coleção e seus registros taxonômicos de determinação."
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeInCO"
-msgstr ""
+msgstr "Troca de objetos de coleção em"
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeInCO_desc"
-msgstr ""
+msgstr "Trocas recebidas com objetos de coleção em preparações trocadas."
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeOutCO"
-msgstr ""
+msgstr "Troca de objetos de coleção"
 
 #. Used in: 
 #, fuzzy
 msgid "ExchangeOutCO_desc"
-msgstr ""
+msgstr "Trocas de saída com objetos de coleção em preparações trocadas."
