@@ -311,7 +311,7 @@ def update_table_schema_config_with_defaults(
             "schematype": table_config.schema_type
         }
 
-        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).first()
+        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).order_by("id").first()
 
         if fetched_sp_locale_container is None:
             sp_local_container = Splocalecontainer.objects.create(**{
@@ -346,6 +346,8 @@ def update_table_schema_config_with_defaults(
         pending_itemstr_rows.extend(item_str_rows)
 
         for field in table.all_fields:
+            if field is table.idField:
+                continue
             field_defaults = None
             if table_defaults.get('items'):
                 field_defaults = table_defaults['items'].get(field.name.lower())
@@ -457,16 +459,26 @@ def update_table_field_schema_config_with_defaults(
         language="en"
     )
 
-    sp_local_container_item, _ = Splocalecontaineritem.objects.get_or_create(
-        name=field_config.name,
-        container=sp_local_container,
-        type=field_config.java_type,
-        ishidden=field_hidden,
-        isrequired=field_required,
-        issystem=table.system,
-        version=0,
-        picklistname=picklist_name
-    )
+    container_item_attrs = {
+        "name": field_config.name,
+        "container": sp_local_container
+    }
+
+    fetched_sp_locale_container_item = Splocalecontaineritem.objects.filter(**container_item_attrs).order_by("id").first()
+
+    if fetched_sp_locale_container_item is None:
+        sp_locale_container_item = Splocalecontaineritem.objects.create(**{
+            **container_item_attrs,
+            "type": field_config.java_type,
+            "ishidden": field_hidden,
+            "isrequired": field_required,
+            "issystem": table.system,
+            "version": 0,
+            "picklistname": picklist_name
+            }
+        )
+    else:
+        sp_locale_container_item = fetched_sp_locale_container_item
 
     itm_str_rows = []
     for k, text in {
@@ -477,7 +489,7 @@ def update_table_field_schema_config_with_defaults(
             "text": text,
             "language": "en",
             "version": 0,
-            k: sp_local_container_item,
+            k: sp_locale_container_item,
         }
         itm_str_rows.append(row)
 
@@ -606,7 +618,8 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         if table_name_lower not in container_names:
             missing_tables.append(table_name)
             missing_fields[table_name] = sorted(
-                field.name for field in table.all_fields if field.name
+                field.name for field in table.all_fields
+                if field.name and field is not table.idField
             )
             continue
 
@@ -614,7 +627,9 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         missing_in_table = sorted( # sort for better reproducablity
             field.name
             for field in table.all_fields
-            if field.name and field.name.lower() not in existing_fields
+            if field.name
+            and field is not table.idField
+            and field.name.lower() not in existing_fields
         )
 
         if missing_in_table:
