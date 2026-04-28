@@ -340,7 +340,7 @@ def update_table_schema_config_with_defaults(
 
         pending_itemstr_rows.extend(item_str_rows)
 
-        for field in table.all_fields:
+        for field in table._all_fields(exclude_id_field=True):
             field_defaults = None
             if table_defaults.get('items'):
                 field_defaults = table_defaults['items'].get(field.name.lower())
@@ -618,14 +618,14 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         if table_name_lower not in container_names:
             missing_tables.append(table_name)
             missing_fields[table_name] = sorted(
-                field.name for field in table.all_fields if field.name
+                field.name for field in table._all_fields(exclude_id_field=True) if field.name
             )
             continue
 
         existing_fields = existing_fields_by_table.get(table_name_lower, set())
         missing_in_table = sorted( # sort for better reproducablity
             field.name
-            for field in table.all_fields
+            for field in table._all_fields(exclude_id_field=True)
             if field.name and field.name.lower() not in existing_fields
         )
 
