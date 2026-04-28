@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Router from 'react-router-dom';
 
+import { hasPermission } from '../../Permissions/helpers';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import type { RA } from '../../../utils/types';
@@ -14,6 +15,8 @@ jest.mock('../../Permissions/helpers', () => ({
   hasPermission: jest.fn(() => true),
   hasToolPermission: jest.fn(() => true),
 }));
+
+const mockedHasPermission = hasPermission as jest.Mock;
 
 describe('AppResourcesAside (simple no conformation case)', () => {
   test('simple no conformation case', () => {
@@ -41,18 +44,10 @@ describe('AppResourcesAside (simple no conformation case)', () => {
  */
 describe('Missing Collection Preferences Permission', () => {
   beforeAll(() => {
-    jest.clearAllMocks();
-    jest.mock('../../Permissions/helpers', () => ({
-      hasPermission: jest.fn(() => false),
-      hasToolPermission: jest.fn(() => true),
-    }));
+    mockedHasPermission.mockReturnValue(false);
   });
   afterAll(() => {
-    jest.clearAllMocks();
-    jest.mock('../../Permissions/helpers', () => ({
-      hasPermission: jest.fn(() => true),
-      hasToolPermission: jest.fn(() => true),
-    }));
+    mockedHasPermission.mockReturnValue(true);
   });
   test('simple no conformation test', () => {
     const onOpen = jest.fn();
