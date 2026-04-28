@@ -1,108 +1,115 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-22 16:12+0000\n"
+"PO-Revision-Date: 2026-04-28 20:12+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål "
-"<https://hosted.weblate.org/projects/specify-7/batchIdentify/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
+"7/batchIdentify/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
+"Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 5.17.1-dev\n"
-"Content-Transfer-Encoding: 8bit\n"
 
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/BatchIdentify/index.tsx:787
 #: components/BatchIdentify/index.tsx:812
 #: components/BatchIdentify/index.tsx:877
 #: components/Header/userToolDefinitions.ts:144
 #: components/Router/OverlayRoutes.tsx:80
-#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "batchIdentify"
-msgstr ""
+msgstr "Batchidentifikasjon"
 
-#: components/BatchIdentify/index.tsx:883
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:883
 #, fuzzy
 msgid "instructions"
 msgstr ""
+"Skriv inn katalognumre ved hjelp av ikke-numeriske skilletegn (komma, "
+"mellomrom, tekstprefikser osv.). Bruk en bindestrek for å definere numeriske "
+"områder som 0001–0150."
 
+#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:940
 #: components/BatchIdentify/index.tsx:951
-#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "catalogNumbersNotFound"
-msgstr ""
+msgstr "Katalognumre ikke funnet"
 
-#: components/BatchIdentify/index.tsx:865
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:865
 #, fuzzy
 msgid "identify"
-msgstr ""
+msgstr "Identifisere"
 
-#: components/BatchIdentify/index.tsx:792
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:792
 #, fuzzy
 msgid "successMessage"
-msgstr ""
+msgstr "Alle poster ble identifisert til det spesifiserte taksonet."
 
-#: components/BatchIdentify/index.tsx:206
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:206
 #, fuzzy
 msgid "updatedRecordSet"
-msgstr ""
+msgstr "Gruppeidentifiser oppdaterte poster"
 
-#: components/BatchIdentify/index.tsx:610
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:610
 #, fuzzy
 msgid "noCatalogNumbersParsed"
-msgstr ""
+msgstr "Skriv inn minst ett numerisk katalognummer."
 
-#: components/BatchIdentify/index.tsx:902
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:902
 #, fuzzy
 msgid "validatingCatalogNumbers"
-msgstr ""
+msgstr "Validerer katalognumre..."
 
-#: components/BatchIdentify/index.tsx:887
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:887
 #, fuzzy
 msgid "placeholder"
-msgstr ""
+msgstr "0001 0002 0003–0150"
 
-#: components/BatchIdentify/index.tsx:156
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:156
 #, fuzzy
 msgid "previewQueryName"
-msgstr ""
+msgstr "Forhåndsvisning av gruppeidentifikasjon"
 
+#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:915
 #: components/BatchIdentify/index.tsx:1023
-#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "unknownTaxonTree"
-msgstr ""
+msgstr "Ukjent taksontre"
 
-#: components/BatchIdentify/index.tsx:920
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:920
 #, fuzzy
 msgid "collectionObjectTypes"
-msgstr ""
+msgstr "Samlingsobjekttyper"
 
-#: components/BatchIdentify/index.tsx:1012
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:1012
 #, fuzzy
 msgid "invalidRecordSetTitle"
-msgstr ""
+msgstr "Blandet platesett"
 
-#: components/BatchIdentify/index.tsx:1016
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:1016
 #, fuzzy
 msgid "invalidRecordSetMessage"
 msgstr ""
+"Det valgte postsettet inneholder samlingsobjekter fra mer enn ett taksontre."
 
-#: components/BatchIdentify/index.tsx:1029
 #. Used in: Components > Batch Identify > Index
+#: components/BatchIdentify/index.tsx:1029
 #, fuzzy
 msgid "invalidRecordSetInstructions"
 msgstr ""
+"Velg et annet postsett, eller rediger spørringen som ble brukt til å "
+"opprette dette postsettet, slik at alle samlingsobjekter bruker samme "
+"taksontre."
