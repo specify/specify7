@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-25 21:09+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-28 15:11+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
 "Language: uk\n"
@@ -40,7 +40,7 @@ msgstr "Запити"
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
 msgid "queryBuilder"
-msgstr "Конструктор запитів"
+msgstr "Конструктор Запитів"
 
 #. Used in: Components > Query Builder > Export ⬤ Components > Query Builder > Index ⬤ Components > Router > Overlay Routes ⬤ Components > Statistics > Add Stat Dialog ⬤ Components > Toolbar > Query Tables Wrapper
 #: components/QueryBuilder/Export.tsx:103
@@ -51,7 +51,7 @@ msgstr "Конструктор запитів"
 #: components/Statistics/AddStatDialog.tsx:149
 #: components/Toolbar/QueryTablesWrapper.tsx:163
 msgid "newQueryName"
-msgstr "Новий запит"
+msgstr "Новий Запит"
 
 #. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
 #: components/QueryComboBox/spec.ts:73
@@ -78,7 +78,7 @@ msgstr "Кінцеве значення"
 #: components/QueryBuilder/Components.tsx:111
 #: components/QueryBuilder/Save.tsx:73
 msgid "saveQuery"
-msgstr "Зберегти запит"
+msgstr "Зберегти Запит"
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:73
@@ -108,7 +108,7 @@ msgstr "Нове або змінене визначення запиту не б
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:267
 msgid "recordSetToQuery"
-msgstr "Створення {recordSetTable:string} із запиту"
+msgstr "Створення {recordSetTable:string} із Запиту"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/QueryBuilder/Components.tsx:272
@@ -134,7 +134,7 @@ msgstr "Будь ласка, додайте поля широти та довг�
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:145
 msgid "queryExportStarted"
-msgstr "Експортний файл створюється"
+msgstr "Експортний Файл Створився"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:148
