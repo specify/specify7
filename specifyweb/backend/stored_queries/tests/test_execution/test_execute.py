@@ -1,9 +1,10 @@
-from datetime import date
+from datetime import date, datetime
 
 from specifyweb.specify.models import Collectionobject, Recordset, Recordsetitem
 from specifyweb.backend.stored_queries.execution import execute
+from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 from specifyweb.backend.stored_queries.tests.tests import SQLAlchemySetup
-from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test
+from specifyweb.backend.stored_queries.tests.utils import make_query_fields_test, make_query_test
 
 
 class TestExecute(SQLAlchemySetup):
@@ -235,6 +236,61 @@ class TestExecute(SQLAlchemySetup):
         )
 
         self.assertEqual(result_count_only, dict(count=2))
+
+    def test_related_date_part_query_fields(self):
+        self._update(
+            self.collectingevent,
+            {
+                "startdate": datetime(1999, 3, 15),
+                "startdateprecision": 1,
+            },
+        )
+        for collectionobject in self.collectionobjects:
+            self._update(collectionobject, {"collectingevent": self.collectingevent})
+
+        table, query_fields = make_query_fields_test(
+            "Collectionobject",
+            [["collectingEvent", "startDate"]],
+        )
+        year_field = QueryFieldSpec.from_path(
+            ("Collectionobject", "collectingEvent", "startDate")
+        )._replace(date_part="Year")
+        month_field = QueryFieldSpec.from_path(
+            ("Collectionobject", "collectingEvent", "startDate")
+        )._replace(date_part="Month")
+        day_field = QueryFieldSpec.from_path(
+            ("Collectionobject", "collectingEvent", "startDate")
+        )._replace(date_part="Day")
+        query_fields = [
+            make_query_test(year_field),
+            make_query_test(month_field),
+            make_query_test(day_field),
+        ]
+
+        with TestExecute.test_session_context() as session:
+            result = execute(
+                session,
+                self.collection,
+                self.specifyuser,
+                table.tableId,
+                distinct=False,
+                series=False,
+                search_synonymy=False,
+                count_only=False,
+                field_specs=query_fields,
+                limit=0,
+                offset=0,
+            )
+
+        self.assertEqual(
+            {
+                "results": [
+                    (collectionobject.id, 1999, 3, 15)
+                    for collectionobject in self.collectionobjects
+                ]
+            },
+            result,
+        )
 
     def test_simple_query_series(self):
         table, query_fields = make_query_fields_test(

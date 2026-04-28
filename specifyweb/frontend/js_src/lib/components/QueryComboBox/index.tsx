@@ -75,6 +75,7 @@ export function QueryComboBox({
   searchView,
   defaultRecord,
   relatedTable: initialRelatedTable,
+  onSavingNewRecord: handleSavingNewRecord,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -91,6 +92,9 @@ export function QueryComboBox({
   readonly searchView?: string;
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
+  readonly onSavingNewRecord?:
+    | ((resource: SpecifyResource<AnySchema>) => void)
+    | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     useQueryComboBoxDefaults({ resource, field, defaultRecord });
@@ -651,15 +655,16 @@ export function QueryComboBox({
               resource?.set(field.name, state.resource as never);
               setState({ type: 'MainState' });
             }}
-            onSaving={
-              field.isDependent()
-                ? (): false => {
-                    resource?.set(field.name, state.resource as never);
-                    setState({ type: 'MainState' });
-                    return false;
-                  }
-                : undefined
-            }
+            onSaving={(unsetUnloadProtect): false | void => {
+              handleSavingNewRecord?.(state.resource);
+              if (field.isDependent()) {
+                resource?.set(field.name, state.resource as never);
+                setState({ type: 'MainState' });
+                unsetUnloadProtect();
+                return false;
+              }
+              return undefined;
+            }}
           />
         ) : undefined}
         {state.type === 'SearchState' ? (
