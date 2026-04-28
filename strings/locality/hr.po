@@ -1,10 +1,10 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-27 06:09+0000\n"
+"PO-Revision-Date: 2026-04-28 20:12+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian "
-"<https://hosted.weblate.org/projects/specify-7/locality/hr/>\n"
+"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
+"locality/hr/>\n"
 "Language: hr\n"
 "MIME-Version: 1.0\n"
 "Content-Type: text/plain; charset=utf-8\n"
@@ -13,385 +13,385 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
+#. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:40
 #: components/QueryBuilder/QueryLineTools.tsx:42
-#. Used in: Components > Query Builder > Query Line Tools
 #, fuzzy
 msgid "openMap"
 msgstr "Otvori kartu"
 
+#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/Leaflet/Map.tsx:112
 #: components/Preferences/UserDefinitions.tsx:2203
 #: components/QueryBuilder/ToMap.tsx:68
 #: components/QueryBuilder/ToMap.tsx:268
 #: components/WbToolkit/WbLeafletMap.tsx:65
-#. Used in: Components > Leaflet > Map ⬤ Components > Preferences > User Definitions ⬤ Components > Query Builder > To Map ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #, fuzzy
 msgid "geoMap"
 msgstr "Geokarta"
 
-#: components/QueryBuilder/ToMap.tsx:264
 #. 🟥Used in GeoMap header while records are still being fetched. Used in: Components > Query Builder > To Map
+#: components/QueryBuilder/ToMap.tsx:264
 #, fuzzy
 msgid "queryMapSubset"
 msgstr ""
 "GeoMap - Iscrtano {plotted:number|formatted} od {total:number|formatted} "
 "zapisa"
 
-#: components/QueryBuilder/ToMap.tsx:261
 #. Used in: Components > Query Builder > To Map
+#: components/QueryBuilder/ToMap.tsx:261
 #, fuzzy
 msgid "queryMapAll"
 msgstr "GeoMap - Ucrtani {plotted:number|formatted} zapisi"
 
-#: components/Leaflet/addOns.ts:91
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:91
 #, fuzzy
 msgid "polygonBoundaries"
 msgstr "Granice poligona"
 
-#: components/Leaflet/addOns.ts:92
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:92
 #, fuzzy
 msgid "errorRadius"
 msgstr "Radijus pogreške"
 
-#: components/FormPlugins/Leaflet.tsx:83
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:83
 #, fuzzy
 msgid "showMap"
 msgstr "Prikaži kartu"
 
-#: components/FormPlugins/Leaflet.tsx:41
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:41
 #, fuzzy
 msgid "noCoordinates"
 msgstr "Nema koordinata"
 
-#: components/FormPlugins/Leaflet.tsx:44
 #. Used in: Components > Form Plugins > Leaflet
+#: components/FormPlugins/Leaflet.tsx:44
 #, fuzzy
 msgid "notEnoughInformationToMap"
 msgstr "{localityTable:string} mora imati koordinate za mapiranje."
 
-#: components/Leaflet/addOns.ts:89
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:89
 #, fuzzy
 msgid "occurrencePoints"
 msgstr "Igle"
 
-#: components/Leaflet/addOns.ts:90
 #. Used in: Components > Leaflet > Add Ons
+#: components/Leaflet/addOns.ts:90
 #, fuzzy
 msgid "occurrencePolygons"
 msgstr "Poligoni"
 
+#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
 #: components/WbToolkit/GeoLocate.tsx:60
-#. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 #, fuzzy
 msgid "geoLocate"
 msgstr "GEOLocate"
 
-#: components/FormPlugins/GeoLocate.tsx:113
 #. Used in: Components > Form Plugins > Geo Locate
+#: components/FormPlugins/GeoLocate.tsx:113
 #, fuzzy
 msgid "geographyRequired"
 msgstr "{geographyTable:string} mora biti mapiran"
 
-#: components/FormPlugins/GeoLocate.tsx:118
 #. Used in: Components > Form Plugins > Geo Locate
+#: components/FormPlugins/GeoLocate.tsx:118
 #, fuzzy
 msgid "geographyRequiredDescription"
 msgstr "Dodatak GeoLocate zahtijeva da polje za geografiju bude popunjeno."
 
-#: components/FormPlugins/LatLongUi.tsx:278
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:278
 #, fuzzy
 msgid "coordinates"
 msgstr "Koordinate"
 
-#: components/FormPlugins/LatLongUi.tsx:281
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:281
 #, fuzzy
 msgid "northWestCorner"
 msgstr "SZ kut"
 
-#: components/FormPlugins/LatLongUi.tsx:292
 #. 🟥Represents coordinates. Careful with translation. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:292
 #, fuzzy
 msgid "southEastCorner"
 msgstr "JI kut"
 
-#: components/FormPlugins/LatLongUi.tsx:251
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:251
 #, fuzzy
 msgid "coordinateType"
 msgstr "Vrsta koordinate"
 
-#: components/FormPlugins/LatLongUi.tsx:262
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:262
 #, fuzzy
 msgid "point"
 msgstr "Točka"
 
-#: components/FormPlugins/LatLongUi.tsx:263
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:263
 #, fuzzy
 msgid "line"
 msgstr "Linija"
 
-#: components/FormPlugins/LatLongUi.tsx:264
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:264
 #, fuzzy
 msgid "rectangle"
 msgstr "Pravokutnik"
 
-#: components/FormPlugins/LatLongUi.tsx:270
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:270
 #, fuzzy
 msgid "parsed"
 msgstr "Analizirano"
 
+#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:180
 #: components/FormPlugins/LatLongUi.tsx:268
-#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "latitude"
 msgstr "Geografska širina"
 
+#. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:193
 #: components/FormPlugins/LatLongUi.tsx:269
-#. Used in: Components > Form Plugins > Lat Long Ui
 #, fuzzy
 msgid "longitude"
 msgstr "Geografska dužina"
 
+#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #: components/AppResources/Editor.tsx:189
 #: components/AppResources/Editor.tsx:191
 #: components/Leaflet/extend.ts:47
 #: components/Leaflet/extend.ts:48
-#. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
 #, fuzzy
 msgid "toggleFullScreen"
 msgstr "Uključi/isključi cijeli zaslon"
 
-#: components/WbToolkit/CoordinateConverter.tsx:83
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:83
 #, fuzzy
 msgid "degrees"
 msgstr "DD.DDDD (32,7619)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:88
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:88
 #, fuzzy
 msgid "degreesMinutes"
 msgstr "DD MMMM (32. 45.714)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:93
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:93
 #, fuzzy
 msgid "degreesMinutesSeconds"
 msgstr "DD MM SS.SS (32 45 42,84)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:98
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:98
 #, fuzzy
 msgid "degreesWithDirection"
 msgstr "DD.DDDD S/J/I/Z (32.7619 S)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:103
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:103
 #, fuzzy
 msgid "degreesMinutesWithDirection"
 msgstr "DD MM.MM S/J/I/Z (32 45.714 S)"
 
-#: components/WbToolkit/CoordinateConverter.tsx:108
 #. Used in: Components > Wb Toolkit > Coordinate Converter
+#: components/WbToolkit/CoordinateConverter.tsx:108
 #, fuzzy
 msgid "degreesMinutesSecondsWithDirection"
 msgstr "DD MM SS.SS S/J/I/Z (32 45 42,84 S)"
 
-#: components/LocalityUpdate/index.tsx:140
 #. Used in: Components > Locality Update > Index
+#: components/LocalityUpdate/index.tsx:140
 #, fuzzy
 msgid "localityUpdateHeaderError"
 msgstr "Pogreške pronađene u zaglavljima stupaca"
 
-#: components/LocalityUpdate/index.tsx:151
 #. Used in: Components > Locality Update > Index
+#: components/LocalityUpdate/index.tsx:151
 #, fuzzy
 msgid "localityUpdateMissingHeader"
 msgstr "Sljedeći stupci su obavezni, ali nedostaju u skupu podataka"
 
-#: components/LocalityUpdate/index.tsx:161
 #. Used in: Components > Locality Update > Index
+#: components/LocalityUpdate/index.tsx:161
 #, fuzzy
 msgid "localityUpdateUnrecognizedHeaders"
 msgstr ""
 "Sljedeći stupci u skupu podataka nisu prepoznati i bit će zanemareni "
 "prilikom uvoza"
 
-#: components/LocalityUpdate/index.tsx:169
 #. Used in: Components > Locality Update > Index
+#: components/LocalityUpdate/index.tsx:169
 #, fuzzy
 msgid "localityUpdateAcceptedHeaders"
 msgstr "Prihvaćaju se samo sljedeći zaglavlja"
 
-#: components/LocalityUpdate/utils.ts:36
 #. Used in: Components > Locality Update > Utils
+#: components/LocalityUpdate/utils.ts:36
 #, fuzzy
 msgid "localityUpdateStarting"
 msgstr "Započetak ažuriranja lokacije"
 
-#: components/LocalityUpdate/utils.ts:35
 #. Used in: Components > Locality Update > Utils
+#: components/LocalityUpdate/utils.ts:35
 #, fuzzy
 msgid "localityUpdateParsing"
 msgstr "Raščlanjivanje skupa podataka o lokaciji"
 
-#: components/LocalityUpdate/utils.ts:37
 #. Used in: Components > Locality Update > Utils
+#: components/LocalityUpdate/utils.ts:37
 #, fuzzy
 msgid "localityUpdateProgressing"
 msgstr "Uvoz skupa podataka o lokaciji"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:296
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParsed"
 msgstr "Skup podataka za ažuriranje lokacije analiziran"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:470
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:264
-#. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailed"
 msgstr "Ažuriranje lokacije nije uspjelo"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
 #: components/Notifications/NotificationRenderers.tsx:240
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateParseFailure"
 msgstr "Raščlanjivanje ažuriranja lokacije nije uspjelo"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:40
 #: components/Notifications/NotificationRenderers.tsx:285
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Ažuriranje lokacije otkazano"
 
+#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:41
 #: components/Notifications/NotificationRenderers.tsx:308
-#. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateSucceeded"
 msgstr "Ažuriranje lokaliteta uspješno"
 
+#. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:474
 #: components/LocalityUpdate/Status.tsx:512
-#. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateWentWrong"
 msgstr "Došlo je do pogreške tijekom procesa ažuriranja lokacije"
 
-#: components/LocalityUpdate/Status.tsx:371
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
+#: components/LocalityUpdate/Status.tsx:371
 #, fuzzy
 msgid "localityUpdateParseErrorFileName"
 msgstr "Pogreške ažuriranja lokacije - {date:string}"
 
+#. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:456
 #: components/LocalityUpdate/Status.tsx:497
-#. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateCrashFileName"
 msgstr ""
 "Ažuriranje lokacije {taskId: string} Izvješće o rušenju programa - {date: "
 "string}"
 
-#: components/LocalityUpdate/utils.ts:53
 #. Used in: Components > Locality Update > Utils
+#: components/LocalityUpdate/utils.ts:53
 #, fuzzy
 msgid "guidHeaderNotProvided"
 msgstr "Skup podataka mora sadržavati zaglavlje 'guid'"
 
-#: components/LocalityUpdate/utils.ts:55
 #. Used in: Components > Locality Update > Utils
+#: components/LocalityUpdate/utils.ts:55
 #, fuzzy
 msgid "noLocalityMatchingGuid"
 msgstr "Nema lokaliteta s guid-om: '{guid:string}'"
 
-#: components/LocalityUpdate/utils.ts:59
 #. Used in: Components > Locality Update > Utils
+#: components/LocalityUpdate/utils.ts:59
 #, fuzzy
 msgid "multipleLocalitiesWithGuid"
 msgstr ""
 "Pronađeno je više od jednog lokaliteta s guid-om: {guid:string}. ID-ovi "
 "lokaliteta: {localityIds: string}"
 
-#: components/LocalityUpdate/Status.tsx:242
 #. Used in: Components > Locality Update > Status
+#: components/LocalityUpdate/Status.tsx:242
 #, fuzzy
 msgid "localityUpdateEffectCounts"
 msgstr ""
 "Ažuriranje će utjecati na sljedeći broj zapisa {localityTabelLabel: string} "
 "i bit će kreirani zapisi {geoCoordDetailTableLabel: string}:"
 
-#: components/LocalityUpdate/Status.tsx:292
 #. Used in: Components > Locality Update > Status
+#: components/LocalityUpdate/Status.tsx:292
 #, fuzzy
 msgid "localityUploadedDescription"
 msgstr ""
 "Sljedeći broj zapisa {localityTabelLabel: string} je ažuriran i "
 "{geoCoordDetailTableLabel: string} je kreiran:"
 
-#: components/Notifications/NotificationRenderers.tsx:228
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:228
 #, fuzzy
 msgid "localityUpdateStarted"
 msgstr "Proces ažuriranja lokacije je započeo"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:339
 #: components/Notifications/NotificationRenderers.tsx:310
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateResults"
 msgstr "Rezultati ažuriranja lokacije"
 
+#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:242
 #: components/Notifications/NotificationRenderers.tsx:266
-#. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "localityUpdateFailureResults"
 msgstr "Rezultati neuspjeha ažuriranja lokacije"
 
+#. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:230
 #: components/Notifications/NotificationRenderers.tsx:254
 #: components/Notifications/NotificationRenderers.tsx:276
 #: components/Notifications/NotificationRenderers.tsx:287
 #: components/Notifications/NotificationRenderers.tsx:298
 #: components/Notifications/NotificationRenderers.tsx:327
-#. Used in: Components > Notifications > Notification Renderers
 #, fuzzy
 msgid "taskId"
 msgstr "ID zadatka"
 
-#: components/FormPlugins/LatLongUi.tsx:92
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:92
 #, fuzzy
 msgid "validLatitude"
 msgstr "Geografska širina mora imati vrijednost između -90° i 90°"
 
-#: components/FormPlugins/LatLongUi.tsx:93
 #. Used in: Components > Form Plugins > Lat Long Ui
+#: components/FormPlugins/LatLongUi.tsx:93
 #, fuzzy
 msgid "validLongitude"
 msgstr "Geografska dužina mora imati vrijednost između -180° i 180°"
