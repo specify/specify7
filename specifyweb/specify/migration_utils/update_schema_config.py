@@ -1,7 +1,7 @@
 import re
 import json
 
-from typing import NamedTuple, Tuple
+from typing import NamedTuple, Tuple, TypedDict, NotRequired
 import logging
 from collections import defaultdict
 from functools import lru_cache
@@ -47,7 +47,6 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0034_UPDATE_FIELDS,
     MIGRATION_0035_FIELDS,
     MIGRATION_0038_FIELDS,
-    MIGRATION_0038_UPDATE_FIELDS,
     MIGRATION_0040_TABLES,
     MIGRATION_0040_FIELDS,
     MIGRATION_0040_UPDATE_FIELDS,
@@ -265,12 +264,17 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
 
     return total_created
 
+class TableDefaults(TypedDict):
+    name: NotRequired[str]
+    desc: NotRequired[str]
+    items: "NotRequired[dict[str, FieldDefaults]]"
+
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     description: str = None,
     apps = global_apps,
-    defaults: dict = None,
+    defaults: TableDefaults | None = None,
     pending_itemstr_rows: list[dict] | None = None,
 ):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -293,7 +297,7 @@ def update_table_schema_config_with_defaults(
         pending_itemstr_rows = []
 
     try:
-        table_defaults = defaults if defaults is not None else dict()
+        table_defaults = defaults if defaults is not None else TableDefaults()
         table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
         table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
 
@@ -379,12 +383,19 @@ def revert_table_schema_config(table_name, apps=global_apps):
     items.delete()
     containers.delete()
 
+class FieldDefaults(TypedDict):
+    name: NotRequired[str]
+    desc: NotRequired[str]
+    ishidden: NotRequired[str]
+    isrequired: NotRequired[str]
+    picklistname: NotRequired[str]
+
 def update_table_field_schema_config_with_defaults(
     table_name,
     discipline_id: int,
     field_name: str,
     apps = global_apps,
-    defaults: dict = None,
+    defaults: FieldDefaults | None = None,
     pending_itemstr_rows: list[dict] | None = None,
 ):
     table = datamodel.get_table(table_name)
@@ -1936,85 +1947,18 @@ def revert_version_required(apps):
 
 def update_loan_and_gift_agent_fields(apps):
     Discipline = apps.get_model('specify', 'Discipline')
+    field_defaults = {
+        "ishidden": True
+    }
     for discipline in Discipline.objects.all():
         for table, fields in MIGRATION_0038_FIELDS.items():
             for field_name in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
+                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps, defaults=field_defaults)
 
 def revert_loan_and_gift_agent_fields(apps):
     for table, fields in MIGRATION_0038_FIELDS.items():
         for field_name in fields:
             revert_table_field_schema_config(table, field_name, apps)
-
-def update_loan_and_gift_agents(apps):
-    """
-    Update field descriptions and display names using MIGRATION_0038_UPDATE_FIELDS
-    (tuple: (fieldName, newLabel, newDesc)).
-    """
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
-
-    def upsert_single_str(*, itemdesc_id=None, itemname_id=None, text=""):
-        if (itemdesc_id is None) == (itemname_id is None):
-            raise ValueError("Exactly one of itemdesc_id or itemname_id must be provided")
-
-        qs = Splocaleitemstr.objects.filter(
-            itemdesc_id=itemdesc_id,
-            itemname_id=itemname_id,
-        ).order_by("id")
-
-        obj = qs.first()
-        if obj is None:
-            return Splocaleitemstr.objects.create(
-                itemdesc_id=itemdesc_id,
-                itemname_id=itemname_id,
-                text=text,
-            )
-
-        qs.exclude(id=obj.id).delete()
-
-        if obj.text != text:
-            obj.text = text
-            obj.save(update_fields=["text"])
-
-        return obj
-
-    for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
-        containers = Splocalecontainer.objects.filter(name=table.lower())
-
-        for container in containers:
-            for (field_name, new_name, new_desc) in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower(),
-                )
-
-                for item in items:
-                    # Hide the existing field
-                    if not item.ishidden:
-                        item.ishidden = True
-                        item.save(update_fields=["ishidden"])
-
-                    upsert_single_str(itemdesc_id=item.id, text=new_desc)
-                    upsert_single_str(itemname_id=item.id, text=new_name)
-
-def revert_loan_and_gift_agents(apps):
-    """
-    Revert the field name/description updates.
-    """
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
-
-    for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
-        containers = Splocalecontainer.objects.filter(name=table.lower())
-        for container in containers:
-            for (field_name, _, _) in fields:
-                items = Splocalecontaineritem.objects.filter(
-                    container=container,
-                    name=field_name.lower()
-                )
-                # If needed, reset ishidden or revert text
 
 # ##########################################
 # Used in 0040_components.py
