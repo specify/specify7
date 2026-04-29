@@ -67,7 +67,10 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.create_cotype_splocalecontaineritem, # specify 0003
         usc.create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
         usc.create_agetype_picklist, # specify 0004
-        usc.update_cog_type_fields, # specify 0007
+        # BUG: This should really only be run in the context of the migration,
+        # and not on startup. See the below BUG comment above
+        # usc.update_hidden_prop
+        # usc.update_cog_type_fields, # specify 0007
         usc.create_cogtype_picklist, # specify 0007
         usc.update_cogtype_splocalecontaineritem, # specify 0007
         usc.update_systemcogtypes_picklist, # specify 0007
