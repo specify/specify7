@@ -377,8 +377,8 @@ def revert_table_schema_config(table_name, apps=global_apps):
 class FieldDefaults(TypedDict):
     name: NotRequired[str]
     desc: NotRequired[str]
-    ishidden: NotRequired[str]
-    isrequired: NotRequired[str]
+    ishidden: NotRequired[bool]
+    isrequired: NotRequired[bool]
     picklistname: NotRequired[str]
 
 def update_table_field_schema_config_with_defaults(
