@@ -2,8 +2,8 @@ import type L from 'leaflet';
 import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
-import { useLiveState } from '../../hooks/useLiveState';
 import { localityText } from '../../localization/locality';
+import { eventListener } from '../../utils/events';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { filterArray } from '../../utils/types';
@@ -102,14 +102,20 @@ type LocalityColumn = {
   readonly columnIndex: number;
 };
 
+type LocalityMapping = {
+  readonly columns: RA<LocalityColumn>;
+  readonly localityPath: RA<string>; // Path to the Locality table (e.g., ['collectingEvent', 'locality'])
+};
+
 export function fieldSpecsToLocalityMappings(
   tableName: keyof Tables,
   fieldSpecs: RA<QueryFieldSpec>
-) {
+): RA<LocalityMapping> {
   const splitPaths = fieldSpecsToMappingPaths(fieldSpecs);
   const mappingPaths = splitPaths.map(({ mappingPath }) =>
     mappingPathToString(mappingPath)
   );
+  
   return findLocalityColumnsInDataSet(tableName, splitPaths).map(
     (localityColumns) => {
       const mapped = Object.entries(localityColumns)
@@ -125,17 +131,14 @@ export function fieldSpecsToLocalityMappings(
           };
         });
 
-      const basePath = splitJoinedMappingPath(
-        localityColumns['locality.longitude1']
-      ).slice(0, -1);
-      const idPath = mappingPathToString([...basePath, 'localityId']);
-      return [
-        ...mapped,
-        {
-          localityColumn: 'localityId',
-          columnIndex: mappingPaths.indexOf(idPath),
-        },
-      ];
+      // Extract the path to the Locality table from any coordinate field
+      const coordinatePath = localityColumns['locality.longitude1'] || localityColumns['locality.latitude1'];
+      const basePath = splitJoinedMappingPath(coordinatePath).slice(0, -1);
+
+      return {
+        columns: mapped,
+        localityPath: basePath,
+      };
     }
   );
 }
@@ -170,7 +173,7 @@ export function QueryToMapDialog({
   readonly results: RA<QueryResultRow>;
   readonly brokerData?: BrokerData;
   readonly totalCount: number | undefined;
-  readonly localityMappings: RA<RA<LocalityColumn>>;
+  readonly localityMappings: RA<LocalityMapping>;
   readonly tableName: keyof Tables;
   readonly fields: RA<QueryField>;
   readonly onClose: () => void;
@@ -178,21 +181,13 @@ export function QueryToMapDialog({
 }): JSX.Element {
   const [map, setMap] = React.useState<LeafletInstance | undefined>(undefined);
   const localityData = React.useRef<RA<LocalityDataWithId>>([]);
-  const [initialData] = useLiveState<
+  const [initialData, setInitialData] = React.useState<
     | {
         readonly localityData: RA<LocalityData>;
         readonly onClick: ReturnType<typeof createClickCallback>;
       }
     | undefined
-  >(
-    React.useCallback(() => {
-      const extracted = extractLocalities(results, localityMappings);
-      return {
-        localityData: extracted.map(({ localityData }) => localityData),
-        onClick: createClickCallback(tableName, extracted),
-      };
-    }, [results])
-  );
+  >(undefined);
 
   const taxonId = React.useMemo(
     () => brokerData?.taxonId ?? extractQueryTaxonId(tableName, fields),
@@ -201,58 +196,57 @@ export function QueryToMapDialog({
   const data = useMapData(brokerData, taxonId);
   const description = useExtendedMap(map, data);
 
-  const markerCountRef = React.useRef(results.length);
-
-  const handleAddPoints = React.useCallback(
-    (results: RA<QueryResultRow>) => {
-      markerCountRef.current += results.length;
-      /*
-       * Need to add markers into queue rather than directly to the map because
-       * the map might not be initialized yet (the map is only initialized after
-       * some markers are fetched, so that it can open to correct position)
-       */
-      localityData.current = [
-        ...localityData.current,
-        ...extractLocalities(results, localityMappings),
-      ];
-
-      if (map === undefined) return;
-      addLeafletMarkers(tableName, map, localityData.current);
-      localityData.current = [];
-    },
-    [tableName, localityMappings]
-  );
-
-  useFetchLoop(handleFetchMore, handleAddPoints);
-
-  /*
-   * The below is used for sanity checking at un-mount.
-   * A unit test for this functionality is tricky. A runtime check is simpler
-   */
-  const mapRef = React.useRef(map);
-  mapRef.current = map;
-
-  React.useEffect(
-    () => () => {
-      if (mapRef.current === undefined) return;
-      if (mapRef.current?.sp7MarkerCount !== markerCountRef.current) {
-        // This way, if the error happens in development mode, it can be caught more easily. (log checks may be easy to forget)
-        softFail(
-          new Error(
-            `Expected the counts to match: Expected: ${markerCountRef.current}. Got: ${mapRef.current?.sp7MarkerCount}`
-          )
-        );
-      }
-    },
+  const markerEvents = React.useMemo(
+    () => eventListener<{ readonly updated: undefined }>(),
     []
   );
 
+  const handleAddPoints = React.useCallback(
+    async (results: RA<QueryResultRow>) => {
+      const newLocalityData = await extractLocalities(
+        results,
+        localityMappings,
+        tableName
+      );
+      
+      localityData.current = [...localityData.current, ...newLocalityData];
+      
+      setInitialData((initialData) =>
+        typeof initialData === 'object'
+          ? initialData
+          : {
+              localityData: localityData.current.map(
+                ({ localityData }) => localityData
+              ),
+              onClick: createClickCallback(tableName, localityData.current),
+            }
+      );
+      markerEvents.trigger('updated');
+    },
+    [tableName, localityMappings, markerEvents]
+  );
+
+  // Add initial results
+  React.useEffect(() => {
+    void handleAddPoints(results);
+  }, [handleAddPoints]);
+  
+  useFetchLoop(handleFetchMore, handleAddPoints);
+
+  React.useEffect(() => {
+    if (map === undefined) return undefined;
+
+    function emptyQueue(): void {
+      if (map === undefined) return;
+      addLeafletMarkers(tableName, map, localityData.current);
+      localityData.current = [];
+    }
+
+    return markerEvents.on('updated', emptyQueue, true);
+  }, [tableName, map, markerEvents]);
+
   return typeof initialData === 'object' ? (
     <LeafletMap
-      /*
-       * This will only add initial locality data
-       * That is needed so that the map can zoom in to correct place
-       */
       description={description}
       forwardRef={setMap}
       header={
@@ -286,33 +280,92 @@ export function QueryToMapDialog({
   );
 }
 
-const extractLocalities = (
+/**
+ * Fetch the localityId by following the relationship path from the record
+ */
+async function fetchLocalityIdFromRecord(
+  recordId: number,
+  tableName: keyof Tables,
+  localityPath: RA<string>
+): Promise<number | undefined> {
+  try {
+    let currentResource = new tables[tableName].Resource({ id: recordId });
+    
+    // Follow the relationship path to the Locality
+    for (const relationship of localityPath) {
+      await currentResource.fetch();
+      const relatedUri = currentResource.get(relationship);
+      
+      if (typeof relatedUri !== 'string') {
+        return undefined;
+      }
+      
+      // Parse the related resource
+      const relatedId = f.parseInt(relatedUri.split('/').at(-2));
+      if (typeof relatedId !== 'number') {
+        return undefined;
+      }
+      
+      // Get the table for the next step
+      const field = currentResource.specifyTable.getField(relationship);
+      if (!field?.relatedTable) {
+        return undefined;
+      }
+      
+      currentResource = new tables[field.relatedTable.name as keyof Tables].Resource({
+        id: relatedId,
+      });
+    }
+    
+    // currentResource should now be the Locality
+    await currentResource.fetch();
+    return currentResource.get('localityId') as number;
+  } catch (error) {
+    softFail(error);
+    return undefined;
+  }
+}
+
+const extractLocalities = async (
   results: RA<QueryResultRow>,
-  localityMappings: RA<RA<LocalityColumn>>
-): RA<LocalityDataWithId> =>
-  filterArray(
-    results.flatMap((row) =>
-      localityMappings.map((mappings) => {
-        const fields = mappings.map(
-          ({ localityColumn, columnIndex }) =>
-            [
-              [localityColumn],
-              // "+1" is to compensate for queryIdField
-              row[columnIndex + 1]?.toString() ?? null,
-            ] as const
-        );
-        const localityData = formatLocalityDataObject(fields);
-        const localityId = f.parseInt(
-          fields.find(
-            ([localityColumn]) => localityColumn[0] === 'localityId'
-          )?.[1] ?? undefined
-        );
-        return localityData === false || typeof localityId !== 'number'
-          ? undefined
-          : { recordId: row[queryIdField] as number, localityId, localityData };
-      })
-    )
+  localityMappings: RA<LocalityMapping>,
+  tableName: keyof Tables
+): Promise<RA<LocalityDataWithId>> => {
+  const localityDataPromises = results.flatMap((row) =>
+    localityMappings.map(async ({ columns, localityPath }) => {
+      const fields = columns.map(
+        ({ localityColumn, columnIndex }) =>
+          [
+            [localityColumn],
+            row[columnIndex + 1]?.toString() ?? null,
+          ] as const
+      );
+      
+      const localityData = formatLocalityDataObject(fields);
+      if (localityData === false) {
+        return undefined;
+      }
+      
+      const recordId = row[queryIdField] as number;
+      
+      // Fetch localityId by following the path from the record
+      const localityId = await fetchLocalityIdFromRecord(
+        recordId,
+        tableName,
+        localityPath
+      );
+      
+      if (typeof localityId !== 'number') {
+        return undefined;
+      }
+      
+      return { recordId, localityId, localityData };
+    })
   );
+  
+  const resolvedData = await Promise.all(localityDataPromises);
+  return filterArray(resolvedData);
+};
 
 function createClickCallback(
   tableName: keyof Tables,
@@ -363,7 +416,7 @@ function addLeafletMarkers(
  */
 function useFetchLoop(
   handleFetchMore: (() => Promise<RA<QueryResultRow> | void>) | undefined,
-  handleAdd: (results: RA<QueryResultRow>) => void
+  handleAdd: (results: RA<QueryResultRow>) => Promise<void>
 ): void {
   const [lastResults, setLastResults] =
     React.useState<RA<QueryResultRow> | void>(undefined);
@@ -372,7 +425,7 @@ function useFetchLoop(
       .then((results) => {
         if (destructorCalled) return;
         setLastResults(results);
-        f.maybe(results, handleAdd);
+        if (results) void handleAdd(results);
       })
       .catch(softFail);
     let destructorCalled = false;
