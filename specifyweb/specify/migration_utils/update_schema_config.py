@@ -263,7 +263,7 @@ class TableDefaults(TypedDict):
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
-    description: str = None,
+    description: str | None = None,
     apps = global_apps,
     defaults: TableDefaults | None = None,
     pending_itemstr_rows: list[dict] | None = None,
@@ -851,30 +851,40 @@ def create_cotype_splocalecontaineritem(apps):
     # Create a Splocalecontaineritem record for each CollectionObject Splocalecontainer
     # NOTE: Each discipline has its own CollectionObject Splocalecontainer
     for container in Splocalecontainer.objects.filter(name='collectionobject', schematype=0):
-        container_item, _created = Splocalecontaineritem.objects.get_or_create(
-            name=COT_FIELD_NAME,
-            container=container,
-            defaults={
-                "picklistname": COT_PICKLIST_NAME,
-                "type": 'ManyToOne',
-                "isrequired": True
-            }
-        )
+        container_item_attrs = {
+            "name": COT_FIELD_NAME,
+            "container": container
+        }
+        container_item = Splocalecontaineritem.objects.filter(**container_item_attrs).order_by("id").first()
+        if container_item is None:
+            resolved_item = Splocalecontaineritem.objects.create(
+                **container_item_attrs,
+                picklistname=COT_PICKLIST_NAME,
+                type="ManyToOne",
+                isrequired=True
+            )
+        else:
+            resolved_item = container_item
 
-        Splocaleitemstr.objects.get_or_create(
-            language='en',
-            itemname=container_item,
-            defaults={
-                "text": COT_TEXT
-            }
-        )
-        Splocaleitemstr.objects.get_or_create(
-            language='en',
-            itemdesc=container_item,
-            defaults={
-                "text": COT_TEXT
-            }
-        )
+        field_label_attrs = {
+            "language": "en",
+            "itemname":resolved_item
+        }
+
+        field_label = Splocaleitemstr.objects.filter(**field_label_attrs).order_by("id").first()
+
+        if field_label is None:
+            Splocaleitemstr.objects.create(**field_label_attrs, text=COT_TEXT)
+
+        field_desc_attrs = {
+            "language": "en",
+            "itemdesc":resolved_item
+        }
+
+        field_desc = Splocaleitemstr.objects.filter(**field_desc_attrs).order_by("id").first()
+
+        if field_desc is None:
+            Splocaleitemstr.objects.create(**field_desc_attrs, text=COT_TEXT)
 
 # ##########################################
 # Used in 0004_stratigraphy_age.py
