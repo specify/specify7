@@ -1132,7 +1132,10 @@ def revert_update_cog_schema_config(apps):
 
 def update_age_schema_config(apps):
     # Revert before adding to avoid duplicates
-    revert_update_age_schema_config(apps)
+    # BUG: This will delete people's potentially modified Schema Config items
+    # If we want to avoid duplicates, we should check the creation code and
+    # prevent duplicates being created there
+    # revert_update_age_schema_config(apps)
 
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
@@ -1964,6 +1967,9 @@ def revert_loan_and_gift_agent_fields(apps):
 # Used in 0040_components.py
 # ##########################################
 
+def remove_componentparent_item(apps):
+    revert_table_field_schema_config("CollectionObject", "componentParent", apps)
+
 def remove_0029_schema_config_fields(apps, schema_editor=None):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
@@ -2082,14 +2088,6 @@ def reverse_hide_component_fields(apps, schema_editor=None):
                         name=field_name.lower()
                     )
                     items.update(ishidden=True)
-                    
-def componets_schema_config_migrations(apps, schema_editor=None):
-        remove_0029_schema_config_fields(apps, schema_editor)
-        create_table_schema_config_with_defaults(apps, schema_editor)
-        update_schema_config_field_desc(apps, schema_editor)
-        update_hidden_prop(apps, schema_editor)
-        create_cotype_splocalecontaineritem(apps)
-        hide_component_fields(apps, schema_editor)
 
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
