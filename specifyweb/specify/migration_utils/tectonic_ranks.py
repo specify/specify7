@@ -15,14 +15,28 @@ def create_default_tectonic_ranks(apps):
         if not tectonic_tree_def:
             tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
 
-        root, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Root",
-            title="Root",
+        root, root_created = TectonicUnitTreeDefItem.objects.get_or_create(
             rankid=0,
             parent=None,
             treedef=tectonic_tree_def,
-            isenforced=True
+            defaults={
+                "name": "Root",
+                "title": "Root",
+                "isenforced": True
+            }
         )
+        # The root rank already exists in some capacity in the Discipline
+        # We can assume the user has made modifications to the tree at this
+        # point, so shouldn't go further with checking/creating lower ranks
+        if not root_created:
+            # BUG?: handle setting the tectonicunittreedef on the Discipline
+            # here? We can probably practically assume it's already set if the
+            # root node exists.
+            continue
+
+        # At this point, these get_or_create calls should always be the
+        # equivalent of create (as we know the root node didn't exist).
+        # But keeping the get_or_create here just because
         superstructure, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Superstructure",
             title="Superstructure",
