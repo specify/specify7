@@ -27,10 +27,11 @@ export function CsvFilePicker({
 }: {
   readonly header: LocalizedString;
   readonly firstRowAlwaysHeader?: boolean;
-  readonly onFileImport: (
-    headers: RA<string>,
-    data: RA<RA<number | string>>
-  ) => void;
+  readonly onFileImport: (payload: {
+    readonly headers: RA<string>;
+    readonly data: RA<RA<number | string>>;
+    readonly fileName: string;
+  }) => void;
 }): JSX.Element {
   const [file, setFile] = React.useState<File | undefined>();
   const getSetHasHeader = useStateForContext<boolean | undefined>(true);
@@ -55,7 +56,11 @@ export function CsvFilePicker({
               parseCsv(file, encoding, getSetDelimiter).then((data) => {
                 const { header, rows } = extractHeader(data, hasHeader);
 
-                return void handleFileImport(header, rows);
+                return void handleFileImport({
+                  headers: header,
+                  data: rows,
+                  fileName: file.name,
+                });
               })
             );
           }}
@@ -79,11 +84,13 @@ export function CsvFilePreview({
     hasHeader,
     encoding,
     getSetDelimiter,
+    fileName,
   }: {
     readonly data: RA<RA<string>>;
     readonly hasHeader: boolean;
     readonly encoding: string;
     readonly getSetDelimiter: GetOrSet<string | undefined>;
+    readonly fileName: string;
   }) => void;
 }): JSX.Element {
   const [encoding, setEncoding] = React.useState<string>('utf-8');
@@ -104,6 +111,7 @@ export function CsvFilePreview({
           hasHeader,
           encoding,
           getSetDelimiter,
+          fileName: file.name,
         });
       }}
     >
