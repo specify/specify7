@@ -81,6 +81,9 @@ export function AutoComplete<T>({
   inputProps = {},
   value: currentValue,
   pendingValueRef,
+  onScrollEnd,
+  isLoadingMore = false,
+  extraItems,
 }: {
   readonly source:
     | RA<AutoCompleteItem<T>>
@@ -115,6 +118,9 @@ export function AutoComplete<T>({
    * typing
    */
   readonly pendingValueRef?: React.MutableRefObject<string>;
+  readonly onScrollEnd?: () => void;
+  readonly isLoadingMore?: boolean;
+  readonly extraItems?: RA<AutoCompleteItem<T>>;
 }): JSX.Element {
   const [results, setResults] = React.useState<
     RA<AutoCompleteItem<T>> | undefined
@@ -237,8 +243,17 @@ export function AutoComplete<T>({
    * only one element that starts with the current value (the current element),
    * thus the filtered list of items has only one item.
    */
+  // Append paginated extra items to the base results
+  const allResults = React.useMemo(
+    () =>
+      extraItems !== undefined && extraItems.length > 0
+        ? [...(results ?? []), ...extraItems]
+        : results,
+    [results, extraItems]
+  );
+
   const ignoreFilter = currentValue === pendingValue;
-  const itemSource = ignoreFilter ? (results ?? []) : filteredItems;
+  const itemSource = ignoreFilter ? (allResults ?? []) : filteredItems;
 
   const pendingItem = results?.find(
     ({ label, searchValue }) => (searchValue ?? label) === pendingValue
@@ -431,6 +446,16 @@ export function AutoComplete<T>({
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
           ref={dataListRefCallback}
+          onScroll={
+            typeof onScrollEnd === 'function'
+              ? (event: React.UIEvent<HTMLUListElement>): void => {
+                  const target = event.currentTarget;
+                  const nearBottom =
+                    target.scrollHeight - target.scrollTop - target.clientHeight < 40;
+                  if (nearBottom) onScrollEnd();
+                }
+              : undefined
+          }
         >
           {isLoading && (
             <Combobox.Option
@@ -528,7 +553,12 @@ export function AutoComplete<T>({
               )}
             </Combobox.Option>
           )}
-          {!listHasItems && (
+          {isLoadingMore && (
+            <li className={`${optionClassName(false, false)} cursor-auto text-gray-500`}>
+              {commonText.loading()}
+            </li>
+          )}
+          {!listHasItems && !isLoadingMore && (
             <div className={`${optionClassName(false, false)} cursor-auto`}>
               {formsText.nothingFound()}
             </div>
