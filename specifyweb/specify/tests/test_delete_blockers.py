@@ -22,7 +22,14 @@ class TestDeleteBlockers(GeographyTree):
     def _assertSame(self, base, other):
         key = lambda obj: (obj['table'], obj['field'])
 
-        sort_by_ids = lambda _blockers: [{**obj, 'ids': sorted(obj['ids'])} for obj in _blockers]
+        sort_by_ids = lambda _blockers: [
+            {
+                **obj,
+                'ids': sorted(obj['ids']),
+                'total_count': obj.get('total_count', len(obj['ids'])),
+            }
+            for obj in _blockers
+        ]
         base = sorted(base, key=key)
         other = sorted(other, key=key)
 
