@@ -59,6 +59,8 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
                 )
             apply_schema_defaults_task.apply(args=[discipline.id])
 
+    # PERF: The vast majority of these can be collapsed to a single call to
+    # update_table_schema_config_with_defaults
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
         usc.create_geo_table_schema_config_with_defaults, # specify 0002
@@ -79,7 +81,10 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.add_tectonicunit_to_pc_in_schema_config, # specify 0020
         usc.fix_hidden_geo_prop, # specify 0021
         usc.update_schema_config_field_desc, # specify 0023
-        usc.update_hidden_prop, # specify 0023
+        # BUG: We can't reliably run this function at startup, as there is no
+        # easy way to differentiate Schema Config tables/fields that should or
+        # should not be updated for already existing Disciplines.
+        # usc.update_hidden_prop, # specify 0023
         usc.update_storage_unique_id_fields, # specify 0024
         usc.update_co_children_fields, # specify 0027
         usc.remove_collectionobject_parentco, # specify 0029

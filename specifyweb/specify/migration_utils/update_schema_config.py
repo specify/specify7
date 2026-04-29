@@ -841,6 +841,8 @@ COT_PICKLIST_NAME = 'CollectionObjectType'
 COT_FIELD_NAME = 'collectionObjectType'
 COT_TEXT = 'Collection Object Type'
 
+# FEAT: Replace this implementation with
+# update_table_field_schema_config_with_defaults
 def create_cotype_splocalecontaineritem(apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -849,23 +851,46 @@ def create_cotype_splocalecontaineritem(apps):
     # Create a Splocalecontaineritem record for each CollectionObject Splocalecontainer
     # NOTE: Each discipline has its own CollectionObject Splocalecontainer
     for container in Splocalecontainer.objects.filter(name='collectionobject', schematype=0):
-        container_item, _ = Splocalecontaineritem.objects.get_or_create(
+        container_item = Splocalecontaineritem.objects.filter(
             name=COT_FIELD_NAME,
-            picklistname=COT_PICKLIST_NAME,
-            type='ManyToOne',
-            container=container,
-            isrequired=True
-        )
-        Splocaleitemstr.objects.get_or_create(
+            container=container
+        ).first()
+        if container_item is None:
+            resolved_item = Splocalecontaineritem.objects.create(
+                name=COT_FIELD_NAME,
+                picklistname=COT_PICKLIST_NAME,
+                type='ManyToOne',
+                container=container,
+                isrequired=True
+            )
+        else:
+            resolved_item = container_item
+
+        field_label = Splocaleitemstr.objects.filter(
             language='en',
-            text=COT_TEXT,
-            itemname=container_item
-        )
-        Splocaleitemstr.objects.get_or_create(
+            itemname=resolved_item
+        ).first()
+        field_desc = Splocaleitemstr.objects.filter(
             language='en',
-            text=COT_TEXT,
-            itemdesc=container_item
-        )
+            itemdesc=resolved_item
+        ).first()
+        strings_to_create = []
+        if field_label is None:
+            new_field_label = Splocaleitemstr(
+                language='en',
+                itemname=resolved_item,
+                text=COT_TEXT
+            )
+            strings_to_create.append(new_field_label)
+        if field_desc is None:
+            new_field_desc = Splocaleitemstr(
+                language='en',
+                itemdesc=resolved_item,
+                text=COT_TEXT
+            )
+            strings_to_create.append(new_field_desc)
+
+        Splocaleitemstr.objects.bulk_create(strings_to_create)
 
 # ##########################################
 # Used in 0004_stratigraphy_age.py
