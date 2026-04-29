@@ -89,6 +89,8 @@ export const formTypes = ['form', 'formTable'] as const;
 export type FormType = (typeof formTypes)[number];
 export type FormMode = 'edit' | 'search' | 'view';
 
+const defaultColumnDefinitionOs = 'lnx';
+
 let views: R<ViewDefinition | undefined> = {};
 
 export const getViewSetApiUrl = (viewName: string): string =>
@@ -539,10 +541,25 @@ function getColumnDefinitions(viewDefinition: SimpleXmlNode): string {
 const getColumnDefinition = (
   viewDefinition: SimpleXmlNode,
   os: string | undefined
-): string | undefined =>
-  viewDefinition.children.columnDef?.find((child) =>
-    typeof os === 'string' ? getParsedAttribute(child, 'os') === os : true
-  )?.text;
+): string | undefined => {
+  const columnDefinitions = viewDefinition.children.columnDef;
+  if (columnDefinitions === undefined) return undefined;
+
+  if (typeof os === 'string')
+    return columnDefinitions.find(
+      (child) => getParsedAttribute(child, 'os') === os
+    )?.text;
+
+  return (
+    columnDefinitions.find(
+      (child) => getParsedAttribute(child, 'os') === defaultColumnDefinitionOs
+    )?.text ??
+    columnDefinitions.find(
+      (child) => getParsedAttribute(child, 'os') === undefined
+    )?.text ??
+    columnDefinitions[0]?.text
+  );
+};
 
 const parseRows = async (
   rawRows: RA<SimpleXmlNode>,
