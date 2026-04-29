@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-28 20:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-04-29 10:10+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
 "Language: uk\n"
@@ -160,12 +160,12 @@ msgstr ""
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:213
 msgid "treeQueryName"
-msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""
+msgstr "{tableName:string} використовуючи \"{nodeFullName:string}\""
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:489
 msgid "newButtonDescription"
-msgstr "Додати нове поле"
+msgstr "Додати Нове Поле"
 
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:85
@@ -175,7 +175,7 @@ msgstr "Рахувати"
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:72
 msgid "distinct"
-msgstr "Виразний"
+msgstr "Відмінні"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:58
@@ -184,9 +184,8 @@ msgstr "Серія"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:81
-#, fuzzy
 msgid "searchSynonyms"
-msgstr "Пошук синонімів"
+msgstr "Пошук Синонімів"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:175
@@ -196,7 +195,7 @@ msgstr "Створити CSV"
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:193
 msgid "createKml"
-msgstr "Створіть KML"
+msgstr "Створити KML"
 
 #. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set ⬤ Components > Work Bench > Record Set
 #: components/BatchIdentify/index.tsx:769
@@ -209,7 +208,7 @@ msgstr "Створити {recordSetTable:string}"
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:122
 msgid "saveAs"
-msgstr "Зберегти як"
+msgstr "Зберегти Як"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:448
@@ -228,7 +227,7 @@ msgstr "(будь-яке дерево)"
 #: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
 msgid "moveUp"
-msgstr "Рухатися вгору"
+msgstr "Перемістити Вгору"
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:230
@@ -237,7 +236,7 @@ msgstr "Рухатися вгору"
 #: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/Toolbar/ListEdit.tsx:117
 msgid "moveDown"
-msgstr "Рухатися вниз"
+msgstr "Перемістити Вниз"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:76
@@ -282,7 +281,7 @@ msgstr "(відформатований)"
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:434
 msgid "like"
-msgstr "Люблю"
+msgstr "Як"
 
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:435
@@ -319,22 +318,22 @@ msgstr "Менше або дорівнює"
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:482
 msgid "true"
-msgstr "правда"
+msgstr "True"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:489
 msgid "false"
-msgstr "помилковий"
+msgstr "False"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:543
 msgid "trueOrNull"
-msgstr "True або Empty"
+msgstr "True або Пустий"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:550
 msgid "falseOrNull"
-msgstr "False або Empty"
+msgstr "False або Пустий"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:496
@@ -344,7 +343,7 @@ msgstr "Між"
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:504
 msgid "in"
-msgstr "в"
+msgstr "В"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:505
@@ -397,7 +396,7 @@ msgstr "Так"
 #: components/QueryBuilder/ResultsTable.tsx:220
 #: components/QueryBuilder/ToForms.tsx:56
 msgid "queryResults"
-msgstr "Результати запиту"
+msgstr "Результати Запиту"
 
 #. Used in: Components > Batch Identify > Index ⬤ Components > Locality Update > Status ⬤ Components > Query Builder > To Forms
 #: components/BatchIdentify/index.tsx:778
@@ -430,27 +429,27 @@ msgstr "Визначте мітку на основі запиту"
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
 msgid "treeMerge"
-msgstr "Об'єднання дерев"
+msgstr "Об'єднання Дерев"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
 msgid "treeMove"
-msgstr "Переміщення дерева"
+msgstr "Переміщення Дерева"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:48
 msgid "treeSynonymize"
-msgstr "Синонімізувати дерево"
+msgstr "Синонімізувати Дерево"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
 msgid "treeDesynonymize"
-msgstr "Десинонімізація дерева"
+msgstr "Де-синонімізація Дерева"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:50
 msgid "treeBulkMove"
-msgstr "Масове переміщення дерева"
+msgstr "Масове Переміщення Дерева"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:118
@@ -472,27 +471,27 @@ msgstr "в минулому"
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:189
 msgid "days"
-msgstr "днів"
+msgstr "Днів"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:190
 msgid "weeks"
-msgstr "тижнів"
+msgstr "Тижнів"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:191
 msgid "months"
-msgstr "Місяці"
+msgstr "Місяців"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:192
 msgid "years"
-msgstr "років"
+msgstr "Років"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:376
 msgid "year"
-msgstr "рік"
+msgstr "Рік"
 
 #. 🟥Used in query builder lines, will be shown as a number followed by a period of time (ie: day, month or week) then a direction (past or future). Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:146
@@ -532,12 +531,12 @@ msgstr "Перейти до відносного"
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:61
 msgid "switchToAbsolute"
-msgstr "Перейти до відносного"
+msgstr "Перейти до абсолютного"
 
 #. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:105
 msgid "scrollToEditor"
-msgstr "Перейдіть до редактора"
+msgstr "Прокрутити до редактора"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:308
@@ -572,15 +571,16 @@ msgstr "Не суворий"
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:187
 msgid "primaryCatalogNumberInheritance"
-msgstr "{collectionObjectTableName: рядок}"
+msgstr "{collectionObjectTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:227
 msgid "parentCatalogNumberInheritance"
-msgstr "{componentTableName: рядок}"
+msgstr "{componentTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:263
+#, fuzzy
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "{componentTableName: string} & {collectionObjectTableName: string}"
 
