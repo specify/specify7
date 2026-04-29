@@ -59,38 +59,50 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
                 )
             apply_schema_defaults_task.apply(args=[discipline.id])
 
+    # PERF: The vast majority of these can be collapsed to a single call to
+    # update_table_schema_config_with_defaults
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
         usc.create_geo_table_schema_config_with_defaults, # specify 0002
         usc.create_cotype_splocalecontaineritem, # specify 0003
         usc.create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
         usc.create_agetype_picklist, # specify 0004
-        usc.update_cog_type_fields, # specify 0007
+        # BUG: This should really only be run in the context of the migration,
+        # and not on startup. See the below BUG comment above usc.update_hidden_prop
+        # usc.update_cog_type_fields, # specify 0007
         usc.create_cogtype_picklist, # specify 0007
-        usc.update_cogtype_splocalecontaineritem, # specify 0007
-        usc.update_systemcogtypes_picklist, # specify 0007
-        usc.update_cogtype_type_splocalecontaineritem, # specify 0007
+        # BUG: These also shouldn't be run with this suite. These are one way
+        # data migrations in the contect of migrations meant to resolve
+        # eariler migrations.
+        # The functions can be destructive as we can't really discern whether
+        # or not these functions should be applied
+        # usc.update_cogtype_splocalecontaineritem, # specify 0007
+        # usc.update_systemcogtypes_picklist, # specify 0007
+        # usc.update_cogtype_type_splocalecontaineritem, # specify 0007
         usc.update_relative_age_fields, # specify 0008
         usc.add_cojo_to_schema_config, # specify 0012
         usc.update_cog_schema_config, # specify 0013
         usc.update_age_schema_config, # specify 0015
-        usc.schemaconfig_fixes, # specify 0017
-        usc.add_cot_catnum_to_schema, # specify 0018
+        # usc.schemaconfig_fixes, # specify 0017
+        # usc.add_cot_catnum_to_schema, # specify 0018
         usc.add_tectonicunit_to_pc_in_schema_config, # specify 0020
-        usc.fix_hidden_geo_prop, # specify 0021
-        usc.update_schema_config_field_desc, # specify 0023
-        usc.update_hidden_prop, # specify 0023
+        # usc.fix_hidden_geo_prop, # specify 0021
+        # usc.update_schema_config_field_desc, # specify 0023
+        # BUG: We can't reliably run this function at startup, as there is no
+        # easy way to differentiate Schema Config tables/fields that should or
+        # should not be updated for already existing Disciplines.
+        # usc.update_hidden_prop, # specify 0023
         usc.update_storage_unique_id_fields, # specify 0024
-        usc.update_co_children_fields, # specify 0027
-        usc.remove_collectionobject_parentco, # specify 0029
-        usc.add_quantities_gift, # specify 0032
-        usc.update_paleo_desc, # specify 0033
-        usc.update_accession_date_fields, # specify 0034
+        # usc.update_co_children_fields, # specify 0027
+        # usc.remove_collectionobject_parentco, # specify 0029
+        # usc.add_quantities_gift, # specify 0032
+        # usc.update_paleo_desc, # specify 0033
+        # usc.update_accession_date_fields, # specify 0034
         usc.update_loan_and_gift_agent_fields, # specify 0039
-        usc.update_loan_and_gift_agents, # specify 0039
-        usc.componets_schema_config_migrations, # specify 0040
+        usc.remove_componentparent_item, # specify 0040
+        usc.create_table_schema_config_with_defaults, # specify 0040
         usc.create_discipline_type_picklist, # specify 0042
-        usc.update_discipline_type_splocalecontaineritem, # specify 0042
+        # usc.update_discipline_type_splocalecontaineritem, # specify 0042
         apply_schema_overrides_for_all_disciplines,
         usc.deduplicate_schema_config_orm,
     ]
