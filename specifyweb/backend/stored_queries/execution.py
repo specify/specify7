@@ -40,6 +40,14 @@ from specifyweb.specify.datamodel import datamodel, is_tree_table
 logger = logging.getLogger(__name__)
 
 SERIES_MAX_ROWS = 10000
+QUERY_BATCH_SIZE = 2000
+
+def _iter_query_rows(query):
+    return (
+        query.yield_per(QUERY_BATCH_SIZE)
+        if hasattr(query, 'yield_per')
+        else iter(query)
+    )
 
 
 class QuerySort:
@@ -346,24 +354,14 @@ def query_to_csv(
                 header = ["id"] + header
             csv_writer.writerow(header)
 
-        if isinstance(query, list):
-            for row in query:
-                if row_filter is not None and not row_filter(row):
-                    continue
-                encoded = [
-                    re.sub("\r|\n", " ", str(f))
-                    for f in (row[1:] if strip_id or distinct else row)
-                ]
-                csv_writer.writerow(encoded)
-        else:
-            for row in query.yield_per(1):
-                if row_filter is not None and not row_filter(row):
-                    continue
-                encoded = [
-                    re.sub("\r|\n", " ", str(f))
-                    for f in (row[1:] if strip_id or distinct else row)
-                ]
-                csv_writer.writerow(encoded)
+        for row in _iter_query_rows(query):
+            if row_filter is not None and not row_filter(row):
+                continue
+            encoded = [
+                re.sub("\r|\n", " ", str(f))
+                for f in (row[1:] if strip_id or distinct else row)
+            ]
+            csv_writer.writerow(encoded)
 
     logger.debug("query_to_csv finished")
 
@@ -430,20 +428,12 @@ def query_to_kml(
 
     coord_cols = getCoordinateColumns(field_specs, table != None)
 
-    if isinstance(query, list):
-        for row in query:
-            if row_has_geocoords(coord_cols, row):
-                placemarkElement = createPlacemark(
-                    kmlDoc, row, coord_cols, table, captions, host
-                )
-                documentElement.appendChild(placemarkElement)
-    else:
-        for row in query.yield_per(1):
-            if row_has_geocoords(coord_cols, row):
-                placemarkElement = createPlacemark(
-                    kmlDoc, row, coord_cols, table, captions, host
-                )
-                documentElement.appendChild(placemarkElement)
+    for row in _iter_query_rows(query):
+        if row_has_geocoords(coord_cols, row):
+            placemarkElement = createPlacemark(
+                kmlDoc, row, coord_cols, table, captions, host
+            )
+            documentElement.appendChild(placemarkElement)
 
     with open(path, "wb") as kmlFile:
         # This should be controlled by a preference or argument, because it makes adding 
@@ -1215,12 +1205,17 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
 def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
     parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
     cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
+    batch_size = None if should_list_query else QUERY_BATCH_SIZE
 
     if parent_inheritance_pref:
-        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+        query = parent_inheritance_post_query_processing(
+            query, tableid, field_specs, collection, user, batch_size=batch_size
+        )
 
     if cog_inheritance_pref: 
-        query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
+        query = cog_inheritance_post_query_processing(
+            query, tableid, field_specs, collection, user, batch_size=batch_size
+        )
     
     if should_list_query:
         return list(query)
