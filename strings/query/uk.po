@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-29 10:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "query/uk/>\n"
 "Language: uk\n"
@@ -580,14 +580,13 @@ msgstr "{componentTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:263
-#, fuzzy
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "{componentTableName: string} & {collectionObjectTableName: string}"
 
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:127
 msgid "formatInputAs"
-msgstr "Форматувати як: {commaSeparatedFormats:string}"
+msgstr "Форматувати Як: {commaSeparatedFormats:string}"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:209
@@ -607,4 +606,4 @@ msgstr "Немає невирішених елементів для поверн
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
 msgid "itemsReturned"
-msgstr "Товари повернуто"
+msgstr "Елементи було повернуто"
