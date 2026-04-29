@@ -112,7 +112,7 @@ def create_root_tectonic_node(apps):
                 discipline=discipline
             )
 
-        tectonic_tree_def_item = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def, parent=None).first()
+        tectonic_tree_def_item = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def, rankid=0, parent=None).first()
         if not tectonic_tree_def_item:
             tectonic_tree_def_item, is_created = TectonicUnitTreeDefItem.objects.get_or_create(
                 name="Root",
@@ -123,7 +123,7 @@ def create_root_tectonic_node(apps):
                 isenforced=True
             )
 
-        root = TectonicUnit.objects.filter(definition=tectonic_tree_def, definitionitem=tectonic_tree_def_item, parent=None).first()
+        root = TectonicUnit.objects.filter(definition=tectonic_tree_def, definitionitem=tectonic_tree_def_item, rankid=0, parent=None).first()
         if not root:
             root, is_created = TectonicUnit.objects.get_or_create(
                 name="Root",
