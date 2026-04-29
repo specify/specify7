@@ -7,6 +7,7 @@ urlpatterns = [
     path('ephemeral/', views.ephemeral),
     path('exportcsv/', views.export_csv),
     path('exportkml/', views.export_kml),
+    path('exportwebportal/', views.export_to_web_portal),
     path('make_recordset/', views.make_recordset),
     path('merge_recordsets/', views.merge_recordsets),
     path('return_loan_preps/', views.return_loan_preps),

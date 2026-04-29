@@ -363,6 +363,20 @@ export const queryText = createDictionary({
     'pt-br': 'Criar KML',
     'hr-hr': 'Izradi KML',
   },
+  exportToWebPortal: {
+    'en-us': 'Export to Web Portal',
+  },
+  webPortalExportDuplicateRecordIds: {
+    'en-us': 'Query contains duplicate record IDs',
+  },
+  webPortalExportDuplicateRecordIdsDescription: {
+    'en-us':
+      'Please modify the query so that it returns unique records for each returned row.',
+  },
+  webPortalExportDuplicateHint: {
+    'en-us':
+      '(Hint: You may need to add a condition for current determination or use an aggregator for preparations or collectors.)',
+  },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
     'ru-ru': 'Создать {recordSetTable:string}',
