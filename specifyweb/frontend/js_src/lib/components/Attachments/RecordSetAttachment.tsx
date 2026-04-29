@@ -132,6 +132,9 @@ export function RecordSetAttachments<SCHEMA extends AnySchema>({
           buttons={
             <>
               <Button.Info
+                disabled={
+                  (attachmentsRef.current?.attachments.length ?? 0) === 0
+                }
                 title={attachmentsText.downloadAllDescription()}
                 onClick={(): void =>
                   recordSetId === undefined && !isComplete
