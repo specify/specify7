@@ -851,7 +851,7 @@ def create_cotype_splocalecontaineritem(apps):
     # Create a Splocalecontaineritem record for each CollectionObject Splocalecontainer
     # NOTE: Each discipline has its own CollectionObject Splocalecontainer
     for container in Splocalecontainer.objects.filter(name='collectionobject', schematype=0):
-        container_item = Splocalecontaineritem.objects.get_or_create(
+        container_item, _created = Splocalecontaineritem.objects.get_or_create(
             name=COT_FIELD_NAME,
             container=container,
             defaults={
