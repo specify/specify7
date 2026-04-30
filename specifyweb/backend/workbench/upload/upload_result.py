@@ -2,9 +2,21 @@ from typing import Any, NamedTuple
 
 from typing import Literal
 
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+
 from .parsing import WorkBenchParseFailure
 
 Failure = Literal["Failure"]
+BusinessRulePayloadValue = (
+    str
+    | int
+    | bool
+    | None
+    | list[str]
+    | list[int]
+    | dict[str, str | int | bool | None]
+)
+BusinessRulePayload = dict[str, BusinessRulePayloadValue]
 
 
 class TreeInfo(NamedTuple):
@@ -215,7 +227,7 @@ class Deleted(NamedTuple):
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: dict[str, str | int | list[str] | list[int]]
+    payload: BusinessRulePayload
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -236,6 +248,18 @@ class FailedBusinessRule(NamedTuple):
             payload=r["payload"],
             info=json_to_ReportInfo(r["info"]),
         )
+
+
+def to_failed_business_rule(exception: Exception, info: ReportInfo) -> FailedBusinessRule:
+    if (
+        isinstance(exception, BusinessRuleException)
+        and len(exception.args) >= 2
+        and isinstance(exception.args[0], str)
+        and isinstance(exception.args[1], dict)
+    ):
+        return FailedBusinessRule(exception.args[0], exception.args[1], info)
+
+    return FailedBusinessRule(str(exception), {}, info)
 
 
 class NoMatch(NamedTuple):
