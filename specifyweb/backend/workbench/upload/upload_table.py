@@ -39,6 +39,7 @@ from .upload_result import (
     PicklistAddition,
     ParseFailures,
     PropagatedFailure,
+    to_failed_business_rule,
 )
 from .uploadable import (
     NULL_RECORD,
@@ -760,7 +761,7 @@ class BoundUploadTable(NamedTuple):
                 picklist_additions = self._do_picklist_additions()
             except (BusinessRuleException, IntegrityError) as e:
                 return UploadResult(
-                    FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                    to_failed_business_rule(e, info), to_one_results, {}
                 )
 
         record = Uploaded(uploaded.id, info, picklist_additions)
@@ -865,7 +866,7 @@ class BoundUploadTable(NamedTuple):
                 reference_record.delete()
                 result = Deleted(self.current_id, info)
             except (BusinessRuleException, IntegrityError) as e:
-                result = FailedBusinessRule(str(e), {}, info)
+                result = to_failed_business_rule(e, info)
 
         to_one_deleted: dict[str, UploadResult] = {
             key: value.delete_row()
@@ -1066,7 +1067,7 @@ class BoundUpdateTable(BoundUploadTable):
                     picklist_additions = self._do_picklist_additions()
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                        to_failed_business_rule(e, info), to_one_results, {}
                     )
 
         record: Updated | NoChange = (
