@@ -167,8 +167,10 @@ function syncCollectingEventEndDate(
     });
     collectingEvent.set('endDate', startDate);
     syncCollectingEventEndDatePrecision(collectingEvent, true);
-  } else if (startDate !== null && startDate === endDate)
+  } else if (startDate !== null && startDate === endDate) {
     updateCollectingEventDateRangeSyncState(collectingEvent);
+    syncCollectingEventEndDatePrecision(collectingEvent);
+  }
 }
 
 function syncCollectingEventEndDatePrecision(
