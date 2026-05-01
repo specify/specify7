@@ -1,30 +1,30 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2023-05-14 03:40+0000\n"
-"Last-Translator: Max Patiiuk <max@patii.uk>\n"
-"Language-Team: Ukrainian "
-"<https://hosted.weblate.org/projects/specify-7/development/uk/>\n"
+"PO-Revision-Date: 2026-05-01 12:09+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
+"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
+"development/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
-"Plural-Forms: nplurals=3; plural=n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
-"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2;\n"
-"X-Generator: Weblate 4.18-dev\n"
+"Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
+"n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
+"X-Generator: Weblate 5.17.1\n"
 
+#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:478
-#. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 msgid "crashReportVisualizer"
-msgstr "Візуалізатор звітів про збої"
+msgstr "Візуалізатор Звітів про Збої"
 
-#: components/Developer/CrashReportVisualizer.tsx:34
 #. Used in: Components > Developer > Crash Report Visualizer
+#: components/Developer/CrashReportVisualizer.tsx:34
 msgid "downloadAsHtml"
 msgstr "Завантажити як HTML"
 
+#. Used in: Components > Developer > Crash Report Mapper ⬤ Components > Specify Network > Map
 #: components/Developer/CrashReportMapper.tsx:168
 #: components/SpecifyNetwork/Map.tsx:228
-#. Used in: Components > Developer > Crash Report Mapper ⬤ Components > Specify Network > Map
 msgid "details"
 msgstr "Подробиці"
