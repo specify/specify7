@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Tabs first tab selected, and then second 1`] = `
 <DocumentFragment>
@@ -20,6 +20,7 @@ exports[`Tabs first tab selected, and then second 1`] = `
     dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
   dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white
 "
+      data-headlessui-state="selected"
       id="headlessui-tabs-tab-:r0:"
       role="tab"
       tabindex="0"
@@ -28,6 +29,7 @@ exports[`Tabs first tab selected, and then second 1`] = `
       tab1
     </button>
     <button
+      aria-controls="headlessui-tabs-panel-:r3:"
       aria-selected="false"
       class="
   button rounded cursor-pointer active:brightness-80 px-4 py-2
@@ -35,6 +37,7 @@ exports[`Tabs first tab selected, and then second 1`] = `
     dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
   hover:bg-gray-300 hover:dark:bg-neutral-600
 "
+      data-headlessui-state=""
       id="headlessui-tabs-tab-:r1:"
       role="tab"
       tabindex="-1"
@@ -49,6 +52,7 @@ exports[`Tabs first tab selected, and then second 1`] = `
     <div
       aria-labelledby="headlessui-tabs-tab-:r0:"
       class="flex flex-1 flex-col gap-4"
+      data-headlessui-state="selected"
       id="headlessui-tabs-panel-:r2:"
       role="tabpanel"
       tabindex="0"
@@ -57,6 +61,14 @@ exports[`Tabs first tab selected, and then second 1`] = `
         Tab1
       </h1>
     </div>
+    <span
+      aria-hidden="true"
+      aria-labelledby="headlessui-tabs-tab-:r1:"
+      id="headlessui-tabs-panel-:r3:"
+      role="tabpanel"
+      style="position: fixed; top: 1px; left: 1px; width: 1px; height: 0px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
+      tabindex="-1"
+    />
   </div>
 </DocumentFragment>
 `;
@@ -73,32 +85,35 @@ exports[`Tabs first tab selected, and then second 2`] = `
     role="tablist"
   >
     <button
-      aria-selected="false"
+      aria-controls="headlessui-tabs-panel-:r2:"
+      aria-selected="true"
       class="
   button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
     dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
   dialog-icon-info hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white
 "
+      data-headlessui-state="selected"
       id="headlessui-tabs-tab-:r0:"
       role="tab"
-      tabindex="-1"
+      tabindex="0"
       type="button"
     >
       tab1
     </button>
     <button
       aria-controls="headlessui-tabs-panel-:r3:"
-      aria-selected="true"
+      aria-selected="false"
       class="
   button rounded cursor-pointer active:brightness-80 px-4 py-2
     disabled:bg-gray-200 disabled:dark:ring-neutral-500 disabled:ring-gray-400 disabled:text-gray-500 
     dark:disabled:!bg-neutral-700 gap-2 inline-flex items-center capitalize justify-center shadow-sm aria-handled
   hover:bg-gray-300 hover:dark:bg-neutral-600
 "
+      data-headlessui-state=""
       id="headlessui-tabs-tab-:r1:"
       role="tab"
-      tabindex="0"
+      tabindex="-1"
       type="button"
     >
       tab2
@@ -108,16 +123,25 @@ exports[`Tabs first tab selected, and then second 2`] = `
     class="flex flex-1 overflow-hidden"
   >
     <div
-      aria-labelledby="headlessui-tabs-tab-:r1:"
+      aria-labelledby="headlessui-tabs-tab-:r0:"
       class="flex flex-1 flex-col gap-4"
-      id="headlessui-tabs-panel-:r3:"
+      data-headlessui-state="selected"
+      id="headlessui-tabs-panel-:r2:"
       role="tabpanel"
       tabindex="0"
     >
       <h1>
-        Tab2
+        Tab1
       </h1>
     </div>
+    <span
+      aria-hidden="true"
+      aria-labelledby="headlessui-tabs-tab-:r1:"
+      id="headlessui-tabs-panel-:r3:"
+      role="tabpanel"
+      style="position: fixed; top: 1px; left: 1px; width: 1px; height: 0px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
+      tabindex="-1"
+    />
   </div>
 </DocumentFragment>
 `;
@@ -126,7 +150,7 @@ exports[`Tabs simple no tabs 1`] = `
 <DocumentFragment>
   <button
     aria-hidden="true"
-    style="position: absolute; width: 1px; height: 1px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
+    style="position: fixed; top: 1px; left: 1px; width: 1px; height: 0px; padding: 0px; margin: -1px; overflow: hidden; clip: rect(0px, 0px, 0px, 0px); white-space: nowrap; border-width: 0px;"
     type="button"
   />
   <div

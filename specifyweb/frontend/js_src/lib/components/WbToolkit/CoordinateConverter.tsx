@@ -15,6 +15,7 @@ import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog } from '../Molecules/Dialog';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { getHotPlugin } from '../WorkBench/handsontable';
 import {
   getSelectedCells,
   getSelectedLast,
@@ -233,7 +234,7 @@ function CoordinateConverter({
       onClose={(): void => {
         hot.batch(() =>
           Array.from({ length: changeCountRef.current }).forEach(() =>
-            hot.undo()
+            getHotPlugin(hot, 'undoRedo').undo()
           )
         );
         handleClose();
