@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-04-28 20:10+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-05-01 11:09+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "specifyNetwork/uk/>\n"
 "Language: uk\n"
@@ -10,7 +10,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 5.17.1-dev\n"
+"X-Generator: Weblate 5.17.1\n"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Specify Network > Index ⬤ Components > Statistics > Pages
 #: components/Preferences/CollectionDefinitions.tsx:162
@@ -24,7 +24,7 @@ msgstr "Specify Network"
 #. Used in: Components > Specify Network > Index
 #: components/SpecifyNetwork/index.tsx:84
 msgid "occurrenceOrGuidRequired"
-msgstr "Щоб відобразити цю сторінку, потрібно вказати назву виду або GUID"
+msgstr "Щоб відобразити цю сторінку, потрібно вказати Назву Виду або GUID"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:133
@@ -38,31 +38,30 @@ msgstr "Будь ласка, спробуйте знайти інший запи
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:149
-#, fuzzy
 msgid "brokerUnavailable"
-msgstr "Вкажіть, що мережа недоступна"
+msgstr "Specify Мережа недоступна"
 
 #. Used in: Components > Specify Network > Overlay
 #: components/SpecifyNetwork/Overlay.tsx:152
-#, fuzzy
 msgid "brokerUnavailableDescription"
-msgstr "Не вдалося підключитися до мережі «Указати». Спробуйте пізніше."
+msgstr ""
+"Не вдалося підключитися до Мережі Specify. Будь-ласка спробуйте пізніше."
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:54
 msgid "dataQuality"
-msgstr "Якість даних"
+msgstr "Якість Даних"
 
 #. Used in: Components > Specify Network > Table
 #: components/SpecifyNetwork/Table.tsx:67
 msgid "reportedBy"
-msgstr "Повідомив {provider:string}"
+msgstr "Звітовано {provider:string}"
 
 #. Used in: Components > Specify Network > Field Mapper
 #: components/SpecifyNetwork/FieldMapper.tsx:109
 #: components/SpecifyNetwork/FieldMapper.tsx:117
 msgid "collectionDate"
-msgstr "Дата збору"
+msgstr "Дата Колекції"
 
 #. Used in: Components > Specify Network > Map
 #: components/SpecifyNetwork/Map.tsx:221
@@ -75,10 +74,9 @@ msgid "iDigBioDescription"
 msgstr ""
 "Випадки, записані в iDigBio, відображаються круглими зеленими точками, за "
 "винятком випадків із поточної колекції, записаної в iDigBio, які мають "
-"круглі червоні точки. Збільшення масштабу червоних крапок відкриває "
-"блакитну шпильку-сльозинку, клацання шпильки виконує запит місцевості в "
-"Specify, який показує всі види в поточній базі даних Specify, зібрані з "
-"цього місця."
+"круглі червоні точки. Збільшення масштабу червоних крапок відкриває блакитну "
+"шпильку, клацання шпильки виконує запит місцевості в Specify, який показує "
+"всі види в поточній базі даних Specify, зібрані з цього місця."
 
 #. Used in: Components > Specify Network > Overlays
 #: components/SpecifyNetwork/overlays.ts:31
@@ -92,37 +90,39 @@ msgstr ""
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:59
 msgid "connectToGbif"
-msgstr "Підключіться до GBIF"
+msgstr "Підключитися до GBIF"
 
 #. Used in: Components > Specify Network Collection > Setup
 #: components/SpecifyNetworkCollection/Setup.tsx:62
 msgid "searchForInstitution"
-msgstr "Підключіться до GBIF"
+msgstr "Пошук вашої інституції:"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:75
 msgid "institutionDistributionMap"
-msgstr "Карта розповсюдження всіх оцифрованих зразків, збережених у вашій установі"
+msgstr ""
+"Карта розповсюдження всіх оцифрованих зразків, збережених у вашій Установі"
 
 #. Used in: Components > Specify Network Collection > Index
 #: components/SpecifyNetworkCollection/index.tsx:149
 msgid "collectionDistributionMap"
-msgstr "Карта розповсюдження всіх оцифрованих зразків, збережених у вашій колекції"
+msgstr ""
+"Карта розповсюдження всіх оцифрованих зразків, збережених у вашій Колекції"
 
 #. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:23
 msgid "startYear"
-msgstr "Рік початку"
+msgstr "Рік Початку"
 
 #. Used in: Components > Molecules > Range
 #: components/Molecules/Range.tsx:44
 msgid "endYear"
-msgstr "Кінцевий рік"
+msgstr "Кінцевий Рік"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:165
 msgid "publishingOrganizationKey"
-msgstr "Ключ видавничої організації GBIF"
+msgstr "Ключ Видавничої Організації GBIF"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:167
@@ -134,7 +134,7 @@ msgstr ""
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:174
 msgid "collectionKey"
-msgstr "Ключ набору даних GBIF"
+msgstr "Ключ Набору Даних GBIF"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:175
