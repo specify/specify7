@@ -40,6 +40,7 @@ import type { Collection } from './specifyTable';
 import { tables } from './tables';
 import type {
   BorrowMaterial,
+  CollectingEvent,
   CollectionObject,
   CollectionObjectGroup,
   CollectionObjectGroupJoin,
@@ -82,6 +83,129 @@ export type BusinessRuleDefs<SCHEMA extends AnySchema> = {
 type MappedBusinessRuleDefs = {
   readonly [TABLE in keyof Tables]?: BusinessRuleDefs<Tables[TABLE]>;
 };
+
+type CollectingEventDateRangeSyncState = {
+  readonly endDate?: string | null;
+  readonly endDatePrecision?: number | null;
+  readonly isEndDatePrecisionManual?: boolean;
+};
+
+const collectingEventDateRangeSyncState = new WeakMap<
+  SpecifyResource<CollectingEvent>,
+  CollectingEventDateRangeSyncState
+>();
+
+const normalizeDateValue = (value: string | null | undefined): string | null =>
+  typeof value === 'string' && value.length > 0 ? value : null;
+
+const normalizeDatePrecision = (
+  value: number | null | undefined
+): number | null => (typeof value === 'number' ? value : null);
+
+const getCollectingEventDateRangeSyncState = (
+  collectingEvent: SpecifyResource<CollectingEvent>
+): CollectingEventDateRangeSyncState => {
+  const state = collectingEventDateRangeSyncState.get(collectingEvent);
+  if (state !== undefined) return state;
+
+  const newState = {};
+  collectingEventDateRangeSyncState.set(collectingEvent, newState);
+  return newState;
+};
+
+function initializeCollectingEventDateRangeSync(
+  collectingEvent: SpecifyResource<CollectingEvent>
+): void {
+  updateCollectingEventDateRangeSyncState(collectingEvent);
+  updateCollectingEventDatePrecisionSyncState(collectingEvent);
+}
+
+function updateCollectingEventDateRangeSyncState(
+  collectingEvent: SpecifyResource<CollectingEvent>
+): void {
+  const state = getCollectingEventDateRangeSyncState(collectingEvent);
+  const startDate = normalizeDateValue(collectingEvent.get('startDate'));
+  const endDate = normalizeDateValue(collectingEvent.get('endDate'));
+
+  collectingEventDateRangeSyncState.set(collectingEvent, {
+    ...state,
+    endDate:
+      startDate !== null && startDate === endDate ? endDate : undefined,
+  });
+}
+
+function updateCollectingEventDatePrecisionSyncState(
+  collectingEvent: SpecifyResource<CollectingEvent>
+): void {
+  const state = getCollectingEventDateRangeSyncState(collectingEvent);
+  const startDatePrecision = normalizeDatePrecision(
+    collectingEvent.get('startDatePrecision')
+  );
+  const endDatePrecision = normalizeDatePrecision(
+    collectingEvent.get('endDatePrecision')
+  );
+  const isSynced =
+    startDatePrecision !== null && startDatePrecision === endDatePrecision;
+
+  collectingEventDateRangeSyncState.set(collectingEvent, {
+    ...state,
+    endDatePrecision: isSynced ? endDatePrecision : undefined,
+    isEndDatePrecisionManual:
+      startDatePrecision !== null && endDatePrecision !== null && !isSynced,
+  });
+}
+
+function syncCollectingEventEndDate(
+  collectingEvent: SpecifyResource<CollectingEvent>
+): void {
+  const state = getCollectingEventDateRangeSyncState(collectingEvent);
+  const startDate = normalizeDateValue(collectingEvent.get('startDate'));
+  const endDate = normalizeDateValue(collectingEvent.get('endDate'));
+
+  if (endDate === null || endDate === state.endDate) {
+    collectingEventDateRangeSyncState.set(collectingEvent, {
+      ...state,
+      endDate: startDate,
+    });
+    collectingEvent.set('endDate', startDate);
+    syncCollectingEventEndDatePrecision(collectingEvent, true);
+  } else if (startDate !== null && startDate === endDate)
+    updateCollectingEventDateRangeSyncState(collectingEvent);
+}
+
+function syncCollectingEventEndDatePrecision(
+  collectingEvent: SpecifyResource<CollectingEvent>,
+  force = false
+): void {
+  const state = getCollectingEventDateRangeSyncState(collectingEvent);
+  const startDate = normalizeDateValue(collectingEvent.get('startDate'));
+  const endDate = normalizeDateValue(collectingEvent.get('endDate'));
+  const startDatePrecision = normalizeDatePrecision(
+    collectingEvent.get('startDatePrecision')
+  );
+  const endDatePrecision = normalizeDatePrecision(
+    collectingEvent.get('endDatePrecision')
+  );
+
+  if (startDate === null || startDate !== endDate) return;
+  if (state.isEndDatePrecisionManual === true) return;
+  if (
+    force ||
+    endDatePrecision === null ||
+    endDatePrecision === state.endDatePrecision ||
+    state.endDatePrecision === undefined
+  ) {
+    collectingEventDateRangeSyncState.set(collectingEvent, {
+      ...state,
+      endDatePrecision: startDatePrecision,
+    });
+    collectingEvent.set('endDatePrecision', startDatePrecision);
+  } else if (
+    startDatePrecision !== null &&
+    startDatePrecision === endDatePrecision
+  )
+    updateCollectingEventDatePrecisionSyncState(collectingEvent);
+}
 
 export const businessRuleDefs: MappedBusinessRuleDefs = {
   Address: {
@@ -376,6 +500,17 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       }
     },
     onAdded: onAddedEnsureBoolInCollection('isPrimary'),
+  },
+
+  CollectingEvent: {
+    customInit: initializeCollectingEventDateRangeSync,
+    fieldChecks: {
+      startDate: syncCollectingEventEndDate,
+      startDatePrecision: (collectingEvent): void =>
+        syncCollectingEventEndDatePrecision(collectingEvent),
+      endDate: updateCollectingEventDateRangeSyncState,
+      endDatePrecision: updateCollectingEventDatePrecisionSyncState,
+    },
   },
 
   Component: {
