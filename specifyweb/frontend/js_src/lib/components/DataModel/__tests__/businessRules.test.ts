@@ -498,6 +498,16 @@ describe.skip('Dependent Collections isPrimary', () => {
 });
 
 describe('Collecting Event', () => {
+  test('copies start date into end date during initialization', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource({
+      startDate: '2026-04-27',
+      startDatePrecision: 2,
+    });
+
+    expect(collectingEvent.get('endDate')).toBe('2026-04-27');
+    expect(collectingEvent.get('endDatePrecision')).toBe(2);
+  });
+
   test('copies start date into an empty end date', () => {
     const collectingEvent = new tables.CollectingEvent.Resource();
 
