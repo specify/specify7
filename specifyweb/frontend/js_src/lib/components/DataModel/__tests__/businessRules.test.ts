@@ -498,6 +498,56 @@ describe.skip('Dependent Collections isPrimary', () => {
 });
 
 describe('Collecting Event', () => {
+  test('copies start date into an empty end date', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+
+    collectingEvent.set('startDate', '2026-04-27');
+
+    expect(collectingEvent.get('endDate')).toBe('2026-04-27');
+  });
+
+  test('updates an automatically copied end date when start date changes', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+
+    collectingEvent.set('startDate', '2026-04-27');
+    collectingEvent.set('startDate', '2026-04-28');
+
+    expect(collectingEvent.get('endDate')).toBe('2026-04-28');
+  });
+
+  test('preserves a manually changed end date', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+
+    collectingEvent.set('startDate', '2026-04-27');
+    collectingEvent.set('endDate', '2026-04-29');
+    collectingEvent.set('startDate', '2026-04-28');
+
+    expect(collectingEvent.get('endDate')).toBe('2026-04-29');
+  });
+
+  test('keeps end date precision with an automatically copied end date', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+
+    collectingEvent.set('startDatePrecision', 2);
+    collectingEvent.set('endDatePrecision', 1, { silent: true });
+    collectingEvent.set('startDate', '2026-04-01');
+    collectingEvent.set('startDatePrecision', 3);
+
+    expect(collectingEvent.get('endDate')).toBe('2026-04-01');
+    expect(collectingEvent.get('endDatePrecision')).toBe(3);
+  });
+
+  test('preserves a manually changed end date precision', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+
+    collectingEvent.set('startDate', '2026-04-01');
+    collectingEvent.set('startDatePrecision', 2);
+    collectingEvent.set('endDatePrecision', 1);
+    collectingEvent.set('startDatePrecision', 3);
+
+    expect(collectingEvent.get('endDatePrecision')).toBe(1);
+  });
+
   test('Removing Collector sets first Collector as primary', () => {
     const collectingEvent = new tables.CollectingEvent.Resource({
       collectors: [
