@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-05-01 11:09+0000\n"
+"PO-Revision-Date: 2026-05-01 13:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "welcome/uk/>\n"
@@ -47,8 +47,8 @@ msgstr ""
 #: components/HomePage/AboutSpecify.tsx:79
 msgid "fullAddress"
 msgstr ""
-"Укажіть консорціум колекцій <br />\n"
-"Інститут біорізноманіття <br />\n"
+"Specify Консорціум Колекцій <br />\n"
+"Інститут Біорізноманіття <br />\n"
 "Університет Канзасу <br />\n"
 "1345 Jayhawk Blvd. <br />\n"
 "Лоуренс, KS 66045 США"
@@ -61,30 +61,30 @@ msgstr ""
 "Consortium, яким керують і фінансують установи-члени. Члени-засновники "
 "консорціуму включають: Науково-промислову дослідницьку організацію "
 "Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas, "
-"Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva, Університет "
+"Датський Консорціум Музеїв, Muséum d'Histoire Naturelle Geneva, Університет "
 "Флориди, Університет Канзасу та Університет Мічигану. Консорціум працює "
 "відповідно до некомерційного, 501(c)3, податкового статусу США "
-"дослідницького центру Канзаського університету. З 1996 по 2018 рік Specify "
-"підтримувався грантами Національного наукового фонду США."
+"дослідницького центру Канзаського Університету. З 1996 по 2018 рік Specify "
+"підтримувався грантами Національного Наукового Фонду США."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
 msgid "licence"
 msgstr ""
-"Укажіть 7, авторське право 2025, Дослідницький центр Канзаського "
-"університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне "
+"Specify 7, Авторське Право 2025, Дослідницький Центр Канзаського "
+"Університету. Specify повставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне "
 "програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General "
 "Public License v2."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
 msgid "systemInformation"
-msgstr "Інформація про систему"
+msgstr "Інформація про Систему"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:99
 msgid "specifyVersion"
-msgstr "Вкажіть 7 версію:"
+msgstr "Specify 7 Версія:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:100
@@ -94,28 +94,27 @@ msgstr "Git SHA:"
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
 msgid "buildDate"
-msgstr "Дата збірки:"
+msgstr "Дата Збірки:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
 msgid "specifySixVersion"
-msgstr "Вкажіть 6 версію:"
+msgstr "Specify 6 Версія:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
 msgid "databaseVersion"
-msgstr "Версія бази даних:"
+msgstr "Версія Бази Даних:"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
-#, fuzzy
 msgid "schemaVersion"
-msgstr "Схема бази даних"
+msgstr "Схема Бази Даних"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
 msgid "databaseName"
-msgstr "Ім'я бази даних:"
+msgstr "Назва Бази Даних:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:128
@@ -125,4 +124,4 @@ msgstr "Браузер:"
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:111
 msgid "databaseCreationDate"
-msgstr "Дата створення БД:"
+msgstr "Дата Створення БД:"
