@@ -116,6 +116,7 @@ const getCollectingEventDateRangeSyncState = (
 function initializeCollectingEventDateRangeSync(
   collectingEvent: SpecifyResource<CollectingEvent>
 ): void {
+  syncCollectingEventEndDate(collectingEvent);
   updateCollectingEventDateRangeSyncState(collectingEvent);
   updateCollectingEventDatePrecisionSyncState(collectingEvent);
 }
@@ -143,14 +144,12 @@ function updateCollectingEventDatePrecisionSyncState(
   const endDatePrecision = normalizeDatePrecision(
     collectingEvent.get('endDatePrecision')
   );
-  const isSynced =
-    startDatePrecision !== null && startDatePrecision === endDatePrecision;
+  const isSynced = startDatePrecision === endDatePrecision;
 
   collectingEventDateRangeSyncState.set(collectingEvent, {
     ...state,
     endDatePrecision: isSynced ? endDatePrecision : undefined,
-    isEndDatePrecisionManual:
-      startDatePrecision !== null && endDatePrecision !== null && !isSynced,
+    isEndDatePrecisionManual: !isSynced,
   });
 }
 
