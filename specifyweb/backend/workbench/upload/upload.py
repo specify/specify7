@@ -16,6 +16,7 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 from typing import Any, Optional, cast
 
+from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
 from specifyweb.backend.permissions.permissions import has_target_permission
 from specifyweb.specify import models
 from specifyweb.backend.workbench.upload.auditlog import auditlog
@@ -341,7 +342,7 @@ def do_upload(
 
     scope_context = ScopeContext()
 
-    with savepoint("main upload"):
+    with savepoint("main upload"), cache_unique_catnum_preferences():
         tic = time.perf_counter()
         results: list[UploadResult] = []
         for i, row in enumerate(rows):
