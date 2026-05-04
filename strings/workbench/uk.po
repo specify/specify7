@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-05-02 12:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"workbench/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/workbench/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,20 +12,19 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1\n"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #: components/Header/menuItemDefinitions.ts:94
 #: components/Preferences/UserDefinitions.tsx:1955
 #: components/Router/OverlayRoutes.tsx:160
 #: components/WbUtils/datasetVariants.tsx:30
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "workBench"
 msgstr "WorkBench"
 
-#. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:39
+#. Used in: Components > Wb Toolkit > Dev Show Plan
 msgid "uploadPlan"
-msgstr "План Відвантаження"
+msgstr "План завантаження"
 
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
@@ -33,160 +32,161 @@ msgstr "План Відвантаження"
 #: components/WbUtils/datasetVariants.tsx:48
 #: components/WbUtils/datasetVariants.tsx:123
 #: components/WorkBench/Status.tsx:80
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Wb Utils > Dataset Variants ⬤ Components > Work Bench > Status
 msgid "rollback"
-msgstr "Відкіт"
+msgstr "Відкат"
 
-#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 #: components/AttachmentsBulkImport/Import.tsx:290
 #: components/WbActions/WbValidate.tsx:73
 #: components/WbPlanView/Mapper.tsx:463
+#. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 msgid "validate"
 msgstr "Перевірити"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:78
+#. Used in: Components > Work Bench > Status
 msgid "validation"
 msgstr "Перевірка"
 
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:217
 #: components/AttachmentsBulkImport/Upload.tsx:243
 #: components/AttachmentsBulkImport/utils.ts:465
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
 msgid "upload"
-msgstr "Відвантаження"
+msgstr "Вавантаження"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:86
+#. Used in: Components > Work Bench > Status
 msgid "rollingBack"
-msgstr "Відкачування Назад"
+msgstr "Відкат назад"
 
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WbUtils/datasetVariants.tsx:53
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 msgid "uploading"
-msgstr "Відвантажується"
+msgstr "Завантаження"
 
-#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:41
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:45
 #: components/WorkBench/Status.tsx:84
+#. Used in: Components > Attachments Bulk Import > Validation Dialog ⬤ Components > Work Bench > Status
 msgid "validating"
-msgstr "Перевіряється"
+msgstr "Перевірка"
 
-#. Used in: Components > Work Bench > Wb Spreadsheet
 #: components/WorkBench/WbSpreadsheet.tsx:169
+#. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "disambiguate"
 msgstr "Усунути неоднозначність"
 
-#. Used in: Components > Work Bench > Wb Spreadsheet
 #: components/WorkBench/WbSpreadsheet.tsx:293
+#. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillDown"
 msgstr "Заповнити вниз"
 
-#. Used in: Components > Work Bench > Wb Spreadsheet
 #: components/WorkBench/WbSpreadsheet.tsx:293
+#. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "fillUp"
-msgstr "Заповнити Вверх"
+msgstr "Заповнити"
 
-#. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:33
 #: components/WbActions/WbRevert.tsx:41
+#. Used in: Components > Wb Actions > Wb Revert
 msgid "revert"
 msgstr "Повернути"
 
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 #: components/Preferences/UserDefinitions.tsx:1961
 #: components/WbActions/WbValidate.tsx:58
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Actions > Wb Validate
 msgid "dataCheck"
-msgstr "Перевірка даних в реальному часі"
+msgstr "Перевірка даних"
 
-#. Used in: Components > Wb Actions > Wb Validate
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbActions/WbValidate.tsx:57
+#. Used in: Components > Wb Actions > Wb Validate
 msgid "dataCheckOn"
-msgstr "Перевірка даних в реальному часі: Увімкнено"
+msgstr "Перевірка даних: увімкнено"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1962
+#. Used in: Components > Preferences > User Definitions
 msgid "dataCheckDescription"
 msgstr ""
 "Зауважте, що перевірка в реальному часі є експериментальною функцією і не "
 "замінює звичайну перевірку."
 
-#. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:38
 #: components/WbToolkit/ChangeOwner.tsx:89
+#. Used in: Components > Wb Toolkit > Change Owner
 msgid "changeOwner"
-msgstr "Змінити Власника"
+msgstr "Змінити власника"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:62
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "convertCoordinates"
-msgstr "Перетворення Координат"
+msgstr "Перетворення координат"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:50
+#. Used in: Components > Wb Utils > Index
 msgid "navigation"
 msgstr "Навігація"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:74
+#. Used in: Components > Wb Utils > Index
 msgid "replace"
 msgstr "Замінити"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:70
 #: components/WbUtils/index.tsx:78
+#. Used in: Components > Wb Utils > Index
 msgid "replacementValue"
-msgstr "Заміщення значення"
+msgstr "Відновна вартість"
 
-#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 #: components/SpecifyNetworkCollection/Setup.tsx:69
 #: components/WbUtils/index.tsx:112
+#. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 msgid "searchResults"
-msgstr "Результати Пошуку"
+msgstr "Результати пошуку"
 
-#. Used in: Components > Wb Utils > Navigation
 #: components/WbUtils/Navigation.tsx:100
+#. Used in: Components > Wb Utils > Navigation
 msgid "clickToToggle"
 msgstr "Натисніть, щоб увімкнути видимість"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:111
 #: components/WorkBench/AdvancedSearch.tsx:214
 #: components/WorkBench/AdvancedSearch.tsx:216
+#. Used in: Components > Work Bench > Advanced Search
 msgid "configureSearchReplace"
-msgstr "Налаштувати Пошук і Заміну"
+msgstr "Налаштувати пошук і заміну"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:120
+#. Used in: Components > Wb Utils > Index
 msgid "modifiedCells"
-msgstr "Модифіковані Клітини"
+msgstr "Модифіковані клітини"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:127
-msgid "newCells"
-msgstr "Нові Клітини"
-
 #. Used in: Components > Wb Utils > Index
+msgid "newCells"
+msgstr "Нові клітини"
+
 #: components/WbUtils/index.tsx:159
+#. Used in: Components > Wb Utils > Index
 msgid "errorCells"
-msgstr "Комірки З Помилками"
+msgstr "Комірки помилок"
 
-#. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:470
+#. Used in: Components > Wb Plan View > Mapper
 msgid "dataEditor"
-msgstr "Редактор Даних"
+msgstr "Редактор даних"
 
-#. Used in: Components > Work Bench > Use Disambiguation Dialog
 #: components/WorkBench/useDisambiguationDialog.tsx:105
+#. Used in: Components > Work Bench > Use Disambiguation Dialog
 msgid "noDisambiguationResults"
 msgstr "Неможливо усунути неоднозначність"
 
-#. Used in: Components > Work Bench > Use Disambiguation Dialog
 #: components/WorkBench/useDisambiguationDialog.tsx:108
+#. Used in: Components > Work Bench > Use Disambiguation Dialog
 msgid "noDisambiguationResultsDescription"
 msgstr ""
 "Жоден із відповідних записів наразі не існує в базі даних. Це може статися, "
@@ -195,698 +195,694 @@ msgstr ""
 "останньому випадку вам потрібно буде додати поля та значення до набору "
 "даних, щоб усунути неоднозначність."
 
-#. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:68
-msgid "disambiguateMatches"
-msgstr "Усуньте Неоднозначність Збігів Кількох Записів"
-
 #. Used in: Components > Work Bench > Disambiguation
-#: components/WorkBench/Disambiguation.tsx:57
-msgid "applyAllUnavailable"
-msgstr "\"Застосувати все\" недоступно, поки триває Перевірка Даних."
+msgid "disambiguateMatches"
+msgstr "Усуньте неоднозначність збігів кількох записів"
 
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Utils > Dataset Variants
+#: components/WorkBench/Disambiguation.tsx:57
+#. Used in: Components > Work Bench > Disambiguation
+msgid "applyAllUnavailable"
+msgstr "Функція «Застосувати все» недоступна, поки триває перевірка даних."
+
 #: components/AttachmentsBulkImport/Rollback.tsx:134
 #: components/WbUtils/datasetVariants.tsx:49
 #: components/WbUtils/datasetVariants.tsx:124
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Utils > Dataset Variants
 msgid "beginRollback"
-msgstr "Почати Відкіт Набору Даних?"
+msgstr "Почати відкат набору даних?"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:50
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "beginRollbackDescription"
 msgstr ""
-"Відкіт видалить нові записи даних, додані цим Набором Даних до бази даних "
-"Specify. Повний відкіт буде скасовано, якщо на будь-які відвантажені дані "
+"Відкат видалить нові записи даних, додані цим набором даних до бази даних "
+"Specify. Повний відкат буде скасовано, якщо на будь-які завантажені дані "
 "посилалися (повторно використовували) інші записи даних після їх "
-"відвантаження."
+"завантаження."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:42
-msgid "startUpload"
-msgstr "Почати Відвантаження Набору Даних?"
-
 #. Used in: Components > Wb Utils > Dataset Variants
+msgid "startUpload"
+msgstr "Почати завантаження набору даних?"
+
 #: components/WbUtils/datasetVariants.tsx:46
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startUploadDescription"
-msgstr "Відвантаження Набору Даних додасть дані до бази даних Specify."
+msgstr "Завантаження набору даних додасть дані до бази даних Specify."
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:169
-msgid "deleteDataSet"
-msgstr "Видалити цей Набір Даних?"
-
 #. Used in: Components > Work Bench > Data Set Meta
+msgid "deleteDataSet"
+msgstr "Видалити цей набір даних?"
+
 #: components/WorkBench/DataSetMeta.tsx:89
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "deleteDataSetDescription"
 msgstr ""
-"Видалення Набору Даних остаточно видаляє його та його План Відвантаження. "
+"Видалення набору даних остаточно видаляє його та його план завантаження. "
 "Зіставлення даних більше не буде доступним для повторного використання з "
-"іншими наборами даних. Крім того, після видалення відкіт більше не буде "
-"доступним для відвантаженого Набору Даних."
+"іншими наборами даних. Крім того, після видалення відкат більше не буде "
+"доступним для завантаженого набору даних."
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:131
-msgid "dataSetDeleted"
-msgstr "Набір Даних успішно видалено"
-
 #. Used in: Components > Work Bench > Data Set Meta
+msgid "dataSetDeleted"
+msgstr "Набір даних успішно видалено"
+
 #: components/WorkBench/DataSetMeta.tsx:134
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetDeletedDescription"
-msgstr "Набір Даних успішно видалено."
+msgstr "Набір даних успішно видалено."
 
-#. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:45
-msgid "revertChanges"
-msgstr "Скасувати Незбережені Зміни?"
-
 #. Used in: Components > Wb Actions > Wb Revert
+msgid "revertChanges"
+msgstr "Скасувати незбережені зміни?"
+
 #: components/WbActions/WbRevert.tsx:48
+#. Used in: Components > Wb Actions > Wb Revert
 msgid "revertChangesDescription"
 msgstr ""
-"Ця дія призведе до скасування всіх змін, внесених до Набору Даних після "
-"останнього Збереження."
+"Ця дія призведе до скасування всіх змін, внесених до набору даних після "
+"останнього збереження."
 
-#. Used in: Components > Wb Actions > Wb Save
 #: components/WbActions/WbSave.tsx:71
+#. Used in: Components > Wb Actions > Wb Save
 msgid "saving"
 msgstr "Збереження..."
 
-#. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/WbView.tsx:124
+#. Used in: Components > Work Bench > Wb View
 msgid "wbUnloadProtect"
-msgstr "Зміни в цьому Наборі Даних не збережено."
+msgstr "Зміни в цьому наборі даних не збережено."
 
-#. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:334
+#. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr "Немає відповідного запису для таблиці обов’язкової відповідності."
 
-#. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:363
+#. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""
 "Це значення збігається з двома чи більше існуючими записами бази даних, і "
 "збіг необхідно усунути перед завантаженням."
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:319
-msgid "validationNoErrors"
-msgstr "Перевірка Завершена Без Помилок"
-
 #. Used in: Components > Wb Actions > Index
+msgid "validationNoErrors"
+msgstr "Перевірка завершена без помилок"
+
 #: components/WbActions/index.tsx:322
+#. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr "Перевірка не виявила помилок, вона готова до завантаження в базу даних."
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:325
 #: components/WbActions/index.tsx:336
+#. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
-"Примітка: Якщо цей Набір Даних відредаговано та повторно збережено, перед "
-"завантаженням слід повторно запустити Перевірку, щоб переконатися, що не "
+"Примітка. Якщо цей набір даних відредаговано та повторно збережено, перед "
+"завантаженням слід повторно запустити перевірку, щоб переконатися, що не "
 "було допущено помилок."
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:330
-msgid "validationErrors"
-msgstr "Перевірка Виконана з Помилками"
-
 #. Used in: Components > Wb Actions > Index
+msgid "validationErrors"
+msgstr "Перевірка виконана з помилками"
+
 #: components/WbActions/index.tsx:333
+#. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
-msgstr "Перевірка виявила помилки в Наборі Даних."
+msgstr "Перевірка виявила помилки в наборі даних."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:55
-msgid "uploadSuccessful"
-msgstr "Відвантаження Завершено Без Помилок"
-
 #. Used in: Components > Wb Utils > Dataset Variants
+msgid "uploadSuccessful"
+msgstr "Завантаження завершено без помилок"
+
 #: components/WbUtils/datasetVariants.tsx:51
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "uploadSuccessfulDescription"
 msgstr ""
-"Натисніть кнопку \"Результати\", щоб побачити кількість нових записів, "
+"Натисніть кнопку «Результати», щоб побачити кількість нових записів, "
 "доданих до кожної таблиці бази даних."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:43
-msgid "uploadErrors"
-msgstr "Помилка Відвантаження через Клітинки з Помилками"
-
 #. Used in: Components > Wb Utils > Dataset Variants
+msgid "uploadErrors"
+msgstr "Помилка завантаження через клітинки помилок"
+
 #: components/WbUtils/datasetVariants.tsx:47
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "uploadErrorsDescription"
 msgstr "Помилка завантаження через одну або кілька помилок значення клітинки."
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:353
+#. Used in: Components > Wb Actions > Index
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Перевірте набір даних і перегляньте підказки під час наведення курсора миші "
 "для кожної клітинки з помилкою, потім внесіть відповідні виправлення. "
 "Збережіть і повторіть спробу {type:string}."
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:360
+#. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
-msgstr "Набір Даних успішно повернуто"
+msgstr "Набір даних успішно повернуто"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:52
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "dataSetRollbackDescription"
 msgstr ""
-"Цей Відкочений Набір Даних зберігається та може бути відредагований або "
+"Цей відкочений набір даних зберігається та може бути відредагований або "
 "повторно завантажений."
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:226
-msgid "validationCanceled"
-msgstr "Перевірку Скасовано"
-
 #. Used in: Components > Wb Actions > Index
-#: components/WbActions/index.tsx:234
-msgid "validationCanceledDescription"
-msgstr "Перевірку Набору Даних скасовано."
+msgid "validationCanceled"
+msgstr "Перевірку скасовано"
 
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
+#: components/WbActions/index.tsx:234
+#. Used in: Components > Wb Actions > Index
+msgid "validationCanceledDescription"
+msgstr "Перевірку набору даних скасовано."
+
 #: components/AttachmentsBulkImport/Rollback.tsx:30
 #: components/WbActions/index.tsx:228
-msgid "rollbackCanceled"
-msgstr "Відкіт Скасовано"
-
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
+msgid "rollbackCanceled"
+msgstr "Відкат скасовано"
+
 #: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WbActions/index.tsx:236
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
-msgstr "Відкіт набору даних скасовано."
+msgstr "Відкат набору даних скасовано."
 
-#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WbUtils/datasetVariants.tsx:44
-msgid "uploadCanceled"
-msgstr "Відвантаження Скасовано"
-
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
+msgid "uploadCanceled"
+msgstr "Завантаження скасовано"
+
 #: components/AttachmentsBulkImport/Upload.tsx:111
 #: components/WbUtils/datasetVariants.tsx:45
+#. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 msgid "uploadCanceledDescription"
-msgstr "Відвантаження Набору Даних скасовано."
+msgstr "Завантаження набору даних скасовано."
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:232
-msgid "coordinateConverter"
-msgstr "Формат Геокоординат"
-
 #. Used in: Components > Wb Toolkit > Coordinate Converter
-#: components/WbToolkit/CoordinateConverter.tsx:243
-msgid "coordinateConverterDescription"
-msgstr "Виберіть потрібний формат Геокоординат"
+msgid "coordinateConverter"
+msgstr "Формат геокоординат"
 
-#. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
+#: components/WbToolkit/CoordinateConverter.tsx:243
+#. Used in: Components > Wb Toolkit > Coordinate Converter
+msgid "coordinateConverterDescription"
+msgstr "Виберіть потрібний формат геокоординат"
+
 #: components/WorkBench/mapping.ts:82
+#. 🟥When empty string is used as a default value for a column, this is shown instead. Used in: Components > Work Bench > Mapping
 msgid "emptyStringInline"
 msgstr "(порожній рядок)"
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:119
+#. Used in: Components > Wb Actions > Index
 msgid "wbUploadedUnavailable"
 msgstr "Набір даних має бути перевірений або завантажений"
 
-#. Used in: Components > Wb Actions > Wb Validate
 #: components/WbActions/WbValidate.tsx:47
 #: components/WbActions/WbValidate.tsx:69
+#. Used in: Components > Wb Actions > Wb Validate
 msgid "wbValidateUnavailable"
-msgstr ""
-"Перед Перевіркою цього Набору Даних необхідно визначити план Відвантаження"
+msgstr "Перед перевіркою цього набору даних необхідно визначити план завантаження"
 
-#. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #: components/WbActions/WbUpload.tsx:69
 #: components/WbActions/WbUpload.tsx:84
 #: components/WbActions/WbValidate.tsx:66
 #: components/WbToolkit/ChangeOwner.tsx:35
 #: components/WbToolkit/index.tsx:113
+#. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 msgid "unavailableWhileEditing"
 msgstr "Ця дія вимагає збереження всіх змін"
 
-#. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:71
 #: components/WbActions/WbUpload.tsx:86
+#. Used in: Components > Wb Actions > Wb Upload
 msgid "uploadUnavailableWhileHasErrors"
-msgstr ""
-"Відвантаження недоступне, оскільки в деяких клітинках є помилки перевірки"
+msgstr "Завантаження недоступне, оскільки в деяких клітинках є помилки перевірки"
 
-#. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 #: components/WbActions/WbValidate.tsx:45
 #: components/WbToolkit/CoordinateConverter.tsx:56
 #: components/WbToolkit/GeoLocate.tsx:54
 #: components/WbUtils/index.tsx:77
+#. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
-msgstr "Ця дія недоступна під час перегляду результатів відвантаження"
+msgstr "Ця дія недоступна під час перегляду результатів завантаження"
 
-#. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:116
+#. Used in: Components > Wb Actions > Index
 msgid "unavailableWhileValidating"
-msgstr "Ця дія недоступна, поки триває Перевірка Даних"
+msgstr "Ця дія недоступна, поки триває перевірка даних"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #: components/WbToolkit/CoordinateConverter.tsx:58
 #: components/WbToolkit/GeoLocate.tsx:56
 #: components/WbToolkit/WbLeafletMap.tsx:62
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "Цей інструмент вимагає відображення стовпців місцевості"
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 #: components/WbToolkit/CoordinateConverter.tsx:54
 #: components/WbToolkit/GeoLocate.tsx:52
+#. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 msgid "unavailableWhenUploaded"
-msgstr "Цей інструмент не працює із завантаженими Наборами Даних"
+msgstr "Цей інструмент не працює із завантаженими наборами даних"
 
-#. Used in: Components > Work Bench > Index
 #: components/WorkBench/index.tsx:53
+#. Used in: Components > Work Bench > Index
 msgid "dataSetDeletedOrNotFound"
-msgstr "Набір Даних видалено іншим сеансом."
+msgstr "Набір даних видалено іншим сеансом."
 
-#. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:268
+#. Used in: Components > Wb Toolkit > Coordinate Converter
 msgid "includeDmsSymbols"
 msgstr "Додайте символи DMS"
 
-#. Used in: Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Upload.tsx:271
+#. Used in: Components > Attachments Bulk Import > Upload
 msgid "uploadResults"
-msgstr "Результати Відвантаження"
+msgstr "План завантаження"
 
-#. Used in: Components > Work Bench > Wb Spreadsheet
 #: components/WorkBench/WbSpreadsheet.tsx:98
+#. Used in: Components > Work Bench > Wb Spreadsheet
 msgid "noUploadResultsAvailable"
 msgstr "Для цієї клітинки немає результатів завантаження"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:116
+#. Used in: Components > Work Bench > Advanced Search
 msgid "navigationOptions"
-msgstr "Параметри Навігації"
+msgstr "Параметри навігації"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:118
-msgid "cursorPriority"
-msgstr "Пріоритет Курсору"
-
 #. Used in: Components > Work Bench > Advanced Search
+msgid "cursorPriority"
+msgstr "Пріоритет курсору"
+
 #: components/WorkBench/AdvancedSearch.tsx:131
+#. Used in: Components > Work Bench > Advanced Search
 msgid "columnFirst"
 msgstr "Колонка перша"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:132
+#. Used in: Components > Work Bench > Advanced Search
 msgid "rowFirst"
 msgstr "Перший ряд"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:138
-msgid "searchOptions"
-msgstr "Параметри Пошуку"
-
 #. Used in: Components > Work Bench > Advanced Search
+msgid "searchOptions"
+msgstr "Параметри пошуку"
+
 #: components/WorkBench/AdvancedSearch.tsx:144
+#. Used in: Components > Work Bench > Advanced Search
 msgid "findEntireCellsOnly"
 msgstr "Знайти лише цілі клітини"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:151
-msgid "matchCase"
-msgstr "Збіг Регістру"
-
 #. Used in: Components > Work Bench > Advanced Search
+msgid "matchCase"
+msgstr "Відмінок сірника"
+
 #: components/WorkBench/AdvancedSearch.tsx:158
+#. Used in: Components > Work Bench > Advanced Search
 msgid "useRegularExpression"
 msgstr "Використовуйте регулярний вираз"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:165
+#. Used in: Components > Work Bench > Advanced Search
 msgid "liveUpdate"
 msgstr "Живий пошук"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:170
+#. Used in: Components > Work Bench > Advanced Search
 msgid "replaceOptions"
-msgstr "Параметри Заміни"
+msgstr "Параметри заміни"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:172
-msgid "replaceMode"
-msgstr "Режим Заміни"
-
 #. Used in: Components > Work Bench > Advanced Search
+msgid "replaceMode"
+msgstr "Режим заміни"
+
 #: components/WorkBench/AdvancedSearch.tsx:185
+#. Used in: Components > Work Bench > Advanced Search
 msgid "replaceAll"
 msgstr "Замінити всі збіги"
 
-#. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:186
+#. Used in: Components > Work Bench > Advanced Search
 msgid "replaceNext"
 msgstr "Замінити наступне входження"
 
-#. Used in: Components > Router > Routes
 #: components/Router/Routes.tsx:215
+#. Used in: Components > Router > Routes
 msgid "importDataSet"
-msgstr "Імпорт Набору Даних"
+msgstr "Імпорт набору даних"
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:39
+#. Used in: Components > Wb Import > Index
 msgid "wbImportHeader"
-msgstr "Імпортуйте файл, щоб створити Новий Набір Даних"
+msgstr "Імпортуйте файл, щоб створити новий набір даних"
 
-#. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:273
-msgid "previewDataSet"
-msgstr "Попередній перегляд Набору Даних"
-
 #. Used in: Components > Molecules > File Picker
+msgid "previewDataSet"
+msgstr "Попередній перегляд набору даних"
+
 #: components/Molecules/FilePicker.tsx:313
+#. Used in: Components > Molecules > File Picker
 msgid "errorImporting"
 msgstr "Під час імпортування файлу виникли такі помилки:"
 
-#. Used in: Components > Wb Import > Helpers
 #: components/WbImport/helpers.ts:108
 #: components/WbImport/helpers.ts:134
+#. Used in: Components > Wb Import > Helpers
 msgid "corruptFile"
-msgstr "Файл {fileName:string} пошкоджено або він не містить даних!"
+msgstr "Файл {fileName:string} пошкоджено або не містить даних!"
 
-#. Used in: Components > Molecules > Csv File Picker
 #: components/Molecules/CsvFilePicker.tsx:157
+#. Used in: Components > Molecules > Csv File Picker
 msgid "characterEncoding"
 msgstr "Кодування символів:"
 
-#. Used in: Components > Molecules > Csv File Picker
 #: components/Molecules/CsvFilePicker.tsx:198
+#. Used in: Components > Molecules > Csv File Picker
 msgid "delimiter"
-msgstr "Роздільник:"
+msgstr "роздільник:"
 
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:172
 #: components/Preferences/UserDefinitions.tsx:1817
 #: components/Preferences/UserDefinitions.tsx:2069
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "comma"
 msgstr "Кома"
 
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:174
 #: components/Preferences/UserDefinitions.tsx:1825
 #: components/Preferences/UserDefinitions.tsx:2077
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "semicolon"
 msgstr "Крапка з комою"
 
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:173
 #: components/Preferences/UserDefinitions.tsx:1821
 #: components/Preferences/UserDefinitions.tsx:2073
-msgid "tab"
-msgstr "Вкладка"
-
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+msgid "tab"
+msgstr "вкладка"
+
 #: components/Molecules/CsvFilePicker.tsx:175
 #: components/Preferences/UserDefinitions.tsx:1829
 #: components/Preferences/UserDefinitions.tsx:2081
-msgid "space"
-msgstr "Простір"
-
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
+msgid "space"
+msgstr "космос"
+
 #: components/Molecules/CsvFilePicker.tsx:176
 #: components/Preferences/UserDefinitions.tsx:1833
 #: components/Preferences/UserDefinitions.tsx:2085
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "pipe"
 msgstr "Труба"
 
-#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:212
 #: components/Preferences/UserDefinitions.tsx:742
 #: components/Preferences/UserDefinitions.tsx:763
 #: components/Preferences/UserDefinitions.tsx:784
+#. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 msgid "determineAutomatically"
-msgstr "Автоматичне визначення"
+msgstr "Регістр сірників"
 
-#. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:118
+#. Used in: Components > Wb Import > Index
 msgid "chooseDataSetName"
-msgstr "Назва Нового Набору Даних:"
+msgstr "Назва нового набору даних:"
 
-#. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:250
+#. Used in: Components > Molecules > File Picker
 msgid "firstRowIsHeader"
-msgstr "Перший Рядок – Заголовок:"
+msgstr "Перший рядок – заголовок:"
 
-#. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 #: components/Molecules/FilePicker.tsx:225
 #: components/Toolbar/WbsDialog.tsx:198
+#. Used in: Components > Molecules > File Picker ⬤ Components > Toolbar > Wbs Dialog
 msgid "importFile"
 msgstr "Імпорт файлу"
 
-#. Used in: Components > Wb Import > Helpers
 #: components/WbImport/helpers.ts:67
+#. Used in: Components > Wb Import > Helpers
 msgid "columnName"
 msgstr "Стовпчик {columnIndex:number}"
 
-#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:41
+#. Used in: Components > Toolbar > Wbs Dialog
 msgid "newDataSetName"
-msgstr "Новий Набір Даних {date}"
+msgstr "Новий набір даних {date}"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:30
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-msgid "dataSets"
-msgstr "{variant:string} Набори Даних"
-
 #. Used in: Components > Wb Utils > Dataset Variants
+msgid "dataSets"
+msgstr "{variant:string} Набори даних"
+
 #: components/WbUtils/datasetVariants.tsx:34
 #: components/WbUtils/datasetVariants.tsx:109
-msgid "wbsDialogEmpty"
-msgstr "Наразі не існує Наборів Даних."
-
 #. Used in: Components > Wb Utils > Dataset Variants
+msgid "wbsDialogEmpty"
+msgstr "Наразі не існує наборів даних."
+
 #: components/WbUtils/datasetVariants.tsx:36
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "createDataSetInstructions"
-msgstr ""
-"Використовуйте \"Імпортувати файл\" або \"Створити новий\", щоб створити "
-"новий."
+msgstr "Використовуйте «Імпортувати файл» або «Створити новий», щоб створити новий."
 
-#. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:209
+#. Used in: Components > Toolbar > Wbs Dialog
 msgid "createNew"
-msgstr "Створити Новий"
+msgstr "Створити новий"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:195
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetMeta"
-msgstr "Властивості Набору Даних"
+msgstr "Властивості набору даних"
 
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 #: components/AttachmentsBulkImport/Datasets.tsx:152
 #: components/AttachmentsBulkImport/Datasets.tsx:284
 #: components/WbPlanView/Mapper.tsx:487
 #: components/WorkBench/DataSetMeta.tsx:219
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta
 msgid "dataSetName"
-msgstr "Назва Набору Даних"
+msgstr "Назва набору даних"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:242
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Кількість рядів"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:249
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Кількість стовпців"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:348
-msgid "importedFileName"
-msgstr "Імпортувати назву файлу"
-
 #. Used in: Components > Work Bench > Data Set Meta
+msgid "importedFileName"
+msgstr "Імпортувати ім'я файлу"
+
 #: components/WorkBench/DataSetMeta.tsx:345
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
-msgstr "(без назви файлу)"
+msgstr "(без імені файлу)"
 
-#. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:93
+#. Used in: Components > Wb Toolkit > Change Owner
 msgid "changeDataSetOwner"
-msgstr "Змінити Власника Набору Даних"
+msgstr "Змінити власника набору даних"
 
-#. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:110
-msgid "changeDataSetOwnerDescription"
-msgstr "Виберіть Нового Власника:"
-
 #. Used in: Components > Wb Toolkit > Change Owner
+msgid "changeDataSetOwnerDescription"
+msgstr "Виберіть нового власника:"
+
 #: components/WbToolkit/ChangeOwner.tsx:78
 #: components/WbToolkit/ChangeOwner.tsx:81
+#. Used in: Components > Wb Toolkit > Change Owner
 msgid "dataSetOwnerChanged"
-msgstr "Змінено власника Набору Даних"
+msgstr "Змінено власника набору даних"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:382
-msgid "dataSet"
-msgstr "Набір Даних"
-
-#. Used in: Components > Toolbar > Wbs Dialog
-#: components/Toolbar/WbsDialog.tsx:122
-msgid "dataSetTimestampUploaded"
-msgstr "Мітка часу Відвантажено"
-
 #. Used in: Components > Work Bench > Data Set Meta
+msgid "dataSet"
+msgstr "Набір даних"
+
+#: components/Toolbar/WbsDialog.tsx:122
+#. Used in: Components > Toolbar > Wbs Dialog
+msgid "dataSetTimestampUploaded"
+msgstr "Мітка часу завантажено"
+
 #: components/WorkBench/DataSetMeta.tsx:386
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
-msgstr "(Завантажено, Лише для Читання)"
+msgstr "(Завантажено, лише для читання)"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:71
-msgid "wbStatusUnupload"
-msgstr "Статус відкоту Набору Даних"
-
-#. Used in: Components > Wb Utils > Dataset Variants
-#: components/WbUtils/datasetVariants.tsx:54
-msgid "wbStatusUpload"
-msgstr "Статус Завантаження Набору Даних"
-
 #. Used in: Components > Work Bench > Status
-#: components/WorkBench/Status.tsx:69
-msgid "wbStatusValidation"
-msgstr "Статус Перевірки Набору Даних"
+msgid "wbStatusUnupload"
+msgstr "Статус відкату набору даних"
 
-#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
+#: components/WbUtils/datasetVariants.tsx:54
+#. Used in: Components > Wb Utils > Dataset Variants
+msgid "wbStatusUpload"
+msgstr "Під час [X22X] сталася помилка"
+
+#: components/WorkBench/Status.tsx:69
+#. Used in: Components > Work Bench > Status
+msgid "wbStatusValidation"
+msgstr "Статус перевірки набору даних"
+
 #: components/AttachmentsBulkImport/ActionState.tsx:38
 #: components/AttachmentsBulkImport/ActionState.tsx:39
 #: components/WorkBench/Status.tsx:106
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "aborting"
 msgstr "Переривання..."
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:96
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusAbortFailed"
 msgstr "Не вдалося перервати {operationName:string}. Будь-ласка спробуйте пізніше"
 
-#. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:123
+#. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 msgid "wbStatusOperationNoProgress"
-msgstr "{operationName:string}..."
+msgstr "{operationName:string}'..."
 
-#. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:127
+#. 🟥E.x, Validating row 999/1,000. Used in: Components > Work Bench > Status
 msgid "wbStatusOperationProgress"
 msgstr ""
-"{operationName:string} ряд {current:number|formatted}/"
-"{total:number|formatted}"
+"{operationName:string} рядок "
+"{current:number|formatted}/{total:number|formatted}"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:110
-msgid "wbStatusPendingDescription"
-msgstr "{operationName:string} цього Набору Даних має початися незабаром."
-
 #. Used in: Components > Work Bench > Status
+msgid "wbStatusPendingDescription"
+msgstr "{operationName:string} цього набору даних має початися незабаром."
+
 #: components/WorkBench/Status.tsx:113
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
 "Якщо це повідомлення зберігається довше 30 секунд, процес "
-"{operationName:string} зайнятий іншим Набором Даних. Будь-ласка спробуйте "
+"{operationName:string} зайнятий іншим набором даних. Будь-ласка спробуйте "
 "пізніше."
 
-#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:24
 #: components/AttachmentsBulkImport/ActionState.tsx:53
 #: components/WorkBench/Status.tsx:166
+#. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 msgid "stop"
-msgstr "Стоп"
+msgstr "СТІЙ"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:137
+#. Used in: Components > Work Bench > Status
 msgid "wbStatusError"
 msgstr "Під час {operationName:string} сталася помилка"
 
-#. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:122
+#. Used in: Components > Work Bench > Status
 msgid "updatingTrees"
 msgstr "Оновлення дерев..."
 
-#. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:79
+#. 🟥Default name of the record that would be created based on upload results. Used in: Components > Work Bench > Record Set
 msgid "recordSetName"
 msgstr "WB завантаження \"{dataSet:string}\""
 
-#. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:100
+#. Used in: Components > Work Bench > Disambiguation
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (у {parent:string})"
 
-#. Used in: Components > Work Bench > Wb Attachments Preview
 #: components/WorkBench/WbAttachmentsPreview.tsx:119
+#. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "attachmentsForRow"
 msgstr "Вкладення для рядка {row:number}:"
 
-#. Used in: Components > Work Bench > Wb Attachments Preview
 #: components/WorkBench/WbAttachmentsPreview.tsx:338
+#. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "detachWindow"
-msgstr "Від’єднати Вікно"
+msgstr "Від’єднати вікно"
 
-#. Used in: Components > Wb Attachment Viewer > Index
 #: components/WbAttachmentViewer/index.tsx:140
+#. Used in: Components > Wb Attachment Viewer > Index
 msgid "attachWindow"
-msgstr "Прикріпити Вікно"
+msgstr "Прикріпити вікно"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:137
-msgid "updatedCells"
-msgstr "Оновлені Комірки"
-
 #. Used in: Components > Wb Utils > Index
+msgid "updatedCells"
+msgstr "Оновлені комірки"
+
 #: components/WbUtils/index.tsx:143
+#. Used in: Components > Wb Utils > Index
 msgid "deletedCells"
-msgstr "Видалені Клітинки"
+msgstr "Видалені клітинки"
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:54
+#. Used in: Components > Work Bench > Results
 msgid "affectedResults"
-msgstr "Записів уражено"
+msgstr "Зафіксовані записи"
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:55
-msgid "potentialAffectedResults"
-msgstr "Потенційно уражених записів"
-
 #. Used in: Components > Work Bench > Results
+msgid "potentialAffectedResults"
+msgstr "Потенційно постраждалі записи"
+
 #: components/WorkBench/Results.tsx:59
+#. Used in: Components > Work Bench > Results
 msgid "wbAffectedDescription"
 msgstr "Кількість нових записів, на які впливає кожна таблиця:"
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:60
+#. Used in: Components > Work Bench > Results
 msgid "wbAffectedPotentialDescription"
 msgstr "Кількість нових записів у кожній таблиці, на які це вплине:"
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:27
+#. Used in: Components > Work Bench > Results
 msgid "recordsCreated"
-msgstr "Створених записів"
+msgstr "Створені записи"
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:30
+#. Used in: Components > Work Bench > Results
 msgid "recordsUpdated"
-msgstr "Оновлених записів"
+msgstr "Записи оновлено"
 
-#. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:28
-msgid "recordsDeleted"
-msgstr "Записи видалено (без урахування залежностей)"
-
 #. Used in: Components > Work Bench > Results
+msgid "recordsDeleted"
+msgstr "Записи видалено (без урахування утриманців)"
+
 #: components/WorkBench/Results.tsx:29
+#. Used in: Components > Work Bench > Results
 msgid "recordsMatchedAndChanged"
 msgstr "Пов’язані записи, що відповідають іншим записам"
 
-#. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:149
+#. Used in: Components > Wb Utils > Index
 msgid "matchAndChanged"
 msgstr "Зіставлені та змінені клітинки"

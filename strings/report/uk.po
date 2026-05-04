@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-04-30 15:09+0000\n"
 "Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"report/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/report/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,110 +12,110 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1\n"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:77
+#. Used in: Components > App Resources > Types
 msgid "label"
-msgstr "Позначка"
+msgstr "Етикетка"
 
-#. Used in: Components > Reports > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 #: components/Reports/index.tsx:161
 #: components/SchemaViewer/Fields.tsx:58
 #: components/SchemaViewer/Relationships.tsx:95
 #: components/SchemaViewer/Table.tsx:58
 #: components/SchemaViewer/schemaToTsv.tsx:16
 #: components/SchemaViewer/schemaToTsv.tsx:21
+#. Used in: Components > Reports > Index ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Table ⬤ Components > Schema Viewer > Schema To Tsv
 msgid "labels"
-msgstr "Позначки"
+msgstr "Етикетки"
 
-#. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:85
+#. Used in: Components > App Resources > Types
 msgid "report"
 msgstr "Звіт"
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
 #: components/Header/menuItemDefinitions.ts:87
 #: components/Preferences/UserDefinitions.tsx:1930
 #: components/Reports/Parameters.tsx:91
 #: components/Reports/index.tsx:143
 #: components/Reports/index.tsx:150
 #: components/Router/OverlayRoutes.tsx:154
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Reports > Parameters ⬤ Components > Reports > Index ⬤ Components > Router > Overlay Routes
 msgid "reports"
 msgstr "Звіти"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:206
+#. Used in: Components > Reports > Report
 msgid "reportProblems"
 msgstr "Проблеми зі звітом"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:210
+#. Used in: Components > Reports > Report
 msgid "reportProblemsDescription"
 msgstr "Вибраний звіт має такі проблеми:"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:211
+#. Used in: Components > Reports > Report
 msgid "missingAttachments"
 msgstr "Відсутні вкладення"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:215
 #: components/Reports/Report.tsx:217
+#. Used in: Components > Reports > Report
 msgid "fix"
 msgstr "Виправити"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:228
+#. Used in: Components > Reports > Report
 msgid "chooseFile"
 msgstr "Виберіть файл"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:316
+#. Used in: Components > Reports > Report
 msgid "reportParameters"
-msgstr "Параметри Звіту"
+msgstr "Параметри звіту"
 
-#. Used in: Components > Reports > Parameters
 #: components/Reports/Parameters.tsx:87
+#. Used in: Components > Reports > Parameters
 msgid "runReport"
-msgstr "Запустити Звіт"
+msgstr "Запустити звіт"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:52
+#. Used in: Components > Reports > Report
 msgid "missingReportQuery"
-msgstr "Відсутній Запит Звіту"
+msgstr "Відсутній запит звіту"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:56
-msgid "missingReportQueryDescription"
-msgstr "Цей звіт не має пов'язаного запиту"
-
 #. Used in: Components > Reports > Report
+msgid "missingReportQueryDescription"
+msgstr "Цей звіт не має прив’язаного запиту"
+
 #: components/Reports/Report.tsx:61
+#. Used in: Components > Reports > Report
 msgid "missingReport"
 msgstr "Відсутній звіт"
 
-#. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:65
+#. Used in: Components > Reports > Report
 msgid "missingReportDescription"
-msgstr "Не вдалося знайти запис SpReport для цього Ресурсу Програми"
+msgstr "Не вдалося знайти запис таблиці SpReport для цього ресурсу програми"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:175
+#. Used in: Components > Form Meta > Index
 msgid "generateLabel"
-msgstr "Створити позначку"
+msgstr "Створити етикетку"
 
-#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 #: components/FormMeta/index.tsx:193
 #: components/FormParse/fields.ts:134
 #: components/FormParse/__tests__/fields.test.ts:147
+#. Used in: Components > Form Meta > Index ⬤ Components > Form Parse > Fields ⬤ Form Parse > __tests__ > Fields
 msgid "generateLabelOnSave"
-msgstr "Створити позначку під час збереження"
+msgstr "Створити етикетку під час збереження"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:174
+#. Used in: Components > Form Meta > Index
 msgid "generateReport"
 msgstr "Створити звіт"
 
-#. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:192
+#. Used in: Components > Form Meta > Index
 msgid "generateReportOnSave"
 msgstr "Створити звіт при збереженні"
