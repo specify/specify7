@@ -674,11 +674,20 @@ class BoundUploadTable(NamedTuple):
 
         n_matched = len(ids)
         if n_matched > 1:
+            if self._disambiguation_pick_first():
+                return Matched(id=ids[0], info=info)
             return MatchedMultiple(ids=ids, key=repr(cache_key), info=info)
         elif n_matched == 1:
             return Matched(id=ids[0], info=info)
         else:
             return None
+
+    def _disambiguation_pick_first(self) -> bool:
+        """Disambiguate by picking the first record if any field uses 'pickFirst'."""
+        for p in self.parsedFields:
+            if p.filter_on and p.disambiguationBehavior == "pickFirst":
+                return True
+        return False
 
     def _check_missing_required(self) -> ParseFailures | None:
         missing_requireds = [

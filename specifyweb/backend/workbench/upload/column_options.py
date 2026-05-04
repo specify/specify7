@@ -28,7 +28,7 @@ class ExtendedColumnOptions(NamedTuple):
     matchBehavior: MatchBehavior
     nullAllowed: bool
     default: str | None
-    DisambiguationBehavior: DisambiguationBehavior
+    disambiguationBehavior: DisambiguationBehavior
     uiformatter: ScopedFormatter | None
     schemaitem: Any
     picklist: Any
