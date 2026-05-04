@@ -5552,7 +5552,7 @@
                 </row>-->
 			</rows>
 		</viewdef>
-		<viewdef name="AgentIdentifiers" class="edu.ku.brc.specify.datamodel.AgentIdentifier" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
+		<viewdef name="AgentIdentifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" type="form" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj" useresourcelabels="true">
 			<desc>subform on the Agent form.</desc>
 			<enableRules/>
 			<columnDef>100px,2px,473px,5px,120px,2px,125px,0px,15px,p:g</columnDef>

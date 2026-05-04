@@ -46,6 +46,7 @@ import {
   getRelatedCollectionId,
   makeComboBoxQuery,
   pendingValueToResource,
+  scopeNewResourceToCollection,
   useQueryComboBoxDefaults,
 } from './helpers';
 import type { TypeSearch } from './spec';
@@ -74,6 +75,7 @@ export function QueryComboBox({
   searchView,
   defaultRecord,
   relatedTable: initialRelatedTable,
+  onSavingNewRecord: handleSavingNewRecord,
 }: {
   readonly id: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
@@ -90,6 +92,9 @@ export function QueryComboBox({
   readonly searchView?: string;
   readonly defaultRecord?: string | undefined;
   readonly relatedTable?: SpecifyTable | undefined;
+  readonly onSavingNewRecord?:
+    | ((resource: SpecifyResource<AnySchema>) => void)
+    | undefined;
 }): JSX.Element {
   React.useEffect(() => {
     useQueryComboBoxDefaults({ resource, field, defaultRecord });
@@ -221,6 +226,7 @@ export function QueryComboBox({
     typeof collectionRelationships === 'object' && typeof resource === 'object'
       ? getRelatedCollectionId(collectionRelationships, resource, field.name)
       : undefined;
+  const targetCollectionId = forceCollection ?? relatedCollectionId;
 
   const loading = React.useContext(LoadingContext);
   const handleOpenRelated = (isReadOnly: boolean): void =>
@@ -247,6 +253,15 @@ export function QueryComboBox({
   const relatedTable =
     (typeof typeSearch === 'object' ? typeSearch?.table : undefined) ??
     field.relatedTable;
+
+  const createPendingResource = React.useCallback(
+    async () =>
+      scopeNewResourceToCollection(
+        pendingValueToResource(field, typeSearch, pendingValueRef.current),
+        targetCollectionId
+      ),
+    [field, typeSearch, targetCollectionId]
+  );
 
   // Used to fetch again tree def if the component type changes
   const componentType =
@@ -381,7 +396,7 @@ export function QueryComboBox({
 
   const canAdd =
     !RESTRICT_ADDING.has(field.relatedTable.name) &&
-    hasTablePermission(field.relatedTable.name, 'create');
+    hasTablePermission(field.relatedTable.name, 'create', targetCollectionId);
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
@@ -401,7 +416,6 @@ export function QueryComboBox({
     <div className="flex w-full min-w-[theme(spacing.40)] items-center sm:min-w-[unset]">
       <TreeDefinitionContext.Provider value={treeDefinition}>
         <AutoComplete<string>
-          aria-label={undefined}
           disabled={
             !isLoaded ||
             isReadOnly ||
@@ -417,10 +431,12 @@ export function QueryComboBox({
           filterItems={false}
           forwardRef={validationRef}
           inputProps={{
+            'aria-label': field.label,
             id,
             required: isRequired,
             title:
-              typeof typeSearch === 'object' ? typeSearch.title : undefined,
+              (typeof typeSearch === 'object' ? typeSearch.title : undefined) ??
+              field.label,
             ...getValidationAttributes(parser),
             type: 'text',
             [titlePosition]: 'top',
@@ -445,14 +461,14 @@ export function QueryComboBox({
               ? (): void =>
                   state.type === 'AddResourceState'
                     ? setState({ type: 'MainState' })
-                    : setState({
-                        type: 'AddResourceState',
-                        resource: pendingValueToResource(
-                          field,
-                          typeSearch,
-                          pendingValueRef.current
-                        ),
-                      })
+                    : loading(
+                        createPendingResource().then((pendingResource) =>
+                          setState({
+                            type: 'AddResourceState',
+                            resource: pendingResource,
+                          })
+                        )
+                      )
               : undefined
           }
         />
@@ -480,14 +496,14 @@ export function QueryComboBox({
                   onClick={(): void =>
                     state.type === 'AddResourceState'
                       ? setState({ type: 'MainState' })
-                      : setState({
-                          type: 'AddResourceState',
-                          resource: pendingValueToResource(
-                            field,
-                            typeSearch,
-                            pendingValueRef.current
-                          ),
-                        })
+                      : loading(
+                          createPendingResource().then((pendingResource) =>
+                            setState({
+                              type: 'AddResourceState',
+                              resource: pendingResource,
+                            })
+                          )
+                        )
                   }
                 />
               ) : undefined}
@@ -558,7 +574,8 @@ export function QueryComboBox({
                                             isNot: false,
                                             value: startValue,
                                           }
-                                        : fieldName === 'taxonTreeDefId'
+                                        : fieldName === 'taxonTreeDefId' ||
+                                            fieldName === 'definitionId'
                                           ? {
                                               field: 'definition',
                                               queryBuilderFieldPath: [
@@ -638,21 +655,22 @@ export function QueryComboBox({
               resource?.set(field.name, state.resource as never);
               setState({ type: 'MainState' });
             }}
-            onSaving={
-              field.isDependent()
-                ? (): false => {
-                    resource?.set(field.name, state.resource as never);
-                    setState({ type: 'MainState' });
-                    return false;
-                  }
-                : undefined
-            }
+            onSaving={(unsetUnloadProtect): false | void => {
+              handleSavingNewRecord?.(state.resource);
+              if (field.isDependent()) {
+                resource?.set(field.name, state.resource as never);
+                setState({ type: 'MainState' });
+                unsetUnloadProtect();
+                return false;
+              }
+              return undefined;
+            }}
           />
         ) : undefined}
         {state.type === 'SearchState' ? (
           <SearchDialog
             extraFilters={state.extraConditions}
-            forceCollection={forceCollection ?? relatedCollectionId}
+            forceCollection={targetCollectionId}
             multiple={false}
             searchView={searchView}
             table={relatedTable}

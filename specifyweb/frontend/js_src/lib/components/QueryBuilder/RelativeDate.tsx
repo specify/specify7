@@ -141,10 +141,20 @@ function DateSplit({
     <div className="flex flex-row gap-1">
       <StringToJsx
         components={{
-          count: (size) => (
+          count: (_displaySize) => (
             <Input.Integer
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
               min={0}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={size}
               onBlur={commitChange}
               onValueChange={(value): void => {
@@ -156,9 +166,19 @@ function DateSplit({
               }}
             />
           ),
-          length: (type) => (
+          length: (_displayType) => (
             <Select
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={type}
               onBlur={commitChange}
               onValueChange={(newValue) => {
@@ -172,9 +192,19 @@ function DateSplit({
               <option value="year">{queryText.years()}</option>
             </Select>
           ),
-          direction: (direction) => (
+          direction: (_displayDirection) => (
             <Select
+              aria-label={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               disabled={handleChange === undefined}
+              title={queryText.relativeDate({
+                size,
+                type,
+                direction,
+              })}
               value={direction}
               onBlur={commitChange}
               onValueChange={(newValue): void => {

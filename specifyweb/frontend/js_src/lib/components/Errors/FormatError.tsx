@@ -147,7 +147,7 @@ export function handleAjaxError(
    * If exceptions occur because user has no agent, don't display the error
    * message, so as not to spawn a new dialog on top of the "No Agent" dialog
    */
-  if (userInformation.agent === null) throw error;
+  if (userInformation.currentCollectionAgent === null) throw error;
 
   if (errorMode !== 'silent') {
     const isNotFoundError =

@@ -69,9 +69,9 @@ const NODE_VERTICAL_GAP = 10;
 const CHART_MARGIN = { top: 12, right: 16, bottom: 12, left: 16 } as const;
 
 const colorByKind: Record<HierarchyNodeKind, string> = {
-  institution: '#c3452d',
-  division: '#66b642',
-  discipline: '#4f98d6',
+  institution: '#b72f2f',
+  division: '#598137',
+  discipline: '#0074B5',
   collection: '#f1a43c',
 };
 

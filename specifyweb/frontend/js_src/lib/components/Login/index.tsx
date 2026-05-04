@@ -196,7 +196,7 @@ function LegacyLogin({
         </Label.Block>
         <input name="next" type="hidden" value={nextUrl} />
         <input name="this_is_the_login_form" type="hidden" value="1" />
-        <Submit.Fancy className="mt-1">{userText.logIn()}</Submit.Fancy>
+        <Submit.Secondary className="mt-1">{userText.logIn()}</Submit.Secondary>
       </Form>
     </SplashScreen>
   );
