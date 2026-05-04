@@ -328,10 +328,13 @@ def proxy(request):
                             },
                             "recordsetid": {
                                 "type": "integer",
-                                "description": "Optional. Will download all attachmends in the recordset. Using this will ignore all other properties.",
+                                "description": "Optional. Will download all attachments in the recordset. Using this will ignore all other properties.",
                             },
                         },
-                        "required": ["attachmentlocations", "origfilenames"],
+                        "anyOf": [
+                            {"required": ["attachmentlocations", "origfilenames"]},
+                            {"required": ["recordsetid"]}
+                        ],
                     }
                 }
             }
