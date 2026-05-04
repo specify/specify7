@@ -84,6 +84,8 @@ def queue_apply_schema_defaults_background(discipline_id: int) -> str:
 @app.task(bind=True, max_retries=SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES)
 def apply_schema_defaults_task(self, discipline_id: int):
     """Run schema localization defaults for one discipline in a background worker."""
+    task_id = getattr(self.request, 'id', None)
+
     try:
         discipline = Discipline.objects.get(id=discipline_id)
     except Discipline.DoesNotExist as exc:
@@ -98,9 +100,11 @@ def apply_schema_defaults_task(self, discipline_id: int):
                 discipline_id,
                 SCHEMA_DEFAULTS_MISSING_DISCIPLINE_MAX_RETRIES,
             )
-            finish_discipline_background_task(discipline_id, self.request.id)
+            if task_id is not None:
+                finish_discipline_background_task(discipline_id, task_id)
             return
     try:
         apply_schema_defaults(discipline)
     finally:
-        finish_discipline_background_task(discipline_id, self.request.id)
+        if task_id is not None:
+            finish_discipline_background_task(discipline_id, task_id)

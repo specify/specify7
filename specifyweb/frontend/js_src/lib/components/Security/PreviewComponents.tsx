@@ -33,7 +33,7 @@ export function PreviewRow({
           <div
             className={`
               cursor-pointer justify-center rounded p-2
-              ${view === action ? 'bg-brand-100 dark:bg-brand-500' : ''}
+              ${view === action ? 'bg-brand-100 dark:bg-brand-400' : ''}
             `}
             key={action}
             role="cell"

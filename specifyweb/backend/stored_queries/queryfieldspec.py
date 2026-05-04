@@ -236,7 +236,10 @@ class QueryFieldSpec(
         root_table = datamodel.get_table_by_id(int(path.popleft()))
 
         if is_relation:
-            path.pop()
+            extracted_fieldname, _ = extract_date_part(field_name)
+            root_field = root_table.get_field(extracted_fieldname, strict=False)
+            if isinstance(root_field, Relationship):
+                path.pop()
 
         join_path = []
         node = root_table
@@ -381,6 +384,7 @@ class QueryFieldSpec(
         op_num=None,
         negate=False,
         strict=False,
+        formatter=None,
         collection=None,
         user=None
     ):
@@ -394,7 +398,7 @@ class QueryFieldSpec(
                 value = other_field
             else:
                 uiformatter = field and get_uiformatter(
-                    query.collection, table.name, field.name
+                    query.collection, table.name, field.name, formatter, user
                 )
                 value = value
 
@@ -421,7 +425,8 @@ class QueryFieldSpec(
 
             if negate:
                 if op_num in NULL_SAFE_NEGATE_OPS:
-                    predicate = null_safe_not(mod_orm_field or orm_field, f)
+                    field_expr = mod_orm_field if mod_orm_field is not None else orm_field
+                    predicate = null_safe_not(field_expr, f)
                 else:
                     predicate = sql.not_(f)
             else:
@@ -452,7 +457,17 @@ class QueryFieldSpec(
         # print "############################################################################"
         query, orm_field, field, table = self.add_spec_to_query(query, formatter)
         return self.apply_filter(
-            query, orm_field, field, table, value, op_num, negate, strict=strict, collection=collection, user=user
+            query,
+            orm_field,
+            field,
+            table,
+            value,
+            op_num,
+            negate,
+            strict=strict,
+            formatter=formatter,
+            collection=collection,
+            user=user,
         )
 
     def add_spec_to_query(
@@ -485,26 +500,17 @@ class QueryFieldSpec(
                     cycle_detector,
                 )
         else:
-            tree_rank_idxs = [i for i, n in enumerate(self.join_path) if isinstance(n, TreeRankQuery)]
-            if tree_rank_idxs:
-                tree_rank_idx = tree_rank_idxs[0]
-                prefix = self.join_path[:tree_rank_idx] # up to (but not including) the tree-rank node
-                tree_rank_node = self.join_path[tree_rank_idx]
-                suffix = self.join_path[tree_rank_idx + 1 :] # field after the rank, e.g., "Name"
-
-                # Join only the prefix to obtain the correct starting alias (e.g., HostTaxon)
-                query, orm_model, table, _ = self.build_join(query, prefix)
-
-                # Build the CASE/joins for the tree rank starting at that alias
+            query, orm_model, table, field = self.build_join(query, self.join_path)
+            if isinstance(field, TreeRankQuery):
+                tree_rank_idx = self.join_path.index(field)
                 query, orm_field, field, table = query.handle_tree_field(
                     orm_model,
                     table,
-                    tree_rank_node,
-                    suffix,
+                    field,
+                    self.join_path[tree_rank_idx + 1 :],
                     self,
                 )
             else:
-                query, orm_model, table, field = self.build_join(query, self.join_path)
                 try:
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)

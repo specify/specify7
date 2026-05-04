@@ -31,12 +31,15 @@ describe('uploadFile', () => {
     return {
       open: jest.fn(),
       send: jest.fn((..._args: readonly unknown[]) => listeners[nextEvent]?.()),
-      addEventListener: jest.fn((eventName: EventName, callback: () => void) => {
-        listeners[eventName] = callback;
-      }),
+      addEventListener: jest.fn(
+        (eventName: EventName, callback: () => void) => {
+          listeners[eventName] = callback;
+        }
+      ),
       removeEventListener: jest.fn(
         (eventName: EventName, callback: () => void) => {
-          if (listeners[eventName] === callback) listeners[eventName] = undefined;
+          if (listeners[eventName] === callback)
+            listeners[eventName] = undefined;
         }
       ),
       upload: {

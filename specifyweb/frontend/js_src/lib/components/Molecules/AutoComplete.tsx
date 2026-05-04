@@ -31,6 +31,8 @@ export type AutoCompleteItem<T> = {
   readonly data: T;
 };
 
+type AutoCompleteValue<T> = AutoCompleteItem<T> | string | null;
+
 /**
  * Get the nearest scrollable parent.
  * Adapted from https://stackoverflow.com/a/35940276/8584605
@@ -43,7 +45,7 @@ const getScrollParent = (node: Element | undefined): Element =>
       : getScrollParent(node.parentElement ?? undefined);
 
 const optionClassName = (isActive: boolean, isSelected: boolean) => `
-  p-0.5 active:bg-brand-100 dark:active:bg-brand-500
+  p-0.5 active:bg-brand-100 dark:active:bg-brand-400
   disabled:cursor-default rounded ${isSelected ? 'text-brand-300' : ''}
   ${isActive ? 'bg-gray-100 dark:bg-neutral-800' : ''}
 `;
@@ -341,6 +343,7 @@ export function AutoComplete<T>({
   );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const shouldBlurAfterMouseSelection = React.useRef(false);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
       (input): void => {
@@ -373,22 +376,26 @@ export function AutoComplete<T>({
   }, [currentValue]);
 
   return (
-    <Combobox<'div', AutoCompleteItem<T> | string | null | undefined>
+    <Combobox
       as="div"
       className="relative w-full"
       disabled={disabled}
       nullable
-      value={currentItem}
+      value={currentItem ?? null}
       // Triggers on enter or selects new item
-      onChange={(
-        value: AutoCompleteItem<T> | string | null | undefined
-      ): void => {
-        if (value === null || value === undefined) handleCleared?.();
+      onChange={(value): void => {
+        const blurAfterSelection = shouldBlurAfterMouseSelection.current;
+        shouldBlurAfterMouseSelection.current = false;
+        if (value === null) handleCleared?.();
         else if (typeof value === 'string') handleNewValue?.(value);
-        else handleChanged(value);
+        else {
+          handleChanged(value);
+          if (blurAfterSelection)
+            globalThis.setTimeout(() => inputRef.current?.blur(), 0);
+        }
       }}
     >
-      <Combobox.Input<'input'>
+      <Combobox.Input
         autoComplete="off"
         onChange={({ target }): void => {
           const value = (target as HTMLInputElement).value;
@@ -398,13 +405,14 @@ export function AutoComplete<T>({
             pendingValueRef.current = value;
         }}
         {...inputProps}
-        displayValue={(item: AutoCompleteItem<T> | null): string =>
-          typeof item === 'string'
-            ? item
-            : typeof item?.label === 'string'
-              ? item.label
-              : (item?.searchValue ?? '')
-        }
+        displayValue={(item: unknown): string => {
+          const currentItem = item as AutoCompleteValue<T>;
+          return typeof currentItem === 'string'
+            ? currentItem
+            : typeof currentItem?.label === 'string'
+              ? currentItem.label
+              : (currentItem?.searchValue ?? '');
+        }}
         ref={forwardChildRef}
         onBlur={withHandleBlur(inputProps?.onBlur).onBlur}
         /*
@@ -423,16 +431,20 @@ export function AutoComplete<T>({
        * of parents with overflow:hidden
        */}
       <Portal>
-        <Combobox.Options<'ul'>
+        <Combobox.Options
           className={`
             fixed z-[10000] max-h-[50vh] w-[inherit] cursor-pointer
             overflow-y-auto rounded rounded bg-white shadow-lg
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
+          onMouseDown={(e: React.MouseEvent) => {
+            e.preventDefault();
+            e.stopPropagation();
+          }}
           ref={dataListRefCallback}
         >
           {isLoading && (
-            <Combobox.Option<'li'>
+            <Combobox.Option
               className={`${optionClassName(false, false)} cursor-auto`}
               disabled
               value=""
@@ -501,7 +513,12 @@ export function AutoComplete<T>({
             return (
               <Combobox.Option as={React.Fragment} key={index} value={item}>
                 {({ active, selected }): JSX.Element => (
-                  <li className={optionClassName(active, selected)}>
+                  <li
+                    className={optionClassName(active, selected)}
+                    onMouseDown={(): void => {
+                      shouldBlurAfterMouseSelection.current = true;
+                    }}
+                  >
                     {typeof item.icon === 'string' ? (
                       <div className="flex items-center">
                         {item.icon}
@@ -518,7 +535,12 @@ export function AutoComplete<T>({
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
-                <li className={optionClassName(active, selected)}>
+                <li
+                  className={optionClassName(active, selected)}
+                  onMouseDown={(): void => {
+                    shouldBlurAfterMouseSelection.current = true;
+                  }}
+                >
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText.add()}

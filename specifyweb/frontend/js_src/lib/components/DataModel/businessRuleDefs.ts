@@ -201,9 +201,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
-        const preferences = await import(
-          '../Preferences/collectionPreferences'
-        ).then(({ collectionPreferences }) => collectionPreferences);
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
 
         const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
           'uniqueCatalogNumberAccrossComponentAndCO',
@@ -429,9 +430,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
-        const preferences = await import(
-          '../Preferences/collectionPreferences'
-        ).then(({ collectionPreferences }) => collectionPreferences);
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
 
         const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
           'uniqueCatalogNumberAccrossComponentAndCO',
@@ -751,11 +753,15 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
       countAmt: async (prep): Promise<BusinessRuleResult | undefined> => {
         const loanPrep = await prep.rgetCollection('loanPreparations');
         const totalPrep = prep.get('countAmt') ?? 0;
-        let totalPrepLoaned = 0;
+        let totalPrepOnLoan = 0;
 
         loanPrep.models.forEach((loan) => {
           const quantity = loan.get('quantity') ?? 0;
-          totalPrepLoaned += quantity;
+          const quantityResolved = loan.get('quantityResolved') ?? 0;
+          const unresolvedQuantity = loan.get('isResolved')
+            ? 0
+            : Math.max(quantity - quantityResolved, 0);
+          totalPrepOnLoan += unresolvedQuantity;
         });
 
         if (totalPrep < 0) {
@@ -765,7 +771,7 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             [resourcesText.preparationIsNegative()],
             PREPARATION_NEGATIVE_KEY
           );
-        } else if (totalPrep < totalPrepLoaned) {
+        } else if (totalPrep < totalPrepOnLoan) {
           setSaveBlockers(
             prep,
             prep.specifyTable.field.countAmt,
