@@ -1,13 +1,36 @@
 
 import json
 import logging
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 logger = logging.getLogger(__name__)
+
+_unique_catnum_pref_cache: ContextVar[dict[tuple[int | None, int | None], bool] | None] = ContextVar(
+    "unique_catnum_pref_cache",
+    default=None,
+)
+
+@contextmanager
+def cache_unique_catnum_preferences():
+    token = _unique_catnum_pref_cache.set({})
+    try:
+        yield
+    finally:
+        _unique_catnum_pref_cache.reset(token)
 
 def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     import specifyweb.backend.context.app_resource as app_resource
 
-    unique_catnum_enabled: bool = False  
+    cache = _unique_catnum_pref_cache.get()
+    cache_key = (
+        getattr(collection, "id", None),
+        getattr(user, "id", None),
+    )
+    if cache is not None and cache_key in cache:
+        return cache[cache_key]
+
+    unique_catnum_enabled: bool = False
 
     try:
         collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
@@ -29,5 +52,8 @@ def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
         logger.warning(f"Error: Unexpected data structure in collection preferences: {e}")
     except Exception as e:
         logger.warning(f"An unexpected error occurred: {e}")
+
+    if cache is not None:
+        cache[cache_key] = unique_catnum_enabled
 
     return unique_catnum_enabled
