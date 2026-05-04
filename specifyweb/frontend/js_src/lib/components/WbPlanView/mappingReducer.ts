@@ -27,7 +27,7 @@ import type {
   MappingState,
   SelectElementPosition,
 } from './Mapper';
-import { emptyMapping } from './mappingHelpers';
+import { emptyMapping, mappingPathToString } from './mappingHelpers';
 import type { MatchBehaviors } from './uploadPlanParser';
 
 const modifyLine = (
@@ -402,17 +402,23 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     }),
     changesMade: true,
   }),
-  ChangeDisambiguationBehaviorAction: ({ state, action }) => ({
-    ...state,
-    lines: modifyLine(state, action.line, {
-      ...state.lines[action.line],
-      columnOptions: {
-        ...state.lines[action.line].columnOptions,
-        disambiguationBehavior: action.disambiguationBehavior,
-      },
-    }),
-    changesMade: true,
-  }),
+  ChangeDisambiguationBehaviorAction: ({ state, action }) => {
+    const mappingPath = state.lines[action.line].mappingPath;
+    return {
+        ...state,
+        lines: state.lines.map((line) =>
+          isSameMappingPath(line.mappingPath, mappingPath) ?
+          {
+            ...line,
+            columnOptions: {
+              ...state.lines[action.line].columnOptions,
+              disambiguationBehavior: action.disambiguationBehavior,
+            },
+          } : line
+        ),
+        changesMade: true,
+      }
+  },
   UpdateLinesAction: ({ state, action: { lines } }) => ({
     ...state,
     lines,
@@ -438,3 +444,6 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     batchEditPrefs: action.prefs,
   }),
 });
+
+const isSameMappingPath = (pathA: MappingPath, pathB: MappingPath): boolean =>
+  mappingPathToString(pathA.slice(0, -1)) === mappingPathToString(pathB.slice(0, -1));
