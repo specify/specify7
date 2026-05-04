@@ -134,7 +134,8 @@ def add_attachments_to_plan(
                     column=f"_ATTACHMENT_{field.upper()}_{index}",
                     matchBehavior="ignoreNever",
                     nullAllowed=True,
-                    default=attachment_field_default(field)
+                    default=attachment_field_default(field),
+                    disambiguationBehavior="ask"
                 )
             attachment_uploadable = UploadTable(
                 name="Attachment",

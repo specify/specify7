@@ -152,6 +152,14 @@ type ChangeDefaultValueAction = Action<
   }
 >;
 
+type ChangeDisambiguationBehaviorAction = Action<
+  'ChangeDisambiguationBehaviorAction',
+  {
+    readonly line: number;
+    readonly disambiguationBehavior: DisambiguationBehaviors;
+  }
+>;
+
 type UpdateLinesAction = Action<
   'UpdateLinesAction',
   { readonly lines: RA<MappingLine> }
@@ -178,6 +186,7 @@ export type MappingActions =
   | ChangeBatchEditPrefs
   | ChangeDefaultValueAction
   | ChangeMatchBehaviorAction
+  | ChangeDisambiguationBehaviorAction
   | ChangeSelectElementValueAction
   | ChangMustMatchPrefAction
   | ClearMappingLineAction
@@ -389,6 +398,17 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       columnOptions: {
         ...state.lines[action.line].columnOptions,
         default: action.defaultValue,
+      },
+    }),
+    changesMade: true,
+  }),
+  ChangeDisambiguationBehaviorAction: ({ state, action }) => ({
+    ...state,
+    lines: modifyLine(state, action.line, {
+      ...state.lines[action.line],
+      columnOptions: {
+        ...state.lines[action.line].columnOptions,
+        disambiguationBehavior: action.disambiguationBehavior,
       },
     }),
     changesMade: true,

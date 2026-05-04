@@ -274,6 +274,12 @@ this column will never be considered for matching purposes, only for uploading."
                     "default": None,
                     "description": "When set use this value for any cells that are empty in this column.",
                 },
+                "disambiguationBehavior": {
+                    "type": "string",
+                    "enum": ["ask", "pickFirst"],
+                    "default": "ignoreNever",
+                    "description": "How to disambiguate when multiple records are matched.",
+                },
             },
             "required": ["column"],
             "additionalProperties": False,
@@ -425,6 +431,7 @@ def parse_column_options(to_parse: str | dict) -> ColumnOptions:
             matchBehavior="ignoreNever",
             nullAllowed=True,
             default=None,
+            disambiguationBehavior="ask",
         )
     else:
         return ColumnOptions(
@@ -432,4 +439,5 @@ def parse_column_options(to_parse: str | dict) -> ColumnOptions:
             matchBehavior=to_parse.get("matchBehavior", "ignoreNever"),
             nullAllowed=to_parse.get("nullAllowed", True),
             default=to_parse.get("default", None),
+            disambiguationBehavior=to_parse.get("disambiguationBehavior", "ask")
         )

@@ -5,6 +5,7 @@ from typing import Literal
 from specifyweb.specify.utils.uiformatters import ScopedFormatter
 
 MatchBehavior = Literal["ignoreWhenBlank", "ignoreAlways", "ignoreNever"]
+DisambiguationBehavior = Literal["ask", "pickFirst"]
 
 # A single row in the workbench. Maps column names to values in the row
 Row = dict[str, str]
@@ -14,6 +15,7 @@ class ColumnOptions(NamedTuple):
     matchBehavior: MatchBehavior
     nullAllowed: bool
     default: str | None
+    disambiguationBehavior: DisambiguationBehavior = "ask" # Default value is temporary while I update all the code
 
     def to_json(self) -> dict | str:
         if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:
@@ -26,6 +28,7 @@ class ExtendedColumnOptions(NamedTuple):
     matchBehavior: MatchBehavior
     nullAllowed: bool
     default: str | None
+    DisambiguationBehavior: DisambiguationBehavior
     uiformatter: ScopedFormatter | None
     schemaitem: Any
     picklist: Any

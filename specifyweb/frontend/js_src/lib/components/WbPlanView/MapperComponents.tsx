@@ -32,7 +32,7 @@ import {
 } from './Mapper';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
-import type { ColumnOptions, MatchBehaviors } from './uploadPlanParser';
+import type { ColumnOptions, DisambiguationBehaviors, MatchBehaviors } from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -229,6 +229,7 @@ export function mappingOptionsMenu({
   onChangeMatchBehaviour: handleChangeMatchBehaviour,
   onToggleAllowNulls: handleToggleAllowNulls,
   onChangeDefaultValue: handleChangeDefaultValue,
+  onChangeDisambiguationBehavior: handleChangeDisambiguationBehavior,
 }: {
   readonly id: (suffix: string) => string;
   readonly isReadOnly: boolean;
@@ -236,6 +237,7 @@ export function mappingOptionsMenu({
   readonly onChangeMatchBehaviour: (matchBehavior: MatchBehaviors) => void;
   readonly onToggleAllowNulls: (allowNull: boolean) => void;
   readonly onChangeDefaultValue: (defaultValue: string | null) => void;
+  readonly onChangeDisambiguationBehavior: (disambiguationBehavior: DisambiguationBehaviors) => void;
 }): IR<MapperComponentData> {
   return {
     matchBehavior: {
@@ -317,6 +319,38 @@ export function mappingOptionsMenu({
         </>
       ),
       title: wbPlanText.defaultValueDescription(),
+    },
+    disambiguationBehavior: {
+      optionLabel: (
+        <>
+          {wbPlanText.disambiguationBehavior()}
+          <Ul>
+            {Object.entries({
+              ask: {
+                title: wbPlanText.ask(),
+                description: wbPlanText.askDescription(),
+              },
+              pickFirst: {
+                title: wbPlanText.pickFirst(),
+                description: wbPlanText.pickFirstDescription(),
+              },
+            }).map(([id, { title, description }]) => (
+              <li key={id}>
+                <Label.Inline title={description}>
+                  <Input.Radio
+                    checked={columnOptions.disambiguationBehavior === id}
+                    isReadOnly={isReadOnly}
+                    name="disambiguation-behavior"
+                    value={id}
+                    onChange={(): void => handleChangeDisambiguationBehavior(id)}
+                  />
+                  {` ${title}`}
+                </Label.Inline>
+              </li>
+            ))}
+          </Ul>
+        </>
+      ),
     },
   };
 }
