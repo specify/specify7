@@ -28,7 +28,7 @@ import type {
   SelectElementPosition,
 } from './Mapper';
 import { emptyMapping, mappingPathToString } from './mappingHelpers';
-import type { MatchBehaviors } from './uploadPlanParser';
+import type { DisambiguationBehaviors, MatchBehaviors } from './uploadPlanParser';
 
 const modifyLine = (
   state: MappingState,
