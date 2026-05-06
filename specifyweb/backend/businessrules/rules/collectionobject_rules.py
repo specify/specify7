@@ -1,8 +1,10 @@
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.businessrules.utils import get_unique_catnum_across_comp_co_coll_pref
-from specifyweb.specify.models import Component
+from specifyweb.backend.businessrules.utils import (
+    collection_has_component_catalog_number,
+    get_unique_catnum_across_comp_co_coll_pref,
+)
 
 def _collection_object_catalog_check_needed(co) -> bool:
     if co.catalognumber is None:
@@ -34,10 +36,10 @@ def collectionobject_pre_save(co):
         unique_catnum_across_comp_co_coll_pref = get_unique_catnum_across_comp_co_coll_pref(co.collection, co.createdbyagent.specifyuser)
 
         if unique_catnum_across_comp_co_coll_pref:
-            contains_component_duplicates = Component.objects.filter(
-                catalognumber=co.catalognumber,
-                collectionobject__collection_id=co.collection_id,
-            ).exists()
+            contains_component_duplicates = collection_has_component_catalog_number(
+                co.collection_id,
+                co.catalognumber,
+            )
 
             if contains_component_duplicates:
                 raise BusinessRuleException(

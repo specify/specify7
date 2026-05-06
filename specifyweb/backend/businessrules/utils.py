@@ -11,13 +11,52 @@ _unique_catnum_pref_cache: ContextVar[dict[tuple[int | None, int | None], bool] 
     default=None,
 )
 
+_component_catnum_cache: ContextVar[dict[int, set[str]] | None] = ContextVar(
+    "component_catnum_cache",
+    default=None,
+)
+
 @contextmanager
 def cache_unique_catnum_preferences():
-    token = _unique_catnum_pref_cache.set({})
+    pref_token = _unique_catnum_pref_cache.set({})
+    component_token = _component_catnum_cache.set({})
     try:
         yield
     finally:
-        _unique_catnum_pref_cache.reset(token)
+        _component_catnum_cache.reset(component_token)
+        _unique_catnum_pref_cache.reset(pref_token)
+
+def component_catalog_number_cache_is_active() -> bool:
+    return _component_catnum_cache.get() is not None
+
+def clear_component_catalog_number_cache(collection_id: int) -> None:
+    cache = _component_catnum_cache.get()
+    if cache is not None:
+        cache.pop(collection_id, None)
+
+def collection_has_component_catalog_number(collection_id: int | None, catalog_number: str | None) -> bool:
+    from specifyweb.specify.models import Component
+
+    if collection_id is None or catalog_number is None:
+        return False
+
+    cache = _component_catnum_cache.get()
+    if cache is None:
+        return Component.objects.filter(
+            catalognumber=catalog_number,
+            collectionobject__collection_id=collection_id,
+        ).exists()
+
+    if collection_id not in cache:
+        cache[collection_id] = set(
+            Component.objects.filter(
+                collectionobject__collection_id=collection_id,
+            )
+            .exclude(catalognumber=None)
+            .values_list("catalognumber", flat=True)
+        )
+
+    return catalog_number in cache[collection_id]
 
 def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     import specifyweb.backend.context.app_resource as app_resource
