@@ -15,7 +15,7 @@ class ColumnOptions(NamedTuple):
     matchBehavior: MatchBehavior
     nullAllowed: bool
     default: str | None
-    disambiguationBehavior: DisambiguationBehavior = "ask" # Default value is temporary while I update all the code
+    disambiguationBehavior: DisambiguationBehavior
 
     def to_json(self) -> dict | str:
         if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:

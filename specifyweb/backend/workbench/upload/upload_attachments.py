@@ -126,7 +126,8 @@ def add_attachments_to_plan(
                 column=f"_ATTACHMENT_ORDINAL_{index}",
                 matchBehavior="ignoreNever",
                 nullAllowed=True,
-                default="0"
+                default="0",
+                disambiguationBehavior="ask"
             )
             attackment_columns = {}
             for field in attachment_fields_to_copy:
