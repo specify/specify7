@@ -49,7 +49,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'simple-search',
+        path: 'express-search',
         title: headerText.simpleSearch(),
         element: () =>
           import('../Header/ExpressSearchTask').then(
@@ -58,7 +58,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'express-search',
-        element: <Redirect to="/specify/overlay/simple-search/" />,
+        element: <Redirect to="/specify/overlay/express-search/" />,
       },
       {
         path: 'choose-collection',

@@ -32,16 +32,22 @@ def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     return UserRole.objects.filter(specifyuser=user).exists() or \
         UserPolicy.objects.filter(specifyuser=user).exists()
 
-def initialize(wipe: bool=False, apps=apps) -> None:
+def initialize(
+    wipe: bool = False,
+    apps=apps,
+    *,
+    migrate_sp6_users: bool = True,
+) -> None:
     with transaction.atomic():
         if wipe:
             wipe_permissions(apps)
         create_admins(apps)
         create_roles(apps)
-        if 'test' in ''.join(sys.argv):
-            assign_users_to_roles_during_testing(apps)
-        else:
-            assign_users_to_roles(apps)
+        if migrate_sp6_users:
+            if 'test' in ''.join(sys.argv):
+                assign_users_to_roles_during_testing(apps)
+            else:
+                assign_users_to_roles(apps)
 
 def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
