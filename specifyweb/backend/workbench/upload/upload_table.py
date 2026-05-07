@@ -5,6 +5,7 @@ from typing import Any, NamedTuple, Literal, Union, Callable
 from django.db import transaction, IntegrityError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.utils import track_changed_fields
 from specifyweb.specify import models
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
@@ -1100,11 +1101,18 @@ class BoundUpdateTable(BoundUploadTable):
         self.auditor.update(reference_obj, None, dirty_fields)
         for key, value in attrs.items():
             setattr(reference_obj, key, value)
+        update_fields = {field["field_name"] for field in dirty_fields}
+        if "modifiedbyagent_id" in attrs:
+            update_fields.add("modifiedbyagent_id")
+        if hasattr(reference_obj, "timestampmodified"):
+            update_fields.add("timestampmodified")
         if hasattr(reference_obj, "version"):
             # Consider using bump_version here.
             # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
             setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
-        reference_obj.save()
+            update_fields.add("version")
+        with track_changed_fields(reference_obj, dirty_fields):
+            reference_obj.save(update_fields=update_fields)
         return reference_obj
 
     def _do_insert(self):
