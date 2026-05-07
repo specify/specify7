@@ -3,6 +3,7 @@ import json
 import logging
 from contextlib import contextmanager
 from contextvars import ContextVar
+from typing import Any
 
 logger = logging.getLogger(__name__)
 
@@ -16,15 +17,101 @@ _component_catnum_cache: ContextVar[dict[int, set[str]] | None] = ContextVar(
     default=None,
 )
 
+_collection_default_type_cache: ContextVar[dict[int, int | None] | None] = ContextVar(
+    "collection_default_type_cache",
+    default=None,
+)
+
+_collection_cache: ContextVar[dict[int, Any] | None] = ContextVar(
+    "businessrules_collection_cache",
+    default=None,
+)
+
+_agent_specifyuser_cache: ContextVar[dict[int, Any | None] | None] = ContextVar(
+    "businessrules_agent_specifyuser_cache",
+    default=None,
+)
+
 @contextmanager
 def cache_unique_catnum_preferences():
     pref_token = _unique_catnum_pref_cache.set({})
     component_token = _component_catnum_cache.set({})
+    default_type_token = _collection_default_type_cache.set({})
+    collection_token = _collection_cache.set({})
+    agent_user_token = _agent_specifyuser_cache.set({})
     try:
         yield
     finally:
+        _agent_specifyuser_cache.reset(agent_user_token)
+        _collection_cache.reset(collection_token)
+        _collection_default_type_cache.reset(default_type_token)
         _component_catnum_cache.reset(component_token)
         _unique_catnum_pref_cache.reset(pref_token)
+
+def _get_collection(collection_id: int):
+    from specifyweb.specify.models import Collection
+
+    cache = _collection_cache.get()
+    if cache is None:
+        return Collection.objects.get(id=collection_id)
+
+    if collection_id not in cache:
+        cache[collection_id] = Collection.objects.get(id=collection_id)
+
+    return cache[collection_id]
+
+def _get_agent_specifyuser(agent_id: int):
+    from specifyweb.specify.models import Agent
+
+    cache = _agent_specifyuser_cache.get()
+    if cache is None:
+        return Agent.objects.select_related("specifyuser").get(id=agent_id).specifyuser
+
+    if agent_id not in cache:
+        cache[agent_id] = (
+            Agent.objects
+            .select_related("specifyuser")
+            .get(id=agent_id)
+            .specifyuser
+        )
+
+    return cache[agent_id]
+
+def get_default_collectionobjecttype_id(collection_or_id) -> int | None:
+    from specifyweb.specify.models import Collection
+
+    collection = None if isinstance(collection_or_id, int) else collection_or_id
+    collection_id = (
+        collection_or_id
+        if isinstance(collection_or_id, int)
+        else getattr(collection_or_id, "id", None)
+    )
+    if collection_id is None:
+        return getattr(collection, "collectionobjecttype_id", None)
+
+    cache = _collection_default_type_cache.get()
+    if cache is None:
+        if collection is not None:
+            return getattr(collection, "collectionobjecttype_id", None)
+        return (
+            Collection.objects
+            .filter(id=collection_id)
+            .values_list("collectionobjecttype_id", flat=True)
+            .first()
+        )
+
+    if collection_id not in cache:
+        if collection is not None:
+            cache[collection_id] = getattr(collection, "collectionobjecttype_id", None)
+        else:
+            cache[collection_id] = (
+                Collection.objects
+                .filter(id=collection_id)
+                .values_list("collectionobjecttype_id", flat=True)
+                .first()
+            )
+
+    return cache[collection_id]
 
 def component_catalog_number_cache_is_active() -> bool:
     return _component_catnum_cache.get() is not None
@@ -96,3 +183,19 @@ def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
         cache[cache_key] = unique_catnum_enabled
 
     return unique_catnum_enabled
+
+def get_unique_catnum_across_comp_co_coll_pref_by_ids(
+    collection_id: int | None,
+    agent_id: int | None,
+) -> bool:
+    if collection_id is None or agent_id is None:
+        return False
+
+    user = _get_agent_specifyuser(agent_id)
+    if user is None:
+        return False
+
+    return get_unique_catnum_across_comp_co_coll_pref(
+        _get_collection(collection_id),
+        user,
+    )
