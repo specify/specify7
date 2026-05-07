@@ -5,6 +5,8 @@ from typing import (
 )
 from collections.abc import Callable
 from collections.abc import Iterable
+from contextlib import contextmanager
+from contextvars import ContextVar
 
 import logging
 
@@ -167,6 +169,18 @@ class QueryResult(NamedTuple):
     matching_user_policies: list
     matching_role_policies: list
 
+_permission_query_cache: ContextVar[dict[PermRequest, QueryResult] | None] = ContextVar(
+    "permission_query_cache",
+    default=None,
+)
+
+@contextmanager
+def cache_permission_queries():
+    token = _permission_query_cache.set({})
+    try:
+        yield
+    finally:
+        _permission_query_cache.reset(token)
 
 def query_pt(
     collectionid: int | None, userid: int, target: PermissionTargetAction
@@ -177,6 +191,11 @@ def query_pt(
 def query(
     collectionid: int | None, userid: int, resource: str, action: str
 ) -> QueryResult:
+    request = PermRequest(collectionid, userid, resource, action)
+    cache = _permission_query_cache.get()
+    if cache is not None and request in cache:
+        return cache[request]
+
     cursor = connection.cursor()
 
     cursor.execute(
@@ -225,11 +244,16 @@ def query(
         for r in cursor.fetchall()
     ]
 
-    return QueryResult(
+    result = QueryResult(
         allowed=bool(ups) or bool(rps),
         matching_user_policies=ups,
         matching_role_policies=rps,
     )
+
+    if cache is not None:
+        cache[request] = result
+
+    return result
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
