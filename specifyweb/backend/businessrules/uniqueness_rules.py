@@ -22,6 +22,7 @@ from specifyweb.specify.utils.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
+from .utils import changed_fields_include
 
 class JSONUniquenessRule(TypedDict): 
     rule: tuple[list[str], list[str]]
@@ -259,6 +260,12 @@ def validate_unique(model, instance):
     registry = model._meta.apps
 
     for rule in _get_uniqueness_rule_configs(registry, model_name):
+        if (
+            instance.pk is not None
+            and not changed_fields_include(instance, rule.all_fields)
+        ):
+            continue
+
         if not _rule_applies_to_instance(rule, instance):
             continue
 
