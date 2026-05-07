@@ -2,6 +2,9 @@
 from functools import reduce
 import logging
 import json
+from contextlib import contextmanager
+from contextvars import ContextVar
+from dataclasses import dataclass
 from typing import Any, TypedDict
 from collections.abc import Iterable
 
@@ -35,6 +38,40 @@ NO_FIELD_VALUE = {}
 
 logger = logging.getLogger(__name__)
 
+@dataclass(frozen=True)
+class CachedUniquenessRule:
+    rule: Any
+    field_names: tuple[str, ...]
+    scope_fields: tuple[str, ...]
+    all_fields: tuple[str, ...]
+    scope: str | None
+    is_database_constraint: bool
+    is_global: bool
+    discipline_id: int | None
+
+_uniqueness_rule_cache: ContextVar[
+    dict[tuple[int, str], list[CachedUniquenessRule]] | None
+] = ContextVar("uniqueness_rule_cache", default=None)
+_uniqueness_migration_cache: ContextVar[dict[str, bool] | None] = ContextVar(
+    "uniqueness_migration_cache",
+    default=None,
+)
+_collection_discipline_cache: ContextVar[dict[int, int | None] | None] = ContextVar(
+    "uniqueness_collection_discipline_cache",
+    default=None,
+)
+
+@contextmanager
+def cache_uniqueness_rules():
+    rule_token = _uniqueness_rule_cache.set({})
+    migration_token = _uniqueness_migration_cache.set({})
+    collection_token = _collection_discipline_cache.set({})
+    try:
+        yield
+    finally:
+        _collection_discipline_cache.reset(collection_token)
+        _uniqueness_migration_cache.reset(migration_token)
+        _uniqueness_rule_cache.reset(rule_token)
 
 def resolve_model_field(model, field_path: str):
     current_model = model
@@ -83,6 +120,119 @@ def apply_case_sensitive_filters(queryset, model, matchable, filter_kwargs):
     return queryset, transformed_filters
 
 
+def _businessrules_initial_migration_applied() -> bool:
+    cache_key = "default"
+    cache = _uniqueness_migration_cache.get()
+    if cache is not None and cache_key in cache:
+        return cache[cache_key]
+
+    applied = any(
+        app == "businessrules" and migration_name == "0001_initial"
+        for app, migration_name in MigrationRecorder(
+            connections["default"]
+        ).applied_migrations()
+    )
+
+    if cache is not None:
+        cache[cache_key] = applied
+
+    return applied
+
+def _get_uniqueness_rule_configs(registry, model_name: str) -> list[CachedUniquenessRule]:
+    cache_key = (id(registry), model_name)
+    cache = _uniqueness_rule_cache.get()
+    if cache is not None and cache_key in cache:
+        return cache[cache_key]
+
+    UniquenessRule = registry.get_model("businessrules", "UniquenessRule")
+
+    configs: list[CachedUniquenessRule] = []
+    rules = (
+        UniquenessRule.objects
+        .filter(modelName=model_name)
+        .select_related("discipline")
+        .prefetch_related("uniquenessrulefield_set")
+    )
+
+    for rule in rules:
+        rule_fields = tuple(rule.uniquenessrulefield_set.all())
+        scope_fields = tuple(
+            field.fieldPath for field in rule_fields if field.isScope
+        )
+        field_names = tuple(
+            field.fieldPath.lower() for field in rule_fields if not field.isScope
+        )
+        scope = scope_fields[0] if scope_fields else None
+        all_fields = (
+            (*field_names, scope.lower())
+            if scope is not None
+            else field_names
+        )
+        configs.append(
+            CachedUniquenessRule(
+                rule=rule,
+                field_names=field_names,
+                scope_fields=scope_fields,
+                all_fields=all_fields,
+                scope=scope,
+                is_database_constraint=rule.isDatabaseConstraint,
+                is_global=rule_is_global(scope_fields),
+                discipline_id=rule.discipline_id,
+            )
+        )
+
+    if cache is not None:
+        cache[cache_key] = configs
+
+    return configs
+
+def _get_collection_discipline_id(collection_id: int) -> int | None:
+    from specifyweb.specify.models import Collection
+
+    cache = _collection_discipline_cache.get()
+    if cache is not None and collection_id in cache:
+        return cache[collection_id]
+
+    discipline_id = (
+        Collection.objects
+        .filter(id=collection_id)
+        .values_list("discipline_id", flat=True)
+        .first()
+    )
+
+    if cache is not None:
+        cache[collection_id] = discipline_id
+
+    return discipline_id
+
+def _instance_discipline_id(instance) -> int | None:
+    discipline_id = getattr(instance, "discipline_id", None)
+    if discipline_id is not None:
+        return discipline_id
+
+    collection_id = getattr(instance, "collection_id", None)
+    if collection_id is None:
+        collection_id = getattr(instance, "collectionmemberid", None)
+    if collection_id is not None:
+        return _get_collection_discipline_id(collection_id)
+
+    cached_collection = getattr(instance._state, "fields_cache", {}).get("collection")
+    if cached_collection is not None:
+        return getattr(cached_collection, "discipline_id", None)
+
+    return None
+
+def _rule_applies_to_instance(rule: CachedUniquenessRule, instance) -> bool:
+    if rule.is_global:
+        return True
+
+    if rule.discipline_id is not None:
+        discipline_id = _instance_discipline_id(instance)
+        if discipline_id is not None:
+            return discipline_id == rule.discipline_id
+
+    return in_same_scope(rule.rule, instance)
+
 @orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
 def validate_unique(model, instance):
     """
@@ -102,40 +252,15 @@ def validate_unique(model, instance):
                 f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
         return
 
-    applied_migrations = MigrationRecorder(
-        connections['default']).applied_migrations()
-
-    for migration in applied_migrations:
-        app, migration_name = migration
-        if app == 'businessrules' and migration_name == '0001_initial':
-            break
-    else:
+    if not _businessrules_initial_migration_applied():
         return
 
     # We can't directly use the main app registry in the context of migrations, which uses fake models
     registry = model._meta.apps
 
-    UniquenessRule = registry.get_model('businessrules', 'UniquenessRule')
-    UniquenessRuleField = registry.get_model(
-        'businessrules', 'UniquenessRuleField')
-
-    rules = UniquenessRule.objects.filter(modelName=model_name)
-    for rule in rules:
-        rule_fields = UniquenessRuleField.objects.filter(uniquenessrule=rule)
-        if not rule_is_global(tuple(field.fieldPath for field in rule_fields.filter(isScope=True))) \
-            and not in_same_scope(rule, instance):
+    for rule in _get_uniqueness_rule_configs(registry, model_name):
+        if not _rule_applies_to_instance(rule, instance):
             continue
-
-        field_names = [
-            field.fieldPath.lower() for field in rule_fields.filter(isScope=False)]
-
-        _scope = rule_fields.filter(isScope=True)
-        scope = None if len(_scope) == 0 else _scope[0]
-
-        all_fields = [*field_names]
-
-        if scope is not None:
-            all_fields.append(scope.fieldPath.lower())
 
         def get_matchable(instance):
             def best_match_or_none(field_name: str):
@@ -146,7 +271,7 @@ def validate_unique(model, instance):
 
             matchable = {}
             field_mapping = {}
-            for field in all_fields:
+            for field in rule.all_fields:
                 matched_or_none = best_match_or_none(field)
                 if matched_or_none is not None:
                     field_mapping[field] = matched_or_none[0]
@@ -155,22 +280,21 @@ def validate_unique(model, instance):
             return field_mapping, matchable
 
         def get_exception(conflicts, matchable, field_map):
-            error_message = '{} must have unique {}'.format(model_name,
-                                                            join_with_and(field_names))
+            error_message = '{} must have unique {}'.format(model_name, join_with_and(rule.field_names))
 
             response = {"table": model_name,
                         "localizationKey": "fieldNotUnique"
-                        if scope is None
+                        if rule.scope is None
                         else "childFieldNotUnique",
-                        "fieldName": ','.join(field_names),
-                        "fieldData": serialize_multiple_django(matchable, field_map, field_names),
+                        "fieldName": ','.join(rule.field_names),
+                        "fieldData": serialize_multiple_django(matchable, field_map, rule.field_names),
                         }
 
-            if scope is not None:
-                error_message += f' in {scope.fieldPath.lower()}'
+            if rule.scope is not None:
+                error_message += f' in {rule.scope.lower()}'
                 response.update({
-                    "parentField": scope.fieldPath,
-                    "parentData": serialize_multiple_django(matchable, field_map, [scope.fieldPath.lower()])
+                    "parentField": rule.scope,
+                    "parentData": serialize_multiple_django(matchable, field_map, [rule.scope.lower()])
                 })
             response['conflicting'] = list(
                 conflicts.values_list('id', flat=True)[:100])
@@ -181,7 +305,7 @@ def validate_unique(model, instance):
             continue
 
         field_map, matchable = match_result
-        if len(matchable.keys()) == 0 or set(all_fields) != set(field_map.keys()):
+        if len(matchable.keys()) == 0 or set(rule.all_fields) != set(field_map.keys()):
             continue
 
         conflicts_query = model.objects.only('id')
@@ -190,7 +314,7 @@ def validate_unique(model, instance):
 
         filter_kwargs = dict(matchable)
 
-        apply_case_sensitive = connection.vendor == 'mysql' and not rule.isDatabaseConstraint
+        apply_case_sensitive = connection.vendor == 'mysql' and not rule.is_database_constraint
 
         if apply_case_sensitive:
             conflicts_query, transformed_filters = apply_case_sensitive_filters(
@@ -205,7 +329,7 @@ def validate_unique(model, instance):
         conflicts = conflicts_query.filter(**filter_kwargs)
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
-        if conflicts:
+        if conflicts.exists():
             raise get_exception(conflicts, matchable, field_map)
 
 
