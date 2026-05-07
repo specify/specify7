@@ -156,8 +156,6 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
 def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=None, parent_obj=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
-    # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
-    # but have to delete the referring record first
     dependents_to_delete = [_f for _f in (
         get_related_or_none(obj, field.name)
         for field in obj._meta.get_fields()
@@ -173,13 +171,15 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
 
-    if deleter:
+    # CRITICAL: Only call deleter if object still has an ID
+    # Dependent objects may already be cascade-deleted with id=None
+    if deleter and obj.id is not None:
         deleter(obj, parent_obj)
 
     obj.delete()
-
+    
     for dep in dependents_to_delete:
-      delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
+        delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
     if 'id' in data: 
