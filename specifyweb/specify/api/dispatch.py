@@ -5,7 +5,8 @@ from django.core.exceptions import FieldError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
-from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
+from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
+from specifyweb.backend.permissions.permissions import cache_permission_queries, enforce, table_permissions_checker
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
@@ -128,7 +129,11 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
 
     data = json.loads(request.body)
     resp_objs = []
-    with cache_unique_catnum_preferences():
+    with (
+        cache_unique_catnum_preferences(),
+        cache_uniqueness_rules(),
+        cache_permission_queries(),
+    ):
         for obj_data in data:
             obj = post_resource(
                 request.specify_collection,
@@ -150,7 +155,11 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     data = json.loads(request.body)
     data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
     resp_objs = []
-    with cache_unique_catnum_preferences():
+    with (
+        cache_unique_catnum_preferences(),
+        cache_uniqueness_rules(),
+        cache_permission_queries(),
+    ):
         for _ in range(int(copies)):
             obj = post_resource(
                 request.specify_collection,
