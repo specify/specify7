@@ -55,7 +55,7 @@ from .uploadable import (
     Uploadable,
     BatchEditJson,
 )
-from .upload_table import UploadTable
+from .upload_table import BulkBatchEditContext, BulkBatchEditFallback, UploadTable
 from .scope_context import ScopeContext
 from ..models import Spdataset
 
@@ -328,7 +328,66 @@ def do_upload(
     batch_edit_packs: list[BatchEditJson | None] | None = None,
     auditor_props: AuditorProps | None = None,
 ) -> list[UploadResult]:
+    should_try_bulk_batch_edit = (
+        batch_edit_packs is not None
+        and not no_commit
+        and not allow_partial
+        and isinstance(rows, Sized)
+    )
+    if should_try_bulk_batch_edit:
+        try:
+            return _do_upload_impl(
+                collection,
+                rows,
+                upload_plan,
+                uploading_agent_id,
+                disambiguations,
+                no_commit,
+                allow_partial,
+                progress,
+                batch_edit_packs,
+                auditor_props,
+                use_bulk_batch_edit=True,
+            )
+        except BulkBatchEditFallback as e:
+            logger.info("falling back to row-by-row Batch Edit upload: %s", e)
+
+    return _do_upload_impl(
+        collection,
+        rows,
+        upload_plan,
+        uploading_agent_id,
+        disambiguations,
+        no_commit,
+        allow_partial,
+        progress,
+        batch_edit_packs,
+        auditor_props,
+    )
+
+
+def _do_upload_impl(
+    collection,
+    rows: Rows,
+    upload_plan: Uploadable,
+    uploading_agent_id: int,
+    disambiguations: list[Disambiguation] | None = None,
+    no_commit: bool = False,
+    allow_partial: bool = True,
+    progress: Progress | None = None,
+    batch_edit_packs: list[BatchEditJson | None] | None = None,
+    auditor_props: AuditorProps | None = None,
+    use_bulk_batch_edit: bool = False,
+) -> list[UploadResult]:
     cache: dict = {}
+    agent = models.Agent.objects.get(id=uploading_agent_id)
+    bulk_context = (
+        BulkBatchEditContext(None if no_commit else auditlog, agent)
+        if use_bulk_batch_edit
+        else None
+    )
+    if bulk_context is not None:
+        bulk_context.validate_audit_backend()
     _auditor = Auditor(
         collection=collection,
         props=auditor_props or DEFAULT_AUDITOR_PROPS,
@@ -336,10 +395,12 @@ def do_upload(
         # Done to allow checking skipping write permission check
         # during validations
         skip_create_permission_check=no_commit,
-        agent=models.Agent.objects.get(id=uploading_agent_id),
+        agent=agent,
+        bulk_context=bulk_context,
     )
     total = len(rows) if isinstance(rows, Sized) else None
     cached_scope_table = None
+    bulk_context_preloaded = False
 
     scope_context = ScopeContext()
 
@@ -352,6 +413,9 @@ def do_upload(
         tic = time.perf_counter()
         results: list[UploadResult] = []
         for i, row in enumerate(rows):
+            if bulk_context is not None and has_attachments(row):
+                raise BulkBatchEditFallback("Attachments use the existing path.")
+
             _cache = cache.copy() if cache is not None and allow_partial else cache
             da = disambiguations[i] if disambiguations else None
             batch_edit_pack = batch_edit_packs[i] if batch_edit_packs else None
@@ -393,8 +457,28 @@ def do_upload(
                     if not scope_context.is_variable:
                         # This forces every row to rescope when not variable
                         cached_scope_table = scoped_table
+                    if bulk_context is not None:
+                        if scope_context.is_variable:
+                            raise BulkBatchEditFallback(
+                                "Variable scoping uses the existing path."
+                            )
+                        if batch_edit_packs is None:
+                            raise BulkBatchEditFallback(
+                                "Batch edit packs are required."
+                            )
+                        bulk_context.preload_references(
+                            scoped_table,
+                            batch_edit_packs,
+                            cache,
+                        )
+                        bulk_context_preloaded = True
                 else:
                     scoped_table = cached_scope_table
+
+                if bulk_context is not None and not bulk_context_preloaded:
+                    raise BulkBatchEditFallback(
+                        "Bulk Batch Edit references were not preloaded."
+                    )
 
                 bind_result = (
                     scoped_table.disambiguate(da)
@@ -432,6 +516,8 @@ def do_upload(
         if no_commit:
             raise Rollback("no_commit option")
         else:
+            if bulk_context is not None:
+                bulk_context.flush()
             fixup_trees(scoped_table, results)
 
     return results
