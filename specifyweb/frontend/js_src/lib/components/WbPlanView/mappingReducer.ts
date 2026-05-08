@@ -411,7 +411,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
           {
             ...line,
             columnOptions: {
-              ...state.lines[action.line].columnOptions,
+              ...line.columnOptions,
               disambiguationBehavior: action.disambiguationBehavior,
             },
           } : line

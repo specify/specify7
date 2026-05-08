@@ -277,7 +277,7 @@ this column will never be considered for matching purposes, only for uploading."
                 "disambiguationBehavior": {
                     "type": "string",
                     "enum": ["ask", "pickFirst"],
-                    "default": "ignoreNever",
+                    "default": "ask",
                     "description": "How to disambiguate when multiple records are matched.",
                 },
             },
