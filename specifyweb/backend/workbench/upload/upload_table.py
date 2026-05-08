@@ -685,7 +685,7 @@ class BoundUploadTable(NamedTuple):
     def _disambiguation_pick_first(self) -> bool:
         """Disambiguate by picking the first record if any field uses 'pickFirst'."""
         for p in self.parsedFields:
-            if p.filter_on and p.disambiguationBehavior == "pickFirst":
+            if p.filter_on and p.disambiguation_behavior == "pickFirst":
                 return True
         return False
 

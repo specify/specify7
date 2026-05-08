@@ -38,13 +38,13 @@ class ParseResult(NamedTuple):
     add_to_picklist: PicklistAddition | None
     column: str
     missing_required: str | None
-    disambiguationBehavior: DisambiguationBehavior
+    disambiguation_behavior: DisambiguationBehavior
 
     @classmethod
     def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str,
-                           missing_required: str | None, disambiguationBehavior: DisambiguationBehavior):
+                           missing_required: str | None, disambiguation_behavior: DisambiguationBehavior):
         return cls(filter_on=filter_on, upload=ps.payload, add_to_picklist=add_to_picklist, column=column,
-                   missing_required=missing_required, disambiguationBehavior=disambiguationBehavior)
+                   missing_required=missing_required, disambiguation_behavior=disambiguation_behavior)
 
     def match_key(self) -> str:
         return filter_match_key(self.filter_on)
