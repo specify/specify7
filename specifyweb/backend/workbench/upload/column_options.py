@@ -18,7 +18,7 @@ class ColumnOptions(NamedTuple):
     disambiguationBehavior: DisambiguationBehavior
 
     def to_json(self) -> dict | str:
-        if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None:
+        if self.matchBehavior == "ignoreNever" and self.nullAllowed and self.default is None and self.disambiguationBehavior == "ask":
             return self.column
 
         return dict(self._asdict())
