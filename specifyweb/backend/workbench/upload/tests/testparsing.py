@@ -861,6 +861,32 @@ class NullAllowedTests(UploadTestsBase):
 
 class DisambiguationBehaviorTests(UploadTestsBase):
     def test_pickFirst_disambiguation_behavior(self) -> None:
+        # Upload some agents first
+        agent_plan = UploadTable(
+            name='Agent',
+            wbcols={
+                'firstname': parse_column_options('firstname'),
+                'lastname': parse_column_options('lastname'),
+                'email': parse_column_options('email'),
+            },
+            overrideScope=None,
+            static={},
+            toOne={},
+            toMany={}
+        )
+        agent_data = [
+            {'lastname': 'Doe', 'firstname': 'John', 'email': '0'},
+            {'lastname': 'Doe', 'firstname': 'John', 'email': '1'},
+        ]
+
+        results = do_upload(self.collection, agent_data, agent_plan, self.agent.id)
+        for result in results:
+            validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
+
+        self.assertIsInstance(results[0].record_result, Uploaded)
+        self.assertIsInstance(results[1].record_result, Uploaded)
+        
+        # Try to add some Collection Objects with ambiguous catalogers
         plan = UploadTable(
             name='Collectionobject',
             wbcols={
@@ -884,17 +910,12 @@ class DisambiguationBehaviorTests(UploadTestsBase):
             toMany={}
         )
         data = [
-            {'Cat #': '123', 'lastname': 'Doe', 'firstname': 'John'},
-            {'Cat #': '123', 'lastname': 'Doe', 'firstname': 'Jane'}
+            {'Cat #': '124', 'lastname': 'Doe', 'firstname': 'John'},
+            {'Cat #': '125', 'lastname': 'Doe', 'firstname': 'Jane'}
         ]
-
-        models.Agent.objects.create(firstname='John', lastname='Doe', agenttype=0)
-        models.Agent.objects.create(firstname='John', lastname='Doe', agenttype=0)
-        models.Agent.objects.create(firstname='Jack', lastname='Doe', agenttype=0)
-
         results = do_upload(self.collection, data, plan, self.agent.id)
         for result in results:
             validate([result.to_json()], upload_results_schema, cls=Draft7Validator)
-
-        self.assertIsInstance(results[0].record_result, Matched, "Record was not disambiguated automatically despite having disambiguationBehavior='pickFirst'.")
-        self.assertIsInstance(results[1].record_result, Uploaded)
+        
+        self.assertIsInstance(results[0].toOne['cataloger'].record_result, Matched, "Record was not disambiguated automatically despite having disambiguationBehavior='pickFirst'.")
+        self.assertIsInstance(results[1].toOne['cataloger'].record_result, Uploaded)
