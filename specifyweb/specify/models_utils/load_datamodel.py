@@ -149,19 +149,32 @@ class Table:
             raise ValueError("classname is required to compute the name")
         return self.classname.split(".")[-1]
 
+    def _all_fields(
+        self,
+        exclude_fields: bool = False,
+        exclude_relationships: bool = False,
+        exclude_id_field: bool = False,
+        exclude_virtual_fields: bool = True,
+    ) -> Iterable[Union["Field", "Relationship"]]:
+        if not exclude_fields:
+            yield from self.fields or []
+        if not exclude_relationships:
+            yield from self.relationships or []
+        if not exclude_virtual_fields:
+            yield from self.virtual_fields or []
+        if not exclude_id_field and self.idField is not None:
+            yield self.idField
+
     @property
     def django_name(self) -> str:
         return self.name.capitalize()
 
     @property
     def all_fields(self) -> list[Union["Field", "Relationship"]]:
-        def af() -> Iterable[Union["Field","Relationship"]]:
-            yield from self.fields or []  # Handle None by using an empty list
-            yield from self.relationships or []  # Handle None by using an empty list
-            if self.idField is not None:
-                yield self.idField
-
-        return list(af())
+        """
+        A list of all non-virtual fields (including the ID field) and relationships for the table.
+        """
+        return list(self._all_fields())
 
 
     def is_virtual_field(self, fieldname: str) -> bool:
