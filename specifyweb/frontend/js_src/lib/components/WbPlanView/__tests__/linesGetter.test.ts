@@ -47,6 +47,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       /*
@@ -161,6 +162,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -170,6 +172,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -179,6 +182,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -188,6 +192,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -197,6 +202,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -206,6 +212,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -215,6 +222,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -224,6 +232,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -233,6 +242,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
       {
@@ -242,6 +252,7 @@ theories(getLinesFromHeaders, [
           matchBehavior: 'ignoreNever',
           nullAllowed: true,
           default: null,
+          disambiguationBehavior: 'ask',
         },
       },
     ],

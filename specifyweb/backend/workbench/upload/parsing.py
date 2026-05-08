@@ -50,7 +50,7 @@ class ParseResult(NamedTuple):
         return filter_match_key(self.filter_on)
 
 
-def filter_and_upload(f: Filter, column: str, disambiguation_behavior: DisambiguationBehavior) -> ParseResult:
+def filter_and_upload(f: Filter, column: str, disambiguation_behavior: DisambiguationBehavior = 'ask') -> ParseResult:
     return ParseResult(f, f, None, column, None, disambiguation_behavior)
 
 
