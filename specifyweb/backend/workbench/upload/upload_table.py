@@ -1,10 +1,14 @@
 from decimal import Decimal
 import logging
+from collections import defaultdict
+from dataclasses import dataclass
 from typing import Any, NamedTuple, Literal, Union, Callable
 
-from django.db import transaction, IntegrityError
+from django.db import connection, transaction, IntegrityError
+from django.db.models.signals import post_save, pre_save
+from django.utils import timezone
 
-from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.businessrules.exceptions import AbortSave, BusinessRuleException
 from specifyweb.backend.businessrules.utils import track_changed_fields
 from specifyweb.specify import models
 from specifyweb.specify.utils.func import Func
@@ -21,8 +25,15 @@ from specifyweb.backend.workbench.upload.predicates import (
 )
 from specifyweb.specify.models_utils.lock_tables import LockDispatcher
 from specifyweb.backend.workbench.upload.scope_context import ScopeContext
+from specifyweb.backend.workbench.upload.auditlog import (
+    Collection as AUDIT_COLLECTION,
+    Discipline as AUDIT_DISCIPLINE,
+    Division as AUDIT_DIVISION,
+    truncate_str_to_bytes,
+)
 from .column_options import ColumnOptions, ExtendedColumnOptions
 from .parsing import parse_many, ParseResult, WorkBenchParseFailure
+from . import auditcodes
 
 from .upload_result import (
     Deleted,
@@ -59,6 +70,333 @@ logger = logging.getLogger(__name__)
 # This doesn't cause race conditions, since the cache itself is local to a dataset.
 # Even if you've another validation on the same thread, this won't cause an issue
 REFERENCE_KEY = object()
+
+
+class BulkBatchEditFallback(Exception):
+    pass
+
+
+@dataclass
+class BulkUpdateIntent:
+    model: type
+    obj: Any
+    dirty_fields: list[FieldChangeInfo]
+    update_fields: frozenset[str]
+    agent_id: int | None
+    parent_record_id: int | None
+    parent_table_num: int | None
+    record_version: int
+    table_num: int
+    row_order: int
+
+
+class BulkBatchEditContext:
+    batch_size = 500
+
+    def __init__(self, audit_log, agent):
+        self.audit_log = audit_log
+        self.agent = agent
+        self.intents: list[BulkUpdateIntent] = []
+        self._order = 0
+        self._audit_enabled: bool | None = None
+        self._field_audit_enabled: bool | None = None
+
+    def validate_audit_backend(self):
+        audit_enabled, field_audit_enabled = self._audit_state()
+        if field_audit_enabled and not connection.features.can_return_rows_from_bulk_insert:
+            raise BulkBatchEditFallback(
+                "Database does not return IDs from bulk audit inserts."
+            )
+
+    def preload_references(self, scoped_upload_plan, batch_edit_packs, cache: dict):
+        refs: dict[str, dict[int, int | None]] = defaultdict(dict)
+        self._collect_references(scoped_upload_plan, batch_edit_packs, refs)
+
+        for model_name, versions_by_id in refs.items():
+            model = getattr(models, model_name.capitalize())
+            records = {
+                record.id: record
+                for record in (
+                    model.objects
+                    .select_for_update()
+                    .filter(id__in=versions_by_id.keys())
+                )
+            }
+            if len(records) != len(versions_by_id):
+                raise BulkBatchEditFallback(
+                    f"Unable to preload all {model_name} batch edit records."
+                )
+
+            for record_id, version in versions_by_id.items():
+                record = records[record_id]
+                current_version = getattr(record, "version", None)
+                if (
+                    current_version is not None
+                    and version is not None
+                    and current_version != version
+                ):
+                    raise BulkBatchEditFallback(
+                        f"{model_name} record {record_id} is out of date."
+                    )
+                cache[(REFERENCE_KEY, model_name, record_id)] = record
+
+    def _collect_references(self, uploadable, packs, refs):
+        if not all(hasattr(uploadable, attr) for attr in ("name", "toOne", "toMany")):
+            raise BulkBatchEditFallback("Only upload tables are eligible.")
+
+        for pack in packs:
+            if pack is None:
+                raise BulkBatchEditFallback("Batch edit pack is required.")
+
+            self_pack = pack.get("self", {})
+            record_id = self_pack.get("id")
+            if not isinstance(record_id, int):
+                raise BulkBatchEditFallback("Only existing records are eligible.")
+            version = self_pack.get("version", None)
+            existing_version = refs[uploadable.name].get(record_id)
+            if (
+                record_id in refs[uploadable.name]
+                and existing_version is not None
+                and version is not None
+                and existing_version != version
+            ):
+                raise BulkBatchEditFallback("Conflicting batch edit versions.")
+            refs[uploadable.name][record_id] = version
+
+            to_one_pack = pack.get("to_one", {}) or {}
+            for field_name, to_one_uploadable in uploadable.toOne.items():
+                if field_name in to_one_pack:
+                    self._collect_references(
+                        to_one_uploadable,
+                        [to_one_pack[field_name]],
+                        refs,
+                    )
+
+            to_many_pack = pack.get("to_many", {}) or {}
+            for field_name, to_many_uploadables in uploadable.toMany.items():
+                if field_name not in to_many_pack:
+                    continue
+                field_packs = to_many_pack[field_name]
+                if len(field_packs) != len(to_many_uploadables):
+                    raise BulkBatchEditFallback(
+                        "Batch edit to-many pack shape changed."
+                    )
+                for record_uploadable, record_pack in zip(
+                    to_many_uploadables,
+                    field_packs,
+                ):
+                    self._collect_references(record_uploadable, [record_pack], refs)
+
+    def queue_update(self, auditor, reference_obj, dirty_fields, attrs):
+        if post_save.has_listeners(type(reference_obj)):
+            raise BulkBatchEditFallback(
+                f"{type(reference_obj).__name__} has post-save handlers."
+            )
+        if self._dirty_fields_touch_uniqueness(type(reference_obj), dirty_fields):
+            raise BulkBatchEditFallback("Unique-field updates use the existing path.")
+
+        auditor.pre_log(reference_obj, "update")
+
+        update_fields = {field["field_name"] for field in dirty_fields}
+        if "modifiedbyagent_id" in attrs:
+            update_fields.add("modifiedbyagent_id")
+        if hasattr(reference_obj, "timestampmodified"):
+            reference_obj.timestampmodified = timezone.now()
+            update_fields.add("timestampmodified")
+
+        old_version = getattr(reference_obj, "version", 0)
+        if hasattr(reference_obj, "version"):
+            reference_obj.version = old_version + 1
+            update_fields.add("version")
+
+        parent_record_id, parent_table_num = self._audit_parent(reference_obj)
+        table_num = (
+            reference_obj.specify_model.tableId
+            if hasattr(reference_obj, "specify_model")
+            else 0
+        )
+
+        for key, value in attrs.items():
+            setattr(reference_obj, key, value)
+
+        try:
+            with track_changed_fields(reference_obj, dirty_fields):
+                pre_save.send(
+                    sender=type(reference_obj),
+                    instance=reference_obj,
+                    raw=False,
+                    using=reference_obj._state.db,
+                    update_fields=frozenset(update_fields),
+                )
+        except AbortSave as e:
+            raise BulkBatchEditFallback("AbortSave uses the existing path.") from e
+
+        self.intents.append(
+            BulkUpdateIntent(
+                model=type(reference_obj),
+                obj=reference_obj,
+                dirty_fields=[dict(field) for field in dirty_fields],
+                update_fields=frozenset(update_fields),
+                agent_id=self.agent.id if self.agent is not None else None,
+                parent_record_id=parent_record_id,
+                parent_table_num=parent_table_num,
+                record_version=old_version,
+                table_num=table_num,
+                row_order=self._order,
+            )
+        )
+        self._order += 1
+        return reference_obj
+
+    def flush(self):
+        if not self.intents:
+            return
+
+        audit_enabled, field_audit_enabled = self._audit_state()
+        self.validate_audit_backend()
+
+        try:
+            for (model, update_fields), intents in self._grouped_update_intents():
+                model.objects.bulk_update(
+                    [intent.obj for intent in intents],
+                    list(update_fields),
+                    batch_size=self.batch_size,
+                )
+
+            if not audit_enabled:
+                return
+
+            sorted_intents = sorted(self.intents, key=lambda intent: intent.row_order)
+            audit_logs = models.Spauditlog.objects.bulk_create(
+                [
+                    models.Spauditlog(
+                        action=auditcodes.UPDATE,
+                        parentrecordid=intent.parent_record_id,
+                        parenttablenum=intent.parent_table_num,
+                        recordid=intent.obj.id,
+                        recordversion=intent.record_version,
+                        tablenum=intent.table_num,
+                        createdbyagent_id=intent.agent_id,
+                        modifiedbyagent_id=intent.agent_id,
+                    )
+                    for intent in sorted_intents
+                ],
+                batch_size=self.batch_size,
+            )
+
+            if not field_audit_enabled:
+                return
+            if any(audit_log.id is None for audit_log in audit_logs):
+                raise BulkBatchEditFallback(
+                    "Database did not populate bulk audit IDs."
+                )
+
+            audit_fields = []
+            for intent, audit_log in zip(sorted_intents, audit_logs):
+                for field in intent.dirty_fields:
+                    audit_fields.append(
+                        models.Spauditlogfield(
+                            fieldname=field["field_name"],
+                            newvalue=self._audit_value(field["new_value"]),
+                            oldvalue=self._audit_value(field["old_value"]),
+                            spauditlog=audit_log,
+                            createdbyagent_id=intent.agent_id,
+                            modifiedbyagent_id=intent.agent_id,
+                        )
+                    )
+            models.Spauditlogfield.objects.bulk_create(
+                audit_fields,
+                batch_size=self.batch_size,
+            )
+        except (IntegrityError, TypeError, ValueError) as e:
+            raise BulkBatchEditFallback("Bulk Batch Edit flush failed.") from e
+
+    def _grouped_update_intents(self):
+        grouped = defaultdict(list)
+        for intent in self.intents:
+            grouped[(intent.model, intent.update_fields)].append(intent)
+        return grouped.items()
+
+    def _audit_state(self):
+        if self._audit_enabled is None:
+            self._audit_enabled = (
+                self.audit_log is not None and self.audit_log.isAuditing()
+            )
+            self._field_audit_enabled = (
+                self._audit_enabled
+                and self.audit_log is not None
+                and self.audit_log.isAuditingFlds()
+            )
+        return self._audit_enabled, self._field_audit_enabled
+
+    def _audit_value(self, value):
+        if value is None:
+            return None
+        return truncate_str_to_bytes(str(value), 2**16 - 1)
+
+    def _audit_parent(self, obj):
+        for field_name, table in (
+            ("collectionmemberid", AUDIT_COLLECTION),
+            ("collection_id", AUDIT_COLLECTION),
+            ("discipline_id", AUDIT_DISCIPLINE),
+            ("division_id", AUDIT_DIVISION),
+        ):
+            if not hasattr(obj, field_name):
+                continue
+            scope_id = getattr(obj, field_name)
+            if scope_id is not None:
+                return scope_id, table.tableId
+        return None, None
+
+    def _dirty_fields_touch_uniqueness(self, model, dirty_fields) -> bool:
+        changed_names = {
+            self._normalize_field_name(field["field_name"])
+            for field in dirty_fields
+        }
+
+        for field in model._meta.fields:
+            if field.unique and self._field_matches(changed_names, field.name):
+                return True
+
+        for unique_together in model._meta.unique_together:
+            if any(self._field_matches(changed_names, field) for field in unique_together):
+                return True
+
+        for constraint in model._meta.constraints:
+            constraint_fields = getattr(constraint, "fields", ())
+            if any(self._field_matches(changed_names, field) for field in constraint_fields):
+                return True
+
+        try:
+            from specifyweb.backend.businessrules.uniqueness_rules import (
+                _get_uniqueness_rule_configs,
+            )
+
+            for rule in _get_uniqueness_rule_configs(
+                model._meta.apps,
+                model.__name__,
+            ):
+                if any(
+                    self._field_matches(changed_names, field_name)
+                    for field_name in rule.all_fields
+                ):
+                    return True
+        except Exception:
+            raise BulkBatchEditFallback("Unable to inspect uniqueness rules.")
+
+        return False
+
+    def _field_matches(self, changed_names, field_name: str) -> bool:
+        field_name = field_name.lower()
+        first_part = field_name.split("__", 1)[0]
+        return (
+            self._normalize_field_name(field_name) in changed_names
+            or self._normalize_field_name(first_part) in changed_names
+        )
+
+    def _normalize_field_name(self, field_name: str) -> str:
+        field_name = field_name.lower()
+        return field_name[:-3] if field_name.endswith("_id") else field_name
 
 
 class UploadTable(NamedTuple):
@@ -701,6 +1039,8 @@ class BoundUploadTable(NamedTuple):
         to_one_results: dict[str, UploadResult],
         info: ReportInfo,
     ) -> UploadResult:
+        if self.auditor.bulk_context is not None:
+            raise BulkBatchEditFallback("Inserts and clones use the existing path.")
 
         missing_required = self._check_missing_required()
 
@@ -808,6 +1148,12 @@ class BoundUploadTable(NamedTuple):
         return _inserter
 
     def _do_picklist_additions(self) -> list[PicklistAddition]:
+        if (
+            self.auditor.bulk_context is not None
+            and any(parsedField.add_to_picklist is not None for parsedField in self.parsedFields)
+        ):
+            raise BulkBatchEditFallback("Picklist additions use the existing path.")
+
         added_picklist_items = []
         for parsedField in self.parsedFields:
             if parsedField.add_to_picklist is not None:
@@ -826,6 +1172,8 @@ class BoundUploadTable(NamedTuple):
         return added_picklist_items
 
     def delete_row(self, parent_obj=None) -> UploadResult:
+        if self.auditor.bulk_context is not None:
+            raise BulkBatchEditFallback("Deletes use the existing path.")
 
         info = ReportInfo(
             tableName=self.name,
@@ -1056,18 +1404,26 @@ class BoundUpdateTable(BoundUploadTable):
                 ),
             }
 
-            with transaction.atomic():
-                try:
+            try:
+                if self.auditor.bulk_context is None:
+                    with transaction.atomic():
+                        updated = self._do_update(
+                            reference_record,
+                            [*to_one_changes.values(), *concrete_field_changes.values()],
+                            **attrs,
+                        )
+                        picklist_additions = self._do_picklist_additions()
+                else:
                     updated = self._do_update(
                         reference_record,
                         [*to_one_changes.values(), *concrete_field_changes.values()],
                         **attrs,
                     )
                     picklist_additions = self._do_picklist_additions()
-                except (BusinessRuleException, IntegrityError) as e:
-                    return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), to_one_results, {}
-                    )
+            except (BusinessRuleException, IntegrityError) as e:
+                return UploadResult(
+                    FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                )
 
         record: Updated | NoChange = (
             Updated(updated.pk, info, picklist_additions)
@@ -1098,6 +1454,14 @@ class BoundUpdateTable(BoundUploadTable):
 
     def _do_update(self, reference_obj, dirty_fields, **attrs):
         # TODO: Try handling parent_obj. Quite complicated and ugly.
+        if self.auditor.bulk_context is not None:
+            return self.auditor.bulk_context.queue_update(
+                self.auditor,
+                reference_obj,
+                dirty_fields,
+                attrs,
+            )
+
         self.auditor.update(reference_obj, None, dirty_fields)
         for key, value in attrs.items():
             setattr(reference_obj, key, value)
