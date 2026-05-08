@@ -42,6 +42,7 @@ class Auditor(NamedTuple):
     audit_log: AuditLog | None
     skip_create_permission_check: bool = False
     agent: Agent | None = None
+    bulk_context: Any | None = None
 
     def pre_log(self, obj: Any, action_name: TABLE_ACTION):
         if self.skip_create_permission_check:
