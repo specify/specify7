@@ -18,6 +18,7 @@ import { load } from '../InitialContext';
 import { isTreeTable } from '../InitialContext/treeRanks';
 import { formatUrl } from '../Router/queryString';
 import type { AnySchema, AnyTree } from './helperTypes';
+import { fetchContext as fetchSchema } from './schema';
 import { schemaExtras } from './schemaExtras';
 import { LiteralField, Relationship } from './specifyField';
 import { type TableDefinition, SpecifyTable } from './specifyTable';
@@ -89,6 +90,7 @@ export const fetchContext = f
       'application/json'
     ),
     localization: fetchSchemaLocalization(),
+    schema: fetchSchema,
   })
   .then(({ dataModel, localization }) => {
     schemaLocalization = localization;

@@ -1,7 +1,7 @@
+from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 from specifyweb.specify.tests.test_api import ApiTests
 from django.apps import apps
 from specifyweb.specify.models import Collection, Collectionobject, Collectionobjecttype
-from specifyweb.specify.utils import create_default_collection_types
 
 class TestCreateDefaultCollectionTypes(ApiTests):
 
@@ -50,9 +50,9 @@ class TestCreateDefaultCollectionTypes(ApiTests):
 
         self.assertEqual(Collection.objects.all().count(), 2)
         
-        Collection.objects.all().update(
-            code="test_code"
-        )
+        for idx, col_id in enumerate(Collection.objects.order_by('id').values_list('id', flat=True)):
+            code_val = "test_code" if idx - 1 == 0 else f"test_code{idx - 1}"
+            Collection.objects.filter(id=col_id).update(code=code_val)
 
         create_default_collection_types(apps)
 

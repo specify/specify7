@@ -611,6 +611,7 @@ export const ResourceBase = Backbone.Model.extend({
         }
         return toOne.url();
       } // The FK as a URI
+      // REFACTOR: add independent support for zero-to-one relationships
       case 'zero-to-one': {
         /*
          * This actually a one-to-many where the related collection is only a single resource

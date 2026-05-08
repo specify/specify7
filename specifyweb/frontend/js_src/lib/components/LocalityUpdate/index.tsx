@@ -45,7 +45,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
     data: RA<RA<number | string>>
   ): void {
     loading(
-      ajax('/api/localityset/parse/', {
+      ajax('/locality_update_tool/localityset/parse/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: {
@@ -63,7 +63,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
     data: RA<RA<number | string>>
   ): void {
     loading(
-      ajax('/api/localityset/import/', {
+      ajax('/locality_update_tool/localityset/import/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: {

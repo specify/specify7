@@ -1,16 +1,20 @@
-from specifyweb.specify.filter_by_col import HierarchyException, filter_by_collection
+
+
+from specifyweb.specify.api.filter_by_col import HierarchyException, filter_by_collection
 from specifyweb.specify.models import (
     Attachment,
     Collection,
     Determination,
     Discipline,
     Disposal,
+)
+from specifyweb.specify.models import (
     Geography,
     Taxontreedefitem,
     Taxon,
 )
-from specifyweb.specify.scoping import ScopeType
-from specifyweb.specify.tests.test_trees import GeographyTree
+from specifyweb.specify.utils.scoping import ScopeType
+from specifyweb.backend.trees.tests.test_trees import GeographyTree
 
 
 class TestFilterByCollection(GeographyTree):
@@ -35,17 +39,17 @@ class TestFilterByCollection(GeographyTree):
         attachment_1 = Attachment.objects.create(scopetype=None)
 
         attachment_2 = Attachment.objects.create(
-            scopetype=ScopeType.COLLECTION, scopeid=self.collection.id
+            scopetype=ScopeType.COLLECTION.value, scopeid=self.collection.id
         )
         attachment_3 = Attachment.objects.create(
-            scopetype=ScopeType.COLLECTION, scopeid=collection_2.id
+            scopetype=ScopeType.COLLECTION.value, scopeid=collection_2.id
         )
 
         attachment_4 = Attachment.objects.create(
-            scopetype=ScopeType.DISCIPLINE, scopeid=self.discipline.id
+            scopetype=ScopeType.DISCIPLINE.value, scopeid=self.discipline.id
         )
         attachment_5 = Attachment.objects.create(
-            scopetype=ScopeType.DISCIPLINE, scopeid=discipline_2.id
+            scopetype=ScopeType.DISCIPLINE.value, scopeid=discipline_2.id
         )
 
         queryset = filter_by_collection(Attachment.objects.all(), self.collection)

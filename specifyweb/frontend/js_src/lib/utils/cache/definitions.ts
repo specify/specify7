@@ -36,6 +36,9 @@ export type CacheDefinitions = {
   readonly general: {
     readonly clearCacheOnException: boolean;
   };
+  readonly expressSearch: {
+    readonly showSearchTips: boolean;
+  };
   readonly forms: {
     readonly readOnlyMode: boolean;
     readonly useFieldLabels: boolean;
@@ -98,6 +101,7 @@ export type CacheDefinitions = {
       }
     >;
   };
+  readonly workBenchAttachmentViewer: Readonly<Record<string, RA<number>>>;
   readonly sortConfig: {
     readonly [KEY in keyof SortConfigs]: SortConfig<SortConfigs[KEY]>;
   };

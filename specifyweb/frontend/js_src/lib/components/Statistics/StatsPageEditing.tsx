@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { resourcesText } from '../../localization/resources';
 import { statsText } from '../../localization/stats';
 import { localized } from '../../utils/types';
 import { Button } from '../Atoms/Button';
@@ -57,7 +58,7 @@ export function StatsPageEditing({
         onSubmit={(): void => (handleRename ?? handleAdd)?.(pageName)}
       >
         <Label.Block>
-          {statsText.name()}
+          {resourcesText.name()}
           <Input.Text required value={pageName} onValueChange={setPageName} />
         </Label.Block>
       </Form>

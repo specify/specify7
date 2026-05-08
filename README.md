@@ -66,7 +66,7 @@ Consortium web site is: https://specifysoftware.org
 
 Specify 7 Copyright © 2024 Specify Collections Consortium. Specify comes with
 ABSOLUTELY NO WARRANTY. This is free software licensed under GNU General Public
-License 2 (GPL2).
+License 3 (GPL3).
 
     Specify Collections Consortium
     Biodiversity Institute

@@ -1,10 +1,5 @@
 import { requireContext } from '../../../tests/helpers';
-import {
-  fetchContext,
-  getCollectionPref,
-  getPref,
-  remotePrefsDefinitions,
-} from '../remotePrefs';
+import { fetchContext, getCollectionPref, getPref } from '../remotePrefs';
 
 requireContext();
 
@@ -16,10 +11,6 @@ describe('Parsing Remote Prefs', () => {
     expect(getPref('auditing.do_audits')).toBe(false));
   test('parses numeric value', () =>
     expect(getPref('attachment.preview_size')).toBe(123));
-  test('uses default value if pref is not set', () =>
-    expect(getPref('form.definition.columnSource')).toBe(
-      remotePrefsDefinitions()['form.definition.columnSource'].defaultValue
-    ));
 });
 
 test('can retrieve collection pref', () =>

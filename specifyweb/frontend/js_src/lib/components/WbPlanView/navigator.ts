@@ -20,7 +20,7 @@ import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
-  HtmlGeneratorFieldData,
+  MapperComponentData,
   MappingElementProps,
 } from './LineComponents';
 import type { MappingPath } from './Mapper';
@@ -45,6 +45,13 @@ import {
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
+
+const geoPaleoDisciplines: readonly string[] = [
+  'geology',
+  'invertpaleo',
+  'vertpaleo',
+  'paleobotany',
+];
 
 type NavigationCallbackPayload = {
   readonly table: SpecifyTable;
@@ -131,12 +138,6 @@ function navigator({
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
   const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
-  const geoPaleoDisciplines = [
-    'geology',
-    'invertpaleo',
-    'vertpaleo',
-    'paleobotany',
-  ];
   const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
 
   if (
@@ -295,7 +296,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
-    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
+    fieldsData: RA<readonly [string, MapperComponentData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
@@ -515,7 +516,8 @@ export function getMappingLineData({
         const isInToMany = internalState.mappingLineData.some(
           ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
         );
-        if (isInToMany) {
+        const isZeroToOne = parentRelationship?.type === 'zero-to-one';
+        if (isInToMany && !isZeroToOne) {
           commitInstanceData('simple', table, [formatted]);
           return;
         }
@@ -558,7 +560,6 @@ export function getMappingLineData({
 
             const disciplineType =
               getSystemInfo().discipline_type?.toLowerCase();
-            const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
             if (
               field.name === 'age' &&
               !geoPaleoDisciplines.includes(disciplineType)

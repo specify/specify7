@@ -16,12 +16,12 @@ const componentsApiUrl = `https://hosted.weblate.org/api/projects/${projectName}
 
 const addOns = {
   'weblate.autotranslate.autotranslate': {
+    q: 'state:<translated',
     mode: 'fuzzy',
     engines: ['google-translate'],
     component: null,
     threshold: 20,
     auto_source: 'mt',
-    filter_type: 'todo',
   },
   'weblate.cleanup.generic': {},
 };

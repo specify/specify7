@@ -2,6 +2,25 @@
 
 from django.db import migrations
 
+def add_column_if_missing(apps, schema_editor):
+    SpQuery = apps.get_model('specify', 'SpQuery')
+    table = SpQuery._meta.db_table
+    column = 'SelectSeries'
+
+    with schema_editor.connection.cursor() as c:
+        c.execute(
+            """
+            SELECT 1
+              FROM information_schema.columns
+             WHERE table_schema = DATABASE()
+               AND table_name   = %s
+               AND column_name  = %s
+            """,
+            [table, column]
+        )
+        if not c.fetchone():
+            c.execute(f'ALTER TABLE `{table}` ADD COLUMN `{column}` BIT NULL;')
+
 
 class Migration(migrations.Migration):
 
@@ -10,6 +29,7 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
+        migrations.RunPython(add_column_if_missing, reverse_code=migrations.RunPython.noop),
         migrations.RemoveField(
             model_name='spquery',
             name='selectseries',

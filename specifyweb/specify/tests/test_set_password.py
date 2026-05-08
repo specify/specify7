@@ -11,7 +11,7 @@ class TestSetPassword(ApiTests):
 
         self._update(self.specifyuser, dict(usertype='Manager'))
         response = c.post(
-            f"/api/set_password/{self.specifyuser.id}/",
+            f"/accounts/set_password/{self.specifyuser.id}/",
             {
                 'password': "changed_password"
             }

@@ -54,10 +54,16 @@ type TreeRecordVariety =
 
 export type Uploadable = TreeRecordVariety | UploadTableVariety;
 
+export type DatasetAttachmentPrefs = {
+  readonly usesAttachments: boolean;
+  readonly attachmentsColumn: string;
+};
+
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly uploadable: Uploadable;
   readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 };
 
 const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({

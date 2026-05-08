@@ -1,8 +1,8 @@
-from specifyweb.interactions.tests.test_preps_available_context import (
+from specifyweb.backend.interactions.tests.test_preps_available_context import (
     TestPrepsAvailableContext,
 )
-from specifyweb.specify.api import obj_to_data
-from specifyweb.specify.calculated_fields import calculate_extra_fields as _cef
+from specifyweb.specify.api.serializers import obj_to_data
+from specifyweb.specify.api.calculated_fields import calculate_extra_fields as _cef
 from copy import deepcopy
 
 from specifyweb.specify.models import (

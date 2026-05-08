@@ -102,29 +102,28 @@ export function ListEdit<T extends string = string>({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
-    <div className="grid grid-rows-1 md:grid-cols-[auto_1fr_auto_1fr] md:flex-row">
+    <div className="grid h-full flex-1 grid-rows-1 md:grid-cols-[auto_1fr_auto_1fr] md:flex-row min-h-60">
       <div className="flex md:contents">
         <div className="flex flex-col justify-center">
           <Button.Icon
-            disabled={isReadOnly || selectedSubset.length === 0}
+            disabled={isReadOnly || (selectedSubset ?? []).length === 0}
             icon="chevronUp"
             title={queryText.moveUp()}
             onClick={handleMoveUp}
           />
           <Button.Icon
-            disabled={isReadOnly || selectedSubset.length === 0}
+            disabled={isReadOnly || (selectedSubset ?? []).length === 0}
             icon="chevronDown"
             title={queryText.moveDown()}
             onClick={handleMoveDown}
           />
         </div>
-        <Label.Block>
+        <Label.Block className="flex flex-1 flex-col">
           {selectedLabel}
           <Select
             className="flex-1"
             disabled={isReadOnly}
             multiple
-            size={10}
             value={selectedSubset}
             onValuesChange={(values): void =>
               setSelectedSubset(values as RA<LocalizedString & T>)
@@ -140,26 +139,25 @@ export function ListEdit<T extends string = string>({
       </div>
       <div className="flex items-center justify-center">
         <Button.Icon
-          disabled={isReadOnly || possibleSubset.length === 0}
+          disabled={isReadOnly || (possibleSubset ?? []).length === 0}
           icon="chevronLeft"
           title={commonText.add()}
           onClick={handleAdd}
         />
         <Button.Icon
-          disabled={isReadOnly || selectedSubset.length === 0}
+          disabled={isReadOnly || (selectedSubset ?? []).length === 0}
           icon="chevronRight"
           title={commonText.remove()}
           onClick={handleRemove}
         />
       </div>
-      <div className="flex w-60 justify-end md:flex-col">
-        <Label.Block>
+      <div className="flex justify-end md:flex-col">
+        <Label.Block className="flex flex-1 flex-col">
           {availableLabel}
           <Select
             className="flex-1"
             disabled={isReadOnly}
             multiple
-            size={10}
             value={possibleSubset}
             onValuesChange={(values): void =>
               setPossibleSubset(values as RA<LocalizedString & T>)

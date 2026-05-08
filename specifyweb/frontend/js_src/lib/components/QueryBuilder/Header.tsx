@@ -14,11 +14,17 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceEvents } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { RecordSet, SpQuery, SpQueryField } from '../DataModel/types';
+import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { TableIcon } from '../Molecules/TableIcon';
-import { hasToolPermission } from '../Permissions/helpers';
+import {
+  hasPermission,
+  hasTablePermission,
+  hasToolPermission,
+} from '../Permissions/helpers';
 import { SaveQueryButtons, ToggleMappingViewButton } from './Components';
 import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
+import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
 
 export type QueryView = {
@@ -103,6 +109,19 @@ export function QueryHeader({
           />
         )}
       </div>
+      {state.baseTableName === 'LoanPreparation' &&
+      hasPermission('/querybuilder/query', 'execute') &&
+      hasTablePermission('Loan', 'update') &&
+      hasTablePermission('LoanReturnPreparation', 'create') &&
+      hasTablePermission('LoanPreparation', 'read') ? (
+        <ErrorBoundary dismissible>
+          <QueryLoanReturn
+            fields={state.fields}
+            getQueryFieldRecords={getQueryFieldRecords}
+            queryResource={queryResource}
+          />
+        </ErrorBoundary>
+      ) : undefined}
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsBasic(!isBasic)}>
           {isBasic

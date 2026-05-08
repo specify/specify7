@@ -12,13 +12,15 @@
 
 import '../../../css/workbench.css';
 
-import type { HotTable } from '@handsontable/react';
+import type { HotTableRef } from '@handsontable/react-wrapper';
 import type Handsontable from 'handsontable';
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useUnloadProtect } from '../../hooks/navigation';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useErrorContext } from '../../hooks/useErrorContext';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { wbText } from '../../localization/workbench';
@@ -29,6 +31,7 @@ import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { resourceEvents } from '../DataModel/resource';
 import { WbActions } from '../WbActions';
 import { useResults } from '../WbActions/useResults';
 import type { Dataset } from '../WbPlanView/Wrapped';
@@ -36,6 +39,7 @@ import { WbToolkit } from '../WbToolkit';
 import { WbUtilsComponent } from '../WbUtils';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import { WbUtils } from '../WbUtils/Utils';
+import { usesAttachments } from './attachmentHelpers';
 import type { WbCellCounts } from './CellMeta';
 import { WbCellMeta } from './CellMeta';
 import { DataSetName } from './DataSetMeta';
@@ -44,6 +48,7 @@ import type { WbMapping } from './mapping';
 import { parseWbMappings } from './mapping';
 import { WbUploaded } from './Results';
 import { useDisambiguationDialog } from './useDisambiguationDialog';
+import { WbAttachmentsPreview } from './WbAttachmentsPreview';
 import { WbSpreadsheet } from './WbSpreadsheet';
 import { WbValidation } from './WbValidation';
 
@@ -82,9 +87,23 @@ export function WbView({
         : dataset.rows,
     [dataset]
   );
+  // Switch to home page on dataset deleted if current dataset is deleted
+  const navigate = useNavigate();
+  React.useEffect(
+    () =>
+      resourceEvents.on('deleted', (resource) => {
+        if (
+          resource.specifyTable.name === 'Spdataset' &&
+          resource.id === dataset.id
+        ) {
+          navigate('/specify/', { replace: true });
+        }
+      }),
+    [dataset.id]
+  );
 
   const spreadsheetContainerRef = React.useRef<HTMLElement>(null);
-  const [hotTable, setHotTable] = React.useState<HotTable | null>(null);
+  const [hotTable, setHotTable] = React.useState<HotTableRef | null>(null);
   const hot = hotTable?.hotInstance ?? undefined;
 
   const isUploaded =
@@ -152,6 +171,20 @@ export function WbView({
   const [showToolkit, _openToolkit, _closeToolkit, toggleToolkit] =
     useBooleanState();
 
+  const useAttachments = React.useMemo(
+    () => usesAttachments(dataset),
+    [dataset]
+  );
+  const [
+    showAttachments,
+    _openAttachments,
+    _closeAttachments,
+    toggleAttachments,
+  ] = useBooleanState(useAttachments);
+  React.useEffect(() => {
+    hot?.refreshDimensions();
+  }, [showAttachments]);
+
   const { showResults, closeResults, toggleResults } = useResults({
     hot,
     workbench,
@@ -166,6 +199,21 @@ export function WbView({
       validation: workbench.validation,
       disambiguation: workbench.disambiguation,
     });
+
+  React.useEffect(() => {
+    if (hot === undefined) return;
+    let canceled = false;
+    const refresh = (): void => {
+      if (canceled) return;
+      hot.refreshDimensions();
+      hot.render();
+    };
+    const frameId = requestAnimationFrame(() => requestAnimationFrame(refresh));
+    return () => {
+      canceled = true;
+      cancelAnimationFrame(frameId);
+    };
+  }, [hot, showAttachments, showResults, showToolkit]);
 
   const searchRef = React.useRef<HTMLInputElement | null>(null);
 
@@ -182,7 +230,7 @@ export function WbView({
       }
     >
       <section
-        className={`wbs-form ${className.containerFull}`}
+        className={`wbs-form ${className.containerFull} ${className.formStyles}`}
         ref={spreadsheetContainerRef}
       >
         <div
@@ -203,6 +251,15 @@ export function WbView({
               {wbPlanText.dataMapper()}
             </Link.Small>
           ) : undefined}
+          {useAttachments && (
+            <Button.Small
+              aria-haspopup="grid"
+              aria-pressed={showAttachments}
+              onClick={toggleAttachments}
+            >
+              {attachmentsText.attachments()}
+            </Button.Small>
+          )}
           <WbActions
             cellCounts={cellCounts}
             checkDeletedFail={checkDeletedFail}
@@ -246,7 +303,7 @@ export function WbView({
             workbench={workbench}
             onClickDisambiguate={openDisambiguationDialog}
           />
-          {showResults && (
+          {showResults ? (
             <aside aria-live="polite">
               <WbUploaded
                 datasetId={dataset.id}
@@ -257,7 +314,17 @@ export function WbView({
                 onClose={closeResults}
               />
             </aside>
-          )}
+          ) : null}
+          {useAttachments ? (
+            <aside aria-live="polite">
+              <WbAttachmentsPreview
+                dataset={dataset}
+                hot={hot}
+                showPanel={showAttachments}
+                onClose={toggleAttachments}
+              />
+            </aside>
+          ) : null}
         </div>
         {disambiguationDialogs}
         <WbUtilsComponent

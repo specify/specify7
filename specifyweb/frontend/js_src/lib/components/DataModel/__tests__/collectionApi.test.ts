@@ -130,6 +130,18 @@ describe('Independent Collection', () => {
     }
   );
 
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+    {
+      objects: [],
+      meta: {
+        limit: 20,
+        offset: 0,
+        total_count: 0,
+      },
+    }
+  );
+
   test('lazily fetched', async () => {
     const accession = new tables.Accession.Resource({
       id: 1,

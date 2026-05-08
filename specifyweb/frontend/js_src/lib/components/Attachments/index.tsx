@@ -223,6 +223,7 @@ function Attachments({
             <Label.Inline>
               {attachmentsText.scale()}
               <Input.Generic
+                className="accent-brand-400"
                 max={maxScale}
                 min={minScale}
                 type="range"

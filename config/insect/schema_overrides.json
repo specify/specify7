@@ -1,0 +1,27 @@
+{
+  "collectionobjectattribute": {
+    "ishidden": false,
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}},
+      {"text3": {"ishidden": false, "name": "Length", "desc": "Length"}},
+      {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "LifeStage", "desc": "LifeStage"}},
+      {"text1": {"ishidden": false, "picklistname": "Sex", "name": "Sex", "desc": "Sex"}}
+    ]
+  },
+  "collectingevent": {
+    "items": [
+      { "endtime": { "ishidden": false } },
+      { "starttime": { "ishidden": false } }
+    ]
+  },
+  "determination": {
+    "items": [
+      { "addendum": { "ishidden": false } },
+      { "nameusage": { "ishidden": false } },
+      { "preferredtaxon": { "ishidden": false } },
+      { "qualifier": { "ishidden": false } },
+      { "remarks": { "ishidden": false } }
+    ]
+  }
+}

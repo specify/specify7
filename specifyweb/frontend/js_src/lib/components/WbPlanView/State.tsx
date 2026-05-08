@@ -67,6 +67,7 @@ export function BaseTableSelection({
   onSelectTemplate: handleSelectTemplate,
   onSelected: handleSelected,
   headers,
+  onlyAttachmentTables = false,
 }: {
   readonly onClose: () => void;
   readonly onSelectTemplate: (
@@ -75,6 +76,7 @@ export function BaseTableSelection({
   ) => void;
   readonly onSelected: (baseTableName: keyof Tables) => void;
   readonly headers: RA<string>;
+  readonly onlyAttachmentTables?: boolean;
 }): JSX.Element {
   const [useTemplate, handleUseTemplate, handleDontUseTemplate] =
     useBooleanState();
@@ -98,10 +100,17 @@ export function BaseTableSelection({
       className={{
         container: `${dialogClassNames.narrowContainer} h-1/2`,
       }}
-      header={wbPlanText.selectBaseTable()}
+      header={
+        onlyAttachmentTables
+          ? wbPlanText.selectBaseTableWithAttachments()
+          : wbPlanText.selectBaseTable()
+      }
       onClose={handleClose}
     >
-      <ListOfBaseTables onClick={handleSelected} />
+      <ListOfBaseTables
+        onlyAttachmentTables={onlyAttachmentTables}
+        onClick={handleSelected}
+      />
     </Dialog>
   );
 }

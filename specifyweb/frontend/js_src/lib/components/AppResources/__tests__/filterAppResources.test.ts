@@ -1,3 +1,4 @@
+import { hasPermission } from '../../Permissions/helpers';
 import {
   countAppResources,
   defaultAppResourceFilters,
@@ -5,12 +6,20 @@ import {
 } from '../filtersHelpers';
 import { staticAppResources } from './staticAppResources';
 
+jest.mock('../../Permissions/helpers', () => ({
+  hasPermission: jest.fn(),
+}));
+
 describe('filterAppResources', () => {
   test('case: no appResources filter', () => {
     const filter = {
       appResources: [],
       viewSets: true,
     };
+
+    // New behavior: must mock permission check
+    (hasPermission as jest.Mock).mockReturnValue(true);
+
     const filteredResourcesNoViews = filterAppResources(
       staticAppResources,
       filter
@@ -31,12 +40,15 @@ describe('filterAppResources', () => {
       ...defaultAppResourceFilters,
       viewSets: false,
     };
-    const filteredResourcesNoAppResources = filterAppResources(
+
+    (hasPermission as jest.Mock).mockReturnValue(true);
+
+    const filteredResourcesNoViews = filterAppResources(
       staticAppResources,
       filter
     );
 
-    expect(filteredResourcesNoAppResources).toEqual({
+    expect(filteredResourcesNoViews).toEqual({
       ...staticAppResources,
       viewSets: [],
     });
@@ -47,6 +59,8 @@ describe('filterAppResources', () => {
   });
 
   test('case: default filter', () => {
+    (hasPermission as jest.Mock).mockReturnValue(true);
+
     const defaultFiltered = filterAppResources(
       staticAppResources,
       defaultAppResourceFilters
@@ -69,6 +83,8 @@ describe('filterAppResources', () => {
         (type) => type !== 'otherXmlResource'
       ),
     };
+
+    (hasPermission as jest.Mock).mockReturnValue(true);
 
     const expectedResources = {
       ...staticAppResources,
