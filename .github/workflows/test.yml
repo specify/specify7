@@ -69,15 +69,13 @@ jobs:
           MIGRATOR_NAME: MasterUser
           MIGRATOR_PASSWORD: MasterPassword
           APP_USER_NAME: MasterUser
-          APP_USER_PASSWORD: MasterPassword 
-        options:
-          --health-cmd="mariadb-admin ping" --health-interval=5s
+          APP_USER_PASSWORD: MasterPassword
+        options: --health-cmd="mariadb-admin ping" --health-interval=5s
           --health-timeout=2s --health-retries=3
       redis:
         image: redis:latest
         ports:
           - 6379
-
 
     steps:
       - uses: actions/checkout@v4
@@ -98,8 +96,7 @@ jobs:
       - name:
           Patch Specify datamodel (Sam, you made the Attachment.origFilename too
           long)
-        run:
-          sed -i 's/name="origFilename"
+        run: sed -i 's/name="origFilename"
           type="java.lang.String"/name="origFilename" type="text"/'
           ./Specify6/config/specify_datamodel.xml
 
@@ -135,10 +132,9 @@ jobs:
           echo "APP_USER_PASSWORD = 'MasterPassword'" >> specifyweb/settings/local_specify_settings.py
           echo "REDIS_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
           echo "REDIS_PORT = ${{ job.services.redis.ports[6379] }}" >> specifyweb/settings/local_specify_settings.py
-      
+
       - name: Need these files to be present
-        run:
-          make specifyweb/settings/build_version.py
+        run: make specifyweb/settings/build_version.py
           specifyweb/settings/secret_key.py
 
       - name: Verify MariaDB connection
@@ -148,7 +144,7 @@ jobs:
           while ! mysqladmin ping -h"127.0.0.1" -P"$PORT" --silent; do
             sleep 1
           done
-      
+
       - name: Run Mypy type checker
         run: VIRTUAL_ENV=./ve make typecheck
 
@@ -180,7 +176,7 @@ jobs:
       - uses: actions/setup-node@v4
         with:
           node-version-file: specifyweb/frontend/js_src/package.json
-          cache: 'npm'
+          cache: "npm"
           cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
 
       - name: Build frontend
@@ -199,8 +195,7 @@ jobs:
 
       - name: Clone branch that stores localization strings
         # Listen for changes to production branch
-        if:
-          github.ref == format('refs/heads/{0}',
+        if: github.ref == format('refs/heads/{0}',
           github.event.repository.default_branch)
         id: weblate
         uses: actions/checkout@v3
@@ -215,8 +210,7 @@ jobs:
           npm run localizationTests -- --emit ../../../weblate-localization/strings
 
       - name: Sync localization strings with Weblate (only on production branch)
-        if:
-          github.ref == format('refs/heads/{0}',
+        if: github.ref == format('refs/heads/{0}',
           github.event.repository.default_branch)
         working-directory: weblate-localization
         run: |
@@ -282,8 +276,7 @@ jobs:
         #  - This would have already run on the feature branch by the time code
         #    is pushed into production.
         #  - There shouldn't be many direct pushes to production anyway
-        if:
-          github.ref != format('refs/heads/{0}',
+        if: github.ref != format('refs/heads/{0}',
           github.event.repository.default_branch)
         working-directory: specifyweb/frontend/js_src
         run: |
@@ -323,3 +316,24 @@ jobs:
               -m "Triggered by ${{ github.sha }} on branch ${{ github.ref }}"
             git push
           fi
+
+  eol-check:
+    name: Check dependency EOL (Django)
+    runs-on: ubuntu-latest
+    continue-on-error: true
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.11"
+
+      - name: Install dependencies
+        run: |
+          pip install requests django
+
+      - name: Run EOL check
+        run: |
+          python scripts/check_django_eol.py
