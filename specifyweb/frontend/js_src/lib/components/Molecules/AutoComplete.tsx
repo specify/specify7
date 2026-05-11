@@ -375,6 +375,15 @@ export function AutoComplete<T>({
     );
   }, [currentValue]);
 
+  const handleOptionMouseDown = React.useCallback(
+    (e: React.MouseEvent): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      shouldBlurAfterMouseSelection.current = true;
+    },
+    []
+  );
+
   return (
     <Combobox
       as="div"
@@ -437,10 +446,6 @@ export function AutoComplete<T>({
             overflow-y-auto rounded rounded bg-white shadow-lg
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
-          onMouseDown={(e: React.MouseEvent) => {
-            //e.preventDefault();
-            e.stopPropagation();
-          }}
           ref={dataListRefCallback}
         >
           {isLoading && (
@@ -515,9 +520,7 @@ export function AutoComplete<T>({
                 {({ active, selected }): JSX.Element => (
                   <li
                     className={optionClassName(active, selected)}
-                    onMouseDown={(): void => {
-                      shouldBlurAfterMouseSelection.current = true;
-                    }}
+                    onMouseDown={handleOptionMouseDown}
                   >
                     {typeof item.icon === 'string' ? (
                       <div className="flex items-center">
