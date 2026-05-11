@@ -7,6 +7,7 @@ from requests import RequestException
 
 THRESHOLD_DAYS = 180
 
+#Test comment
 
 def get_django_version():
     result = subprocess.run(
