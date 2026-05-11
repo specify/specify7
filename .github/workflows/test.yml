@@ -336,7 +336,8 @@ jobs:
 
       - name: Install dependencies
         run: |
-          pip install requests django
+          pip install requests
+          pip install -r requirements.txt
 
       - name: Run EOL check
         id: eol
