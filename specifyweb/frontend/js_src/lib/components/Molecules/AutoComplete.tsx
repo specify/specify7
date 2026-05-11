@@ -438,7 +438,7 @@ export function AutoComplete<T>({
             shadow-gray-400 dark:border dark:border-gray-500 dark:bg-neutral-900
           `}
           onMouseDown={(e: React.MouseEvent) => {
-            e.preventDefault();
+            //e.preventDefault();
             e.stopPropagation();
           }}
           ref={dataListRefCallback}
