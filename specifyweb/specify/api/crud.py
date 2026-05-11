@@ -170,15 +170,18 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
+    # store obj id and class before deletion to avoid accessing deleted obj
+    obj_id = obj.id
 
-    # CRITICAL: Only call deleter if object still has an ID
-    # Dependent objects may already be cascade-deleted with id=None
-    if deleter and obj.id is not None:
+    if deleter and (obj_id is not None):
         deleter(obj, parent_obj)
 
     obj.delete()
-    
+
+# before delete obj, store dep id to avoid accessing deleted obj in recursive delete calls
     for dep in dependents_to_delete:
+      dep_id = dep.id
+      if dep_id is not None:
         delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
