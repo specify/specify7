@@ -2,6 +2,8 @@ import requests
 import datetime
 import sys
 import subprocess
+import re
+from requests import RequestException
 
 THRESHOLD_DAYS = 180
 
@@ -21,7 +23,11 @@ def get_django_version():
 
     # Example:
     # 4.2.16 -> 4.2
-    cycle = ".".join(full_version.split(".")[:2])
+    m = re.match(r"^(\d+)\.(\d+)", full_version)
+    if not m:
+        print(f"ERROR: Unexpected Django version format: {full_version}")
+        sys.exit(1)
+    cycle = f"{m.group(1)}.{m.group(2)}"
 
     return full_version, cycle
 
@@ -29,10 +35,11 @@ def get_django_version():
 def get_django_eol(cycle):
     url = "https://endoflife.date/api/django.json"
 
-    response = requests.get(url)
-
-    if response.status_code != 200:
-        print("ERROR: Failed to fetch EOL data")
+    try:
+        response = requests.get(url, timeout=10)
+        response.raise_for_status()
+    except RequestException as exc:
+        print(f"ERROR: Failed to fetch EOL data: {exc}")
         sys.exit(1)
 
     data = response.json()
