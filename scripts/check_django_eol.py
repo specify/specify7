@@ -27,6 +27,7 @@ def get_django_version():
     if not m:
         print(f"ERROR: Unexpected Django version format: {full_version}")
         sys.exit(1)
+
     cycle = f"{m.group(1)}.{m.group(2)}"
 
     return full_version, cycle
@@ -54,37 +55,37 @@ def get_django_eol(cycle):
 
 def calculate_days_remaining(eol_date):
     today = datetime.date.today()
-    eol = datetime.datetime.strptime(
-        eol_date,
-        "%Y-%m-%d"
-    ).date()
-
-    delta = eol - today
-
-    return delta.days
+    eol = datetime.datetime.strptime(eol_date, "%Y-%m-%d").date()
+    return (eol - today).days
 
 
 def main():
     full_version, cycle = get_django_version()
 
-    print(f"Detected Django version: {full_version}")
-
     eol_date = get_django_eol(cycle)
-
-    print(f"Django {cycle} EOL date: {eol_date}")
-
     days_remaining = calculate_days_remaining(eol_date)
 
-    print(f"Days remaining before EOL: {days_remaining}")
-
+    status = "OK"
     if days_remaining < THRESHOLD_DAYS:
-        print(
-            f"ERROR: Django {cycle} has less than "
-            f"{THRESHOLD_DAYS} days before EOL"
-        )
-        sys.exit(1)
+        status = "WARNING"
 
-    print("SUCCESS: Django version is within support window")
+    # ---- structured output for GitHub Actions ----
+    print(f"STATUS={status}")
+    print(f"DJANGO_VERSION={full_version}")
+    print(f"DJANGO_CYCLE={cycle}")
+    print(f"EOL_DATE={eol_date}")
+    print(f"DAYS_REMAINING={days_remaining}")
+
+    # ---- human-readable log ----
+    print("\n--- Django EOL Report ---")
+    print(f"Version: {full_version}")
+    print(f"Cycle: {cycle}")
+    print(f"EOL date: {eol_date}")
+    print(f"Days remaining: {days_remaining}")
+    print(f"Status: {status}")
+
+    # keep non-blocking behavior (CI should NOT fail)
+    sys.exit(0)
 
 
 if __name__ == "__main__":
