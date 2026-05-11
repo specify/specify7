@@ -363,6 +363,7 @@ jobs:
         env:
           EOL_OUTPUT: ${{ steps.eol.outputs.output }}
         with:
+        # Content of pr comment
         script: |
           const output = process.env.EOL_OUTPUT || '';
 
