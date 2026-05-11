@@ -12,7 +12,7 @@ def get_django_version():
     result = subprocess.run(
         [sys.executable, "-m", "django", "--version"],
         capture_output=True,
-        text=True
+        text=True,
         timeout=30
     )
 
