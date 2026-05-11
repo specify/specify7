@@ -321,6 +321,7 @@ jobs:
     name: Check dependency EOL (Django)
     runs-on: ubuntu-latest
     continue-on-error: true
+    timeout-minutes: 10
 
     permissions:
       pull-requests: write
