@@ -335,8 +335,17 @@ jobs:
         with:
           python-version: "3.11"
 
-      - name: Install dependencies
+      - name: Install system dependencies
         run: |
+          sudo apt-get update
+          sudo apt-get install -y \
+            libldap2-dev \
+            libsasl2-dev \
+            libssl-dev
+
+      - name: Install Python dependencies
+        run: |
+          python -m pip install --upgrade pip
           pip install requests
           pip install -r requirements.txt
 
@@ -347,9 +356,11 @@ jobs:
 
           echo "$output"
 
-          echo "output<<EOF" >> $GITHUB_OUTPUT
-          echo "$output" >> $GITHUB_OUTPUT
-          echo "EOF" >> $GITHUB_OUTPUT
+          {
+            echo "output<<EOF"
+            echo "$output"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
       - name: Parse EOL status
         id: parse
@@ -367,7 +378,7 @@ jobs:
             const output = process.env.EOL_OUTPUT || '';
 
             const body =
-              '```\n' +
+              '```text\n' +
               output.replace(/```/g, '``\\`') +
               '\n```\n\n' +
               'This dependency is approaching or past End-of-Life.\n' +
