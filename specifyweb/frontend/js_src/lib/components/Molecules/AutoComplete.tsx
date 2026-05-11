@@ -540,7 +540,8 @@ export function AutoComplete<T>({
               {({ active, selected }): JSX.Element => (
                 <li
                   className={optionClassName(active, selected)}
-                  onMouseDown={(): void => {
+                  onMouseDown={(e: React.MouseEvent): void => {
+                    e.stopPropagation();
                     shouldBlurAfterMouseSelection.current = true;
                   }}
                 >
