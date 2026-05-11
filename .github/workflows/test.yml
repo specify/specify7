@@ -363,20 +363,19 @@ jobs:
         env:
           EOL_OUTPUT: ${{ steps.eol.outputs.output }}
         with:
-        # Content of pr comment
-        script: |
-          const output = process.env.EOL_OUTPUT || '';
+          script: |
+            const output = process.env.EOL_OUTPUT || '';
 
-          const body =
-            '```\n' +
-            output.replace(/```/g, '``\\`') +
-            '\n```\n\n' +
-            'This dependency is approaching or past End-of-Life.\n' +
-            'Please plan an upgrade.';
+            const body =
+              '```\n' +
+              output.replace(/```/g, '``\\`') +
+              '\n```\n\n' +
+              'This dependency is approaching or past End-of-Life.\n' +
+              'Please plan an upgrade.';
 
-          await github.rest.issues.createComment({
-            issue_number: context.issue.number,
-            owner: context.repo.owner,
-            repo: context.repo.repo,
-            body
-          });
+            await github.rest.issues.createComment({
+              issue_number: context.issue.number,
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              body
+            });
