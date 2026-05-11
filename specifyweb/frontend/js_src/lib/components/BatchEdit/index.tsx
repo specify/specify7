@@ -45,7 +45,7 @@ type TreeDefsFilter =
   | {};
 
 type BatchEditFromQueryBodyProps = {
-  readonly query: SpecifyResource<SpQuery> | SerializedRecord<SpQuery>;
+  readonly query: SerializedRecord<SpQuery> | SpecifyResource<SpQuery>;
   readonly fields: RA<QueryField>;
   readonly baseTableName: keyof Tables;
   readonly dataSetName: string;
