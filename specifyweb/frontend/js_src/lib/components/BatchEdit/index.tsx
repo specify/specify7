@@ -12,7 +12,7 @@ import { filterArray } from '../../utils/types';
 import { keysToLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnyTree } from '../DataModel/helperTypes';
+import type { AnyTree, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import { serializeResource } from '../DataModel/serializers';
@@ -44,6 +44,39 @@ type TreeDefsFilter =
     }
   | {};
 
+type BatchEditFromQueryBodyProps = {
+  readonly query: SpecifyResource<SpQuery> | SerializedRecord<SpQuery>;
+  readonly fields: RA<QueryField>;
+  readonly baseTableName: keyof Tables;
+  readonly dataSetName: string;
+  readonly recordSetId?: number;
+  readonly treeDefsFilter: TreeDefsFilter;
+  readonly hasRelationships: boolean;
+};
+
+export const buildBatchEditFromQueryBody = ({
+  query,
+  fields,
+  baseTableName,
+  dataSetName,
+  recordSetId,
+  treeDefsFilter,
+  hasRelationships,
+}: BatchEditFromQueryBodyProps) =>
+  keysToLowerCase({
+    ...serializeResource(query),
+    captions: fields
+      .filter(({ isDisplay }) => isDisplay)
+      .map(({ mappingPath }) =>
+        generateMappingPathPreview(baseTableName, mappingPath)
+      ),
+    name: dataSetName,
+    recordSetId,
+    limit: 0,
+    treeDefsFilter,
+    omitRelationships: !hasRelationships,
+  });
+
 export function BatchEditFromQuery({
   query,
   fields,
@@ -69,18 +102,14 @@ export function BatchEditFromQuery({
       method: 'POST',
       errorMode: 'dismissible',
       headers: { Accept: 'application/json' },
-      body: keysToLowerCase({
-        ...serializeResource(query),
-        captions: fields
-          .filter(({ isDisplay }) => isDisplay)
-          .map(({ mappingPath }) =>
-            generateMappingPathPreview(baseTableName, mappingPath)
-          ),
-        name: dataSetName,
+      body: buildBatchEditFromQueryBody({
+        query,
+        fields,
+        baseTableName,
+        dataSetName,
         recordSetId,
-        limit: userPreferences.get('batchEdit', 'query', 'limit'),
         treeDefsFilter,
-        omitRelationships: !hasRelationships,
+        hasRelationships,
       }),
     });
 
