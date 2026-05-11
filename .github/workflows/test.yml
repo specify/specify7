@@ -377,16 +377,39 @@ jobs:
           script: |
             const output = process.env.EOL_OUTPUT || '';
 
+            const marker = '<!-- django-eol-warning -->';
+
             const body =
+              marker + '\n' +
               '```text\n' +
               output.replace(/```/g, '``\\`') +
               '\n```\n\n' +
               'This dependency is approaching or past End-of-Life.\n' +
               'Please plan an upgrade.';
 
-            await github.rest.issues.createComment({
-              issue_number: context.issue.number,
+            const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
               repo: context.repo.repo,
-              body
+              issue_number: context.issue.number,
             });
+
+            const existingComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes(marker)
+            );
+
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
