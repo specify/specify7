@@ -366,13 +366,13 @@ jobs:
 
             const body = `
 
-  \`\`\`
-  ${output}
-  \`\`\`
+            \`\`\`
+            ${output}
+            \`\`\`
 
-  This dependency is approaching or past End-of-Life.
-  Please plan an upgrade.
-  `;
+            This dependency is approaching or past End-of-Life.
+            Please plan an upgrade.
+            `;
 
             github.rest.issues.createComment({
               issue_number: context.issue.number,
