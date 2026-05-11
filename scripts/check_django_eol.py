@@ -13,6 +13,7 @@ def get_django_version():
         [sys.executable, "-m", "django", "--version"],
         capture_output=True,
         text=True
+        timeout=30
     )
 
     if result.returncode != 0:
