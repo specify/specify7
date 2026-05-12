@@ -15,13 +15,11 @@ from specifyweb.middleware.general import require_GET
 from specifyweb.backend.permissions.permissions import check_table_permissions, table_permissions_checker
 from specifyweb.specify.api.api_utils import strict_uri_to_model
 from specifyweb.specify.models import Collectionobject, Loan, Loanpreparation, \
-    Loanreturnpreparation, Preparation, Recordset, Recordsetitem
+    Loanreturnpreparation, Preparation, Recordset
 from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.views import login_maybe_required
 
-from django.db.models import F, Q, Sum
-from django.db.models.functions import Coalesce
-from django.http import JsonResponse
+from django.db.models import Q
 
 @require_POST # NOTE: why is this a POST request?
 @login_maybe_required
@@ -132,6 +130,64 @@ def preps_available_ids(request):
 
     cursor = connection.cursor()
     cursor.execute(sql, [int(request.specify_collection.id)] + co_ids)
+    rows = cursor.fetchall()
+
+    return http.HttpResponse(toJson(rows), content_type='application/json')
+
+
+@require_POST
+@login_maybe_required
+def preps_available_preps(request):
+    """Returns a list of preparations filtered by a Preparation field.
+
+    The field name is provided via the `prep_fld` POST param and values via
+    the `prep_values` JSON list. Intended to support barcodes or other
+    preparation-level identifiers when selecting preparations for an
+    interaction.
+    """
+
+    try:
+        prep_fld = Preparation._meta.get_field(request.POST['prep_fld'].lower()).db_column
+    except FieldDoesNotExist as e:
+        raise http.Http404(e)
+
+    prep_values = json.loads(request.POST['prep_values'])
+
+    isLoan = request.POST.get('isLoan', 'false').lower() == 'true'
+
+    sql = """
+    select co.CatalogNumber,
+           co.collectionObjectId,
+           t.FullName,
+           t.taxonId,
+           p.preparationid,
+           pt.name,
+           p.countAmt,
+           sum(lp.quantity-lp.quantityreturned) Loaned,
+           sum(gp.quantity) Gifted,
+           sum(ep.quantity) Exchanged,
+           p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) -
+           coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) Available
+    from preparation p
+    left join loanpreparation lp on lp.preparationid = p.preparationid
+    left join giftpreparation gp on gp.preparationid = p.preparationid
+    left join exchangeoutprep ep on ep.PreparationID = p.PreparationID
+    inner join collectionobject co on co.CollectionObjectID = p.CollectionObjectID
+    inner join preptype pt on pt.preptypeid = p.preptypeid
+    left join determination d on d.CollectionObjectID = co.CollectionObjectID
+    left join taxon t on t.TaxonID = d.TaxonID
+    where p.collectionmemberid = %s
+      and (d.IsCurrent or d.DeterminationID is null)
+      and p.{prep_fld} in ({params})
+    """.format(prep_fld=prep_fld, params=','.join('%s' for _ in prep_values))
+
+    if isLoan:
+        sql += " and pt.isloanable"
+
+    sql += " group by 1,2,3,4,5 order by 1;"
+
+    cursor = connection.cursor()
+    cursor.execute(sql, [int(request.specify_collection.id)] + prep_values)
     rows = cursor.fetchall()
 
     return http.HttpResponse(toJson(rows), content_type='application/json')

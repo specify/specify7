@@ -208,8 +208,10 @@ export function QueryInputField({
       // The :after pseudo element sets the width
       data-value={value}
     >
-      {/* This invisible input is used to set the height */}
-      <Input.Text aria-hidden className="invisible w-0" />
+      {/* This invisible element is used only to set height */}
+      <span aria-hidden className="invisible block w-0 p-1 leading-[unset]">
+        &nbsp;
+      </span>
       <Input.Generic
         // This is the actual input that is visible to user
         {...commonProps}
@@ -271,6 +273,7 @@ function SingleField({
   )
     return (
       <SpecifyUserAutoComplete
+        label={label}
         startValue={currentValue}
         onChange={handleChange}
       />

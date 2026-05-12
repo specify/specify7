@@ -142,30 +142,10 @@ class UIFormatter(NamedTuple):
         objs = model.objects.filter(**{ fieldname + '__regex': self.autonumber_regexp(with_year) })
         return group_filter(objs).order_by('-' + fieldname)
 
-    def prepare_autonumber_thunk(self, collection, model, vals: Sequence[str], year: int | None=None):
-        with_year = self.fillin_year(vals, year)
-        fieldname = self.field_name.lower()
-
-        filtered_objs = self._autonumber_queryset(collection, model, fieldname, with_year)
-        # At this point the query for the autonumber is defined but not yet executed.
-
-        # The actual lookup and setting of the autonumbering value
-        # is thunked so that it can be executed in context of locked tables.
-        def apply_autonumbering_to(obj):
-            try:
-                biggest = filtered_objs[0] # actual lookup occurs here
-            except IndexError:
-                filled_vals = self.fill_vals_no_prior(with_year)
-            else:
-                filled_vals = self.fill_vals_after(getattr(biggest, fieldname))
-
-            # And here the new value is assigned to the object.  It is
-            # the callers responsibilty to save the object within the
-            # same locked tables context because there maybe multiple
-            # autonumber fields.
-            setattr(obj, self.field_name.lower(), ''.join(filled_vals))
-
-        return apply_autonumbering_to
+    def apply_autonumbering(self, collection, obj, vals: Sequence[str]):
+        field_name = self.field_name.lower()
+        field_value = self.autonumber_now(collection, obj.__class__, vals)
+        setattr(obj, field_name, field_value)
 
     def fill_vals_after(self, prior: str) -> list[str]:
 
@@ -192,14 +172,17 @@ class UIFormatter(NamedTuple):
     def canonicalize(self, values: Sequence[str]) -> str:
         return ''.join([field.canonicalize(value) for field, value in zip(self.fields, values)])
 
-    def apply_scope(self, collection):
+    def apply_scope(self, collection, autonumbering_lock_dispatcher = None) -> ScopedFormatter:
+        from specifyweb.specify.utils.autonumbering import highest_autonumbering_value
         def parser(table: Table, value: str) -> str:
             parsed = self.parse(value)
             if self.needs_autonumber(parsed):
-                canonicalized = self.autonumber_now(
+                canonicalized = highest_autonumbering_value(
                     collection,
                     getattr(models, table.django_name),
-                    parsed
+                    self,
+                    parsed,
+                    get_lock_dispatcher=autonumbering_lock_dispatcher
                 )
             else:
                 canonicalized = self.canonicalize(parsed)
@@ -287,6 +270,7 @@ class SeparatorField(Field):
         return self.wild_regexp()
 
 class CNNField(NumericField):
+    # CNN stands for Catalog Number Numeric, Specify's numeric catalog number formatter.
     def __new__(cls):
         return NumericField.__new__(cls, size=9, inc=9)
 
@@ -299,12 +283,18 @@ class CNNField(NumericField):
 def get_uiformatter_by_name(collection, user, formatter_name: str) -> UIFormatter | None:
     xml, _, __ = get_app_resource(collection, user, "UIFormatters")
     node = ElementTree.XML(xml).find('.//format[@name=%s]' % quoteattr(formatter_name))
-    if node is None: return None
+    if node is None:
+        return None
     external = node.find('external')
     if external is not None and external.text is not None:
         name = external.text.split('.')[-1]
         if name == 'CatalogNumberUIFieldFormatter':
-            return UIFormatter('CollectionObject', 'CatalogNumber', [CNNField()], formatter_name)
+            return UIFormatter(
+                'CollectionObject',
+                'CatalogNumber',
+                [CNNField()],
+                formatter_name,
+            )
         else:
             return None
     else:
@@ -360,10 +350,20 @@ def get_uiformatters(collection, obj, user) -> list[UIFormatter]:
     logger.debug("uiformatters for %s: %s", tablename, uiformatters)
     return uiformatters
 
-def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter | None:
+def get_uiformatter(
+    collection,
+    tablename: str,
+    fieldname: str,
+    format_name: str | None = None,
+    user=None,
+) -> UIFormatter | None:
 
     if tablename.lower() == "collectionobject" and fieldname.lower() == "catalognumber":
-        return get_catalognumber_format(collection, None, None)
+        return (
+            get_uiformatter_by_name(collection, user, format_name)
+            if format_name is not None
+            else get_catalognumber_format(collection, None, user)
+        )
 
     try:
         field_format = Item.objects.get(
@@ -376,10 +376,12 @@ def get_uiformatter(collection, tablename: str, fieldname: str) -> UIFormatter |
     else:
         return get_uiformatter_by_name(collection, None, field_format)
 
-def get_catalognumber_format(collection, format_name: str | None, user) -> UIFormatter:
-    if format_name: 
-         formatter = get_uiformatter_by_name(collection, user, format_name)
-         if formatter:
+def get_catalognumber_format(
+    collection, format_name: str | None, user
+) -> UIFormatter | None:
+    if format_name:
+        formatter = get_uiformatter_by_name(collection, user, format_name)
+        if formatter:
             return formatter
 
     return get_uiformatter_by_name(collection, user, collection.catalognumformatname)

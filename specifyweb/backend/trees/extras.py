@@ -207,25 +207,55 @@ def close_interval(model, node_number, size):
         highestchildnodenumber=F('highestchildnodenumber')-size,
     )
 
-def adding_node(node,collection=None, user=None):
+def _get_collection_preferences(collection=None, user=None):
     import specifyweb.backend.context.app_resource as app_resource
+
+    try:
+        resource = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+    except Exception as e:
+        logger.warning('Could not load CollectionPreferences: %s', e)
+        return {}
+
+    if resource is None:
+        return {}
+
+    if not isinstance(resource, (tuple, list)) or len(resource) == 0:
+        logger.warning('Unexpected CollectionPreferences resource format: %r', type(resource))
+        return {}
+
+    collection_prefs_json = resource[0]
+    if collection_prefs_json is None:
+        return {}
+
+    try:
+        collection_prefs_dict = json.loads(collection_prefs_json)
+    except (TypeError, json.JSONDecodeError) as e:
+        logger.warning('Could not parse CollectionPreferences JSON: %s', e)
+        return {}
+
+    return collection_prefs_dict if isinstance(collection_prefs_dict, dict) else {}
+
+def _allow_adding_child_to_synonymized_parent(node, collection=None, user=None):
+    collection_prefs_dict = _get_collection_preferences(collection, user)
+    tree_management_pref = collection_prefs_dict.get('treeManagement', {})
+
+    synonymized = tree_management_pref.get('synonymized', {}) \
+        if isinstance(tree_management_pref, dict) else {}
+
+    if not isinstance(synonymized, dict):
+        return False
+
+    pref_key = f'sp7.allow_adding_child_to_synonymized_parent.{node.specify_model.name}'
+    return synonymized.get(pref_key, False) is True
+
+def adding_node(node,collection=None, user=None):
     logger.info('adding node %s', node)
     model = type(node)
     parent = model.objects.select_for_update().get(id=node.parent.id)
 
     if parent.accepted_id is not None:
-        collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-        if collection_prefs_json is not None:
-            collection_prefs_dict = json.loads(collection_prefs_json)
-
-        treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-
-        synonymized = treeManagement_pref.get('synonymized', {}) \
-            if isinstance(treeManagement_pref, dict) else {}
-
-        add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
-
-        if add_synonym_enabled is True:
+        allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
+        if not allow_adding_child:
             raise TreeBusinessRuleException(
                 f'Adding node "{node.fullname}" to synonymized parent "{parent.fullname}"',
                 {"tree" : "Taxon",
@@ -410,19 +440,8 @@ def synonymize(node, into, agent, user=None, collection=None):
     node.save()
 
     # This check can be disabled by a remote pref
-    import specifyweb.backend.context.app_resource as app_resource
-    collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
-    if collection_prefs_json is not None:
-            collection_prefs_dict = json.loads(collection_prefs_json)
-
-    treeManagement_pref = collection_prefs_dict.get('treeManagement', {})
-
-    synonymized = treeManagement_pref.get('synonymized', {}) \
-        if isinstance(treeManagement_pref, dict) else {}
-
-    add_synonym_enabled = synonymized.get(r'^sp7\.allow_adding_child_to_synonymized_parent\.' + node.specify_model.name + '=(.+)', False) if isinstance(synonymized, dict) else False
-
-    if node.children.count() > 0 and (add_synonym_enabled is True):
+    allow_adding_child = _allow_adding_child_to_synonymized_parent(node, collection, user)
+    if node.children.count() > 0 and not allow_adding_child:
         raise TreeBusinessRuleException(
             f'Synonymizing node "{node.fullname}" which has children',
             {"tree" : "Taxon",

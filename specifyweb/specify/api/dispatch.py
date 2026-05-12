@@ -1,8 +1,15 @@
 import json
-from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAllowed, QueryDict)
+from django.http import (
+    HttpResponse,
+    HttpResponseBadRequest,
+    HttpResponseForbidden,
+    HttpResponseNotAllowed,
+    QueryDict,
+)
 
 from django.core.exceptions import FieldError
 
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
@@ -53,6 +60,15 @@ def resource_dispatch(request, model, id) -> HttpResponse:
                             content_type='application/json')
 
     elif request.method == 'DELETE':
+        if model.lower() == 'discipline' and not request.specify_user.is_admin():
+            return HttpResponseForbidden('Specifyuser must be an institution admin')
+
+        # Block deleting currently logged collection
+        if model.lower() == 'collection' and int(id) == request.specify_collection.id:
+            raise BusinessRuleException(
+                "You cannot delete the collection you are currently logged into."
+            )
+
         delete_resource(request.specify_collection,
                         request.specify_user_agent,
                         model, id, version)

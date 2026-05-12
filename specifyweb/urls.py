@@ -21,6 +21,7 @@ from .specify.views import images, properties
 from specifyweb.backend.stored_queries import urls as query_urls
 from specifyweb.backend.workbench import urls as wb_urls
 from specifyweb.backend.stats import urls as stat_urls
+from specifyweb.backend.setup_tool import urls as setup_tool_urls
 from specifyweb.backend.inheritance import urls as inheritance_urls
 from specifyweb.backend.trees import urls as trees_urls
 from specifyweb.backend.merge import urls as merge_urls
@@ -72,6 +73,7 @@ urlpatterns = [
     path('permissions/', include(permissions_urls)), # permissions added
     # url(r'^testcontext/', include()),
     path('stats/', include(stat_urls)),
+    path('setup_tool/', include(setup_tool_urls)),
     path('inheritance/', include(inheritance_urls)),
     path('trees/', include(trees_urls)),
     path('merge/', include(merge_urls)),

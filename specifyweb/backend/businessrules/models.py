@@ -42,7 +42,7 @@ class UniquenessRule(models.Model):
     isDatabaseConstraint = models.BooleanField(default=False, db_column='isDatabaseConstraint')
     modelName = models.CharField(max_length=256)
     discipline = models.ForeignKey(
-        Discipline, null=True, blank=True, on_delete=models.PROTECT, db_column="DisciplineID")
+        Discipline, null=True, blank=True, on_delete=models.CASCADE, db_column="DisciplineID")
 
     @property
     def fields(self):

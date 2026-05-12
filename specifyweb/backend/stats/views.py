@@ -130,14 +130,16 @@ def get_percent_georeferenced(request):
                             Locality, "read")
     cursor = connection.cursor()
     cursor.execute("""
-       SELECT CASE WHEN 
-       (SELECT count(*) FROM locality
-        JOIN discipline ON 
-        locality.DisciplineID = discipline.DisciplineID 
-        WHERE discipline.DisciplineID = %s) = 0 THEN 0 
-        ELSE ((count(localityid) * 1.0) / 
-        ((SELECT count(*) FROM locality) * 1.0)) * 100.0 
-        END AS PercentGeoReferencedLocalities FROM locality WHERE not latitude1 is null""",
+       SELECT CASE WHEN totals.total_count = 0 THEN 0
+       ELSE (totals.georeferenced_count * 100.0) / totals.total_count
+       END AS PercentGeoReferencedLocalities
+       FROM (
+           SELECT
+               COUNT(*) AS total_count,
+               SUM(CASE WHEN Latitude1 IS NOT NULL THEN 1 ELSE 0 END) AS georeferenced_count
+           FROM locality
+           WHERE DisciplineID = %s
+       ) AS totals""",
                    [request.specify_collection.discipline.id])
     percent_georeferenced = round(cursor.fetchone()[0],2)
     return percent_georeferenced

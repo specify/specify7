@@ -1,0 +1,45 @@
+{
+  "tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Surface",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0
+        },
+        {
+          "name": "Super Group",
+          "enforced": false,
+          "infullname": false,
+          "rank": 100
+        },
+        {
+          "name": "Litho Group",
+          "enforced": false,
+          "infullname": false,
+          "rank": 200
+        },
+        {
+          "name": "Formation",
+          "enforced": false,
+          "infullname": false,
+          "rank": 300
+        },
+        {
+          "name": "Member",
+          "enforced": false,
+          "infullname": false,
+          "rank": 400
+        },
+        {
+          "name": "Bed",
+          "enforced": false,
+          "infullname": false,
+          "rank": 500
+        }
+      ]
+    },
+    "nodes": []
+  }
+}

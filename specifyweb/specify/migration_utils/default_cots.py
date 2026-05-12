@@ -62,13 +62,13 @@ def create_default_discipline_for_tree_defs(apps, using='default'):
             storage_tree_def.institution = institution
             storage_tree_def.save(using=using)
 
-def create_cogtype_type_picklist(apps):
+def create_cogtype_type_picklist(apps, using='default'):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
 
-    for collection in Collection.objects.all():
-        cog_type_picklist, _ = Picklist.objects.get_or_create(
+    for collection in Collection.objects.using(using).all():
+        cog_type_picklist, _ = Picklist.objects.using(using).get_or_create(
             name='SystemCOGTypes', # Default Collection Object Group Types
             type=0,
             collection=collection,
@@ -78,7 +78,7 @@ def create_cogtype_type_picklist(apps):
             }
         )
         for cog_type in DEFAULT_COG_TYPES:
-            Picklistitem.objects.get_or_create(
+            Picklistitem.objects.using(using).get_or_create(
                 title=cog_type,
                 value=cog_type,
                 picklist=cog_type_picklist
@@ -107,18 +107,18 @@ def create_cotype_picklist(apps):
             }
         )
 
-def set_discipline_for_taxon_treedefs(apps):
+def set_discipline_for_taxon_treedefs(apps, using='default'):
     Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
     Taxontreedef = apps.get_model('specify', 'Taxontreedef')
 
-    collection_object_types = Collectionobjecttype.objects.filter(
+    collection_object_types = Collectionobjecttype.objects.using(using).filter(
         taxontreedef__discipline__isnull=True
     ).annotate(
         discipline=F('collection__discipline')
     )
 
     for cot in collection_object_types:
-        Taxontreedef.objects.filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
+        Taxontreedef.objects.using(using).filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
 
 def fix_taxon_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')

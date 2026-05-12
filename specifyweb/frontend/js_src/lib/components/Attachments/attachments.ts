@@ -50,6 +50,7 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
+const uploadTimeoutMilliseconds = 30 * 60 * 1000;
 
 /*
  * This function is useful when testing functions that depend on the settings.
@@ -264,33 +265,90 @@ export async function uploadFile({
       handleProgress(event.lengthComputable ? event.loaded / event.total : true)
     );
   }
-  xhr.open('POST', settings.write);
-  xhr.send(formData);
   const DONE = 4;
-  await new Promise((resolve, reject) =>
-    xhr.addEventListener('readystatechange', () => {
-      if (xhr.readyState === DONE)
-        try {
-          resolve(
-            handleAjaxResponse({
-              expectedErrors: [],
-              accept: undefined,
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              response: {
-                ok: xhr.status === Http.OK,
-                status: xhr.status,
-                url: settings!.write,
-              } as Response,
+  xhr.open('POST', settings.write);
+  xhr.timeout = uploadTimeoutMilliseconds;
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
 
-              errorMode: strict ? 'visible' : 'silent',
-              text: xhr.responseText,
-            })
-          );
+    const handleReadyStateChange = () => {
+      if (xhr.readyState !== DONE) return;
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: xhr.status === Http.OK,
+              status: xhr.status,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: xhr.responseText,
+          });
+          resolve();
         } catch (error) {
           reject(error);
         }
-    })
-  );
+      });
+    };
+
+    const handleFailureWithoutResponse = (message: string) => {
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: false,
+              status: 0,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: message,
+          });
+          reject(new Error(message));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+
+    const settle = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback();
+    };
+
+    const handleError = () =>
+      handleFailureWithoutResponse(
+        'Upload failed before receiving a response.'
+      );
+    const handleAbort = () =>
+      handleFailureWithoutResponse(
+        'Upload was aborted before receiving a response.'
+      );
+    const handleTimeout = () =>
+      handleFailureWithoutResponse(
+        `Upload timed out after ${uploadTimeoutMilliseconds} milliseconds.`
+      );
+
+    const cleanup = () => {
+      xhr.removeEventListener('readystatechange', handleReadyStateChange);
+      xhr.removeEventListener('error', handleError);
+      xhr.removeEventListener('abort', handleAbort);
+      xhr.removeEventListener('timeout', handleTimeout);
+    };
+
+    xhr.addEventListener('readystatechange', handleReadyStateChange);
+    xhr.addEventListener('error', handleError);
+    xhr.addEventListener('abort', handleAbort);
+    xhr.addEventListener('timeout', handleTimeout);
+    xhr.send(formData);
+  });
 
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,

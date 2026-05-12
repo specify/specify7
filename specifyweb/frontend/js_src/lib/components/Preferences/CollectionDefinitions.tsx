@@ -20,6 +20,12 @@ import { definePref } from './types';
 const tableLabel = (tableName: keyof Tables): LocalizedString =>
   genericTables[tableName]?.label ?? camelToHuman(tableName);
 
+const fieldLabel = (
+  tableName: keyof Tables,
+  fieldName: keyof (typeof genericTables)[keyof Tables]['field']
+): LocalizedString =>
+  genericTables[tableName]?.field[fieldName].label ?? camelToHuman(fieldName);
+
 export const collectionPreferenceDefinitions = {
   general: {
     title: preferencesText.general(),
@@ -126,8 +132,17 @@ export const collectionPreferenceDefinitions = {
             container: 'label',
           }),
           showPreparationsTotal: definePref<boolean>({
-            title: statsText.showPreparationsTotal(),
-            description: statsText.showPreparationsTotalDescription(),
+            title: () =>
+              statsText.showPreparationsTotal({
+                preparationTableName: tableLabel('Preparation'),
+              }),
+            description: () =>
+              statsText.showPreparationsTotalDescription({
+                preparationTableName: tableLabel('Preparation'),
+                lowerPreparationTableName:
+                  tableLabel('Preparation').toLowerCase(),
+                prepTypeTableName: tableLabel('PrepType').toLowerCase(),
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
@@ -168,15 +183,36 @@ export const collectionPreferenceDefinitions = {
     },
   },
   catalogNumberInheritance: {
-    title: queryText.primaryCatalogNumberInheritance(),
+    title: () =>
+      queryText.primaryCatalogNumberInheritance({
+        collectionObjectTableName: tableLabel('CollectionObject'),
+      }),
     subCategories: {
       behavior: {
-        title: preferencesText.behavior(),
+        title: preferencesText.inheritance(),
         items: {
           inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberPref(),
+            title: () =>
+              preferencesText.inheritanceCatNumberPref({
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
+                collectionObjectGroupTableName: tableLabel(
+                  'CollectionObjectGroup'
+                ),
+              }),
             description: () =>
-              preferencesText.inheritanceCatNumberPrefDescription(),
+              preferencesText.inheritanceCatNumberPrefDescription({
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
+                collectionObjectTableName: tableLabel('CollectionObject'),
+                collectionObjectGroupTableName: tableLabel(
+                  'CollectionObjectGroup'
+                ),
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -187,15 +223,32 @@ export const collectionPreferenceDefinitions = {
     },
   },
   catalogNumberParentInheritance: {
-    title: queryText.parentCatalogNumberInheritance(),
+    title: () =>
+      queryText.parentCatalogNumberInheritance({
+        componentTableName: tableLabel('Component'),
+      }),
     subCategories: {
       behavior: {
-        title: preferencesText.behavior(),
+        title: preferencesText.inheritance(),
         items: {
           inheritance: definePref<boolean>({
-            title: preferencesText.inheritanceCatNumberParentCOPref(),
+            title: () =>
+              preferencesText.inheritanceCatNumberParentCOPref({
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
+                componentTableName: tableLabel('Component'),
+              }),
             description: () =>
-              preferencesText.inheritanceCatNumberParentCOPrefDescription(),
+              preferencesText.inheritanceCatNumberParentCOPrefDescription({
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
+                componentTableName: tableLabel('Component'),
+                collectionObjectTableName: tableLabel('CollectionObject'),
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: false,
@@ -206,13 +259,25 @@ export const collectionPreferenceDefinitions = {
     },
   },
   uniqueCatalogNumberAccrossComponentAndCO: {
-    title: queryText.uniqueCatalogNumberAcrossComponentAndCoTitle(),
+    title: () =>
+      queryText.uniqueCatalogNumberAcrossComponentAndCoTitle({
+        componentTableName: tableLabel('Component'),
+        collectionObjectTableName: tableLabel('CollectionObject'),
+      }),
     subCategories: {
       behavior: {
-        title: preferencesText.behavior(),
+        title: preferencesText.uniqueness(),
         items: {
           uniqueness: definePref<boolean>({
-            title: preferencesText.uniqueCatNumberAcrossCompAndCo(),
+            title: () =>
+              preferencesText.uniqueCatNumberAcrossCompAndCo({
+                catalogNumberFieldName: fieldLabel(
+                  'CollectionObject',
+                  'catalogNumber'
+                ),
+                componentTableName: tableLabel('Component'),
+                collectionObjectTableName: tableLabel('CollectionObject'),
+              }),
             requiresReload: false,
             visible: true,
             defaultValue: true,

@@ -35,10 +35,10 @@ export const operationPolicies = {
   '/tree/edit/storage': [
     'merge',
     'move',
+    'bulk_move',
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',

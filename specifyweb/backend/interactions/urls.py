@@ -5,6 +5,7 @@ from .views import *
 urlpatterns = [
     re_path(r'^preparations_available_rs/(?P<recordset_id>\d+)/', preps_available_rs),
     re_path(r'^preparations_available_ids/', preps_available_ids),
+    re_path(r'^preparations_available_preps/', preps_available_preps),
     re_path(r'^loan_return_all/', loan_return_all_items),
     re_path(r'^prep_interactions/', prep_interactions),
     re_path(r'^prep_availability/(?P<prep_id>\d+)/(?P<iprep_id>\d+)/(?P<iprep_name>\w+)/', prep_availability),

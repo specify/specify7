@@ -7,25 +7,50 @@ import { uploadFile } from '../attachments';
 requireContext();
 
 describe('uploadFile', () => {
-  const xhrMock = {
-    open: jest.fn(),
-    send: jest.fn(),
-    // Immediately call the callback
-    addEventListener,
-    readyState: 4,
-    status: Http.OK as number, // Need to loosen up the type.
-    _error: undefined as unknown,
+  type EventName = 'abort' | 'error' | 'readystatechange' | 'timeout';
+  type MockXhr = {
+    readonly open: jest.Mock;
+    readonly send: jest.Mock;
+    readonly addEventListener: jest.Mock;
+    readonly removeEventListener: jest.Mock;
+    readonly upload: {
+      readonly addEventListener: jest.Mock;
+    };
+    readonly readyState: number;
+    readonly status: number;
+    readonly responseText: string;
+    readonly timeout: number;
   };
 
-  // Functions get hoisted
-  function addEventListener(_: string, callback: () => void) {
-    try {
-      callback();
-    } catch (error) {
-      console.log('got here!');
-      xhrMock._error = error;
-    }
-  }
+  let nextEvent: EventName = 'readystatechange';
+  let xhrMock: MockXhr;
+
+  const makeXhrMock = (): MockXhr => {
+    const listeners: Partial<Record<EventName, () => void>> = {};
+
+    return {
+      open: jest.fn(),
+      send: jest.fn((..._args: readonly unknown[]) => listeners[nextEvent]?.()),
+      addEventListener: jest.fn(
+        (eventName: EventName, callback: () => void) => {
+          listeners[eventName] = callback;
+        }
+      ),
+      removeEventListener: jest.fn(
+        (eventName: EventName, callback: () => void) => {
+          if (listeners[eventName] === callback)
+            listeners[eventName] = undefined;
+        }
+      ),
+      upload: {
+        addEventListener: jest.fn(),
+      },
+      readyState: 4,
+      status: Http.OK,
+      responseText: '',
+      timeout: 0,
+    };
+  };
 
   let previousImplementation: typeof window.XMLHttpRequest;
   let previousTelemetry: typeof globalThis.performance.getEntries;
@@ -33,15 +58,9 @@ describe('uploadFile', () => {
   beforeEach(() => {
     previousImplementation = window.XMLHttpRequest;
     previousTelemetry = globalThis.performance.getEntries;
+    xhrMock = makeXhrMock();
 
-    xhrMock.open.mockClear();
-    xhrMock.send.mockClear();
-    /*
-     * This is done like this so that a test can alter the return code
-     * to test errors.
-     */
-    xhrMock.status = Http.OK;
-    xhrMock._error = undefined;
+    nextEvent = 'readystatechange';
 
     // @ts-expect-error
     jest.spyOn(window, 'XMLHttpRequest').mockImplementation(() => xhrMock);
@@ -79,9 +98,10 @@ describe('uploadFile', () => {
       'POST',
       attachmentSettings.write
     );
+    expect(xhrMock.timeout).toBe(30 * 60 * 1000);
 
     expect(xhrMock.send).toHaveBeenCalledTimes(1);
-    const formData: FormData = xhrMock.send.mock.calls.at(-1)[0];
+    const formData = xhrMock.send.mock.calls.at(-1)?.[0] as FormData;
 
     expect(formData.get('token')).toBe(testToken);
     expect(formData.get('store')).toBe(testAttachmentLocation);
@@ -117,7 +137,7 @@ describe('uploadFile', () => {
     );
 
     expect(xhrMock.send).toHaveBeenCalledTimes(1);
-    const formData: FormData = xhrMock.send.mock.calls.at(-1)[0];
+    const formData = xhrMock.send.mock.calls.at(-1)?.[0] as FormData;
 
     expect(formData.get('token')).toBe(newToken);
     expect(formData.get('store')).toBe(newLocation);
@@ -129,5 +149,18 @@ describe('uploadFile', () => {
     expect(attachment?.get('mimeType')).toBe('text/plain');
     expect(attachment?.get('origFilename')).toBe(testFileName);
     expect(attachment?.get('title')).toBe(testFileName);
+  });
+
+  test('fails when upload request times out', async () => {
+    nextEvent = 'timeout';
+    const consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+
+    await expect(uploadFile({ file: testFile })).rejects.toThrow(
+      'Invalid response code 0.'
+    );
+    expect(consoleError).toHaveBeenCalled();
+    consoleError.mockRestore();
   });
 });

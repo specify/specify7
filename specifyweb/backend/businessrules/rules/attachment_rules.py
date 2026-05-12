@@ -30,8 +30,8 @@ def attachment_jointable_save(sender, obj):
 
     attachee = get_attachee(obj)
     obj.attachment.tableid = attachee.specify_model.tableId
-    scopetype, scope = Scoping(attachee)()
-    obj.attachment.scopetype, obj.attachment.scopeid = scopetype, scope.id
+    scopetype, scope = Scoping.from_instance(attachee)
+    obj.attachment.scopetype, obj.attachment.scopeid = scopetype.value, scope.id
     obj.attachment.save()
 
 

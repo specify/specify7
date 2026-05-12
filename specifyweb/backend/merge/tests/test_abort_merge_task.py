@@ -61,18 +61,18 @@ class TestAbortMerge(ApiTests):
         record_merge_task.AsyncResult.assert_called_once_with(test_id)
         app_control.revoke.assert_called_once_with(test_id, terminate=True)
 
-    @patch("specifyweb.specify.views.app.control")
+    @patch("specifyweb.backend.merge.views.app.control")
     @patch("specifyweb.backend.merge.record_merging.record_merge_task")
     def test_revoke_pending(self, record_merge_task: Mock, app_control: Mock):
         self._revoke_test(record_merge_task, app_control, "PENDING")
 
-    @patch("specifyweb.specify.views.app.control")
+    @patch("specifyweb.backend.merge.views.app.control")
     @patch("specifyweb.backend.merge.record_merging.record_merge_task")
     def test_revoke_merging(self, record_merge_task: Mock, app_control: Mock):
         self._revoke_test(record_merge_task, app_control, "MERGING")
 
 
-    @patch("specifyweb.specify.views.app.control")
+    @patch("specifyweb.backend.merge.views.app.control")
     @patch("specifyweb.backend.merge.record_merging.record_merge_task")
     def test_no_revoke(self, record_merge_task: Mock, app_control: Mock):
         test_id, merge_obj, response = self._revoke_setup(record_merge_task, app_control, "ABORTED")

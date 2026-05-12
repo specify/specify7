@@ -1,3 +1,4 @@
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
@@ -86,6 +87,17 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/security/',
       icon: icons.fingerPrint,
     },
+    systemConfigurationTool: {
+      title: userText.systemConfig(),
+      enabled: () =>
+        userInformation.isadmin &&
+        hasToolPermission('resources', 'read') &&
+        hasTablePermission('Discipline', 'read') &&
+        hasTablePermission('Collection', 'read') &&
+        hasTablePermission('SpecifyUser', 'read'),
+      url: '/specify/system-configuration/',
+      icon: icons.library,
+    },
     repairTree: {
       title: headerText.repairTree(),
       url: '/specify/overlay/tree-repair/',
@@ -121,12 +133,20 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
-  [commonText.import()]: {
+  [commonText.tools()]: {
     localityUpdate: {
       title: headerText.localityUpdateTool(),
       enabled: () => userInformation.isadmin,
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
+    },
+    batchIdentify: {
+      title: batchIdentifyText.batchIdentify(),
+      url: '/specify/overlay/batch-identify/',
+      icon: icons.clipboardCopy,
+      enabled: () =>
+        hasTablePermission('CollectionObject', 'read') &&
+        hasTablePermission('Determination', 'create'),
     },
   },
   [headerText.documentation()]: {
