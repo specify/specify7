@@ -1,6 +1,6 @@
-from eol.scanner import scan_repo
-from eol.runtimes import RUNTIMES
-from eol.eol_api import get_eol_date, calculate_days_remaining
+from scripts.eol.scanner import scan_repo
+from scripts.eol.runtimes import RUNTIMES
+from scripts.eol.eol_api import get_eol_date, calculate_days_remaining
 
 THRESHOLD_DAYS = 180
 
