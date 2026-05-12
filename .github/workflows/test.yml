@@ -343,7 +343,7 @@ jobs:
       - name: Run EOL check
         id: eol
         run: |
-          output=$(python scripts/check_eol.py || true)
+          output=$(python scripts/eol/check_eol.py || true)
 
           echo "$output"
 
