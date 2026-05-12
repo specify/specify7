@@ -323,12 +323,6 @@ jobs:
     continue-on-error: true
     timeout-minutes: 10
 
-    strategy:
-      matrix:
-        product:
-          - django
-          - python
-
     permissions:
       pull-requests: write
       contents: read
@@ -341,38 +335,27 @@ jobs:
         with:
           python-version: "3.12"
 
-      - name: Install system dependencies
-        if: matrix.product == 'django'
-        run: |
-          sudo apt-get update
-          sudo apt-get install -y \
-            libldap2-dev \
-            libsasl2-dev \
-            libssl-dev
-
-      - name: Install Python dependencies
+      - name: Install dependencies
         run: |
           python -m pip install --upgrade pip
           pip install requests
 
-          if [ "${{ matrix.product }}" = "django" ]; then
-            pip install -r requirements.txt
-          fi
+      - name: Install Django deps
+        run: |
+          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
 
       - name: Run EOL check
+        id: eol
         run: |
-          mkdir -p eol-results
+          output=$(python scripts/check_eol.py || true)
 
-          python scripts/check_eol.py "${{ matrix.product }}" \
-            > "eol-results/${{ matrix.product }}.txt" || true
+          echo "$output"
 
-          cat "eol-results/${{ matrix.product }}.txt"
-
-      - name: Upload EOL result
-        uses: actions/upload-artifact@v4
-        with:
-          name: eol-${{ matrix.product }}
-          path: eol-results/${{ matrix.product }}.txt
+          {
+            echo "output<<EOF"
+            echo "$output"
+            echo "EOF"
+          } >> "$GITHUB_OUTPUT"
 
   eol-comment:
     name: Consolidated EOL comment
