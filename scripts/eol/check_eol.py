@@ -1,5 +1,6 @@
 import sys
-from eol.runner import run_all
+
+from scripts.eol.runner import run_all
 
 
 if __name__ == "__main__":
