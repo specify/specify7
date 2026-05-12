@@ -360,68 +360,100 @@ jobs:
           fi
 
       - name: Run EOL check
-        id: eol
         run: |
-          output=$(python scripts/check_eol.py "${{ matrix.product }}" || true)
+          mkdir -p eol-results
 
-          echo "$output"
+          python scripts/check_eol.py "${{ matrix.product }}" \
+            > "eol-results/${{ matrix.product }}.txt" || true
 
-          {
-            echo "output<<EOF"
-            echo "$output"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
+          cat "eol-results/${{ matrix.product }}.txt"
 
-      - name: Parse EOL status
-        id: parse
-        run: |
-          STATUS=$(echo "${{ steps.eol.outputs.output }}" | grep STATUS= | cut -d= -f2)
-          echo "status=$STATUS" >> "$GITHUB_OUTPUT"
-
-      - name: Comment on PR if EOL warning
-        if: github.event_name == 'pull_request' && steps.parse.outputs.status == 'WARNING'
-        uses: actions/github-script@v7
-        env:
-          EOL_OUTPUT: ${{ steps.eol.outputs.output }}
-          PRODUCT: ${{ matrix.product }}
+      - name: Upload EOL result
+        uses: actions/upload-artifact@v4
         with:
-          script: |
-            const output = process.env.EOL_OUTPUT || '';
-            const product = process.env.PRODUCT || 'dependency';
+          name: eol-${{ matrix.product }}
+          path: eol-results/${{ matrix.product }}.txt
 
-            const marker = `<!-- ${product}-eol-warning -->`;
+  eol-comment:
+    name: Consolidated EOL comment
+    runs-on: ubuntu-latest
+    needs: eol-check
 
-            const body =
-              marker + '\n' +
-              '```text\n' +
-              output.replace(/```/g, '``\\`') +
-              '\n```\n\n' +
-              `This ${product} version is approaching or past End-of-Life.\n` +
-              'Please plan an upgrade.';
+    if: github.event_name == 'pull_request'
 
-            const { data: comments } = await github.rest.issues.listComments({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              issue_number: context.issue.number,
-            });
+    permissions:
+      pull-requests: write
+      contents: read
 
-            const existingComment = comments.find(comment =>
-              comment.user.type === 'Bot' &&
-              comment.body.includes(marker)
-            );
+    steps:
+      - name: Download EOL artifacts
+        uses: actions/download-artifact@v4
+        with:
+          path: artifacts
 
-            if (existingComment) {
-              await github.rest.issues.updateComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                comment_id: existingComment.id,
-                body
-              });
-            } else {
-              await github.rest.issues.createComment({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                issue_number: context.issue.number,
-                body
-              });
-            }
+      - name: Combine warnings
+        id: combine
+        shell: bash
+        run: |
+          combined=""
+
+          while IFS= read -r -d '' file; do
+            if grep -q '^STATUS=WARNING' "$file"; then
+              combined="${combined}
+          $(cat "$file")
+          "
+                    fi
+                  done < <(find artifacts -name '*.txt' -print0)
+
+                  {
+                    echo "warnings<<EOF"
+                    echo "$combined"
+                    echo "EOF"
+                  } >> "$GITHUB_OUTPUT"
+
+              - name: Create or update PR comment
+                if: steps.combine.outputs.warnings != ''
+                uses: actions/github-script@v7
+                env:
+                  WARNINGS: ${{ steps.combine.outputs.warnings }}
+                with:
+                  script: |
+                    const warnings = process.env.WARNINGS || '';
+
+                    const marker = '<!-- consolidated-eol-warning -->';
+
+                    const body =
+                      marker + '\n' +
+                      '# Dependency EOL Warnings\n\n' +
+                      '```text\n' +
+                      warnings.replace(/```/g, '``\\`') +
+                      '\n```\n\n' +
+                      'One or more dependencies are approaching or past End-of-Life.\n' +
+                      'Please plan upgrades accordingly.';
+
+                    const { data: comments } = await github.rest.issues.listComments({
+                      owner: context.repo.owner,
+                      repo: context.repo.repo,
+                      issue_number: context.issue.number,
+                    });
+
+                    const existingComment = comments.find(comment =>
+                      comment.user.type === 'Bot' &&
+                      comment.body.includes(marker)
+                    );
+
+                    if (existingComment) {
+                      await github.rest.issues.updateComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        comment_id: existingComment.id,
+                        body
+                      });
+                    } else {
+                      await github.rest.issues.createComment({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: context.issue.number,
+                        body
+                      });
+                    }
