@@ -161,14 +161,14 @@ class BulkBatchEditContext:
             if not isinstance(record_id, int):
                 raise BulkBatchEditFallback("Only existing records are eligible.")
             version = self_pack.get("version", None)
-            existing_version = refs[uploadable.name].get(record_id)
-            if (
-                record_id in refs[uploadable.name]
-                and existing_version is not None
-                and version is not None
-                and existing_version != version
-            ):
-                raise BulkBatchEditFallback("Conflicting batch edit versions.")
+            if record_id in refs[uploadable.name]:
+                existing_version = refs[uploadable.name][record_id]
+                if existing_version != version:
+                    raise BulkBatchEditFallback("Conflicting batch edit versions.")
+                raise BulkBatchEditFallback(
+                    f"{uploadable.name} record {record_id} appears more than once "
+                    "in the batch."
+                )
             refs[uploadable.name][record_id] = version
 
             to_one_pack = pack.get("to_one", {}) or {}
@@ -370,6 +370,9 @@ class BulkBatchEditContext:
             for field in dirty_fields
         }
 
+        if self._dirty_fields_touch_custom_catalog_number_rule(model, changed_names):
+            return True
+
         for field in model._meta.fields:
             if field.unique and self._field_matches(changed_names, field.name):
                 return True
@@ -397,8 +400,27 @@ class BulkBatchEditContext:
                     for field_name in rule.all_fields
                 ):
                     return True
-        except Exception:
-            raise BulkBatchEditFallback("Unable to inspect uniqueness rules.")
+        except Exception as e:
+            raise BulkBatchEditFallback("Unable to inspect uniqueness rules.") from e
+
+        return False
+
+    def _dirty_fields_touch_custom_catalog_number_rule(
+        self,
+        model,
+        changed_names,
+    ) -> bool:
+        if model.__name__ == "Collectionobject":
+            return any(
+                self._field_matches(changed_names, field_name)
+                for field_name in ("catalognumber", "collection")
+            )
+
+        if model.__name__ == "Component":
+            return any(
+                self._field_matches(changed_names, field_name)
+                for field_name in ("catalognumber", "collectionobject")
+            )
 
         return False
 
