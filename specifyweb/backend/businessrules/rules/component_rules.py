@@ -9,7 +9,7 @@ from specifyweb.specify.models import Collectionobject, Component
 
 def _clear_component_catalog_number_cache_if_needed(comp):
     if component_catalog_number_cache_is_active():
-        clear_component_catalog_number_cache(comp.collectionobject.collection_id)
+        clear_component_catalog_number_cache()
 
 @orm_signal_handler('pre_save', 'Component')
 def component_pre_save(comp):
