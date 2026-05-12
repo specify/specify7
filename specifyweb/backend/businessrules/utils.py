@@ -12,7 +12,7 @@ _unique_catnum_pref_cache: ContextVar[dict[tuple[int | None, int | None], bool] 
     default=None,
 )
 
-_component_catnum_cache: ContextVar[dict[int, set[str]] | None] = ContextVar(
+_component_catnum_cache: ContextVar[dict[tuple[str, int | None], bool] | None] = ContextVar(
     "component_catnum_cache",
     default=None,
 )
@@ -162,34 +162,34 @@ def get_default_collectionobjecttype_id(collection_or_id) -> int | None:
 def component_catalog_number_cache_is_active() -> bool:
     return _component_catnum_cache.get() is not None
 
-def clear_component_catalog_number_cache(collection_id: int) -> None:
+def clear_component_catalog_number_cache() -> None:
     cache = _component_catnum_cache.get()
     if cache is not None:
-        cache.pop(collection_id, None)
+        cache.clear()
 
-def collection_has_component_catalog_number(collection_id: int | None, catalog_number: str | None) -> bool:
+def component_catalog_number_exists(
+    catalog_number: str | None,
+    excluded_component_id: int | None = None,
+) -> bool:
     from specifyweb.specify.models import Component
 
-    if collection_id is None or catalog_number is None:
+    if catalog_number is None:
         return False
 
+    cache_key = (catalog_number, excluded_component_id)
     cache = _component_catnum_cache.get()
-    if cache is None:
-        return Component.objects.filter(
-            catalognumber=catalog_number,
-            collectionobject__collection_id=collection_id,
-        ).exists()
+    if cache is not None and cache_key in cache:
+        return cache[cache_key]
 
-    if collection_id not in cache:
-        cache[collection_id] = set(
-            Component.objects.filter(
-                collectionobject__collection_id=collection_id,
-            )
-            .exclude(catalognumber=None)
-            .values_list("catalognumber", flat=True)
-        )
+    query = Component.objects.filter(catalognumber=catalog_number)
+    if excluded_component_id is not None:
+        query = query.exclude(pk=excluded_component_id)
+    exists = query.exists()
 
-    return catalog_number in cache[collection_id]
+    if cache is not None:
+        cache[cache_key] = exists
+
+    return exists
 
 def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     import specifyweb.backend.context.app_resource as app_resource
