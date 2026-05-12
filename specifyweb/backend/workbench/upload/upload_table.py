@@ -92,6 +92,14 @@ class BulkUpdateIntent:
 
 class BulkBatchEditContext:
     batch_size = 500
+    pre_save_external_side_effect_models = frozenset(
+        {
+            # The Determination isCurrent rule updates sibling Determination rows.
+            # Queuing only the current row would replay those writes in the wrong
+            # order when the bulk_update flush happens at the end of the dataset.
+            "Determination",
+        }
+    )
 
     def __init__(self, audit_log, agent):
         self.audit_log = audit_log
@@ -188,6 +196,10 @@ class BulkBatchEditContext:
                     self._collect_references(record_uploadable, [record_pack], refs)
 
     def queue_update(self, auditor, reference_obj, dirty_fields, attrs):
+        if type(reference_obj).__name__ in self.pre_save_external_side_effect_models:
+            raise BulkBatchEditFallback(
+                f"{type(reference_obj).__name__} has cross-record pre-save side effects."
+            )
         if post_save.has_listeners(type(reference_obj)):
             raise BulkBatchEditFallback(
                 f"{type(reference_obj).__name__} has post-save handlers."
@@ -220,6 +232,7 @@ class BulkBatchEditContext:
             setattr(reference_obj, key, value)
 
         try:
+            pre_save_snapshot = self._concrete_field_values(reference_obj)
             with track_changed_fields(reference_obj, dirty_fields):
                 pre_save.send(
                     sender=type(reference_obj),
@@ -228,6 +241,9 @@ class BulkBatchEditContext:
                     using=reference_obj._state.db,
                     update_fields=frozenset(update_fields),
                 )
+            update_fields.update(
+                self._changed_concrete_fields(reference_obj, pre_save_snapshot)
+            )
         except AbortSave as e:
             raise BulkBatchEditFallback("AbortSave uses the existing path.") from e
 
@@ -398,6 +414,19 @@ class BulkBatchEditContext:
         field_name = field_name.lower()
         return field_name[:-3] if field_name.endswith("_id") else field_name
 
+    def _concrete_field_values(self, obj):
+        return {
+            field.attname: getattr(obj, field.attname)
+            for field in obj._meta.concrete_fields
+            if not field.primary_key
+        }
+
+    def _changed_concrete_fields(self, obj, previous_values):
+        return {
+            field_name
+            for field_name, previous_value in previous_values.items()
+            if getattr(obj, field_name) != previous_value
+        }
 
 class UploadTable(NamedTuple):
     name: str
@@ -1465,18 +1494,12 @@ class BoundUpdateTable(BoundUploadTable):
         self.auditor.update(reference_obj, None, dirty_fields)
         for key, value in attrs.items():
             setattr(reference_obj, key, value)
-        update_fields = {field["field_name"] for field in dirty_fields}
-        if "modifiedbyagent_id" in attrs:
-            update_fields.add("modifiedbyagent_id")
-        if hasattr(reference_obj, "timestampmodified"):
-            update_fields.add("timestampmodified")
         if hasattr(reference_obj, "version"):
             # Consider using bump_version here.
             # I'm not doing it for performance reasons -- we already checked our version at this point, and have a lock, so can just increment the version.
             setattr(reference_obj, "version", getattr(reference_obj, "version") + 1)
-            update_fields.add("version")
         with track_changed_fields(reference_obj, dirty_fields):
-            reference_obj.save(update_fields=update_fields)
+            reference_obj.save()
         return reference_obj
 
     def _do_insert(self):
