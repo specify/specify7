@@ -2254,7 +2254,7 @@ export const userPreferenceDefinitions = {
             title: batchEditText.numberOfRecords(),
             requiresReload: false,
             visible: true,
-            defaultValue: 50000,
+            defaultValue: 50_000,
             type: 'java.lang.Double',
             parser: {
               min: 0,
