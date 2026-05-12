@@ -2253,8 +2253,8 @@ export const userPreferenceDefinitions = {
           limit: definePref<number>({
             title: batchEditText.numberOfRecords(),
             requiresReload: false,
-            visible: true,
-            defaultValue: 50_000,
+            visible: false,
+            defaultValue: 0,
             type: 'java.lang.Double',
             parser: {
               min: 0,
