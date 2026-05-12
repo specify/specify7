@@ -3,7 +3,7 @@ from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handl
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.utils import (
     changed_fields_include,
-    collection_has_component_catalog_number,
+    component_catalog_number_exists,
     get_default_collectionobjecttype_id,
     get_unique_catnum_across_comp_co_coll_pref_by_ids,
 )
@@ -45,9 +45,9 @@ def collectionobject_pre_save(co):
         )
 
         if unique_catnum_across_comp_co_coll_pref:
-            contains_component_duplicates = collection_has_component_catalog_number(
-                co.collection_id,
+            contains_component_duplicates = component_catalog_number_exists(
                 co.catalognumber,
+                excluded_component_id=co.pk,
             )
 
             if contains_component_duplicates:
