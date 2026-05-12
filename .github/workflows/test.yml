@@ -340,10 +340,6 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Install Django deps
-        run: |
-          if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-
       - name: Run EOL check
         id: eol
         run: |
