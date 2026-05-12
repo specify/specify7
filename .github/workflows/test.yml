@@ -411,49 +411,49 @@ jobs:
                     echo "EOF"
                   } >> "$GITHUB_OUTPUT"
 
-              - name: Create or update PR comment
-                if: steps.combine.outputs.warnings != ''
-                uses: actions/github-script@v7
-                env:
-                  WARNINGS: ${{ steps.combine.outputs.warnings }}
-                with:
-                  script: |
-                    const warnings = process.env.WARNINGS || '';
+      - name: Create or update PR comment
+        if: steps.combine.outputs.warnings != ''
+        uses: actions/github-script@v7
+        env:
+          WARNINGS: ${{ steps.combine.outputs.warnings }}
+        with:
+          script: |
+            const warnings = process.env.WARNINGS || '';
 
-                    const marker = '<!-- consolidated-eol-warning -->';
+            const marker = '<!-- consolidated-eol-warning -->';
 
-                    const body =
-                      marker + '\n' +
-                      '# Dependency EOL Warnings\n\n' +
-                      '```text\n' +
-                      warnings.replace(/```/g, '``\\`') +
-                      '\n```\n\n' +
-                      'One or more dependencies are approaching or past End-of-Life.\n' +
-                      'Please plan upgrades accordingly.';
+            const body =
+              marker + '\n' +
+              '# Dependency EOL Warnings\n\n' +
+              '```text\n' +
+              warnings.replace(/```/g, '``\\`') +
+              '\n```\n\n' +
+              'One or more dependencies are approaching or past End-of-Life.\n' +
+              'Please plan upgrades accordingly.';
 
-                    const { data: comments } = await github.rest.issues.listComments({
-                      owner: context.repo.owner,
-                      repo: context.repo.repo,
-                      issue_number: context.issue.number,
-                    });
+            const { data: comments } = await github.rest.issues.listComments({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              issue_number: context.issue.number,
+            });
 
-                    const existingComment = comments.find(comment =>
-                      comment.user.type === 'Bot' &&
-                      comment.body.includes(marker)
-                    );
+            const existingComment = comments.find(comment =>
+              comment.user.type === 'Bot' &&
+              comment.body.includes(marker)
+            );
 
-                    if (existingComment) {
-                      await github.rest.issues.updateComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        comment_id: existingComment.id,
-                        body
-                      });
-                    } else {
-                      await github.rest.issues.createComment({
-                        owner: context.repo.owner,
-                        repo: context.repo.repo,
-                        issue_number: context.issue.number,
-                        body
-                      });
-                    }
+            if (existingComment) {
+              await github.rest.issues.updateComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                comment_id: existingComment.id,
+                body
+              });
+            } else {
+              await github.rest.issues.createComment({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                issue_number: context.issue.number,
+                body
+              });
+            }
