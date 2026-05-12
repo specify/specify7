@@ -1,7 +1,7 @@
 {
   "absoluteage": {
     "items": {
-      "absoluteage": {"name": "Absolute Age", "desc": "Absolute Age", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.math.BigDecimal", "isrequired": false, "weblinkname": null},
+      "absoluteage": {"name": "Absolute Age", "desc": "Records a numerical age determination for a Collection Object, such as a radiocarbon or potassium-argon date. Includes the age value, uncertainty, dating method, and agent who performed the analysis.", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.math.BigDecimal", "isrequired": false, "weblinkname": null},
       "absoluteageattachments": {"name": "Absolute Age Attachments", "desc": "Absolute Age Attachments", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "absoluteagecitations": {"name": "Absolute Age Citations", "desc": "Absolute Age Citations", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "absoluteageid": {"name": "Absolute Age Id", "desc": "Absolute Age Id", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": true, "weblinkname": null},
@@ -9,7 +9,7 @@
       "agetype": {"name": "Age Type", "desc": "Age Type", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": "AgeType", "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "ageuncertainty": {"name": "Age Uncertainty", "desc": "Age Uncertainty", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.math.BigDecimal", "isrequired": false, "weblinkname": null},
       "collectiondate": {"name": "Collection Date", "desc": "Collection Date", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.util.Date", "isrequired": false, "weblinkname": null},
-      "collectionobject": {"name": "Collection Object", "desc": "Collection Object", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
+      "collectionobject": {"name": "Collection Object", "desc": "The central record in Specify, representing any item in a collection: physical specimen, lot, observation, sound recording, slide, tissue sample, or extract. Ties together all related information (determinations, preparations, locality, collecting event, etc.).", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "date1": {"name": "Date1", "desc": "Date1", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.util.Date", "isrequired": false, "weblinkname": null},
       "date2": {"name": "Date2", "desc": "Date2", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.util.Date", "isrequired": false, "weblinkname": null},
@@ -41,7 +41,7 @@
     "items": {
       "absoluteage": {"name": "Absolute Age", "desc": "Absolute Age", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
       "absoluteageattachmentid": {"name": "Absolute Age Attachment Id", "desc": "Absolute Age Attachment Id", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": true, "weblinkname": null},
-      "attachment": {"name": "Attachment", "desc": "Attachment", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
+      "attachment": {"name": "Attachment", "desc": "A digital file (image, PDF, audio, etc.) linked to a data record. Instead of storing the file in the database, Specify stores it on a Web Asset Server and keeps a reference (location, MIME type, original filename, metadata) in this table. Supports licensing, copyright, and visibility controls.", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
       "collectionmember": {"name": "Collection Member", "desc": "Collection Member", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
@@ -59,7 +59,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Absolute Age Attachment",
-    "desc": "Absolute Age Attachment"
+    "desc": "Links an Attachment (e.g., a lab report or data sheet) to an Absolute Age record, with an ordinal for ordering multiple attachments."
   },
   "absoluteagecitation": {
     "items": {
@@ -72,7 +72,7 @@
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "pagenumber": {"name": "Page Number", "desc": "Page Number", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "platenumber": {"name": "Plate Number", "desc": "Plate Number", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
-      "referencework": {"name": "Reference Work", "desc": "Reference Work", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
+      "referencework": {"name": "Reference Work", "desc": "Stores bibliographic references (publications, books, articles, theses) that can be cited from Determinations, Localities, Taxa, and other records.", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": true, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Remarks", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
       "timestampcreated": {"name": "Timestamp Created", "desc": "Timestamp Created", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": true, "weblinkname": null},
       "timestampmodified": {"name": "Timestamp Modified", "desc": "Timestamp Modified", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
@@ -86,7 +86,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Absolute Age Citation",
-    "desc": "Absolute Age Citation"
+    "desc": "Links a Reference Work (publication) to an Absolute Age record, capturing details like figure, plate, and page numbers where the age is reported."
   },
   "accession": {
     "items": {
@@ -96,7 +96,7 @@
       "accessioncitations": {"name": "Accession Citations", "desc": "Accession Citations", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "accessioncondition": {"name": "Accession Condition", "desc": "Physical description of the condition of the accession.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "accessionnumber": {"name": "Accession Number", "desc": "Usually an integer or alphanumeric value that is assigned to the material when it enters the collection. The format of accession numbers varies among collections, but all refer to the acquisition of specimens, observations, or other collection objects.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
-      "addressofrecord": {"name": "Address Of Record", "desc": "Address Of Record", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "addressofrecord": {"name": "Address Of Record", "desc": "Captures the legal address associated with an Accession, Loan, Exchange, or Repository Agreement at the time the transaction took place.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "appraisals": {"name": "Appraisals", "desc": "Appraisals", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectionobjects": {"name": "Collection Objects", "desc": "Collection Objects", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -110,7 +110,7 @@
       "dateacknowledgedprecision": {"name": "Date Acknowledged Precision", "desc": "Date Acknowledged Precision", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null},
       "datereceived": {"name": "Date Received", "desc": "Date material was received.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.util.Calendar", "isrequired": false, "weblinkname": null},
       "datereceivedprecision": {"name": "Date Received Precision", "desc": "Date Received Precision", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null},
-      "division": {"name": "Division", "desc": "Division", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": "Division", "type": null, "isrequired": false, "weblinkname": null},
+      "division": {"name": "Division", "desc": "A division or department within an Institution (e.g., 'Vertebrate Zoology', 'Botany'). Contains Agents and may oversee multiple Disciplines.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": "Division", "type": null, "isrequired": false, "weblinkname": null},
       "integer1": {"name": "Integer1", "desc": "Integer1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "integer2": {"name": "Integer2", "desc": "Integer2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "integer3": {"name": "Integer3", "desc": "Integer3", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -118,7 +118,7 @@
       "number1": {"name": "Number1", "desc": "User definable.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Float", "isrequired": false, "weblinkname": null},
       "number2": {"name": "Number2", "desc": "User definable.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Float", "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Additional Comments.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
-      "repositoryagreement": {"name": "Repository Agreement", "desc": "Repository Agreement", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "repositoryagreement": {"name": "Repository Agreement", "desc": "Records a legal agreement that permits an Accession to occur without transferring ownership (e.g., a loan for study, a field repository agreement).", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "status": {"name": "Status", "desc": "Status of Accession, e.g. `In process`, `Complete` ...", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "AccessionStatus", "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "text1": {"name": "Text1", "desc": "User definable.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "text2": {"name": "Text2", "desc": "User definable.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
@@ -143,17 +143,17 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Accession",
-    "desc": "Also called an acquisition. A consignment of specimens acquired either by field collecting of staff members, gifts, purchases, or exchange with another institution."
+    "desc": "Also called an acquisition. A consignment of specimens acquired either by field collecting of staff members, gifts, purchases, or exchange with another institution. Tracks the source, date received, status, and total value of the acquisition."
   },
   "accessionagent": {
     "items": {
       "accession": {"name": "Accession", "desc": "Accession", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
-      "agent": {"name": "Agent", "desc": "Agent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "agent": {"name": "Agent", "desc": "Central directory of people, groups, and organizations involved in the collection process. Roles include collector, determiner, preparer, cataloger, donor, permit issuer, and more. Supports both individuals (with name components) and organizations.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Additional Comments.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
       "repositoryagreement": {"name": "Repository Agreement", "desc": "Repository Agreement", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
-      "role": {"name": "Role", "desc": "Role the agent played in the accession process.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "AccessionRole", "type": "java.lang.String", "isrequired": true, "weblinkname": null},
+      "role": {"name": "Role", "desc": "System table: Stores user-defined roles with associated permissions for access control within a collection.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "AccessionRole", "type": "java.lang.String", "isrequired": true, "weblinkname": null},
       "timestampcreated": {"name": "Timestamp Created", "desc": "The timestamp the record was created.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
       "timestampmodified": {"name": "Timestamp Modified", "desc": "The timestamp the record was last modified.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
@@ -166,7 +166,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Accession Agent",
-    "desc": "The person(s) requesting the Accession. This references an Agent."
+    "desc": "Links an Agent (person, group, or organization) to an Accession and defines their role in the accession process (e.g., donor, collector, requester)."
   },
   "accessionattachment": {
     "items": {
@@ -188,14 +188,14 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Accession Attachment",
-    "desc": "An attachment for the Accession. This may be one or more PDF files of paperwork or a photo of the Accession."
+    "desc": "Links digital files (PDFs, photos, etc.) to an Accession record, such as scanned import permits, deeds of gift, or correspondence."
   },
   "accessionauthorization": {
     "items": {
       "accession": {"name": "Accession", "desc": "Accession", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "permit": {"name": "Permit", "desc": "Permit", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "permit": {"name": "Permit", "desc": "Records legal permits and licenses for collecting specimens, including the issuing authority, permit number, date range, and terms. Links to Accessions, Collecting Events, and Loans.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Additional comments.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
       "repositoryagreement": {"name": "Repository Agreement", "desc": "Repository Agreement", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "timestampcreated": {"name": "Timestamp Created", "desc": "The timestamp the record was created.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
@@ -210,7 +210,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Accession Authorization",
-    "desc": "This represents the person authorizing the Accession. It references an existing Agent."
+    "desc": "Records authorization for an Accession, linking it to a Permit and optionally a Repository Agreement. Tracks who authorized the acquisition."
   },
   "accessioncitation": {
     "items": {
@@ -235,11 +235,11 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Accession Citations",
-    "desc": "Accession Citations"
+    "desc": "Links a Reference Work (publication) to an Accession, with optional figure, plate, and page numbers for citation details."
   },
   "address": {
     "items": {
-      "address": {"name": "Address", "desc": "Address as it should appear on mailing labels.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
+      "address": {"name": "Address", "desc": "Stores the postal address of an Agent (person or organization), including street, city, state, country, postal code, phone, and fax. Also captures the date range the agent was at that address and the position they held there.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "address2": {"name": "Address2", "desc": "Second line of address (optional).", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "address3": {"name": "Address3", "desc": "Address3", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "address4": {"name": "Address4", "desc": "Address4", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -352,7 +352,7 @@
       "organization": {"name": "Organization", "desc": "Organization", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "orgmembers": {"name": "Org Members", "desc": "Org Members", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Additional comments.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
-      "specifyuser": {"name": "Specify User", "desc": "Specify User", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "specifyuser": {"name": "Specify User", "desc": "System table: Represents a user account in Specify.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "suffix": {"name": "Suffix", "desc": "Suffix", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "text1": {"name": "Text1", "desc": "Text1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "text2": {"name": "Text2", "desc": "Text2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -398,13 +398,13 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Agent Attachment",
-    "desc": "This table can be used for a picture of the agent or anything else used to further describe the agent."
+    "desc": "Links digital files (photos, documents) to an Agent record, such as a portrait of a collector or a researcher's CV."
   },
   "agentgeography": {
     "items": {
       "agent": {"name": "Agent", "desc": "Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "geography": {"name": "Geography", "desc": "The geographical region of specialization", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "geography": {"name": "Geography", "desc": "Hierarchical tree representing political boundaries (Country, State, Province, County, Township, etc.). Used to classify localities and agent collecting regions.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified by Agent", "desc": "Modified by Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Additional comments.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "role": {"name": "Role", "desc": "Role of the agent as \"author\" or \"collector\" within the geography.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -420,7 +420,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Agent Geography",
-    "desc": "The geographical region that a particular collector was known for collecting in."
+    "desc": "Records the geographic region(s) an Agent was known for collecting in or specializing on, with an optional role (e.g., author, collector)."
   },
   "agentidentifier": {
     "items": {
@@ -456,7 +456,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Agent Identifier",
-    "desc": "Describes an identifier of an Agent such an as ORCID."
+    "desc": "Stores external identifiers for an Agent, such as ORCID, ResearcherID, Scopus ID, or Wikidata ID, enabling integration with external authority systems."
   },
   "agentspecialty": {
     "items": {
@@ -477,7 +477,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Agent Specialty",
-    "desc": "The Taxonomic specialty that a particular agent was known for."
+    "desc": "Records the taxonomic or disciplinary specialty of an Agent (e.g., 'Coleoptera', 'Marine Invertebrates'), with an order number for ranking primary vs. secondary specialties."
   },
   "agentvariant": {
     "items": {
@@ -501,7 +501,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Agent Variant",
-    "desc": "This is primarily used by Botanists for capturing Variant and Vernacular names. This table is searchable but does not have any specific business rules associated with it."
+    "desc": "Captures variant and vernacular names for an Agent, primarily used by botanists. Includes language, country, and a type flag distinguishing variants from vernacular names."
   },
   "appraisal": {
     "items": {
@@ -527,13 +527,13 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Appraisal",
-    "desc": "The monetary appraisal of an Acession or Collection Object"
+    "desc": "Records the monetary appraisal value of an Accession or Collection Object, including the appraiser (Agent), appraisal date, and monetary unit."
   },
   "attachment": {
     "items": {
       "accessionattachments": {"name": "Accession Attachments", "desc": "Accession Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "agentattachments": {"name": "Agent Attachments", "desc": "Agent Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
-      "attachmentimageattribute": {"name": "Attachment Image Attribute", "desc": "Attachment Image Attribute", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "attachmentimageattribute": {"name": "Attachment Image Attribute", "desc": "Stores image-specific metadata for an Attachment, such as height, width, resolution, magnification, image type, and view description. Used primarily for specimen images.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "attachmentlocation": {"name": "Attachment Location", "desc": "Location of attachment repository.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "attachmentstorageconfig": {"name": "Attachment Storage Config", "desc": "Attachment Storage Config", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "borrowattachments": {"name": "Borrow Attachments", "desc": "Borrow Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -613,7 +613,7 @@
       "magnification": {"name": "Magnification", "desc": "Magnification", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "mbimageid": {"name": "Mb Image Id", "desc": "Mb Image Id", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "morphbankview": {"name": "Morph Bank View", "desc": "Morph Bank View", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "morphbankview": {"name": "Morph Bank View", "desc": "Links to MorphBank (a morphological image database) views, providing integration with external image repositories.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "number1": {"name": "Number1", "desc": "Number1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "number2": {"name": "Number2", "desc": "Number2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Remarks", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -659,7 +659,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Attachment Metadata",
-    "desc": "This holds metadata about the attachment. It is a set of named value pairs."
+    "desc": "Key-value metadata pairs associated with an Attachment, allowing flexible storage of custom metadata fields (e.g., EXIF data, capture device info)."
   },
   "attachmenttag": {
     "items": {
@@ -679,15 +679,15 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Attachment Tag",
-    "desc": "An attribute tag of an attachment. This consists of a single text field for storing a tag. In later versions, users will be allowed to search attachments by their tag."
+    "desc": "User-defined keyword tags for Attachments, enabling search and categorization of digital media files."
   },
   "attributedef": {
     "items": {
       "collectingeventattrs": {"name": "Collecting Event Attrs", "desc": "Collecting Event Attrs", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "collectionobjectattrs": {"name": "Collection Object Attrs", "desc": "Collection Object Attrs", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "datatype": {"name": "Data Type", "desc": "The data type of the attribute.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Short", "isrequired": false, "weblinkname": null},
-      "discipline": {"name": "Discipline", "desc": "Discipline", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "datatype": {"name": "Data Type", "desc": "Defines the core data types used in the Specify data model (e.g., String, Number, Date, Boolean), used for schema and attribute definitions.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Short", "isrequired": false, "weblinkname": null},
+      "discipline": {"name": "Discipline", "desc": "Organizational unit that may contain one or more Collections sharing the same Taxon, Geography, Lithostratigraphy, and Chronostratigraphy trees, as well as shared Localities, Agents, and Determination statuses.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "fieldname": {"name": "Field Name", "desc": "The field name of the attribute.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "preparationattrs": {"name": "Preparation Attrs", "desc": "Preparation Attrs", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
@@ -705,7 +705,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Attribute Definition",
-    "desc": "The definition of an attribute."
+    "desc": "Defines a custom attribute field that can be applied to Collection Objects, Collecting Events, or Preparations. Specifies the data type, field name, and which Prep Type it applies to."
   },
   "author": {
     "items": {
@@ -727,7 +727,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Author",
-    "desc": "An Author is a reference to an Agent and provides the order for a list of authors of a Reference Work."
+    "desc": "Links an Agent as an author to a Reference Work, with an order number to specify the author sequence (first author, second author, etc.)."
   },
   "autonumberingscheme": {
     "items": {
@@ -753,7 +753,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Auto Numbering Scheme",
-    "desc": "This is an internal table used to group parts of a collection with the same numbering scheme."
+    "desc": "Internal configuration table that defines auto-numbering formats for catalog numbers, accessions, or other identifiers. Groups collections, disciplines, or divisions that share the same numbering scheme."
   },
   "borrow": {
     "items": {
@@ -795,7 +795,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Borrow",
-    "desc": "Contains information about loans from another institution. When one institution borrows a group of objects from another institution, all objects in the borrowed group share a common set of attributes that are defined for the loan."
+    "desc": "Tracks incoming loans (borrows) from other institutions. Records the lender, dates (borrow date, due date, received date, closed date), invoice number, and status of the borrowed material."
   },
   "borrowagent": {
     "items": {
@@ -818,7 +818,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Borrow Agent",
-    "desc": "Refers to an Agent and describes their role in the borrowing process."
+    "desc": "Links an Agent to a Borrow record and defines their role (e.g., lender, contact person, shipper) in the borrowing transaction."
   },
   "borrowattachment": {
     "items": {
@@ -840,7 +840,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Borrow Attachment",
-    "desc": "Borrow Attachment"
+    "desc": "Links digital files (e.g., loan agreements, shipping documents) to a Borrow record."
   },
   "borrowmaterial": {
     "items": {
@@ -870,7 +870,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Borrow Material",
-    "desc": "Describes the material being borrowed."
+    "desc": "Describes individual items or lots included in a Borrow, with material number, description, quantity, and tracking of quantities returned or resolved."
   },
   "borrowreturnmaterial": {
     "items": {
@@ -894,15 +894,15 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Borrow Return Material",
-    "desc": "Describes the material that was returned."
+    "desc": "Tracks the return of borrowed material, recording the return date, quantity returned, and the Agent who received the return."
   },
   "collectingevent": {
     "items": {
       "collectingeventattachments": {"name": "Collecting Event Attachments", "desc": "Collecting Event Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
-      "collectingeventattribute": {"name": "Collecting Event Attribute", "desc": "Collecting Event Attribute", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToOne", "isrequired": false, "weblinkname": null},
+      "collectingeventattribute": {"name": "Collecting Event Attribute", "desc": "A one-to-one extension table for Collecting Events, providing additional user-customizable attribute fields beyond the standard schema.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToOne", "isrequired": false, "weblinkname": null},
       "collectingeventattrs": {"name": "Collecting Event Attrs", "desc": "Collecting Event Attrs", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "collectingeventauthorizations": {"name": "Collecting Event Authorizations", "desc": "Collecting Event Authorizations", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "collectingtrip": {"name": "Collecting Trip", "desc": "Collecting Trip", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "collectingtrip": {"name": "Collecting Trip", "desc": "Groups multiple Collecting Events into an expedition or field trip. Tracks the trip's start/end dates, participants, and purpose.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "collectionobjects": {"name": "Collection Objects", "desc": "Collection Objects", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "collectors": {"name": "Collectors", "desc": "Collectors", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -914,10 +914,10 @@
       "guid": {"name": "GUID", "desc": "GUID", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "integer1": {"name": "Integer1", "desc": "Integer1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "integer2": {"name": "Integer2", "desc": "Integer2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "locality": {"name": "Locality", "desc": "Locality where collection took place.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "locality": {"name": "Locality", "desc": "Defines the 'where' of a collection: the specific place name, geographic coordinates (point, line, or polygon), coordinate determination method, datum, and elevation/depth. The foundation for georeferencing specimens.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "method": {"name": "Method", "desc": "A method, such as net or trap, which is used to obtain the specimen.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "CollectingMethod", "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "paleocontext": {"name": "Paleo Context", "desc": "Paleo Context", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "paleocontext": {"name": "Paleo Context", "desc": "Provides paleontological context for a Collection Object, Collecting Event, or Locality, linking to chronostratigraphy, lithostratigraphy, and biostratigraphy data.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Remarks", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
       "reservedinteger3": {"name": "Reserved Integer3", "desc": "Reserved Integer3", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "reservedinteger4": {"name": "Reserved Integer4", "desc": "Reserved Integer4", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -957,7 +957,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Event",
-    "desc": "A Collecting Event captures the “when” and “how” of a collection. It records the date, time, method, and the people (collectors) involved in capturing the specimen. Some disciplines identify CEs by a field number, while others rely on the unique combination of the locality name and date."
+    "desc": "Captures the 'when' and 'how' of a collection: the date(s), time, method, collectors, and field number. Links to a Locality for the 'where'. Some disciplines identify events by field number, others by locality+date combination."
   },
   "collectingeventattachment": {
     "items": {
@@ -980,7 +980,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Event Attachment",
-    "desc": "Refers to an attachment and provides an order."
+    "desc": "Links digital files (field photos, maps, audio recordings) to a Collecting Event, with ordinal for ordering."
   },
   "collectingeventattr": {
     "items": {
@@ -1003,7 +1003,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Event Attribute",
-    "desc": "User-customizable attributes that can be repurposed for various data collection needs."
+    "desc": "Stores values for user-customizable attributes defined by an AttributeDef, linked to a Collecting Event. Supports string and numeric value types."
   },
   "collectingeventattribute": {
     "items": {
@@ -1091,7 +1091,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Event Authorization",
-    "desc": "Collecting Event Authorization"
+    "desc": "Records authorization for a Collecting Event, typically linking to a Permit that grants permission to collect at a specific time and place."
   },
   "collectingtrip": {
     "items": {
@@ -1099,7 +1099,7 @@
       "agent2": {"name": "Agent2", "desc": "Agent2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectingevents": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "collectingtripattachments": {"name": "Collecting Trip Attachments", "desc": "Collecting Trip Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "collectingtripattribute": {"name": "Collecting Trip Attribute", "desc": "Collecting Trip Attribute", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "collectingtripattribute": {"name": "Collecting Trip Attribute", "desc": "Stores values for user-customizable attributes linked to a Collecting Trip, supporting flexible data capture beyond the standard schema.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectingtripauthorizations": {"name": "Collecting Trip Authorizations", "desc": "Collecting Trip Authorizations", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectingtripname": {"name": "Trip Name", "desc": "Name of the collecting trip.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -1171,7 +1171,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Trip Attachment",
-    "desc": "Collecting Trip Attachment"
+    "desc": "Links digital files (trip reports, maps, permits) to a Collecting Trip record."
   },
   "collectingtripattribute": {
     "items": {
@@ -1258,7 +1258,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Trip Authorization",
-    "desc": "Collecting Trip Authorization"
+    "desc": "Records authorization for a Collecting Trip, linking to a Permit that authorizes the overall expedition."
   },
   "collection": {
     "items": {
@@ -1266,7 +1266,7 @@
       "catalognumformatname": {"name": "Catalog Num Format Name", "desc": "Name of catalog number format the collection uses.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
       "code": {"name": "Code", "desc": "Unique code for collection.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectionname": {"name": "Collection Name", "desc": "The name of the collection.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
-      "collectionobjecttype": {"name": "Collection Object Type", "desc": "Collection Object Type", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "collectionobjecttype": {"name": "Collection Object Type", "desc": "Categorizes Collection Objects by their nature (e.g., 'Specimen', 'Observation', 'Tissue Sample', 'DNA Extract', 'Sound Recording').", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "collectiontype": {"name": "Collection Type", "desc": "Textual description of collection. ABCD schema field.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "contentcontacts": {"name": "Content Contacts", "desc": "Content Contacts", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -1276,7 +1276,7 @@
       "discipline": {"name": "Discipline", "desc": "Discipline", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "estimatedsize": {"name": "Estimated Size", "desc": "ABCD schema field.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "guid": {"name": "GUID", "desc": "GUID", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "institutionnetwork": {"name": "Institution Network", "desc": "Institution Network", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "institutionnetwork": {"name": "Institution Network", "desc": "Records affiliations or partnerships between Institutions (e.g., consortium memberships, collaborative agreements).", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "institutiontype": {"name": "Institution Type", "desc": "ABCD schema field.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "isanumber": {"name": "ISA Number", "desc": "ISA number.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "isembeddedcollectingevent": {"name": "Is Embedded Collecting Event", "desc": "Yes if collecting event is a one-to-one relationship.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
@@ -1309,7 +1309,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection",
-    "desc": "A collection holds Collection Objects that are of the same discipline type."
+    "desc": "Defines a collection within a Discipline, grouping Collection Objects of the same type (e.g., 'Birds', 'Insects', 'Paleobotany'). Each collection has its own catalog numbering and default preparation types."
   },
   "collectionobject": {
     "items": {
@@ -1335,7 +1335,7 @@
       "collectionobjectproperties": {"name": "Collection Object Properties", "desc": "Collection Object Properties", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectionobjecttype": {"name": "Type", "desc": "The type of object, such as a fish, mammal, mineral, rock, or meteorite.", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": "CollectionObjectType", "type": "ManyToOne", "isrequired": true, "weblinkname": null},
       "conservdescriptions": {"name": "Conserv Descriptions", "desc": "Conserv Descriptions", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
-      "container": {"name": "Container", "desc": "Container", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "container": {"name": "Container", "desc": "Represents a physical or logical container that can hold Collection Objects (e.g., a drawer, cabinet, box, or freezer rack). Containers can optionally be cataloged as Collection Objects themselves.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "containerowner": {"name": "Container Owner", "desc": "Container Owner", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "countamt": {"name": "Count Amount", "desc": "The number of objects (specimens, slides, pieces) prepared.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -1352,7 +1352,7 @@
       "embargostartdate": {"name": "Embargo Start Date", "desc": "Embargo Start Date", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "embargostartdateprecision": {"name": "Embargo Start Date Precision", "desc": "Embargo Start Date Precision", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "exsiccataitems": {"name": "Exsiccata Items", "desc": "Exsiccata Items", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "fieldnotebookpage": {"name": "Field Notebook Page", "desc": "Field Notebook Page", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "fieldnotebookpage": {"name": "Field Notebook Page", "desc": "Describes an individual page within a Field Notebook, capturing the page number and date.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "fieldnumber": {"name": "Field Number", "desc": "A unique number a collector assigns to each specimen at the time of collection. For example, botanists often keep a running count of the individual specimens they have collected (LKK1023, LKK1024, etc.).", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "guid": {"name": "GUID", "desc": "Global Unique Identifier", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "integer1": {"name": "Integer1", "desc": "Integer1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -1440,7 +1440,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Attachment",
-    "desc": "An attachment for a collection object and provides order."
+    "desc": "Links digital files (specimen photos, X-rays, field notes) to a Collection Object, with ordinal for ordering."
   },
   "collectionobjectattr": {
     "items": {
@@ -1463,7 +1463,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Attribute",
-    "desc": "User-customizable attributes that can be repurposed for various data collection needs."
+    "desc": "A one-to-one extension table for Collection Objects, providing additional user-customizable attribute fields beyond the standard schema."
   },
   "collectionobjectattribute": {
     "items": {
@@ -1630,7 +1630,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Citation",
-    "desc": "Refers to a citation for a Collection Object."
+    "desc": "Links a Reference Work (publication) to a Collection Object, with optional figure, plate, and page numbers for citation details."
   },
   "collectionobjectgroup": {
     "items": {
@@ -1669,7 +1669,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Group",
-    "desc": "Collection Object Group"
+    "desc": "Groups multiple Collection Objects together for a specific purpose (e.g., a type series, a teaching collection, or a loan set). Uses CollectionObjectGroupType to define the grouping category."
   },
   "collectionobjectgroupjoin": {
     "items": {
@@ -1701,7 +1701,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Group Join",
-    "desc": "Collection Object Group Join"
+    "desc": "Join table linking Collection Objects to Collection Object Groups, enabling many-to-many relationships between objects and groups."
   },
   "collectionobjectgrouptype": {
     "items": {
@@ -1723,7 +1723,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Group Type",
-    "desc": "Collection Object Group Type"
+    "desc": "Defines the types or categories of Collection Object Groups (e.g., 'Type Series', 'Teaching Collection', 'Exhibit')."
   },
   "collectionobjectproperty": {
     "items": {
@@ -1905,7 +1905,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Property",
-    "desc": "Collection Object Property"
+    "desc": "Stores additional properties or measurements for a Collection Object, such as weight, length, or other quantitative attributes."
   },
   "collectionobjecttype": {
     "items": {
@@ -1954,7 +1954,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Relationship",
-    "desc": "Enables two collection objects to refer to each other, for example, voucher and tissue."
+    "desc": "Links two Collection Objects to each other, defining a relationship between them (e.g., voucher specimen to tissue sample, host to parasite, parent to offspring)."
   },
   "collectionreltype": {
     "items": {
@@ -1976,7 +1976,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Relationship Type",
-    "desc": "Describes the type of relationship between two collection objects."
+    "desc": "Defines the types of relationships that can exist between Collection Objects (e.g., 'voucher for', 'parasite of', 'host to', 'derived from')."
   },
   "collector": {
     "items": {
@@ -2004,7 +2004,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collector",
-    "desc": "In Specify, the person or persons who collected a specimen. Collector records are stored in the Agent table."
+    "desc": "Join table linking an Agent (as collector) to a Collecting Event, with an order field for listing multiple collectors in sequence."
   },
   "commonnametx": {
     "items": {
@@ -2015,7 +2015,7 @@
       "language": {"name": "Language", "desc": "The language code.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "name": {"name": "Name", "desc": "Name", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
-      "taxon": {"name": "Taxon", "desc": "Taxon", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "taxon": {"name": "Taxon", "desc": "Hierarchical tree representing the taxonomic classification of organisms (Kingdom > Phylum > Class > Order > Family > Genus > Species). Used for determinations and organizing collection objects.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "timestampcreated": {"name": "Timestamp Created", "desc": "The timestamp the record was created.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
       "timestampmodified": {"name": "Timestamp Modified", "desc": "The timestamp the record was last modified.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
       "variant": {"name": "Variant", "desc": "The variant code of the language.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
@@ -2029,7 +2029,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Common Name",
-    "desc": "Describes a common name and the localization of the name. This table is used to describe additional Common Names in other languages."
+    "desc": "Stores common (vernacular) names for a Taxon, with localization support including language, country, and variant information."
   },
   "commonnametxcitation": {
     "items": {
@@ -2060,7 +2060,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Common Name Tx Citation",
-    "desc": "Common Name Tx Citation"
+    "desc": "Links a Reference Work to a Common Name record, citing the source where the common name was published or used."
   },
   "conservdescription": {
     "items": {
@@ -2099,7 +2099,7 @@
       "number5": {"name": "Number5", "desc": "User definable", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Float", "isrequired": false, "weblinkname": null},
       "objlength": {"name": "Object Length", "desc": "The length of the object.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.Float", "isrequired": false, "weblinkname": null},
       "otherrecommendations": {"name": "Other Recommendations", "desc": "Other Recommendations", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "preparation": {"name": "Preparation", "desc": "Preparation", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "preparation": {"name": "Preparation", "desc": "Represents the distinct physical components of a Collection Object (e.g., skin, skeleton, tissue, slide, fluid-preserved jar). Supports extensible attributes and properties. A single Collection Object can have multiple Preparations.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Additional Comments", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
       "shortdesc": {"name": "Short Description", "desc": "A short description of the object.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "source": {"name": "Source", "desc": "Source", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
@@ -2127,7 +2127,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Conservator Description",
-    "desc": "Describes an object that has participated in a Conservator action. There is only one of these for each Collection Object."
+    "desc": "Describes the conservation status and treatment history of a Collection Object. Each Collection Object can have at most one Conservation Description, which groups multiple treatment events."
   },
   "conservdescriptionattachment": {
     "items": {
@@ -2149,7 +2149,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Conservator Description Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (condition reports, treatment photos) to a Conservation Description."
   },
   "conservevent": {
     "items": {
@@ -2193,7 +2193,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Conservator Event",
-    "desc": "An action that takes place as part of a Conservation Description. Over a period of time there may be multiple incidents that require a Conservator to take action."
+    "desc": "Records a specific conservation or restoration action performed on a Collection Object as part of a Conservation Description. Multiple events can occur over time (e.g., cleaning, repair, pest treatment)."
   },
   "conserveventattachment": {
     "items": {
@@ -2215,7 +2215,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Conservator Event Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (treatment photos, before/after images) to a specific Conservation Event."
   },
   "container": {
     "items": {
@@ -2229,7 +2229,7 @@
       "name": {"name": "Name", "desc": "The name of the container", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "number": {"name": "Number", "desc": "User definable", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null},
       "parent": {"name": "Parent", "desc": "Parent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "storage": {"name": "Storage", "desc": "Storage", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "storage": {"name": "Storage", "desc": "Hierarchical tree representing the physical storage locations in the collection (e.g., Building > Room > Cabinet > Drawer > Tray). Used to track where Preparations are physically housed.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "timestampcreated": {"name": "Timestamp Created", "desc": "The timestamp the record was created.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
       "timestampmodified": {"name": "Timestamp Modified", "desc": "The timestamp the record was last modified.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.sql.Timestamp", "isrequired": false, "weblinkname": null},
       "type": {"name": "Type", "desc": "The type of container", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "ContainerType", "type": "java.lang.Short", "isrequired": false, "weblinkname": null},
@@ -2314,7 +2314,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Deaccession",
-    "desc": "Removal of a biological object (specimen, observation, or preparation type) from the collection. Deaccessions may include loans to other collections that are subsequently given to the borrower, lost specimens, and specimens that are destroyed."
+    "desc": "Records the permanent removal of Collection Objects from the collection, whether by transfer, exchange, gift, destruction, or loss. Tracks the reason, date, and method of deaccession."
   },
   "deaccessionagent": {
     "items": {
@@ -2336,7 +2336,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Deaccession Agent",
-    "desc": "Refers to an agent and contains their role in the deaccession."
+    "desc": "Links an Agent to a Deaccession and defines their role (e.g., recipient, authorizer, witness) in the deaccession process."
   },
   "deaccessionattachment": {
     "items": {
@@ -2358,7 +2358,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Deaccession Attachment",
-    "desc": "Deaccession Attachment"
+    "desc": "Links digital files (transfer agreements, disposal certificates) to a Deaccession record."
   },
   "determination": {
     "items": {
@@ -2371,7 +2371,7 @@
       "determinationcitations": {"name": "Determination Citations", "desc": "Determination Citations", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "determineddate": {"name": "Determined Date", "desc": "The date it was determined.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.util.Calendar", "isrequired": false, "weblinkname": null},
       "determineddateprecision": {"name": "Determined Date Precision", "desc": "Determined Date Precision", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "determiner": {"name": "Determiner", "desc": "Individual who assigned or made the decision regarding the taxonomic name of specimen. In some instances, determiner may be an organization or institute. In Specify, determiner information is stored in the Agent table.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "determiner": {"name": "Determiner", "desc": "Join table linking an Agent (as determiner) to a Determination, with an order field for listing multiple determiners in sequence.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "determiners": {"name": "Determiners", "desc": "Determiners", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "featureorbasis": {"name": "Feature Or Basis", "desc": "Body part, or characteristic used as the basis of a determination.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "guid": {"name": "GUID", "desc": "GUID", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -2421,7 +2421,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Determination",
-    "desc": "Sometimes referred to as an ‘Identification’, this record captures the taxonomic name assigned to a Collection Object. It includes data such as the determiner (the person who identified it), the date it was determined, confidence qualifiers (like “cf.” or “?”), type statuses, and remarks. A single Collection Object can have a history of many Determinations over time."
+    "desc": "Also called an Identification. Records the taxonomic name assigned to a Collection Object, including the determiner, determination date, confidence qualifiers (cf., aff., ?), type status, and remarks. A Collection Object can have a history of multiple determinations over time."
   },
   "determinationcitation": {
     "items": {
@@ -2447,7 +2447,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Determination Citation",
-    "desc": "Refers to a citation for the determination."
+    "desc": "Links a Reference Work to a Determination, citing the publication used to make the identification."
   },
   "determiner": {
     "items": {
@@ -2542,7 +2542,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Disposal",
-    "desc": "A specific record documenting the physical removal or destruction of a preparation during a deaccession or process (e.g., a tissue sample being consumed for DNA analysis). This may be a destructive sample, item lost in transport, the item was disposed, or simply no longer found in the collection. These are linked to Preparations."
+    "desc": "Records the physical removal or destruction of a specific Preparation during deaccession (e.g., tissue consumed for DNA extraction, specimen lost in transit, or destroyed). Linked to Preparations."
   },
   "disposalagent": {
     "items": {
@@ -2564,7 +2564,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Disposal Agent",
-    "desc": "Disposal Agent"
+    "desc": "Links an Agent to a Disposal record and defines their role (e.g., authorizer, witness) in the disposal process."
   },
   "disposalattachment": {
     "items": {
@@ -2586,13 +2586,13 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Disposal Attachment",
-    "desc": "Disposal Attachment"
+    "desc": "Links digital files (disposal certificates, destruction records) to a Disposal record."
   },
   "disposalpreparation": {
     "items": {
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "disposal": {"name": "Disposal", "desc": "Disposal", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "loanreturnpreparation": {"name": "Loan Return Preparation", "desc": "Loan Return Preparation", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "loanreturnpreparation": {"name": "Loan Return Preparation", "desc": "Tracks the return of loaned Preparations, recording the return date, condition, and quantity returned.", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "preparation": {"name": "Preparation", "desc": "Preparation", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "quantity": {"name": "Quantity", "desc": "Quantity", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -2609,7 +2609,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Disposal Preparation",
-    "desc": "Disposal Preparation"
+    "desc": "Join table linking a Preparation to a Disposal, recording which specific preparations were disposed of and in what quantity."
   },
   "division": {
     "items": {
@@ -2621,7 +2621,7 @@
       "discipline": {"name": "Discipline", "desc": "The discipline of the division", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "disciplines": {"name": "Disciplines", "desc": "The list of Disciplines that belong to this Division", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "iconuri": {"name": "Icon URL", "desc": "The URL to their icon", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
-      "institution": {"name": "Institution", "desc": "The institution the division belongs to.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "institution": {"name": "Institution", "desc": "The top-level organization (e.g., museum, university) that owns the collections. An Institution contains one or more Divisions.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "members": {"name": "Members", "desc": "Members", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToMany", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "name": {"name": "Name", "desc": "The name of the division", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
@@ -2686,7 +2686,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "DNA Primer",
-    "desc": "DNA Primer"
+    "desc": "Stores DNA primer sequences used in molecular work, including the primer name, sequence, and direction (forward/reverse)."
   },
   "dnasequence": {
     "items": {
@@ -2706,11 +2706,11 @@
       "dnasequencingruns": {"name": "DNA Sequencing Runs", "desc": "DNA Sequencing Runs", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "extractiondate": {"name": "Extraction Date", "desc": "Extraction Date", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "extractiondateprecision": {"name": "Extraction Date Precision", "desc": "Extraction Date Precision", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "extractor": {"name": "Extractor", "desc": "Extractor", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "extractor": {"name": "Extractor", "desc": "Links an Agent to a DNA Sequence record as the person who performed the extraction, with an order field for multiple extractors.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "extractors": {"name": "Extractors", "desc": "Extractors", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "genbankaccessionnumber": {"name": "Genbank Acc #", "desc": "Genbank Acc #", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "genesequence": {"name": "Gene Sequence", "desc": "The actual sequence", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "materialsample": {"name": "Material Sample", "desc": "Material Sample", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "materialsample": {"name": "Material Sample", "desc": "Records a material sample taken from a Collection Object for analysis (e.g., a tissue sample for DNA, a rock sample for geochemistry).", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "moleculetype": {"name": "Molecule Type", "desc": "Molecule Type", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "MoleculeType", "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "number1": {"name": "Number1", "desc": "Number1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -2741,7 +2741,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "DNA Sequence",
-    "desc": "Tracks DNA Sequencing information for a Collection Object."
+    "desc": "Stores DNA sequence data associated with a Collection Object, including the sequence itself, GenBank accession number, and primer information."
   },
   "dnasequenceattachment": {
     "items": {
@@ -2763,13 +2763,13 @@
     "aggregator": null,
     "defaultui": null,
     "name": "DNA Sequence Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (chromatograms, sequence alignments) to a DNA Sequence record."
   },
   "dnasequencerunattachment": {
     "items": {
       "attachment": {"name": "Attachment", "desc": "Attachment", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "dnasequencingrun": {"name": "DNA Sequencing Run", "desc": "DNA Sequencing Run", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "dnasequencingrun": {"name": "DNA Sequencing Run", "desc": "Records a DNA sequencing run, including the run date, protocol, machine used, and links to the resulting DNA sequences.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "ordinal": {"name": "Ordinal", "desc": "Ordinal", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Remarks", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -2852,7 +2852,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "dnasequencingrunattachment",
-    "desc": "dnasequencingrunattachment"
+    "desc": "Links digital files (run logs, quality reports) to a DNA Sequencing Run."
   },
   "dnasequencingruncitation": {
     "items": {
@@ -2883,7 +2883,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "DNA Sequencing Run Citation",
-    "desc": "DNA Sequencing Run Citation"
+    "desc": "Links a Reference Work to a DNA Sequencing Run, citing the publication where the sequence data was reported."
   },
   "exchangein": {
     "items": {
@@ -2921,7 +2921,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exchange In",
-    "desc": "Describes an incoming Exchanged Specimen from a different institution."
+    "desc": "Tracks specimens received from another institution as part of an exchange agreement. Records the sender, date received, and associated terms."
   },
   "exchangeinattachment": {
     "items": {
@@ -2943,7 +2943,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exchange In Attachment",
-    "desc": "Exchange In Attachment"
+    "desc": "Links digital files (exchange agreements, shipping documents) to an incoming Exchange record."
   },
   "exchangeinprep": {
     "items": {
@@ -2970,7 +2970,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exchange In Prep",
-    "desc": "Exchange In Prep"
+    "desc": "Links specific Preparations received as part of an incoming exchange, with quantity information."
   },
   "exchangeout": {
     "items": {
@@ -3010,7 +3010,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exchange Out",
-    "desc": "Describes an outgoing Exchanged Specimen to a different institution."
+    "desc": "Tracks specimens sent to another institution as part of an exchange agreement. Records the recipient, date sent, and associated terms."
   },
   "exchangeoutattachment": {
     "items": {
@@ -3032,7 +3032,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exchange Out Attachment",
-    "desc": "Exchange Out Attachment"
+    "desc": "Links digital files (exchange agreements, shipping documents) to an outgoing Exchange record."
   },
   "exchangeoutprep": {
     "items": {
@@ -3059,7 +3059,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exchange Out Prep",
-    "desc": "Exchange Out Prep"
+    "desc": "Links specific Preparations sent as part of an outgoing exchange, with quantity information."
   },
   "exsiccata": {
     "items": {
@@ -3082,7 +3082,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exsiccata",
-    "desc": "Exsiccata"
+    "desc": "Records an exsiccata series—a published, numbered set of preserved specimens distributed to institutions. Common in botany and mycology."
   },
   "exsiccataitem": {
     "items": {
@@ -3104,7 +3104,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exsiccata Item",
-    "desc": "Exsiccata Item"
+    "desc": "Links a specific Collection Object to an Exsiccata series, recording its number within the series."
   },
   "extractor": {
     "items": {
@@ -3158,7 +3158,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Field Notebook",
-    "desc": "Describes a physical Field NoteBook."
+    "desc": "Describes a physical field notebook, including its identifier, owner, and storage location."
   },
   "fieldnotebookattachment": {
     "items": {
@@ -3180,7 +3180,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Field Notebook Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (scanned notebook pages, covers) to a Field Notebook record."
   },
   "fieldnotebookpage": {
     "items": {
@@ -3227,7 +3227,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Field Notebook Page Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (scanned images) to a specific Field Notebook Page."
   },
   "fieldnotebookpageset": {
     "items": {
@@ -3255,7 +3255,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Field Notebook Page Set",
-    "desc": "Describes a set of Field Note Book pages. This can be used to group pages together that were scanned in together."
+    "desc": "Groups multiple Field Notebook Pages together, typically representing pages that were scanned together as a batch."
   },
   "fieldnotebookpagesetattachment": {
     "items": {
@@ -3277,7 +3277,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Field Notebook Page Set Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files to a Field Notebook Page Set."
   },
   "fundingagent": {
     "items": {
@@ -3302,7 +3302,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Funding Agent",
-    "desc": "Funding Agent"
+    "desc": "Links a funding agency (Agent) to a Collecting Trip or Project, recording the grant or funding source that supported the work."
   },
   "geocoorddetail": {
     "items": {
@@ -3360,7 +3360,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Geo Coord Detail",
-    "desc": "Describes extra detail for a Locality for Manis data."
+    "desc": "Stores additional georeferencing details for a Locality, originally designed for MANIS (Mammal Networked Information System) data compatibility."
   },
   "geography": {
     "items": {
@@ -3430,7 +3430,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Geography Tree Definition",
-    "desc": "Defines the levels of the Geography tree."
+    "desc": "Defines the number, names, and hierarchy of levels in the Geography tree (e.g., Continent > Country > State > County)."
   },
   "geographytreedefitem": {
     "items": {
@@ -3461,7 +3461,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Geography Tree Definition Item",
-    "desc": "Describes a level in the definition of the tree."
+    "desc": "Describes a single level in the Geography tree definition, specifying its name, rank, and position in the hierarchy."
   },
   "geologictimeperiod": {
     "items": {
@@ -3503,7 +3503,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Chronostratigraphy",
-    "desc": "Describes Chronostratigraphy."
+    "desc": "Hierarchical tree representing chronostratigraphic/geologic time units (Eon > Era > Period > Epoch > Age). Used for dating paleontological specimens."
   },
   "geologictimeperiodtreedef": {
     "items": {
@@ -3528,7 +3528,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Geological Time Period Tree Definition",
-    "desc": "Defines the levels of the GTP tree."
+    "desc": "Defines the levels and hierarchy of the Geologic Time Period tree."
   },
   "geologictimeperiodtreedefitem": {
     "items": {
@@ -3559,7 +3559,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Geological Time Period Tree Definition Item",
-    "desc": "Describes a level in the definition of the tree."
+    "desc": "Describes a single level in the Geologic Time Period tree definition."
   },
   "gift": {
     "items": {
@@ -3616,7 +3616,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Gift",
-    "desc": "Describes a Gift."
+    "desc": "Records specimens given as gifts to other institutions or individuals. Tracks the recipient, date, and purpose of the gift."
   },
   "giftagent": {
     "items": {
@@ -3640,7 +3640,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Gift Agent",
-    "desc": "Describes the role the Agent played in the giving of a Gift."
+    "desc": "Links an Agent to a Gift record and defines their role (e.g., donor, recipient, authorizer) in the gift transaction."
   },
   "giftattachment": {
     "items": {
@@ -3662,7 +3662,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Gift Attachment",
-    "desc": "Gift Attachment"
+    "desc": "Links digital files (gift agreements, correspondence) to a Gift record."
   },
   "giftpreparation": {
     "items": {
@@ -3695,7 +3695,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Gift Preparation",
-    "desc": "Points a gift to a preparation."
+    "desc": "Links specific Preparations included in a Gift, with quantity information."
   },
   "groupperson": {
     "items": {
@@ -3718,7 +3718,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Group Person",
-    "desc": "This is a join table for Agents that are Institutions and Organizations that contain other Agents. It also provides order."
+    "desc": "Join table for hierarchical Agent relationships, linking member Agents to parent organization Agents (e.g., a department within a university). Provides ordering."
   },
   "inforequest": {
     "items": {
@@ -3747,7 +3747,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Information Request",
-    "desc": "Describes a request for information on a collection and refers to a Bundle of Collection Objects."
+    "desc": "Records a request for information about Collection Objects, linking to a set of records and tracking the requester, date, and purpose."
   },
   "institution": {
     "items": {
@@ -3856,7 +3856,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Journal",
-    "desc": "Refers to a published journal."
+    "desc": "Stores metadata about academic journals, used for citing Reference Works that are journal articles."
   },
   "latlonpolygon": {
     "items": {
@@ -3880,7 +3880,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Lat Lon Polygon",
-    "desc": "Lat Lon Polygon"
+    "desc": "Stores a geographic polygon (e.g., a collecting area boundary or protected area) defined by a series of latitude/longitude points."
   },
   "latlonpolygonpnt": {
     "items": {
@@ -3898,7 +3898,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Lat Lon Polygon Pnt",
-    "desc": "Lat Lon Polygon Pnt"
+    "desc": "Stores individual latitude/longitude points that make up a LatLonPolygon, with sequence order."
   },
   "libraryrole": {
     "items": {
@@ -3914,7 +3914,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Library Role",
-    "desc": "Stores names and descriptions of default roles that can be added to any collection."
+    "desc": "System table: Stores predefined (library/default) roles that can be assigned to users within any collection. Defines the base set of permissions available."
   },
   "libraryrolepolicy": {
     "items": {
@@ -3931,7 +3931,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Library Role Policy",
-    "desc": "Stores resource and action permissions for library roles within a collection."
+    "desc": "System table: Stores resource and action permissions associated with library (default) roles within a collection."
   },
   "lithostrat": {
     "items": {
@@ -3970,7 +3970,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Lithostratigraphy",
-    "desc": "The Lithostratigraphy tree."
+    "desc": "Hierarchical tree representing lithostratigraphic units (Supergroup > Group > Formation > Member > Bed). Used for geological context of specimens."
   },
   "lithostrattreedef": {
     "items": {
@@ -3995,7 +3995,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Lithostratigraphy Tree Definition",
-    "desc": "Defines the levels of the tree."
+    "desc": "Defines the levels and hierarchy of the Lithostratigraphy tree."
   },
   "lithostrattreedefitem": {
     "items": {
@@ -4026,7 +4026,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Lithostratigraphy Tree Definition Item",
-    "desc": "Describes a level in the definition of the tree."
+    "desc": "Describes a single level in the Lithostratigraphy tree definition."
   },
   "loan": {
     "items": {
@@ -4085,7 +4085,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Loan",
-    "desc": "A group of specimens that another institution borrows from your collection. Specify lets you manage all aspects of loans electronically so that you always have an up-to-date record of which specimen have been loaned and which have been returned."
+    "desc": "Tracks specimens loaned out to other institutions. Manages all aspects including loan date, due date, return tracking, and shipping. Each loan can include multiple preparations."
   },
   "loanagent": {
     "items": {
@@ -4108,7 +4108,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Loan Agent",
-    "desc": "An agent associated with a loan. Each agent includes the role played in the loan process."
+    "desc": "Links an Agent to a Loan and defines their role (e.g., Borrower, Benefactor, Sponsor, Preparer) in the loan transaction."
   },
   "loanattachment": {
     "items": {
@@ -4130,7 +4130,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Loan Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (loan agreements, shipping labels, insurance documents) to a Loan record."
   },
   "loanpreparation": {
     "items": {
@@ -4165,7 +4165,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Loan Preparation",
-    "desc": "A join table between the Loan and the Preparation. It contains comments and quantity fields."
+    "desc": "Join table linking a Preparation to a Loan, recording which specimens were loaned and in what quantity."
   },
   "loanreturnpreparation": {
     "items": {
@@ -4283,7 +4283,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locality Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (maps, site photos) to a Locality record."
   },
   "localitycitation": {
     "items": {
@@ -4309,7 +4309,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locality Citation",
-    "desc": "A join table to link a Locality to a Citation."
+    "desc": "Links a Reference Work to a Locality, citing a publication that describes or mentions the locality."
   },
   "localitydetail": {
     "items": {
@@ -4375,7 +4375,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locality Detail",
-    "desc": "Describes additional Locality detail. For example, water body and island information. Includes UTM fields."
+    "desc": "Stores additional locality information such as water body, island group, UTM coordinates, and other supplementary geographic details."
   },
   "localitynamealias": {
     "items": {
@@ -4397,7 +4397,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locality Name Alias",
-    "desc": "Describes additional names for a given Locality."
+    "desc": "Stores alternate names or spellings for a Locality (e.g., historical names, variant spellings in different languages)."
   },
   "materialsample": {
     "items": {
@@ -4476,7 +4476,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Message",
-    "desc": "Stores user notifications."
+    "desc": "System table: Stores user notifications and messages within the application."
   },
   "morphbankview": {
     "items": {
@@ -4543,7 +4543,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Other Identifier",
-    "desc": "Describes an identifier (Catalog Number) of a Collection Object from a different Institution."
+    "desc": "Stores an identifier (catalog number or other ID) assigned to a Collection Object by another institution, enabling cross-referencing between collections."
   },
   "paleocontext": {
     "items": {
@@ -4564,7 +4564,7 @@
       "number5": {"name": "Number5", "desc": "Number5", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "paleocontextname": {"name": "Context Name", "desc": "Context Name", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Remarks", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "tectonicunit": {"name": "Tectonic Unit", "desc": "Tectonic Unit", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "tectonicunit": {"name": "Tectonic Unit", "desc": "Hierarchical tree representing tectonic/terrane units used in geology and paleontology for describing the tectonic setting of specimens.", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "text1": {"name": "Bio Strat", "desc": "Bio Strat", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "text2": {"name": "Text2", "desc": "Text2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "text3": {"name": "Text3", "desc": "Text3", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -4613,7 +4613,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Pcr Persons",
-    "desc": "Pcr Persons"
+    "desc": "Links an Agent to a DNA Sequencing Run as the person who performed the PCR (polymerase chain reaction) amplification."
   },
   "permit": {
     "items": {
@@ -4683,7 +4683,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Permit Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (scanned permits, letters of authorization) to a Permit record."
   },
   "picklist": {
     "items": {
@@ -4714,7 +4714,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Pick List",
-    "desc": "System Table: A list of items that can be choosen to produce a controlled vocabulary."
+    "desc": "System table: Defines a controlled vocabulary (picklist) for a field, providing a dropdown list of selectable values to ensure data consistency."
   },
   "picklistitem": {
     "items": {
@@ -4736,7 +4736,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Pick List Item",
-    "desc": "Pick List Item"
+    "desc": "System table: An individual value within a Picklist, representing one selectable option in a controlled vocabulary."
   },
   "preparation": {
     "items": {
@@ -4769,7 +4769,7 @@
       "number1": {"name": "Number1", "desc": "Number1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "number2": {"name": "Number2", "desc": "Number2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "preparationattachments": {"name": "Preparation Attachments", "desc": "Preparation Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
-      "preparationattribute": {"name": "Preparation Attribute", "desc": "Preparation Attribute", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToOne", "isrequired": false, "weblinkname": null},
+      "preparationattribute": {"name": "Preparation Attribute", "desc": "A one-to-one extension table for Preparations, providing additional user-customizable attribute fields beyond the standard schema.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToOne", "isrequired": false, "weblinkname": null},
       "preparationattrs": {"name": "Preparation Attrs", "desc": "Preparation Attrs", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "preparationproperties": {"name": "Preparation Properties", "desc": "Preparation Properties", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "preparedbyagent": {"name": "Prepared By", "desc": "Prepared By", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
@@ -4834,7 +4834,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Preparation Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (preparation photos, X-rays) to a Preparation record."
   },
   "preparationattr": {
     "items": {
@@ -4857,7 +4857,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Preparation Attr",
-    "desc": "One-to-many user-customizable attributes that can be repurposed for various data collection needs."
+    "desc": "Stores values for user-customizable attributes defined by an AttributeDef, linked to a Preparation. Supports string and numeric value types."
   },
   "preparationattribute": {
     "items": {
@@ -5100,7 +5100,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Preparation Property",
-    "desc": "Preparation Property"
+    "desc": "Stores additional properties or measurements for a Preparation, such as weight, dimensions, or preservation method."
   },
   "preptype": {
     "items": {
@@ -5122,7 +5122,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Preparation Type",
-    "desc": "Describe a Preparation Type. For example, Cleared and Stained, Mounted, etc."
+    "desc": "Defines the types of Preparations available in a collection (e.g., 'Cleared and Stained', 'Mounted', 'Frozen Tissue', 'Microscope Slide', 'Skeleton')."
   },
   "project": {
     "items": {
@@ -5158,7 +5158,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Project",
-    "desc": "Describes a grouping of Collection Objects."
+    "desc": "Groups Collection Objects together under a research project or study, enabling project-level organization and reporting."
   },
   "recordset": {
     "items": {
@@ -5188,7 +5188,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Record Set",
-    "desc": "Describes a set of records of any type that can be acted upon within the applicatiton."
+    "desc": "System table: Stores a set of record IDs of any type, used for batch operations, query results, and temporary selections within the application."
   },
   "recordsetitem": {
     "items": {
@@ -5204,7 +5204,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Record Set Item",
-    "desc": "Record Set Item"
+    "desc": "System table: An individual record ID within a Record Set."
   },
   "referencework": {
     "items": {
@@ -5276,7 +5276,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Reference Work Attachment",
-    "desc": "Reference Work Attachment"
+    "desc": "Links digital files (PDFs, scans) to a Reference Work record."
   },
   "relativeage": {
     "items": {
@@ -5319,7 +5319,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Relative Age",
-    "desc": "Relative Age"
+    "desc": "Records a relative age determination (e.g., 'Early Miocene', 'Late Cretaceous') for a Collection Object, based on biostratigraphy or other relative dating methods."
   },
   "relativeageattachment": {
     "items": {
@@ -5343,7 +5343,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Relative Age Attachment",
-    "desc": "Relative Age Attachment"
+    "desc": "Links digital files to a Relative Age record."
   },
   "relativeagecitation": {
     "items": {
@@ -5370,7 +5370,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Relative Age Citation",
-    "desc": "Relative Age Citation"
+    "desc": "Links a Reference Work to a Relative Age record, citing the publication where the age determination was reported."
   },
   "repositoryagreement": {
     "items": {
@@ -5430,7 +5430,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Repository Agreement Attachment",
-    "desc": "Refers to an attachment and provides order."
+    "desc": "Links digital files (signed agreements, terms of deposit) to a Repository Agreement."
   },
   "role": {
     "items": {
@@ -5464,7 +5464,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Role Policy",
-    "desc": "Stores resource and action permissions for user-created roles within a collection."
+    "desc": "System table: Stores resource and action permissions for user-defined roles within a collection."
   },
   "shipment": {
     "items": {
@@ -5503,7 +5503,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Shipment",
-    "desc": "Describes the shipment of a Loan or Exchange."
+    "desc": "Tracks the physical shipment of specimens for Loans, Exchanges, or Borrows, including carrier, tracking number, date sent, and date received."
   },
   "spappresource": {
     "items": {
@@ -5533,7 +5533,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "App Resource",
-    "desc": "System Table: This represents a resource, typically XML, that the application uses during run time."
+    "desc": "System table: Stores application resources (typically XML configuration) used by Specify at runtime for forms, views, and other UI components."
   },
   "spappresourcedata": {
     "items": {
@@ -5554,7 +5554,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "App Resource Data",
-    "desc": "System Table: The data associated with an application resource."
+    "desc": "System table: Stores the data content associated with an application resource."
   },
   "spappresourcedir": {
     "items": {
@@ -5580,7 +5580,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "App Resource Default",
-    "desc": "System Table: the default for application resources."
+    "desc": "System table: Defines the directory structure for organizing application resources."
   },
   "spattachmentdataset": {
     "items": {
@@ -5606,7 +5606,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Spattachmentdataset",
-    "desc": "Holds attachment data sets."
+    "desc": "System table: Groups attachments into datasets for batch processing or export."
   },
   "spauditlog": {
     "items": {
@@ -5631,7 +5631,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Audit Log",
-    "desc": "Sp Audit Log"
+    "desc": "System table: Records audit log entries tracking data changes (create, update, delete) for specified tables."
   },
   "spauditlogfield": {
     "items": {
@@ -5653,7 +5653,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Audit Log Field",
-    "desc": "Sp Audit Log Field"
+    "desc": "System table: Records individual field-level changes within an audit log entry."
   },
   "spdataset": {
     "items": {
@@ -5683,7 +5683,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Spdataset",
-    "desc": "Stores Specify Data Sets created during bulk import using the WorkBench, typically through spreadsheet uploads."
+    "desc": "Stores data sets created during bulk import via the Specify 7 WorkBench, typically from spreadsheet uploads. Contains the mapping between spreadsheet columns and database fields."
   },
   "spdatasetattachment": {
     "items": {
@@ -5707,7 +5707,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Data Set Attachment",
-    "desc": "An attachment temporarily associated with a Specify Data Set for use in a WorkBench upload."
+    "desc": "Links digital files (specimen images, field notes) temporarily associated with a Specify 7 WorkBench data set during import."
   },
   "specifyuser": {
     "items": {
@@ -5767,7 +5767,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Export Schema",
-    "desc": "System Table:"
+    "desc": "System table: Defines export schemas for data export/import operations."
   },
   "spexportschemaitem": {
     "items": {
@@ -5791,7 +5791,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Export Schema Item",
-    "desc": "System Table:"
+    "desc": "System table: Defines individual fields within an export schema."
   },
   "spexportschemaitemmapping": {
     "items": {
@@ -5816,7 +5816,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Export Schema Item Mapping",
-    "desc": "Sp Export Schema Item Mapping"
+    "desc": "System table: Maps export schema items to database fields for data transformation."
   },
   "spexportschemamapping": {
     "items": {
@@ -5841,7 +5841,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Export Schema Mapping",
-    "desc": "Sp Export Schema Mapping"
+    "desc": "System table: Defines the mapping between export schemas and database tables."
   },
   "spfieldvaluedefault": {
     "items": {
@@ -5864,7 +5864,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Field Value Default",
-    "desc": "System Table: This represents a default field value for a form."
+    "desc": "System table: Stores default values for form fields, used to pre-populate data entry forms."
   },
   "splocalecontainer": {
     "items": {
@@ -5896,7 +5896,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locale Container",
-    "desc": "System Table: This is used for localizing the database schema it has a localized name and description but can also contain localizable items."
+    "desc": "System table: Stores localized names and descriptions for database tables (schema containers), enabling multi-language support in the user interface."
   },
   "splocalecontaineritem": {
     "items": {
@@ -5927,7 +5927,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locale Container Item",
-    "desc": "System Table: This is used for localizing the database schema it has a localized name and description."
+    "desc": "System table: Stores localized names and descriptions for individual database fields (schema container items), enabling multi-language support."
   },
   "splocaleitemstr": {
     "items": {
@@ -5953,7 +5953,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locale Item String",
-    "desc": "System Table: This is used for localizing the database schema it represents a string and also a Language, Country and Variant for that string."
+    "desc": "System table: Stores localized string values with language, country, and variant identifiers for internationalization."
   },
   "spmerging": {
     "items": {
@@ -5981,7 +5981,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Spmerging",
-    "desc": "Tracks record and task IDs of records being merged."
+    "desc": "System table: Tracks records that are being merged, storing record IDs and task IDs for the merge process."
   },
   "sppermission": {
     "items": {
@@ -5999,7 +5999,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Permission",
-    "desc": "System Table:"
+    "desc": "System table: Stores individual permission records defining access rights to resources and actions."
   },
   "spprincipal": {
     "items": {
@@ -6025,7 +6025,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Principal",
-    "desc": "System Table:"
+    "desc": "System table: Stores security principals (users and groups) for the permission system."
   },
   "spquery": {
     "items": {
@@ -6058,7 +6058,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Query",
-    "desc": "System Table: This represents a saved Query."
+    "desc": "System table: Stores saved queries, including the query definition and configuration."
   },
   "spqueryfield": {
     "items": {
@@ -6096,7 +6096,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Query Field",
-    "desc": "System Table: This represents a single field in a saved Query."
+    "desc": "System table: Stores individual field definitions within a saved query."
   },
   "spreport": {
     "items": {
@@ -6122,7 +6122,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Report",
-    "desc": "System Table: This represents a saved Report."
+    "desc": "System table: Stores saved report definitions and configurations."
   },
   "spsymbiotainstance": {
     "items": {
@@ -6149,7 +6149,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Symbiota Instance",
-    "desc": "Sp Symbiota Instance"
+    "desc": "System table: Stores configuration for Symbiota integration instances, enabling data sharing with the Symbiota biodiversity platform."
   },
   "sptasksemaphore": {
     "items": {
@@ -6177,7 +6177,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Task Semaphore",
-    "desc": "System Table:"
+    "desc": "System table: Internal semaphore mechanism for coordinating background tasks and preventing concurrent execution."
   },
   "spuserexternalid": {
     "items": {
@@ -6196,7 +6196,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Spuserexternalid",
-    "desc": "Stores provider identifiers and tokens for users who sign in using Single Sign On (SSO)."
+    "desc": "Stores external provider identifiers and authentication tokens for users who sign in using Single Sign-On (SSO) providers (e.g., Entra ID/Azure AD, Keycloak, Google)."
   },
   "spversion": {
     "items": {
@@ -6220,7 +6220,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Version",
-    "desc": "Sp Version"
+    "desc": "System table: Tracks the Specify and database schema version."
   },
   "spviewsetobj": {
     "items": {
@@ -6245,7 +6245,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "View Set Object",
-    "desc": "System Table: This represents a View Set used in the form system."
+    "desc": "System table: Stores view set definitions used by the Specify form system to define data entry forms and layouts."
   },
   "spvisualquery": {
     "items": {
@@ -6267,7 +6267,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Visual Query",
-    "desc": "Sp Visual Query"
+    "desc": "System table: Stores visual query builder configurations."
   },
   "storage": {
     "items": {
@@ -6330,7 +6330,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Storage Attachment",
-    "desc": "Storage Attachment"
+    "desc": "Links digital files (storage maps, shelf photos) to a Storage location record."
   },
   "storagetreedef": {
     "items": {
@@ -6355,7 +6355,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Storage Tree Definition",
-    "desc": "Defines the levels of the tree."
+    "desc": "Defines the levels and hierarchy of the Storage tree."
   },
   "storagetreedefitem": {
     "items": {
@@ -6386,7 +6386,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Storage Tree Definition Item",
-    "desc": "Describes a level in the definition of the tree."
+    "desc": "Describes a single level in the Storage tree definition."
   },
   "taxon": {
     "items": {
@@ -6438,7 +6438,7 @@
       "remarks": {"name": "Remarks", "desc": "Additional Comments", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
       "source": {"name": "Source", "desc": "If the record has been imported then this field holds information about the authority file it was obtained from, else it is user-editable.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "taxonattachments": {"name": "Taxon Attachments", "desc": "Taxon Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
-      "taxonattribute": {"name": "Taxon Attribute", "desc": "Taxon Attribute", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "taxonattribute": {"name": "Taxon Attribute", "desc": "Stores additional attributes or properties for a Taxon (e.g., author citation, publication year, common characteristics).", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "taxoncitations": {"name": "Taxon Citations", "desc": "Taxon Citations", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "taxonomicserialnumber": {"name": "Taxonomic Serial Number", "desc": "If the record has been imported from an Authority File then this field stores a unique ID assigned by the provider, else it is null", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "text1": {"name": "Text 1", "desc": "Text 1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -6525,7 +6525,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Taxon Attachment",
-    "desc": "This refers to an attachment and provides order."
+    "desc": "Links digital files (illustrations, distribution maps) to a Taxon record."
   },
   "taxonattribute": {
     "items": {
@@ -6739,7 +6739,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Taxon Citation",
-    "desc": "Linkage from the Taxonomic record to a published document."
+    "desc": "Links a Reference Work to a Taxon record, citing the publication where the taxon was described or revised."
   },
   "taxontreedef": {
     "items": {
@@ -6763,7 +6763,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Taxon Tree Definition",
-    "desc": "Defines the levels of the tree."
+    "desc": "Defines the levels and hierarchy of the Taxon tree (e.g., Kingdom, Phylum, Class, Order, Family, Genus, Species)."
   },
   "taxontreedefitem": {
     "items": {
@@ -6795,7 +6795,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Taxon Tree Definition Item",
-    "desc": "Describes a level in the definition of the tree."
+    "desc": "Describes a single level in the Taxon tree definition, specifying its name, rank, and position in the hierarchy."
   },
   "tectonicunit": {
     "items": {
@@ -6859,7 +6859,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Tectonic Unit Tree Def",
-    "desc": "Tectonic Unit Tree Def"
+    "desc": "Defines the levels and hierarchy of the Tectonic Unit tree."
   },
   "tectonicunittreedefitem": {
     "items": {
@@ -6891,7 +6891,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Tectonic Unit Tree Def Item",
-    "desc": "Tectonic Unit Tree Def Item"
+    "desc": "Describes a single level in the Tectonic Unit tree definition."
   },
   "treatmentevent": {
     "items": {
@@ -6940,7 +6940,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Treatment Event",
-    "desc": "An action that occurs to a Conservation Description."
+    "desc": "Records a specific conservation treatment action performed on a Collection Object (e.g., pest eradication, cleaning, repair, stabilization). Part of a Conservation Description."
   },
   "treatmenteventattachment": {
     "items": {
@@ -6962,7 +6962,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Treatment Event Attachment",
-    "desc": "Treatment Event Attachment"
+    "desc": "Links digital files (treatment reports, before/after photos) to a Treatment Event."
   },
   "uniquenessrule": {
     "items": {
@@ -6979,7 +6979,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Uniqueness Rule",
-    "desc": "Stores table names in the data model that have uniqueness rules configured for each discipline."
+    "desc": "Stores table names that have uniqueness constraints configured per discipline, defining which tables require unique field combinations."
   },
   "uniquenessrulefield": {
     "items": {
@@ -6996,7 +6996,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Uniqueness Rule Field",
-    "desc": "Stores field names in the data model that have uniqueness rules configured for each discipline, linked to UniquenessRule records."
+    "desc": "Stores field names that participate in uniqueness constraints per discipline, linked to UniquenessRule records."
   },
   "userpolicy": {
     "items": {
@@ -7014,7 +7014,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "User Policy",
-    "desc": "Records permissions for a user within a collection."
+    "desc": "Records specific resource and action permissions granted to a user within a collection."
   },
   "userrole": {
     "items": {
@@ -7030,7 +7030,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "User Role",
-    "desc": "Records roles associated with ecify users."
+    "desc": "Records the roles assigned to a user within a collection, linking users to their role-based permissions."
   },
   "voucherrelationship": {
     "items": {
@@ -7067,7 +7067,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Voucher Relationship",
-    "desc": "Voucher Relationship"
+    "desc": "Links a voucher specimen (Collection Object) to a taxon concept or DNA sequence, establishing the specimen as the physical voucher for that identification or genetic data."
   },
   "workbench": {
     "items": {
@@ -7100,14 +7100,14 @@
     "aggregator": null,
     "defaultui": null,
     "name": "WorkBench",
-    "desc": "A WorkBench DataSet."
+    "desc": "Deprecated table: Represents a Specify 6 WorkBench data set created during bulk data import, typically from a spreadsheet. Contains the import configuration and mapping metadata."
   },
   "workbenchdataitem": {
     "items": {
       "celldata": {"name": "Cell Data", "desc": "Cell Data", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "rownumber": {"name": "Row Number", "desc": "Row Number", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Short", "isrequired": false, "weblinkname": null},
       "validationstatus": {"name": "Validation Status", "desc": "Validation Status", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Short", "isrequired": false, "weblinkname": null},
-      "workbenchrow": {"name": "Workbench Row", "desc": "Workbench Row", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "workbenchrow": {"name": "Workbench Row", "desc": "Deprecated table: Represents a single row of data in a Specify 6 WorkBench data set, containing multiple data items.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "workbenchtemplatemappingitem": {"name": "Workbench Template Mapping Item", "desc": "Workbench Template Mapping Item", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null}
     },
     "format": null,
@@ -7118,7 +7118,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "WorkBench Data Item",
-    "desc": "A cell of data."
+    "desc": "Deprecated table: Stores the value of a single cell in a Specify 6 WorkBench data set row."
   },
   "workbenchrow": {
     "items": {
@@ -7171,7 +7171,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Workbench Row Exported Relationship",
-    "desc": "Workbench Row Exported Relationship"
+    "desc": "Deprecated table: Tracks relationships created between records during Specify 6 WorkBench data export/import operations."
   },
   "workbenchrowimage": {
     "items": {
@@ -7189,7 +7189,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Workbench Row Image",
-    "desc": "An image associated with a row."
+    "desc": "Deprecated table: Links an image file to a specific row in a Specify 6 WorkBench data set, used for associating media during import."
   },
   "workbenchtemplate": {
     "items": {
@@ -7213,7 +7213,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "WorkBench Template",
-    "desc": "The mapping description of the WorkBench."
+    "desc": "Deprecated table: Defines the column mapping template for a Specify 6 WorkBench data set, specifying how spreadsheet columns map to database fields."
   },
   "workbenchtemplatemappingitem": {
     "items": {
@@ -7250,6 +7250,6 @@
     "aggregator": null,
     "defaultui": null,
     "name": "WorkBench Template Mapping Item",
-    "desc": "One column of the mapped description."
+    "desc": "Deprecated table: Defines the mapping for a single column in a Specify 6 WorkBench template, specifying the target database field and transformation rules."
   }
 }
