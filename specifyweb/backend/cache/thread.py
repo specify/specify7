@@ -1,11 +1,16 @@
-from typing import Callable, Any
+from typing import Callable, Generic, TypeVar
 from contextlib import contextmanager
 from contextvars import ContextVar
 
 KEY_MISSING = object()
 
+K = TypeVar("K")
+V = TypeVar("V")
 
-class ThreadCache[K, V]:
+# Would much rather use the built-in syntax for declaring generics on classes
+# in Python 3.12, but MyPy doesn't seem to like that currently, so going with
+# the old-fashion way with TypeVar and Generic for now
+class ThreadCache(Generic[K, V]):
     """
     A wrapper for ContextVar objects containg dictonaries that can act as
     caches.
