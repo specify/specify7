@@ -17,16 +17,18 @@ from django.core.exceptions import ObjectDoesNotExist, FieldDoesNotExist
 from specifyweb.specify.api.crud import get_model
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.middleware.general import serialize_django_obj
-from specifyweb.specify.models import Discipline
+from specifyweb.backend.cache.thread import ThreadCache
 from specifyweb.specify.utils.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
 from .utils import changed_fields_include
 
-class JSONUniquenessRule(TypedDict): 
+
+class JSONUniquenessRule(TypedDict):
     rule: tuple[list[str], list[str]]
     isDatabaseConstraint: bool
+
 
 DEFAULT_UNIQUENESS_RULES:  dict[str, list[JSONUniquenessRule]] = json.load(
     open('specifyweb/backend/businessrules/uniqueness_rules.json'))
@@ -39,6 +41,7 @@ NO_FIELD_VALUE = {}
 
 logger = logging.getLogger(__name__)
 
+
 @dataclass(frozen=True)
 class CachedUniquenessRule:
     rule: Any
@@ -50,29 +53,38 @@ class CachedUniquenessRule:
     is_global: bool
     discipline_id: int | None
 
-_uniqueness_rule_cache: ContextVar[
-    dict[tuple[int, str], list[CachedUniquenessRule]] | None
-] = ContextVar("uniqueness_rule_cache", default=None)
-_uniqueness_migration_cache: ContextVar[dict[str, bool] | None] = ContextVar(
-    "uniqueness_migration_cache",
-    default=None,
+
+_uniqueness_rule_cache = ThreadCache[tuple[int, str], list[CachedUniquenessRule]](
+    ContextVar(
+        "uniqueness_rule_cache",
+        default=None
+    )
 )
-_collection_discipline_cache: ContextVar[dict[int, int | None] | None] = ContextVar(
-    "uniqueness_collection_discipline_cache",
-    default=None,
+
+_uniqueness_migration_cache = ThreadCache[str, bool](
+    ContextVar(
+        "uniqueness_migration_cache",
+        default=None,
+    )
 )
+
+_collection_discipline_cache = ThreadCache[int, int | None](
+    ContextVar(
+        "uniqueness_collection_discipline_cache",
+        default=None,
+    )
+)
+
 
 @contextmanager
 def cache_uniqueness_rules():
-    rule_token = _uniqueness_rule_cache.set({})
-    migration_token = _uniqueness_migration_cache.set({})
-    collection_token = _collection_discipline_cache.set({})
-    try:
+    with (
+        _uniqueness_rule_cache.activate(),
+        _uniqueness_migration_cache.activate(),
+        _collection_discipline_cache.activate()
+    ):
         yield
-    finally:
-        _collection_discipline_cache.reset(collection_token)
-        _uniqueness_migration_cache.reset(migration_token)
-        _uniqueness_rule_cache.reset(rule_token)
+
 
 def resolve_model_field(model, field_path: str):
     current_model = model
@@ -83,7 +95,8 @@ def resolve_model_field(model, field_path: str):
         except FieldDoesNotExist:
             return None
         remote_field = getattr(resolved_field, 'remote_field', None)
-        remote_model = getattr(remote_field, 'model', None) if remote_field else None
+        remote_model = getattr(remote_field, 'model',
+                               None) if remote_field else None
         if remote_model is not None:
             current_model = remote_model
     return resolved_field
@@ -121,33 +134,23 @@ def apply_case_sensitive_filters(queryset, model, matchable, filter_kwargs):
     return queryset, transformed_filters
 
 
-def _businessrules_initial_migration_applied() -> bool:
-    cache_key = "default"
-    cache = _uniqueness_migration_cache.get()
-    if cache is not None and cache_key in cache:
-        return cache[cache_key]
-
-    applied = any(
+def _initial_businessrules_migration_applied():
+    return any(
         app == "businessrules" and migration_name == "0001_initial"
         for app, migration_name in MigrationRecorder(
             connections["default"]
         ).applied_migrations()
     )
 
-    if cache is not None:
-        cache[cache_key] = applied
 
-    return applied
+def _cached_businessrules_migration_applied() -> bool:
+    cache_key = "default"
+    return _uniqueness_migration_cache.get_or_set(cache_key, _initial_businessrules_migration_applied)
 
-def _get_uniqueness_rule_configs(registry, model_name: str) -> list[CachedUniquenessRule]:
-    cache_key = (id(registry), model_name)
-    cache = _uniqueness_rule_cache.get()
-    if cache is not None and cache_key in cache:
-        return cache[cache_key]
 
+def _fetch_uniquenessrules_for_cache(registry, model_name) -> list[CachedUniquenessRule]:
+    cached_rules: list[CachedUniquenessRule] = []
     UniquenessRule = registry.get_model("businessrules", "UniquenessRule")
-
-    configs: list[CachedUniquenessRule] = []
     rules = (
         UniquenessRule.objects
         .filter(modelName=model_name)
@@ -169,7 +172,7 @@ def _get_uniqueness_rule_configs(registry, model_name: str) -> list[CachedUnique
             if scope is not None
             else field_names
         )
-        configs.append(
+        cached_rules.append(
             CachedUniquenessRule(
                 rule=rule,
                 field_names=field_names,
@@ -181,30 +184,26 @@ def _get_uniqueness_rule_configs(registry, model_name: str) -> list[CachedUnique
                 discipline_id=rule.discipline_id,
             )
         )
+    return cached_rules
 
-    if cache is not None:
-        cache[cache_key] = configs
 
-    return configs
+def _get_uniqueness_rule_configs(registry, model_name: str) -> list[CachedUniquenessRule]:
+    def fetch_rules(): return _fetch_uniquenessrules_for_cache(registry, model_name)
+    cache_key = (id(registry), model_name)
+    return _uniqueness_rule_cache.get_or_set(cache_key, fetch_rules)
+
 
 def _get_collection_discipline_id(collection_id: int) -> int | None:
-    from specifyweb.specify.models import Collection
 
-    cache = _collection_discipline_cache.get()
-    if cache is not None and collection_id in cache:
-        return cache[collection_id]
+    def fetch_discipline_id():
+        from specifyweb.specify.models import Collection
+        return (Collection.objects
+                .filter(id=collection_id)
+                .values_list("discipline_id", flat=True)
+                .first())
 
-    discipline_id = (
-        Collection.objects
-        .filter(id=collection_id)
-        .values_list("discipline_id", flat=True)
-        .first()
-    )
+    return _collection_discipline_cache.get_or_set(collection_id, fetch_discipline_id)
 
-    if cache is not None:
-        cache[collection_id] = discipline_id
-
-    return discipline_id
 
 def _instance_discipline_id(instance) -> int | None:
     discipline_id = getattr(instance, "discipline_id", None)
@@ -217,11 +216,13 @@ def _instance_discipline_id(instance) -> int | None:
     if collection_id is not None:
         return _get_collection_discipline_id(collection_id)
 
-    cached_collection = getattr(instance._state, "fields_cache", {}).get("collection")
+    cached_collection = getattr(
+        instance._state, "fields_cache", {}).get("collection")
     if cached_collection is not None:
         return getattr(cached_collection, "discipline_id", None)
 
     return None
+
 
 def _rule_applies_to_instance(rule: CachedUniquenessRule, instance) -> bool:
     if rule.is_global:
@@ -233,6 +234,7 @@ def _rule_applies_to_instance(rule: CachedUniquenessRule, instance) -> bool:
             return discipline_id == rule.discipline_id
 
     return in_same_scope(rule.rule, instance)
+
 
 @orm_signal_handler('pre_save', None, dispatch_uid=UNIQUENESS_DISPATCH_UID)
 def validate_unique(model, instance):
@@ -253,7 +255,7 @@ def validate_unique(model, instance):
                 f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
         return
 
-    if not _businessrules_initial_migration_applied():
+    if not _cached_businessrules_migration_applied():
         return
 
     # We can't directly use the main app registry in the context of migrations, which uses fake models
@@ -287,7 +289,8 @@ def validate_unique(model, instance):
             return field_mapping, matchable
 
         def get_exception(conflicts, matchable, field_map):
-            error_message = '{} must have unique {}'.format(model_name, join_with_and(rule.field_names))
+            error_message = '{} must have unique {}'.format(
+                model_name, join_with_and(rule.field_names))
 
             response = {"table": model_name,
                         "localizationKey": "fieldNotUnique"
@@ -352,7 +355,7 @@ class UniquenessCheck(TypedDict):
 
 
 def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[str], registry=None) \
-    -> UniquenessCheck | None:
+        -> UniquenessCheck | None:
     """
     Given a model, a list of fields, and a list of scopes, check whether there
     are models of model_name which have duplicate values of fields in scopes. 
@@ -469,6 +472,7 @@ def serialize_multiple_django(matchable, field_map, fields):
 def join_with_and(fields):
     return ' and '.join(fields)
 
+
 def apply_default_uniqueness_rules(discipline, registry=None):
     for table, rules in DEFAULT_UNIQUENESS_RULES.items():
         model_name = getattr(datamodel.get_table(table), "django_name", None)
@@ -478,7 +482,8 @@ def apply_default_uniqueness_rules(discipline, registry=None):
             fields, scopes = rule["rule"]
             isDatabaseConstraint = rule["isDatabaseConstraint"]
 
-            create_uniqueness_rule(model_name, discipline, isDatabaseConstraint, fields, scopes, registry)
+            create_uniqueness_rule(
+                model_name, discipline, isDatabaseConstraint, fields, scopes, registry)
 
 
 def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
@@ -486,7 +491,7 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
-    
+
     discipline = None if rule_is_global(scopes) else raw_discipline
 
     candidate_rules = UniquenessRule.objects.filter(modelName=model_name,
@@ -495,13 +500,15 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
 
     for rule in candidate_rules:
         all_fields = rule.uniquenessrulefield_set.all()
-        matching_fields = all_fields.filter(fieldPath__in=fields, isScope=False)
+        matching_fields = all_fields.filter(
+            fieldPath__in=fields, isScope=False)
         matching_scopes = all_fields.filter(fieldPath__in=scopes, isScope=True)
         # If the rule already exists, skip creating the rule
-        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
+        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
             return
 
-    logger.info(f"Creating uniqueness rule on {model_name} with fields {fields} and scopes {scopes} for the discipline {discipline.name if discipline else 'Global'}")
+    logger.info(
+        f"Creating uniqueness rule on {model_name} with fields {fields} and scopes {scopes} for the discipline {discipline.name if discipline else 'Global'}")
     rule = UniquenessRule.objects.create(
         discipline=discipline,
         modelName=model_name,
@@ -509,9 +516,12 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
     )
 
     for field in fields:
-        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=field, isScope=False)
+        UniquenessRuleField.objects.create(
+            uniquenessrule=rule, fieldPath=field, isScope=False)
     for scope in scopes:
-        UniquenessRuleField.objects.create(uniquenessrule=rule, fieldPath=scope, isScope=True)
+        UniquenessRuleField.objects.create(
+            uniquenessrule=rule, fieldPath=scope, isScope=True)
+
 
 def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
     UniquenessRule = registry.get_model(
@@ -525,12 +535,13 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
         modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
 
     rule_ids = []
-    for rule in candidate_rules: 
+    for rule in candidate_rules:
         all_fields = rule.uniquenessrulefield_set.all()
-        matching_fields = all_fields.filter(fieldPath__in=fields, isScope=False)
+        matching_fields = all_fields.filter(
+            fieldPath__in=fields, isScope=False)
         matching_scopes = all_fields.filter(fieldPath__in=scopes, isScope=True)
         # If the rule exists, add it to the list of rules to be deleted
-        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes): 
+        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
             rule_ids.append(rule.id)
 
     UniquenessRuleField.objects.filter(
@@ -544,9 +555,11 @@ scoped to discipline and instead be global
 """
 GLOBAL_RULE_FIELDS = ["division", 'institution']
 
+
 def rule_is_global(scopes: Iterable[str]) -> bool:
     return len(scopes) == 0 \
         or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
+
 
 def fix_global_default_rules(registry=None):
     UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') \

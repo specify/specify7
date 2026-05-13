@@ -1,6 +1,6 @@
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
-from specifyweb.backend.businessrules.utils import get_unique_catnum_across_comp_co_coll_pref
+from specifyweb.backend.businessrules.utils import get_cached_unique_catnum_across_comp_co_coll_pref
 from specifyweb.specify.models import Component
 
 @orm_signal_handler('pre_save', 'Collectionobject')
@@ -14,7 +14,7 @@ def collectionobject_pre_save(co):
     agent = co.createdbyagent
     if agent is not None and agent.specifyuser is not None:
 
-        unique_catnum_across_comp_co_coll_pref = get_unique_catnum_across_comp_co_coll_pref(co.collection, co.createdbyagent.specifyuser)
+        unique_catnum_across_comp_co_coll_pref = get_cached_unique_catnum_across_comp_co_coll_pref(co.collection, co.createdbyagent.specifyuser)
 
         if unique_catnum_across_comp_co_coll_pref: 
             if co.catalognumber is not None:

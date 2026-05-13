@@ -5,39 +5,53 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any
 
+from specifyweb.backend.cache.thread import ThreadCache
+
 logger = logging.getLogger(__name__)
 
-_unique_catnum_pref_cache: ContextVar[dict[tuple[int | None, int | None], bool] | None] = ContextVar(
-    "unique_catnum_pref_cache",
-    default=None,
+_unique_catnum_pref_cache = ThreadCache[tuple[int | None, int | None], bool](
+    ContextVar(
+        "unique_catnum_pref_cache",
+        default=None
+    )
 )
 
-_component_catnum_cache: ContextVar[dict[tuple[str, int | None], bool] | None] = ContextVar(
-    "component_catnum_cache",
-    default=None,
+_component_catnum_cache = ThreadCache[tuple[str, int | None], bool](
+    ContextVar(
+        "component_catnum_cache",
+        default=None,
+    )
 )
 
-_collection_default_type_cache: ContextVar[dict[int, int | None] | None] = ContextVar(
-    "collection_default_type_cache",
-    default=None,
+_collection_default_type_cache = ThreadCache[int, int | None](
+    ContextVar(
+        "collection_default_type_cache",
+        default=None,
+    )
 )
 
-_collection_cache: ContextVar[dict[int, Any] | None] = ContextVar(
-    "businessrules_collection_cache",
-    default=None,
+_collection_cache = ThreadCache[int, Any](
+    ContextVar(
+        "businessrules_collection_cache",
+        default=None,
+    )
 )
 
-_agent_specifyuser_cache: ContextVar[dict[int, Any | None] | None] = ContextVar(
-    "businessrules_agent_specifyuser_cache",
-    default=None,
+_agent_specifyuser_cache = ThreadCache[int, Any | None](
+    ContextVar(
+        "businessrules_agent_specifyuser_cache",
+        default=None,
+    )
 )
 
 _changed_field_names_attr = "_specify_changed_field_names"
 _missing = object()
 
+
 def _normalize_changed_field_name(field_name: str) -> str:
     field_name = field_name.lower()
     return field_name[:-3] if field_name.endswith("_id") else field_name
+
 
 def _field_path_match_names(field_name: str) -> set[str]:
     field_name = field_name.lower()
@@ -46,6 +60,7 @@ def _field_path_match_names(field_name: str) -> set[str]:
         _normalize_changed_field_name(field_name),
         _normalize_changed_field_name(first_part),
     }
+
 
 @contextmanager
 def track_changed_fields(instance, dirty_fields):
@@ -66,6 +81,7 @@ def track_changed_fields(instance, dirty_fields):
         else:
             setattr(instance, _changed_field_names_attr, previous)
 
+
 def changed_fields_include(instance, field_names) -> bool:
     changed_field_names = getattr(instance, _changed_field_names_attr, None)
     if changed_field_names is None:
@@ -78,94 +94,52 @@ def changed_fields_include(instance, field_names) -> bool:
     }
     return bool(changed_field_names & match_names)
 
+
 @contextmanager
 def cache_unique_catnum_preferences():
-    pref_token = _unique_catnum_pref_cache.set({})
-    component_token = _component_catnum_cache.set({})
-    default_type_token = _collection_default_type_cache.set({})
-    collection_token = _collection_cache.set({})
-    agent_user_token = _agent_specifyuser_cache.set({})
-    try:
+    with (
+        _unique_catnum_pref_cache.activate(),
+        _component_catnum_cache.activate(),
+        _collection_default_type_cache.activate(),
+        _collection_cache.activate(),
+        _agent_specifyuser_cache.activate()
+    ):
         yield
-    finally:
-        _agent_specifyuser_cache.reset(agent_user_token)
-        _collection_cache.reset(collection_token)
-        _collection_default_type_cache.reset(default_type_token)
-        _component_catnum_cache.reset(component_token)
-        _unique_catnum_pref_cache.reset(pref_token)
 
-def _get_collection(collection_id: int):
-    from specifyweb.specify.models import Collection
 
-    cache = _collection_cache.get()
-    if cache is None:
+def _get_cached_collection(collection_id: int):
+
+    def get_collection():
+        from specifyweb.specify.models import Collection
         return Collection.objects.get(id=collection_id)
 
-    if collection_id not in cache:
-        cache[collection_id] = Collection.objects.get(id=collection_id)
+    return _collection_cache.get_or_set(collection_id, get_collection)
 
-    return cache[collection_id]
 
 def _get_agent_specifyuser(agent_id: int):
-    from specifyweb.specify.models import Agent
 
-    cache = _agent_specifyuser_cache.get()
-    if cache is None:
-        return Agent.objects.select_related("specifyuser").get(id=agent_id).specifyuser
+    def get_specifyuser_from_agent():
+        from specifyweb.specify.models import Agent
+        return (Agent.objects
+                .select_related("specifyuser")
+                .get(id=agent_id)
+                .specifyuser)
 
-    if agent_id not in cache:
-        cache[agent_id] = (
-            Agent.objects
-            .select_related("specifyuser")
-            .get(id=agent_id)
-            .specifyuser
-        )
+    return _agent_specifyuser_cache.get_or_set(agent_id, get_specifyuser_from_agent)
 
-    return cache[agent_id]
 
-def get_default_collectionobjecttype_id(collection_or_id) -> int | None:
+def get_default_collectionobjecttype_id(collection_id: int) -> int | None:
     from specifyweb.specify.models import Collection
 
-    collection = None if isinstance(collection_or_id, int) else collection_or_id
-    collection_id = (
-        collection_or_id
-        if isinstance(collection_or_id, int)
-        else getattr(collection_or_id, "id", None)
-    )
-    if collection_id is None:
-        return getattr(collection, "collectionobjecttype_id", None)
-
-    cache = _collection_default_type_cache.get()
-    if cache is None:
-        if collection is not None:
-            return getattr(collection, "collectionobjecttype_id", None)
+    def get_cot_id_from_collection():
         return (
-            Collection.objects
-            .filter(id=collection_id)
+            Collection.objects.filter(id=collection_id)
             .values_list("collectionobjecttype_id", flat=True)
             .first()
         )
 
-    if collection_id not in cache:
-        if collection is not None:
-            cache[collection_id] = getattr(collection, "collectionobjecttype_id", None)
-        else:
-            cache[collection_id] = (
-                Collection.objects
-                .filter(id=collection_id)
-                .values_list("collectionobjecttype_id", flat=True)
-                .first()
-            )
+    return _collection_default_type_cache.get_or_set(collection_id, get_cot_id_from_collection)
 
-    return cache[collection_id]
-
-def component_catalog_number_cache_is_active() -> bool:
-    return _component_catnum_cache.get() is not None
-
-def clear_component_catalog_number_cache() -> None:
-    cache = _component_catnum_cache.get()
-    if cache is not None:
-        cache.clear()
 
 def component_catalog_number_exists(
     catalog_number: str | None,
@@ -176,59 +150,59 @@ def component_catalog_number_exists(
     if catalog_number is None:
         return False
 
+    def component_exists_with_catalog_number() -> bool:
+        query = Component.objects.filter(catalognumber=catalog_number)
+        if excluded_component_id is not None:
+            query = query.exclude(pk=excluded_component_id)
+        return query.exists()
+
     cache_key = (catalog_number, excluded_component_id)
-    cache = _component_catnum_cache.get()
-    if cache is not None and cache_key in cache:
-        return cache[cache_key]
+    return _component_catnum_cache.get_or_set(cache_key, component_exists_with_catalog_number)
 
-    query = Component.objects.filter(catalognumber=catalog_number)
-    if excluded_component_id is not None:
-        query = query.exclude(pk=excluded_component_id)
-    exists = query.exists()
 
-    if cache is not None:
-        cache[cache_key] = exists
-
-    return exists
-
-def get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
+def _get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     import specifyweb.backend.context.app_resource as app_resource
 
-    cache = _unique_catnum_pref_cache.get()
-    cache_key = (
-        getattr(collection, "id", None),
-        getattr(user, "id", None),
-    )
-    if cache is not None and cache_key in cache:
-        return cache[cache_key]
-
-    unique_catnum_enabled: bool = False
-
+    unique_catnum_enabled = False
     try:
-        collection_prefs_json, _, __ = app_resource.get_app_resource(collection, user, 'CollectionPreferences')
+        collection_prefs_json, _, __ = app_resource.get_app_resource(
+            collection, user, 'CollectionPreferences')
 
         if collection_prefs_json is not None:
             collection_prefs_dict = json.loads(collection_prefs_json)
 
-            unique_catalog_number_pref = collection_prefs_dict.get('uniqueCatalogNumberAccrossComponentAndCO', {})
+            unique_catalog_number_pref = collection_prefs_dict.get(
+                'uniqueCatalogNumberAccrossComponentAndCO', {})
             behavior = unique_catalog_number_pref.get('behavior', {}) \
                 if isinstance(unique_catalog_number_pref, dict) else {}
-            unique_catnum_enabled = behavior.get('uniqueness', False) if isinstance(behavior, dict) else False
+            unique_catnum_enabled = behavior.get(
+                'uniqueness', False) if isinstance(behavior, dict) else False
 
             if not isinstance(unique_catnum_enabled, bool):
                 unique_catnum_enabled = False
 
     except json.JSONDecodeError:
-        logger.warning(f"Error: Could not decode JSON for collection preferences")
+        logger.warning(
+            f"Error: Could not decode JSON for collection preferences")
     except TypeError as e:
-        logger.warning(f"Error: Unexpected data structure in collection preferences: {e}")
+        logger.warning(
+            f"Error: Unexpected data structure in collection preferences: {e}")
     except Exception as e:
         logger.warning(f"An unexpected error occurred: {e}")
-
-    if cache is not None:
-        cache[cache_key] = unique_catnum_enabled
-
     return unique_catnum_enabled
+
+
+def get_cached_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
+    cache_key = (
+        getattr(collection, "id", None),
+        getattr(user, "id", None),
+    )
+
+    def get_preference_value(): return _get_unique_catnum_across_comp_co_coll_pref(
+        collection, user)
+
+    return _unique_catnum_pref_cache.get_or_set(cache_key, get_preference_value)
+
 
 def get_unique_catnum_across_comp_co_coll_pref_by_ids(
     collection_id: int | None,
@@ -241,7 +215,7 @@ def get_unique_catnum_across_comp_co_coll_pref_by_ids(
     if user is None:
         return False
 
-    return get_unique_catnum_across_comp_co_coll_pref(
-        _get_collection(collection_id),
+    return get_cached_unique_catnum_across_comp_co_coll_pref(
+        _get_cached_collection(collection_id),
         user,
     )

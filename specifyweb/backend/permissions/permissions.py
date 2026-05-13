@@ -17,6 +17,7 @@ from django.db.models import Model
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
+from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
 
@@ -169,18 +170,19 @@ class QueryResult(NamedTuple):
     matching_user_policies: list
     matching_role_policies: list
 
-_permission_query_cache: ContextVar[dict[PermRequest, QueryResult] | None] = ContextVar(
-    "permission_query_cache",
-    default=None,
+_permission_query_cache = ThreadCache[PermRequest, QueryResult](
+    ContextVar(
+        "permission_query_cache",
+        default=None,
+    )
 )
 
 @contextmanager
 def cache_permission_queries():
-    token = _permission_query_cache.set({})
-    try:
+    with (
+        _permission_query_cache.activate()
+    ):
         yield
-    finally:
-        _permission_query_cache.reset(token)
 
 def query_pt(
     collectionid: int | None, userid: int, target: PermissionTargetAction
@@ -188,16 +190,8 @@ def query_pt(
     return query(collectionid, userid, target.resource(), target.action())
 
 
-def query(
-    collectionid: int | None, userid: int, resource: str, action: str
-) -> QueryResult:
-    request = PermRequest(collectionid, userid, resource, action)
-    cache = _permission_query_cache.get()
-    if cache is not None and request in cache:
-        return cache[request]
-
+def _get_spuser_policies(collectionid: int | None, userid: int, resource: str, action: str):
     cursor = connection.cursor()
-
     cursor.execute(
         """
     select collection_id, specifyuser_id, resource, action
@@ -219,7 +213,10 @@ def query(
         dict(zip(("collectionid", "userid", "resource", "action"), r))
         for r in cursor.fetchall()
     ]
+    return ups
 
+def _get_role_policies(collectionid: int | None, userid: int, resource: str, action: str):
+    cursor = connection.cursor()
     cursor.execute(
         """
     select r.id, r.name, resource, action
@@ -243,17 +240,34 @@ def query(
         dict(zip(("roleid", "rolename", "resource", "action"), r))
         for r in cursor.fetchall()
     ]
+    return rps
 
-    result = QueryResult(
-        allowed=bool(ups) or bool(rps),
-        matching_user_policies=ups,
-        matching_role_policies=rps,
-    )
+def query(
+    collectionid: int | None, userid: int, resource: str, action: str
+) -> QueryResult:
+    def get_query_result():
+        user_policies = _get_spuser_policies(
+            collectionid=collectionid,
+            userid=userid,
+            resource=resource,
+            action=action
+        )
 
-    if cache is not None:
-        cache[request] = result
+        role_policies = _get_role_policies(
+            collectionid=collectionid,
+            userid=userid,
+            resource=resource,
+            action=action
+        )
 
-    return result
+        return QueryResult(
+            allowed=(bool(user_policies) or bool(role_policies)),
+            matching_user_policies=user_policies,
+            matching_role_policies=role_policies
+        )
+
+    request = PermRequest(collectionid, userid, resource, action)
+    return _permission_query_cache.get_or_set(request, get_query_result)
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
