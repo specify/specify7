@@ -17,6 +17,7 @@ from specifyweb.specify.models import (
     Specifyuser,
     Collectionobject,
     Loan,
+    Loanpreparation,
     Deaccession,
     Accession,
     Collectionobjectgroupjoin,
@@ -110,21 +111,27 @@ def calculate_extra_fields(obj, data: dict[str, Any]) -> dict[str, Any]:
 
         extra["isMemberOfCOG"] = Collectionobjectgroupjoin.objects.filter(childco=obj).exists()
 
+
+     
+    elif isinstance(obj, Loanpreparation):  # ← Add this case
+        quantity_resolved = obj.quantityresolved or 0
+        quantity_returned = obj.quantityreturned or 0
+        total_quantity = obj.quantity or 0
+        
+        # Calculate isresolved - DON'T modify obj, just return the value
+        is_resolved = (
+            quantity_resolved >= total_quantity and 
+            quantity_returned >= total_quantity
+        )
+        
+        extra['isresolved'] = is_resolved
+
+
     elif isinstance(obj, Loan):
         preps = data["loanpreparations"]
         prep_count = len(preps)
         quantities = sum((prep.get('quantity') or 0) for prep in preps)
 
-#recalculate isresolved for each prep based on the current loan returns and resolved quantities
-        for prep in preps:
-            quantity_resolved = prep.get("quantityresolved") or 0
-            quantity_returned = prep.get("quantityreturned") or 0
-            total_quantity = prep.get("quantity") or 0
-
-            if quantity_resolved < total_quantity or quantity_returned < total_quantity:
-                prep["isresolved"] = False
-            else:
-                prep["isresolved"] = True
 
 
         unresolved_prep_count = sum(not prep["isresolved"] for prep in preps)
