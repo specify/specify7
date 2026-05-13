@@ -68,7 +68,7 @@ msgstr "No"
 #: components/Reports/Report.tsx:312
 #: components/Reports/index.tsx:142
 #: components/Router/UnloadProtect.tsx:26
-#: components/SearchDialog/SelectRecordSet.tsx:133
+#: components/SearchDialog/SelectRecordSet.tsx:130
 #: components/SearchDialog/index.tsx:240
 #: components/Security/ImportExport.tsx:81
 #: components/Security/MissingAgentsDialog.tsx:104
@@ -410,8 +410,8 @@ msgstr "Save"
 #: components/SchemaConfig/Languages.tsx:75
 #: components/SchemaConfig/Table.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:298
-#: components/SearchDialog/SelectRecordSet.tsx:135
-#: components/SearchDialog/SelectRecordSet.tsx:139
+#: components/SearchDialog/SelectRecordSet.tsx:132
+#: components/SearchDialog/SelectRecordSet.tsx:136
 #: components/Security/CollectionRole.tsx:207
 #: components/Security/Policies.tsx:184
 #: components/Statistics/Categories.tsx:285
@@ -774,7 +774,7 @@ msgstr "Descending"
 
 #: components/Header/menuItemDefinitions.ts:81
 #: components/Router/OverlayRoutes.tsx:146
-#: components/SearchDialog/SelectRecordSet.tsx:98
+#: components/SearchDialog/SelectRecordSet.tsx:95
 #: components/Security/registry.ts:214
 #: components/Toolbar/RecordSets.tsx:231
 #: components/Toolbar/RecordSets.tsx:258

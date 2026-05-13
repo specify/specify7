@@ -36,8 +36,8 @@ msgstr "Mover"
 #: components/Merging/index.tsx:365
 #: components/Merging/index.tsx:370
 #: components/Merging/index.tsx:373
-#: components/SearchDialog/SelectRecordSet.tsx:135
-#: components/SearchDialog/SelectRecordSet.tsx:139
+#: components/SearchDialog/SelectRecordSet.tsx:132
+#: components/SearchDialog/SelectRecordSet.tsx:136
 #: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:186
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
