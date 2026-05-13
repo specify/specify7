@@ -1,9 +1,10 @@
-
 import json
 import logging
 from contextlib import contextmanager
 from contextvars import ContextVar
 from typing import Any
+
+from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.backend.cache.thread import ThreadCache
 
@@ -211,11 +212,16 @@ def get_unique_catnum_across_comp_co_coll_pref_by_ids(
     if collection_id is None or agent_id is None:
         return False
 
-    user = _get_agent_specifyuser(agent_id)
+    try:
+        user = _get_agent_specifyuser(agent_id)
+        collection = _get_cached_collection(collection_id)
+    except ObjectDoesNotExist:
+        return False
+
     if user is None:
         return False
 
     return get_cached_unique_catnum_across_comp_co_coll_pref(
-        _get_cached_collection(collection_id),
+        collection,
         user,
     )
