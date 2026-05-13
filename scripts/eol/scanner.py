@@ -95,7 +95,7 @@ def detect_django():
         return None
 
     match = re.search(
-        r"(?i)^django\s*([<>=!~]=?)\s*([\d\.]+)",
+        r"(?i)^django\b\s*([<>=!~]=?)\s*([\d\.]+)",
         content,
         re.MULTILINE
     )
