@@ -4,28 +4,82 @@ from pathlib import Path
 
 
 def detect_node():
-    pkg = Path("package.json")
+    # Search for package.json files recursively
+    for pkg in Path(".").rglob("package.json"):
+        try:
+            data = json.loads(pkg.read_text())
+            engines = data.get("engines", {})
+            node = engines.get("node")
 
-    if not pkg.exists():
-        return None
+            if not node:
+                continue
 
-    try:
-        data = json.loads(pkg.read_text())
-        engines = data.get("engines", {})
-        node = engines.get("node")
+            m = re.search(r"(\d+)", node)
+            if m:
+                return f"{m.group(1)}.0"
+        except (json.JSONDecodeError, OSError, ValueError):
+            continue
 
-        if not node:
-            return None
-
-        m = re.search(r"(\d+)", node)
-        return f"{m.group(1)}.0" if m else None
-    except Exception:
-        return None
+    return None
 
 
 def detect_python():
-    if Path("pyproject.toml").exists() or Path("requirements.txt").exists():
-        return "3.12"
+    # Try pyproject.toml
+    pyproject = Path("pyproject.toml")
+    if pyproject.exists():
+        try:
+            content = pyproject.read_text()
+            # Look for requires-python in pyproject.toml
+            match = re.search(r'requires-python\s*=\s*["\']([^"\']+)["\']', content)
+            if match:
+                version_spec = match.group(1)
+                # Extract X.Y format from version specs like ">=3.12" or "^3.12"
+                version_match = re.search(r"(\d+)\.(\d+)", version_spec)
+                if version_match:
+                    return f"{version_match.group(1)}.{version_match.group(2)}"
+        except (OSError, ValueError):
+            pass
+
+    # Try .python-version
+    python_version = Path(".python-version")
+    if python_version.exists():
+        try:
+            content = python_version.read_text().strip()
+            # Extract X.Y format
+            match = re.search(r"^(\d+)\.(\d+)", content)
+            if match:
+                return f"{match.group(1)}.{match.group(2)}"
+        except OSError:
+            pass
+
+    # Try runtime.txt
+    runtime = Path("runtime.txt")
+    if runtime.exists():
+        try:
+            content = runtime.read_text().strip()
+            # Look for python-X.Y pattern
+            match = re.search(r"python-(\d+)\.(\d+)", content)
+            if match:
+                return f"{match.group(1)}.{match.group(2)}"
+        except OSError:
+            pass
+
+    # Try GitHub Actions workflows
+    workflows_dir = Path(".github/workflows")
+    if workflows_dir.exists():
+        try:
+            for workflow in workflows_dir.glob("*.yml"):
+                try:
+                    content = workflow.read_text()
+                    # Look for setup-python with python-version
+                    match = re.search(r"python-version:\s*[\"']?(\d+\.\d+)", content)
+                    if match:
+                        return match.group(1)
+                except OSError:
+                    continue
+        except OSError:
+            pass
+
     return None
 
 
