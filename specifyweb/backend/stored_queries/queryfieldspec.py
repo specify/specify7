@@ -243,7 +243,9 @@ class QueryFieldSpec(
 
         join_path = []
         node = root_table
-        for elem in path:
+        extracted_fieldname, date_part = extract_date_part(field_name)
+        path_elems = list(path)
+        for idx, elem in enumerate(path_elems):
             try:
                 tableid, fieldname = elem.split("-")
             except ValueError:
@@ -252,10 +254,17 @@ class QueryFieldSpec(
             field = (
                 node.get_field(fieldname) if fieldname else node.get_field(table.name)
             )
+            if (
+                is_relation
+                and idx == len(path_elems) - 1
+                and fieldname is not None
+                and isinstance(field, Relationship)
+                and field.name.lower() == extracted_fieldname.lower()
+            ):
+                break
             join_path.append(field)
             node = table
 
-        extracted_fieldname, date_part = extract_date_part(field_name)
         field = node.get_field(extracted_fieldname, strict=False)
 
         tree_rank_name = None
