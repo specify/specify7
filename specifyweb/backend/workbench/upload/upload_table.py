@@ -98,6 +98,13 @@ class BulkBatchEditContext:
             # Queuing only the current row would replay those writes in the wrong
             # order when the bulk_update flush happens at the end of the dataset.
             "Determination",
+            # Tree models have save() overrides for rank and parent-chain behavior.
+            "Taxon",
+            "Storage",
+            "Geography",
+            "Geologictimeperiod",
+            "Lithostrat",
+            "Tectonicunit",
         }
     )
 
@@ -1199,11 +1206,7 @@ class BoundUploadTable(NamedTuple):
         return _inserter
 
     def _do_picklist_additions(self) -> list[PicklistAddition]:
-        if (
-            self.auditor.bulk_context is not None
-            and any(parsedField.add_to_picklist is not None for parsedField in self.parsedFields)
-        ):
-            raise BulkBatchEditFallback("Picklist additions use the existing path.")
+        self._fallback_bulk_context_for_picklist_additions()
 
         added_picklist_items = []
         for parsedField in self.parsedFields:
@@ -1221,6 +1224,19 @@ class BoundUploadTable(NamedTuple):
                     )
                 )
         return added_picklist_items
+
+    def _has_picklist_additions(self) -> bool:
+        return any(
+            parsedField.add_to_picklist is not None
+            for parsedField in self.parsedFields
+        )
+
+    def _fallback_bulk_context_for_picklist_additions(self) -> None:
+        if (
+            self.auditor.bulk_context is not None
+            and self._has_picklist_additions()
+        ):
+            raise BulkBatchEditFallback("Picklist additions use the existing path.")
 
     def delete_row(self, parent_obj=None) -> UploadResult:
         if self.auditor.bulk_context is not None:
@@ -1465,12 +1481,13 @@ class BoundUpdateTable(BoundUploadTable):
                         )
                         picklist_additions = self._do_picklist_additions()
                 else:
+                    self._fallback_bulk_context_for_picklist_additions()
                     updated = self._do_update(
                         reference_record,
                         [*to_one_changes.values(), *concrete_field_changes.values()],
                         **attrs,
                     )
-                    picklist_additions = self._do_picklist_additions()
+                    picklist_additions = []
             except (BusinessRuleException, IntegrityError) as e:
                 return UploadResult(
                     FailedBusinessRule(str(e), {}, info), to_one_results, {}
