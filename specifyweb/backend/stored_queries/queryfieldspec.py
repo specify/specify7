@@ -45,6 +45,15 @@ PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
 }
 
+TREE_TABLE_NAMES = {
+    "geography",
+    "geologictimeperiod",
+    "lithostrat",
+    "storage",
+    "taxon",
+    "tectonicunit",
+}
+
 class SpQueryAttrs(TypedDict):
     tablelist: str
     stringid: str
@@ -257,7 +266,7 @@ class QueryFieldSpec(
             if (
                 is_relation
                 and idx == len(path_elems) - 1
-                and fieldname is not None
+                and (fieldname is not None or table.name.lower() in TREE_TABLE_NAMES)
                 and isinstance(field, Relationship)
                 and field.name.lower() == extracted_fieldname.lower()
             ):
