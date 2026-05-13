@@ -89,7 +89,10 @@ def detect_django():
     if not req_file.exists():
         return None
 
-    content = req_file.read_text()
+    try:
+        content = req_file.read_text()
+    except OSError:
+        return None
 
     match = re.search(
         r"(?i)^django\s*([<>=!~]=?)\s*([\d\.]+)",
