@@ -20,7 +20,13 @@ def get_eol_date(api_url: str, cycle: str):
     sys.exit(1)
 
 
-def calculate_days_remaining(eol_date: str) -> int:
-    today = datetime.date.today()
-    eol = datetime.datetime.strptime(eol_date, "%Y-%m-%d").date()
-    return (eol - today).days
+def calculate_days_remaining(eol_date: str):
+    if not isinstance(eol_date, str) or not eol_date or eol_date is False:
+        return None
+
+    try:
+        today = datetime.date.today()
+        eol = datetime.datetime.strptime(eol_date, "%Y-%m-%d").date()
+        return (eol - today).days
+    except ValueError:
+        return None
