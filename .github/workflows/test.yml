@@ -346,12 +346,20 @@ jobs:
           output=$(python -m scripts.eol.check_eol || true)
 
           echo "$output"
+          
+          echo "$output" > eol-output.txt
 
           {
             echo "output<<EOF"
             echo "$output"
             echo "EOF"
           } >> "$GITHUB_OUTPUT"
+      
+      - name: Upload EOL results
+        uses: actions/upload-artifact@v4
+        with:
+          name: eol-results
+          path: eol-output.txt
 
   eol-comment:
     name: Consolidated EOL comment
