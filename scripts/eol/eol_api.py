@@ -13,7 +13,7 @@ def get_eol_date(api_url: str, cycle: str):
         sys.exit(1)
 
     for release in response.json():
-        if release["cycle"] == cycle:
+        if str(release["cycle"]) == cycle:
             return release["eol"]
 
     print(f"ERROR: No EOL data found for cycle {cycle}")
