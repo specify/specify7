@@ -1113,7 +1113,7 @@ def run_batch_edit_query(props: BatchEditProps):
         else:
             # New field/column. Add it to the end of the dataset.
             visual_order_groups.append([index])
-            prev_group = len(visual_order_groups)-1
+            # prev_group = len(visual_order_groups)-1
         
         prev_duplicate_index = duplicate_index
 
