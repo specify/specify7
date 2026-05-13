@@ -1103,7 +1103,7 @@ def run_batch_edit_query(props: BatchEditProps):
         original_place = key[0]
         duplicate_index = key[1]
         if original_place < len(visible_fields):
-            if prev_duplicate_index is not None and duplicate_index > 1 and (duplicate_index == prev_duplicate_index or duplicate_index == prev_duplicate_index-1):
+            if prev_duplicate_index is not None and duplicate_index > 1 and (duplicate_index == prev_duplicate_index+1 or duplicate_index == prev_duplicate_index):
                 # There are duplicate columns, group them by record instead of original query order
                 # Columns are already grouped by record, just preserve the order if the dupe index is greater than the previous.
                 visual_order_groups[prev_group].append(index)
