@@ -26,7 +26,10 @@ def run_all(filter_product=None):
         eol_date = get_eol_date(runtime.api, version)
         days = calculate_days_remaining(eol_date)
 
-        status = "WARNING" if days < THRESHOLD_DAYS else "OK"
+        if days is None:
+            status = "UNKNOWN"
+        else:
+            status = "WARNING" if days < THRESHOLD_DAYS else "OK"
 
         print(f"STATUS={status}")
         print(f"{name.upper()}_VERSION={version}")

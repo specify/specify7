@@ -16,7 +16,7 @@ def detect_node():
 
             m = re.search(r"(\d+)", node)
             if m:
-                return f"{m.group(1)}.0"
+                return m.group(1)
         except (json.JSONDecodeError, OSError, ValueError):
             continue
 
