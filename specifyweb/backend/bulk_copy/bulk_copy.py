@@ -1,6 +1,6 @@
 import json
 
-from specifyweb.backend.permissions.permissions import cache_permission_queries, table_permissions_checker
+from specifyweb.backend.permissions.permissions import table_permissions_checker
 from django.http import (HttpResponse, HttpResponseNotAllowed)
 
 from specifyweb.specify.api.crud import post_resource
@@ -22,7 +22,6 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     with (
         cache_unique_catnum_preferences(),
         cache_uniqueness_rules(),
-        cache_permission_queries(),
     ):
         for _ in range(int(copies)):
             obj = post_resource(
@@ -52,7 +51,6 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
     with (
         cache_unique_catnum_preferences(),
         cache_uniqueness_rules(),
-        cache_permission_queries(),
     ):
         for obj_data in data:
             obj = post_resource(
