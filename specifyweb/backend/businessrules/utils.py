@@ -17,7 +17,7 @@ _unique_catnum_pref_cache = ThreadCache[tuple[int | None, int | None], bool](
     )
 )
 
-_component_catnum_cache = ThreadCache[tuple[str, int | None], bool](
+_component_catnum_cache = ThreadCache[tuple[str, int | None, int | None], bool](
     ContextVar(
         "component_catnum_cache",
         default=None,
@@ -145,6 +145,7 @@ def get_default_collectionobjecttype_id(collection_id: int) -> int | None:
 def component_catalog_number_exists(
     catalog_number: str | None,
     excluded_component_id: int | None = None,
+    collection_id: int | None = None,
 ) -> bool:
     from specifyweb.specify.models import Component
 
@@ -153,11 +154,13 @@ def component_catalog_number_exists(
 
     def component_exists_with_catalog_number() -> bool:
         query = Component.objects.filter(catalognumber=catalog_number)
+        if collection_id is not None:
+            query = query.filter(collectionobject__collection_id=collection_id)
         if excluded_component_id is not None:
             query = query.exclude(pk=excluded_component_id)
         return query.exists()
 
-    cache_key = (catalog_number, excluded_component_id)
+    cache_key = (catalog_number, excluded_component_id, collection_id)
     return _component_catnum_cache.get_or_set(cache_key, component_exists_with_catalog_number)
 
 

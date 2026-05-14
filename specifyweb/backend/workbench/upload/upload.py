@@ -336,7 +336,7 @@ def do_upload(
     )
     if should_try_bulk_batch_edit:
         try:
-            return _do_upload_impl(
+            results = _do_upload_impl(
                 collection,
                 rows,
                 upload_plan,
@@ -344,11 +344,14 @@ def do_upload(
                 disambiguations,
                 no_commit,
                 allow_partial,
-                progress,
+                None,
                 batch_edit_packs,
                 auditor_props,
                 use_bulk_batch_edit=True,
             )
+            if progress is not None:
+                progress(len(results), len(rows))
+            return results
         except BulkBatchEditFallback as e:
             logger.info("falling back to row-by-row Batch Edit upload: %s", e)
 

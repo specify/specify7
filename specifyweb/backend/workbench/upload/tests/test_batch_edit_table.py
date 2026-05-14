@@ -81,6 +81,36 @@ class UpdateTests(UploadTestsBase):
         validate(plan_json, schema)
         return parse_plan(plan_json)
 
+    def make_picklist_for_text1(self):
+        container = get_table("Splocalecontainer").objects.create(
+            name="collectionobject",
+            schematype=0,
+            discipline=self.discipline,
+            ishidden=False,
+            issystem=False,
+        )
+        container.items.create(
+            name="text1",
+            ishidden=False,
+            issystem=False,
+            picklistname="Habitat",
+            isrequired=False,
+        )
+        container.items.create(
+            name="catalognumber",
+            ishidden=False,
+            issystem=False,
+            isrequired=True,
+        )
+        habitat = get_table("Picklist").objects.create(
+            name="Habitat",
+            type=0,
+            collection=self.collection,
+            readonly=False,
+        )
+        habitat.picklistitems.create(title="Marsh", value="marsh")
+        return habitat
+
     def test_bulk_batch_edit_preserves_update_metadata_and_audit(self):
         plan = self.make_basic_update_plan()
         records = [
@@ -164,34 +194,7 @@ class UpdateTests(UploadTestsBase):
         self.assertFalse(lookup_in_auditlog("Collectionobject", records[1].id).exists())
 
     def test_bulk_batch_edit_picklist_addition_falls_back_before_queueing(self):
-        container = get_table("Splocalecontainer").objects.create(
-            name="collectionobject",
-            schematype=0,
-            discipline=self.discipline,
-            ishidden=False,
-            issystem=False,
-        )
-        container.items.create(
-            name="text1",
-            ishidden=False,
-            issystem=False,
-            picklistname="Habitat",
-            isrequired=False,
-        )
-        container.items.create(
-            name="catalognumber",
-            ishidden=False,
-            issystem=False,
-            isrequired=True,
-        )
-        habitat = get_table("Picklist").objects.create(
-            name="Habitat",
-            type=0,
-            collection=self.collection,
-            readonly=False,
-        )
-        habitat.picklistitems.create(title="Marsh", value="marsh")
-
+        habitat = self.make_picklist_for_text1()
         plan = UploadTable(
             name="Collectionobject",
             wbcols={
@@ -248,6 +251,60 @@ class UpdateTests(UploadTestsBase):
                 value="River",
             ).exists()
         )
+
+    def test_bulk_batch_edit_fallback_suppresses_tentative_progress(self):
+        self.make_picklist_for_text1()
+        plan = UploadTable(
+            name="Collectionobject",
+            wbcols={
+                "catalognumber": parse_column_options("catno"),
+                "remarks": parse_column_options("remarks"),
+                "text1": parse_column_options("habitat"),
+            },
+            overrideScope=None,
+            static={},
+            toOne={},
+            toMany={},
+        )
+        records = [
+            get_table("Collectionobject").objects.create(
+                catalognumber=str(number).rjust(9, "0"),
+                remarks=remarks,
+                text1="marsh",
+                collection=self.collection,
+            )
+            for number, remarks in (
+                (1, "Original one"),
+                (2, "Original two"),
+            )
+        ]
+        progress_calls = []
+
+        results = do_upload(
+            self.collection,
+            [
+                {"catno": "1", "remarks": "Changed one", "habitat": "marsh"},
+                {"catno": "2", "remarks": "Original two", "habitat": "River"},
+            ],
+            plan,
+            self.agent.id,
+            batch_edit_packs=[
+                {
+                    "self": {
+                        "id": record.id,
+                        "version": record.version,
+                        "ordernumber": None,
+                    }
+                }
+                for record in records
+            ],
+            allow_partial=False,
+            progress=lambda current, total: progress_calls.append((current, total)),
+        )
+
+        self.assertEqual(progress_calls, [(1, 2), (2, 2)])
+        self.assertIsInstance(results[0].record_result, Updated)
+        self.assertIsInstance(results[1].record_result, Updated)
 
     def test_bulk_batch_edit_tree_models_fallback_before_mutation(self):
         taxon = get_table("Taxon").objects.create(

@@ -181,9 +181,8 @@ def _fetch_uniquenessrules_for_cache(registry, model_name) -> list[CachedUniquen
         )
         scope = scope_fields[0] if scope_fields else None
         all_fields = (
-            (*field_names, scope.lower())
-            if scope is not None
-            else field_names
+            *field_names,
+            *(scope_field.lower() for scope_field in scope_fields),
         )
         cached_rules.append(
             CachedUniquenessRule(
@@ -512,12 +511,12 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
                                                     discipline=discipline)
 
     for rule in candidate_rules:
-        all_fields = rule.uniquenessrulefield_set.all()
-        matching_fields = all_fields.filter(
-            fieldPath__in=fields, isScope=False)
-        matching_scopes = all_fields.filter(fieldPath__in=scopes, isScope=True)
         # If the rule already exists, skip creating the rule
-        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
+        if _rule_fields_exactly_match(
+            rule.uniquenessrulefield_set.all(),
+            fields,
+            scopes,
+        ):
             return
 
     logger.info(
@@ -549,17 +548,33 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
 
     rule_ids = []
     for rule in candidate_rules:
-        all_fields = rule.uniquenessrulefield_set.all()
-        matching_fields = all_fields.filter(
-            fieldPath__in=fields, isScope=False)
-        matching_scopes = all_fields.filter(fieldPath__in=scopes, isScope=True)
         # If the rule exists, add it to the list of rules to be deleted
-        if len(matching_fields) == len(fields) and len(matching_scopes) == len(scopes):
+        if _rule_fields_exactly_match(
+            rule.uniquenessrulefield_set.all(),
+            fields,
+            scopes,
+        ):
             rule_ids.append(rule.id)
 
     UniquenessRuleField.objects.filter(
         uniquenessrule__id__in=rule_ids).delete()
     UniquenessRule.objects.filter(id__in=rule_ids).delete()
+
+
+def _rule_fields_exactly_match(rule_fields, fields, scopes) -> bool:
+    return (
+        rule_fields.count() == len(set(fields)) + len(set(scopes))
+        and set(
+            rule_fields
+            .filter(fieldPath__in=fields, isScope=False)
+            .values_list("fieldPath", flat=True)
+        ) == set(fields)
+        and set(
+            rule_fields
+            .filter(fieldPath__in=scopes, isScope=True)
+            .values_list("fieldPath", flat=True)
+        ) == set(scopes)
+    )
 
 
 """If a uniqueness rule has a scope which traverses through a hiearchy 
