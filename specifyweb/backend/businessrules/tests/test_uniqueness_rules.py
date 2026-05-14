@@ -1,13 +1,42 @@
 import json
+from unittest.mock import patch
 
 from django.test import Client
 
+from specifyweb.backend.businessrules import uniqueness_rules
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
 class UniquenessTests(ApiTests):
+    def test_migration_cache_rechecks_until_migration_is_seen(self):
+        original_seen = uniqueness_rules._businessrules_initial_migration_seen
+        uniqueness_rules._businessrules_initial_migration_seen = False
+        try:
+            with (
+                uniqueness_rules._uniqueness_migration_cache.activate(),
+                patch.object(
+                    uniqueness_rules,
+                    "_initial_businessrules_migration_applied",
+                    side_effect=[False, True],
+                ) as migration_applied,
+            ):
+                self.assertFalse(
+                    uniqueness_rules._cached_businessrules_migration_applied()
+                )
+                self.assertTrue(
+                    uniqueness_rules._cached_businessrules_migration_applied()
+                )
+                self.assertEqual(migration_applied.call_count, 2)
+
+                self.assertTrue(
+                    uniqueness_rules._cached_businessrules_migration_applied()
+                )
+                self.assertEqual(migration_applied.call_count, 2)
+        finally:
+            uniqueness_rules._businessrules_initial_migration_seen = original_seen
+
     def test_simple_validation(self):
         c = Client()
         c.force_login(self.specifyuser)
