@@ -75,6 +75,7 @@ _collection_discipline_cache = ThreadCache[int, int | None](
     )
 )
 
+_businessrules_initial_migration_seen = False
 
 @contextmanager
 def cache_uniqueness_rules():
@@ -144,8 +145,20 @@ def _initial_businessrules_migration_applied():
 
 
 def _cached_businessrules_migration_applied() -> bool:
+    global _businessrules_initial_migration_seen
+    if _businessrules_initial_migration_seen:
+        return True
+
     cache_key = "default"
-    return _uniqueness_migration_cache.get_or_set(cache_key, _initial_businessrules_migration_applied)
+    _, cached = _uniqueness_migration_cache.get(cache_key)
+    if cached is True:
+        return True
+
+    applied = _initial_businessrules_migration_applied()
+    if applied:
+        _businessrules_initial_migration_seen = True
+        _uniqueness_migration_cache.set(cache_key, True)
+    return applied
 
 
 def _fetch_uniquenessrules_for_cache(registry, model_name) -> list[CachedUniquenessRule]:
