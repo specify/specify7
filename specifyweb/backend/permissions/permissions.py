@@ -5,8 +5,6 @@ from typing import (
 )
 from collections.abc import Callable
 from collections.abc import Iterable
-from contextlib import contextmanager
-from contextvars import ContextVar
 
 import logging
 
@@ -17,7 +15,6 @@ from django.db.models import Model
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
-from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
 
@@ -170,20 +167,6 @@ class QueryResult(NamedTuple):
     matching_user_policies: list
     matching_role_policies: list
 
-_permission_query_cache = ThreadCache[PermRequest, QueryResult](
-    ContextVar(
-        "permission_query_cache",
-        default=None,
-    )
-)
-
-@contextmanager
-def cache_permission_queries():
-    with (
-        _permission_query_cache.activate()
-    ):
-        yield
-
 def query_pt(
     collectionid: int | None, userid: int, target: PermissionTargetAction
 ) -> QueryResult:
@@ -266,8 +249,7 @@ def query(
             matching_role_policies=role_policies
         )
 
-    request = PermRequest(collectionid, userid, resource, action)
-    return _permission_query_cache.get_or_set(request, get_query_result)
+    return get_query_result()
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
