@@ -4,9 +4,7 @@ from django.http import (HttpResponse, HttpResponseBadRequest, HttpResponseNotAl
 from django.core.exceptions import FieldError
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
-from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
-from specifyweb.backend.permissions.permissions import cache_permission_queries, enforce, table_permissions_checker
+from specifyweb.backend.permissions.permissions import enforce, table_permissions_checker
 from specifyweb.specify.api.crud import apply_filters, delete_resource, get_collection, get_resource, post_resource, put_resource
 from specifyweb.specify.api.exceptions import FilterError, OrderByError
 from specifyweb.specify.api.filter_by_col import filter_by_collection
