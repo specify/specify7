@@ -15,7 +15,7 @@ from typing import Any, Optional, cast
 from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
 from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
 from specifyweb.backend.context.remote_prefs import cache_remote_preferences
-from specifyweb.backend.permissions.permissions import has_target_permission
+from specifyweb.backend.permissions.permissions import has_target_permission, cache_permission_queries
 from specifyweb.specify import models
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
@@ -409,7 +409,8 @@ def _do_upload_impl(
         savepoint("main upload"),
         cache_unique_catnum_preferences(),
         cache_uniqueness_rules(),
-        cache_remote_preferences()
+        cache_remote_preferences(),
+        cache_permission_queries()
     ):
         tic = time.perf_counter()
         results: list[UploadResult] = []
