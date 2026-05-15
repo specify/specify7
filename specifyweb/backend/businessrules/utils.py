@@ -167,9 +167,12 @@ def component_catalog_number_exists(
 def _get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     import specifyweb.backend.context.app_resource as app_resource
 
-    collection_prefs_json, _, __ = app_resource.get_app_resource(
+    collection_prefs = app_resource.get_app_resource(
         collection, user, 'CollectionPreferences')
+    if collection_prefs is None:
+        return False
 
+    collection_prefs_json, _, __ = collection_prefs
     if collection_prefs_json is None:
         return False
 
