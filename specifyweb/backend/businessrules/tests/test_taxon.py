@@ -371,9 +371,8 @@ class TaxonTests(ApiTests):
             definitionitem=kingdom
         )
 
-        child = self.roottaxon.children.create(
+        child = parent.children.create(
             name="Child",
-            parent=parent,
             definition=self.taxontreedef,
             definitionitem=kingdom
         )
