@@ -10,14 +10,14 @@ from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
-from specifyweb.specify.models_utils.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
+from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
-from specifyweb.specify.models_utils.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -46,12 +46,7 @@ PRECALCULATED_FIELDS = {
 }
 
 TREE_TABLE_NAMES = {
-    "geography",
-    "geologictimeperiod",
-    "lithostrat",
-    "storage",
-    "taxon",
-    "tectonicunit",
+    table.name.lower() for table in datamodel.tables if is_tree_table(table)
 }
 
 class SpQueryAttrs(TypedDict):
