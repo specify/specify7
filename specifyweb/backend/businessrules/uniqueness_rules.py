@@ -276,6 +276,7 @@ def validate_unique(model, instance):
     for rule in _get_uniqueness_rule_configs(registry, model_name):
         if (
             instance.pk is not None
+            and rule.is_global
             and not changed_fields_include(instance, rule.all_fields)
         ):
             continue
