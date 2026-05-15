@@ -167,33 +167,44 @@ def component_catalog_number_exists(
 def _get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     import specifyweb.backend.context.app_resource as app_resource
 
-    unique_catnum_enabled = False
+    collection_prefs_json, _, __ = app_resource.get_app_resource(
+        collection, user, 'CollectionPreferences')
+
+    if collection_prefs_json is None:
+        return False
+
     try:
-        collection_prefs_json, _, __ = app_resource.get_app_resource(
-            collection, user, 'CollectionPreferences')
-
-        if collection_prefs_json is not None:
-            collection_prefs_dict = json.loads(collection_prefs_json)
-
-            unique_catalog_number_pref = collection_prefs_dict.get(
-                'uniqueCatalogNumberAccrossComponentAndCO', {})
-            behavior = unique_catalog_number_pref.get('behavior', {}) \
-                if isinstance(unique_catalog_number_pref, dict) else {}
-            unique_catnum_enabled = behavior.get(
-                'uniqueness', False) if isinstance(behavior, dict) else False
-
-            if not isinstance(unique_catnum_enabled, bool):
-                unique_catnum_enabled = False
-
-    except json.JSONDecodeError:
+        collection_prefs_dict = json.loads(collection_prefs_json)
+    except (TypeError, ValueError) as e:
         logger.warning(
-            f"Error: Could not decode JSON for collection preferences")
-    except TypeError as e:
+            "Invalid CollectionPreferences JSON while resolving catalog number "
+            "uniqueness preference for collection %s and user %s: %s",
+            getattr(collection, "id", None),
+            getattr(user, "id", None),
+            e,
+        )
+        return False
+
+    if not isinstance(collection_prefs_dict, dict):
         logger.warning(
-            f"Error: Unexpected data structure in collection preferences: {e}")
-    except Exception as e:
-        logger.warning(f"An unexpected error occurred: {e}")
-    return unique_catnum_enabled
+            "Invalid CollectionPreferences shape while resolving catalog number "
+            "uniqueness preference for collection %s and user %s",
+            getattr(collection, "id", None),
+            getattr(user, "id", None),
+        )
+        return False
+
+    unique_catalog_number_pref = collection_prefs_dict.get(
+        'uniqueCatalogNumberAccrossComponentAndCO', {})
+    if not isinstance(unique_catalog_number_pref, dict):
+        return False
+
+    behavior = unique_catalog_number_pref.get('behavior', {})
+    if not isinstance(behavior, dict):
+        return False
+
+    unique_catnum_enabled = behavior.get('uniqueness', False)
+    return unique_catnum_enabled if isinstance(unique_catnum_enabled, bool) else False
 
 
 def get_cached_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
