@@ -4,10 +4,6 @@ import logging
 import time
 from contextlib import contextmanager
 from datetime import datetime, timezone
-from typing import (
-    Callable,
-    Sized,
-)
 from collections.abc import Callable
 from collections.abc import Sized
 
@@ -328,11 +324,12 @@ def do_upload(
     batch_edit_packs: list[BatchEditJson | None] | None = None,
     auditor_props: AuditorProps | None = None,
 ) -> list[UploadResult]:
+    bulk_batch_edit_total = len(rows) if isinstance(rows, Sized) else None
     should_try_bulk_batch_edit = (
         batch_edit_packs is not None
         and not no_commit
         and not allow_partial
-        and isinstance(rows, Sized)
+        and bulk_batch_edit_total is not None
     )
     if should_try_bulk_batch_edit:
         try:
@@ -350,7 +347,7 @@ def do_upload(
                 use_bulk_batch_edit=True,
             )
             if progress is not None:
-                progress(len(results), len(rows))
+                progress(len(results), bulk_batch_edit_total)
             return results
         except BulkBatchEditFallback as e:
             logger.info("falling back to row-by-row Batch Edit upload: %s", e)
