@@ -8,6 +8,7 @@ from specifyweb.specify.api.dispatch import HttpResponseCreated
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
 from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
+from specifyweb.backend.context.remote_prefs import cache_remote_preferences
 
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
@@ -22,6 +23,7 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     with (
         cache_unique_catnum_preferences(),
         cache_uniqueness_rules(),
+        cache_remote_preferences()
     ):
         for _ in range(int(copies)):
             obj = post_resource(
@@ -51,6 +53,7 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
     with (
         cache_unique_catnum_preferences(),
         cache_uniqueness_rules(),
+        cache_remote_preferences()
     ):
         for obj_data in data:
             obj = post_resource(
