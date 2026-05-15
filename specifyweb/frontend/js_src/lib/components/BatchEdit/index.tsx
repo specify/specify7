@@ -46,6 +46,7 @@ type TreeDefsFilter =
 
 type BatchEditFromQueryBodyProps = {
   readonly query: SerializedRecord<SpQuery> | SpecifyResource<SpQuery>;
+  readonly limit: number;
   readonly fields: RA<QueryField>;
   readonly baseTableName: keyof Tables;
   readonly dataSetName: string;
@@ -56,6 +57,7 @@ type BatchEditFromQueryBodyProps = {
 
 export const buildBatchEditFromQueryBody = ({
   query,
+  limit,
   fields,
   baseTableName,
   dataSetName,
@@ -72,7 +74,7 @@ export const buildBatchEditFromQueryBody = ({
       ),
     name: dataSetName,
     recordSetId,
-    limit: 0,
+    limit,
     treeDefsFilter,
     omitRelationships: !hasRelationships,
   });
@@ -109,6 +111,7 @@ export function BatchEditFromQuery({
         dataSetName,
         recordSetId,
         treeDefsFilter,
+        limit: userPreferences.get('batchEdit', 'query', 'limit'),
         hasRelationships,
       }),
     });
