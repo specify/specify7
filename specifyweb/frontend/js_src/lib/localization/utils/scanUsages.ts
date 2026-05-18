@@ -143,6 +143,7 @@ export async function scanUsages(
 ): Promise<DictionaryUsages | undefined> {
   const debug = mode === 'verbose' ? console.log : () => undefined;
   const warn = mode === 'silent' ? () => undefined : globalWarn;
+  const warnDuplicateValues = mode === 'verbose' ? warn : () => undefined;
 
   const entries = await extractStrings();
 
@@ -247,6 +248,16 @@ export async function scanUsages(
     extensionsToScan.has(fileName.split('.').at(-1)!)
   );
 
+  const expressSearchConfigKeysAreDynamicallyUsed = sourceFiles.some(
+    (filePath) => {
+      const fileContent = fs.readFileSync(filePath).toString();
+      return (
+        fileContent.includes('getExpressSearchQueryTitle(') ||
+        fileContent.includes('getExpressSearchQueryDescription(')
+      );
+    }
+  );
+
   debug('Looking for usages of strings');
   sourceFiles.forEach((filePath) => {
     const shortPath = filePath.slice(
@@ -287,8 +298,20 @@ export async function scanUsages(
             ].join('')
           );
 
-        // Matched an import statement (i.e, import { commonText } from ...)
-        if (followingCharacter === '}') return;
+        // Matched an import/export destructuring pattern or object destructuring
+        if (
+          followingCharacter === '}' ||
+          followingCharacter === ',' ||
+          followingCharacter === ':'
+        )
+          return;
+        // Matched a dictionary identifier in a string literal, expression, or comparison
+        if (
+          /\s/u.test(followingCharacter) ||
+          followingCharacter === '"' ||
+          followingCharacter === "'"
+        )
+          return;
         // Matched the declaration of a dictionary (i.e, const commonText = ...)
         if (followingCharacter === '=') return;
         // Matched a comment (i.e, // dictionaryText \n someOtherLine)
@@ -320,15 +343,30 @@ export async function scanUsages(
           return;
         }
 
+        let isTypeAssertionFunctionCall = false;
+        let typeAssertionHasArguments = false;
         if (groups.openBracket !== '(') {
-          report(
-            `Unexpected usage of a ${dictionaryName}.${keyName} key\n`,
-            `Expected a function call (i.e ${dictionaryName}.${keyName}()`
+          const afterKey = fileContent.slice(
+            index + dictionaryName.length + 1 + keyName.length,
+            index + dictionaryName.length + 1 + keyName.length + 300
           );
-          return;
+          if (/^\s*as\b/u.test(afterKey) && /\)\s*\(/u.test(afterKey)) {
+            isTypeAssertionFunctionCall = true;
+            const callMatch = afterKey.match(/\)\s*\(\s*([^)]*)\)/u);
+            typeAssertionHasArguments =
+              callMatch !== null && callMatch[1].trim().length > 0;
+          } else {
+            report(
+              `Unexpected usage of a ${dictionaryName}.${keyName} key\n`,
+              `Expected a function call (i.e ${dictionaryName}.${keyName}()`
+            );
+            return;
+          }
         }
 
-        const hasArguments = groups.followCharacter !== ')';
+        const hasArguments = isTypeAssertionFunctionCall
+          ? typeAssertionHasArguments
+          : groups.followCharacter !== ')';
         const expectsArguments =
           strings[keyName].strings[DEFAULT_LANGUAGE]?.includes('}') ?? false;
 
@@ -345,7 +383,11 @@ export async function scanUsages(
             );
         }
 
-        if (groups.followCharacter !== ')' && groups.followCharacter !== '{')
+        if (
+          !isTypeAssertionFunctionCall &&
+          groups.followCharacter !== ')' &&
+          groups.followCharacter !== '{'
+        )
           report(
             `Unexpected argument for ${dictionaryName}.${keyName}. Argument must `,
             `be an object. Don't use positional arguments`
@@ -404,7 +446,7 @@ export async function scanUsages(
     Object.entries(valueDictionary ?? {})
       .filter(([_valueString, instances]) => instances.length > 1)
       .forEach(([valueString, instances]) => {
-        warn(
+        warnDuplicateValues(
           [
             'Multiple instances of the same value were found for language ',
             `${language} in:\n`,
@@ -423,9 +465,15 @@ export async function scanUsages(
   Object.entries(dictionaries).forEach(([dictionaryName, { strings }]) =>
     Object.entries(strings)
       .filter(([_keyName, { usages }]) => usages.length === 0)
-      .forEach(([keyName]) =>
-        error(`No usages of ${dictionaryName}.${keyName} found`)
-      )
+      .forEach(([keyName]) => {
+        if (
+          dictionaryName === 'expressSearchConfigText' &&
+          expressSearchConfigKeysAreDynamicallyUsed
+        )
+          return;
+
+        error(`No usages of ${dictionaryName}.${keyName} found`);
+      })
   );
 
   // Output stats

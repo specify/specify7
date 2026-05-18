@@ -8,12 +8,10 @@ from functools import lru_cache
 from pathlib import Path
 
 
-from django.db.models import Q, Count, Window, F
+from django.db.models import Q, Count
 from django.conf import settings
 from django.apps import apps as global_apps
-from django.core.exceptions import MultipleObjectsReturned
 from django.db import connection, transaction
-from django.db.models.functions import RowNumber
 
 from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
 
@@ -265,6 +263,62 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
 
     return total_created
 
+def _lock_schema_config_discipline(apps, discipline_id: int) -> None:
+    DisciplineModel = apps.get_model('specify', 'Discipline')
+    DisciplineModel.objects.select_for_update().get(id=discipline_id)
+
+def _get_or_create_schema_config_row(model, attrs: dict, defaults: dict | None = None):
+    row = model.objects.filter(**attrs).order_by("id").first()
+    if row is not None:
+        return row, False
+    return model.objects.create(**{**attrs, **(defaults or {})}), True
+
+def _locale_string_key(row) -> tuple[str, str, str]:
+    return (
+        row.language,
+        row.country or "",
+        row.variant or "",
+    )
+
+def _repoint_unique_locale_strings(
+    ItemStr,
+    fk_field: str,
+    source_ids: list[int],
+    target_id: int,
+) -> None:
+    if len(source_ids) == 0:
+        return
+
+    fk_id_field = f"{fk_field}_id"
+    existing_keys = {
+        _locale_string_key(row)
+        for row in ItemStr.objects.filter(**{fk_id_field: target_id}).only(
+            "language",
+            "country",
+            "variant",
+        )
+    }
+
+    ids_to_update: list[int] = []
+    ids_to_delete: list[int] = []
+    for row in ItemStr.objects.filter(
+        **{f"{fk_id_field}__in": source_ids}
+    ).only("id", "language", "country", "variant").order_by("id"):
+        key = _locale_string_key(row)
+        if key in existing_keys:
+            ids_to_delete.append(row.id)
+        else:
+            existing_keys.add(key)
+            ids_to_update.append(row.id)
+
+    if ids_to_delete:
+        ItemStr.objects.filter(id__in=ids_to_delete).delete()
+
+    if ids_to_update:
+        ItemStr.objects.filter(id__in=ids_to_update).update(
+            **{fk_id_field: target_id}
+        )
+
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
@@ -305,20 +359,29 @@ def update_table_schema_config_with_defaults(
             language="en",
         )
 
-        sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
-            name=table_config.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-            ishidden=False,
-            issystem=table.system,
-            version=0,
-        )
+        container_attrs = {
+            "name": table_config.name.lower(),
+            "discipline_id": discipline_id,
+            "schematype": table_config.schema_type,
+        }
 
-        if Splocalecontaineritem.objects.filter(
-            container=sp_local_container,
-            name=table_config.name.lower(),
-        ).exists():
-            return
+        with transaction.atomic():
+            _lock_schema_config_discipline(apps, discipline_id)
+            sp_local_container, _ = _get_or_create_schema_config_row(
+                Splocalecontainer,
+                container_attrs,
+                {
+                    "ishidden": False,
+                    "issystem": table.system,
+                    "version": 0,
+                },
+            )
+
+            if Splocalecontaineritem.objects.filter(
+                container=sp_local_container,
+                name=table_config.name.lower(),
+            ).exists():
+                return
 
         item_str_rows = []
         for k, text in {
@@ -337,6 +400,8 @@ def update_table_schema_config_with_defaults(
         pending_itemstr_rows.extend(item_str_rows)
 
         for field in table.all_fields:
+            if field is table.idField:
+                continue
             field_defaults = None
             if table_defaults.get('items'):
                 field_defaults = table_defaults['items'].get(field.name.lower())
@@ -400,19 +465,6 @@ def update_table_field_schema_config_with_defaults(
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     try:
-        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-        )
-    except MultipleObjectsReturned:
-        sp_local_container = Splocalecontainer.objects.filter(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type
-        ).first()
-
-    try:
         field = table.get_field_strict(field_name)
     except FieldDoesNotExistError:
         if field_name in {'parentCog', 'parentCO', 'children', 'componentParent', 'components'}:
@@ -448,16 +500,33 @@ def update_table_field_schema_config_with_defaults(
         language="en"
     )
 
-    sp_local_container_item, _ = Splocalecontaineritem.objects.get_or_create(
-        name=field_config.name,
-        container=sp_local_container,
-        type=field_config.java_type,
-        ishidden=field_hidden,
-        isrequired=field_required,
-        issystem=table.system,
-        version=0,
-        picklistname=picklist_name
-    )
+    container_attrs = {
+        "name": table.name.lower(),
+        "discipline_id": discipline_id,
+        "schematype": table_config.schema_type,
+    }
+
+    with transaction.atomic():
+        _lock_schema_config_discipline(apps, discipline_id)
+        sp_local_container, _ = _get_or_create_schema_config_row(
+            Splocalecontainer,
+            container_attrs,
+        )
+        sp_locale_container_item, _ = _get_or_create_schema_config_row(
+            Splocalecontaineritem,
+            {
+                "name": field_config.name,
+                "container": sp_local_container,
+            },
+            {
+                "type": field_config.java_type,
+                "ishidden": field_hidden,
+                "isrequired": field_required,
+                "issystem": table.system,
+                "version": 0,
+                "picklistname": picklist_name,
+            },
+        )
 
     itm_str_rows = []
     for k, text in {
@@ -468,7 +537,7 @@ def update_table_field_schema_config_with_defaults(
             "text": text,
             "language": "en",
             "version": 0,
-            k: sp_local_container_item,
+            k: sp_locale_container_item,
         }
         itm_str_rows.append(row)
 
@@ -514,18 +583,16 @@ def update_table_field_schema_config_params(
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    try:
-        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
+    with transaction.atomic():
+        _lock_schema_config_discipline(apps, discipline_id)
+        sp_local_container, _ = _get_or_create_schema_config_row(
+            Splocalecontainer,
+            {
+                "name": table.name.lower(),
+                "discipline_id": discipline_id,
+                "schematype": table_config.schema_type,
+            },
         )
-    except MultipleObjectsReturned:
-        sp_local_container = Splocalecontainer.objects.filter(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type
-        ).first()
 
     try:
         field = table.get_field_strict(field_name)
@@ -597,7 +664,8 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         if table_name_lower not in container_names:
             missing_tables.append(table_name)
             missing_fields[table_name] = sorted(
-                field.name for field in table.all_fields if field.name
+                field.name for field in table.all_fields
+                if field.name and field is not table.idField
             )
             continue
 
@@ -605,7 +673,9 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         missing_in_table = sorted( # sort for better reproducablity
             field.name
             for field in table.all_fields
-            if field.name and field.name.lower() not in existing_fields
+            if field.name
+            and field is not table.idField
+            and field.name.lower() not in existing_fields
         )
 
         if missing_in_table:
@@ -692,52 +762,126 @@ def deduplicate_schema_config_sql(apps=None):
     cursor.execute(dedupe_sql)
     cursor.close()
 
-def deduplicate_schema_config_orm(apps, schema_editor=None):
+def deduplicate_splocalecontainers(apps):
+    Container = apps.get_model('specify', 'SpLocaleContainer')
     ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
     ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
 
     with transaction.atomic():
-        # Identify duplicates using a Window function.
-        # Partition by container_id + item name only.
-        # Only schema type 0 containers (standard schema) are eligible for this cleanup.
-        # The schema type 1 refers to the WorkBench Schema from Specify 6, which has
-        # a different structure and should not be modified by this cleanup.
-        #
-        # Why this key:
-        # - Rows are only true duplicates when they refer to the same concrete
-        #   container row and the same field name.
-        # - Earlier broad grouping by discipline/container-name/field-name could
-        #   collapse valid rows from different containers that happened to share
-        #   names, causing missing Schema Config fields after dedupe.
-        # - This narrower key preserves legitimate rows and only removes
-        #   duplicates that are semantically equivalent.
-        qs = ContainerItem.objects.filter(
-            container__schematype=0,
-        ).annotate(
-            rn=Window(
-                expression=RowNumber(),
-                partition_by=[
-                    F('container_id'),
-                    F('name')
-                ],
-                order_by=F('id').asc()
-            )
+        # Find duplicate SpLocaleContainers
+        # A duplicate should be in the same discipline and have the same name
+        # and schematype
+        # For this query we consider the oldest SpLocaleContainer as the
+        # "cannonical" record, and all later records as the duplicates
+        # We could be a little smarter about this and also check the associated
+        # container items and strings, but this should be minimally sufficient
+        # without sacrificing complexity and speed
+        # See #7988
+        duplicate_groups = (
+            Container.objects.filter(schematype=0)
+            .values("discipline_id", "name", "schematype")
+            .annotate(count=Count("id"))
+            .filter(count__gt=1)
         )
 
-        # Extract the IDs of the duplicates, keep the first and delete the rest
-        ids_to_delete = [item.id for item in qs if item.rn > 1]
+        for group in list(duplicate_groups):
+            containers = list(
+                Container.objects.filter(
+                    discipline_id=group["discipline_id"],
+                    name=group["name"],
+                    schematype=group["schematype"],
+                ).order_by("id")
+            )
+            if len(containers) <= 1:
+                continue
 
-        if ids_to_delete:
-            # Delete dependent strings using corrected field names
-            ItemStr.objects.filter(itemname_id__in=ids_to_delete).delete()
-            ItemStr.objects.filter(itemdesc_id__in=ids_to_delete).delete()
-            
-            # Delete the duplicate Container Items
+            # Remove the items and strings shouldn't be strictly neccesary as they
+            # should both cascade if we call duplicate_containers.delete()
+            # But this is the safer option for any edge cases with historical
+            # models in migrations and if we ever decide to change the delete
+            # behavior later down the line
+            # Plus, I don't think the performance impact should be **that**
+            # significantly different...
+            keeper = containers[0]
+            duplicate_ids = [container.id for container in containers[1:]]
+
+            _repoint_unique_locale_strings(
+                ItemStr, "containername", duplicate_ids, keeper.id
+            )
+            _repoint_unique_locale_strings(
+                ItemStr, "containerdesc", duplicate_ids, keeper.id
+            )
+
+            keeper_items_by_name = {}
+            for item in ContainerItem.objects.filter(container=keeper).order_by("id"):
+                keeper_items_by_name.setdefault(item.name, item)
+
+            duplicate_items = ContainerItem.objects.filter(
+                container_id__in=duplicate_ids
+            ).order_by("id")
+            for item in duplicate_items:
+                keeper_item = keeper_items_by_name.get(item.name)
+                if keeper_item is None:
+                    ContainerItem.objects.filter(id=item.id).update(
+                        container_id=keeper.id
+                    )
+                    item.container_id = keeper.id
+                    keeper_items_by_name[item.name] = item
+                    continue
+
+                _repoint_unique_locale_strings(
+                    ItemStr, "itemname", [item.id], keeper_item.id
+                )
+                _repoint_unique_locale_strings(
+                    ItemStr, "itemdesc", [item.id], keeper_item.id
+                )
+                ContainerItem.objects.filter(id=item.id).delete()
+
+            Container.objects.filter(id__in=duplicate_ids).delete()
+
+
+def deduplicate_containeritems_and_strings(apps):
+    ContainerItem = apps.get_model('specify', 'SpLocaleContainerItem')
+    ItemStr = apps.get_model('specify', 'SpLocaleItemStr')
+    with transaction.atomic():
+        duplicate_groups = (
+            ContainerItem.objects.filter(container__schematype=0)
+            .values("container_id", "name")
+            .annotate(count=Count("id"))
+            .filter(count__gt=1)
+        )
+
+        deleted_count = 0
+        for group in list(duplicate_groups):
+            duplicate_items = list(
+                ContainerItem.objects.filter(
+                    container_id=group["container_id"],
+                    name=group["name"],
+                ).order_by("id")
+            )
+            if len(duplicate_items) <= 1:
+                continue
+
+            item_to_keep = duplicate_items[0]
+            ids_to_delete = [item.id for item in duplicate_items[1:]]
+            _repoint_unique_locale_strings(
+                ItemStr, "itemname", ids_to_delete, item_to_keep.id
+            )
+            _repoint_unique_locale_strings(
+                ItemStr, "itemdesc", ids_to_delete, item_to_keep.id
+            )
             ContainerItem.objects.filter(id__in=ids_to_delete).delete()
-            
-            print(f"Successfully deleted {len(ids_to_delete)} duplicate schema items.")
+            deleted_count += len(ids_to_delete)
+
+        if deleted_count > 0:
+            print(f"Successfully deleted {deleted_count} duplicate schema items.")
         else:
             print("No duplicates found.")
+
+def deduplicate_schema_config_orm(apps, schema_editor=None):
+    with transaction.atomic():
+        deduplicate_splocalecontainers(apps)
+        deduplicate_containeritems_and_strings(apps)
 
 # ##############################################################################
 # Migration schema config helper functions
@@ -1831,9 +1975,7 @@ def revert_update_accession_date_fields(apps):
                         container=container,
                         name=field_name.lower()
                     )
-                    for item in items:
-                        # If needed, reset ishidden or revert text
-                        pass
+                    # If needed, reset ishidden or revert text
 
     revert_0034_fields(apps)
     revert_0034_schema_config_field_desc(apps)
@@ -1950,9 +2092,7 @@ def revert_loan_and_gift_agents(apps):
                     container=container,
                     name=field_name.lower()
                 )
-                for item in items:
-                    # If needed, reset ishidden or revert text
-                    pass
+                # If needed, reset ishidden or revert text
 
 # ##########################################
 # Used in 0040_components.py

@@ -4,6 +4,7 @@ from collections.abc import Callable, Iterable
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
+from django.db.models import Exists, OuterRef, Q
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import (
     apply_default_uniqueness_rules,
@@ -56,7 +57,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
                 stdout(
                     f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
                 )
-            apply_schema_defaults_task.run(discipline.id)
+            apply_schema_defaults_task.apply(args=[discipline.id])
 
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
@@ -95,9 +96,42 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
     ]
     log_and_run(funcs, stdout)
 
-def fix_app_resource_dirs(stdout: WriteToStdOut | None = None):
-    from specifyweb.backend.setup_tool.app_resource_defaults import ensure_all_discipline_resource_dirs
+def deduplicate_discipline_resource_dirs(apps):
+    """
+    De-deuplicate SpAppResourceDirs scoped to Discipline.
+    We will attempt to preserve the oldest SpAppResourceDir, and will only
+    remove SpAppResourceDirs that are completely empty (do not have any related
+    view sets or appresources)
+    """
+    SpAppResourceDir = apps.get_model('specify', 'SpAppResourceDir')
+    with transaction.atomic():
+        common_filters = {
+            "collection__isnull": True,
+            "usertype__isnull": True,
+            "ispersonal": False,
+        }
+        duplicate_dirs = SpAppResourceDir.objects.filter(
+            sppersistedviewsets__isnull=True,
+            sppersistedappresources__isnull=True,
+            **common_filters
+        ).annotate(
+            earlier_exists=Exists(
+                SpAppResourceDir.objects.filter(
+                    discipline_id=OuterRef('discipline_id'),
+                    **common_filters
+                ).filter(
+                    Q(timestampcreated__lt=OuterRef('timestampcreated'))
+                    | Q(
+                        timestampcreated=OuterRef('timestampcreated'),
+                        id__lt=OuterRef('id'),
+                    )
+                )
+            )
+        ).filter(earlier_exists=True)
+        duplicate_dirs.delete()
 
+def create_missing_app_resource_dirs(stdout, apps):
+    from specifyweb.backend.setup_tool.app_resource_defaults import ensure_all_discipline_resource_dirs
     results = ensure_all_discipline_resource_dirs()
     if stdout is not None:
         stdout(
@@ -106,6 +140,13 @@ def fix_app_resource_dirs(stdout: WriteToStdOut | None = None):
             f"created={results['created']}, "
             f"updated={results['updated']}"
         )
+
+def fix_app_resource_dirs(stdout: WriteToStdOut | None = None):
+    funcs = [
+        lambda apps: create_missing_app_resource_dirs(stdout, apps),
+        deduplicate_discipline_resource_dirs,
+    ]
+    log_and_run(funcs, stdout)
 
 def apply_default_uniqueness_rules_to_disciplines(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -129,7 +170,7 @@ def fix_business_rules(stdout: WriteToStdOut | None = None):
     log_and_run(funcs, stdout)
 
 def initialize_permissions(apps):
-    initialize(False, apps)
+    initialize(False, apps, migrate_sp6_users=False)
 
 def fix_permissions(stdout: WriteToStdOut | None = None):
     funcs = [
