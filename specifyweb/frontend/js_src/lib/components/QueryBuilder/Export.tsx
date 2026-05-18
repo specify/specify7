@@ -22,6 +22,7 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
+import { dialogIcons } from '../Atoms/Icons';
 
 export function QueryExportButtons({
   baseTableName,
@@ -47,9 +48,23 @@ export function QueryExportButtons({
   const showConfirmation = (): boolean =>
     fields.some(({ mappingPath }) => !mappingPathIsComplete(mappingPath));
 
-  const [state, setState] = React.useState<'creating' | 'warning' | undefined>(
-    undefined
-  );
+  const [state, setState] = React.useState<
+    'creating' | 'warning' | 'duplicateWarning' | undefined
+  >(undefined);
+
+  const hasDuplicateRecordIds = (): boolean => {
+    const seenIds = new Set<number | string>();
+    return (
+      results.current?.some((row) => {
+        if (row === undefined) return false;
+        const id = row[0];
+        if (id === undefined || id === null) return false;
+        if (seenIds.has(id)) return true;
+        seenIds.add(id);
+        return false;
+      }) ?? false
+    );
+  };
 
   function doQueryExport(
     url: string,
@@ -155,6 +170,17 @@ export function QueryExportButtons({
         >
           {queryText.missingCoordinatesForKmlDescription()}
         </Dialog>
+      ) : state === 'duplicateWarning' ? (
+        <Dialog
+          icon={dialogIcons.warning}
+          buttons={commonText.close()}
+          header={queryText.webPortalExportDuplicateRecordIds()}
+          onClose={(): void => setState(undefined)}
+        >
+          {queryText.webPortalExportDuplicateRecordIdsDescription()}
+          <br />
+          {queryText.webPortalExportDuplicateHint()}
+        </Dialog>
       ) : undefined}
       {containsResults &&
         hasPermission('/querybuilder/query', 'export_csv') && (
@@ -193,6 +219,28 @@ export function QueryExportButtons({
           {queryText.createKml()}
         </QueryButton>
       )}
+      {containsResults &&
+        hasPermission('/querybuilder/query', 'export_to_web_portal') && (
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={(): void => {
+              if (hasDuplicateRecordIds()) {
+                setState('duplicateWarning');
+                return;
+              }
+
+              doQueryExport(
+                '/stored_query/exportwebportal/',
+                undefined,
+                undefined,
+                undefined
+              );
+            }}
+          >
+            {queryText.exportToWebPortal()}
+          </QueryButton>
+        )}
     </>
   );
 }

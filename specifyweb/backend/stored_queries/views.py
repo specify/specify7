@@ -34,6 +34,7 @@ class QueryBuilderPt(PermissionTarget):
     execute = PermissionTargetAction()
     export_csv = PermissionTargetAction()
     export_kml = PermissionTargetAction()
+    export_to_web_portal = PermissionTargetAction()
     create_recordset = PermissionTargetAction()
 
 def value_from_request(field, get):
@@ -150,8 +151,6 @@ def batch_edit(request):
 @never_cache
 def export_csv(request):
     """Executes and return as CSV the results of the query provided as JSON in the POST body."""
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
-        QueryBuilderPt.execute, QueryBuilderPt.export_csv])
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -164,6 +163,9 @@ def export_csv(request):
         logger.debug('forcing collection to %s', collection.collectionname)
     else:
         collection = request.specify_collection
+
+    check_permission_targets(collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute, QueryBuilderPt.export_csv])
     
     file_name = format_export_file_name(spquery, "csv")
 
@@ -177,8 +179,6 @@ def export_csv(request):
 @never_cache
 def export_kml(request):
     """Executes and return as KML the results of the query provided as JSON in the POST body."""
-    check_permission_targets(request.specify_collection.id, request.specify_user.id, [
-        QueryBuilderPt.execute, QueryBuilderPt.export_kml])
     try:
         spquery = json.load(request)
     except ValueError as e:
@@ -195,9 +195,46 @@ def export_kml(request):
     else:
         collection = request.specify_collection
 
+    check_permission_targets(collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute, QueryBuilderPt.export_kml])
+
     file_name = format_export_file_name(spquery, "kml")
 
     thread = Thread(target=do_export, args=(spquery, collection, request.specify_user, file_name, 'kml', the_host))
+    thread.daemon = True
+    thread.start()
+    return HttpResponse('OK', content_type='text/plain')
+
+
+@require_POST
+@login_maybe_required
+@never_cache
+def export_to_web_portal(request):
+    """Executes and returns as ZIP the web portal export package for the query provided as JSON in the POST body."""
+    try:
+        spquery = json.load(request)
+    except ValueError as e:
+        return HttpResponseBadRequest(e)
+
+    logger.info('export web portal query: %s', spquery)
+
+    if 'collectionid' in spquery:
+        collection = Collection.objects.get(pk=spquery['collectionid'])
+        logger.debug('forcing collection to %s', collection.collectionname)
+    else:
+        collection = request.specify_collection
+
+    check_permission_targets(collection.id, request.specify_user.id, [
+        QueryBuilderPt.execute,
+        QueryBuilderPt.export_to_web_portal,
+    ])
+
+    file_name = format_export_file_name(spquery, 'zip')
+
+    thread = Thread(
+        target=do_export,
+        args=(spquery, collection, request.specify_user, file_name, 'webportal', None),
+    )
     thread.daemon = True
     thread.start()
     return HttpResponse('OK', content_type='text/plain')

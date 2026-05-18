@@ -3,23 +3,31 @@ import json
 import logging
 import os
 import re
+import traceback
+import uuid
+from io import StringIO
+from xml.sax.saxutils import escape
+from zipfile import ZIP_DEFLATED, ZipFile
 
-from typing import Literal, NamedTuple
+from typing import Any, Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from functools import reduce
 
 from django.conf import settings
+from django.apps import apps
 from django.db import transaction
 from django.utils import timezone
 from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing, parent_inheritance_post_query_processing
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
+from specifyweb.backend.context.schema_localization import get_schema_localization
 from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.specify.utils.uiformatters import CNNField, get_catalognumber_format, get_uiformatter
 from sqlalchemy import sql, orm, func, text
 from sqlalchemy.sql.expression import asc, desc, insert, literal
 
-from specifyweb.specify.models_utils.models_by_table_id import get_table_id_by_model_name
+from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id, get_table_id_by_model_name
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.trees.utils import get_search_filters
 
@@ -28,13 +36,15 @@ from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
+from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, _portal_attachment_map
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
-from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
+from specifyweb.backend.stored_queries.queryfield import QueryField, fields_from_json, QUREYFIELD_SORT_T
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
+
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 
 logger = logging.getLogger(__name__)
@@ -258,21 +268,83 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     message_type = "query-export-to-csv-complete"
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery['fields'])
-        if exporttype == 'csv':
-            query_to_csv(session, collection, user, tableid, field_specs, path,
-                         recordsetid=recordsetid, 
-                         captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
-        elif exporttype == 'kml':
-            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
-            message_type = 'query-export-to-kml-complete'
+        try:
+            field_specs = fields_from_json(spquery['fields'])
+            if exporttype == 'csv':
+                query_to_csv(session, collection, user, tableid, field_specs, path,
+                             recordsetid=recordsetid, 
+                             captions=spquery['captions'], strip_id=True,
+                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
+                message_type = 'query-export-to-csv-complete'
+            elif exporttype == 'kml':
+                query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
+                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
+                message_type = 'query-export-to-kml-complete'
+            elif exporttype == 'webportal':
+                query_to_web_portal_zip(
+                    session,
+                    collection,
+                    user,
+                    tableid,
+                    field_specs,
+                    path,
+                    spquery['captions'],
+                    recordsetid=recordsetid,
+                    distinct=spquery['selectdistinct'],
+                )
+                message_type = 'query-export-to-webportal-complete'
+            else:
+                # This should never happen because the export type is controlled by the backend, but just in case.
+                raise ValueError(f"Unsupported export type: {exporttype}")
+        except Exception as e:
+            logger.exception(
+                "Export failed for %s: collection %s, file %s, type %s",
+                user, collection, filename, exporttype,
+            )
+            tb = traceback.format_exc()
+            error_details = {'error': str(e)}
+            if tb:
+                error_details['traceback'] = tb
+            message_type = f'query-export-to-{exporttype}-failed'
+            Message.objects.create(user=user, content=json.dumps({
+                'type': message_type,
+                'file': filename,
+                'error': error_details,
+            }))
+            raise
 
     Message.objects.create(user=user, content=json.dumps({
         'type': message_type,
         'file': filename,
     }))
+
+
+def query_to_web_portal_zip(
+    session,
+    collection,
+    user,
+    tableid,
+    field_specs,
+    path,
+    captions,
+    recordsetid=None,
+    distinct=False,
+):
+    return _query_to_web_portal_zip(
+        session,
+        collection,
+        user,
+        tableid,
+        field_specs,
+        path,
+        captions,
+        build_query_fn=build_query,
+        build_query_props_cls=BuildQueryProps,
+        apply_special_post_query_processing_fn=apply_special_post_query_processing,
+        set_group_concat_max_len_fn=set_group_concat_max_len,
+        recordsetid=recordsetid,
+        distinct=distinct,
+    )
 
 # def stored_query_to_csv(query_id, collection, user, path):
 #     """Executes a query from the Spquery table with the given id and send
