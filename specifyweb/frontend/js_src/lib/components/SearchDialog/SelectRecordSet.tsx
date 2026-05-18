@@ -18,7 +18,6 @@ import type { RecordSet } from '../DataModel/types';
 import { softError } from '../Errors/assert';
 import { userInformation } from '../InitialContext/userInformation';
 import { Dialog, LoadingScreen } from '../Molecules/Dialog';
-import { usePaginator } from '../Molecules/Paginator';
 import { TableIcon } from '../Molecules/TableIcon';
 
 export function SelectRecordSets<SCHEMA extends AnySchema>({
@@ -38,21 +37,19 @@ export function SelectRecordSets<SCHEMA extends AnySchema>({
     RA<number>
   >([]);
 
-  const { limit, offset } = usePaginator('recordSets');
-
   const [recordSets] = useAsyncState(
     React.useCallback(
       async () =>
         fetchCollection('RecordSet', {
           specifyUser: userInformation.id,
           type: 0,
-          limit,
+          limit: 0,
           domainFilter: true,
-          offset,
+          offset: 0,
           dbTableId: table?.tableId,
           collectionMemberId: schema.domainLevelIds.collection,
         }),
-      [table, limit, offset]
+      [table]
     ),
     false
   );
