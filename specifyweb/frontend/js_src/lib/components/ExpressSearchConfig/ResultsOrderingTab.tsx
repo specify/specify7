@@ -11,17 +11,12 @@ import { genericTables } from '../DataModel/tables';
 
 function tableLabel(tableName: string): string {
   return (
-    (genericTables[tableName as keyof typeof genericTables]?.label as
-      | string
-      | undefined) ?? camelToHuman(tableName)
+    (genericTables[tableName as keyof typeof genericTables]?.label as string | undefined) ??
+    camelToHuman(tableName)
   );
 }
 
-export function ResultsOrderingTab({
-  config,
-  relatedQueriesDefinitions = [],
-  onChangeConfig,
-}: any) {
+export function ResultsOrderingTab({ config, relatedQueriesDefinitions = [], onChangeConfig }: any) {
   const baseTables = config.tables
     .filter((t: any) => t.searchFields.some((sf: any) => sf.inUse !== false))
     .map((t: any) => ({
@@ -34,12 +29,8 @@ export function ResultsOrderingTab({
   const activeQueries = config.relatedQueries
     .filter((rq: any) => rq.isActive)
     .map((rq: any) => {
-      const def = relatedQueriesDefinitions.find(
-        (def: any) => def.id === rq.id
-      );
-      const title = def?.name
-        ? getExpressSearchQueryTitle(def.name)
-        : undefined;
+      const def = relatedQueriesDefinitions.find((def: any) => def.id === rq.id);
+      const title = def?.name ? getExpressSearchQueryTitle(def.name) : undefined;
 
       if (!def || !title || title === String(def.name)) {
         return undefined;
@@ -95,9 +86,7 @@ export function ResultsOrderingTab({
 
   return (
     <div className="flex flex-col gap-2 h-full min-h-[400px]">
-      <h3 className="font-bold mb-2">
-        {expressSearchConfigText.configureResultsOrdering()}
-      </h3>
+      <h3 className="font-bold mb-2">{expressSearchConfigText.configureResultsOrdering()}</h3>
       <p className="text-sm text-gray-500 mb-4">
         {expressSearchConfigText.reorderResultsOrderingDescription()}
       </p>
@@ -110,10 +99,7 @@ export function ResultsOrderingTab({
           >
             <span className="font-medium">{item.label}</span>
             <div className="flex gap-2">
-              <Button.BorderedGray
-                disabled={index === 0}
-                onClick={() => moveItem(index, 'up')}
-              >
+              <Button.BorderedGray disabled={index === 0} onClick={() => moveItem(index, 'up')}>
                 {icons.chevronUp}
               </Button.BorderedGray>
               <Button.BorderedGray

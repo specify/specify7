@@ -52,13 +52,14 @@ export function usePrimarySearch(
 }
 
 async function fetchRelatedSearches(): Promise<RA<string>> {
-  return contextUnlockedPromise.then(async (entrypoint) =>
-    entrypoint === 'main'
-      ? ajax<RA<string>>('/context/available_related_searches.json', {
-          headers: { Accept: 'application/json' },
-          cache: 'no-store',
-        }).then(({ data }) => data)
-      : foreverFetch<RA<string>>()
+  return contextUnlockedPromise.then(
+    async (entrypoint) =>
+      entrypoint === 'main'
+        ? ajax<RA<string>>('/context/available_related_searches.json', {
+            headers: { Accept: 'application/json' },
+            cache: 'no-store',
+          }).then(({ data }) => data)
+        : foreverFetch<RA<string>>()
   );
 }
 

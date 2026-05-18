@@ -104,16 +104,13 @@ export const commonText = createDictionary({
     'hr-hr': 'Savjeti za pretraživanje',
   },
   expressSearchInstructions: {
-    'en-us':
-      'Separate multiple search terms with spaces, use % anywhere, * at the beginning or end, and wrap terms in quotes for exact multi-word matches.',
+    'en-us': 'Separate multiple search terms with spaces, use % anywhere, * at the beginning or end, and wrap terms in quotes for exact multi-word matches.',
   },
   expressSearchDateFormats: {
-    'en-us':
-      'Dates can be searched using either the YYYY-MM-DD or MM/DD/YYYY format.',
+    'en-us': 'Dates can be searched using either the YYYY-MM-DD or MM/DD/YYYY format.',
   },
   expressSearchPhraseExample: {
-    'en-us':
-      'To search a term with spaces, wrap the phrase in quotes, for example "Clinton Lake".',
+    'en-us': 'To search a term with spaces, wrap the phrase in quotes, for example "Clinton Lake".',
   },
   apply: {
     'en-us': 'Apply',

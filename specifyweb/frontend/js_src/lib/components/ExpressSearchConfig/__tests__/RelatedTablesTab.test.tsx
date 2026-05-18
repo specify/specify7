@@ -43,9 +43,7 @@ describe('RelatedTablesTab', () => {
 
     expect(onChangeConfig).toHaveBeenCalledTimes(1);
     const newConfig = onChangeConfig.mock.calls[0][0];
-    expect(
-      newConfig.relatedQueries.find((rq: any) => rq.id === '2').isActive
-    ).toBe(true);
+    expect(newConfig.relatedQueries.find((rq: any) => rq.id === '2').isActive).toBe(true);
 
     const activeRow = rows[0];
     const activeCheckbox = activeRow.querySelector('input[type="checkbox"]');
@@ -56,8 +54,6 @@ describe('RelatedTablesTab', () => {
 
     expect(onChangeConfig).toHaveBeenCalledTimes(2);
     const secondConfig = onChangeConfig.mock.calls[1][0];
-    expect(
-      secondConfig.relatedQueries.find((rq: any) => rq.id === '1').isActive
-    ).toBe(false);
+    expect(secondConfig.relatedQueries.find((rq: any) => rq.id === '1').isActive).toBe(false);
   });
 });

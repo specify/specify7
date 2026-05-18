@@ -39,7 +39,9 @@ describe('ResultsOrderingTab', () => {
           displayFields: [],
         },
       ],
-      relatedQueries: [{ id: '8', isActive: true, displayOrder: 1 }],
+      relatedQueries: [
+        { id: '8', isActive: true, displayOrder: 1 },
+      ],
     };
 
     const onChangeConfig = jest.fn();
