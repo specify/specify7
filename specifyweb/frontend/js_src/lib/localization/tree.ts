@@ -982,4 +982,11 @@ export const treeText = createDictionary({
     'hr-hr':
       'Ako je omogućeno, ovo korisnicima omogućuje dodavanje djece sinonimiziranim roditeljima i sinonimizaciju čvora s djecom.',
   },
+  utf8EncodingWarning: {
+    'en-us':
+      'This tree data cannot be imported in your database because it contains UTF-8 characters and this database uses {encoding:string}',
+  },
+  resolveEncoding: {
+    'en-us': 'How to resolve:',
+  },
 } as const);

@@ -81,7 +81,7 @@ export function Logo({
             src={collapsedLogo}
           />
         )}
-        <span className="sr-only">{commonText.goToHomepage()}</span>
+        <span className="sr-only text-white">{commonText.goToHomepage()}</span>
       </a>
     </h1>
   );

@@ -21,6 +21,7 @@ import type {
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
 import { exportFeedSpec } from '../ExportFeed/spec';
+import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
 import { fieldFormattersSpec } from '../FieldFormatters/spec';
 import { DataObjectFormatter } from '../Formatters';
@@ -167,7 +168,10 @@ export const visualAppResourceEditors = f.store<
     visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
   },
-  expressSearchConfig: undefined,
+  expressSearchConfig: {
+    visual: ExpressSearchConfigResourceEditor,
+    xml: AppResourceTextEditor,
+  },
   typeSearches: undefined,
   webLinks: {
     visual: WebLinkEditor,

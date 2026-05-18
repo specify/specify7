@@ -827,7 +827,7 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Sadržaj',
   },
   defaultImage: {
-    'en-us': 'Specify Logo',
+    'en-us': 'Specify Splash',
     'ru-ru': 'Укажите логотип',
     'es-es': 'Especificar logotipo',
     'fr-fr': 'Spécifier le logo',
@@ -835,6 +835,15 @@ export const preferencesText = createDictionary({
     'de-ch': 'Logo angeben',
     'pt-br': 'Especificar logotipo',
     'hr-hr': 'Navedite logotip',
+  },
+  critterless: {
+    'en-us': 'Specify Splash (No Critters)',
+    'ru-ru': 'Без существ',
+    'es-es': 'Sin criaturas',
+    'fr-fr': 'Sans créatures',
+    'uk-ua': 'Без створінь',
+    'de-ch': 'Kritterlos',
+    'pt-br': 'Sem criaturas',
   },
   customImage: {
     'en-us': 'Custom Image',

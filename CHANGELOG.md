@@ -4,6 +4,47 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.12.0](https://github.com/specify/specify7/compare/v7.11.2...v7.12.0) (10 April 2026)
+
+### Added
+
+* Introduces the **Guided Setup Tool**, a step-by-step wizard for new Specify installations that enables the initial creation of institutions, divisions, and disciplines ([#7647](https://github.com/specify/specify7/pull/7647), [#7674](https://github.com/specify/specify7/pull/7674))
+* Adds the **System Configuration Tool**, a new administrative interface for managing high-level system settings and infrastructure configurations without direct database access ([#7312](https://github.com/specify/specify7/pull/7312), [#7647](https://github.com/specify/specify7/pull/7647))
+* Introduces a **UI Branding Refresh**, featuring new logos, updated color palettes, and modern graphics, including accessibility improvements to meet WCAG 2.1 AA compliance ([#7788](https://github.com/specify/specify7/pull/7788))
+* Adds a **Visual Editor for Field Formatters**, providing a visual interface for configuration and reducing the need for manual XML/JSON editing ([#5075](https://github.com/specify/specify7/pull/5075))
+* Adds a **Collection Preferences UI** for managing collection-specific settings directly within the application ([#7557](https://github.com/specify/specify7/pull/7557), [#7608](https://github.com/specify/specify7/pull/7608))
+* Adds the **Tree Import** feature, enabling the direct import of new default tree data for Taxon, Storage, and other hierarchical trees ([#6429](https://github.com/specify/specify7/pull/6429))
+* Adds support for using **Interaction Identifiers** (preparation identifiers) when creating or adding items in the Interactions modules, including Loans ([#7644](https://github.com/specify/specify7/pull/7644))
+* Adds support for the **Components** data model, enabling the capture of constituent parts as named or numbered parts of a Collection Object ([#6721](https://github.com/specify/specify7/pull/6721))
+* Adds zoom support for images within the attachment previewer ([#7526](https://github.com/specify/specify7/pull/7526))
+* Adds Batch Edit support for attachment-related tables to streamline metadata management ([#7453](https://github.com/specify/specify7/pull/7453))
+* Adds the `ALLOW_SUPPORT_LOGIN` environment variable to Docker to facilitate troubleshooting by support staff ([#7399](https://github.com/specify/specify7/pull/7399))
+* Adds support for automatic database user creation for new Specify 7 instances ([#6389](https://github.com/specify/specify7/pull/6389))
+
+### Changed
+
+* Updates the **Query Builder "NOT" logic** to include records with empty (null) values by default for "In", "Contains", or "=" comparisons ([#7477](https://github.com/specify/specify7/pull/7477), [#7651](https://github.com/specify/specify7/pull/7651))
+* Enhances the **Catalog Number Search** to intelligently detect if a number is numeric or alphanumeric before searching to prevent casting errors ([#7469](https://github.com/specify/specify7/pull/7469))
+* Moves attachment downloading for record sets to the backend to improve performance ([#6625](https://github.com/specify/specify7/pull/6625))
+* Changes **Object Formatters** to automatically apply date formatting to temporal fields ([#7807](https://github.com/specify/specify7/pull/7807))
+* Replaces legacy table icons with modern `SvgIcon` components ([#7429](https://github.com/specify/specify7/pull/7429))
+* Upgrades the backend framework **Django to version 4.2.27** ([#7591](https://github.com/specify/specify7/pull/7591))
+
+### Fixed
+
+* Fixes an issue in **Workbench** where attachment imports could become stuck ([#7798](https://github.com/specify/specify7/pull/7798))
+* Fixes an issue where deleting a dataset in Workbench incorrectly navigated the user away from the page ([#7519](https://github.com/specify/specify7/pull/7519))
+* Fixes an issue where **Quantity Resolved** enforcement was not correctly handled in validation ([#7670](https://github.com/specify/specify7/pull/7670))
+* Fixes the **Auto-populate** preference during record merging ([#7478](https://github.com/specify/specify7/pull/7478))
+* Fixes an issue preventing the cloning of **Collection Object Attribute (COA)** values ([#7538](https://github.com/specify/specify7/pull/7538))
+* Fixes ordering issues in tree queries ([#7528](https://github.com/specify/specify7/pull/7528)) and bad structures on taxon imports ([#7765](https://github.com/specify/specify7/pull/7765))
+* Fixes a regression that prevented manual typing in tree rank picklists ([#7597](https://github.com/specify/specify7/pull/7597))
+* Fixes an issue that caused broken transactions during autonumbering ([#7671](https://github.com/specify/specify7/pull/7671))
+* Implements a "Delete Blockers" hotfix to resolve stability issues during record deletion ([#7833](https://github.com/specify/specify7/pull/7833))
+* Fixes an issue in **Firefox** where "Download All" failed for single attachments ([#6619](https://github.com/specify/specify7/pull/6619))
+* Fixes an issue with multi-select functionality in embedded record sets ([#7796](https://github.com/specify/specify7/pull/7796))
+* Fixes Host Taxon disambiguation cases in query results ([#7509](https://github.com/specify/specify7/pull/7509))
+
 ## [7.11.4](https://github.com/specify/specify7/compare/v7.11.3...v7.11.4) (5 February 2026)
 
 ### Fixed
@@ -11,7 +52,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
  * Prevent auto-incrementing in the WorkBench from preventing other users from accessing Specify ([#7671](https://github.com/specify/specify7/pull/7671) - *Reported by CSIRO, RBGE, NHMD, IRD, and many others*)
     * Fixes an issue with auto-incrementing for the 'Treatment Number' field in 'Treatment Event' ([#7560](https://github.com/specify/specify7/issues/7560) - *Reported by SDNHM and CSIRO*)
     * Solves an issue that prevented the upload of records with auto-incrementing fields when other users are creating records in the same table ([#4894](https://github.com/specify/specify7/issues/4894) - *Reported by RBGE and others*)
-
 
 ## [7.11.3](https://github.com/specify/specify7/compare/v7.11.2.1..v7.11.3) (12 November 2025)
 

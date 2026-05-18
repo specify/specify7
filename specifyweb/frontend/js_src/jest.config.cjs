@@ -13,8 +13,6 @@
  * into JavaScript (without type checking).
  */
 
-import type { Config } from '@jest/types';
-
 /* eslint-disable multiline-comment-style */
 /* eslint-disable capitalized-comments */
 /* eslint-disable write-good-comments/write-good-comments */
@@ -23,7 +21,8 @@ import type { Config } from '@jest/types';
  * https://jestjs.io/docs/configuration
  */
 
-const config: Config.InitialOptions = {
+/** @type {import('@jest/types').Config.InitialOptions} */
+const config = {
   prettierPath: null,
   // All imported modules in your tests should be mocked automatically
   // automock: false,
@@ -242,7 +241,7 @@ const config: Config.InitialOptions = {
   // watchman: true,
 };
 
-export default config;
+module.exports = config;
 /* eslint-enable multiline-comment-style */
 /* eslint-enable capitalized-comments */
 /* eslint-enable write-good-comments/write-good-comments */

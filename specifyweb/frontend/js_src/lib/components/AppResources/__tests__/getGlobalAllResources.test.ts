@@ -81,6 +81,7 @@ describe('getGlobalAllResources', () => {
 
     const newGlobalDirectory = {
       ...addMissingFields('SpAppResourceDir', {
+        isPersonal: false,
         userType: 'Common',
       }),
       scope: 'global',
