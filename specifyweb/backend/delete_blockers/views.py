@@ -21,7 +21,8 @@ def delete_blockers(request, model, id):
     obj = get_object_or_404(model, id=int(id))
     using = router.db_for_write(obj.__class__, instance=obj)
 
-    if obj._meta.model_name == 'discipline': # Special case for discipline
+    # Special case for discipline
+    if obj._meta.model_name == 'discipline': 
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
             result = guard_blockers
@@ -32,11 +33,11 @@ def delete_blockers(request, model, id):
                 result = _collect_delete_blockers(obj, using)
                 transaction.set_rollback(True, using=using)
     else:
-        # Standard delete blockers behavior
-        result = _collect_delete_blockers(obj, using)
+        result = _collect_delete_blockers(obj, using) # Standard delete blockers behavior
 
     return http.HttpResponse(toJson(result), content_type='application/json')
 
+# New definition
 def _collect_delete_blockers(obj, using) -> list[dict]:
     collector = Collector(using=using)
     collector.delete_blockers = []

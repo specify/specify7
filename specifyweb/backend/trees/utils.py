@@ -28,6 +28,7 @@ TREE_NAMES = {
     'tectonicunit': 'Tectonic Unit'
 }
 
+# Tree model names
 DISCIPLINE_TREE_MODELS = (
     spmodels.Geographytreedef,
     spmodels.Geologictimeperiodtreedef,

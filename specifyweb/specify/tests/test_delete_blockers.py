@@ -68,6 +68,7 @@ class TestDeleteBlockers(GeographyTree):
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
 
+    # test discipline new deletion logic 
     def _create_discipline_with_owned_trees(self, name='Disposable Discipline'):
         placeholder_geo = models.Geographytreedef.objects.create(name=f'{name} placeholder geo')
         placeholder_geo_time = models.Geologictimeperiodtreedef.objects.create(

@@ -60,6 +60,7 @@ def resource_dispatch(request, model, id) -> HttpResponse:
                             content_type='application/json')
 
     elif request.method == 'DELETE':
+        #check for discipline logic deletion
         if model.lower() == 'discipline' and not request.specify_user.is_admin():
             return HttpResponseForbidden('Specifyuser must be an institution admin')
 

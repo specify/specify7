@@ -197,6 +197,7 @@ def make_default_deleter(collection=None, agent=None):
             auditlog.remove(obj, agent, parent_obj)
     return _deleter
 
+# New discipline logic
 def is_discipline(obj) -> bool:
     return getattr(getattr(obj, "_meta", None), "model_name", "") == "discipline"
 
@@ -338,6 +339,7 @@ def prepare_discipline_for_delete(obj) -> None:
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
 
     delete_discipline_owned_setup_data(obj)
+# End of discipline logic 
 
 @transaction.atomic
 def put_resource(collection, agent, name: str, id, version, data: dict[str, Any]):
@@ -458,6 +460,8 @@ def delete_resource(collection, agent, name, id, version) -> None:
     locking 'version'.
     """
     obj = get_object_or_404(name, id=int(id))
+
+    # check for discipline logic delition
     if is_discipline(obj):
         guard_blockers = get_discipline_delete_guard_blockers(obj)
         if guard_blockers:
