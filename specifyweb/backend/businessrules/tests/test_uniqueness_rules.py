@@ -31,31 +31,26 @@ class UniquenessTests(ApiTests):
         return rule
 
     def test_migration_cache_rechecks_until_migration_is_seen(self):
-        original_seen = uniqueness_rules._businessrules_initial_migration_seen
-        uniqueness_rules._businessrules_initial_migration_seen = False
-        try:
-            with (
-                uniqueness_rules._uniqueness_migration_cache.activate(),
-                patch.object(
-                    uniqueness_rules,
-                    "_initial_businessrules_migration_applied",
-                    side_effect=[False, True],
-                ) as migration_applied,
-            ):
-                self.assertFalse(
-                    uniqueness_rules._cached_businessrules_migration_applied()
-                )
-                self.assertTrue(
-                    uniqueness_rules._cached_businessrules_migration_applied()
-                )
-                self.assertEqual(migration_applied.call_count, 2)
+        with (
+            uniqueness_rules._uniqueness_migration_cache.activate(),
+            patch.object(
+                uniqueness_rules,
+                "_initial_businessrules_migration_applied",
+                side_effect=[False, True],
+            ) as migration_applied,
+        ):
+            self.assertFalse(
+                uniqueness_rules._cached_businessrules_migration_applied()
+            )
+            self.assertTrue(
+                uniqueness_rules._cached_businessrules_migration_applied()
+            )
+            self.assertEqual(migration_applied.call_count, 2)
 
-                self.assertTrue(
-                    uniqueness_rules._cached_businessrules_migration_applied()
-                )
-                self.assertEqual(migration_applied.call_count, 2)
-        finally:
-            uniqueness_rules._businessrules_initial_migration_seen = original_seen
+            self.assertTrue(
+                uniqueness_rules._cached_businessrules_migration_applied()
+            )
+            self.assertEqual(migration_applied.call_count, 2)
 
     def test_cached_uniqueness_rule_preserves_all_scope_fields(self):
         rule = self._create_uniqueness_rule(

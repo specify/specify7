@@ -75,8 +75,6 @@ _collection_discipline_cache = ThreadCache[int, int | None](
     )
 )
 
-_businessrules_initial_migration_seen = False
-
 @contextmanager
 def cache_uniqueness_rules():
     with (
@@ -145,20 +143,20 @@ def _initial_businessrules_migration_applied():
 
 
 def _cached_businessrules_migration_applied() -> bool:
-    global _businessrules_initial_migration_seen
-    if _businessrules_initial_migration_seen:
-        return True
-
     cache_key = "default"
-    _, cached = _uniqueness_migration_cache.get(cache_key)
-    if cached is True:
+    cache_is_active, is_set = _uniqueness_migration_cache.get(cache_key)
+    if cache_is_active and is_set:
         return True
+    # If the cache is not active or the business rule migration is not applied,
+    # then check whether it is applied in the DB
+    is_applied = _initial_businessrules_migration_applied()
+    # If the migration has been applied and the cache is active, store the
+    # result so future lookups can bypass hitting the database (a migration
+    # generally wouldn't be reversed while Specify is running)
+    if cache_is_active and is_applied:
+        _uniqueness_migration_cache.set(cache_key, is_applied)
 
-    applied = _initial_businessrules_migration_applied()
-    if applied:
-        _businessrules_initial_migration_seen = True
-        _uniqueness_migration_cache.set(cache_key, True)
-    return applied
+    return is_applied
 
 
 def _fetch_uniquenessrules_for_cache(registry, model_name) -> list[CachedUniquenessRule]:
