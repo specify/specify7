@@ -196,10 +196,12 @@ async function formatField(
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
-  if (trimZeros)
-    formatted = Number.isNaN(Number(formatted))
+  if (trimZeros) {
+    const num = Number(formatted);
+    formatted = Number.isNaN(num) || (formatted ?? '').trim() === '' || !Number.isSafeInteger(num)
       ? formatted
-      : Number(formatted).toString();
+      : num.toString();
+  }
 
   return {
     formatted: formatted?.toString() ?? '',
