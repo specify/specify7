@@ -28,7 +28,11 @@ import type {
   SelectElementPosition,
 } from './Mapper';
 import { emptyMapping, mappingPathToString } from './mappingHelpers';
-import type { DisambiguationBehaviors, MatchBehaviors } from './uploadPlanParser';
+import type {
+  ColumnOptions,
+  DisambiguationBehaviors,
+  MatchBehaviors,
+} from './uploadPlanParser';
 
 const modifyLine = (
   state: MappingState,
@@ -290,7 +294,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
           [state.lines.length]
         ).at(-1)!,
         mappingPath: [emptyMapping],
-        columnOptions: defaultColumnOptions,
+        columnOptions: getCurrentColumnOptions(state, [emptyMapping]),
       },
     ],
     focusedLine: state.lines.length,
@@ -337,6 +341,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines: deduplicateMappings(
         modifyLine(state, line, {
           mappingPath: newMappingPath,
+          columnOptions: getCurrentColumnOptions(state, newMappingPath),
         }),
         state.openSelectElement?.line ?? false
       ),
@@ -405,19 +410,19 @@ export const reducer = generateReducer<MappingState, MappingActions>({
   ChangeDisambiguationBehaviorAction: ({ state, action }) => {
     const mappingPath = state.lines[action.line].mappingPath;
     return {
-        ...state,
-        lines: state.lines.map((line) =>
-          isSameMappingPath(line.mappingPath, mappingPath) ?
-          {
-            ...line,
-            columnOptions: {
-              ...line.columnOptions,
-              disambiguationBehavior: action.disambiguationBehavior,
-            },
-          } : line
-        ),
-        changesMade: true,
-      }
+      ...state,
+      lines: state.lines.map((line) =>
+        (isSameMappingPath(line.mappingPath, mappingPath) && mappingPathIsComplete(line.mappingPath)) ?
+        {
+          ...line,
+          columnOptions: {
+            ...line.columnOptions,
+            disambiguationBehavior: action.disambiguationBehavior,
+          },
+        } : line
+      ),
+      changesMade: true,
+    };
   },
   UpdateLinesAction: ({ state, action: { lines } }) => ({
     ...state,
@@ -447,3 +452,24 @@ export const reducer = generateReducer<MappingState, MappingActions>({
 
 const isSameMappingPath = (pathA: MappingPath, pathB: MappingPath): boolean =>
   mappingPathToString(pathA.slice(0, -1)) === mappingPathToString(pathB.slice(0, -1));
+
+const getCurrentColumnOptions = (
+  state: MappingState,
+  mappingPath: MappingPath
+): ColumnOptions => {
+  if (!mappingPathIsComplete(mappingPath)) return defaultColumnOptions;
+
+  // Share disambiguationBehavior with lines mapped to the same record
+  const matchingLine = state.lines.find((line) =>
+    mappingPathIsComplete(line.mappingPath) &&
+    isSameMappingPath(line.mappingPath, mappingPath)
+  );
+
+  return matchingLine === undefined
+    ? defaultColumnOptions
+    : {
+        ...defaultColumnOptions,
+        disambiguationBehavior:
+          matchingLine.columnOptions.disambiguationBehavior,
+      };
+};
