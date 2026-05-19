@@ -5,7 +5,7 @@ import json
 from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
-from typing import Any, TypedDict
+from typing import Any, TypedDict, Iterable
 from collections.abc import Iterable
 
 from django.apps import apps
@@ -398,8 +398,8 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
 
     for rule in candidate_rules:
         # If the rule already exists, skip creating the rule
-        if _rule_fields_exactly_match(
-            rule.uniquenessrulefield_set.all(),
+        if _rule_fields_match(
+            rule,
             fields,
             scopes,
         ):
@@ -435,8 +435,8 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
     rule_ids = []
     for rule in candidate_rules:
         # If the rule exists, add it to the list of rules to be deleted
-        if _rule_fields_exactly_match(
-            rule.uniquenessrulefield_set.all(),
+        if _rule_fields_match(
+            rule,
             fields,
             scopes,
         ):
@@ -447,19 +447,13 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
     UniquenessRule.objects.filter(id__in=rule_ids).delete()
 
 
-def _rule_fields_exactly_match(rule_fields, fields, scopes) -> bool:
+def _rule_fields_match(rule, fields: Iterable[str], scopes: Iterable[str]) -> bool:
+    all_rule_fields = rule.uniquenessrulefield_set.all()
+    matching_fields = all_rule_fields.filter(fieldPath__in=fields, isScope=False)
+    matching_scopes = all_rule_fields.filter(fieldPath__in=scopes, isScope=True)
     return (
-        rule_fields.count() == len(set(fields)) + len(set(scopes))
-        and set(
-            rule_fields
-            .filter(fieldPath__in=fields, isScope=False)
-            .values_list("fieldPath", flat=True)
-        ) == set(fields)
-        and set(
-            rule_fields
-            .filter(fieldPath__in=scopes, isScope=True)
-            .values_list("fieldPath", flat=True)
-        ) == set(scopes)
+        (len(matching_fields) == len(fields)) and
+        (len(matching_scopes) == len(scopes))
     )
 
 
