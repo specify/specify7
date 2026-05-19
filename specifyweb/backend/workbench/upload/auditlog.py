@@ -150,14 +150,14 @@ class AuditLog:
             modifiedbyagent_id=agent_id)
 
     def purge(self):
-        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', get_global_prefs())
+        audit_lifespan = get_global_pref('AUDIT_LIFESPAN_MONTHS')
         logger.info("checking to see if purge is required")
-        if match is not None:
+        if audit_lifespan is not None:
             cursor = connection.cursor()
-            sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
+            sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  audit_lifespan.lower()+ " month) > timestampcreated"
             logger.info("purging audit log: %s", [sql]);
             cursor.execute(sql)
-            sql = "delete from spauditlog where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
+            sql = "delete from spauditlog where date_sub(curdate(), Interval " +  audit_lifespan.lower()+ " month) > timestampcreated"
             logger.info("purging audit log: %s", [sql]);
             cursor.execute(sql)
         return True
