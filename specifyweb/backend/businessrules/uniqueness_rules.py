@@ -451,9 +451,12 @@ def _rule_fields_match(rule, fields: Iterable[str], scopes: Iterable[str]) -> bo
     scopes_count = len(list(scopes))
     all_rule_fields = rule.uniquenessrulefield_set.all()
 
-    matching_fields = all_rule_fields.filter(fieldPath__in=fields, isScope=False)
-    matching_scopes = all_rule_fields.filter(fieldPath__in=scopes, isScope=True)
+    matching_fields = all_rule_fields.filter(
+        fieldPath__in=fields, isScope=False)
+    matching_scopes = all_rule_fields.filter(
+        fieldPath__in=scopes, isScope=True)
     return (
+        (all_rule_fields.count() == (fields_count + scopes_count)) and
         (matching_fields.count() == fields_count) and
         (matching_scopes.count() == scopes_count)
     )
