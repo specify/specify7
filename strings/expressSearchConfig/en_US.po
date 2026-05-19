@@ -76,22 +76,22 @@ msgstr "Descending"
 msgid "displayFields"
 msgstr "Display Fields"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
 #. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "configureResultsOrdering"
 msgstr "Configure Results Ordering"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
 #. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "reorderResultsOrderingDescription"
 msgstr "Reorder how sections appear in the search results pane."
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
 #. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "relatedQueryLabel"
 msgstr "Related Query: {query:string}"
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
 #. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "noDisplayItemsConfigured"
 msgstr "No display items configured."

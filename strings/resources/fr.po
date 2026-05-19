@@ -615,21 +615,21 @@ msgstr "Valeur de champ conditionnelle"
 msgid "formatPreview"
 msgstr "Aperçu du format"
 
-#: components/DataModel/businessRuleDefs.ts:540
-#: components/DataModel/businessRuleDefs.ts:558
+#: components/DataModel/businessRuleDefs.ts:542
+#: components/DataModel/businessRuleDefs.ts:560
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Une décision actuelle est requise."
 
-#: components/DataModel/businessRuleDefs.ts:320
-#: components/DataModel/businessRuleDefs.ts:339
+#: components/DataModel/businessRuleDefs.ts:321
+#: components/DataModel/businessRuleDefs.ts:340
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "Un centre de gravité ne peut pas être ajouté à lui-même."
 
-#: components/DataModel/businessRuleDefs.ts:269
+#: components/DataModel/businessRuleDefs.ts:270
 #: components/DataModel/__tests__/businessRules.test.ts:416
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
@@ -638,37 +638,37 @@ msgstr ""
 "Un groupe d'objets de collection consolidée doit avoir un objet de "
 "collection enfant principal"
 
-#: components/DataModel/businessRuleDefs.ts:357
+#: components/DataModel/businessRuleDefs.ts:358
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "L'enregistrement principal CO ne peut pas être supprimé."
 
-#: components/DataModel/businessRuleDefs.ts:801
+#: components/DataModel/businessRuleDefs.ts:803
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Une préparation empruntée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:809
+#: components/DataModel/businessRuleDefs.ts:811
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Une préparation offerte ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:817
+#: components/DataModel/businessRuleDefs.ts:819
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Une préparation éliminée ne peut pas être supprimée."
 
-#: components/DataModel/businessRuleDefs.ts:825
+#: components/DataModel/businessRuleDefs.ts:827
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Une préparation échangée ne peut pas être supprimée"
 
-#: components/DataModel/businessRuleDefs.ts:833
+#: components/DataModel/businessRuleDefs.ts:835
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
@@ -689,7 +689,7 @@ msgstr ""
 "La détermination n'appartient pas à l'arbre taxonomique associé au type "
 "d'objet Collection"
 
-#: components/DataModel/businessRuleDefs.ts:408
+#: components/DataModel/businessRuleDefs.ts:409
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "invalidNameTaxon"
@@ -697,8 +697,8 @@ msgstr ""
 "{taxonName: string} n'appartient pas à l'arbre {taxonTableLabel: string} "
 "associé à {typeName: string}"
 
-#: components/DataModel/businessRuleDefs.ts:236
-#: components/DataModel/businessRuleDefs.ts:471
+#: components/DataModel/businessRuleDefs.ts:237
+#: components/DataModel/businessRuleDefs.ts:473
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "catalogNumberAlreadyUsed"
@@ -706,13 +706,13 @@ msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} est déjà utilisé "
 "pour un autre composant ou objet de collection dans cette collection."
 
-#: components/DataModel/businessRuleDefs.ts:776
+#: components/DataModel/businessRuleDefs.ts:778
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Ce document est utilisé dans le cadre d'un prêt."
 
-#: components/DataModel/businessRuleDefs.ts:769
+#: components/DataModel/businessRuleDefs.ts:771
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"

@@ -166,7 +166,7 @@ msgid "metadataResource"
 msgstr "Ressource de métadonnées"
 
 #: components/Header/ExpressSearchTask.tsx:60
-#: components/Header/ExpressSearchTask.tsx:175
+#: components/Header/ExpressSearchTask.tsx:169
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
@@ -174,12 +174,12 @@ msgstr "Ressource de métadonnées"
 msgid "simpleSearch"
 msgstr "Recherche simple"
 
-#: components/Header/ExpressSearchTask.tsx:205
+#: components/Header/ExpressSearchTask.tsx:203
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Recherche principale"
 
-#: components/Header/ExpressSearchTask.tsx:211
+#: components/Header/ExpressSearchTask.tsx:209
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Recherche secondaire"

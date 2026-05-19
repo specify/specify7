@@ -612,21 +612,21 @@ msgstr "Vrijednost uvjetnog polja"
 msgid "formatPreview"
 msgstr "Pregled formata"
 
-#: components/DataModel/businessRuleDefs.ts:540
-#: components/DataModel/businessRuleDefs.ts:558
+#: components/DataModel/businessRuleDefs.ts:542
+#: components/DataModel/businessRuleDefs.ts:560
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "currentDeterminationRequired"
 msgstr "Potrebna je trenutna odluka."
 
-#: components/DataModel/businessRuleDefs.ts:320
-#: components/DataModel/businessRuleDefs.ts:339
+#: components/DataModel/businessRuleDefs.ts:321
+#: components/DataModel/businessRuleDefs.ts:340
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "cogAddedToItself"
 msgstr "COG se ne može dodati samom sebi."
 
-#: components/DataModel/businessRuleDefs.ts:269
+#: components/DataModel/businessRuleDefs.ts:270
 #: components/DataModel/__tests__/businessRules.test.ts:416
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #, fuzzy
@@ -635,37 +635,37 @@ msgstr ""
 "Konsolidirana grupa objekata kolekcije mora imati primarni podređeni objekt "
 "kolekcije"
 
-#: components/DataModel/businessRuleDefs.ts:357
+#: components/DataModel/businessRuleDefs.ts:358
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deletePrimaryRecord"
 msgstr "Primarni zapis CO ne može se izbrisati."
 
-#: components/DataModel/businessRuleDefs.ts:801
+#: components/DataModel/businessRuleDefs.ts:803
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteLoanedPrep"
 msgstr "Posuđeni preparat se ne može izbrisati"
 
-#: components/DataModel/businessRuleDefs.ts:809
+#: components/DataModel/businessRuleDefs.ts:811
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteGiftedPrep"
 msgstr "Poklonjena priprema ne može se izbrisati"
 
-#: components/DataModel/businessRuleDefs.ts:817
+#: components/DataModel/businessRuleDefs.ts:819
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteDisposedPrep"
 msgstr "Odbačeni pripravak ne može se izbrisati"
 
-#: components/DataModel/businessRuleDefs.ts:825
+#: components/DataModel/businessRuleDefs.ts:827
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeOutPrep"
 msgstr "Zamijenjeni pripravak ne može se izbrisati"
 
-#: components/DataModel/businessRuleDefs.ts:833
+#: components/DataModel/businessRuleDefs.ts:835
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "deleteExchangeInPrep"
@@ -684,7 +684,7 @@ msgstr ""
 msgid "invalidDeterminationTaxon"
 msgstr "Determinacija ne pripada stablu taksona povezanom s tipom objekta kolekcije"
 
-#: components/DataModel/businessRuleDefs.ts:408
+#: components/DataModel/businessRuleDefs.ts:409
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "invalidNameTaxon"
@@ -692,8 +692,8 @@ msgstr ""
 "{taxonName: string} ne pripada stablu {taxonTableLabel: string} povezanom s "
 "{typeName: string}"
 
-#: components/DataModel/businessRuleDefs.ts:236
-#: components/DataModel/businessRuleDefs.ts:471
+#: components/DataModel/businessRuleDefs.ts:237
+#: components/DataModel/businessRuleDefs.ts:473
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "catalogNumberAlreadyUsed"
@@ -701,13 +701,13 @@ msgstr ""
 "{catalogNumberFieldName: string} {catalogNumber: string} se već koristi za "
 "drugu komponentu ili objekt kolekcije u ovoj kolekciji."
 
-#: components/DataModel/businessRuleDefs.ts:776
+#: components/DataModel/businessRuleDefs.ts:778
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationUsedInLoan"
 msgstr "Priprema se koristi u zajmu."
 
-#: components/DataModel/businessRuleDefs.ts:769
+#: components/DataModel/businessRuleDefs.ts:771
 #. Used in: Components > Data Model > Business Rule Defs
 #, fuzzy
 msgid "preparationIsNegative"

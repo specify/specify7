@@ -102,25 +102,25 @@ msgstr ""
 msgid "displayFields"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:89
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:91
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:42
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
 msgstr ""
 
-#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:116
+#: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
