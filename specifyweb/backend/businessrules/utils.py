@@ -45,56 +45,6 @@ _agent_specifyuser_cache = ThreadCache[int, Any | None](
     )
 )
 
-_changed_field_names_attr = "_specify_changed_field_names"
-_missing = object()
-
-
-def _normalize_changed_field_name(field_name: str) -> str:
-    field_name = field_name.lower()
-    return field_name[:-3] if field_name.endswith("_id") else field_name
-
-
-def _field_path_match_names(field_name: str) -> set[str]:
-    field_name = field_name.lower()
-    first_part = field_name.split("__", 1)[0]
-    return {
-        _normalize_changed_field_name(field_name),
-        _normalize_changed_field_name(first_part),
-    }
-
-
-@contextmanager
-def track_changed_fields(instance, dirty_fields):
-    previous = getattr(instance, _changed_field_names_attr, _missing)
-    setattr(
-        instance,
-        _changed_field_names_attr,
-        {
-            _normalize_changed_field_name(field["field_name"])
-            for field in dirty_fields
-        },
-    )
-    try:
-        yield
-    finally:
-        if previous is _missing:
-            delattr(instance, _changed_field_names_attr)
-        else:
-            setattr(instance, _changed_field_names_attr, previous)
-
-
-def changed_fields_include(instance, field_names) -> bool:
-    changed_field_names = getattr(instance, _changed_field_names_attr, None)
-    if changed_field_names is None:
-        return True
-
-    match_names = {
-        match_name
-        for field_name in field_names
-        for match_name in _field_path_match_names(field_name)
-    }
-    return bool(changed_field_names & match_names)
-
 
 @contextmanager
 def cache_unique_catnum_preferences():

@@ -2,7 +2,6 @@ from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handl
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.utils import (
-    changed_fields_include,
     component_catalog_number_exists,
     get_default_collectionobjecttype_id,
     get_unique_catnum_across_comp_co_coll_pref_by_ids,
@@ -13,8 +12,6 @@ def _collection_object_catalog_check_needed(co) -> bool:
         return False
     if co.pk is None:
         return True
-    if not changed_fields_include(co, ("catalognumber", "collection")):
-        return False
 
     return not type(co).objects.filter(
         pk=co.pk,

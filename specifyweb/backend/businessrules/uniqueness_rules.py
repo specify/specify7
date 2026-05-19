@@ -22,7 +22,6 @@ from specifyweb.specify.utils.scoping import in_same_scope
 from .orm_signal_handler import orm_signal_handler
 from .exceptions import BusinessRuleException
 from . import models
-from .utils import changed_fields_include
 
 
 class JSONUniquenessRule(TypedDict):
@@ -68,19 +67,11 @@ _uniqueness_migration_cache = ThreadCache[str, bool](
     )
 )
 
-_collection_discipline_cache = ThreadCache[int, int | None](
-    ContextVar(
-        "uniqueness_collection_discipline_cache",
-        default=None,
-    )
-)
-
 @contextmanager
 def cache_uniqueness_rules():
     with (
         _uniqueness_rule_cache.activate(),
-        _uniqueness_migration_cache.activate(),
-        _collection_discipline_cache.activate()
+        _uniqueness_migration_cache.activate()
     ):
         yield
 
@@ -99,38 +90,6 @@ def resolve_model_field(model, field_path: str):
         if remote_model is not None:
             current_model = remote_model
     return resolved_field
-
-
-def apply_case_sensitive_filters(queryset, model, matchable, filter_kwargs):
-    annotations: dict[str, Func] = {}
-    transformed_filters: dict[str, object] = {}
-
-    case_sensitive_field_types = (
-        dj_models.CharField,
-        dj_models.TextField,
-        dj_models.SlugField,
-        dj_models.EmailField,
-        dj_models.UUIDField,
-    )
-
-    for index, (field_path, value) in enumerate(matchable.items()):
-        if not isinstance(value, str):
-            continue
-        resolved_field = resolve_model_field(model, field_path)
-        if isinstance(resolved_field, case_sensitive_field_types):
-            alias = f"__binary_filter__{index}"
-            annotations[alias] = Func(
-                F(field_path),
-                function='BINARY',
-                output_field=dj_models.TextField(),
-            )
-            transformed_filters[alias] = value
-            filter_kwargs.pop(field_path, None)
-
-    if annotations:
-        queryset = queryset.annotate(**annotations)
-
-    return queryset, transformed_filters
 
 
 def _initial_businessrules_migration_applied():
@@ -203,46 +162,11 @@ def _get_uniqueness_rule_configs(registry, model_name: str) -> list[CachedUnique
     return _uniqueness_rule_cache.get_or_set(cache_key, fetch_rules)
 
 
-def _get_collection_discipline_id(collection_id: int) -> int | None:
-
-    def fetch_discipline_id():
-        from specifyweb.specify.models import Collection
-        return (Collection.objects
-                .filter(id=collection_id)
-                .values_list("discipline_id", flat=True)
-                .first())
-
-    return _collection_discipline_cache.get_or_set(collection_id, fetch_discipline_id)
-
-
-def _instance_discipline_id(instance) -> int | None:
-    discipline_id = getattr(instance, "discipline_id", None)
-    if discipline_id is not None:
-        return discipline_id
-
-    collection_id = getattr(instance, "collection_id", None)
-    if collection_id is None:
-        collection_id = getattr(instance, "collectionmemberid", None)
-    if collection_id is not None:
-        return _get_collection_discipline_id(collection_id)
-
-    cached_collection = getattr(
-        instance._state, "fields_cache", {}).get("collection")
-    if cached_collection is not None:
-        return getattr(cached_collection, "discipline_id", None)
-
-    return None
-
-
 def _rule_applies_to_instance(rule: CachedUniquenessRule, instance) -> bool:
     if rule.is_global:
         return True
-
-    if rule.discipline_id is not None:
-        discipline_id = _instance_discipline_id(instance)
-        if discipline_id is not None:
-            return discipline_id == rule.discipline_id
-
+    # REFACTOR: Find some way to generally cache lookups for hierarchy tables,
+    # especially for Collection and Discipline.
     return in_same_scope(rule.rule, instance)
 
 
@@ -271,14 +195,20 @@ def validate_unique(model, instance):
     # We can't directly use the main app registry in the context of migrations, which uses fake models
     registry = model._meta.apps
 
+    # REFACTOR(perf): We should look into batching UniquenessRule queries.
+    # That is, instead of making a query to the DB for each rule, aggregate
+    # the rules and make a "single" query.
+    # We should be able to use QuerySet annotations for this, which would also
+    # enable us to differentiate which rules are violated. e.g.:
+    #  conflicts = model.objects.annotate(
+    #               rule1=Exists(model.objects.filter(catalognumber="something")),
+    #               rule2=Exists(...),
+    #               ...
+    #             ).filter(
+    #               Q(rule1=True)
+    #               | Q(rule2=True),
+    #               ...)
     for rule in _get_uniqueness_rule_configs(registry, model_name):
-        if (
-            instance.pk is not None
-            and rule.is_global
-            and not changed_fields_include(instance, rule.all_fields)
-        ):
-            continue
-
         if not _rule_applies_to_instance(rule, instance):
             continue
 
@@ -331,23 +261,7 @@ def validate_unique(model, instance):
 
         conflicts_query = model.objects.only('id')
 
-        connection = connections['default']
-
-        filter_kwargs = dict(matchable)
-
-        apply_case_sensitive = connection.vendor == 'mysql' and not rule.is_database_constraint
-
-        if apply_case_sensitive:
-            conflicts_query, transformed_filters = apply_case_sensitive_filters(
-                conflicts_query,
-                model,
-                matchable,
-                filter_kwargs,
-            )
-            if transformed_filters:
-                filter_kwargs.update(transformed_filters)
-
-        conflicts = conflicts_query.filter(**filter_kwargs)
+        conflicts = conflicts_query.filter(**matchable)
         if instance.id is not None:
             conflicts = conflicts.exclude(id=instance.id)
         if conflicts.exists():
@@ -394,35 +308,8 @@ def check_uniqueness(model_name: str, raw_fields: list[str], raw_scopes: list[st
 
     duplicates_field = '__duplicates'
 
-    db_alias = router.db_for_read(django_model)
-    connection = connections[db_alias]
-
     queryset = django_model.objects
     value_fields: list[str] = [*all_fields]
-
-    if connection.vendor == 'mysql':
-        case_sensitive_field_types = (
-            dj_models.CharField,
-            dj_models.TextField,
-            dj_models.SlugField,
-            dj_models.EmailField,
-            dj_models.UUIDField,
-        )
-
-        binary_annotations: dict[str, Func] = {}
-        for index, field in enumerate(all_fields):
-            resolved_field = resolve_model_field(django_model, field)
-            if isinstance(resolved_field, case_sensitive_field_types):
-                alias = f"__binary__{index}"
-                binary_annotations[alias] = Func(
-                    F(field),
-                    function='BINARY',
-                    output_field=dj_models.TextField(),
-                )
-                value_fields.append(alias)
-
-        if binary_annotations:
-            queryset = queryset.annotate(**binary_annotations)
 
     duplicates = (
         queryset
