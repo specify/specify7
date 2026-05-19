@@ -2,7 +2,20 @@ from typing import Callable, Generic, TypeVar
 from contextlib import contextmanager
 from contextvars import ContextVar
 
-KEY_MISSING = object()
+class MissingKey:
+    # This is used so that if the missing key is returned from a .get or
+    # similar operation than implicit bool evaluators like if will evaluate
+    # the object as False
+    # e.g.:
+    # my_val = my_thread_cache.get("some_key")
+    # # if the key does not exist, then my_val will evaluate to False in the if
+    # condition
+    # if my_val:
+    #   ...
+    def __bool__(self):
+        return False
+
+KEY_MISSING = MissingKey()
 
 K = TypeVar("K")
 V = TypeVar("V")

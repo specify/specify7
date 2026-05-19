@@ -103,7 +103,7 @@ def _initial_businessrules_migration_applied():
 
 def _cached_businessrules_migration_applied() -> bool:
     cache_key = "default"
-    cache_is_active, is_set = _uniqueness_migration_cache.get(cache_key)
+    cache_is_active, is_set = _uniqueness_migration_cache.get(cache_key, default=False)
     if cache_is_active and is_set:
         return True
     # If the cache is not active or the business rule migration is not applied,
