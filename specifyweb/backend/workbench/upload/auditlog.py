@@ -154,12 +154,13 @@ class AuditLog:
         logger.info("checking to see if purge is required")
         if audit_lifespan is not None:
             cursor = connection.cursor()
-            sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  audit_lifespan.lower()+ " month) > timestampcreated"
-            logger.info("purging audit log: %s", [sql]);
-            cursor.execute(sql)
-            sql = "delete from spauditlog where date_sub(curdate(), Interval " +  audit_lifespan.lower()+ " month) > timestampcreated"
-            logger.info("purging audit log: %s", [sql]);
-            cursor.execute(sql)
+            query_parameters = [audit_lifespan.lower()]
+            sql = "delete from spauditlogfield where date_sub(curdate(), Interval %s month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql])
+            cursor.execute(sql, query_parameters)
+            sql = "delete from spauditlog where date_sub(curdate(), Interval %s month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql])
+            cursor.execute(sql, query_parameters)
         return True
     
 auditlog = AuditLog()
