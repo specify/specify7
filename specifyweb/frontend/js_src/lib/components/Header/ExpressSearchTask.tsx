@@ -125,11 +125,7 @@ function ExpressSearchInstructions({
               {headerText.documentation()}
             </Link.NewTab>
           )}
-          <Button.Icon
-            icon="x"
-            title={commonText.close()}
-            onClick={onClose}
-          />
+          <Button.Icon icon="x" title={commonText.close()} onClick={onClose} />
         </div>
       </div>
       <ul className="mt-2 space-y-1 list-disc pl-5">
@@ -147,10 +143,8 @@ export function ExpressSearchView(): JSX.Element {
   const [pendingQuery] = value;
   const [isConfigOpen, setIsConfigOpen] = React.useState(false);
   const [configRefreshTrigger, setConfigRefreshTrigger] = React.useState(0);
-  const [showInstructions = true, setShowExpressSearchInstructions] = useCachedState(
-    'expressSearch',
-    'showSearchTips'
-  );
+  const [showInstructions = true, setShowExpressSearchInstructions] =
+    useCachedState('expressSearch', 'showSearchTips');
   const canEditExpressSearchConfig =
     hasToolPermission('resources', 'read') &&
     hasToolPermission('resources', 'create') &&
@@ -176,11 +170,15 @@ export function ExpressSearchView(): JSX.Element {
           <Button.Icon
             icon="questionCircle"
             title={commonText.expressSearchInstructionsTitle()}
-            onClick={(): void => setShowExpressSearchInstructions((value) => !value)}
+            onClick={(): void =>
+              setShowExpressSearchInstructions((value) => !value)
+            }
           />
         </div>
         {showInstructions && (
-          <ExpressSearchInstructions onClose={(): void => setShowExpressSearchInstructions(false)} />
+          <ExpressSearchInstructions
+            onClose={(): void => setShowExpressSearchInstructions(false)}
+          />
         )}
         <Form onSubmit={(): void => setQuery(pendingQuery)}>
           <div className="flex items-center gap-2">
