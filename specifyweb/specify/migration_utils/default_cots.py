@@ -135,22 +135,25 @@ def fix_tectonic_unit_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     Tectonicunittreedef = apps.get_model('specify', 'Tectonicunittreedef')
 
-    empty_tectonic_unit_treedefs = Tectonicunittreedef.objects.filter(discipline__isnull=True)
-    empty_disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True)
-    for empty_discipline in empty_disciplines:
-        if not empty_tectonic_unit_treedefs.exists():
-            new_tectonic_unit_treedef = Tectonicunittreedef.objects.create(
-                name=f'{empty_discipline.name} Tectonic Unit Tree',
-                discipline=empty_discipline
-            )
-        else:
-            empty_discipline.tectonicunittreedef = empty_tectonic_unit_treedefs.first()
-            empty_discipline.save()
+    empty_tectonic_unit_treedefs = list(
+        Tectonicunittreedef.objects.filter(discipline__isnull=True)
+    )
+    empty_disciplines = list(
+        Discipline.objects.filter(tectonicunittreedef__isnull=True)
+    )
 
-    for empty_tectonic_unit_treedef in empty_tectonic_unit_treedefs:
-        if empty_disciplines.exists():
-            empty_tectonic_unit_treedef.discipline = empty_disciplines.first()
-            empty_tectonic_unit_treedef.save()
-        else:
-            empty_tectonic_unit_treedef.discipline = empty_disciplines.last()
-            empty_tectonic_unit_treedef.save()
+    for discipline, tectonic_unit_treedef in zip(
+        empty_disciplines, empty_tectonic_unit_treedefs
+    ):
+        tectonic_unit_treedef.discipline = discipline
+        tectonic_unit_treedef.save()
+        discipline.tectonicunittreedef = tectonic_unit_treedef
+        discipline.save()
+
+    for discipline in empty_disciplines[len(empty_tectonic_unit_treedefs):]:
+        tectonic_unit_treedef = Tectonicunittreedef.objects.create(
+            name=f'{discipline.name} Tectonic Unit Tree',
+            discipline=discipline
+        )
+        discipline.tectonicunittreedef = tectonic_unit_treedef
+        discipline.save()
