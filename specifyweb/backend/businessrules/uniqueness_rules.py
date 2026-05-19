@@ -6,7 +6,6 @@ from contextlib import contextmanager
 from contextvars import ContextVar
 from dataclasses import dataclass
 from typing import Any, TypedDict, Iterable
-from collections.abc import Iterable
 
 from django.apps import apps
 from django.db import connections, router, transaction
@@ -448,12 +447,15 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
 
 
 def _rule_fields_match(rule, fields: Iterable[str], scopes: Iterable[str]) -> bool:
+    fields_count = len(list(fields))
+    scopes_count = len(list(scopes))
     all_rule_fields = rule.uniquenessrulefield_set.all()
+
     matching_fields = all_rule_fields.filter(fieldPath__in=fields, isScope=False)
     matching_scopes = all_rule_fields.filter(fieldPath__in=scopes, isScope=True)
     return (
-        (len(matching_fields) == len(fields)) and
-        (len(matching_scopes) == len(scopes))
+        (matching_fields.count() == fields_count) and
+        (matching_scopes.count() == scopes_count)
     )
 
 
