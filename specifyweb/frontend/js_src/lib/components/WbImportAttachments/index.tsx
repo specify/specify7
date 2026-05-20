@@ -15,9 +15,7 @@ import type { RA } from '../../utils/types';
 import { Container, H2 } from '../Atoms';
 import { Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
-import {
-  serializeResource,
-} from '../DataModel/serializers';
+import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import { raise } from '../Errors/Crash';
 import { useMenuItem } from '../Header/MenuContext';

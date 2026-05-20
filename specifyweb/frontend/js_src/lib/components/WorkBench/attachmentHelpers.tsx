@@ -188,16 +188,18 @@ export async function uploadAttachmentsToRow(
   >
 ): Promise<void> {
   const [attachmentIsPublicDefault] = collectionPreferences.use(
-      'general',
-      'attachments',
-      'attachment.is_public_default'
-    );
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
   const attachmentColumn = getAttachmentsColumn(dataset);
   if (attachmentColumn === -1) return;
   setFileUploadProgress(0);
   setFileUploadLength(files.length);
   const currentCount = existingAttachments.length;
-  await Promise.all(uploadFiles(files, setFileUploadProgress, attachmentIsPublicDefault))
+  await Promise.all(
+    uploadFiles(files, setFileUploadProgress, attachmentIsPublicDefault)
+  )
     .then(async (attachments) =>
       // Create SpDataSetAttachments for each attachment
       f.all({
@@ -206,7 +208,7 @@ export async function uploadAttachmentsToRow(
           dataset.id
         ).then(async (unsavedDataSetAttachments) => {
           unsavedDataSetAttachments.forEach((dataSetAttachment, index) => {
-            dataSetAttachment.set('ordinal', currentCount+index);
+            dataSetAttachment.set('ordinal', currentCount + index);
           });
           return saveDataSetAttachments(unsavedDataSetAttachments);
         }),
@@ -243,7 +245,7 @@ export async function deleteAttachmentFromRow(
   const allDataSetAttachments = existingAttachments.filter(
     (att) => att.id !== idToDelete
   );
-  
+
   // The previous target table is not preserved. Safe for now since only uploading to the base table is supported.
   const targetTable = BASE_TABLE_NAME;
   const data = attachmentsToCell(allDataSetAttachments, targetTable);
