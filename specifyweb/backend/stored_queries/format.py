@@ -28,6 +28,7 @@ from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models
+from .build_models import get_many_to_many_join_info
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct import QueryConstruct
@@ -342,12 +343,24 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
-        join_column = list(inspect(
-            getattr(orm_table, field.otherSideName)).property.local_columns)[0]
-        subquery_query = Query([]) \
-            .select_from(orm_table) \
-            .filter(join_column == rel_table._id) \
-            .correlate(rel_table)
+        join_info = get_many_to_many_join_info(datamodel, field)
+        if join_info is not None:
+            secondary_table = models.tables[join_info.table]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .join(
+                    secondary_table,
+                    secondary_table.c[join_info.remote_column] == orm_table._id,
+                ) \
+                .filter(secondary_table.c[join_info.local_column] == rel_table._id) \
+                .correlate(rel_table)
+        else:
+            join_column = list(inspect(
+                getattr(orm_table, field.otherSideName)).property.local_columns)[0]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .filter(join_column == rel_table._id) \
+                .correlate(rel_table)
 
         try:
             from_table_name = query.query.selectable.froms[0].name.lower()
