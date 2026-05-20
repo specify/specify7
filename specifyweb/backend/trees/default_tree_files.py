@@ -132,7 +132,7 @@ def load_default_tree_json(source: str) -> Any:
     if not _is_allowed_remote_mapping_url(source):
         raise ValueError('Remote mapping URL is not allowed.')
 
-    response = requests.get(source)
+    response = requests.get(source, timeout=(5, 30))
     response.raise_for_status()
     return response.json()
 
