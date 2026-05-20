@@ -114,7 +114,9 @@ def calculate_extra_fields(obj, data: dict[str, Any]) -> dict[str, Any]:
 
      
     elif isinstance(obj, Loanpreparation):
-            # calculate the resolved status based on quantity and quantityresolved.
+            """calculate the resolved status based on quantity and quantityresolved. 
+            added fallback to handle null values for quantity and quantityresolved, 
+            treating them as 0 if they are null or not provided"""
             quantity_resolved = int(data.get('quantityresolved')) or 0
             total_quantity = int(data.get('quantity')) or 0
             is_resolved = (quantity_resolved >= total_quantity)
