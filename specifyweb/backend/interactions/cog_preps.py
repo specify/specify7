@@ -548,9 +548,9 @@ def modify_update_of_loan_return_sibling_preps(original_interaction_obj, updated
         )
           #fixed error firefox specific error caused by  quantity returned being posted as a string instead of an int in the  API request, need to convert to int before summing
         total_quantity_returned = sum(
-            [int(loan_return["quantityreturned"]) for loan_return in loan_return_data])
+            [int(loan_return["quantityreturned"] or 0) for loan_return in loan_return_data])
         total_quantity_resolved = sum(
-            [int(loan_return["quantityresolved"]) for loan_return in loan_return_data])
+            [int(loan_return["quantityresolved"] or 0) for loan_return in loan_return_data])
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityresolved"] = total_quantity_resolved
         updated_interaction_data["loanpreparations"][loan_prep_idx]["quantityreturned"] = total_quantity_returned
 
