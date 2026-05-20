@@ -108,9 +108,8 @@ msgstr "Ingen"
 #: components/WbToolkit/CoordinateConverter.tsx:228
 #: components/WorkBench/DataSetMeta.tsx:163
 #: components/WorkBench/Disambiguation.tsx:40
-#, fuzzy
 msgid "cancel"
-msgstr "Kansellere"
+msgstr "Kanseller"
 
 #. Used in: Components > Batch Identify > Index ⬤ Components > Formatters > List ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables ⬤ Components > Setup Tool > Index
 #: components/BatchIdentify/index.tsx:859
