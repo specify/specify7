@@ -22,6 +22,8 @@ import { QueryButton } from './Components';
 import type { QueryField } from './helpers';
 import { hasLocalityColumns } from './helpers';
 import type { QueryResultRow } from './Results';
+import { ReportsView } from '../Reports';
+import { useBooleanState } from '../../hooks/useBooleanState';
 
 export function QueryExportButtons({
   baseTableName,
@@ -92,11 +94,6 @@ export function QueryExportButtons({
     'exportCsvUtf8Bom'
   );
 
-  /*
-   *Will be only called if query is not distinct,
-   *selection not enabled when distinct selected
-   */
-
   async function exportCsvSelected(): Promise<void> {
     const name = `${
       queryResource.isNew()
@@ -129,6 +126,8 @@ export function QueryExportButtons({
     );
   }
 
+  const [showReports, handleShowReports, handleHideReports] = useBooleanState();
+
   const containsResults = results.current?.some((row) => row !== undefined);
 
   const canUseKml =
@@ -136,6 +135,10 @@ export function QueryExportButtons({
       fields.some(({ mappingPath }) => mappingPath.includes('locality'))) &&
     containsResults &&
     hasPermission('/querybuilder/query', 'export_kml');
+
+  const canGenerateLabels =
+    containsResults &&
+    hasPermission('/querybuilder/query', 'execute');
 
   return (
     <>
@@ -192,6 +195,25 @@ export function QueryExportButtons({
         >
           {queryText.createKml()}
         </QueryButton>
+      )}
+      {canGenerateLabels && (
+        <>
+          <QueryButton
+            disabled={fields.length === 0}
+            showConfirmation={showConfirmation}
+            onClick={handleShowReports}
+          >
+            {queryText.generateLabels()}
+          </QueryButton>
+          {showReports && (
+            <ReportsView
+              autoSelectSingle
+              resourceId={queryResource.get('id')}
+              table={genericTables[baseTableName]}
+              onClose={handleHideReports}
+            />
+          )}
+        </>
       )}
     </>
   );
