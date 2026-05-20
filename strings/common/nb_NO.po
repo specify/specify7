@@ -329,12 +329,11 @@ msgstr "Søketips"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:132
-#, fuzzy
 msgid "expressSearchInstructions"
 msgstr ""
 "Skill flere søkeord med mellomrom, bruk % hvor som helst, * i begynnelsen "
-"eller slutten, og bryt søkeord i anførselstegn for eksakte treff med flere "
-"ord."
+"eller slutten, og sett alle søkeord sammen i anførselstegn for eksakte treff "
+"med flere ord."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
