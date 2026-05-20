@@ -464,7 +464,20 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
             : backendFilter('id').not.equals(resource.id)),
         }).then(({ totalCount }) => totalCount !== 0);
 
-        const isInvalid = containsCoDuplicates || containsComponentDuplicates;
+        const localCatalogNumbers =
+          resource.collection === undefined
+            ? []
+            : resource.collection.models
+                .map((component) => component.get('catalogNumber'))
+                .filter((catalogNumber) => catalogNumber !== null);
+
+        const containsLocalDuplicates =
+          new Set(localCatalogNumbers).size !== localCatalogNumbers.length;
+
+        const isInvalid =
+          containsCoDuplicates ||
+          containsComponentDuplicates ||
+          containsLocalDuplicates;
 
         setSaveBlockers(
           resource,
