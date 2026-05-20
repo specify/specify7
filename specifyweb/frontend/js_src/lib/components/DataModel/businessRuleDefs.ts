@@ -211,7 +211,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           'uniqueness'
         );
 
-        if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        if (
+          !uniqueCatalogNumberAccrossComponentAndCOPref ||
+          catalogNumberValue === null
+        ) {
           setSaveBlockers(
             resource,
             resource.specifyTable.field.catalogNumber,
@@ -221,17 +226,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           return undefined;
         }
 
-        const catalogNumberValue = resource.get('catalogNumber');
+        const databaseContainsComponentDuplicates = await fetchCollection(
+          'Component',
+          {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+          }
+        ).then(({ totalCount }) => totalCount !== 0);
 
-        const containsComponentDuplicates = await fetchCollection('Component', {
-          catalogNumber: catalogNumberValue,
-          domainFilter: true,
-        }).then(({ totalCount }) => totalCount !== 0);
+        // BUG: When a local Component is modified to have a catalogNumber that
+        // matches this CollectionObject, a change event is being triggered on
+        // the CO -> catalogNumber and triggering this rule as well
+        // Found out what is causing the change event...
+        const localCollectionContainsComponentDuplicates = resource
+          .getDependentResource('components')
+          ?.models.some(
+            (component) =>
+              catalogNumberValue !== null &&
+              component.get('catalogNumber') === catalogNumberValue
+          );
+
+        const isInvalid =
+          databaseContainsComponentDuplicates ||
+          localCollectionContainsComponentDuplicates;
 
         setSaveBlockers(
           resource,
           resource.specifyTable.field.catalogNumber,
-          containsComponentDuplicates
+          isInvalid
             ? [
                 resourcesText.catalogNumberAlreadyUsed({
                   catalogNumberFieldName:
