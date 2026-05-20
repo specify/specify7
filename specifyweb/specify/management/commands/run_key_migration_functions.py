@@ -4,7 +4,6 @@ from collections.abc import Callable, Iterable
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
-from django.db.models import Subquery
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import (
     apply_default_uniqueness_rules,
@@ -82,12 +81,8 @@ def apply_default_uniqueness_rules_to_disciplines(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
 
-    disciplines_with_rules = UniquenessRule.objects.exclude(
-        discipline_id__isnull=True
-    ).values("discipline_id").distinct()
     for discipline in Discipline.objects.exclude(
-        id__in=Subquery(disciplines_with_rules)
-    ):
+        id__in=set(UniquenessRule.objects.values_list('discipline_id', flat=True).distinct())):
         apply_default_uniqueness_rules(discipline, registry=apps)
 
 
@@ -143,7 +138,7 @@ class Command(BaseCommand):
             nargs="*",
             type=str,
             choices=tuple(self.funcs.keys()),
-            help="Optional: specify one or more functions to run",
+            help=f"Optional: specify one or more functions to run",
         )
         parser.add_argument(
             "--verbose",
@@ -176,6 +171,6 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
-        except Exception:
-            logger.exception("An error occurred while running key migrations")
+        except Exception as e:
+            logger.error(f"An error occurred: {e}")
             raise

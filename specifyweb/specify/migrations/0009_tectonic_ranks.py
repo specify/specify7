@@ -18,8 +18,8 @@ class Migration(migrations.Migration):
         create_root_tectonic_node(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_create_root_tectonic_node(apps, schema_editor)
         revert_default_tectonic_ranks(apps, schema_editor)
+        revert_create_root_tectonic_node(apps, schema_editor)
 
     operations = [
         migrations.RunPython(

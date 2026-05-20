@@ -1,6 +1,5 @@
 import logging
 import os
-from django.conf import settings
 from django.db.models import Case, FloatField, F, Q, Value, When
 from django.db.models.functions import Coalesce, Greatest, Least, Cast
 from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
@@ -978,6 +977,5 @@ def modify_query_add_meta_age_range(query, start_time, end_time, require_full_ov
     ).label("age")
     new_query = new_query.add_columns(age_expr)
     
-    if settings.DEBUG:
-        log_sqlalchemy_query(new_query)
+    log_sqlalchemy_query(new_query)
     return new_query

@@ -1,4 +1,4 @@
-from typing import List
+from typing import Tuple, List
 
 from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule
 
@@ -47,7 +47,6 @@ def catnum_rule_uneditable(apps, schema_editor=None):
         model_rules = UniquenessRule.objects.filter(modelName="Collectionobject", discipline_id=discipline.id, isDatabaseConstraint=False)
 
         has_catalognumber_rule = False
-        matching_rule_ids: List[int] = []
         for rule in model_rules: 
             rule_fields = rule.uniquenessrulefield_set.all()
 
@@ -60,11 +59,8 @@ def catnum_rule_uneditable(apps, schema_editor=None):
             # exception if more than one result is returned
             if (len(fields) == 1 and len(scopes) == 1) and (fields.get().fieldPath.lower() == "catalognumber" and scopes.get().fieldPath.lower() == "collection"):
                 has_catalognumber_rule = True
-                matching_rule_ids.append(rule.id)
 
-        if has_catalognumber_rule:
-            UniquenessRule.objects.filter(id__in=matching_rule_ids).update(isDatabaseConstraint=True)
-        else:
+        if not has_catalognumber_rule:
             create_uniqueness_rule(
                 "Collectionobject",
                 discipline=discipline,

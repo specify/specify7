@@ -16,6 +16,7 @@ from specifyweb.specify.migration_utils.default_cots import (
     create_default_discipline_for_tree_defs,
     set_discipline_for_taxon_treedefs,
 )
+from specifyweb.specify.api.utils import create_default_collection_types
 
 logger = logging.getLogger(__name__)
 
