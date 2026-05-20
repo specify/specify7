@@ -7,8 +7,9 @@ from xml.etree import ElementTree
 from xml.etree.ElementTree import Element
 from xml.sax.saxutils import quoteattr
 
+from specifyweb.backend.stored_queries.utils import ensure_string_type_if_null
 from specifyweb.specify.api.utils import get_picklists
-from sqlalchemy import Table as SQLTable, inspect, case
+from sqlalchemy import Table as SQLTable, inspect, case, type_coerce
 from sqlalchemy.orm import aliased, Query
 from sqlalchemy.sql.expression import func, cast, literal, Label
 from sqlalchemy.sql.functions import concat
@@ -27,6 +28,7 @@ from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models
+from .build_models import get_many_to_many_join_info
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct import QueryConstruct
@@ -40,10 +42,10 @@ Agent_model = datamodel.get_table('Agent')
 Spauditlog_model = datamodel.get_table('SpAuditLog')
 
 class ObjectFormatterProps(NamedTuple):
-    format_agent_type: bool = False,
-    format_picklist: bool = False,
-    format_types: bool = True,
-    numeric_catalog_number: bool = True,
+    format_agent_type: bool = False
+    format_picklist: bool = False
+    format_types: bool = True
+    numeric_catalog_number: bool = True
     # format_expr determines if make_expr should call _fieldformat, like in versions before 7.10.2.
     # Batch edit expects it to be false to correctly handle some edge cases.
     format_expr: bool = False
@@ -199,27 +201,69 @@ class ObjectFormatter:
                 formatter,
                 aggregator, previous_tables)
 
+            raw_expr = new_expr
         else:
             new_query, table, model, specify_field = query.build_join(
                 specify_model, orm_table, formatter_field_spec.join_path)
             new_expr = getattr(table, specify_field.name)
-            
+            raw_expr = new_expr
+
+            # Apply field-level formatting, which may include numeric cast
             if self.format_expr:
-                new_expr = self._fieldformat(formatter_field_spec.table, formatter_field_spec.get_field(), new_expr)
+                new_expr = self._fieldformat(
+                    formatter_field_spec.table,
+                    formatter_field_spec.get_field(),
+                    new_expr
+                )
 
-        if 'trimzeros' in fieldNodeAttrib:
-            new_expr = case(
-                [(new_expr.op('REGEXP')('^-?[0-9]+(\\.[0-9]+)?$'), cast(new_expr, types.Numeric(65)))],
-                else_=new_expr
+        # Helper function to apply only string-ish transforms with no numeric casts
+        def apply_stringish(expr):
+            e = expr
+
+            if fieldNodeAttrib.get('trimzeros') == 'true':
+                e = cast(e, types.String())
+                trimmed = e
+
+                # remove leading zeros
+                trimmed = func.regexp_replace(trimmed, r'^(-?)0+([0-9])', r'\1\2')
+
+                # remove trailing zeros after decimal
+                trimmed = func.regexp_replace(trimmed, r'(\.[0-9]*?)0+$', r'\1')
+
+                # remove trailing decimal point
+                trimmed = func.regexp_replace(trimmed, r'\.$', '')
+
+                e = case((e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), trimmed), else_=e)
+
+            fmt = fieldNodeAttrib.get('format')
+            if fmt is not None:
+                e = self.pseudo_sprintf(fmt, e)
+
+            sep = fieldNodeAttrib.get('sep')
+            if sep is not None:
+                e = concat(sep, e)
+
+            return e
+
+        stringish_expr = apply_stringish(raw_expr)
+        formatted_expr = apply_stringish(new_expr)
+
+        if do_blank_null:
+            sf = formatter_field_spec.get_field()
+            is_catalog_num = (
+                sf is not None
+                and sf is CollectionObject_model.get_field('catalogNumber')
             )
+            if (
+                is_catalog_num
+                and self.numeric_catalog_number
+                and all_numeric_catnum_formats(self.collection)
+            ):
+                return new_query, blank_nulls(stringish_expr), formatter_field_spec
 
-        if 'format' in fieldNodeAttrib:
-            new_expr = self.pseudo_sprintf(fieldNodeAttrib['format'], new_expr)
+            return new_query, blank_nulls(formatted_expr), formatter_field_spec
 
-        if 'sep' in fieldNodeAttrib:
-            new_expr = concat(fieldNodeAttrib['sep'], new_expr)
-
-        return new_query, blank_nulls(new_expr) if do_blank_null else new_expr, formatter_field_spec
+        return new_query, formatted_expr, formatter_field_spec
 
     def objformat(self, query: QueryConstruct, orm_table: SQLTable,
                   formatter_name, cycle_detector=[]) -> tuple[QueryConstruct, blank_nulls]:
@@ -299,12 +343,24 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
-        join_column = list(inspect(
-            getattr(orm_table, field.otherSideName)).property.local_columns)[0]
-        subquery_query = Query([]) \
-            .select_from(orm_table) \
-            .filter(join_column == rel_table._id) \
-            .correlate(rel_table)
+        join_info = get_many_to_many_join_info(datamodel, field)
+        if join_info is not None:
+            secondary_table = models.tables[join_info.table]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .join(
+                    secondary_table,
+                    secondary_table.c[join_info.remote_column] == orm_table._id,
+                ) \
+                .filter(secondary_table.c[join_info.local_column] == rel_table._id) \
+                .correlate(rel_table)
+        else:
+            join_column = list(inspect(
+                getattr(orm_table, field.otherSideName)).property.local_columns)[0]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .filter(join_column == rel_table._id) \
+                .correlate(rel_table)
 
         try:
             from_table_name = query.query.selectable.froms[0].name.lower()
@@ -321,13 +377,7 @@ class ObjectFormatter:
         aliased_orm_table = aliased(orm_table)
 
         if is_self_join_aggregation: # Handle self join aggregation
-            if field.name in {'children', 'components'} and field.relatedModelName == 'CollectionObject':
-                # Child = aliased(orm_table)
-                subquery_query = Query([]) \
-                    .select_from(aliased_orm_table) \
-                    .filter(aliased_orm_table.ComponentParentID == rel_table._id) \
-                    .correlate(rel_table)
-            elif field.is_relationship and \
+            if field.is_relationship and \
                 field.type == 'one-to-many' and \
                 field.otherSideName in [fld.name for fld in specify_model.relationships]:
                 # Handle self join aggregation in the general case
@@ -369,48 +419,79 @@ class ObjectFormatter:
         if field_spec.get_field() is not None:
             if field_spec.is_temporal() and field_spec.date_part == "Full Date":
                 field = self._dateformat(field_spec.get_field(), field)
-
+            elif field_spec.is_temporal() and field_spec.date_part is not None:
+                # Numeric date_part fields are already derived SQL expressions
+                pass
             elif field_spec.is_relationship():
                 pass
-
             else:
                 field = self._fieldformat(field_spec.table, field_spec.get_field(), field)
+        
         return blank_nulls(field) if self.replace_nulls else field
 
     def _dateformat(self, specify_field, field):
         if specify_field.type == "java.sql.Timestamp":
             return func.date_format(field, "%Y-%m-%dT%H:%i:%s")
 
-        prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
+        prec_fld = None
+        if hasattr(field, 'class_'):
+            prec_fld = getattr(field.class_, specify_field.name + 'Precision', None)
 
-        format_expr = (
-            case(
-                [
-                    (prec_fld == 2, self.date_format_month),
-                    (prec_fld == 3, self.date_format_year),
-                ],
-                else_=self.date_format,
+        # format_expr = (
+        #     case(
+        #         [
+        #             (prec_fld == 2, self.date_format_month),
+        #             (prec_fld == 3, self.date_format_year),
+        #         ],
+        #         else_=self.date_format,
+        #     )
+        #     if prec_fld is not None
+        #     else self.date_format
+        # )
+        if prec_fld is not None:
+            format_expr = case(
+                (prec_fld == 2, literal(self.date_format_month, type_=types.String())),
+                (prec_fld == 3, literal(self.date_format_year,  type_=types.String())),
+                else_=ensure_string_type_if_null(literal(self.date_format, type_=types.String())),
             )
-            if prec_fld is not None
-            else self.date_format
-        )
+        else:
+            format_expr = literal(self.date_format, type_=types.String())
 
         return func.date_format(field, format_expr)
 
     def _fieldformat(self, table: Table, specify_field: Field,
                      field: InstrumentedAttribute | Extract):
+        if (
+            self.format_types
+            and specify_field.is_temporal()
+            and isinstance(field, InstrumentedAttribute)
+        ):
+            return self._dateformat(specify_field, field)
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
-            cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
-            _case = case(cases)
+            # cases = [(field == _id, name) for (_id, name) in enumerate(agent_types)]
+            # _case = case(cases)
+            cases = [(field == _id, ensure_string_type_if_null(literal(name, type_=types.String()))) for (_id, name) in enumerate(agent_types)]
+            _case = case(cases, else_=ensure_string_type_if_null(literal('', type_=types.String())))
             return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_picklist:
             picklists, _ = get_picklists(self.collection, table.table, specify_field.name)
             if picklists:
-                cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
-                _case = case(cases, else_=field)
-            
+                # cases = [(field == item.value, item.title) for item in picklists[0].picklistitems.all()]
+                # _case = case(cases, else_=field)
+                items = list(picklists[0].picklistitems.all())
+                if not items:
+                    expr = cast(field, types.String())
+                    return blank_nulls(expr) if self.replace_nulls else expr
+        
+                cases = [
+                    (field == item.value, ensure_string_type_if_null(literal(item.title or "")))
+                    for item in items
+                ]
+                _case = case(cases, else_=cast(field, types.String()))
+                _case = type_coerce(_case, types.String())
+                
                 return blank_nulls(_case) if self.replace_nulls else _case
         
         if self.format_types and specify_field.type == "java.lang.Boolean":
@@ -421,11 +502,15 @@ class ObjectFormatter:
         
         if self.numeric_catalog_number and specify_field is CollectionObject_model.get_field('catalogNumber') \
                 and all_numeric_catnum_formats(self.collection):
+            # Cast to Numeric only if the value is numeric to avoid casting strings like 'F-235694' to 0
             # While the frontend can format the catalogNumber if needed,
             # processes like reports, labels, and query exports generally
             # expect the catalogNumber to be numeric if possible.
             # See https://github.com/specify/specify7/issues/6464
-            return cast(field, types.Numeric(65))
+            return case(
+                [(field.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), cast(field, types.Numeric(65)))],
+                else_=field
+            )
 
         if self.format_types and specify_field.type == 'json' and isinstance(field.comparator.type, types.JSON):
             return cast(field, types.Text)

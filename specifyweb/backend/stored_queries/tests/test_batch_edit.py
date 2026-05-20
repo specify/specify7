@@ -2310,3 +2310,36 @@ class QueryConstructionTests(SQLAlchemySetup):
         ]
 
         self.assertEqual(correct_packs, packs)
+
+    def test_column_key_collision(self):
+        # Build QB Query
+        base_table = "collectionobject"
+        expected_captions = ['Cataloger - GUID', 'Determiner - GUID']
+        query_paths = [
+            ["cataloger", "GUID"],
+            ["determinations", "Determiner", "GUID"],
+        ]
+
+        added = [(base_table, *path) for path in query_paths]
+
+        query_fields = [
+            BatchEditPack._query_field(QueryFieldSpec.from_path(path), 0)
+            for path in added
+        ]
+
+        props = BatchEditProps(
+            collection=self.collection,
+            user=self.specifyuser,
+            contexttableid=datamodel.get_table_strict(base_table).tableId,
+            fields=query_fields,
+            session_maker=QueryConstructionTests.test_session_context,
+            captions=expected_captions,
+            limit=None,
+            recordsetid=None,
+            omit_relationships=False,
+            treedefsfilter=None
+        )
+        (headers, rows, packs, plan, order) = run_batch_edit_query(props)
+
+        self.assertEqual(headers, expected_captions)
+        

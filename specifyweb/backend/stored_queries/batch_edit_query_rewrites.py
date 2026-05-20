@@ -1,11 +1,12 @@
 
 
 from functools import reduce
-from typing import Any, Dict, List, Set, Tuple
+from typing import Any
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.models_utils.load_datamodel import Table
 from specifyweb.backend.trees.views import TREE_INFORMATION
+from specifyweb.backend.stored_queries.execution import QuerySort
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec, TreeRankQuery
 from .batch_edit import BatchEditFieldPack, BatchEditPack, RowPlanMap
 
@@ -178,9 +179,70 @@ def _safe_table(key: str, table: Table):
         return table
     return datamodel.get_table_strict(field.relatedModelName)
 
+def contains_coords(columns: list[BatchEditFieldPack]) -> bool:
+    coordinate_field_names = ('latitude1', 'lat1text', 'longitude1',
+                              'long1text', 'latitude2', 'lat2text',
+                              'longitude2', 'long2text')
+    locality_table = datamodel.get_table_strict('Locality')
+    coordinate_fields = list(map(lambda field_name: locality_table.get_field_strict(
+        field_name), coordinate_field_names))
+    return any(column.field is not None and column.field.fieldspec.get_field() in coordinate_fields for column in columns)
+
+
+def missing_coordinate_columns(running_path: list[str], columns: list[BatchEditFieldPack]) -> tuple[BatchEditFieldPack]:
+    grouped_coordinate_fields = (
+        ('latitude1', 'lat1text'),
+        ('longitude1', 'long1text'),
+        ('latitude2', 'lat2text'),
+        ('longitude2', 'long2text')
+    )
+    coordinate_fields = tuple(
+        field for pair in grouped_coordinate_fields for field in pair)
+    present: dict[str, BatchEditFieldPack] = {}
+    for column in columns:
+        field = column.field.fieldspec.get_field() if column.field is not None else None
+        if field is None or not field.name.lower() in coordinate_fields:
+            continue
+        present[field.name.lower()] = column
+    present_field_names = present.keys()
+
+    missing_cols = []
+    for decimal_field, text_field in grouped_coordinate_fields:
+        decimal_field_present = decimal_field in present_field_names
+        text_field_present = text_field in present_field_names
+
+        if decimal_field_present == text_field_present:
+            continue
+
+        missing_field = text_field if decimal_field_present else decimal_field
+        field_spec = QueryFieldSpec.from_path([*running_path, missing_field])
+        field = BatchEditPack._query_field(field_spec, QuerySort.NONE)
+        missing_cols.append(BatchEditFieldPack(field=field))
+
+    return tuple(missing_cols)
+
+
+def _rewrite_locality_coords(running_path: list[str], current: RowPlanMap):
+    """
+        If the RowPlanMap contains any mappings to coordinate information, we
+        need to adjust the RowPlanMap to also include
+    """
+    new_current = current
+    if not contains_coords(current.columns):
+        # If no coordinate fields are mapped, we don't have to do any re-writing
+        return current
+
+    # Now we have to identify which corresponding lat/longtext fields to add to the query
+    missing_cols = missing_coordinate_columns(running_path, current.columns)
+    new_current = current._replace(columns=[*current.columns, *missing_cols])
+
+    return new_current
+
 def _batch_edit_rewrite(
     self: RowPlanMap, table: Table, all_tree_info: TREE_INFORMATION, running_path=[]
 ) -> RowPlanMap:
+
+    self = _rewrite_locality_coords(running_path, self)
 
     to_ones = {
         key: value.rewrite(

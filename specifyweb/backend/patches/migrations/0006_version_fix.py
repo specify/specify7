@@ -5,7 +5,12 @@ def set_null_versions_to_zero_and_default(apps, schema_editor):
         cursor.execute("""
             SELECT table_name
             FROM information_schema.columns
-            WHERE column_name = 'version' AND table_schema = DATABASE();
+            WHERE column_name = 'version' AND table_schema = DATABASE()
+            AND table_name IN (
+                SELECT table_name
+                FROM information_schema.tables
+                WHERE table_schema = DATABASE() AND table_type = 'BASE TABLE'
+            );
         """)
         tables = cursor.fetchall()
 

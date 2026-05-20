@@ -1,0 +1,33 @@
+{
+  "collectingevent": {
+    "ishidden": false,
+    "desc": "Collecting Event",
+    "items": [
+      {"stationFieldNumber": {"ishidden": false, "name": "Field Number", "desc": "Field Number"}},
+      {"method": {"ishidden": false, "name": "Method", "desc": "Method"}},
+      { "endtime": { "ishidden": false } },
+      { "starttime": { "ishidden": false } }
+    ]
+  },
+  "collectionobjectattribute": {
+    "ishidden": false,
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"text5": {"ishidden": false, "name": "Stomach", "desc": "Stomach"}},
+      {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
+      {"text6": {"ishidden": false, "name": "Gonads", "desc": "Gonads"}},
+      {"text8": {"ishidden": false, "name": "Weight", "desc": "Weight"}},
+      {"text2": {"ishidden": false, "name": "Sex", "desc": "Sex"}},
+      {"text4": {"ishidden": false, "name": "Body", "desc": "Body"}},
+      {"text1": {"ishidden": false, "name": "LifeStage", "desc": "LifeStage"}},
+      {"text7": {"ishidden": false, "name": "Molt", "desc": "Molt"}}
+    ]
+  },
+  "determination": {
+    "ishidden": false,
+    "desc": "Determination",
+    "items": [
+      {"typeStatusName": {"ishidden": false, "name": "Type Status", "desc": "Type Status"}}
+    ]
+  }
+}

@@ -17,10 +17,10 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 
@@ -69,7 +69,9 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getPref(
+  const doExpandSynonymActionsPref = collectionPreferences.get(
+    'treeManagement',
+    'synonymized',
     `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
   );
 

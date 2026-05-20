@@ -12,21 +12,22 @@ from specifyweb.specify.datamodel import datamodel, Table, Field, Relationship
 from specifyweb.specify.utils.uiformatters import FormatMismatch, ScopedFormatter
 
 ParseFailureKey = Literal[
-'valueTooLong',
-'formatMismatch',
+    'valueTooLong',
+    'formatMismatch',
 
-'failedParsingDecimal',
-'failedParsingFloat',
-'failedParsingBoolean',
-'failedParsingAgentType',
+    'failedParsingDecimal',
+    'failedParsingFloat',
+    'failedParsingBoolean',
+    'failedParsingAgentType',
 
-'invalidYear',
-'badDateFormat',
+    'invalidYear',
+    'badDateFormat',
 
-'coordinateBadFormat',
-'latitudeOutOfRange',
-'longitudeOutOfRange'
+    'coordinateBadFormat',
+    'latitudeOutOfRange',
+    'longitudeOutOfRange'
 ]
+
 
 class ParseFailure(NamedTuple):
     message: ParseFailureKey
@@ -37,13 +38,18 @@ class ParseFailure(NamedTuple):
 
 
 class ParseSucess(NamedTuple):
-    to_upload: dict[str, Any]
+    payload: dict[str, Any]
 
 
 ParseResult = ParseSucess | ParseFailure
 
 
-def parse_field(table_name: str, field_name: str, raw_value: str, formatter: ScopedFormatter | None = None) -> ParseResult:
+def parse_field(
+        table_name: str,
+        field_name: str,
+        raw_value: str,
+        formatter: ScopedFormatter | None = None
+        ) -> ParseResult:
     table = datamodel.get_table_strict(table_name)
     field = table.get_field_strict(field_name)
 
@@ -169,7 +175,11 @@ def parse_date(table: Table, field_name: str, dateformat: str, value: str) -> Pa
     return ParseFailure('badDateFormat', {'value': value, 'format': dateformat})
 
 
-def parse_formatted(uiformatter: ScopedFormatter, table: Table, field: Field | Relationship, value: str) -> ParseResult:
+def parse_formatted(
+        uiformatter: ScopedFormatter,
+        table: Table,
+        field: Field | Relationship,
+        value: str) -> ParseResult:
     try:
         canonicalized = uiformatter(table, value)
     except FormatMismatch as e:

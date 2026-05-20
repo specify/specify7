@@ -1,3 +1,4 @@
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
@@ -53,9 +54,16 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
   },
   [preferencesText.customization()]: {
     userPreferences: {
-      title: preferencesText.preferences(),
+      title: preferencesText.userPreferences(),
       url: '/specify/user-preferences/',
       icon: icons.cog,
+    },
+    collectionPreferences: {
+      title: preferencesText.collectionPreferences(),
+      url: '/specify/collection-preferences/',
+      icon: icons.office,
+      enabled: () =>
+        hasPermission('/preferences/collection', 'edit_collection'),
     },
     schemaConfig: {
       title: schemaText.schemaConfig(),
@@ -78,6 +86,17 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       title: userText.securityPanel(),
       url: '/specify/security/',
       icon: icons.fingerPrint,
+    },
+    systemConfigurationTool: {
+      title: userText.systemConfig(),
+      enabled: () =>
+        userInformation.isadmin &&
+        hasToolPermission('resources', 'read') &&
+        hasTablePermission('Discipline', 'read') &&
+        hasTablePermission('Collection', 'read') &&
+        hasTablePermission('SpecifyUser', 'read'),
+      url: '/specify/system-configuration/',
+      icon: icons.library,
     },
     repairTree: {
       title: headerText.repairTree(),
@@ -114,12 +133,20 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       icon: icons.rss,
     },
   },
-  [commonText.import()]: {
+  [commonText.tools()]: {
     localityUpdate: {
       title: headerText.localityUpdateTool(),
       enabled: () => userInformation.isadmin,
       url: '/specify/import/locality-dataset/',
       icon: icons.globe,
+    },
+    batchIdentify: {
+      title: batchIdentifyText.batchIdentify(),
+      url: '/specify/overlay/batch-identify/',
+      icon: icons.clipboardCopy,
+      enabled: () =>
+        hasTablePermission('CollectionObject', 'read') &&
+        hasTablePermission('Determination', 'create'),
     },
   },
   [headerText.documentation()]: {

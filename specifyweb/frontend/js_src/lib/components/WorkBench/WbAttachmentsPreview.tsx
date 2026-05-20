@@ -46,8 +46,8 @@ import type { Dataset } from '../WbPlanView/Wrapped';
 import {
   BASE_TABLE_NAME,
   deleteAttachmentFromRow,
-  getAttachmentsColumn,
   getAttachmentsFromCell,
+  getVisualAttachmentsColumn,
   uploadAttachmentsToRow,
 } from '../WorkBench/attachmentHelpers';
 import type { Workbench } from '../WorkBench/WbView';
@@ -355,7 +355,7 @@ function fetchRowAttachments(
   ) => void
 ): void {
   // Look for Attachments column
-  const attachmentColumnIndex = getAttachmentsColumn(dataset);
+  const attachmentColumnIndex = getVisualAttachmentsColumn(dataset, hot);
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments

@@ -1,4 +1,4 @@
-from typing import Union, Optional, TypeVar, cast
+from typing import Union, Optional, TypeVar, cast, Literal
 from collections.abc import Callable
 from collections.abc import Iterable
 from xml.etree import ElementTree
@@ -313,11 +313,13 @@ class IdField(Field):
         return "<SpecifyIdField: %s>" % self.name
 
 
+RelationshipType = Literal["one-to-many", "one-to-one", "many-to-one", "many-to-many", "zero-to-one"]
+
 class Relationship(Field):
     is_relationship: bool = True
     dependent: bool = False
     name: str
-    type: str | None
+    type: RelationshipType | None
     required: bool
     relatedModelName: str
     column: str | None = None 
@@ -326,7 +328,7 @@ class Relationship(Field):
     def __init__(
         self,
         name: str | None = None,
-        type: str | None = None,
+        type: RelationshipType | None = None,
         required: bool | None = None,
         relatedModelName: str | None = None,
         column: str | None = None,
@@ -366,6 +368,35 @@ class Relationship(Field):
     def is_remote_to_one(self):
         return self.type == "one-to-one" and self.column == None
 
+# REFACTOR: extract other relationship types from base Relationship?
+class ManyToMany(Relationship):
+    through_model: str
+    through_field: str
+
+    def __init__(self,
+                 name = None,
+                 required = None,
+                 relatedModelName = None,
+                 otherSideName = None,
+                 through_model = None,
+                 through_field = None):
+        super().__init__(name=name,
+                         type='many-to-many',
+                         is_relationship=True,
+                         #FEATURE: add support for dependent many-to-many
+                         dependent=False,
+                         required=required,
+                         relatedModelName=relatedModelName,
+                         otherSideName=otherSideName)
+        if through_model is None:
+            raise ValueError("A through model must be specified for a \
+                             ManyToMany Relationship!")
+        if through_field is None:
+            raise ValueError("A column on the through table for the source \
+                             side must be specified!")
+
+        self.through_model = through_model
+        self.through_field = through_field
 
 def make_table(tabledef: ElementTree.Element) -> Table:
     iddef = tabledef.find("id")
@@ -427,7 +458,7 @@ def make_index(indexdef: ElementTree.Element) -> Index:
 def make_relationship(reldef: ElementTree.Element) -> Relationship:
     rel = Relationship(
         name=reldef.attrib["relationshipname"],
-        type=reldef.attrib["type"],
+        type=cast(RelationshipType, reldef.attrib["type"]),
         required=(reldef.attrib["required"] == "true"),
         relatedModelName=reldef.attrib["classname"].split(".")[-1],
         column=(

@@ -35,10 +35,10 @@ export const operationPolicies = {
   '/tree/edit/storage': [
     'merge',
     'move',
+    'bulk_move',
     'synonymize',
     'desynonymize',
     'repair',
-    'bulk_move',
   ],
   '/tree/edit/geologictimeperiod': [
     'merge',
@@ -122,6 +122,7 @@ export const institutionPermissions = new Set([
 export const frontEndPermissions = {
   '/preferences/user': ['edit_protected'],
   '/preferences/statistics': ['edit_shared'],
+  '/preferences/collection': ['edit_collection'],
 } as const;
 
 /**

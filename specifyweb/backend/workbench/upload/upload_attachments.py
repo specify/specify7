@@ -20,6 +20,16 @@ logger = logging.getLogger(__name__)
 BASE_TABLE_NAME = "baseTable"
 ATTACHMENTS_COLUMN = "_UPLOADED_ATTACHMENTS"
 
+def serialize_attachment_field_value(field: str, value) -> str:
+    if field == "ispublic":
+        if value is None:
+            return "false"
+        return "true" if bool(value) else "false"
+    return "" if value is None else str(value)
+
+def attachment_field_default(field: str) -> str:
+    return "false" if field == "ispublic" else ""
+
 def get_attachments(row: Row):
     if has_attachments(row):
         return json.loads(cast(str, row.get(ATTACHMENTS_COLUMN)))
@@ -91,7 +101,10 @@ def add_attachments_to_plan(
 
         new_row[f"_ATTACHMENT_ORDINAL_{index}"] = str(spdatasetattachment.ordinal)
         for field in attachment_fields_to_copy:
-            new_row[f"_ATTACHMENT_{field.upper()}_{index}"] = str(getattr(spdatasetattachment.attachment, field) or "")
+            new_row[f"_ATTACHMENT_{field.upper()}_{index}"] = serialize_attachment_field_value(
+                field,
+                getattr(spdatasetattachment.attachment, field, None),
+            )
 
         # Inject attachment tables into upload plan
         table_name = attachment["table"]
@@ -121,7 +134,7 @@ def add_attachments_to_plan(
                     column=f"_ATTACHMENT_{field.upper()}_{index}",
                     matchBehavior="ignoreNever",
                     nullAllowed=True,
-                    default="0"
+                    default=attachment_field_default(field)
                 )
             attachment_uploadable = UploadTable(
                 name="Attachment",

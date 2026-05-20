@@ -1,4 +1,4 @@
-from specifyweb.specify.tests.test_update_locality.test_update_locality_context import (
+from specifyweb.backend.locality_update_tool.tests.test_update_locality_context import (
     TestUpdateLocalityContext,
 )
 from specifyweb.backend.locality_update_tool.update_locality import (

@@ -9,14 +9,22 @@ import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { formatNumber } from '../Atoms/Internationalization';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { getField } from '../DataModel/helpers';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { getResourceViewUrl } from '../DataModel/resource';
 import { genericTables, tables } from '../DataModel/tables';
-import type { ExchangeOut, Gift, Loan } from '../DataModel/types';
+import type {
+  CollectionObject,
+  ExchangeOut,
+  Gift,
+  Loan,
+  Preparation,
+  Taxon,
+} from '../DataModel/types';
 import { syncFieldFormat } from '../Formatters/fieldFormat';
 import { ResourceView } from '../Forms/ResourceView';
+import { FormattedResource } from '../Molecules/FormattedResource';
 import type { PreparationData } from './helpers';
 import { getInteractionsForPrepId } from './helpers';
 
@@ -36,6 +44,12 @@ export function PrepDialogRow({
   const loading = React.useContext(LoadingContext);
   const [state, setState] = React.useState<
     | State<
+        'CollectionObjectDialog',
+        {
+          readonly resource: SpecifyResource<CollectionObject>;
+        }
+      >
+    | State<
         'ItemSelection',
         {
           readonly items: RR<
@@ -48,9 +62,21 @@ export function PrepDialogRow({
         }
       >
     | State<
+        'PreparationDialog',
+        {
+          readonly resource: SpecifyResource<Preparation>;
+        }
+      >
+    | State<
         'ResourceDialog',
         {
           readonly resource: SpecifyResource<ExchangeOut | Gift | Loan>;
+        }
+      >
+    | State<
+        'TaxonDialog',
+        {
+          readonly resource: SpecifyResource<Taxon>;
         }
       >
     | State<'Main'>
@@ -68,25 +94,83 @@ export function PrepDialogRow({
           />
         </td>
         <td className="justify-end tabular-nums">
-          <Link.NewTab
-            href={getResourceViewUrl(
-              'CollectionObject',
-              preparation.collectionObjectId
-            )}
+          <Button.LikeLink
+            onClick={(): void =>
+              setState({
+                type: 'CollectionObjectDialog',
+                resource: new tables.CollectionObject.Resource({
+                  id: preparation.collectionObjectId,
+                }),
+              })
+            }
           >
             {syncFieldFormat(
               getField(tables.CollectionObject, 'catalogNumber'),
               preparation.catalogNumber
             )}
+          </Button.LikeLink>
+          <Link.NewTab
+            href={getResourceViewUrl(
+              'CollectionObject',
+              preparation.collectionObjectId
+            )}
+            title={getField(tables.CollectionObject, 'catalogNumber').label}
+          >
+            <span className="sr-only">
+              {getField(tables.CollectionObject, 'catalogNumber').label}
+            </span>
+          </Link.NewTab>
+        </td>
+        <td className="flex items-center gap-1">
+          <Button.LikeLink
+            onClick={(): void =>
+              setState({
+                type: 'PreparationDialog',
+                resource: new tables.Preparation.Resource({
+                  id: preparation.preparationId,
+                }),
+              })
+            }
+          >
+            <FormattedResource
+              resource={
+                new tables.Preparation.Resource({
+                  id: preparation.preparationId,
+                })
+              }
+            />
+          </Button.LikeLink>
+          <Link.NewTab
+            href={getResourceViewUrl('Preparation', preparation.preparationId)}
+            title={tables.Preparation.label}
+          >
+            <span className="sr-only">{tables.Preparation.label}</span>
           </Link.NewTab>
         </td>
         <td>
           {preparation.taxon ? (
-            <Link.NewTab
-              href={getResourceViewUrl('Taxon', preparation.taxonId)}
-            >
-              {localized(preparation.taxon)}
-            </Link.NewTab>
+            <span className="flex items-center gap-1">
+              <Button.LikeLink
+                onClick={(): void =>
+                  setState({
+                    type: 'TaxonDialog',
+                    resource: new tables.Taxon.Resource({
+                      id: preparation.taxonId,
+                    }),
+                  })
+                }
+              >
+                {localized(preparation.taxon)}
+              </Button.LikeLink>
+              <Link.NewTab
+                href={getResourceViewUrl('Taxon', preparation.taxonId)}
+                title={getField(tables.Determination, 'taxon').label}
+              >
+                <span className="sr-only">
+                  {getField(tables.Determination, 'taxon').label}
+                </span>
+              </Link.NewTab>
+            </span>
           ) : (
             <span>{interactionsText.notAvailable()}</span>
           )}
@@ -186,17 +270,26 @@ export function PrepDialogRow({
           </td>
         </tr>
       )}
-      {state.type === 'ResourceDialog' && (
-        <ResourceView
-          dialog="modal"
-          isDependent={false}
-          isSubForm={false}
-          resource={state.resource}
-          onAdd={undefined}
-          onClose={(): void => setState({ type: 'Main' })}
-          onDeleted={undefined}
-          onSaved={undefined}
-        />
+      {[
+        'ResourceDialog',
+        'CollectionObjectDialog',
+        'TaxonDialog',
+        'PreparationDialog',
+      ].includes(state.type) && (
+        <ReadOnlyContext.Provider value>
+          <ResourceView
+            dialog="modal"
+            isDependent={false}
+            isSubForm={false}
+            resource={
+              (state as { readonly resource: SpecifyResource<any> }).resource
+            }
+            onAdd={undefined}
+            onClose={(): void => setState({ type: 'Main' })}
+            onDeleted={undefined}
+            onSaved={undefined}
+          />
+        </ReadOnlyContext.Provider>
       )}
     </>
   );

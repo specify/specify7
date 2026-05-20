@@ -5,7 +5,6 @@ import { overrideAjax } from '../../../tests/ajax';
 import { mockTime, requireContext } from '../../../tests/helpers';
 import type { RA } from '../../../utils/types';
 import { overwriteReadOnly } from '../../../utils/types';
-import { getPref } from '../../InitialContext/remotePrefs';
 import { cogTypes } from '../helpers';
 import type { SerializedResource } from '../helperTypes';
 import { getResourceApiUrl } from '../resource';
@@ -24,6 +23,15 @@ import type {
 
 mockTime();
 requireContext();
+
+const emptyCollection = {
+  objects: [],
+  meta: {
+    limit: 20,
+    offset: 0,
+    total_count: 0,
+  },
+};
 
 describe('Borrow Material business rules', () => {
   const borrowMaterialId = 1;
@@ -104,6 +112,16 @@ describe('Collection Object business rules', () => {
     });
 
   const orginalEmbeddedCollectingEvent = schema.embeddedCollectingEvent;
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+    emptyCollection
+  );
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000123&domainfilter=true',
+    emptyCollection
+  );
 
   beforeAll(() => {
     overwriteReadOnly(schema, 'embeddedCollectingEvent', true);
@@ -289,6 +307,11 @@ describe('Collection Object business rules', () => {
         total_count: 0,
       },
     }
+  );
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=2022-%23%23%23%23%23%23&domainfilter=true',
+    emptyCollection
   );
 
   test('CollectionObject -> catalogNumber is reset whenever new CollectionObject -> collectionObjectType changes', async () => {
@@ -619,6 +642,12 @@ describe('uniqueness rules', () => {
       },
     }
   );
+
+  overrideAjax(
+    '/api/specify/component/?catalognumber=000000001&domainfilter=true',
+    emptyCollection
+  );
+
   test('simple uniqueness rule', async () => {
     const collectionObject = new tables.CollectionObject.Resource({
       collection: '/api/specify/collection/4/',
@@ -864,14 +893,20 @@ describe('treeBusinessRules', () => {
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
   test('saveBlocker not on synonymized parent w/preference', async () => {
-    const remotePrefs = await import('../../InitialContext/remotePrefs');
-    jest
-      .spyOn(remotePrefs, 'getPref')
-      .mockImplementation((key) =>
-        key === 'sp7.allow_adding_child_to_synonymized_parent.Taxon'
-          ? true
-          : getPref(key)
-      );
+    const { collectionPreferences } = await import(
+      '../../Preferences/collectionPreferences'
+    );
+    const originalRaw = collectionPreferences.getRaw();
+    collectionPreferences.setRaw({
+      ...originalRaw,
+      treeManagement: {
+        ...originalRaw.treeManagement,
+        synonymized: {
+          ...originalRaw.treeManagement?.synonymized,
+          'sp7.allow_adding_child_to_synonymized_parent.Taxon': true,
+        },
+      },
+    } as typeof originalRaw);
 
     const taxon = new tables.Taxon.Resource({
       name: 'dauricus',

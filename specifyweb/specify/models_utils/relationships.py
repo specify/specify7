@@ -25,6 +25,31 @@ def _is_circular_relationship(model, field_name: str, parent_relationship: Relat
     
     return datamodel.reverse_relationship(cast(Relationship, field)) is parent_relationship
 
+def is_dependent_field_collection(collection, model, field_name):
+    if model.specify_model.get_field(field_name) is None:
+        return False
+
+    return (
+        model.specify_model.get_field(field_name).dependent
+
+        or (model is models.Collectionobject and
+            field_name == 'collectingevent' and
+            collection.isembeddedcollectingevent)
+
+        or (field_name == 'paleocontext' and (
+
+            (model is models.Collectionobject and
+             collection.discipline.paleocontextchildtable == "collectionobject" and
+             collection.discipline.ispaleocontextembedded)
+
+            or (model is models.Collectingevent and
+                collection.discipline.paleocontextchildtable == "collectingevent" and
+                collection.discipline.ispaleocontextembedded)
+
+            or (model is models.Locality and
+                collection.discipline.paleocontextchildtable == "locality" and
+                collection.discipline.ispaleocontextembedded))))
+
 def is_dependent_field(obj, field_name: str) -> bool:
     if obj.specify_model.get_field(field_name) is None:
         return False
@@ -321,7 +346,9 @@ def _handle_independent_to_many(collection, agent, obj, field, value: Independen
             rel_data = cached_objs.get(fk_id)
             if rel_data is None: 
                 raise Http404(f"{rel_model.specify_model.name} with id {fk_id} does not exist")
-            assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {resource_uri}"
+            # The otherside could be dependent and thus not a uri
+            if not is_dependent_field_collection(collection, rel_model, related_field.name):
+                assert rel_data[field.field.name] == uri_for_model(obj.__class__, obj.pk), f"Related {related_field.relatedModelName} does not belong to {obj.__class__.__name__}.{field.field.name}: {resource_uri}"
             rel_data[field.field.name] = None
             update_obj(collection, agent, rel_model, rel_data["id"], rel_data["version"], rel_data)
 

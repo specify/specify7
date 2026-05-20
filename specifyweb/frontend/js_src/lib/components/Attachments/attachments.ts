@@ -50,6 +50,7 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
+const uploadTimeoutMilliseconds = 30 * 60 * 1000;
 
 /*
  * This function is useful when testing functions that depend on the settings.
@@ -213,12 +214,19 @@ export const fetchOriginalUrl = async (
       )
     : Promise.resolve(undefined);
 
-export async function uploadFile(
-  file: File,
-  handleProgress?: (percentage: number | true) => void,
-  uploadAttachmentSpec?: UploadAttachmentSpec,
-  strict = true
-): Promise<SpecifyResource<Attachment> | undefined> {
+export async function uploadFile({
+  file,
+  handleProgress,
+  uploadAttachmentSpec,
+  strict,
+  attachmentIsPublicDefault,
+}: {
+  readonly file: File;
+  readonly handleProgress?: (percentage: number | true) => void;
+  readonly uploadAttachmentSpec?: UploadAttachmentSpec;
+  readonly strict?: boolean;
+  readonly attachmentIsPublicDefault?: boolean;
+}): Promise<SpecifyResource<Attachment> | undefined> {
   if (settings === undefined) return undefined;
 
   const data =
@@ -257,39 +265,97 @@ export async function uploadFile(
       handleProgress(event.lengthComputable ? event.loaded / event.total : true)
     );
   }
-  xhr.open('POST', settings.write);
-  xhr.send(formData);
   const DONE = 4;
-  await new Promise((resolve, reject) =>
-    xhr.addEventListener('readystatechange', () => {
-      if (xhr.readyState === DONE)
-        try {
-          resolve(
-            handleAjaxResponse({
-              expectedErrors: [],
-              accept: undefined,
-              // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
-              response: {
-                ok: xhr.status === Http.OK,
-                status: xhr.status,
-                url: settings!.write,
-              } as Response,
+  xhr.open('POST', settings.write);
+  xhr.timeout = uploadTimeoutMilliseconds;
+  await new Promise<void>((resolve, reject) => {
+    let settled = false;
 
-              errorMode: strict ? 'visible' : 'silent',
-              text: xhr.responseText,
-            })
-          );
+    const handleReadyStateChange = () => {
+      if (xhr.readyState !== DONE) return;
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: xhr.status === Http.OK,
+              status: xhr.status,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: xhr.responseText,
+          });
+          resolve();
         } catch (error) {
           reject(error);
         }
-    })
-  );
+      });
+    };
+
+    const handleFailureWithoutResponse = (message: string) => {
+      settle(() => {
+        try {
+          handleAjaxResponse({
+            expectedErrors: [],
+            accept: undefined,
+            // eslint-disable-next-line @typescript-eslint/consistent-type-assertions
+            response: {
+              ok: false,
+              status: 0,
+              url: settings!.write,
+            } as Response,
+            errorMode: strict ? 'visible' : 'silent',
+            text: message,
+          });
+          reject(new Error(message));
+        } catch (error) {
+          reject(error);
+        }
+      });
+    };
+
+    const settle = (callback: () => void) => {
+      if (settled) return;
+      settled = true;
+      cleanup();
+      callback();
+    };
+
+    const handleError = () =>
+      handleFailureWithoutResponse(
+        'Upload failed before receiving a response.'
+      );
+    const handleAbort = () =>
+      handleFailureWithoutResponse(
+        'Upload was aborted before receiving a response.'
+      );
+    const handleTimeout = () =>
+      handleFailureWithoutResponse(
+        `Upload timed out after ${uploadTimeoutMilliseconds} milliseconds.`
+      );
+
+    const cleanup = () => {
+      xhr.removeEventListener('readystatechange', handleReadyStateChange);
+      xhr.removeEventListener('error', handleError);
+      xhr.removeEventListener('abort', handleAbort);
+      xhr.removeEventListener('timeout', handleTimeout);
+    };
+
+    xhr.addEventListener('readystatechange', handleReadyStateChange);
+    xhr.addEventListener('error', handleError);
+    xhr.addEventListener('abort', handleAbort);
+    xhr.addEventListener('timeout', handleTimeout);
+    xhr.send(formData);
+  });
+
   return new tables.Attachment.Resource({
     attachmentlocation: data.attachmentLocation,
     mimetype: fixMimeType(file.type),
     origfilename: file.name,
     title: file.name,
-    isPublic: getPref('attachment.is_public_default'),
+    isPublic: attachmentIsPublicDefault,
   });
 }
 
@@ -321,20 +387,23 @@ export function downloadAttachment(
       const fileName = cleanAttachmentDownloadName(
         attachment.origFilename ?? attachment.attachmentLocation
       );
-      downloadFile(
-        fileName,
-        `/attachment_gw/proxy/${new URL(url).search}`,
-        true
-      );
+      // Cannot use downloadFile because of iframe restrictions
+      const element = document.createElement('a');
+      element.href = `/attachment_gw/proxy/${new URL(url).search}`;
+      element.download = fileName;
+      document.body.append(element);
+      element.click();
+      element.remove();
     }
   });
 }
 
 export async function downloadAllAttachments(
-  attachments: readonly SerializedResource<Attachment>[],
-  archiveName?: string
+  attachments: RA<SerializedResource<Attachment>>,
+  archiveName?: string,
+  recordSetId?: number
 ): Promise<void> {
-  if (attachments.length === 0) return;
+  if (attachments.length === 0 && recordSetId === undefined) return;
   if (attachments.length === 1) {
     downloadAttachment(attachments[0]);
     return;
@@ -355,6 +424,7 @@ export async function downloadAllAttachments(
     method: 'POST',
     body: keysToLowerCase({
       attachmentLocations,
+      recordSetId: recordSetId ?? undefined,
       origFilenames,
     }),
     headers: {

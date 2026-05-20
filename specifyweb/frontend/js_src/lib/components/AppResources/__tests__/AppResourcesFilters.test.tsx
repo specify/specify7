@@ -6,6 +6,10 @@ import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { AppResourcesFilters } from '../Filters';
 import { testAppResources } from './testAppResources';
 
+jest.mock('../../Permissions/helpers', () => ({
+  hasPermission: jest.fn(() => true),
+}));
+
 beforeEach(() => {
   setCache(
     'appResources',

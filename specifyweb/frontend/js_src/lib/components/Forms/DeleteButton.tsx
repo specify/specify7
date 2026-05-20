@@ -26,7 +26,7 @@ import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FormattedResource } from '../Molecules/FormattedResource';
 import { TableIcon } from '../Molecules/TableIcon';
 import { createQuery } from '../QueryBuilder';
-import { queryFieldFilters } from '../QueryBuilder/FieldFilter';
+import { queryFieldFilterSpecs } from '../QueryBuilder/FieldFilterSpec';
 import { QueryFieldSpec } from '../QueryBuilder/fieldSpec';
 import { runQuery } from '../QueryBuilder/ResultsWrapper';
 import type { DeleteBlocker } from './DeleteBlocked';
@@ -56,11 +56,14 @@ export function DeleteButton<SCHEMA extends AnySchema>({
   component: ButtonComponent = Button.Secondary,
   onDeleted: handleDeleted,
   isIcon = false,
+  children,
 }: DeleteButtonProps<SCHEMA> & {
   readonly deletionMessage?: React.ReactNode;
   readonly component?: (typeof Button)['Secondary'];
   readonly onDeleted?: () => void;
   readonly isIcon?: boolean;
+  // A render prop to render custom children inside the delete dialog
+  readonly children?: (onClick: () => void, disabled: boolean) => JSX.Element;
 }): JSX.Element {
   const { blockers, setBlockers, fetchBlockers } = useDeleteBlockers(
     resource,
@@ -74,9 +77,20 @@ export function DeleteButton<SCHEMA extends AnySchema>({
 
   const iconName = resource.specifyTable.name;
 
+  // Callback for button click
+  const handleClick = (): void => {
+    handleOpen();
+    fetchBlockers();
+  };
+
+  const isDisabled = blockers === undefined || isBlocked;
+
   return (
     <>
-      {isIcon ? (
+      {/* Use  children as render prop if provided */}
+      {typeof children === 'function' ? (
+        children(handleClick, isDisabled)
+      ) : isIcon ? (
         <Button.Icon
           icon="trash"
           title={isBlocked ? formsText.deleteBlocked() : commonText.delete()}
@@ -209,7 +223,7 @@ function resolveParentViaOtherside(
     ])
       .toSpQueryField()
       .set('isDisplay', false)
-      .set('operStart', queryFieldFilters.equal.id)
+      .set('operStart', queryFieldFilterSpecs.equal.id)
       .set('startValue', id.toString()),
   ]);
 }
@@ -266,7 +280,7 @@ export async function fetchDeleteBlockers(
                         ])
                           .toSpQueryField()
                           .set('isDisplay', false)
-                          .set('operStart', queryFieldFilters.in.id)
+                          .set('operStart', queryFieldFilterSpecs.in.id)
                           .set('startValue', ids.join(',')),
                         /*
                          * TODO: ParentRelationship.table.name should always be directRelationship.model.name.

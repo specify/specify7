@@ -21,6 +21,7 @@ import type {
 import { raise } from '../Errors/Crash';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { ping } from '../../utils/ajax/ping';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -88,11 +89,22 @@ export function usesAttachments(dataset: Dataset): boolean {
   return dataset.columns.includes(ATTACHMENTS_COLUMN);
 }
 
+/**
+ * Returns the *physical* column index of the attachment JSON data.
+ */
 export function getAttachmentsColumn(dataset: Dataset): number {
   if (!usesAttachments(dataset)) {
     return -1;
   }
   return dataset.columns.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function getVisualAttachmentsColumn(
+  dataset: Dataset,
+  hot: Handsontable
+): number {
+  const physical = getAttachmentsColumn(dataset);
+  return physical === -1 ? -1 : hot.toVisualColumn(physical);
 }
 
 /**
@@ -109,10 +121,11 @@ export function getAttachmentsColumnFromHeaders(headers: RA<string>): number {
 
 export function uploadFiles(
   files: RA<File>,
-  handleProgress: (progress: (progress: number | undefined) => number) => void
+  handleProgress: (progress: (progress: number | undefined) => number) => void,
+  attachmentIsPublicDefault: boolean
 ): RA<Promise<SpecifyResource<Attachment>>> {
   return files.map(async (file) =>
-    uploadFile(file)
+    uploadFile({ file, attachmentIsPublicDefault })
       .then(async (attachment) =>
         attachment === undefined
           ? Promise.reject(`Upload failed for file ${file.name}`)
@@ -174,12 +187,17 @@ export async function uploadAttachmentsToRow(
     React.SetStateAction<number | undefined>
   >
 ): Promise<void> {
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+      'general',
+      'attachments',
+      'attachment.is_public_default'
+    );
   const attachmentColumn = getAttachmentsColumn(dataset);
   if (attachmentColumn === -1) return;
   setFileUploadProgress(0);
   setFileUploadLength(files.length);
   const currentCount = existingAttachments.length;
-  await Promise.all(uploadFiles(files, setFileUploadProgress))
+  await Promise.all(uploadFiles(files, setFileUploadProgress, attachmentIsPublicDefault))
     .then(async (attachments) =>
       // Create SpDataSetAttachments for each attachment
       f.all({

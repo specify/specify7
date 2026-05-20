@@ -12,7 +12,7 @@ class TestParseField(ApiTests):
         )
 
         parsed_no_value_result = ParseSuccess(
-            to_upload={"text1": ""},
+            payload={"text1": ""},
             model="CollectionObject",
             locality_id=1,
             row_number=2,
@@ -25,7 +25,7 @@ class TestParseField(ApiTests):
         )
 
         parsed_with_value_result = ParseSuccess(
-            to_upload={"text1": "Some Value"},
+            payload={"text1": "Some Value"},
             model="CollectionObject",
             locality_id=None,
             row_number=10,
@@ -33,7 +33,7 @@ class TestParseField(ApiTests):
 
         self.assertEqual(parsed_with_value, parsed_with_value_result)
 
-    @patch("specifyweb.specify.update_locality.get_uiformatter")
+    @patch("specifyweb.backend.locality_update_tool.update_locality.get_uiformatter")
     def test_cnn_formatter(self, get_uiformatter: Mock):
 
         get_uiformatter.return_value = UIFormatter(
@@ -48,7 +48,7 @@ class TestParseField(ApiTests):
         )
 
         parsed_no_value_result = ParseSuccess(
-            to_upload={"catalognumber": "000000000"},
+            payload={"catalognumber": "000000000"},
             model="CollectionObject",
             locality_id=1,
             row_number=2,
@@ -61,7 +61,7 @@ class TestParseField(ApiTests):
         )
 
         parsed_with_value_result = ParseSuccess(
-            to_upload={"catalognumber": "000000010"},
+            payload={"catalognumber": "000000010"},
             model="CollectionObject",
             locality_id=None,
             row_number=10,

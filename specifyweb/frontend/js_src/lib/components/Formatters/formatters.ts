@@ -23,7 +23,7 @@ import {
 } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -41,7 +41,7 @@ export const fetchFormatters: Promise<{
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? Promise.all([
-        ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
+        ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
           headers: { Accept: 'text/xml' },
         }).then(({ data }) => data),
         fetchSchema,
@@ -171,7 +171,7 @@ async function formatField(
     formatted = field.isRelationship
       ? isCycle
         ? ''
-        : await (relationshipIsToMany(field)
+        : await (relationshipIsToMany(field) && field.type !== 'zero-to-one'
             ? aggregate(
                 await resource.rgetCollection(field.name),
                 aggregator,
@@ -196,10 +196,12 @@ async function formatField(
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
-  if (trimZeros)
-    formatted = Number.isNaN(Number(formatted))
+  if (trimZeros) {
+    const num = Number(formatted);
+    formatted = Number.isNaN(num) || (formatted ?? '').trim() === '' || !Number.isSafeInteger(num)
       ? formatted
-      : Number(formatted).toString();
+      : num.toString();
+  }
 
   return {
     formatted: formatted?.toString() ?? '',

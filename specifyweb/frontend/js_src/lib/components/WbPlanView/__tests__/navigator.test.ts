@@ -186,6 +186,15 @@ theories(getMappingLineData, [
             optionLabel: 'Collection Object Type',
             tableName: 'CollectionObjectType',
           },
+          components: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Components',
+            tableName: 'Component',
+          },
           determinations: {
             optionLabel: 'Determinations',
             isEnabled: true,
@@ -688,6 +697,15 @@ theories(getMappingLineData, [
             isRequired: false,
             optionLabel: 'Collection Object Type',
             tableName: 'CollectionObjectType',
+          },
+          components: {
+            isDefault: false,
+            isEnabled: true,
+            isHidden: false,
+            isRelationship: true,
+            isRequired: false,
+            optionLabel: 'Components',
+            tableName: 'Component',
           },
           determinations: {
             optionLabel: 'Determinations',

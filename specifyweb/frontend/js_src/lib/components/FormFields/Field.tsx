@@ -119,23 +119,19 @@ function Field({
     (field?.isReadOnly === true && !isInSearchDialog);
 
   const validationAttributes = getValidationAttributes(parser);
-
-  const [rightAlignNumberFields] = userPreferences.use(
-    'form',
-    'ui',
-    'rightAlignNumberFields'
-  );
+  const rightAlignClassName = useRightAlignClassName(parser.type, isReadOnly);
 
   const isNew = resource?.isNew();
   const isCO = resource?.specifyTable.name === 'CollectionObject';
+  const isComponent = resource?.specifyTable.name === 'Component';
 
   const isPartOfCOG = isCO
     ? resource?.get('cojo') !== null && resource?.get('cojo') !== undefined
     : false;
 
-  const hasComponentParent = isCO
-    ? resource.get('componentParent') !== null &&
-      resource.get('componentParent') !== undefined
+  const hasCOParent = isComponent
+    ? resource.get('collectionObject') !== null &&
+      resource.get('collectionObject') !== undefined
     : false;
 
   const isCatNumberField = field?.name === 'catalogNumber';
@@ -163,8 +159,8 @@ function Field({
 
   const displayParentCatNumberPlaceHolder =
     isNew === false &&
-    isCO &&
-    hasComponentParent &&
+    isComponent &&
+    hasCOParent &&
     isCatNumberField &&
     displayParentCatNumberPref;
 
@@ -190,7 +186,7 @@ function Field({
           console.error('Error fetching catalog number:', error);
         });
     } else if (resource && displayParentCatNumberPlaceHolder) {
-      ajax<string | null>('/api/specify/catalog_number_from_parent/', {
+      ajax<string | null>('/inheritance/catalog_number_from_parent/', {
         method: 'POST',
         headers: { Accept: 'application/json' },
         body: resource,
@@ -208,33 +204,27 @@ function Field({
     displayParentCatNumberPlaceHolder,
   ]);
 
+  const customPlaceholder =
+    displayPrimaryCatNumberPlaceHolder &&
+    typeof primaryCatalogNumber === 'string'
+      ? primaryCatalogNumber
+      : displayParentCatNumberPlaceHolder &&
+          typeof parentCatalogNumber === 'string'
+        ? parentCatalogNumber
+        : undefined;
+
+  const { placeholder: parserPlaceholder, ...restValidationAttributes } =
+    validationAttributes;
+
   return (
     <Input.Generic
       forwardRef={validationRef}
       key={parser.title}
       max={Number.MAX_SAFE_INTEGER}
       name={name}
-      placeholder={
-        displayPrimaryCatNumberPlaceHolder &&
-        typeof primaryCatalogNumber === 'string'
-          ? primaryCatalogNumber
-          : displayParentCatNumberPlaceHolder &&
-              typeof parentCatalogNumber === 'string'
-            ? parentCatalogNumber
-            : undefined
-      }
-      {...validationAttributes}
-      className={
-        /*
-         * Disable "text-align: right" in non webkit browsers
-         * as they don't support spinner's arrow customization
-         */
-        parser.type === 'number' &&
-        rightAlignNumberFields &&
-        globalThis.navigator.userAgent.toLowerCase().includes('webkit')
-          ? `text-right ${isReadOnly ? '' : 'pr-6'}`
-          : ''
-      }
+      placeholder={customPlaceholder ?? parserPlaceholder}
+      {...restValidationAttributes}
+      className={rightAlignClassName}
       id={id}
       isReadOnly={isReadOnly}
       required={'required' in validationAttributes && !isInSearchDialog}
@@ -259,4 +249,25 @@ function Field({
       }}
     />
   );
+}
+
+export function useRightAlignClassName(
+  type: Parser['type'],
+  isReadOnly: boolean
+): string | undefined {
+  const [rightAlignNumberFields] = userPreferences.use(
+    'form',
+    'ui',
+    'rightAlignNumberFields'
+  );
+
+  /*
+   * Disable "text-align: right" in non webkit browsers
+   * as they don't support spinner's arrow customization
+   */
+  return type === 'number' &&
+    rightAlignNumberFields &&
+    globalThis.navigator.userAgent.toLowerCase().includes('webkit')
+    ? `text-right ${isReadOnly ? '' : 'pr-6'}`
+    : '';
 }

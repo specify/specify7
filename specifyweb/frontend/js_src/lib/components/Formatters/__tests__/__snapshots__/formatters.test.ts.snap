@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Formatters are fetched and parsed correctly 1`] = `
 {
@@ -2354,6 +2354,11 @@ exports[`getMainTableFields 1`] = `
     "name",
   ],
   "CommonNameTxCitation": [],
+  "Component": [
+    "catalogNumber",
+    "role",
+    "uniqueIdentifier",
+  ],
   "ConservDescription": [
     "shortDesc",
     "units",
@@ -2822,6 +2827,7 @@ exports[`getMainTableFields 1`] = `
   ],
   "Storage": [
     "name",
+    "uniqueIdentifier",
   ],
   "StorageAttachment": [],
   "StorageTreeDef": [

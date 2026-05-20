@@ -1091,7 +1091,7 @@ class ScopingTests(ApiTests):
             accessionnumber="ACC_Test",
             division=self.division
         )
-        accession_scope = scoping.Scoping(accession).get_scope_model()
+        accession_scope = scoping.Scoping.model_from_instance(accession)
         self.assertEqual(accession_scope.id, self.institution.id)
 
         loan = Loan.objects.create(
@@ -1099,14 +1099,14 @@ class ScopingTests(ApiTests):
             discipline=self.other_discipline
         )
 
-        loan_scope = scoping.Scoping(loan).get_scope_model()
+        loan_scope = scoping.Scoping.model_from_instance(loan)
         self.assertEqual(loan_scope.id, self.other_discipline.id)
 
     def test_infered_scope(self):
         disposal = Disposal.objects.create(
             disposalnumber = "DISPOSAL_TEST"
         )
-        disposal_scope = scoping.Scoping(disposal).get_scope_model()
+        disposal_scope = scoping.Scoping.model_from_instance(disposal)
         self.assertEqual(disposal_scope.id, self.institution.id)
 
         loan = Loan.objects.create(
@@ -1114,12 +1114,12 @@ class ScopingTests(ApiTests):
             division=self.other_division,
             discipline=self.other_discipline,
         )
-        inferred_loan_scope = scoping.Scoping(loan)._infer_scope()[1]
-        self.assertEqual(inferred_loan_scope.id, self.other_division.id)
+        inferred_loan_scope = scoping.Scoping.model_from_instance(loan)
+        self.assertEqual(inferred_loan_scope.id, self.other_discipline.id)
 
-        collection_object_scope = scoping.Scoping(
+        collection_object_scope = scoping.Scoping.model_from_instance(
             self.collectionobjects[0]
-        ).get_scope_model()
+        )
         self.assertEqual(collection_object_scope.id, self.collection.id)
 
     def test_in_same_scope(self):

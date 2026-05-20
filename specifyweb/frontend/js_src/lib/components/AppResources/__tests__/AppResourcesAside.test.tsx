@@ -1,6 +1,7 @@
 import React from 'react';
 import * as Router from 'react-router-dom';
 
+import { hasPermission } from '../../Permissions/helpers';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import type { RA } from '../../../utils/types';
@@ -10,8 +11,45 @@ import { testAppResources } from './testAppResources';
 
 requireContext();
 
+jest.mock('../../Permissions/helpers', () => ({
+  hasPermission: jest.fn(() => true),
+  hasToolPermission: jest.fn(() => true),
+}));
+
+const mockedHasPermission = hasPermission as jest.Mock;
+
 describe('AppResourcesAside (simple no conformation case)', () => {
   test('simple no conformation case', () => {
+    const onOpen = jest.fn();
+    const setConformations = jest.fn();
+
+    const { asFragment, unmount } = mount(
+      <AppResourcesAside
+        conformations={[[], setConformations]}
+        filters={undefined}
+        isEmbedded
+        resources={testAppResources}
+        onOpen={onOpen}
+      />
+    );
+
+    expect(asFragment()).toMatchSnapshot();
+    unmount();
+  });
+});
+
+/*
+ * TEST: This should really (also) be a test for filterAppResources, but
+ * including this here just cause
+ */
+describe('Missing Collection Preferences Permission', () => {
+  beforeAll(() => {
+    mockedHasPermission.mockReturnValue(false);
+  });
+  afterAll(() => {
+    mockedHasPermission.mockReturnValue(true);
+  });
+  test('simple no conformation test', () => {
     const onOpen = jest.fn();
     const setConformations = jest.fn();
 
@@ -122,7 +160,10 @@ describe('AppResourcesAside (expanded case)', () => {
 
     const { asFragment: asFragmentAllExpanded, unmount: unmountExpandedll } =
       mount(
-        <Router.MemoryRouter initialEntries={['/specify/resources/']}>
+        <Router.MemoryRouter
+          future={{ v7_relativeSplatPath: true, v7_startTransition: true }}
+          initialEntries={['/specify/resources/']}
+        >
           <AppResourcesAside
             conformations={[_conformations, setConformations]}
             filters={undefined}

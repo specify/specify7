@@ -3,20 +3,17 @@ import { useNavigate } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { resourcesText } from '../../localization/resources';
-import type { GetSet, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
 import { TableIcon } from '../Molecules/TableIcon';
 import { resolveRelative } from '../Router/queryString';
-import type { WebLink } from './spec';
+import type { WebLinkOutlet } from './Editor';
 
 export function WebLinkList({
   items: [items, setItems],
-}: {
-  readonly items: GetSet<RA<WebLink>>;
-}): JSX.Element {
+}: WebLinkOutlet): JSX.Element {
   const navigate = useNavigate();
 
   return (

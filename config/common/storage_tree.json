@@ -1,0 +1,69 @@
+{
+  "tree": {
+    "treedef": {
+      "levels": [
+        {
+          "name": "Site",
+          "enforced": true,
+          "infullname": false,
+          "rank": 0
+        },
+        {
+          "name": "Building",
+          "enforced": false,
+          "infullname": false,
+          "rank": 100
+        },
+        {
+          "name": "Collection",
+          "enforced": false,
+          "infullname": false,
+          "rank": 150
+        },
+        {
+          "name": "Room",
+          "enforced": false,
+          "infullname": false,
+          "rank": 200
+        },
+        {
+          "name": "Aisle",
+          "enforced": false,
+          "infullname": false,
+          "rank": 250
+        },
+        {
+          "name": "Cabinet",
+          "enforced": false,
+          "infullname": false,
+          "rank": 300
+        },
+        {
+          "name": "Shelf",
+          "enforced": false,
+          "infullname": false,
+          "rank": 350
+        },
+        {
+          "name": "Box",
+          "enforced": false,
+          "infullname": false,
+          "rank": 400
+        },
+        {
+          "name": "Rack",
+          "enforced": false,
+          "infullname": false,
+          "rank": 450
+        },
+        {
+          "name": "Vial",
+          "enforced": false,
+          "infullname": false,
+          "rank": 500
+        }
+      ]
+    },
+    "nodes": []
+  }
+}

@@ -247,14 +247,14 @@ class ParsedRow(TypedDict):
 
 
 class ParseSuccess(NamedTuple):
-    to_upload: dict[str, Any]
+    payload: dict[str, Any]
     model: UpdateModel
     locality_id: int | None
     row_number: str | None
 
     @classmethod
     def from_base_parse_success(cls, parse_success: BaseParseSuccess, model: UpdateModel, locality_id: int | None, row_number: int):
-        return cls(parse_success.to_upload, model, locality_id, row_number)
+        return cls(parse_success.payload, model, locality_id, row_number)
 
 
 class UploadSuccessRow(TypedDict):
@@ -421,7 +421,7 @@ def merge_parse_results(results: list[ParseSuccess | ParseError], locality_id: i
         if isinstance(result, ParseError):
             errors.append(result)
         else:
-            to_upload[result.model.lower()].update(result.to_upload)
+            to_upload[result.model.lower()].update(result.payload)
 
     if len(to_upload['geocoorddetail']) == 0:
         to_upload['geocoorddetail'] = None

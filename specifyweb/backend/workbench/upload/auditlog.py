@@ -7,6 +7,9 @@ from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 logger = logging.getLogger(__name__)
 import re
 
+from time import time
+from typing import Iterable
+
 from django.db import connection
 from django.conf import settings
 
@@ -14,17 +17,23 @@ from specifyweb.specify.models import Spauditlog, Spauditlogfield
 from specifyweb.backend.context.remote_prefs import get_remote_prefs, get_global_prefs
 from specifyweb.specify.models import datamodel
 
+logger = logging.getLogger(__name__)
+
 Collection = datamodel.get_table_strict('Collection')
 Discipline = datamodel.get_table_strict('Discipline')
 Division = datamodel.get_table_strict('Division')
 
 
 from . import auditcodes
-    
-def truncate_str_to_bytes(string: str, bytes: int) -> str:
+
+def str_to_bytes(string: str, max_length: int) -> bytes: 
     str_as_bytes = string.encode()
+    return str_as_bytes[:max_length]
+
+def truncate_str_to_bytes(string: str, max_length: int) -> str:
+    str_as_bytes = str_to_bytes(string, max_length)
     try:
-        return str_as_bytes[:bytes].decode()
+        return str_as_bytes.decode()
     except UnicodeDecodeError as err:
         return str_as_bytes[:err.start].decode()
 
@@ -56,7 +65,7 @@ class AuditLog:
             self._lastCheck = time()
         return self._auditing;
     
-    def update(self, obj, agent, parent_record, dirty_flds):
+    def update(self, obj, agent, parent_record, dirty_flds: Iterable[FieldChangeInfo]):
         self.log_action(auditcodes.UPDATE, obj, agent, parent_record, dirty_flds)
     
     def log_action(self, action, obj, agent, parent_record, dirty_flds):
@@ -66,7 +75,7 @@ class AuditLog:
                 self._log_fld_update(vals, log_obj, agent)
         return log_obj
         
-    def insert(self, obj, agent, parent_record=None):
+    def insert(self, obj, agent=None, parent_record=None):
         return self._log(auditcodes.INSERT, obj, agent, parent_record)
 
     def remove(self, obj, agent, parent_record=None):
@@ -119,7 +128,7 @@ class AuditLog:
                 parenttablenum=parentTbl,
                 recordid=obj.id,
                 recordversion=obj.version if hasattr(obj, 'version') else 0,
-                tablenum=obj.specify_model.tableId,
+                tablenum=obj.specify_model.tableId if hasattr(obj, 'specify_model') else 0, # TODO: Checkout why LibraryRole has no specify_model during init migration
                 createdbyagent_id=agent_id,
                 modifiedbyagent_id=agent_id)
     

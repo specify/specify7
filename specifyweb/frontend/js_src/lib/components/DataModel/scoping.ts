@@ -39,7 +39,9 @@ export function initializeResource(resource: SpecifyResource<AnySchema>): void {
 
   if (
     getCollectionPref('CO_CREATE_COA', schema.domainLevelIds.collection) &&
-    hasTablePermission('CollectionObjectAttribute', 'create')
+    hasTablePermission('CollectionObjectAttribute', 'create') &&
+    resource.createdBy !== 'clone' &&
+    collectionObject.get('collectionObjectAttribute') == null
   ) {
     const attribute = new tables.CollectionObjectAttribute.Resource();
     attribute.placeInSameHierarchy(collectionObject);
