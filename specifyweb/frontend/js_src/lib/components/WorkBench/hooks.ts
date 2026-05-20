@@ -15,7 +15,7 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
-import { getAttachmentsColumn, usesAttachments } from './attachmentHelpers';
+import { getVisualAttachmentsColumn, usesAttachments } from './attachmentHelpers';
 import type { WbMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
@@ -507,24 +507,22 @@ export function useHotHooks({
       const removedRows = Array.from({ length: amount }, (_, index) =>
         workbench.hot!.toPhysicalRow(visualRowStart + index)
       )
-        .filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length)
         // REFACTOR: use sortFunction here
         .sort()
         .reverse();
+      const removedRowsCellMeta = removedRows.filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length);
 
-      // Delete attachment
+      // Don't delete rows if any contain attachments
       if (usesAttachments(workbench.dataset)) {
-        console.log('uses attachments');
-        const attachmentsColumn = getAttachmentsColumn(workbench.dataset);
+        const attachmentsColumn = getVisualAttachmentsColumn(workbench.dataset, workbench.hot);
         for (const row of removedRows) {
-          const cellMeta = workbench.hot.getCellMeta(row, attachmentsColumn);
-          if (cellMeta)
-            // TODO: Check if cell has a value, rather than just getting the meta
+          const cellMeta = workbench.hot.getCellMeta(workbench.hot.toVisualRow(row), attachmentsColumn);
+          if (cellMeta !== undefined && cellMeta.formattedValue !== undefined)
             return false;
         }
       }
 
-      removedRows.forEach((physicalRow) => {
+      removedRowsCellMeta.forEach((physicalRow) => {
         workbench.cells.cellMeta.splice(physicalRow, 1);
         workbench.validation.liveValidationStack.splice(physicalRow, 1);
       });
