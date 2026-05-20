@@ -4,8 +4,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { uploadFile } from '../Attachments/attachments';
-import type { SerializedResource } from '../DataModel/helperTypes';
-import type { SerializedRecord } from '../DataModel/helperTypes';
+import type { SerializedResource, SerializedRecord } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
@@ -21,7 +20,6 @@ import type {
 import { raise } from '../Errors/Crash';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { ping } from '../../utils/ajax/ping';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -182,16 +180,12 @@ export async function uploadAttachmentsToRow(
   row: number,
   existingAttachments: RA<SerializedResource<SpDataSetAttachment>>,
   targetTable: AttachmentTargetTable,
+  attachmentIsPublicDefault: boolean,
   setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
   setFileUploadProgress: React.Dispatch<
     React.SetStateAction<number | undefined>
   >
 ): Promise<void> {
-  const [attachmentIsPublicDefault] = collectionPreferences.use(
-      'general',
-      'attachments',
-      'attachment.is_public_default'
-    );
   const attachmentColumn = getAttachmentsColumn(dataset);
   if (attachmentColumn === -1) return;
   setFileUploadProgress(0);

@@ -43,6 +43,7 @@ import { PopupWindow } from '../Molecules/PopupWindow';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { handleWorkbenchSave } from '../WbActions/WbSave';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import {
   BASE_TABLE_NAME,
   deleteAttachmentFromRow,
@@ -135,6 +136,11 @@ export function WbAttachmentsPreview({
   const [fileUploadProgress, setFileUploadProgress] = React.useState<
     number | undefined
   >(undefined);
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
 
   const saveDataset = async function(): Promise<void> {
     return handleWorkbenchSave(
@@ -234,6 +240,7 @@ export function WbAttachmentsPreview({
                       selectedRow,
                       existingAttachments,
                       BASE_TABLE_NAME,
+                      attachmentIsPublicDefault,
                       setFileUploadLength,
                       setFileUploadProgress
                     ).then(async () =>
