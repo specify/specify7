@@ -47,13 +47,14 @@ def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
 
-    if UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
-        # don't do anything if there is already any admin.
-        return
-
     users = Specifyuser.objects.all()
     for user in users:
-        if is_sp6_user_permissions_migrated(user, apps):
+        if UserPolicy.objects.filter(
+            collection__isnull=True,
+            specifyuser_id=user.id,
+            resource="%",
+            action="%",
+        ).exists():
             continue
         if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
@@ -97,17 +98,12 @@ def assign_users_to_roles(apps=apps) -> None:
         JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
         JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
         WHERE p.groupType IS NULL
-        AND u.SpecifyUserID NOT IN (
-            SELECT ur.specifyuser_id
-            FROM spuserrole ur 
-            JOIN sprole r ON r.id = ur.role_id 
-            WHERE r.collection_id = p.usergroupscopeid
-        )
-        AND c.UserGroupScopeId NOT IN (
-            SELECT DISTINCT r.collection_id
+        AND NOT EXISTS (
+            SELECT 1
             FROM spuserrole ur 
             JOIN sprole r ON r.id = ur.role_id
-            JOIN collection c ON c.UserGroupScopeId = r.collection_id
+            WHERE r.collection_id = c.UserGroupScopeId
+            AND ur.specifyuser_id = u.SpecifyUserID
         );
     """)
 
