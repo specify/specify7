@@ -110,8 +110,19 @@ def component_catalog_number_exists(
             query = query.exclude(pk=excluded_component_id)
         return query.exists()
 
-    cache_key = (catalog_number, excluded_component_id, collection_id)
-    return _component_catnum_cache.get_or_set(cache_key, component_exists_with_catalog_number)
+    # We do a "soft cache" of catalognumbers for Components in Collection
+    # That is, if the cache is active and we observe some CatalogNumber on a
+    # Component in a Collection, we cache that result for future use
+    # i.e., We never store that some Component -> catalogNumber does not exist
+    # in the cache: only that a Component -> catalogNumber DOES exist
+    cache_key = (catalog_number, collection_id)
+    cache_is_active, cached_comp_exists = _component_catnum_cache.get(cache_key, default=False)
+    if cache_is_active and cached_comp_exists:
+        return True
+    db_component_exists = component_exists_with_catalog_number()
+    if cache_is_active and db_component_exists:
+        _component_catnum_cache.set(cache_key, db_component_exists)
+    return db_component_exists
 
 
 def _get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
@@ -162,8 +173,8 @@ def _get_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
 
 def get_cached_unique_catnum_across_comp_co_coll_pref(collection, user) -> bool:
     cache_key = (
-        getattr(collection, "id", None),
-        getattr(user, "id", None),
+        getattr(collection, "pk", None),
+        getattr(user, "pk", None),
     )
 
     def get_preference_value(): return _get_unique_catnum_across_comp_co_coll_pref(

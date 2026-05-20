@@ -7,18 +7,6 @@ from specifyweb.backend.businessrules.utils import (
     get_unique_catnum_across_comp_co_coll_pref_by_ids,
 )
 
-def _collection_object_catalog_check_needed(co) -> bool:
-    if co.catalognumber is None:
-        return False
-    if co.pk is None:
-        return True
-
-    return not type(co).objects.filter(
-        pk=co.pk,
-        catalognumber=co.catalognumber,
-        collection_id=co.collection_id,
-    ).exists()
-
 @orm_signal_handler('pre_save', 'Collectionobject')
 def collectionobject_pre_save(co):
     if co.collectionmemberid is None:
@@ -31,7 +19,7 @@ def collectionobject_pre_save(co):
 
     if (
         co.createdbyagent_id is not None
-        and _collection_object_catalog_check_needed(co)
+        and co.catalognumber is not None
     ):
 
         unique_catnum_across_comp_co_coll_pref = (
@@ -49,4 +37,4 @@ def collectionobject_pre_save(co):
             )
 
             if contains_component_duplicates:
-                raise BusinessRuleException("Catalog Number is already in use for another Component in this collection.")
+                raise BusinessRuleException("Catalog Number is already in use by a Component in this Collection")
