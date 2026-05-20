@@ -15,7 +15,7 @@ class Migration(migrations.Migration):
         usc.update_relative_age_fields(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.update_relative_age_fields(apps)
+        usc.revert_relative_age_fields(apps)
 
     operations = [
         migrations.AddField(
