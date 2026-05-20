@@ -70,11 +70,13 @@ def update_table_field_schema_config_with_defaults(
     sp_local_container_item, _ = Splocalecontaineritem.objects.get_or_create(
         name=field_name,
         container=sp_local_container,
-        type=java_type,
-        ishidden=field_name.lower() in HIDDEN_FIELDS,
-        isrequired=field.required,
-        issystem=table.system,
-        version=0,
+        defaults={
+            'type': java_type,
+            'ishidden': field_name.lower() in HIDDEN_FIELDS,
+            'isrequired': field.required,
+            'issystem': table.system,
+            'version': 0,
+        }
     )
 
     field_description = camel_to_spaced_title_case(field.name)
