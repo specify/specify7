@@ -22,7 +22,7 @@ import {
   PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { fetchCollection } from './collection';
-import { cogTypes } from './helpers';
+import { backendFilter, cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -459,6 +459,9 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         const containsComponentDuplicates = await fetchCollection('Component', {
           catalogNumber: catalogNumberValue,
           domainFilter: true,
+          ...(resource.id === undefined
+            ? {}
+            : backendFilter('id').not.equals(resource.id)),
         }).then(({ totalCount }) => totalCount !== 0);
 
         const isInvalid = containsCoDuplicates || containsComponentDuplicates;
