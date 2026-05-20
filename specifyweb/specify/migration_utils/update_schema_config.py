@@ -121,21 +121,20 @@ def update_table_schema_config_with_defaults(
         issystem=table.system,
         version=0,
     )
-    if not is_new:
-        return  # If the container already exists, we don't need to update it
 
-    # Create a Splocaleitemstr for the table name and description
-    for k, text in {
-        "containername": camel_to_spaced_title_case(uncapitilize(table.name)),
-        "containerdesc": table_config.description,
-    }.items():
-        item_str = {
-            "text": text,
-            "language": "en",
-            "version": 0,
-        }
-        item_str[k] = sp_local_container
-        Splocaleitemstr.objects.get_or_create(**item_str)
+    if is_new:
+        # Create a Splocaleitemstr for the table name and description
+        for k, text in {
+            "containername": camel_to_spaced_title_case(uncapitilize(table.name)),
+            "containerdesc": table_config.description,
+        }.items():
+            item_str = {
+                "text": text,
+                "language": "en",
+                "version": 0,
+            }
+            item_str[k] = sp_local_container
+            Splocaleitemstr.objects.get_or_create(**item_str)
 
     for field in table.all_fields:
         update_table_field_schema_config_with_defaults(table_name, discipline_id, field.name, apps)
@@ -470,7 +469,7 @@ def update_cog_type_fields(apps):
     container_items = Splocalecontaineritem.objects.filter(
         name="collectionObjectType",
         picklistname=None,
-        container__name="CollectionObject",
+        container__name="collectionobject",
     )
     for container_item in container_items:
         Splocaleitemstr.objects.filter(itemname=container_item).delete()
@@ -882,7 +881,7 @@ def update_schema_config_field_desc(apps, schema_editor=None):
                 #i.e: COType
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
-                    name=field_name.lower()
+                    name__iexact=field_name
                 )
 
                 for item in items:
@@ -963,7 +962,7 @@ def reverse_update_schema_config_field_desc(apps, schema_editor=None):
             for field_name, new_name, new_desc in fields:
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
-                    name=field_name.lower()
+                    name__iexact=field_name
                 )
 
                 for item in items:
@@ -1027,7 +1026,7 @@ def update_co_children_fields(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
 
                     for item in items:
@@ -1103,7 +1102,7 @@ def remove_collectionobject_parentco(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
 
                     for item in items:
@@ -1136,7 +1135,7 @@ def remove_collectionobject_parentco(apps):
                     for field_name, _, _ in fields:
                         items = Splocalecontaineritem.objects.filter(
                             container=container,
-                            name=field_name.lower()
+                            name__iexact=field_name
                         )
 
                         for item in items:
@@ -1189,7 +1188,7 @@ def revert_remove_collectionobject_parentco(apps):
                     for field_name, _, _ in fields:
                         items = Splocalecontaineritem.objects.filter(
                             container=container,
-                            name=field_name.lower()
+                            name__iexact=field_name
                         )
 
                         for item in items:
@@ -1229,7 +1228,7 @@ def add_quantities_gift(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
 
                     for item in items:
@@ -1322,7 +1321,7 @@ def update_accession_date_fields(apps):
                 for (field_name, new_name, new_desc) in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
                     for item in items:
                         item.ishidden = True
@@ -1354,18 +1353,27 @@ def revert_update_accession_date_fields(apps):
         """
         Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
         Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
         for table, fields in MIGRATION_0034_UPDATE_FIELDS.items():
             containers = Splocalecontainer.objects.filter(name=table.lower())
             for container in containers:
-                for (field_name, _, _) in fields:
+                for (field_name, original_label, original_description) in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
                     for item in items:
-                        # If needed, reset ishidden or revert text
-                        pass
+                        item.ishidden = False
+                        item.save()
+                        desc_str = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
+                        name_str = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
+                        if desc_str is not None:
+                            desc_str.text = original_description
+                            desc_str.save()
+                        if name_str is not None:
+                            name_str.text = original_label
+                            name_str.save()
 
     revert_0034_fields(apps)
     revert_0034_schema_config_field_desc(apps)
