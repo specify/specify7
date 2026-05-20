@@ -496,17 +496,30 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           }).then(({ totalCount }) => totalCount !== 0);
 
         // If the Components are in a collection (such as when viewing the
-        // Components SubView from CollectionObject), then make sure
+        // Components SubView from CollectionObject), then make sure that no
+        // unsaved Component in the collection has the same catalogNumber as
+        // this Component
+        // BUG: Consider the following case:
+        // - There's a Component collection with a saved Component (1) with
+        //   catalogNumber A
+        // - a Component (2) is added to the Collection with catalogNumber A
+        // - Component 1's catalogNumber is changed from A
+        // - a saveblocker will be set on Component 2, even though we know the
+        //   existing duplicate has been locally changed
         const localComponentCollectionHasValue = () =>
           Promise.resolve(
-            resource.collection === undefined
-              ? []
+            resource.collection === undefined || catalogNumberValue === null
+              ? false
               : resource.collection.models
+                  .filter((component) =>
+                    resource.id === undefined
+                      ? component.cid !== resource.cid
+                      : resource.id !== component.id
+                  )
                   .map((component) => component.get('catalogNumber'))
-                  .filter((catalogNumber) => catalogNumber !== null)
-          ).then(
-            (localCatalogNumbers) =>
-              new Set(localCatalogNumbers).size !== localCatalogNumbers.length
+                  .filter(
+                    (catalogNumber) => catalogNumber === catalogNumberValue
+                  ).length >= 1
           );
 
         // Finally, check whether the Component's CollectionObject has the same
