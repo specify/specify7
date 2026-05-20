@@ -1937,6 +1937,7 @@ def update_accession_date_fields(apps):
                         name__iexact=field_name
                     )
                     for item in items:
+                        # TODO: is this correct?
                         item.ishidden = True
                         item.save()
                         desc_str = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
