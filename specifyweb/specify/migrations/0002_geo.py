@@ -3,16 +3,19 @@
 
 import logging
 from django.db import migrations, models
-from django.db.models import F
+# from django.db.models import F
 import django.utils.timezone
 from specifyweb.specify.models import (
     protect_with_blockers
 )
-from specifyweb.specify.migration_utils.update_schema_config import (
-    update_table_schema_config_with_defaults,
-    revert_table_schema_config,
-)
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
+from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils.default_cots import (
+    create_cogtype_type_picklist,
+    create_default_collection_types,
+    create_default_discipline_for_tree_defs,
+    set_discipline_for_taxon_treedefs,
+)
 from specifyweb.specify.api.utils import create_default_collection_types
 
 logger = logging.getLogger(__name__)
@@ -28,15 +31,6 @@ logger = logging.getLogger(__name__)
 # 8. Add discipline relationship to TreeDef tables
 # 9. Add schema config for new sp7 tables
 
-DEFAULT_COG_TYPES = [
-    'Discrete',
-    'Consolidated',
-    'Drill Core',
-]
-
-def handle_default_collection_types(apps):
-    create_default_collection_types(apps)
-
 def revert_default_collection_types(apps):
     # Reverse handeled by table deletion.
     pass
@@ -45,67 +39,11 @@ def revert_default_cog_types(apps):
     # Reverse handeled by table deletion
     pass
 
-def create_default_discipline_for_tree_defs(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-    Institution = apps.get_model('specify', 'Institution')
-
-    for discipline in Discipline.objects.all():
-        geography_tree_def = discipline.geographytreedef
-        geography_tree_def.discipline = discipline
-        geography_tree_def.save()
-
-        geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
-        geologic_time_period_tree_def.discipline = discipline
-        geologic_time_period_tree_def.save()
-
-        lithostrat_tree_def = discipline.lithostrattreedef
-        lithostrat_tree_def.discipline = discipline
-        lithostrat_tree_def.save()
-
-        taxon_tree_def = discipline.taxontreedef
-        taxon_tree_def.discipline = discipline
-        taxon_tree_def.save()
-
-    for institution in Institution.objects.all():
-        storage_tree_def = institution.storagetreedef
-        storage_tree_def.institution = institution
-        storage_tree_def.save()
-
 def revert_default_discipline_for_tree_defs(apps):
     # Reverse handeled by table deletion
     pass
 
-def create_table_schema_config_with_defaults(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        for table, desc in SCHEMA_CONFIG_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
-
-def revert_table_schema_config_with_defaults(apps):
-    for table, _ in SCHEMA_CONFIG_TABLES:
-        revert_table_schema_config(table, apps)
-
-def create_default_collection_object_types(apps):
-    Collection = apps.get_model('specify', 'Collection')
-    Picklist = apps.get_model('specify', 'Picklist')
-    Picklistitem = apps.get_model('specify', 'Picklistitem')
-
-    for collection in Collection.objects.all():
-        cog_type_picklist = Picklist.objects.create(
-            name='Default Collection Object Group Types',
-            issystem=False,
-            type=0,
-            readonly=False,
-            collection=collection
-        )
-        for cog_type in DEFAULT_COG_TYPES:
-            Picklistitem.objects.create(
-                title=cog_type,
-                value=cog_type,
-                picklist=cog_type_picklist
-            )
-
-def revert_default_collection_object_types(apps):
+def revert_cogtype_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
@@ -113,6 +51,7 @@ def revert_default_collection_object_types(apps):
     for collection in Collection.objects.all():
         cog_type_picklist_qs = Picklist.objects.filter(
             name='Default Collection Object Group Types',
+            type=0,
             collection=collection
         )
         if cog_type_picklist_qs.exists():
@@ -120,18 +59,9 @@ def revert_default_collection_object_types(apps):
             Picklistitem.objects.filter(picklist=cog_type_picklist).delete()
             cog_type_picklist.delete()
 
-def set_discipline_for_taxon_treedefs(apps):
-    Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
-    Taxontreedef = apps.get_model('specify', 'Taxontreedef')
-
-    collection_object_types = Collectionobjecttype.objects.filter(
-        taxontreedef__discipline__isnull=True
-    ).annotate(
-        discipline=F('collection__discipline')
-    )
-
-    for cot in collection_object_types:
-        Taxontreedef.objects.filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
+def revert_geo_table_schema_config_with_defaults(apps):
+    for table, _ in SCHEMA_CONFIG_TABLES:
+        usc.revert_table_schema_config(table, apps)
 
 class Migration(migrations.Migration):
 
@@ -142,15 +72,15 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        handle_default_collection_types(apps)
+        create_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps)
-        create_table_schema_config_with_defaults(apps)
-        create_default_collection_object_types(apps)
+        usc.create_geo_table_schema_config_with_defaults(apps)
+        create_cogtype_type_picklist(apps)
         set_discipline_for_taxon_treedefs(apps)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        revert_default_collection_object_types(apps)
-        revert_table_schema_config_with_defaults(apps)
+        revert_cogtype_type_picklist(apps)
+        revert_geo_table_schema_config_with_defaults(apps)
         revert_default_discipline_for_tree_defs(apps)
         revert_default_collection_types(apps)
 

@@ -1,5 +1,7 @@
 import logging
 
+from django.conf import settings
+
 from specifyweb.specify import models as spmodels
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
@@ -17,6 +19,19 @@ def get_spmodel_class(model_name: str):
         if attr_name.lower() == model_name.lower():
             return getattr(spmodels, attr_name)
     raise AttributeError(f"Model '{model_name}' not found in models module.")
+
+def log_sqlalchemy_query(query):
+    if not settings.DEBUG:
+        return
+
+    from sqlalchemy.dialects import mysql
+
+    compiled_query = query.statement.compile(dialect=mysql.dialect())
+    raw_sql = str(compiled_query).replace('\n', ' ') + ';'
+    logger.debug("%s", "=" * 80)
+    logger.debug("SQL: %s", raw_sql)
+    logger.debug("Params: %s", compiled_query.params)
+    logger.debug("%s", "=" * 80)
 
 def create_default_collection_types(apps):
     Collection = apps.get_model('specify', 'Collection')
