@@ -4,7 +4,10 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import { uploadFile } from '../Attachments/attachments';
-import type { SerializedResource, SerializedRecord } from '../DataModel/helperTypes';
+import type {
+  SerializedResource,
+  SerializedRecord,
+} from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import {
   deserializeResource,
