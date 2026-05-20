@@ -368,7 +368,7 @@ function fetchRowAttachments(
   // Each row should have comma-separated IDs for SpDataSetAttachments
   const selectedCell = (hot.getDataAtCell(
     row,
-    hot.toVisualColumn(attachmentColumnIndex)
+    attachmentColumnIndex
   ) ?? '') as string;
   const cellData = getAttachmentsFromCell(selectedCell);
   const dataSetAttachmentIds =

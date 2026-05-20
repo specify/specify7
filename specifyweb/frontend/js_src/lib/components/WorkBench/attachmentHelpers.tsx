@@ -189,7 +189,7 @@ export async function uploadAttachmentsToRow(
     React.SetStateAction<number | undefined>
   >
 ): Promise<void> {
-  const attachmentColumn = getAttachmentsColumn(dataset);
+  const attachmentColumn = getVisualAttachmentsColumn(dataset, hot);
   if (attachmentColumn === -1) return;
   setFileUploadProgress(0);
   setFileUploadLength(files.length);
@@ -236,7 +236,7 @@ export async function deleteAttachmentFromRow(
   row: number,
   existingAttachments: RA<SerializedResource<SpDataSetAttachment>>
 ): Promise<void> {
-  const attachmentColumn = getAttachmentsColumn(dataset);
+  const attachmentColumn = getVisualAttachmentsColumn(dataset, hot);
   if (attachmentColumn === -1) return;
 
   const allDataSetAttachments = existingAttachments.filter(
