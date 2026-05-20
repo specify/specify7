@@ -6,14 +6,13 @@ def create_default_tectonic_ranks(apps):
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True).exclude(
-        id__in=TectonicTreeDef.objects.values_list('discipline_id', flat=True)
-    )
+    disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True)
 
     for discipline in disciplines:
-        tectonic_tree_def = TectonicTreeDef.objects.filter(discipline=discipline).first()
-        if not tectonic_tree_def:
-            tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(name="Tectonic Unit", discipline=discipline)
+        tectonic_tree_def, _ = TectonicTreeDef.objects.get_or_create(
+            name="Tectonic Unit",
+            discipline=discipline,
+        )
 
         root, _ = TectonicUnitTreeDefItem.objects.get_or_create(
             name="Root",
@@ -99,10 +98,17 @@ def create_root_tectonic_node(apps):
             )
 
         tectonic_tree_def_item = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def, name="Root").first()
-        if not tectonic_tree_def_item:
+        if tectonic_tree_def_item:
+            tectonic_tree_def_item.rankid = 0
+            tectonic_tree_def_item.parent = None
+            tectonic_tree_def_item.isenforced = True
+            tectonic_tree_def_item.save()
+        else:
             tectonic_tree_def_item, is_created = TectonicUnitTreeDefItem.objects.get_or_create(
                 name="Root",
                 title="Root",
+                rankid=0,
+                parent=None,
                 treedef=tectonic_tree_def,
                 isenforced=True
             )
@@ -135,7 +141,9 @@ def revert_create_root_tectonic_node(apps, schema_editor=None):
         tectonic_tree_def = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline).first()
         
         if tectonic_tree_def:
-            TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).delete()
             TectonicUnit.objects.filter(
-                name="Root"
+                name="Root",
+                definition=tectonic_tree_def,
+                parent__isnull=True,
             ).delete()
+            TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).delete()
