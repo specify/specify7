@@ -243,14 +243,14 @@ export async function deleteAttachmentFromRow(
     (att) => att.id !== idToDelete
   );
 
+  await ping(`/api/specify/spdatasetattachment/${idToDelete}/`, {
+    method: 'DELETE',
+  });
+
   // The previous target table is not preserved. Safe for now since only uploading to the base table is supported.
   const targetTable = BASE_TABLE_NAME;
   const data = attachmentsToCell(allDataSetAttachments, targetTable);
   hot.setDataAtCell(row, attachmentColumn, data);
-
-  await ping(`/api/specify/spdatasetattachment/${idToDelete}/`, {
-    method: 'DELETE',
-  });
 
   // The dataset still needs to be saved after this.
 }

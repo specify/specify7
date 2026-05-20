@@ -23,7 +23,7 @@ export const handleWorkbenchSave = async (
   workbench.validation.stopLiveValidation();
 
   // Send data
-  ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
+  return ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
     method: 'PUT',
     body: workbench.data,
     expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
