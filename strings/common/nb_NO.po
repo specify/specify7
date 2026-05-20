@@ -357,9 +357,8 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:556
 #: components/WbToolkit/CoordinateConverter.tsx:229
 #: components/WorkBench/Disambiguation.tsx:48
-#, fuzzy
 msgid "apply"
-msgstr "Søke"
+msgstr "Bruk"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/WbToolkit/CoordinateConverter.tsx:277
