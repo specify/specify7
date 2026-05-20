@@ -1,19 +1,19 @@
 from django.db import migrations
-from specifyweb.backend.workbench.upload.auditlog import auditlog
+from specifyweb.specify.models import Collection  # type: ignore
+from ..models import Role
 
 
-def add_stats_edit_permission(apps, schema_editor=None):
-    Role = apps.get_model('permissions', 'Role')
-
-    all_full_access_roles = Role.objects.filter(name="Full Access - Legacy")
-
-    for full_access_role in all_full_access_roles:
-        new_policy, created = full_access_role.policies.get_or_create(
-            resource="/preferences/statistics",
-            action="edit",
-        )
-        if created:
-            auditlog.insert(new_policy, None)
+def add_stats_edit_permission(apps, schema_editor):
+    for collection_id in Collection.objects.values_list('id', flat=True):
+        try:
+            all_full_access_roles = Role.objects.filter(collection_id=collection_id, name="Full Access - Legacy")
+            for full_access_role in all_full_access_roles:
+                full_access_role.policies.create(resource="/preferences"
+                                                          "/statistics",
+                                                 action="edit")
+        except:
+            print("Failed to assign stats edit permission in collection: ",
+                  collection_id)
 
 
 class Migration(migrations.Migration):

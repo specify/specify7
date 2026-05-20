@@ -7,12 +7,13 @@
 
 from django.db import migrations, models
 
-from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
 
+def make_selectseries_false(apps):
+    spquery = apps.get_model('specify', 'Spquery')
+    spquery.objects.filter(selectseries=None).update(selectseries=False)
 
-# def make_selectseries_false(apps):
-#     spquery = apps.get_model('specify', 'Spquery')
-#     spquery.objects.filter(selectseries=None).update(selectseries=False)
+def revert_selectseries(apps, schema_editor):
+    pass
 
 class Migration(migrations.Migration):
 
@@ -30,5 +31,5 @@ class Migration(migrations.Migration):
             field=models.BooleanField(blank=True, db_column='SelectSeries', default=False, null=True),
         ),
         # No revert function added since this patches faulty data
-        migrations.RunPython(apply_migration, migrations.RunPython.noop, atomic=True)
+        migrations.RunPython(apply_migration, revert_selectseries, atomic=True)
     ]

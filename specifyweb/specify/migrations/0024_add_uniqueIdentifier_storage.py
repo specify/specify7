@@ -1,6 +1,22 @@
 from django.db import migrations, models
-from specifyweb.backend.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES
-from specifyweb.specify.migration_utils import update_schema_config as usc
+
+from specifyweb.specify.migration_utils.update_schema_config import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0024_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
+
+def update_fields(apps):
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    # Add uniqueIdentifier -> storage
+    for discipline in Discipline.objects.all():
+        for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items(): 
+            for field in fields: 
+                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+
+def revert_update_fields(apps):
+    # Remove uniqueIdentifier -> storage
+    for table, fields in SCHEMA_CONFIG_MOD_TABLE_FIELDS.items(): 
+        for field in fields: 
+            revert_table_field_schema_config(table, field, apps)
 
 class Migration(migrations.Migration):
 
@@ -9,10 +25,10 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.update_storage_unique_id_fields(apps)
+        update_fields(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_storage_unique_id_fields(apps)
+        revert_update_fields(apps)
 
     operations = [
         migrations.AddField(
