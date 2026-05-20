@@ -31,8 +31,7 @@ def collectionobject_pre_save(co):
 
         if unique_catnum_across_comp_co_coll_pref:
             contains_component_duplicates = component_catalog_number_exists(
-                co.catalognumber,
-                excluded_component_id=co.pk,
+                catalog_number=co.catalognumber,
                 collection_id=co.collection_id,
             )
 

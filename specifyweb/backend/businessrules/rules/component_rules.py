@@ -36,7 +36,11 @@ def component_pre_save(comp):
                 # REFACTOR: localize these table and field names
                 raise BusinessRuleException("Catalog Number is already in use by another Collection Object in this Collection")
 
-            contains_component_duplicates = component_catalog_number_exists(comp.catalognumber, comp.pk, collection_id)
+            contains_component_duplicates = component_catalog_number_exists(
+                catalog_number=comp.catalognumber,
+                excluded_component_id=comp.pk,
+                collection_id=collection_id
+            )
 
             if contains_component_duplicates:
                 raise BusinessRuleException(
