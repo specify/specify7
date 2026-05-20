@@ -214,7 +214,7 @@ class Command(BaseCommand):
             nargs="*",
             type=str,
             choices=tuple(self.funcs.keys()),
-            help=f"Optional: specify one or more functions to run",
+            help="Optional: specify one or more functions to run",
         )
         parser.add_argument(
             "--verbose",
@@ -247,6 +247,6 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
+        except Exception:
+            logger.exception("An error occurred while running key migrations")
             raise
