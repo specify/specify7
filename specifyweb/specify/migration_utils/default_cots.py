@@ -137,10 +137,10 @@ def fix_tectonic_unit_treedef_discipline_links(apps):
     Tectonicunittreedef = apps.get_model('specify', 'Tectonicunittreedef')
 
     empty_tectonic_unit_treedefs = list(
-        Tectonicunittreedef.objects.filter(discipline__isnull=True)
+        Tectonicunittreedef.objects.filter(discipline__isnull=True).order_by('id')
     )
     empty_disciplines = list(
-        Discipline.objects.filter(tectonicunittreedef__isnull=True)
+        Discipline.objects.filter(tectonicunittreedef__isnull=True).order_by('id')
     )
 
     for discipline, tectonic_unit_treedef in zip(
