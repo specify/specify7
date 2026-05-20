@@ -1,6 +1,6 @@
 import { resourcesText } from '../../localization/resources';
 import { resolveParser } from '../../utils/parser/definitions';
-import type { ValueOf } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
   CATALOG_NUMBER_EXISTS,
@@ -451,33 +451,80 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
         const catalogNumberValue = resource.get('catalogNumber');
 
-        const containsCoDuplicates = await fetchCollection('CollectionObject', {
-          domainFilter: true,
-          catalogNumber: catalogNumberValue,
-        }).then(({ totalCount }) => totalCount !== 0);
+        // Check the Database for CollectionObject records that have the same
+        // catalogNumber
+        const containsCoDuplicates = () =>
+          fetchCollection('CollectionObject', {
+            domainFilter: true,
+            catalogNumber: catalogNumberValue,
+            limit: 1,
+          }).then(({ totalCount }) => totalCount !== 0);
 
-        const containsComponentDuplicates = await fetchCollection('Component', {
-          catalogNumber: catalogNumberValue,
-          domainFilter: true,
-          ...(resource.id === undefined
-            ? {}
-            : backendFilter('id').not.equals(resource.id)),
-        }).then(({ totalCount }) => totalCount !== 0);
+        // Check the Database for other existing Component records with the
+        // same catalogNumber
+        const containsComponentDuplicates = () =>
+          fetchCollection('Component', {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+            ...(resource.id === undefined
+              ? {}
+              : backendFilter('id').not.equals(resource.id)),
+          }).then(({ totalCount }) => totalCount !== 0);
 
-        const localCatalogNumbers =
-          resource.collection === undefined
-            ? []
-            : resource.collection.models
-                .map((component) => component.get('catalogNumber'))
-                .filter((catalogNumber) => catalogNumber !== null);
+        // If the Components are in a collection (such as when viewing the
+        // Components SubView from CollectionObject), then make sure
+        const localComponentCollectionHasValue = () =>
+          Promise.resolve(
+            resource.collection === undefined
+              ? []
+              : resource.collection.models
+                  .map((component) => component.get('catalogNumber'))
+                  .filter((catalogNumber) => catalogNumber !== null)
+          ).then(
+            (localCatalogNumbers) =>
+              new Set(localCatalogNumbers).size !== localCatalogNumbers.length
+          );
 
-        const containsLocalDuplicates =
-          new Set(localCatalogNumbers).size !== localCatalogNumbers.length;
+        // Finally, check whether the Component's CollectionObject has the same
+        // catalogNumber as the Component
+        const collectionObjectHasValue = () =>
+          resource.collection?.related?.specifyTable.name === 'CollectionObject'
+            ? Promise.resolve(
+                catalogNumberValue !== null &&
+                  (
+                    resource.collection
+                      .related as SpecifyResource<CollectionObject>
+                  ).get('catalogNumber') === catalogNumberValue
+              )
+            : // This case should be subsumed by the prior check in
+              // containsCoDuplicates, but leaving this here just in case
+              resource
+                .rgetPromise('collectionObject')
+                .then(
+                  (collectionObject) =>
+                    collectionObject !== null &&
+                    collectionObject.get('catalogNumber') === catalogNumberValue
+                );
+        // REFACTOR: Change this when we upgrade to HTTP 2+
+        // Aggregate all of the invalid checks into a singe array to be
+        // processed sequentially
+        // It would be slightly more performant to have these all executing at
+        // the same time, but don't want to overwhelm the browser with the 6
+        // in-flight request limit of HTTP 1.1
+        const invalidChecks: RA<() => Promise<boolean>> = [
+          containsCoDuplicates,
+          containsComponentDuplicates,
+          localComponentCollectionHasValue,
+          collectionObjectHasValue,
+        ];
 
-        const isInvalid =
-          containsCoDuplicates ||
-          containsComponentDuplicates ||
-          containsLocalDuplicates;
+        let isInvalid = false;
+
+        for (const checkInvalid of invalidChecks) {
+          isInvalid = await checkInvalid();
+          if (isInvalid) break;
+        }
 
         setSaveBlockers(
           resource,
