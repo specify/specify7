@@ -126,6 +126,9 @@ def load_default_tree_json(source: str) -> Any:
         if not _is_remote_source(source):
             raise FileNotFoundError(local_path)
 
+    if not _is_remote_source(source):
+        raise ValueError('Default tree source is not allowed.')
+
     if not _is_allowed_remote_mapping_url(source):
         raise ValueError('Remote mapping URL is not allowed.')
 
