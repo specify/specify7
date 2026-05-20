@@ -114,7 +114,7 @@ def calculate_extra_fields(obj, data: dict[str, Any]) -> dict[str, Any]:
 
      
     elif isinstance(obj, Loanpreparation):
-            # calculate the resolved status based on quantity and quantityresolved, used to update IsResolved thorugh a new business rule
+            # calculate the resolved status based on quantity and quantityresolved.
             quantity_resolved = data.get('quantityresolved') or 0
             total_quantity = data.get('quantity') or 0
             is_resolved = (quantity_resolved >= total_quantity)
@@ -125,9 +125,6 @@ def calculate_extra_fields(obj, data: dict[str, Any]) -> dict[str, Any]:
         preps = data["loanpreparations"]
         prep_count = len(preps)
         quantities = sum((prep.get('quantity') or 0) for prep in preps)
-
-
-
         unresolved_prep_count = sum(not prep["isresolved"] for prep in preps)
         unresolved_quantities = sum(
             max((prep.get("quantity") or 0) - (prep.get("quantityresolved") or 0), 0)
