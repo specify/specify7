@@ -27,19 +27,19 @@ const mockConfigResponse = {
         tableName: 'CollectionObject',
         displayOrder: 0,
         searchFields: [],
-        displayFields: []
-      }
+        displayFields: [],
+      },
     ],
-    relatedQueries: []
+    relatedQueries: [],
   },
   related_queries_definitions: [],
   schema_metadata: [
     {
       name: 'CollectionObject',
       title: 'Collection Object',
-      fields: []
-    }
-  ]
+      fields: [],
+    },
+  ],
 };
 
 describe('ExpressSearchConfigEditor', () => {
@@ -65,42 +65,43 @@ describe('ExpressSearchConfigEditor', () => {
     });
 
     expect(onChangeJSON).toHaveBeenCalled();
-    const latestConfig = onChangeJSON.mock.calls[onChangeJSON.mock.calls.length - 1][0];
+    const latestConfig =
+      onChangeJSON.mock.calls[onChangeJSON.mock.calls.length - 1][0];
     expect(latestConfig.tables[0].tableName).toBe('Agent');
     expect(latestConfig.tables[0].searchFields[0].fieldName).toBe('firstName');
   });
 
   test('renders loading state initially', async () => {
     const { getByText } = mount(
-      <ExpressSearchConfigEditor 
-        onChange={jest.fn()} 
-        onSetCleanup={jest.fn()} 
+      <ExpressSearchConfigEditor
+        onChange={jest.fn()}
+        onSetCleanup={jest.fn()}
       />
     );
     expect(getByText('Loading...')).toBeInTheDocument();
-    
+
     // Wait for it to finish loading to avoid act warnings
     await act(async () => {
-      await new Promise(resolve => setTimeout(resolve, 0));
+      await new Promise((resolve) => setTimeout(resolve, 0));
     });
   });
 
   test('renders tabs after data load', async () => {
     const { findByRole } = mount(
-      <ExpressSearchConfigEditor 
-        onChange={jest.fn()} 
-        onSetCleanup={jest.fn()} 
+      <ExpressSearchConfigEditor
+        onChange={jest.fn()}
+        onSetCleanup={jest.fn()}
       />
     );
-    
+
     expect(await findByRole('tablist')).toBeInTheDocument();
   });
 
   test('switches tabs correctly', async () => {
     const { findByText, getByRole, user } = mount(
-      <ExpressSearchConfigEditor 
-        onChange={jest.fn()} 
-        onSetCleanup={jest.fn()} 
+      <ExpressSearchConfigEditor
+        onChange={jest.fn()}
+        onSetCleanup={jest.fn()}
       />
     );
 
@@ -112,7 +113,7 @@ describe('ExpressSearchConfigEditor', () => {
     await act(async () => {
       await user.click(relatedTab);
     });
-    
+
     expect(await findByText('Related Tables Tab')).toBeInTheDocument();
 
     // Click Results Ordering
