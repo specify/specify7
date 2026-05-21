@@ -2,11 +2,11 @@ from typing import Any, NamedTuple
 
 from typing import Literal
 
-from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-
 from .parsing import WorkBenchParseFailure
 
 Failure = Literal["Failure"]
+BUSINESS_RULE_EXCEPTION_MODULE = "specifyweb.backend.businessrules.exceptions"
+BUSINESS_RULE_EXCEPTION_NAME = "BusinessRuleException"
 BusinessRulePayloadValue = (
     str
     | int
@@ -250,13 +250,19 @@ class FailedBusinessRule(NamedTuple):
         )
 
 
-def to_failed_business_rule(exception: Exception, info: ReportInfo) -> FailedBusinessRule:
-    if (
-        isinstance(exception, BusinessRuleException)
+def is_business_rule_exception_with_payload(exception: Exception) -> bool:
+    exception_class = exception.__class__
+    return (
+        exception_class.__module__ == BUSINESS_RULE_EXCEPTION_MODULE
+        and exception_class.__name__ == BUSINESS_RULE_EXCEPTION_NAME
         and len(exception.args) >= 2
         and isinstance(exception.args[0], str)
         and isinstance(exception.args[1], dict)
-    ):
+    )
+
+
+def to_failed_business_rule(exception: Exception, info: ReportInfo) -> FailedBusinessRule:
+    if is_business_rule_exception_with_payload(exception):
         return FailedBusinessRule(exception.args[0], exception.args[1], info)
 
     return FailedBusinessRule(str(exception), {}, info)
