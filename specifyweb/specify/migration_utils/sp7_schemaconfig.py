@@ -148,7 +148,7 @@ MIGRATION_0023_FIELDS_BIS = {
     'RelativeAge': ['number2', 'yesno2', 'relativeAgeId', 'relativeAgePeriod', 'text1', 'agent1', 'collectionDate', 'text2', 'agent2', 'date1', 'date2', 'collectionObject', 'relativeAgeCitations', 'number1', 'yesno1'],
     'CollectionObject': ['collectionObjectType', 'relativeAges', 'absoluteAges', 'cojo'],
     'AbsoluteAgeCitation': ['collectionMember', 'absoluteAgeCitationId'],
-    'RelativeAgeCitation': ['absoluteAgeCitationId', 'collectionMember'],
+    'RelativeAgeCitation': ['relativeAgeCitationId', 'collectionMember'],
     'TectonicUnit': ['collectionMember', 'nodeNumber', 'yesno1', 'tectonicUnitId', 'number1', 'yesno2', 'number2', 'rankId', 'text1'],
     'TectonicUnitTreeDefItem': ['children', 'rankId', 'parent', 'treeDef', 'treeEntries', 'tectonicUnitTreeDefItemId'],
     'TectonicUnitTreeDef': ['discipline', 'treeEntries', 'tectonicUnitTreeDefId']
