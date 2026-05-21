@@ -208,7 +208,14 @@ export function QueryExportButtons({
           {showReports && (
             <ReportsView
               autoSelectSingle
-              resourceId={queryResource.get('id')}
+             resourceId={
+          // Use first selected row ID if rows are selected,
+          // otherwise use recordSetId if available,
+          // otherwise use first result's ID
+          selectedRows.size > 0 
+            ? Array.from(selectedRows)[0]
+            : recordSetId ?? (results.current?.[0]?.[0] as number | undefined)
+        }
               table={genericTables[baseTableName]}
               onClose={handleHideReports}
             />
