@@ -14,7 +14,7 @@ from django.db import connection
 from django.conf import settings
 
 from specifyweb.specify.models import Spauditlog, Spauditlogfield
-from specifyweb.backend.context.remote_prefs import get_remote_prefs, get_global_prefs
+from specifyweb.backend.context.remote_prefs import get_remote_pref, get_global_pref
 from specifyweb.specify.models import datamodel
 
 logger = logging.getLogger(__name__)
@@ -51,16 +51,16 @@ class AuditLog:
         if settings.DISABLE_AUDITING:
             return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
-            match = re.search(r'auditing\.do_audits=(.+)', get_remote_prefs())
-            if match is None:
+            do_auditing_pref = get_remote_pref('auditing.do_audits')
+            if do_auditing_pref is None:
                 self._auditing = True
             else:
-                self._auditing = False if match.group(1).lower() == 'false' else True
-            match = re.search(r'auditing\.audit_field_updates=(.+)', get_remote_prefs())
-            if match is None:
+                self._auditing = False if do_auditing_pref.lower() == 'false' else True
+            do_audit_field_updates = get_remote_pref('auditing.audit_field_updates')
+            if do_audit_field_updates is None:
                 self._auditingFlds = True
             else:
-                self._auditingFlds = False if match.group(1).lower() == 'false' else True
+                self._auditingFlds = False if do_audit_field_updates.lower() == 'false' else True
             self.purge()
             self._lastCheck = time()
         return self._auditing;
@@ -150,16 +150,17 @@ class AuditLog:
             modifiedbyagent_id=agent_id)
 
     def purge(self):
-        match = re.search(r'AUDIT_LIFESPAN_MONTHS=(.+)', get_global_prefs())
+        audit_lifespan = get_global_pref('AUDIT_LIFESPAN_MONTHS')
         logger.info("checking to see if purge is required")
-        if match is not None:
+        if audit_lifespan is not None:
             cursor = connection.cursor()
-            sql = "delete from spauditlogfield where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
-            logger.info("purging audit log: %s", [sql]);
-            cursor.execute(sql)
-            sql = "delete from spauditlog where date_sub(curdate(), Interval " +  match.group(1).lower()+ " month) > timestampcreated"
-            logger.info("purging audit log: %s", [sql]);
-            cursor.execute(sql)
+            query_parameters = [audit_lifespan.lower()]
+            sql = "delete from spauditlogfield where date_sub(curdate(), Interval %s month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql])
+            cursor.execute(sql, query_parameters)
+            sql = "delete from spauditlog where date_sub(curdate(), Interval %s month) > timestampcreated"
+            logger.info("purging audit log: %s", [sql])
+            cursor.execute(sql, query_parameters)
         return True
     
 auditlog = AuditLog()

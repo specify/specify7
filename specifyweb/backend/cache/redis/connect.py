@@ -63,6 +63,9 @@ class RedisList(RedisDataType):
         return self.connection.ltrim(key, start_index, end_index)
     
     def blocking_left_pop(self, key: str, timeout: int) -> str | bytes | None:
+        # This will block the thread until either an item is pushed into the
+        # List or timeout seconds have passed
+        # https://redis.io/docs/latest/commands/blpop/
         response = self.connection.blpop(key, timeout=timeout)
         if response is None:
             return None

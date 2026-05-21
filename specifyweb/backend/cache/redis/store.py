@@ -1,5 +1,6 @@
 from .utils import _set_string, _get_string, _delete_key, _add_to_set, _remove_from_set, _set_elements, _redis_type, format_key
 
+# REFACTOR: Replace these with RedisConnection adapters
 
 def set_string(key: str | bytes, value: str, time_to_live=None, override_existing=True):
     return _set_string(format_key(key), value, time_to_live=time_to_live, override_existing=override_existing, decode_responses=True)

@@ -2,7 +2,7 @@ import json
 
 from typing import Callable, Generator, Iterable, cast
 
-from specifyweb.backend.redis_cache.connect import RedisConnection, RedisList, RedisSet
+from specifyweb.backend.cache.redis.connect import RedisConnection, RedisList, RedisSet
 
 type Serialized = str | bytes | bytearray
 

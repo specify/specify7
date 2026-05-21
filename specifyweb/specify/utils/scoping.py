@@ -356,4 +356,4 @@ def in_same_scope(object1: Model, object2: Model) -> bool:
         while scope2_type != scope1_type:
             scope1_type, scope1 = Scoping.from_instance(scope1)
 
-    return scope1.id == scope2.id
+    return scope1.pk == scope2.pk

@@ -12,7 +12,7 @@ from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tr
 from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
-from specifyweb.backend.redis_cache.store import set_string, get_string
+from specifyweb.backend.cache.redis import set_string, get_string
 from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
 from specifyweb.backend.setup_tool.task_tracking import (
     queue_collection_background_task,
