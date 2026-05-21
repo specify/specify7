@@ -22,6 +22,18 @@ overrideAjax(
   }
 );
 
+overrideAjax(
+  '/api/specify/component/?catalognumber=%23%23%23%23%23%23%23%23%23&domainfilter=true',
+  {
+    objects: [],
+    meta: {
+      limit: 20,
+      offset: 0,
+      total_count: 0,
+    },
+  }
+);
+
 describe('getCollectionForResource', () => {
   test('Collection Object', () => {
     const collectionObject = new tables.CollectionObject.Resource({
@@ -130,11 +142,10 @@ describe('Resource initialization preferences', () => {
 
   test('CO_CREATE_DET', async () => {
     const collectionObject = new tables.CollectionObject.Resource();
-    await expect(
-      collectionObject
-        .rgetCollection('determinations')
-        .then((collection) => collection.models.length)
-    ).resolves.toBe(1);
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    expect(determinations).toHaveLength(1);
+    expect(determinations?.models.at(0)?.get('isCurrent')).toBe(true);
   });
 
   test('Cloning resource does not create duplicates', async () => {

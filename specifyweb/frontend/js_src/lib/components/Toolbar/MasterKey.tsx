@@ -48,7 +48,7 @@ export function MasterKeyOverlay(): JSX.Element | null {
         id={id('form')}
         onSubmit={(): void =>
           loading(
-            ajax('/api/master_key/', {
+            ajax('/accounts/master_key/', {
               method: 'POST',
               body: formData({ password }),
               headers: {

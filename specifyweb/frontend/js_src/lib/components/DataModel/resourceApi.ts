@@ -482,7 +482,7 @@ export const ResourceBase = Backbone.Model.extend({
      * incomplete timestampcreated. A complete timestamp cannot be used because
      * the back-end cannot receive timestamps with time zones, so this sets it
      * to null so the back-end uses its own complete timestamp.
-     * See: https://github.com/specify/specify7/issues/5421, 
+     * See: https://github.com/specify/specify7/issues/5421,
      *      https://github.com/specify/specify7/issues/641
      * REFACTOR: Remove this once the back-end supports time zones.
      */
@@ -611,6 +611,7 @@ export const ResourceBase = Backbone.Model.extend({
         }
         return toOne.url();
       } // The FK as a URI
+      // REFACTOR: add independent support for zero-to-one relationships
       case 'zero-to-one': {
         /*
          * This actually a one-to-many where the related collection is only a single resource

@@ -17,7 +17,8 @@ import 'leaflet.featuregroup.subgroup';
 import GestureHandling from 'leaflet-gesture-handling';
 
 import { localityText } from '../../localization/locality';
-import { legacyNonJsxIcons } from '../Atoms/Icons';
+import { icons } from '../Atoms/Icons';
+import { renderToStaticMarkup } from 'react-dom/server';
 import { className } from '../Atoms/className';
 // @ts-expect-error Path to non-ts file
 import iconRetinaUrl from 'leaflet/dist/images/marker-icon-2x.png';
@@ -53,7 +54,7 @@ export const leafletControls = {
           '!cursor-pointer',
           'rounded'
         );
-        button.innerHTML = legacyNonJsxIcons.arrowsExpand;
+        button.innerHTML = renderToStaticMarkup(icons.arrowsExpand);
 
         let isFullScreen = false;
         L.DomEvent.on(button, 'click', (event) => {
@@ -94,7 +95,7 @@ export const leafletControls = {
         // Hidden by default, until map enters the full-screen mode
         'hidden'
       );
-      button.innerHTML = legacyNonJsxIcons.printer;
+      button.innerHTML = renderToStaticMarkup(icons.document);
 
       L.DomEvent.on(button, 'click', (event) => {
         L.DomEvent.stopPropagation(event);

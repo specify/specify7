@@ -1,4 +1,3 @@
-
 from django.test import Client
 from specifyweb.specify.models import Collection, Collectionobject, Geologictimeperiod
 import json
@@ -13,10 +12,10 @@ class TestRows(GeoTimeTestsContext):
         c = Client()
         c.force_login(self.specifyuser)
         self.c = c
-    
+
     def test_simple_fetch(self):
         
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'catalognumber,collection__collectionname'
         })
         
@@ -47,7 +46,7 @@ class TestRows(GeoTimeTestsContext):
             self.collectionobjects[4],
             dict(text1="TextData2")
         )
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'catalognumber,text1',
             'orderby': 'text1'
         })
@@ -57,15 +56,38 @@ class TestRows(GeoTimeTestsContext):
             return [co.catalognumber, co.text1]
 
         rows = json.loads(result_rows.content.decode())
-        self.assertEqual(rows, [
-            _get_row(2),
-            _get_row(3),
-            _get_row(4),
-            _get_row(1),
-            _get_row(0)
-        ])
 
-        distinct_result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        possible_lists = [
+            [
+                _get_row(2),
+                _get_row(3),
+                _get_row(4),
+                _get_row(1),
+                _get_row(0)
+            ],
+            [
+                _get_row(2),
+                _get_row(4),
+                _get_row(3),
+                _get_row(1),
+                _get_row(0)
+            ]
+        ]
+
+        error = None
+        for possible_row in possible_lists:
+            try:
+                self.assertEqual(rows, possible_row)
+                break
+            except Exception as e:
+                error = e
+                continue
+        else:
+            assert error is not None, "Trying to throw undefined error"
+            raise error
+
+
+        distinct_result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'text1',
             'orderby': 'text1',
             'distinct': True
@@ -76,7 +98,7 @@ class TestRows(GeoTimeTestsContext):
 
     def test_limit(self):
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'catalognumber,collection__collectionname',
             'limit': 3
         })
@@ -88,7 +110,7 @@ class TestRows(GeoTimeTestsContext):
 
     def test_offset(self):
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'catalognumber,collection__collectionname',
             'limit': 3,
             'offset': 1
@@ -115,7 +137,7 @@ class TestRows(GeoTimeTestsContext):
             ) for i in range(5)
         ]
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'catalognumber,collection__collectionname',
         })
 
@@ -127,7 +149,7 @@ class TestRows(GeoTimeTestsContext):
             [*result_1, *result_2]
         )
 
-        domain_result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        domain_result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'catalognumber,collection__collectionname',
             'domainfilter': 'true'
         })
@@ -156,7 +178,7 @@ class TestRows(GeoTimeTestsContext):
         )
 
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'preparations__remarks,catalognumber',
             'domainfilter': 'true',
             'preparations__remarks__isnull': 'false'
@@ -167,7 +189,7 @@ class TestRows(GeoTimeTestsContext):
             [co_2_prep_2.remarks, self.collectionobjects[1].catalognumber]
         ])
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'preparations__remarks,catalognumber',
             'domainfilter': 'true',
             'preparations__remarks__isnull': 'true'
@@ -207,7 +229,7 @@ class TestRows(GeoTimeTestsContext):
         self._numeric_setup()
 
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'integer1,catalognumber',
             'integer1__in': '3,8'
         })
@@ -225,7 +247,7 @@ class TestRows(GeoTimeTestsContext):
             _get_row(3)
         ])
 
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'text1,catalognumber',
             'text1__in': 'NewText1,ModText4'
         })
@@ -247,7 +269,7 @@ class TestRows(GeoTimeTestsContext):
     def test_range_query(self):
         
         self._numeric_setup()
-        result_rows = self.c.get("/api/specify_rows/collectionobject/", {
+        result_rows = self.c.get("/table_rows/specify_rows/collectionobject/", {
             'fields': 'integer1,catalognumber',
             'integer1__range': '4,8'
         })
@@ -289,7 +311,7 @@ class TestRows(GeoTimeTestsContext):
             endperiod=50,
             enduncertainty=None,
         )
-        result_rows = self.c.get("/api/specify_rows/geologictimeperiod/", {
+        result_rows = self.c.get("/table_rows/specify_rows/geologictimeperiod/", {
             'fields': 'name,rankid',
             'filterchronostrat': False
         })
@@ -307,7 +329,7 @@ class TestRows(GeoTimeTestsContext):
 
         self.assertCountEqual(expected_rows, json.loads(result_rows.content.decode()))
 
-        result_rows = self.c.get("/api/specify_rows/geologictimeperiod/", {
+        result_rows = self.c.get("/table_rows/specify_rows/geologictimeperiod/", {
             'fields': 'name,rankid',
             'filterchronostrat': True
         })

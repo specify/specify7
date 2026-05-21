@@ -165,6 +165,35 @@ function genericSet<T>(
   return value;
 }
 
+export const removeCache = <
+  CATEGORY extends string & keyof CacheDefinitions,
+  KEY extends string & keyof CacheDefinitions[CATEGORY],
+>(
+  category: CATEGORY,
+  key: KEY,
+  triggerChange = true
+) =>
+  genericRemove<CacheDefinitions[CATEGORY][KEY]>(category, key, triggerChange);
+
+function genericRemove<TYPE>(
+  category: string,
+  key: string,
+  triggerChange = true
+): TYPE | undefined {
+  if (!eventListenerIsInitialized) initialize();
+
+  const previousValue = genericGet(category, key);
+
+  const formattedKey = formatCacheKey(category, key);
+
+  globalThis.localStorage.removeItem(formattedKey);
+  delete cache[formattedKey];
+
+  if (triggerChange) cacheEvents.trigger('change', { category, key });
+
+  return previousValue as TYPE | undefined;
+}
+
 export const exportsForTests = {
   formatCacheKey,
   parseCacheKey,

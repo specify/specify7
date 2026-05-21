@@ -53,7 +53,7 @@ export const getAppResourceTree = (
   },
 ];
 
-const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
+export const sortTree = (tree: AppResourcesTree): AppResourcesTree =>
   Array.from(tree)
     .sort(sortFunction(({ label }) => label))
     .map(({ subCategories, ...rest }) => ({
@@ -72,6 +72,7 @@ function getGlobalAllResources(resources: AppResources): {
   if (globalDirectories.length === 0)
     globalDirectories.push({
       ...addMissingFields('SpAppResourceDir', {
+        isPersonal: false,
         userType: 'Common',
       }),
       scope: 'global',
@@ -114,6 +115,7 @@ const disambiguateGlobalPrefs = (
       ({ id }) =>
         getResourceApiUrl('SpAppResourceDir', id) === resource.spAppResourceDir
     );
+    // Pretty sure this is redundant... that is, directory should always be defined.
     if (!directory) return resource;
     const userType = directory.userType?.toLowerCase();
     if (userType === globalUserType)
@@ -177,6 +179,7 @@ export const getScopedAppResources = (
       addMissingFields('SpAppResourceDir', {
         discipline: discipline.resource_uri,
         collection: undefined,
+        isPersonal: false,
       });
     return {
       label: localized(discipline.name ?? ''),
@@ -204,6 +207,7 @@ const getDisciplineAppResources = (
         addMissingFields('SpAppResourceDir', {
           collection: collection.resource_uri,
           discipline: collection.discipline,
+          isPersonal: false,
         });
       return {
         /*
@@ -257,6 +261,7 @@ const getUserTypeResources = (
       addMissingFields('SpAppResourceDir', {
         collection: collection.resource_uri,
         discipline: collection.discipline,
+        isPersonal: false,
         userType: userType.toLowerCase(),
       });
     return {
@@ -295,3 +300,14 @@ const getUserResources = (
       subCategories: [],
     };
   });
+
+export const exportsForTests = {
+  getGlobalAllResources,
+  disambiguateGlobalPrefs,
+  mergeDirectories,
+  getDirectoryChildren,
+  getDisciplineAppResources,
+  getUserTypeResources,
+  getUserResources,
+  getCollectionResources,
+};

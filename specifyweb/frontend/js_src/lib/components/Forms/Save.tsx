@@ -7,35 +7,24 @@ import { useId } from '../../hooks/useId';
 import { useIsModified } from '../../hooks/useIsModified';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
-import { ajax } from '../../utils/ajax';
 import { smoothScroll } from '../../utils/dom';
 import { listen } from '../../utils/events';
-import {
-  formatterToParser,
-  getValidationAttributes,
-} from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
-import { keysToLowerCase, replaceKey } from '../../utils/utils';
+import { replaceKey } from '../../utils/utils';
 import { appResourceSubTypes } from '../AppResources/types';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
-import { Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
-import type { AnySchema, SerializedRecord } from '../DataModel/helperTypes';
+import type { AnySchema } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { BlockerWithResource } from '../DataModel/saveBlockers';
 import {
   findUnclaimedBlocker,
   useAllSaveBlockers,
 } from '../DataModel/saveBlockers';
-import {
-  deserializeResource,
-  serializeResource,
-} from '../DataModel/serializers';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import { tables } from '../DataModel/tables';
 import { error } from '../Errors/assert';
 import { errorHandledBy } from '../Errors/FormatError';
 import { InFormEditorContext } from '../FormEditor/Context';
@@ -45,7 +34,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
-import { BulkCarryRangeBlockedDialog, SeriesFormContext } from './BulkCarryForward';
+import { useBulkCarryForward, SeriesFormContext, handleBulkCarryForward } from './BulkCarryForward';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -188,25 +177,26 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                 ? undefined
                 : error(error_)
             )
+            .then(handleSaved)
             .finally(() => {
-              if (usingSeriesForm && seriesRangeEndValue !== '') {
-                /*
-                * If using the in-form series input the record should not
-                * be saved before bulk carry forward.
-                */
-                handleBulkCarryForward(true).then((resources) => {
-                  if (handleAdd && resources !== undefined) {
-                    handleAdd(resources);
-                  }
-                }).then(() => {
-                  unsetUnloadProtect();
-                  handleSaved?.();
-                  setIsSaving(false);
-                })
-                return;
-              }
+              // TODO: Update this code and uncomment
+              // if (usingSeriesForm && seriesRangeEndValue !== '') {
+              //   /*
+              //   * If using the in-form series input the record should not
+              //   * be saved before bulk carry forward.
+              //   */
+              //   handleBulkCarryForward(true).then((resources) => {
+              //     if (handleAdd && resources !== undefined) {
+              //       handleAdd(resources);
+              //     }
+              //   }).then(() => {
+              //     unsetUnloadProtect();
+              //     handleSaved?.();
+              //     setIsSaving(false);
+              //   })
+              //   return;
+              // }
               unsetUnloadProtect();
-              handleSaved?.();
               setIsSaving(false);
             });
         }
@@ -248,7 +238,9 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
         smoothScroll(form, 0);
         loading(
           handleClick().then((resources) =>
-            resources && handleAdd ? handleAdd(resources) : undefined
+            resources !== undefined && handleAdd
+              ? handleAdd(resources)
+              : undefined
           )
         );
       }}
@@ -257,119 +249,12 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
-  const [carryForwardAmount, setCarryForwardAmount] = React.useState<number>(1);
-  const [carryForwardRangeEnd, setCarryForwardRangeEnd] =
-    React.useState<string>('');
   const { seriesEnd: seriesRangeEndValue, usingSeries: usingSeriesForm } = React.useContext(SeriesFormContext);
-  React.useEffect(() => {
-    setCarryForwardRangeEnd(seriesRangeEndValue);
-  }, [seriesRangeEndValue]);
-
-  const isCOGorCOJO =
-    resource.specifyTable.name === 'CollectionObjectGroup' ||
-    resource.specifyTable.name === 'CollectionObjectGroupJoin';
-
-  // Disable bulk carry forward for COType cat num format that are undefined or one of types listed in tableValidForBulkClone()
-  const numberField =
-    tables.CollectionObject.strictGetLiteralField('catalogNumber');
-  const formatter = numberField.getUiFormatter(resource)!;
-  const disableBulk =
-    !tableValidForBulkClone(resource.specifyTable, resource) ||
-    formatter === undefined;
-  const canAutoNumberFormatter = formatter.canAutoIncrement();
-  const parser = formatterToParser(numberField, formatter);
-
-  const [bulkCarryRangeBlocked, setBulkCarryRangeBlocked] =
-    React.useState(false);
-  const [bulkCarryRangeInvalidNumbers, setBulkCarryRangeInvalidNumbers] =
-    React.useState<RA<string> | undefined>(undefined);
-
-  const handleBulkCarryForward = async (saved=true): Promise<
-    RA<SpecifyResource<SCHEMA>> | undefined
-  > => {
-    const numberFieldName = 'catalogNumber';
-    const wildCard = formatter.valueOrWild();
-    let numbers: RA<number> | undefined;
-
-    if (showBulkCarryRange) {
-      const carryForwardRangeStart = resource.get(numberFieldName);
-      if (
-        carryForwardRangeStart === null ||
-        !formatter.format(carryForwardRangeStart) ||
-        !formatter.format(carryForwardRangeEnd) ||
-        (formatter.format(carryForwardRangeStart) ?? '') >=
-          (formatter.format(carryForwardRangeEnd) ?? '')
-      ) {
-        setBulkCarryRangeBlocked(true);
-        return undefined;
-      }
-
-      const response = await ajax<{
-        readonly values: RA<number>;
-        readonly existing: RA<string>;
-      }>(`/api/specify/series_autonumber_range/`, {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: keysToLowerCase({
-          rangeStart: carryForwardRangeStart,
-          rangeEnd: carryForwardRangeEnd,
-          tableName: resource.specifyTable.name.toLowerCase(),
-          fieldName: numberFieldName.toLowerCase(),
-          formatterName: formatter.name,
-          skipStartNumber: saved,
-        }),
-      })
-        .then(({ data }) => data)
-        .catch((error) => {
-          console.error(error);
-          return undefined;
-        });
-      if (response === undefined) {
-        setBulkCarryRangeBlocked(true);
-        return undefined;
-      }
-      numbers = response.values;
-      if (response.existing.length > 0) {
-        setBulkCarryRangeInvalidNumbers(response.existing);
-        setBulkCarryRangeBlocked(true);
-        return undefined;
-      }
-    }
-
-    const clonePromises = Array.from(
-      { length: numbers ? numbers.length : carryForwardAmount },
-      async (_, index) => {
-        const clonedResource = await resource.clone(false, true);
-        clonedResource.set(
-          numberFieldName,
-          numbers ? (numbers[index] as never) : (wildCard as never)
-        );
-        return clonedResource;
-      }
-    );
-
-    let recordsToBeSaved: RA<SpecifyResource<SCHEMA>>;
-    const clones = await Promise.all(clonePromises);
-
-    if (saved === false) {
-      recordsToBeSaved = [resource, ...clones];
-    } else {
-      recordsToBeSaved = clones;
-    }
-
-    const backendClones = await ajax<RA<SerializedRecord<SCHEMA>>>(
-      `/api/specify/bulk/${resource.specifyTable.name.toLowerCase()}/`,
-      {
-        method: 'POST',
-        headers: { Accept: 'application/json' },
-        body: recordsToBeSaved,
-      }
-    ).then(({ data }) =>
-      data.map((resource) => deserializeResource(serializeResource(resource)))
-    );
-
-    return Promise.all([resource, ...backendClones]);
-  };
+  const {
+    BulkCarryForward,
+    dialogs: BulkCarryForwardDialogs,
+    handleBulkCarryForward,
+  } = useBulkCarryForward({ resource, showBulkCarryCount, showBulkCarryRange });
 
   return (
     <>
@@ -378,50 +263,10 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           {resource.specifyTable.name === 'CollectionObject' &&
           (isInRecordSet === false || isInRecordSet === undefined) &&
           isSaveDisabled &&
-          showCarry &&
-          (showBulkCarryCount || showBulkCarryRange) &&
-          !isCOGorCOJO &&
-          !disableBulk ? (
-            showBulkCarryRange ? (
-              canAutoNumberFormatter ? (
-                <Label.Inline>
-                  <Input.Text
-                    aria-label={formsText.bulkCarryForwardRangeStart()}
-                    className="!w-fit"
-                    isReadOnly
-                    placeholder={formatter.valueOrWild()}
-                    value={resource.get('catalogNumber') ?? ''}
-                    width={numberField.datamodelDefinition.length}
-                  />
-                  <Input.Text
-                    aria-label={formsText.bulkCarryForwardRangeEnd()}
-                    className="!w-fit"
-                    {...getValidationAttributes(parser)}
-                    placeholder={formatter.valueOrWild()}
-                    isReadOnly={usingSeriesForm}
-                    value={carryForwardRangeEnd}
-                    width={numberField.datamodelDefinition.length}
-                    onValueChange={(value): void =>
-                      setCarryForwardRangeEnd(value)
-                    }
-                  />
-                </Label.Inline>
-              ) : undefined
-            ) : (
-              <Input.Integer
-                aria-label={formsText.bulkCarryForwardCount()}
-                className="!w-fit"
-                max={5000}
-                min={1}
-                placeholder="1"
-                value={carryForwardAmount}
-                onValueChange={(value): void =>
-                  setCarryForwardAmount(Number(value))
-                }
-              />
-            )
-          ) : null}
-          {showCarry && !isCOGorCOJO
+          showCarry
+            ? BulkCarryForward
+            : undefined}
+          {showCarry
             ? copyButton(
                 formsText.carryForward(),
                 formsText.carryForwardDescription(),
@@ -430,19 +275,16 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
                  * See https://github.com/specify/specify7/pull/4804
                  *
                  */
-                !(
-                  !showBulkCarryRange ||
-                  (showBulkCarryRange && canAutoNumberFormatter)
-                ),
-                resource.specifyTable.name === 'CollectionObject' &&
-                  (showBulkCarryRange || carryForwardAmount > 1)
+                false,
+                (showBulkCarryCount || showBulkCarryRange) &&
+                  handleBulkCarryForward !== undefined
                   ? handleBulkCarryForward
                   : async (): Promise<RA<SpecifyResource<SCHEMA>>> => [
                       await resource.clone(false),
                     ]
               )
             : undefined}
-          {showClone && !isCOGorCOJO
+          {showClone
             ? copyButton(
                 formsText.clone(),
                 formsText.cloneDescription(),
@@ -489,16 +331,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
           onClose={(): void => setShownBlocker(undefined)}
         />
       ) : undefined}
-      {bulkCarryRangeBlocked ? (
-        <BulkCarryRangeBlockedDialog
-          invalidNumbers={bulkCarryRangeInvalidNumbers}
-          numberField={numberField}
-          onClose={(): void => {
-            setBulkCarryRangeBlocked(false);
-            setBulkCarryRangeInvalidNumbers(undefined);
-          }}
-        />
-      ) : undefined}
+      {BulkCarryForwardDialogs}
     </>
   );
 }
@@ -514,7 +347,7 @@ function SaveBlockedDialog({
     () =>
       generateMappingPathPreview(
         field[0].table.name,
-        field.map(({ name }) => name)
+        field.map(({ label }) => label)
       ),
     [field]
   );
@@ -592,7 +425,12 @@ function useEnabledButtons<SCHEMA extends AnySchema = AnySchema>(
     !NO_CLONE.has(tableName) &&
     !isDisabledCloneAppResource;
   const showAdd =
-    !disableAdd.includes(tableName) && !FORBID_ADDING.has(tableName);
+    !disableAdd.includes(tableName) &&
+    !FORBID_ADDING.has(tableName) &&
+    !(
+      tableName === 'SpAppResource' &&
+      appResourceName === 'CollectionPreferences'
+    );
 
   return {
     showClone,

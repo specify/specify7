@@ -1,0 +1,39 @@
+{
+  "collectionobjectattribute": {
+    "ishidden": false,
+    "desc": "Collection Object Attribute",
+    "items": [
+      {"text8": {"ishidden": false, "name": "Color in Life", "desc": "Color in Life"}},
+      {"text5": {"ishidden": false, "name": "TL", "desc": "TL"}},
+      {"text6": {"ishidden": false, "name": "SL", "desc": "SL"}},
+      {"text4": {"ishidden": false, "picklistname": "LifeStage", "name": "Stage", "desc": "Stage"}},
+      {"text1": {"ishidden": false, "picklistname": "Sex", "name": "Sex", "desc": "Sex"}},
+      {"text7": {"ishidden": false, "name": "Total Length", "desc": "Total Length"}},
+      {"text3": {"ishidden": false, "name": "ReproCondition", "desc": "ReproCondition"}},
+      {"text2": {"ishidden": false, "name": "Weight", "desc": "Weight"}}
+    ]
+  },
+  "collectingeventattribute": {
+    "ishidden": false,
+    "desc": "Collecting Event Attribute",
+    "items": [
+      {"text4": {"ishidden": false, "name": "Current", "desc": "Current"}},
+      {"text8": {"ishidden": false, "name": "Vegetation", "desc": "Vegetation"}},
+      {"text3": {"ishidden": false, "name": "Temp", "desc": "Temp"}},
+      {"remarks": {"ishidden": false, "name": "Remarks", "desc": "Remarks"}},
+      {"text1": {"ishidden": false, "name": "Min Depth", "desc": "Min Depth"}},
+      {"text6": {"ishidden": false, "name": "Salinity", "desc": "Salinity"}},
+      {"text9": {"ishidden": false, "picklistname": "HabitatType", "name": "Habitat Type", "desc": "Habitat Type"}},
+      {"text5": {"ishidden": false, "name": "Clarity", "desc": "Clarity"}},
+      {"text7": {"ishidden": false, "name": "Turbidity", "desc": "Turbidity"}},
+      {"text2": {"ishidden": false, "name": "Max Depth", "desc": "Max Depth"}}
+    ]
+  },
+  "collectionobject": {
+    "ishidden": false,
+    "desc": "Collection Object",
+    "items": [
+      {"text1": {"ishidden": false, "name": "Other number", "desc": "Other number"}}
+    ]
+  }
+}

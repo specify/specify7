@@ -1,7 +1,6 @@
 import { treeText } from '../../localization/tree';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import { getPref } from '../InitialContext/remotePrefs';
 import { fetchPossibleRanks } from '../PickLists/TreeLevelPickList';
 import { formatUrl } from '../Router/queryString';
 import type { BusinessRuleResult } from './businessRules';
@@ -40,9 +39,14 @@ export const treeBusinessRules = async (
             idFromUrl(parentDefItem.get('treeDef'))!
           );
 
-    const doExpandSynonymActionsPref = getPref(
+    const prefModule = await import('../Preferences/collectionPreferences');
+    const collectionPreferences = prefModule.collectionPreferences;
+    const doExpandSynonymActionsPref = collectionPreferences.get(
+      'treeManagement',
+      'synonymized',
       `sp7.allow_adding_child_to_synonymized_parent.${resource.specifyTable.name}`
     );
+
     const isParentSynonym = !parent.get('isAccepted');
 
     const hasBadTreeStrcuture =
@@ -122,7 +126,7 @@ const predictFullName = async <
 ): Promise<string> =>
   ajax(
     formatUrl(
-      `/api/specify_tree/${resource.specifyTable.name.toLowerCase()}/${
+      `/trees/specify_tree/${resource.specifyTable.name.toLowerCase()}/${
         parent.id
       }/predict_fullname/`,
       {

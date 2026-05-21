@@ -12,7 +12,7 @@ export const dialogIconTriggers = {
 };
 
 const buttonClassName = 'button';
-const secondaryButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800 shadow-sm
+const secondaryButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-button-color)] text-gray-800
 dark:text-gray-100`;
 const secondaryLightButton = `${buttonClassName} hover:brightness-90 dark:hover:brightness-125 bg-[color:var(--secondary-light-button-color)] text-gray-800 shadow-sm
 dark:text-gray-100`;
@@ -20,7 +20,7 @@ dark:text-gray-100`;
 const containerBaseUnstyled = `flex flex-col gap-4 overflow-scroll
   overflow-x-auto [overflow-y:overlay] [scrollbar-gutter:auto]`;
 const containerBase = `${containerBaseUnstyled} bg-[color:var(--form-foreground)]
-  rounded p-4 shadow-gray-400 shadow-2xl`;
+  rounded p-4 shadow-gray-400 outline outline-1 outline-gray-300 dark:outline-neutral-800`;
 const containerFull = 'flex flex-col gap-4 sm:h-full p-1 sm:p-4';
 const formStyles =
   'text-[length:var(--form-font-size)] font-[family-name:var(--form-font-family)]';
@@ -64,11 +64,11 @@ export const className = {
   smallButton: `${niceButton} !py-1 !px-2`,
   borderedGrayButton,
   defaultSmallButtonVariant: `${borderedGrayButton}`,
-  dangerButton: `${dialogIconTriggers.error} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--danger-button-color)] text-white`,
-  infoButton: `${dialogIconTriggers.info} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--info-button-color)] text-white`,
-  warningButton: `${dialogIconTriggers.warning} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--warning-button-color)] text-white`,
-  successButton: `${dialogIconTriggers.success} hover:brightness-90 dark:hover:brightness-150 bg-[color:var(--success-button-color)] text-white`,
-  saveButton: `hover:brightness-90 dark:hover:brightness-150 text-white bg-[color:var(--save-button-color)]`,
+  dangerButton: `${dialogIconTriggers.error} hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--danger-button-color)] text-white`,
+  infoButton: `${dialogIconTriggers.info} hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--info-button-color)] text-white`,
+  warningButton: `${dialogIconTriggers.warning} hover:brightness-90 dark:hover:brightness-140 bg-[color:var(--warning-button-color)] text-white`,
+  successButton: `${dialogIconTriggers.success} hover:brightness-90 dark:hover:brightness-140 bg-brand-400 text-white`,
+  saveButton: `hover:brightness-90 dark:hover:brightness-125 text-white bg-[color:var(--save-button-color)]`,
   fancyButton: `bg-gray-300 hover:bg-brand-200 dark:bg-neutral-600
     hover:dark:bg-brand:400 text-gray-800 dark:text-white text-center`,
   containerFull,
@@ -83,16 +83,16 @@ export const className = {
   formStyles,
   limitedWidth: `max-w-[var(--max-field-width)]`,
   headerPrimary: 'font-semibold text-black dark:text-white',
-  headerGray: 'text-gray-500 dark:text-neutral-400',
+  headerGray: 'text-gray-600 dark:text-neutral-400',
   // These values must be synchronised with main.css
   dataEntryGrid: 'data-entry-grid',
   formFooter:
     'border-brand-300 border-t-2 flex print:hidden pt-2 gap-2 flex-wrap justify-center flex-col md:flex-row',
-  dataEntryAdd: '!text-green-700 print:hidden',
+  dataEntryAdd: '!text-brand-400 print:hidden',
   dataEntryView: '!text-cyan-400 print:hidden',
   dataEntryEdit: '!text-orange-400 print:hidden',
   dataEntryClone: '!text-amber-700 print:hidden',
-  dataEntrySearch: '!text-blue-500 print:hidden',
+  dataEntrySearch: '!text-blue-100 print:hidden',
   dataEntryRemove: '!text-red-700 print:hidden',
-  dataEntryVisit: '!text-blue-700 print:hidden',
+  dataEntryVisit: '!text-brand-400 print:hidden',
 } as const;

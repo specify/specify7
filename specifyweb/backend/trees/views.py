@@ -1,0 +1,943 @@
+import csv
+from functools import wraps
+import json
+from uuid import uuid4
+from django import http
+from typing import Iterator, Literal, TypedDict, Any, Dict
+from django.db import connection, transaction
+from django.http import HttpResponse
+from django.views.decorators.http import require_POST
+from specifyweb.backend.trees.tree_mutations import perm_target
+from specifyweb.specify.views import login_maybe_required, openapi
+from sqlalchemy import distinct
+from specifyweb.specify import models as spmodels
+from specifyweb.specify.api.crud import get_object_or_404
+from specifyweb.specify.api.serializers import obj_to_data, toJson
+from sqlalchemy import select, func, distinct, literal
+from sqlalchemy.orm import aliased
+from jsonschema import validate  # type: ignore
+from jsonschema.exceptions import ValidationError  # type: ignore
+
+from specifyweb.middleware.general import require_GET
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.permissions.permissions import check_permission_targets, has_table_permission
+
+from specifyweb.backend.stored_queries import models as sqlmodels
+from specifyweb.backend.stored_queries.execution import set_group_concat_max_len
+from specifyweb.backend.stored_queries.group_concat import group_concat
+from specifyweb.backend.notifications.models import Message
+
+from specifyweb.backend.trees.default_tree_files import load_default_tree_json
+from specifyweb.backend.trees.utils import get_search_filters
+from specifyweb.backend.trees.defaults import create_default_tree_task, queue_create_default_tree_task, get_active_create_default_tree_tasks
+from specifyweb.specify.utils.field_change_info import FieldChangeInfo
+from specifyweb.backend.trees.ranks import tree_rank_count
+from . import extras
+from specifyweb.backend.workbench.upload.auditcodes import TREE_MOVE
+from specifyweb.backend.trees.utils import SPECIFY_TREES, TREE_NAMES
+from specifyweb.backend.trees.stats import get_tree_stats
+
+import logging
+
+logger = logging.getLogger(__name__)
+
+TREE_TABLE = Literal['Taxon', 'Storage',
+                     'Geography', 'Geologictimeperiod', 'Lithostrat', 'Tectonicunit']
+
+GEO_TREES: tuple[TREE_TABLE, ...] = ('Tectonicunit',)
+
+COMMON_TREES: tuple[TREE_TABLE, ...] = ('Taxon', 'Storage',
+                                        'Geography')
+
+ALL_TREES: tuple[TREE_TABLE, ...] = (
+    *COMMON_TREES, 'Geologictimeperiod', 'Lithostrat', *GEO_TREES)
+
+
+def tree_mutation(mutation):
+    @login_maybe_required
+    @require_POST
+    @transaction.atomic
+    @wraps(mutation)
+    def wrapper(*args, **kwargs):
+        try:
+            mutation(*args, **kwargs)
+            result = {"success": True}
+        except BusinessRuleException as e:
+            result = {"success": False, "error": str(e)}
+        return HttpResponse(toJson(result), content_type="application/json")
+
+    return wrapper
+
+
+@openapi(
+    schema={
+        "get": {
+            "parameters": [
+                {
+                    "name": "includeauthor",
+                    "in": "query",
+                    "required": False,
+                    "schema": {"type": "number"},
+                    "description": "If parameter is present, include the author of the requested node in the response \
+                    if the tree is taxon and node's rankid >= paramter value.",
+                }
+            ],
+            "responses": {
+                "200": {
+                    "description": "Returns a list of nodes with parent <parentid> restricted to the tree defined by <treedef>. \
+                Nodes are sorted by <sortfield>",
+                    "content": {
+                        "application/json": {
+                            "schema": {
+                                "type": "array",
+                                "prefixItems": [
+                                    {
+
+                                        "type": "integer",
+                                        "description": "The id of the child node"
+
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The name of the child node"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The fullName of the child node"
+                                    },
+                                    {
+
+                                        "type": "integer",
+                                        "description": "The nodenumber of the child node"
+                                    },
+                                    {
+                                        "type": "integer",
+                                        "description": "The highestChildNodeNumber of the child node"
+                                    },
+                                    {
+                                        "type": "integer",
+                                        "description": "The rankId of the child node"
+
+                                    },
+                                    {
+                                        "type": "number",
+                                        "description": "The acceptedId of the child node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The fullName of the child node's accepted node. Returns null if the node has no acceptedId"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "The author of the child node. \
+                                        Returns null if <tree> is not taxon or the rankId of the node is less than <includeAuthor> paramter"
+                                    },
+                                    {
+
+                                        "type" : "integer",
+                                        "description" : "The number of children the child node has"
+                                    },
+                                    {
+                                        "type": "string",
+                                        "description": "Concat of fullname of syonyms"
+                                    }
+                                ],
+                            }
+                        }
+                    },
+                }
+            },
+        }
+    }
+)
+@login_maybe_required
+@require_GET
+def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
+    """Returns a list of <tree> nodes with parent <parentid> restricted to
+    the tree defined by treedefid = <treedef>. The nodes are sorted
+    according to <sortfield>.
+    """
+    """
+    Also include the author of the node in the response if requested and the tree is the taxon tree.
+    There is a preference which can be enabled from within Specify which adds the author next to the 
+    fullname on the front end. 
+    See https://github.com/specify/specify7/pull/2818 for more context and a breakdown regarding 
+    implementation/design decisions
+    """
+    include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
+    with sqlmodels.session_context() as session:
+        set_group_concat_max_len(session.connection())
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, session)
+    return HttpResponse(toJson(results), content_type='application/json')
+
+
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
+    tree_table = spmodels.datamodel.get_table(tree)
+    parentid = None if parentid == 'null' else int(parentid)
+
+    node     = getattr(sqlmodels, tree_table.name)
+    child    = aliased(node)
+    accepted = aliased(node)
+    synonym  = aliased(node)
+
+    treedef_col = getattr(node, tree_table.name + "TreeDefID")
+    orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
+
+    # We use min for grouped columns because for some reason, SQL is rejecting
+    # the group_by in some dbs due to "only_full_group_by". It is somehow not
+    # smart enough to see that there is no dependency in the columns going from
+    # main table to the to-manys (child, and syns).
+    # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
+    # I don't want to disable "only_full_group_by" in case someone misuses it...
+    # applying min to fool into thinking it is aggregated.
+    # these values are guarenteed to be the same
+    cols = [
+        node._id.label("id"),
+        func.min(node.name).label("name"),
+        func.min(node.fullName).label("full_name"),
+        func.min(node.nodeNumber).label("node_number"),
+        func.min(node.highestChildNodeNumber).label("highest_child_number"),
+        func.min(node.rankId).label("rank_id"),
+
+        func.min(node.AcceptedID).label("accepted_id"),
+        func.min(accepted.fullName).label("accepted_fullname"),
+
+        (
+            func.min(node.author)
+            if include_author
+            else func.min(literal("NULL"))
+        ).label("author"),
+
+        func.count(distinct(child._id)).label("child_count"),
+        group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+    ]
+
+    query = (
+        select(*cols)
+        .outerjoin(child, child.ParentID  == node._id)
+        .outerjoin(accepted, node.AcceptedID == accepted._id)
+        .outerjoin(synonym, synonym.AcceptedID == node._id)
+        .where(treedef_col == int(treedef))
+        .where(node.ParentID == parentid)
+        .group_by(node._id)
+        .order_by(orderby)
+    )
+
+    return session.execute(query).all()
+
+@login_maybe_required
+@require_GET
+def tree_stats(request, treedef, tree, parentid):
+    "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
+
+    using_cte = (tree in ['geography', 'taxon', 'storage'])
+    results = get_tree_stats(
+        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte)
+
+    return HttpResponse(toJson(results), content_type="application/json")
+
+
+@login_maybe_required
+@require_GET
+def path(request, tree: TREE_TABLE, id: int):
+    "Returns all nodes up to the root of <tree> starting from node <id>."
+    id = int(id)
+    tree_node = get_object_or_404(tree, id=id)
+
+    data = {
+        node.definitionitem.name: obj_to_data(node) for node in get_tree_path(tree_node)
+    }
+
+    data["resource_uri"] = "/trees/specify_tree/%s/%d/path/" % (tree, id)
+
+    return HttpResponse(toJson(data), content_type="application/json")
+
+
+def get_tree_path(tree_node):
+    while tree_node is not None:
+        yield tree_node
+        tree_node = tree_node.parent
+
+
+@login_maybe_required
+@require_GET
+def predict_fullname(request, tree: TREE_TABLE, parentid: int):
+    """Returns the predicted fullname for a <tree> node based on the name
+    field of the node and its <parentid>. Requires GET parameters
+    'treedefitemid' and 'name', to indicate the rank (treedefitem) and
+    name of the node, respectively.
+    """
+    parent = get_object_or_404(tree, id=parentid)
+    depth = parent.definition.treedefitems.count()
+    reverse = parent.definition.fullnamedirection == -1
+    defitemid = int(request.GET["treedefitemid"])
+    name = request.GET["name"]
+    fullname = extras.predict_fullname(
+        parent._meta.db_table, depth, parent.id, defitemid, name, reverse
+    )
+    return HttpResponse(fullname, content_type="text/plain")
+
+
+@tree_mutation
+def merge(request, tree: TREE_TABLE, id: int):
+    """Merges <tree> node <id> into the node with id indicated by the
+    'target' POST parameter."""
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).merge],
+    )
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST["target"])
+    extras.merge(node, target, request.specify_user_agent)
+
+
+@tree_mutation
+def move(request, tree: TREE_TABLE, id: int):
+    """Reparents the <tree> node <id> to be a child of the node
+    indicated by the 'target' POST parameter.
+    """
+    check_permission_targets(
+        request.specify_collection.id, request.specify_user.id, [perm_target(tree).move]
+    )
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST["target"])
+    old_parent = node.parent
+    old_parentid = old_parent.id
+    old_fullname = node.fullname
+    node.parent = target
+    old_stamp = node.timestampmodified
+    node.save()
+    node = get_object_or_404(tree, id=id)
+    if old_stamp is None or (node.timestampmodified > old_stamp):
+        field_change_infos = [
+            FieldChangeInfo(
+                field_name="parentid", old_value=old_parentid, new_value=target.id
+            ),
+            FieldChangeInfo(
+                field_name="fullname", old_value=old_fullname, new_value=node.fullname
+            ),
+        ]
+        extras.mutation_log(
+            TREE_MOVE, node, request.specify_user_agent, node.parent, field_change_infos
+        )
+
+
+@openapi(schema={
+    "post": {
+        "parameters": [{
+            "name": "tree",
+            "in": "path",
+            "required": True,
+            "schema": {
+                "enum": ['Storage']
+            }
+        },
+            {
+            "name": "id",
+            "in": "path",
+            "description": "The id of the node from which to bulk move from.",
+            "required": True,
+            "schema": {
+                "type": "integer",
+                "minimum": 0
+            }
+        }],
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "target": {
+                                "type": "integer",
+                                "description": "The ID of the storage tree node to which the preparations should be moved."
+                            },
+                        },
+                        'required': ['target'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "Success message indicating the bulk move operation was successful."
+            }
+        }
+    }
+})
+@tree_mutation
+def bulk_move(request, tree: TREE_TABLE, id: int):
+    """Bulk move the preparations under the <tree> node <id> to have
+    as new location storage the node indicated by the 'target'
+    POST parameter.
+    """
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).bulk_move],
+    )
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST["target"])
+    extras.bulk_move(node, target, request.specify_user_agent)
+
+
+@tree_mutation
+def synonymize(request, tree: TREE_TABLE, id: int):
+    """Synonymizes the <tree> node <id> to be a synonym of the node
+    indicated by the 'target' POST parameter.
+    """
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).synonymize],
+    )
+    node = get_object_or_404(tree, id=id)
+    target = get_object_or_404(tree, id=request.POST["target"])
+    extras.synonymize(node, target, request.specify_user_agent, request.specify_user,
+            request.specify_collection)
+
+
+@tree_mutation
+def desynonymize(request, tree: TREE_TABLE, id: int):
+    "Causes the <tree> node <id> to no longer be a synonym of another node."
+    check_permission_targets(
+        request.specify_collection.id,
+        request.specify_user.id,
+        [perm_target(tree).desynonymize],
+    )
+    node = get_object_or_404(tree, id=id)
+    extras.desynonymize(node, request.specify_user_agent)
+
+
+@tree_mutation
+def repair_tree(request, tree: TREE_TABLE):
+    "Repairs the indicated <tree>."
+    check_permission_targets(request.specify_collection.id,
+                             request.specify_user.id,
+                             [perm_target(tree).repair])
+    tree_model = spmodels.datamodel.get_table(tree)
+    table = tree_model.name.lower()
+    extras.renumber_tree(table)
+    extras.validate_tree_numbering(table)
+
+@tree_mutation
+def add_root(request, tree, treeid): 
+    "Creates a root node in a specific tree."
+
+    tree_name = tree.title()
+    tree_target = get_object_or_404(f"{tree_name}treedef", id=treeid)
+    tree_def_item_model = getattr(spmodels, f"{tree_name}treedefitem")
+    item = getattr(spmodels, tree_name)
+
+    tree_def_item, create = tree_def_item_model.objects.get_or_create(
+            treedef=tree_target,
+            rankid=0
+        )
+
+    filter_kwargs = {
+        'rankid': 0,
+        'definition_id': treeid
+    }
+
+    if item.objects.filter(**filter_kwargs).count() > 0:
+        raise Exception("Root node already exists.") 
+
+    root = item.objects.create(
+        name="Root",
+        isaccepted=1,
+        nodenumber=1,
+        rankid=0,
+        parent=None,
+        definition=tree_target,
+        definitionitem=tree_def_item,
+        fullname="Root"
+    )
+
+    # Override node number with raw sql execution
+    cursor = connection.cursor()
+    cursor.execute(f"UPDATE {tree_name.lower()} SET NodeNumber = 1 WHERE {tree}id = {root.id}")
+
+    return http.HttpResponse(status=204)
+
+@login_maybe_required
+@require_GET
+def tree_rank_item_count(request, tree, rankid):
+    """Returns the number of items in the tree rank with id <rank_id>."""
+    tree_rank_model_name = (
+        tree if tree.endswith("treedefitem") else tree + "treedefitem"
+    )
+    rank = get_object_or_404(tree_rank_model_name, id=rankid)
+    count = tree_rank_count(tree, rank.id)
+    return HttpResponse(toJson(count), content_type="application/json")
+
+
+
+@openapi(schema={
+    "get": {
+        "responses": {
+            "200": {
+                "description": 'Tree information fetched successfully',
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            'properties': {
+                                tree: {"$ref": "#/components/schemas/tree_info"} for tree in ALL_TREES
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}, components={
+    "schemas": {
+        'tree_info': {
+            "type": "array",
+            "items": {
+                "type": "object",
+                "properties": {
+                    "definition": {
+                        "type": "object",
+                        "description": "A serialized TreeDef",
+                    },
+                    "ranks": {
+                        "type": "array",
+                        "description": "An array of the TreeDef's TreeDefItems, sorted by ascending rankid",
+                        "items": {
+                            "type": "object",
+                            "description": "A serialized TreeDefItem"
+                        }
+                    }
+                }
+            }
+        }
+    }
+})
+@login_maybe_required
+@require_GET
+def all_tree_information(request):
+    result = get_all_tree_information(request.specify_collection, request.specify_user.id)
+    return HttpResponse(toJson(result), content_type="application/json")
+
+class TREE_INFORMATION(TypedDict):
+    # TODO: Stricten all this.
+    definition: dict[Any, Any]
+    ranks: list[dict[Any, Any]] 
+
+# This is done to make tree fetching easier.
+def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMATION]]:
+    def has_tree_read_permission(tree: TREE_TABLE) -> bool:
+        return has_table_permission(
+            collection.id, user_id, tree, 'read')
+
+    is_paleo_or_geo_discipline = collection.discipline.is_paleo_geo()
+
+    accessible_trees = tuple(filter(
+        has_tree_read_permission, ALL_TREES if is_paleo_or_geo_discipline else COMMON_TREES))
+
+    result = {}
+
+    for tree in accessible_trees:
+        result[tree] = []
+
+        treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
+        tree_defs = treedef_model.objects.filter(get_search_filters(collection, tree)).distinct()
+        for definition in tree_defs:
+            ranks = definition.treedefitems.order_by('rankid')            
+            result[tree].append({
+                'definition': obj_to_data(definition),
+                'ranks': [obj_to_data(rank) for rank in ranks]
+            })
+
+    return result
+
+# class DefaultTreePT(PermissionTarget):
+#     resource = "/tree/default"
+#     update = PermissionTargetAction()
+#     delete = PermissionTargetAction()
+
+# Schema definition for the mapping file that is used in default tree creation.
+DEFAULT_TREE_MAPPING_SCHEMA = {
+    "title": "Tree column mapping for default trees",
+    "description": "The mapping of the CSV columns for default tree creation.",
+    "$schema": "http://json-schema.org/schema#",
+    "type": "object",
+    "properties": {
+        "all_columns": {
+            "description": "A list of all the column header names contained in the CSV. The first columns names should correspond the number of ranks defined in this schema.",
+            "type": "array",
+            "items": {
+                "type": "string"
+            }
+        },
+        "ranks": {
+            "description": "An ordered list containing all the ranks to be created.",
+            "type": "array",
+            "minItems": 1,
+            "items": {
+                "description": "A rank's mapping definition.",
+                "type": "object",
+                "properties": {
+                    "name": {"type": "string", "description": "Display name for the rank"},
+                    "enforced": {"type": "boolean", "description": "isEnforced"},
+                    "infullname": {"type": "boolean", "description": "isInFullName"},
+                    "fullnameseparator": {"type": "string", "description": "fullNameSeparator"},
+                    "rank": {"type": "integer", "description": "Rank's rankid"},
+                    "column": {"type": "string", "description": "The CSV column corresponding to this rank"},
+                    "fields": {
+                        "type": "object",
+                        "description": "Mapping of the rank's field names to the CSV columns containing the values.",
+                        "additionalProperties": {"type": "string"}
+                    }
+                },
+                "required": ["name", "column", "fields"],
+                "additionalProperties": False
+            }
+        },
+        "root": {
+            "type": "object",
+            "properties": {
+                "name": {"type": "string"},
+                "fullnameseparator": {"type": "string"}
+            }
+        }
+    },
+    "required": ["ranks"]
+}
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {"$ref": "#/components/schemas/TreeCreationRequest"}
+                }
+            }
+        },
+        "responses": {
+            "201": {
+                "description": 'Default tree created.',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/Success"}
+                    }
+                }
+            },
+            "202": {
+                "description": 'Default tree creation started in the background.',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/SuccessBackground"}
+                    }
+                }
+            }
+        }
+    }},
+    components={
+        "schemas": {
+            "TreeCreationRequest": {
+                "type": "object",
+                "properties": {
+                    "url": {
+                        "type": "string",
+                        "description": "The URL of the tree CSV file."
+                    },
+                    "treeName": {
+                        "type": "string",
+                        "description": "The name to be used by the new tree.",
+                    },
+                    "disciplineName": {
+                        "type": "string",
+                        "description": "Name of the disicpline the tree belongs to."
+                    },
+                    "collectionName": {
+                        "type": "string",
+                        "description": "The name of the destination collection. The logged in colleciton will be used otherwise."
+                    },
+                    "rowCount": {
+                        "type": "integer",
+                        "description": "The total number of rows contained in the CSV file. Only used for progress tracking."
+                    },
+                    "treeDefId": {
+                        "type": "integer",
+                        "description": "(optional) The ID of the existing tree to import into."
+                    },
+                    "createMissingRanks": {
+                        "type": "boolean",
+                        "description": "(optional) Whether or not to create the ranks included in the downloadable tree."
+                    }
+                },
+                "required": ["url", "disciplineName"],
+                "oneOf": [
+                    {"required": ["mappingUrl"],
+                        "properties": {
+                            "mappingUrl": {
+                                "type": "string",
+                                "description": "The URL of a JSON file describing the column mapping of the CSV data."
+                            },
+                        }},
+                    {"required": ["mapping"],
+                        "properties": {
+                            "mapping": {
+                                "type": "object",
+                                "description": "An object describing the column mapping of the CSV data."
+                            },
+                        }}
+                ]
+            },
+            "SuccessBackground": {
+                "type": "object",
+                "properties": {
+                    "message": {"type": "string"},
+                    "task_id": {"type": "string"}
+                },
+                "required": ["message", "task_id"]
+            },
+            "Success": {
+                "type": "object",
+                "properties": {"message": {"type": "string"}},
+                "required": ["message"]
+            }
+        }
+    })
+@login_maybe_required
+@require_POST
+@transaction.atomic
+def create_default_tree_view(request):
+    """Creates or populates a tree with default records from a CSV file.
+    """
+    # Check permissions in the normal case and for the case of intial database setup.
+    # check_permission_targets(request.specify_collection.id, request.specify_user.id, [DefaultTreePT.create])
+    
+    data = json.loads(request.body)
+
+    requested_discipline_name = data.get('disciplineName', None)
+    if not requested_discipline_name:
+        return http.JsonResponse({'error': 'Discipline name was not provided.'}, status=400)
+
+    collection_name = data.get('collectionName', None)
+    if collection_name is not None:
+        try:
+            collection = spmodels.Collection.objects.get(collectionname=collection_name)
+        except:
+            return http.JsonResponse({'error': 'Collection was not found.'}, status=404)
+    else:
+        collection = request.specify_collection
+    
+    # Scope new trees to the current collection's discipline
+    discipline = collection.discipline
+    if not discipline:
+        return http.JsonResponse({'error': 'Collection discipline was not found.'}, status=404)
+
+    url = data.get('url', None)
+
+    tree_name = data.get('treeName', requested_discipline_name.capitalize())
+    
+    tree_type = 'taxon'
+    if requested_discipline_name.lower() in SPECIFY_TREES:
+        # non-taxon tree
+        tree_type = requested_discipline_name.lower()
+        tree_name = TREE_NAMES.get(tree_type)
+
+    row_count = data.get('rowCount', None)
+
+    create_missing_ranks = data.get('createMissingRanks', False)
+
+    if not url:
+        return http.JsonResponse({'error': 'Tree not found.'}, status=404)
+    
+    # Import into an existing tree
+    tree_def_id = data.get('treeDefId')
+    
+    # CSV mapping. Accept the mapping directly or a url to a JSON file containing the mapping.
+    tree_cfg = data.get('mapping', None)
+    mapping_url = data.get('mappingUrl', None)
+    if mapping_url:
+        try:
+            tree_cfg = load_default_tree_json(mapping_url)
+        except Exception:
+            return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
+    try:
+        validate(tree_cfg, DEFAULT_TREE_MAPPING_SCHEMA)
+    except ValidationError as e:
+        return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
+
+    task_id = str(uuid4())
+    async_result = create_default_tree_task.apply_async(
+        args=[url, discipline.id, tree_type, collection.id, request.specify_user.id, tree_cfg, row_count, tree_name, tree_def_id, create_missing_ranks, True],
+        task_id=f"create_default_tree_{tree_type}_{task_id}",
+        taskid=task_id
+    )
+    if tree_def_id:
+        queue_create_default_tree_task(f'create_default_tree_{tree_type.lower()}_{tree_def_id or task_id}')
+    return http.JsonResponse({
+        'message': 'Trees creation started in the background.',
+        'task_id': async_result.id
+    }, status=202)
+
+@openapi(schema={
+    "get": {
+        "parameters": [
+            {
+                "name": "task_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+                "description": "ID of the default tree creation task"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": 'Status of the tree creation task',
+                "content": {
+                    "application/json": {
+                        "schema": {"$ref": "#/components/schemas/Progress"}
+                    }
+                }
+            },
+        }
+    }},
+    components={
+        "schemas": {
+            "Progress": {
+                "type": "object",
+                "properties": {
+                    "taskstatus": {
+                        "type": "string",
+                        "description": "Celery task status (PENDING, STARTED, RUNNING, SUCCESS, FAILURE, REVOKED)"
+                    },
+                    "taskprogress": {
+                        "oneOf": [
+                            {"type": "string"},
+                            {
+                                "type": "object",
+                                "description": "Progress info for the task.",
+                                "properties": {
+                                    "current": {"type": "integer", "minimum": 0},
+                                    "total": {"type": "integer", "minimum": 0}
+                                },
+                                "required": ["current", "total"]
+                            }
+                        ],
+                        "description": "Info returned by the task"
+                    },
+                    "taskid": {
+                        "type": "string",
+                        "description": "The id of the task you queried"
+                    },
+                    "active": {
+                        "type": "boolean",
+                        "description": "If you provided an id in the format create_default_tree_[tree_type]_[tree_def_id]. Should only be used if you don't know the real task id."
+                    }
+                },
+                "required": ["taskstatus", "taskid"]
+            }
+        }
+    })
+@require_GET
+def default_tree_upload_status(request, task_id: str) -> http.HttpResponse:
+    """Returns the task status for the default tree upload celery task.
+    If you don't know the task id, the format create_default_tree_{tree_type}_{task_id} can be used just to get the active status.
+    Celery task logs are semi-permanent, so ids need to be generated randomly."""
+
+    tasks = get_active_create_default_tree_tasks()
+    result = create_default_tree_task.AsyncResult(task_id)
+
+    status = {
+        'taskstatus': result.status,
+        'taskprogress': result.info if isinstance(result.info, dict) else repr(result.info),
+        'taskid': task_id,
+        'active': task_id in tasks
+    }
+
+    return http.JsonResponse(status)
+
+@openapi(schema={
+    "post": {
+        "parameters": [
+            {
+                "name": "task_id",
+                "in": "path",
+                "required": True,
+                "schema": {"type": "string"},
+                "description": "ID of the default tree creation task to abort"
+            }
+        ],
+        "responses": {
+            "200": {
+                "description": "Task aborted successfully"
+            },
+            "400": {
+                "description": "Error aborting the task",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "error": {
+                                    "type": "string",
+                                    "description": "Error message"
+                                }
+                            },
+                            "required": ["error"]
+                        }
+                    }
+                }
+            }
+        }
+    },
+})
+@require_POST
+def abort_default_tree_creation(request, task_id: str) -> http.HttpResponse:
+    """Stops a default tree upload celery task"""
+    try:
+        task = create_default_tree_task.AsyncResult(task_id)
+        task.revoke(terminate=True)
+
+        Message.objects.create(user=request.specify_user, content=json.dumps({
+            'type': 'create-default-tree-cancelled',
+            'name': '',
+            'taskid': task_id,
+            'collection_id': request.specify_collection.id,
+        }))
+
+        return http.HttpResponse('', status=204)
+    except Exception as e:
+        return http.JsonResponse({'error': str(e)}, status=400)
+
+@login_maybe_required
+@require_POST
+def default_tree_mapping(request) -> http.HttpResponse:
+    """Retrieves a default populated tree's mapping from a url"""
+    # TODO: Reuse code from create_default_tree
+    data = json.loads(request.body)
+    tree_cfg = data.get('mapping', None)
+    mapping_url = data.get("mappingUrl")
+    if mapping_url:
+        try:
+            tree_cfg = load_default_tree_json(mapping_url)
+        except Exception:
+            return http.JsonResponse({'error': f'Could not retrieve default tree mapping from {mapping_url}.'}, status=404)
+    try:
+        validate(tree_cfg, DEFAULT_TREE_MAPPING_SCHEMA)
+    except ValidationError as e:
+        return http.JsonResponse({'error': f'Default tree mapping is invalid: {e}'}, status=400)
+
+    return http.JsonResponse(tree_cfg)
+
+def get_db_encoding(request):
+    cursor = connection.cursor()
+
+    cursor.execute("SELECT @@character_set_database;")
+    row = cursor.fetchone()
+
+    encoding = row[0] if row else None
+
+    return http.HttpResponse(
+        json.dumps({"encoding": encoding}),
+        content_type='application/json'
+    )

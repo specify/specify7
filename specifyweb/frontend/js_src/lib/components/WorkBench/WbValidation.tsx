@@ -11,9 +11,13 @@ import {
   formatToManyIndex,
   formatTreeRank,
 } from '../WbPlanView/mappingHelpers';
+import { ATTACHMENTS_COLUMN } from './attachmentHelpers';
 import type { WbCellCounts, WbMeta } from './CellMeta';
 import type { UploadResult } from './resultsParser';
-import { resolveValidationMessage } from './resultsParser';
+import {
+  resolveAttachmentValidationMessage,
+  resolveValidationMessage,
+} from './resultsParser';
 import type { Workbench } from './WbView';
 
 type Records = WritableArray<
@@ -213,16 +217,36 @@ export class WbValidation {
     initialColumns: RA<string>,
     inferColumnsCallback: (() => RA<string>) | undefined = undefined
   ): RA<number> {
+    const resolvePhysicalColumns = (columns: RA<string>): RA<number> =>
+      columns
+        .map((column) => this.workbench.dataset.columns.indexOf(column))
+        .filter((physicalCol) => physicalCol !== -1);
+
+    const normalizeColumns = (columns: RA<string>): RA<string> =>
+      columns.map((column) =>
+        column.startsWith('_ATTACHMENT_') &&
+        this.workbench.dataset.columns.includes(ATTACHMENTS_COLUMN)
+          ? ATTACHMENTS_COLUMN
+          : column
+      );
+
     // See https://github.com/specify/specify7/issues/810
-    let columns: RA<string> = initialColumns.filter(Boolean);
-    if (typeof inferColumnsCallback === 'function') {
-      if (columns.length === 0) columns = inferColumnsCallback();
-      if (columns.length === 0) columns = this.workbench.dataset.columns;
+    let columns: RA<string> = normalizeColumns(initialColumns.filter(Boolean));
+    let physicalColumns = resolvePhysicalColumns(columns);
+
+    if (
+      typeof inferColumnsCallback === 'function' &&
+      physicalColumns.length === 0
+    ) {
+      columns = normalizeColumns(inferColumnsCallback());
+      physicalColumns = resolvePhysicalColumns(columns);
+      if (physicalColumns.length === 0)
+        physicalColumns = resolvePhysicalColumns(
+          this.workbench.dataset.columns
+        );
     }
-    // Convert to physicalCol and filter out unknown columns
-    return columns
-      .map((column) => this.workbench.dataset.columns.indexOf(column))
-      .filter((physicalCol) => physicalCol !== -1);
+
+    return physicalColumns;
   }
 
   private applyRowValidationResults(
@@ -340,7 +364,17 @@ export class WbValidation {
         recordResult.MatchedMultiple.info.columns,
         resolveColumns
       );
-    }
+    } else if (uploadStatus === 'AttachmentFailure')
+      setMetaCallback(
+        'issues',
+        whitespaceSensitive(
+          resolveAttachmentValidationMessage(
+            recordResult.AttachmentFailure.message
+          )
+        ),
+        recordResult.AttachmentFailure.info.columns,
+        resolveColumns
+      );
     // TODO: Discuss if MatchedAndChanged needs to shown. or whatever.
     else if (
       uploadStatus === 'Uploaded' ||

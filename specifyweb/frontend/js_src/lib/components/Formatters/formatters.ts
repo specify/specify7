@@ -23,7 +23,7 @@ import {
 } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import {
-  cachableUrl,
+  cacheableUrl,
   contextUnlockedPromise,
   foreverFetch,
 } from '../InitialContext';
@@ -41,7 +41,7 @@ export const fetchFormatters: Promise<{
 }> = contextUnlockedPromise.then(async (entrypoint) =>
   entrypoint === 'main'
     ? Promise.all([
-        ajax<Element>(cachableUrl(getAppResourceUrl('DataObjFormatters')), {
+        ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
           headers: { Accept: 'text/xml' },
         }).then(({ data }) => data),
         fetchSchema,
@@ -145,6 +145,7 @@ async function formatField(
     aggregator,
     fieldFormatter,
     formatFieldValue = true,
+    trimZeros = false,
   }: Formatter['definition']['fields'][number]['fields'][number] & {
     readonly formatFieldValue?: boolean;
   },
@@ -170,7 +171,7 @@ async function formatField(
     formatted = field.isRelationship
       ? isCycle
         ? ''
-        : await (relationshipIsToMany(field)
+        : await (relationshipIsToMany(field) && field.type !== 'zero-to-one'
             ? aggregate(
                 await resource.rgetCollection(field.name),
                 aggregator,
@@ -195,6 +196,13 @@ async function formatField(
       ? naiveFormatter(parentResource.specifyTable.name, parentResource.id)
       : userText.noPermission();
 
+  if (trimZeros) {
+    const num = Number(formatted);
+    formatted = Number.isNaN(num) || (formatted ?? '').trim() === '' || !Number.isSafeInteger(num)
+      ? formatted
+      : num.toString();
+  }
+
   return {
     formatted: formatted?.toString() ?? '',
     separator: (formatted ?? '') === '' ? '' : separator,
@@ -218,6 +226,7 @@ export async function fetchPathAsString(
       aggregator: undefined,
       fieldFormatter: undefined,
       formatFieldValue,
+      trimZeros: false,
     },
     baseResource
   );
@@ -266,6 +275,7 @@ const autoGenerateFormatter = (table: SpecifyTable): Formatter => ({
             formatter: undefined,
             aggregator: undefined,
             fieldFormatter: undefined,
+            trimZeros: false,
           })),
       },
     ],

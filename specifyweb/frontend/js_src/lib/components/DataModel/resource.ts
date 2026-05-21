@@ -332,7 +332,12 @@ export const getUniqueFields = (
           .map(({ name }) => name)
       : []),
     ...filterArray(
-      uniqueFields.map((fieldName) => table.getField(fieldName)?.name)
+      uniqueFields
+        .filter(
+          (fieldName) =>
+            !(table.name === 'Determination' && fieldName === 'isCurrent')
+        )
+        .map((fieldName) => table.getField(fieldName)?.name)
     ),
   ]);
 

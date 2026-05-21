@@ -338,7 +338,12 @@ function RecordSet<SCHEMA extends AnySchema>({
       ids.map(async (recordId) =>
         recordId === undefined
           ? undefined
-          : createResource('RecordSetItem', {
+          : // REFACTOR: OPTIMIZE: The backend supports passing recordSetItems
+            /*
+             * Inline like a dependent relationship. Don't need to create each
+             * item individually
+             */
+            createResource('RecordSetItem', {
               recordId,
               recordSet: recordSet.get('resource_uri'),
             })
@@ -381,6 +386,7 @@ function RecordSet<SCHEMA extends AnySchema>({
         isInRecordSet
         isLoading={isLoading}
         newResource={currentRecord.isNew() ? currentRecord : undefined}
+        recordSetId={recordSet.id}
         table={currentRecord.specifyTable}
         title={
           recordSet.isNew()
@@ -427,9 +433,11 @@ function RecordSet<SCHEMA extends AnySchema>({
         onClone={(resources: RA<SpecifyResource<SCHEMA>>): void => {
           go(totalCount, 'new', resources[0]);
           if (resources.length > 1) {
-            if (createRecordSetOnBulkCarryForward.includes(
-              resources[0].specifyTable.name
-            )) {
+            if (
+              createRecordSetOnBulkCarryForward.includes(
+                resources[0].specifyTable.name
+              )
+            ) {
               const sortedResources = Array.from(resources).sort(
                 sortFunction((r) => r.id)
               ) as RA<SpecifyResource<CollectionObject>>;
@@ -437,7 +445,9 @@ function RecordSet<SCHEMA extends AnySchema>({
                 createNewRecordSet(
                   sortedResources.map((resource) => resource.id)
                 ).then(async () => {
-                  const firstCollectionObject = await format(sortedResources[0]);
+                  const firstCollectionObject = await format(
+                    sortedResources[0]
+                  );
                   const lastCollectionObject = await format(
                     sortedResources.at(-1)
                   );

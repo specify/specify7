@@ -14,6 +14,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { resourceOn } from '../DataModel/resource';
 import type { Relationship } from '../DataModel/specifyField';
 import type { Collection } from '../DataModel/specifyTable';
+import { shouldBeToOne } from './helpers';
 import type {
   RecordSelectorProps,
   RecordSelectorState,
@@ -57,7 +58,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
 
   const isDependent = collection instanceof DependentCollection;
   const isLazy = collection instanceof LazyCollection;
-  const isToOne = !relationship.type.includes('-to-many');
+  const isToOne = shouldBeToOne(relationship);
 
   // Listen for changes to collection
   React.useEffect(
@@ -80,7 +81,7 @@ export function RecordSelectorFromCollection<SCHEMA extends AnySchema>({
      *   don't need to fetch all records in between)
      */
     if (
-      !isToOne &&
+      relationship.type.includes('-to-many') &&
       isLazy &&
       collection.related?.isNew() !== true &&
       collection.models[index] === undefined

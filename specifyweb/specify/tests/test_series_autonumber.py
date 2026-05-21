@@ -11,7 +11,7 @@ class TestSeriesAutonumber(ApiTests):
 
         # 000000005 to 000000007
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '5',
                 'rangeend': '7',
@@ -27,7 +27,7 @@ class TestSeriesAutonumber(ApiTests):
 
         # 000000010 to 000000015, skipping the first value
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '10',
                 'rangeend': '15',
@@ -43,7 +43,7 @@ class TestSeriesAutonumber(ApiTests):
 
         # Range start value must be less than range end value
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '10',
                 'rangeend': '0',
@@ -58,7 +58,7 @@ class TestSeriesAutonumber(ApiTests):
 
         # Range cannot include wildcards
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '#########',
                 'rangeend': '10',
@@ -73,7 +73,7 @@ class TestSeriesAutonumber(ApiTests):
 
         # Test range limit
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '0',
                 'rangeend': '1000',
@@ -84,11 +84,12 @@ class TestSeriesAutonumber(ApiTests):
             }),
             content_type="application/json",
         )
-        self.assertEqual(response.status_code, 400)
+        content = json.loads(response.content.decode())
+        self.assertEqual(content['error'], "LimitExceeded")
 
         # Test autonumbering with CatalogNumberAlphaNumByYear format
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '2023-000001',
                 'rangeend': '2023-000005',
@@ -123,7 +124,7 @@ class TestSeriesAutonumber(ApiTests):
         )
 
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '10',
                 'rangeend': '20',
@@ -138,7 +139,7 @@ class TestSeriesAutonumber(ApiTests):
         self.assertEqual(content['existing'], ['000000012','000000013','000000014'])
 
         response = c.post(
-            f"/api/specify/series_autonumber_range/",
+            f"/series/series_autonumber_range/",
             data=json.dumps({
                 'rangestart': '0',
                 'rangeend': '10',
@@ -150,4 +151,4 @@ class TestSeriesAutonumber(ApiTests):
             content_type="application/json",
         )
         content = json.loads(response.content.decode())
-        self.assertEqual(content['existing'], [])
+        self.assertNotIn('existing', content)

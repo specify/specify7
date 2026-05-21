@@ -154,7 +154,7 @@ export function Categories({
                 checkEmptyItems
                   ? ''
                   : `flex h-auto max-h-80 flex-col content-center rounded bg-[color:var(--form-foreground)] 
-                     shadow-lg shadow-gray-300 transition hover:shadow-md hover:shadow-gray-400 
+                      transition outline outline-1 outline-neutral-300 dark:outline-neutral-800 
                      ${typeof handleAdd === 'function' ? 'gap-2 p-4' : ''}`
               }
               key={categoryIndex}
@@ -163,7 +163,7 @@ export function Categories({
                 checkEmptyItems ? (
                   <h5 className="font-semibold">{label}</h5>
                 ) : (
-                  <h3 className="bg-brand-300 overflow-auto rounded-t p-3 pb-[0.1rem] pt-[0.1rem] text-lg font-semibold text-white">
+                  <h3 className="bg-brand-400 overflow-auto rounded-t p-3 pb-[0.1rem] pt-[0.1rem] text-lg font-semibold text-white">
                     {label}
                   </h3>
                 )
@@ -292,7 +292,7 @@ export function Categories({
 
       {handleAdd !== undefined && (
         <Button.Secondary
-          className="!p-4 font-bold shadow-md shadow-gray-300"
+          className="!p-4 font-bold outline outline-1 outline-neutral-300 dark:outline-neutral-800"
           onClick={(): void => handleAdd(undefined)}
         >
           {statsText.addACategory()}
