@@ -10,14 +10,14 @@ from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
-from specifyweb.specify.models_utils.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
+from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
-from specifyweb.specify.models_utils.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,10 @@ TREE_ID_FIELD_RE = re.compile(r"(.*) (ID)$")
 # Precalculated fields that are not in the database. Map from table name to field name.
 PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
+}
+
+TREE_TABLE_NAMES = {
+    table.name.lower() for table in datamodel.tables if is_tree_table(table)
 }
 
 class SpQueryAttrs(TypedDict):
@@ -237,7 +241,9 @@ class QueryFieldSpec(
 
         join_path = []
         node = root_table
-        for elem in path:
+        extracted_fieldname, date_part = extract_date_part(field_name)
+        path_elems = list(path)
+        for idx, elem in enumerate(path_elems):
             try:
                 tableid, fieldname = elem.split("-")
             except ValueError:
@@ -246,6 +252,14 @@ class QueryFieldSpec(
             field = (
                 node.get_field(fieldname) if fieldname else node.get_field(table.name)
             )
+            if (
+                is_relation
+                and idx == len(path_elems) - 1
+                and (fieldname is not None or table.name.lower() in TREE_TABLE_NAMES)
+                and isinstance(field, Relationship)
+                and field.name.lower() == extracted_fieldname.lower()
+            ):
+                break
             join_path.append(field)
             node = table
 
