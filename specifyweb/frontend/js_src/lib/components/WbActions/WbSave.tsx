@@ -17,7 +17,7 @@ export const handleWorkbenchSave = async (
   searchRef: React.MutableRefObject<HTMLInputElement | null>,
   checkDeletedFail: (statusCode: number) => void,
   handleSpreadsheetUpToDate: () => void,
-) => {
+): Promise<void> => {
   // Clear validation
   overwriteReadOnly(workbench.dataset, 'rowresults', null);
   workbench.validation.stopLiveValidation();
