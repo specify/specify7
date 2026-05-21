@@ -279,6 +279,7 @@ export const reducer = generateReducer<MappingState, MappingActions>({
       lines: replaceItem(state.lines, focusedLine, {
         ...state.lines[focusedLine],
         mappingPath: mappingViewMappingPath,
+        columnOptions: getCurrentColumnOptions(state, mappingViewMappingPath),
       }),
       changesMade: true,
       mappingsAreValidated: false,
@@ -359,6 +360,10 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     lines: modifyLine(state, state.openSelectElement!.line, {
       mappingPath:
         state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath,
+      columnOptions: getCurrentColumnOptions(
+        state,
+        state.autoMapperSuggestions![Number(suggestion) - 1].mappingPath
+      ),
     }),
     openSelectElement: undefined,
     autoMapperSuggestions: undefined,
