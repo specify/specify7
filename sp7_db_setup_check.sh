@@ -145,9 +145,16 @@ elif [[ "$LEGACY_SCHEMA_EXISTS" -eq 0 ]]; then
 
   # Check whether the database is truly empty. If it is empty, proceed with initial setup. 
   # If it's non-empty, require explicit opt-in via ALLOW_DB_RESET=true to perform a destructive reset.
-  DB_TABLE_COUNT=0
-  DB_TABLE_COUNT=$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>/dev/null) || DB_TABLE_COUNT=0
+  if ! DB_TABLE_COUNT=$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
+        -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+        -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME';"); then
+    echo "Error: Failed to count tables in '$DB_NAME'."
+    exit 1
+  fi
+  if [[ -z "$DB_TABLE_COUNT" ]]; then
+    echo "Error: Empty response when counting tables in '$DB_NAME'."
+    exit 1
+  fi
 
   if [[ "$DB_TABLE_COUNT" -eq 0 ]]; then
     echo "Database '$DB_NAME' is empty; proceeding with initial setup."
