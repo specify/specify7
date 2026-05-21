@@ -60,13 +60,35 @@ export async function buildInitialMergedResource(
   shouldAutoPopulate: boolean,
   targetId?: number
 ): Promise<SerializedResource<AnySchema>> {
-  return (shouldAutoPopulate
-    ? await postMergeResource(
-        resources,
-        autoMerge(table, resources, false, targetId)
-      )
-    : autoMerge(table, resources, true, targetId)) as SerializedResource<AnySchema>;
+  return (
+    shouldAutoPopulate
+      ? await postMergeResource(
+          resources,
+          autoMerge(table, resources, false, targetId)
+        )
+      : addMissingFields(
+          table.name,
+          getNonAutoPopulatedFields(table, resources, targetId)
+        )
+  ) as SerializedResource<AnySchema>;
 }
+
+const getNonAutoPopulatedFields = (
+  table: SpecifyTable,
+  resources: RA<SerializedResource<AnySchema>>,
+  targetId?: number
+): Partial<SerializedResource<AnySchema>> =>
+  table.name === 'Agent'
+    ? { agentType: getTargetResource(resources, targetId)?.agentType }
+    : {};
+
+const getTargetResource = (
+  resources: RA<SerializedResource<AnySchema>>,
+  targetId?: number
+): SerializedResource<AnySchema> | undefined =>
+  targetId === undefined
+    ? resources[0]
+    : (resources.find(({ id }) => id === targetId) ?? resources[0]);
 
 /**
  * Sort from newest to oldest
