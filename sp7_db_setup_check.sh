@@ -141,7 +141,7 @@ if [[ "$DB_EXISTS" -eq 0 ]]; then
     exit 1
   fi
 elif [[ "$LEGACY_SCHEMA_EXISTS" -eq 0 ]]; then
-  echo "Database '$DB_NAME' exists but does not contain a Specify schema. Please ensure that the database is either empty or contains a valid Specify schema."
+  echo "Database '$DB_NAME' exists but does not contain a Specify schema."
 
   # Check whether the database is truly empty. If it is empty, proceed with initial setup. 
   # If it's non-empty, require explicit opt-in via ALLOW_DB_RESET=true to perform a destructive reset.
