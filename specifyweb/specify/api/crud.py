@@ -176,8 +176,8 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     # obj_id = obj.id
     # temporary disabled to tests its necessity since the cases in which its obj_id is missing are on the dependent objects
 
-    # if deleter and (obj_id is not None):
-    deleter(obj, parent_obj)
+    if deleter:
+        deleter(obj, parent_obj)
 
     obj.delete()
 
