@@ -35,7 +35,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Absolute Age",
-    "desc": "Absolute Age"
+    "desc": "Records a numerical age determination for a Collection Object, such as a radiocarbon or potassium-argon date. Includes the age value, uncertainty, dating method, and agent who performed the analysis."
   },
   "absoluteageattachment": {
     "items": {
@@ -278,7 +278,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Address",
-    "desc": "The address of an Agent. This also captures a start and end date for the address and the position held while at the address."
+    "desc": "Stores the postal address of an Agent (person or organization), including street, city, state, country, postal code, phone, and fax. Also captures the date range the agent was at that address and the position they held there."
   },
   "addressofrecord": {
     "items": {
@@ -309,7 +309,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Address Of Record",
-    "desc": "This is the address when the legal action took place."
+    "desc": "Captures the legal address associated with an Accession, Loan, Exchange, or Repository Agreement at the time the transaction took place."
   },
   "agent": {
     "items": {
@@ -376,7 +376,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Agent",
-    "desc": "Contains information about people, groups, and organizations. Some roles for an agent include collector, determiner, preparer, cataloger, donor, issuer of permits, and so forth."
+    "desc": "Central directory of people, groups, and organizations involved in the collection process. Roles include collector, determiner, preparer, cataloger, donor, permit issuer, and more. Supports both individuals (with name components) and organizations."
   },
   "agentattachment": {
     "items": {
@@ -601,7 +601,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Attachment",
-    "desc": "An attachment is any digital file linked to a specific data record to provide supplementary information or media. This could be a photograph of a specimen, a scanned permit document, a field notes PDF, or an audio recording. Instead of storing the file directly in the database, which would make it large and slow, Specify saves the file to a dedicated Web Asset Server and stores only a reference to that file in the database record."
+    "desc": "A digital file (image, PDF, audio, etc.) linked to a data record. Instead of storing the file in the database, Specify stores it on a Web Asset Server and keeps a reference (location, MIME type, original filename, metadata) in this table. Supports licensing, copyright, and visibility controls."
   },
   "attachmentimageattribute": {
     "items": {
@@ -638,7 +638,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Attachment Image Attribute",
-    "desc": "Attachment Image Attribute"
+    "desc": "Stores image-specific metadata for an Attachment, such as height, width, resolution, magnification, image type, and view description. Used primarily for specimen images."
   },
   "attachmentmetadata": {
     "items": {
@@ -1070,7 +1070,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Event Attribute",
-    "desc": "User-customizable attributes that can be repurposed for various data collection needs."
+    "desc": "A one-to-one extension table for Collecting Events, providing additional user-customizable attribute fields beyond the standard schema."
   },
   "collectingeventauthorization": {
     "items": {
@@ -1148,7 +1148,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Trip",
-    "desc": "Used to group Collecting Events together."
+    "desc": "Groups multiple Collecting Events into an expedition or field trip. Tracks the trip's start/end dates, participants, and purpose."
   },
   "collectingtripattachment": {
     "items": {
@@ -1237,7 +1237,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collecting Trip Attribute",
-    "desc": "User-customizable attributes that can be repurposed for various data collection needs"
+    "desc": "Stores values for user-customizable attributes linked to a Collecting Trip, supporting flexible data capture beyond the standard schema."
   },
   "collectingtripauthorization": {
     "items": {
@@ -1417,7 +1417,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object",
-    "desc": "A general term for any item that can be part of a collection. This includes a physical specimen, a specimen lot, an observation, a sound recording, a slide, a tissue sample, or an extract. This is the central record that ties all other information together"
+    "desc": "The central record in Specify, representing any item in a collection: physical specimen, lot, observation, sound recording, slide, tissue sample, or extract. Ties together all related information (determinations, preparations, locality, collecting event, etc.)."
   },
   "collectionobjectattachment": {
     "items": {
@@ -1463,7 +1463,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Attribute",
-    "desc": "A one-to-one extension table for Collection Objects, providing additional user-customizable attribute fields beyond the standard schema."
+    "desc": "Stores values for user-customizable attributes defined by an AttributeDef, linked to a Collection Object. Supports string and numeric value types."
   },
   "collectionobjectattribute": {
     "items": {
@@ -1604,7 +1604,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Attribute",
-    "desc": "User-customizable attributes that can be repurposed for various data collection needs."
+    "desc": "A one-to-one extension table for Collection Objects, providing additional user-customizable attribute fields beyond the standard schema."
   },
   "collectionobjectcitation": {
     "items": {
@@ -1931,7 +1931,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Collection Object Type",
-    "desc": "Collection Object Type"
+    "desc": "Categorizes Collection Objects by their type (e.g., 'Fish', 'Observation', 'Tissue Sample', 'DNA Extract', 'Sound Recording')."
   },
   "collectionrelationship": {
     "items": {
@@ -2243,7 +2243,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Container",
-    "desc": "A container can optionally be cataloged as a collection object and it contains other collection objects. Describes a logical or physical container."
+    "desc": "Represents a physical or logical container that can hold Collection Objects (e.g., a drawer, cabinet, box, or freezer rack). Containers can optionally be cataloged as Collection Objects themselves."
   },
   "datatype": {
     "items": {
@@ -2262,7 +2262,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Data Type",
-    "desc": "A data type represents a core type of collection data."
+    "desc": "Defines the core data types used in the Specify data model (e.g., String, Number, Date, Boolean), used for schema and attribute definitions."
   },
   "deaccession": {
     "items": {
@@ -2474,7 +2474,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Determiner",
-    "desc": "Individual who assigned or made the decision regarding the taxonomic name of specimen. In some instances, determiner may be an organization or institute. In Specify, determiner information is stored in the Agent table."
+    "desc": "Join table linking an Agent (as determiner) to a Determination, with an order field for listing multiple determiners in sequence."
   },
   "discipline": {
     "items": {
@@ -2509,7 +2509,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Discipline",
-    "desc": "May include one or more collections that share the Taxon, Geography, LithoStratigraphy, and Chronostratigraphy Trees, Localities, Agents and Determination Status."
+    "desc": "Organizational unit that may contain one or more Collections sharing the same Taxon, Geography, Lithostratigraphy, and Chronostratigraphy trees, as well as shared Localities, Agents, and Determination statuses."
   },
   "disposal": {
     "items": {
@@ -2642,7 +2642,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Division",
-    "desc": "The division (or department) containing agents."
+    "desc": "A division or department within an Institution (e.g., 'Vertebrate Zoology', 'Botany'). Contains Agents and may oversee multiple Disciplines."
   },
   "dnaprimer": {
     "items": {
@@ -2785,7 +2785,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "DNA Sequencing Run Attachment",
-    "desc": "DNA Sequencing Run Attachment"
+    "desc": "Records a DNA sequencing run, including the run date, protocol, machine used, and links to the resulting DNA sequences."
   },
   "dnasequencingrun": {
     "items": {
@@ -2839,7 +2839,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "DNA Sequencing Run",
-    "desc": "DNA Sequencing Run"
+    "desc": "Records a DNA sequencing run, including the run date, protocol, machine used, and links to the resulting DNA sequences."
   },
   "dnasequencingrunattachment": {
     "items": {
@@ -3082,7 +3082,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Exsiccata",
-    "desc": "Records an exsiccata series—a published, numbered set of preserved specimens distributed to institutions. Common in botany and mycology."
+    "desc": "Records an exsiccata series\u2014a published, numbered set of preserved specimens distributed to institutions. Common in botany and mycology."
   },
   "exsiccataitem": {
     "items": {
@@ -3130,7 +3130,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Extractor",
-    "desc": "Extractor"
+    "desc": "Links an Agent to a DNA Sequence record as the person who performed the extraction, with an order field for multiple extractors."
   },
   "fieldnotebook": {
     "items": {
@@ -3205,7 +3205,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Field Notebook Page",
-    "desc": "Describes a page from a Field Note Book."
+    "desc": "Describes an individual page within a Field Notebook, capturing the page number and date."
   },
   "fieldnotebookpageattachment": {
     "items": {
@@ -3405,7 +3405,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Geography",
-    "desc": "Represents political boundary (Country, State, County, Township, etc.)."
+    "desc": "Hierarchical tree representing political boundaries (Country, State, Province, County, Township, etc.). Used to classify localities and agent collecting regions."
   },
   "geographytreedef": {
     "items": {
@@ -3797,7 +3797,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Institution",
-    "desc": "The parent institution. An institution is made up of one or more divisions."
+    "desc": "The top-level organization (e.g., museum, university) that owns the collections. An Institution contains one or more Divisions."
   },
   "institutionnetwork": {
     "items": {
@@ -3830,7 +3830,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Institution Network",
-    "desc": "Institution Network"
+    "desc": "Records affiliations or partnerships between Institutions (e.g., consortium memberships, collaborative agreements)."
   },
   "journal": {
     "items": {
@@ -4191,7 +4191,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Loan Return Preparation",
-    "desc": "This is used for tracking a returned Preparation for a loan."
+    "desc": "Tracks the return of loaned Preparations, recording the return date, condition, and quantity returned."
   },
   "locality": {
     "items": {
@@ -4261,7 +4261,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Locality",
-    "desc": "Locality records define the “where.” They include the specific name of a locale, its geographic coordinates (point, line, or rectangle), the method used to determine latitude/longitude, the datum, and other georeferencing details."
+    "desc": "Defines the 'where' of a collection: the specific place name, geographic coordinates (point, line, or polygon), coordinate determination method, datum, and elevation/depth. The foundation for georeferencing specimens."
   },
   "localityattachment": {
     "items": {
@@ -4458,7 +4458,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Material Sample",
-    "desc": "Material Sample"
+    "desc": "Records a material sample taken from a Collection Object for analysis (e.g., a tissue sample for DNA, a rock sample for geochemistry)."
   },
   "message": {
     "items": {
@@ -4504,7 +4504,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Morph Bank View",
-    "desc": "Morph Bank View"
+    "desc": "Links to MorphBank (a morphological image database) views, providing integration with external image repositories."
   },
   "otheridentifier": {
     "items": {
@@ -4587,7 +4587,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Paleo Context",
-    "desc": "Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality."
+    "desc": "Provides paleontological context for a Collection Object, Collecting Event, or Locality, linking to chronostratigraphy, lithostratigraphy, and biostratigraphy data."
   },
   "pcrperson": {
     "items": {
@@ -4661,7 +4661,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Permit",
-    "desc": "The permit transaction window is designed to hold information linked to legal paperwork for permission from a government agency to collect a specimen or specimens. Preparation: A subdivision of a collection object that refers to the preparation method."
+    "desc": "Records legal permits and licenses for collecting specimens, including the issuing authority, permit number, date range, and terms. Links to Accessions, Collecting Events, and Loans."
   },
   "permitattachment": {
     "items": {
@@ -4811,7 +4811,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Preparation",
-    "desc": "Preparations represent the distinct physical components of a Collection Object (e.g., a skin, a tissue sample, a skeleton, a fluid-preserved jar, or a microscope slide). It supports a large number of extensible attributes and properties."
+    "desc": "Represents the distinct physical components of a Collection Object (e.g., skin, skeleton, tissue, slide, fluid-preserved jar). Supports extensible attributes and properties. A single Collection Object can have multiple Preparations."
   },
   "preparationattachment": {
     "items": {
@@ -4918,7 +4918,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Preparation Attribute",
-    "desc": "User-customizable attributes that can be repurposed for various data collection needs."
+    "desc": "A one-to-one extension table for Preparations, providing additional user-customizable attribute fields beyond the standard schema."
   },
   "preparationproperty": {
     "items": {
@@ -5254,7 +5254,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Reference Work",
-    "desc": "A literary reference work."
+    "desc": "Stores bibliographic references (publications, books, articles, theses) that can be cited from Determinations, Localities, Taxa, and other records."
   },
   "referenceworkattachment": {
     "items": {
@@ -5408,7 +5408,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Repository Agreement",
-    "desc": "An agreement for allowing an Accession to occur, but does not include ownership."
+    "desc": "Records a legal agreement that permits an Accession to occur without transferring ownership (e.g., a loan for study, a field repository agreement)."
   },
   "repositoryagreementattachment": {
     "items": {
@@ -5447,7 +5447,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Role",
-    "desc": "Stores names, descriptions, and collection information for user-created roles."
+    "desc": "System table: Stores user-defined roles with associated permissions for access control within a collection."
   },
   "rolepolicy": {
     "items": {
@@ -5631,7 +5631,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Audit Log",
-    "desc": "System table: Records audit log entries tracking data changes (create, update, delete) for specified tables."
+    "desc": "System table: Records audit log entries tracking data changes (create, update, delete) for data entry tables."
   },
   "spauditlogfield": {
     "items": {
@@ -5743,7 +5743,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Specify User",
-    "desc": "System Table: This represents Specify User within the application."
+    "desc": "System table: Represents a user account in Specify."
   },
   "spexportschema": {
     "items": {
@@ -5999,7 +5999,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Permission",
-    "desc": "System table: Stores individual permission records defining access rights to resources and actions."
+    "desc": "Deprecated Specify 6 table: Stores individual permission records defining access rights to resources and actions."
   },
   "spprincipal": {
     "items": {
@@ -6025,7 +6025,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Principal",
-    "desc": "System table: Stores security principals (users and groups) for the permission system."
+    "desc": "Deprecated Specify 6 table: Stores security principals (users and groups) for the permission system."
   },
   "spquery": {
     "items": {
@@ -6149,7 +6149,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Sp Symbiota Instance",
-    "desc": "System table: Stores configuration for Symbiota integration instances, enabling data sharing with the Symbiota biodiversity platform."
+    "desc": "Deprecated Specify 6 table: Stores configuration for Symbiota integration instances, enabling data sharing with the Symbiota biodiversity platform."
   },
   "sptasksemaphore": {
     "items": {
@@ -6308,7 +6308,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Storage",
-    "desc": "A tree data structure for describing where Collection Objects are physically stored."
+    "desc": "Hierarchical tree representing the physical storage locations in the collection (e.g., Building > Room > Cabinet > Drawer > Tray). Used to track where Preparations are physically housed."
   },
   "storageattachment": {
     "items": {
@@ -6503,7 +6503,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Taxon",
-    "desc": "Describes the taxonomy of a Determination."
+    "desc": "Hierarchical tree representing the taxonomic classification of organisms (Kingdom > Phylum > Class > Order > Family > Genus > Species). Used for determinations and organizing collection objects."
   },
   "taxonattachment": {
     "items": {
@@ -6708,7 +6708,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Taxon Attribute",
-    "desc": "Taxon Attribute"
+    "desc": "Stores additional attributes or properties for a Taxon (e.g., author citation, publication year, common characteristics)."
   },
   "taxoncitation": {
     "items": {
@@ -6834,7 +6834,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Tectonic Unit",
-    "desc": "Tectonic Unit"
+    "desc": "Hierarchical tree representing tectonic/terrane units used in geology and paleontology for describing the tectonic setting of specimens."
   },
   "tectonicunittreedef": {
     "items": {
@@ -7148,7 +7148,7 @@
     "aggregator": null,
     "defaultui": null,
     "name": "Workbench Row",
-    "desc": "A row of data."
+    "desc": "Deprecated table: Represents a single row of data in a Specify 6 WorkBench data set, containing multiple data items."
   },
   "workbenchrowexportedrelationship": {
     "items": {
