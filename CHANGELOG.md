@@ -4,6 +4,29 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.12.0.6](https://github.com/specify/specify7/compare/v7.12.0.5...v7.12.0.6) (21 May 2026)
+
+* Fix aggregated relation parsing for stored queries ([#8059](https://github.com/specify/specify7/pull/8059))
+* Added context-scoped caching across bulk creation, uploads, permission lookups, uniqueness rules, and remote/global preferences to reduce repeated queries to improve database performance ([#8057](https://github.com/specify/specify7/pull/8057))
+    * Refined catalog-number uniqueness checks to be more accurate and collection-scoped.
+    * Made uniqueness-rule evaluation and permission checks more efficient and cache-aware.
+    * Added and expanded tests covering uniqueness, caching behavior, and permissions.
+* Enabled searching shared trees in the tree viewer ([#8104](https://github.com/specify/specify7/pull/8104))
+
+## [7.12.0.5](https://github.com/specify/specify7/compare/v7.12.0...v7.12.0.5) (29 April 2026)
+
+* Fixes an issue where WorkBench Schema records would be preserved instead of standard Schema Config records when deduplicating ([#7989](https://github.com/specify/specify7/pull/7989))
+* Prevents schema container duplication when initializing the database and removes existing duplicates
+* Added a 'schema repair' utility for adding missing schema config records
+* Fixes Redis key collision so that keys are now automatically qualified by database name ([#7761](https://github.com/specify/specify7/pull/7761))
+* Fixes a bug that prevented partial dates from appearing in query results in some cases ([#7970](https://github.com/specify/specify7/pull/7970))
+* Fixes a bug preventing the use of the 'negate' operator on tree query fields ([#7986](https://github.com/specify/specify7/pull/7986))
+* Fixes an issue that resulted in overly complex queries on the back-end ([#7981](https://github.com/specify/specify7/pull/7981))
+* Fixes an issue where app resources are hidden for users that do not have permission to edit Collection Preferences ([#7990](https://github.com/specify/specify7/pull/7990))
+* Fixes cascaded delete blocker issues preventing proper deletion of Disciplines associated with Divisions. Improves delete blocker handling for complex relationships, reducing cases where valid deletions were incorrectly prevented ([#7999](https://github.com/specify/specify7/pull/7999))
+* Fixes form column definition precedence to ensure the correct configuration is selected when multiple definitions are present. Ensures proper fallback behavior when OS-specific column definitions are unavailable, improving cross-platform UI consistency ([#8028](https://github.com/specify/specify7/pull/8028))
+* Fixes an issue in key migration functions that could create duplicate `SpLocaleContainer`, `SpLocaleContainerItem`, and `SpLocaleItemStr` records. Prevents unintended in-place modification of schema config records during migrations, protecting user-customized configurations. Fixes issues in the `fix_schema_config` migration step that could lead to data inconsistency or duplication ([#8039](https://github.com/specify/specify7/pull/8039))
+
 ## [7.12.0](https://github.com/specify/specify7/compare/v7.11.2...v7.12.0) (10 April 2026)
 
 ### Added
