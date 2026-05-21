@@ -1,5 +1,6 @@
 from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handler
 
+from specifyweb.specify.api.utils import ensure_collection_object_type
 from specifyweb.specify.models import Determination, Taxon
 
 
@@ -7,6 +8,12 @@ from specifyweb.specify.models import Determination, Taxon
 def determination_pre_save(det):
     if det.collectionmemberid is None:
         det.collectionmemberid = det.collectionobject.collectionmemberid
+
+    ensure_collection_object_type(
+        det.collectionobject,
+        using=det._state.db or 'default',
+        persist=True,
+    )
 
     taxon_id = det.taxon_id
     if taxon_id is None:

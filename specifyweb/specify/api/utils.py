@@ -55,6 +55,41 @@ def get_or_create_default_collection_object_type(collection: spmodels.Collection
 
     return default_type
 
+def ensure_collection_object_type(
+    collection_object: spmodels.Collectionobject,
+    using: str = "default",
+    persist: bool = False,
+):
+    db = using or "default"
+
+    if collection_object.collectionobjecttype is not None:
+        return collection_object.collectionobjecttype
+
+    if collection_object.collection.collectionobjecttype is not None:
+        collection_object.collectionobjecttype = (
+            collection_object.collection.collectionobjecttype
+        )
+    elif collection_object.pk is not None:
+        collection_object.collectionobjecttype = (
+            get_or_create_default_collection_object_type(
+                collection_object.collection, using=db
+            )
+        )
+
+    if (
+        persist
+        and collection_object.pk is not None
+        and collection_object.collectionobjecttype is not None
+    ):
+        type(collection_object).objects.using(db).filter(
+            pk=collection_object.pk,
+            collectionobjecttype__isnull=True,
+        ).update(
+            collectionobjecttype_id=collection_object.collectionobjecttype_id
+        )
+
+    return collection_object.collectionobjecttype
+
 def create_default_collection_types(apps, using="default"):
     db = using or "default"
 

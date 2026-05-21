@@ -2,7 +2,7 @@ from specifyweb.backend.businessrules.orm_signal_handler import orm_signal_handl
 
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.backend.businessrules.utils import get_unique_catnum_across_comp_co_coll_pref
-from specifyweb.specify.api.utils import get_or_create_default_collection_object_type
+from specifyweb.specify.api.utils import ensure_collection_object_type
 from specifyweb.specify.models import Component
 
 
@@ -11,15 +11,7 @@ def collectionobject_pre_save(co):
     if co.collectionmemberid is None:
         co.collectionmemberid = co.collection_id
 
-    if co.collectionobjecttype is None:
-        if co.collection.collectionobjecttype is not None:
-            co.collectionobjecttype = co.collection.collectionobjecttype
-        elif co.pk is not None:
-            co.collectionobjecttype = (
-                get_or_create_default_collection_object_type(
-                    co.collection, using=co._state.db or 'default'
-                )
-            )
+    ensure_collection_object_type(co, using=co._state.db or 'default')
 
     agent = co.createdbyagent
     if agent is not None and agent.specifyuser is not None:
