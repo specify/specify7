@@ -279,7 +279,7 @@ function Field({
             setSeriesRangeEnd(input.value);
             setUsingSeries(true);
           }}
-          placeholder={placeholder}
+          placeholder={customPlaceholder}
           {...validationAttributes}
           required={false}
         /> :
