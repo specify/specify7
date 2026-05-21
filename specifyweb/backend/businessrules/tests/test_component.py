@@ -8,13 +8,14 @@ from specifyweb.specify.models import (
     Collectionobject,
     Component,
 )
-import specifyweb.backend.businessrules.utils
+import specifyweb.backend.businessrules.utils as busrule_utils
 from specifyweb.backend.businessrules.utils import (
     cache_unique_catnum_preferences,
     component_catalog_number_exists,
     get_unique_catnum_across_comp_co_coll_pref_by_ids,
 )
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+
 
 class enable_unique_catnum_pref:
     """
@@ -31,7 +32,7 @@ class enable_unique_catnum_pref:
     @enable_unique_catnum_pref()
     def test_something_1(self):
         ...
-    
+
     # as a context manager
     def test_something_2(self):
         with enable_unique_catnum_pref():
@@ -41,6 +42,7 @@ class enable_unique_catnum_pref:
             ...
     ```
     """
+
     def __call__(self, test_func):
         @wraps(test_func)
         def wrapper(*args, **kwargs):
@@ -50,7 +52,7 @@ class enable_unique_catnum_pref:
 
     def __enter__(self):
         self._patcher = patch.object(
-            specifyweb.backend.businessrules.utils,
+            busrule_utils,
             "_get_unique_catnum_across_comp_co_coll_pref",
             return_value=True
         )
@@ -103,20 +105,59 @@ class ComponentTests(ApiTests):
                     collection_id=self.other_collection.id,
                 )
             )
-        
+
         test_component.delete()
+
+    def test_unique_catnum_pref_disabled(self):
+        is_pref_enabled = busrule_utils._get_unique_catnum_across_comp_co_coll_pref(
+            self.collection, self.specifyuser)
+        self.assertFalse(is_pref_enabled)
+        shared_catalognumber = "shared_catnum"
+
+        main_co = Collectionobject.objects.create(
+            collection=self.collection,
+            catalognumber=shared_catalognumber,
+            createdbyagent=self.agent
+        )
+        main_component = Component.objects.create(
+            collectionobject=main_co,
+            createdbyagent=self.agent,
+            catalognumber=shared_catalognumber
+        )
+        main_other_component = Component.objects.create(
+            collectionobject=main_co,
+            createdbyagent=self.agent,
+            catalognumber=shared_catalognumber
+        )
+        other_co = Collectionobject.objects.create(
+            collection=self.other_collection,
+            catalognumber=shared_catalognumber,
+            createdbyagent=self.agent
+        )
+        other_component = Component.objects.create(
+            collectionobject=other_co,
+            createdbyagent=self.agent,
+            catalognumber=shared_catalognumber
+        )
+        other_component.delete()
+        main_component.delete()
+        main_other_component.delete()
+        other_co.delete()
+        main_co.delete()
 
     @enable_unique_catnum_pref()
     def test_collectionobject_across_collections(self):
         shared_catalognumber = "shared_co_comp_catnum"
         other_co = Collectionobject.objects.create(
             collection=self.other_collection,
-            catalognumber=shared_catalognumber
+            catalognumber=shared_catalognumber,
+            createdbyagent=self.agent
         )
 
         main_co = Collectionobject.objects.create(
             collection=self.collection,
-            catalognumber="some_other_catnum"
+            catalognumber="some_other_catnum",
+            createdbyagent=self.agent
         )
 
         main_component = Component.objects.create(
@@ -139,7 +180,8 @@ class ComponentTests(ApiTests):
     def test_component_catalognumber_across_collections(self):
         shared_catalognumber = "shared_catnum"
         other_co = Collectionobject.objects.create(
-            collection=self.other_collection
+            collection=self.other_collection,
+            createdbyagent=self.agent
         )
         other_component = Component.objects.create(
             collectionobject=other_co,
@@ -147,7 +189,8 @@ class ComponentTests(ApiTests):
             createdbyagent=self.agent
         )
         main_co = Collectionobject.objects.create(
-            collection=self.collection
+            collection=self.collection,
+            createdbyagent=self.agent
         )
         main_component = Component.objects.create(
             collectionobject=main_co,
