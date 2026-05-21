@@ -38,6 +38,26 @@ import { QueryToMap } from './ToMap';
 
 export type QueryResultRow = RA<number | string | null>;
 
+/*
+ * These values are somewhat arbitrary but are based on testing with real queries.
+ * Column widths smaller than 120px tend to cause readability issues, and widths
+ * larger than 600px are usually not helpful since users can just resize columns
+ * manually if they want them wider.
+ */
+
+const minAutoSizedQueryResultColumnWidth = 120;
+const minManualQueryResultColumnWidth = 60;
+const maxQueryResultColumnWidth = 600;
+
+const clampManualColumnWidth = (width: number): number =>
+  Math.max(minManualQueryResultColumnWidth, Math.ceil(width));
+
+const clampAutoSizedColumnWidth = (width: number): number =>
+  Math.min(
+    maxQueryResultColumnWidth,
+    Math.max(minAutoSizedQueryResultColumnWidth, Math.ceil(width))
+  );
+
 export type QueryResultsProps = {
   readonly table: SpecifyTable;
   readonly label?: LocalizedString;
@@ -103,7 +123,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 
   const canMergeTable = canMerge(table);
 
-  const visibleFieldSpecs = fieldSpecs.filter(({ isPhantom }) => !isPhantom);
+  const visibleColumns = React.useMemo(
+    () =>
+      fieldSpecs
+        .flatMap((fieldSpec, fieldIndex) =>
+          fieldSpec.isPhantom ? [] : [{ fieldSpec, fieldIndex }]
+        )
+        .map((column, visibleIndex) => ({ ...column, visibleIndex })),
+    [fieldSpecs]
+  );
   if (resultsRef !== undefined) resultsRef.current = results;
 
   const [pickListsLoaded = false] = useAsyncState(
@@ -128,6 +156,13 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   );
 
   const [treeRanksLoaded = false] = useAsyncState(fetchTreeRanks, false);
+
+  const [columnWidths, setColumnWidths] = React.useState<
+    Record<number, number>
+  >({});
+  const [hasManualColumnResize, setHasManualColumnResize] =
+    React.useState(false);
+  const [showCellEllipsis, setShowCellEllipsis] = React.useState(false);
 
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
   // Unselect all rows when query is reRun
@@ -196,6 +231,111 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     'appearance',
     'showLineNumber'
   );
+  const [wrapQueryResults = false] = userPreferences.use(
+    'queryBuilder',
+    'appearance',
+    'wrapQueryResults'
+  );
+
+  const autoSizeColumns = React.useCallback((): void => {
+    const tableElement = scrollerRef.current;
+    if (tableElement === null || visibleColumns.length === 0) return;
+
+    setColumnWidths(
+      Object.fromEntries(
+        visibleColumns.map(({ visibleIndex }) => {
+          const header = tableElement.querySelector<HTMLElement>(
+            `[data-query-results-header-col="${visibleIndex}"]`
+          );
+          const cells = Array.from(
+            tableElement.querySelectorAll<HTMLElement>(
+              `[data-query-results-cell-col="${visibleIndex}"]`
+            )
+          );
+          return [
+            visibleIndex,
+            clampAutoSizedColumnWidth(
+              Math.max(
+                header?.scrollWidth ?? 0,
+                header?.getBoundingClientRect().width ?? 0,
+                ...cells.flatMap((cell) => [
+                  cell.scrollWidth,
+                  cell.getBoundingClientRect().width,
+                ])
+              )
+            ),
+          ];
+        })
+      )
+    );
+  }, [visibleColumns]);
+
+  const resetToAutoSize = React.useCallback((): void => {
+    setHasManualColumnResize(false);
+    setColumnWidths({});
+    setShowCellEllipsis(false);
+    requestAnimationFrame(() =>
+      requestAnimationFrame(() => {
+        autoSizeColumns();
+        requestAnimationFrame(() => setShowCellEllipsis(true));
+      })
+    );
+  }, [autoSizeColumns]);
+
+  React.useEffect(() => {
+    if (
+      !showResults ||
+      !Array.isArray(initialData) ||
+      visibleColumns.length === 0
+    )
+      return;
+    resetToAutoSize();
+  }, [
+    fieldSpecs,
+    initialData,
+    resetToAutoSize,
+    showResults,
+    visibleColumns.length,
+  ]);
+
+  const handleColumnResizeStart = React.useCallback(
+    (columnIndex: number, event: React.MouseEvent<HTMLDivElement>): void => {
+      event.preventDefault();
+      event.stopPropagation();
+
+      setHasManualColumnResize(true);
+
+      const tableElement = scrollerRef.current;
+      if (tableElement === null) return;
+
+      const header = tableElement.querySelector<HTMLElement>(
+        `[data-query-results-header-col="${columnIndex}"]`
+      );
+      const startWidth =
+        columnWidths[columnIndex] ?? header?.getBoundingClientRect().width ?? 0;
+      const startX = event.clientX;
+
+      const handleMove = (moveEvent: MouseEvent): void => {
+        const nextWidth = clampManualColumnWidth(
+          startWidth + moveEvent.clientX - startX
+        );
+        setColumnWidths((columnWidths) => ({
+          ...columnWidths,
+          [columnIndex]: nextWidth,
+        }));
+      };
+
+      const handleUp = (): void => {
+        setHasManualColumnResize(true);
+        globalThis.removeEventListener('mousemove', handleMove);
+        globalThis.removeEventListener('mouseup', handleUp);
+      };
+
+      globalThis.addEventListener('mousemove', handleMove);
+      globalThis.addEventListener('mouseup', handleUp);
+    },
+    [columnWidths]
+  );
 
   const isDistinct =
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
@@ -226,7 +366,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         )}
         <div className="-ml-2 flex-1" />
         {displayedFields.length > 0 &&
-        visibleFieldSpecs.length > 0 &&
+        visibleColumns.length > 0 &&
         totalCount !== 0
           ? extraButtons
           : null}
@@ -234,7 +374,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         Array.isArray(loadedResults) &&
         results.length > 0 &&
         typeof fetchResults === 'function' &&
-        visibleFieldSpecs.length > 0 ? (
+        visibleColumns.length > 0 ? (
           <>
             {canMergeTable ? (
               <RecordMergingLink
@@ -308,12 +448,18 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         style={{
           gridTemplateColumns: [
             ...Array.from({ length: metaColumns }).fill('min-content'),
-            ...Array.from({ length: visibleFieldSpecs.length }).fill('auto'),
+            ...visibleColumns.map(({ visibleIndex }) =>
+              typeof columnWidths[visibleIndex] === 'number'
+                ? hasManualColumnResize
+                  ? `${columnWidths[visibleIndex]}px`
+                  : `minmax(${columnWidths[visibleIndex]}px,1fr)`
+                : 'auto'
+            ),
           ].join(' '),
         }}
         onScroll={showResults && !canFetchMore ? undefined : handleScroll}
       >
-        {showResults && visibleFieldSpecs.length > 0 ? (
+        {showResults && visibleColumns.length > 0 ? (
           <div role="rowgroup">
             <div role="row">
               {showLineNumber && (
@@ -333,34 +479,38 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 sortConfig={undefined}
                 onSortChange={undefined}
               />
-              {fieldSpecs.map((fieldSpec, index) =>
-                fieldSpec.isPhantom ? undefined : (
-                  <TableHeaderCell
-                    fieldSpec={fieldSpec}
-                    key={index}
-                    sortConfig={sortConfig?.[index]}
-                    onSortChange={
-                      typeof handleSortChange === 'function'
-                        ? (sortType): void =>
-                            handleSortChange?.(fieldSpec, sortType)
-                        : undefined
-                    }
-                  />
-                )
-              )}
+              {visibleColumns.map(({ fieldSpec, fieldIndex, visibleIndex }) => (
+                <TableHeaderCell
+                  columnIndex={visibleIndex}
+                  fieldSpec={fieldSpec}
+                  key={fieldIndex}
+                  sortConfig={sortConfig?.[fieldIndex]}
+                  onResizeStart={(event): void =>
+                    handleColumnResizeStart(visibleIndex, event)
+                  }
+                  onSortChange={
+                    typeof handleSortChange === 'function'
+                      ? (sortType): void =>
+                          handleSortChange?.(fieldSpec, sortType)
+                      : undefined
+                  }
+                />
+              ))}
             </div>
           </div>
         ) : null}
         <div role="rowgroup">
           {showResults &&
-          visibleFieldSpecs.length > 0 &&
+          visibleColumns.length > 0 &&
           Array.isArray(loadedResults) &&
           Array.isArray(initialData) ? (
             <QueryResultsTable
               fieldSpecs={fieldSpecs}
               results={loadedResults}
+              showCellEllipsis={showCellEllipsis}
               selectedRows={selectedRows}
               table={table}
+              wrapQueryResults={wrapQueryResults}
               onSelected={(rowIndex, isSelected, isShiftClick): void => {
                 /*
                  * If shift/ctrl/cmd key was held during click, toggle all rows
@@ -406,36 +556,44 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
 }
 
 function TableHeaderCell({
+  columnIndex,
   fieldSpec,
   sortConfig,
   onSortChange: handleSortChange,
+  onResizeStart: handleResizeStart,
 }: {
+  readonly columnIndex?: number;
   readonly fieldSpec: QueryFieldSpec | undefined;
   readonly sortConfig: QueryField['sortType'];
   readonly onSortChange?: (sortType: QueryField['sortType']) => void;
+  readonly onResizeStart?: (event: React.MouseEvent<HTMLDivElement>) => void;
 }): JSX.Element {
   // TableName refers to the table the field is from, not the base table name of the query
   const tableName = fieldSpec?.table?.name;
 
   const content =
     typeof fieldSpec === 'object' ? (
-      <>
+      <span className="flex min-w-0 items-center gap-1 overflow-hidden">
         {tableName && <TableIcon label name={tableName} />}
-        {generateMappingPathPreview(
-          fieldSpec.baseTable.name,
-          fieldSpec.toMappingPath()
-        )}
-      </>
+        <span className="min-w-0 overflow-hidden text-ellipsis whitespace-nowrap">
+          {generateMappingPathPreview(
+            fieldSpec.baseTable.name,
+            fieldSpec.toMappingPath()
+          )}
+        </span>
+      </span>
     ) : undefined;
 
   return (
     <div
-      className="bg-brand-100 dark:bg-brand-400 sticky z-[2] w-full
-        min-w-max border-b border-gray-500 p-1 [inset-block-start:_0]"
+      className="bg-brand-100 dark:bg-brand-400 sticky relative z-[2] w-full
+        min-w-0 overflow-hidden border-b border-gray-500 p-1 [inset-block-start:_0]"
+      data-query-results-header-col={columnIndex}
       role={typeof content === 'object' ? `columnheader` : 'cell'}
     >
       {typeof handleSortChange === 'function' ? (
         <Button.LikeLink
+          className="flex w-full min-w-0 items-center gap-1 overflow-hidden"
           onClick={(): void =>
             handleSortChange?.(
               sortTypes[(sortTypes.indexOf(sortConfig) + 1) % sortTypes.length]
@@ -455,6 +613,16 @@ function TableHeaderCell({
         </Button.LikeLink>
       ) : (
         content
+      )}
+      {typeof columnIndex === 'number' && (
+        <div
+          aria-label="Resize column"
+          className="absolute inset-y-0 right-0 z-20 w-2 cursor-col-resize
+            touch-none before:absolute before:inset-y-0 before:right-0
+            before:w-px before:bg-gray-500 before:content-['']"
+          role="separator"
+          onMouseDown={handleResizeStart}
+        />
       )}
     </div>
   );

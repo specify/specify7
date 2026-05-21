@@ -32,14 +32,12 @@ export function useParserDefaultValue(
   React.useLayoutEffect(() => {
     if (field === undefined || resource === undefined) return;
     /*
-     * Don't auto set numeric to "0" or boolean fields to false, unless it is the default value
+     * Don't auto set numeric to "0", unless it is the default value
      * in the form definition
      */
-    // REFACTOR: resolveParser() should probably not make up the default value like false/0 out of the blue as it's not safe to assume that it's always desired (vs null)
     const hasDefault =
       parser.value !== undefined &&
-      (parser.type !== 'number' || parser.value !== 0) &&
-      (parser.type !== 'checkbox' || parser.value !== false);
+      (parser.type !== 'number' || parser.value !== 0);
 
     const fieldValue = resource.get(field.name) as
       | boolean

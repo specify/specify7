@@ -17,6 +17,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Запит',
     'de-ch': 'Abfrage',
     'pt-br': 'Consulta',
+    'hr-hr': 'Upit',
   },
   queries: {
     'en-us': 'Queries',
@@ -26,6 +27,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Запити',
     'de-ch': 'Abfragen',
     'pt-br': 'Consultas',
+    'hr-hr': 'Upiti',
   },
   queryBuilder: {
     'en-us': 'Query Builder',
@@ -35,6 +37,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Конструктор запитів',
     'de-ch': 'Query Builder',
     'pt-br': 'Construtor de consultas',
+    'hr-hr': 'Alat za izradu upita',
   },
   newQueryName: {
     'en-us': 'New Query',
@@ -44,6 +47,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Nouvelle requête',
     'ru-ru': 'Новый запрос',
     'pt-br': 'Nova consulta',
+    'hr-hr': 'Novi upit',
   },
   searchFields: {
     comment: `
@@ -57,6 +61,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Пошукові поля',
     'de-ch': 'Durchsuchte Felder',
     'pt-br': 'Campos pesquisados',
+    'hr-hr': 'Pretražena polja',
   },
   any: {
     'en-us': 'Any',
@@ -66,6 +71,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Будь-який',
     'de-ch': 'Beliebig',
     'pt-br': 'Qualquer',
+    'hr-hr': 'Bilo koji',
   },
   startValue: {
     'en-us': 'Start Value',
@@ -75,6 +81,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Початкове значення',
     'de-ch': 'Startwert',
     'pt-br': 'Valor inicial',
+    'hr-hr': 'Početna vrijednost',
   },
   endValue: {
     'en-us': 'End Value',
@@ -84,6 +91,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Кінцеве значення',
     'de-ch': 'Endwert',
     'pt-br': 'Valor final',
+    'hr-hr': 'Krajnja vrijednost',
   },
   saveQuery: {
     'en-us': 'Save Query',
@@ -93,6 +101,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Зберегти запит',
     'de-ch': 'Anfrage speichern',
     'pt-br': 'Salvar consulta',
+    'hr-hr': 'Spremi upit',
   },
   saveClonedQuery: {
     'en-us': 'Save query as...',
@@ -102,6 +111,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Зберегти запит як...',
     'de-ch': 'Abfrage speichern unter...',
     'pt-br': 'Salvar consulta como...',
+    'hr-hr': 'Spremi upit kao...',
   },
   saveClonedQueryDescription: {
     'en-us':
@@ -118,6 +128,8 @@ export const queryText = createDictionary({
       'Die Abfrage wird unter einem neuen Namen gespeichert, die aktuelle Abfrage bleibt dabei unverändert.',
     'pt-br':
       'A consulta será salva com um novo nome, mantendo-se a consulta atual inalterada.',
+    'hr-hr':
+      'Upit će biti spremljen pod novim nazivom, a trenutni upit će ostati nepromijenjen.',
   },
   queryDeleteIncomplete: {
     'en-us': 'Query definition contains incomplete fields',
@@ -127,6 +139,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Визначення запиту містить незаповнені поля',
     'de-ch': 'Die Abfragedefinition enthält unvollständige Felder',
     'pt-br': 'A definição da consulta contém campos incompletos.',
+    'hr-hr': 'Definicija upita sadrži nepotpuna polja',
   },
   queryDeleteIncompleteDescription: {
     'en-us':
@@ -142,6 +155,8 @@ export const queryText = createDictionary({
       'Die Abfragedefinition enthält unvollständige Felder. Möchten Sie diese entfernen?',
     'pt-br':
       'Existem campos incompletos na definição da consulta. Deseja removê-los?',
+    'hr-hr':
+      'U definiciji upita postoje neispunjena polja. Želite li ih ukloniti?',
   },
   queryUnloadProtect: {
     'en-us': 'The new or modified query definition has not been saved',
@@ -153,6 +168,7 @@ export const queryText = createDictionary({
     'de-ch':
       'Die neue oder geänderte Abfragedefinition wurde nicht gespeichert.',
     'pt-br': 'A definição de consulta nova ou modificada não foi salva.',
+    'hr-hr': 'Nova ili izmijenjena definicija upita nije spremljena',
   },
   recordSetToQuery: {
     comment: 'Example: Creating a Record Set from Query',
@@ -163,6 +179,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Створення {recordSetTable:string} із запиту',
     'de-ch': 'Erstellen eines {recordSetTable:string} aus der Abfrage',
     'pt-br': 'Criando um {recordSetTable:string} a partir de uma consulta',
+    'hr-hr': 'Izrada {recordSetTable:string} iz upita',
   },
   recordSetToQueryDescription: {
     'en-us': 'Generating {recordSetTable:string}...',
@@ -172,6 +189,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Створення {recordSetTable:string}...',
     'de-ch': 'Generiere {recordSetTable:string}...',
     'pt-br': 'Gerando {recordSetTable:string}...',
+    'hr-hr': 'Generiranje {recordSetTable:string}...',
   },
   recordSetCreated: {
     'en-us': '{recordSetTable:string} Created',
@@ -181,6 +199,7 @@ export const queryText = createDictionary({
     'uk-ua': '{recordSetTable:string} Створено',
     'de-ch': '{recordSetTable:string} Erstellt',
     'pt-br': '{recordSetTable:string} Criado',
+    'hr-hr': '{recordSetTable:string} Kreirano',
   },
   missingCoordinatesForKml: {
     'en-us': 'Unable to export to KML',
@@ -190,6 +209,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Не вдалося експортувати в KML',
     'de-ch': 'Export nach KML nicht möglich',
     'pt-br': 'Não foi possível exportar para KML.',
+    'hr-hr': 'Nije moguće izvesti u KML',
   },
   missingCoordinatesForKmlDescription: {
     'en-us': 'Please add latitude and longitude fields to the query.',
@@ -201,6 +221,7 @@ export const queryText = createDictionary({
     'de-ch': 'Bitte fügen Sie der Abfrage Breiten- und Längengradfelder hinzu.',
     'pt-br':
       'Por favor, adicione os campos de latitude e longitude à consulta.',
+    'hr-hr': 'Molimo dodajte polja za zemljopisnu širinu i dužinu u upit.',
   },
   queryExportStarted: {
     'en-us': 'Export File Being Created',
@@ -210,6 +231,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Експортний файл створюється',
     'de-ch': 'Exportdatei wird erstellt',
     'pt-br': 'Arquivo de exportação sendo criado',
+    'hr-hr': 'Izrada izvozne datoteke',
   },
   queryExportStartedDescription: {
     'en-us':
@@ -226,6 +248,8 @@ export const queryText = createDictionary({
       'Уведомление появится, когда экспорт файла будет завершен и файл будет готов к загрузке.',
     'pt-br':
       'Uma notificação aparecerá quando o arquivo de exportação estiver completo e pronto para download.',
+    'hr-hr':
+      'Obavijest će se pojaviti kada je izvozna datoteka dovršena i spremna za preuzimanje.',
   },
   invalidPicklistValue: {
     comment: 'Used when selected pick list value is not one of allowed values',
@@ -236,6 +260,7 @@ export const queryText = createDictionary({
     'uk-ua': '{value:string} (поточне, недійсне значення)',
     'de-ch': '{value:string} (aktueller, ungültiger Wert)',
     'pt-br': '{value:string} (valor atual inválido)',
+    'hr-hr': '{value:string} (trenutna, nevažeća vrijednost)',
   },
   queryRecordSetTitle: {
     comment: 'Used in query builder header when querying on record set',
@@ -253,6 +278,8 @@ export const queryText = createDictionary({
       'Anfrage: "{queryName:string}" auf {recordSetTable:string}: "{recordSetName:string}"',
     'pt-br':
       'Consulta: "{queryName:string}" em {recordSetTable:string}: "{recordSetName:string}"',
+    'hr-hr':
+      'Upit: "{queryName:string}" na {recordSetTable:string}: "{recordSetName:string}"',
   },
   treeQueryName: {
     comment: 'Used in query builder header when querying on tree node usages',
@@ -263,6 +290,7 @@ export const queryText = createDictionary({
     'uk-ua': '{tableName:string} за допомогою "{nodeFullName:string}"',
     'de-ch': '{tableName:string} verwendet "{nodeFullName:string}"',
     'pt-br': '{tableName:string} usando "{nodeFullName:string}"',
+    'hr-hr': '{tableName:string} koristi "{nodeFullName:string}"',
   },
   newButtonDescription: {
     'en-us': 'Add New Field',
@@ -272,6 +300,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Додати нове поле',
     'de-ch': 'Neues Feld hinzufügen',
     'pt-br': 'Adicionar novo campo',
+    'hr-hr': 'Dodaj novo polje',
   },
   countOnly: {
     comment: 'Verb',
@@ -282,6 +311,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Рахувати',
     'de-ch': 'Zählen',
     'pt-br': 'Contar',
+    'hr-hr': 'Računati',
   },
   distinct: {
     'en-us': 'Distinct',
@@ -291,6 +321,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Виразний',
     'de-ch': 'Unterscheidbar',
     'pt-br': 'Distinto',
+    'hr-hr': 'Različito',
   },
   series: {
     'en-us': 'Series',
@@ -300,9 +331,17 @@ export const queryText = createDictionary({
     'pt-br': 'Série',
     'ru-ru': 'Ряд',
     'uk-ua': 'Серія',
+    'hr-hr': 'Niz',
   },
   searchSynonyms: {
     'en-us': 'Search Synonyms',
+    'de-ch': 'Synonyme suchen',
+    'es-es': 'Buscar sinónimos',
+    'fr-fr': 'Rechercher des synonymes',
+    'hr-hr': 'Pretraži sinonime',
+    'pt-br': 'Pesquisar sinônimos',
+    'ru-ru': 'Поиск синонимов',
+    'uk-ua': 'Пошук синонімів',
   },
   createCsv: {
     'en-us': 'Create CSV',
@@ -312,6 +351,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Створити CSV',
     'de-ch': 'CSV erstellen',
     'pt-br': 'Criar arquivo CSV',
+    'hr-hr': 'Izradi CSV',
   },
   createKml: {
     'en-us': 'Create KML',
@@ -321,6 +361,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Створіть KML',
     'de-ch': 'KML erstellen',
     'pt-br': 'Criar KML',
+    'hr-hr': 'Izradi KML',
   },
   createRecordSet: {
     'en-us': 'Create {recordSetTable:string}',
@@ -330,6 +371,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Створити {recordSetTable:string}',
     'de-ch': '{recordSetTable:string} erstellen',
     'pt-br': 'Criar {recordSetTable:string}',
+    'hr-hr': 'Stvori {recordSetTable:string}',
   },
   saveAs: {
     'en-us': 'Save As',
@@ -339,6 +381,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Enregistrer sous',
     'ru-ru': 'Сохранить как',
     'pt-br': 'Salvar como',
+    'hr-hr': 'Spremi kao',
   },
   anyRank: {
     'en-us': '(any rank)',
@@ -348,6 +391,7 @@ export const queryText = createDictionary({
     'uk-ua': '(будь-який ранг)',
     'de-ch': '(beliebiger Rang)',
     'pt-br': '(qualquer patente)',
+    'hr-hr': '(bilo koji rang)',
   },
   anyTree: {
     'en-us': '(any tree)',
@@ -357,6 +401,7 @@ export const queryText = createDictionary({
     'pt-br': '(qualquer árvore)',
     'ru-ru': '(любое дерево)',
     'uk-ua': '(будь-яке дерево)',
+    'hr-hr': '(bilo koje drvo)',
   },
   moveUp: {
     comment: 'As in move it up',
@@ -367,6 +412,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Рухатися вгору',
     'de-ch': 'Aufsteigen',
     'pt-br': 'Subir de nível',
+    'hr-hr': 'Pomakni se gore',
   },
   moveDown: {
     comment: 'As in move it down',
@@ -377,6 +423,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Рухатися вниз',
     'de-ch': 'Nach unten bewegen',
     'pt-br': 'Desça',
+    'hr-hr': 'Pomakni prema dolje',
   },
   sort: {
     'en-us': 'Sort',
@@ -386,6 +433,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Сортувати',
     'de-ch': 'Sortieren',
     'pt-br': 'Organizar',
+    'hr-hr': 'Vrsta',
   },
   ascendingSort: {
     'en-us': 'Ascending Sort',
@@ -395,6 +443,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Сортування за зростанням',
     'de-ch': 'Aufsteigende Sortierung',
     'pt-br': 'Classificação Ascendente',
+    'hr-hr': 'Uzlazno sortiranje',
   },
   descendingSort: {
     'en-us': 'Descending Sort',
@@ -404,6 +453,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Сортування за спаданням',
     'de-ch': 'Absteigende Sortierung',
     'pt-br': 'Classificação decrescente',
+    'hr-hr': 'Silazno sortiranje',
   },
   negate: {
     comment: 'as in negate query condition',
@@ -414,6 +464,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Заперечувати',
     'de-ch': 'Negieren',
     'pt-br': 'Negar',
+    'hr-hr': 'Negirati',
   },
   showButtonDescription: {
     'en-us': 'Show in results',
@@ -423,6 +474,7 @@ export const queryText = createDictionary({
     'fr-fr': 'Afficher dans les résultats',
     'ru-ru': 'Показать в результатах',
     'pt-br': 'Mostrar nos resultados',
+    'hr-hr': 'Prikaži u rezultatima',
   },
   aggregatedInline: {
     'en-us': '(aggregated)',
@@ -432,6 +484,7 @@ export const queryText = createDictionary({
     'uk-ua': '(узагальнено)',
     'de-ch': '(aggregiert)',
     'pt-br': '(agregado)',
+    'hr-hr': '(agregirano)',
   },
   formattedInline: {
     'en-us': '(formatted)',
@@ -441,6 +494,7 @@ export const queryText = createDictionary({
     'uk-ua': '(відформатований)',
     'de-ch': '(formatiert)',
     'pt-br': '(formatado)',
+    'hr-hr': '(formatirano)',
   },
   like: {
     'en-us': 'Like',
@@ -450,6 +504,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Люблю',
     'de-ch': 'Wie',
     'pt-br': 'Como',
+    'hr-hr': 'Kao',
   },
   likeDescription: {
     comment: 'Explains the use of special symbols for the "like" query filter',
@@ -467,6 +522,8 @@ export const queryText = createDictionary({
       'Verwenden Sie „%“, um eine beliebige Anzahl von Zeichen zu finden.\n\nVerwenden Sie „_“, um ein einzelnes Zeichen zu finden.',
     'pt-br':
       'Use "%" para corresponder a qualquer número de caracteres.\n\nUse "_" para corresponder a um único caractere.',
+    'hr-hr':
+      'Koristite "%" za pronalaženje bilo kojeg broja znakova. Koristite "_" za pronalaženje jednog znaka.',
   },
   equal: {
     'en-us': 'Equal',
@@ -476,6 +533,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Рівні',
     'de-ch': 'Gleich',
     'pt-br': 'Igual',
+    'hr-hr': 'Jednak',
   },
   greaterThan: {
     'en-us': 'Greater than',
@@ -485,6 +543,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Більш чим',
     'de-ch': 'Größer als',
     'pt-br': 'Maior que',
+    'hr-hr': 'Veće od',
   },
   lessThan: {
     'en-us': 'Less than',
@@ -494,6 +553,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Менше ніж',
     'de-ch': 'Weniger als',
     'pt-br': 'Menor que',
+    'hr-hr': 'Manje od',
   },
   greaterOrEqualTo: {
     'en-us': 'Greater or Equal to',
@@ -503,6 +563,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Більше або дорівнює',
     'de-ch': 'Größer oder gleich',
     'pt-br': 'Maior ou igual a',
+    'hr-hr': 'Veće ili jednako',
   },
   lessOrEqualTo: {
     'en-us': 'Less or Equal to',
@@ -512,6 +573,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Менше або дорівнює',
     'de-ch': 'Kleiner oder gleich',
     'pt-br': 'Menor ou igual a',
+    'hr-hr': 'Manje ili jednako',
   },
   true: {
     'en-us': 'True',
@@ -521,6 +583,7 @@ export const queryText = createDictionary({
     'uk-ua': 'правда',
     'de-ch': 'WAHR',
     'pt-br': 'Verdadeiro',
+    'hr-hr': 'Pravi',
   },
   false: {
     'en-us': 'False',
@@ -530,6 +593,7 @@ export const queryText = createDictionary({
     'uk-ua': 'помилковий',
     'de-ch': 'FALSCH',
     'pt-br': 'Falso',
+    'hr-hr': 'Lažno',
   },
   trueOrNull: {
     'en-us': 'True or Empty',
@@ -539,6 +603,7 @@ export const queryText = createDictionary({
     'uk-ua': 'True або Empty',
     'de-ch': 'Wahr oder leer',
     'pt-br': 'Verdadeiro ou Vazio',
+    'hr-hr': 'True ili Prazno',
   },
   falseOrNull: {
     'en-us': 'False or Empty',
@@ -548,6 +613,7 @@ export const queryText = createDictionary({
     'uk-ua': 'False або Empty',
     'de-ch': 'Falsch oder leer',
     'pt-br': 'Falso ou Vazio',
+    'hr-hr': 'Lažno ili prazno',
   },
   between: {
     'en-us': 'Between',
@@ -557,6 +623,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Між',
     'de-ch': 'Zwischen',
     'pt-br': 'Entre',
+    'hr-hr': 'Između',
   },
   in: {
     'en-us': 'In',
@@ -566,6 +633,7 @@ export const queryText = createDictionary({
     'uk-ua': 'в',
     'de-ch': 'In',
     'pt-br': 'Em',
+    'hr-hr': 'U',
   },
   inDescription: {
     'en-us': 'A comma-separated list of values',
@@ -575,6 +643,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Список значень, розділених комами',
     'de-ch': 'Eine durch Kommas getrennte Liste von Werten',
     'pt-br': 'Uma lista de valores separados por vírgulas',
+    'hr-hr': 'Popis vrijednosti odvojenih zarezima',
   },
   contains: {
     'en-us': 'Contains',
@@ -584,6 +653,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Містить',
     'de-ch': 'Enthält',
     'pt-br': 'Contém',
+    'hr-hr': 'Sadrži',
   },
   empty: {
     'en-us': 'Empty',
@@ -593,6 +663,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Порожній',
     'de-ch': 'Leer',
     'pt-br': 'Vazio',
+    'hr-hr': 'Prazan',
   },
   and: {
     'en-us': 'and',
@@ -602,6 +673,7 @@ export const queryText = createDictionary({
     'uk-ua': 'і',
     'de-ch': 'Und',
     'pt-br': 'e',
+    'hr-hr': 'i',
   },
   startsWith: {
     'en-us': 'Starts With',
@@ -611,6 +683,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Починається з',
     'de-ch': 'Beginnt mit',
     'pt-br': 'Começa com',
+    'hr-hr': 'Počinje s',
   },
   endsWith: {
     'en-us': 'Ends With',
@@ -618,8 +691,9 @@ export const queryText = createDictionary({
     'es-es': 'Termina con',
     'fr-fr': 'Se termine par',
     'pt-br': 'Termina com',
-    'ru-ru': 'Заканчивается',
+    'ru-ru': 'Заканчивается на',
     'uk-ua': 'Закінчується на',
+    'hr-hr': 'Završava s',
   },
   or: {
     'en-us': 'or',
@@ -629,6 +703,7 @@ export const queryText = createDictionary({
     'uk-ua': 'або',
     'de-ch': 'oder',
     'pt-br': 'ou',
+    'hr-hr': 'ili',
   },
   yes: {
     'en-us': 'Yes',
@@ -638,6 +713,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Так',
     'de-ch': 'Ja',
     'pt-br': 'Sim',
+    'hr-hr': 'Da',
   },
   queryResults: {
     'en-us': 'Query Results',
@@ -647,6 +723,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Результати запиту',
     'de-ch': 'Suchergebnisse',
     'pt-br': 'Resultados da consulta',
+    'hr-hr': 'Rezultati upita',
   },
   browseInForms: {
     'en-us': 'Browse in Forms',
@@ -656,6 +733,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Перегляд у Формах',
     'de-ch': 'Formulare durchsuchen',
     'pt-br': 'Navegar em formulários',
+    'hr-hr': 'Pregledaj u Obrascima',
   },
   configureQueryTables: {
     'en-us': 'Configure visible query tables',
@@ -665,33 +743,37 @@ export const queryText = createDictionary({
     'uk-ua': 'Налаштувати видимі таблиці запитів',
     'de-ch': 'Sichtbare Abfragetabellen konfigurieren',
     'pt-br': 'Configurar tabelas de consulta visíveis',
+    'hr-hr': 'Konfiguriranje vidljivih tablica upita',
   },
   exportQueryForDwca: {
     'en-us': 'Export query for DwCA definition',
     'ru-ru': 'Экспорт запроса для определения DwCA',
-    'es-es': 'Consulta de exportación para la definición de DwCA',
+    'es-es': 'Exportar consulta para la definición de DwCA',
     'fr-fr': "Requête d'exportation pour la définition DwCA",
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
-    'pt-br': 'Consulta de exportação para definição de DwCA',
+    'pt-br': 'Exportar consulta para definição de DwCA',
+    'hr-hr': 'Izvoz upita za definiciju DwCA-a',
   },
   exportQueryAsReport: {
     'en-us': 'Define report based on query',
     'ru-ru': 'Сформулируйте отчет на основе запроса.',
-    'es-es': 'Definir informe basado en consulta',
+    'es-es': 'Definir informe en función de la consulta',
     'fr-fr': 'Définir un rapport basé sur une requête',
     'uk-ua': 'Визначити звіт на основі запиту',
     'de-ch': 'Bericht basierend auf einer Abfrage definieren',
     'pt-br': 'Defina o relatório com base na consulta.',
+    'hr-hr': 'Definiraj izvješće na temelju upita',
   },
   exportQueryAsLabel: {
     'en-us': 'Define label based on query',
     'ru-ru': 'Определите метку на основе запроса.',
-    'es-es': 'Definir etiqueta según consulta',
+    'es-es': 'Definir etiqueta en función de la consulta',
     'fr-fr': "Définir l'étiquette en fonction de la requête",
     'uk-ua': 'Визначте мітку на основі запиту',
     'de-ch': 'Definiere Label basierend auf der Abfrage',
     'pt-br': 'Defina o rótulo com base na consulta.',
+    'hr-hr': 'Definiraj oznaku na temelju upita',
   },
   treeMerge: {
     comment: 'Audit Log Action Type',
@@ -702,46 +784,51 @@ export const queryText = createDictionary({
     'uk-ua': "Об'єднання дерев",
     'de-ch': 'Baumzusammenführung',
     'pt-br': 'Fusão de árvores',
+    'hr-hr': 'Spajanje stabla',
   },
   treeMove: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Move',
     'ru-ru': 'Перемещение дерева',
-    'es-es': 'Movimiento de árbol',
+    'es-es': 'Traslado de árboles',
     'fr-fr': "Déplacement d'arbre",
     'uk-ua': 'Переміщення дерева',
     'de-ch': 'Baumversetzung',
     'pt-br': 'Movimentação da árvore',
+    'hr-hr': 'Pomicanje stabla',
   },
   treeSynonymize: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Synonymize',
     'ru-ru': 'Дерево Синонимизировать',
-    'es-es': 'Árbol Sinónimos',
+    'es-es': 'Árbol Sinonimizar',
     'fr-fr': "Synonymiser l'arbre",
     'uk-ua': 'Синонімізувати дерево',
     'de-ch': 'Baum Synonymisieren',
     'pt-br': 'Sinônimos de árvore',
+    'hr-hr': 'Sinonimiziraj stablo',
   },
   treeDesynonymize: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Desynonymize',
     'ru-ru': 'Дерево Десинонимизировать',
-    'es-es': 'Desinonimizar árboles',
+    'es-es': 'Árbol Dessinonimar',
     'fr-fr': "Désynonymisation d'arbre",
     'uk-ua': 'Десинонімізація дерева',
     'de-ch': 'Baum Desynonymisieren',
     'pt-br': 'Dessinonizar árvore',
+    'hr-hr': 'Desinonimiziraj stablo',
   },
   treeBulkMove: {
     comment: 'Audit Log Action Type',
     'en-us': 'Tree Bulk Move',
     'de-ch': 'Baumtransport',
-    'es-es': 'Movimiento masivo de árboles',
+    'es-es': 'Traslado masivo de árboles',
     'fr-fr': "Déménagement en masse d'arbres",
     'ru-ru': 'Перевозка деревьев оптом',
     'uk-ua': 'Масове переміщення дерева',
     'pt-br': 'Mudança em massa de árvores',
+    'hr-hr': 'Premještanje skupnog drveća',
   },
   tooLongErrorMessage: {
     'en-us':
@@ -758,6 +845,8 @@ export const queryText = createDictionary({
       'Der Feldwert ist zu lang. Die maximal zulässige Länge beträgt {maxLength:number|formatted}.',
     'pt-br':
       'O valor do campo é muito longo. O comprimento máximo permitido é {maxLength:number|formatted}',
+    'hr-hr':
+      'Vrijednost polja je preduga. Maksimalna dopuštena duljina je {maxLength:number|formatted}',
   },
   future: {
     'en-us': 'in the future',
@@ -767,6 +856,7 @@ export const queryText = createDictionary({
     'ru-ru': 'в будущем',
     'uk-ua': 'в майбутньому',
     'pt-br': 'no futuro',
+    'hr-hr': 'u budućnosti',
   },
   past: {
     'en-us': 'in the past',
@@ -776,6 +866,7 @@ export const queryText = createDictionary({
     'ru-ru': 'в прошлом',
     'uk-ua': 'в минулому',
     'pt-br': 'no passado',
+    'hr-hr': 'u prošlosti',
   },
   days: {
     'en-us': 'Days',
@@ -785,6 +876,7 @@ export const queryText = createDictionary({
     'uk-ua': 'днів',
     'de-ch': 'Tage',
     'pt-br': 'Dias',
+    'hr-hr': 'Dani',
   },
   weeks: {
     'en-us': 'Weeks',
@@ -794,6 +886,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Недели',
     'uk-ua': 'тижнів',
     'pt-br': 'Semanas',
+    'hr-hr': 'Tjedni',
   },
   months: {
     'en-us': 'Months',
@@ -803,6 +896,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Месяцы',
     'uk-ua': 'Місяці',
     'pt-br': 'Meses',
+    'hr-hr': 'Mjeseci',
   },
   years: {
     'en-us': 'Years',
@@ -812,6 +906,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Годы',
     'uk-ua': 'років',
     'pt-br': 'Anos',
+    'hr-hr': 'Godine',
   },
   year: {
     'en-us': 'Year',
@@ -821,6 +916,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Год',
     'uk-ua': 'рік',
     'pt-br': 'Ano',
+    'hr-hr': 'Godina',
   },
   relativeDate: {
     comment: `
@@ -841,6 +937,8 @@ export const queryText = createDictionary({
       '<count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>',
     'pt-br':
       '<count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>',
+    'hr-hr':
+      '<count>{size:number}</count> <length>{type:string}</length> <direction>{direction:string}</direction>',
   },
   importHiddenFields: {
     'en-us': 'The following fields are hidden in the query you imported:',
@@ -852,14 +950,15 @@ export const queryText = createDictionary({
     'de-ch':
       'Die folgenden Felder sind in der importierten Abfrage ausgeblendet:',
     'pt-br': 'Os seguintes campos estão ocultos na consulta que você importou:',
+    'hr-hr': 'Sljedeća polja su skrivena u upitu koji ste uvezli:',
   },
   importNoReadPermission: {
     'en-us':
       'The query you imported contains tables you do not have read access to:',
     'es-es':
-      'La consulta que importó contiene tablas a las que no tiene acceso de lectura:',
+      'La consulta que importaste contiene tablas a las que no tienes acceso de lectura:',
     'fr-fr':
-      "La requête que vous avez importée contient des tables auxquelles vous n'avez pas d'accès en lecture :",
+      "La requête que vous avez importée contient des tables auxquelles vous n'avez pas accès en lecture :",
     'ru-ru':
       'В импортированном вами запросе содержатся таблицы, к которым у вас нет доступа на чтение:',
     'uk-ua':
@@ -868,6 +967,8 @@ export const queryText = createDictionary({
       'Die importierte Abfrage enthält Tabellen, für die Sie keine Leseberechtigung haben:',
     'pt-br':
       'A consulta que você importou contém tabelas às quais você não tem acesso de leitura:',
+    'hr-hr':
+      'Upit koji ste uvezli sadrži tablice za koje nemate pristup za čitanje:',
   },
   noReadPermission: {
     'en-us': 'No read permission',
@@ -877,6 +978,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Немає дозволу на читання',
     'de-ch': 'Keine Leseberechtigung',
     'pt-br': 'Sem permissão de leitura',
+    'hr-hr': 'Nema dopuštenja za čitanje',
   },
   switchToRelative: {
     'en-us': 'Switch to relative',
@@ -886,6 +988,7 @@ export const queryText = createDictionary({
     'ru-ru': 'Переключиться на относительное',
     'uk-ua': 'Перейти до відносного',
     'pt-br': 'Mudar para relativo',
+    'hr-hr': 'Prebaci na relativno',
   },
   switchToAbsolute: {
     'en-us': 'Switch to absolute',
@@ -895,15 +998,17 @@ export const queryText = createDictionary({
     'ru-ru': 'Переключиться на абсолютный',
     'uk-ua': 'Перейти до відносного',
     'pt-br': 'Mudar para absoluto',
+    'hr-hr': 'Prebaci na apsolutno',
   },
   scrollToEditor: {
     'en-us': 'Scroll to editor',
     'de-ch': 'Zum Editor scrollen',
-    'es-es': 'Desplazarse al editor',
+    'es-es': 'Desplácese hasta el editor',
     'uk-ua': 'Перейдіть до редактора',
     'fr-fr': "Défilez vers l'éditeur",
     'ru-ru': 'Прокрутите вниз до редактора',
     'pt-br': 'Vá até o editor',
+    'hr-hr': 'Pomakni se do uređivača',
   },
   viewRecords: {
     'en-us': 'View records',
@@ -913,15 +1018,17 @@ export const queryText = createDictionary({
     'ru-ru': 'Просмотреть записи',
     'uk-ua': 'Переглянути записи',
     'pt-br': 'Ver registros',
+    'hr-hr': 'Prikaži zapise',
   },
   chooseFormatter: {
     'en-us': 'Choose formatter',
     'de-ch': 'Formatierer auswählen',
-    'es-es': 'Elija el formateador',
+    'es-es': 'Seleccione el formateador',
     'fr-fr': 'Choisir le formateur',
     'ru-ru': 'Выберите форматтер',
     'uk-ua': 'Виберіть форматер',
     'pt-br': 'Escolha o formatador',
+    'hr-hr': 'Odaberite formater',
   },
   range: {
     'en-us': 'Range',
@@ -931,6 +1038,7 @@ export const queryText = createDictionary({
     'pt-br': 'Faixa',
     'ru-ru': 'Диапазон',
     'uk-ua': 'Діапазон',
+    'hr-hr': 'Raspon',
   },
   strict: {
     'en-us': 'Strict',
@@ -940,6 +1048,7 @@ export const queryText = createDictionary({
     'pt-br': 'Estrito',
     'ru-ru': 'Строгий',
     'uk-ua': 'Суворий',
+    'hr-hr': 'Strogo',
   },
   nonStrict: {
     'en-us': 'Non strict',
@@ -949,24 +1058,27 @@ export const queryText = createDictionary({
     'pt-br': 'Não estrito',
     'ru-ru': 'Нестрогий',
     'uk-ua': 'Не суворий',
+    'hr-hr': 'Nije strogo',
   },
   primaryCatalogNumberInheritance: {
     'en-us': '{collectionObjectTableName: string}',
     'de-ch': '{collectionObjectTableName: string}',
-    'es-es': '{collectionObjectTableName: cadena}',
+    'es-es': '{collectionObjectTableName: string}',
     'fr-fr': '{collectionObjectTableName: chaîne}',
     'pt-br': '{collectionObjectTableName: string}',
     'ru-ru': '{collectionObjectTableName: string}',
     'uk-ua': '{collectionObjectTableName: рядок}',
+    'hr-hr': '{collectionObjectTableName: string}',
   },
   parentCatalogNumberInheritance: {
     'en-us': '{componentTableName: string}',
     'de-ch': '{componentTableName: string}',
-    'es-es': '{nombreDeTablaDeComponente: cadena}',
+    'es-es': '{componentTableName: string}',
     'fr-fr': '{componentTableName: chaîne}',
     'pt-br': '{componentTableName: string}',
     'ru-ru': '{componentTableName: string}',
     'uk-ua': '{componentTableName: рядок}',
+    'hr-hr': '{nazivkomponentneTableice: niz}',
   },
   uniqueCatalogNumberAcrossComponentAndCoTitle: {
     'en-us':
@@ -974,7 +1086,7 @@ export const queryText = createDictionary({
     'de-ch':
       '{componentTableName: string} & {collectionObjectTableName: string}',
     'es-es':
-      '{nombreDeTablaDeComponentes: cadena} y {nombreDeTablaDeObjetosDeColección: cadena}',
+      '{componentTableName: string} y {collectionObjectTableName: string}',
     'fr-fr':
       '{componentTableName: chaîne} et {collectionObjectTableName: chaîne}',
     'pt-br':
@@ -982,6 +1094,8 @@ export const queryText = createDictionary({
     'ru-ru':
       '{componentTableName: string} & {collectionObjectTableName: string}',
     'uk-ua':
+      '{componentTableName: string} & {collectionObjectTableName: string}',
+    'hr-hr':
       '{componentTableName: string} & {collectionObjectTableName: string}',
   },
   formatInputAs: {
@@ -994,32 +1108,35 @@ export const queryText = createDictionary({
     `,
     'en-us': 'Format As: {commaSeparatedFormats:string}',
     'de-ch': 'Format als: {commaSeparatedFormats:string}',
-    'es-es': 'Formato como: {commaSeparatedFormats:string}',
+    'es-es': 'Formatear como: {commaSeparatedFormats:string}',
     'fr-fr': 'Format : {commaSeparatedFormats:string}',
     'pt-br': 'Formatar como: {commaSeparatedFormats:string}',
     'ru-ru': 'Формат: {commaSeparatedFormats:string}',
     'uk-ua': 'Форматувати як: {commaSeparatedFormats:string}',
+    'hr-hr': 'Format kao: {commaSeparatedFormats:string}',
   },
   unsavedChangesInQuery: {
     'en-us': 'Query has unsaved changes',
     'de-ch': 'Die Abfrage enthält ungespeicherte Änderungen',
-    'es-es': 'La consulta tiene cambios sin guardar',
+    'es-es': 'La consulta tiene cambios sin guardar.',
     'fr-fr': 'La requête contient des modifications non enregistrées.',
     'pt-br': 'A consulta contém alterações não salvas.',
     'ru-ru': 'В запросе содержатся несохраненные изменения.',
     'uk-ua': 'Запит містить незбережені зміни',
+    'hr-hr': 'Upit ima nespremljene promjene',
   },
   unsavedChangesInQueryDescription: {
     'en-us': 'Please save the query before running Batch Edit',
     'de-ch':
       'Bitte speichern Sie die Abfrage, bevor Sie die Stapelbearbeitung ausführen.',
-    'es-es': 'Guarde la consulta antes de ejecutar la edición por lotes',
+    'es-es': 'Guarde la consulta antes de ejecutar la edición por lotes.',
     'fr-fr':
       "Veuillez enregistrer la requête avant d'exécuter l'édition par lots.",
     'pt-br': 'Salve a consulta antes de executar a edição em lote.',
     'ru-ru':
       'Пожалуйста, сохраните запрос перед запуском пакетного редактирования.',
     'uk-ua': 'Будь ласка, збережіть запит перед запуском пакетного редагування',
+    'hr-hr': 'Spremite upit prije pokretanja skupnog uređivanja',
   },
   noPreparationsToReturn: {
     'en-us': 'There are no unresolved items to return',
@@ -1030,6 +1147,7 @@ export const queryText = createDictionary({
     'de-ch':
       'Es gibt keine ungelösten Elemente, die zurückgegeben werden müssen',
     'pt-br': 'Não há itens pendentes para devolver.',
+    'hr-hr': 'Nema neriješenih artikala za povrat',
   },
   itemsReturned: {
     'en-us': 'Items have been returned',
@@ -1039,5 +1157,6 @@ export const queryText = createDictionary({
     'uk-ua': 'Товари повернуто',
     'de-ch': 'Artikel wurden zurückgegeben',
     'pt-br': 'Os itens foram devolvidos.',
+    'hr-hr': 'Stavke su vraćene',
   },
 } as const);
