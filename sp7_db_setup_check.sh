@@ -124,6 +124,12 @@ fi
 DB_EXISTS=$(mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
   -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
 
+LEGACY_SCHEMA_EXISTS=0
+if [[ "$DB_EXISTS" -ne 0 ]]; then
+  LEGACY_SCHEMA_EXISTS=$(mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+    -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME' AND table_name = 'specifyuser';")
+fi
+
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
   echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
@@ -133,6 +139,34 @@ if [[ "$DB_EXISTS" -eq 0 ]]; then
   else
     echo "Error: Failed to create database."
     exit 1
+  fi
+elif [[ "$LEGACY_SCHEMA_EXISTS" -eq 0 ]]; then
+  echo "Database '$DB_NAME' exists but does not contain a Specify schema. Please ensure that the database is either empty or contains a valid Specify schema."
+
+  # Check whether the database is truly empty. If it is empty, proceed with initial setup. 
+  # If it's non-empty, require explicit opt-in via ALLOW_DB_RESET=true to perform a destructive reset.
+  DB_TABLE_COUNT=0
+  DB_TABLE_COUNT=$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+    -sse "SELECT COUNT(*) FROM information_schema.tables WHERE table_schema = '$DB_NAME';" 2>/dev/null) || DB_TABLE_COUNT=0
+
+  if [[ "$DB_TABLE_COUNT" -eq 0 ]]; then
+    echo "Database '$DB_NAME' is empty; proceeding with initial setup."
+    NEW_DATABASE_CREATED=1
+  else
+    if [[ "${ALLOW_DB_RESET:-}" == "true" ]]; then
+      echo "Resetting non-empty database '$DB_NAME' because ALLOW_DB_RESET=true was set."
+      if ! mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+           -e "DROP DATABASE \`$DB_NAME\`; CREATE DATABASE \`$DB_NAME\`;"; then
+        echo "Error: Failed to reset database."
+        exit 1
+      fi
+      NEW_DATABASE_CREATED=1
+    else
+      echo "Error: Database '$DB_NAME' exists but lacks the Specify schema and is not empty."
+      echo "If you want to allow a destructive reset, set ALLOW_DB_RESET=true in your environment before starting."
+      echo "Otherwise restore a proper Specify database or delete the database entirely to start fresh."
+      exit 1
+    fi
   fi
 else
   echo "Database '$DB_NAME' already exists."
@@ -423,11 +457,11 @@ echo "New app user created: $([[ "$NEW_APP_USER_CREATED" -eq 1 ]] && echo True |
 echo "--------------------------------------------------"
 
 # Run the base_specify_migration script
-if [[ "$NEW_DATABASE_CREATED" -eq 0 ]]; then
+if [[ "$LEGACY_SCHEMA_EXISTS" -eq 1 ]]; then
   echo "Existing database detected."
   ve/bin/python manage.py base_specify_migration --use-override --database=${MIGRATION_DB_ALIAS}
 else
-  echo "New database detected."
+  echo "Blank or newly created database detected."
   ve/bin/python manage.py base_specify_migration --database=${MIGRATION_DB_ALIAS}
 fi
 
