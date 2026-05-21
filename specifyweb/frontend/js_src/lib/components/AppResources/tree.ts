@@ -72,6 +72,7 @@ function getGlobalAllResources(resources: AppResources): {
   if (globalDirectories.length === 0)
     globalDirectories.push({
       ...addMissingFields('SpAppResourceDir', {
+        isPersonal: false,
         userType: 'Common',
       }),
       scope: 'global',
@@ -178,6 +179,7 @@ export const getScopedAppResources = (
       addMissingFields('SpAppResourceDir', {
         discipline: discipline.resource_uri,
         collection: undefined,
+        isPersonal: false,
       });
     return {
       label: localized(discipline.name ?? ''),
@@ -205,6 +207,7 @@ const getDisciplineAppResources = (
         addMissingFields('SpAppResourceDir', {
           collection: collection.resource_uri,
           discipline: collection.discipline,
+          isPersonal: false,
         });
       return {
         /*
@@ -258,6 +261,7 @@ const getUserTypeResources = (
       addMissingFields('SpAppResourceDir', {
         collection: collection.resource_uri,
         discipline: collection.discipline,
+        isPersonal: false,
         userType: userType.toLowerCase(),
       });
     return {

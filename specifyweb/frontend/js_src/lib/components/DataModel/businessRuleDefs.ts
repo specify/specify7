@@ -214,9 +214,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
-        const preferences = await import(
-          '../Preferences/collectionPreferences'
-        ).then(({ collectionPreferences }) => collectionPreferences);
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
 
         const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
           'uniqueCatalogNumberAccrossComponentAndCO',
@@ -442,9 +443,10 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
         return undefined;
       },
       catalogNumber: async (resource): Promise<undefined> => {
-        const preferences = await import(
-          '../Preferences/collectionPreferences'
-        ).then(({ collectionPreferences }) => collectionPreferences);
+        const preferences =
+          await import('../Preferences/collectionPreferences').then(
+            ({ collectionPreferences }) => collectionPreferences
+          );
 
         const uniqueCatalogNumberAccrossComponentAndCOPref = preferences.get(
           'uniqueCatalogNumberAccrossComponentAndCO',

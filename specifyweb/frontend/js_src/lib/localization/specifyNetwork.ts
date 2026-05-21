@@ -54,6 +54,13 @@ export const specifyNetworkText = createDictionary({
     'pt-br': 'Por favor, tente pesquisar um registro diferente.',
     'hr-hr': 'Pokušajte pretražiti drugi zapis',
   },
+  brokerUnavailable: {
+    'en-us': 'Specify Network unavailable',
+  },
+  brokerUnavailableDescription: {
+    'en-us':
+      'Specify could not connect to Specify Network. Please try again later.',
+  },
   dataQuality: {
     'en-us': 'Data Quality',
     'de-ch': 'Datenqualität',
@@ -216,7 +223,7 @@ export const specifyNetworkText = createDictionary({
   publishingOrganizationKey: {
     'en-us': 'GBIF Publishing Organization Key',
     'de-ch': 'GBIF-Veröffentlichungsorganisationsschlüssel',
-    'es-es': 'Clave de la organización editorial de GBIF',
+    'es-es': 'Clave de la organización editorial GBIF',
     'fr-fr': "Clé de l'organisation d'édition GBIF",
     'pt-br': 'Chave da Organização de Publicação do GBIF',
     'ru-ru': 'Ключ к издательской организации GBIF',
@@ -229,7 +236,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch':
       'Der GBIF-„publishingOrgKey“ (eine UUID) für diese Sammlung, der für die Specify Network-Integration verwendet wird.',
     'es-es':
-      'La "publishingOrgKey" de GBIF (un UUID) para esta colección, utilizada para la integración de Specify Network.',
+      'La clave GBIF "publishingOrgKey" (un UUID) para esta colección, utilizada para la integración de Specify Network.',
     'fr-fr':
       "La clé GBIF « publishingOrgKey » (un UUID) pour cette collection, utilisée pour l'intégration du réseau Specify.",
     'pt-br':
@@ -257,7 +264,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch':
       'Der GBIF-Datensatzschlüssel (eine UUID) für diese Sammlung, der für die Specify Network-Integration verwendet wird.',
     'es-es':
-      'La "dataSetKey" de GBIF (un UUID) para esta colección, utilizada para la integración de Specify Network.',
+      'La clave "dataSetKey" de GBIF (un UUID) para esta colección, utilizada para la integración de Specify Network.',
     'fr-fr':
       "Le « dataSetKey » GBIF (un UUID) pour cette collection, utilisé pour l'intégration du réseau Specification.",
     'pt-br':

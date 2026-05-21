@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`Link.BorderedGray renders without errors 1`] = `
 <DocumentFragment>
@@ -101,13 +101,8 @@ exports[`Link.NewTab renders without errors 1`] = `
   >
     Close
     <span
-      title="(opens in a new tab)"
+      aria-hidden="true"
     >
-      <span
-        class="sr-only"
-      >
-        (opens in a new tab)
-      </span>
       <svg
         aria-hidden="true"
         class="w-6 h-6 flex-shrink-0"

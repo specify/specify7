@@ -743,6 +743,7 @@ class BoundUploadTable(NamedTuple):
             **(
                 {"createdbyagent_id": self.uploadingAgentId}
                 if model.specify_model.get_field("createdbyagent")
+                and "createdbyagent" not in to_one_ids
                 else {}
             ),
         }
