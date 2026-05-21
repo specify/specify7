@@ -42,7 +42,7 @@ export function useBulkCarryForward<SCHEMA extends AnySchema = AnySchema>({
 }): {
   readonly BulkCarryForward: JSX.Element | null;
   readonly handleBulkCarryForward:
-    | ((saved: boolean) => Promise<RA<SpecifyResource<SCHEMA>> | undefined>)
+    | ((saved?: boolean) => Promise<RA<SpecifyResource<SCHEMA>> | undefined>)
     | undefined;
   readonly dialogs: JSX.Element | null;
 } {
