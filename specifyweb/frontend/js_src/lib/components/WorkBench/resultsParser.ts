@@ -15,7 +15,7 @@ import {
   formatDisjunction,
 } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
-import { tables } from '../DataModel/tables';
+import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
 /*
@@ -273,23 +273,62 @@ function getStringPayload(payload: IR<unknown>, key: string): string {
   return typeof value === 'string' ? value : '';
 }
 
+function getSchemaTableLabel(tableName: string): LocalizedString {
+  return getTable(tableName)?.label ?? localized(tableName);
+}
+
+function getSchemaFieldLabel(
+  tableName: string,
+  fieldName: string
+): LocalizedString {
+  const lookupFieldName = fieldName.split('__').join('.');
+  return (
+    getTable(tableName)?.getField(lookupFieldName)?.label ??
+    localized(fieldName)
+  );
+}
+
+function getSchemaFieldLabels(
+  tableName: string,
+  fieldNames: string
+): LocalizedString {
+  const labels = fieldNames
+    .split(',')
+    .map((fieldName) => fieldName.trim())
+    .filter((fieldName) => fieldName.length > 0)
+    .map((fieldName) => getSchemaFieldLabel(tableName, fieldName));
+  return labels.length === 0
+    ? localized(fieldNames)
+    : formatConjunction(labels);
+}
+
 function resolveBackendBusinessRuleMessage(
   payload: IR<unknown>
 ): LocalizedString | undefined {
+  const tableName = getStringPayload(payload, 'table');
   if (payload.localizationKey === 'fieldNotUnique')
     return withConflictingRecordIds(
       backEndText.fieldNotUnique({
-        tableName: getStringPayload(payload, 'table'),
-        fieldName: getStringPayload(payload, 'fieldName'),
+        tableName: getSchemaTableLabel(tableName),
+        fieldName: getSchemaFieldLabels(
+          tableName,
+          getStringPayload(payload, 'fieldName')
+        ),
       }),
       payload
     );
   else if (payload.localizationKey === 'childFieldNotUnique')
     return withConflictingRecordIds(
       backEndText.childFieldNotUnique({
-        tableName: getStringPayload(payload, 'table'),
-        fieldName: getStringPayload(payload, 'fieldName'),
-        parentField: getStringPayload(payload, 'parentField'),
+        tableName: getSchemaTableLabel(tableName),
+        fieldName: getSchemaFieldLabels(
+          tableName,
+          getStringPayload(payload, 'fieldName')
+        ),
+        parentField: getSchemaFieldLabels(
+          tableName,
+          getStringPayload(payload, 'parentField')
+        ),
       }),
       payload
     );
