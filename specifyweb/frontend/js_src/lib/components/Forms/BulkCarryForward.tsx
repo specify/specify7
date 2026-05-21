@@ -97,7 +97,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
 
   const handleBulkCarryForward =
     typeof formatter === 'object'
-      ? async (saved=true): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
+      ? async (saved=false): Promise<RA<SpecifyResource<SCHEMA>> | undefined> => {
           const carryForwardRangeStart = resource.get(field.name);
           if (
             carryForwardRangeStart === null ||
