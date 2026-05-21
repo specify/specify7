@@ -85,7 +85,7 @@ function useBulkCarryForwardRange<SCHEMA extends AnySchema>(
 
   const [carryForwardRangeEnd, setCarryForwardRangeEnd] =
     React.useState<string>('');
-  const { seriesEnd: seriesRangeEndValue, usingSeries: usingSeriesForm } = React.useContext(SeriesFormContext);
+  const { seriesEnd: seriesRangeEndValue } = React.useContext(SeriesFormContext);
   React.useEffect(() => {
       setCarryForwardRangeEnd(seriesRangeEndValue);
     }, [seriesRangeEndValue]);
