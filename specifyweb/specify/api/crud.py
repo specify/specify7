@@ -172,10 +172,6 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
-    # store obj id and class before deletion to avoid accessing deleted obj
-    # obj_id = obj.id
-    # temporary disabled to tests its necessity since the cases in which its obj_id is missing are on the dependent objects
-
     if deleter:
         deleter(obj, parent_obj)
 
