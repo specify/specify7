@@ -134,10 +134,6 @@ export class UiFormatter {
     return this.parts.some((part) => part.autoIncrement);
   }
 
-  public canAutoIncrement(): boolean {
-    return this.fields.some((field) => field.autoIncrement);
-  }
-
   public format(value: string): LocalizedString | undefined {
     const parsed = this.parse(value);
     return parsed === undefined ? undefined : this.canonicalize(parsed);

@@ -34,7 +34,7 @@ import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { generateMappingPathPreview } from '../WbPlanView/mappingPreview';
 import { FormContext } from './BaseResourceView';
-import { useBulkCarryForward, SeriesFormContext, handleBulkCarryForward } from './BulkCarryForward';
+import { useBulkCarryForward, SeriesFormContext } from './BulkCarryForward';
 import { FORBID_ADDING, NO_CLONE } from './ResourceView';
 export const saveFormUnloadProtect = formsText.unsavedFormUnloadProtect();
 
@@ -249,7 +249,7 @@ export function SaveButton<SCHEMA extends AnySchema = AnySchema>({
     </ButtonComponent>
   );
 
-  const { seriesEnd: seriesRangeEndValue, usingSeries: usingSeriesForm } = React.useContext(SeriesFormContext);
+  // const { seriesEnd: seriesRangeEndValue, usingSeries: usingSeriesForm } = React.useContext(SeriesFormContext);
   const {
     BulkCarryForward,
     dialogs: BulkCarryForwardDialogs,
