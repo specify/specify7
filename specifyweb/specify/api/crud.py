@@ -156,6 +156,8 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
 def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=None, parent_obj=None, clean_predelete=None) -> None:
     # need to delete dependent -to-one records
+    # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
+    # but have to delete the referring record first
     dependents_to_delete = [_f for _f in (
         get_related_or_none(obj, field.name)
         for field in obj._meta.get_fields()
@@ -171,18 +173,19 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
     # store obj id and class before deletion to avoid accessing deleted obj
-    obj_id = obj.id
+    # obj_id = obj.id
+    # temporary disabled to tests its necessity since the cases in which its obj_id is missing are on the dependent objects
 
-    if deleter and (obj_id is not None):
-        deleter(obj, parent_obj)
+    # if deleter and (obj_id is not None):
+    #     deleter(obj, parent_obj)
 
     obj.delete()
 
-# before delete obj, store dep id to avoid accessing deleted obj in recursive delete calls
+    # before delete obj, store dep id to avoid accessing deleted obj in recursive delete calls
     for dep in dependents_to_delete:
-      dep_id = dep.id
-      if dep_id is not None:
-        delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
+        dep_id = dep.id
+        if dep_id is not None:
+            delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
     if 'id' in data: 
