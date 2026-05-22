@@ -68,19 +68,33 @@ export async function buildInitialMergedResource(
         )
       : addMissingFields(
           table.name,
-          getNonAutoPopulatedFields(table, resources, targetId)
+          getPreservedFieldsWithoutAutoPopulate(table, resources, targetId)
         )
   ) as SerializedResource<AnySchema>;
 }
 
-const getNonAutoPopulatedFields = (
+const preservedFieldsWithoutAutoPopulate: Partial<
+  RR<
+    keyof Tables,
+    (
+      resources: RA<SerializedResource<AnySchema>>,
+      targetId?: number
+    ) => Partial<SerializedResource<AnySchema>>
+  >
+> = {
+  Agent: (resources, targetId) => ({
+    agentType:
+      getSharedFieldValue(resources, 'agentType') ??
+      getTargetResource(resources, targetId)?.agentType,
+  }),
+};
+
+const getPreservedFieldsWithoutAutoPopulate = (
   table: SpecifyTable,
   resources: RA<SerializedResource<AnySchema>>,
   targetId?: number
 ): Partial<SerializedResource<AnySchema>> =>
-  table.name === 'Agent'
-    ? { agentType: getTargetResource(resources, targetId)?.agentType }
-    : {};
+  preservedFieldsWithoutAutoPopulate[table.name]?.(resources, targetId) ?? {};
 
 const getTargetResource = (
   resources: RA<SerializedResource<AnySchema>>,
@@ -89,6 +103,18 @@ const getTargetResource = (
   targetId === undefined
     ? resources[0]
     : (resources.find(({ id }) => id === targetId) ?? resources[0]);
+
+const getSharedFieldValue = (
+  resources: RA<SerializedResource<AnySchema>>,
+  fieldName: string
+): boolean | number | string | null | undefined => {
+  const values = f.unique(
+    resources
+      .map((resource) => resource[fieldName])
+      .filter((value) => value !== null && value !== undefined)
+  );
+  return values.length === 1 ? values[0] : undefined;
+};
 
 /**
  * Sort from newest to oldest
