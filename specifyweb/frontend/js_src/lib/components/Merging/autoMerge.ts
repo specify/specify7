@@ -83,9 +83,10 @@ const preservedFieldsWithoutAutoPopulate: Partial<
   >
 > = {
   Agent: (resources, targetId) => ({
-    agentType:
-      getSharedFieldValue(resources, 'agentType') ??
-      getTargetResource(resources, targetId)?.agentType,
+    agentType: parseNumber(
+      getSharedNumberFieldValue(resources, 'agentType') ??
+        getTargetResource(resources, targetId)?.agentType
+    ),
   }),
 };
 
@@ -104,17 +105,26 @@ const getTargetResource = (
     ? resources[0]
     : (resources.find(({ id }) => id === targetId) ?? resources[0]);
 
-const getSharedFieldValue = (
+const getSharedNumberFieldValue = (
   resources: RA<SerializedResource<AnySchema>>,
   fieldName: string
-): boolean | number | string | null | undefined => {
+): number | undefined => {
   const values = f.unique(
     resources
-      .map((resource) => resource[fieldName])
-      .filter((value) => value !== null && value !== undefined)
+      .map((resource) => parseNumber(resource[fieldName]))
+      .filter((value) => value !== undefined)
   );
   return values.length === 1 ? values[0] : undefined;
 };
+
+const parseNumber = (
+  value: boolean | number | string | null | undefined
+): number | undefined =>
+  typeof value === 'number'
+    ? value
+    : typeof value === 'string'
+      ? f.parseInt(value)
+      : undefined;
 
 /**
  * Sort from newest to oldest
