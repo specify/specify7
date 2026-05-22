@@ -1,6 +1,6 @@
 import logging
 
-from specifyweb import settings
+from django.conf import settings
 from specifyweb.specify import models as spmodels
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
