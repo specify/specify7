@@ -32,13 +32,24 @@ def log_sqlalchemy_query(query):
 def get_or_create_default_collection_object_type(collection: spmodels.Collection, using: str = "default"):
     db = using or "default"
 
-    if collection.collectionobjecttype is not None:
-        return collection.collectionobjecttype
+    collectionobjecttype = collection.collectionobjecttype
+
+    if collectionobjecttype is not None:
+        return collectionobjecttype
 
     discipline_name = collection.discipline.name
     taxon_tree_def_id = collection.discipline.taxontreedef_id
 
     if discipline_name is None or taxon_tree_def_id is None:
+        logger.warning(
+            "Cannot create default Collectionobjecttype for collection %s: "
+            "discipline_name=%r, discipline.taxontreedef_id=%r, "
+            "collectionobjecttype=%r.",
+            collection.pk,
+            discipline_name,
+            taxon_tree_def_id,
+            collectionobjecttype,
+        )
         return None
 
     default_type, _ = spmodels.Collectionobjecttype.objects.using(db).get_or_create(
