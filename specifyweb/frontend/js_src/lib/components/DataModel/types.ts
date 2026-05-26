@@ -4983,6 +4983,23 @@ export type RepositoryAgreementAttachment = {
   readonly toManyDependent: RR<never, never>;
   readonly toManyIndependent: RR<never, never>;
 };
+export type SchemaMapping = {
+  readonly tableName: 'SchemaMapping';
+  readonly fields: {
+    readonly mappingType: string;
+    readonly name: string;
+    readonly isDefault: boolean;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly query: SpQuery;
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+    readonly specifyUser: SpecifyUser;
+  };
+  readonly toManyDependent: RR<never, never>;
+  readonly toManyIndependent: RR<never, never>;
+};
 export type Shipment = {
   readonly tableName: 'Shipment';
   readonly fields: {

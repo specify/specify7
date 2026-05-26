@@ -6135,6 +6135,56 @@ datamodel = Datamodel(tables=[
         searchDialog=None
     ),
     Table(
+    classname='edu.ku.brc.specify.datamodel.SchemaMapping',
+    table='schemamapping',
+    tableId=1037,  
+    system=True,
+    idColumn='SchemaMappingID',
+    idFieldName='schemaMappingId',
+    idField=IdField(name='schemaMappingId', column='SchemaMappingID', type='java.lang.Integer'),
+    fields=[
+        Field(name='mappingType', column='MappingType', indexed=False, unique=False, required=True, type='java.lang.String', length=16),
+        Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=256),
+        Field(name='isDefault', column='IsDefault', indexed=False, unique=False, required=True, type='java.lang.Boolean'),
+    ],
+    indexes=[
+        Index(name='SchemaMappingNameIDX', column_names=['Name'])
+    ],
+    relationships=[
+        Relationship(
+            name='query',
+            type='one-to-one',
+            required=True,
+            relatedModelName='SpQuery',
+            column='QueryID'
+        ),
+        Relationship(
+            name='createdByAgent',
+            type='many-to-one',
+            required=False,
+            relatedModelName='Agent',
+            column='CreatedByAgentID'
+        ),
+        Relationship(
+            name='modifiedByAgent',
+            type='many-to-one',
+            required=False,
+            relatedModelName='Agent',
+            column='ModifiedByAgentID'
+        ),
+        Relationship(
+            name='specifyUser',
+            type='many-to-one',
+            required=True,
+            relatedModelName='SpecifyUser',
+            column='SpecifyUserID',
+            otherSideName='schemamapping'
+        ),
+    ],
+    fieldAliases=[
+    ]
+    ),
+    Table(
         classname='edu.ku.brc.specify.datamodel.Shipment',
         table='shipment',
         tableId=71,
