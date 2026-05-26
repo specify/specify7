@@ -1091,6 +1091,7 @@ def run_batch_edit_query(props: BatchEditProps):
         omit_relationships,
     )
 
+    logger.info(key_and_headers)
     headers_enumerated = enumerate(key_and_headers)
 
     # We would have arbitarily sorted the columns, so our columns will not be correct.
@@ -1103,13 +1104,13 @@ def run_batch_edit_query(props: BatchEditProps):
         original_place = key[0]
         duplicate_index = key[1]
         if original_place < len(visible_fields):
-            if prev_duplicate_index is not None and duplicate_index > 1 and (duplicate_index == prev_duplicate_index+1 or duplicate_index == prev_duplicate_index):
-                # There are duplicate columns, group them by record instead of original query order
-                # Columns are already grouped by record, just preserve the order if the dupe index is greater than the previous.
-                visual_order_groups[prev_group].append(index)
-            else:
-                visual_order_groups[original_place].append(index)
-                prev_group = original_place
+            # if prev_duplicate_index is not None and duplicate_index > 1 and (duplicate_index == prev_duplicate_index+1 or duplicate_index == prev_duplicate_index):
+            #     # There are duplicate columns, group them by record instead of original query order
+            #     # Columns are already grouped by record, just preserve the order if the dupe index is greater than the previous.
+            #     visual_order_groups[prev_group].append(index)
+            # else:
+            visual_order_groups[original_place].append(index)
+            prev_group = original_place
         else:
             # New field/column. Add it to the end of the dataset.
             visual_order_groups.append([index])
@@ -1118,8 +1119,45 @@ def run_batch_edit_query(props: BatchEditProps):
         prev_duplicate_index = duplicate_index
 
     visual_order: list[int] = []
-    for bucket in visual_order_groups:
-        visual_order.extend(bucket)
+    dupe_index = 0
+    prev_bucket_len = -1
+    first_record_index = -1
+    index = 0
+    while True:
+        first_index = index
+        bucket = visual_order_groups[index]
+        next_dupe_index = dupe_index
+
+        # backtrack? To group all fields belonging to a record together.
+        if len(bucket) != prev_bucket_len:
+            if first_record_index > 0 and first_record_index < len(visual_order_groups) and dupe_index+1 < len(visual_order_groups[first_record_index]):
+                index = first_record_index
+                dupe_index = dupe_index + 1
+                next_dupe_index = dupe_index + 1
+                prev_bucket_len = len(visual_order_groups[first_record_index])
+                continue
+            else:
+                first_record_index = index
+                dupe_index = 0
+                next_dupe_index = 0
+                index += 1
+                prev_bucket_len = len(bucket)
+        else:
+            index += 1
+            prev_bucket_len = len(bucket)
+
+        # add column to visual order
+        if dupe_index < len(bucket):
+            visual_order.append(bucket[dupe_index])
+        else:
+            logger.warning(f"WRONG {first_index} {bucket} (Pass {dupe_index + 1}) -> {index} (Pass {next_dupe_index + 1})")
+            break
+
+        # Went through all buckets
+        if index >= len(visual_order_groups):
+            break
+        logger.info(f"{first_index} {bucket} (Pass {dupe_index + 1}) -> {index} (Pass {next_dupe_index + 1})")
+        dupe_index = next_dupe_index
 
     headers = Func.second(key_and_headers)
 
