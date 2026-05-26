@@ -115,14 +115,22 @@ export function WbAttachmentsPreview({
     setAttachments([]);
     setSelectedAttachment(undefined);
     if (selectedRow === undefined) return;
+    let active = true;
 
     fetchRowAttachments(
       hot,
       dataset,
       selectedRow,
-      setAttachments,
-      setSelectedAttachment
+      (next) => {
+        if (active) setAttachments(next);
+      },
+      (next) => {
+        if (active) setSelectedAttachment(next);
+      }
     );
+    return () => {
+      active = false;
+    };
   }, [selectedRow]);
 
   React.useEffect(() => {
@@ -378,6 +386,7 @@ function fetchRowAttachments(
 
   if (dataSetAttachmentIds.length === 0) {
     setAttachments([]);
+    setSelectedAttachment(undefined);
     return;
   }
 
