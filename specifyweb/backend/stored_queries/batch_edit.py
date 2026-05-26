@@ -1148,16 +1148,26 @@ def reorder_batch_edit_columns(key_and_headers: list[tuple[tuple[int, int], str]
     # Visit duplicate columns within a record group in order. So (0, 0), (1, 0), (0, 1), (1, 1)
     visual_order: list[int] = []
     current_dup_index = 0 # Which duplicate index is currently being visited
-    prev_group_len = 0 # Keep track of group length as an additional indicator for when we've moved to a different record.
-    prev_record_id = 0
     record_start_index: int | None = None # The first group belonging to the current record
     index = 0
     while index < len(visual_order_groups):
         group = visual_order_groups[index]
         record_id = group_record_ids[index]
 
-        # Check if we're on a different record
-        if len(group) != prev_group_len or record_id != prev_record_id:
+        # Add this column to visual order
+        if current_dup_index < len(group):
+            visual_order.append(group[current_dup_index])
+        else:
+            logger.warning("Query field is missing a Batch Edit column. Falling back to default column order.")
+            break
+
+        # Check if we're on a different record, or at the end
+        next_group: int | None = None
+        next_record_id: int | None = None
+        if index+1 < len(visual_order_groups):
+            next_group = visual_order_groups[index+1]
+            next_record_id = group_record_ids[index+1]
+        if next_group is None or len(next_group) != len(group) or next_record_id != record_id:
             if record_start_index is not None and record_start_index < len(visual_order_groups) and current_dup_index+1 < len(visual_order_groups[record_start_index]):
                 # Backtrack to group all fields belonging to the record with this duplicate_index together.
                 index = record_start_index
@@ -1165,18 +1175,10 @@ def reorder_batch_edit_columns(key_and_headers: list[tuple[tuple[int, int], str]
                 continue
             else:
                 # All duplicates have been visited. Continue and mark the start of this record.
-                record_start_index = index
+                record_start_index = index+1
                 current_dup_index = 0
 
         index += 1
-        prev_record_id = record_id
-        prev_group_len = len(group)
-
-        # Add this column to visual order
-        if current_dup_index < len(group):
-            visual_order.append(group[current_dup_index])
-        else:
-            break
     
     return visual_order
 
