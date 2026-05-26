@@ -1,11 +1,11 @@
 import { ajax } from '../../utils/ajax';
-import { cachableUrl, contextUnlockedPromise } from '../InitialContext';
+import { cacheableUrl, contextUnlockedPromise } from '../InitialContext';
 
 export const reportsAvailable = contextUnlockedPromise.then(
   async (entrypoint) =>
     entrypoint === 'main'
       ? ajax<{ readonly available: boolean }>(
-          cachableUrl('/context/report_runner_status.json'),
+          cacheableUrl('/context/report_runner_status.json'),
           {
             headers: { Accept: 'application/json' },
           }

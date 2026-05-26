@@ -45,11 +45,23 @@ export type AjaxMethod =
   | 'POST'
   | 'PUT';
 
+/**
+ * These methods usually don't modify data, so if they fail it is not a big
+ * deal. If on the other than POST, PUT, DELETE, or PATCH request fails, it
+ * may cause data loss or data corruption
+ */
 const safeMethods: ReadonlySet<AjaxMethod> = new Set([
   'OPTIONS',
   'GET',
   'HEAD',
 ]);
+
+const testAjaxMockPromise: Promise<
+  (typeof import('../../tests/ajax'))['ajaxMock'] | undefined
+> =
+  process.env.NODE_ENV === 'test'
+    ? import('../../tests/ajax').then(({ ajaxMock }) => ajaxMock)
+    : Promise.resolve(undefined);
 
 export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
   readonly method?: AjaxMethod;
@@ -80,16 +92,13 @@ export type AjaxProps = Omit<RequestInit, 'body' | 'headers' | 'method'> & {
 /**
  * All front-end network requests should go through this utility.
  *
- * Wraps native fetch in useful helpers
- * It is intended as a replacement for jQuery's ajax
- *
- * @remarks
- * Automatically adds CSRF token to non GET requests
- * Casts response to correct typescript type
- * Parsers JSON and XML responses
- * Handlers errors (including permission errors)
+ * Wraps native fetch in useful helpers:
+ * - Automatically adds CSRF token to non GET requests
+ * - Casts response to correct typescript type
+ * - Parses JSON and XML responses
+ * - Handlers errors (including permission errors)
+ * - Helps with request mocking in tests
  */
-// "errorMode" is optional for "GET" requests
 export async function ajax<RESPONSE_TYPE = string>(
   url: string,
   /** These options are passed directly to fetch() */
@@ -108,8 +117,10 @@ export async function ajax<RESPONSE_TYPE = string>(
    */
   // REFACTOR: replace this with a mock
   if (process.env.NODE_ENV === 'test') {
-    const { ajaxMock } = await import('../../tests/ajax');
-    return ajaxMock(url, {
+    const ajaxMock = await testAjaxMockPromise;
+    if (typeof ajaxMock !== 'function')
+      throw new Error('Failed to initialize ajax test mock');
+    return ajaxMock<RESPONSE_TYPE>(url, {
       headers: { Accept: accept, ...headers },
       method,
       expectedErrors,

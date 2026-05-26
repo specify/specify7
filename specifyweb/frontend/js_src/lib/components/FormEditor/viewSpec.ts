@@ -712,6 +712,11 @@ const rawFieldSpec = (table: SpecifyTable | undefined) =>
     dataObjectFormatter: syncers.xmlAttribute('formatName', 'skip'),
     // Example: CatalogNumberNumeric
     uiFieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
+    series: pipe(
+      syncers.xmlAttribute('initialize series', 'skip'),
+      syncers.maybe(syncers.toBoolean),
+      syncers.default<boolean>(false)
+    ),
     rest: syncers.captureLogContext(),
   });
 
@@ -771,7 +776,7 @@ const textSpec = f.store(() =>
      * This is either for series data entry, or for displaying catalog number
      * field as separate inputs (one for each part of the formatter)
      */
-    legacyIsSeries: pipe(
+    isSeries: pipe(
       syncers.xmlAttribute('initialize series', 'skip'),
       syncers.maybe(syncers.toBoolean),
       syncers.default<boolean>(false)

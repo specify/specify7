@@ -443,7 +443,7 @@ export const ResourceBase = Backbone.Model.extend({
            * on their models holding the resource are not incidently notified
            * of a change event
            * See https://github.com/specify/specify7/issues/6488
-           * 
+           *
            */
           {
             silent: typeof key === 'object' && options?.silent === true,
@@ -476,6 +476,24 @@ export const ResourceBase = Backbone.Model.extend({
     if (fieldName === '_tablename') return ['_tablename', undefined];
     if (_(['id', 'resource_uri', 'recordset_info']).contains(fieldName))
       return [fieldName, value]; // Special fields
+
+    /**
+     * This is a temporary fix to prevent the front-end from setting an
+     * incomplete timestampcreated. A complete timestamp cannot be used because
+     * the back-end cannot receive timestamps with time zones, so this sets it
+     * to null so the back-end uses its own complete timestamp.
+     * See: https://github.com/specify/specify7/issues/5421,
+     *      https://github.com/specify/specify7/issues/641
+     * REFACTOR: Remove this once the back-end supports time zones.
+     */
+    if (
+      fieldName === 'timestampcreated' &&
+      typeof value === 'string' &&
+      this.isNew() &&
+      value.length === 'YYYY-MM-DD'.length
+    ) {
+      return [fieldName, null];
+    }
 
     const field = this.specifyTable.getField(fieldName);
     if (!field) {
@@ -593,6 +611,7 @@ export const ResourceBase = Backbone.Model.extend({
         }
         return toOne.url();
       } // The FK as a URI
+      // REFACTOR: add independent support for zero-to-one relationships
       case 'zero-to-one': {
         /*
          * This actually a one-to-many where the related collection is only a single resource
@@ -668,9 +687,9 @@ export const ResourceBase = Backbone.Model.extend({
    * REFACTOR: remove the need for this
    * Like "rget", but returns native promise
    */
-  async rgetPromise(fieldName, prePop = true) {
+  async rgetPromise(fieldName, prePop = true, strict = true) {
     return (
-      this.getRelated(fieldName, { prePop })
+      this.getRelated(fieldName, { prePop, strict })
         // GetRelated may return either undefined or null (yuk)
         .then((data) => (data === undefined ? null : data))
     );
@@ -711,7 +730,8 @@ export const ResourceBase = Backbone.Model.extend({
            * This is needed to prevent refetching the collection with the default
            * limit of 20
            */ else if (isRelationshipCollection(value)) return value;
-          else if (typeof value.fetch === 'function') return value.fetch();
+          else if (typeof value.fetch === 'function')
+            return value.fetch(options);
         }
         return value;
       });
@@ -1000,14 +1020,18 @@ export const ResourceBase = Backbone.Model.extend({
     )
       return this;
     else if (this._fetch) return this._fetch;
-    else
-      return (this._fetch = Backbone.Model.prototype.fetch
-        .call(this, options)
-        .then(() => {
+    else {
+      const fetchCallback = () =>
+        Backbone.Model.prototype.fetch.call(this, options).then(() => {
           this._fetch = null;
           // BUG: consider doing this.needsSaved=false here
           return this;
-        }));
+        });
+      return (this._fetch =
+        options === undefined || options.strict
+          ? fetchCallback()
+          : hijackBackboneAjax([Http.NOT_FOUND], fetchCallback));
+    }
   },
   parse(_resp) {
     // Since we are putting in data, the resource in now populated

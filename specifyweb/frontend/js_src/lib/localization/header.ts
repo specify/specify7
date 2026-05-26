@@ -14,9 +14,11 @@ export const headerText = createDictionary({
     'en-us': 'Skip to Content',
     'ru-ru': 'Перейти к содержанию',
     'es-es': 'Ir al contenido',
-    'fr-fr': 'Aller au contenu',
+    'fr-fr': 'Passer au contenu',
     'uk-ua': 'Перейти до вмісту',
     'de-ch': 'Weiter zum Inhalt',
+    'pt-br': 'Ir para o conteúdo',
+    'hr-hr': 'Preskoči na sadržaj',
   },
   main: {
     comment: 'As in "main menu"',
@@ -26,6 +28,8 @@ export const headerText = createDictionary({
     'uk-ua': 'Головна',
     'de-ch': 'Allgemein',
     'fr-fr': 'Principal',
+    'pt-br': 'Principal',
+    'hr-hr': 'Glavni',
   },
   currentCollection: {
     comment: 'Example: Current Collection',
@@ -35,6 +39,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Actuelle{collectionTable:string}',
     'uk-ua': 'Поточна {collectionTable:string}',
     'de-ch': 'Derzeitige {collectionTable:string}',
+    'pt-br': 'Atual {collectionTable:string}',
+    'hr-hr': 'Trenutni {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',
@@ -43,6 +49,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Saisie des données',
     'uk-ua': 'Введення даних',
     'de-ch': 'Datenerfassung',
+    'pt-br': 'Entrada de dados',
+    'hr-hr': 'Unos podataka',
   },
   makeDwca: {
     'en-us': 'Create DwC Archive',
@@ -51,6 +59,18 @@ export const headerText = createDictionary({
     'fr-fr': 'Créer une archive DwC',
     'uk-ua': 'Створити архів DwC',
     'de-ch': 'DwC-Archiv erstellen',
+    'pt-br': 'Criar arquivo DwC',
+    'hr-hr': 'Izradi DwC arhivu',
+  },
+  backupDatabase: {
+    'en-us': 'Backup Database',
+    'ru-ru': 'Резервное копирование базы данных',
+    'es-es': 'Copia de seguridad de la base de datos',
+    'fr-fr': 'Sauvegarder la base de données',
+    'uk-ua': 'Резервне копіювання бази даних',
+    'de-ch': 'Datenbank sichern',
+    'pt-br': 'Fazer backup do banco de dados',
+    'hr-hr': 'Sigurnosna kopija baze podataka',
   },
   updateExportFeed: {
     'en-us': 'Update RSS Feed',
@@ -59,6 +79,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Mettre à jour le flux RSS',
     'uk-ua': 'Оновити RSS-канал',
     'de-ch': 'RSS-Feed aktualisieren',
+    'pt-br': 'Atualizar feed RSS',
+    'hr-hr': 'Ažuriranje RSS feeda',
   },
   updateExportFeedConfirmation: {
     'en-us': 'Update export feed?',
@@ -67,6 +89,8 @@ export const headerText = createDictionary({
     'fr-fr': "Mettre à jour le flux d'exportation ?",
     'uk-ua': 'Оновити канал експорту?',
     'de-ch': 'Export-Feed aktualisieren?',
+    'pt-br': 'Atualizar feed de exportação?',
+    'hr-hr': 'Ažurirati feed za izvoz?',
   },
   updateExportFeedConfirmationDescription: {
     'en-us': 'Update all RSS export feed items now?',
@@ -77,6 +101,9 @@ export const headerText = createDictionary({
       "Mettre à jour tous les éléments du flux d'exportation RSS maintenant ?",
     'uk-ua': 'Оновити всі елементи RSS-експорту?',
     'de-ch': 'Jetzt alle RSS-Export-Feed-Elemente aktualisieren?',
+    'pt-br':
+      'Agora é necessário atualizar todos os itens do feed RSS exportado?',
+    'hr-hr': 'Ažurirati sve stavke RSS izvoza feeda sada?',
   },
   feedExportStarted: {
     'en-us': 'Export feed update started',
@@ -85,32 +112,26 @@ export const headerText = createDictionary({
     'fr-fr': "La mise à jour du flux d'exportation a commencé",
     'uk-ua': 'Оновлення каналу експорту розпочато',
     'de-ch': 'Aktualisierung des Export-Feeds gestartet',
+    'pt-br': 'Atualização do feed de exportação iniciada',
+    'hr-hr': 'Započeto je ažuriranje feeda izvoza',
   },
   feedExportStartedDescription: {
-    'en-us': `
-      Update started. You will receive a notification for each feed item
-      updated.
-    `,
-    'ru-ru': `
-      Обновление запущено. Вы будете получать уведомление о каждом обновлении
-      элемента фида.
-    `,
-    'es-es': `
-      Actualización iniciada. Recibirá una notificación por cada elemento
-      actualizado.
-    `,
-    'fr-fr': `
-      La mise à jour a commencé. Vous recevrez une notification pour chaque
-      élément de flux mis à jour.
-    `,
-    'uk-ua': `
-      Оновлення розпочато. Ви отримаєте сповіщення про кожен оновлений елемент
-      каналу.
-    `,
-    'de-ch': `
-      Aktualisierung gestartet. Sie erhalten eine Benachrichtigung für jedes
-      aktualisierte Feed-Element.
-    `,
+    'en-us':
+      'Update started. You will receive a notification for each feed item updated.',
+    'ru-ru':
+      'Обновление запущено. Вы будете получать уведомление о каждом обновлении элемента фида.',
+    'es-es':
+      'Actualización iniciada. Recibirá una notificación por cada elemento actualizado.',
+    'fr-fr':
+      'La mise à jour a commencé. Vous recevrez une notification pour chaque élément de flux mis à jour.',
+    'uk-ua':
+      'Оновлення розпочато. Ви отримаєте сповіщення про кожен оновлений елемент каналу.',
+    'de-ch':
+      'Aktualisierung gestartet. Sie erhalten eine Benachrichtigung für jedes aktualisierte Feed-Element.',
+    'pt-br':
+      'Atualização iniciada. Você receberá uma notificação para cada item do feed atualizado.',
+    'hr-hr':
+      'Ažuriranje je započelo. Primit ćete obavijest za svaku ažuriranu stavku feeda.',
   },
   dwcaExportStarted: {
     'en-us': 'DwCA export started',
@@ -119,37 +140,35 @@ export const headerText = createDictionary({
     'fr-fr': "L'exportation DwCA a démarré",
     'uk-ua': 'Розпочато експорт DwCA',
     'de-ch': 'DwCA-Export gestartet',
+    'pt-br': 'A exportação DwCA foi iniciada.',
+    'hr-hr': 'Izvoz DwCA-a je započeo',
   },
   dwcaExportStartedDescription: {
-    'en-us': `
-      Export started. You will receive a notification when the export is
-      complete.
-    `,
-    'ru-ru': `
-      Экспорт запущен. Вы получите уведомление, когда экспорт будет завершен.
-    `,
-    'es-es': `
-      Exportación iniciada. Recibirá una notificación cuando finalice la
-      exportación.
-    `,
-    'fr-fr': `
-      L'exportation a commencé. Vous recevrez une notification lorsque
-      l'exportation sera terminée.
-    `,
+    'en-us':
+      'Export started. You will receive a notification when the export is complete.',
+    'ru-ru':
+      'Экспорт запущен. Вы получите уведомление, когда экспорт будет завершен.',
+    'es-es':
+      'Exportación iniciada. Recibirá una notificación cuando finalice la exportación.',
+    'fr-fr':
+      "L'exportation a commencé. Vous recevrez une notification lorsque l'exportation sera terminée.",
     'uk-ua':
       'Експорт розпочато. Коли експорт завершиться, ви отримаєте сповіщення.',
-    'de-ch': `
-      Export gestartet. Sie erhalten eine Benachrichtigung, sobald der Export
-      abgeschlossen ist.
-    `,
+    'de-ch':
+      'Export gestartet. Sie erhalten eine Benachrichtigung, sobald der Export abgeschlossen ist.',
+    'pt-br':
+      'Exportação iniciada. Você receberá uma notificação quando a exportação for concluída.',
+    'hr-hr': 'Izvoz je započeo. Primit ćete obavijest kada izvoz bude dovršen.',
   },
   localityUpdateTool: {
     'en-us': 'Locality Update Tool',
-    'de-ch': 'DwCA-Ressource',
+    'de-ch': 'Tool zur Aktualisierung der Ortsinformationen',
     'es-es': 'Herramienta de actualización de localidad',
-    'fr-fr': 'Outil de mise à jour de localité',
-    'ru-ru': 'Основной',
-    'uk-ua': 'Ресурс DwCA',
+    'fr-fr': 'Outil de mise à jour de la localisation',
+    'ru-ru': 'Инструмент обновления местоположения',
+    'uk-ua': 'Інструмент оновлення місцевості',
+    'pt-br': 'Ferramenta de atualização de localidade',
+    'hr-hr': 'Alat za ažuriranje lokacije',
   },
   labelName: {
     'en-us': 'Label Name',
@@ -158,6 +177,8 @@ export const headerText = createDictionary({
     'uk-ua': 'Назва бірки',
     'de-ch': 'Etikett Name',
     'fr-fr': 'Outils administratifs',
+    'pt-br': 'Nome da etiqueta',
+    'hr-hr': 'Naziv oznake',
   },
   reportName: {
     'en-us': 'Report Name',
@@ -166,6 +187,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Nom du rapport',
     'uk-ua': 'Назва звіту',
     'de-ch': 'Name des Berichts',
+    'pt-br': 'Nome do relatório',
+    'hr-hr': 'Naziv izvješća',
   },
   createLabel: {
     'en-us': 'Create new label',
@@ -174,6 +197,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Créer une nouvelle étiquette',
     'uk-ua': 'Створити нову бірку',
     'de-ch': 'Neues Label erstellen',
+    'pt-br': 'Criar nova etiqueta',
+    'hr-hr': 'Izradi novu oznaku',
   },
   createReport: {
     'en-us': 'Create new report',
@@ -182,30 +207,38 @@ export const headerText = createDictionary({
     'fr-fr': 'Créer un nouveau document',
     'uk-ua': 'Створити новий звіт',
     'de-ch': 'Neuen Bericht erstellen',
+    'pt-br': 'Criar novo relatório',
+    'hr-hr': 'Izradi novo izvješće',
   },
   repairTree: {
     'en-us': 'Repair Tree',
     'ru-ru': 'Ремонтное дерево',
     'es-es': 'Se ha borrado la caché. Por favor recarga la página.',
-    'fr-fr': 'Arbre de réparation',
+    'fr-fr': "Réparer l'arbre",
     'uk-ua': 'Ремонтувати дерево',
     'de-ch': 'Baum reparieren',
+    'pt-br': 'Árvore de reparo',
+    'hr-hr': 'Popravak stabla',
   },
   treeRepairComplete: {
     'en-us': 'Tree repair is complete.',
     'ru-ru': 'Ремонт дерева завершен.',
     'es-es': 'La reparación del árbol está completa.',
-    'fr-fr': 'Outil de mise à jour de localité',
+    'fr-fr': "La réparation de l'arbre est terminée.",
     'uk-ua': 'Ремонт дерева завершено.',
     'de-ch': 'Die Baumreparatur ist abgeschlossen.',
+    'pt-br': 'O reparo da árvore está concluído.',
+    'hr-hr': 'Popravak drveća je završen.',
   },
   choose: {
     'en-us': 'Choose',
-    'de-ch': 'DwCA-Ressource',
+    'de-ch': 'Wählen',
     'es-es': 'Elegir',
     'fr-fr': 'Choisir',
-    'ru-ru': 'Основной',
-    'uk-ua': 'Ресурс DwCA',
+    'ru-ru': 'Выбирать',
+    'uk-ua': 'Виберіте',
+    'pt-br': 'Escolher',
+    'hr-hr': 'Odaberite',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -213,23 +246,29 @@ export const headerText = createDictionary({
     'es-es': 'Elige DwCA',
     'uk-ua': 'Виберіть DwCA',
     'de-ch': 'DwCA wählen',
-    'fr-fr': 'Choisissez DwCA',
+    'fr-fr': 'Choisissez la DwCA',
+    'pt-br': 'Escolha DwCA',
+    'hr-hr': 'Odaberite DwCA',
   },
   dwcaResource: {
     'en-us': 'DwCA Resource',
     'de-ch': 'DwCA-Ressource',
     'es-es': 'Recurso DwCA',
-    'fr-fr': 'Ressource DwCA',
+    'fr-fr': 'Ressources DwCA',
     'ru-ru': 'Ресурс DwCA',
-    'uk-ua': 'Ресурс DwCA',
+    'uk-ua': 'Ресурси DwCA',
+    'pt-br': 'Recurso DwCA',
+    'hr-hr': 'DwCA resurs',
   },
   chooseMetadataResource: {
     'en-us': 'Choose Metadata resource',
     'ru-ru': 'Выберите ресурс метаданных',
     'es-es': 'Elija recurso de metadatos',
-    'fr-fr': 'Localisation incomplète',
+    'fr-fr': 'Choisir une ressource de métadonnées',
     'uk-ua': 'Виберіть ресурс метаданих',
     'de-ch': 'Metadaten-Ressource auswählen',
+    'pt-br': 'Selecione o recurso de metadados',
+    'hr-hr': 'Odaberite resurs metapodataka',
   },
   metadataResource: {
     'en-us': 'Metadata Resource',
@@ -238,14 +277,18 @@ export const headerText = createDictionary({
     'fr-fr': 'Ressource de métadonnées',
     'ru-ru': 'Ресурс метаданных',
     'uk-ua': 'Ресурс метаданих',
+    'pt-br': 'Recurso de metadados',
+    'hr-hr': 'Resurs metapodataka',
   },
   simpleSearch: {
-    'en-us': 'Simple Search',
+    'en-us': 'Express Search',
     'ru-ru': 'Экспресс-поиск',
     'es-es': 'Búsqueda sencilla',
     'fr-fr': 'Recherche simple',
     'uk-ua': 'Експрес-пошук',
     'de-ch': 'Express-Suche',
+    'pt-br': 'Busca simples',
+    'hr-hr': 'Jednostavno pretraživanje',
   },
   primarySearch: {
     'en-us': 'Primary Search',
@@ -254,6 +297,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Recherche principale',
     'uk-ua': 'Первинний пошук',
     'de-ch': 'Primäre Suche',
+    'pt-br': 'Busca principal',
+    'hr-hr': 'Primarno pretraživanje',
   },
   secondarySearch: {
     'en-us': 'Secondary Search',
@@ -262,6 +307,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Recherche secondaire',
     'uk-ua': 'Вторинний пошук',
     'de-ch': 'Sekundäre Suche',
+    'pt-br': 'Pesquisa secundária',
+    'hr-hr': 'Sekundarno pretraživanje',
   },
   menuItems: {
     'en-us': 'Menu Items',
@@ -270,6 +317,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Éléments du menu',
     'uk-ua': 'Елементи меню',
     'de-ch': 'Menü-Einträge',
+    'pt-br': 'Itens do menu',
+    'hr-hr': 'Stavke izbornika',
   },
   userTools: {
     'en-us': 'User Tools',
@@ -278,6 +327,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Outils Utilisateur',
     'uk-ua': 'Інструменти',
     'de-ch': 'Benutzerwerkzeuge',
+    'pt-br': 'Ferramentas do usuário',
+    'hr-hr': 'Korisnički alati',
   },
   userToolsForUser: {
     'en-us': 'User Tools ({userName:string})',
@@ -286,6 +337,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Outils Utilisateur ({userName:string})',
     'uk-ua': 'Інструменти ({userName:string})',
     'de-ch': 'Benutzerwerkzeuge ({userName:string})',
+    'pt-br': 'Ferramentas do usuário ({userName:string})',
+    'hr-hr': 'Korisnički alati ({userName:string})',
   },
   helpLocalizeSpecify: {
     'en-us': 'Help Localize Specify 7',
@@ -294,37 +347,26 @@ export const headerText = createDictionary({
     'fr-fr': 'Aidez à traduire Specify 7',
     'uk-ua': 'Допоможіть перекласти Specify 7',
     'de-ch': 'Hilf beim übersetzen von Specify 7',
+    'pt-br': 'Ajuda Localizar Especificar 7',
+    'hr-hr': 'Pomoć pri lokalizaciji Navedite 7',
   },
   helpLocalizeSpecifyDescription: {
-    'en-us': `
-      We would be very grateful for your support localizing Specify 7 User
-      Interface. If you are interested, please <link>see the
-      instructions</link>.
-    `,
-    'ru-ru': `
-      Мы будем очень признательны за вашу поддержку в локализации
-      пользовательского интерфейса Specify 7. Если вы заинтересованы, отправьте
-      электронное письмо по адресу <link>см. Инструкции</link>.
-    `,
-    'es-es': `
-      Estaríamos muy agradecidos por su ayuda para localizar la interfaz de
-      usuario de Specify 7. Si está interesado, por favor <link>consulte las
-      instrucciones</link>.
-    `,
-    'fr-fr': `
-      Nous serions très reconnaissants de votre soutien pour la traduction de
-      l'interface utilisateur Specify 7. Si vous êtes intéressé, veuillez
-      <link>voir les instructions</link>.
-    `,
-    'uk-ua': `
-      Ми будемо дуже вдячні за вашу підтримку в перекладі інтерфейсу Specify 7.
-      Якщо ви зацікавлені, <link>перегляньте інструкції</link>.
-    `,
-    'de-ch': `
-      Wir wären sehr dankbar für Ihre Unterstützung bei der Übersetzung der
-      Specify 7 Benutzeroberfläche. Wenn Sie daran interessiert sind, lesen Sie
-      bitte <link>die Anleitung</link>.
-    `,
+    'en-us':
+      'We would be very grateful for your support localizing Specify 7 User Interface. If you are interested, please <link>see the instructions</link>.',
+    'ru-ru':
+      'Мы будем очень признательны за вашу поддержку в локализации пользовательского интерфейса Specify 7. Если вы заинтересованы, отправьте электронное письмо по адресу <link>см. Инструкции</link>.',
+    'es-es':
+      'Estaríamos muy agradecidos por su ayuda para localizar la interfaz de usuario de Specify 7. Si está interesado, por favor <link>consulte las instrucciones</link>.',
+    'fr-fr':
+      "Nous serions très reconnaissants de votre soutien pour la traduction de l'interface utilisateur Specify 7. Si vous êtes intéressé, veuillez <link>voir les instructions</link>.",
+    'uk-ua':
+      'Ми будемо дуже вдячні за вашу підтримку в перекладі інтерфейсу Specify 7. Якщо ви зацікавлені, <link>перегляньте інструкції</link>.',
+    'de-ch':
+      'Wir wären sehr dankbar für Ihre Unterstützung bei der Übersetzung der Specify 7 Benutzeroberfläche. Wenn Sie daran interessiert sind, lesen Sie bitte <link>die Anleitung</link>.',
+    'pt-br':
+      'Agradecemos muito o seu apoio na localização da Interface de Usuário do Specify 7. Se estiver interessado, por favor, <link>consulte as instruções</link>.',
+    'hr-hr':
+      'Bili bismo vam vrlo zahvalni na podršci u lokalizaciji korisničkog sučelja Specify 7. Ako ste zainteresirani, molimo <link>pogledajte upute</link>.',
   },
   incompleteInline: {
     'en-us': '(incomplete)',
@@ -333,6 +375,8 @@ export const headerText = createDictionary({
     'ru-ru': '(неполный)',
     'uk-ua': '(не закінчено)',
     'de-ch': '(unvollständig)',
+    'pt-br': '(incompleto)',
+    'hr-hr': '(nepotpun)',
   },
   incompleteLocalization: {
     'en-us': 'Incomplete localization',
@@ -341,45 +385,26 @@ export const headerText = createDictionary({
     'ru-ru': 'Неполная локализация',
     'uk-ua': 'Неповна локалізація',
     'de-ch': 'Unvollständige Übersetzung',
+    'pt-br': 'Localização incompleta',
+    'hr-hr': 'Nepotpuna lokalizacija',
   },
   incompleteLocalizationDescription: {
-    'en-us': `
-      Translation to this language is not yet complete. Some elements may be
-      missing localization, or have incorrect localization. If you are
-      interested in helping us complete localization, please <link>follow the
-      instructions.</link>
-    `,
-    'es-es': `
-      La traducción a este idioma aún no está completa. Es posible que a algunos
-      elementos les falte localización o que tengan una localización
-      incorrecta. Si está interesado en ayudarnos a completar la
-      localización, <link>siga las instrucciones.</link>
-    `,
-    'fr-fr': `
-      La traduction dans cette langue n'est pas encore terminée. Certains
-      éléments peuvent ne pas être localisés ou avoir une localisation
-      incorrecte. Si vous souhaitez nous aider à terminer la localisation,
-      veuillez <link>suivre les instructions.</link>
-    `,
-    'ru-ru': `
-      Перевод на этот язык еще не завершен. У некоторых элементов может
-      отсутствовать локализация или они имеют неправильную локализацию. Если вы
-      хотите помочь нам завершить локализацию, <link>следуйте
-      инструкциям.</link>
-    `,
-    'uk-ua': `
-      Переклад цією мовою ще не завершено. Деякі елементи можуть не мати
-      локалізації або мати неправильну локалізацію. Якщо ви зацікавлені в тому,
-      щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте
-      інструкцій.</link>
-    `,
-    'de-ch': `
-      Die Übersetzung in diese Sprache ist noch nicht abgeschlossen. Bei einigen
-      Elementen fehlt möglicherweise die Lokalisierung oder sie sind nicht
-      korrekt lokalisiert. Wenn Sie daran interessiert sind, uns bei der
-      Vervollständigung der Übersetzung zu helfen, <link>befolgen Sie bitte die
-      Anweisungen.</link>
-    `,
+    'en-us':
+      'Translation to this language is not yet complete. Some elements may be missing localization, or have incorrect localization. If you are interested in helping us complete localization, please <link>follow the instructions.</link>',
+    'es-es':
+      'La traducción a este idioma aún no está completa. Es posible que a algunos elementos les falte localización o que tengan una localización incorrecta. Si está interesado en ayudarnos a completar la localización, <link>siga las instrucciones.</link>',
+    'fr-fr':
+      "La traduction dans cette langue n'est pas encore terminée. Certains éléments peuvent ne pas être localisés ou avoir une localisation incorrecte. Si vous souhaitez nous aider à terminer la localisation, veuillez <link>suivre les instructions.</link>",
+    'ru-ru':
+      'Перевод на этот язык еще не завершен. У некоторых элементов может отсутствовать локализация или они имеют неправильную локализацию. Если вы хотите помочь нам завершить локализацию, <link>следуйте инструкциям.</link>',
+    'uk-ua':
+      'Переклад цією мовою ще не завершено. Деякі елементи можуть не мати локалізації або мати неправильну локалізацію. Якщо ви зацікавлені в тому, щоб допомогти нам завершити локалізацію, будь ласка, <link>прочитайте інструкцій.</link>',
+    'de-ch':
+      'Die Übersetzung in diese Sprache ist noch nicht abgeschlossen. Bei einigen Elementen fehlt möglicherweise die Lokalisierung oder sie sind nicht korrekt lokalisiert. Wenn Sie daran interessiert sind, uns bei der Vervollständigung der Übersetzung zu helfen, <link>befolgen Sie bitte die Anweisungen.</link>',
+    'pt-br':
+      'A tradução para este idioma ainda não está completa. Alguns elementos podem estar sem localização ou com localização incorreta. Se você estiver interessado em nos ajudar a concluir a localização, siga as instruções.',
+    'hr-hr':
+      'Prijevod na ovaj jezik još nije dovršen. Nekim elementima možda nedostaje lokalizacija ili je lokalizacija netočna. Ako ste zainteresirani da nam pomognete dovršiti lokalizaciju, molimo <link>slijedite upute.</link>',
   },
   tableApi: {
     'en-us': 'Tables API',
@@ -388,14 +413,18 @@ export const headerText = createDictionary({
     'fr-fr': 'API des tableaux',
     'uk-ua': 'API таблиць',
     'de-ch': 'Tabellen-API',
+    'pt-br': 'API de tabelas',
+    'hr-hr': 'API za tablice',
   },
   operationsApi: {
     'en-us': 'Operations API',
     'ru-ru': 'Операционный API',
     'es-es': 'API de operaciones',
-    'fr-fr': "API d'opérations",
+    'fr-fr': 'API Opérations',
     'uk-ua': 'API операцій',
     'de-ch': 'Operations-API',
+    'pt-br': 'API de Operações',
+    'hr-hr': 'API za operacije',
   },
   documentation: {
     'en-us': 'Documentation',
@@ -404,6 +433,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Documentation',
     'uk-ua': 'Документація',
     'de-ch': 'Dokumentation',
+    'pt-br': 'Documentação',
+    'hr-hr': 'Dokumentacija',
   },
   administration: {
     'en-us': 'Administrative Tools',
@@ -412,6 +443,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Outils Administrateur',
     'uk-ua': 'Адміністрування',
     'de-ch': 'Administrative Werkzeuge',
+    'pt-br': 'Ferramentas Administrativas',
+    'hr-hr': 'Administrativni alati',
   },
   developers: {
     'en-us': 'Developer Resources',
@@ -420,6 +453,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Ressources pour les développeurs',
     'uk-ua': 'Для розробників',
     'de-ch': 'Ressourcen für Entwickler',
+    'pt-br': 'Recursos para desenvolvedores',
+    'hr-hr': 'Resursi za razvojne programere',
   },
   forum: {
     'en-us': 'Community Forum',
@@ -428,6 +463,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Forum de la communauté',
     'uk-ua': 'Форум',
     'de-ch': 'Community-Forum',
+    'pt-br': 'Fórum da Comunidade',
+    'hr-hr': 'Forum zajednice',
   },
   clearCache: {
     'en-us': 'Clear Browser Cache',
@@ -436,6 +473,8 @@ export const headerText = createDictionary({
     'fr-fr': 'Vider le cache du navigateur',
     'uk-ua': 'Очистити кеш браузера',
     'de-ch': 'Browser-Cache leeren',
+    'pt-br': 'Limpar o cache do navegador',
+    'hr-hr': 'Obriši predmemoriju preglednika',
   },
   cacheCleared: {
     'en-us': 'Cache has been cleared. Please reload the page.',
@@ -444,16 +483,28 @@ export const headerText = createDictionary({
     'fr-fr': 'Le cache a été vidé. Veuillez recharger la page.',
     'uk-ua': 'Кеш очищено. Перезавантажте сторінку.',
     'de-ch': 'Der Cache wurde geleert. Bitte laden Sie die Seite neu.',
+    'pt-br': 'O cache foi limpo. Recarregue a página.',
+    'hr-hr':
+      'Predmemorija je izbrisana. Molimo vas da ponovno učitate stranicu.',
   },
   technicalDocumentation: {
-    'en-us': 'Technical Docs',
-    'ru-ru': 'Технические документы',
-    'es-es': 'Documentos técnicos',
-    'fr-fr': 'Documents techniques',
-    'uk-ua': 'Технічні документи',
-    'de-ch': 'Technische Dokumentation',
+    'en-us': 'Documentation',
+    'ru-ru': 'Документация',
+    'es-es': 'Documentación',
+    'fr-fr': 'Documentation',
+    'uk-ua': 'Документація',
+    'de-ch': 'Dokumentation',
+    'pt-br': 'Documentação',
+    'hr-hr': 'Dokumentacija',
   },
   chronostratigraphicChart: {
     'en-us': 'Chronostratigraphic Chart',
+    'de-ch': 'Chronostratigraphische Tabelle',
+    'es-es': 'Cuadro cronoestratigráfico',
+    'fr-fr': 'Charte chronostratigraphique',
+    'pt-br': 'Carta cronoestratigráfica',
+    'ru-ru': 'Хроностратиграфическая диаграмма',
+    'uk-ua': 'Хроностратиграфічна діаграма',
+    'hr-hr': 'Kronostratigrafski grafikon',
   },
 } as const);

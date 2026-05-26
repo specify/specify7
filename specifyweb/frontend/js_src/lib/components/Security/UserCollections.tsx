@@ -15,15 +15,17 @@ import { ping } from '../../utils/ajax/ping';
 import type { IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { replaceKey, toggleItem } from '../../utils/utils';
+import { ErrorMessage } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
+import { getResourceApiUrl, resourceOn } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { Collection, SpecifyUser } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
@@ -169,6 +171,7 @@ export function CollectionAccess({
   onChangedAgent: handleChangeAgent,
   collectionId,
   userAgents,
+  userAgentsReadState,
   isSuperAdmin,
 }: {
   readonly userPolicies: IR<RA<Policy> | undefined> | undefined;
@@ -178,6 +181,10 @@ export function CollectionAccess({
   readonly onChangedAgent: () => void;
   readonly collectionId: number;
   readonly userAgents: UserAgents | undefined;
+  readonly userAgentsReadState:
+    | 'full'
+    | 'missingAgentRead'
+    | 'missingDisciplineRead';
   readonly isSuperAdmin: boolean;
 }): JSX.Element {
   const hasCollectionAccess =
@@ -185,9 +192,11 @@ export function CollectionAccess({
       ({ resource, actions }) =>
         resource === collectionAccessResource && actions.includes('access')
     ) ?? false;
-  const collectionAddress = userAgents?.find(({ collections }) =>
+
+  const scopedAgent = userAgents?.find(({ collections }) =>
     collections.includes(collectionId)
-  )?.address;
+  );
+  const collectionAddress = scopedAgent?.address;
   const hasAgent = (collectionAddress?.get('agent')?.length ?? 0) > 0;
 
   React.useEffect(
@@ -238,7 +247,16 @@ export function CollectionAccess({
         : undefined
     );
 
-  const isReadOnly = React.useContext(ReadOnlyContext) || !canAssignAgent;
+  const agentReadWarning =
+    userAgentsReadState === 'missingAgentRead'
+      ? userText.cannotReadAgentsForUserAssignment()
+      : userAgentsReadState === 'missingDisciplineRead'
+        ? userText.cannotReadDisciplinesForUserAssignment()
+        : undefined;
+  const isReadOnly =
+    React.useContext(ReadOnlyContext) ||
+    !canAssignAgent ||
+    userAgentsReadState !== 'full';
   return (
     <div className="flex flex-col gap-4">
       {hasPermission('/permissions/policies/user', 'read', collectionId) &&
@@ -272,10 +290,22 @@ export function CollectionAccess({
               isRequired={hasCollectionAccess || isSuperAdmin}
               resource={collectionAddress}
               typeSearch={undefined}
+              onSavingNewRecord={(resource) => {
+                const divisionId = scopedAgent?.divisionId;
+
+                if (divisionId !== undefined)
+                  toTable(resource, 'Agent')?.set(
+                    'division',
+                    getResourceApiUrl('Division', divisionId)
+                  );
+              }}
             />
           </ReadOnlyContext.Provider>
         ) : (
           <Input.Text disabled value={commonText.loading()} />
+        )}
+        {agentReadWarning !== undefined && (
+          <ErrorMessage className="mt-2">{agentReadWarning}</ErrorMessage>
         )}
       </Label.Block>
     </div>

@@ -18,13 +18,7 @@
     "timestampModified"
   ],
   "accessioncitation": ["timestampCreated", "version", "timestampModified"],
-  "address": [
-    "timestampCreated",
-    "version",
-    "isCurrent",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "address": ["timestampCreated", "version", "isCurrent", "timestampModified"],
   "addressofrecord": ["timestampCreated", "version", "timestampModified"],
   "agent": [
     "agentAttachments",
@@ -70,6 +64,7 @@
     "preparationAttachments",
     "referenceWorkAttachments",
     "repositoryAgreementAttachments",
+    "spDataSetAttachments",
     "storageAttachments",
     "taxonAttachments",
     "treatmentEventAttachments",
@@ -197,14 +192,10 @@
     "version",
     "timestampModified"
   ],
-  "collector": [
-    "timestampCreated",
-    "version",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "collector": ["timestampCreated", "version", "timestampModified"],
   "commonnametx": ["timestampCreated", "version", "timestampModified"],
   "commonnametxcitation": ["timestampCreated", "version", "timestampModified"],
+  "component": ["timestampCreated", "version", "timestampModified"],
   "conservdescription": [
     "conservDescriptionAttachments",
     "timestampCreated",
@@ -274,20 +265,9 @@
     "version",
     "timestampModified"
   ],
-  "determination": [
-    "guid",
-    "timestampCreated",
-    "version",
-    "isCurrent",
-    "timestampModified"
-  ],
+  "determination": ["guid", "timestampCreated", "version", "timestampModified"],
   "determinationcitation": ["timestampCreated", "version", "timestampModified"],
-  "determiner": [
-    "timestampCreated",
-    "version",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "determiner": ["timestampCreated", "version", "timestampModified"],
   "discipline": ["timestampCreated", "version", "timestampModified"],
   "disposal": [
     "disposalAttachments",
@@ -372,12 +352,7 @@
     "version",
     "timestampModified"
   ],
-  "fundingagent": [
-    "timestampCreated",
-    "version",
-    "isPrimary",
-    "timestampModified"
-  ],
+  "fundingagent": ["timestampCreated", "version", "timestampModified"],
   "geocoorddetail": ["timestampCreated", "version", "timestampModified"],
   "geography": [
     "guid",
@@ -637,7 +612,11 @@
   "userrole": [],
   "rolepolicy": [],
   "libraryrolepolicy": [],
-  "spdataset": ["timestampcreated", "timestampmodified"],
+  "spdataset": [
+    "spDataSetAttachments",
+    "timestampcreated",
+    "timestampmodified"
+  ],
   "collectionobjecttype": ["timestampCreated", "version", "timestampModified"],
   "collectionobjectgroup": [
     "guid",
@@ -648,7 +627,6 @@
   "collectionobjectgroupjoin": [
     "timestampCreated",
     "version",
-    "isPrimary",
     "timestampModified"
   ],
   "collectionobjectgrouptype": [
@@ -688,5 +666,11 @@
     "version",
     "timestampModified"
   ],
-  "tectonicunit": ["guid", "timestampCreated", "version", "timestampModified"]
+  "tectonicunit": ["guid", "timestampCreated", "version", "timestampModified"],
+  "spdatasetattachment": [
+    "attachment",
+    "timestampCreated",
+    "version",
+    "timestampModified"
+  ]
 }

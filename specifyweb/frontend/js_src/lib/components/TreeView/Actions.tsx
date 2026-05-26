@@ -11,16 +11,16 @@ import type { GetSet, RA, RR } from '../../utils/types';
 import { toLowerCase } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Link } from '../Atoms/Link';
-import { LoadingContext } from '../Core/Contexts';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import type { AnySchema, AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { genericTables } from '../DataModel/tables';
 import { DeleteButton } from '../Forms/DeleteButton';
-import { getPref } from '../InitialContext/remotePrefs';
 import { Dialog } from '../Molecules/Dialog';
 import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasPermission, hasTablePermission } from '../Permissions/helpers';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import type { Row } from './helpers';
 import { checkMoveViolatesEnforced } from './helpers';
 
@@ -69,12 +69,16 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
   const resourceName = `/tree/edit/${toLowerCase(tableName)}` as const;
   const isSynonym = typeof focusedRow?.acceptedId === 'number';
 
-  const doExpandSynonymActionsPref = getPref(
+  const doExpandSynonymActionsPref = collectionPreferences.get(
+    'treeManagement',
+    'synonymized',
     `sp7.allow_adding_child_to_synonymized_parent.${tableName}`
   );
 
   const disableButtons =
     focusedRow === undefined || typeof currentAction === 'string';
+
+  const isReadOnly = React.useContext(ReadOnlyContext);
 
   return currentAction === undefined ||
     actionRow === undefined ||
@@ -116,11 +120,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           addNew={false}
           disabled={focusedRow === undefined}
           isRoot={isRoot}
-          label={
-            hasTablePermission(tableName, 'update')
-              ? commonText.edit()
-              : commonText.view()
-          }
+          label={isReadOnly ? commonText.view() : commonText.edit()}
           nodeId={focusedRow?.nodeId}
           tableName={tableName}
           onRefresh={handleRefresh}
@@ -160,7 +160,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'move') && (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons || isRoot || isReadOnly}
             icon="arrowsMove"
             title={treeText.move()}
             onClick={(): void => setAction('move')}
@@ -171,7 +171,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       hasPermission(resourceName as '/tree/edit/storage', 'bulk_move') ? (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons}
+            disabled={disableButtons || isReadOnly}
             icon="truck"
             title={treeText.moveItems()}
             onClick={(): void => setAction('bulkMove')}
@@ -181,7 +181,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
       {hasPermission(resourceName, 'merge') && (
         <li className="contents">
           <Button.Icon
-            disabled={disableButtons || isRoot}
+            disabled={disableButtons || isRoot || isReadOnly}
             icon="merge"
             title={treeText.merge()}
             onClick={(): void => setAction('merge')}
@@ -196,6 +196,7 @@ export function TreeViewActions<SCHEMA extends AnyTree>({
           <Button.Icon
             disabled={
               disableButtons ||
+              isReadOnly ||
               isRoot ||
               (doExpandSynonymActionsPref
                 ? false
@@ -322,7 +323,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
 
   const action = async (): Promise<number> =>
     ping(
-      `/api/specify_tree/${tableName.toLowerCase()}/${actionRow.nodeId}/${
+      `/trees/specify_tree/${tableName.toLowerCase()}/${actionRow.nodeId}/${
         frontendToBackendMappingActions[type]
       }/`,
       {
@@ -476,7 +477,7 @@ function ActiveAction<SCHEMA extends AnyTree>({
                     })
                   : treeText.desynonymizeNodeMessage({
                       nodeName: actionRow.fullName,
-                      synonymName: focusedRow.fullName,
+                      synonymName: focusedRow.acceptedName!,
                     })}
         </Dialog>
       ) : undefined}

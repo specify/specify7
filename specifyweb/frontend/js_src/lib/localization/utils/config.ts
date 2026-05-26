@@ -23,6 +23,8 @@ export const languageCodeMapper = {
   'es-es': 'es',
   'de-ch': 'de_CH',
   'pt-br': 'pt_BR',
+  'hr-hr': 'hr',
+  nb: 'nb_NO',
 } as const;
 
 export const languages = Object.keys(languageCodeMapper);
@@ -80,6 +82,6 @@ setDevelopmentGlobal('_language', LANGUAGE);
  * If modifying this, also update the trigger in the GitHub Action on
  * this branch and on the weblate-localization branch
  */
-export const syncBranch = 'production';
+export const syncBranch = 'main';
 
 export const weblateBranch = 'weblate-localization';

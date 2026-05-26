@@ -1,7 +1,7 @@
 /**
- * Using Node.js --import API to resolve CSS imports into
+ * Using Node.js --import API to resolve CSS, PNG, and SVG imports into
  * empty objects. This is a workaround to avoid errors:
- * TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css"
+ * TypeError [ERR_UNKNOWN_FILE_EXTENSION]: Unknown file extension ".css"/.png"/.svg"
  *
  * The imports are there for webpack, and should be ignored
  * by Node.js
@@ -20,7 +20,9 @@ export const resolve = (specifier, context, nextResolve) =>
       // Fake resolve CSS imports
       specifier.endsWith('.css') ||
       // Fake resolve PNG imports
-      specifier.endsWith('.png')
+      specifier.endsWith('.png') ||
+      // Fake resolve SVG imports
+      specifier.endsWith('.svg')
       ? new URL('__mocks__/fileMock.ts', import.meta.url).href
       : specifier,
     context

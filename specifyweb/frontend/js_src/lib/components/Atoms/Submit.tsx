@@ -38,7 +38,7 @@ export const Submit = {
   ),
   Secondary: submitButton(
     'Submit.Secondary',
-    `${className.niceButton} ${className.secondaryButton}`
+    `${className.niceButton} ${className.borderedGrayButton}`
   ),
   Danger: submitButton(
     'Submit.Danger',

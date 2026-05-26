@@ -3,7 +3,7 @@
   "specify6_version": "6.8.03",
   "database_version": "6.8.03",
   "schema_version": "2.9",
-  "stats_url": "https://stats.specifycloud.org/capture",
+  "stats_url": "https://sp7-stats.specifycloud.org/capture",
   "database": "specify",
   "institution": "University of Kansas Biodiversity Institute",
   "institution_guid": "77ff1bff-af23-4647-b5d1-9d3c414fd003",

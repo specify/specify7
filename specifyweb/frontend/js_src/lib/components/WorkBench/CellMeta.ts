@@ -78,6 +78,13 @@ export class WbCellMeta {
     );
   }
 
+  public getCellMetaArray(
+    physicalRow: number,
+    physicalCol: number
+  ): WbMetaArray {
+    return this.cellMeta[physicalRow]?.[physicalCol] ?? defaultMetaValues;
+  }
+
   public getCellMeta<KEY extends keyof WbMeta>(
     physicalRow: number,
     physicalCol: number,

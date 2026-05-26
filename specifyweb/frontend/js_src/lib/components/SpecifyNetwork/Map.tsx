@@ -222,12 +222,18 @@ export function useExtendedMap(
     gbif?.description,
     iDigBio?.description,
   ]);
-  return items.length === 0 ? undefined : (
+  const hasAnyDescription = Boolean(gbif?.description || iDigBio?.description);
+  return hasAnyDescription ? (
     <details>
       <summary>{developmentText.details()}</summary>
-      {items}
+      {items.map((item, index) => (
+        <React.Fragment key={index}>
+          {item}
+          {index < items.length - 1 && ' '}
+        </React.Fragment>
+      ))}
     </details>
-  );
+  ) : undefined;
 }
 
 export const exportsForTests = {

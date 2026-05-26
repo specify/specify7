@@ -5,11 +5,13 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { useAsyncState } from '../../hooks/useAsyncState';
 import { useValidation } from '../../hooks/useValidation';
 import { commonText } from '../../localization/common';
 import { userText } from '../../localization/user';
 import type { Language } from '../../localization/utils/config';
 import { devLanguage, LANGUAGE } from '../../localization/utils/config';
+import { ajax } from '../../utils/ajax';
 import { parseDjangoDump } from '../../utils/ajax/csrfToken';
 import type { RA } from '../../utils/types';
 import { ErrorMessage } from '../Atoms';
@@ -17,14 +19,51 @@ import { Form, Input, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
 import { SplashScreen } from '../Core/SplashScreen';
+import { LoadingScreen } from '../Molecules/Dialog';
+import { SetupTool } from '../SetupTool';
+import type { SetupProgress } from '../SetupTool/types';
 import { handleLanguageChange, LanguageSelection } from '../Toolbar/Language';
 import type { OicProvider } from './OicLogin';
 import { OicLogin } from './OicLogin';
 
 export function Login(): JSX.Element {
+  const [setupProgress, setSetupProgress] = useAsyncState(
+    React.useCallback(
+      async () =>
+        ajax<SetupProgress>(`/setup_tool/setup_progress/`, {
+          method: 'GET',
+          headers: { Accept: 'application/json' },
+          errorMode: 'silent',
+        })
+          .then(({ data }) => data)
+          .catch((error) => {
+            console.error('Failed to fetch setup progress:', error);
+            return undefined;
+          }),
+      []
+    ),
+    true
+  );
+
   return React.useMemo(() => {
     const nextUrl = parseDjangoDump<string>('next-url') ?? '/specify/';
     const providers = parseDjangoDump<RA<OicProvider>>('providers') ?? [];
+
+    if (setupProgress === undefined) return <LoadingScreen />;
+
+    if (
+      setupProgress.busy ||
+      (setupProgress.hasOwnProperty('resources') &&
+        Object.values(setupProgress.resources).includes(false))
+    ) {
+      return (
+        <SetupTool
+          setSetupProgress={setSetupProgress}
+          setupProgress={setupProgress}
+        />
+      );
+    }
+
     return providers.length > 0 ? (
       <OicLogin
         data={{
@@ -57,7 +96,7 @@ export function Login(): JSX.Element {
         }
       />
     );
-  }, []);
+  }, [setupProgress]);
 }
 
 const nextDestination = '/accounts/choose_collection/?next=';
@@ -157,7 +196,7 @@ function LegacyLogin({
         </Label.Block>
         <input name="next" type="hidden" value={nextUrl} />
         <input name="this_is_the_login_form" type="hidden" value="1" />
-        <Submit.Fancy className="mt-1">{userText.logIn()}</Submit.Fancy>
+        <Submit.Secondary className="mt-1">{userText.logIn()}</Submit.Secondary>
       </Form>
     </SplashScreen>
   );

@@ -1,4 +1,4 @@
-import type { IR, RA, RR } from '../../utils/types';
+import type { IR, PartialBy, RA, RR } from '../../utils/types';
 import type { AnyTree } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { strictGetTable } from '../DataModel/tables';
@@ -6,7 +6,7 @@ import type { Tables } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { getTreeDefinitions } from '../InitialContext/treeRanks';
 import { defaultColumnOptions } from './linesGetter';
-import type { MappingPath } from './Mapper';
+import type { BatchEditPrefs, MappingPath } from './Mapper';
 import type { SplitMappingPath } from './mappingHelpers';
 import { formatTreeDefinition } from './mappingHelpers';
 import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
@@ -24,7 +24,11 @@ export type ColumnDefinition =
   | string
   | (ColumnOptions & { readonly column: string });
 
-export type NestedUploadTable = Omit<UploadTable, 'toMany'>;
+/*
+ * NOTE: This comment was added after workbench supports nested-to-manys.
+ * Type is made Partial to not chock on legacy upload plans
+ */
+export type NestedUploadTable = PartialBy<UploadTable, 'toMany'>;
 
 export type UploadTable = {
   readonly wbcols: IR<ColumnDefinition>;
@@ -50,9 +54,16 @@ type TreeRecordVariety =
 
 export type Uploadable = TreeRecordVariety | UploadTableVariety;
 
+export type DatasetAttachmentPrefs = {
+  readonly usesAttachments: boolean;
+  readonly attachmentsColumn: string;
+};
+
 export type UploadPlan = {
   readonly baseTableName: Lowercase<keyof Tables>;
   readonly uploadable: Uploadable;
+  readonly batchEditPrefs?: BatchEditPrefs;
+  readonly attachmentPrefs?: DatasetAttachmentPrefs;
 };
 
 const parseColumnOptions = (matchingOptions: ColumnOptions): ColumnOptions => ({
@@ -147,23 +158,21 @@ const parseUploadTable = (
       [...mappingPath, table.strictGetRelationship(relationshipName).name]
     )
   ),
-  ...('toMany' in uploadPlan
-    ? Object.entries(uploadPlan.toMany).flatMap(
-        ([relationshipName, mappings]) =>
-          Object.values(mappings).flatMap((mapping, index) =>
-            parseUploadTable(
-              table.strictGetRelationship(relationshipName).relatedTable,
-              mapping,
-              makeMustMatch,
-              [
-                ...mappingPath,
-                table.strictGetRelationship(relationshipName).name,
-                formatToManyIndex(index + 1),
-              ]
-            )
-          )
+  ...Object.entries(uploadPlan.toMany ?? []).flatMap(
+    ([relationshipName, mappings]) =>
+      Object.values(mappings).flatMap((mapping, index) =>
+        parseUploadTable(
+          table.strictGetRelationship(relationshipName).relatedTable,
+          mapping,
+          makeMustMatch,
+          [
+            ...mappingPath,
+            table.strictGetRelationship(relationshipName).name,
+            formatToManyIndex(index + 1),
+          ]
+        )
       )
-    : []),
+  ),
 ];
 
 function parseUploadTableTypes(

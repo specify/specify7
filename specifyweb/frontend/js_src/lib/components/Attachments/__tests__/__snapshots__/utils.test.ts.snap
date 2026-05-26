@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`allTablesWithAttachments 1`] = `
 [
@@ -31,6 +31,7 @@ exports[`allTablesWithAttachments 1`] = `
   "[table TreatmentEvent]",
   "[table AbsoluteAge]",
   "[table RelativeAge]",
+  "[table Spdataset]",
 ]
 `;
 
@@ -66,5 +67,6 @@ exports[`attachmentRelatedTables 1`] = `
   "TreatmentEventAttachment",
   "AbsoluteAgeAttachment",
   "RelativeAgeAttachment",
+  "SpDataSetAttachment",
 ]
 `;

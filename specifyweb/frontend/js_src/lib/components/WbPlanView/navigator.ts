@@ -20,7 +20,7 @@ import { getTreeDefinitions, isTreeTable } from '../InitialContext/treeRanks';
 import { hasTablePermission, hasTreeAccess } from '../Permissions/helpers';
 import type { CustomSelectSubtype } from './CustomSelectElement';
 import type {
-  HtmlGeneratorFieldData,
+  MapperComponentData,
   MappingElementProps,
 } from './LineComponents';
 import type { MappingPath } from './Mapper';
@@ -45,6 +45,13 @@ import {
 } from './mappingHelpers';
 import { getMaxToManyIndex, isCircularRelationship } from './modelHelpers';
 import type { NavigatorSpec } from './navigatorSpecs';
+
+const geoPaleoDisciplines: readonly string[] = [
+  'geology',
+  'invertpaleo',
+  'vertpaleo',
+  'paleobotany',
+];
 
 type NavigationCallbackPayload = {
   readonly table: SpecifyTable;
@@ -130,6 +137,18 @@ function navigator({
   const childrenAreRanks =
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
+  const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
+  const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
+
+  if (
+    isNonGeoDiscipline &&
+    (table.name === 'PaleoContext' ||
+      table.name === 'LithoStrat' ||
+      table.name === 'TectonicUnit')
+  ) {
+    return;
+  }
+
   const callbackPayload = {
     table,
     parentRelationship,
@@ -206,13 +225,6 @@ export type MappingLineData = Pick<
   readonly defaultValue: string;
 };
 
-const queryBuilderTreeFields = new Set([
-  'fullName',
-  'author',
-  'groupNumber',
-  'geographyCode',
-]);
-
 /**
  * Get data required to build a mapping line from a source mapping path
  * Handles circular dependencies and must match tables
@@ -284,7 +296,7 @@ export function getMappingLineData({
   const commitInstanceData = (
     customSelectSubtype: CustomSelectSubtype,
     table: SpecifyTable,
-    fieldsData: RA<readonly [string, HtmlGeneratorFieldData] | undefined>
+    fieldsData: RA<readonly [string, MapperComponentData] | undefined>
   ): void =>
     void internalState.mappingLineData.push({
       customSelectSubtype,
@@ -484,8 +496,7 @@ export function getMappingLineData({
         ((generateFieldData === 'all' &&
           (!isTreeTable(table.name) ||
             mappingPath[internalState.position - 1] ===
-              formatTreeRank(anyTreeRank) ||
-            queryBuilderTreeFields.has(formattedEntry))) ||
+              formatTreeRank(anyTreeRank))) ||
           internalState.defaultValue === formattedEntry)
           ? ([
               formattedEntry,
@@ -505,7 +516,8 @@ export function getMappingLineData({
         const isInToMany = internalState.mappingLineData.some(
           ({ customSelectSubtype }) => customSelectSubtype === 'toMany'
         );
-        if (isInToMany) {
+        const isZeroToOne = parentRelationship?.type === 'zero-to-one';
+        if (isInToMany && !isZeroToOne) {
           commitInstanceData('simple', table, [formatted]);
           return;
         }
@@ -548,7 +560,6 @@ export function getMappingLineData({
 
             const disciplineType =
               getSystemInfo().discipline_type?.toLowerCase();
-            const geoPaleoDisciplines = ['geology', 'invertpaleo', 'vertpaleo'];
             if (
               field.name === 'age' &&
               !geoPaleoDisciplines.includes(disciplineType)
@@ -573,13 +584,6 @@ export function getMappingLineData({
               spec.includeReadOnly ||
               !field.overrides.isReadOnly;
 
-            isIncluded &&=
-              spec.includeAllTreeFields ||
-              !isTreeTable(table.name) ||
-              mappingPath[internalState.position - 1] ===
-                formatTreeRank(anyTreeRank) ||
-              queryBuilderTreeFields.has(field.name);
-
             // Hide frontend only field
             isIncluded &&= !(
               getFrontEndOnlyFields()[table.name]?.includes(field.name) ===
@@ -588,15 +592,15 @@ export function getMappingLineData({
 
             if (field.isRelationship) {
               isIncluded &&=
-                spec.allowNestedToMany ||
                 parentRelationship === undefined ||
                 (!isCircularRelationship(parentRelationship, field) &&
-                  !(
-                    (relationshipIsToMany(field) ||
-                      relationshipIsRemoteToOne(field)) &&
-                    (relationshipIsToMany(parentRelationship) ||
-                      relationshipIsRemoteToOne(parentRelationship))
-                  ));
+                  (spec.allowNestedToMany ||
+                    !(
+                      (relationshipIsToMany(field) ||
+                        relationshipIsRemoteToOne(field)) &&
+                      (relationshipIsToMany(parentRelationship) ||
+                        relationshipIsRemoteToOne(parentRelationship))
+                    )));
 
               isIncluded &&=
                 !canDoAction ||
@@ -609,7 +613,10 @@ export function getMappingLineData({
                     ));
 
               isIncluded &&=
-                spec.includeRelationshipsFromTree || !isTreeTable(table.name);
+                (spec.includeRelationshipsFromTree &&
+                  mappingPath[internalState.position - 1] ===
+                    formatTreeRank(anyTreeRank)) ||
+                !isTreeTable(table.name);
 
               isIncluded &&=
                 spec.includeToManyToTree ||

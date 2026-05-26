@@ -1,9 +1,9 @@
-from django.conf.urls import url
+from django.urls import path
 
 from . import views
 
 urlpatterns = [
-    url(r'^api/tables/$', views.api_tables),
-    url(r'^api/operations/$', views.api_operations),
-    url(r'^api/operations/all/$', views.api_operations_all),
+    path('api/tables/', views.api_tables),
+    path('api/operations/', views.api_operations),
+    path('api/operations/all/', views.api_operations_all),
 ]

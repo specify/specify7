@@ -14,7 +14,7 @@ import type {
 import { softFail } from '../Errors/Crash';
 import { hasTablePermission } from '../Permissions/helpers';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
-import { queryFieldFilters } from './FieldFilter';
+import { queryFieldFilterSpecs } from './FieldFilterSpec';
 import { QueryFieldSpec } from './fieldSpec';
 import { flippedSortTypes } from './helpers';
 import { createQuery } from './index';
@@ -57,12 +57,12 @@ const defaultFields: RR<
     }),
     makeField('determinations.taxon.fullName', {}),
     makeField(`determinations.taxon.${rankName}.taxonId`, {
-      operStart: queryFieldFilters.equal.id,
+      operStart: queryFieldFilterSpecs.equal.id,
       startValue: nodeId.toString(),
       isDisplay: false,
     }),
     makeField('determinations.isCurrent', {
-      operStart: queryFieldFilters.trueOrNull.id,
+      operStart: queryFieldFilterSpecs.trueOrNull.id,
       isDisplay: false,
     }),
     makeField('collectingEvent.locality.localityName', {}),
@@ -74,7 +74,7 @@ const defaultFields: RR<
     }),
     makeField('determinations.isCurrent', {
       isDisplay: false,
-      operStart: queryFieldFilters.trueOrNull.id,
+      operStart: queryFieldFilterSpecs.trueOrNull.id,
     }),
     makeField('collectingEvent.locality.localityName', {}),
     makeField('collectingEvent.locality.geography.fullName', {
@@ -82,7 +82,7 @@ const defaultFields: RR<
     }),
     makeField(`collectingEvent.locality.geography.${rankName}.geographyId`, {
       isDisplay: false,
-      operStart: queryFieldFilters.equal.id,
+      operStart: queryFieldFilterSpecs.equal.id,
       startValue: nodeId.toString(),
     }),
   ],
@@ -93,12 +93,12 @@ const defaultFields: RR<
     makeField('determinations.taxon.fullName', {}),
     makeField('determinations.isCurrent', {
       isDisplay: false,
-      operStart: queryFieldFilters.trueOrNull.id,
+      operStart: queryFieldFilterSpecs.trueOrNull.id,
     }),
     makeField('preparations.storage.fullName', {}),
     makeField(`preparations.storage.${rankId}.storageId`, {
       isDisplay: false,
-      operStart: queryFieldFilters.equal.id,
+      operStart: queryFieldFilterSpecs.equal.id,
       startValue: nodeId.toString(),
     }),
   ],
@@ -111,7 +111,7 @@ const defaultFields: RR<
       }),
       makeField('determinations.isCurrent', {
         isDisplay: false,
-        operStart: queryFieldFilters.trueOrNull.id,
+        operStart: queryFieldFilterSpecs.trueOrNull.id,
       }),
 
       ...(typeof paleoPath === 'string'
@@ -121,7 +121,7 @@ const defaultFields: RR<
               `${paleoPath}.chronosStrat.${rankName}.geologicTimePeriodId`,
               {
                 isDisplay: false,
-                operStart: queryFieldFilters.equal.id,
+                operStart: queryFieldFilterSpecs.equal.id,
                 startValue: nodeId.toString(),
               }
             ),
@@ -138,13 +138,13 @@ const defaultFields: RR<
       }),
       makeField('determinations.isCurrent', {
         isDisplay: false,
-        operStart: queryFieldFilters.trueOrNull.id,
+        operStart: queryFieldFilterSpecs.trueOrNull.id,
       }),
       ...(typeof paleoPath === 'string'
         ? [
             makeField(`${paleoPath}.lithoStrat.fullName`, {}),
             makeField(`${paleoPath}.lithoStrat.${rankName}.lithoStratId`, {
-              operStart: queryFieldFilters.equal.id,
+              operStart: queryFieldFilterSpecs.equal.id,
               startValue: nodeId.toString(),
               isDisplay: false,
             }),
@@ -161,13 +161,13 @@ const defaultFields: RR<
       }),
       makeField('determinations.isCurrent', {
         isDisplay: false,
-        operStart: queryFieldFilters.trueOrNull.id,
+        operStart: queryFieldFilterSpecs.trueOrNull.id,
       }),
       ...(typeof paleoPath === 'string'
         ? [
             makeField(`${paleoPath}.tectonicUnit.fullName`, {}),
             makeField(`${paleoPath}.tectonicUnit.${rankName}.tectonicUnitId`, {
-              operStart: queryFieldFilters.equal.id,
+              operStart: queryFieldFilterSpecs.equal.id,
               startValue: nodeId.toString(),
               isDisplay: false,
             }),

@@ -2,23 +2,25 @@
  * Component for the Handsontable React wrapper
  */
 
-import { HotTable } from '@handsontable/react';
+import type { HotTableRef } from '@handsontable/react-wrapper';
+import { HotTable } from '@handsontable/react-wrapper';
 import type Handsontable from 'handsontable';
 import type { DetailedSettings } from 'handsontable/plugins/contextMenu';
 import { registerAllModules } from 'handsontable/registry';
 import React from 'react';
+import { renderToStaticMarkup } from 'react-dom/server';
 
 import { commonText } from '../../localization/common';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbText } from '../../localization/workbench';
 import type { RA } from '../../utils/types';
 import { writable } from '../../utils/types';
-import { iconClassName, legacyNonJsxIcons } from '../Atoms/Icons';
+import { iconClassName, icons } from '../Atoms/Icons';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { strictGetTable } from '../DataModel/tables';
-import { getIcon, unknownIcon } from '../InitialContext/icons';
+import { SvgIcon } from '../Molecules/SvgIcon';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { configureHandsontable } from './handsontable';
+import { configureHandsontable, getHotPlugin } from './handsontable';
 import { useHotHooks } from './hooks';
 import {
   getPhysicalColToMappingCol,
@@ -41,18 +43,20 @@ function WbSpreadsheetComponent({
   workbench,
   mappings,
   isResultsOpen,
+  hasBatchEditRolledBack,
   checkDeletedFail,
   spreadsheetChanged,
   onClickDisambiguate: handleClickDisambiguate,
 }: {
   readonly dataset: Dataset;
-  readonly setHotTable: React.RefCallback<HotTable>;
+  readonly setHotTable: React.RefCallback<HotTableRef>;
   readonly hot: Handsontable | undefined;
   readonly isUploaded: boolean;
   readonly data: RA<RA<string | null>>;
   readonly workbench: Workbench;
   readonly mappings: WbMapping | undefined;
   readonly isResultsOpen: boolean;
+  readonly hasBatchEditRolledBack: boolean;
   readonly checkDeletedFail: (statusCode: number) => boolean;
   readonly spreadsheetChanged: () => void;
   readonly onClickDisambiguate: () => void;
@@ -72,7 +76,7 @@ function WbSpreadsheetComponent({
                 upload_results: {
                   disableSelection: true,
                   isCommand: false,
-                  renderer: (hot, wrapper) => {
+                  renderer: (_, wrapper) => {
                     const { endRow: visualRow, endCol: visualCol } =
                       getSelectedRegions(hot).at(-1) ?? {};
                     const physicalRow = hot.toPhysicalRow(visualRow ?? 0);
@@ -87,7 +91,9 @@ function WbSpreadsheetComponent({
                       visualRow === undefined ||
                       visualCol === undefined ||
                       createdRecords === undefined ||
-                      !cells.getCellMeta(physicalRow, physicalCol, 'isNew')
+                      !cells.isResultCell(
+                        cells.getCellMetaArray(physicalRow, physicalCol)
+                      )
                     ) {
                       wrapper.textContent = wbText.noUploadResultsAvailable();
                       wrapper.parentElement?.classList.add('htDisabled');
@@ -108,20 +114,26 @@ function WbSpreadsheetComponent({
                             ? strictGetTable(tableName).label
                             : label;
                         // REFACTOR: use new table icons
-                        const tableIcon = getIcon(tableName) ?? unknownIcon;
+                        const tableSvg = renderToStaticMarkup(
+                          <SvgIcon
+                            className={iconClassName}
+                            label={tableLabel}
+                            name={strictGetTable(tableName).name}
+                          />
+                        );
 
                         return `<a
-                        class="link"
-                        href="/specify/view/${tableName}/${recordId}/"
-                        target="_blank"
-                      >
-                        <img class="${iconClassName}" src="${tableIcon}" alt="">
-                        ${tableLabel}
-                        <span
-                          title="${commonText.opensInNewTab()}"
-                          aria-label="${commonText.opensInNewTab()}"
-                        >${legacyNonJsxIcons.link}</span>
-                      </a>`;
+                    class="link"
+                    href="/specify/view/${tableName}/${recordId}/"
+                    target="_blank"
+                    >
+                    ${tableSvg}
+                    ${tableLabel}
+                    <span
+                    title="${commonText.opensInNewTab()}"
+                    aria-label="${commonText.opensInNewTab()}"
+                    >${renderToStaticMarkup(icons.externalLink)}</span>
+                   </a>`;
                       })
                       .join('');
 
@@ -143,11 +155,14 @@ function WbSpreadsheetComponent({
                     if (isReadOnly) return true;
                     // Or if called on the last row
                     const selectedRegions = getSelectedRegions(hot);
-                    return (
-                      selectedRegions.length === 1 &&
-                      selectedRegions[0].startRow === data.length - 1 &&
-                      selectedRegions[0].startRow === selectedRegions[0].endRow
-                    );
+                    // Allow removing last row in Batch Edit since rows cannot be added in Batch Edit
+                    const disableRemoveLastRow = dataset.isupdate
+                      ? false
+                      : selectedRegions[0].startRow === data.length - 1 &&
+                        selectedRegions[0].startRow ===
+                          selectedRegions[0].endRow;
+
+                    return selectedRegions.length === 1 && disableRemoveLastRow;
                   },
                 },
                 disambiguate: {
@@ -161,16 +176,20 @@ function WbSpreadsheetComponent({
                 fill_up: fillCellsContextMenuItem(hot, 'up', isReadOnly),
                 ['separator_2' as 'redo']: '---------',
                 undo: {
-                  disabled: () => !hot.isUndoAvailable() || isReadOnly,
+                  disabled: () =>
+                    !getHotPlugin(hot, 'undoRedo').isUndoAvailable() ||
+                    isReadOnly,
                 },
                 redo: {
-                  disabled: () => !hot.isRedoAvailable() || isReadOnly,
+                  disabled: () =>
+                    !getHotPlugin(hot, 'undoRedo').isRedoAvailable() ||
+                    isReadOnly,
                 },
               } as const),
         };
 
   React.useEffect(() => {
-    if (hot === undefined) return;
+    if (hot === undefined || hasBatchEditRolledBack) return;
     hot.batch(() => {
       (mappings === undefined
         ? Promise.resolve({})
@@ -219,17 +238,21 @@ function WbSpreadsheetComponent({
   return (
     <section className="flex-1 overflow-hidden overscroll-none">
       <HotTable
+        autoColumnSize={{
+          syncLimit: '100%',
+          useHeaders: true,
+        }}
         autoWrapCol={autoWrapCol}
         autoWrapRow={autoWrapRow}
+        className="h-full"
         colHeaders={colHeaders}
         columns={columns}
         commentedCellClassName="htCommentCell"
         comments={comments}
         contextMenu={contextMenuConfig}
-        // eslint-disable-next-line functional/prefer-readonly-type
-        data={data as (string | null)[][]}
         enterBeginsEditing={enterBeginsEditing}
         enterMoves={enterMoves}
+        height="100%"
         hiddenColumns={hiddenColumns}
         hiddenRows={hiddenRows}
         invalidCellClassName="-"
@@ -243,9 +266,16 @@ function WbSpreadsheetComponent({
         placeholderCellClassName="htPlaceholder"
         readOnly={isReadOnly}
         ref={setHotTable}
-        rowHeaders
+        rowHeaders={(index) => String(index + 1)}
+        rowHeights={23}
         stretchH="all"
         tabMoves={tabMoves}
+        theme="ht-theme-classic"
+        viewportColumnRenderingOffset={12}
+        viewportRowRenderingOffset={40}
+        width="100%"
+        // eslint-disable-next-line functional/prefer-readonly-type
+        data={data as (string | null)[][]}
         {...hooks}
       />
     </section>

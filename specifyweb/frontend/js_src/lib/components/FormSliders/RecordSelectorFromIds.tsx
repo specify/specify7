@@ -43,6 +43,7 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   totalCount = ids.length + (typeof newResource === 'object' ? 1 : 0),
   isLoading: isExternalLoading = false,
   isInRecordSet = false,
+  recordSetId,
   onClose: handleClose,
   onSaved: handleSaved,
   onAdd: handleAdd,
@@ -66,8 +67,8 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
   readonly canRemove?: boolean;
   readonly totalCount?: number;
   readonly isLoading?: boolean;
-  // Record set ID, or false to not update the URL
   readonly isInRecordSet?: boolean;
+  readonly recordSetId?: number | undefined;
   readonly onClose: () => void;
   readonly onSaved: (resource: SpecifyResource<SCHEMA>) => void;
   readonly onClone:
@@ -235,7 +236,9 @@ export function RecordSelectorFromIds<SCHEMA extends AnySchema>({
               !resource?.isNew() ? (
                 <RecordSetAttachments
                   name={title as string}
+                  recordCount={totalCount}
                   records={records}
+                  recordSetId={isInRecordSet ? recordSetId : undefined}
                   onFetch={handleFetch}
                 />
               ) : undefined}

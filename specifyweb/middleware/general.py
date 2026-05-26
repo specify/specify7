@@ -1,6 +1,7 @@
 import traceback
 import json
-from typing import Any, Optional, Union, Dict, FrozenSet, List, Callable, Literal
+from typing import Any, Literal
+from collections.abc import Callable
 from django import http
 from django.core import serializers
 from django.db import models
@@ -15,7 +16,7 @@ def require_GET(function: Callable):
     return raw_require_http_methods(['HEAD', 'GET'])(function)
 
 
-def require_http_methods(_request_method_list: List[REQUEST_METHOD]):
+def require_http_methods(_request_method_list: list[REQUEST_METHOD]):
     request_method_list = set(_request_method_list)
     if 'GET' in _request_method_list:
         request_method_list.add('HEAD')
@@ -31,7 +32,7 @@ class SpecifyExceptionWrapper():
         self.status_code = getattr(self.exception, "status_code") if hasattr(
             self.exception, "status_code") else 500
 
-    def to_json(self) -> Dict:
+    def to_json(self) -> dict:
         result = {
             'exception': self.exception.__class__.__name__,
             'message': str(self.message),
@@ -42,8 +43,8 @@ class SpecifyExceptionWrapper():
         if isinstance(self.data, set):
             result['data'] = serialize_django_obj(self.data)
 
-        from ..specify import api
-        return api.toJson(result)
+        from ..specify.api.serializers import toJson
+        return toJson(result)
 
 
 class GeneralMiddleware:
@@ -57,8 +58,8 @@ class GeneralMiddleware:
     def process_view(self, request, view_func, view_args, view_kwargs):
         pass
 
-    def process_exception(self, request, exception) -> Optional[http.HttpResponse]:
-        from ..permissions.permissions import PermissionsException
+    def process_exception(self, request, exception) -> http.HttpResponse | None:
+        from specifyweb.backend.permissions.permissions import PermissionsException
         if not settings.DEBUG:
             if isinstance(exception, PermissionsException):
                 return http.JsonResponse(exception.to_json(), status=exception.status_code, safe=False)
@@ -78,7 +79,7 @@ class GeneralMiddleware:
                 return http.HttpResponse(exception.to_json(), status=exception.status_code)
 
 
-def serialize_django_obj(django_obj: FrozenSet[Union[models.QuerySet, models.Model]]) -> List[Dict[str, Any]] or Dict[str, Any]:
+def serialize_django_obj(django_obj: frozenset[models.QuerySet | models.Model]) -> list[dict[str, Any]] | dict[str, Any]:
     """Attempt to serialize two common objects in Django, a Queryset or a Model. 
     If the object is a Queryset, return a list of dictonaries containing the important (non-null) fields
     Similarly, if the object is a single Model, return a dictonary containing every field

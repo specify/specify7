@@ -22,6 +22,7 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext } from '../Core/Contexts';
+import { addMissingFields } from '../DataModel/addMissingFields';
 import { runAllFieldChecks } from '../DataModel/businessRules';
 import type { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
@@ -210,31 +211,36 @@ function Merging({
   const clones = sortedResources.slice(1);
 
   const [merged, setMerged] = useAsyncState(
-    React.useCallback(
-      async () =>
-        records === undefined || initialRecords.current === undefined
-          ? undefined
-          : postMergeResource(
-              initialRecords.current,
-              autoMerge(
-                table,
-                initialRecords.current,
-                userPreferences.get(
-                  'recordMerging',
-                  'behavior',
-                  'autoPopulate'
-                ),
-                target.id
-              )
-            ).then(async (merged) => {
-              const mergedResource = deserializeResource(
-                merged as SerializedResource<AnySchema>
-              );
-              if (merged !== undefined) await runAllFieldChecks(mergedResource);
-              return mergedResource;
-            }),
-      [table, records]
-    ),
+    React.useCallback(async () => {
+      if (
+        records === undefined ||
+        initialRecords.current === undefined ||
+        target === undefined
+      )
+        return undefined;
+
+      const shouldAutoPopulate = userPreferences.get(
+        'recordMerging',
+        'behavior',
+        'autoPopulate'
+      );
+
+      const mergedPayload = shouldAutoPopulate
+        ? await postMergeResource(
+            initialRecords.current,
+            autoMerge(table, initialRecords.current, false, target.id)
+          )
+        : addMissingFields(
+            table.name,
+            {} as Partial<SerializedResource<AnySchema>>
+          );
+
+      const mergedResource = deserializeResource(
+        mergedPayload as SerializedResource<AnySchema>
+      );
+      if (mergedPayload !== undefined) await runAllFieldChecks(mergedResource);
+      return mergedResource;
+    }, [table, records, target]),
     true
   );
 
@@ -303,21 +309,18 @@ function Merging({
         onMerge={(): void => {
           target.bulkSet(removeKey(merged.toJSON(), 'version'));
           loading(
-            ajax(
-              `/api/specify/${table.name.toLowerCase()}/replace/${target.id}/`,
-              {
-                method: 'POST',
-                headers: {
-                  Accept: 'application/json',
-                },
-                body: {
-                  old_record_ids: clones.map((clone) => clone.id),
-                  new_record_data: merged.toJSON(),
-                },
-                expectedErrors: [Http.NOT_ALLOWED],
-                errorMode: 'dismissible',
-              }
-            ).then(({ data, response }) => {
+            ajax(`/merge/${table.name.toLowerCase()}/replace/${target.id}/`, {
+              method: 'POST',
+              headers: {
+                Accept: 'application/json',
+              },
+              body: {
+                old_record_ids: clones.map((clone) => clone.id),
+                new_record_data: merged.toJSON(),
+              },
+              expectedErrors: [Http.NOT_ALLOWED],
+              errorMode: 'dismissible',
+            }).then(({ data, response }) => {
               if (!response.ok) return;
               setMergeId(data);
             })

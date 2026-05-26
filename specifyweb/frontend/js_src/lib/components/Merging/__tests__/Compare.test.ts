@@ -27,28 +27,19 @@ describe('findDiffering', () => {
   test('without matching fields', () =>
     expect(
       findDiffering(false, tables.Agent, getResources()).map(({ name }) => name)
-    ).toMatchInlineSnapshot(`
-      [
-        "date1",
-        "date2Precision",
-        "lastName",
-        "middleInitial",
-      ]
-    `));
+    ).toEqual(['date1', 'date2Precision', 'lastName', 'middleInitial']));
 
   test('with matching fields', () =>
     expect(
       findDiffering(true, tables.Agent, getResources()).map(({ name }) => name)
-    ).toMatchInlineSnapshot(`
-      [
-        "date1",
-        "date2",
-        "date1Precision",
-        "date2Precision",
-        "firstName",
-        "lastName",
-        "middleInitial",
-        "division",
-      ]
-    `));
+    ).toEqual([
+      'date1',
+      'date2',
+      'date1Precision',
+      'date2Precision',
+      'firstName',
+      'lastName',
+      'middleInitial',
+      'division',
+    ]));
 });
