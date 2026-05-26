@@ -115,14 +115,16 @@ export const notificationRenderers: IR<
       </>
     );
   },
-  'query-export-to-csv-complete'(notification) {
+  'query-export-to-kml-complete'(notification) {
     return (
       <>
-        {notificationsText.queryExportToCsvCompleted()}
+        {notificationsText.queryExportToKmlCompleted()}
         <Link.Success
           className="w-fit"
           download
-          href={`/static/depository/${notification.payload.file}`}
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
         >
           {notificationsText.download()}
         </Link.Success>
