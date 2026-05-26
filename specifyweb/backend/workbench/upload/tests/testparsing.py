@@ -21,7 +21,6 @@ from ..upload_result import Uploaded, Matched, NullRecord, ParseFailures, \
     WorkBenchParseFailure
 from ..upload_results_schema import schema as upload_results_schema
 from ..upload_table import UploadTable
-from specifyweb.specify import models
 
 from django.conf import settings
 
