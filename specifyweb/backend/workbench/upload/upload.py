@@ -455,7 +455,7 @@ from django.conf import settings
 import csv
 import re
 import os
-from specifyweb.notifications.models import Message
+from specifyweb.backend.notifications.models import Message
 import uuid
 do_upload_csv = do_upload
 
