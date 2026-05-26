@@ -1091,76 +1091,9 @@ def run_batch_edit_query(props: BatchEditProps):
         omit_relationships,
     )
 
-    logger.info(key_and_headers)
-    headers_enumerated = enumerate(key_and_headers)
-
     # We would have arbitarily sorted the columns, so our columns will not be correct.
     # Rather than sifting the data, we just add a default visual order.
-    visual_order_groups: list[list[int]] = [[] for _ in visible_fields]
-    group_records: list[int] = [[] for _ in visible_fields]
-    record_id = 0
-    prev_duplicate_index: int | None = None
-    for index, (key, _header) in headers_enumerated:
-        # Find the column's original position if it existed in the origin query
-        original_place = key[0]
-        duplicate_index = key[1]
-        if duplicate_index != prev_duplicate_index:
-            record_id = record_id + 1
-
-        if original_place < len(visible_fields):
-            visual_order_groups[original_place].append(index)
-            group_records[original_place] = record_id
-        else:
-            # New field/column. Add it to the end of the dataset.
-            visual_order_groups.append([index])
-            group_records.append(record_id)
-
-        prev_duplicate_index = duplicate_index
-
-    visual_order: list[int] = []
-    dupe_index = 0
-    prev_bucket_len = -1
-    prev_record_id = 0
-    first_record_index = -1
-    index = 0
-    while True:
-        first_index = index
-        bucket = visual_order_groups[index]
-        record_id = group_records[index]
-        next_dupe_index = dupe_index
-
-        # backtrack? To group all fields belonging to a record together.
-        if len(bucket) != prev_bucket_len or record_id != prev_record_id:
-            if first_record_index > 0 and first_record_index < len(visual_order_groups) and dupe_index+1 < len(visual_order_groups[first_record_index]):
-                index = first_record_index
-                dupe_index = dupe_index + 1
-                next_dupe_index = dupe_index + 1
-                prev_bucket_len = len(visual_order_groups[first_record_index])
-                continue
-            else:
-                first_record_index = index
-                dupe_index = 0
-                next_dupe_index = 0
-                index += 1
-                prev_bucket_len = len(bucket)
-        else:
-            index += 1
-            prev_bucket_len = len(bucket)
-
-        # add column to visual order
-        if dupe_index < len(bucket):
-            visual_order.append(bucket[dupe_index])
-        else:
-            logger.warning(f"WRONG {first_index} {bucket}:{record_id} (Pass {dupe_index + 1}) -> {index} (Pass {next_dupe_index + 1})")
-            break
-
-        prev_record_id = record_id
-
-        # Went through all buckets
-        if index >= len(visual_order_groups):
-            break
-        logger.info(f"{first_index} {bucket}:{record_id} (Pass {dupe_index + 1}) -> {index} (Pass {next_dupe_index + 1})")
-        dupe_index = next_dupe_index
+    visual_order = reorder_batch_edit_columns(key_and_headers, visible_fields)
 
     headers = Func.second(key_and_headers)
 
@@ -1174,6 +1107,78 @@ def run_batch_edit_query(props: BatchEditProps):
         json_upload_plan,
         visual_order,
     )
+
+def reorder_batch_edit_columns(key_and_headers: list[tuple[tuple[int, int], str]], visible_fields: list[int]) -> list[int]:
+    """
+        Columns are usually not naturally in query-order. This function provides an order that matches the query-order as closely as possible.
+        Column keys: (original_position, duplicate_index)
+        To achieve query-order, these assumptions are made:
+        1. Duplicate columns are grouped by record: (0, 0), (1, 0), (0, 1), (1, 1), (0, 2), (1, 2), (2, 0)
+            - If duplicate_index goes back to 0 when looking at the columns in sequence, thats a sign you're on a different record.
+        2. New columns will have an original_position greater than the query's number of fields.
+    """
+    headers_enumerated = enumerate(key_and_headers)
+
+    # Multiple (duplicate) columns can exist in the same position. Group them, the final order will be determined later.
+    visual_order_groups: list[list[int]] = [[] for _ in visible_fields]
+    # Keep track of the record id of each group of columns in visual_order_groups
+    group_record_ids: list[int] = [[] for _ in visible_fields]
+    record_id = 0
+    prev_duplicate_index: int | None = None
+    for index, (key, _header) in headers_enumerated:
+        # Find the column's original position if it existed in the origin query
+        original_position = key[0]
+        duplicate_index = key[1]
+        if duplicate_index != prev_duplicate_index:
+            # (Assumption #1) Since duplicate_index has gone down, assume we are on a different record's fields.
+            record_id = record_id + 1
+
+        if original_position < len(visible_fields): # Assumption #2
+            # Field existed in original query, place it in its original position.
+            visual_order_groups[original_position].append(index)
+            group_record_ids[original_position] = record_id
+        else:
+            # New field/column. Add it to the end of the dataset.
+            visual_order_groups.append([index])
+            group_record_ids.append(record_id)
+
+        prev_duplicate_index = duplicate_index
+
+    # Determine final visual order. Flatten visual_order_groups into a single list.
+    # Visit duplicate columns within a record group in order. So (0, 0), (1, 0), (0, 1), (1, 1)
+    visual_order: list[int] = []
+    current_dup_index = 0 # Which duplicate index is currently being visited
+    prev_group_len = 0 # Keep track of group length as an additional indicator for when we've moved to a different record.
+    prev_record_id = 0
+    record_start_index: int | None = None # The first group belonging to the current record
+    index = 0
+    while index < len(visual_order_groups):
+        group = visual_order_groups[index]
+        record_id = group_record_ids[index]
+
+        # Check if we're on a different record
+        if len(group) != prev_group_len or record_id != prev_record_id:
+            if record_start_index is not None and record_start_index < len(visual_order_groups) and current_dup_index+1 < len(visual_order_groups[record_start_index]):
+                # Backtrack to group all fields belonging to the record with this duplicate_index together.
+                index = record_start_index
+                current_dup_index = current_dup_index + 1
+                continue
+            else:
+                # All duplicates have been visited. Continue and mark the start of this record.
+                record_start_index = index
+                current_dup_index = 0
+
+        index += 1
+        prev_record_id = record_id
+        prev_group_len = len(group)
+
+        # Add this column to visual order
+        if current_dup_index < len(group):
+            visual_order.append(group[current_dup_index])
+        else:
+            break
+    
+    return visual_order
 
 
 def make_dataset(
