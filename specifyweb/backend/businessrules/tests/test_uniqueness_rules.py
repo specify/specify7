@@ -75,11 +75,11 @@ class UniquenessTests(ApiTests):
         self._create_uniqueness_rule("Accession", ["text1", "text2"], [])
 
         uniqueness_rules.create_uniqueness_rule(
-            "Accession",
-            self.discipline,
-            False,
-            ["text1"],
-            [],
+            model_name="Accession",
+            discipline=self.discipline,
+            is_database_constraint=False,
+            fields=["text1"],
+            scopes=[]
         )
 
         field_sets = {
@@ -101,11 +101,11 @@ class UniquenessTests(ApiTests):
         subset = self._create_uniqueness_rule("Accession", ["text1"], [])
 
         uniqueness_rules.remove_uniqueness_rule(
-            "Accession",
-            self.discipline,
-            False,
-            ["text1"],
-            [],
+            model_name="Accession",
+            discipline=self.discipline,
+            is_database_constraint=False,
+            fields=["text1"],
+            scopes=[]
         )
 
         self.assertTrue(
