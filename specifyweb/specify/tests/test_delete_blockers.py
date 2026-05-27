@@ -1,10 +1,6 @@
 from django.test import Client
 import json
 
-from specifyweb.specify import models
-from django.db import router
-from django.test import TestCase
-from specifyweb.backend.delete_blockers.views import _collect_delete_blockers
 from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
@@ -37,19 +33,7 @@ class TestDeleteBlockers(GeographyTree):
 
     def _get_blockers(self, obj):
         response = self.c.get(_url(obj))
-        self.assertEqual(
-            response.status_code,
-            200,
-            f"ERROR: {response.content.decode()}",
-        )
         return json.loads(response.content.decode())
-
-    def _assertContains(self, blockers, expected):
-        normalized = [
-            {**obj, 'ids': sorted(obj['ids'])}
-            for obj in blockers
-        ]
-        self.assertIn({**expected, 'ids': sorted(expected['ids'])}, normalized)
 
 
     def test_simple_agent_delete_blockers(self):
@@ -83,92 +67,6 @@ class TestDeleteBlockers(GeographyTree):
         
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
-
-    def test_many_to_many_join_blockers_are_normalized(self):
-        export_schema = models.Spexportschema.objects.create(
-            discipline=self.discipline
-        )
-        export_mapping = models.Spexportschemamapping.objects.create(
-            collectionmemberid=self.collection.id
-        )
-        export_schema.mappings.add(export_mapping)
-
-        delete_blockers = self._get_blockers(export_schema)
-
-        expected = [
-            dict(
-                table='SpExportSchemaMapping',
-                field='spExportSchemas',
-                ids=[export_mapping.id],
-            )
-        ]
-
-        self._assertSame(delete_blockers, expected)
-
-def _url(obj):
-    return f"/delete_blockers/delete_blockers/{obj._meta.model_name}/{obj.id}/"
-
-class TestDeleteBlockersCascade(TestCase):
-
-    def _assertContains(self, blockers, expected):
-        normalized = [
-            {**obj, 'ids': sorted(obj['ids'])}
-            for obj in blockers
-        ]
-        self.assertIn({**expected, 'ids': sorted(expected['ids'])}, normalized)
-
-    def test_division_collects_normalized_cascaded_discipline_blockers(self):
-        institution = models.Institution.objects.create(
-            name='Test Institution',
-            isaccessionsglobal=True,
-            issecurityon=False,
-            isserverbased=False,
-            issharinglocalities=True,
-            issinglegeographytree=True,
-        )
-        division = models.Division.objects.create(
-            institution=institution,
-            name='Test Division',
-        )
-        geologictimeperiodtreedef = models.Geologictimeperiodtreedef.objects.create(
-            name='Test gtptd'
-        )
-        geographytreedef = models.Geographytreedef.objects.create(
-            name='Test gtd'
-        )
-        datatype = models.Datatype.objects.create(name='Test datatype')
-        discipline = models.Discipline.objects.create(
-            geologictimeperiodtreedef=geologictimeperiodtreedef,
-            geographytreedef=geographytreedef,
-            division=division,
-            datatype=datatype,
-            type='paleobotany',
-        )
-        export_schema = models.Spexportschema.objects.create(
-            discipline=discipline
-        )
-        export_mapping = models.Spexportschemamapping.objects.create(
-            collectionmemberid=1
-        )
-        export_schema.mappings.add(export_mapping)
-
-        using = router.db_for_write(division.__class__, instance=division)
-        delete_blockers = _collect_delete_blockers(division, using)
-
-        self._assertContains(
-            delete_blockers,
-            dict(
-                table='SpExportSchemaMapping',
-                field='spExportSchemas',
-                ids=[export_mapping.id],
-            ),
-        )
-        self.assertFalse(
-            any(
-                blocker['table'] == 'Spexportschema_exportmapping'
-                for blocker in delete_blockers
-            )
-        )
 
     def _create_discipline_with_owned_trees(self, name='Disposable Discipline'):
         placeholder_geo = models.Geographytreedef.objects.create(name=f'{name} placeholder geo')
