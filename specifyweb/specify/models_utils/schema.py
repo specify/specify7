@@ -556,6 +556,41 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
             }
         ),
         (
+            f"/bulk_copy/bulk_delete/{table.django_name}/",
+            {
+                "post": {
+                    "tags": [table.django_name],
+                    "summary": f"Delete multiple records from the {table.django_name} table",
+                    "description": f"Delete multiple records from the {table.django_name} table",
+                    "parameters": [],
+                    "requestBody": {
+                        "required": True,
+                        "description": "A JSON array of resource IDs to delete",
+                        "content": {
+                            "application/json": {
+                                "schema": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "number",
+                                        "minimum": 0,
+                                    },
+                                }
+                            }
+                        },
+                    },
+                    "responses": {
+                        "204": {
+                            "responses": {
+                                "204": {
+                                    "description": "Empty response",
+                                },
+                            },
+                        }
+                    },
+                },
+            }
+        ),
+        (
             f"/api/specify/{table.django_name}/{{id}}/",
             {
                 "parameters": [

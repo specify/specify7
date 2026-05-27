@@ -1,9 +1,10 @@
 import json
 
 from specifyweb.backend.permissions.permissions import table_permissions_checker
-from django.http import (HttpResponse, HttpResponseNotAllowed)
+from django.http import (HttpResponse, HttpResponseNotAllowed, QueryDict)
+from django.db import transaction
 
-from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.crud import delete_resource, post_resource
 from specifyweb.specify.api.dispatch import HttpResponseCreated
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
 
@@ -53,3 +54,22 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
         resp_objs.append(_obj_to_data(obj, checker))
 
     return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
+
+@transaction.atomic()
+def collection_dispatch_bulk_delete(request, model) -> HttpResponse:
+    version = None
+
+    if request.method != 'POST':
+        return HttpResponseNotAllowed(['POST'])
+
+    data = json.loads(request.body)
+    for id in data.get('ids', []):
+        delete_resource(
+            request.specify_collection,
+            request.specify_user_agent,
+            model,
+            id,
+            version
+        )
+
+    return HttpResponse('', status=204)

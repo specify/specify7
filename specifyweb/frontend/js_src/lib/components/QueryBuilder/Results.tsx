@@ -35,6 +35,8 @@ import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
+import { QueryBulkDelete } from './BulkDelete';
+import { userInformation } from '../InitialContext/userInformation';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -122,6 +124,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   } = useFetchQueryResults(props);
 
   const canMergeTable = canMerge(table);
+  const canDeleteTable = userInformation.isadmin;
 
   const visibleColumns = React.useMemo(
     () =>
@@ -382,6 +385,21 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 table={table}
                 onDeleted={handleDelete}
                 onMerged={handleReRun}
+              />
+            ) : undefined}
+            {canDeleteTable ? (
+              <QueryBulkDelete
+                selectedRows={selectedRows}
+                totalCount={totalCount}
+                table={table}
+                onDeleted={handleDelete}
+                recordIds={(): RA<number> =>
+                  loadedResults
+                    .filter((result) =>
+                      selectedRows.has(result[queryIdField] as number)
+                    )
+                    .map((result) => result[queryIdField] as number)
+                }
               />
             ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
