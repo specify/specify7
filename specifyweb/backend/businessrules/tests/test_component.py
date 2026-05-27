@@ -44,12 +44,11 @@ class enable_unique_catnum_pref:
         return wrapper
 
     def __enter__(self):
-        import specifyweb.backend.businessrules.utils as busrule_utils
+        from specifyweb.backend.businessrules.utils import _get_unique_catnum_across_comp_co_coll_pref
 
-        self._patcher = patch.object(
-            busrule_utils,
-            "_get_unique_catnum_across_comp_co_coll_pref",
-            return_value=True
+        self._patcher = patch(
+            "specifyweb.backend.businessrules.utils._get_unique_catnum_across_comp_co_coll_pref",
+        return_value=True
         )
         return self._patcher.start()
 
@@ -112,10 +111,13 @@ class ComponentTests(ApiTests):
         test_component.delete()
 
     def test_unique_catnum_pref_disabled(self):
-        import specifyweb.backend.businessrules.utils as busrule_utils
+        from specifyweb.backend.businessrules.utils import (
+            _get_unique_catnum_across_comp_co_coll_pref,
+        )
 
-        is_pref_enabled = busrule_utils._get_unique_catnum_across_comp_co_coll_pref(
+        is_pref_enabled = _get_unique_catnum_across_comp_co_coll_pref(
             self.collection, self.specifyuser)
+        
         self.assertFalse(is_pref_enabled)
         shared_catalognumber = "shared_catnum"
 
