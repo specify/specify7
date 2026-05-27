@@ -34,7 +34,6 @@ from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
-from .remote_prefs import get_all_remote_prefs_database
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
@@ -640,6 +639,9 @@ def view_helper(request, limit):
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
+
+    from .remote_prefs import get_all_remote_prefs_database
+
     return HttpResponse(get_all_remote_prefs_database(), content_type='text/x-java-properties')
 
 @require_http_methods(['GET', 'HEAD'])
