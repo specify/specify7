@@ -7,7 +7,6 @@ from specifyweb.specify.models import (
     Collectionobject,
     Component,
 )
-import specifyweb.backend.businessrules.utils as busrule_utils
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
@@ -45,6 +44,8 @@ class enable_unique_catnum_pref:
         return wrapper
 
     def __enter__(self):
+        import specifyweb.backend.businessrules.utils as busrule_utils
+
         self._patcher = patch.object(
             busrule_utils,
             "_get_unique_catnum_across_comp_co_coll_pref",
@@ -111,6 +112,8 @@ class ComponentTests(ApiTests):
         test_component.delete()
 
     def test_unique_catnum_pref_disabled(self):
+        import specifyweb.backend.businessrules.utils as busrule_utils
+
         is_pref_enabled = busrule_utils._get_unique_catnum_across_comp_co_coll_pref(
             self.collection, self.specifyuser)
         self.assertFalse(is_pref_enabled)
