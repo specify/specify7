@@ -1053,7 +1053,10 @@ datamodel = Datamodel(tables=[
             Field(name='verbatimDate', column='VerbatimDate', indexed=False, unique=False, required=False, type='java.lang.String', length=50),
             Field(name='verbatimLocality', column='VerbatimLocality', indexed=False, unique=False, required=False, type='text', length=2048),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
-            Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte')
+            Field(name='visibility', column='Visibility', indexed=False, unique=False, required=False, type='java.lang.Byte'),
+            Field(name='associatedTaxa', column='AssociatedTaxa', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='habitat', column='Habitat', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='eventType', column='EventType', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='CEStationFieldNumberIDX', column_names=['StationFieldNumber']),
@@ -1468,7 +1471,8 @@ datamodel = Datamodel(tables=[
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='webPortalURI', column='WebPortalURI', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='webSiteURI', column='WebSiteURI', indexed=False, unique=False, required=False, type='java.lang.String', length=255)
+            Field(name='webSiteURI', column='WebSiteURI', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
+            Field(name='basisOfRecord', column='BasisOfRecord', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='CollectionNameIDX', column_names=['CollectionName']),
@@ -1564,6 +1568,8 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='disposition', column='Disposition', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='establishmentMeans', column='EstablishmentMeans', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='FieldNumberIDX', column_names=['FieldNumber']),
@@ -1811,7 +1817,10 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo6', column='YesNo6', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo7', column='YesNo7', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo8', column='YesNo8', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo9', column='YesNo9', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo9', column='YesNo9', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='lifeStage', column='LifeStage', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='sex', column='Sex', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='behavior', column='Behavior', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='COLOBJATTRSColMemIDX', column_names=['CollectionMemberID'])
@@ -2942,7 +2951,8 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='identificationVerificationStatus', column='IdentificationVerificationStatus', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='DeterminedDateIDX', column_names=['DeterminedDate']),
@@ -4347,7 +4357,9 @@ datamodel = Datamodel(tables=[
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='uri', column='Uri', indexed=False, unique=False, required=False, type='java.lang.String', length=255),
-            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
+            Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
+            Field(name='datasetName', column='DatasetName', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='rightsHolder', column='RightsHolder', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='InstNameIDX', column_names=['Name']),
@@ -4860,7 +4872,13 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='coordinatePrecision', column='CoordinatePrecision', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='verbatimCoordinates', column='VerbatimCoordinates', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='verbatimSRS', column='VerbatimSRS', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='footprintSRS', column='FootprintSRS', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='footprintWKT', column='FootprintWKT', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
+            Field(name='footprintSpatialFit', column='FootprintSpatialFit', indexed=False, unique=False, required=False, type='java.math.BigDecimal'),
         ],
         indexes=[
             Index(name='localityNameIDX', column_names=['LocalityName']),
@@ -4882,7 +4900,8 @@ datamodel = Datamodel(tables=[
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='paleoContext', type='many-to-one',required=False, relatedModelName='PaleoContext', column='PaleoContextID', otherSideName='localities'),
             Relationship(name='visibilitySetBy', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='VisibilitySetByID'),
-            Relationship(name='collectingEvents', type='one-to-many', required=False, relatedModelName='collectingEvent', otherSideName='locality')
+            Relationship(name='collectingEvents', type='one-to-many', required=False, relatedModelName='collectingEvent', otherSideName='locality'),
+            Relationship(name='locationAccordingToID', type='many-to-one',required=False, relatedModelName='Agent', column='LocationAccordingToID'),
         ],
         fieldAliases=[
 
@@ -5008,7 +5027,8 @@ datamodel = Datamodel(tables=[
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo4', column='YesNo4', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo5', column='YesNo5', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='verbatimDepth', column='VerbatimDepth', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
 
@@ -5517,7 +5537,8 @@ datamodel = Datamodel(tables=[
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer'),
             Field(name='yesNo1', column='YesNo1', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='yesNo2', column='YesNo2', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean')
+            Field(name='yesNo3', column='YesNo3', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
+            Field(name='disposition', column='Disposition', indexed=False, unique=False, required=False, type='java.lang.String', length=64),
         ],
         indexes=[
             Index(name='PreparedDateIDX', column_names=['preparedDate']),

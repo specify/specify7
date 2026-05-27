@@ -455,3 +455,59 @@ MIGRATION_0040_UPDATE_FIELDS = {
 MIGRATION_0040_HIDDEN_FIELDS = {
     'Component': ['componentid','verbatimname','role', 'proportion','uniqueidentifier','text1','text2','text3', 'text4','text5','text6', 'yesno1','yesno2','yesno3','yesno4','yesno5','yesno6','integer1','integer2','integer3','integer4','integer5','integer6','number1', 'number2','number3','number4','number5','number6','version','collectionobject', 'absoluteages', 'relativeages', 'identifieddate', 'identifiedby']
 }
+
+MIGRATION_0045_FIELDS = {
+    'CollectionObject': [
+        (
+            'disposition',
+            'Disposition',
+            'The verbatim state of an object with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".',
+            True
+        ),
+        (
+            'establishmentmeans',
+            'Establishment Means',
+            'Provides information about whether an organism or organisms have been introduced to a given place and time through the direct or indirect activity of modern humans.',
+            True
+        ),
+    ],
+    'CollectionObjectAttribute': [
+        ('lifestage','Life Stage', 'The age class or life stage of the organism at the time the occurrence was recorded.', True),
+        ('sex', 'Sex', 'The sex of the biological individual(s) represented in the occurrence.', True),
+        ('behavior', 'Behavior', 'A description of the behavior shown by the subject at the time the Occurrence was recorded. Recommended best practice is to use a controlled vocabulary.', True)
+    ],
+    'CollectingEvent': [   
+        ('associatedtaxa', 'Associated Taxa', 'A list of taxa associated with this occurrence (e.g., host, parasite, or habitat associate). Best practice is to separate values with a pipe.', True), 
+        ('habitat', 'Habitat', 'A category or description of the habitat in which the Event occurred.', True),
+        ('eventtype', 'Event Type', 'The nature of the event (e.g., "survey", "opportunistic").', True)
+    ],
+    'Collection': [
+        ('basisofrecord', 'Basis Of Record', 'The specific nature of the data record. Recommended best practice is to use a controlled vocabulary such as the set of local names of the identifiers for classes in Darwin Core.', True)
+    ],
+    'LocalityDetail': [
+        ('verbatimdepth', 'Verbatim Depth', 'The original description of the depth below the local surface.', True)
+    ],
+    'Determination': [
+        ('identificationverificationstatus', 'Identification Precision', 'A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.', True)
+    ],
+    'Preparation': [
+        ('disposition', 'Disposition', 'The verbatim state of an entity with respect to the collection. Examples: "in collection", "missing", "voucher elsewhere".', True)
+    ],
+    'Attachment': [
+        ('type', 'Type', 'Type', False)
+    ],
+    'Institution': [
+        ('rightsholder', 'Rights Holder', 'A person or organization owning or managing rights over the resource.', True),
+        ('datasetname', 'Dataset Name', 'The name identifying the data set from which the record was derived.', True),
+        ('license', 'License', 'A legal document giving official permission to do something with the resource. Recommended best practice is to identify the license using a URI (e.g. http://creativecommons.org/publicdomain/zero/1.0/).', True)
+    ],
+    'Locality': [
+        ('coordinateprecision', 'Coordinate Precision', 'A decimal representation of the precision of the coordinates given in the Decimal Latitude and Decimal Longitude.', True),
+        ('verbatimcoordinates', 'Verbatim Coordinates', 'The verbatim original spatial coordinates of the Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in Verbatim SRS and the coordinate system should be stored in Verbatim Coordinate System.', True),
+        ('verbatimsrs', 'Verbatim SRS', 'The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which coordinates given in Verbatim Coordinates are based. Recommended best practice is use the EPSG code.', True),
+        ('footprintsrs', 'Footprint SRS', 'The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geometry given in dwc:footprintWKT is based.', True),
+        ('footprintwkt', 'Footprint WKT', 'A Well-Known Text (WKT) representation of the shape (footprint, geometry) that defines the dcterms:Location. A dcterms:Location may have both a point-radius representation (see dwc:decimalLatitude) and a footprint representation, and they may differ from each other.', True),
+        ('footprintspatialfit', 'Footprint Spatial Fit', 'The ratio of the area of the dwc:footprintWKT to the area of the true (original, or most specific) spatial representation of the dcterms:Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given dwc:footprintWKT does not completely contain the original representation. The dwc:footprintSpatialFit is undefined (and should be left empty) if the original representation is any geometry without area (e.g., a point or polyline) and without uncertainty and the given georeference is not that same geometry (without uncertainty). If both the original and the given georeference are the same point, the dwc:footprintSpatialFit is 1.', True),
+        ('locationaccordingtoID', 'Location According To', 'Information about the source of this Location information. Could be a publication (gazetteer), person s name, organization, etc.', True)
+    ]
+}

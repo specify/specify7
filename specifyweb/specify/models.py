@@ -989,6 +989,9 @@ class Collectingevent(models.Model):
     verbatimlocality = models.TextField(blank=True, null=True, unique=False, db_column='VerbatimLocality', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     visibility = models.SmallIntegerField(blank=True, null=True, unique=False, db_column='Visibility', db_index=False)
+    associatedtaxa = models.CharField(blank=True, null=True, max_length=64, db_column='AssociatedTaxa', db_index=False)
+    habitat = models.CharField(blank=True, null=True, max_length=64, db_column='Habitat', db_index=False)
+    eventtype = models.CharField(blank=True, null=True, max_length=64, db_column='EventType', db_index=False)
 
     # Relationships: Many-to-One
     collectingeventattribute = models.ForeignKey('CollectingEventAttribute', db_column='CollectingEventAttributeID', related_name='collectingevents', null=True, on_delete=protect_with_blockers)
@@ -1392,6 +1395,7 @@ class Collection(models.Model):
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
     webportaluri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebPortalURI', db_index=False)
     websiteuri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='WebSiteURI', db_index=False)
+    basisofrecord = models.CharField(blank=True, null=True, max_length=64, db_column='BasisOfRecord', db_index=False)
 
     # Relationships: Many-to-One
     admincontact = models.ForeignKey('Agent', db_column='AdminContactID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -1479,6 +1483,8 @@ class Collectionobject(models.Model):
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
     yesno6 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo6', db_index=False)
+    disposition = models.CharField(blank=True, null=True, max_length=64, db_column='Disposition', db_index=False)
+    establishmentmeans = models.CharField(blank=True, null=True, max_length=64, db_column='EstablishmentMeans', db_index=False)
 
     # Relationships: Many-to-One
     accession = models.ForeignKey('Accession', db_column='AccessionID', related_name='collectionobjects', null=True, on_delete=protect_with_blockers)
@@ -1707,6 +1713,9 @@ class Collectionobjectattribute(models.Model):
     yesno7 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo7', db_index=False)
     yesno8 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo8', db_index=False)
     yesno9 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo9', db_index=False)
+    lifestage = models.CharField(blank=True, null=True, max_length=64, db_column='LifeStage', db_index=False)
+    sex = models.CharField(blank=True, null=True, max_length=64, db_column='Sex', db_index=False)
+    behavior = models.CharField(blank=True, null=True, max_length=64, db_column='Behavior', db_index=False)
 
     # Relationships: Many-to-One
     agent1 = models.ForeignKey('Agent', db_column='Agent1ID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -2798,6 +2807,7 @@ class Determination(models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
+    identificationverificationstatus = models.CharField(blank=True, null=True, max_length=64, db_column='IdentificationVerificationStatus', db_index=False)
 
     # Relationships: Many-to-One
     collectionobject = models.ForeignKey('CollectionObject', db_column='CollectionObjectID', related_name='determinations', null=False, on_delete=models.CASCADE)
@@ -4117,6 +4127,8 @@ class Institution(models.Model):
     timestampmodified = models.DateTimeField(blank=True, null=True, unique=False, db_column='TimestampModified', db_index=False, default=timezone.now) # auto_now=True
     uri = models.CharField(blank=True, max_length=255, null=True, unique=False, db_column='Uri', db_index=False)
     version = models.IntegerField(blank=True, null=False, unique=False, db_column='Version', db_index=False, default=0)
+    datasetname = models.CharField(blank=True, null=True, max_length=64, db_column='DatasetName', db_index=False)
+    rightsholder = models.CharField(blank=True, null=True, max_length=64, db_column='RightsHolder', db_index=False)
 
     # Relationships: Many-to-One
     address = models.ForeignKey('Address', db_column='AddressID', related_name='insitutions', null=True, on_delete=protect_with_blockers)
@@ -4605,6 +4617,12 @@ class Locality(models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
+    coordinateprecision = models.CharField(blank=True, null=True, max_length=64, db_column='CoordinatePrecision', db_index=False)
+    verbatimcoordinates = models.CharField(blank=True, null=True, max_length=64, db_column='VerbatimCoordinates', db_index=False)
+    verbatimsrs = models.CharField(blank=True, null=True, max_length=64, db_column='VerbatimSRS', db_index=False)
+    footprintsrs = models.CharField(blank=True, null=True, max_length=64, db_column='FootprintSRS', db_index=False)
+    footprintwkt = models.CharField(blank=True, null=True, max_length=64, db_column='FootprintWKT', db_index=False)
+    footprintspatialfit = models.DecimalField(blank=True, max_digits=22, decimal_places=10, null=True, unique=False, db_column='FootprintSpatialFit', db_index=False)
 
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
@@ -4613,6 +4631,7 @@ class Locality(models.Model):
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     paleocontext = models.ForeignKey('PaleoContext', db_column='PaleoContextID', related_name='localities', null=True, on_delete=protect_with_blockers)
     visibilitysetby = models.ForeignKey('SpecifyUser', db_column='VisibilitySetByID', related_name='+', null=True, on_delete=protect_with_blockers)
+    locationaccordingto = models.ForeignKey('Agent', db_column='LocationAccordingToID', related_name='+', null=True, on_delete=protect_with_blockers)
 
     class Meta:
         db_table = 'locality'
@@ -4746,7 +4765,7 @@ class Localitydetail(models.Model):
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
     yesno4 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo4', db_index=False)
     yesno5 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo5', db_index=False)
-
+    verbatimdepth = models.CharField(blank=True, null=True, max_length=64, db_column='VerbatimDepth', db_index=False)
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     locality = models.ForeignKey('Locality', db_column='LocalityID', related_name='localitydetails', null=True, on_delete=models.CASCADE)
@@ -5229,6 +5248,7 @@ class Preparation(model_extras.Preparation):
     yesno1 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo1', db_index=False)
     yesno2 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo2', db_index=False)
     yesno3 = models.BooleanField(blank=True, null=True, unique=False, db_column='YesNo3', db_index=False)
+    disposition = models.CharField(blank=True, null=True, max_length=64, db_column='Disposition', db_index=False)
 
     # Relationships: Many-to-One
     alternatestorage = models.ForeignKey('Storage', db_column='AlternateStorageID', related_name='+', null=True, on_delete=protect_with_blockers)
