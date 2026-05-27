@@ -13,20 +13,20 @@
 #
 
 services:
-  mariadb:
-    container_name: mariadb
-    image: mariadb:11.8
-    volumes:
-      - "database:/var/lib/mysql" # the data directory for mariadb
-      - "./seed-database:/docker-entrypoint-initdb.d"
-    ports:
-      - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
-    command: --max_allowed_packet=1073741824
-    environment:
-      - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
-      - MYSQL_DATABASE=${DATABASE_NAME}
-      - MYSQL_USER=${MASTER_NAME}
-      - MYSQL_PASSWORD=${MASTER_PASSWORD}
+  # mariadb:
+  #   container_name: mariadb
+  #   image: mariadb:11.8
+  #   volumes:
+  #     - "database:/var/lib/mysql" # the data directory for mariadb
+  #     - "./seed-database:/docker-entrypoint-initdb.d"
+  #   ports:
+  #     - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
+  #   command: --max_allowed_packet=1073741824
+  #   environment:
+  #     - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
+  #     - MYSQL_DATABASE=${DATABASE_NAME}
+  #     - MYSQL_USER=${MASTER_NAME}
+  #     - MYSQL_PASSWORD=${MASTER_PASSWORD}
 
   specify7:
     container_name: specify7
@@ -43,7 +43,7 @@ services:
       # node user in the webpack container. Adding webpack to the
       # depends_on will hopefully stop that.
       - webpack
-      - mariadb
+      # - mariadb
     volumes:
       - "./config:/opt/Specify/config:ro" # provides Specify 6 files to Specify 7 and the web server
       - "static-files:/volumes/static-files" # provides Specify 7 static files to the web server
@@ -113,6 +113,6 @@ services:
 
 volumes:
   attachments: # the asset-servers attachment files
-  database: # the data directory for mariadb
+  # database: # the data directory for mariadb
   static-files: # provides Specify 7 static files to the web server
   webpack-output:
