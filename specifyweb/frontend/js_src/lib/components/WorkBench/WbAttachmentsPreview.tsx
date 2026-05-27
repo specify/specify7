@@ -40,10 +40,10 @@ import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { FilePicker } from '../Molecules/FilePicker';
 import { PopupWindow } from '../Molecules/PopupWindow';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
 import { handleWorkbenchSave } from '../WbActions/WbSave';
 import type { Dataset } from '../WbPlanView/Wrapped';
-import { collectionPreferences } from '../Preferences/collectionPreferences';
 import {
   BASE_TABLE_NAME,
   deleteAttachmentFromRow,
@@ -311,11 +311,12 @@ function DatasetAttachmentPreview({
         <Button.Small
           className="h-full"
           disabled={
-            dataSetAttachment !== attachments.at(-1)?.spDataSetAttachment
+            dataSetAttachment !== attachments.at(-1)?.spDataSetAttachment ||
+            dataset.uploadresult?.success === true
           }
           title={commonText.delete()}
           variant={className.dangerButton}
-          onClick={async () => {
+          onClick={(): void => {
             if (hot === undefined) return;
             const existingAttachments = attachments
               .map((cell) => cell.spDataSetAttachment)
