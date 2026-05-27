@@ -18,6 +18,7 @@ from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.views.decorators.cache import cache_control, never_cache
+from django.utils.module_loading import import_string
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
@@ -640,7 +641,9 @@ def view_helper(request, limit):
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
 
-    from .remote_prefs import get_all_remote_prefs_database
+    get_all_remote_prefs_database = import_string(
+        'specifyweb.backend.context.remote_prefs.get_all_remote_prefs_database'
+    )
 
     return HttpResponse(get_all_remote_prefs_database(), content_type='text/x-java-properties')
 
