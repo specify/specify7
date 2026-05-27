@@ -88,11 +88,11 @@ A more complex datastructure is demonstrated in specifyweb.backend.cache.redis.r
 If there is not an adapter to fit your needs, you can pass commands directly to Redis through the connection attribute of the RedisConnection class
 
 ```py
-from specifyweb.backend.cache.redis.connection import RedisConnection
+from specifyweb.backend.cache.redis.connect import RedisConnection
 
 connection_adapter = RedisConnection()
 
-# https://redis.io/docs/latest/commands/hset//
+# https://redis.io/docs/latest/commands/hset/
 connection_adapter.connection.hset("myHashKey", "someField", "foo")
 connection_adapter.connection.hget("myHashKey", "someField") # returns "foo"
 ```
