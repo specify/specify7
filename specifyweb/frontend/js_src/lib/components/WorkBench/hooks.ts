@@ -175,6 +175,28 @@ export function useHotHooks({
 
     afterScrollHorizontally: () => scheduleVisibleColumnsAutoSize(),
 
+    afterGetColHeader: (visualCol, th) => {
+      const headerLabel = th.querySelector<HTMLButtonElement>(
+        `button[data-wb-header-label="${visualCol}"]`
+      );
+      if (headerLabel === null) return;
+
+      headerLabel.addEventListener('click', (_event) => {
+        if (workbench.hot === undefined) return;
+
+        const plugin = getHotPlugin(workbench.hot, 'multiColumnSorting');
+        const existing = plugin.getSortConfig(visualCol) as Handsontable.plugins.ColumnSorting.Config | undefined;
+
+        if (existing === undefined) {
+          plugin.sort({ column: visualCol, sortOrder: 'asc' });
+        } else if (existing.sortOrder === 'asc') {
+          plugin.sort({ column: visualCol, sortOrder: 'desc' });
+        } else {
+          plugin.clearSort();
+        }
+      });
+    },
+
     /*
      * After cell is rendered, we need to reApply metaData classes
      * NOTE:

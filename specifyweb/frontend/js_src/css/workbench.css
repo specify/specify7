@@ -28,14 +28,30 @@
   @apply leading-5;
 }
 
+.handsontable .colHeader.columnSorting {
+  @apply inline-flex items-center gap-1 overflow-hidden whitespace-nowrap;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+  padding-right: 1.2rem !important; /* don't shift header content */
+}
+
 /* Sorting direction */
 .handsontable .colHeader.columnSorting::before {
-  @apply !static order-2 !mt-1 !bg-center pr-1;
+  @apply !absolute !top-1/2 !bg-center flex-none;
+  right: 0.375rem;
+  transform: translateY(-50%);
+  margin-inline-end: 0;
 }
 
 /* Sorting priority index */
 .handsontable .colHeader.columnSorting::after {
-  @apply !static order-2 !mt-2 -ml-2;
+  @apply !absolute !top-1/2 flex-none;
+  right: 1.4rem;
+  transform: translateY(-50%);
+  content: none;
+  display: none;
 }
 
 /* Highlighted cells' headers */

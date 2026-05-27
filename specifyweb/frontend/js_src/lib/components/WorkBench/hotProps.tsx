@@ -86,6 +86,7 @@ export function useHotProps({
 
       return ReactDOMServer.renderToString(
         <ColumnHeader
+          physicalCol={physicalCol}
           columnName={columnName}
           isMapped={isMapped}
           tableName={tableName}
@@ -143,16 +144,22 @@ export function useHotProps({
 }
 
 function ColumnHeader({
+  physicalCol,
   isMapped,
   columnName,
   tableName,
 }: {
+  readonly physicalCol: number;
   readonly isMapped: boolean;
   readonly columnName: string;
   readonly tableName: string | undefined;
 }): JSX.Element {
   return (
-    <span className="inline-flex max-w-full items-center gap-1 whitespace-nowrap align-middle">
+    <button
+      type="button"
+      className="inline-flex max-w-full items-center gap-1 whitespace-nowrap align-middle border-0 bg-transparent p-0 text-inherit"
+      data-wb-header-label={physicalCol}
+    >
       {isMapped && tableName !== undefined ? (
         <TableIcon label={false} name={tableName} />
       ) : (
@@ -163,6 +170,6 @@ function ColumnHeader({
         })
       )}
       <span className="wb-header-name">{columnName}</span>
-    </span>
+    </button>
   );
 }
