@@ -67,6 +67,9 @@ class ComponentTests(ApiTests):
         )
 
     def test_unique_catnum_preference_lookup_handles_stale_ids(self):
+        from specifyweb.backend.businessrules.utils import (
+            get_unique_catnum_across_comp_co_coll_pref_by_ids,
+        )
         self.assertFalse(
             get_unique_catnum_across_comp_co_coll_pref_by_ids(
                 collection_id=self.collection.id,
@@ -81,6 +84,11 @@ class ComponentTests(ApiTests):
         )
 
     def test_component_catalog_number_cache_is_collection_scoped(self):
+        from specifyweb.backend.businessrules.utils import (
+            cache_unique_catnum_preferences,
+            component_catalog_number_exists,
+        )
+        
         test_component = Component.objects.create(
             collectionobject=self.collectionobjects[0],
             catalognumber="shared-component-catno",
