@@ -157,8 +157,14 @@ class AuditLog:
         audit_lifespan = get_global_pref('AUDIT_LIFESPAN_MONTHS')
         logger.info("checking to see if purge is required")
         if audit_lifespan is not None:
+            try:
+                lifespan_months = int(audit_lifespan.strip())
+            except (TypeError, ValueError):
+                logger.warning("Invalid AUDIT_LIFESPAN_MONTHS value: %r", audit_lifespan)
+                return True
+
             cursor = connection.cursor()
-            query_parameters = [audit_lifespan.lower()]
+            query_parameters = [lifespan_months]
             sql = "delete from spauditlogfield where date_sub(curdate(), Interval %s month) > timestampcreated"
             logger.info("purging audit log: %s", [sql])
             cursor.execute(sql, query_parameters)
