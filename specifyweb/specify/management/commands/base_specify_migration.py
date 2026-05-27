@@ -35,7 +35,7 @@ class Command(BaseCommand):
                     );
                 """)
 
-            # Check if the record in the django_migrations table exists with app 'specify' and name '0001_initial'
+            # Check if the record in the django_migrations table exists with app 'specify' and name '0001_initial'.
             cursor.execute("""
                 SELECT 1
                 FROM django_migrations
