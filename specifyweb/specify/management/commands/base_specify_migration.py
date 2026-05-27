@@ -35,18 +35,14 @@ class Command(BaseCommand):
                     );
                 """)
 
-            # Check if the record in the django_migrations table exists with app 'specify' and name '0001_initial'
+            # Check if the record exists and insert it if it doesn't
             cursor.execute("""
-                SELECT 1
-                FROM django_migrations
-                WHERE app = 'specify' AND name = '0001_initial'
-                LIMIT 1;
+                INSERT INTO django_migrations (app, name, applied)
+                SELECT 'specify', '0001_initial', NOW()
+                FROM dual
+                WHERE NOT EXISTS (
+                    SELECT 1
+                    FROM django_migrations
+                    WHERE app = 'specify' AND name = '0001_initial'
+                );
             """)
-            record_exists = cursor.fetchone() is not None
-
-            if not record_exists:
-                # Insert the initial migration record for the specify app
-                cursor.execute("""
-                    INSERT INTO django_migrations (app, name, applied)
-                    VALUES ('specify', '0001_initial', NOW());
-                """)
