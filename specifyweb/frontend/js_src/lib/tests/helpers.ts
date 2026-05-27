@@ -43,5 +43,5 @@ export const requireContext = (): void => {
 export const mockTime = (date = testTime): void =>
   beforeAll(() => {
     jest.useFakeTimers();
-    jest.setSystemTime(date);
+    jest.setSystemTime(new Date(date).getTime());
   });

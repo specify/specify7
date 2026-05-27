@@ -28,6 +28,7 @@ from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models
+from .build_models import get_many_to_many_join_info
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct import QueryConstruct
@@ -218,18 +219,30 @@ class ObjectFormatter:
         # Helper function to apply only string-ish transforms with no numeric casts
         def apply_stringish(expr):
             e = expr
+
             if fieldNodeAttrib.get('trimzeros') == 'true':
-                numeric_str = cast(cast(e, types.Numeric(65)), types.String())
-                e = case(
-                    (e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), numeric_str),
-                    else_=cast(e, types.String()),
-                )
+                e = cast(e, types.String())
+                trimmed = e
+
+                # remove leading zeros
+                trimmed = func.regexp_replace(trimmed, r'^(-?)0+([0-9])', r'\1\2')
+
+                # remove trailing zeros after decimal
+                trimmed = func.regexp_replace(trimmed, r'(\.[0-9]*?)0+$', r'\1')
+
+                # remove trailing decimal point
+                trimmed = func.regexp_replace(trimmed, r'\.$', '')
+
+                e = case((e.op('REGEXP')(r'^-?[0-9]+(\.[0-9]+)?$'), trimmed), else_=e)
+
             fmt = fieldNodeAttrib.get('format')
             if fmt is not None:
                 e = self.pseudo_sprintf(fmt, e)
+
             sep = fieldNodeAttrib.get('sep')
             if sep is not None:
                 e = concat(sep, e)
+
             return e
 
         stringish_expr = apply_stringish(raw_expr)
@@ -330,12 +343,24 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
-        join_column = list(inspect(
-            getattr(orm_table, field.otherSideName)).property.local_columns)[0]
-        subquery_query = Query([]) \
-            .select_from(orm_table) \
-            .filter(join_column == rel_table._id) \
-            .correlate(rel_table)
+        join_info = get_many_to_many_join_info(datamodel, field)
+        if join_info is not None:
+            secondary_table = models.tables[join_info.table]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .join(
+                    secondary_table,
+                    secondary_table.c[join_info.remote_column] == orm_table._id,
+                ) \
+                .filter(secondary_table.c[join_info.local_column] == rel_table._id) \
+                .correlate(rel_table)
+        else:
+            join_column = list(inspect(
+                getattr(orm_table, field.otherSideName)).property.local_columns)[0]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .filter(join_column == rel_table._id) \
+                .correlate(rel_table)
 
         try:
             from_table_name = query.query.selectable.froms[0].name.lower()

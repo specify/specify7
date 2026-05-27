@@ -87,6 +87,7 @@ export function SearchDialog<SCHEMA extends AnySchema>(
     <QueryBuilderSearch
       // BUG: pass on extraFilters
       {...props}
+      extraFilters={props.extraFilters}
       onSelected={(records): void => {
         props.onSelected(records);
         props.onClose();

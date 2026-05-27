@@ -4,6 +4,7 @@
 import logging
 from typing import Any, Dict
 from collections.abc import Callable
+import json
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
@@ -48,6 +49,7 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
     from specifyweb.backend.setup_tool.api import create_institution, create_division, create_discipline, create_collection
     from specifyweb.backend.setup_tool.utils import normalize_keys
     from specifyweb.backend.permissions.permissions import PermissionsException
+    from specifyweb.backend.notifications.models import Message
     CREATE_MODEL_REDIRECTS: Dict[str, Callable[[dict], dict]] = {
         'institution': create_institution,
         'division': create_division,
@@ -65,7 +67,12 @@ def create_obj(collection, agent, model, data: dict[str, Any], parent_obj=None, 
         if not agent.specifyuser.is_admin():
             raise PermissionsException("Specifyuser must be an instituion admin")
         check_table_permissions(collection, agent, model, "create")
-        result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data))
+        result = CREATE_MODEL_REDIRECTS[model_name](normalize_keys(data)) 
+        if model_name == 'collection' and agent.specifyuser is not None:
+            # Send notification to show that the collection is still being created.
+            Message.objects.create(user_id=agent.specifyuser.id, content=json.dumps({
+                'type': 'collection-creation-starting'
+            }))
         return model.objects.filter(id=result[f'{model_name}_id']).first()
 
     data = cleanData(model, data, parent_relationship)
@@ -165,14 +172,16 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
-
     if deleter:
         deleter(obj, parent_obj)
 
     obj.delete()
 
+    # before delete obj, store dep id to avoid accessing deleted obj in recursive delete calls
     for dep in dependents_to_delete:
-      delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
+        dep_id = dep.id
+        if dep_id is not None:
+            delete_obj(dep, deleter, version, parent_obj=obj, clean_predelete=clean_predelete)
 
 def update_or_create_resource(collection, agent, model, data, parent_obj, parent_relationship=None): 
     if 'id' in data: 
@@ -329,6 +338,7 @@ def prepare_discipline_for_delete(obj) -> None:
 
     for tree_def_model in DISCIPLINE_TREE_MODELS:
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
+
     delete_discipline_owned_setup_data(obj)
 
 @transaction.atomic
