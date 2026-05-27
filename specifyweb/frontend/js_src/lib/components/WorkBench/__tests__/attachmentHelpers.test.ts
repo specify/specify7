@@ -28,6 +28,8 @@ theories(getAttachmentsFromCell, [
 ]);
 
 theories(formatAttachmentsFromCell, [
+  [[''], undefined],
+  [['{"attachments":[],"formatted":""}'], ''],
   [
     [
       '{"attachments":[{"id":1,"table":"baseTable"}, {"id": 2, "table":"baseTable"}],"formatted":"image1.jpg; image2.jpg"}',
