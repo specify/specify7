@@ -14,7 +14,6 @@ from django.db import connection
 from django.conf import settings
 
 from specifyweb.specify.models import Spauditlog, Spauditlogfield
-from specifyweb.backend.context.remote_prefs import get_remote_pref, get_global_pref
 from specifyweb.specify.models import datamodel
 
 logger = logging.getLogger(__name__)
@@ -48,6 +47,9 @@ class AuditLog:
         return self.isAuditing() and self._auditingFlds
         
     def isAuditing(self):
+
+        from specifyweb.backend.context.remote_prefs import get_remote_pref
+
         if settings.DISABLE_AUDITING:
             return False
         if self._auditing is None or self._lastCheck is None or time() - self._lastCheck > self._checkInterval:
@@ -150,6 +152,8 @@ class AuditLog:
             modifiedbyagent_id=agent_id)
 
     def purge(self):
+        from specifyweb.backend.context.remote_prefs import get_global_pref
+
         audit_lifespan = get_global_pref('AUDIT_LIFESPAN_MONTHS')
         logger.info("checking to see if purge is required")
         if audit_lifespan is not None:

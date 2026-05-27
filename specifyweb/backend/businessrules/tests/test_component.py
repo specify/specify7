@@ -1,5 +1,4 @@
-from unittest.case import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from functools import wraps
 
 from specifyweb.specify.tests.test_api import ApiTests
@@ -9,11 +8,6 @@ from specifyweb.specify.models import (
     Component,
 )
 import specifyweb.backend.businessrules.utils as busrule_utils
-from specifyweb.backend.businessrules.utils import (
-    cache_unique_catnum_preferences,
-    component_catalog_number_exists,
-    get_unique_catnum_across_comp_co_coll_pref_by_ids,
-)
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
 
