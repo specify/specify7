@@ -521,6 +521,7 @@ def get_date_format() -> str:
     from specifyweb.backend.context.remote_prefs import get_remote_pref
 
     source_date_format = get_remote_pref('ui.formatting.scrdateformat')
+    
     date_format = source_date_format.strip() if source_date_format is not None else 'yyyy-MM-dd'
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
