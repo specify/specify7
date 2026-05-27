@@ -183,55 +183,55 @@ def query_pt(
 
 
 def _get_spuser_policies(collectionid: int | None, userid: int, resource: str, action: str):
-    cursor = connection.cursor()
-    cursor.execute(
-        """
-    select collection_id, specifyuser_id, resource, action
-    from spuserpolicy
-    where (collection_id = %(collectionid)s or collection_id is null)
-    and (specifyuser_id = %(userid)s or specifyuser_id is null)
-    and %(resource)s like resource
-    and %(action)s like action
-    """,
-        {
-            "collectionid": collectionid,
-            "userid": userid,
-            "resource": resource,
-            "action": action,
-        },
-    )
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+        select collection_id, specifyuser_id, resource, action
+        from spuserpolicy
+        where (collection_id = %(collectionid)s or collection_id is null)
+        and (specifyuser_id = %(userid)s or specifyuser_id is null)
+        and %(resource)s like resource
+        and %(action)s like action
+        """,
+            {
+                "collectionid": collectionid,
+                "userid": userid,
+                "resource": resource,
+                "action": action,
+            },
+        )
 
-    ups = [
-        dict(zip(("collectionid", "userid", "resource", "action"), r))
-        for r in cursor.fetchall()
-    ]
+        ups = [
+            dict(zip(("collectionid", "userid", "resource", "action"), r))
+            for r in cursor.fetchall()
+        ]
     return ups
 
 def _get_role_policies(collectionid: int | None, userid: int, resource: str, action: str):
-    cursor = connection.cursor()
-    cursor.execute(
-        """
-    select r.id, r.name, resource, action
-    from spuserrole ur
-    join sprole r on r.id = ur.role_id
-    join sprolepolicy rp on rp.role_id = r.id
-    where ur.specifyuser_id = %(userid)s
-    and collection_id = %(collectionid)s
-    and %(resource)s like resource
-    and %(action)s like action
-    """,
-        {
-            "collectionid": collectionid,
-            "userid": userid,
-            "resource": resource,
-            "action": action,
-        },
-    )
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+        select r.id, r.name, resource, action
+        from spuserrole ur
+        join sprole r on r.id = ur.role_id
+        join sprolepolicy rp on rp.role_id = r.id
+        where ur.specifyuser_id = %(userid)s
+        and collection_id = %(collectionid)s
+        and %(resource)s like resource
+        and %(action)s like action
+        """,
+            {
+                "collectionid": collectionid,
+                "userid": userid,
+                "resource": resource,
+                "action": action,
+            },
+        )
 
-    rps = [
-        dict(zip(("roleid", "rolename", "resource", "action"), r))
-        for r in cursor.fetchall()
-    ]
+        rps = [
+            dict(zip(("roleid", "rolename", "resource", "action"), r))
+            for r in cursor.fetchall()
+        ]
     return rps
 
 def query(
