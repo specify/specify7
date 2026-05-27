@@ -57,7 +57,7 @@ def get_all_global_prefs_database() -> str:
 
 
 def get_preference(joined_preferences: str, key: str) -> str | None:
-    match = re.search(f"{key}" + r'=(.+)', joined_preferences)
+    match = re.search(f"{re.escape(key)}" + r'=(.+)', joined_preferences)
     if match is None:
         return None
     return match.group(1)
