@@ -4,7 +4,10 @@ import logging
 import os
 import re
 import uuid
+from typing import TYPE_CHECKING, Callable
 from collections import defaultdict
+from collections.abc import Generator
+from decimal import Decimal
 from io import StringIO
 from itertools import zip_longest
 from typing import Any, Callable
@@ -16,10 +19,12 @@ from django.apps import apps
 from django.conf import settings
 
 from specifyweb.backend.context.schema_localization import get_schema_localization
-from specifyweb.specify.datamodel import datamodel
+from specifyweb.specify.datamodel import datamodel, Field
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
 from specifyweb.specify.utils.uiformatters import CNNField, get_catalognumber_format
 
+if TYPE_CHECKING:
+    from specifyweb.backend.stored_queries.queryfield import QueryField
 
 logger = logging.getLogger(__name__)
 # Filename used by asset server URLs that should be stripped from portal asset paths.
@@ -354,11 +359,11 @@ def _serialize_portal_data(
     The web portal expects a standard CSV file with a header row followed by
     one row per portal record.
     """
-    output = StringIO()
-    writer = csv.writer(output)
-    writer.writerow(header)
-    writer.writerows(rows)
-    return output.getvalue()
+    with StringIO() as output:
+        writer = csv.writer(output)
+        writer.writerow(header)
+        writer.writerows(rows)
+        return output.getvalue()
 
 
 def _find_geoc_field_indexes(
@@ -416,6 +421,40 @@ def _build_geoc_value(
         return primary
     return _pair_value(lat2_idx, lon2_idx)
 
+def _trim_big_decimal_fields(query_fields: "list[QueryField]") -> Callable[[list], list]:
+    # map BigDecimal to their location within the query results
+    big_decimal_idxs: list[int] = []
+
+    for query_field_idx, query_field in enumerate(query_fields):
+        field = query_field.fieldspec.get_field()
+        if field is None:
+            continue
+        if field.type == 'java.math.BigDecimal':
+            # account for the record id that will be inserted as the first item
+            # in results
+            field_idx = query_field_idx + 1
+            big_decimal_idxs.append(field_idx)
+
+
+    def trim_big_decimal(row: list):
+        modified_row = list(row)
+        for field_index in big_decimal_idxs:
+            previous_value = str(row[field_index])
+            new_value = previous_value
+            if "." in previous_value:
+                new_value = previous_value.rstrip("0")
+                if len(new_value) > 1 and new_value[-1] == ".":
+                    new_value = new_value + "0"
+            modified_row[field_index] = new_value
+        return modified_row
+
+    return trim_big_decimal
+
+
+def WebportalQueryResultProcessors(query_fields: "list[QueryField]") -> list[Callable[[list], list]]:
+    return [
+        _trim_big_decimal_fields(query_fields=query_fields)
+    ]
 
 def query_to_web_portal_zip(
     session,
@@ -425,12 +464,8 @@ def query_to_web_portal_zip(
     field_specs,
     path,
     captions,
-    build_query_fn: Callable[..., tuple[Any, Any]],
-    build_query_props_cls,
-    apply_special_post_query_processing_fn: Callable[..., Any],
+    query_rows: Generator[list, Any, None],
     set_group_concat_max_len_fn: Callable[[Any], None],
-    recordsetid=None,
-    distinct=False,
 ):
     """Export a stored query as a web portal ZIP package.
 
@@ -438,22 +473,6 @@ def query_to_web_portal_zip(
     SolrFldSchema.xml into the destination ZIP file.
     """
     set_group_concat_max_len_fn(session.connection())
-    query, __ = build_query_fn(
-        session,
-        collection,
-        user,
-        tableid,
-        field_specs,
-        build_query_props_cls(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
-    )
-    query = apply_special_post_query_processing_fn(
-        query,
-        tableid,
-        field_specs,
-        collection,
-        user,
-        should_list_query=False,
-    )
 
     display_fields = [field_spec for field_spec in field_specs if field_spec.display]
 
@@ -547,7 +566,17 @@ def query_to_web_portal_zip(
 
     output_rows: list[list[str]] = []
     geoc_lat1_idx, geoc_lon1_idx, geoc_lat2_idx, geoc_lon2_idx = _find_geoc_field_indexes(column_defs)
-    data_rows = query if isinstance(query, list) else list(query.yield_per(1))
+    # REFACTOR: Bleh, exhaust all rows in the query generator here
+    # this is really only needed to optimize constructing the portal attachment
+    # map. 
+    # We can make a single query there if we have the IDs of all of the base
+    # records.
+    # For the sake of memory, would much rather prefer to iterate through the
+    # generator normally, but database hits are very expensive so prioritizing
+    # speed.
+    # Can we at least do the Webportal Exportal in a separate process so memory
+    # can be returned to the OS?
+    data_rows = list(query_rows)
     portal_attachments = _portal_attachment_map(tableid, [row[0] for row in data_rows])
     # The portal frontend expects each row to have the same number of values as the field metadata.
     # If the query returns too few values, pad with empty strings; if it returns too many,
@@ -574,6 +603,12 @@ def query_to_web_portal_zip(
         output_rows.append([spid, contents, img, geoc, *cleaned_values])
 
     header = ['spid', 'contents', 'img', 'geoc', *[column_def[1] for column_def in column_defs]]
+    # REFACTOR: PortalData can be very large. Consider using a generator to
+    # retreive rows and subsequently write them to the CSV.
+    # That way, only a single row will need to be kept in memory at a time, as
+    # opposed to every row
+    # If that is not feasible, perform this operation in a separate process so
+    # the memory can be reclaimed
     portal_data = _serialize_portal_data(output_rows, header)
     # flds.json drives the portal's field definitions and display metadata.
     flds_json = json.dumps(metadata_rows, indent=2)
