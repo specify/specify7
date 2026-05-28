@@ -1534,13 +1534,14 @@ def update_loan_and_gift_agents(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    def upsert_single_str(*, itemdesc_id=None, itemname_id=None, text=""):
+    def upsert_single_str(*, itemdesc_id=None, itemname_id=None, text="", language="en"):
         if (itemdesc_id is None) == (itemname_id is None):
             raise ValueError("Exactly one of itemdesc_id or itemname_id must be provided")
 
         qs = Splocaleitemstr.objects.filter(
             itemdesc_id=itemdesc_id,
             itemname_id=itemname_id,
+            language=language,
         ).order_by("id")
 
         obj = qs.first()
@@ -1549,6 +1550,8 @@ def update_loan_and_gift_agents(apps):
                 itemdesc_id=itemdesc_id,
                 itemname_id=itemname_id,
                 text=text,
+                language=language,
+                version=0,
             )
 
         qs.exclude(id=obj.id).delete()
