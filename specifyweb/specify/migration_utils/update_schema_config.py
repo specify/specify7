@@ -187,6 +187,28 @@ def uncapitilize(string: str) -> str:
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
 def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) -> int:
+    """
+    Idempotently ensure Splocaleitemstr rows exist without clobbering custom text.
+
+    Creates any missing `Splocaleitemstr` rows described by `rows`, removes
+    duplicate rows, and preserves existing `text` values (it does NOT
+    overwrite customized captions). Returns the number of rows created.
+
+    Args:
+        Splocaleitemstr: The Django model class for `SpLocaleItemStr`.
+        rows: A list of dictionaries describing rows to create. Each dict
+            must set exactly one FK among `itemname`, `itemdesc`,
+            `containername`, or `containerdesc` and include `language` and
+            `text` fields. FK values should be model instances.
+
+    Returns:
+        int: Number of `Splocaleitemstr` rows created.
+
+    Note:
+        This function intentionally preserves existing `text` values to
+        avoid overwriting administrator/customized captions during
+        migrations (see issue #8128).
+    """
     if not rows:
         return 0
 
@@ -233,7 +255,11 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
             key = (r["language"], r[fk_field].pk)
             desired_by_key[key] = r
 
-        rows_to_update = []
+        # We will only create missing rows and remove duplicate rows.
+        # Do NOT overwrite existing `text` values — preserve any customized
+        # localized captions that may exist in the database. Overwriting
+        # existing text with defaults during upgrade caused user custom
+        # captions to be lost (see issue #8128).
         ids_to_delete: set[int] = set()
         to_create = []
         for key, desired_row in desired_by_key.items():
@@ -244,9 +270,16 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
                 continue
 
             keeper = existing_for_key[0]
+            # If the existing text differs from the desired default, preserve
+            # the existing text rather than overwriting it. This avoids
+            # clobbering administrator/customized captions during migration.
             if keeper.text != desired_row["text"]:
-                keeper.text = desired_row["text"]
-                rows_to_update.append(keeper)
+                logger.info(
+                    "Preserving existing Splocaleitemstr text for language=%s fk_id=%s id=%s",
+                    key[0],
+                    key[1],
+                    keeper.id,
+                )
 
             for duplicate in existing_for_key[1:]:
                 ids_to_delete.add(duplicate.id)
@@ -254,9 +287,7 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
         if ids_to_delete:
             Splocaleitemstr.objects.filter(id__in=ids_to_delete).delete()
 
-        if rows_to_update:
-            Splocaleitemstr.objects.bulk_update(rows_to_update, ["text"])
-
+        # Create any missing rows, but do not update existing text values.
         if to_create:
             Splocaleitemstr.objects.bulk_create(to_create)
             total_created += len(to_create)
