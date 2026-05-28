@@ -1720,7 +1720,7 @@ def reverse_hide_component_fields(apps, schema_editor=None):
                     )
                     items.update(ishidden=False)
                     
-def componets_schema_config_migrations(apps, schema_editor=None):
+def components_schema_config_migrations(apps, schema_editor=None):
         remove_0029_schema_config_fields(apps, schema_editor)
         create_table_schema_config_with_defaults(apps, schema_editor)
         update_schema_config_field_desc(apps, schema_editor)
