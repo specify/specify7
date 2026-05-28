@@ -444,15 +444,19 @@ def update_table_field_schema_config_with_defaults(
         language="en"
     )
 
-    sp_local_container_item, _ = Splocalecontaineritem.objects.get_or_create(
-        name=field_config.name,
-        container=sp_local_container,
-        type=field_config.java_type,
-        ishidden=field_hidden,
-        isrequired=field_required,
-        issystem=table.system,
-        version=0,
-        picklistname=picklist_name
+    sp_local_container_item, _ = (
+        Splocalecontaineritem.objects.update_or_create(
+            name=field_config.name,
+            container=sp_local_container,
+            defaults={
+                "type": field_config.java_type,
+                "ishidden": field_hidden,
+                "isrequired": field_required,
+                "issystem": table.system,
+                "version": 0,
+                "picklistname": picklist_name,
+            },
+        )
     )
 
     itm_str_rows = []
