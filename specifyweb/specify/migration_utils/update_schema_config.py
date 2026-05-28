@@ -303,20 +303,18 @@ def update_table_schema_config_with_defaults(
             language="en",
         )
 
-        sp_local_container, is_new = Splocalecontainer.objects.get_or_create(
-            name=table_config.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-            ishidden=False,
-            issystem=table.system,
-            version=0,
+        sp_local_container, is_new = (
+            Splocalecontainer.objects.update_or_create(
+                name=table_config.name.lower(),
+                discipline_id=discipline_id,
+                schematype=table_config.schema_type,
+                defaults={
+                    "ishidden": False,
+                    "issystem": table.system,
+                    "version": 0,
+                },
+            )
         )
-
-        if Splocalecontaineritem.objects.filter(
-            container=sp_local_container,
-            name=table_config.name.lower(),
-        ).exists():
-            return
 
         item_str_rows = []
         for k, text in {
