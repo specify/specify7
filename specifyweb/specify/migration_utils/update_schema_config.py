@@ -1643,13 +1643,15 @@ def update_schema_config_field_desc_for_components(apps, schema_editor=None):
             Splocaleitemstr.objects.filter(
                 itemdesc__container__name=table.lower(),
                 itemdesc__container__schematype=0,
-                itemdesc__name=field_name.lower()
+                itemdesc__name=field_name.lower(),
+                language="en",
             ).update(text=new_desc)
 
             Splocaleitemstr.objects.filter(
                 itemname__container__name=table.lower(),
                 itemname__container__schematype=0,
-                itemname__name=field_name.lower()
+                itemname__name=field_name.lower(),
+                language="en",
             ).update(text=new_name)
 
 def update_hidden_prop_for_compoenents(apps, schema_editor=None):
