@@ -269,7 +269,12 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
                 to_create.append(Splocaleitemstr(**desired_row))
                 continue
 
-            keeper = existing_for_key[0]
+            # Prefer a row whose text already differs from the default so we
+            # preserve a customized caption instead of deleting it as a dup.
+            keeper = next(
+                (row for row in existing_for_key if row.text != desired_row["text"]),
+                existing_for_key[0],
+            )
             # If the existing text differs from the desired default, preserve
             # the existing text rather than overwriting it. This avoids
             # clobbering administrator/customized captions during migration.
@@ -281,8 +286,11 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
                     keeper.id,
                 )
 
-            for duplicate in existing_for_key[1:]:
-                ids_to_delete.add(duplicate.id)
+            # Remove every other row for this key; the keeper is the only one
+            # we want to preserve once duplicates have been collapsed.
+            for duplicate in existing_for_key:
+                if duplicate.id != keeper.id:
+                    ids_to_delete.add(duplicate.id)
 
         if ids_to_delete:
             Splocaleitemstr.objects.filter(id__in=ids_to_delete).delete()
