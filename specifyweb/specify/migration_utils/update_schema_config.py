@@ -1521,6 +1521,9 @@ def update_loan_and_gift_agent_fields(apps):
                 update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
 
 def revert_loan_and_gift_agent_fields(apps):
+    # Note: This is a logical rollback, not a full historical reconstruction.
+    # Splocaleitemstr structural duplicates may not be restored exactly.
+
     for table, fields in MIGRATION_0038_FIELDS.items():
         for field_name in fields:
             revert_table_field_schema_config(table, field_name, apps)
