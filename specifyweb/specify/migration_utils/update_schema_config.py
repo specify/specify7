@@ -1583,22 +1583,58 @@ def update_loan_and_gift_agents(apps):
 
 def revert_loan_and_gift_agents(apps):
     """
-    Revert the field name/description updates.
+    Revert the loan/gift agent localization updates.
     """
-    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    Splocalecontainer = apps.get_model(
+        'specify',
+        'Splocalecontainer'
+    )
+
+    Splocalecontaineritem = apps.get_model(
+        'specify',
+        'Splocalecontaineritem'
+    )
+
+    Splocaleitemstr = apps.get_model(
+        'specify',
+        'Splocaleitemstr'
+    )
 
     for table, fields in MIGRATION_0038_UPDATE_FIELDS.items():
-        containers = Splocalecontainer.objects.filter(name=table.lower())
+        containers = Splocalecontainer.objects.filter(
+            name=table.lower()
+        )
+
         for container in containers:
-            for (field_name, _, _) in fields:
+            for (
+                field_name,
+                previous_name,
+                previous_desc,
+            ) in fields:
+
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
-                    name=field_name.lower()
+                    name=field_name.lower(),
                 )
+
                 for item in items:
-                    # If needed, reset ishidden or revert text
-                    pass
+                    item.ishidden = False
+                    item.save(update_fields=['ishidden'])
+
+                    Splocaleitemstr.objects.filter(
+                        itemname=item,
+                        language='en',
+                    ).update(
+                        text=previous_name
+                    )
+
+                    Splocaleitemstr.objects.filter(
+                        itemdesc=item,
+                        language='en',
+                    ).update(
+                        text=previous_desc
+                    )
 
 # ##########################################
 # Used in 0040_components.py
