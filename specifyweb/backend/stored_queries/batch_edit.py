@@ -921,7 +921,7 @@ def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...
     field_replacement_map = {
         'latitude1': 'lat1text',
         'longitude1': 'long1text',
-        'latiude2': 'lat2text',
+        'latitude2': 'lat2text',
         'longitude2': 'long2text'
     }
 
