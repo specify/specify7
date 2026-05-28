@@ -94,63 +94,74 @@ export const fetchContext = f
   })
   .then(({ dataModel, localization }) => {
     schemaLocalization = localization;
-    dataModel
+
+    const tablePairs = dataModel
+      .slice()
       .map((tableDefinition) => {
         const table = new SpecifyTable(tableDefinition);
-        overwriteReadOnly(genericTables, table.name, table);
         return [tableDefinition, table] as const;
       })
-      .forEach(([tableDefinition, table]) => {
-        const [frontEndFields, callback] = (
-          schemaExtras[table.name] as (typeof schemaExtras)['Agent'] | undefined
-        )?.(table as SpecifyTable<Agent>) ?? [[]];
-        const [literalFields, relationships] = split(
-          frontEndFields.map((field) => {
-            field.isReadOnly = true;
-            field.overrides.isReadOnly = true;
-            return field;
-          }),
-          (field) => field.isRelationship
-        );
+      .sort(([, a], [, b]) => a.name.localeCompare(b.name));
 
-        overwriteReadOnly(
-          table,
-          'literalFields',
-          processFields(
-            tableDefinition.fields.map(
-              (fieldDefinition) => new LiteralField(table, fieldDefinition)
-            ),
-            literalFields
-          )
-        );
-        overwriteReadOnly(
-          table,
-          'relationships',
-          processFields(
-            tableDefinition.relationships.map(
-              (relationshipDefinition) =>
-                new Relationship(table, relationshipDefinition)
-            ),
-            relationships
-          )
-        );
-        overwriteReadOnly(table, 'fields', [
-          ...table.literalFields,
-          ...table.relationships,
-        ]);
-        overwriteReadOnly(
-          table,
-          'field',
-          Object.fromEntries(table.fields.map((field) => [field.name, field]))
-        );
+    // First, register all tables so lookups from Relationship constructors
+    // (which call `strictGetTable`) can find any related table.
+    tablePairs.forEach(([, table]) => {
+      overwriteReadOnly(genericTables, table.name, table);
+    });
 
-        frontEndOnlyFields[table.name] = [
-          ...literalFields,
-          ...relationships,
-        ].map(({ name }) => name);
+    // Then process fields and relationships for each table.
+    tablePairs.forEach(([tableDefinition, table]) => {
+      const [frontEndFields, callback] =
+        (schemaExtras[table.name] as (typeof schemaExtras)['Agent'] | undefined)?.(
+          table as SpecifyTable<Agent>
+        ) ?? [[]];
+      const [literalFields, relationships] = split(
+        frontEndFields.map((field) => {
+          field.isReadOnly = true;
+          field.overrides.isReadOnly = true;
+          return field;
+        }),
+        (field) => field.isRelationship
+      );
 
-        callback?.();
-      });
+      overwriteReadOnly(
+        table,
+        'literalFields',
+        processFields(
+          tableDefinition.fields.map(
+            (fieldDefinition) => new LiteralField(table, fieldDefinition)
+          ),
+          literalFields
+        )
+      );
+      overwriteReadOnly(
+        table,
+        'relationships',
+        processFields(
+          tableDefinition.relationships.map(
+            (relationshipDefinition) =>
+              new Relationship(table, relationshipDefinition)
+          ),
+          relationships
+        )
+      );
+      overwriteReadOnly(table, 'fields', [
+        ...table.literalFields,
+        ...table.relationships,
+      ]);
+      overwriteReadOnly(
+        table,
+        'field',
+        Object.fromEntries(table.fields.map((field) => [field.name, field]))
+      );
+
+      frontEndOnlyFields[table.name] = [
+        ...literalFields,
+        ...relationships,
+      ].map(({ name }) => name);
+
+      callback?.();
+    });
     return tables;
   });
 
