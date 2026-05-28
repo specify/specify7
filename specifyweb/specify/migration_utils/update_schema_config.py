@@ -1718,7 +1718,7 @@ def reverse_hide_component_fields(apps, schema_editor=None):
                         container=container,
                         name=field_name.lower()
                     )
-                    items.update(ishidden=True)
+                    items.update(ishidden=False)
                     
 def componets_schema_config_migrations(apps, schema_editor=None):
         remove_0029_schema_config_fields(apps, schema_editor)
