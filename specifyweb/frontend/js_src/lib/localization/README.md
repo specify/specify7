@@ -42,7 +42,6 @@
 11. Weblate should do automatic translation for the language using Google
     Translate. If this did not happen automatically, you can trigger it
     manually:
-
     1. In
        [the list of language for the Specify 7 project](https://hosted.weblate.org/projects/specify-7/#languages),
        find the new language (it should be automatically added to the list once
@@ -155,7 +154,6 @@ reasons:
   migration was made.
 
   Type safety provides awesome side effects:
-
   - Developers get autocomplete in the IDE
   - Developers can go to definition of the string with just one click
   - Developers get inline errors if they forget to pass parameter or use

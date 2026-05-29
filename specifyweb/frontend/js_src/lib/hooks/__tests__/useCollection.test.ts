@@ -121,6 +121,44 @@ describe('useCollection', () => {
     )
   );
 
+  const collectionObjectAttachmentUrl =
+    `/api/specify/collectionobjectattachment/?domainfilter=false&collectionobject=${ceID}&offset=0`;
+  const collectionObjectAttachmentObjects = [
+    {
+      id: 1,
+      resource_uri: getResourceApiUrl('CollectionObjectAttachment', 1),
+      ordinal: 3,
+    },
+    {
+      id: 2,
+      resource_uri: getResourceApiUrl('CollectionObjectAttachment', 2),
+      ordinal: 1,
+    },
+    {
+      id: 3,
+      resource_uri: getResourceApiUrl('CollectionObjectAttachment', 3),
+      ordinal: 2,
+    },
+  ];
+
+  overrideAjax(
+    `/api/specify/collectionobject/${ceID}/`,
+    {
+      id: ceID,
+      resource_uri: getResourceApiUrl('CollectionObject', ceID),
+    }
+  );
+
+  overrideAjax(
+    collectionObjectAttachmentUrl,
+    makeBackendResponse(collectionObjectAttachmentObjects, 0, 3)
+  );
+
+  overrideAjax(
+    `${collectionObjectAttachmentUrl}&limit=0`,
+    makeBackendResponse(collectionObjectAttachmentObjects, 0, 3, 0)
+  );
+
   test('to-many independent collection gets fetched and set correctly', async () => {
     const collectingEvent = new tables.CollectingEvent.Resource({ id: ceID });
     const collectionObject =
@@ -146,6 +184,30 @@ describe('useCollection', () => {
     await waitFor(() => {
       expect(castAsCollection(result.current[0])).toHaveLength(25);
     });
+  });
+
+  test('to-many independent collection defaults to attachment ordinal sorting', async () => {
+    const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
+    const collectionObject = new tables.CollectionObject.Resource({ id: ceID });
+    const collectionObjectAttachments =
+      tables.CollectionObject.strictGetRelationship('collectionObjectAttachments');
+
+    const { result } = renderHook(() =>
+      useCollection({
+        parentResource: collectionObject,
+        relationship: collectionObjectAttachments,
+      })
+    );
+
+    await waitFor(() => {
+      expect(result.current[0]).toBeDefined();
+    });
+
+    expect(castAsCollection(result.current[0]).models.map((resource) =>
+      resource.get('ordinal')
+    )).toEqual([1, 2, 3]);
+
+    warnSpy.mockRestore();
   });
 
   test('to-many dependent collection sorts', async () => {

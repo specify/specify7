@@ -984,7 +984,7 @@
   },
   "collectingeventattr": {
     "items": {
-      "collectingevent": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "collectingevent": {"name": "Collecting Event", "desc": "Collecting Event", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "collectionmemberid": {"name": "Collection Member Id", "desc": "Collection Member Id", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "dblvalue": {"name": "Double Value", "desc": "Double Value", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Double", "isrequired": false, "weblinkname": null},
@@ -1074,7 +1074,7 @@
   },
   "collectingeventauthorization": {
     "items": {
-      "collectingevent": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "collectingevent": {"name": "Collecting Event", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "permit": {"name": "Permit", "desc": "Permit", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -1097,7 +1097,7 @@
     "items": {
       "agent1": {"name": "Agent1", "desc": "Agent1", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "agent2": {"name": "Agent2", "desc": "Agent2", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "collectingevents": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
+      "collectingevents": {"name": "Collecting Event", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
       "collectingtripattachments": {"name": "Collecting Trip Attachments", "desc": "Collecting Trip Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectingtripattribute": {"name": "Collecting Trip Attribute", "desc": "Stores values for user-customizable attributes linked to a Collecting Trip, supporting flexible data capture beyond the standard schema.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "collectingtripauthorizations": {"name": "Collecting Trip Authorizations", "desc": "Collecting Trip Authorizations", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -1325,7 +1325,7 @@
       "cataloger": {"name": "Cataloger", "desc": "In Specify, the person who recorded the specimen data in the catalog. Cataloger records are stored in the Agent table.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "catalognumber": {"name": "Catalog Number", "desc": "The number that identifies an individual specimen, a lot of specimens, or an observation as a part of a museum collection.", "format": "CatalogNumberString", "ishidden": false, "isuiformatter": true, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "cojo": {"name": "Parent Group", "desc": "Connects a Collection Object to its Collection Object Group", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "OneToOne", "isrequired": false, "weblinkname": null},
-      "collectingevent": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "collectingevent": {"name": "Collecting Event", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "collection": {"name": "Collection", "desc": "Collection", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "collectionmemberid": {"name": "Collection Member Id", "desc": "Collection Member Id", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
       "collectionobjectattachments": {"name": "Collection Object Attachments", "desc": "Collection Object Attachments", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "OneToMany", "isrequired": false, "weblinkname": null},
@@ -1981,7 +1981,7 @@
   "collector": {
     "items": {
       "agent": {"name": "Agent", "desc": "Agent", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
-      "collectingevent": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
+      "collectingevent": {"name": "Collecting Event", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "createdbyagent": {"name": "Created By Agent", "desc": "Created By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "division": {"name": "Division", "desc": "Division", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "isprimary": {"name": "Is Primary", "desc": "Is Primary", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},

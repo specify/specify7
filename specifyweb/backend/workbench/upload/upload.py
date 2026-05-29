@@ -62,7 +62,7 @@ from ..models import Spdataset
 
 from .upload_attachments import (
     has_attachments,
-    validate_attachment,
+    validate_attachments,
     add_attachments_to_plan,
     unlink_attachments,
 )
@@ -383,7 +383,7 @@ def do_upload(
 
                 if has_attachments(row):
                     # If there's an attachments column, add attachments to upload plan
-                    attachments_valid, result = validate_attachment(row, upload_plan) # type: ignore
+                    attachments_valid, result = validate_attachments(row, upload_plan) # type: ignore
                     if not attachments_valid:
                         results.append(result) # type: ignore
                         cache = _cache
