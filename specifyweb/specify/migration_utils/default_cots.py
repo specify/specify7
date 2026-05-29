@@ -145,7 +145,7 @@ def fix_tectonic_unit_treedef_discipline_links(apps):
     )
 
     for discipline, tectonic_unit_treedef in zip(
-        empty_disciplines, empty_tectonic_unit_treedefs
+        empty_disciplines, empty_tectonic_unit_treedefs, strict=False
     ):
         tectonic_unit_treedef.discipline = discipline
         tectonic_unit_treedef.save()
