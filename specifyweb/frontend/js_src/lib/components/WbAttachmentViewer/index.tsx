@@ -136,7 +136,7 @@ export function WbAttachmentViewerView(): JSX.Element {
             value={selectedAttachment}
             count={attachmentIds?.length ?? 1}
             onChange={(newValue: number) => {
-              setSelectedAttachment(newValue)
+              setSelectedAttachment(newValue);
             }}
           />
           <Button.Secondary

@@ -121,8 +121,7 @@ describe('useCollection', () => {
     )
   );
 
-  const collectionObjectAttachmentUrl =
-    `/api/specify/collectionobjectattachment/?domainfilter=false&collectionobject=${ceID}&offset=0`;
+  const collectionObjectAttachmentUrl = `/api/specify/collectionobjectattachment/?domainfilter=false&collectionobject=${ceID}&offset=0`;
   const collectionObjectAttachmentObjects = [
     {
       id: 1,
@@ -141,13 +140,10 @@ describe('useCollection', () => {
     },
   ];
 
-  overrideAjax(
-    `/api/specify/collectionobject/${ceID}/`,
-    {
-      id: ceID,
-      resource_uri: getResourceApiUrl('CollectionObject', ceID),
-    }
-  );
+  overrideAjax(`/api/specify/collectionobject/${ceID}/`, {
+    id: ceID,
+    resource_uri: getResourceApiUrl('CollectionObject', ceID),
+  });
 
   overrideAjax(
     collectionObjectAttachmentUrl,
@@ -190,7 +186,9 @@ describe('useCollection', () => {
     const warnSpy = jest.spyOn(console, 'warn').mockImplementation(() => {});
     const collectionObject = new tables.CollectionObject.Resource({ id: ceID });
     const collectionObjectAttachments =
-      tables.CollectionObject.strictGetRelationship('collectionObjectAttachments');
+      tables.CollectionObject.strictGetRelationship(
+        'collectionObjectAttachments'
+      );
 
     const { result } = renderHook(() =>
       useCollection({
@@ -203,9 +201,11 @@ describe('useCollection', () => {
       expect(result.current[0]).toBeDefined();
     });
 
-    expect(castAsCollection(result.current[0]).models.map((resource) =>
-      resource.get('ordinal')
-    )).toEqual([1, 2, 3]);
+    expect(
+      castAsCollection(result.current[0]).models.map((resource) =>
+        resource.get('ordinal')
+      )
+    ).toEqual([1, 2, 3]);
 
     warnSpy.mockRestore();
   });

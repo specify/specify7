@@ -241,19 +241,19 @@ export function WbAttachmentsPreview({
                       SerializedResource<SpDataSetAttachment>
                     >;
 
-                    loading(uploadAttachmentsToRow(
-                      Array.from(selectedFiles),
-                      dataset,
-                      hot,
-                      selectedRow,
-                      existingAttachments,
-                      BASE_TABLE_NAME,
-                      attachmentIsPublicDefault,
-                      setFileUploadLength,
-                      setFileUploadProgress
-                    ).then(async () =>
-                      saveDataset().then(refreshSpreadsheet)
-                    ));
+                    loading(
+                      uploadAttachmentsToRow(
+                        Array.from(selectedFiles),
+                        dataset,
+                        hot,
+                        selectedRow,
+                        existingAttachments,
+                        BASE_TABLE_NAME,
+                        attachmentIsPublicDefault,
+                        setFileUploadLength,
+                        setFileUploadProgress
+                      ).then(async () => saveDataset().then(refreshSpreadsheet))
+                    );
                   }}
                 />
               )}
@@ -375,10 +375,8 @@ function fetchRowAttachments(
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
-  const selectedCell = (hot.getDataAtCell(
-    row,
-    attachmentColumnIndex
-  ) ?? '') as string;
+  const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
+    '') as string;
   const cellData = getAttachmentsFromCell(selectedCell);
   const dataSetAttachmentIds =
     cellData === undefined

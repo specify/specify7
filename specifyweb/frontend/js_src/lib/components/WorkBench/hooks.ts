@@ -15,7 +15,10 @@ import { overwriteReadOnly } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { LoadingContext } from '../Core/Contexts';
 import { schema } from '../DataModel/schema';
-import { getVisualAttachmentsColumn, usesAttachments } from './attachmentHelpers';
+import {
+  getVisualAttachmentsColumn,
+  usesAttachments,
+} from './attachmentHelpers';
 import type { WbMeta } from './CellMeta';
 import { getHotPlugin } from './handsontable';
 import type { Workbench } from './WbView';
@@ -177,8 +180,9 @@ export function useHotHooks({
     afterScrollHorizontally: () => scheduleVisibleColumnsAutoSize(),
 
     afterGetColHeader: (visualCol, th) => {
-      const headerLabel = 
-        th.querySelector<HTMLButtonElement>('button[data-wb-header-label]');
+      const headerLabel = th.querySelector<HTMLButtonElement>(
+        'button[data-wb-header-label]'
+      );
       if (headerLabel === null) return;
 
       headerLabel.onclick = (_event) => {
@@ -533,13 +537,21 @@ export function useHotHooks({
         // REFACTOR: use sortFunction here
         .sort()
         .reverse();
-      const removedRowsCellMeta = removedRows.filter((physicalRow) => physicalRow < workbench.cells.cellMeta.length);
+      const removedRowsCellMeta = removedRows.filter(
+        (physicalRow) => physicalRow < workbench.cells.cellMeta.length
+      );
 
       // Don't delete rows if any contain attachments
       if (usesAttachments(workbench.dataset)) {
-        const attachmentsColumn = getVisualAttachmentsColumn(workbench.dataset, workbench.hot);
+        const attachmentsColumn = getVisualAttachmentsColumn(
+          workbench.dataset,
+          workbench.hot
+        );
         for (const row of removedRows) {
-          const cellMeta = workbench.hot.getCellMeta(workbench.hot.toVisualRow(row), attachmentsColumn);
+          const cellMeta = workbench.hot.getCellMeta(
+            workbench.hot.toVisualRow(row),
+            attachmentsColumn
+          );
           if (cellMeta !== undefined && cellMeta.formattedValue !== undefined)
             return false;
         }
