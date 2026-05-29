@@ -410,18 +410,22 @@ def update_table_field_schema_config_with_defaults(
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    try:
-        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+    sp_local_container = (
+        Splocalecontainer.objects.filter(
             name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type,
         )
-    except MultipleObjectsReturned:
-        sp_local_container = Splocalecontainer.objects.filter(
+        .order_by('id')
+            .first()
+    )
+
+    if sp_local_container is None:
+        sp_local_container = Splocalecontainer.objects.create(
             name=table.name.lower(),
             discipline_id=discipline_id,
-            schematype=table_config.schema_type
-        ).first()
+            schematype=table_config.schema_type,
+        )
 
     try:
         field = table.get_field_strict(field_name)
@@ -535,18 +539,22 @@ def update_table_field_schema_config_params(
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    try:
-        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+    sp_local_container = (
+        Splocalecontainer.objects.filter(
             name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type,
         )
-    except MultipleObjectsReturned:
-        sp_local_container = Splocalecontainer.objects.filter(
+        .order_by('id')
+            .first()
+    )
+
+    if sp_local_container is None:
+        sp_local_container = Splocalecontainer.objects.create(
             name=table.name.lower(),
             discipline_id=discipline_id,
-            schematype=table_config.schema_type
-        ).first()
+            schematype=table_config.schema_type,
+        )
 
     try:
         field = table.get_field_strict(field_name)
