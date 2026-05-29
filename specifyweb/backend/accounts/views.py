@@ -6,11 +6,10 @@ import jwt
 import logging
 import requests
 import time
-from urllib.parse import unquote_plus
 from django import forms
 from django import http
 from django.conf import settings
-from django.contrib.auth import login
+from django.contrib.auth import login, authenticate
 from django.contrib.auth.models import AbstractBaseUser
 from django.db import connection
 from django.db.models import Max
@@ -19,6 +18,7 @@ from django.template.response import TemplateResponse
 from django.utils import crypto
 from django.utils.http import url_has_allowed_host_and_scheme, urlencode
 from django.views.decorators.cache import never_cache
+from django.views.decorators.csrf import csrf_exempt
 from typing import cast
 
 from specifyweb.backend.accounts.account_utils import check_collection_access_against_agents, is_provider_info
@@ -27,15 +27,17 @@ from specifyweb.backend.accounts.forms_types import CollectionChoiceField
 from specifyweb.backend.accounts.permissions_types import InviteLinkPT, SetPasswordPT, SetUserAgentsPT, Sp6AdminPT, UserOICProvidersPT
 from specifyweb.backend.accounts.types import ExternalUser, InviteToken, OAuthLogin, ProviderConf, ProviderInfo
 from specifyweb.middleware.general import require_GET, require_http_methods
+from specifyweb.backend.context.views import has_collection_access, set_collection_cookie, users_collections_for_sp7
 
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.views import login_maybe_required, openapi
 from .models import Spuserexternalid
-from specifyweb.specify.models import Specifyuser
+from specifyweb.specify.models import Specifyuser, Collection
 from django.views.decorators.http import require_POST
 from specifyweb.backend.permissions.permissions import check_permission_targets
 from specifyweb.specify.auth.support_login import b64_url_to_bytes
+from specifyweb.backend.accounts.access_token_utils import DEFAULT_AUTH_LIFESPAN_SECONDS, generate_access_token, revoke_access_token as revoke_token, AUTH_JWT_DECODE_OPTIONS, AUTH_TOKEN_ALGORITHMS
 from django.db import transaction, connection
 
 logger = logging.getLogger(__name__)
@@ -293,7 +295,6 @@ def choose_collection(request) -> http.HttpResponse:
     through here, we also use the opportunity to associate an external
     id to the user if one is provided.
     """
-    from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
     from specifyweb.backend.setup_tool.api import filter_ready_collections_for_config_tasks
 
     
@@ -354,7 +355,6 @@ def support_login(request: http.HttpRequest) -> http.HttpResponse:
     if not settings.ALLOW_SUPPORT_LOGIN:
         return http.HttpResponseForbidden()
 
-    from django.contrib.auth import login, authenticate
     token = request.GET["token"]
     key = b64_url_to_bytes(request.GET["key"])
 
@@ -580,3 +580,147 @@ def set_admin_status(request, userid):
     else:
         user.clear_admin()
         return http.HttpResponse('false', content_type='text/plain')
+
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Obtain an access token that can be used with the API",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "username": {
+                                "type": "string"
+                            },
+                            "password": {
+                                "type": "string"
+                            },
+                            "collectionid": {
+                                "type": "integer"
+                            },
+                            "expires": {
+                                "type": "integer",
+                                "description": f"The number of seconds this token should be valid for. Defaults to {DEFAULT_AUTH_LIFESPAN_SECONDS / 60} minutes if not specified",
+                                "default": DEFAULT_AUTH_LIFESPAN_SECONDS
+                            }
+                        },
+                        "required": ['username', 'password', 'collectionid'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "The access token was successfully generated",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "access_token": {
+                                    "type": "string"
+                                },
+                                "expires_in": {
+                                    "type": "integer",
+                                    "description": "The number of seconds the access token is live for."
+                                }
+                            }
+                        }
+                    }
+                }
+            },
+            "400": {"description": "One of the required keys was not supplied, or one or more keys were supplied incorrectly"},
+            "403": {"description": "The provided credentials were incorrect, or the user does not have access to the collection"},
+            "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
+        }
+    },
+})
+@require_POST
+@csrf_exempt
+def acquire_access_token(request):
+    username = request.POST.get("username")
+    password = request.POST.get("password")
+    collection_id = request.POST.get("collectionid")
+    raw_expires_in = request.POST.get("expires", DEFAULT_AUTH_LIFESPAN_SECONDS)
+
+    if None in (username, password, collection_id):
+        return http.HttpResponseBadRequest(f"username, password, and collection are required")
+
+    try:
+        expires_in = int(raw_expires_in)
+        if expires_in <= 0:
+            return http.HttpResponseBadRequest(f"Invalid expiry time")
+    except ValueError:
+        return http.HttpResponseBadRequest(f"Expiry time could be parsed as integer")
+
+
+    try:
+        collection = Collection.objects.get(id=collection_id)
+    except Collection.DoesNotExist:
+        return http.HttpResponseBadRequest(f'collection {collection_id} does not exist')
+
+    user = authenticate(username=username, password=password)
+
+    if user is None or not has_collection_access(collection.id, user.id):
+        return http.HttpResponseForbidden()
+
+    token = generate_access_token(user, collection.id, expires_in=expires_in)
+
+    # TODO: lower default expiry time and also issue refresh tokens that can be
+    # used to re-issue auth tokens
+    # Issue refresh tokens as HTTP-only cookies? Need to keep CSRF protection
+    # and replay attacks in mind. Maybe just store them in Redis...
+    response = {
+        "access_token": token,
+        "expires_in": expires_in
+    }
+    return http.JsonResponse(response)
+
+
+@openapi(schema={
+    'post': {
+        "requestBody": {
+            "required": True,
+            "description": "Revoke a previously granted access token",
+            "content": {
+                "application/x-www-form-urlencoded": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "access_token": {
+                                "type": "string",
+                                "description": "The JWT Access token to revoke"
+                            },
+                        },
+                        "required": ['access_token'],
+                        'additionalProperties': False
+                    }
+                }
+            }
+        },
+        "responses": {
+            "204": {"description": "The access token was revoked"},
+            "400": {"description": "The provided token is already invalid or could not be validated"},
+            "403": {"description": "The user was not logged-in when making a request to the endpoint"},
+            "405": {"description": "A non-POST method was made to the endpoint. Only POST is supported"}
+        }
+    },
+})
+@require_POST
+@login_maybe_required
+def revoke_access_token(request):
+    encoded_token = request.POST.get("access_token")
+
+    try:
+        token = jwt.decode(encoded_token, settings.SECRET_KEY,
+                           options=AUTH_JWT_DECODE_OPTIONS, algorithms=AUTH_TOKEN_ALGORITHMS)
+    except jwt.exceptions.InvalidTokenError:
+        return http.HttpResponseBadRequest()
+
+    revoke_token(token)
+
+    return http.HttpResponse('', status=204)

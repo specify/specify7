@@ -1,4 +1,4 @@
-from .utils import _set_string, _get_string, _delete_key, _add_to_set, _remove_from_set, _set_elements, _redis_type, format_key
+from .utils import _set_string, _get_string, _delete_key, _add_to_set, _remove_from_set, _set_elements, _redis_type, format_key, _key_exists
 
 
 def set_string(key: str | bytes, value: str, time_to_live=None, override_existing=True):
@@ -35,3 +35,7 @@ def delete_key(key: str | bytes):
 
 def redis_type(key: str | bytes):
     return _redis_type(format_key(key))
+
+
+def key_exists(key: str) -> bool:
+    return _key_exists(key)

@@ -13,6 +13,9 @@ urlpatterns = [
     # OpenId Connect callback endpoint:
     path('oic_callback/', views.oic_callback),
 
+    path('token/', views.acquire_access_token),
+    path('token/revoke/', views.revoke_access_token),
+
     path(
         'logout/',
         skip_collection_access_check(auth_views.LogoutView.as_view(next_page='/accounts/login/'))
