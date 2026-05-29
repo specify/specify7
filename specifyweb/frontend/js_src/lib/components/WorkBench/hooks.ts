@@ -185,7 +185,9 @@ export function useHotHooks({
         if (workbench.hot === undefined) return;
 
         const plugin = getHotPlugin(workbench.hot, 'multiColumnSorting');
-        const existing = plugin.getSortConfig(visualCol) as Handsontable.plugins.ColumnSorting.Config | undefined;
+        const existing = plugin.getSortConfig(visualCol) as
+          | Handsontable.plugins.ColumnSorting.Config
+          | undefined;
 
         if (existing === undefined) {
           plugin.sort({ column: visualCol, sortOrder: 'asc' });
