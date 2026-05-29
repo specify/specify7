@@ -14,12 +14,15 @@ import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { exportsForTests, setCache } from '../../utils/cache';
 import type { GetSet, RA } from '../../utils/types';
-import { H2 } from '../Atoms';
+import { H2, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
+import { icons } from '../Atoms/Icons';
 import { fetchOriginalUrl } from '../Attachments/attachments';
 import { LeafletImageViewer } from '../Attachments/LeafletImageViewer';
 import { AttachmentPreview } from '../Attachments/Preview';
 import { AttachmentViewer } from '../Attachments/Viewer';
+import { LoadingContext } from '../Core/Contexts';
 import { toResource } from '../DataModel/helpers';
 import type {
   AnySchema,
@@ -33,32 +36,53 @@ import {
 } from '../DataModel/serializers';
 import type { Attachment, SpDataSetAttachment } from '../DataModel/types';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
+import { loadingBar } from '../Molecules';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { FilePicker } from '../Molecules/FilePicker';
 import { PopupWindow } from '../Molecules/PopupWindow';
+import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { Skeleton } from '../SkeletonLoaders/Skeleton';
+import { handleWorkbenchSave } from '../WbActions/WbSave';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import {
+  BASE_TABLE_NAME,
+  deleteAttachmentFromRow,
   getAttachmentsFromCell,
   getVisualAttachmentsColumn,
+  uploadAttachmentsToRow,
 } from '../WorkBench/attachmentHelpers';
+import type { Workbench } from '../WorkBench/WbView';
 
 const { formatCacheKey } = exportsForTests;
 
 type WbAttachmentPreviewCell = {
   readonly attachment: SerializedResource<Attachment> | undefined;
+  readonly spDataSetAttachment:
+    | SerializedResource<SpDataSetAttachment>
+    | undefined;
   readonly isLoading: boolean;
 };
 
 export function WbAttachmentsPreview({
   hot,
   dataset,
+  workbench,
+  isUploaded,
   showPanel,
   onClose: handleClose,
+  searchRef,
+  checkDeletedFail,
+  onSpreadsheetUpToDate: handleSpreadsheetUpToDate,
 }: {
   readonly hot: Handsontable | undefined;
   readonly dataset: Dataset;
+  readonly workbench: Workbench;
+  readonly isUploaded: boolean;
   readonly showPanel: boolean;
   readonly onClose: () => void;
+  readonly searchRef: React.MutableRefObject<HTMLInputElement | null>;
+  readonly checkDeletedFail: (statusCode: number) => void;
+  readonly onSpreadsheetUpToDate: () => void;
 }): JSX.Element {
   const [selectedRow, setSelectedRow] = React.useState<number | undefined>(
     undefined
@@ -67,11 +91,13 @@ export function WbAttachmentsPreview({
     RA<WbAttachmentPreviewCell>
   >([]);
   const [selectedAttachment, setSelectedAttachment] = React.useState<
-    SerializedResource<Attachment> | undefined
+    WbAttachmentPreviewCell | undefined
   >(undefined);
 
   const [showAttachment, handleShowAttachment, handleHideAttachment] =
     useBooleanState();
+
+  const loading = React.useContext(LoadingContext);
 
   const [useWindow, setUseWindow] = React.useState<boolean>(false);
 
@@ -89,14 +115,22 @@ export function WbAttachmentsPreview({
     setAttachments([]);
     setSelectedAttachment(undefined);
     if (selectedRow === undefined) return;
+    let active = true;
 
     fetchRowAttachments(
       hot,
       dataset,
       selectedRow,
-      setAttachments,
-      setSelectedAttachment
+      (next) => {
+        if (active) setAttachments(next);
+      },
+      (next) => {
+        if (active) setSelectedAttachment(next);
+      }
     );
+    return () => {
+      active = false;
+    };
   }, [selectedRow]);
 
   React.useEffect(() => {
@@ -106,8 +140,53 @@ export function WbAttachmentsPreview({
     hot.addHook('afterSelectionEnd', handleSelection);
   }, [hot]);
 
+  const [fileUploadLength, setFileUploadLength] = React.useState<number>(0);
+  const [fileUploadProgress, setFileUploadProgress] = React.useState<
+    number | undefined
+  >(undefined);
+  const [attachmentIsPublicDefault] = collectionPreferences.use(
+    'general',
+    'attachments',
+    'attachment.is_public_default'
+  );
+
+  const saveDataset = async function (): Promise<void> {
+    return handleWorkbenchSave(
+      workbench,
+      searchRef,
+      checkDeletedFail,
+      handleSpreadsheetUpToDate
+    );
+  };
+
+  const refreshSpreadsheet = function (): void {
+    if (hot === undefined || selectedRow === undefined) return;
+    fetchRowAttachments(
+      hot,
+      dataset,
+      selectedRow,
+      setAttachments,
+      setSelectedAttachment
+    );
+  };
+
   return (
     <>
+      {fileUploadProgress !== undefined && (
+        <Dialog
+          buttons={undefined}
+          header={attachmentsText.uploadingInline()}
+          onClose={undefined}
+        >
+          <div aria-live="polite">
+            {fileUploadProgress === fileUploadLength ? (
+              loadingBar
+            ) : (
+              <Progress max={fileUploadLength} value={fileUploadProgress} />
+            )}
+          </div>
+        </Dialog>
+      )}
       {showPanel && (
         <ErrorBoundary dismissible>
           <div className="flex h-full w-60 flex-col gap-4 overflow-y-auto">
@@ -121,13 +200,22 @@ export function WbAttachmentsPreview({
               {selectedRow !== undefined && attachments.length >= 0 && (
                 <div className="flex flex-col gap-2">
                   {attachments.map((cell, index) =>
-                    cell !== undefined && !cell.isLoading && cell.attachment ? (
-                      <AttachmentPreview
-                        attachment={cell.attachment}
+                    cell !== undefined &&
+                    !cell.isLoading &&
+                    cell.spDataSetAttachment ? (
+                      <DatasetAttachmentPreview
+                        attachments={attachments}
+                        dataset={dataset}
+                        dataSetAttachment={cell.spDataSetAttachment}
+                        handleRefreshSpreadsheet={refreshSpreadsheet}
+                        hot={hot}
                         key={index}
+                        loading={loading}
+                        saveDataset={saveDataset}
+                        selectedRow={selectedRow}
                         onOpen={(): void => {
                           handleShowAttachment();
-                          setSelectedAttachment(cell.attachment);
+                          setSelectedAttachment(cell);
                         }}
                       />
                     ) : (
@@ -137,7 +225,38 @@ export function WbAttachmentsPreview({
                 </div>
               )}
             </div>
-            <div className="flex flex-wrap gap-2">
+
+            <div className="flex flex-col gap-2">
+              {selectedRow !== undefined && !isUploaded && (
+                <FilePicker
+                  acceptedFormats={undefined}
+                  containerClassName="h-8 px-2 py-1 text-sm w-auto"
+                  showFileNames={false}
+                  onFilesSelected={async (selectedFiles) => {
+                    if (hot === undefined || selectedRow === undefined) return;
+
+                    const existingAttachments = attachments
+                      .map((cell) => cell.spDataSetAttachment)
+                      .filter((a) => a !== undefined) as RA<
+                      SerializedResource<SpDataSetAttachment>
+                    >;
+
+                    loading(uploadAttachmentsToRow(
+                      Array.from(selectedFiles),
+                      dataset,
+                      hot,
+                      selectedRow,
+                      existingAttachments,
+                      BASE_TABLE_NAME,
+                      attachmentIsPublicDefault,
+                      setFileUploadLength,
+                      setFileUploadProgress
+                    ).then(async () =>
+                      saveDataset().then(refreshSpreadsheet)
+                    ));
+                  }}
+                />
+              )}
               <Button.Small className="flex-1" onClick={handleClose}>
                 {commonText.close()}
               </Button.Small>
@@ -147,13 +266,92 @@ export function WbAttachmentsPreview({
       )}
       {showAttachment && (
         <AttachmentViewerDialog
-          attachment={selectedAttachment}
+          attachment={selectedAttachment?.attachment}
+          attachments={attachments}
+          selected={[selectedAttachment, setSelectedAttachment]}
           viewerId={dataset.id.toString()}
           window={[useWindow, setUseWindow]}
           onClose={handleHideAttachment}
         />
       )}
     </>
+  );
+}
+
+function DatasetAttachmentPreview({
+  dataSetAttachment,
+  onOpen,
+  dataset,
+  hot,
+  selectedRow,
+  attachments,
+  loading,
+  saveDataset,
+  handleRefreshSpreadsheet,
+}: {
+  readonly dataSetAttachment: SerializedResource<SpDataSetAttachment>;
+  readonly onOpen: () => void;
+  readonly dataset: Dataset;
+  readonly hot: Handsontable | undefined;
+  readonly selectedRow: number;
+  readonly attachments: RA<WbAttachmentPreviewCell>;
+  readonly loading: (promise: Promise<unknown>) => void;
+  readonly saveDataset: () => Promise<void>;
+  readonly handleRefreshSpreadsheet: () => void;
+}): JSX.Element {
+  return (
+    <div className="flex items-stretch w-full">
+      <div className="flex-1 min-w-0">
+        <AttachmentPreview
+          attachment={dataSetAttachment.attachment}
+          onOpen={onOpen}
+        />
+      </div>
+      <div className="flex flex-col ml-2 gap-1 flex-shrink-0">
+        <Button.Small
+          className="h-full"
+          disabled={
+            dataSetAttachment !== attachments.at(-1)?.spDataSetAttachment ||
+            dataset.uploadresult?.success === true
+          }
+          title={commonText.delete()}
+          variant={className.dangerButton}
+          onClick={(): void => {
+            if (hot === undefined) return;
+            const existingAttachments = attachments
+              .map((cell) => cell.spDataSetAttachment)
+              .filter((a) => a !== undefined) as RA<
+              SerializedResource<SpDataSetAttachment>
+            >;
+            loading(
+              deleteAttachmentFromRow(
+                dataSetAttachment.id,
+                dataset,
+                hot,
+                selectedRow,
+                existingAttachments
+              ).then(async () => saveDataset().then(handleRefreshSpreadsheet))
+            );
+          }}
+        >
+          {icons.trash}
+        </Button.Small>
+        {/* <Button.Small
+          title={commonText.remove()}
+          className="h-full"
+          onClick={() => {}}
+        >
+          {icons.chevronUp}
+        </Button.Small>
+        <Button.Small
+          title={commonText.remove()}
+          className="h-full"
+          onClick={() => {}}
+        >
+          {icons.chevronDown}
+        </Button.Small> */}
+      </div>
+    </div>
   );
 }
 
@@ -169,7 +367,7 @@ function fetchRowAttachments(
         ) => RA<WbAttachmentPreviewCell>)
   ) => void,
   setSelectedAttachment: (
-    attachment: SerializedResource<Attachment> | undefined
+    attachment: WbAttachmentPreviewCell | undefined
   ) => void
 ): void {
   // Look for Attachments column
@@ -177,8 +375,10 @@ function fetchRowAttachments(
   if (attachmentColumnIndex === -1) return;
 
   // Each row should have comma-separated IDs for SpDataSetAttachments
-  const selectedCell = (hot.getDataAtCell(row, attachmentColumnIndex) ??
-    '') as string;
+  const selectedCell = (hot.getDataAtCell(
+    row,
+    attachmentColumnIndex
+  ) ?? '') as string;
   const cellData = getAttachmentsFromCell(selectedCell);
   const dataSetAttachmentIds =
     cellData === undefined
@@ -187,12 +387,14 @@ function fetchRowAttachments(
 
   if (dataSetAttachmentIds.length === 0) {
     setAttachments([]);
+    setSelectedAttachment(undefined);
     return;
   }
 
   setAttachments(
     Array.from({ length: dataSetAttachmentIds.length }, () => ({
       attachment: undefined,
+      spDataSetAttachment: undefined,
       isLoading: true,
     }))
   );
@@ -221,33 +423,41 @@ function fetchRowAttachments(
           serializeResource(data.attachment),
           'Attachment'
         );
-        if (resource !== undefined && index === 0) {
-          // TODO: update spDataSetAttachment's ordinal when uploading multiple attachments to a single row and use data.ordinal === 0
-          setSelectedAttachment(resource);
-        }
-        insertAttachmentPreviewCell(index, {
+        const cell: WbAttachmentPreviewCell = {
           attachment: resource,
+          spDataSetAttachment: serializeResource(data),
           isLoading: false,
-        });
+        };
+        if (resource !== undefined && index === 0) {
+          setSelectedAttachment(cell);
+        }
+        insertAttachmentPreviewCell(index, cell);
       })
       .catch(() => {
         insertAttachmentPreviewCell(index, {
           attachment: undefined,
+          spDataSetAttachment: undefined,
           isLoading: false,
         });
       });
   });
 }
 
+import { Slider } from '../FormSliders/Slider';
+
 function AttachmentViewerDialog({
   attachment,
+  attachments,
   onClose,
   viewerId,
+  selected: [selectedAttachment, setSelectedAttachment],
   window: [useWindow, setUseWindow],
 }: {
   readonly attachment: SerializedResource<Attachment> | undefined;
+  readonly attachments: RA<WbAttachmentPreviewCell>;
   readonly onClose: () => void;
   readonly viewerId: string;
+  readonly selected: GetSet<WbAttachmentPreviewCell | undefined>;
   readonly window: GetSet<boolean>;
 }): JSX.Element | null {
   const [attachmentUrl, setAttachmentUrl] = React.useState<string | undefined>(
@@ -271,7 +481,11 @@ function AttachmentViewerDialog({
   React.useEffect(() => {
     if (attachment === undefined) return;
     if (useWindow) {
-      setCache('workBenchAttachmentViewer', viewerId, [attachment.id]);
+      setCache(
+        'workBenchAttachmentViewer',
+        viewerId,
+        attachments.map((cell) => cell.attachment?.id ?? attachment.id)
+      );
     }
   }, [attachment, useWindow]);
 
@@ -311,10 +525,10 @@ function AttachmentViewerDialog({
         const value = globalThis.localStorage.getItem(
           formatCacheKey('workBenchAttachmentViewer', viewerId)
         );
-        if (value) {
-          onClose();
-        } else {
+        if (value === null) {
           setUseWindow(false);
+        } else {
+          onClose();
         }
       }}
     >
@@ -334,10 +548,17 @@ function AttachmentViewerDialog({
       header={attachmentsText.attachments()}
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
+          <Slider
+            count={attachments?.length ?? 1}
+            value={selectedAttachment?.spDataSetAttachment?.ordinal ?? 0}
+            onChange={(newValue: number) => {
+              setSelectedAttachment(attachments[newValue]);
+            }}
+          />
           <Button.Secondary onClick={(): void => setUseWindow(true)}>
             {wbText.detachWindow()}
           </Button.Secondary>
-          <Button.Secondary onClick={(): void => onClose()}>
+          <Button.Secondary onClick={onClose}>
             {commonText.close()}
           </Button.Secondary>
         </div>
