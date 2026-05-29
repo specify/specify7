@@ -1,4 +1,4 @@
-from unittest import TestCase, expectedFailure, skip
+from unittest import TestCase, skip
 from sqlalchemy import orm, inspect
 
 import specifyweb.specify.models as spmodels
@@ -11,7 +11,6 @@ class QueryFieldTests(TestCase):
         fs = QueryFieldSpec.from_stringid("4.taxon.Genus", False)
         self.assertEqual("4.taxon.Genus", fs.to_stringid())
 
-    @expectedFailure
     def test_stringid_roundtrip_en_masse(self) -> None:
         for (stringid, relfld) in STRINGID_LIST:
             fs = QueryFieldSpec.from_stringid(stringid, relfld)

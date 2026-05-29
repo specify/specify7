@@ -101,6 +101,20 @@ def generate_fields_test_str(query_fields, var_name): # pragma: no cover
 
 class TestFieldSpecsFromJson(ApiTests):
 
+    def assert_relation_stringid(self, stringid: str, expected_path: tuple[str, ...]):
+        fieldspec = QueryFieldSpec.from_stringid(stringid, True)
+        round_tripped = QueryFieldSpec.from_stringid(fieldspec.to_stringid(), True)
+
+        self.assertTrue(fieldspec.is_relationship())
+        self.assertEqual(fieldspec, round_tripped)
+        self.assertEqual(
+            tuple(node.name for node in fieldspec.join_path),
+            expected_path,
+        )
+        self.assertFalse(
+            any(isinstance(node, TreeRankQuery) for node in fieldspec.join_path)
+        )
+
     def test_static_field_specs(self): # pragma: no cover
         query = json.load(open("specifyweb/backend/stored_queries/tests/static/co_query.json"))
         query_fields = fields_from_json(query["fields"])
@@ -108,3 +122,27 @@ class TestFieldSpecsFromJson(ApiTests):
         # generate_fields_test_str(query_fields, "static_simple_field_spec")
 
         self.assertEqual(static_simple_field_spec, query_fields)
+
+    def test_nested_formatted_prep_type_stringid_stays_relationship(self):
+        self.assert_relation_stringid(
+            "1,63-preparations,65.preptype.prepType",
+            ("preparations", "prepType"),
+        )
+
+    def test_direct_formatted_collecting_event_stringid_stays_relationship(self):
+        self.assert_relation_stringid(
+            "1,10.collectingevent.collectingEvent",
+            ("collectingEvent",),
+        )
+
+    def test_nested_formatted_taxon_stringid_stays_relationship(self):
+        self.assert_relation_stringid(
+            "1,9-determinations,4.taxon.taxon",
+            ("determinations", "taxon"),
+        )
+
+    def test_nested_formatted_chronostrat_stringid_stays_relationship(self):
+        self.assert_relation_stringid(
+            "1,32,46-chronosStrat.geologictimeperiod.chronosStrat",
+            ("paleoContext", "chronosStrat"),
+        )
