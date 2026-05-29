@@ -128,7 +128,6 @@ def create_root_tectonic_node(apps):
                 parent=None,
                 treedef=tectonic_tree_def,
                 rankid=0,
-                parent=None,
                 isenforced=True
             )
 
