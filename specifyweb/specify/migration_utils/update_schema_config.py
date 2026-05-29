@@ -557,6 +557,9 @@ def update_table_field_schema_config_params(
             name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type,
+            ishidden=False,
+            issystem=table.system,
+            version=0,
         )
 
     try:
