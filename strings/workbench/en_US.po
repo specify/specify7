@@ -256,7 +256,7 @@ msgstr ""
 "This action will discard all changes made to the Data Set since the last "
 "Save."
 
-#: components/WbActions/WbSave.tsx:71
+#: components/WbActions/WbSave.tsx:86
 #. Used in: Components > Wb Actions > Wb Save
 msgid "saving"
 msgstr "Saving..."
@@ -802,17 +802,17 @@ msgstr "WB upload of \"{dataSet:string}\""
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (in {parent:string})"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#: components/WorkBench/WbAttachmentsPreview.tsx:198
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "attachmentsForRow"
 msgstr "Attachments for row {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:338
+#: components/WorkBench/WbAttachmentsPreview.tsx:559
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "detachWindow"
 msgstr "Detach Window"
 
-#: components/WbAttachmentViewer/index.tsx:140
+#: components/WbAttachmentViewer/index.tsx:148
 #. Used in: Components > Wb Attachment Viewer > Index
 msgid "attachWindow"
 msgstr "Attach Window"

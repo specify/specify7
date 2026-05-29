@@ -267,7 +267,7 @@ msgstr ""
 "Ця дія призведе до скасування всіх змін, внесених до набору даних після "
 "останнього збереження."
 
-#: components/WbActions/WbSave.tsx:71
+#: components/WbActions/WbSave.tsx:86
 #. Used in: Components > Wb Actions > Wb Save
 msgid "saving"
 msgstr "Збереження..."
@@ -817,17 +817,17 @@ msgstr "WB завантаження \"{dataSet:string}\""
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (у {parent:string})"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:119
+#: components/WorkBench/WbAttachmentsPreview.tsx:198
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "attachmentsForRow"
 msgstr "Вкладення для рядка {row:number}:"
 
-#: components/WorkBench/WbAttachmentsPreview.tsx:338
+#: components/WorkBench/WbAttachmentsPreview.tsx:559
 #. Used in: Components > Work Bench > Wb Attachments Preview
 msgid "detachWindow"
 msgstr "Від’єднати вікно"
 
-#: components/WbAttachmentViewer/index.tsx:140
+#: components/WbAttachmentViewer/index.tsx:148
 #. Used in: Components > Wb Attachment Viewer > Index
 msgid "attachWindow"
 msgstr "Прикріпити вікно"

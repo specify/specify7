@@ -15,13 +15,13 @@ msgstr "Content-Type: text/plain\n"
 #: components/Router/Routes.tsx:190
 #: components/Router/Routes.tsx:493
 #: components/Statistics/StatsSpec.tsx:508
-#: components/WbAttachmentViewer/index.tsx:131
-#: components/WbImportAttachments/index.tsx:193
-#: components/WbImportAttachments/index.tsx:227
+#: components/WbAttachmentViewer/index.tsx:132
+#: components/WbImportAttachments/index.tsx:131
+#: components/WbImportAttachments/index.tsx:165
 #: components/WbToolkit/index.tsx:72
-#: components/WorkBench/WbAttachmentsPreview.tsx:115
-#: components/WorkBench/WbAttachmentsPreview.tsx:300
-#: components/WorkBench/WbAttachmentsPreview.tsx:334
+#: components/WorkBench/WbAttachmentsPreview.tsx:194
+#: components/WorkBench/WbAttachmentsPreview.tsx:514
+#: components/WorkBench/WbAttachmentsPreview.tsx:548
 #: components/WorkBench/WbView.tsx:260
 #: components/WorkBench/hotProps.tsx:75
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
@@ -38,7 +38,7 @@ msgstr "Scale"
 #: components/Attachments/index.tsx:54
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
-#: components/WbImportAttachments/index.tsx:196
+#: components/WbImportAttachments/index.tsx:134
 #. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Attachment server unavailable"
@@ -56,8 +56,9 @@ msgid "orderBy"
 msgstr "Order By"
 
 #: components/Attachments/Plugin.tsx:168
-#: components/WbImportAttachments/index.tsx:202
-#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index
+#: components/WbImportAttachments/index.tsx:140
+#: components/WorkBench/WbAttachmentsPreview.tsx:178
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index ⬤ Components > Work Bench > Wb Attachments Preview
 msgid "uploadingInline"
 msgstr "Uploading…"
 
@@ -309,7 +310,7 @@ msgstr "Stopped By User"
 #: components/Router/OverlayRoutes.tsx:246
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
-#: components/WbImportAttachments/index.tsx:224
+#: components/WbImportAttachments/index.tsx:162
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 msgid "importAttachments"
 msgstr "Import Attachments"
