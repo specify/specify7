@@ -2097,7 +2097,7 @@ def reverse_hide_component_fields(apps, schema_editor=None):
                         container=container,
                         name=field_name.lower()
                     )
-                    items.update(ishidden=True)
+                    items.update(ishidden=False)
 
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
