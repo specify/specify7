@@ -982,7 +982,7 @@ def update_cog_type_fields(apps):
     container_items = Splocalecontaineritem.objects.filter(
         name="collectionObjectType",
         picklistname=None,
-        container__name="Collectionobject",
+        container__name="collectionobject",
     )
     for container_item in container_items:
         Splocaleitemstr.objects.filter(itemname=container_item).delete()
