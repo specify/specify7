@@ -499,7 +499,8 @@ def fix_global_default_rules(registry=None):
                 rule.modelName,
                 rule.isDatabaseConstraint,
                 frozenset(
-                    rule.uniquenessrulefield_set.values_list("fieldPath", "isScope")
+                    (field.fieldPath, field.isScope)
+                        for field in rule.uniquenessrulefield_set.all()
                 ),
             )
             for rule in UniquenessRule.objects.filter(
@@ -522,7 +523,8 @@ def fix_global_default_rules(registry=None):
                     rule.modelName,
                     rule.isDatabaseConstraint,
                     frozenset(
-                        rule.uniquenessrulefield_set.values_list("fieldPath", "isScope")
+                        (field.fieldPath, field.isScope)
+                        for field in rule.uniquenessrulefield_set.all()
                     ),
                 )
                 if signature in global_rule_signatures:
