@@ -176,12 +176,11 @@ export function useHotHooks({
     afterScrollHorizontally: () => scheduleVisibleColumnsAutoSize(),
 
     afterGetColHeader: (visualCol, th) => {
-      const headerLabel = th.querySelector<HTMLButtonElement>(
-        `button[data-wb-header-label="${visualCol}"]`
-      );
+      const headerLabel = 
+        th.querySelector<HTMLButtonElement>('button[data-wb-header-label]');
       if (headerLabel === null) return;
 
-      headerLabel.addEventListener('click', (_event) => {
+      headerLabel.onclick = (_event) => {
         if (workbench.hot === undefined) return;
 
         const plugin = getHotPlugin(workbench.hot, 'multiColumnSorting');
@@ -196,7 +195,7 @@ export function useHotHooks({
         } else {
           plugin.clearSort();
         }
-      });
+      };
     },
 
     /*
