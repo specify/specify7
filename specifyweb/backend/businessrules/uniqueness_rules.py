@@ -510,6 +510,6 @@ def fix_global_default_rules(registry=None):
                         rule.uniquenessrulefield_set.values_list("fieldPath", "isScope")
                     ),
                 )
-            if signature in global_rule_signatures:
-                    rule.uniquenessrulefield_set.all().delete()
-                    rule.delete()
+                if signature in global_rule_signatures:
+                        rule.uniquenessrulefield_set.all().delete()
+                        rule.delete()
