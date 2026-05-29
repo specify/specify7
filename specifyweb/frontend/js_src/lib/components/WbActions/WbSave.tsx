@@ -16,7 +16,7 @@ export const handleWorkbenchSave = async (
   workbench: Workbench,
   searchRef: React.MutableRefObject<HTMLInputElement | null>,
   checkDeletedFail: (statusCode: number) => void,
-  handleSpreadsheetUpToDate: () => void,
+  handleSpreadsheetUpToDate: () => void
 ): Promise<void> => {
   // Clear validation
   overwriteReadOnly(workbench.dataset, 'rowresults', null);
@@ -64,11 +64,11 @@ export function WbSave({
       workbench,
       searchRef,
       checkDeletedFail,
-      handleSpreadsheetUpToDate,
+      handleSpreadsheetUpToDate
     );
 
     closeProgressBar();
-  }
+  };
 
   return (
     <>
