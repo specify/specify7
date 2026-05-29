@@ -125,7 +125,6 @@ def create_root_tectonic_node(apps):
             tectonic_tree_def_item, _ = TectonicUnitTreeDefItem.objects.get_or_create(
                 name="Root",
                 title="Root",
-                rankid=0,
                 parent=None,
                 treedef=tectonic_tree_def,
                 rankid=0,
