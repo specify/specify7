@@ -2047,7 +2047,9 @@ def update_loan_and_gift_agents(apps):
             return Splocaleitemstr.objects.create(
                 itemdesc_id=itemdesc_id,
                 itemname_id=itemname_id,
+                language="en",
                 text=text,
+                version=0,
             )
 
         qs.exclude(id=obj.id).delete()
