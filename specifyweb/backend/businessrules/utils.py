@@ -17,7 +17,7 @@ _unique_catnum_pref_cache = ThreadCache[tuple[int | None, int | None], bool](
     )
 )
 
-_component_catnum_cache = ThreadCache[tuple[str, int | None, int | None], bool](
+_component_catnum_cache = ThreadCache[tuple[str, int | None], bool](
     ContextVar(
         "component_catnum_cache",
         default=None,

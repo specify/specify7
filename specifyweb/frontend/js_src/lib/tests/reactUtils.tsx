@@ -5,12 +5,23 @@ import type {
   RenderOptions,
   RenderResult,
 } from '@testing-library/react';
-import { render } from '@testing-library/react';
+import { act, render } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import type { UserEvent } from '@testing-library/user-event/dist/types/setup/setup';
 import React from 'react';
 
-import type { IR } from '../utils/types';
+import type { IR, RA } from '../utils/types';
+
+const createActUser = (user: UserEvent): UserEvent =>
+  new Proxy(user, {
+    get(target, property, receiver) {
+      const value = Reflect.get(target, property, receiver);
+      if (typeof value !== 'function') return value;
+
+      return async (...args: RA<unknown>) =>
+        act(async () => value.apply(target, args));
+    },
+  }) as UserEvent;
 
 /**
  * A wrapper for render() with userEvents setup function
@@ -26,7 +37,7 @@ export const mount = <
   readonly user: UserEvent;
 } => ({
   ...render(ui, options),
-  user: userEvent.setup(),
+  user: createActUser(userEvent.setup()),
 });
 
 /**

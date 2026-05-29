@@ -380,20 +380,29 @@ def apply_default_uniqueness_rules(discipline, registry=None):
             isDatabaseConstraint = rule["isDatabaseConstraint"]
 
             create_uniqueness_rule(
-                model_name, discipline, isDatabaseConstraint, fields, scopes, registry)
+                model_name=model_name,
+                discipline=discipline,
+                is_database_constraint=isDatabaseConstraint,
+                fields=fields,
+                scopes=scopes,
+                registry=registry
+            )
 
 
-def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
+def create_uniqueness_rule(model_name: str, discipline, is_database_constraint: bool, fields: Iterable[str], scopes: Iterable[str], registry=None):
     UniquenessRule = registry.get_model(
         'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
 
-    discipline = None if rule_is_global(scopes) else raw_discipline
+    final_discipline = None if rule_is_global(scopes) else discipline
 
     candidate_rules = UniquenessRule.objects.filter(modelName=model_name,
                                                     isDatabaseConstraint=is_database_constraint,
-                                                    discipline=discipline)
+                                                    discipline=final_discipline)
+
+    fields = list(fields)
+    scopes = list(scopes)
 
     for rule in candidate_rules:
         # If the rule already exists, skip creating the rule
@@ -405,9 +414,9 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
             return
 
     logger.info(
-        f"Creating uniqueness rule on {model_name} with fields {fields} and scopes {scopes} for the discipline {discipline.name if discipline else 'Global'}")
+        f"Creating uniqueness rule on {model_name} with fields {fields} and scopes {scopes} for the discipline {final_discipline.name if final_discipline else 'Global'}")
     rule = UniquenessRule.objects.create(
-        discipline=discipline,
+        discipline=final_discipline,
         modelName=model_name,
         isDatabaseConstraint=is_database_constraint
     )
@@ -420,16 +429,19 @@ def create_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
             uniquenessrule=rule, fieldPath=scope, isScope=True)
 
 
-def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, fields, scopes, registry=None):
+def remove_uniqueness_rule(model_name: str, discipline, is_database_constraint: bool, fields: Iterable[str], scopes: Iterable[str], registry=None):
     UniquenessRule = registry.get_model(
         'businessrules', 'UniquenessRule') if registry else models.UniquenessRule
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
 
-    discipline = None if rule_is_global(scopes) else raw_discipline
+    final_discipline = None if rule_is_global(scopes) else discipline
 
     candidate_rules = UniquenessRule.objects.filter(
-        modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=discipline)
+        modelName=model_name, isDatabaseConstraint=is_database_constraint, discipline=final_discipline)
+
+    fields = list(fields)
+    scopes = list(scopes)
 
     rule_ids = []
     for rule in candidate_rules:
@@ -447,8 +459,10 @@ def remove_uniqueness_rule(model_name, raw_discipline, is_database_constraint, f
 
 
 def _rule_fields_match(rule, fields: Iterable[str], scopes: Iterable[str]) -> bool:
-    fields_count = len(list(fields))
-    scopes_count = len(list(scopes))
+    fields = list(fields)
+    scopes = list(scopes)
+    fields_count = len(fields)
+    scopes_count = len(scopes)
     all_rule_fields = rule.uniquenessrulefield_set.all()
 
     matching_fields = all_rule_fields.filter(
@@ -470,8 +484,9 @@ GLOBAL_RULE_FIELDS = ["division", 'institution']
 
 
 def rule_is_global(scopes: Iterable[str]) -> bool:
-    return len(scopes) == 0 \
-        or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in scopes)
+    evaluated_scopes = tuple(scopes)
+    return len(evaluated_scopes) == 0 \
+        or any(any(scope_field.lower() in GLOBAL_RULE_FIELDS for scope_field in scope.split('__')) for scope in evaluated_scopes)
 
 
 def fix_global_default_rules(registry=None):

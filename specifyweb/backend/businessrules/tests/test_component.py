@@ -1,5 +1,4 @@
-from unittest.case import TestCase
-from unittest.mock import Mock, patch
+from unittest.mock import patch
 from functools import wraps
 
 from specifyweb.specify.tests.test_api import ApiTests
@@ -7,12 +6,6 @@ from specifyweb.specify.models import (
     Collection,
     Collectionobject,
     Component,
-)
-import specifyweb.backend.businessrules.utils as busrule_utils
-from specifyweb.backend.businessrules.utils import (
-    cache_unique_catnum_preferences,
-    component_catalog_number_exists,
-    get_unique_catnum_across_comp_co_coll_pref_by_ids,
 )
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 
@@ -51,10 +44,11 @@ class enable_unique_catnum_pref:
         return wrapper
 
     def __enter__(self):
-        self._patcher = patch.object(
-            busrule_utils,
-            "_get_unique_catnum_across_comp_co_coll_pref",
-            return_value=True
+        from specifyweb.backend.businessrules.utils import _get_unique_catnum_across_comp_co_coll_pref
+
+        self._patcher = patch(
+            "specifyweb.backend.businessrules.utils._get_unique_catnum_across_comp_co_coll_pref",
+        return_value=True
         )
         return self._patcher.start()
 
@@ -73,6 +67,9 @@ class ComponentTests(ApiTests):
         )
 
     def test_unique_catnum_preference_lookup_handles_stale_ids(self):
+        from specifyweb.backend.businessrules.utils import (
+            get_unique_catnum_across_comp_co_coll_pref_by_ids,
+        )
         self.assertFalse(
             get_unique_catnum_across_comp_co_coll_pref_by_ids(
                 collection_id=self.collection.id,
@@ -87,6 +84,11 @@ class ComponentTests(ApiTests):
         )
 
     def test_component_catalog_number_cache_is_collection_scoped(self):
+        from specifyweb.backend.businessrules.utils import (
+            cache_unique_catnum_preferences,
+            component_catalog_number_exists,
+        )
+        
         test_component = Component.objects.create(
             collectionobject=self.collectionobjects[0],
             catalognumber="shared-component-catno",
@@ -109,8 +111,13 @@ class ComponentTests(ApiTests):
         test_component.delete()
 
     def test_unique_catnum_pref_disabled(self):
-        is_pref_enabled = busrule_utils._get_unique_catnum_across_comp_co_coll_pref(
+        from specifyweb.backend.businessrules.utils import (
+            _get_unique_catnum_across_comp_co_coll_pref,
+        )
+
+        is_pref_enabled = _get_unique_catnum_across_comp_co_coll_pref(
             self.collection, self.specifyuser)
+        
         self.assertFalse(is_pref_enabled)
         shared_catalognumber = "shared_catnum"
 

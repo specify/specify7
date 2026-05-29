@@ -66,7 +66,7 @@ def catnum_rule_uneditable(apps, schema_editor=None):
             UniquenessRule.objects.filter(id__in=matching_rule_ids).update(isDatabaseConstraint=True)
         else:
             create_uniqueness_rule(
-                "Collectionobject",
+                model_name="Collectionobject",
                 discipline=discipline,
                 is_database_constraint=True,
                 fields=["catalogNumber"],

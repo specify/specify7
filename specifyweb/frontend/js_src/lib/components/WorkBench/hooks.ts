@@ -1,6 +1,6 @@
 import type Handsontable from 'handsontable';
 import type { CellChange } from 'handsontable/common';
-import type { Events } from 'handsontable/pluginHooks';
+import type { Events } from 'handsontable/core/hooks';
 import type { Action } from 'handsontable/plugins/undoRedo';
 import React from 'react';
 
@@ -36,13 +36,121 @@ export function useHotHooks({
 }): Partial<Events> {
   let sortConfigIsSet: boolean = false;
   const loading = React.useContext(LoadingContext);
+  const visibleColumnsAutoSizeTimeout =
+    React.useRef<ReturnType<typeof globalThis.setTimeout>>();
+  const lastAutoSizedVisibleColumns = React.useRef<string>();
+  const headerMeasureContext = React.useMemo(() => {
+    const canvas = globalThis.document?.createElement('canvas');
+    return canvas?.getContext('2d') ?? null;
+  }, []);
+  React.useEffect(
+    () => () => {
+      if (visibleColumnsAutoSizeTimeout.current !== undefined) {
+        clearTimeout(visibleColumnsAutoSizeTimeout.current);
+      }
+    },
+    []
+  );
+  const getVisualColFromProperty = React.useCallback(
+    (
+      property: CellChange[1],
+      fallbackVisualCol?: number
+    ): number | undefined => {
+      if (workbench.hot === undefined) return undefined;
+      if (typeof property === 'function') return fallbackVisualCol;
+      return workbench.hot.propToCol<number>(property);
+    },
+    [workbench.hot]
+  );
+  const getHeaderMinWidth = React.useCallback(
+    (visualCol: number): number => {
+      if (workbench.hot === undefined) return 50;
+      const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
+      if (physicalCol < 0 || physicalCol >= workbench.dataset.columns.length)
+        return 50;
+
+      const headerLabel = workbench.dataset.columns[physicalCol] ?? '';
+      const isMapped =
+        workbench.mappings?.mappedHeaders?.[physicalCol] !== undefined;
+      if (headerMeasureContext !== null) {
+        const bodyStyle =
+          globalThis.document === undefined
+            ? undefined
+            : globalThis.getComputedStyle(globalThis.document.body);
+        const fontFamily =
+          bodyStyle?.getPropertyValue('--form-font-family').trim() ||
+          bodyStyle?.fontFamily ||
+          'system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif';
+        const fontSize =
+          globalThis.getComputedStyle(workbench.hot.rootElement).fontSize ||
+          '13px';
+        headerMeasureContext.font = `500 ${fontSize} ${fontFamily}`;
+      }
+      const textWidth =
+        headerMeasureContext?.measureText(headerLabel).width ??
+        headerLabel.length * 7;
+
+      /*
+       * Account for icon, gap, cell padding, and the sorting affordance that
+       * HOT reserves on the right side of sortable headers.
+       */
+      return Math.ceil(textWidth + (isMapped ? 60 : 72));
+    },
+    [
+      headerMeasureContext,
+      workbench.dataset.columns,
+      workbench.hot,
+      workbench.mappings,
+    ]
+  );
+  const getAutoSizedWidth = React.useCallback(
+    (visualCol: number, fallbackWidth: number): number => {
+      if (workbench.hot === undefined) return fallbackWidth;
+      return (
+        getHotPlugin(workbench.hot, 'autoColumnSize').getColumnWidth(
+          visualCol,
+          fallbackWidth,
+          true
+        ) ?? fallbackWidth
+      );
+    },
+    [workbench.hot]
+  );
+  const scheduleVisibleColumnsAutoSize = React.useCallback(
+    (force = false): void => {
+      if (workbench.hot === undefined) return;
+      if (visibleColumnsAutoSizeTimeout.current !== undefined) {
+        clearTimeout(visibleColumnsAutoSizeTimeout.current);
+      }
+      visibleColumnsAutoSizeTimeout.current = globalThis.setTimeout(() => {
+        visibleColumnsAutoSizeTimeout.current = undefined;
+        if (workbench.hot === undefined) return;
+        const autoColumnSize = getHotPlugin(workbench.hot, 'autoColumnSize');
+        const firstVisibleColumn = autoColumnSize.getFirstVisibleColumn();
+        const lastVisibleColumn = autoColumnSize.getLastVisibleColumn();
+        if (firstVisibleColumn < 0 || lastVisibleColumn < firstVisibleColumn)
+          return;
+        const visibleColumnKey = `${firstVisibleColumn}:${lastVisibleColumn}`;
+        if (!force && lastAutoSizedVisibleColumns.current === visibleColumnKey)
+          return;
+        lastAutoSizedVisibleColumns.current = visibleColumnKey;
+        autoColumnSize.calculateColumnsWidth(
+          { from: firstVisibleColumn, to: lastVisibleColumn },
+          { from: 0, to: workbench.hot.countRows() - 1 },
+          true
+        );
+        workbench.hot.render();
+      }, 80);
+    },
+    [workbench.hot]
+  );
 
   return {
     /*
      * Add accessibility labels to empty table header cells
      * This ensures screen readers can properly announce the structure
      */
-    afterInit: function () {
+    afterInit() {
       if (workbench.hot === undefined) return;
 
       // Add aria-label to corner header cell (intersection of row/column headers)
@@ -62,7 +170,10 @@ export function useHotHooks({
           th.setAttribute('aria-label', 'Header cell');
         }
       });
+      scheduleVisibleColumnsAutoSize(true);
     },
+
+    afterScrollHorizontally: () => scheduleVisibleColumnsAutoSize(),
 
     /*
      * After cell is rendered, we need to reApply metaData classes
@@ -73,16 +184,14 @@ export function useHotHooks({
      *
      */
     afterRenderer: (td, visualRow, visualCol, property, _value) => {
-      if (workbench.hot === undefined) {
-        td.classList.add('text-gray-500');
-        return;
-      }
+      if (workbench.hot === undefined) return;
       const physicalRow = workbench.hot.toPhysicalRow(visualRow);
       const physicalCol =
         typeof property === 'number'
           ? property
           : workbench.hot.toPhysicalColumn(visualCol);
       if (physicalCol >= workbench.dataset.columns.length) return;
+      td.classList.remove('wb-unmapped-cell', 'wb-coordinate-cell');
       const metaArray = workbench.cells.cellMeta?.[physicalRow]?.[physicalCol];
       const cellMetaToUpdate: RA<keyof WbMeta> = [
         'isModified',
@@ -104,7 +213,7 @@ export function useHotHooks({
         }
       });
       if (workbench.mappings?.mappedHeaders?.[physicalCol] === undefined)
-        td.classList.add('text-gray-500');
+        td.classList.add('wb-unmapped-cell');
       if (workbench.mappings?.coordinateColumns?.[physicalCol] !== undefined)
         td.classList.add('wb-coordinate-cell');
     },
@@ -113,7 +222,7 @@ export function useHotHooks({
     beforeValidate: (value, _visualRow, property) => {
       if (Boolean(value) || workbench.hot === undefined) return value;
 
-      const visualCol = workbench.hot.propToCol(property);
+      const visualCol = workbench.hot.propToCol<number>(property);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
 
       return workbench.mappings?.defaultValues[physicalCol] ?? value;
@@ -126,7 +235,7 @@ export function useHotHooks({
       property
     ) => {
       if (workbench.hot === undefined) return;
-      const visualCol = workbench.hot.propToCol(property);
+      const visualCol = workbench.hot.propToCol<number>(property);
 
       const physicalRow = workbench.hot.toPhysicalRow(visualRow);
       const physicalCol = workbench.hot.toPhysicalColumn(visualCol);
@@ -210,21 +319,27 @@ export function useHotHooks({
 
       const filteredChanges = unfilteredChanges
         .filter((change): change is CellChange => change !== null)
-        .filter(
-          ([, property]) =>
-            (property as number) < workbench.dataset.columns.length
-        );
+        .filter(([, property]) => {
+          const visualCol = getVisualColFromProperty(property);
+          return (
+            visualCol !== undefined &&
+            visualCol < workbench.dataset.columns.length
+          );
+        });
       if (
         filteredChanges.length === unfilteredChanges.length ||
         workbench.hot === undefined
       )
         return true;
       workbench.hot.setDataAtCell(
-        filteredChanges.map(([visualRow, property, _oldValue, newValue]) => [
-          visualRow,
-          workbench.hot!.propToCol(property as number),
-          newValue,
-        ]),
+        filteredChanges.flatMap(
+          ([visualRow, property, _oldValue, newValue]) => {
+            const visualCol = getVisualColFromProperty(property);
+            return visualCol === undefined
+              ? []
+              : [[visualRow, visualCol, newValue]];
+          }
+        ),
         'CopyPaste.paste'
       );
       return false;
@@ -245,19 +360,23 @@ export function useHotHooks({
       )
         return;
       const changes = unfilteredChanges
-        .map(([visualRow, property, oldValue, newValue]) => ({
-          visualRow,
-          visualCol: workbench.hot!.propToCol(property),
-          physicalRow: workbench.hot!.toPhysicalRow(visualRow),
-          physicalCol:
-            typeof property === 'number'
-              ? property
-              : workbench.hot!.toPhysicalColumn(
-                  workbench.hot!.propToCol(property as number | string)
-                ),
-          oldValue,
-          newValue,
-        }))
+        .flatMap(([visualRow, property, oldValue, newValue]) => {
+          const visualCol = getVisualColFromProperty(property);
+          if (visualCol === undefined) return [];
+          return [
+            {
+              visualRow,
+              visualCol,
+              physicalRow: workbench.hot!.toPhysicalRow(visualRow),
+              physicalCol:
+                typeof property === 'number'
+                  ? property
+                  : workbench.hot!.toPhysicalColumn(visualCol),
+              oldValue,
+              newValue,
+            },
+          ];
+        })
         .filter(
           ({ oldValue, newValue, visualCol }) =>
             /*
@@ -286,7 +405,7 @@ export function useHotHooks({
 
       /*
        * Don't clear disambiguation when afterChange is triggered by
-       * hot.undo() from inside of afterUndoRedo()
+       * the undoRedo plugin from inside of afterUndoRedo()
        * FEATURE: consider not clearing disambiguation at all
        */
       if (!workbench.undoRedoIsHandled)
@@ -521,6 +640,16 @@ export function useHotHooks({
       !isResultsOpen &&
       (dropIndex !== undefined || workbench.hot !== undefined),
 
+    modifyColWidth: (width, visualCol) =>
+      Math.max(width, getHeaderMinWidth(visualCol)),
+
+    beforeStretchingColumnWidth: (stretchedWidth, visualCol) =>
+      Math.max(
+        stretchedWidth,
+        getAutoSizedWidth(visualCol, stretchedWidth),
+        getHeaderMinWidth(visualCol)
+      ),
+
     // Save new visualOrder on the back end
     afterColumnMove: (_columnIndexes, _finalIndex, dropIndex) => {
       // An ugly fix for jQuery's dialogs conflicting with HOT
@@ -618,7 +747,8 @@ function afterUndoRedo(
     // HOT doesn't seem to like calling undo from inside of afterUndo
     globalThis.setTimeout(() => {
       workbench.undoRedoIsHandled = true;
-      workbench.hot?.undo();
+      if (workbench.hot !== undefined)
+        getHotPlugin(workbench.hot, 'undoRedo').undo();
       workbench.undoRedoIsHandled = false;
       workbench.disambiguation.afterChangeDisambiguation(physicalRow);
     }, 0);

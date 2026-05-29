@@ -2,6 +2,7 @@ import React from 'react';
 
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
+import { batchIdentifyText } from '../../localization/batchIdentify';
 import { commonText } from '../../localization/common';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
@@ -47,7 +48,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: 'simple-search',
+        path: 'express-search',
         title: headerText.simpleSearch(),
         element: () =>
           import('../Header/ExpressSearchTask').then(
@@ -56,7 +57,7 @@ export const overlayRoutes: RA<EnhancedRoute> = [
       },
       {
         path: 'express-search',
-        element: <Redirect to="/specify/overlay/simple-search/" />,
+        element: <Redirect to="/specify/overlay/express-search/" />,
       },
       {
         path: 'choose-collection',
@@ -72,6 +73,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../DataEntryTables').then(
             ({ FormsDialogOverlay }) => FormsDialogOverlay
+          ),
+      },
+      {
+        path: 'batch-identify',
+        title: batchIdentifyText.batchIdentify(),
+        element: () =>
+          import('../BatchIdentify').then(
+            ({ BatchIdentifyOverlay }) => BatchIdentifyOverlay
           ),
       },
       {

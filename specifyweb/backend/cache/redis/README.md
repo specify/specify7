@@ -7,7 +7,7 @@ Redis should be considered when:
 - You need to store ephemeral information/state that can generally be lost on container restart
 - A Specify operation needs to be handled asynchronously and/or across multiple processes (as in, multiple Gunicorn or Celery workers)
 
-Examples on how the Redis cache is already being using in Specify:
+Examples of how the Redis cache is already being used in Specify:
 
 - [feat: add ALLOW_SUPPORT_LOGIN to Dockerfile
   #7399](https://github.com/specify/specify7/pull/7399)
@@ -60,7 +60,7 @@ r_strings.get("myKey") # returns None
 
 ## Working With Other Data Structures
 
-There are currently simple adapters for Lists (RedisList) and Sets (RedisSet) and that behave with the same principles as RedisString:
+There are currently simple adapters for Lists (RedisList) and Sets (RedisSet) that behave with the same principles as RedisString:
 
 ```py
 from specifyweb.backend.cache.redis.connect import RedisConnection, RedisSet
@@ -88,11 +88,11 @@ A more complex datastructure is demonstrated in specifyweb.backend.cache.redis.r
 If there is not an adapter to fit your needs, you can pass commands directly to Redis through the connection attribute of the RedisConnection class
 
 ```py
-from specifyweb.backend.cache.redis.connection import RedisConnection
+from specifyweb.backend.cache.redis.connect import RedisConnection
 
 connection_adapter = RedisConnection()
 
-# https://redis.io/docs/latest/commands/hset//
+# https://redis.io/docs/latest/commands/hset/
 connection_adapter.connection.hset("myHashKey", "someField", "foo")
 connection_adapter.connection.hget("myHashKey", "someField") # returns "foo"
 ```
