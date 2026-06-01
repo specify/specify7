@@ -16,13 +16,16 @@ from django.db.utils import OperationalError, IntegrityError
 from jsonschema import validate  # type: ignore
 from typing import Any, Optional, cast
 
-from specifyweb.backend.permissions.permissions import has_target_permission
+from specifyweb.backend.permissions.permissions import has_target_permission, cache_permission_queries
 from specifyweb.specify import models
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify.datamodel import Table
 from specifyweb.specify.utils.func import Func
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
 from specifyweb.backend.workbench.permissions import BatchEditDataSetPT
+from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
+from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
+from specifyweb.backend.context.remote_prefs import cache_remote_preferences
 from specifyweb.backend.workbench.upload.auditor import (
     DEFAULT_AUDITOR_PROPS,
     AuditorProps,
@@ -341,7 +344,13 @@ def do_upload(
 
     scope_context = ScopeContext()
 
-    with savepoint("main upload"):
+    with (
+        savepoint("main upload"),
+        cache_unique_catnum_preferences(),
+        cache_uniqueness_rules(),
+        cache_remote_preferences(),
+        cache_permission_queries()
+    ):
         tic = time.perf_counter()
         results: list[UploadResult] = []
         for i, row in enumerate(rows):
