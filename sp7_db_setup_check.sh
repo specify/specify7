@@ -1,4 +1,5 @@
 #!/bin/bash
+set -euo pipefail
 
 echo "Starting MariaDB database and user creation script..."
 
@@ -40,7 +41,7 @@ if [[ -z "$MIGRATOR_NAME" ]]; then
   MIGRATOR_PASSWORD="$DB_ROOT_PASSWORD"
 fi
 
-# If app user name is not set, set it to migrator
+# If target user name is not set, set it to migrator
 if [[ -z "$APP_USER_NAME" ]]; then
   APP_USER_NAME="$MIGRATOR_NAME"
   APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
@@ -121,14 +122,14 @@ else
 fi
 
 # Create database if it doesn't exist
-DB_EXISTS=$(mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-  -sse "SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
+DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
+"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
 
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
-  echo "Executing: mariadb -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
-  if mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-       -e "CREATE DATABASE \`$DB_NAME\`;"; then
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
+  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+    -e "CREATE DATABASE \`$DB_NAME\`;"; then
     NEW_DATABASE_CREATED=1
   else
     echo "Error: Failed to create database."
@@ -138,125 +139,45 @@ else
   echo "Database '$DB_NAME' already exists."
 fi
 
-########################################
-# MIGRATOR USER
-########################################
+# Create migrator user if it doesn't exist
+USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
+"SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$MIGRATOR_USER_HOST';")
 
-if [[ "$SAME_MASTER_AND_MIGRATOR" == true ]]; then
-  echo "Migrator user '$MIGRATOR_NAME' uses the same credentials as master."
-  echo "Skipping creation/grant steps for a separate migrator account and using master connection for migrations."
-  MIGRATION_DB_ALIAS="master"
-else
-  echo "Ensuring migrator user '$MIGRATOR_NAME' exists for relevant hosts..."
-
-  MIGRATOR_HOSTS_SEEN=""
-  # Ensure user exists for both MIGRATOR_USER_HOST and CLIENT_HOST
-  for h in "$MIGRATOR_USER_HOST" "$CLIENT_HOST"; do
-    [[ -z "$h" ]] && continue
-    if [[ " $MIGRATOR_HOSTS_SEEN " == *" $h "* ]]; then
-      continue
-    fi
-    MIGRATOR_HOSTS_SEEN+=" $h"
-
-    USER_EXISTS_HOST=$(mariadb -h "$DB_HOST" -P "$DB_PORT" \
-      -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-      -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$h';")
-
-    if [[ "$USER_EXISTS_HOST" -eq 0 ]]; then
-      echo "Creating user '${MIGRATOR_NAME}'@'${h}'..."
-      echo "Executing: CREATE USER '${MIGRATOR_NAME}'@'${h}' IDENTIFIED BY '<hidden>'"
-      if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-           -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-           -e "CREATE USER '${MIGRATOR_NAME}'@'${h}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
-        echo "Error: Failed to create migrator user '${MIGRATOR_NAME}'@'${h}'."
-        exit 1
-      fi
-      NEW_MIGRATOR_USER_CREATED=1
-    else
-      echo "Migrator user '${MIGRATOR_NAME}'@'${h}' already exists."
-    fi
-  done
-
-  echo "Existing hosts for '$MIGRATOR_NAME' in mysql.user:"
-  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-    -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$MIGRATOR_NAME';"; then
-    echo "Warning: Could not list existing hosts for '$MIGRATOR_NAME'."
-  fi
-
-  # Grant privileges on DB_NAME for all relevant migrator hosts
-  echo "Granting privileges to migrator user '$MIGRATOR_NAME'..."
-  MIGRATOR_GRANT_HOSTS_SEEN=""
-  for h in "$MIGRATOR_USER_HOST" "$CLIENT_HOST"; do
-    [[ -z "$h" ]] && continue
-    if [[ " $MIGRATOR_GRANT_HOSTS_SEEN " == *" $h "* ]]; then
-      continue
-    fi
-    MIGRATOR_GRANT_HOSTS_SEEN+=" $h"
-
-    echo "Granting ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${h}'..."
-    if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-          -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-          -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${h}';"; then
-      echo "Error: Failed to grant privileges to migrator user '${MIGRATOR_NAME}'@'${h}'."
-      echo "--------------"
-      echo "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${h}'"
-      echo "--------------"
-      exit 1
-    fi
-  done
-
-  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-        -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-        -e "FLUSH PRIVILEGES;"; then
-    echo "Error: Failed to FLUSH PRIVILEGES for migrator user."
+if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
+  echo "Creating migrator user '$MIGRATOR_NAME'..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+    -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
+    NEW_MIGRATOR_USER_CREATED=1
+  else
+    echo "Error: Failed to create user."
     exit 1
   fi
 
-  # Verify migrator access for MIGRATOR_USER_HOST
-  GRANTS_OUTPUT="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
-                    -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                    -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
-
-  if [[ -z "$GRANTS_OUTPUT" ]]; then
-    echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
-    echo "Check whether this user exists with a different host (e.g. 'localhost' instead of '$MIGRATOR_USER_HOST')."
+if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
+  echo "Granting privileges to new user..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
+    echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
 
-  migrator_has_access=false
-  while IFS= read -r raw_line; do
-    line="$(echo "$raw_line" | tr -s '[:space:]' ' ')"
-    if echo "$line" | grep -Eiq " ON (\*\.\*|(\`?${DB_NAME}\`?)\.\*) "; then
-      privs="$(echo "$line" | sed -E 's/^GRANT (.+) ON .+$/\1/I')"
-      if echo "$privs" | grep -Eiq '^[[:space:]]*USAGE[[:space:]]*$'; then
-        continue
-      fi
-      migrator_has_access=true
-      break
-    fi
-  done <<< "$GRANTS_OUTPUT"
+GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
+  -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+  -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
 
-  # Also verify for CLIENT_HOST if available and different
-  if [[ -n "$CLIENT_HOST" && "$CLIENT_HOST" != "$MIGRATOR_USER_HOST" ]]; then
-    CLIENT_GRANTS_OUTPUT="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
-                            -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                            -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${CLIENT_HOST}';" 2>/dev/null || true)"
-    while IFS= read -r raw_line; do
-      line="$(echo "$raw_line" | tr -s '[:space:]' ' ')"
-      if echo "$line" | grep -Eiq " ON (\*\.\*|(\`?${DB_NAME}\`?)\.\*) "; then
-        privs="$(echo "$line" | sed -E 's/^GRANT (.+) ON .+$/\1/I')"
-        if echo "$privs" | grep -Eiq '^[[:space:]]*USAGE[[:space:]]*$'; then
-          continue
-        fi
-        migrator_has_access=true
-        break
-      fi
-    done <<< "$CLIENT_GRANTS_OUTPUT"
-  fi
+GRANTS_PARSED="$(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')"
 
-  if [[ "$migrator_has_access" == true ]]; then
-    echo "Verified: migrator user '${MIGRATOR_NAME}' has usable access to '${DB_NAME}'."
+# Create app user if it doesn't exist
+USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
+"SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$APP_USER_HOST';")
+
+if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
+  echo "Creating app user '$APP_USER_NAME'..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+    -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
+    NEW_APP_USER_CREATED=1
   else
     echo "Notice: Migrator user '${MIGRATOR_NAME}' lacks usable access to '${DB_NAME}'."
     echo "Make corrections to the intended MIGRATOR user permissions to resolve."
@@ -284,13 +205,16 @@ elif [[ "$SAME_MIGRATOR_AND_APP" == true ]]; then
 else
   echo "Ensuring app user '$APP_USER_NAME' exists for relevant hosts..."
 
-  APP_HOSTS_SEEN=""
-  for h in "$APP_USER_HOST" "$CLIENT_HOST"; do
-    [[ -z "$h" ]] && continue
-    if [[ " $APP_HOSTS_SEEN " == *" $h "* ]]; then
-      continue
-    fi
-    APP_HOSTS_SEEN+=" $h"
+if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
+  echo "Granting privileges to new user..."
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"; then
+    echo "Error: Failed to grant privileges to new user."
+    exit 1
+  fi
+else
+  echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}'..."
+fi
 
     USER_EXISTS_HOST=$(mariadb -h "$DB_HOST" -P "$DB_PORT" \
       -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
@@ -423,13 +347,24 @@ echo "New app user created: $([[ "$NEW_APP_USER_CREATED" -eq 1 ]] && echo True |
 echo "--------------------------------------------------"
 
 # Run the base_specify_migration script
+echo "Running base_specify_migration..."
+
 if [[ "$NEW_DATABASE_CREATED" -eq 0 ]]; then
-  echo "Existing database detected."
+  set +e
   ve/bin/python manage.py base_specify_migration --use-override --database=${MIGRATION_DB_ALIAS}
+  BASE_MIGRATION_EXIT_CODE=$?
+  set -e
 else
-  echo "New database detected."
+  set +e
   ve/bin/python manage.py base_specify_migration --database=${MIGRATION_DB_ALIAS}
+  BASE_MIGRATION_EXIT_CODE=$?
+  set -e
 fi
 
-# Run Django migrations
+if [[ $BASE_MIGRATION_EXIT_CODE -ne 0 ]]; then
+  echo "Error: base_specify_migration failed (exit code $BASE_MIGRATION_EXIT_CODE). Aborting."
+  exit 1
+fi
+
+echo "Running Django migrations..."
 ve/bin/python manage.py migrate --database=${MIGRATION_DB_ALIAS}
