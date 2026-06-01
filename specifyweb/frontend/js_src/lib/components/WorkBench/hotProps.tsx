@@ -157,7 +157,7 @@ function ColumnHeader({
   return (
     <button
       type="button"
-      className="inline-flex max-w-full items-center gap-1 whitespace-nowrap align-middle border-0 bg-transparent p-0 text-inherit"
+      className="inline-flex w-full max-w-full min-w-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap text-clip align-middle border-0 bg-transparent p-0 text-inherit"
       data-wb-header-label={physicalCol}
     >
       {isMapped && tableName !== undefined ? (
@@ -169,7 +169,7 @@ function ColumnHeader({
           className: `${tableIconUndefined.props.className} flex-shrink-0`,
         })
       )}
-      <span className="wb-header-name">{columnName}</span>
+      <span className="wb-header-name min-w-0 flex-1 text-center">{columnName}</span>
     </button>
   );
 }
