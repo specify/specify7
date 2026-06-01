@@ -2,7 +2,8 @@ import { mockTime, requireContext } from '../../../tests/helpers';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
 import type { UiFormatter } from '..';
-import { fetchContext, getUiFormatters } from '..';
+import { fetchContext, fieldFormatterTypeMapper, getUiFormatters } from '..';
+import { localized } from '../../utils/types';
 
 mockTime();
 requireContext();
@@ -51,4 +52,27 @@ describe('format', () => {
 
   test('invalid catalog number', () =>
     expect(getFormatter()?.format('a')).toBeUndefined());
+
+  test('grouped regex preserves full value', () => {
+    const formatter = new UiFormatter(
+      false,
+      localized('GroupedRegex'),
+      [
+        new fieldFormatterTypeMapper.regex({
+          size: 1,
+          placeholder: localized(
+            '(CANB|CBG|CNS|JCT|QRS)-([0-9]{4})-([0-9]{3})'
+          ),
+          autoIncrement: false,
+          byYear: false,
+          regexPlaceholder: localized('eg. CANB-2024-001'),
+        }),
+      ],
+      undefined,
+      undefined,
+      'GroupedRegex'
+    );
+
+    expect(formatter.format('CNS-2026-503')).toBe('CNS-2026-503');
+  });
 });
