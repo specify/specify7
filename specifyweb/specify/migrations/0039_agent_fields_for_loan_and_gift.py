@@ -8,10 +8,8 @@ from specifyweb.specify.migration_utils import update_schema_config as usc
 
 def consolidated_0038_forward(apps, schema_editor):
     usc.update_loan_and_gift_agent_fields(apps)
-    usc.update_loan_and_gift_agents(apps)
 
 def consolidated_0038_backward(apps, schema_editor):
-    usc.revert_loan_and_gift_agents(apps)
     usc.revert_loan_and_gift_agent_fields(apps)
 
 class Migration(migrations.Migration):
