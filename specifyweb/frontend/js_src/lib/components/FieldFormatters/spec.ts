@@ -180,12 +180,30 @@ export function trimRegexString(regexString: string): string {
   if (pattern.startsWith('^')) pattern = pattern.slice(1);
   if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
   if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
-  // Preserve grouping parentheses; they can be part of the actual pattern.
+  // Only remove parentheses that wrap the entire pattern.
+  if (hasWrappingParens(pattern)) pattern = pattern.slice(1, -1);
   return pattern;
 }
 function normalizeRegexString(regexString: string): string {
-  // Only add the legacy anchors; do not rewrite the user-supplied pattern.
-  return `/^${trimRegexString(regexString)}$/`;
+  let pattern: string = trimRegexString(regexString);
+  // Wrap alternations so they remain grouped when re-anchored for legacy XML.
+  if (pattern.includes('|')) pattern = `(${pattern})`;
+  return `/^${pattern}$/`;
+}
+
+function hasWrappingParens(pattern: string): boolean {
+  // Detect a single pair of outer parentheses that encloses the full string.
+  if (!pattern.startsWith('(') || !pattern.endsWith(')')) return false;
+  let depth = 0;
+  for (let index = 0; index < pattern.length; index += 1) {
+    const character = pattern[index];
+    if (character === '(') depth += 1;
+    else if (character === ')') {
+      depth -= 1;
+      if (depth === 0 && index < pattern.length - 1) return false;
+    }
+  }
+  return depth === 0;
 }
 
 const partSpec = f.store(() =>
