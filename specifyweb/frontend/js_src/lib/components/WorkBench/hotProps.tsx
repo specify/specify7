@@ -169,7 +169,9 @@ function ColumnHeader({
           className: `${tableIconUndefined.props.className} flex-shrink-0`,
         })
       )}
-      <span className="wb-header-name min-w-0 flex-1 text-center">{columnName}</span>
+      <span className="wb-header-name min-w-0 flex-1 text-center">
+        {columnName}
+      </span>
     </button>
   );
 }
