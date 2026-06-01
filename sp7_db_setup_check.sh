@@ -46,6 +46,34 @@ if [[ -z "$DB_HOST" || -z "$DB_PORT" || -z "$MASTER_USER_NAME" || -z "$MASTER_US
   exit 1
 fi
 
+sql_string_literal() {
+  local value="$1"
+  value=$(printf '%s' "$value" | sed -e 's/\\/\\\\/g' -e "s/'/''/g")
+  printf "'%s'" "$value"
+}
+
+sql_identifier() {
+  local value="$1"
+  value=$(printf '%s' "$value" | sed -e 's/`/``/g')
+  printf "\`%s\`" "$value"
+}
+
+regex_escape() {
+  local value="$1"
+  printf '%s' "$value" | sed -e 's/[][\/.^$*+?{}()|\\]/\\&/g'
+}
+
+SQL_DB_NAME=$(sql_string_literal "$DB_NAME")
+SQL_DB_IDENTIFIER=$(sql_identifier "$DB_NAME")
+SQL_MIGRATOR_NAME=$(sql_string_literal "$MIGRATOR_NAME")
+SQL_MIGRATOR_PASSWORD=$(sql_string_literal "$MIGRATOR_PASSWORD")
+SQL_MIGRATOR_USER_HOST=$(sql_string_literal "$MIGRATOR_USER_HOST")
+SQL_APP_USER_NAME=$(sql_string_literal "$APP_USER_NAME")
+SQL_APP_USER_PASSWORD=$(sql_string_literal "$APP_USER_PASSWORD")
+SQL_APP_USER_HOST=$(sql_string_literal "$APP_USER_HOST")
+DB_NAME_REGEX=$(regex_escape "$DB_NAME")
+SQL_DB_IDENTIFIER_REGEX=$(regex_escape "$SQL_DB_IDENTIFIER")
+
 echo "--------------------------------------------------"
 echo "DB Configuration:"
 echo "  DB Host: $DB_HOST"
@@ -77,13 +105,13 @@ fi
 
 # Create database if it doesn't exist
 DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
+"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = ${SQL_DB_NAME};")
 
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE ${SQL_DB_IDENTIFIER};\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE DATABASE \`$DB_NAME\`;"; then
+    -e "CREATE DATABASE ${SQL_DB_IDENTIFIER};"; then
     NEW_DATABASE_CREATED=1
   else
     echo "Error: Failed to create database."
@@ -95,13 +123,13 @@ fi
 
 # Create migrator user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM mysql.user WHERE user = '$MIGRATOR_NAME' AND host = '$MIGRATOR_USER_HOST';")
+"SELECT COUNT(*) FROM mysql.user WHERE user = ${SQL_MIGRATOR_NAME} AND host = ${SQL_MIGRATOR_USER_HOST};")
 
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating migrator user '$MIGRATOR_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST} IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '${MIGRATOR_PASSWORD}';"; then
+    -e "CREATE USER ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST} IDENTIFIED BY ${SQL_MIGRATOR_PASSWORD};"; then
     NEW_MIGRATOR_USER_CREATED=1
   else
     echo "Error: Failed to create user."
@@ -113,8 +141,8 @@ fi
 
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST}; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST}; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
@@ -124,19 +152,19 @@ fi
 
 GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
   -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-  -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
+  -e "SHOW GRANTS FOR ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST};" 2>/dev/null || true)"
 
 GRANTS_PARSED="$(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')"
 
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$APP_USER_HOST';")
+"SELECT COUNT(*) FROM mysql.user WHERE user = ${SQL_APP_USER_NAME} AND host = ${SQL_APP_USER_HOST};")
 
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating app user '$APP_USER_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST} IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
+    -e "CREATE USER ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST} IDENTIFIED BY ${SQL_APP_USER_PASSWORD};"; then
     NEW_APP_USER_CREATED=1
   else
     echo "Error: Failed to create user."
@@ -148,8 +176,8 @@ fi
 
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${APP_USER_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;"; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
@@ -159,7 +187,7 @@ fi
 
 REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
 APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                  -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
+                  -e "SHOW GRANTS FOR ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST};" 2>/dev/null || true)"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
   echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
@@ -200,7 +228,7 @@ for g in "${APP_GRANTS_LINES[@]}"; do
   fi
 
   # If DB-scoped to this database and has required subset
-  if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+  if grep -qiE " ON (${SQL_DB_IDENTIFIER_REGEX}|${DB_NAME_REGEX})\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
     app_has_required_permissions=true; break
   fi
 done
