@@ -1,9 +1,8 @@
 import { mockTime, requireContext } from '../../../tests/helpers';
 import { getField } from '../../DataModel/helpers';
 import { tables } from '../../DataModel/tables';
-import type { UiFormatter } from '..';
-import { fetchContext, fieldFormatterTypeMapper, getUiFormatters } from '..';
-import { localized } from '../../utils/types';
+import { UiFormatter, fetchContext, fieldFormatterTypeMapper, getUiFormatters } from '..';
+import { localized } from '../../../utils/types';
 
 mockTime();
 requireContext();
@@ -74,5 +73,51 @@ describe('format', () => {
     );
 
     expect(formatter.format('CNS-2026-503')).toBe('CNS-2026-503');
+  });
+
+  test('numeric decimal depth regex formats full value', () => {
+    const formatter = new UiFormatter(
+      true,
+      localized('NumericDecimalDepth'),
+      [
+        new fieldFormatterTypeMapper.regex({
+          size: 9,
+          placeholder: localized('(?:0|[1-9]\\d{0,3})(?:\\.\\d+)?'),
+          autoIncrement: false,
+          byYear: false,
+          regexPlaceholder: localized(''),
+        }),
+      ],
+      undefined,
+      undefined,
+      'NumericDecimalDepth'
+    );
+
+    expect(formatter.format('12.34')).toBe('12.34');
+    expect(formatter.format('0')).toBe('0');
+  });
+
+  test('catalog number entry book regex formats full value', () => {
+    const formatter = new UiFormatter(
+      false,
+      localized('CatalogNumberEntryBook'),
+      [
+        new fieldFormatterTypeMapper.regex({
+          size: 9,
+          placeholder: localized(
+            '(?:[1-9]\\d{0,3})\\.(?:00[1-9]|0[1-9]\\d|100)[A-Za-z]?'
+          ),
+          autoIncrement: false,
+          byYear: false,
+          regexPlaceholder: localized('ex: 1.001 + {a,b,...} (opt.)'),
+        }),
+      ],
+      undefined,
+      undefined,
+      'CatalogNumberEntryBook'
+    );
+
+    expect(formatter.format('1.001a')).toBe('1.001a');
+    expect(formatter.format('9999.100')).toBe('9999.100');
   });
 });
