@@ -718,7 +718,7 @@ msgid "formMeta"
 msgstr "Form Meta"
 
 #: components/AppResources/Create.tsx:287
-#: components/AppResources/Editor.tsx:262
+#: components/AppResources/Editor.tsx:270
 #: components/Formatters/formatters.ts:58
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160

@@ -144,8 +144,8 @@ msgstr "Широта"
 msgid "longitude"
 msgstr "Довгота"
 
-#: components/AppResources/Editor.tsx:189
-#: components/AppResources/Editor.tsx:191
+#: components/AppResources/Editor.tsx:192
+#: components/AppResources/Editor.tsx:194
 #: components/Leaflet/extend.ts:47
 #: components/Leaflet/extend.ts:48
 #. Used in: Components > App Resources > Editor ⬤ Components > Leaflet > Extend
