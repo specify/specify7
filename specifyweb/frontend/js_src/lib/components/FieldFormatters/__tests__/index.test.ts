@@ -73,6 +73,8 @@ describe('format', () => {
     );
 
     expect(formatter.format('CNS-2026-503')).toBe('CNS-2026-503');
+    expect(formatter.format('CBG-1091-030')).toBe('CBG-1091-030');
+    expect(formatter.format('CANB-2026-002')).toBe('CANB-2026-002');
   });
 
   test('numeric decimal depth regex formats full value', () => {
