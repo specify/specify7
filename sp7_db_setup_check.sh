@@ -64,15 +64,59 @@ if [[ "$MIGRATOR_NAME" == "$MASTER_USER_NAME" && "$MIGRATOR_PASSWORD" == "$MASTE
   SAME_MASTER_AND_MIGRATOR=true
 fi
 
-SAME_MASTER_AND_APP=false
-if [[ "$APP_USER_NAME" == "$MASTER_USER_NAME" && "$APP_USER_PASSWORD" == "$MASTER_USER_PASSWORD" ]]; then
-  SAME_MASTER_AND_APP=true
-fi
+has_all_privs_in_line() {
+  local line="$1"
+  shift
+  local missing=()
+  local p
+  for p in "$@"; do
+    # match whole words; spaces already canonicalized
+    if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
+      missing+=("$p")
+    fi
+  done
+  if [[ ${#missing[@]} -eq 0 ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
 
-SAME_MIGRATOR_AND_APP=false
-if [[ "$APP_USER_NAME" == "$MIGRATOR_NAME" && "$APP_USER_PASSWORD" == "$MIGRATOR_PASSWORD" ]]; then
-  SAME_MIGRATOR_AND_APP=true
-fi
+grant_line_has_required_privs() {
+  local line="$1"
+  shift
+
+  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$line"; then
+    return 0
+  fi
+
+  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON (${SQL_DB_IDENTIFIER_REGEX}|${DB_NAME_REGEX})\.\* TO " <<<"$line"; then
+    return 0
+  fi
+
+  if grep -qiE " ON \*\.\* TO " <<<"$line" && has_all_privs_in_line "$line" "$@"; then
+    return 0
+  fi
+
+  if grep -qiE " ON (${SQL_DB_IDENTIFIER_REGEX}|${DB_NAME_REGEX})\.\* TO " <<<"$line" && has_all_privs_in_line "$line" "$@"; then
+    return 0
+  fi
+
+  return 1
+}
+
+SQL_DB_NAME=$(sql_string_literal "$DB_NAME")
+SQL_DB_IDENTIFIER=$(sql_identifier "$DB_NAME")
+SQL_MIGRATOR_NAME=$(sql_string_literal "$MIGRATOR_NAME")
+SQL_MIGRATOR_PASSWORD=$(sql_string_literal "$MIGRATOR_PASSWORD")
+SQL_MIGRATOR_USER_HOST=$(sql_string_literal "$MIGRATOR_USER_HOST")
+SQL_APP_USER_NAME=$(sql_string_literal "$APP_USER_NAME")
+SQL_APP_USER_PASSWORD=$(sql_string_literal "$APP_USER_PASSWORD")
+SQL_APP_USER_HOST=$(sql_string_literal "$APP_USER_HOST")
+DB_NAME_REGEX=$(regex_escape "$DB_NAME")
+SQL_DB_IDENTIFIER_REGEX=$(regex_escape "$SQL_DB_IDENTIFIER")
+MIGRATION_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "DELETE" "CREATE" "ALTER" "INDEX" "DROP")
+APP_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
 
 echo "--------------------------------------------------"
 echo "DB Configuration:"
@@ -161,7 +205,30 @@ GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
   -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
   -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
 
-GRANTS_PARSED="$(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')"
+if [[ -z "$GRANTS_OUTPUT" ]]; then
+  echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+  exit 1
+fi
+
+mapfile -t MIGRATOR_GRANTS_LINES < <(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')
+
+migrator_has_required_permissions=false
+
+for g in "${MIGRATOR_GRANTS_LINES[@]}"; do
+  if grant_line_has_required_privs "$g" "${MIGRATION_REQUIRED_PRIVS[@]}"; then
+    migrator_has_required_permissions=true; break
+  fi
+done
+
+if [[ "$migrator_has_required_permissions" == true ]]; then
+  echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has migration privileges on '${DB_NAME}'."
+else
+  echo "Error: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' lacks migration privileges on '${DB_NAME}'."
+  echo "Required for migrations (any one GRANT must include all of): ${MIGRATION_REQUIRED_PRIVS[*]}"
+  echo "Grants found:"
+  echo "$GRANTS_OUTPUT"
+  exit 1
+fi
 
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
@@ -211,127 +278,34 @@ else
   echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}'..."
 fi
 
-    USER_EXISTS_HOST=$(mariadb -h "$DB_HOST" -P "$DB_PORT" \
-      -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-      -sse "SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$h';")
+APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+                  -e "SHOW GRANTS FOR ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST};" 2>/dev/null || true)"
 
-    if [[ "$USER_EXISTS_HOST" -eq 0 ]]; then
-      echo "Creating user '${APP_USER_NAME}'@'${h}'..."
-      echo "Executing: CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '<hidden>'"
-      if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-           -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-           -e "CREATE USER '${APP_USER_NAME}'@'${h}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
-        echo "Error: Failed to create app user '${APP_USER_NAME}'@'${h}'."
-        exit 1
-      fi
-      NEW_APP_USER_CREATED=1
-    else
-      echo "App user '${APP_USER_NAME}'@'${h}' already exists."
-    fi
-  done
+if [[ -z "$APP_GRANTS_RAW" ]]; then
+  echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+  exit 1
+fi
 
-  echo "Existing hosts for '$APP_USER_NAME' in mysql.user:"
-  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-    -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "SELECT CONCAT(\"'\", user, \"'@'\", host, \"'\") FROM mysql.user WHERE user = '$APP_USER_NAME';"; then
-    echo "Warning: Could not list existing hosts for '$APP_USER_NAME'."
+mapfile -t APP_GRANTS_LINES < <(echo "$APP_GRANTS_RAW" | tr -s '[:space:]' ' ')
+
+app_has_required_permissions=false
+
+# Evaluate each grant line
+for g in "${APP_GRANTS_LINES[@]}"; do
+  if grant_line_has_required_privs "$g" "${APP_REQUIRED_PRIVS[@]}"; then
+    app_has_required_permissions=true; break
   fi
+done
 
-  REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
-
-  echo "Granting required privileges to app user '$APP_USER_NAME' for relevant hosts..."
-  APP_GRANT_HOSTS_SEEN=""
-  for h in "$APP_USER_HOST" "$CLIENT_HOST"; do
-    [[ -z "$h" ]] && continue
-    if [[ " $APP_GRANT_HOSTS_SEEN " == *" $h "* ]]; then
-      continue
-    fi
-    APP_GRANT_HOSTS_SEEN+=" $h"
-
-    echo "Granting app privileges on \`${DB_NAME}\`.* to '${APP_USER_NAME}'@'${h}'..."
-    if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-          -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-          -e "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${h}';"; then
-      echo "Error: Failed to grant privileges to app user '${APP_USER_NAME}'@'${h}'."
-      echo "--------------"
-      echo "GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${DB_NAME}\`.* TO '${APP_USER_NAME}'@'${h}';"
-      echo "--------------"
-      exit 1
-    fi
-  done
-
-  if ! mariadb -h "$DB_HOST" -P "$DB_PORT" \
-        -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-        -e "FLUSH PRIVILEGES;"; then
-    echo "Error: Failed to FLUSH PRIVILEGES for app user."
-    exit 1
-  fi
-
-  APP_GRANTS_RAW="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                    -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
-
-  if [[ -z "$APP_GRANTS_RAW" ]]; then
-    echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
-    echo "Check whether this user exists only with different hosts (e.g. 'localhost' instead of '$APP_USER_HOST')."
-    exit 1
-  fi
-
-  mapfile -t APP_GRANTS_LINES < <(printf '%s\n' "$APP_GRANTS_RAW" | sed 's/[[:space:]]\+/ /g')
-
-  app_has_required_permissions=false
-
-  has_all_privs_in_line() {
-    local line="$1"
-    local missing=()
-    for p in "${REQUIRED_PRIVS[@]}"; do
-      if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
-        missing+=("$p")
-      fi
-    done
-    [[ ${#missing[@]} -eq 0 ]]
-  }
-
-  for g in "${APP_GRANTS_LINES[@]}"; do
-    if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
-      app_has_required_permissions=true; break
-    fi
-    if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-      app_has_required_permissions=true; break
-    fi
-    if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-      app_has_required_permissions=true; break
-    fi
-  done
-
-  # Verify at CLIENT_HOST if different
-  if [[ "$app_has_required_permissions" != true && -n "$CLIENT_HOST" && "$CLIENT_HOST" != "$APP_USER_HOST" ]]; then
-    CLIENT_APP_GRANTS_RAW="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
-                             -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                             -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${CLIENT_HOST}';" 2>/dev/null || true)"
-    mapfile -t CLIENT_APP_GRANTS_LINES < <(printf '%s\n' "$CLIENT_APP_GRANTS_RAW" | sed 's/[[:space:]]\+/ /g')
-    for g in "${CLIENT_APP_GRANTS_LINES[@]}"; do
-      if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
-        app_has_required_permissions=true; break
-      fi
-      if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-        app_has_required_permissions=true; break
-      fi
-      if grep -qiE " ON (\`?${DB_NAME}\`?)\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-        app_has_required_permissions=true; break
-      fi
-    done
-  fi
-
-  if [[ "$app_has_required_permissions" == true ]]; then
-    echo "Verified: app user '${APP_USER_NAME}' has required privileges on '${DB_NAME}'."
-  else
-    echo "Error: '${APP_USER_NAME}' lacks required privileges on '${DB_NAME}'."
-    echo "Required (any one GRANT must include all of): ${REQUIRED_PRIVS[*]}"
-    echo "Grants found (APP_USER_HOST):"
-    echo "$APP_GRANTS_RAW"
-    APP_USER_NAME="$MIGRATOR_NAME"
-    APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
-  fi
+if [[ "$app_has_required_permissions" == true ]]; then
+  echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
+else
+  echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
+  echo "Required (any one GRANT must include all of): ${APP_REQUIRED_PRIVS[*]}"
+  echo "Grants found:"
+  echo "$APP_GRANTS_RAW"
+  APP_USER_NAME="$MIGRATOR_NAME"
+  APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
 fi
 
 echo "--------------------------------------------------"
