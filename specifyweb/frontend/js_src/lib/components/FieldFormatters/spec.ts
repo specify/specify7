@@ -180,14 +180,12 @@ export function trimRegexString(regexString: string): string {
   if (pattern.startsWith('^')) pattern = pattern.slice(1);
   if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
   if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
-  if (pattern.startsWith('(') && pattern.endsWith(')'))
-    pattern = pattern.slice(1, -1);
+  // Preserve grouping parentheses; they can be part of the actual pattern.
   return pattern;
 }
 function normalizeRegexString(regexString: string): string {
-  let pattern: string = trimRegexString(regexString);
-  if (pattern.includes('|')) pattern = `(${pattern})`;
-  return `/^${pattern}$/`;
+  // Only add the legacy anchors; do not rewrite the user-supplied pattern.
+  return `/^${trimRegexString(regexString)}$/`;
 }
 
 const partSpec = f.store(() =>
