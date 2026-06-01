@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1-dev\n"
 
-#: components/BatchEdit/index.tsx:189
+#: components/BatchEdit/index.tsx:221
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2255
 #: components/Router/OverlayRoutes.tsx:263
@@ -52,7 +52,7 @@ msgstr ""
 "Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для "
 "пакетного редагування"
 
-#: components/BatchEdit/index.tsx:162
+#: components/BatchEdit/index.tsx:194
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}'"
@@ -191,7 +191,7 @@ msgstr ""
 "визначення того, чи є запис порожнім. Значення за замовчуванням: {default: "
 "boolean}"
 
-#: components/BatchEdit/index.tsx:183
+#: components/BatchEdit/index.tsx:215
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr ""

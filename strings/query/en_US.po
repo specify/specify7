@@ -575,12 +575,12 @@ msgstr "{componentTableName: string} & {collectionObjectTableName: string}"
 msgid "formatInputAs"
 msgstr "Format As: {commaSeparatedFormats:string}"
 
-#: components/BatchEdit/index.tsx:209
+#: components/BatchEdit/index.tsx:241
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQuery"
 msgstr "Query has unsaved changes"
 
-#: components/BatchEdit/index.tsx:212
+#: components/BatchEdit/index.tsx:244
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Please save the query before running Batch Edit"

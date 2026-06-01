@@ -588,12 +588,12 @@ msgstr "{componentTableName: string} & {collectionObjectTableName: string}"
 msgid "formatInputAs"
 msgstr "Форматувати як: {commaSeparatedFormats:string}"
 
-#: components/BatchEdit/index.tsx:209
+#: components/BatchEdit/index.tsx:241
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQuery"
 msgstr "Запит містить незбережені зміни"
 
-#: components/BatchEdit/index.tsx:212
+#: components/BatchEdit/index.tsx:244
 #. Used in: Components > Batch Edit > Index
 msgid "unsavedChangesInQueryDescription"
 msgstr "Будь ласка, збережіть запит перед запуском пакетного редагування"

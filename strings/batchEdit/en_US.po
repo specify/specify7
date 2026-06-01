@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/BatchEdit/index.tsx:189
+#: components/BatchEdit/index.tsx:221
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2255
 #: components/Router/OverlayRoutes.tsx:263
@@ -41,7 +41,7 @@ msgstr ""
 "The selected rank(s) are found in multiple trees. Pick tree(s) to batch "
 "edit with"
 
-#: components/BatchEdit/index.tsx:162
+#: components/BatchEdit/index.tsx:194
 #. Used in: Components > Batch Edit > Index
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
@@ -175,7 +175,7 @@ msgstr ""
 "If true, invisible database fields will not be used for determining whether "
 "the record is empty or not. Default value is {default: boolean}"
 
-#: components/BatchEdit/index.tsx:183
+#: components/BatchEdit/index.tsx:215
 #. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr "Batch Edit is disabled for system tables and scoping hierarchy tables"
