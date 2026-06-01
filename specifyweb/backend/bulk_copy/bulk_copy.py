@@ -1,11 +1,14 @@
 import json
 
-from specifyweb.backend.permissions.permissions import table_permissions_checker
+from specifyweb.backend.permissions.permissions import table_permissions_checker, cache_permission_queries
 from django.http import (HttpResponse, HttpResponseNotAllowed)
 
 from specifyweb.specify.api.crud import post_resource
 from specifyweb.specify.api.dispatch import HttpResponseCreated
 from specifyweb.specify.api.serializers import _obj_to_data, toJson
+from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
+from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
+from specifyweb.backend.context.remote_prefs import cache_remote_preferences
 
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
@@ -17,15 +20,21 @@ def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     data = json.loads(request.body)
     data = dict(filter(lambda item: item[0] != 'id', data.items())) # Remove ID field before making copies
     resp_objs = []
-    for _ in range(int(copies)):
-        obj = post_resource(
-            request.specify_collection,
-            request.specify_user_agent,
-            model,
-            data,
-            request.GET.get("recordsetid", None),
-        )
-        resp_objs.append(_obj_to_data(obj, checker))
+    with (
+        cache_unique_catnum_preferences(),
+        cache_uniqueness_rules(),
+        cache_remote_preferences(),
+        cache_permission_queries()
+    ):
+        for _ in range(int(copies)):
+            obj = post_resource(
+                request.specify_collection,
+                request.specify_user_agent,
+                model,
+                data,
+                request.GET.get("recordsetid", None),
+            )
+            resp_objs.append(_obj_to_data(obj, checker))
 
     return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
@@ -39,17 +48,23 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
 
     if request.method != 'POST':
         return HttpResponseNotAllowed(['POST'])
-        
+
     data = json.loads(request.body)
     resp_objs = []
-    for obj_data in data:
-        obj = post_resource(
-            request.specify_collection,
-            request.specify_user_agent,
-            model,
-            obj_data,
-            request.GET.get("recordsetid", None),
-        )
-        resp_objs.append(_obj_to_data(obj, checker))
+    with (
+        cache_unique_catnum_preferences(),
+        cache_uniqueness_rules(),
+        cache_remote_preferences(),
+        cache_permission_queries()
+    ):
+        for obj_data in data:
+            obj = post_resource(
+                request.specify_collection,
+                request.specify_user_agent,
+                model,
+                obj_data,
+                request.GET.get("recordsetid", None),
+            )
+            resp_objs.append(_obj_to_data(obj, checker))
 
     return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
