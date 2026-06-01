@@ -25,14 +25,16 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         use_override = bool(options.get('use_override', False))
         alias = options["database"]
-        conn = connections[alias]
         logger.info(f"Running base_specify_migration using database alias '{alias}'")
 
+        # Validate the alias exists and is usable; fallback to 'master' if not
         try:
-            transaction.atomic(using=alias)
-        except:
+            connections[alias].ensure_connection()
+        except Exception:
             alias = 'master'
+            logger.warning(f"Falling back to database alias '{alias}'")
 
+        conn = connections[alias]
         with transaction.atomic(using=alias):
             with conn.cursor() as cursor:
                 # Check django table
