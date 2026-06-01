@@ -63,6 +63,47 @@ regex_escape() {
   printf '%s' "$value" | sed -e 's/[][\/.^$*+?{}()|\\]/\\&/g'
 }
 
+has_all_privs_in_line() {
+  local line="$1"
+  shift
+  local missing=()
+  local p
+  for p in "$@"; do
+    # match whole words; spaces already canonicalized
+    if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
+      missing+=("$p")
+    fi
+  done
+  if [[ ${#missing[@]} -eq 0 ]]; then
+    return 0
+  else
+    return 1
+  fi
+}
+
+grant_line_has_required_privs() {
+  local line="$1"
+  shift
+
+  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$line"; then
+    return 0
+  fi
+
+  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON (${SQL_DB_IDENTIFIER_REGEX}|${DB_NAME_REGEX})\.\* TO " <<<"$line"; then
+    return 0
+  fi
+
+  if grep -qiE " ON \*\.\* TO " <<<"$line" && has_all_privs_in_line "$line" "$@"; then
+    return 0
+  fi
+
+  if grep -qiE " ON (${SQL_DB_IDENTIFIER_REGEX}|${DB_NAME_REGEX})\.\* TO " <<<"$line" && has_all_privs_in_line "$line" "$@"; then
+    return 0
+  fi
+
+  return 1
+}
+
 SQL_DB_NAME=$(sql_string_literal "$DB_NAME")
 SQL_DB_IDENTIFIER=$(sql_identifier "$DB_NAME")
 SQL_MIGRATOR_NAME=$(sql_string_literal "$MIGRATOR_NAME")
@@ -73,6 +114,8 @@ SQL_APP_USER_PASSWORD=$(sql_string_literal "$APP_USER_PASSWORD")
 SQL_APP_USER_HOST=$(sql_string_literal "$APP_USER_HOST")
 DB_NAME_REGEX=$(regex_escape "$DB_NAME")
 SQL_DB_IDENTIFIER_REGEX=$(regex_escape "$SQL_DB_IDENTIFIER")
+MIGRATION_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "DELETE" "CREATE" "ALTER" "INDEX" "DROP")
+APP_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
 
 echo "--------------------------------------------------"
 echo "DB Configuration:"
@@ -154,7 +197,30 @@ GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
   -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
   -e "SHOW GRANTS FOR ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST};" 2>/dev/null || true)"
 
-GRANTS_PARSED="$(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')"
+if [[ -z "$GRANTS_OUTPUT" ]]; then
+  echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+  exit 1
+fi
+
+mapfile -t MIGRATOR_GRANTS_LINES < <(echo "$GRANTS_OUTPUT" | tr -s '[:space:]' ' ')
+
+migrator_has_required_permissions=false
+
+for g in "${MIGRATOR_GRANTS_LINES[@]}"; do
+  if grant_line_has_required_privs "$g" "${MIGRATION_REQUIRED_PRIVS[@]}"; then
+    migrator_has_required_permissions=true; break
+  fi
+done
+
+if [[ "$migrator_has_required_permissions" == true ]]; then
+  echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has migration privileges on '${DB_NAME}'."
+else
+  echo "Error: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' lacks migration privileges on '${DB_NAME}'."
+  echo "Required for migrations (any one GRANT must include all of): ${MIGRATION_REQUIRED_PRIVS[*]}"
+  echo "Grants found:"
+  echo "$GRANTS_OUTPUT"
+  exit 1
+fi
 
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
@@ -185,7 +251,6 @@ else
   echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}'..."
 fi
 
-REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "ALTER" "INDEX" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
 APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
                   -e "SHOW GRANTS FOR ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST};" 2>/dev/null || true)"
 
@@ -198,37 +263,9 @@ mapfile -t APP_GRANTS_LINES < <(echo "$APP_GRANTS_RAW" | tr -s '[:space:]' ' ')
 
 app_has_required_permissions=false
 
-# Helper: check if a single GRANT line contains all REQUIRED_PRIVS
-has_all_privs_in_line() {
-  local line="$1"
-  local missing=()
-  for p in "${REQUIRED_PRIVS[@]}"; do
-    # match whole words; spaces already canonicalized
-    if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
-      missing+=("$p")
-    fi
-  done
-  if [[ ${#missing[@]} -eq 0 ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 # Evaluate each grant line
 for g in "${APP_GRANTS_LINES[@]}"; do
-  # If global ALL PRIVILEGES, good enough
-  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$g"; then
-    app_has_required_permissions=true; break
-  fi
-
-  # If global with at least required subset
-  if grep -qiE " ON \*\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
-    app_has_required_permissions=true; break
-  fi
-
-  # If DB-scoped to this database and has required subset
-  if grep -qiE " ON (${SQL_DB_IDENTIFIER_REGEX}|${DB_NAME_REGEX})\.\* TO " <<<"$g" && has_all_privs_in_line "$g"; then
+  if grant_line_has_required_privs "$g" "${APP_REQUIRED_PRIVS[@]}"; then
     app_has_required_permissions=true; break
   fi
 done
@@ -237,7 +274,7 @@ if [[ "$app_has_required_permissions" == true ]]; then
   echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
 else
   echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
-  echo "Required (any one GRANT must include all of): ${REQUIRED_PRIVS[*]}"
+  echo "Required (any one GRANT must include all of): ${APP_REQUIRED_PRIVS[*]}"
   echo "Grants found:"
   echo "$APP_GRANTS_RAW"
   APP_USER_NAME="$MIGRATOR_NAME"
