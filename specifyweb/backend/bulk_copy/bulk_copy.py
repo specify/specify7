@@ -1,7 +1,7 @@
 import json
 
 from specifyweb.backend.permissions.permissions import table_permissions_checker
-from django.http import (HttpResponse, HttpResponseNotAllowed, QueryDict)
+from django.http import (HttpResponse, HttpResponseNotAllowed)
 from django.db import transaction
 
 from specifyweb.specify.api.crud import delete_resource, post_resource

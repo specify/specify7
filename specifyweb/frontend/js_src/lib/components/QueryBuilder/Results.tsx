@@ -389,7 +389,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             ) : undefined}
             {canDeleteTable ? (
               <QueryBulkDelete
-                totalCount={totalCount}
                 table={table}
                 onDeleted={handleDelete}
                 recordIds={(): RA<number> =>

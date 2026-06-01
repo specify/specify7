@@ -1,68 +1,70 @@
 import React from 'react';
 
-import { ajax } from '../../utils/ajax';
-import { commonText } from '../../localization/common';
-import { queryText } from '../../localization/query';
-import { Button } from '../Atoms/Button';
-import type { SpecifyTable } from '../DataModel/specifyTable';
-import { ping } from '../../utils/ajax/ping';
-import { Http } from '../../utils/ajax/definitions';
-import { Dialog } from '../Molecules/Dialog';
 import { useBooleanState } from '../../hooks/useBooleanState';
+import { commonText } from '../../localization/common';
+import { formsText } from '../../localization/forms';
+import { queryText } from '../../localization/query';
+import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
+import type { SpecifyTable } from '../DataModel/specifyTable';
+import { Dialog } from '../Molecules/Dialog';
 
 export function QueryBulkDelete({
   table,
-  totalCount,
   onDeleted,
   recordIds,
 }: {
   readonly table: SpecifyTable;
-  readonly totalCount: number;
   readonly onDeleted: () => void;
-  readonly recordIds: any;
+  readonly recordIds: () => RA<number>;
 }): JSX.Element {
-  const [isShowingWarning, showWarning, hideWarning, _] = useBooleanState(false);
+  const [isShowingWarning, showWarning, hideWarning, _] =
+    useBooleanState(false);
 
   return (
     <>
       <Button.Small
-      disabled={totalCount === undefined || totalCount === 0}
-      onClick={showWarning}
+        disabled={totalCount === undefined || totalCount === 0}
+        onClick={showWarning}
       >
-      {queryText.bulkDelete()}
+        {queryText.bulkDelete()}
       </Button.Small>
-      {isShowingWarning ? 
+      {isShowingWarning ? (
         <BulkDeletionDialog
-          table={table}
-          totalCount={totalCount}
-          onDeleted={onDeleted}
           recordIds={recordIds}
+          table={table}
           onClose={(): void => {
             hideWarning();
           }}
+          onDeleted={onDeleted}
         />
-      : undefined}
+      ) : undefined}
     </>
   );
 }
 
 export function BulkDeletionDialog({
   table,
-  totalCount,
   onDeleted,
   recordIds,
   onClose,
 }: {
   readonly table: SpecifyTable;
-  readonly totalCount: number;
   readonly onDeleted: () => void;
-  readonly recordIds: any;
+  readonly recordIds: () => RA<number>;
   readonly onClose: () => void;
 }): JSX.Element | null {
   const loading = React.useContext(LoadingContext);
 
+  const [recordIdList, setRecordIdList] = React.useState<RA<number>>([]);
+  React.useEffect(() => {
+    setRecordIdList(recordIds());
+  }, [recordIds]);
+
   const handleClick = (): void => {
+    onClose();
     loading(
       ping(`/bulk_copy/bulk_delete/${table.name}/`, {
         headers: { Accept: 'text/plain' },
@@ -70,28 +72,32 @@ export function BulkDeletionDialog({
         body: JSON.stringify({
           ids: recordIds(),
         }),
-        expectedErrors: [Http.NO_CONTENT],
       })
         .then(onDeleted)
         .catch((error) => {
           console.error(error);
         })
     );
-  }
+  };
 
   return (
     <Dialog
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Info onClick={handleClick}>{queryText.yes()}</Button.Info>
+          <Button.Danger onClick={handleClick}>
+            {commonText.delete()}
+          </Button.Danger>
         </>
       }
-      header={commonText.delete()}
+      header={formsText.bulkDeleteConfirmation({
+        count: recordIdList.length,
+        tableName: table.name,
+      })}
       onClose={onClose}
     >
       <div className="mb-4 flex flex-col gap-4">
-        <section>{commonText.delete()}</section>
+        <section>{formsText.deleteConfirmationDescription()}</section>
       </div>
     </Dialog>
   );
