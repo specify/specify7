@@ -55,21 +55,15 @@ DATABASE_PORT = ''
 # https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-OPTIONS
 DATABASE_OPTIONS = {}
 
-# The master user login. This is the MySQL user used to connect to the
-# database. This can be the same as the Specify 6 master user.
-MASTER_NAME = 'MasterUser'
-MASTER_PASSWORD = 'MasterPassword'
-MIGRATOR_NAME = 'MasterUser'
-MIGRATOR_PASSWORD = 'MasterPassword'
-APP_USER_NAME = 'MasterUser'
-APP_USER_PASSWORD = 'MasterPassword'
-
-# MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
-# MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
-# MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
-# MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
-# APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
-# APP_USER_PASSWORD = os.environ.get('APP_USER_PASSWORD', MIGRATOR_PASSWORD)
+# The master, migrator, and application user logins. The migrator and app
+# credentials fall back through the more privileged roles for compatibility.
+ROOT_PASSWORD = os.getenv('MYSQL_ROOT_PASSWORD', 'password')
+MASTER_NAME = os.getenv('MASTER_NAME', 'root')
+MASTER_PASSWORD = os.getenv('MASTER_PASSWORD', ROOT_PASSWORD)
+MIGRATOR_NAME = os.getenv('MIGRATOR_NAME', MASTER_NAME)
+MIGRATOR_PASSWORD = os.getenv('MIGRATOR_PASSWORD', MASTER_PASSWORD)
+APP_USER_NAME = os.getenv('APP_USER_NAME', MIGRATOR_NAME)
+APP_USER_PASSWORD = os.getenv('APP_USER_PASSWORD', MIGRATOR_PASSWORD)
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
