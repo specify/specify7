@@ -8,8 +8,8 @@ echo "Starting MariaDB database and user creation script..."
 # Read variables from environment
 DB_HOST="${DATABASE_HOST}"
 DB_PORT="${DATABASE_PORT}"
-MASTER_USER_NAME="${MASTER_NAME:-$MASTER_USER_NAME}"
-MASTER_USER_PASSWORD="${MASTER_PASSWORD:-$MASTER_USER_PASSWORD}"
+MASTER_USER_NAME="${MASTER_NAME:-${MASTER_USER_NAME:-}}"
+MASTER_USER_PASSWORD="${MASTER_PASSWORD:-${MASTER_USER_PASSWORD:-}}"
 MIGRATOR_NAME="${MIGRATOR_NAME}"
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD}"
 MIGRATOR_USER_HOST="%"
@@ -41,7 +41,7 @@ if [[ -z "$APP_USER_NAME" ]]; then
 fi
 
 # Validate required variables
-if [[ -z "$DB_HOST" || -z "$DB_PORT" || -z "$MIGRATOR_PASSWORD" || -z "$DB_NAME" || -z "$APP_USER_NAME" || -z "$APP_USER_PASSWORD" ]]; then
+if [[ -z "$DB_HOST" || -z "$DB_PORT" || -z "$MASTER_USER_NAME" || -z "$MASTER_USER_PASSWORD" || -z "$MIGRATOR_PASSWORD" || -z "$DB_NAME" || -z "$APP_USER_NAME" || -z "$APP_USER_PASSWORD" ]]; then
   echo "Error: One or more required environment variables are missing or empty."
   exit 1
 fi
