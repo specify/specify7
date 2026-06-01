@@ -27,7 +27,14 @@ def catnum_rule_uneditable(apps, schema_editor):
 
         candidate_rules = UniquenessRule.objects.filter(id__in=candidate_rules_with_scope)
         if len(candidate_rules) == 0: 
-            create_uniqueness_rule('Collectionobject', discipline=discipline, is_database_constraint=True, fields=['catalogNumber'], scopes=['collection'], registry=apps)
+            create_uniqueness_rule(
+                model_name='Collectionobject',
+                discipline=discipline,
+                is_database_constraint=True,
+                fields=['catalogNumber'],
+                scopes=['collection'],
+                registry=apps
+            )
         else: 
             candidate_rules.update(isDatabaseConstraint=True)
 
