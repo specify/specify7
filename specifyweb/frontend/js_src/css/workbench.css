@@ -48,7 +48,7 @@
 
 .handsontable .columnSorting.columnSorting.columnSorting.sortAction.ascending,
 .handsontable .columnSorting.columnSorting.columnSorting.sortAction.descending {
-  /* override handsontable's large padding when sorting direction is present*/
+  /* override handsontable's large padding when sorting direction is present */
   max-width: calc(100% + 1px) !important;
 }
 
