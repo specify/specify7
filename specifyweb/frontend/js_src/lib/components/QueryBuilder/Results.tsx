@@ -124,7 +124,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   } = useFetchQueryResults(props);
 
   const canMergeTable = canMerge(table);
-  const canDeleteTable = hasPermission('/record/bulk_delete', 'delete') || userInformation.isadmin;
+  const canDeleteTable =
+    hasPermission('/record/bulk_delete', 'delete') || userInformation.isadmin;
 
   const visibleColumns = React.useMemo(
     () =>
