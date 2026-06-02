@@ -24,9 +24,7 @@ def catnum_rule_editable(apps, schema_editor=None):
         # must be unique to Collection"
         # We check for length of fields and scopes because get() raises an
         # exception if more than one result is returned
-        if (len(fields) == 1 and len(scopes) == 1) and (
-            fields.get().fieldPath.lower() == "catalognumber"
-            and scopes.get().fieldPath.lower() == "collection"):
+        if (len(fields) == 1 and len(scopes) == 1) and (fields.get().fieldPath.lower() == "catalognumber" and scopes.get().fieldPath.lower() == "collection"):
             catalog_number_rules.append(rule.id)
 
     rules_to_update = UniquenessRule.objects.filter(id__in=catalog_number_rules)
