@@ -32,12 +32,17 @@ def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     return UserRole.objects.filter(specifyuser=user).exists() or \
         UserPolicy.objects.filter(specifyuser=user).exists()
 
-def initialize(
-    wipe: bool = False,
-    apps=apps,
-    *,
-    migrate_sp6_users: bool = True,
-) -> None:
+def has_sp6_permissions_tables() -> bool:
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
+            AND table_schema = DATABASE();
+        """)
+        return cursor.fetchone()[0] == 2
+
+def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
             wipe_permissions(apps)
@@ -91,15 +96,10 @@ def assign_users_to_roles(apps=apps) -> None:
     }
 
     results = []
+    if not has_sp6_permissions_tables():
+        return # Newly created sp7 databases don't have these sp6 specific tables.
+
     with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT COUNT(*)
-            FROM information_schema.tables
-            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
-            AND table_schema = DATABASE();
-        """)
-        if cursor.fetchone()[0] < 2:
-            return # Newly created sp7 databases don't have these sp6 specific tables.
         cursor.execute("""
             SELECT
                 u.SpecifyUserID as user_id,
@@ -165,7 +165,6 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     Agent = apps.get_model('specify', 'Agent')
 
-    cursor = connection.cursor()
     for user in Specifyuser.objects.all():
         for collection in Collection.objects.all():
             if user.usertype == 'Manager':
@@ -175,16 +174,21 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
             if user.usertype in ('LimitedAccess', 'Guest'):
                 user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
 
-        for colid, _ in users_collections_for_sp6(cursor, user.id):
-            # Does the user has an agent for the collection?
-            if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
-                # Give them access to the collection.
-                UserPolicy.objects.create(
-                    collection_id=colid,
-                    specifyuser_id=user.id,
-                    resource=CollectionAccessPT.access.resource(),
-                    action=CollectionAccessPT.access.action(),
-                )
+    if not has_sp6_permissions_tables():
+        return
+
+    with connection.cursor() as cursor:
+        for user in Specifyuser.objects.all():
+            for colid, _ in users_collections_for_sp6(cursor, user.id):
+                # Does the user has an agent for the collection?
+                if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
+                    # Give them access to the collection.
+                    UserPolicy.objects.create(
+                        collection_id=colid,
+                        specifyuser_id=user.id,
+                        resource=CollectionAccessPT.access.resource(),
+                        action=CollectionAccessPT.access.action(),
+                    )
 
 def create_roles(apps = apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
