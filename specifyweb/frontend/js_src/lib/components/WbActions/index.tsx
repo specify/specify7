@@ -340,7 +340,7 @@ function getMessage(
     upload:
       cellCounts.invalidCells === 0
         ? {
-            header: viewerLocalization.do,
+            header: viewerLocalization.doSuccessful,
             message: viewerLocalization.doSuccessfulDescription,
           }
         : {

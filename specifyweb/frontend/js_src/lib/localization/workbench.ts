@@ -601,32 +601,42 @@ export const wbText = createDictionary({
     'hr-hr': 'Validacija je pronašla pogreške u skupu podataka.',
   },
   uploadSuccessful: {
-    'en-us': 'Upload Completed with No Errors',
-    'ru-ru': 'Загрузка завершена без ошибок',
-    'es-es': 'Carga completada sin errores',
-    'fr-fr': 'Téléchargement terminé sans erreur',
-    'uk-ua': 'Завантаження завершено без помилок',
+    'en-us': 'Upload Successfully Completed',
+    'ru-ru': 'Загрузка успешно завершена',
+    'es-es': 'Carga completada exitosamente',
+    'fr-fr': 'Téléchargement terminé avec succès',
+    'uk-ua': 'Завантаження успішно завершено',
     'de-ch': 'Upload erfolgreich abgeschlossen',
-    'pt-br': 'Envio concluído sem erros.',
-    'hr-hr': 'Prijenos završen bez grešaka',
+    'pt-br': 'Envio concluído com sucesso.',
+    'hr-hr': 'Prijenos uspješno završen',
   },
   uploadSuccessfulDescription: {
     'en-us':
-      'Click on the "Results" button to see the number of new records added to each database table.',
+      'Your data has been uploaded to the database. To see the number of new records added to each table, click "Results" in the toolbar above the data grid.',
     'ru-ru':
-      'Нажмите кнопку «Результаты», чтобы увидеть количество новых записей добавлен в каждую таблицу базы данных',
+      'Ваши данные загружены в базу данных. Чтобы увидеть количество новых записей, добавленных в каждую таблицу, нажмите «Результаты» на панели инструментов над сеткой данных.',
     'es-es':
-      'Haga clic en el botón "Resultados" para ver la cantidad de nuevos registros agregados a cada tabla de la base de datos.',
+      'Sus datos se han cargado en la base de datos. Para ver la cantidad de nuevos registros agregados a cada tabla, haga clic en "Resultados" en la barra de herramientas sobre la cuadrícula de datos.',
     'fr-fr':
-      'Cliquez sur le bouton « Résultats » pour voir le nombre de nouveaux enregistrements ajoutés à chaque table de la base de données.',
+      'Vos données ont été téléchargées dans la base de données. Pour voir le nombre de nouveaux enregistrements ajoutés à chaque table, cliquez sur « Résultats » dans la barre d\'outils au-dessus de la grille de données.',
     'uk-ua':
-      'Натисніть кнопку «Результати», щоб побачити кількість нових записів, доданих до кожної таблиці бази даних.',
+      'Ваші дані завантажено в базу даних. Щоб переглянути кількість нових записів, доданих до кожної таблиці, натисніть «Результати» на панелі інструментів над сіткою даних.',
     'de-ch':
-      'Klicken Sie auf die Schaltfläche „Ergebnisse“, um die Anzahl der neu hinzugefügten Datensätze in jeder Datenbanktabelle anzuzeigen.',
+      'Ihre Daten wurden in die Datenbank hochgeladen. Um die Anzahl der neu hinzugefügten Datensätze in jeder Tabelle anzuzeigen, klicken Sie in der Symbolleiste über dem Datenraster auf „Ergebnisse".',
     'pt-br':
-      'Clique no botão "Resultados" para ver o número de novos registros adicionados a cada tabela do banco de dados.',
+      'Seus dados foram enviados para o banco de dados. Para ver o número de novos registros adicionados a cada tabela, clique em "Resultados" na barra de ferramentas acima da grade de dados.',
     'hr-hr':
-      'Kliknite gumb "Rezultati" da biste vidjeli broj novih zapisa dodanih svakoj tablici baze podataka.',
+      'Vaši podaci su preneseni u bazu podataka. Da biste vidjeli broj novih zapisa dodanih svakoj tablici, kliknite "Rezultati" na alatnoj traci iznad rešetke podataka.',
+  },
+  saveAsRecordSet: {
+    'en-us': 'Save uploaded records as a Record Set',
+    'ru-ru': 'Сохранить загруженные записи как набор записей',
+    'es-es': 'Guardar registros cargados como un Conjunto de Registros',
+    'fr-fr': 'Enregistrer les enregistrements téléchargés comme un ensemble d\'enregistrements',
+    'uk-ua': 'Зберегти завантажені записи як набір записів',
+    'de-ch': 'Hochgeladene Datensätze als Record Set speichern',
+    'pt-br': 'Salvar registros enviados como um Conjunto de Registros',
+    'hr-hr': 'Spremi prenesene zapise kao skup zapisa',
   },
   uploadErrors: {
     'en-us': 'Upload Failed due to Error Cells',

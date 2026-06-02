@@ -2,7 +2,6 @@ import React from 'react';
 
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { batchEditText } from '../../localization/batchEdit';
-import { queryText } from '../../localization/query';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { formData } from '../../utils/ajax/helpers';
@@ -40,9 +39,7 @@ export function CreateRecordSetButton({
     >
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
-          {queryText.createRecordSet({
-            recordSetTable: tables.RecordSet.label,
-          })}
+          {wbText.saveAsRecordSet()}
         </ButtonComponent>
         {isOpen && (
           <CreateRecordSetDialog
