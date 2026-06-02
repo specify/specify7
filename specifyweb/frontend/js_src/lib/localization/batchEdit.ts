@@ -223,7 +223,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Sus cambios se han aplicado a la base de datos. Para ver el número de registros afectados en cada tabla, haga clic en "Resultados" en la barra de herramientas sobre la cuadrícula de datos.',
     'fr-fr':
-      'Vos modifications ont été appliquées à la base de données. Pour voir le nombre d\'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d\'outils au-dessus de la grille de données.',
+      "Vos modifications ont été appliquées à la base de données. Pour voir le nombre d'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données.",
     'pt-br':
       'Suas alterações foram aplicadas ao banco de dados. Para ver o número de registros afetados em cada tabela, clique em "Resultados" na barra de ferramentas acima da grade de dados.',
     'ru-ru':
