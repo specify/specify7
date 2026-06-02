@@ -196,35 +196,42 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
    * Note: this may be called with a recordId that is not part of query results
    */
   const handleDelete = React.useCallback(
-    (recordId: number): void => {
-      if (deletingRef.current.has(recordId)) return; // Prevents duplicate deletion calls for the same record
-      deletingRef.current.add(recordId);
+    (recordId: number | RA<number>): void => {
+      const recordIds = Array.isArray(recordId) ? recordId : [recordId];
+      let filteredResults = results;
+      let totalRemoveCount = 0;
+      recordIds.forEach((recordId: number) => {
+        if (deletingRef.current.has(recordId)) return; // Prevents duplicate deletion calls for the same record
+        deletingRef.current.add(recordId);
 
-      let removeCount = 0;
-      function newResults(results: RA<QueryResultRow | undefined> | undefined) {
-        if (!Array.isArray(results) || totalCount === undefined) return;
-        const newResults = results.filter(
-          (result) => result?.[queryIdField] !== recordId
-        );
-        removeCount = results.length - newResults.length;
-        if (resultsRef !== undefined) resultsRef.current = newResults;
-        return newResults;
-      }
-      setResults(newResults(results));
-      // Delete deletingRef if no records are able to be removed
-      if (removeCount === 0) {
-        deletingRef.current.delete(recordId);
-        return;
-      }
+        let removeCount = 0;
+        function newResults(results: RA<QueryResultRow | undefined> | undefined) {
+          if (!Array.isArray(results) || totalCount === undefined) return;
+          const newResults = results.filter(
+            (result) => result?.[queryIdField] !== recordId
+          );
+          removeCount = results.length - newResults.length;
+          if (resultsRef !== undefined) resultsRef.current = newResults;
+          return newResults;
+        }
+        filteredResults = (newResults(filteredResults));
+        totalRemoveCount = totalRemoveCount - removeCount;
+        // Delete deletingRef if no records are able to be removed
+        if (removeCount === 0) {
+          deletingRef.current.delete(recordId);
+          return;
+        }
+        setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
+      });
+      setResults(filteredResults);
       setTotalCount((totalCount) =>
         totalCount === undefined
           ? undefined
-          : Math.max(0, totalCount - removeCount)
+          : Math.max(0, totalCount - totalRemoveCount)
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
-        new Set(Array.from(selectedRows).filter((id) => id !== recordId));
+        new Set(Array.from(selectedRows).filter((id) => recordIds.includes(id)));
       setSelectedRows(newSelectedRows(selectedRows));
-      setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
     },
     [setResults, setTotalCount, totalCount]
   );
@@ -390,6 +397,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
             {canDeleteTable ? (
               <QueryBulkDelete
                 table={table}
+                totalCount={totalCount || 0}
                 onDeleted={handleDelete}
                 recordIds={(): RA<number> =>
                   loadedResults

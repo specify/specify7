@@ -13,11 +13,13 @@ import { Dialog } from '../Molecules/Dialog';
 
 export function QueryBulkDelete({
   table,
+  totalCount,
   onDeleted,
   recordIds,
 }: {
   readonly table: SpecifyTable;
-  readonly onDeleted: () => void;
+  readonly totalCount: number;
+  readonly onDeleted: (recordIds: RA<number>) => void;
   readonly recordIds: () => RA<number>;
 }): JSX.Element {
   const [isShowingWarning, showWarning, hideWarning, _] =
@@ -52,7 +54,7 @@ export function BulkDeletionDialog({
   onClose,
 }: {
   readonly table: SpecifyTable;
-  readonly onDeleted: () => void;
+  readonly onDeleted: (recordIds: RA<number>) => void;
   readonly recordIds: () => RA<number>;
   readonly onClose: () => void;
 }): JSX.Element | null {
@@ -63,7 +65,11 @@ export function BulkDeletionDialog({
     setRecordIdList(recordIds());
   }, [recordIds]);
 
+  const [isShowingConfirmation, showConfirmation, hideConfirmation, _] =
+    useBooleanState(false);
+
   const handleClick = (): void => {
+    hideConfirmation();
     onClose();
     loading(
       ping(`/bulk_copy/bulk_delete/${table.name}/`, {
@@ -73,7 +79,7 @@ export function BulkDeletionDialog({
           ids: recordIds(),
         }),
       })
-        .then(onDeleted)
+        .then(() => onDeleted(recordIdList))
         .catch((error) => {
           console.error(error);
         })
@@ -81,24 +87,48 @@ export function BulkDeletionDialog({
   };
 
   return (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-          <Button.Danger onClick={handleClick}>
-            {commonText.delete()}
-          </Button.Danger>
-        </>
+    <>
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+            <Button.Danger onClick={showConfirmation}>
+              {commonText.delete()}
+            </Button.Danger>
+          </>
+        }
+        header={formsText.bulkDeleteConfirmation({
+          count: recordIdList.length,
+          tableName: table.name,
+        })}
+        onClose={onClose}
+      >
+        <div className="mb-4 flex flex-col gap-4">
+          <section>{formsText.deleteConfirmationDescription()}</section>
+        </div>
+      </Dialog>
+      {
+        isShowingConfirmation ?
+        (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+                <Button.Danger onClick={handleClick}>
+                  {formsText.bulkDeleteFinalConfirmationOption({ count: recordIdList.length })}
+                </Button.Danger>
+              </>
+            }
+            header={formsText.bulkDeleteFinalConfirmation()}
+            onClose={onClose}
+          >
+            <div className="mb-4 flex flex-col gap-4">
+              <section>{formsText.deleteConfirmationDescription()}</section>
+            </div>
+          </Dialog>
+        )
+        : undefined
       }
-      header={formsText.bulkDeleteConfirmation({
-        count: recordIdList.length,
-        tableName: table.name,
-      })}
-      onClose={onClose}
-    >
-      <div className="mb-4 flex flex-col gap-4">
-        <section>{formsText.deleteConfirmationDescription()}</section>
-      </div>
-    </Dialog>
+    </>
   );
 }

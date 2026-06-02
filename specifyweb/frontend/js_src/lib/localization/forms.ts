@@ -251,6 +251,14 @@ export const formsText = createDictionary({
     'en-us':
       'Are you sure you want to permanently delete {count:number} {tableName:string} records from the database?'
   },
+  bulkDeleteFinalConfirmation: {
+    'en-us':
+      'Are you sure you want to proceed?'
+  },
+  bulkDeleteFinalConfirmationOption: {
+    'en-us':
+      'I want to delete {count:number} records'
+  },
   datePrecision: {
     'en-us': 'Date Precision',
     'ru-ru': 'Точность даты',
