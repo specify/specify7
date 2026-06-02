@@ -157,7 +157,9 @@ export function WbUpload({
                     {wbText.recordsCreated()}
                   </p>
                   <ul className="flex flex-col gap-1">
-                    {Object.entries(recordCounts.Uploaded as RR<keyof Tables, number>)
+                    {Object.entries(
+                      recordCounts.Uploaded as RR<keyof Tables, number>
+                    )
                       .sort(([, a], [, b]) => b - a)
                       .map(([tableName, count]) => (
                         <TableResults

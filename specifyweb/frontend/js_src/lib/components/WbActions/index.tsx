@@ -81,8 +81,7 @@ export function WbActions({
 
   const isMapped = mappings !== undefined;
 
-  const recordCounts =
-    workbench.validation.uploadResults.recordCounts ?? {};
+  const recordCounts = workbench.validation.uploadResults.recordCounts ?? {};
 
   const dataCheckInProgress = React.useMemo(
     () => workbench.validation.liveValidationStack.length > 0,
@@ -224,7 +223,8 @@ export function WbActions({
         >
           <div className="flex flex-col gap-4">
             <div>{message?.message}</div>
-            {cellCounts.invalidCells === 0 && mode === 'upload' &&
+            {cellCounts.invalidCells === 0 &&
+              mode === 'upload' &&
               recordCounts.Uploaded !== undefined &&
               Object.keys(recordCounts.Uploaded).length > 0 && (
                 <div>

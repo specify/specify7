@@ -619,7 +619,7 @@ export const wbText = createDictionary({
     'es-es':
       'Sus datos se han cargado en la base de datos. Para ver la cantidad de nuevos registros agregados a cada tabla, haga clic en "Resultados" en la barra de herramientas sobre la cuadrícula de datos.',
     'fr-fr':
-      'Vos données ont été téléchargées dans la base de données. Pour voir le nombre de nouveaux enregistrements ajoutés à chaque table, cliquez sur « Résultats » dans la barre d\'outils au-dessus de la grille de données.',
+      "Vos données ont été téléchargées dans la base de données. Pour voir le nombre de nouveaux enregistrements ajoutés à chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données.",
     'uk-ua':
       'Ваші дані завантажено в базу даних. Щоб переглянути кількість нових записів, доданих до кожної таблиці, натисніть «Результати» на панелі інструментів над сіткою даних.',
     'de-ch':
@@ -633,7 +633,8 @@ export const wbText = createDictionary({
     'en-us': 'Save uploaded records as a Record Set',
     'ru-ru': 'Сохранить загруженные записи как набор записей',
     'es-es': 'Guardar registros cargados como un Conjunto de Registros',
-    'fr-fr': 'Enregistrer les enregistrements téléchargés comme un ensemble d\'enregistrements',
+    'fr-fr':
+      "Enregistrer les enregistrements téléchargés comme un ensemble d'enregistrements",
     'uk-ua': 'Зберегти завантажені записи як набір записів',
     'de-ch': 'Hochgeladene Datensätze als Record Set speichern',
     'pt-br': 'Salvar registros enviados como um Conjunto de Registros',
@@ -1298,10 +1299,8 @@ export const wbText = createDictionary({
       'Використовуйте «Імпортувати файл» або «Створити новий», щоб створити новий.',
     'de-ch':
       'Verwenden Sie „Datei importieren" oder „Neu erstellen", um eine neue zu erstellen.',
-    'pt-br':
-      'Use "Importar um arquivo" ou "Criar novo" para criar um novo.',
-    'hr-hr':
-      'Za izradu novog koristite "Uvezi datoteku" ili "Stvori novo".',
+    'pt-br': 'Use "Importar um arquivo" ou "Criar novo" para criar um novo.',
+    'hr-hr': 'Za izradu novog koristite "Uvezi datoteku" ili "Stvori novo".',
   },
   createNew: {
     'en-us': 'Create New',
