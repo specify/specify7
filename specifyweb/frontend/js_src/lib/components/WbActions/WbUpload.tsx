@@ -9,13 +9,11 @@ import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { formatNumber } from '../Atoms/Internationalization';
 import type { Tables } from '../DataModel/types';
-import { strictGetTable } from '../DataModel/tables';
-import { TableIcon } from '../Molecules/TableIcon';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
+import { TableResults } from '../WorkBench/Results';
 import type { RecordCounts } from '../WorkBench/WbValidation';
 import type { WbStatus } from '../WorkBench/WbView';
 
@@ -162,15 +160,11 @@ export function WbUpload({
                     {Object.entries(recordCounts.Uploaded as RR<keyof Tables, number>)
                       .sort(([, a], [, b]) => b - a)
                       .map(([tableName, count]) => (
-                        <li key={tableName} className="flex items-center gap-1">
-                          <TableIcon label={false} name={tableName as Lowercase<keyof Tables>} />
-                          <span>
-                            {commonText.colonLine({
-                              label: strictGetTable(tableName as Lowercase<keyof Tables>).label,
-                              value: formatNumber(count),
-                            })}
-                          </span>
-                        </li>
+                        <TableResults
+                          key={tableName}
+                          recordCount={count}
+                          tableName={tableName as Lowercase<keyof Tables>}
+                        />
                       ))}
                   </ul>
                 </div>

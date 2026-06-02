@@ -14,13 +14,11 @@ import { Dialog } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
-import { formatNumber } from '../Atoms/Internationalization';
-import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
-import { TableIcon } from '../Molecules/TableIcon';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
+import { TableResults } from '../WorkBench/Results';
 import { WbStatus as WbStatusComponent } from '../WorkBench/Status';
 import type { WbStatus, Workbench } from '../WorkBench/WbView';
 import { WbNoUploadPlan } from './WbNoUploadPlan';
@@ -239,20 +237,11 @@ export function WbActions({
                     )
                       .sort(([, a], [, b]) => b - a)
                       .map(([tableName, count]) => (
-                        <li key={tableName} className="flex items-center gap-1">
-                          <TableIcon
-                            label={false}
-                            name={tableName as Lowercase<keyof Tables>}
-                          />
-                          <span>
-                            {commonText.colonLine({
-                              label: strictGetTable(
-                                tableName as Lowercase<keyof Tables>
-                              ).label,
-                              value: formatNumber(count),
-                            })}
-                          </span>
-                        </li>
+                        <TableResults
+                          key={tableName}
+                          recordCount={count}
+                          tableName={tableName as Lowercase<keyof Tables>}
+                        />
                       ))}
                   </ul>
                 </div>

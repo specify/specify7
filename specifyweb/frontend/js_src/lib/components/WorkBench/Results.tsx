@@ -147,7 +147,8 @@ export function TableRecordCounts({
   );
 }
 
-function TableResults({
+/** Helper to render a single table row with icon, label, and record count */
+export function TableResults({
   tableName,
   recordCount,
 }: {
