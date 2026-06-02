@@ -467,7 +467,7 @@ export function Mapper(props: {
             aria-haspopup="dialog"
             href={`/specify/workbench/${props.dataset.id}/`}
           >
-            {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
+            {wbText.dataEditor()}
           </Link.Small>
           {!disableSave && (
             <Button.Small
