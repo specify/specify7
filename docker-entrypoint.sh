@@ -9,11 +9,9 @@ if [ "$1" = 've/bin/gunicorn' ] || [ "$1" = 've/bin/python' ]; then
   rsync -a --delete specifyweb/frontend/static/ /volumes/static-files/frontend-static
   cd /opt/specify7
   echo "Applying Django migrations."
-  set +e
   ./sp7_db_setup_check.sh # Setup db users and run migrations
   # ve/bin/python manage.py base_specify_migration
   # ve/bin/python manage.py migrate
-  ve/bin/python manage.py run_key_migration_functions # Uncomment if you want the key migration functions to run on startup.
-  set -e
+  # ve/bin/python manage.py run_key_migration_functions # Uncomment if you want the key migration functions to run on startup.
 fi
 exec "$@"
