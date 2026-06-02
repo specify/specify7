@@ -189,17 +189,20 @@ export function useHotHooks({
         if (workbench.hot === undefined) return;
 
         const plugin = getHotPlugin(workbench.hot, 'multiColumnSorting');
-        const existing = plugin.getSortConfig(visualCol) as
-          | Handsontable.plugins.ColumnSorting.Config
-          | undefined;
+        const currentSortConfig = plugin.getSortConfig();
+        const sortConfig = Array.isArray(currentSortConfig)
+          ? currentSortConfig.slice()
+          : [currentSortConfig];
+        const index = sortConfig.findIndex((c) => c.column === visualCol);
 
-        if (existing === undefined) {
-          plugin.sort({ column: visualCol, sortOrder: 'asc' });
-        } else if (existing.sortOrder === 'asc') {
-          plugin.sort({ column: visualCol, sortOrder: 'desc' });
+        if (index === -1) {
+          sortConfig.push({ column: visualCol, sortOrder: 'asc' });
+        } else if (sortConfig[index].sortOrder === 'asc') {
+          sortConfig[index].sortOrder = 'desc';
         } else {
-          plugin.clearSort();
+          sortConfig.splice(index, 1);
         }
+        plugin.sort(sortConfig);
       };
     },
 
