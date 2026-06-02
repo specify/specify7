@@ -31,6 +31,7 @@
 .handsontable .colHeader.columnSorting {
   @apply inline-flex items-center gap-1 overflow-hidden whitespace-nowrap;
 
+  position: relative;
   min-width: 0;
   flex-wrap: nowrap;
   align-content: center;
@@ -48,8 +49,18 @@
 
 .handsontable .columnSorting.columnSorting.columnSorting.sortAction.ascending,
 .handsontable .columnSorting.columnSorting.columnSorting.sortAction.descending {
-  /* override handsontable's large padding when sorting direction is present */
+  /* Override handsontable's large padding when sorting direction is present */
   max-width: calc(100% + 1px) !important;
+}
+
+.handsontable th .colHeader.columnSorting > span {
+  /* Disable column dragging when click on header title... */
+  pointer-events: none;
+}
+
+.handsontable th .columnSorting {
+  /* ...and enable column sorting when clicking on header title */
+  pointer-events: auto;
 }
 
 /* Sorting priority index */

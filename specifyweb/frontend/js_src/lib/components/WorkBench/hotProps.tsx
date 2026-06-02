@@ -86,7 +86,6 @@ export function useHotProps({
 
       return ReactDOMServer.renderToString(
         <ColumnHeader
-          physicalCol={physicalCol}
           columnName={columnName}
           isMapped={isMapped}
           tableName={tableName}
@@ -155,11 +154,7 @@ function ColumnHeader({
   readonly tableName: string | undefined;
 }): JSX.Element {
   return (
-    <button
-      type="button"
-      className="inline-flex w-full max-w-full min-w-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap text-clip align-middle border-0 bg-transparent p-0 text-inherit"
-      data-wb-header-label={physicalCol}
-    >
+    <span className="inline-flex w-full max-w-full min-w-0 items-center justify-center gap-1 overflow-hidden whitespace-nowrap text-clip align-middle border-0 bg-transparent p-0 text-inherit">
       {isMapped && tableName !== undefined ? (
         <TableIcon label={false} name={tableName} />
       ) : (
@@ -169,9 +164,7 @@ function ColumnHeader({
           className: `${tableIconUndefined.props.className} flex-shrink-0`,
         })
       )}
-      <span className="wb-header-name min-w-0 flex-1 text-center">
-        {columnName}
-      </span>
-    </button>
+      <span className="wb-header-name">{columnName}</span>
+    </span>
   );
 }

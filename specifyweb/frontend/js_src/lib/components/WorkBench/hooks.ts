@@ -179,33 +179,6 @@ export function useHotHooks({
 
     afterScrollHorizontally: () => scheduleVisibleColumnsAutoSize(),
 
-    afterGetColHeader: (visualCol, th) => {
-      const headerLabel = th.querySelector<HTMLButtonElement>(
-        'button[data-wb-header-label]'
-      );
-      if (headerLabel === null) return;
-
-      headerLabel.onclick = (_event) => {
-        if (workbench.hot === undefined) return;
-
-        const plugin = getHotPlugin(workbench.hot, 'multiColumnSorting');
-        const currentSortConfig = plugin.getSortConfig();
-        const sortConfig = Array.isArray(currentSortConfig)
-          ? currentSortConfig.slice()
-          : [currentSortConfig];
-        const index = sortConfig.findIndex((c) => c.column === visualCol);
-
-        if (index === -1) {
-          sortConfig.push({ column: visualCol, sortOrder: 'asc' });
-        } else if (sortConfig[index].sortOrder === 'asc') {
-          sortConfig[index].sortOrder = 'desc';
-        } else {
-          sortConfig.splice(index, 1);
-        }
-        plugin.sort(sortConfig);
-      };
-    },
-
     /*
      * After cell is rendered, we need to reApply metaData classes
      * NOTE:
