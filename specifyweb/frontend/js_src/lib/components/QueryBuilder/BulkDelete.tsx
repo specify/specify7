@@ -22,23 +22,23 @@ export function QueryBulkDelete({
   readonly onDeleted: (recordIds: RA<number>) => void;
   readonly recordIds: () => RA<number>;
 }): JSX.Element {
-  const [isShowingWarning, showWarning, hideWarning, _] =
+  const [isOpen, handleOpen, handleClose, _] =
     useBooleanState(false);
 
   return (
     <>
       <Button.Small
         disabled={totalCount === undefined || totalCount === 0}
-        onClick={showWarning}
+        onClick={handleOpen}
       >
         {queryText.bulkDelete()}
       </Button.Small>
-      {isShowingWarning ? (
+      {isOpen ? (
         <BulkDeletionDialog
           recordIds={recordIds}
           table={table}
           onClose={(): void => {
-            hideWarning();
+            handleClose();
           }}
           onDeleted={onDeleted}
         />
@@ -65,11 +65,11 @@ export function BulkDeletionDialog({
     setRecordIdList(recordIds());
   }, [recordIds]);
 
-  const [isShowingConfirmation, showConfirmation, hideConfirmation, _] =
+  const [isWarningOpen, openWarning, closeWarning, _] =
     useBooleanState(false);
 
   const handleClick = (): void => {
-    hideConfirmation();
+    closeWarning();
     onClose();
     loading(
       ping(`/bulk_copy/bulk_delete/${table.name}/`, {
@@ -92,7 +92,7 @@ export function BulkDeletionDialog({
         buttons={
           <>
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Button.Danger onClick={showConfirmation}>
+            <Button.Danger onClick={openWarning}>
               {commonText.delete()}
             </Button.Danger>
           </>
@@ -108,7 +108,7 @@ export function BulkDeletionDialog({
         </div>
       </Dialog>
       {
-        isShowingConfirmation ?
+        isWarningOpen ?
         (
           <Dialog
             buttons={
