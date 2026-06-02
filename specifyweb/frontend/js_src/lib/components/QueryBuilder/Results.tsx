@@ -205,7 +205,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         deletingRef.current.add(recordId);
 
         let removeCount = 0;
-        function newResults(results: RA<QueryResultRow | undefined> | undefined) {
+        function newResults(
+          results: RA<QueryResultRow | undefined> | undefined
+        ) {
           if (!Array.isArray(results) || totalCount === undefined) return;
           const newResults = results.filter(
             (result) => result?.[queryIdField] !== recordId
@@ -214,7 +216,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           if (resultsRef !== undefined) resultsRef.current = newResults;
           return newResults;
         }
-        filteredResults = (newResults(filteredResults));
+        filteredResults = newResults(filteredResults);
         totalRemoveCount = totalRemoveCount - removeCount;
         // Delete deletingRef if no records are able to be removed
         if (removeCount === 0) {
@@ -230,7 +232,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           : Math.max(0, totalCount - totalRemoveCount)
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
-        new Set(Array.from(selectedRows).filter((id) => recordIds.includes(id)));
+        new Set(
+          Array.from(selectedRows).filter((id) => recordIds.includes(id))
+        );
       setSelectedRows(newSelectedRows(selectedRows));
     },
     [setResults, setTotalCount, totalCount]
