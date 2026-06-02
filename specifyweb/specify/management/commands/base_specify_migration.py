@@ -37,18 +37,7 @@ class Command(BaseCommand):
         conn = connections[alias]
         with transaction.atomic(using=alias):
             with conn.cursor() as cursor:
-                # Check django table
-                try:
-                    cursor.execute("""
-                        SELECT 1
-                        FROM django_migrations
-                        LIMIT 1;
-                    """)
-                    exists = True
-                except:
-                    exists = False
-                
-                if not exists:
+                if "django_migrations" not in conn.introspection.table_names(cursor):
                     # Check if the django_migrations table exists and create it if it doesn't
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS `django_migrations` (
