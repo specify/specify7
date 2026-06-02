@@ -5,15 +5,13 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import type { Tables } from '../DataModel/types';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
-import { TableResults } from '../WorkBench/Results';
+import { TableResults, TableRecordCounts } from '../WorkBench/Results';
 import type { RecordCounts } from '../WorkBench/WbValidation';
 import type { WbStatus } from '../WorkBench/WbView';
 
@@ -156,17 +154,10 @@ export function WbUpload({
                   <p className="text-sm font-medium">
                     {wbText.recordsCreated()}
                   </p>
-                  <ul className="flex flex-col gap-1">
-                    {Object.entries(recordCounts.Uploaded as RR<keyof Tables, number>)
-                      .sort(([, a], [, b]) => b - a)
-                      .map(([tableName, count]) => (
-                        <TableResults
-                          key={tableName}
-                          recordCount={count}
-                          tableName={tableName as Lowercase<keyof Tables>}
-                        />
-                      ))}
-                  </ul>
+                  <TableRecordCounts
+                    recordCounts={recordCounts.Uploaded}
+                    sortFunction={([, recordCount]) => -(recordCount ?? 0)}
+                  />
                 </div>
               )}
           </div>

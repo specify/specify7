@@ -4,7 +4,6 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
-import type { RR } from '../../utils/types';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
@@ -14,11 +13,10 @@ import { Dialog } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
-import type { Tables } from '../DataModel/types';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
-import { TableResults } from '../WorkBench/Results';
+import { TableRecordCounts } from '../WorkBench/Results';
 import { WbStatus as WbStatusComponent } from '../WorkBench/Status';
 import type { WbStatus, Workbench } from '../WorkBench/WbView';
 import { WbNoUploadPlan } from './WbNoUploadPlan';
@@ -231,19 +229,10 @@ export function WbActions({
                   <p className="text-sm font-medium">
                     {wbText.recordsCreated()}
                   </p>
-                  <ul className="flex flex-col gap-1">
-                    {Object.entries(
-                      recordCounts.Uploaded as RR<keyof Tables, number>
-                    )
-                      .sort(([, a], [, b]) => b - a)
-                      .map(([tableName, count]) => (
-                        <TableResults
-                          key={tableName}
-                          recordCount={count}
-                          tableName={tableName as Lowercase<keyof Tables>}
-                        />
-                      ))}
-                  </ul>
+                  <TableRecordCounts
+                    recordCounts={recordCounts.Uploaded}
+                    sortFunction={([, recordCount]) => -(recordCount ?? 0)}
+                  />
                 </div>
               )}
           </div>
