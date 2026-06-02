@@ -96,6 +96,9 @@ export const operationPolicies = {
     'delete_dependents',
     'edit_multiple_tables',
   ],
+  '/record/bulk_delete': [
+    'delete',
+  ],
 } as const;
 
 /**
