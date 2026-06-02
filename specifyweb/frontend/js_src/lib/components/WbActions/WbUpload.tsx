@@ -5,12 +5,18 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import type { RR } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { formatNumber } from '../Atoms/Internationalization';
+import type { Tables } from '../DataModel/types';
+import { strictGetTable } from '../DataModel/tables';
+import { TableIcon } from '../Molecules/TableIcon';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
+import type { RecordCounts } from '../WorkBench/WbValidation';
 import type { WbStatus } from '../WorkBench/WbView';
 
 export function WbUpload({
@@ -20,6 +26,7 @@ export function WbUpload({
   startUpload,
   cellCounts,
   viewerLocalization,
+  recordCounts,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly mappings: WbMapping | undefined;
@@ -27,6 +34,7 @@ export function WbUpload({
   readonly startUpload: (mode: WbStatus) => void;
   readonly cellCounts: WbCellCounts;
   readonly viewerLocalization: WbVariantLocalization;
+  readonly recordCounts: RecordCounts;
 }): JSX.Element {
   const [showUpload, openUpload, closeUpload] = useBooleanState();
 
@@ -142,7 +150,32 @@ export function WbUpload({
           header={viewerLocalization.doStart}
           onClose={closeUpload}
         >
-          {viewerLocalization.doStartDescription}
+          <div className="flex flex-col gap-4">
+            <div>{viewerLocalization.doStartDescription}</div>
+            {recordCounts.Uploaded !== undefined &&
+              Object.keys(recordCounts.Uploaded).length > 0 && (
+                <div>
+                  <p className="text-sm font-medium">
+                    {wbText.recordsCreated()}
+                  </p>
+                  <ul className="flex flex-col gap-1">
+                    {Object.entries(recordCounts.Uploaded as RR<keyof Tables, number>)
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([tableName, count]) => (
+                        <li key={tableName} className="flex items-center gap-1">
+                          <TableIcon label={false} name={tableName as Lowercase<keyof Tables>} />
+                          <span>
+                            {commonText.colonLine({
+                              label: strictGetTable(tableName as Lowercase<keyof Tables>).label,
+                              value: formatNumber(count),
+                            })}
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+          </div>
         </Dialog>
       )}
     </>

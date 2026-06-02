@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import type { RR } from '../../utils/types';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
@@ -13,6 +14,10 @@ import { Dialog } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { Dataset, Status } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
+import { formatNumber } from '../Atoms/Internationalization';
+import { strictGetTable } from '../DataModel/tables';
+import type { Tables } from '../DataModel/types';
+import { TableIcon } from '../Molecules/TableIcon';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
@@ -78,6 +83,9 @@ export function WbActions({
 
   const isMapped = mappings !== undefined;
 
+  const recordCounts =
+    workbench.validation.uploadResults.recordCounts ?? {};
+
   const dataCheckInProgress = React.useMemo(
     () => workbench.validation.liveValidationStack.length > 0,
     [workbench.validation.liveValidationStack.length]
@@ -139,6 +147,7 @@ export function WbActions({
             hasUnsavedChanges={hasUnsavedChanges}
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
+            recordCounts={recordCounts}
             startUpload={startUpload}
             viewerLocalization={viewerLocalization}
           />
@@ -215,7 +224,40 @@ export function WbActions({
           header={message!.header}
           onClose={closeOperationCompleted}
         >
-          {message?.message}
+          <div className="flex flex-col gap-4">
+            <div>{message?.message}</div>
+            {cellCounts.invalidCells === 0 && mode === 'upload' &&
+              recordCounts.Uploaded !== undefined &&
+              Object.keys(recordCounts.Uploaded).length > 0 && (
+                <div>
+                  <p className="text-sm font-medium">
+                    {wbText.recordsCreated()}
+                  </p>
+                  <ul className="flex flex-col gap-1">
+                    {Object.entries(
+                      recordCounts.Uploaded as RR<keyof Tables, number>
+                    )
+                      .sort(([, a], [, b]) => b - a)
+                      .map(([tableName, count]) => (
+                        <li key={tableName} className="flex items-center gap-1">
+                          <TableIcon
+                            label={false}
+                            name={tableName as Lowercase<keyof Tables>}
+                          />
+                          <span>
+                            {commonText.colonLine({
+                              label: strictGetTable(
+                                tableName as Lowercase<keyof Tables>
+                              ).label,
+                              value: formatNumber(count),
+                            })}
+                          </span>
+                        </li>
+                      ))}
+                  </ul>
+                </div>
+              )}
+          </div>
         </Dialog>
       )}
       {operationAborted && (

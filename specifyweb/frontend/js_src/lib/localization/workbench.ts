@@ -391,19 +391,7 @@ export const wbText = createDictionary({
   },
   startUploadDescription: {
     'en-us':
-      'Uploading the Data Set will add the data to the Specify database.',
-    'ru-ru': 'Загрузка набора данных добавит данные в базу данных Specify.',
-    'es-es':
-      'Cargar el conjunto de datos agregará los datos a la base de datos de especificación.',
-    'fr-fr':
-      "Le téléchargement de l'ensemble de données ajoutera les données à la base de données Specify.",
-    'uk-ua': 'Завантаження набору даних додасть дані до бази даних Specify.',
-    'de-ch':
-      'Durch das Hochladen des Datensatzes werden die Daten der Specify-Datenbank hinzugefügt.',
-    'pt-br':
-      'O carregamento do conjunto de dados adicionará os dados ao banco de dados especificado.',
-    'hr-hr':
-      'Prijenosom skupa podataka podaci će se dodati u bazu podataka Specify.',
+      'Uploading this will add all records in the Data Set to your database. Make sure you have validated your data and are ready to upload before confirming!',
   },
   deleteDataSet: {
     'en-us': 'Delete this Data Set?',
@@ -546,21 +534,7 @@ export const wbText = createDictionary({
   },
   validationNoErrorsDescription: {
     'en-us':
-      'Validation found no errors, it is ready to be uploaded into the database.',
-    'ru-ru':
-      'Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу данных.',
-    'es-es':
-      'La validación no encontró errores, está listo para ser cargado en la base de datos.',
-    'fr-fr':
-      "La validation n'a trouvé aucune erreur, elle est prête à être téléchargée dans la base de données.",
-    'uk-ua':
-      'Перевірка не виявила помилок, вона готова до завантаження в базу даних.',
-    'de-ch':
-      'Bei der Validierung wurden keine Fehler festgestellt, die Datei kann nun in die Datenbank hochgeladen werden.',
-    'pt-br':
-      'A validação não encontrou erros, o arquivo está pronto para ser carregado no banco de dados.',
-    'hr-hr':
-      'Validacija nije pronašla greške, spremno je za učitavanje u bazu podataka.',
+      'Validation found no errors! Your Data Set is ready to be uploaded. Make sure to review the validation results.',
   },
   validationReEditWarning: {
     'en-us':
@@ -1702,24 +1676,10 @@ export const wbText = createDictionary({
     'hr-hr': 'Broj novih zapisa na koje bi to utjecalo u svakoj tablici:',
   },
   recordsCreated: {
-    'en-us': 'Records created',
-    'de-ch': 'Datensätze erstellt',
-    'es-es': 'Registros creados',
-    'fr-fr': 'Enregistrements créés',
-    'pt-br': 'Registros criados',
-    'ru-ru': 'Созданы записи',
-    'uk-ua': 'Створені записи',
-    'hr-hr': 'Stvoreni zapisi',
+    'en-us': 'New records',
   },
   recordsUpdated: {
-    'en-us': 'Records updated',
-    'de-ch': 'Datensätze aktualisiert',
-    'es-es': 'Registros actualizados',
-    'fr-fr': 'Mise à jour des enregistrements',
-    'pt-br': 'Registros atualizados',
-    'ru-ru': 'Записи обновлены.',
-    'uk-ua': 'Записи оновлено',
-    'hr-hr': 'Zapisi ažurirani',
+    'en-us': 'Updated records',
   },
   recordsDeleted: {
     'en-us': 'Records deleted (not including dependents)',
