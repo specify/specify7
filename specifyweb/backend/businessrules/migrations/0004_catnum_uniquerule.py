@@ -1,42 +1,57 @@
 from django.db import migrations
 
-from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable, catnum_rule_uneditable
+from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import create_uniqueness_rule
 
 
-def catnum_rule_editable(apps, schema_editor):
-    UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
-    UniquenessRuleField = apps.get_model('businessrules', 'UniquenessRuleField')
-
-    candidate_rules_with_field: tuple[int] = tuple(UniquenessRuleField.objects.filter(uniquenessrule__modelName__iexact='collectionobject', uniquenessrule__isDatabaseConstraint=True, fieldPath__iexact='catalognumber', isScope=False).values_list('uniquenessrule_id', flat=True))
-
-    candidate_rules_with_scope: tuple[int] = tuple(UniquenessRuleField.objects.filter(uniquenessrule_id__in=candidate_rules_with_field, fieldPath__iexact='collection', isScope=True).values_list('uniquenessrule_id', flat=True))
-
-    candidate_rules = UniquenessRule.objects.filter(id__in=candidate_rules_with_scope)
-    candidate_rules.update(isDatabaseConstraint=False)
-
 def catnum_rule_uneditable(apps, schema_editor):
-    Discipline = apps.get_model('specify', 'Discipline')
-    UniquenessRule = apps.get_model('businessrules', 'UniquenessRule')
-    UniquenessRuleField = apps.get_model('businessrules', 'UniquenessRuleField')
+    """ Find any CollectionObject catalogNumber must be unique to Collection
+    rules which are editable on the frontend (have isDatabaseConstraint=False)
+    and set their isDatabaseConstraint=True.
+
+    Generally should be run when migration businessrules/0003 is being reverted
+    """
+    Discipline = apps.get_model("specify", "Discipline")
+    UniquenessRule = apps.get_model("businessrules", "UniquenessRule")
 
     for discipline in Discipline.objects.all():
-        candidate_rules_with_field: tuple[int] = tuple(UniquenessRuleField.objects.filter(uniquenessrule__modelName__iexact='collectionobject', uniquenessrule__discipline=discipline.id, uniquenessrule__isDatabaseConstraint=False, fieldPath__iexact='catalognumber', isScope=False).values_list('uniquenessrule_id', flat=True))
+        # REFACTOR: Some of these queries should be able to be combined to
+        # improve performance and limit how often we need to hit the database
+        model_rules = UniquenessRule.objects.filter(
+            modelName="Collectionobject",
+            discipline_id=discipline.id,
+            isDatabaseConstraint=False
+        )
 
-        candidate_rules_with_scope: tuple[int] = tuple(UniquenessRuleField.objects.filter(uniquenessrule_id__in=candidate_rules_with_field, fieldPath__iexact='collection', isScope=True).values_list('uniquenessrule_id', flat=True))
+        has_catalognumber_rule = False
+        matching_rule_ids: list[int] = []
+        for rule in model_rules:
+            rule_fields = rule.uniquenessrulefield_set.all()
 
-        candidate_rules = UniquenessRule.objects.filter(id__in=candidate_rules_with_scope)
-        if len(candidate_rules) == 0: 
+            fields = rule_fields.filter(isScope=False)
+            scopes = rule_fields.filter(isScope=True)
+
+            # We're only interested in the rule "CollectionObject catalogNumber
+            # must be unique to Collection"
+            # We check for length of fields and scopes because get() raises an
+            # exception if more than one result is returned
+            if (len(fields) == 1 and len(scopes) == 1) and (fields.get().fieldPath.lower() == "catalognumber" and scopes.get().fieldPath.lower() == "collection"):
+                has_catalognumber_rule = True
+                matching_rule_ids.append(rule.id)
+
+        if has_catalognumber_rule:
+            UniquenessRule.objects.filter(
+                id__in=matching_rule_ids).update(isDatabaseConstraint=True)
+        else:
             create_uniqueness_rule(
-                model_name='Collectionobject',
+                model_name="Collectionobject",
                 discipline=discipline,
                 is_database_constraint=True,
-                fields=['catalogNumber'],
-                scopes=['collection'],
-                registry=apps
+                fields=["catalogNumber"],
+                scopes=["collection"],
+                registry=apps,
             )
-        else: 
-            candidate_rules.update(isDatabaseConstraint=True)
+
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -44,5 +59,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(catnum_rule_editable, catnum_rule_uneditable, atomic=True)
+        migrations.RunPython(catnum_rule_editable,
+                             catnum_rule_uneditable, atomic=True)
     ]
