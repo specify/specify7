@@ -15,7 +15,7 @@ pip_requirements:
 	$(PIP) install --upgrade -r requirements.txt
 
 django_migrations:
-	$(PYTHON) manage.py base_specify_migration --database=migrations
+	$(PYTHON) manage.py base_specify_migration --use-override --database=migrations
 	$(PYTHON) manage.py migrate --database=migrations
 
 specifyweb/settings/build_version.py: .FORCE
