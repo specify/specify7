@@ -222,17 +222,38 @@ export function WbActions({
           <div className="flex flex-col gap-4">
             <div>{message?.message}</div>
             {cellCounts.invalidCells === 0 &&
-              mode === 'upload' &&
-              recordCounts.Uploaded !== undefined &&
-              Object.keys(recordCounts.Uploaded).length > 0 && (
-                <div>
-                  <p className="text-sm font-medium">
-                    {wbText.recordsCreated()}
-                  </p>
-                  <TableRecordCounts
-                    recordCounts={recordCounts.Uploaded}
-                    sortFunction={([, recordCount]) => -(recordCount ?? 0)}
-                  />
+              (mode === 'validate' || mode === 'upload') &&
+              Object.keys(recordCounts).some(
+                (key) =>
+                  recordCounts[key as keyof typeof recordCounts] !== undefined &&
+                  Object.keys(
+                    recordCounts[key as keyof typeof recordCounts] ?? {}
+                  ).length > 0
+              ) && (
+                <div className="flex flex-col gap-2">
+                  {Object.entries(recordCounts).map(
+                    ([resultType, recordsPerType]) =>
+                      recordsPerType !== undefined &&
+                      Object.keys(recordsPerType).length > 0 ? (
+                        <div key={resultType}>
+                          <p className="text-sm font-medium">
+                            {resultType === 'Uploaded'
+                              ? wbText.recordsCreated()
+                              : resultType === 'Updated'
+                                ? wbText.recordsUpdated()
+                                : resultType === 'Deleted'
+                                  ? wbText.recordsDeleted()
+                                  : wbText.recordsMatchedAndChanged()}
+                          </p>
+                          <TableRecordCounts
+                            recordCounts={recordsPerType}
+                            sortFunction={([, recordCount]) =>
+                              -(recordCount ?? 0)
+                            }
+                          />
+                        </div>
+                      ) : null
+                  )}
                 </div>
               )}
           </div>

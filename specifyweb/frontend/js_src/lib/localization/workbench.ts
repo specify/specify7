@@ -70,7 +70,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Prenesi',
   },
   rollingBack: {
-    'en-us': 'Rolling Back…',
+    'en-us': 'Rolling back',
     'ru-ru': 'Откат',
     'es-es': 'Retrocediendo',
     'fr-fr': 'Retour en arrière',
@@ -390,21 +390,7 @@ export const wbText = createDictionary({
   },
   startUploadDescription: {
     'en-us':
-      'Uploading this will add all records in the Data Set to your database. Make sure you have validated your data and are ready to upload before confirming!',
-    'ru-ru':
-      'Загрузка добавит все записи из набора данных в вашу базу данных. Убедитесь, что вы проверили данные и готовы к загрузке перед подтверждением!',
-    'es-es':
-      'La carga añadirá todos los registros del Conjunto de Datos a su base de datos. ¡Asegúrese de haber validado los datos y estar listo para cargar antes de confirmar!',
-    'fr-fr':
-      "Le téléchargement ajoutera tous les enregistrements de l'ensemble de données à votre base de données. Assurez-vous d'avoir validé vos données et d'être prêt à les télécharger avant de confirmer !",
-    'uk-ua':
-      'Завантаження додасть усі записи з набору даних до вашої бази даних. Перед підтвердженням переконайтеся, що ви перевірили дані та готові до завантаження!',
-    'de-ch':
-      'Durch das Hochladen werden alle Datensätze des Datensatzes zu Ihrer Datenbank hinzugefügt. Stellen Sie sicher, dass Sie Ihre Daten validiert haben und zum Hochladen bereit sind, bevor Sie den Vorgang bestätigen!',
-    'pt-br':
-      'O upload adicionará todos os registros do Conjunto de Dados ao seu banco de dados. Certifique-se de ter validado seus dados e estar pronto para fazer o upload antes de confirmar!',
-    'hr-hr':
-      'Prijenos će dodati sve zapise iz skupa podataka u vašu bazu podataka. Prije potvrde provjerite jeste li validirali podatke i spremni za prijenos!',
+      'Uploading this will add all new records in this Data Set to your database.',
   },
   deleteDataSet: {
     'en-us': 'Delete this Data Set?',
@@ -547,21 +533,7 @@ export const wbText = createDictionary({
   },
   validationNoErrorsDescription: {
     'en-us':
-      'Validation found no errors! Your Data Set is ready to be uploaded. Make sure to review the validation results.',
-    'ru-ru':
-      'Проверка не обнаружила ошибок! Ваш набор данных готов к загрузке. Обязательно просмотрите результаты проверки.',
-    'es-es':
-      '¡La validación no encontró errores! Su Conjunto de Datos está listo para ser cargado. Asegúrese de revisar los resultados de la validación.',
-    'fr-fr':
-      "La validation n'a trouvé aucune erreur ! Votre ensemble de données est prêt à être téléchargé. Assurez-vous de consulter les résultats de la validation.",
-    'uk-ua':
-      'Перевірка не виявила помилок! Ваш набір даних готовий до завантаження. Обовʼязково перегляньте результати перевірки.',
-    'de-ch':
-      'Bei der Validierung wurden keine Fehler gefunden! Ihr Datensatz kann nun hochgeladen werden. Überprüfen Sie unbedingt die Validierungsergebnisse.',
-    'pt-br':
-      'A validação não encontrou erros! Seu Conjunto de Dados está pronto para ser carregado. Certifique-se de revisar os resultados da validação.',
-    'hr-hr':
-      'Validacija nije pronašla pogreške! Vaš skup podataka spreman je za prijenos. Obavezno pregledajte rezultate validacije.',
+      'The validation process found no errors. Your Data Set is ready to be imported.',
   },
   validationReEditWarning: {
     'en-us':
@@ -630,15 +602,7 @@ export const wbText = createDictionary({
       'Vaši podaci su preneseni u bazu podataka. Da biste vidjeli broj novih zapisa dodanih svakoj tablici, kliknite "Rezultati" na alatnoj traci iznad rešetke podataka.',
   },
   saveAsRecordSet: {
-    'en-us': 'Save uploaded records as a Record Set',
-    'ru-ru': 'Сохранить загруженные записи как набор записей',
-    'es-es': 'Guardar registros cargados como un Conjunto de Registros',
-    'fr-fr':
-      "Enregistrer les enregistrements téléchargés comme un ensemble d'enregistrements",
-    'uk-ua': 'Зберегти завантажені записи як набір записів',
-    'de-ch': 'Hochgeladene Datensätze als Record Set speichern',
-    'pt-br': 'Salvar registros enviados como um Conjunto de Registros',
-    'hr-hr': 'Spremi prenesene zapise kao skup zapisa',
+    'en-us': 'Save uploaded records as a {recordSetTable:string}',
   },
   uploadErrors: {
     'en-us': 'Upload Failed Due to Error Cells',
@@ -696,7 +660,7 @@ export const wbText = createDictionary({
   },
   dataSetRollbackDescription: {
     'en-us':
-      'This Rolledback Data Set is saved, and can be edited or re-uploaded.',
+      'This Data Set has been successfully rolled back, and can be edited or re-uploaded.',
     'ru-ru':
       'Этот откаченный набор данных сохранен и может быть отредактирован или повторно загружен.',
     'es-es':

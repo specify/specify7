@@ -14,6 +14,7 @@ import {
 } from '../Permissions/PermissionDenied';
 import { unsafeNavigate } from '../Router/Router';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
+import { queryText } from '../../localization/query';
 
 export function CreateRecordSetButton({
   datasetId,
@@ -39,7 +40,9 @@ export function CreateRecordSetButton({
     >
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
-          {wbText.saveAsRecordSet()}
+          {queryText.saveAsRecordSet({
+            recordSetTable: tables.RecordSet.label,
+          })}
         </ButtonComponent>
         {isOpen && (
           <CreateRecordSetDialog
