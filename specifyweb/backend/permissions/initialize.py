@@ -32,6 +32,16 @@ def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     return UserRole.objects.filter(specifyuser=user).exists() or \
         UserPolicy.objects.filter(specifyuser=user).exists()
 
+def has_sp6_permissions_tables() -> bool:
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT COUNT(*)
+            FROM information_schema.tables
+            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
+            AND table_schema = DATABASE();
+        """)
+        return cursor.fetchone()[0] == 2
+
 def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
@@ -84,34 +94,38 @@ def assign_users_to_roles(apps=apps) -> None:
         "Guest": "Read Only - Legacy",
     }
 
-    cursor = connection.cursor()
-    cursor.execute("""
-        SELECT
-            u.SpecifyUserID as user_id,
-            u.Name as user_name,
-            u.UserType as user_type,
-            p.usergroupscopeid as collection_id,
-            c.CollectionName as collection_name
-        FROM specifyuser u
-        JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
-        JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
-        JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
-        WHERE p.groupType IS NULL
-        AND u.SpecifyUserID NOT IN (
-            SELECT ur.specifyuser_id
-            FROM spuserrole ur 
-            JOIN sprole r ON r.id = ur.role_id 
-            WHERE r.collection_id = p.usergroupscopeid
-        )
-        AND c.UserGroupScopeId NOT IN (
-            SELECT DISTINCT r.collection_id
-            FROM spuserrole ur 
-            JOIN sprole r ON r.id = ur.role_id
-            JOIN collection c ON c.UserGroupScopeId = r.collection_id
-        );
-    """)
+    results = []
+    if not has_sp6_permissions_tables():
+        return # Newly created sp7 databases don't have these sp6 specific tables.
 
-    results = cursor.fetchall()
+    with connection.cursor() as cursor:
+        cursor.execute("""
+            SELECT
+                u.SpecifyUserID as user_id,
+                u.Name as user_name,
+                u.UserType as user_type,
+                p.usergroupscopeid as collection_id,
+                c.CollectionName as collection_name
+            FROM specifyuser u
+            JOIN specifyuser_spprincipal up ON up.SpecifyUserID = u.SpecifyUserID
+            JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
+            JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
+            WHERE p.groupType IS NULL
+            AND u.SpecifyUserID NOT IN (
+                SELECT ur.specifyuser_id
+                FROM spuserrole ur 
+                JOIN sprole r ON r.id = ur.role_id 
+                WHERE r.collection_id = p.usergroupscopeid
+            )
+            AND c.UserGroupScopeId NOT IN (
+                SELECT DISTINCT r.collection_id
+                FROM spuserrole ur 
+                JOIN sprole r ON r.id = ur.role_id
+                JOIN collection c ON c.UserGroupScopeId = r.collection_id
+            );
+        """)
+
+        results = cursor.fetchall()
     
     for user_id, user_name, user_type, collection_id, collection_name in results:
         if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
@@ -150,7 +164,6 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     Agent = apps.get_model('specify', 'Agent')
 
-    cursor = connection.cursor()
     for user in Specifyuser.objects.all():
         for collection in Collection.objects.all():
             if user.usertype == 'Manager':
@@ -160,16 +173,21 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
             if user.usertype in ('LimitedAccess', 'Guest'):
                 user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
 
-        for colid, _ in users_collections_for_sp6(cursor, user.id):
-            # Does the user has an agent for the collection?
-            if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
-                # Give them access to the collection.
-                UserPolicy.objects.create(
-                    collection_id=colid,
-                    specifyuser_id=user.id,
-                    resource=CollectionAccessPT.access.resource(),
-                    action=CollectionAccessPT.access.action(),
-                )
+    if not has_sp6_permissions_tables():
+        return
+
+    with connection.cursor() as cursor:
+        for user in Specifyuser.objects.all():
+            for colid, _ in users_collections_for_sp6(cursor, user.id):
+                # Does the user has an agent for the collection?
+                if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
+                    # Give them access to the collection.
+                    UserPolicy.objects.create(
+                        collection_id=colid,
+                        specifyuser_id=user.id,
+                        resource=CollectionAccessPT.access.resource(),
+                        action=CollectionAccessPT.access.action(),
+                    )
 
 def create_roles(apps = apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
