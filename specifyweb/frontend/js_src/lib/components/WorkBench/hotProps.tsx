@@ -143,12 +143,10 @@ export function useHotProps({
 }
 
 function ColumnHeader({
-  physicalCol,
   isMapped,
   columnName,
   tableName,
 }: {
-  readonly physicalCol: number;
   readonly isMapped: boolean;
   readonly columnName: string;
   readonly tableName: string | undefined;
