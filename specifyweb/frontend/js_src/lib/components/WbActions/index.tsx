@@ -362,7 +362,6 @@ function getMessage(
               <>
                 {wbText.validationNoErrorsDescription()}
                 <br />
-                <br />
                 {wbText.validationReEditWarning()}
               </>
             ),

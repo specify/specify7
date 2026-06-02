@@ -362,7 +362,7 @@ export const wbText = createDictionary({
   },
   beginRollbackDescription: {
     'en-us':
-      'Rolling back will remove the new data records this Data Set added to the Specify database. The entire rollback will be cancelled if any of the uploaded data have been referenced (re-used) by other data records since they were uploaded.',
+      'Rolling back will remove the new data records this data set added to the Specify database. The entire rollback will be cancelled if any of the uploaded data have been referenced (re-used) by other data records since they were uploaded.',
     'ru-ru':
       'Откат удалит новые записи данных, которые этот набор данных добавил в базу данных Specify. Весь откат будет отменен, если на загруженные данные ссылаются другие записи данных с момента их загрузки.',
     'es-es':
@@ -390,10 +390,10 @@ export const wbText = createDictionary({
   },
   startUploadDescription: {
     'en-us':
-      'Uploading this will add all new records in this Data Set to your database.',
+      'Uploading this will add all new records in this data set to your database.',
   },
   deleteDataSet: {
-    'en-us': 'Delete this Data Set?',
+    'en-us': 'Delete this data set?',
     'ru-ru': 'Удалить этот набор данных?',
     'es-es': '¿Eliminar este conjunto de datos?',
     'fr-fr': 'Supprimer cet ensemble de données ?',
@@ -404,7 +404,7 @@ export const wbText = createDictionary({
   },
   deleteDataSetDescription: {
     'en-us':
-      'Deleting a Data Set permanently removes it and its Upload Plan. Data mappings will no longer be available for re-use with other Data Sets. Also after deleting, Rollback will no longer be an option for an uploaded Data Set.',
+      'Deleting a data set permanently removes it and its upload plan. This mapping will no longer be available for re-use with other data sets. Once deleted, rollback will no longer be an option.',
     'ru-ru':
       'Удаление набора данных приводит к безвозвратному удалению его и его плана загрузки. План загрузки не будет доступным для повторного использования; откат больше не будет возможным для загруженного набора данных.',
     'es-es':
@@ -421,7 +421,7 @@ export const wbText = createDictionary({
       'Trajnim brisanjem skupa podataka uklanja se on i njegov plan prijenosa. Mapiranje podataka više neće biti dostupno za ponovnu upotrebu s drugim skupovima podataka. Također, nakon brisanja, vraćanje na prethodno stanje više neće biti opcija za preneseni skup podataka.',
   },
   dataSetDeleted: {
-    'en-us': 'Data Set successfully deleted',
+    'en-us': 'Data set successfully deleted',
     'ru-ru': 'Набор данных успешно удален',
     'es-es': 'Conjunto de datos eliminado con éxito',
     'fr-fr': 'Ensemble de données supprimé avec succès',
@@ -429,16 +429,6 @@ export const wbText = createDictionary({
     'de-ch': 'Datensatz erfolgreich gelöscht',
     'pt-br': 'Conjunto de dados excluído com sucesso',
     'hr-hr': 'Skup podataka uspješno izbrisan',
-  },
-  dataSetDeletedDescription: {
-    'en-us': 'Data Set successfully deleted.',
-    'ru-ru': 'Набор данных успешно удален.',
-    'es-es': 'Conjunto de datos eliminado con éxito.',
-    'fr-fr': 'Ensemble de données supprimé avec succès.',
-    'uk-ua': 'Набір даних успішно видалено.',
-    'de-ch': 'Datensatz erfolgreich gelöscht.',
-    'pt-br': 'Conjunto de dados excluído com sucesso.',
-    'hr-hr': 'Skup podataka uspješno izbrisan.',
   },
   revertChanges: {
     'en-us': 'Revert Unsaved Changes?',
@@ -452,7 +442,7 @@ export const wbText = createDictionary({
   },
   revertChangesDescription: {
     'en-us':
-      'This action will discard all changes made to the Data Set since the last Save.',
+      'This action will discard all changes made to the data set since the last save.',
     'ru-ru':
       'Это действие приведет к отмене всех изменений, внесенных в набор данных с момента последнего сохранения.',
     'es-es':
@@ -479,7 +469,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Spremanje...',
   },
   wbUnloadProtect: {
-    'en-us': 'Changes to this Data Set have not been Saved.',
+    'en-us': 'Changes to this data set have not been saved.',
     'ru-ru': 'Изменения в этом наборе данных не были сохранены.',
     'es-es': 'Los cambios a este conjunto de datos no se han guardado.',
     'fr-fr':
@@ -533,11 +523,11 @@ export const wbText = createDictionary({
   },
   validationNoErrorsDescription: {
     'en-us':
-      'The validation process found no errors. Your Data Set is ready to be imported.',
+      'The validation process found no errors. Your data set is ready to be imported.',
   },
   validationReEditWarning: {
     'en-us':
-      'Note: If this Data Set is edited and re-saved, Validate should be re-run prior to Uploading to verify that no errors have been introduced.',
+      'If this data set is edited, make sure to validate before uploading.',
     'ru-ru':
       'Примечание: Если этот набор данных отредактирован и повторно сохранен, необходимо заново запустить проверку перед загрузкой, чтобы убедиться, что ошибки не были внесены.',
     'es-es':
@@ -632,7 +622,7 @@ export const wbText = createDictionary({
   },
   uploadErrorsSecondDescription: {
     'en-us':
-      'Validate the Data Set and review the mouseover hints for each error cell, then make the appropriate corrections. Save and retry the {type:string}.',
+      'Validate the data set and review the mouseover hints for each error cell, then make the appropriate corrections. Save and retry the {type:string}.',
     'de-ch':
       'Überprüfen Sie den Datensatz und die Mauszeigerhinweise für jede Fehlerzelle. Nehmen Sie anschließend die entsprechenden Korrekturen vor. Speichern Sie die Daten und versuchen Sie es erneut mit {type:string}.',
     'es-es':
@@ -649,7 +639,7 @@ export const wbText = createDictionary({
       'Validirajte skup podataka i pregledajte natuknice za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
   },
   dataSetRollback: {
-    'en-us': 'Data Set was rolled back successfully',
+    'en-us': 'Data set was rolled back successfully',
     'ru-ru': 'Набор данных был успешно откачен',
     'es-es': 'El conjunto de datos se revirtió con éxito',
     'fr-fr': "L'ensemble de données a été restauré avec succès",
@@ -660,7 +650,7 @@ export const wbText = createDictionary({
   },
   dataSetRollbackDescription: {
     'en-us':
-      'This Data Set has been successfully rolled back, and can be edited or re-uploaded.',
+      'This data set has been successfully rolled back, and can be edited or re-uploaded.',
     'ru-ru':
       'Этот откаченный набор данных сохранен и может быть отредактирован или повторно загружен.',
     'es-es':
@@ -782,7 +772,7 @@ export const wbText = createDictionary({
   },
   wbValidateUnavailable: {
     'en-us':
-      'An Upload Plan needs to be defined before this Data Set can be Validated',
+      'An upload plan needs to be defined before this data set can be validated',
     'ru-ru':
       'План загрузки должен быть определен до того, как этот набор данных может быть проверен',
     'es-es':
@@ -866,7 +856,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Ovaj alat zahtijeva mapiranje stupaca lokaliteta',
   },
   unavailableWhenUploaded: {
-    'en-us': 'This tool does not work with uploaded Data Sets',
+    'en-us': 'This tool does not work with uploaded data sets',
     'ru-ru': 'Этот инструмент не работает с загруженными наборами данных',
     'es-es': 'Esta herramienta no funciona con Conjuntos de Datos cargados',
     'fr-fr':
@@ -877,7 +867,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Ovaj alat ne radi s prenesenim skupovima podataka',
   },
   dataSetDeletedOrNotFound: {
-    'en-us': 'Data Set was deleted by another session.',
+    'en-us': 'This data set was deleted by another session.',
     'ru-ru': 'Набор данных был удален другим сеансом.',
     'es-es': 'Otra sesión ha eliminado el conjunto de datos.',
     'fr-fr': "L'ensemble de données a été supprimé par une autre session.",
@@ -1242,7 +1232,7 @@ export const wbText = createDictionary({
     'hr-hr': '{variant:string} Skupovi podataka',
   },
   wbsDialogEmpty: {
-    'en-us': 'Currently no Data Sets exist.',
+    'en-us': 'Currently no data sets exist.',
     'ru-ru': 'В настоящее время наборов данных не существует.',
     'es-es': 'Actualmente no existen conjuntos de datos.',
     'fr-fr': "Actuellement, aucun ensemble de données n'existe.",
@@ -1484,7 +1474,7 @@ export const wbText = createDictionary({
       '{operationName:string} red {current:number|formatted}/{total:number|formatted}',
   },
   wbStatusPendingDescription: {
-    'en-us': '{operationName:string} of this Data Set should begin shortly.',
+    'en-us': '{operationName:string} of this data set should begin shortly.',
     'ru-ru':
       '{operationName:string} этого набора данных должно начаться в ближайшее время.',
     'es-es':
@@ -1502,7 +1492,7 @@ export const wbText = createDictionary({
   },
   wbStatusPendingSecondDescription: {
     'en-us':
-      'If this message persists for longer than 30 seconds, the {operationName:string} process is busy with another Data Set. Please try again later.',
+      'If this message persists for longer than 30 seconds, the {operationName:string} process is busy with another data set. Please try again later.',
     'ru-ru':
       'Если это сообщение отображается дольше 30 секунд, процесс {operationName:string} занят другим набором данных. Пожалуйста, попробуйте снова позже.',
     'es-es':
