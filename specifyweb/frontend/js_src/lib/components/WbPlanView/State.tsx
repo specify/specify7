@@ -14,7 +14,7 @@ import { ListOfBaseTables } from './Components';
 import type { UploadPlan } from './uploadPlanParser';
 import type { Dataset } from './Wrapped';
 
-function TemplateSelection({
+export function TemplateSelection({
   headers,
   onClose: handleClose,
   onSelect: handleSelect,
