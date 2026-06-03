@@ -501,7 +501,7 @@ export const wbPlanText = createDictionary({
   },
   goToBaseTableDescription: {
     'en-us':
-      'Choosing a different Base Table for a Data Set Upload will make that table the new starting point for column-to-data field mappings and will erase existing mappings. The AutoMapper will attempt to map columns to the new Base Table fields.',
+      'Choosing a different base table for a data set will make that table the new starting point for column-to-data field mappings and will erase existing mappings. The AutoMapper will attempt to map columns to the new base table fields.',
     'ru-ru':
       'Выбор другой базовой таблице для загрузки набора данных сделает ту таблицу новой отправной точкой для сопоставлений полей столбцов и данных и сотрет существующие сопоставления. AutoMapper попытается сопоставить столбцы в новые поля базовой таблицы.',
     'es-es':
