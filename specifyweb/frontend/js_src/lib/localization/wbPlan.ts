@@ -431,6 +431,14 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Mostrar todas as tabelas',
     'hr-hr': 'Prikaži sve tablice',
   },
+  baseTableDescription: {
+    'en-us':
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Every row in your data set will correspond to a new record in Specify in the base table you select.",
+  },
+  baseTableWithAttachmentsDescription: {
+    'en-us':
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Each imported attachment record will be added as a new row in the base table you select.",
+  },
   selectBaseTableWithAttachments: {
     'en-us': 'Select a Base Table with Attachments',
     'de-ch': 'Wählen Sie eine Basistabelle mit Anhängen aus',

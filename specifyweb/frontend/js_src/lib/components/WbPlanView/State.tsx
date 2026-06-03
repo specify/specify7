@@ -98,7 +98,7 @@ export function BaseTableSelection({
         </>
       }
       className={{
-        container: `${dialogClassNames.narrowContainer} h-1/2`,
+        container: `${dialogClassNames.normalContainer} !w-1/3 max-h-[90%]`,
       }}
       header={
         onlyAttachmentTables
@@ -107,6 +107,11 @@ export function BaseTableSelection({
       }
       onClose={handleClose}
     >
+      <p className="text-wrap mb-4">
+        {onlyAttachmentTables
+          ? wbPlanText.baseTableWithAttachmentsDescription()
+          : wbPlanText.baseTableDescription()}
+      </p>
       <ListOfBaseTables
         onlyAttachmentTables={onlyAttachmentTables}
         onClick={handleSelected}
