@@ -125,13 +125,22 @@ def fix_taxon_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     Taxontreedef = apps.get_model('specify', 'Taxontreedef')
 
-    empty_taxon_treedefs = Taxontreedef.objects.filter(discipline__isnull=True)
-    disciplines = Discipline.objects.all()
-    for empty_taxon_treedef in empty_taxon_treedefs:
-        for discipline in disciplines:
-            if discipline.taxontreedef_id == empty_taxon_treedef.id:
-                empty_taxon_treedef.discipline = discipline
-                empty_taxon_treedef.save()
+    # If a TaxonTreeDef has a NULL DisciplineID but there's a non-NULL
+    # Discipline pointing to the TaxonTreeDef via Discipline -> TaxonTreeDefID,
+    # then set the discipline on the TaxonTreeDef to the referencing Discipline
+    Taxontreedef.objects.filter(
+        discipline__isnull=True
+    ).update(
+        discipline=Subquery(
+            Discipline.objects.filter(
+                taxontreedef=OuterRef("pk")
+            ).order_by("pk").values("pk")[:1]
+        )
+    )
+
+    # BUG?: We're not handling the case here when Discipline has a NULL
+    # TaxonTreeDefID but there's a TaxonTreeDef pointing to the Discipline via
+    # TaxonTreeDef -> discipline
 
 def fix_tectonic_unit_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
