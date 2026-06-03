@@ -15,7 +15,6 @@ from specifyweb.backend.stored_queries.queryfield import fields_from_json
 from specifyweb.backend.stored_queries.execution import build_query
 from specifyweb.backend.stored_queries import models
 from specifyweb.specify.api.crud import get_model_or_404
-from specifyweb.specify.models import datamodel
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
