@@ -131,6 +131,8 @@ def assign_users_to_roles(apps=apps) -> None:
         results = cursor.fetchall()
     
     for user_id, user_name, user_type, collection_id, collection_name in results:
+        # REFACTOR: If we want to exlcude all other roles, why don't we write
+        # the exlcusion in the query rather than evaluate in Python?
         if user_type not in ROLE_NAMES.keys():
             continue
 
