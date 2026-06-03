@@ -123,9 +123,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   } = useFetchQueryResults(props);
 
   const canMergeTable = canMerge(table);
-  const canBulkDeleteTable =
-    hasPermission('/record/bulk_delete', 'delete') &&
-    hasTablePermission(table.name, 'delete');
 
   const visibleColumns = React.useMemo(
     () =>
@@ -218,7 +215,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           return newResults;
         }
         filteredResults = newResults(filteredResults);
-        totalRemoveCount = totalRemoveCount - removeCount;
+        totalRemoveCount = totalRemoveCount + removeCount;
         // Delete deletingRef if no records are able to be removed
         if (removeCount === 0) {
           deletingRef.current.delete(recordId);
@@ -239,7 +236,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       );
       const newSelectedRows = (selectedRows: ReadonlySet<number>) =>
         new Set(
-          Array.from(selectedRows).filter((id) => recordIds.includes(id))
+          Array.from(selectedRows).filter((id) => !recordIds.includes(id))
         );
       setSelectedRows(newSelectedRows(selectedRows));
     },
@@ -360,6 +357,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const isDistinct =
     typeof loadedResults?.[0]?.[0] === 'string' && loadedResults !== undefined;
   const metaColumns = (showLineNumber ? 1 : 0) + 2;
+
+  const canBulkDeleteTable =
+    hasPermission('/record/bulk_delete', 'delete') &&
+    hasTablePermission(table.name, 'delete') &&
+    !isDistinct;
 
   return (
     <Container.Base className="w-full !bg-[color:var(--form-background)]">
