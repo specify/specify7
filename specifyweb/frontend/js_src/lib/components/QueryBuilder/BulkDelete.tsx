@@ -53,6 +53,8 @@ export function QueryBulkDelete({
   );
 }
 
+import { Input } from '../Atoms/Form';
+
 export function BulkDeletionDialog({
   table,
   onDeleted,
@@ -86,6 +88,7 @@ export function BulkDeletionDialog({
 
   const [isWarningOpen, openWarning, closeWarning, _] =
     useBooleanState(false);
+  const [confirmationText, setConfirmationText] = React.useState<string>('');
 
   const handleClick = (): void => {
     closeWarning();
@@ -137,7 +140,10 @@ export function BulkDeletionDialog({
             buttons={
               <>
                 <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                <Button.Danger onClick={handleClick}>
+                <Button.Danger
+                  disabled={confirmationText !== totalDeleteCount.toString()}
+                  onClick={handleClick}
+                >
                   {formsText.bulkDeleteFinalConfirmationOption({ count: totalDeleteCount })}
                 </Button.Danger>
               </>
@@ -147,6 +153,11 @@ export function BulkDeletionDialog({
           >
             <div className="mb-4 flex flex-col gap-4">
               <section>{formsText.deleteConfirmationDescription()}</section>
+              <section>{formsText.bulkDeleteFinalConfirmationDescription()}</section>
+              <Input.Text
+                value={confirmationText}
+                onValueChange={setConfirmationText}
+              />
             </div>
           </Dialog>
         )
