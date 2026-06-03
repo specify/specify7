@@ -72,6 +72,14 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
     },
   },
   [headerText.administration()]: {
+    taskManager: {
+      title: headerText.taskManager(),
+      url: '/specify/overlay/task-manager/',
+      icon: icons.clock,
+      enabled: () =>
+        userInformation.isadmin ||
+        hasPermission('/task_manager', 'read'),
+    },
     resources: {
       title: resourcesText.appResources(),
       url: '/specify/resources/',

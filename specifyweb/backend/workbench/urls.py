@@ -1,6 +1,6 @@
 from django.urls import include, path, re_path
 
-from . import views
+from . import task_manager, views
 
 urlpatterns = [
     path('dataset/', views.datasets),
@@ -16,6 +16,9 @@ urlpatterns = [
     re_path(r'^validate_row/(?P<ds_id>\d+)/', views.validate_row),
     re_path(r'^transfer/(?P<ds_id>\d+)/', views.transfer),
     re_path(r'^create_recordset/(?P<ds_id>\d+)/', views.create_recordset),
+
+    re_path(r'^revoke/(?P<task_id>[a-f0-9-]+)/', task_manager.revoke_task),
+    path('tasks/', task_manager.list_tasks),
 
     path('schemas/', include([
         path('uploadplan/', views.up_schema),

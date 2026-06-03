@@ -77,6 +77,7 @@ export const operationPolicies = {
     'transfer',
     'create_recordset',
   ],
+  '/task_manager': ['read'],
   '/attachment_import/dataset': [
     'create',
     'update',
@@ -114,6 +115,7 @@ export const institutionPermissions = new Set([
   '/permissions/list_admins',
   '/report/record',
   '/export/backup',
+  '/task_manager',
 ]);
 
 /**

@@ -171,6 +171,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
           ),
       },
       {
+        path: 'task-manager',
+        title: headerText.taskManager(),
+        element: () =>
+          import('../TaskManager').then(
+            ({ TaskManagerOverlay }) => TaskManagerOverlay
+          ),
+      },
+      {
         path: 'tree-repair',
         title: headerText.repairTree(),
         element: () =>
