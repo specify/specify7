@@ -490,6 +490,15 @@ def rule_is_global(scopes: Iterable[str]) -> bool:
 
 
 def fix_global_default_rules(registry=None):
+    """
+    Removes UniquenessRules that are scoped to Discipline that already exist
+    globally.
+
+    There were historically cases where UniquenessRules were incorrectly
+    created in two places: globally and scoped to a particular discipline.
+
+    See https://github.com/specify/specify7/pull/6308#issuecomment-3247556491
+    """
     UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') \
         if registry \
         else models.UniquenessRule
@@ -508,25 +517,21 @@ def fix_global_default_rules(registry=None):
             ).prefetch_related("uniquenessrulefield_set")
         }
 
-    discipline_ids = (
-        UniquenessRule.objects.exclude(discipline__isnull=True)
-        .values_list("discipline_id", flat=True)
-        .distinct()
-    )
-
-    for discipline_id in discipline_ids:
-        with transaction.atomic():
-            for rule in UniquenessRule.objects.filter(
-                discipline_id=discipline_id
-            ).prefetch_related("uniquenessrulefield_set"):
-                signature = (
-                    rule.modelName,
-                    rule.isDatabaseConstraint,
-                    frozenset(
-                        (field.fieldPath, field.isScope)
-                        for field in rule.uniquenessrulefield_set.all()
-                    ),
-                )
-                if signature in global_rule_signatures:
-                        rule.uniquenessrulefield_set.all().delete()
-                        rule.delete()
+    with transaction.atomic():
+        # REFACTOR: See if we can simplify this even further. We should be able
+        # to collapse this query -> iteration -> check workflow to a single
+        # query.
+        # That would eliminate the N + 1 problem with this current approach,
+        # where every scoped rule needs to be evaluated.
+        for rule in UniquenessRule.objects.exclude(discipline__isnull=True).prefetch_related("uniquenessrulefield_set"):
+            signature = (
+                        rule.modelName,
+                        rule.isDatabaseConstraint,
+                        frozenset(
+                            (field.fieldPath, field.isScope)
+                            for field in rule.uniquenessrulefield_set.all()
+                        ),
+                    )
+            if signature in global_rule_signatures:
+                    rule.uniquenessrulefield_set.all().delete()
+                    rule.delete()
