@@ -262,13 +262,13 @@ fi
 
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM mysql.user WHERE user = '$APP_USER_NAME' AND host = '$APP_USER_HOST';")
+"SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_APP_USER_NAME AND host = $SQL_APP_USER_HOST;")
 
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating app user '$APP_USER_NAME'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '${APP_USER_PASSWORD}';"; then
+    -e "CREATE USER $SQL_APP_USER_NAME@$SQL_APP_USER_HOST IDENTIFIED BY $SQL_APP_USER_PASSWORD;"; then
     NEW_APP_USER_CREATED=1
   else
     echo "Notice: Migrator user '${MIGRATOR_NAME}' lacks usable access to '${DB_NAME}'."
