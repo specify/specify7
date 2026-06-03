@@ -592,7 +592,7 @@ export const wbText = createDictionary({
       'Vaši podaci su preneseni u bazu podataka. Da biste vidjeli broj novih zapisa dodanih svakoj tablici, kliknite "Rezultati" na alatnoj traci iznad rešetke podataka.',
   },
   saveAsRecordSet: {
-    'en-us': 'Save uploaded records as a {recordSetTable:string}',
+    'en-us': 'Save records as a {recordSetTable:string}',
   },
   uploadErrors: {
     'en-us': 'Upload Failed Due to Error Cells',
