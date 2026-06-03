@@ -48,11 +48,10 @@ def initialize(wipe: bool=False, apps=apps) -> None:
             wipe_permissions(apps)
         create_admins(apps)
         create_roles(apps)
-        if migrate_sp6_users:
-            if 'test' in ''.join(sys.argv):
-                assign_users_to_roles_during_testing(apps)
-            else:
-                assign_users_to_roles(apps)
+        if 'test' in ''.join(sys.argv):
+            assign_users_to_roles_during_testing(apps)
+        else:
+            assign_users_to_roles(apps)
 
 def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
