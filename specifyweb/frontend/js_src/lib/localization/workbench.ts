@@ -154,7 +154,7 @@ export const wbText = createDictionary({
   },
   dataCheckDescription: {
     'en-us':
-      'Note, live validation is an experimental feature and is not a substitute for regular validation.',
+      'Live validation is not a complete substitute for regular validation. Make sure to perform regular validation before uploading.',
     'de-ch':
       'Hinweis: Die Live-Validierung ist eine experimentelle Funktion und kein Ersatz für die reguläre Validierung.',
     'es-es':
