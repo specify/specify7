@@ -565,18 +565,30 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
                     "parameters": [],
                     "requestBody": {
                         "required": True,
-                        "description": "A JSON array of resource IDs to delete",
+                        "description": "IDs and/or query used to select records to delete",
                         "content": {
                             "application/json": {
                                 "schema": {
-                                    "type": "array",
-                                    "items": {
-                                        "type": "number",
-                                        "minimum": 0,
+                                    "type": "object",
+                                    "properties": {
+                                        "ids": {
+                                            "type": "array",
+                                            "items": {
+                                                "type": "number",
+                                                "minimum": 0,
+                                            },
+                                            "description": "List of record IDs to delete",
+                                        },
+                                        "query": {
+                                            "type": "object",
+                                            "description": "Query resource used to select records to delete",
+                                            "additionalProperties": True,
+                                        },
                                     },
+                                    "additionalProperties": False,
                                 }
                             }
-                        },
+                        }
                     },
                     "responses": {
                         "204": {

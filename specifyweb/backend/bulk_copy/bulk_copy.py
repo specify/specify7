@@ -15,6 +15,7 @@ from specifyweb.backend.stored_queries.queryfield import fields_from_json
 from specifyweb.backend.stored_queries.execution import build_query
 from specifyweb.backend.stored_queries import models
 from specifyweb.specify.api.crud import get_model_or_404
+from specifyweb.specify.models import datamodel
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
@@ -74,6 +75,10 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
 
     return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
+import logging
+logger = logging.getLogger(__name__)
+
+
 @transaction.atomic()
 def collection_dispatch_bulk_delete(request, model) -> HttpResponse:
     version = None
@@ -94,6 +99,9 @@ def collection_dispatch_bulk_delete(request, model) -> HttpResponse:
     if delete_from_query and spquery is not None:
         with models.session_context() as session:
             tableid = spquery["contexttableid"]
+            specify_model = model.specify_model
+            if specify_model.tableId != tableid:
+                return HttpResponseBadRequest('Query table does not match bulk delete table.')
             
             field_specs = fields_from_json(spquery["fields"])
 
