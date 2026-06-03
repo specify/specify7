@@ -5,14 +5,16 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
-import { TableResults, TableRecordCounts } from '../WorkBench/Results';
+import { TableRecordCounts } from '../WorkBench/Results';
 import type { RecordCounts } from '../WorkBench/WbValidation';
+import { RecordCountPriority } from '../WorkBench/WbValidation';
 import type { WbStatus } from '../WorkBench/WbView';
 
 export function WbUpload({
@@ -148,18 +150,36 @@ export function WbUpload({
         >
           <div className="flex flex-col gap-4">
             <div>{viewerLocalization.doStartDescription}</div>
-            {recordCounts.Uploaded !== undefined &&
-              Object.keys(recordCounts.Uploaded).length > 0 && (
-                <div>
-                  <p className="text-sm font-medium">
-                    {wbText.recordsCreated()}
-                  </p>
-                  <TableRecordCounts
-                    recordCounts={recordCounts.Uploaded}
-                    sortFunction={([, recordCount]) => -(recordCount ?? 0)}
-                  />
-                </div>
-              )}
+            {Object.keys(recordCounts).length > 0 && (
+              <div className="flex flex-col gap-2">
+                {Object.entries(recordCounts)
+                  .sort(
+                    sortFunction(([value]) => RecordCountPriority.indexOf(value))
+                  )
+                  .map(([resultType, recordsPerType]) =>
+                    recordsPerType !== undefined &&
+                    Object.keys(recordsPerType).length > 0 ? (
+                      <div key={resultType}>
+                        <p className="text-sm font-medium">
+                          {resultType === 'Uploaded'
+                            ? wbText.recordsCreated()
+                            : resultType === 'Updated'
+                              ? wbText.recordsUpdated()
+                              : resultType === 'Deleted'
+                                ? wbText.recordsDeleted()
+                                : wbText.recordsMatchedAndChanged()}
+                        </p>
+                        <TableRecordCounts
+                          recordCounts={recordsPerType}
+                          sortFunction={([, recordCount]) =>
+                            -(recordCount ?? 0)
+                          }
+                        />
+                      </div>
+                    ) : null
+                  )}
+              </div>
+            )}
           </div>
         </Dialog>
       )}
