@@ -191,6 +191,9 @@ if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
     echo "Error: Failed to create user."
     exit 1
   fi
+else
+  echo "User '$MIGRATOR_NAME' already exists."
+fi
 
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
@@ -199,6 +202,9 @@ if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
+else
+  echo "Skipping privilege grant for migrator user: user already exists. Verifying privileges on '${DB_NAME}'..."
+fi
 
 GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
   -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
@@ -305,6 +311,7 @@ else
   echo "$APP_GRANTS_RAW"
   APP_USER_NAME="$MIGRATOR_NAME"
   APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
+fi
 fi
 
 echo "--------------------------------------------------"
