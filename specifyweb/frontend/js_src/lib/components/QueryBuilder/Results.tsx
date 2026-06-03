@@ -36,7 +36,6 @@ import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
 import { QueryBulkDelete } from './BulkDelete';
-import { userInformation } from '../InitialContext/userInformation';
 
 export type QueryResultRow = RA<number | string | null>;
 
@@ -411,6 +410,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                     )
                     .map((result) => result[queryIdField] as number)
                 }
+                queryResource={queryResource}
               />
             ) : undefined}
             {hasToolPermission('recordSets', 'create') && totalCount !== 0 ? (
