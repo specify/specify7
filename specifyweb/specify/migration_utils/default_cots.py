@@ -1,5 +1,5 @@
 import logging
-from django.db.models import F
+from django.db.models import F, OuterRef, Subquery
 
 logger = logging.getLogger(__name__)
 
@@ -137,25 +137,51 @@ def fix_tectonic_unit_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     Tectonicunittreedef = apps.get_model('specify', 'Tectonicunittreedef')
 
-    empty_tectonic_unit_treedefs = list(
-        Tectonicunittreedef.objects.filter(discipline__isnull=True).order_by('id')
-    )
-    empty_disciplines = list(
-        Discipline.objects.filter(tectonicunittreedef__isnull=True).order_by('id')
+    # Fetches Discipline objects with an empty TectonicUnitTreeDef relationship
+    # and no TectonicUnitTreeDef objects with a set discipline
+    # Most commonly, this would be in the case of creating a Discipline in
+    # Specify 6 after the TectonicUnitTreeDef migrations have been run in
+    # Specify 7
+    disciplines_missing_tectonicunit = Discipline.objects.filter(
+        tectonicunittreedef__isnull=True,
+        tectonicunittreedefs__isnull=True
+    ).values_list("pk", "name")
+
+    Tectonicunittreedef.objects.bulk_create(
+        [
+            Tectonicunittreedef(
+                name=f"{discipline_name} Tectonic Unit Tree",
+                discipline_id=disciplineid
+            ) for disciplineid, discipline_name in disciplines_missing_tectonicunit
+        ],
+        batch_size=1000
     )
 
-    for discipline, tectonic_unit_treedef in zip(
-        empty_disciplines, empty_tectonic_unit_treedefs, strict=False
-    ):
-        tectonic_unit_treedef.discipline = discipline
-        tectonic_unit_treedef.save()
-        discipline.tectonicunittreedef = tectonic_unit_treedef
-        discipline.save()
-
-    for discipline in empty_disciplines[len(empty_tectonic_unit_treedefs):]:
-        tectonic_unit_treedef = Tectonicunittreedef.objects.create(
-            name=f'{discipline.name} Tectonic Unit Tree',
-            discipline=discipline
+    # If there are cases where Discipline -> tectonicunittreedef is not set,
+    # but there is at least one TectonicUnitTreeDef pointing to the Discipline,
+    # then set the Discipline -> tectonicunittreedef relationship to the "first"
+    # TectonicUnitTreeDef -> discipline
+    Discipline.objects.filter(
+        tectonicunittreedef__isnull=True,
+        tectonicunittreedefs__isnull=False
+    ).update(
+        tectonicunittreedef=Subquery(
+            Tectonicunittreedef.objects.filter(
+                discipline=OuterRef("pk")
+            ).order_by("pk").values("pk")[:1]
         )
-        discipline.tectonicunittreedef = tectonic_unit_treedef
-        discipline.save()
+    )
+
+    # Finally, if there's any remaining TectonicUnitTreeDef objects with a NULL
+    # discipline, set the discipline relationship to the
+    # Discipline -> tectonicunittreedef (which must be set at this point)
+    Tectonicunittreedef.objects.filter(
+        discipline__isnull=True,
+        disciplines__isnull=False
+    ).update(
+        discipline=Subquery(
+            Discipline.objects.filter(
+                tectonicunittreedef=OuterRef("pk")
+            ).order_by("pk").values("pk")[:1]
+        )
+    )
