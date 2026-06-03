@@ -63,6 +63,23 @@ if [[ "$MIGRATOR_NAME" == "$MASTER_USER_NAME" && "$MIGRATOR_PASSWORD" == "$MASTE
   SAME_MASTER_AND_MIGRATOR=true
 fi
 
+sql_string_literal() {
+  local value="$1"
+  value=$(printf '%s' "$value" | sed -e 's/\\/\\\\/g' -e "s/'/''/g")
+  printf "'%s'" "$value"
+}
+
+sql_identifier() {
+  local value="$1"
+  value=$(printf '%s' "$value" | sed -e 's/`/``/g')
+  printf "\`%s\`" "$value"
+}
+
+regex_escape() {
+  local value="$1"
+  printf '%s' "$value" | sed -e 's/[][\/.^$*+?{}()|\\]/\\&/g'
+}
+
 has_all_privs_in_line() {
   local line="$1"
   shift
