@@ -99,8 +99,6 @@ def assign_users_to_roles(apps=apps) -> None:
             WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
             AND table_schema = DATABASE();
         """)
-        if cursor.fetchone()[0] < 2:
-            return # Newly created sp7 databases don't have these sp6 specific tables.
         cursor.execute("""
             SELECT
                 u.SpecifyUserID as user_id,
