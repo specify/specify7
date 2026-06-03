@@ -59,8 +59,16 @@ fi
 
 # Relationship flags between the three users
 SAME_MASTER_AND_MIGRATOR=false
+SAME_MASTER_AND_APP=false
+SAME_MIGRATOR_AND_APP=false
 if [[ "$MIGRATOR_NAME" == "$MASTER_USER_NAME" && "$MIGRATOR_PASSWORD" == "$MASTER_USER_PASSWORD" ]]; then
   SAME_MASTER_AND_MIGRATOR=true
+fi
+if [[ "$APP_USER_NAME" == "$MASTER_USER_NAME" && "$APP_USER_PASSWORD" == "$MASTER_USER_PASSWORD" ]]; then
+  SAME_MASTER_AND_APP=true
+fi
+if [[ "$APP_USER_NAME" == "$MIGRATOR_NAME" && "$APP_USER_PASSWORD" == "$MIGRATOR_PASSWORD" ]]; then
+  SAME_MIGRATOR_AND_APP=true
 fi
 
 sql_string_literal() {
