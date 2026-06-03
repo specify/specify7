@@ -235,7 +235,7 @@ export function DataSetMeta({
         </Label.Block>
         <div className="flex flex-col">
           <b>
-            {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
+            {wbText.metadata()}
           </b>
           <span>
             {commonText.colonLine({
@@ -392,7 +392,7 @@ export function DataSetName({
         )}
       </h2>
       <Button.Small onClick={handleOpen}>
-        {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
+        {wbText.metadata()}
       </Button.Small>
       {showMeta && (
         <WbDataSetMeta

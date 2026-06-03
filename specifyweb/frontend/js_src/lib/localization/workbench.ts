@@ -980,6 +980,16 @@ export const wbText = createDictionary({
     'pt-br': 'Diferenciar maiúsculas/minúsculas',
     'hr-hr': 'Razlikuj velika i mala slova',
   },
+  metadata: {
+    'en-us': 'Metadata',
+    'de-ch': 'Metadaten',
+    'es-es': 'Metadatos',
+    'fr-fr': 'Métadonnées',
+    'ru-ru': 'Метаданные',
+    'uk-ua': 'Метадані',
+    'pt-br': 'Metadados',
+    'hr-hr': 'Metapodaci',
+  },
   useRegularExpression: {
     'en-us': 'Use regular expression',
     'ru-ru': 'Использовать регулярное выражение',
