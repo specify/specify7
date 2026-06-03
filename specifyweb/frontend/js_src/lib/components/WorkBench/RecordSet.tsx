@@ -14,7 +14,6 @@ import {
 } from '../Permissions/PermissionDenied';
 import { unsafeNavigate } from '../Router/Router';
 import { EditRecordSet } from '../Toolbar/RecordSetEdit';
-import { queryText } from '../../localization/query';
 
 export function CreateRecordSetButton({
   datasetId,
