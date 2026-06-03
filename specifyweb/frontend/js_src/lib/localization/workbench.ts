@@ -430,6 +430,16 @@ export const wbText = createDictionary({
     'pt-br': 'Conjunto de dados excluído com sucesso',
     'hr-hr': 'Skup podataka uspješno izbrisan',
   },
+  dataSetDeletedDescription: {
+    'en-us': 'This data set was deleted.',
+    'ru-ru': 'Этот набор данных был удален.',
+    'es-es': 'Este conjunto de datos fue eliminado.',
+    'fr-fr': "Cet ensemble de données a été supprimé.",
+    'uk-ua': 'Цей набір даних було видалено.',
+    'de-ch': 'Dieser Datensatz wurde gelöscht.',
+    'pt-br': 'Este conjunto de dados foi excluído.',
+    'hr-hr': 'Ovaj skup podataka je izbrisan.',
+  },
   revertChanges: {
     'en-us': 'Revert Unsaved Changes?',
     'ru-ru': 'Отменить несохраненные изменения?',
