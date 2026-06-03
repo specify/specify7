@@ -63,14 +63,18 @@ def create_admins(apps=apps) -> None:
         #   - (The Institution Admin permission could have been intentionally
         #      removed)
         # - Are admins in Sp 6
+
+        # The ordering here for checks here is intentional: it's more likely a
+        # user has Sp 7 permissions than being an admin, so we do the former
+        # check first
+        if is_sp6_user_permissions_migrated(user=user, apps=apps):
+            continue
         if UserPolicy.objects.filter(
             collection__isnull=True,
             specifyuser_id=user.id,
             resource="%",
             action="%",
         ).exists():
-            continue
-        if is_sp6_user_permissions_migrated(user=user, apps=apps):
             continue
         if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
