@@ -20,7 +20,7 @@ export const wbPlanText = createDictionary({
     'hr-hr': 'Maper podataka',
   },
   noUploadPlan: {
-    'en-us': 'No Upload Plan is Defined',
+    'en-us': 'No Data Set Mapping is Defined',
     'ru-ru': 'План загрузки не определен',
     'es-es': 'No hay definido ningún plan de carga',
     'fr-fr': "Aucun plan de téléchargement n'est défini.",
@@ -31,7 +31,7 @@ export const wbPlanText = createDictionary({
   },
   noUploadPlanDescription: {
     'en-us':
-      'No Upload Plan has been defined for this Data Set. Create one now?',
+      'No mapping has been defined for this data set. Please choose an existing mapping or create a new one.',
     'ru-ru':
       'Для этого набора данных не определен план загрузки. Создать эго сейчас?',
     'es-es':
@@ -314,7 +314,7 @@ export const wbPlanText = createDictionary({
   },
   validationFailedDescription: {
     'en-us':
-      'This data mapping is missing one or more data fields required for uploading by your Specify configuration. Add the missing mappings shown or save this Upload Plan as unfinished.',
+      'This data mapping is missing one or more data fields required for uploading by your Specify configuration. Add the missing mappings shown or save this mapping as unfinished.',
     'ru-ru':
       'В этом сопоставлении данные отсутствует в одном или нескольких полей данных, необходимых для загрузки по вашей Specify конфигурацию. Добавьте недостающие сопоставления или сохраните этот план загрузки как незавершенный.',
     'es-es':
@@ -412,14 +412,14 @@ export const wbPlanText = createDictionary({
     'hr-hr': 'Odaberite osnovnu tablicu',
   },
   chooseExistingPlan: {
-    'en-us': 'Choose Existing Plan',
-    'ru-ru': 'Выберите существующий план',
-    'es-es': 'Elegir un Plan ya Existente',
-    'fr-fr': 'Choisir un régime existant',
-    'uk-ua': 'Виберіть існуючий план',
-    'de-ch': 'Bestehenden Plan auswählen',
-    'pt-br': 'Escolha um plano existente',
-    'hr-hr': 'Odaberite postojeći plan',
+    'en-us': 'Choose Existing Mapping',
+    'ru-ru': 'Выберите существующее сопоставление',
+    'es-es': 'Elegir un Mapeo ya Existente',
+    'fr-fr': 'Choisir un mappage existant',
+    'uk-ua': 'Виберіть існуюче відображення',
+    'de-ch': 'Bestehende Zuordnung auswählen',
+    'pt-br': 'Escolha um mapeamento existente',
+    'hr-hr': 'Odaberite postojeće mape',
   },
   showAllTables: {
     'en-us': 'Show All Tables',
@@ -433,11 +433,11 @@ export const wbPlanText = createDictionary({
   },
   baseTableDescription: {
     'en-us':
-      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Every row in your data set will correspond to a new record in Specify in the base table you select.",
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Every row in your data set will correspond to a new record in Specify in the base table you select. Click on a base table in the list to get started.",
   },
   baseTableWithAttachmentsDescription: {
     'en-us':
-      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Each imported attachment record will be added as a new row in the base table you select.",
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Each imported attachment record will be added as a new row in the base table you select. Click on a base table in the list to get started.",
   },
   selectBaseTableWithAttachments: {
     'en-us': 'Select a Base Table with Attachments',
@@ -450,7 +450,7 @@ export const wbPlanText = createDictionary({
     'hr-hr': 'Odaberite osnovnu tablicu s prilozima',
   },
   dataSetUploaded: {
-    'en-us': 'Data Set uploaded. This Upload Plan cannot be changed',
+    'en-us': 'Data Set uploaded. This mapping cannot be changed',
     'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',
     'es-es':
       'Conjunto de Datos cargado. El Plan de Carga ya no puede modificarse',
@@ -644,7 +644,7 @@ export const wbPlanText = createDictionary({
       'Pritisnite gumb "Dodaj novi stupac" ispod linija mapiranja da biste dodali nove stupce.',
   },
   reRunAutoMapperConfirmation: {
-    'en-us': 'Automap to start a new Upload Plan?',
+    'en-us': 'Automap to start a new mapping?',
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
@@ -764,7 +764,7 @@ export const wbPlanText = createDictionary({
   },
   invalidTemplatePlan: {
     'en-us':
-      'Selected Data Set has no upload plan. Please select a different one.',
+      'Selected data set has no mapping. Please select a different one.',
     'ru-ru':
       'Выбранный набор данных не имеет плана загрузки. Выберите другой набор данных.',
     'es-es':

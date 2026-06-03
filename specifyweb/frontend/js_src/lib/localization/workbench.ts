@@ -20,14 +20,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Radni stol',
   },
   uploadPlan: {
-    'en-us': 'Upload Plan',
-    'de-ch': 'Upload-Plan',
-    'es-es': 'Plan de carga',
-    'fr-fr': 'Plan de téléchargement',
-    'ru-ru': 'План загрузки',
-    'uk-ua': 'План завантаження',
-    'pt-br': 'Plano de upload',
-    'hr-hr': 'Plan prijenosa',
+    'en-us': 'Mapping Plan',
   },
   rollback: {
     'en-us': 'Rollback',
@@ -782,7 +775,7 @@ export const wbText = createDictionary({
   },
   wbValidateUnavailable: {
     'en-us':
-      'An upload plan needs to be defined before this data set can be validated',
+      'A mapping needs to be defined before this data set can be validated',
     'ru-ru':
       'План загрузки должен быть определен до того, как этот набор данных может быть проверен',
     'es-es':
