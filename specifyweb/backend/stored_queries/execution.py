@@ -856,10 +856,7 @@ def execute(
         if limit:
             query = query.limit(limit)
 
-
-
-        if settings.DEBUG:
-            log_sqlalchemy_query(query)
+        log_sqlalchemy_query(query)
 
         return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
 
@@ -1067,8 +1064,7 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
 
-    if settings.DEBUG:
-        log_sqlalchemy_query(query)
+    log_sqlalchemy_query(query)
 
     def parse_catalog_for_comparing(s):
         def check_for_decimal(s):
