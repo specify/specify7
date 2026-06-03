@@ -19,19 +19,6 @@ def get_spmodel_class(model_name: str):
             return getattr(spmodels, attr_name)
     raise AttributeError(f"Model '{model_name}' not found in models module.")
 
-def log_sqlalchemy_query(query):
-    if not settings.DEBUG:
-        return
-
-    from sqlalchemy.dialects import mysql
-    compiled_query = query.statement.compile(dialect=mysql.dialect())
-    raw_sql = str(compiled_query).replace('\n', ' ') + ';'
-    logger.debug('='.join(['' for _ in range(80)]))
-    logger.debug(raw_sql)
-    logger.debug('='.join(['' for _ in range(80)]))
-    # Run in the storred_queries.execute file, in the execute function, right before the return statement, line 546
-    # from specifyweb.specify.utils import log_sqlalchemy_query; log_sqlalchemy_query(query)
-
 def create_default_collection_types(apps, using="default"):
     db = using or "default"
 
