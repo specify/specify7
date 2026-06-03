@@ -217,7 +217,7 @@ export const batchEditText = createDictionary({
   },
   commitSuccessfulDescription: {
     'en-us':
-      'Your changes have been applied to the database. To see the number of records affected in each table, click "Results" in the toolbar above the data grid.',
+      'Your changes have been applied to the database. See the number of records affected in each table below:',
     'de-ch':
       'Ihre Änderungen wurden in die Datenbank übernommen. Um die Anzahl der betroffenen Datensätze in jeder Tabelle anzuzeigen, klicken Sie in der Symbolleiste über dem Datenraster auf „Ergebnisse".',
     'es-es':
