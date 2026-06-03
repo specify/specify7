@@ -17,13 +17,12 @@ from specifyweb.specify.migration_utils.default_cots import (
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
     fix_taxon_treedef_discipline_links,
-    set_discipline_for_taxon_treedefs,
-    fix_tectonic_unit_treedef_discipline_links
+    set_discipline_for_taxon_treedefs
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import update_schema_config as usc
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
-from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
+from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node, fix_tectonic_unit_treedef_discipline_links
 from specifyweb.backend.patches.migration_utils import apply_migrations as apply_patches
 
 logger = logging.getLogger(__name__)
