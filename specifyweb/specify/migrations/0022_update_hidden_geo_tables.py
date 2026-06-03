@@ -60,7 +60,7 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor):
 
 class Migration(migrations.Migration):
     dependencies = [
-        ('specify', '0020_add_tectonicunit_to_pc_in_schema_config'),
+        ('specify', '0021_ensure_default_cots'),
     ]
 
     operations = [
