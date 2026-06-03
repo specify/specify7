@@ -213,6 +213,7 @@ export function WbActions({
                   }}
                 />
               )}
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }

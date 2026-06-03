@@ -40,7 +40,7 @@ export function CreateRecordSetButton({
     >
       <ProtectedTool action="create" tool="recordSets">
         <ButtonComponent onClick={handleOpen}>
-          {queryText.saveAsRecordSet({
+          {wbText.saveAsRecordSet({
             recordSetTable: tables.RecordSet.label,
           })}
         </ButtonComponent>
