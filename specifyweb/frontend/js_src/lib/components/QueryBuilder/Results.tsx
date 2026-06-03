@@ -226,6 +226,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         }
         setTimeout(() => deletingRef.current.delete(recordId), 100); // Remove the record from the deletingRef
       });
+      // Remove all records if no ids were provided
+      if (recordIds.length === 0) {
+        filteredResults = [];
+        totalRemoveCount = totalCount ?? 0;
+      }
       setResults(filteredResults);
       setTotalCount((totalCount) =>
         totalCount === undefined
