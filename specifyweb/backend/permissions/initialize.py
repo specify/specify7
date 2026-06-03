@@ -108,12 +108,6 @@ def assign_users_to_roles(apps=apps) -> None:
     results = []
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT COUNT(*)
-            FROM information_schema.tables
-            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
-            AND table_schema = DATABASE();
-        """)
-        cursor.execute("""
             SELECT
                 u.SpecifyUserID as user_id,
                 u.Name as user_name,
