@@ -53,11 +53,28 @@ def create_default_collection_types(apps):
     for collection in Collection.objects.all():
         discipline = collection.discipline
         discipline_name = discipline.name
-        cot, created = Collectionobjecttype.objects.get_or_create(
+
+        qs = Collectionobjecttype.objects.filter(
             name=discipline_name,
             collection=collection,
             taxontreedef_id=discipline.taxontreedef_id
-        )
+        ).order_by("id")
+
+        cot = qs.first()
+
+        if cot is None:
+            cot = Collectionobjecttype.objects.create(
+                name=discipline_name,
+                collection=collection,
+                taxontreedef_id=discipline.taxontreedef_id
+            )
+        else:
+            duplicates = list(qs[1:])
+            if duplicates:
+                logger.warning(
+                    f"Found {len(duplicates)} duplicate Collectionobjecttype rows for "
+                    f"{discipline_name}/{collection}"
+                )
 
         # Update CollectionObjects' collectionobjecttype for the discipline
         Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
