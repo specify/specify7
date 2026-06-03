@@ -100,4 +100,6 @@ def create_default_collection_types(apps):
                     collection.save()
                 except BusinessRuleException as e:
                     logger.warning(f'Problem saving collection {collection}: {e}')
+            else:
+                logger.warning(f'Unexpected BusinessRuleException saving collection {collection}: {e}')
             continue
