@@ -55,12 +55,22 @@ def create_admins(apps=apps) -> None:
 
     users = Specifyuser.objects.all()
     for user in users:
+        # REFACTOR: Try and fold the following checks into a single query to
+        # avoid making multiple queries per user.
+        # Ideally, we only make a single query to fetch all users that:
+        # - Are not already Institution Admins
+        # - Have not already seen activity in Sp 7 (don't have Sp7 permissions)
+        #   - (The Institution Admin permission could have been intentionally
+        #      removed)
+        # - Are admins in Sp 6
         if UserPolicy.objects.filter(
             collection__isnull=True,
             specifyuser_id=user.id,
             resource="%",
             action="%",
         ).exists():
+            continue
+        if is_sp6_user_permissions_migrated(user=user, apps=apps):
             continue
         if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
@@ -123,7 +133,7 @@ def assign_users_to_roles(apps=apps) -> None:
         results = cursor.fetchall()
     
     for user_id, user_name, user_type, collection_id, collection_name in results:
-        if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
+        if user_type not in ROLE_NAMES.keys():
             continue
 
         role_name = ROLE_NAMES.get(user_type, f"{user_type} - {collection_name}")
