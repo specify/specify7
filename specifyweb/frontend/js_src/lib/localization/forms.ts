@@ -255,7 +255,8 @@ export const formsText = createDictionary({
     'en-us': 'Are you sure you want to proceed?',
   },
   bulkDeleteFinalConfirmationDescription: {
-    'en-us': 'Type the number of records that will be deleted in order to proceed.',
+    'en-us':
+      'Type the number of records that will be deleted in order to proceed.',
   },
   bulkDeleteFinalConfirmationOption: {
     'en-us': 'I want to delete {count:number} records',
