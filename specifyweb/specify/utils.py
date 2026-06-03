@@ -67,9 +67,10 @@ def create_default_collection_types(apps):
         except BusinessRuleException as e:
             if 'Collection must have unique code in discipline' in str(e):
                 # May want to do something besides numbering, but users can edit if after the migrqation if they want.
+                original_code = collection.code
                 i = 1
                 while True:
-                    collection.code = f'{collection.code}-{i}'
+                    collection.code = f'{original_code}-{i}'
                     i += 1
                     if collection.code not in code_set:
                         code_set.add(collection.code)
