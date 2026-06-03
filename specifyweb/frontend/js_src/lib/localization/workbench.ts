@@ -575,7 +575,7 @@ export const wbText = createDictionary({
   },
   uploadSuccessfulDescription: {
     'en-us':
-      'Your data has been uploaded to the database. To see the number of new records added to each table, click "Results" in the toolbar above the data grid.',
+      'Your data has successfully uploaded to the database. You can see the number of new records added to each table below.',
     'ru-ru':
       'Ваши данные загружены в базу данных. Чтобы увидеть количество новых записей, добавленных в каждую таблицу, нажмите «Результаты» на панели инструментов над сеткой данных.',
     'es-es':
