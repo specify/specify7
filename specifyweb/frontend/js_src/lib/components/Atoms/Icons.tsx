@@ -151,7 +151,7 @@ export const dialogIcons: RR<
   none: undefined,
   error: <span className="text-red-500">{icons.exclamationCircle}</span>,
   warning: (
-    <span className="text-brand-200 dark:text-brand-400">
+    <span className="text-red-500 dark:text-red-500">
       {icons.exclamation}
     </span>
   ),
