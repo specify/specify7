@@ -182,7 +182,7 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
                 # Does the user has an agent for the collection?
                 if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
                     # Give them access to the collection.
-                    UserPolicy.objects.create(
+                    UserPolicy.objects.get_or_create(
                         collection_id=colid,
                         specifyuser_id=user.id,
                         resource=CollectionAccessPT.access.resource(),
