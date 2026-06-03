@@ -76,8 +76,12 @@ def create_default_collection_types(apps):
                     f"{discipline_name}/{collection}"
                 )
 
-        # Update CollectionObjects' collectionobjecttype for the discipline
-        Collectionobject.objects.filter(collection=collection).update(collectionobjecttype=cot)
+        # Only fill in COTs that are not already set, to avoid clobbering user data on re-run
+        Collectionobject.objects.filter(
+            collection=collection, collectionobjecttype__isnull=True
+        ).update(collectionobjecttype=cot)
+        if collection.collectionobjecttype_id is not None:
+            continue
         collection.collectionobjecttype = cot
         try:
             collection.save()
