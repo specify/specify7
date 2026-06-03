@@ -75,7 +75,6 @@ export function BulkDeletionDialog({
   React.useEffect(() => {
     const recordIdsResult = recordIds();
     setRecordIdList(recordIdsResult);
-    console.log(queryResource?.toJSON());
     // If there are no selected ids, delete the entirety of the query's results
     const recordIdCount = recordIdsResult.length;
     if (recordIdCount === 0) {
@@ -83,7 +82,7 @@ export function BulkDeletionDialog({
     } else {
       setTotalDeleteCount(recordIdCount);
     }
-  }, [recordIds, totalCount, queryResource]);
+  }, [recordIds, totalCount]);
 
   const [isWarningOpen, openWarning, closeWarning, _] =
     useBooleanState(false);

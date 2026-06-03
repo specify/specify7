@@ -3,6 +3,7 @@ import json
 from specifyweb.backend.permissions.permissions import table_permissions_checker, cache_permission_queries
 from django.http import (HttpResponse, HttpResponseNotAllowed, HttpResponseBadRequest)
 from django.db import transaction
+from sqlalchemy import inspect
 
 from specifyweb.specify.api.crud import delete_resource, post_resource
 from specifyweb.specify.api.dispatch import HttpResponseCreated
@@ -10,7 +11,10 @@ from specifyweb.specify.api.serializers import _obj_to_data, toJson
 from specifyweb.backend.businessrules.utils import cache_unique_catnum_preferences
 from specifyweb.backend.businessrules.uniqueness_rules import cache_uniqueness_rules
 from specifyweb.backend.context.remote_prefs import cache_remote_preferences
-
+from specifyweb.backend.stored_queries.queryfield import fields_from_json
+from specifyweb.backend.stored_queries.execution import build_query
+from specifyweb.backend.stored_queries import models
+from specifyweb.specify.api.crud import get_model_or_404
 
 def collection_dispatch_bulk_copy(request, model, copies) -> HttpResponse:
     checker = table_permissions_checker(request.specify_collection, request.specify_user_agent, "read")
@@ -70,16 +74,6 @@ def collection_dispatch_bulk(request, model) -> HttpResponse:
 
     return HttpResponseCreated(toJson(resp_objs), content_type='application/json')
 
-from django.db import transaction
-from sqlalchemy import inspect
-from sqlalchemy.sql.expression import insert, literal
-from specifyweb.backend.stored_queries.queryfield import fields_from_json
-from specifyweb.backend.stored_queries.execution import build_query
-from specifyweb.backend.stored_queries import models
-from specifyweb.specify.api.crud import get_model_or_404
-import logging
-logger = logging.getLogger(__name__)
-
 @transaction.atomic()
 def collection_dispatch_bulk_delete(request, model) -> HttpResponse:
     version = None
@@ -89,7 +83,6 @@ def collection_dispatch_bulk_delete(request, model) -> HttpResponse:
     
     data = json.loads(request.body)
     
-    logger.debug("bulk deleting %s with data: %s", model, data)
     if isinstance(model, str):
         model = get_model_or_404(model)
 
