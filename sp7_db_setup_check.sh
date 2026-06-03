@@ -274,7 +274,7 @@ else
 
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, ALTER, INDEX, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;\""
   if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;"; then    
     echo "Error: Failed to grant privileges to new user."
     exit 1
