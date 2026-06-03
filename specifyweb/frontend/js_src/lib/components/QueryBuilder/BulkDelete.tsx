@@ -28,7 +28,7 @@ export function QueryBulkDelete({
   return (
     <>
       <Button.Small
-        disabled={totalCount === undefined || totalCount === 0}
+        disabled={totalCount === 0}
         onClick={handleOpen}
       >
         {queryText.bulkDelete()}

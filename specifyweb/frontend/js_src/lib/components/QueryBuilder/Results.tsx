@@ -124,7 +124,8 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   } = useFetchQueryResults(props);
 
   const canMergeTable = canMerge(table);
-  const canDeleteTable = hasPermission('/record/bulk_delete', 'delete') || userInformation.isadmin;
+  const canBulkDeleteTable = hasPermission('/record/bulk_delete', 'delete') &&
+    hasTablePermission(table.name, 'delete');
 
   const visibleColumns = React.useMemo(
     () =>
@@ -398,7 +399,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 onMerged={handleReRun}
               />
             ) : undefined}
-            {canDeleteTable ? (
+            {canBulkDeleteTable ? (
               <QueryBulkDelete
                 table={table}
                 totalCount={totalCount || 0}
