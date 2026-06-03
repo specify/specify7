@@ -138,13 +138,13 @@ def assign_users_to_roles(apps=apps) -> None:
         role_description = ROLE_DESCRIPTIONS.get(user_type, "No description available.")
         logger.info(f"Assigned user {user_name} to role {role_name} for collection {collection_name}.")
 
-        role, is_new_role = Role.objects.get_or_create(
+        role, _ = Role.objects.get_or_create(
             collection_id=collection_id,
-            name=role_name
+            name=role_name,
+            defaults={
+                "description": role_description
+            }
         )
-        if is_new_role:
-            role.description = role_description
-            role.save()
         UserRole.objects.get_or_create(
             specifyuser_id=user_id,
             role=role
