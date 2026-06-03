@@ -208,7 +208,7 @@ export const wbPlanText = createDictionary({
   },
   ignoreAlwaysDescription: {
     'en-us':
-      'When set to "Ignore Always" the value in this column will never be considered for matching purposes, only for uploading.',
+      'When set to "Always Ignore," the value in this column will not be used for matching purposes, only for uploading.',
     'ru-ru':
       'Если задано значение «Всегда игнорировать», значение в этом столбце никогда не будет рассматривается для целей сопоставления, только для загрузки',
     'es-es':
