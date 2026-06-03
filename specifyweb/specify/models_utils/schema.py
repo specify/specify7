@@ -580,11 +580,7 @@ def table_to_endpoint(table: Table) -> list[tuple[str, dict]]:
                     },
                     "responses": {
                         "204": {
-                            "responses": {
-                                "204": {
-                                    "description": "Empty response",
-                                },
-                            },
+                            "description": "Empty response",
                         }
                     },
                 },
