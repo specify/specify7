@@ -7,6 +7,7 @@ import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
@@ -199,6 +200,17 @@ export function WbActions({
       ) : undefined}
       {operationCompleted && (
         <Dialog
+          icon={
+            mode === 'validate'
+              ? cellCounts.invalidCells === 0
+                ? dialogIcons.success
+                : dialogIcons.error
+              : mode === 'upload'
+              ? cellCounts.invalidCells === 0
+                ? dialogIcons.success
+                : dialogIcons.error
+              : dialogIcons.success
+          }
           buttons={
             <>
               {cellCounts.invalidCells === 0 && mode === 'upload' && (
