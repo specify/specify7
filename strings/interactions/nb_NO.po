@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:12+0000\n"
+"PO-Revision-Date: 2026-06-24 18:14+0000\n"
 "Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/interactions/nb_NO/>\n"
@@ -17,7 +17,6 @@ msgstr ""
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
 #: components/Router/OverlayRoutes.tsx:96
-#, fuzzy
 msgid "interactions"
 msgstr "Interaksjoner"
 
