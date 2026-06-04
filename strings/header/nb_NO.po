@@ -180,8 +180,9 @@ msgstr "Hurtigsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:203
+#, fuzzy
 msgid "primarySearch"
-msgstr "Primærsøk"
+msgstr "Enkelt søk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:209
