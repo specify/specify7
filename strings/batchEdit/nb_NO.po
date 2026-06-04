@@ -220,16 +220,14 @@ msgstr ""
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:125
-#, fuzzy
 msgid "commitDataSet"
-msgstr "Bekreft datasett"
+msgstr "Lagre datasett"
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:128
-#, fuzzy
 msgid "warningBatchEditText"
 msgstr ""
-"Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre "
-"andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig "
-"utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan "
-"dette påvirker brukeropplevelsen deres. Denne handlingen kan ikke angres."
+"Før du fortsetter, vær oppmerksom på at denne handlingen kan påvirke andre "
+"brukere. Den kan føre til forsinkelser eller midlertidig utilgjengelighet av "
+"enkelte funksjoner i Specify. Vennligst vurder konsekvensene for "
+"brukeropplevelsen. Handlingen kan ikke angres."
