@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-24 18:00+0000\n"
+"Last-Translator: Vanessa <vanessa.pitusi@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/batchEdit/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -18,44 +18,37 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:263
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#, fuzzy
 msgid "batchEdit"
-msgstr "Grupperedigering"
+msgstr "Masseredigering"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
-#, fuzzy
 msgid "batchEditPrefs"
-msgstr "Innstillinger for batchredigering"
+msgstr "Innstillinger for masseredigering"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2261
-#, fuzzy
 msgid "numberOfRecords"
-msgstr "Antall poster valgt fra spørringen"
+msgstr "Antall treff valgt fra spørringen"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
-#, fuzzy
 msgid "removeField"
-msgstr ""
-"Feltet støttes ikke for batchredigering. Fjern feltet, eller gjør det skjult."
+msgstr "Feltet støttes ikke ved masseredigering. Fjern feltet eller skjul det."
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
-#, fuzzy
 msgid "addTreeRank"
 msgstr ""
-"Følgende ranger vil bli lagt til spørringen for å muliggjøre batchredigering"
+"Følgende ranger vil bli lagt til i spørringen for å aktivere masseredigering"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:89
-#, fuzzy
 msgid "pickTreesToFilter"
 msgstr ""
 "Den/de valgte rangeringen(e) finnes i flere trær. Velg tre(r) for "
-"batchredigering med"
+"massredigering med"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:194
