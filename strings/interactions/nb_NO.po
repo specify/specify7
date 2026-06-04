@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/interactions/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -19,7 +19,7 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:96
 #, fuzzy
 msgid "interactions"
-msgstr ""
+msgstr "Interaksjoner"
 
 #. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #: components/Interactions/InteractionDialog.tsx:488
@@ -43,7 +43,7 @@ msgstr "Det er ingen interaksjoner knyttet til dette preparatet."
 #: components/FormCommands/ShowTransactions.tsx:131
 #, fuzzy
 msgid "tableLabelRecords"
-msgstr "Post"
+msgstr "{tableLabel:string} poster"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:578
