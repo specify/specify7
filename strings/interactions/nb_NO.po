@@ -109,7 +109,7 @@ msgstr "Legg til et ikke-tilknyttet element"
 #: components/Statistics/__tests__/layout.tests.ts:42
 #, fuzzy
 msgid "preparations"
-msgstr ""
+msgstr "Forberedelser"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:101
