@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -67,7 +67,7 @@ msgstr "Konfigurer vedleggsserveren din"
 #: components/Preferences/UserDefinitions.tsx:1413
 #, fuzzy
 msgid "orderBy"
-msgstr "Sorter etter"
+msgstr "Bestill etter"
 
 #. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index ⬤ Components > Work Bench > Wb Attachments Preview
 #: components/Attachments/Plugin.tsx:168
