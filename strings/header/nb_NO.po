@@ -127,6 +127,7 @@ msgstr "Opprett ny rapport"
 #: components/Header/userToolDefinitions.ts:102
 #: components/Router/OverlayRoutes.tsx:175
 #: components/Toolbar/TreeRepair.tsx:173
+#, fuzzy
 msgid "repairTree"
 msgstr "Reparer treet"
 
