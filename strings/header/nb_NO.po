@@ -79,8 +79,7 @@ msgstr "Oppdatering av eksport startet"
 #, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
-"Oppdatering startet. Du vil motta et varsel for hvert feedelement som "
-"oppdateres."
+"Oppdatering startet. Du vil motta et varsel for hvert element som oppdateres."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
