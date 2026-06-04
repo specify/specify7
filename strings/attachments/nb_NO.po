@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-01 19:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-04 10:01+0000\n"
+"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -35,7 +35,6 @@ msgstr ""
 #: components/WorkBench/WbAttachmentsPreview.tsx:546
 #: components/WorkBench/WbView.tsx:260
 #: components/WorkBench/hotProps.tsx:75
-#, fuzzy
 msgid "attachments"
 msgstr "Vedlegg"
 
