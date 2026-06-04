@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-24 18:19+0000\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/main/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -13,34 +13,29 @@ msgstr ""
 
 #. 🟥Formatting for the title in the web page title bar. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:65
-#, fuzzy
 msgid "appTitle"
-msgstr "{baseTitle:string} | Spesifiser 7"
+msgstr "{baseTitle:string} | Specify 7"
 
 #. 🟥Default page title. Used in: Components > Molecules > App Title
 #: components/Molecules/AppTitle.tsx:64
-#, fuzzy
 msgid "baseAppTitle"
-msgstr "Spesifiser 7"
+msgstr "Specify 7"
 
 #. 🟥Used in title. Used in: Components > Formatters > Element ⬤ Components > Router > Not Found View ⬤ Components > Router > Router Utils
 #: components/Formatters/Element.tsx:66
 #: components/Router/NotFoundView.tsx:15
 #: components/Router/NotFoundView.tsx:20
 #: components/Router/RouterUtils.tsx:194
-#, fuzzy
 msgid "pageNotFound"
 msgstr "Siden ble ikke funnet"
 
 #. 🟥Used in the heading on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:25
-#, fuzzy
 msgid "nothingWasFound"
 msgstr "Ups! Ingenting ble funnet"
 
 #. 🟥Used in the paragraph on 404 page. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:26
-#, fuzzy
 msgid "pageNotFoundDescription"
 msgstr ""
 "Siden du leter etter kan ha blitt fjernet, fått navnet endret eller er "
@@ -48,7 +43,6 @@ msgstr ""
 
 #. Used in: Components > Router > Not Found View
 #: components/Router/NotFoundView.tsx:29
-#, fuzzy
 msgid "returnToHomepage"
 msgstr "Gå tilbake til hjemmesiden"
 
@@ -56,27 +50,23 @@ msgstr "Gå tilbake til hjemmesiden"
 #: components/Errors/ErrorDialog.tsx:62
 #: components/Errors/FormatError.tsx:197
 #: components/Errors/FormatError.tsx:227
-#, fuzzy
 msgid "errorOccurred"
 msgstr "Beklager, noe har gått galt"
 
 #. Used in: Components > Errors > Toasts
 #: components/Errors/Toasts.tsx:97
-#, fuzzy
 msgid "clickToSeeDetails"
 msgstr "Klikk for å se detaljer"
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:187
-#, fuzzy
 msgid "errorOccurredDescription"
 msgstr ""
-"Beklager, det ser ut til at du har støtt på en feil i Specifice 7 som vi "
+"Beklager, det ser ut til at du har støtt på en feil i Specify 7 som vi "
 "kanskje ikke er klar over."
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:188
-#, fuzzy
 msgid "criticalErrorOccurredDescription"
 msgstr ""
 "For å unngå å ødelegge dataposter, må du starte på nytt fra et trygt sted – "
@@ -84,12 +74,10 @@ msgstr ""
 
 #. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:39
-#, fuzzy
 msgid "errorResolutionDescription"
 msgstr ""
-"Hvis problemet vedvarer, kan du kontakte IT-støtte. Hvis dette er en "
-"Specifice Cloud-database, kan du laste ned feilmeldingen og sende den til "
-"<email />."
+"Hvis problemet vedvarer, kan du kontakte IT-støtte. Hvis dette er en Specify "
+"Cloud-database, kan du laste ned feilmeldingen og sende den til <email />."
 
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 #: components/Errors/ErrorDialog.tsx:56
