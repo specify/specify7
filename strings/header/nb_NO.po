@@ -186,8 +186,9 @@ msgstr "Enkelt søk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:209
+#, fuzzy
 msgid "secondarySearch"
-msgstr "Sekundærsøk"
+msgstr "Utvidet søk"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:127
