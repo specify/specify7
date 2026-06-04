@@ -43,6 +43,7 @@ import { columnOptionsAreDefault } from './linesGetter';
 import {
   BatchEditPrefsView,
   ChangeBaseTable,
+  ClearMappings,
   EmptyDataSetDialog,
   mappingOptionsMenu,
   MappingsControlPanel,
@@ -350,16 +351,18 @@ export function Mapper(props: {
         isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
-            <Button.Small
-              aria-haspopup="dialog"
+            <ClearMappings
+              showConfirmation={(): boolean =>
+                state.lines.some(({ mappingPath }) =>
+                  mappingPathIsComplete(mappingPath)
+                )
+              }
               onClick={(): void =>
                 dispatch({
                   type: 'ResetMappingsAction',
                 })
               }
-            >
-              {wbPlanText.clearMappings()}
-            </Button.Small>
+            />
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>

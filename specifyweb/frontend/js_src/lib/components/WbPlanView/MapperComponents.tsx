@@ -372,6 +372,33 @@ export function ReRunAutoMapper({
   );
 }
 
+export function ClearMappings({
+  onClick: handleClick,
+  showConfirmation,
+}: {
+  readonly onClick: () => void;
+  readonly showConfirmation: () => boolean;
+}): JSX.Element {
+  return (
+    <ButtonWithConfirmation
+      dialogButtons={(confirm) => (
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Button.Warning onClick={confirm}>
+            {wbPlanText.clearMappings()}
+          </Button.Warning>
+        </>
+      )}
+      dialogHeader={wbPlanText.clearMappingsConfirmation()}
+      dialogMessage={wbPlanText.clearMappingsConfirmationDescription()}
+      showConfirmation={showConfirmation}
+      onConfirm={handleClick}
+    >
+      {wbPlanText.clearMappings()}
+    </ButtonWithConfirmation>
+  );
+}
+
 export function ToggleMappingPath({
   showMappingView,
   onClick: handleClick,
