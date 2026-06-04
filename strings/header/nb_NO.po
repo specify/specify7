@@ -85,7 +85,6 @@ msgstr ""
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
-#, fuzzy
 msgid "dwcaExportStarted"
 msgstr "DwCA-eksport startet"
 
@@ -177,7 +176,7 @@ msgstr "Metadata-ressurs"
 #: components/Router/Routes.tsx:33
 #, fuzzy
 msgid "simpleSearch"
-msgstr "Ekspresssøk"
+msgstr "Hurtigsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:203
