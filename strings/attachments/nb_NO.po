@@ -86,7 +86,7 @@ msgstr "Det finnes ingen vedlegg"
 #: components/Attachments/Cell.tsx:147
 #, fuzzy
 msgid "unableToFindRelatedRecord"
-msgstr "Finner ikke relatert oppføring"
+msgstr "Finner ikke tilknyttet post"
 
 #. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:150
