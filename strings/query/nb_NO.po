@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/query/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -226,7 +226,6 @@ msgstr "(hvilket som helst tre)"
 #: components/QueryBuilder/QueryLineTools.tsx:103
 #: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
-#, fuzzy
 msgid "moveUp"
 msgstr "Flytt opp"
 
@@ -236,28 +235,24 @@ msgstr "Flytt opp"
 #: components/QueryBuilder/QueryLineTools.tsx:111
 #: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/Toolbar/ListEdit.tsx:117
-#, fuzzy
 msgid "moveDown"
 msgstr "Flytt ned"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:76
 #: components/QueryBuilder/QueryLineTools.tsx:86
-#, fuzzy
 msgid "sort"
-msgstr "Sortere"
+msgstr "Sorter"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:73
 #: components/QueryBuilder/QueryLineTools.tsx:83
-#, fuzzy
 msgid "ascendingSort"
 msgstr "Stigende sortering"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:75
 #: components/QueryBuilder/QueryLineTools.tsx:85
-#, fuzzy
 msgid "descendingSort"
 msgstr "Synkende sortering"
 
@@ -271,137 +266,115 @@ msgstr "Neger"
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:50
 #: components/QueryBuilder/QueryLineTools.tsx:57
-#, fuzzy
 msgid "showButtonDescription"
 msgstr "Vis i resultatene"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:505
-#, fuzzy
 msgid "aggregatedInline"
 msgstr "(aggregert)"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:506
-#, fuzzy
 msgid "formattedInline"
 msgstr "(formatert)"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:434
-#, fuzzy
 msgid "like"
-msgstr "Like"
+msgstr "Ligner"
 
 #. 🟥Explains the use of special symbols for the "like" query filter. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:435
-#, fuzzy
 msgid "likeDescription"
 msgstr ""
-"Bruk «%» for å finne et hvilket som helst antall tegn.\n"
-"Bruk «_» for å finne et enkelt tegn."
+"Bruk «%» for å matche et hvilket som helst antall tegn.\n"
+"Bruk «_» for å matche et enkelt tegn."
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:442
-#, fuzzy
 msgid "equal"
 msgstr "Lik"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:450
-#, fuzzy
 msgid "greaterThan"
 msgstr "Større enn"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:458
-#, fuzzy
 msgid "lessThan"
 msgstr "Mindre enn"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:466
-#, fuzzy
 msgid "greaterOrEqualTo"
 msgstr "Større enn eller lik"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:474
-#, fuzzy
 msgid "lessOrEqualTo"
-msgstr "Mindre eller lik"
+msgstr "Mindre enn eller lik"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:482
-#, fuzzy
 msgid "true"
-msgstr "ekte"
+msgstr "Sant"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:489
-#, fuzzy
 msgid "false"
-msgstr "falsk"
+msgstr "Usant"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:543
-#, fuzzy
 msgid "trueOrNull"
-msgstr "Sann eller tom"
+msgstr "Sant eller Tom"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:550
-#, fuzzy
 msgid "falseOrNull"
-msgstr "Usann eller tom"
+msgstr "Usann eller Tom"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:496
-#, fuzzy
 msgid "between"
 msgstr "Mellom"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:504
-#, fuzzy
 msgid "in"
 msgstr "I"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:505
-#, fuzzy
 msgid "inDescription"
 msgstr "En kommaseparert liste med verdier"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #: components/Preferences/UserDefinitions.tsx:1550
 #: components/QueryBuilder/FieldFilterSpec.tsx:512
-#, fuzzy
 msgid "contains"
 msgstr "Inneholder"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:536
-#, fuzzy
 msgid "empty"
-msgstr "Tømme"
+msgstr "Tom"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:348
-#, fuzzy
 msgid "and"
 msgstr "og"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Query Builder > Field Filter Spec
 #: components/Preferences/UserDefinitions.tsx:1546
 #: components/QueryBuilder/FieldFilterSpec.tsx:520
-#, fuzzy
 msgid "startsWith"
 msgstr "Starter med"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:528
-#, fuzzy
 msgid "endsWith"
 msgstr "Slutter med"
 
@@ -409,7 +382,6 @@ msgstr "Slutter med"
 #: components/QueryBuilder/FieldFilterTool.tsx:60
 #: components/QueryBuilder/FieldFilterTool.tsx:68
 #: components/QueryBuilder/FieldFilterTool.tsx:96
-#, fuzzy
 msgid "or"
 msgstr "eller"
 
@@ -418,14 +390,12 @@ msgstr "eller"
 #: components/TreeView/CreateTree.tsx:548
 #: utils/__tests__/fieldFormat.test.ts:92
 #: utils/parser/definitions.ts:121
-#, fuzzy
 msgid "yes"
 msgstr "Ja"
 
 #. Used in: Components > Query Builder > Results Table ⬤ Components > Query Builder > To Forms
 #: components/QueryBuilder/ResultsTable.tsx:220
 #: components/QueryBuilder/ToForms.tsx:56
-#, fuzzy
 msgid "queryResults"
 msgstr "Søkeresultater"
 
@@ -433,112 +403,94 @@ msgstr "Søkeresultater"
 #: components/BatchIdentify/index.tsx:778
 #: components/LocalityUpdate/Status.tsx:321
 #: components/QueryBuilder/ToForms.tsx:43
-#, fuzzy
 msgid "browseInForms"
 msgstr "Bla gjennom i skjemaer"
 
 #. Used in: Components > Toolbar > Query Tables Edit
 #: components/Toolbar/QueryTablesEdit.tsx:32
-#, fuzzy
 msgid "configureQueryTables"
-msgstr "Konfigurer synlige spørretabeller"
+msgstr "Konfigurer synlige søketabeller"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:95
 #: components/QueryBuilder/Edit.tsx:148
-#, fuzzy
 msgid "exportQueryForDwca"
-msgstr "Eksportforespørsel for DwCA-definisjon"
+msgstr "Eksporer utvidet søk for DwCA-definisjon"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
-#, fuzzy
 msgid "exportQueryAsReport"
-msgstr "Definer rapport basert på spørring"
+msgstr "Definer rapport basert på søk"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
-#, fuzzy
 msgid "exportQueryAsLabel"
-msgstr "Definer etikett basert på spørring"
+msgstr "Definer etikett basert på søk"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
-#, fuzzy
 msgid "treeMerge"
-msgstr "Tresammenslåing"
+msgstr "Sammenslåing av trær"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
-#, fuzzy
 msgid "treeMove"
-msgstr "Treflytting"
+msgstr "Flytting av trær"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:48
-#, fuzzy
 msgid "treeSynonymize"
-msgstr "Tre synonymisere"
+msgstr "Synonymisering av trær"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
-#, fuzzy
 msgid "treeDesynonymize"
-msgstr "Tre desynonymisere"
+msgstr "Desynonymisering av trær"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:50
-#, fuzzy
 msgid "treeBulkMove"
-msgstr "Masseflytting av tre"
+msgstr "Flytting av flere trær"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:118
-#, fuzzy
 msgid "tooLongErrorMessage"
 msgstr ""
-"Feltverdien er for lang. Maksimalt tillatt lengde er "
+"Teksten i feltet er for lang. Maksimalt tillatt lengde er "
 "{maxLength:number|formatted}"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:216
-#, fuzzy
 msgid "future"
 msgstr "i fremtiden"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:215
-#, fuzzy
 msgid "past"
 msgstr "i fortiden"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:189
-#, fuzzy
 msgid "days"
 msgstr "Dager"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:190
-#, fuzzy
 msgid "weeks"
 msgstr "Uker"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:191
-#, fuzzy
 msgid "months"
 msgstr "Måneder"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:192
-#, fuzzy
 msgid "years"
 msgstr "År"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:376
-#, fuzzy
 msgid "year"
 msgstr "År"
 
@@ -550,7 +502,6 @@ msgstr "År"
 #: components/QueryBuilder/RelativeDate.tsx:197
 #: components/QueryBuilder/RelativeDate.tsx:203
 #: components/QueryBuilder/RelativeDate.tsx:220
-#, fuzzy
 msgid "relativeDate"
 msgstr ""
 "<count>{size:number}</count> <length>{type:string}</length> <direction>"
@@ -558,20 +509,16 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
-#, fuzzy
 msgid "importHiddenFields"
-msgstr "Følgende felt er skjult i spørringen du importerte:"
+msgstr "Følgende felt er skjult i søket du importerte:"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
-#, fuzzy
 msgid "importNoReadPermission"
-msgstr ""
-"Spørringen du importerte inneholder tabeller du ikke har lesetilgang til:"
+msgstr "Søket du importerte inneholder tabeller du ikke har lesetilgang til:"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
-#, fuzzy
 msgid "noReadPermission"
 msgstr "Ingen lesetillatelse"
 
@@ -589,14 +536,12 @@ msgstr "Bytt til absolutt"
 
 #. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:105
-#, fuzzy
 msgid "scrollToEditor"
-msgstr "Bla til redigeringsprogrammet"
+msgstr "Skroll til editor"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:308
 #: components/QueryBuilder/ResultsTable.tsx:205
-#, fuzzy
 msgid "viewRecords"
 msgstr "Vis poster"
 
