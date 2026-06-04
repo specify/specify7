@@ -54,46 +54,39 @@ msgstr "{count:number|formatted} poster"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:425
-#, fuzzy
 msgid "subViewControls"
 msgstr "Under-visning kontroller"
 
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
-#, fuzzy
 msgid "mergeFields"
 msgstr "Slå sammen {field:string}"
 
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:273
 #: components/Preferences/UserDefinitions.tsx:1899
-#, fuzzy
 msgid "autoPopulate"
-msgstr "Automatisk utfylling"
+msgstr "Fyll inn automatisk"
 
 #. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:88
-#, fuzzy
 msgid "dismissFromMerging"
-msgstr "Avvis fra sammenslåing"
+msgstr "Unnta fra sammenslåing"
 
 #. Used in: Components > Merging > Definitions
 #: components/Merging/definitions.ts:23
-#, fuzzy
 msgid "agentContainsGroupDescription"
 msgstr "Agenter inneholder gruppemedlemmer"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
-#, fuzzy
 msgid "recordNotBeMergedReason"
 msgstr "Følgende poster kan ikke slås sammen. Årsak:"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:93
-#, fuzzy
 msgid "someCannotBeMerged"
-msgstr "Enkelte poster kan ikke slås sammen"
+msgstr "Noen poster kan ikke slås sammen"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
