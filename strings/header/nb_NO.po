@@ -155,20 +155,17 @@ msgstr "Velg DwCA"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:213
-#, fuzzy
 msgid "dwcaResource"
 msgstr "DwCA-ressurs"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:52
 #: components/ExportFeed/Editor.tsx:324
-#, fuzzy
 msgid "chooseMetadataResource"
 msgstr "Velg metadataressurs"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
-#, fuzzy
 msgid "metadataResource"
 msgstr "Metadata-ressurs"
 
@@ -183,13 +180,11 @@ msgstr "Ekspresssøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:203
-#, fuzzy
 msgid "primarySearch"
 msgstr "Primærsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:209
-#, fuzzy
 msgid "secondarySearch"
 msgstr "Sekundærsøk"
 
@@ -204,7 +199,6 @@ msgstr "Menyelementer"
 #: components/Header/UserTools.tsx:79
 #: components/Preferences/Renderers.tsx:125
 #: components/Router/OverlayRoutes.tsx:44
-#, fuzzy
 msgid "userTools"
 msgstr "Brukerverktøy"
 
@@ -232,7 +226,6 @@ msgstr ""
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:149
-#, fuzzy
 msgid "incompleteInline"
 msgstr "(ufullstendig)"
 
