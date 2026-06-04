@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Vanessa <vanessa.pitusi@uit.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/batchEdit/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -179,7 +179,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:524
 #, fuzzy
 msgid "deferForNullCheck"
-msgstr "Bruk bare synlige felt for sjekk av tomme poster"
+msgstr "Bruk bare synlige felt for tom postsjekk"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:525
