@@ -95,6 +95,7 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #: components/Header/userToolDefinitions.ts:138
 #: components/LocalityUpdate/index.tsx:83
+#, fuzzy
 msgid "localityUpdateTool"
 msgstr "Verktøy for lokalitetsoppdatering"
 
