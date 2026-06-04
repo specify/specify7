@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 17:56+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"PO-Revision-Date: 2026-06-24 18:18+0000\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -71,9 +71,8 @@ msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
-#, fuzzy
 msgid "feedExportStarted"
-msgstr "Oppdatering av eksportstrøm startet"
+msgstr "Oppdatering av eksport startet"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
@@ -97,7 +96,6 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #: components/Header/userToolDefinitions.ts:138
 #: components/LocalityUpdate/index.tsx:83
-#, fuzzy
 msgid "localityUpdateTool"
 msgstr "Verktøy for lokalitetsoppdatering"
 
@@ -112,7 +110,6 @@ msgstr "Etikettnavn"
 #: components/QueryBuilder/Edit.tsx:209
 #: components/QueryBuilder/Edit.tsx:213
 #: components/QueryBuilder/Edit.tsx:216
-#, fuzzy
 msgid "reportName"
 msgstr "Rapportnavn"
 
@@ -130,21 +127,18 @@ msgstr "Opprett ny rapport"
 #: components/Header/userToolDefinitions.ts:102
 #: components/Router/OverlayRoutes.tsx:175
 #: components/Toolbar/TreeRepair.tsx:173
-#, fuzzy
 msgid "repairTree"
 msgstr "Reparer treet"
 
 #. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:168
-#, fuzzy
 msgid "treeRepairComplete"
 msgstr "Reparasjonen av treet er fullført."
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
-#, fuzzy
 msgid "choose"
-msgstr "Velge"
+msgstr "Velg"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
@@ -174,7 +168,6 @@ msgstr "Metadata-ressurs"
 #: components/Header/ExpressSearchTask.tsx:169
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Router/Routes.tsx:33
-#, fuzzy
 msgid "simpleSearch"
 msgstr "Hurtigsøk"
 
@@ -206,7 +199,6 @@ msgstr "Brukerverktøy"
 
 #. Used in: Components > Header > User Tools
 #: components/Header/UserTools.tsx:78
-#, fuzzy
 msgid "userToolsForUser"
 msgstr "Brukerverktøy ({userName:string})"
 
@@ -233,13 +225,11 @@ msgstr "(ufullstendig)"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:115
-#, fuzzy
 msgid "incompleteLocalization"
 msgstr "Ufullstendig lokalisering"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:127
-#, fuzzy
 msgid "incompleteLocalizationDescription"
 msgstr ""
 "Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan "
@@ -280,7 +270,6 @@ msgstr "Administrative verktøy"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:169
-#, fuzzy
 msgid "developers"
 msgstr "Utvikler-ressurser"
 
@@ -312,6 +301,5 @@ msgstr "Dokumentasjon"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:29
-#, fuzzy
 msgid "chronostratigraphicChart"
 msgstr "Kronostratigrafisk diagram"
