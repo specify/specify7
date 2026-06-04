@@ -133,6 +133,7 @@ msgstr "Reparer treet"
 
 #. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:168
+#, fuzzy
 msgid "treeRepairComplete"
 msgstr "Reparasjonen av treet er fullført."
 
