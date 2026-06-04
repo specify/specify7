@@ -58,7 +58,6 @@ msgstr "{queryName:string} {datePart:string}"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
-#, fuzzy
 msgid "errorInQuery"
 msgstr "Følgende feil ble funnet i spørringen"
 
@@ -74,7 +73,6 @@ msgstr "Bruk spørrebyggeren til å opprette et nytt datasett for massredigering
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2284
-#, fuzzy
 msgid "showRollback"
 msgstr "Vis tilbakestillingsknapp"
 
