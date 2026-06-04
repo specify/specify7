@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 17:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -13,9 +13,8 @@ msgstr ""
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:66
-#, fuzzy
 msgid "skipToContent"
-msgstr "Hopp til innhold"
+msgstr "Gå til innhold"
 
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
@@ -68,7 +67,7 @@ msgstr "Oppdatere eksportfeeden?"
 #: components/ExportFeed/ForceUpdate.tsx:53
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle RSS-eksportfeedelementer nå?"
+msgstr "Oppdatere alle tekniske innholdsstrømmer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
