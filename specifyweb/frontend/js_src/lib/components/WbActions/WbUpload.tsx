@@ -8,6 +8,7 @@ import { wbText } from '../../localization/workbench';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { dialogIcons } from '../Atoms/Icons';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
@@ -137,6 +138,7 @@ export function WbUpload({
 
       {showUpload && (
         <Dialog
+          icon={dialogIcons.question}
           buttons={
             <>
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>

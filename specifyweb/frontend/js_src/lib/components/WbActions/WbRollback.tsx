@@ -4,6 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { WbVariantLocalization } from '../Toolbar/WbsDialog';
@@ -57,6 +58,7 @@ function RollbackConfirmation({
   const loading = React.useContext(LoadingContext);
   return (
     <Dialog
+      icon={dialogIcons.question}
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>

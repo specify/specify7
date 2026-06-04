@@ -274,6 +274,7 @@ export function WbActions({
       )}
       {operationAborted && (
         <Dialog
+          icon={dialogIcons.error}
           buttons={commonText.close()}
           header={
             mode === 'validate'
