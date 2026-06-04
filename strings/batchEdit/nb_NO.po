@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Vanessa <vanessa.pitusi@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/batchEdit/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -85,7 +85,7 @@ msgstr ""
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
 msgid "commit"
-msgstr "Bekreft"
+msgstr "Lagre"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
@@ -211,16 +211,15 @@ msgstr "Aktiver relasjoner"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2281
-#, fuzzy
 msgid "enableRelationshipsDescription"
 msgstr ""
-"Tillater batchredigering av relasjoner i basistabellen. Tilbakerulling er "
+"Tillater masseredigering av relasjoner i basistabellen. Tilbakeføring er "
 "deaktivert når relasjoner er aktivert"
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:125
 msgid "commitDataSet"
-msgstr "Lagre datasett"
+msgstr "Bekreft datasett"
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:128
