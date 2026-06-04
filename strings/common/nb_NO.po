@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-24 17:48+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -14,7 +14,7 @@ msgstr ""
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:28
 msgid "specifySeven"
-msgstr "Spesify 7"
+msgstr "Specify 7"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
 #: components/Preferences/UserDefinitions.tsx:2049
@@ -109,7 +109,7 @@ msgstr "Ingen"
 #: components/WorkBench/DataSetMeta.tsx:163
 #: components/WorkBench/Disambiguation.tsx:40
 msgid "cancel"
-msgstr "Kanseller"
+msgstr "Avbryt"
 
 #. Used in: Components > Batch Identify > Index ⬤ Components > Formatters > List ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables ⬤ Components > Setup Tool > Index
 #: components/BatchIdentify/index.tsx:859
