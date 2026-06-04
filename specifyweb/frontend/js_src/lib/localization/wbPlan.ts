@@ -439,7 +439,7 @@ export const wbPlanText = createDictionary({
   },
   baseTableDescription: {
     'en-us':
-      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Every row in your data set will correspond to a new record in Specify in the base table you select. Click on a base table in the list to get started.",
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. One uploaded, each row in your data set will result in a new record in Specify in the base table you select. Click on a base table in the list to get started.",
   },
   baseTableWithAttachmentsDescription: {
     'en-us':
