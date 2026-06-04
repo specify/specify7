@@ -13,7 +13,6 @@ msgstr ""
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:66
-#, fuzzy
 msgid "skipToContent"
 msgstr "Gå til innhold"
 
@@ -68,7 +67,7 @@ msgstr "Oppdatere eksportstrømmen?"
 #: components/ExportFeed/ForceUpdate.tsx:53
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
+msgstr "Oppdatere alle tekniske innholdsstrømmer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
