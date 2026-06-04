@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/interactions/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -49,7 +49,7 @@ msgstr "{tableLabel:string} poster"
 #: components/Interactions/InteractionDialog.tsx:578
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr "forberedelser"
+msgstr "Ingen forberedelser ble funnet for følgende poster:"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:587
@@ -61,7 +61,7 @@ msgstr ""
 #: components/Interactions/InteractionDialog.tsx:568
 #, fuzzy
 msgid "problemsFound"
-msgstr "Det er problemer med inntasting"
+msgstr "Det er problemer med inntastingen:"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:497
