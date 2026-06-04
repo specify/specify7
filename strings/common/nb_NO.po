@@ -965,9 +965,8 @@ msgstr "Import"
 #: components/Errors/ErrorDialog.tsx:177
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
-#, fuzzy
 msgid "dismiss"
-msgstr "Avskjedige"
+msgstr "Avvis"
 
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 #: components/DataModel/specifyTable.ts:281
@@ -1043,9 +1042,8 @@ msgstr "Utvid alle"
 #: components/FormCells/FormTable.tsx:380
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Header/index.tsx:154
-#, fuzzy
 msgid "collapse"
-msgstr "Kollapse"
+msgstr "Skjul"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
