@@ -282,7 +282,7 @@ msgstr "Administrative verktøy"
 #: components/Header/userToolDefinitions.ts:169
 #, fuzzy
 msgid "developers"
-msgstr "Utviklerressurser"
+msgstr "Utvikler-ressurser"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:159
