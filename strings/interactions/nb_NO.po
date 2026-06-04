@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:08+0000\n"
+"PO-Revision-Date: 2026-06-24 18:12+0000\n"
 "Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/interactions/nb_NO/>\n"
