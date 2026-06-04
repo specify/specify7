@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-24 17:56+0000\n"
+"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -13,35 +13,30 @@ msgstr ""
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:66
-#, fuzzy
 msgid "skipToContent"
 msgstr "Hopp til innhold"
 
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
-#, fuzzy
 msgid "main"
 msgstr "Hoved"
 
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #: components/Header/ChooseCollection.tsx:75
 #: components/Header/ChooseCollection.tsx:81
-#, fuzzy
 msgid "currentCollection"
-msgstr "Nåværende {collectionTable:string}"
+msgstr "Gjeldende [collectionTable:string}"
 
 #. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 #: components/DataEntryTables/index.tsx:43
 #: components/Header/menuItemDefinitions.ts:43
 #: components/Router/OverlayRoutes.tsx:72
-#, fuzzy
 msgid "dataEntry"
 msgstr "Dataregistrering"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:124
 #: components/Router/OverlayRoutes.tsx:199
-#, fuzzy
 msgid "makeDwca"
 msgstr "Opprett DwC-arkiv"
 
@@ -58,7 +53,6 @@ msgstr "Sikkerhetskopiering av database"
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:130
 #: components/Router/OverlayRoutes.tsx:207
-#, fuzzy
 msgid "updateExportFeed"
 msgstr "Oppdater RSS-feed"
 
@@ -66,7 +60,7 @@ msgstr "Oppdater RSS-feed"
 #: components/ExportFeed/ForceUpdate.tsx:50
 #, fuzzy
 msgid "updateExportFeedConfirmation"
-msgstr "Oppdatere eksportfeeden?"
+msgstr "Oppdatere eksportstrømmen?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
