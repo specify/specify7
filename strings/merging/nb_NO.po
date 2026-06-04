@@ -96,66 +96,56 @@ msgstr "Slå sammen andre"
 
 #. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:411
-#, fuzzy
 msgid "warningMergeText"
 msgstr ""
 "Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre "
 "andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig "
 "utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan "
-"dette påvirker opplevelsen deres. Denne sammenslåingen kan ikke angres."
+"dette påvirker opplevelsen deres. Denne sammenslåingen kan ikke reverseres."
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:24
 #: components/Merging/Status.tsx:25
-#, fuzzy
 msgid "mergeFailed"
 msgstr "Sammenslåingen mislyktes"
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:26
-#, fuzzy
 msgid "mergeSucceeded"
 msgstr "Sammenslåingen var vellykket"
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:23
-#, fuzzy
 msgid "merging"
 msgstr "Sammenslåing"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:161
-#, fuzzy
 msgid "mergingHasStarted"
 msgstr "Sammenslåingsprosessen har startet."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:216
-#, fuzzy
 msgid "mergingHasSucceeded"
-msgstr "Sammenslåingsprosessen har vært vellykket."
+msgstr "Sammenslåingsprosessen var vellykket."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:178
-#, fuzzy
 msgid "mergingHasFailed"
 msgstr "Sammenslåingsprosessen har mislyktes."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:196
-#, fuzzy
 msgid "mergingHasBeenCanceled"
 msgstr "Sammenslåingsprosessen er avbrutt."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:181
-#, fuzzy
 msgid "retryMerge"
-msgstr "Prøv å slå sammen på nytt."
+msgstr "Prøv sammenslåing på nytt."
 
 #. Used in: Components > Merging > Status
 #: components/Merging/Status.tsx:144
-#, fuzzy
 msgid "mergingWentWrong"
 msgstr "Noe gikk galt under sammenslåingsprosessen."
 
@@ -169,6 +159,5 @@ msgstr "Noe gikk galt under sammenslåingsprosessen."
 #: components/Molecules/LinkedRecords.tsx:90
 #: components/Molecules/LinkedRecords.tsx:94
 #: components/Molecules/LinkedRecords.tsx:129
-#, fuzzy
 msgid "linkedRecords"
 msgstr "Tilknyttede poster"
