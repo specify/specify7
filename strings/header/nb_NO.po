@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 17:01+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -15,7 +15,7 @@ msgstr ""
 #: components/Core/Main.tsx:66
 #, fuzzy
 msgid "skipToContent"
-msgstr "Gå til innhold"
+msgstr "Hopp til innhold"
 
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
