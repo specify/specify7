@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:00+0000\n"
+"PO-Revision-Date: 2026-06-24 18:01+0000\n"
 "Last-Translator: Vanessa <vanessa.pitusi@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/batchEdit/nb_NO/>\n"
@@ -30,7 +30,7 @@ msgstr "Innstillinger for masseredigering"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2261
 msgid "numberOfRecords"
-msgstr "Antall treff valgt fra spørringen"
+msgstr "Antall treff valgt fra søket"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
@@ -40,8 +40,7 @@ msgstr "Feltet støttes ikke ved masseredigering. Fjern feltet eller skjul det."
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
 msgid "addTreeRank"
-msgstr ""
-"Følgende ranger vil bli lagt til i spørringen for å aktivere masseredigering"
+msgstr "Følgende ranger vil bli lagt til i søket for å aktivere masseredigering"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:89
@@ -59,17 +58,17 @@ msgstr "{queryName:string} {datePart:string}"
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
 msgid "errorInQuery"
-msgstr "Følgende feil ble funnet i spørringen"
+msgstr "Følgende feil ble funnet i søket"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
 msgid "missingRanksInQuery"
-msgstr "Spørringen krever flere ranger for massredigering"
+msgstr "Søket krever flere ranger for massredigering"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
 msgid "createUpdateDataSetInstructions"
-msgstr "Bruk spørrebyggeren til å opprette et nytt datasett for massredigering"
+msgstr "Bruk søkbyggeren til å opprette et nytt datasett for masseredigering"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2284
@@ -78,7 +77,6 @@ msgstr "Vis tilbakestillingsknapp"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2289
-#, fuzzy
 msgid "showRollbackDescription"
 msgstr ""
 "Tilbakeføring i masseredigering er en eksperimentell funksjon. Denne "
@@ -86,89 +84,76 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
-#, fuzzy
 msgid "commit"
-msgstr "Begå"
+msgstr "Bekreft"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
-#, fuzzy
 msgid "startCommitDescription"
 msgstr ""
-"Når datasettet er lagret, vil det oppdatere, legge til og slette dataene fra "
-"regnearket til Specify-databasen."
+"Når datasettet bekreftes, blir dataene i regnearket oppdatert, lagt til og "
+"slettet i Specify-databasen."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
-#, fuzzy
 msgid "startRevertDescription"
 msgstr ""
-"Tilbakestilling av datasettet vil oppdatere verdiene på nytt, slette "
-"opprettede poster og opprette nye poster"
+"Tilbakeføring av datasettet vil gjenopprette tidligere verdier, slette "
+"opprettede poster og gjenopprette slettede poster"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:126
-#, fuzzy
 msgid "commitSuccessfulDescription"
 msgstr ""
-"Klikk på «Resultater»-knappen for å se antall poster som er berørt i hver "
-"databasetabell."
+"Klikk på «Resultater»-knappen for å se antall treff som blir berørt i hver "
+"databasetabell"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
-#, fuzzy
 msgid "dateSetRevertDescription"
 msgstr ""
-"Dette tilbakerullede datasettet er lagret, men det kan ikke redigeres. Kjør "
-"spørringen på nytt."
+"Dette tilbakerullede datasettet er lagret, men kan ikke redigeres. Kjør "
+"søket på nytt"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
-#, fuzzy
 msgid "committing"
-msgstr "Forpliktelse"
+msgstr "Lagrer datasettet"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
-#, fuzzy
 msgid "beStatusCommit"
-msgstr "Status for iverksettelse av datasett"
+msgstr "Lagringsstatus for datasett"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
-#, fuzzy
 msgid "startCommit"
-msgstr "Starte datasett-iverksettelse?"
+msgstr "Starte lagring av datasettet?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
-#, fuzzy
 msgid "commitErrors"
-msgstr "Utføring mislyktes på grunn av feilceller"
+msgstr "Lagring mislyktes på grunn av feil i celler"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
-#, fuzzy
 msgid "commitErrorsDescription"
-msgstr "Iverksettelsen mislyktes på grunn av én eller flere celleverdifeil."
+msgstr "Lagringen mislyktes på grunn av én eller flere feil i celleverdier."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
-#, fuzzy
 msgid "commitCancelled"
-msgstr "Forpliktelse avbrutt"
+msgstr "Lagring avbrutt"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
-#, fuzzy
 msgid "commitCancelledDescription"
-msgstr "Beskrivelse av forpliktelse avbrutt"
+msgstr "Forklaring på avbrutt lagring"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:130
-#, fuzzy
 msgid "commitSuccessful"
-msgstr "Utføring fullført uten feil"
+msgstr "Lagring fullført uten feil"
 
 #. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
