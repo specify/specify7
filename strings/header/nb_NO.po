@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 17:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -79,8 +79,7 @@ msgstr "Oppdatering av eksport startet"
 #, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
-"Oppdatering startet. Du vil motta et varsel for hvert feedelement som "
-"oppdateres."
+"Oppdatering startet. Du vil motta et varsel for hvert element som oppdateres."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
