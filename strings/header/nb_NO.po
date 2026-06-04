@@ -254,6 +254,7 @@ msgstr "Tabeller API"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:186
+#, fuzzy
 msgid "operationsApi"
 msgstr "Operasjoner API"
 
