@@ -222,7 +222,7 @@ msgstr "Hjelp Lokaliser Specify 7"
 #, fuzzy
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
-"Vi vil sette stor pris på din støtte med å lokalisere Specifice 7-"
+"Vi vil sette stor pris på din støtte med å lokalisere Specificy 7-"
 "brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene "
 "</link>."
 
