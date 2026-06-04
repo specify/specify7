@@ -778,4 +778,24 @@ export const wbPlanText = createDictionary({
       'O conjunto de dados selecionado não possui um plano de upload. Selecione outro.',
     'hr-hr': 'Odabrani skup podataka nema plan prijenosa. Odaberite drugi.',
   },
+  invalidJsonFile: {
+    'en-us': 'The selected file is not valid JSON.',
+    'ru-ru': 'Выбранный файл не является допустимым JSON.',
+    'es-es': 'El archivo seleccionado no es un JSON válido.',
+    'fr-fr': 'Le fichier sélectionné n\'est pas un JSON valide.',
+    'uk-ua': 'Вибраний файл не є дійсним JSON.',
+    'de-ch': 'Die ausgewählte Datei ist kein gültiges JSON.',
+    'pt-br': 'O arquivo selecionado não é um JSON válido.',
+    'hr-hr': 'Odabrana datoteka nije valjani JSON.',
+  },
+  invalidJsonFileDescription: {
+    'en-us': 'Please select a valid JSON data set mapping file.',
+    'ru-ru': 'Пожалуйста, выберите допустимый файл JSON.',
+    'es-es': 'Seleccione un archivo JSON válido.',
+    'fr-fr': 'Veuillez sélectionner un fichier JSON valide.',
+    'uk-ua': 'Будь ласка, виберіть дійсний файл JSON.',
+    'de-ch': 'Bitte wählen Sie eine gültige JSON-Datei aus.',
+    'pt-br': 'Por favor, selecione um arquivo JSON válido.',
+    'hr-hr': 'Odaberite valjani JSON file.',
+  }
 } as const);
