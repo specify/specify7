@@ -67,7 +67,7 @@ msgstr "Oppdatere eksportstrømmen?"
 #: components/ExportFeed/ForceUpdate.tsx:53
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle RSS-eksportfeedelementer nå?"
+msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
