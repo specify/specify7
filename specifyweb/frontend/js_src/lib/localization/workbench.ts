@@ -680,7 +680,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Validacija otkazana',
   },
   validationCanceledDescription: {
-    'en-us': 'The validation operation was cancelled. No changes were made to the database.',
+    'en-us': 'The validation operation was cancelled. Please try again before uploading.',
     'ru-ru': 'Проверка набора данных отменена.',
     'es-es': 'Se canceló la validación del conjunto de datos.',
     'fr-fr': "Validation de l'ensemble de données annulée.",
