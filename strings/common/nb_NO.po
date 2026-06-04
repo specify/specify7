@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 17:48+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-06-24 17:53+0000\n"
+"Last-Translator: Rasmus Worsøe Havmøller <rasmus.w.havmoller@uia.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -316,7 +316,6 @@ msgstr "Lukk"
 #. Used in: Components > Header > Express Search Task ⬤ Components > Home Page > Index
 #: components/Header/ExpressSearchTask.tsx:189
 #: components/HomePage/index.tsx:47
-#, fuzzy
 msgid "configureExpressSearch"
 msgstr "Konfigurer ekspresssøk"
 
@@ -358,7 +357,7 @@ msgstr ""
 #: components/WbToolkit/CoordinateConverter.tsx:229
 #: components/WorkBench/Disambiguation.tsx:48
 msgid "apply"
-msgstr "Bruk"
+msgstr "Anvend"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/WbToolkit/CoordinateConverter.tsx:277
