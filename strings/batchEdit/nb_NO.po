@@ -179,7 +179,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:524
 #, fuzzy
 msgid "deferForNullCheck"
-msgstr "Bruk bare synlige felt for tom postsjekk"
+msgstr "Bruk bare synlige felt for sjekk av tomme poster"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:525
