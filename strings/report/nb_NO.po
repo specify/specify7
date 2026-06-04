@@ -92,7 +92,6 @@ msgstr "Denne rapporten har ingen tilknyttet søk"
 
 #. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:61
-#, fuzzy
 msgid "missingReport"
 msgstr "Manglende rapport"
 
