@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 17:54+0000\n"
+"PO-Revision-Date: 2026-06-24 18:21+0000\n"
 "Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
@@ -671,7 +671,6 @@ msgstr "Rediger"
 #. Used in: Components > Reports > Report ⬤ Components > Security > User Components
 #: components/Reports/Report.tsx:202
 #: components/Security/UserComponents.tsx:188
-#, fuzzy
 msgid "ignore"
 msgstr "Overse"
 
@@ -705,7 +704,6 @@ msgstr "Oppdater"
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
 #: components/WbPlanView/navigator.ts:663
-#, fuzzy
 msgid "fullDate"
 msgstr "Full dato"
 
