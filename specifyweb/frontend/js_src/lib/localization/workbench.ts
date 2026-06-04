@@ -680,7 +680,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Validacija otkazana',
   },
   validationCanceledDescription: {
-    'en-us': 'Data Set Validation cancelled.',
+    'en-us': 'The validation operation was cancelled. No changes were made to the database.',
     'ru-ru': 'Проверка набора данных отменена.',
     'es-es': 'Se canceló la validación del conjunto de datos.',
     'fr-fr': "Validation de l'ensemble de données annulée.",
@@ -700,7 +700,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Vraćanje otkazano',
   },
   rollbackCanceledDescription: {
-    'en-us': 'Data Set Rollback cancelled.',
+    'en-us': 'The rollback was cancelled. No changes were made to the database.',
     'ru-ru': 'Откат набора данных отменен.',
     'es-es': 'Reversión del conjunto de datos cancelada.',
     'fr-fr': 'Restauration de l’ensemble de données annulée.',
@@ -720,7 +720,7 @@ export const wbText = createDictionary({
     'hr-hr': 'Prijenos otkazan',
   },
   uploadCanceledDescription: {
-    'en-us': 'Data Set Upload cancelled.',
+    'en-us': 'The upload was cancelled. No changes were made to the database.',
     'ru-ru': 'Загрузка набора данных отменена.',
     'es-es': 'Carga de conjunto de datos cancelada.',
     'fr-fr': "Téléchargement de l'ensemble de données annulé.",
