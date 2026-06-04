@@ -43,7 +43,7 @@ msgstr "Det er ingen interaksjoner knyttet til dette preparatet."
 #: components/FormCommands/ShowTransactions.tsx:131
 #, fuzzy
 msgid "tableLabelRecords"
-msgstr ""
+msgstr "Post"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:578
