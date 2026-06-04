@@ -191,17 +191,16 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:215
-#, fuzzy
 msgid "batchEditDisabled"
 msgstr ""
-"Grupperedigering er deaktivert for systemtabeller og omfangshierarktabeller"
+"Masseredigering er deaktivert for systemtabeller og tabeller i skop- og "
+"hierarkitabeller"
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:390
-#, fuzzy
 msgid "cannotEditAfterRollback"
 msgstr ""
-"(Datasett for batchredigering kan ikke redigeres etter tilbakestilling – "
+"(Datasett for masseredigering kan ikke redigeres etter tilbakeføring – "
 "skrivebeskyttet)"
 
 #. Used in: Components > Preferences > User Definitions
