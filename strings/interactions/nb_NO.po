@@ -49,7 +49,7 @@ msgstr "{tableLabel:string} poster"
 #: components/Interactions/InteractionDialog.tsx:578
 #, fuzzy
 msgid "preparationsNotFoundFor"
-msgstr ""
+msgstr "forberedelser"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:587
