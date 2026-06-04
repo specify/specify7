@@ -6,13 +6,16 @@ import { useCachedState } from '../../hooks/useCachedState';
 import { useId } from '../../hooks/useId';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { IR, RA, RR } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
+import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
+import { datasetVariants } from '../WbUtils/datasetVariants';
 import { strictGetTable } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
@@ -75,6 +78,10 @@ export function MappingsControlPanel({
         />
         {wbPlanText.revealHiddenFormFields()}
       </Label.Inline>
+      <span className="-ml-2 flex-1" />
+      <Link.NewTab href={datasetVariants.workbench.documentationUrl}>
+        {headerText.documentation()}
+      </Link.NewTab>
     </div>
   );
 }
