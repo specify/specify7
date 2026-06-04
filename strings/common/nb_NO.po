@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-24 17:53+0000\n"
-"Last-Translator: Rasmus Worsøe Havmøller <rasmus.w.havmoller@uia.no>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -116,13 +116,11 @@ msgstr "Avbryt"
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
 #: components/SetupTool/index.tsx:299
-#, fuzzy
 msgid "back"
 msgstr "Tilbake"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
-#, fuzzy
 msgid "skip"
 msgstr "Hopp over"
 
@@ -322,7 +320,6 @@ msgstr "Konfigurer ekspresssøk"
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:120
 #: components/Header/ExpressSearchTask.tsx:172
-#, fuzzy
 msgid "expressSearchInstructionsTitle"
 msgstr "Søketips"
 
@@ -331,22 +328,20 @@ msgstr "Søketips"
 msgid "expressSearchInstructions"
 msgstr ""
 "Skill flere søkeord med mellomrom, bruk % hvor som helst, * i begynnelsen "
-"eller slutten, og sett alle søkeord sammen i anførselstegn for eksakte treff "
-"med flere ord."
+"eller slutten, og omslutt søkeord med anførselstegn for eksakte treff med "
+"flere ord."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
-#, fuzzy
 msgid "expressSearchDateFormats"
-msgstr "Datoer kan søkes etter enten i formatet ÅÅÅÅ-MM-DD eller MM/DD/ÅÅÅÅ."
+msgstr "Datoer kan søkes på formatene ÅÅÅÅ-MM-DD eller MM/DD/ÅÅÅÅ."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:133
-#, fuzzy
 msgid "expressSearchPhraseExample"
 msgstr ""
 "For å søke etter et ord med mellomrom, sett frasen i anførselstegn, for "
-"eksempel «Clinton Lake»."
+"eksempel \"Clinton Lake\"."
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/Interactions/LoanReturn.tsx:203
