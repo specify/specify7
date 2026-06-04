@@ -232,20 +232,18 @@ msgstr ""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:226
-#, fuzzy
 msgid "noCollectionInQuery"
 msgstr "Ingen samling funnet i spørringen for tabell {table:string}"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:228
-#, fuzzy
 msgid "invalidDatePart"
 msgstr ""
-"Ugyldig datodel «{datePart:string}». Forventet én av {validDateParts:string}"
+"Ugyldig del av dato «{datePart:string}». Forventet én av "
+"{validDateParts:string}"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:233
-#, fuzzy
 msgid "invalidUploadStatus"
 msgstr ""
 "Ugyldig status «{uploadStatus:string}» for {operation:string}. Forventet "
@@ -253,7 +251,6 @@ msgstr ""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:239
-#, fuzzy
 msgid "datasetAlreadyUploaded"
 msgstr "Datasettet er allerede lastet opp"
 
@@ -267,7 +264,6 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:287
-#, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Flere tredefinisjoner på rad"
 
@@ -279,14 +275,12 @@ msgstr "Ugyldig type for valgte trerangering(er)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:290
-#, fuzzy
 msgid "invalidComponentType"
 msgstr "Ugyldig {componentType: string} for valgte trerangering(er)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:310
 #: components/WorkBench/resultsParser.ts:316
-#, fuzzy
 msgid "attachmentNotFound"
 msgstr "Ett eller flere vedlegg finnes ikke. De kan ha blitt slettet."
 
@@ -298,6 +292,5 @@ msgstr "Vedleggets måltabell støtter ikke vedlegg."
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:314
-#, fuzzy
 msgid "attachmentAlreadyLinked"
 msgstr "Ett eller flere vedlegg er allerede knyttet til en opplastet oppføring."
