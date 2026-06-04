@@ -90,7 +90,6 @@ msgstr "DwCA-eksport startet"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:132
-#, fuzzy
 msgid "dwcaExportStartedDescription"
 msgstr ""
 "Eksporten har startet. Du vil motta et varsel når eksporten er fullført."
@@ -106,7 +105,6 @@ msgstr "Verktøy for lokalitetsoppdatering"
 #: components/QueryBuilder/Edit.tsx:209
 #: components/QueryBuilder/Edit.tsx:213
 #: components/QueryBuilder/Edit.tsx:216
-#, fuzzy
 msgid "labelName"
 msgstr "Etikettnavn"
 
@@ -120,13 +118,11 @@ msgstr "Rapportnavn"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:178
-#, fuzzy
 msgid "createLabel"
 msgstr "Opprett ny etikett"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:178
-#, fuzzy
 msgid "createReport"
 msgstr "Opprett ny rapport"
 
