@@ -66,160 +66,133 @@ msgstr "Noen"
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:342
 #: components/QueryBuilder/FieldFilterSpec.tsx:392
-#, fuzzy
 msgid "startValue"
 msgstr "Startverdi"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:353
-#, fuzzy
 msgid "endValue"
 msgstr "Sluttverdi"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 #: components/QueryBuilder/Components.tsx:111
 #: components/QueryBuilder/Save.tsx:73
-#, fuzzy
 msgid "saveQuery"
-msgstr "Lagre spørring"
+msgstr "Lagre utvidet søk"
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:73
-#, fuzzy
 msgid "saveClonedQuery"
-msgstr "Lagre spørring som..."
+msgstr "Lagre utvidet søk som..."
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:76
-#, fuzzy
 msgid "saveClonedQueryDescription"
 msgstr ""
-"Spørringen lagres med et nytt navn, og den nåværende spørringen forblir "
-"uendret."
+"Søket blir lagret med et nytt navn, og det originale søket forblir uendret."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
-#, fuzzy
 msgid "queryDeleteIncomplete"
-msgstr "Spørredefinisjonen inneholder ufullstendige felt"
+msgstr "Søk-definisjonen inneholder ufullstendige felt"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:173
-#, fuzzy
 msgid "queryDeleteIncompleteDescription"
-msgstr "Det er ufullførte felt i spørringsdefinisjonen. Vil du fjerne dem?"
+msgstr "Det er ufullførte felt i søk-definisjonen. Vil du fjerne dem?"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:188
-#, fuzzy
 msgid "queryUnloadProtect"
-msgstr "Den nye eller endrede spørredefinisjonen er ikke lagret"
+msgstr "Den nye eller endrede søk-definisjonen er ikke lagret"
 
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:267
-#, fuzzy
 msgid "recordSetToQuery"
-msgstr "Opprette en {recordSetTable:string} fra spørring"
+msgstr "Et {recordSetTable:string} opprettes fra utvidet søk"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/QueryBuilder/Components.tsx:272
 #: components/QueryBuilder/CreateRecordSet.tsx:134
-#, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "Genererer {recordSetTable:string}..."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:289
-#, fuzzy
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Opprettet"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:153
-#, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "Kan ikke eksportere til KML"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:156
-#, fuzzy
 msgid "missingCoordinatesForKmlDescription"
-msgstr "Legg til felt for breddegrad og lengdegrad i spørringen."
+msgstr "Vennligst legg til felt for breddegrad og lengdegrad i søket."
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:145
-#, fuzzy
 msgid "queryExportStarted"
 msgstr "Eksportfil opprettes"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:148
-#, fuzzy
 msgid "queryExportStartedDescription"
-msgstr ""
-"Det vises et varsel når eksportfilen er fullført og klar for nedlasting."
+msgstr "En melding vises når eksportfilen er ferdig og klar for nedlasting."
 
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 #: components/PickLists/index.tsx:188
 #: components/QueryBuilder/Formatter.tsx:220
 #: components/SchemaConfig/Components.tsx:90
-#, fuzzy
 msgid "invalidPicklistValue"
 msgstr "{value:string} (gjeldende, ugyldig verdi)"
 
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:91
-#, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
-"Spørsmål: \"{queryName:string}\" på {recordSetTable:string}: \""
+"Utvidet søk: \"{queryName:string}\" på {recordSetTable:string}: \""
 "{recordSetName:string}\""
 
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:213
-#, fuzzy
 msgid "treeQueryName"
-msgstr "{tableName:string} ved bruk av «{nodeFullName:string}»"
+msgstr "{tableName:string} bruker «{nodeFullName:string}»"
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:489
-#, fuzzy
 msgid "newButtonDescription"
 msgstr "Legg til nytt felt"
 
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:85
-#, fuzzy
 msgid "countOnly"
-msgstr "Telle"
+msgstr "Antall"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:72
-#, fuzzy
 msgid "distinct"
 msgstr "Distinkt"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:58
-#, fuzzy
 msgid "series"
 msgstr "Serie"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:81
-#, fuzzy
 msgid "searchSynonyms"
-msgstr "Søk etter synonymer"
+msgstr "Søk i synonymer"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:175
-#, fuzzy
 msgid "createCsv"
 msgstr "Opprett CSV"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:193
-#, fuzzy
 msgid "createKml"
 msgstr "Opprett KML"
 
@@ -228,19 +201,16 @@ msgstr "Opprett KML"
 #: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/WorkBench/RecordSet.tsx:43
-#, fuzzy
 msgid "createRecordSet"
 msgstr "Opprett {recordSetTable:string}"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:122
-#, fuzzy
 msgid "saveAs"
 msgstr "Lagre som"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:448
-#, fuzzy
 msgid "anyRank"
 msgstr "(hvilken som helst rang)"
 
