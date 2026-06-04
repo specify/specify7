@@ -19,6 +19,12 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Mapeador de Dados',
     'hr-hr': 'Maper podataka',
   },
+  importExportMapping: {
+    'en-us': 'Import/Export Mapping'
+  },
+  importExportMappingDescription: {
+    'en-us': 'You can export the current data set mapping as a JSON file or import an existing data set mapping.',
+  },
   noUploadPlan: {
     'en-us': 'No Data Set Mapping is Defined',
     'ru-ru': 'План загрузки не определен',

@@ -7,7 +7,6 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
-import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { overwriteReadOnly } from '../../utils/types';
@@ -37,7 +36,7 @@ export function WbRawPlan({
         aria-pressed={showRawPlan}
         onClick={openRawPlan}
       >
-        {wbText.uploadPlan()}
+        {wbPlanText.importExportMapping()}
       </Button.Small>
       {showRawPlan && (
         <RawUploadPlan
@@ -115,11 +114,6 @@ function RawUploadPlan({
         icon={icons.clipboard}
         buttons={
           <>
-            <Button.Info
-              onClick={(): void => void downloadFile(`${name}.json`, uploadPlan)}
-            >
-              {commonText.export()}
-            </Button.Info>
             <input
               accept=".json"
               className="sr-only"
@@ -131,6 +125,11 @@ function RawUploadPlan({
               onClick={(): void => fileInputRef.current?.click()}
             >
               {commonText.import()}
+            </Button.Info>
+            <Button.Info
+              onClick={(): void => void downloadFile(`${name}.json`, uploadPlan)}
+            >
+              {commonText.export()}
             </Button.Info>
             <span className="-ml-4 flex-1" />
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
@@ -160,9 +159,12 @@ function RawUploadPlan({
             </Button.Save>
           </>
         }
-        header={wbPlanText.dataMapper()}
+        header={wbPlanText.importExportMapping()}
         onClose={handleClose}
       >
+        <p className="text-wrap mb-4">
+          {wbPlanText.importExportMappingDescription()}
+        </p>
         <AutoGrowTextArea value={uploadPlan} onValueChange={setUploadPlane} />
       </Dialog>
     </>
