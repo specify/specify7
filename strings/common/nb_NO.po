@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Rasmus Worsøe Havmøller <rasmus.w.havmoller@uia.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -311,14 +311,12 @@ msgstr "Skape"
 #: components/WorkBench/WbAttachmentsPreview.tsx:261
 #: components/WorkBench/WbAttachmentsPreview.tsx:560
 #: components/WorkBench/useDisambiguationDialog.tsx:104
-#, fuzzy
 msgid "close"
-msgstr "Lukke"
+msgstr "Lukk"
 
 #. Used in: Components > Header > Express Search Task ⬤ Components > Home Page > Index
 #: components/Header/ExpressSearchTask.tsx:189
 #: components/HomePage/index.tsx:47
-#, fuzzy
 msgid "configureExpressSearch"
 msgstr "Konfigurer ekspresssøk"
 
@@ -360,9 +358,8 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:556
 #: components/WbToolkit/CoordinateConverter.tsx:229
 #: components/WorkBench/Disambiguation.tsx:48
-#, fuzzy
 msgid "apply"
-msgstr "Søke"
+msgstr "Anvend"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/WbToolkit/CoordinateConverter.tsx:277
@@ -407,9 +404,8 @@ msgstr "Slett ikke-tilordnede kolonner"
 #: components/WbPlanView/Mapper.tsx:479
 #: components/WbToolkit/DevShowPlan.tsx:115
 #: components/WorkBench/DataSetMeta.tsx:191
-#, fuzzy
 msgid "save"
-msgstr "Spare"
+msgstr "Lagre"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
 #: components/Atoms/DataEntry.tsx:148
