@@ -19,9 +19,6 @@ export const wbText = createDictionary({
     'pt-br': 'Bancada de trabalho',
     'hr-hr': 'Radni stol',
   },
-  uploadPlan: {
-    'en-us': 'Mapping Plan',
-  },
   rollback: {
     'en-us': 'Rollback',
     'ru-ru': 'Откат',
