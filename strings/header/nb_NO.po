@@ -215,7 +215,7 @@ msgstr "Brukerverktøy ({userName:string})"
 #: components/Toolbar/Language.tsx:155
 #, fuzzy
 msgid "helpLocalizeSpecify"
-msgstr "Hjelp Lokaliser Spesifiser 7"
+msgstr "Hjelp Lokaliser Specify 7"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
