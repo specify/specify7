@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 17:01+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -67,7 +67,7 @@ msgstr "Oppdatere eksportfeeden?"
 #: components/ExportFeed/ForceUpdate.tsx:53
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle tekniske innholdsstrømmer nå?"
+msgstr "Oppdatere alle RSS-eksportfeedelementer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
@@ -79,7 +79,8 @@ msgstr "Oppdatering av eksport startet"
 #, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
-"Oppdatering startet. Du vil motta et varsel for hvert element som oppdateres."
+"Oppdatering startet. Du vil motta et varsel for hvert feedelement som "
+"oppdateres."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
@@ -177,7 +178,7 @@ msgstr "Hurtigsøk"
 #: components/Header/ExpressSearchTask.tsx:203
 #, fuzzy
 msgid "primarySearch"
-msgstr "Enkelt søk"
+msgstr "Primærsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:209
