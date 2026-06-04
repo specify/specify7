@@ -92,7 +92,7 @@ msgstr "Finner ikke tilknyttet post"
 #: components/Attachments/Cell.tsx:150
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
-msgstr "Finner ikke en oppføring som dette vedlegget er relatert til."
+msgstr "Finner ikke en post som dette vedlegget er relatert til."
 
 #. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
