@@ -40,7 +40,6 @@ msgstr "Vedlegg"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:224
-#, fuzzy
 msgid "scale"
 msgstr "Skala"
 
