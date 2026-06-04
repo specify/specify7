@@ -64,15 +64,13 @@ msgstr "Følgende feil ble funnet i spørringen"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
-#, fuzzy
 msgid "missingRanksInQuery"
-msgstr "Spørringen krever flere ranger for batchredigering"
+msgstr "Spørringen krever flere ranger for massredigering"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
-#, fuzzy
 msgid "createUpdateDataSetInstructions"
-msgstr "Bruk spørrebyggeren til å opprette et nytt datasett for batchredigering"
+msgstr "Bruk spørrebyggeren til å opprette et nytt datasett for massredigering"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2284
