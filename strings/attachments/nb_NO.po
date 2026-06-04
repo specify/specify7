@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:03+0000\n"
+"PO-Revision-Date: 2026-06-24 18:04+0000\n"
 "Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
@@ -65,7 +65,6 @@ msgstr "Konfigurer vedleggsserveren din"
 #: components/Attachments/index.tsx:210
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1413
-#, fuzzy
 msgid "orderBy"
 msgstr "Sorter etter"
 
@@ -73,7 +72,6 @@ msgstr "Sorter etter"
 #: components/Attachments/Plugin.tsx:168
 #: components/WbImportAttachments/index.tsx:140
 #: components/WorkBench/WbAttachmentsPreview.tsx:178
-#, fuzzy
 msgid "uploadingInline"
 msgstr "Laster opp…"
 
@@ -81,7 +79,6 @@ msgstr "Laster opp…"
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:176
 #: components/AttachmentsBulkImport/utils.ts:463
-#, fuzzy
 msgid "noAttachments"
 msgstr "Det finnes ingen vedlegg"
 
