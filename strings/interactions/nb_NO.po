@@ -61,7 +61,7 @@ msgstr ""
 #: components/Interactions/InteractionDialog.tsx:568
 #, fuzzy
 msgid "problemsFound"
-msgstr ""
+msgstr "Det er problemer med inntasting"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:497
