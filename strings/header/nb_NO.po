@@ -72,7 +72,7 @@ msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
 #: components/ExportFeed/ForceUpdate.tsx:24
 #, fuzzy
 msgid "feedExportStarted"
-msgstr "Oppdatering av eksportfeed startet"
+msgstr "Oppdatering av eksportstrømmen har startet"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
