@@ -1430,17 +1430,17 @@ export const wbText = createDictionary({
     'hr-hr': 'Status validacije skupa podataka',
   },
   aborting: {
-    'en-us': 'Aborting...',
-    'ru-ru': 'Прерывание...',
-    'es-es': 'Abortando...',
-    'fr-fr': 'Abandon...',
-    'uk-ua': 'Переривання...',
+    'en-us': 'Cancelling...',
+    'ru-ru': 'Отмена...',
+    'es-es': 'Cancelando...',
+    'fr-fr': 'Annulation...',
+    'uk-ua': 'Скасування...',
     'de-ch': 'Abbruch...',
     'pt-br': 'Abortando...',
     'hr-hr': 'Prekid...',
   },
   wbStatusAbortFailed: {
-    'en-us': 'Failed aborting {operationName:string}. Please try again later',
+    'en-us': 'Failed cancelling the {operationName:string} operation. Please try again later',
     'ru-ru':
       'Не удалось прервать операцию {operationName:string}. Пожалуйста, попробуйте позже',
     'es-es':
