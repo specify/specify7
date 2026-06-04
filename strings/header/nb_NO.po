@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-04 10:01+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -61,19 +61,19 @@ msgstr "Oppdater RSS-feed"
 #: components/ExportFeed/ForceUpdate.tsx:50
 #, fuzzy
 msgid "updateExportFeedConfirmation"
-msgstr "Oppdatere eksportstrømmen?"
+msgstr "Oppdatere eksportfeeden?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
 #, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
+msgstr "Oppdatere alle RSS-eksportfeedelementer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
 #, fuzzy
 msgid "feedExportStarted"
-msgstr "Oppdatering av eksportstrøm startet"
+msgstr "Oppdatering av eksportfeed startet"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
@@ -176,19 +176,19 @@ msgstr "Metadata-ressurs"
 #: components/Router/Routes.tsx:33
 #, fuzzy
 msgid "simpleSearch"
-msgstr "Hurtigsøk"
+msgstr "Ekspresssøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:203
 #, fuzzy
 msgid "primarySearch"
-msgstr "Enkelt søk"
+msgstr "Primærsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:209
 #, fuzzy
 msgid "secondarySearch"
-msgstr "Utvidet søk"
+msgstr "Sekundærsøk"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:127
@@ -215,14 +215,14 @@ msgstr "Brukerverktøy ({userName:string})"
 #: components/Toolbar/Language.tsx:155
 #, fuzzy
 msgid "helpLocalizeSpecify"
-msgstr "Hjelp Lokaliser Specify 7"
+msgstr "Hjelp Lokaliser Spesifiser 7"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
 #, fuzzy
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
-"Vi vil sette stor pris på din støtte med å lokalisere Specificy 7-"
+"Vi vil sette stor pris på din støtte med å lokalisere Specifice 7-"
 "brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene "
 "</link>."
 
@@ -282,7 +282,7 @@ msgstr "Administrative verktøy"
 #: components/Header/userToolDefinitions.ts:169
 #, fuzzy
 msgid "developers"
-msgstr "Utvikler-ressurser"
+msgstr "Utviklerressurser"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:159
