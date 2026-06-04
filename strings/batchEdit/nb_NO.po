@@ -83,8 +83,8 @@ msgstr "Vis tilbakestillingsknapp"
 #, fuzzy
 msgid "showRollbackDescription"
 msgstr ""
-"Tilbakerulling i batchredigering er en eksperimentell funksjon. Denne "
-"innstillingen vil skjule knappen"
+"Tilbakeføring i masseredigering er en eksperimentell funksjon. Denne "
+"innstillingen skjuler knappen."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
