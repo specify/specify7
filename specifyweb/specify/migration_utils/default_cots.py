@@ -112,14 +112,15 @@ def set_discipline_for_taxon_treedefs(apps):
     Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
     Taxontreedef = apps.get_model('specify', 'Taxontreedef')
 
-    collection_object_types = Collectionobjecttype.objects.filter(
-        taxontreedef__discipline__isnull=True
-    ).annotate(
-        discipline=F('collection__discipline')
+    Taxontreedef.objects.filter(
+        discipline__isnull=True
+    ).update(
+        discipline=Subquery(
+            Collectionobjecttype.objects.filter(
+                taxontreedef=OuterRef("pk")
+            ).order_by("pk").values("collection__discipline")[:1]
+        )
     )
-
-    for cot in collection_object_types:
-        Taxontreedef.objects.filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
 
 def fix_taxon_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
