@@ -1,9 +1,10 @@
 from django.db import migrations
-from django.db.models import Exists, OuterRef
+from django.db.models import Exists, OuterRef, Subquery
 
 from specifyweb.specify.migration_utils.tectonic_ranks import (
     create_default_tectonic_ranks,
-    create_root_tectonic_node
+    create_root_tectonic_node,
+    DEFAULT_RANKS
 )
 
 def revert_create_root_tectonic_node(apps, schema_editor=None):
@@ -44,26 +45,62 @@ def revert_create_root_tectonic_node(apps, schema_editor=None):
         name="Root"
     ).delete()
 
+# REFACTOR: Optimize this
 def revert_default_tectonic_ranks(apps, schema_editor=None):
     TectonicUnit = apps.get_model('specify', 'TectonicUnit')
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    for discipline in Discipline.objects.all():
-        tectonic_tree_defs = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline)
+    for default_rank in reversed(DEFAULT_RANKS):
+        tree_def_items = TectonicUnitTreeDefItem.objects.annotate(
+            has_child_rank=Exists(
+                TectonicUnitTreeDefItem.objects.filter(
+                    parent=OuterRef("pk")
+                )
+            )
+        ).filter(
+            has_child_rank=False,
+            name=default_rank["name"],
+            # rankid=default_rank["rankid"]
+        )
 
-        for tectonic_tree_def in tectonic_tree_defs:
-            tectonic_unit_tree_def_items = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).order_by('-id')
+        units_to_delete = TectonicUnit.objects.annotate(
+            has_children_nodes=Exists(
+                TectonicUnit.objects.filter(
+                    parent=OuterRef("pk")
+                )
+            )
+        ).filter(
+            has_children_nodes=False,
+            definitionitem__in=tree_def_items
+        )
+        TectonicUnit.objects.filter(
+            acceptedtectonicunit_id__in=units_to_delete.values_list('pk', flat=True)
+        ).update(
+            acceptedtectonicunit=None,
+            isaccepted=True
+        )
 
-            for item in tectonic_unit_tree_def_items:
-                TectonicUnit.objects.filter(definitionitem=item).delete()
+        units_to_delete.delete()
+        tree_def_items.delete()
 
-                item.delete()
+    empty_tree_defs = TectonicTreeDef.objects.annotate(
+        has_ranks=Exists(
+            TectonicUnitTreeDefItem.objects.filter(
+                treedef=OuterRef("pk")
+            )
+        )
+    ).filter(
+        has_ranks=False
+    )
 
-            discipline.tectonicunittreedef = None
-            discipline.save()
-            tectonic_tree_def.delete()
+    Discipline.objects.filter(
+        tectonicunittreedef_id__in=empty_tree_defs.values_list('pk', flat=True)
+    ).update(
+        tectonicunittreedef=None
+    )
+    empty_tree_defs.delete()
 
 class Migration(migrations.Migration):
 
