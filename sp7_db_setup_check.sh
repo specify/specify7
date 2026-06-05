@@ -10,7 +10,7 @@ MASTER_USER_PASSWORD="${MASTER_PASSWORD:-${MASTER_USER_PASSWORD:-}}"
 MIGRATOR_NAME="${MIGRATOR_NAME:-}"
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD:-}"
 MIGRATOR_USER_HOST="%"
-DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD}"
+DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-}"
 DB_NAME="${DATABASE_NAME}"
 APP_USER_NAME="${APP_USER_NAME:-}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD:-}"
@@ -206,7 +206,7 @@ fi
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
 "SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_MIGRATOR_NAME AND host = $SQL_MIGRATOR_USER_HOST;")
 
-if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
+if [[ "$USER_EXISTS" -eq 0 && "$MIGRATOR_NAME" != "root" ]]; then
   echo "Creating migrator user '$MIGRATOR_NAME'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
@@ -264,7 +264,7 @@ fi
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
 "SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_APP_USER_NAME AND host = $SQL_APP_USER_HOST;")
 
-if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
+if [[ "$USER_EXISTS" -eq 0 && "$MIGRATOR_NAME" != "root" ]]; then
   echo "Creating app user '$APP_USER_NAME'..."
   echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
@@ -309,7 +309,7 @@ else
 fi
 
 APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                  -e "SHOW GRANTS FOR ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST};" 2>/dev/null || true)"
+                  -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
   echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
