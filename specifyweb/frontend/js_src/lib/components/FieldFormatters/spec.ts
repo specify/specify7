@@ -166,9 +166,11 @@ export const fieldFormatterTypesWithForcedSize = new Set([
 ] as const);
 
 /**
- * Specify 6 expects the regex pattern to start with "/^" and end with "$/"
+ * Specify 6 expects the regex pattern to start with "^" and end with "$"
  * because it parses each field part individually.
- * In Specify 7, we construct a combined regex that parts all field parts at
+ * (Though currently, there's a bug in Specify 6 where it only parses the first
+ * regex part of the field formatter)
+ * In Specify 7, we construct a combined regex that parses all field parts at
  * once.
  * Thus we do not want the "^" and "$" to be part of the pattern as far as
  * Specify 7 front-end is concerned, but we want it to be part of the pattern
@@ -176,34 +178,32 @@ export const fieldFormatterTypesWithForcedSize = new Set([
  */
 export function trimRegexString(regexString: string): string {
   let pattern = regexString;
+  /**
+   * We should generally never receive forward slashes from Specify 6, as Java
+   * just uses normal strings for regular expressions.
+   * We're matching Javascript/Perl/PHP, etc. style regular expressions here in
+   * the case the user pastes an expression containing these special characters
+   *
+   * Also, the initial release of the visual field format editor in v7.12.0
+   * added regular expressions in literal Javascript style format, which
+   * Specify 6 would interpret as a literal / character.
+   * In the case the user still has the forward slashes, they will now be
+   * removed.
+   * See https://github.com/specify/specify7/pull/8152
+   * BUG: If the user expects to use a regular expression that starts with "/"
+   * and/or ends with "/" and they're not expecting the slashes to be
+   * interpreted as boundaries, they will be implictly removed from the
+   * expression
+   * */
   if (pattern.startsWith('/')) pattern = pattern.slice(1);
   if (pattern.startsWith('^')) pattern = pattern.slice(1);
   if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
   if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
-  // Only remove parentheses that wrap the entire pattern.
-  if (hasWrappingParens(pattern)) pattern = pattern.slice(1, -1);
   return pattern;
 }
 function normalizeRegexString(regexString: string): string {
   let pattern: string = trimRegexString(regexString);
-  // Wrap alternations so they remain grouped when re-anchored for legacy XML.
-  if (pattern.includes('|')) pattern = `(${pattern})`;
-  return `/^${pattern}$/`;
-}
-
-function hasWrappingParens(pattern: string): boolean {
-  // Detect a single pair of outer parentheses that encloses the full string.
-  if (!pattern.startsWith('(') || !pattern.endsWith(')')) return false;
-  let depth = 0;
-  for (let index = 0; index < pattern.length; index += 1) {
-    const character = pattern[index];
-    if (character === '(') depth += 1;
-    else if (character === ')') {
-      depth -= 1;
-      if (depth === 0 && index < pattern.length - 1) return false;
-    }
-  }
-  return depth === 0;
+  return `^${pattern}$`;
 }
 
 const partSpec = f.store(() =>
