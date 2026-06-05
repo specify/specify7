@@ -3,8 +3,7 @@ from django.db.models import Exists, OuterRef
 
 from specifyweb.specify.migration_utils.tectonic_ranks import (
     create_default_tectonic_ranks,
-    create_root_tectonic_node,
-    revert_default_tectonic_ranks,
+    create_root_tectonic_node
 )
 
 def revert_create_root_tectonic_node(apps, schema_editor=None):
@@ -44,6 +43,27 @@ def revert_create_root_tectonic_node(apps, schema_editor=None):
         has_child_rank=False,
         name="Root"
     ).delete()
+
+def revert_default_tectonic_ranks(apps, schema_editor=None):
+    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
+    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
+    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
+    Discipline = apps.get_model('specify', 'Discipline')
+
+    for discipline in Discipline.objects.all():
+        tectonic_tree_defs = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline)
+
+        for tectonic_tree_def in tectonic_tree_defs:
+            tectonic_unit_tree_def_items = TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).order_by('-id')
+
+            for item in tectonic_unit_tree_def_items:
+                TectonicUnit.objects.filter(definitionitem=item).delete()
+
+                item.delete()
+
+            discipline.tectonicunittreedef = None
+            discipline.save()
+            tectonic_tree_def.delete()
 
 class Migration(migrations.Migration):
 
