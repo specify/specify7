@@ -4,6 +4,15 @@ from django.db.models import OuterRef, Subquery, Exists
 
 logger = logging.getLogger(__name__)
 
+DEFAULT_RANKS = (
+    {"rankid": 0, "name": "Root", "attrs": {"isenforced": True}},
+    {"rankid": 10, "name": "Superstructure"},
+    {"rankid": 20, "name": "Tectonic Domain"},
+    {"rankid": 30, "name": "Tectonic Subdomain"},
+    {"rankid": 40, "name": "Tectonic Unit"},
+    {"rankid": 50, "name": "Tectonic Subunit"}
+)
+
 def create_default_tectonic_ranks(apps): 
     TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
     TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
@@ -18,55 +27,22 @@ def create_default_tectonic_ranks(apps):
     trees_missing_ranks = TectonicTreeDef.objects.filter(treedefitems__isnull=True)
 
     for tectonic_tree_def in trees_missing_ranks:
-        # At this point, these get_or_create calls should always be the
-        # equivalent of create (as we know these nodes didn't exist).
-        # But keeping the get_or_create here just because
-        root, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            rankid=0,
-            parent=None,
-            treedef=tectonic_tree_def,
-            defaults={
-                "name": "Root",
-                "title": "Root",
-                "isenforced": True
-            }
-        )
 
-        superstructure, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Superstructure",
-            title="Superstructure",
-            rankid=10,
-            parent=root,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_domain, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Domain",
-            title="Tectonic Domain",
-            rankid=20,
-            parent=superstructure,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_subdomain, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Subdomain",
-            title="Tectonic Subdomain",
-            rankid=30,
-            parent=tectonic_domain,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_unit, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Unit",
-            title="Tectonic Unit",
-            rankid=40,
-            parent=tectonic_subdomain,
-            treedef=tectonic_tree_def,
-        )
-        tectonic_subunit, _ = TectonicUnitTreeDefItem.objects.get_or_create(
-            name="Tectonic Subunit",
-            title="Tectonic Subunit",
-            rankid=50,
-            parent=tectonic_unit,
-            treedef=tectonic_tree_def,
-        )
+        current_parent = None
+        for default_rank in DEFAULT_RANKS:
+            # At this point, these get_or_create calls should always be the
+            # equivalent of create (as we know these nodes didn't exist).
+            # But keeping the get_or_create here just because
+            current_parent, _ = TectonicUnitTreeDefItem.objects.get_or_create(
+                rankid=default_rank["rankid"],
+                parent=current_parent,
+                treedef=tectonic_tree_def,
+                defaults={
+                    "name": default_rank["name"],
+                    "title": default_rank["name"],
+                    **default_rank.get('attrs', {})
+                }
+            )
 
 def revert_default_tectonic_ranks(apps, schema_editor=None):
     TectonicUnit = apps.get_model('specify', 'TectonicUnit')
