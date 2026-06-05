@@ -99,7 +99,11 @@ def _initial_businessrules_migration_applied():
         ).applied_migrations()
     )
 
+def businessrule_app_is_ready(registry):
+    return any(app.label == 'businessrules' for app in registry.get_app_configs())
 
+# BUG: If we reverse past the initial businessrule migration, Specify can still
+# consider the migration applied within those earlier migrations
 def _cached_businessrules_migration_applied() -> bool:
     cache_key = "default"
     cache_is_active, is_set = _uniqueness_migration_cache.get(cache_key, default=False)
@@ -188,11 +192,18 @@ def validate_unique(model, instance):
                 f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
         return
 
-    if not _cached_businessrules_migration_applied():
-        return
-
     # We can't directly use the main app registry in the context of migrations, which uses fake models
     registry = model._meta.apps
+
+    # If we're in a migration where businessrules have not been loaded and/or
+    # the initial businessrule migration has not been applied, then skip
+    # checking the rule for now.
+    # Note that the former can exist where the latter does: if we're reversing
+    # a migration which does not have a dependency on businessrules (so the
+    # businessrules app does not need to be loaded) but the businessrule
+    # migration is still applied
+    if not businessrule_app_is_ready(registry) or not _cached_businessrules_migration_applied():
+        return
 
     # REFACTOR(perf): We should look into batching UniquenessRule queries.
     # That is, instead of making a query to the DB for each rule, aggregate
