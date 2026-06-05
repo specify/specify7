@@ -28,11 +28,12 @@ class Command(BaseCommand):
         logger.info(f"Running base_specify_migration using database alias '{alias}'")
 
         # Validate the alias exists and is usable; fallback to 'master' if not
+        original_alias = alias
         try:
             connections[alias].ensure_connection()
-        except Exception:
+        except Exception as e:
             alias = 'master'
-            logger.warning(f"Falling back to database alias '{alias}'")
+            logger.warning(f"Database alias '{original_alias}' unavailable ({e}), falling back to 'master'")
 
         conn = connections[alias]
         with transaction.atomic(using=alias):
