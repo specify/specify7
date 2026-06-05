@@ -71,7 +71,7 @@ class Migration(migrations.Migration):
     ]
     
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        db_alias = schema_editor.connection.alias or 'migrator'
+        db_alias = schema_editor.connection.alias or 'migrations'
         create_default_collection_types(apps)
         create_default_discipline_for_tree_defs(apps, using=db_alias)
         usc.create_geo_table_schema_config_with_defaults(apps)
