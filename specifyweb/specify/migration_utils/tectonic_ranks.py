@@ -106,23 +106,6 @@ def create_root_tectonic_node(apps):
 
     TectonicUnitTreeDefItem.objects.filter(parent=None,rankid=0, isenforced__isnull=True).update(isenforced=True)
 
-def revert_create_root_tectonic_node(apps, schema_editor=None):
-    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
-    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
-    TectonicTreeDef = apps.get_model('specify', 'TectonicUnitTreeDef')
-    Discipline = apps.get_model('specify', 'Discipline')
-
-    for discipline in Discipline.objects.all():
-        tectonic_tree_def = TectonicTreeDef.objects.filter(name="Tectonic Unit", discipline=discipline).first()
-
-        if tectonic_tree_def:
-            TectonicUnit.objects.filter(
-                name="Root",
-                definition=tectonic_tree_def,
-                parent__isnull=True,
-            ).delete()
-            TectonicUnitTreeDefItem.objects.filter(treedef=tectonic_tree_def).delete()
-
 def _create_tectonic_unit_for_discipline(Discipline_Model, Tectonicunittreedef_Model):
     # Fetches Discipline objects with an empty TectonicUnitTreeDef relationship
     # and no TectonicUnitTreeDef objects with a set discipline

@@ -1,11 +1,49 @@
 from django.db import migrations
+from django.db.models import Exists, OuterRef
 
 from specifyweb.specify.migration_utils.tectonic_ranks import (
     create_default_tectonic_ranks,
     create_root_tectonic_node,
-    revert_create_root_tectonic_node,
     revert_default_tectonic_ranks,
 )
+
+def revert_create_root_tectonic_node(apps, schema_editor=None):
+    TectonicUnit = apps.get_model('specify', 'TectonicUnit')
+    TectonicUnitTreeDefItem = apps.get_model('specify', 'TectonicUnitTreeDefItem')
+
+    # Technically at this point a user could have more than just the root node
+    # in the tree, so only delete the TectonicUnit nodes which were created
+    # from create_root_tectonic_node and are alone in the tree
+    TectonicUnit.objects.annotate(
+        has_children_nodes=Exists(
+            TectonicUnit.objects.filter(
+                parent=OuterRef("pk")
+            )
+        )
+    ).filter(
+        parent__isnull=True,
+        has_children_nodes=False,
+        name="Root"
+    ).delete()
+
+    # Delete the Root TectonicUnit rank if there are no nodes in the tree and
+    # no children rank reference the Root rank
+    TectonicUnitTreeDefItem.objects.annotate(
+        has_nodes=Exists(
+            TectonicUnit.objects.filter(
+                definitionitem=OuterRef("pk")
+            )
+        ),
+        has_child_rank=Exists(
+            TectonicUnitTreeDefItem.objects.filter(
+                parent=OuterRef("pk")
+            )
+        )
+    ).filter(
+        has_nodes=False,
+        has_child_rank=False,
+        name="Root"
+    ).delete()
 
 class Migration(migrations.Migration):
 
