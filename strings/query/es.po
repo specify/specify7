@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-06 09:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
 "Language: es\n"
@@ -447,9 +447,8 @@ msgstr "Árbol Sinonimizar"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
-#, fuzzy
 msgid "treeDesynonymize"
-msgstr "Árbol Dessinonimar"
+msgstr "Desinonimizar árbol"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:50
@@ -462,7 +461,7 @@ msgstr "Traslado masivo de árboles"
 msgid "tooLongErrorMessage"
 msgstr ""
 "El valor del campo es demasiado largo. La longitud máxima permitida es "
-"{maxLength:number|formatted}."
+"{maxLength:number|formatted}"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:216
@@ -594,21 +593,18 @@ msgstr "{componentTableName: string} y {collectionObjectTableName: string}"
 
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:127
-#, fuzzy
 msgid "formatInputAs"
 msgstr "Formatear como: {commaSeparatedFormats:string}"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:241
-#, fuzzy
 msgid "unsavedChangesInQuery"
-msgstr "La consulta tiene cambios sin guardar."
+msgstr "La consulta tiene cambios sin guardar"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:244
-#, fuzzy
 msgid "unsavedChangesInQueryDescription"
-msgstr "Guarde la consulta antes de ejecutar la edición por lotes."
+msgstr "Guarde la consulta antes de ejecutar la edición por lotes"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:173
