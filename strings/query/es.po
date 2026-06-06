@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-06 09:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
 "Language: es\n"
@@ -416,39 +416,34 @@ msgstr "Configurar tablas de consulta visibles"
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:95
 #: components/QueryBuilder/Edit.tsx:148
-#, fuzzy
 msgid "exportQueryForDwca"
 msgstr "Consulta de exportación para la definición de DwCA"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
-#, fuzzy
 msgid "exportQueryAsReport"
 msgstr "Definir informe en función de la consulta"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
-#, fuzzy
 msgid "exportQueryAsLabel"
 msgstr "Definir etiqueta en función de la consulta"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
-#, fuzzy
 msgid "treeMerge"
-msgstr "Fusión de árboles"
+msgstr "Fusionar árbol"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
-#, fuzzy
 msgid "treeMove"
-msgstr "Traslado de árboles"
+msgstr "Traslado de árbol"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:48
 #, fuzzy
 msgid "treeSynonymize"
-msgstr "Árbol Sinonimizar"
+msgstr "Árbol Sinónimo"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
