@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-01 19:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-06 09:01+0000\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/es/>\n"
 "Language: es\n"
@@ -87,17 +87,15 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
-#, fuzzy
 msgid "commit"
-msgstr "Comprometerse"
+msgstr "Efectuar"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
-#, fuzzy
 msgid "startCommitDescription"
 msgstr ""
-"Al confirmar el conjunto de datos, se actualizarán, agregarán y eliminarán "
-"los datos de la hoja de cálculo en la base de datos especificada."
+"Efectuando el Conjunto de Datos será actualizado, añadido y eliminado de los "
+"datos de la hoja de cálculo en la base de datos especificada."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
@@ -122,9 +120,8 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
-#, fuzzy
 msgid "committing"
-msgstr "Comprometerse"
+msgstr "Efectuar"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
@@ -133,41 +130,34 @@ msgstr "Estado de confirmación del conjunto de datos"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
-#, fuzzy
 msgid "startCommit"
-msgstr "¿Iniciar confirmación del conjunto de datos?"
+msgstr "¿Iniciar efectuar el conjunto de datos?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
-#, fuzzy
 msgid "commitErrors"
-msgstr "Error al confirmar la transacción debido a celdas con errores."
+msgstr "Fallo al efectuar debido a celdas con errores"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
-#, fuzzy
 msgid "commitErrorsDescription"
 msgstr ""
-"La confirmación falló debido a uno o más errores en los valores de las "
-"celdas."
+"La efecto falló debido a uno o más errores en los valores de las celdas."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
-#, fuzzy
 msgid "commitCancelled"
-msgstr "Compromiso cancelado"
+msgstr "Efecto Cancelado"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
-#, fuzzy
 msgid "commitCancelledDescription"
-msgstr "Compromiso Cancelado Descripción"
+msgstr "Descripción Cancelada de Efectuación"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:130
-#, fuzzy
 msgid "commitSuccessful"
-msgstr "Confirmación completada sin errores"
+msgstr "Efecto Completado sin Ningún Error"
 
 #. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
