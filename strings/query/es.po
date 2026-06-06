@@ -187,19 +187,16 @@ msgstr "Serie"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:81
-#, fuzzy
 msgid "searchSynonyms"
 msgstr "Buscar sinónimos"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:175
-#, fuzzy
 msgid "createCsv"
 msgstr "Crear CSV"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:193
-#, fuzzy
 msgid "createKml"
 msgstr "Crear KML"
 
@@ -208,7 +205,6 @@ msgstr "Crear KML"
 #: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/WorkBench/RecordSet.tsx:43
-#, fuzzy
 msgid "createRecordSet"
 msgstr "Crear {recordSetTable:string}"
 
@@ -224,7 +220,6 @@ msgstr "(cualquier rango)"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:400
-#, fuzzy
 msgid "anyTree"
 msgstr "(cualquier árbol)"
 
@@ -382,7 +377,6 @@ msgstr "Comienza con"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:528
-#, fuzzy
 msgid "endsWith"
 msgstr "Termina con"
 
