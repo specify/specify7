@@ -459,7 +459,6 @@ msgstr "Traslado masivo de árboles"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:118
-#, fuzzy
 msgid "tooLongErrorMessage"
 msgstr ""
 "El valor del campo es demasiado largo. La longitud máxima permitida es "
@@ -467,13 +466,11 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:216
-#, fuzzy
 msgid "future"
 msgstr "en el futuro"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:215
-#, fuzzy
 msgid "past"
 msgstr "en el pasado"
 
@@ -499,7 +496,6 @@ msgstr "Años"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:376
-#, fuzzy
 msgid "year"
 msgstr "Año"
 
@@ -511,7 +507,6 @@ msgstr "Año"
 #: components/QueryBuilder/RelativeDate.tsx:197
 #: components/QueryBuilder/RelativeDate.tsx:203
 #: components/QueryBuilder/RelativeDate.tsx:220
-#, fuzzy
 msgid "relativeDate"
 msgstr ""
 "<count>{size:number}</count> <length>{type:string}</length> <direction>"
@@ -519,13 +514,11 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
-#, fuzzy
 msgid "importHiddenFields"
 msgstr "Los siguientes campos están ocultos en la consulta que importó:"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
-#, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
 "La consulta que importaste contiene tablas a las que no tienes acceso de "
@@ -533,32 +526,27 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
-#, fuzzy
 msgid "noReadPermission"
 msgstr "Sin permiso de lectura"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:60
-#, fuzzy
 msgid "switchToRelative"
-msgstr "Cambiar a relativo"
+msgstr "Conmutar a relativo"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:61
-#, fuzzy
 msgid "switchToAbsolute"
-msgstr "Cambiar a absoluto"
+msgstr "Conmutar a absoluto"
 
 #. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:105
-#, fuzzy
 msgid "scrollToEditor"
-msgstr "Desplácese hasta el editor"
+msgstr "Arrastrar hasta el editor"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:308
 #: components/QueryBuilder/ResultsTable.tsx:205
-#, fuzzy
 msgid "viewRecords"
 msgstr "Ver registros"
 
@@ -566,20 +554,17 @@ msgstr "Ver registros"
 #: components/QueryBuilder/Formatter.tsx:184
 #: components/QueryBuilder/Formatter.tsx:194
 #: components/QueryBuilder/Formatter.tsx:202
-#, fuzzy
 msgid "chooseFormatter"
-msgstr "Seleccione el formateador"
+msgstr "Elegir formateador"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:565
-#, fuzzy
 msgid "range"
-msgstr "Rango"
+msgstr "Intervalo"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
 #: components/QueryBuilder/FieldFilterTool.tsx:145
-#, fuzzy
 msgid "strict"
 msgstr "Estricto"
 
