@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-06 09:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/es/>\n"
 "Language: es\n"
@@ -272,19 +272,15 @@ msgstr ""
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:310
 #: components/WorkBench/resultsParser.ts:316
-#, fuzzy
 msgid "attachmentNotFound"
-msgstr ""
-"Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado."
+msgstr "No existe uno o más adjuntos. Es posible que hayan sido eliminados."
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:312
-#, fuzzy
 msgid "tableDoesNotSupportAttachments"
 msgstr "La tabla de destino del archivo adjunto no admite archivos adjuntos."
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:314
-#, fuzzy
 msgid "attachmentAlreadyLinked"
-msgstr "Uno o más archivos adjuntos ya están asociados a un registro subido."
+msgstr "Uno o más archivos adjuntos ya están asociados con un registro subido."
