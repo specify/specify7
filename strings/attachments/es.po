@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-01 19:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-06 09:01+0000\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "attachments/es/>\n"
 "Language: es\n"
@@ -352,9 +352,8 @@ msgstr "Error al guardar el registro"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:478
-#, fuzzy
 msgid "interruptionStopped"
-msgstr "Se detuvo debido a un error al cargar un archivo anterior."
+msgstr "Se detuvo debido a un error al subir un archivo anterior."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
@@ -403,20 +402,17 @@ msgstr ""
 #: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#, fuzzy
 msgid "downloadAll"
 msgstr "Descargar todo"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#, fuzzy
 msgid "downloadAllDescription"
-msgstr "Descargar todos los archivos adjuntos encontrados"
+msgstr "Descarga todos los archivos adjuntos encontrados"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:224
-#, fuzzy
 msgid "createRecordSetToDownloadAll"
 msgstr ""
 "No se han cargado todos los archivos adjuntos. Cree un conjunto de registros "
@@ -424,29 +420,24 @@ msgstr ""
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
-#, fuzzy
 msgid "deleteAttachmentWarning"
-msgstr "¿Seguro que quieres eliminar este archivo adjunto?"
+msgstr "¿Seguro que quieres eliminar este adjunto?"
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:57
-#, fuzzy
 msgid "attachmentDelition"
-msgstr "Eliminación de archivos adjuntos"
+msgstr "Eliminación de adjuntos"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:50
-#, fuzzy
 msgid "publicDefault"
-msgstr "Hacer públicos los archivos adjuntos por defecto"
+msgstr "Hacer públicos los adjuntos por defecto"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:51
-#, fuzzy
 msgid "publicDefaultDescription"
 msgstr ""
-"Esto controla si los nuevos archivos adjuntos añadidos a esta colección se "
-"marcan como \"Públicos\" por defecto. Los archivos adjuntos públicos serán "
-"visibles automáticamente en un portal web específico. Esta configuración se "
-"puede modificar para cada archivo adjunto individualmente y no afecta a los "
-"archivos adjuntos existentes."
+"Esto controla si los nuevos adjuntos añadidos a esta colección se indican "
+"como \"Públicos\" por defecto. Los adjuntos públicos serán visibles "
+"automáticamente en un portal web específico. Este ajuste se puede modificar "
+"para cada adjunto individualmente y no afecta a los adjuntos existentes."
