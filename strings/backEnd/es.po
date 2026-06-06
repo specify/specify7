@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-01 19:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-06 09:01+0000\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/es/>\n"
 "Language: es\n"
@@ -174,9 +174,8 @@ msgstr ""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:181
-#, fuzzy
 msgid "operationAcrossTrees"
-msgstr "{operation:string} a través de los árboles"
+msgstr "{operation:string} a través de árboles"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:185
@@ -247,7 +246,6 @@ msgstr "Conjunto de datos ya subido"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:285
-#, fuzzy
 msgid "scopeChangeDetected"
 msgstr ""
 "Se ha detectado un cambio de alcance en esta fila. Se recomienda eliminar "
@@ -255,23 +253,18 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:287
-#, fuzzy
 msgid "multipleTreeDefsInRow"
-msgstr "Múltiples definiciones de árbol en una fila"
+msgstr "Múltiples definiciones de árbol dentro de fila"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:288
-#, fuzzy
 msgid "invalidCotype"
-msgstr "Tipo no válido para el/los rango(s) de árbol seleccionado(s)"
+msgstr "Tipo no válido para el/los intervalo(s) de árbol seleccionado(s)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:290
-#, fuzzy
 msgid "invalidComponentType"
 msgstr ""
-"Tipo de componente no válido: cadena para el/los rango(s) de árbol "
-"seleccionado(s)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:310
