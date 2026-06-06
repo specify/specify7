@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-06 09:01+0000\n"
-"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/query/"
 "es/>\n"
 "Language: es\n"
@@ -443,7 +443,7 @@ msgstr "Traslado de árbol"
 #: components/PickLists/definitions.ts:48
 #, fuzzy
 msgid "treeSynonymize"
-msgstr "Árbol Sinónimo"
+msgstr "Árbol Sinonimizar"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
