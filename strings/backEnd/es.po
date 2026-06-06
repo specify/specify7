@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-06 09:01+0000\n"
-"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/es/>\n"
 "Language: es\n"
@@ -263,8 +263,11 @@ msgstr "Tipo no válido para el/los intervalo(s) de árbol seleccionado(s)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:290
+#, fuzzy
 msgid "invalidComponentType"
 msgstr ""
+"Tipo de componente no válido: cadena para el/los rango(s) de árbol "
+"seleccionado(s)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:310
