@@ -7,6 +7,7 @@ import { queryText } from '../../localization/query';
 import { ping } from '../../utils/ajax/ping';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Input } from '../Atoms/Form';
 import { LoadingContext } from '../Core/Contexts';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -52,8 +53,6 @@ export function QueryBulkDelete({
     </>
   );
 }
-
-import { Input } from '../Atoms/Form';
 
 export function BulkDeletionDialog({
   table,
@@ -125,7 +124,7 @@ export function BulkDeletionDialog({
         }
         header={formsText.bulkDeleteConfirmation({
           count: totalDeleteCount,
-          tableName: table.name,
+          tableName: table.label,
         })}
         onClose={onClose}
       >
