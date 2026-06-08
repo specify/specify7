@@ -27,8 +27,7 @@ export function QueryBulkDelete({
   readonly recordIds: () => RA<number>;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
 }): JSX.Element {
-  const [isOpen, handleOpen, handleClose, _] =
-    useBooleanState(false);
+  const [isOpen, handleOpen, handleClose] = useBooleanState();
 
   return (
     <>
@@ -38,18 +37,16 @@ export function QueryBulkDelete({
       >
         {queryText.bulkDelete()}
       </Button.Small>
-      {isOpen ? (
+      {isOpen && (
         <BulkDeletionDialog
           recordIds={recordIds}
           table={table}
-          onClose={(): void => {
-            handleClose();
-          }}
+          onClose={handleClose}
           onDeleted={onDeleted}
           queryResource={queryResource}
           totalCount={totalCount}
         />
-      ) : undefined}
+      )}
     </>
   );
 }
@@ -68,28 +65,18 @@ export function BulkDeletionDialog({
   readonly onClose: () => void;
   readonly queryResource: SpecifyResource<SpQuery> | undefined;
   readonly totalCount: number;
-}): JSX.Element | null {
+}): JSX.Element {
   const loading = React.useContext(LoadingContext);
+  const recordIdsRef = React.useRef(recordIds);
+  recordIdsRef.current = recordIds;
 
-  const [totalDeleteCount, setTotalDeleteCount] = React.useState<number>(0);
-  const [recordIdList, setRecordIdList] = React.useState<RA<number>>([]);
-  React.useEffect(() => {
-    const recordIdsResult = recordIds();
-    setRecordIdList(recordIdsResult);
-    // If there are no selected ids, delete the entirety of the query's results
-    const recordIdCount = recordIdsResult.length;
-    if (recordIdCount === 0) {
-      setTotalDeleteCount(totalCount);
-    } else {
-      setTotalDeleteCount(recordIdCount);
-    }
-  }, [recordIds, totalCount]);
+  const ids = recordIds();
+  const deleteCount = ids.length === 0 ? totalCount : ids.length;
 
-  const [isWarningOpen, openWarning, closeWarning, _] =
-    useBooleanState(false);
-  const [confirmationText, setConfirmationText] = React.useState<string>('');
+  const [isWarningOpen, openWarning, closeWarning] = useBooleanState();
+  const [confirmationText, setConfirmationText] = React.useState('');
 
-  const handleClick = (): void => {
+  const handleConfirm = (): void => {
     closeWarning();
     onClose();
     loading(
@@ -97,14 +84,12 @@ export function BulkDeletionDialog({
         headers: { Accept: 'text/plain' },
         method: 'POST',
         body: JSON.stringify({
-          ids: recordIds(),
+          ids: recordIdsRef.current(),
           query: queryResource?.toJSON(),
         }),
       })
-        .then(() => onDeleted(recordIdList))
-        .catch((error) => {
-          console.error(error);
-        })
+        .then(() => onDeleted(recordIdsRef.current()))
+        .catch(console.error)
     );
   };
 
@@ -113,55 +98,49 @@ export function BulkDeletionDialog({
       <Dialog
         buttons={
           <>
-            <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-            <Button.Danger
-              disabled={totalDeleteCount === 0}
-              onClick={openWarning}
-            >
+            <Button.Danger disabled={deleteCount === 0} onClick={openWarning}>
               {commonText.delete()}
             </Button.Danger>
+            <span className="-ml-2 flex-1" />
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
           </>
         }
         header={formsText.bulkDeleteConfirmation({
-          count: totalDeleteCount,
+          count: deleteCount,
           tableName: table.label,
         })}
         onClose={onClose}
       >
-        <div className="mb-4 flex flex-col gap-4">
-          <section>{formsText.deleteConfirmationDescription()}</section>
-        </div>
+        {formsText.deleteConfirmationDescription()}
       </Dialog>
-      {
-        isWarningOpen ?
-        (
-          <Dialog
-            buttons={
-              <>
-                <Button.DialogClose>{commonText.close()}</Button.DialogClose>
-                <Button.Danger
-                  disabled={confirmationText !== totalDeleteCount.toString()}
-                  onClick={handleClick}
-                >
-                  {formsText.bulkDeleteFinalConfirmationOption({ count: totalDeleteCount })}
-                </Button.Danger>
-              </>
-            }
-            header={formsText.bulkDeleteFinalConfirmation()}
-            onClose={onClose}
-          >
-            <div className="mb-4 flex flex-col gap-4">
-              <section>{formsText.deleteConfirmationDescription()}</section>
-              <section>{formsText.bulkDeleteFinalConfirmationDescription()}</section>
-              <Input.Text
-                value={confirmationText}
-                onValueChange={setConfirmationText}
-              />
-            </div>
-          </Dialog>
-        )
-        : undefined
-      }
+      {isWarningOpen && (
+        <Dialog
+          buttons={
+            <>
+              <Button.Danger
+                disabled={confirmationText !== deleteCount.toString()}
+                onClick={handleConfirm}
+              >
+                {formsText.bulkDeleteFinalConfirmationOption({
+                  count: deleteCount,
+                })}
+              </Button.Danger>
+              <span className="-ml-2 flex-1" />
+              <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            </>
+          }
+          header={formsText.bulkDeleteFinalConfirmation()}
+          onClose={closeWarning}
+        >
+          <div className="flex flex-col gap-4">
+            {formsText.bulkDeleteFinalConfirmationDescription()}
+            <Input.Text
+              value={confirmationText}
+              onValueChange={setConfirmationText}
+            />
+          </div>
+        </Dialog>
+      )}
     </>
   );
 }
