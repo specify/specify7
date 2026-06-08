@@ -39,12 +39,12 @@ def has_attachments(row: Row) -> bool:
     return row.get(ATTACHMENTS_COLUMN) is not None and row.get(ATTACHMENTS_COLUMN) != ""
 
 # upload_plan can either be an UploadTable or an Uploadable (so it can be one of two types)
-def validate_attachment(
+def validate_attachments(
     row: Row, upload_plan: UploadTable
 ) -> Tuple[bool, Union[None, UploadResult]]:
     if has_attachments(row):
         data = get_attachments(row)
-        if data and isinstance(data, dict):
+        if data is not None and isinstance(data, dict):
             base_table = upload_plan.name
             for attachment in data.get("attachments", []):
                 if attachment.get("id") and attachment.get("table"):
@@ -62,8 +62,10 @@ def validate_attachment(
                         return False, makeAttachmentResult('attachmentNotFound')
                     if spdatasetattachment.attachment.tableid != Spdataset.specify_model.tableId: # type: ignore
                         return False, makeAttachmentResult('attachmentAlreadyLinked')
-                
-                    return True, None
+                else:
+                    return False, makeAttachmentResult('attachmentNotFound')
+            # All attachments were valid
+            return True, None
 
     return False, makeAttachmentResult('attachmentNotFound')
 
