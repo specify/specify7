@@ -23,6 +23,7 @@ def revert_create_root_tectonic_node(apps, schema_editor=None):
     ).filter(
         parent__isnull=True,
         has_children_nodes=False,
+        acceptedtectonicunit__isnull=True,
         name="Root"
     ).delete()
 
