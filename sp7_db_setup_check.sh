@@ -9,12 +9,10 @@ MASTER_USER_NAME="${MASTER_NAME:-${MASTER_USER_NAME:-}}"
 MASTER_USER_PASSWORD="${MASTER_PASSWORD:-${MASTER_USER_PASSWORD:-}}"
 MIGRATOR_NAME="${MIGRATOR_NAME:-}"
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD:-}"
-MIGRATOR_USER_HOST="%"
 DB_ROOT_PASSWORD="${MYSQL_ROOT_PASSWORD:-}"
 DB_NAME="${DATABASE_NAME}"
 APP_USER_NAME="${APP_USER_NAME:-}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD:-}"
-APP_USER_HOST="%"
 
 MASTER_USER_HOST="${MASTER_USER_HOST:-%}"
 MIGRATOR_USER_HOST="${MIGRATOR_USER_HOST:-%}"
@@ -190,9 +188,9 @@ DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password=
 
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE \`$DB_NAME\`;\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE DATABASE ${SQL_DB_IDENTIFIER};\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE DATABASE \`$DB_NAME\`;"; then
+    -e "CREATE DATABASE ${SQL_DB_IDENTIFIER};"; then
     NEW_DATABASE_CREATED=1
   else
     echo "Error: Failed to create database."
@@ -271,12 +269,10 @@ if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
     -e "CREATE USER $SQL_APP_USER_NAME@$SQL_APP_USER_HOST IDENTIFIED BY $SQL_APP_USER_PASSWORD;"; then
     NEW_APP_USER_CREATED=1
   else
-    echo "Notice: Migrator user '${MIGRATOR_NAME}' lacks usable access to '${DB_NAME}'."
-    echo "Make corrections to the intended MIGRATOR user permissions to resolve."
-    echo "  GRANT ALL PRIVILEGES ON \`${DB_NAME}\`.* TO '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'; FLUSH PRIVILEGES;"
-    MIGRATOR_NAME="$MASTER_USER_NAME"
-    MIGRATOR_PASSWORD="$MASTER_USER_PASSWORD"
-    MIGRATION_DB_ALIAS="master"
+    echo "Error: Failed to create app user '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+    echo "Falling back to migrator credentials for app user."
+    APP_USER_NAME="$MIGRATOR_NAME"
+    APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
   fi
 fi
 
