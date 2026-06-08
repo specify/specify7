@@ -330,8 +330,8 @@ def query_to_csv(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
-    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
     query = query.order_by(*order_by_expers)
+    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_csv starting")
 
