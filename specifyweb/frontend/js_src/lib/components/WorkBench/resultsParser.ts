@@ -15,7 +15,7 @@ import {
   formatDisjunction,
 } from '../Atoms/Internationalization';
 import { getField } from '../DataModel/helpers';
-import { tables } from '../DataModel/tables';
+import { getTable, tables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 
 /*
@@ -256,14 +256,96 @@ export function resolveBackendParsingMessage(
   else return undefined;
 }
 
+function withConflictingRecordIds(
+  message: LocalizedString,
+  payload: IR<unknown>
+): LocalizedString {
+  const conflicting = payload.conflicting;
+  return Array.isArray(conflicting) && conflicting.length > 0
+    ? localized(
+        `${message} (Conflicting record IDs: ${conflicting.join(', ')})`
+      )
+    : message;
+}
+
+function getStringPayload(payload: IR<unknown>, key: string): string {
+  const value = payload[key];
+  return typeof value === 'string' ? value : '';
+}
+
+function getSchemaTableLabel(tableName: string): LocalizedString {
+  return getTable(tableName)?.label ?? localized(tableName);
+}
+
+function getSchemaFieldLabel(
+  tableName: string,
+  fieldName: string
+): LocalizedString {
+  const lookupFieldName = fieldName.split('__').join('.');
+  return (
+    getTable(tableName)?.getField(lookupFieldName)?.label ??
+    localized(fieldName)
+  );
+}
+
+function getSchemaFieldLabels(
+  tableName: string,
+  fieldNames: string
+): LocalizedString {
+  const labels = fieldNames
+    .split(',')
+    .map((fieldName) => fieldName.trim())
+    .filter((fieldName) => fieldName.length > 0)
+    .map((fieldName) => getSchemaFieldLabel(tableName, fieldName));
+  return labels.length === 0
+    ? localized(fieldNames)
+    : formatConjunction(labels);
+}
+
+function resolveBackendBusinessRuleMessage(
+  payload: IR<unknown>
+): LocalizedString | undefined {
+  const tableName = getStringPayload(payload, 'table');
+  if (payload.localizationKey === 'fieldNotUnique')
+    return withConflictingRecordIds(
+      backEndText.fieldNotUnique({
+        tableName: getSchemaTableLabel(tableName),
+        fieldName: getSchemaFieldLabels(
+          tableName,
+          getStringPayload(payload, 'fieldName')
+        ),
+      }),
+      payload
+    );
+  else if (payload.localizationKey === 'childFieldNotUnique')
+    return withConflictingRecordIds(
+      backEndText.childFieldNotUnique({
+        tableName: getSchemaTableLabel(tableName),
+        fieldName: getSchemaFieldLabels(
+          tableName,
+          getStringPayload(payload, 'fieldName')
+        ),
+        parentField: getSchemaFieldLabels(
+          tableName,
+          getStringPayload(payload, 'parentField')
+        ),
+      }),
+      payload
+    );
+  else return undefined;
+}
+
 /** Back-end sends a validation key. Front-end translates it */
 export function resolveValidationMessage(
   key: string,
   payload: IR<unknown>
 ): LocalizedString {
   const baseParsedMessage = resolveBackendParsingMessage(key, payload);
+  const businessRuleMessage = resolveBackendBusinessRuleMessage(payload);
   if (baseParsedMessage !== undefined) {
     return baseParsedMessage;
+  } else if (businessRuleMessage !== undefined) {
+    return businessRuleMessage;
   } else if (key === 'failedParsingPickList')
     return backEndText.failedParsingPickList({
       value: `"${payload.value as string}"`,
