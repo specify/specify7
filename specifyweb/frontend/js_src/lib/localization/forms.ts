@@ -247,6 +247,20 @@ export const formsText = createDictionary({
     'pt-br': 'Esta ação não pode ser desfeita.',
     'hr-hr': 'Ova se radnja ne može poništiti.',
   },
+  bulkDeleteConfirmation: {
+    'en-us':
+      'Are you sure you want to permanently delete {count:number} {tableName:string} records from the database?',
+  },
+  bulkDeleteFinalConfirmation: {
+    'en-us': 'Are you sure you want to proceed?',
+  },
+  bulkDeleteFinalConfirmationDescription: {
+    'en-us':
+      'Type the number of records that will be deleted in order to proceed.',
+  },
+  bulkDeleteFinalConfirmationOption: {
+    'en-us': 'I want to delete {count:number} records',
+  },
   datePrecision: {
     'en-us': 'Date Precision',
     'ru-ru': 'Точность даты',
