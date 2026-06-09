@@ -350,6 +350,28 @@ class PermissionsApiTest(ApiTests):
 
         data = json.loads(response.content)
 
+    def test_query_reflects_policy_changes_immediately(self) -> None:
+        models.UserPolicy.objects.all().delete()
+        request = (
+            self.collection.id,
+            self.specifyuser.id,
+            "/table/collectionobject",
+            "create",
+        )
+
+        self.assertFalse(permissions.query(*request).allowed)
+
+        policy = models.UserPolicy.objects.create(
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+            resource="/table/collectionobject",
+            action="create",
+        )
+        self.assertTrue(permissions.query(*request).allowed)
+
+        policy.delete()
+        self.assertFalse(permissions.query(*request).allowed)
+
     def test_add_access_to_new_collection_exception(self) -> None:
         user2 = models.Specifyuser.objects.create( # type: ignore
             isloggedin=False,

@@ -3,8 +3,9 @@ from typing import (
     Literal,
     NamedTuple,
 )
-from collections.abc import Callable
-from collections.abc import Iterable
+from collections.abc import Callable, Iterable
+from contextvars import ContextVar
+from contextlib import contextmanager
 
 import logging
 
@@ -15,6 +16,7 @@ from django.db.models import Model
 
 from specifyweb.specify.models import Agent
 from specifyweb.specify.datamodel import Table
+from specifyweb.backend.cache.thread import ThreadCache
 
 from . import models
 
@@ -167,6 +169,12 @@ class QueryResult(NamedTuple):
     matching_user_policies: list
     matching_role_policies: list
 
+_permission_query_cache = ThreadCache[PermRequest, QueryResult](
+    ContextVar(
+        "permission_query_cache",
+        default=None,
+    )
+)
 
 def query_pt(
     collectionid: int | None, userid: int, target: PermissionTargetAction
@@ -174,62 +182,90 @@ def query_pt(
     return query(collectionid, userid, target.resource(), target.action())
 
 
+def _get_spuser_policies(collectionid: int | None, userid: int, resource: str, action: str):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+        select collection_id, specifyuser_id, resource, action
+        from spuserpolicy
+        where (collection_id = %(collectionid)s or collection_id is null)
+        and (specifyuser_id = %(userid)s or specifyuser_id is null)
+        and %(resource)s like resource
+        and %(action)s like action
+        """,
+            {
+                "collectionid": collectionid,
+                "userid": userid,
+                "resource": resource,
+                "action": action,
+            },
+        )
+
+        ups = [
+            dict(zip(("collectionid", "userid", "resource", "action"), r))
+            for r in cursor.fetchall()
+        ]
+    return ups
+
+def _get_role_policies(collectionid: int | None, userid: int, resource: str, action: str):
+    with connection.cursor() as cursor:
+        cursor.execute(
+            """
+        select r.id, r.name, resource, action
+        from spuserrole ur
+        join sprole r on r.id = ur.role_id
+        join sprolepolicy rp on rp.role_id = r.id
+        where ur.specifyuser_id = %(userid)s
+        and collection_id = %(collectionid)s
+        and %(resource)s like resource
+        and %(action)s like action
+        """,
+            {
+                "collectionid": collectionid,
+                "userid": userid,
+                "resource": resource,
+                "action": action,
+            },
+        )
+
+        rps = [
+            dict(zip(("roleid", "rolename", "resource", "action"), r))
+            for r in cursor.fetchall()
+        ]
+    return rps
+
 def query(
     collectionid: int | None, userid: int, resource: str, action: str
 ) -> QueryResult:
-    cursor = connection.cursor()
+    def get_query_result():
+        user_policies = _get_spuser_policies(
+            collectionid=collectionid,
+            userid=userid,
+            resource=resource,
+            action=action
+        )
 
-    cursor.execute(
-        """
-    select collection_id, specifyuser_id, resource, action
-    from spuserpolicy
-    where (collection_id = %(collectionid)s or collection_id is null)
-    and (specifyuser_id = %(userid)s or specifyuser_id is null)
-    and %(resource)s like resource
-    and %(action)s like action
-    """,
-        {
-            "collectionid": collectionid,
-            "userid": userid,
-            "resource": resource,
-            "action": action,
-        },
-    )
+        role_policies = _get_role_policies(
+            collectionid=collectionid,
+            userid=userid,
+            resource=resource,
+            action=action
+        )
 
-    ups = [
-        dict(zip(("collectionid", "userid", "resource", "action"), r))
-        for r in cursor.fetchall()
-    ]
+        return QueryResult(
+            allowed=(bool(user_policies) or bool(role_policies)),
+            matching_user_policies=user_policies,
+            matching_role_policies=role_policies
+        )
+    request = PermRequest(collectionid, userid, resource, action)
+    return _permission_query_cache.get_or_set(request, get_query_result)
 
-    cursor.execute(
-        """
-    select r.id, r.name, resource, action
-    from spuserrole ur
-    join sprole r on r.id = ur.role_id
-    join sprolepolicy rp on rp.role_id = r.id
-    where ur.specifyuser_id = %(userid)s
-    and collection_id = %(collectionid)s
-    and %(resource)s like resource
-    and %(action)s like action
-    """,
-        {
-            "collectionid": collectionid,
-            "userid": userid,
-            "resource": resource,
-            "action": action,
-        },
-    )
-
-    rps = [
-        dict(zip(("roleid", "rolename", "resource", "action"), r))
-        for r in cursor.fetchall()
-    ]
-
-    return QueryResult(
-        allowed=bool(ups) or bool(rps),
-        matching_user_policies=ups,
-        matching_role_policies=rps,
-    )
+@contextmanager
+def cache_permission_queries():
+    with (
+        _permission_query_cache.activate()
+    ):
+        yield
 
 TABLE_ACTION = Literal["read", "create", "update", "delete"]
 
