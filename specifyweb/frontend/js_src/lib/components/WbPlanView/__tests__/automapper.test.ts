@@ -212,21 +212,21 @@ theories(
 
 test('circular tables are calculated correctly', () =>
   expect(circularTables()).toMatchInlineSnapshot(`
-    [
-      "[table Agent]",
-      "[table Container]",
-      "[table Geography]",
-      "[table GeographyTreeDefItem]",
-      "[table GeologicTimePeriod]",
-      "[table GeologicTimePeriodTreeDefItem]",
-      "[table LithoStrat]",
-      "[table LithoStratTreeDefItem]",
-      "[table ReferenceWork]",
-      "[table Storage]",
-      "[table StorageTreeDefItem]",
-      "[table Taxon]",
-      "[table TaxonTreeDefItem]",
-      "[table TectonicUnitTreeDefItem]",
-      "[table TectonicUnit]",
-    ]
-  `));
+[
+  "[table Agent]",
+  "[table Container]",
+  "[table Geography]",
+  "[table GeographyTreeDefItem]",
+  "[table GeologicTimePeriod]",
+  "[table GeologicTimePeriodTreeDefItem]",
+  "[table LithoStrat]",
+  "[table LithoStratTreeDefItem]",
+  "[table ReferenceWork]",
+  "[table Storage]",
+  "[table StorageTreeDefItem]",
+  "[table Taxon]",
+  "[table TaxonTreeDefItem]",
+  "[table TectonicUnit]",
+  "[table TectonicUnitTreeDefItem]",
+]
+`));
