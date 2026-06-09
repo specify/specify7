@@ -6915,7 +6915,117 @@ class Taxon(model_extras.Taxon):
         ]
 
     
-    save = partialmethod(custom_save)
+    def save(self, *args, **kwargs):
+        """Custom save method for Taxon that handles synonymization behavior
+        when the AcceptedID (Accepted/Preferred Taxon) changes.
+        
+        This ensures that when a Taxon's AcceptedID is changed (via API or form),
+        all related data is updated to reflect the new synonymization, matching
+        the behavior of the /api/specify_tree/taxon/<id>/synonymize/ endpoint.
+        
+        Handles two cases:
+        1. Synonymization (AcceptedID is set to a new value):
+           - Validates the target is not itself a synonym
+           - Validates the source has no children
+           - Repoints acceptedchildren to the new accepted taxon
+           - Updates Determinations where this is the Taxon to point to the new AcceptedID
+           - Updates Determinations where this is the PreferredTaxon to point to the new AcceptedID
+        2. Desynonymization (AcceptedID is cleared):
+           - Updates Determinations where PreferredTaxon is this Taxon to use themselves (F('taxon'))
+        
+        NOTE: This method intentionally duplicates some logic from extras.synonymize()/
+        extras.desynonymize() because those functions call node.save() which triggers this
+        method, and then do the same updates again. This double-processing is harmless
+        (idempotent updates) and is accepted to ensure correctness regardless of the
+        code path used to change AcceptedID.
+        """
+        # Get the old AcceptedID before we save (if this is an update)
+        old_accepted_id = None
+        if self.pk is not None:
+            try:
+                old_taxon = Taxon.objects.get(pk=self.pk)
+                old_accepted_id = old_taxon.acceptedtaxon_id
+            except Taxon.DoesNotExist:
+                pass
+        
+        # Call the parent save to handle timestamps and actually save the object
+        save_auto_timestamp_field_with_override(super(Taxon, self).save, args, kwargs, self)
+        
+        # Handle updates if AcceptedID changed
+        new_accepted_id = self.acceptedtaxon_id
+        
+        if old_accepted_id != new_accepted_id:
+            if new_accepted_id is not None:
+                # --- Synonymization: AcceptedID was set to a new value ---
+                
+                # Validation 1: Target must not already be a synonym
+                target = Taxon.objects.get(pk=new_accepted_id)
+                if target.acceptedtaxon_id is not None:
+                    from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
+                    raise TreeBusinessRuleException(
+                        f'Synonymizing "{self.fullname}" to synonymized node "{target.fullname}"',
+                        {"tree": "Taxon",
+                         "localizationKey": "nodeSynonymizeToSynonymized",
+                         "node": {
+                            "id": self.id,
+                            "rankid": self.rankid,
+                            "fullName": self.fullname,
+                            "parentid": self.parent_id,
+                            "children": list(self.children.values('id', 'fullname'))
+                         },
+                         "synonymized": {
+                            "id": target.id,
+                            "rankid": target.rankid,
+                            "fullName": target.fullname,
+                            "parentid": target.parent_id,
+                            "children": list(target.children.values('id', 'fullname'))
+                         }})
+                
+                # Validation 2: Source must not have children
+                if self.children.count() > 0:
+                    from specifyweb.backend.businessrules.exceptions import TreeBusinessRuleException
+                    raise TreeBusinessRuleException(
+                        f'Synonymizing node "{self.fullname}" which has children',
+                        {"tree": "Taxon",
+                         "localizationKey": "nodeSynonimizeWithChildren",
+                         "node": {
+                            "id": self.id,
+                            "rankid": self.rankid,
+                            "fullName": self.fullname,
+                            "children": list(self.children.values('id', 'fullname'))
+                         },
+                         "parent": {
+                            "id": target.id,
+                            "rankid": target.rankid,
+                            "fullName": target.fullname,
+                            "parentid": target.parent_id,
+                            "children": list(target.children.values('id', 'fullname'))
+                         }})
+                
+                # Repoint acceptedchildren to the new accepted taxon
+                self.acceptedchildren.update(acceptedtaxon=target)
+
+                # Update Determinations where this Taxon is the determined taxon
+                self.determinations.update(preferredtaxon=target)
+
+                # Update Determinations where this Taxon is already the preferred taxon
+                # Use lazy import to avoid circular import issues (same pattern as extras.py)
+                from specifyweb.specify.models import Determination
+                Determination.objects.filter(preferredtaxon_id=self.id).update(
+                    preferredtaxon=target
+                )
+            elif old_accepted_id is not None:
+                # --- Desynonymization: AcceptedID was cleared ---
+                # Update Determinations where this Taxon is the determined taxon
+                # to use themselves as the preferred taxon (F('taxon'))
+                self.determinations.update(preferredtaxon=models.F('taxon'))
+
+                # Update Determinations where this Taxon is the preferred taxon
+                # to use themselves as the preferred taxon
+                from specifyweb.specify.models import Determination
+                Determination.objects.filter(preferredtaxon_id=self.id).update(
+                    preferredtaxon=models.F('taxon')
+                )
 
 class Taxonattachment(models.Model):
     specify_model = datamodel.get_table_strict('taxonattachment')
