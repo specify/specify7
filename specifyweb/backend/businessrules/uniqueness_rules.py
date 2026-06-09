@@ -395,14 +395,14 @@ def create_uniqueness_rule(model_name: str, discipline, is_database_constraint: 
     UniquenessRuleField = registry.get_model(
         'businessrules', 'UniquenessRuleField') if registry else models.UniquenessRuleField
 
+    fields = list(fields)
+    scopes = list(scopes)
+
     final_discipline = None if rule_is_global(scopes) else discipline
 
     candidate_rules = UniquenessRule.objects.filter(modelName=model_name,
                                                     isDatabaseConstraint=is_database_constraint,
                                                     discipline=final_discipline)
-
-    fields = list(fields)
-    scopes = list(scopes)
 
     for rule in candidate_rules:
         # If the rule already exists, skip creating the rule
