@@ -13,11 +13,13 @@ import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
+export type DisambiguationBehaviors = 'ask' | 'pickFirst'
 
 export type ColumnOptions = {
   readonly matchBehavior: MatchBehaviors;
   readonly nullAllowed: boolean;
   readonly default: string | null;
+  readonly disambiguationBehavior: DisambiguationBehaviors;
 };
 
 export type ColumnDefinition =
