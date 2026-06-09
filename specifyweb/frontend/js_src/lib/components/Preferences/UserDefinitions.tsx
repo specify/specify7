@@ -1615,6 +1615,23 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          queryField: definePref<'preferredTaxon' | 'taxon'>({
+            title: preferencesText.queryButtonTaxonField(),
+            description: preferencesText.queryButtonTaxonFieldDescription(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'preferredTaxon',
+            values: [
+              {
+                value: 'preferredTaxon',
+                title: localized('_preferredTaxon'),
+              },
+              {
+                value: 'taxon',
+                title: localized('_taxon'),
+              },
+            ],
+          }),
           rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
             description: preferencesText.rankThresholdDescription(),
@@ -2386,6 +2403,44 @@ import('../DataModel/tables')
       } else {
         softError(
           'Unable to replace the tree preferences item title for orderByField'
+        );
+      }
+
+      const taxonQueryField =
+        userPreferenceDefinitions.treeEditor.subCategories.taxon.items
+          .queryField;
+      if ('values' in taxonQueryField) {
+        const queryFieldValues = taxonQueryField.values as RA<{
+          readonly value: string;
+          readonly title: string;
+        }>;
+        const preferredTaxon = defined(
+          queryFieldValues.find(
+            (entry) =>
+              typeof entry === 'object' && entry.value === 'preferredTaxon'
+          ),
+          'Unable to find tree query preferredTaxon value'
+        );
+        const taxon = defined(
+          queryFieldValues.find(
+            (entry) => typeof entry === 'object' && entry.value === 'taxon'
+          ),
+          'Unable to find tree query taxon value'
+        );
+
+        overwriteReadOnly(
+          preferredTaxon,
+          'title',
+          getField(tables.Determination, 'preferredTaxon').label
+        );
+        overwriteReadOnly(
+          taxon,
+          'title',
+          getField(tables.Determination, 'taxon').label
+        );
+      } else {
+        softError(
+          'Unable to replace the tree preferences item title for queryField'
         );
       }
     })

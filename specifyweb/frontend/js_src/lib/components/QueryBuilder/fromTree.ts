@@ -13,6 +13,7 @@ import type {
 } from '../DataModel/types';
 import { softFail } from '../Errors/Crash';
 import { hasTablePermission } from '../Permissions/helpers';
+import { userPreferences } from '../Preferences/userPreferences';
 import { formatTreeRank } from '../WbPlanView/mappingHelpers';
 import { queryFieldFilterSpecs } from './FieldFilterSpec';
 import { QueryFieldSpec } from './fieldSpec';
@@ -51,22 +52,30 @@ const defaultFields: RR<
     rankName: string
   ) => Promise<RA<SpecifyResource<SpQueryField>>>
 > = {
-  Taxon: async (nodeId, rankName) => [
-    makeField('catalogNumber', {
-      sortType: flippedSortTypes.ascending,
-    }),
-    makeField('determinations.taxon.fullName', {}),
-    makeField(`determinations.taxon.${rankName}.taxonId`, {
-      operStart: queryFieldFilterSpecs.equal.id,
-      startValue: nodeId.toString(),
-      isDisplay: false,
-    }),
-    makeField('determinations.isCurrent', {
-      operStart: queryFieldFilterSpecs.trueOrNull.id,
-      isDisplay: false,
-    }),
-    makeField('collectingEvent.locality.localityName', {}),
-  ],
+  Taxon: async (nodeId, rankName) => {
+    const queryField = userPreferences.get(
+      'treeEditor',
+      'taxon',
+      'queryField'
+    );
+
+    return [
+      makeField('catalogNumber', {
+        sortType: flippedSortTypes.ascending,
+      }),
+      makeField('determinations.taxon.fullName', {}),
+      makeField(`determinations.${queryField}.${rankName}.taxonId`, {
+        operStart: queryFieldFilterSpecs.equal.id,
+        startValue: nodeId.toString(),
+        isDisplay: false,
+      }),
+      makeField('determinations.isCurrent', {
+        operStart: queryFieldFilterSpecs.trueOrNull.id,
+        isDisplay: false,
+      }),
+      makeField('collectingEvent.locality.localityName', {}),
+    ];
+  },
   Geography: async (nodeId, rankName) => [
     makeField('catalogNumber', {}),
     makeField('determinations.taxon.fullName', {
