@@ -178,6 +178,7 @@ def unupload_record(upload_result: UploadResult, agent) -> None:
         unupload_record(record, agent)
 
 
+FORCE_UPLOAD = True
 def do_upload_dataset(
     collection,
     uploading_agent_id: int,
@@ -201,7 +202,7 @@ def do_upload_dataset(
     batch_edit_packs = [get_batch_edit_pack_from_row(ncols, row) for row in ds.data]
     base_table, upload_plan, batchEditPrefs = get_raw_ds_upload_plan(ds)
 
-    results = do_upload(
+    results, failed_rows = do_upload(
         collection,
         rows,
         upload_plan,
@@ -221,6 +222,19 @@ def do_upload_dataset(
         ),
     )
     success = not any(r.contains_failure() for r in results)
+
+    # Export failed rows
+    if FORCE_UPLOAD:
+        # upload counts as success if at least one row uploaded
+        success = any(not r.contains_failure() for r in results)
+
+        agent = models.Agent.objects.get(id=uploading_agent_id)
+        user = agent.specifyuser
+        
+        logger.debug(failed_rows)
+        if len(failed_rows) > 0:
+            export_failed_rows(failed_rows, user)
+
     if not no_commit:
         ds.uploadresult = {
             "success": success,
@@ -317,6 +331,7 @@ def get_ds_upload_plan(collection, ds: Spdataset) -> tuple[Table, ScopedUploadab
     base_table, plan, _ = get_raw_ds_upload_plan(ds)
     return base_table, plan.apply_scoping(collection)
 
+
 def do_upload(
     collection,
     rows: Rows,
@@ -344,6 +359,10 @@ def do_upload(
 
     scope_context = ScopeContext()
 
+    if FORCE_UPLOAD:
+        allow_partial = True
+
+    failed_rows = []
     with (
         savepoint("main upload"),
         cache_unique_catnum_preferences(),
@@ -423,8 +442,11 @@ def do_upload(
                     f"finished row {len(results)}, cache size: {cache and len(cache)}"
                 )
                 if result.contains_failure():
-                    cache = _cache
-                    raise Rollback("failed row")
+                    if FORCE_UPLOAD:
+                        failed_rows.append(row)
+                    else:
+                        cache = _cache
+                        raise Rollback("failed row")
                 
                 autonum_dispatcher.commit_highest()
 
@@ -436,11 +458,42 @@ def do_upload(
         else:
             fixup_trees(scoped_table, results)
 
-    return results
+    return results, failed_rows
 
-
+from django.conf import settings
+import csv
+import re
+import os
+from specifyweb.backend.notifications.models import Message
+import uuid
 do_upload_csv = do_upload
 
+def export_failed_rows(failed_rows, user):
+    message_type = "workbench-failed-rows"
+
+
+    filename = f"failed_rows_{uuid.uuid4().hex}.csv"
+    path = os.path.join(settings.DEPOSITORY_DIR, filename)
+    bom = True
+    delimiter = ','
+    
+    encoding = 'utf-8-sig' if bom else 'utf-8'
+
+    column_order = None
+    if column_order is None:
+        column_order = list(failed_rows[0].keys())
+
+    with open(path, 'w', newline='', encoding=encoding) as f:
+        csv_writer = csv.DictWriter(f, fieldnames=column_order, delimiter=delimiter)
+        csv_writer.writeheader()
+        for row in failed_rows:
+            csv_writer.writerow(row)
+
+    Message.objects.create(user=user, content=json.dumps({
+        'type': message_type,
+        'file': filename,
+        'datasetname': 'PLACEHOLDER',
+    }))
 
 def validate_row(
     collection,
