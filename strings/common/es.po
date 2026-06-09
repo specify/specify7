@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-08 10:05+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-09 11:01+0000\n"
+"Last-Translator: Libre <6n0n1m0s@proton.me>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/common/"
 "es/>\n"
 "Language: es\n"
@@ -325,7 +325,6 @@ msgstr "Consejos de búsqueda"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:132
-#, fuzzy
 msgid "expressSearchInstructions"
 msgstr ""
 "Separe los términos de búsqueda con espacios, use % en cualquier parte, * al "
@@ -334,14 +333,12 @@ msgstr ""
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
-#, fuzzy
 msgid "expressSearchDateFormats"
 msgstr ""
 "Las fechas se pueden buscar utilizando el formato AAAA-MM-DD o MM/DD/AAAA."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:133
-#, fuzzy
 msgid "expressSearchPhraseExample"
 msgstr ""
 "Para buscar un término con espacios, encierre la frase entre comillas, por "
