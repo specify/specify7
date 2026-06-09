@@ -25,9 +25,9 @@ def create_default_tectonic_ranks(apps):
                 "isenforced": True
             }
         )
-        # The root rank already exists in some capacity in the Discipline
-        # We can assume the user has made modifications to the tree at this
-        # point, so shouldn't go further with checking/creating lower ranks
+        if discipline.tectonicunittreedef_id != tectonic_tree_def.id:
+                discipline.tectonicunittreedef = tectonic_tree_def
+                discipline.save(update_fields=["tectonicunittreedef"])
         if not root_created:
             # BUG?: handle setting the tectonicunittreedef on the Discipline
             # here? We can probably practically assume it's already set if the
