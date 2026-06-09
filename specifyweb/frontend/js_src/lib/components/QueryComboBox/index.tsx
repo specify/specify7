@@ -4,6 +4,7 @@ import type { State } from 'typesafe-reducer';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { useResourceValue } from '../../hooks/useResourceValue';
+import { ajax } from '../../utils/ajax';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { userText } from '../../localization/user';
@@ -11,6 +12,7 @@ import { f } from '../../utils/functools';
 import { getValidationAttributes } from '../../utils/parser/definitions';
 import type { RA } from '../../utils/types';
 import { filterArray, localized } from '../../utils/types';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { backboneFieldSeparator, toTable } from '../DataModel/helpers';
@@ -54,6 +56,28 @@ import { useCollectionRelationships } from './useCollectionRelationships';
 import { useTreeData } from './useTreeData';
 import { TreeDefinitionContext } from './useTreeData';
 import { useTypeSearch } from './useTypeSearch';
+
+/**
+ * Maximum number of results to fetch for the typeahead dropdown.
+ * Kept low to avoid expensive queries on large tables (200K+ rows).
+ */
+export const QUERY_COMBO_BOX_SEARCH_LIMIT = 50;
+
+/**
+ * Session-scoped preference for how to handle editing shared records (#597).
+ * When set, the warning dialog is skipped and the remembered action is used.
+ */
+const SHARED_EDIT_SESSION_KEY = 'specify-shared-edit-preference';
+type SharedEditPreference = 'cloneAndEdit' | 'editShared';
+
+function getSessionSharedEditPref(): SharedEditPreference | undefined {
+  const value = sessionStorage.getItem(SHARED_EDIT_SESSION_KEY);
+  return value === 'cloneAndEdit' || value === 'editShared' ? value : undefined;
+}
+
+function setSessionSharedEditPref(pref: SharedEditPreference): void {
+  sessionStorage.setItem(SHARED_EDIT_SESSION_KEY, pref);
+}
 
 /*
  * REFACTOR: split this component
@@ -219,6 +243,19 @@ export function QueryComboBox({
       >
     | State<'AccessDeniedState', { readonly collectionName: string }>
     | State<'MainState'>
+    | State<
+        'SharedRecordWarningState',
+        {
+          readonly sharingCount: number;
+          readonly sharingRecords: RA<{
+            readonly parentId: number | undefined;
+            readonly parentLabel: string | undefined;
+            readonly parentTableName: string | undefined;
+            readonly sharedId: number | undefined;
+            readonly sharedTableName: string;
+          }>;
+        }
+      >
     | State<'ViewResourceState', { readonly isReadOnly: boolean }>
   >({ type: 'MainState' });
 
@@ -229,25 +266,181 @@ export function QueryComboBox({
   const targetCollectionId = forceCollection ?? relatedCollectionId;
 
   const loading = React.useContext(LoadingContext);
-  const handleOpenRelated = (isReadOnly: boolean): void =>
-    state.type === 'ViewResourceState' || state.type === 'AccessDeniedState'
-      ? setState({ type: 'MainState' })
-      : typeof relatedCollectionId === 'number' &&
-          !userInformation.availableCollections.some(
-            ({ id }) => id === relatedCollectionId
-          )
-        ? loading(
-            fetchResource('Collection', relatedCollectionId).then(
-              (collection) =>
-                setState({
-                  type: 'AccessDeniedState',
-                  collectionName: collection?.collectionName ?? '',
-                })
-            )
-          )
-        : setState({ type: 'ViewResourceState', isReadOnly });
-
   const subViewRelationship = React.useContext(SubViewContext)?.relationship;
+
+  const handleOpenRelated = (isReadOnly: boolean): void => {
+    if (
+      state.type === 'ViewResourceState' ||
+      state.type === 'AccessDeniedState' ||
+      state.type === 'SharedRecordWarningState'
+    ) {
+      setState({ type: 'MainState' });
+      return;
+    }
+
+    if (
+      typeof relatedCollectionId === 'number' &&
+      !userInformation.availableCollections.some(
+        ({ id }) => id === relatedCollectionId
+      )
+    ) {
+      loading(
+        fetchResource('Collection', relatedCollectionId).then((collection) =>
+          setState({
+            type: 'AccessDeniedState',
+            collectionName: collection?.collectionName ?? '',
+          })
+        )
+      );
+      return;
+    }
+
+    /*
+     * For non-dependent, non-read-only edits, check if the related
+     * record is shared before allowing direct edits (#597).
+     * Carry Forward copies foreign keys, so editing a shared Locality
+     * (for example) silently mutates every CO that references it.
+     */
+    if (!isReadOnly && !field.isDependent() && formatted?.resource?.id) {
+      const parentTableName = resource!.specifyTable.name.toLowerCase();
+      const fieldName = field.name.toLowerCase();
+      const relatedId = formatted.resource.id;
+
+      /*
+       * Try to resolve back to CollectionObject for the display.
+       * If the QCB is inside a subform (e.g., CE inside CO form),
+       * query COs via the joined path (e.g., collectingevent__locality=X).
+       * Otherwise fall back to querying the direct parent table.
+       */
+      const subView = subViewRelationship;
+      const canResolveToCollectionObject =
+        subView !== undefined && subView.table.name === 'CollectionObject';
+
+      const queryTable = canResolveToCollectionObject
+        ? 'collectionobject'
+        : parentTableName;
+      const queryFilter = canResolveToCollectionObject
+        ? `${subView!.name.toLowerCase()}__${fieldName}`
+        : fieldName;
+
+      loading(
+        (canResolveToCollectionObject
+          ? /*
+             * Query COs joined through the parent table
+             * (e.g., collectionobject?collectingevent__locality=X)
+             * and also fetch the parent ID for linking.
+             */
+            ajax<{
+              readonly meta: { readonly total_count: number };
+              readonly objects: RA<{
+                readonly id: number;
+                readonly catalogNumber?: string;
+                readonly catalognumber?: string;
+                readonly collectingEvent?: string;
+                readonly collectingevent?: string;
+              }>;
+            }>(
+              `/api/specify/${queryTable}/?${queryFilter}=${relatedId}&limit=11`,
+              { headers: { Accept: 'application/json' } }
+            ).then(({ data }) => {
+              const parentTable = subView!.table.name;
+              const sharedTable = field.relatedTable.name;
+              return {
+                totalCount: data.meta.total_count,
+                records: data.objects.slice(0, 10).map((obj) => {
+                  const barcode = obj.catalogNumber ?? obj.catalognumber ?? '';
+                  const objRecord = obj as Record<string, unknown>;
+                  const relRaw: unknown =
+                    objRecord[subView!.name.toLowerCase()] ??
+                    objRecord[subView!.name];
+                  let relId: number | undefined;
+                  if (
+                    typeof relRaw === 'object' &&
+                    relRaw !== null &&
+                    'id' in relRaw
+                  ) {
+                    relId = (relRaw as { id: number }).id;
+                  } else if (
+                    typeof relRaw === 'string' &&
+                    relRaw.includes('/')
+                  ) {
+                    relId = Number.parseInt(
+                      relRaw.split('/').filter(Boolean).pop()!,
+                      10
+                    );
+                  } else if (typeof relRaw === 'number') {
+                    relId = relRaw;
+                  }
+                  return {
+                    parentId: obj.id,
+                    parentLabel: barcode || `${parentTable} #${obj.id}`,
+                    parentTableName: parentTable,
+                    sharedId: Number.isNaN(relId) ? undefined : relId,
+                    sharedTableName: sharedTable,
+                  };
+                }),
+              };
+            })
+          : /* Fall back to querying the direct parent table */
+            ajax<{
+              readonly meta: { readonly total_count: number };
+              readonly objects: RA<{ readonly id: number }>;
+            }>(
+              `/api/specify/${queryTable}/?${queryFilter}=${relatedId}&limit=11`,
+              { headers: { Accept: 'application/json' } }
+            ).then(({ data }) => ({
+              totalCount: data.meta.total_count,
+              records: data.objects.slice(0, 10).map((obj) => ({
+                parentId: undefined as number | undefined,
+                parentLabel: undefined as string | undefined,
+                parentTableName: undefined as string | undefined,
+                sharedId: obj.id,
+                sharedTableName: resource!.specifyTable.name,
+              })),
+            }))
+        ).then(({ totalCount, records }) => {
+          if (totalCount <= 1) {
+            setState({ type: 'ViewResourceState', isReadOnly: false });
+            return;
+          }
+
+          // Check session preference — skip dialog if user already chose
+          const sessionPref = getSessionSharedEditPref();
+          if (sessionPref === 'editShared') {
+            setState({ type: 'ViewResourceState', isReadOnly: false });
+          } else if (sessionPref === 'cloneAndEdit') {
+            doCloneAndEdit();
+          } else {
+            setState({
+              type: 'SharedRecordWarningState',
+              sharingCount: totalCount,
+              sharingRecords: records,
+            });
+          }
+        })
+      );
+      return;
+    }
+
+    setState({ type: 'ViewResourceState', isReadOnly });
+  };
+
+  const doCloneAndEdit = (): void => {
+    const relatedResource = formatted?.resource;
+    if (relatedResource === undefined) return;
+    loading(
+      relatedResource.clone(true).then((clonedResource) => {
+        resource?.set(field.name, clonedResource as never);
+        setState({
+          type: 'AddResourceState',
+          resource: clonedResource,
+        });
+      })
+    );
+  };
+
+  const [rememberChoice, setRememberChoice] = React.useState(false);
+
   const pendingValueRef = React.useRef('');
 
   const relatedTable =
@@ -355,8 +548,7 @@ export function QueryComboBox({
               .map(async (query) =>
                 runQuery<readonly [id: number, label: LocalizedString]>(query, {
                   collectionId: forceCollection ?? relatedCollectionId,
-                  // REFACTOR: allow customizing these arbitrary limits
-                  limit: 1000,
+                  limit: QUERY_COMBO_BOX_SEARCH_LIMIT,
                 })
               )
           ).then((responses) =>
@@ -616,6 +808,118 @@ export function QueryComboBox({
             {userText.collectionAccessDeniedDescription({
               collectionName: state.collectionName,
             })}
+          </Dialog>
+        )}
+        {state.type === 'SharedRecordWarningState' && (
+          <Dialog
+            buttons={
+              <>
+                <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+                <Button.Info
+                  onClick={(): void => {
+                    if (rememberChoice) setSessionSharedEditPref('editShared');
+                    setState({ type: 'ViewResourceState', isReadOnly: false });
+                  }}
+                >
+                  {formsText.editShared()}
+                </Button.Info>
+                <Button.Fancy
+                  onClick={(): void => {
+                    if (rememberChoice)
+                      setSessionSharedEditPref('cloneAndEdit');
+                    doCloneAndEdit();
+                  }}
+                >
+                  {formsText.cloneAndEdit()}
+                </Button.Fancy>
+              </>
+            }
+            header={formsText.sharedRecordWarning()}
+            onClose={(): void => setState({ type: 'MainState' })}
+          >
+            <p>
+              {formsText.sharedRecordWarningDescription({
+                tableName: field.relatedTable.label,
+                count: state.sharingCount.toString(),
+                parentTableName: resource!.specifyTable.label,
+              })}
+            </p>
+            <p className="mt-1 text-xs text-gray-500">
+              {formsText.linksForInspectionOnly()}
+            </p>
+            {state.sharingRecords.length > 0 && (
+              <table className="mt-2 text-sm w-full">
+                <thead>
+                  <tr className="text-left text-xs text-gray-500">
+                    {state.sharingRecords.some(
+                      (r) => r.parentId !== undefined
+                    ) && (
+                      <th className="pr-4 font-normal">
+                        {state.sharingRecords.find((r) => r.parentTableName)
+                          ?.parentTableName ?? resource!.specifyTable.label}
+                      </th>
+                    )}
+                    <th className="font-normal">{field.relatedTable.label}</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {state.sharingRecords.map((record, index) => (
+                    <tr key={record.parentId ?? record.sharedId ?? index}>
+                      {state.sharingRecords.some(
+                        (r) => r.parentId !== undefined
+                      ) && (
+                        <td className="pr-4 py-0.5">
+                          {record.parentId !== undefined &&
+                          record.parentTableName !== undefined ? (
+                            <a
+                              className="text-blue-600 underline hover:text-blue-800"
+                              href={`/specify/view/${record.parentTableName.toLowerCase()}/${record.parentId}/`}
+                              target="_blank"
+                              rel="noopener noreferrer"
+                            >
+                              {record.parentLabel}
+                            </a>
+                          ) : (
+                            '\u2014'
+                          )}
+                        </td>
+                      )}
+                      <td className="py-0.5">
+                        {record.sharedId !== undefined ? (
+                          <a
+                            className="text-blue-600 underline hover:text-blue-800"
+                            href={`/specify/view/${record.sharedTableName.toLowerCase()}/${record.sharedId}/`}
+                            target="_blank"
+                            rel="noopener noreferrer"
+                          >
+                            {`${record.sharedTableName} #${record.sharedId}`}
+                          </a>
+                        ) : (
+                          '\u2014'
+                        )}
+                      </td>
+                    </tr>
+                  ))}
+                </tbody>
+              </table>
+            )}
+            {state.sharingCount > 10 && (
+              <p className="mt-1 text-xs text-gray-500">
+                {formsText.andNMore({
+                  count: (state.sharingCount - 10).toString(),
+                })}
+              </p>
+            )}
+            <label className="mt-3 flex items-center gap-2 text-sm cursor-pointer">
+              <input
+                checked={rememberChoice}
+                type="checkbox"
+                onChange={(event): void =>
+                  setRememberChoice(event.target.checked)
+                }
+              />
+              {formsText.rememberChoiceForSession()}
+            </label>
           </Dialog>
         )}
         {typeof formatted?.resource === 'object' &&
