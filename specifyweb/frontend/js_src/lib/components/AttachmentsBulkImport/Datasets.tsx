@@ -32,6 +32,7 @@ import type {
   AttachmentDataSet,
   AttachmentDataSetPlan,
   FetchedDataSet,
+  PartialUploadableFileSpec,
 } from './types';
 import { useEagerDataSet } from './useEagerDataset';
 
@@ -97,11 +98,20 @@ function ModifyDataset({
   );
 }
 
-const createEmpty = async (name: LocalizedString) =>
+const createEmpty = async (
+  name: LocalizedString,
+  rows: RA<PartialUploadableFileSpec> = []
+) =>
   createEmptyDataSet<AttachmentDataSet>('bulkAttachment', name, {
     uploadplan: { staticPathKey: undefined },
     uploaderstatus: 'main',
+    rows,
   });
+
+export const createEmptyAttachmentDataset = (
+  name: LocalizedString,
+  rows: RA<PartialUploadableFileSpec> = []
+) => createEmpty(name, rows);
 
 export function AttachmentsImportOverlay(): JSX.Element | null {
   const handleClose = React.useContext(OverlayContext);
@@ -274,7 +284,7 @@ function NewDataSet(): JSX.Element | null {
             id={id('form')}
             onSubmit={async () => {
               loading(
-                createEmpty(pendingName).then(({ id }) =>
+                createEmptyAttachmentDataset(pendingName).then(({ id }) =>
                   navigate(`/specify/attachments/import/${id}`)
                 )
               );

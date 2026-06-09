@@ -81,7 +81,7 @@ export function LocalityUpdateFromDataSet(): JSX.Element {
       <CsvFilePicker
         firstRowAlwaysHeader
         header={headerText.localityUpdateTool()}
-        onFileImport={(headers, data): void => {
+        onFileImport={({ headers, data }): void => {
           const foundHeaderErrors = headers.reduce(
             (accumulator, currentHeader) => {
               const parsedHeader = currentHeader

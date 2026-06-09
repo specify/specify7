@@ -236,7 +236,12 @@ function Attachments({
             <Button.BorderedGray
               onClick={() => navigate('/specify/overlay/attachments/import/')}
             >
-              {commonText.import()}
+              {attachmentsText.importMatchingAttachments()}
+            </Button.BorderedGray>
+            <Button.BorderedGray
+              onClick={() => navigate('/specify/attachments/import//')}
+            >
+              {attachmentsText.importFromMappingFile()}
             </Button.BorderedGray>
           </>
         )}

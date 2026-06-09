@@ -29,6 +29,12 @@ export const attachmentsText = createDictionary({
     'pt-br': 'Escala',
     'hr-hr': 'Skala',
   },
+  importFromMMappingFile: {
+    'en-us': 'Import from Mapping File',
+  },
+  importMatchingAttachments: {
+    'en-us': 'Import Matching Attachments',
+  },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер прикрепленных файлов недоступен',
@@ -847,5 +853,8 @@ export const attachmentsText = createDictionary({
       'Це налаштування контролює, чи нові вкладення, додані до цієї колекції, позначатимуться як «Публічні» за замовчуванням. Публічні вкладення автоматично відображатимуться на веб-порталі Specify. Цей параметр можна змінити для кожного вкладення окремо, і він не впливає на існуючі вкладення.',
     'hr-hr':
       'Ovo kontrolira hoće li se novi privitci dodani u ovu kolekciju prema zadanim postavkama označavati kao "Javni". Javni privitci automatski će biti vidljivi na Navedite web portalu. Ova se postavka može poništiti za svaki pojedinačni privitak i ne utječe na postojeće privitke.',
+  },
+  importFromMappingFile: {
+    'en-us': 'Import from Mapping File',
   },
 } as const);

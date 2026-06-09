@@ -15,7 +15,6 @@ import {
   keysToLowerCase,
   mappedFind,
   replaceItem,
-  stripFileExtension,
 } from '../../utils/utils';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type {
@@ -157,6 +156,7 @@ type MatchSelectedFiles = {
   readonly resolvedFiles: RA<PartialUploadableFileSpec>;
   readonly duplicateFiles: RA<PartialUploadableFileSpec>;
 };
+
 export const matchSelectedFiles = (
   previousUploadables: RA<PartialUploadableFileSpec>,
   filesToResolve: RA<PartialUploadableFileSpec>
@@ -168,10 +168,14 @@ export const matchSelectedFiles = (
           previousUploadable.uploadFile !== undefined &&
           previousUploadable.uploadFile.file.name ===
             uploadable.uploadFile.file.name &&
-          previousUploadable.uploadFile.file.size ===
-            uploadable.uploadFile.file.size &&
-          previousUploadable.uploadFile.file.type ===
-            uploadable.uploadFile.file.type
+          // If previous uploadables do not have size, skip them.
+          // Happens when mapping file is being used
+          (previousUploadable.uploadFile.file.size === undefined ||
+            previousUploadable.uploadFile.file.size ===
+              uploadable.uploadFile.file.size) &&
+          (previousUploadable.uploadFile.file.type === undefined ||
+            previousUploadable.uploadFile.file.type ===
+              uploadable.uploadFile.file.type)
       );
       if (matchedIndex === -1)
         return {
@@ -189,6 +193,7 @@ export const matchSelectedFiles = (
           duplicateFiles: [...previousMatchedSpec.duplicateFiles, uploadable],
         };
 
+      // We get here if we are going to preserve the incoming file.
       return {
         ...previousMatchedSpec,
         resolvedFiles: replaceItem(
@@ -196,15 +201,17 @@ export const matchSelectedFiles = (
           matchedIndex,
           {
             ...previousMatch,
-            uploadFile: uploadable.uploadFile,
+            uploadFile: {
+              file: uploadable.uploadFile.file,
+              parsedName: previousMatch.uploadFile.parsedName,
+            },
             /*
              * Generating tokens again because the file could have been
              * uploaded to the asset server but not yet recorded in Specify DB.
              */
             uploadTokenSpec: undefined,
             /*
-             * Take the new status in case of parse failure was reported.
-             * But take the previous status it was a success
+             * Take the previous status it was a success
              */
             status:
               previousMatch.status?.type === 'success' ||
@@ -228,7 +235,7 @@ export function resolveFileNames(
   formatter?: UiFormatter
 ): string | undefined {
   // BUG: Won't catch if formatters begin or end with a space
-  const splitName = stripFileExtension(fileName).trim();
+  const splitName = fileName.trim();
   let nameToParse = splitName;
   if (formatter?.parts.every((field) => field.type !== 'regex') === true) {
     nameToParse = fileName.trim().slice(0, formatter.size);
