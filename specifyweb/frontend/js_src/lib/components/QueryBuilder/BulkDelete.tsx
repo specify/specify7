@@ -4,7 +4,7 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { formsText } from '../../localization/forms';
 import { queryText } from '../../localization/query';
-import { ping } from '../../utils/ajax/ping';
+import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
@@ -80,15 +80,23 @@ export function BulkDeletionDialog({
     closeWarning();
     onClose();
     loading(
-      ping(`/bulk_copy/bulk_delete/${table.name}/`, {
-        headers: { Accept: 'text/plain' },
-        method: 'POST',
-        body: JSON.stringify({
-          ids: recordIdsRef.current(),
-          query: queryResource?.toJSON(),
-        }),
-      })
-        .then(() => onDeleted(recordIdsRef.current()))
+      ajax<{ readonly task_id: string }>(
+        `/bulk_copy/bulk_delete/${table.name}/`,
+        {
+          method: 'POST',
+          headers: { Accept: 'application/json' },
+          body: JSON.stringify({
+            ids: recordIdsRef.current(),
+            query: queryResource?.toJSON(),
+          }),
+        }
+      )
+        .then(({ data }) => {
+          // The worker will notify the user via notifications when done.
+          // Still call onDeleted so the local query-results UI is updated.
+          onDeleted(recordIdsRef.current());
+          return data.task_id;
+        })
         .catch(console.error)
     );
   };
