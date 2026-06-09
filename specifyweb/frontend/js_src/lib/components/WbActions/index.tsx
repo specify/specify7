@@ -7,6 +7,7 @@ import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
 import { Button } from '../Atoms/Button';
+import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
 import { Dialog } from '../Molecules/Dialog';
@@ -16,6 +17,7 @@ import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
 import type { WbCellCounts } from '../WorkBench/CellMeta';
 import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
+import { TableRecordCounts } from '../WorkBench/Results';
 import { WbStatus as WbStatusComponent } from '../WorkBench/Status';
 import type { WbStatus, Workbench } from '../WorkBench/WbView';
 import { WbNoUploadPlan } from './WbNoUploadPlan';
@@ -78,6 +80,8 @@ export function WbActions({
 
   const isMapped = mappings !== undefined;
 
+  const recordCounts = workbench.validation.uploadResults.recordCounts ?? {};
+
   const dataCheckInProgress = React.useMemo(
     () => workbench.validation.liveValidationStack.length > 0,
     [workbench.validation.liveValidationStack.length]
@@ -139,6 +143,7 @@ export function WbActions({
             hasUnsavedChanges={hasUnsavedChanges}
             mappings={mappings}
             openNoUploadPlan={openNoUploadPlan}
+            recordCounts={recordCounts}
             startUpload={startUpload}
             viewerLocalization={viewerLocalization}
           />
@@ -195,6 +200,17 @@ export function WbActions({
       ) : undefined}
       {operationCompleted && (
         <Dialog
+          icon={
+            mode === 'validate'
+              ? cellCounts.invalidCells === 0
+                ? dialogIcons.success
+                : dialogIcons.error
+              : mode === 'upload'
+              ? cellCounts.invalidCells === 0
+                ? dialogIcons.success
+                : dialogIcons.error
+              : dialogIcons.success
+          }
           buttons={
             <>
               {cellCounts.invalidCells === 0 && mode === 'upload' && (
@@ -209,17 +225,56 @@ export function WbActions({
                   }}
                 />
               )}
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             </>
           }
           header={message!.header}
           onClose={closeOperationCompleted}
         >
-          {message?.message}
+          <div className="flex flex-col gap-4">
+            <div>{message?.message}</div>
+            {cellCounts.invalidCells === 0 &&
+              (mode === 'validate' || mode === 'upload') &&
+              Object.keys(recordCounts).some(
+                (key) =>
+                  recordCounts[key as keyof typeof recordCounts] !== undefined &&
+                  Object.keys(
+                    recordCounts[key as keyof typeof recordCounts] ?? {}
+                  ).length > 0
+              ) && (
+                <div className="flex flex-col gap-2">
+                  {Object.entries(recordCounts).map(
+                    ([resultType, recordsPerType]) =>
+                      recordsPerType !== undefined &&
+                      Object.keys(recordsPerType).length > 0 ? (
+                        <div key={resultType}>
+                          <p className="text-sm font-medium">
+                            {resultType === 'Uploaded'
+                              ? wbText.recordsCreated()
+                              : resultType === 'Updated'
+                                ? wbText.recordsUpdated()
+                                : resultType === 'Deleted'
+                                  ? wbText.recordsDeleted()
+                                  : wbText.recordsMatchedAndChanged()}
+                          </p>
+                          <TableRecordCounts
+                            recordCounts={recordsPerType}
+                            sortFunction={([, recordCount]) =>
+                              -(recordCount ?? 0)
+                            }
+                          />
+                        </div>
+                      ) : null
+                  )}
+                </div>
+              )}
+          </div>
         </Dialog>
       )}
       {operationAborted && (
         <Dialog
+          icon={dialogIcons.failure}
           buttons={commonText.close()}
           header={
             mode === 'validate'
@@ -321,7 +376,6 @@ function getMessage(
               <>
                 {wbText.validationNoErrorsDescription()}
                 <br />
-                <br />
                 {wbText.validationReEditWarning()}
               </>
             ),
@@ -340,7 +394,7 @@ function getMessage(
     upload:
       cellCounts.invalidCells === 0
         ? {
-            header: viewerLocalization.do,
+            header: viewerLocalization.doSuccessful,
             message: viewerLocalization.doSuccessfulDescription,
           }
         : {
