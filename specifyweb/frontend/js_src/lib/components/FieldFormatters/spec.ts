@@ -166,9 +166,11 @@ export const fieldFormatterTypesWithForcedSize = new Set([
 ] as const);
 
 /**
- * Specify 6 expects the regex pattern to start with "/^" and end with "$/"
+ * Specify 6 expects the regex pattern to start with "^" and end with "$"
  * because it parses each field part individually.
- * In Specify 7, we construct a combined regex that parts all field parts at
+ * (Though currently, there's a bug in Specify 6 where it only parses the first
+ * regex part of the field formatter)
+ * In Specify 7, we construct a combined regex that parses all field parts at
  * once.
  * Thus we do not want the "^" and "$" to be part of the pattern as far as
  * Specify 7 front-end is concerned, but we want it to be part of the pattern
@@ -176,18 +178,39 @@ export const fieldFormatterTypesWithForcedSize = new Set([
  */
 export function trimRegexString(regexString: string): string {
   let pattern = regexString;
-  if (pattern.startsWith('/')) pattern = pattern.slice(1);
-  if (pattern.startsWith('^')) pattern = pattern.slice(1);
-  if (pattern.endsWith('/')) pattern = pattern.slice(0, -1);
-  if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
-  if (pattern.startsWith('(') && pattern.endsWith(')'))
+  /**
+   * We should generally never receive forward slashes from Specify 6, as Java
+   * just uses normal strings for regular expressions.
+   * We're matching Javascript/Perl/PHP, etc. style regular expressions here in
+   * the case the user pastes an expression containing these special characters
+   *
+   * Also, the initial release of the visual field format editor in v7.12.0
+   * added regular expressions in literal Javascript style format, which
+   * Specify 6 would interpret as a literal / character.
+   * In the case the user still has the forward slashes, they will now be
+   * removed.
+   * See https://github.com/specify/specify7/pull/8152
+   * BUG: If the user expects to use a regular expression that starts with a
+   * literal "/" and ends with a literal "/", they will be implictly removed
+   * from the expression
+   * */
+  /**
+   * Ugh, this isn't a great way to determine the user received the regex in a
+   * Javascript style (generally contained in forward slashes), but it might be
+   * good enough for nearly all cases
+   */
+  if (pattern.length >= 2 && pattern.startsWith('/') && pattern.endsWith('/'))
     pattern = pattern.slice(1, -1);
+  // Finally, trim start and end tags so Specify 7 can smush the regular
+  // expression with the expressions of other parts in the field format if
+  // needed
+  if (pattern.startsWith('^')) pattern = pattern.slice(1);
+  if (pattern.endsWith('$')) pattern = pattern.slice(0, -1);
   return pattern;
 }
 function normalizeRegexString(regexString: string): string {
-  let pattern: string = trimRegexString(regexString);
-  if (pattern.includes('|')) pattern = `(${pattern})`;
-  return `/^${pattern}$/`;
+  const pattern: string = trimRegexString(regexString);
+  return `^${pattern}$`;
 }
 
 const partSpec = f.store(() =>
