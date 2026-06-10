@@ -29,9 +29,6 @@ def get_availability(prep, iprepid, iprepid_fld):
 
 @orm_signal_handler('pre_save', 'Loanpreparation')
 def loanprep_quantity_must_be_lte_availability(ipreparation):
-    if ipreparation.id is None:
-        return
-
     if ipreparation.preparation is not None:
         available = get_availability(
             ipreparation.preparation, ipreparation.id, "loanpreparationid") or 0
