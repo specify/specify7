@@ -410,18 +410,25 @@ def update_table_field_schema_config_with_defaults(
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    try:
-        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+    sp_local_container = (
+        Splocalecontainer.objects.filter(
             name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type,
         )
-    except MultipleObjectsReturned:
-        sp_local_container = Splocalecontainer.objects.filter(
+        .order_by('id')
+            .first()
+    )
+
+    if sp_local_container is None:
+        sp_local_container = Splocalecontainer.objects.create(
             name=table.name.lower(),
             discipline_id=discipline_id,
-            schematype=table_config.schema_type
-        ).first()
+            schematype=table_config.schema_type,
+            ishidden=False,
+            issystem=table.system,
+            version=0,
+        )
 
     try:
         field = table.get_field_strict(field_name)
@@ -535,18 +542,25 @@ def update_table_field_schema_config_params(
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    try:
-        sp_local_container, _ = Splocalecontainer.objects.get_or_create(
+    sp_local_container = (
+        Splocalecontainer.objects.filter(
             name=table.name.lower(),
             discipline_id=discipline_id,
             schematype=table_config.schema_type,
         )
-    except MultipleObjectsReturned:
-        sp_local_container = Splocalecontainer.objects.filter(
+        .order_by('id')
+            .first()
+    )
+
+    if sp_local_container is None:
+        sp_local_container = Splocalecontainer.objects.create(
             name=table.name.lower(),
             discipline_id=discipline_id,
-            schematype=table_config.schema_type
-        ).first()
+            schematype=table_config.schema_type,
+            ishidden=False,
+            issystem=table.system,
+            version=0,
+        )
 
     try:
         field = table.get_field_strict(field_name)
@@ -968,7 +982,7 @@ def update_cog_type_fields(apps):
     container_items = Splocalecontaineritem.objects.filter(
         name="collectionObjectType",
         picklistname=None,
-        container__name="CollectionObject",
+        container__name="collectionobject",
     )
     for container_item in container_items:
         Splocaleitemstr.objects.filter(itemname=container_item).delete()
@@ -1383,7 +1397,7 @@ def update_schema_config_field_desc(apps, schema_editor=None):
                 #i.e: COType
                 items = Splocalecontaineritem.objects.filter(
                     container=container,
-                    name=field_name.lower()
+                    name__iexact=field_name
                 )
 
                 for item in items:
@@ -1585,7 +1599,7 @@ def update_co_children_fields(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
 
                     for item in items:
@@ -1661,7 +1675,7 @@ def remove_collectionobject_parentco(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
 
                     for item in items:
@@ -1787,7 +1801,7 @@ def add_quantities_gift(apps):
                     #i.e: COType
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
 
                     for item in items:
@@ -1880,19 +1894,19 @@ def update_accession_date_fields(apps):
                 for (field_name, new_name, new_desc) in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
                     for item in items:
                         item.ishidden = True
                         item.save()
                         desc_str = Splocaleitemstr.objects.filter(itemdesc_id=item.id).first()
                         name_str = Splocaleitemstr.objects.filter(itemname_id=item.id).first()
-                        if not desc_str or not name_str:
-                            continue
-                        desc_str.text = new_desc
-                        desc_str.save()
-                        name_str.text = new_name
-                        name_str.save()
+                        if desc_str is not None:
+                            desc_str.text = new_desc
+                            desc_str.save()
+                        if name_str is not None:
+                            name_str.text = new_name
+                            name_str.save()
 
     update_0034_fields(apps)
     update_0034_schema_config_field_desc(apps)
@@ -1919,7 +1933,7 @@ def revert_update_accession_date_fields(apps):
                 for (field_name, _, _) in fields:
                     items = Splocalecontaineritem.objects.filter(
                         container=container,
-                        name=field_name.lower()
+                        name__iexact=field_name
                     )
                     # If needed, reset ishidden or revert text
 
@@ -2019,13 +2033,15 @@ def update_schema_config_field_desc_for_components(apps, schema_editor=None):
             Splocaleitemstr.objects.filter(
                 itemdesc__container__name=table.lower(),
                 itemdesc__container__schematype=0,
-                itemdesc__name=field_name.lower()
+                itemdesc__name=field_name.lower(),
+                language="en",
             ).update(text=new_desc)
 
             Splocaleitemstr.objects.filter(
                 itemname__container__name=table.lower(),
                 itemname__container__schematype=0,
-                itemname__name=field_name.lower()
+                itemname__name=field_name.lower(),
+                language="en",
             ).update(text=new_name)
 
 def update_hidden_prop_for_compoenents(apps, schema_editor=None):
@@ -2097,7 +2113,7 @@ def reverse_hide_component_fields(apps, schema_editor=None):
                         container=container,
                         name=field_name.lower()
                     )
-                    items.update(ishidden=True)
+                    items.update(ishidden=False)
 
 # ##########################################
 # Used in 0042_discipline_type_picklist.py

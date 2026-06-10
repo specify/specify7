@@ -1,5 +1,5 @@
 import logging
-from django.db.models import F
+from django.db.models import F, OuterRef, Subquery
 
 logger = logging.getLogger(__name__)
 
@@ -30,45 +30,45 @@ def create_default_collection_types(apps):
         collection.collectionobjecttype = cot
         collection.save()
 
-def create_default_discipline_for_tree_defs(apps, using='default'):
+def create_default_discipline_for_tree_defs(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     Institution = apps.get_model('specify', 'Institution')
 
     # Use the specified DB alias for all queries
-    for discipline in Discipline.objects.using(using).all():
+    for discipline in Discipline.objects.all():
         geography_tree_def = discipline.geographytreedef
         if geography_tree_def and geography_tree_def.discipline_id is None:
             geography_tree_def.discipline = discipline
-            geography_tree_def.save(using=using)
+            geography_tree_def.save()
 
         geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
         if geologic_time_period_tree_def and geologic_time_period_tree_def.discipline_id is None:
             geologic_time_period_tree_def.discipline = discipline
-            geologic_time_period_tree_def.save(using=using)
+            geologic_time_period_tree_def.save()
 
         lithostrat_tree_def = discipline.lithostrattreedef
         if lithostrat_tree_def and lithostrat_tree_def.discipline_id is None:
             lithostrat_tree_def.discipline = discipline
-            lithostrat_tree_def.save(using=using)
+            lithostrat_tree_def.save()
 
         taxon_tree_def = discipline.taxontreedef
         if taxon_tree_def and taxon_tree_def.discipline_id is None:
             taxon_tree_def.discipline = discipline
-            taxon_tree_def.save(using=using)
+            taxon_tree_def.save()
 
-    for institution in Institution.objects.using(using).all():
+    for institution in Institution.objects.all():
         storage_tree_def = institution.storagetreedef
         if storage_tree_def and storage_tree_def.institution_id is None:
             storage_tree_def.institution = institution
-            storage_tree_def.save(using=using)
+            storage_tree_def.save()
 
-def create_cogtype_type_picklist(apps, using='default'):
+def create_cogtype_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
 
-    for collection in Collection.objects.using(using).all():
-        cog_type_picklist, picklist_created = Picklist.objects.using(using).get_or_create(
+    for collection in Collection.objects.all():
+        cog_type_picklist, picklist_created = Picklist.objects.get_or_create(
             name='SystemCOGTypes', # Default Collection Object Group Types
             type=0,
             collection=collection,
@@ -79,7 +79,7 @@ def create_cogtype_type_picklist(apps, using='default'):
         )
         if picklist_created:
             for cog_type in DEFAULT_COG_TYPES:
-                Picklistitem.objects.using(using).get_or_create(
+                Picklistitem.objects.get_or_create(
                     title=cog_type,
                     value=cog_type,
                     picklist=cog_type_picklist
@@ -108,51 +108,37 @@ def create_cotype_picklist(apps):
             }
         )
 
-def set_discipline_for_taxon_treedefs(apps, using='default'):
+def set_discipline_for_taxon_treedefs(apps):
     Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
     Taxontreedef = apps.get_model('specify', 'Taxontreedef')
 
-    collection_object_types = Collectionobjecttype.objects.using(using).filter(
-        taxontreedef__discipline__isnull=True
-    ).annotate(
-        discipline=F('collection__discipline')
+    Taxontreedef.objects.filter(
+        discipline__isnull=True
+    ).update(
+        discipline=Subquery(
+            Collectionobjecttype.objects.filter(
+                taxontreedef=OuterRef("pk")
+            ).order_by("pk").values("collection__discipline")[:1]
+        )
     )
-
-    for cot in collection_object_types:
-        Taxontreedef.objects.using(using).filter(id=cot.taxontreedef_id).update(discipline=cot.discipline)
 
 def fix_taxon_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     Taxontreedef = apps.get_model('specify', 'Taxontreedef')
 
-    empty_taxon_treedefs = Taxontreedef.objects.filter(discipline__isnull=True)
-    disciplines = Discipline.objects.all()
-    for empty_taxon_treedef in empty_taxon_treedefs:
-        for discipline in disciplines:
-            if discipline.taxontreedef_id == empty_taxon_treedef.id:
-                empty_taxon_treedef.discipline = discipline
-                empty_taxon_treedef.save()
+    # If a TaxonTreeDef has a NULL DisciplineID but there's a non-NULL
+    # Discipline pointing to the TaxonTreeDef via Discipline -> TaxonTreeDefID,
+    # then set the discipline on the TaxonTreeDef to the referencing Discipline
+    Taxontreedef.objects.filter(
+        discipline__isnull=True
+    ).update(
+        discipline=Subquery(
+            Discipline.objects.filter(
+                taxontreedef=OuterRef("pk")
+            ).order_by("pk").values("pk")[:1]
+        )
+    )
 
-def fix_tectonic_unit_treedef_discipline_links(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-    Tectonicunittreedef = apps.get_model('specify', 'Tectonicunittreedef')
-
-    empty_tectonic_unit_treedefs = Tectonicunittreedef.objects.filter(discipline__isnull=True)
-    empty_disciplines = Discipline.objects.filter(tectonicunittreedef__isnull=True)
-    for empty_discipline in empty_disciplines:
-        if not empty_tectonic_unit_treedefs.exists():
-            new_tectonic_unit_treedef = Tectonicunittreedef.objects.create(
-                name=f'{empty_discipline.name} Tectonic Unit Tree',
-                discipline=empty_discipline
-            )
-        else:
-            empty_discipline.tectonicunittreedef = empty_tectonic_unit_treedefs.first()
-            empty_discipline.save()
-
-    for empty_tectonic_unit_treedef in empty_tectonic_unit_treedefs:
-        if empty_disciplines.exists():
-            empty_tectonic_unit_treedef.discipline = empty_disciplines.first()
-            empty_tectonic_unit_treedef.save()
-        else:
-            empty_tectonic_unit_treedef.discipline = empty_disciplines.last()
-            empty_tectonic_unit_treedef.save()
+    # BUG?: We're not handling the case here when Discipline has a NULL
+    # TaxonTreeDefID but there's a TaxonTreeDef pointing to the Discipline via
+    # TaxonTreeDef -> discipline

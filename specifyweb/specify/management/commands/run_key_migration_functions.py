@@ -17,13 +17,13 @@ from specifyweb.specify.migration_utils.default_cots import (
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
     fix_taxon_treedef_discipline_links,
-    set_discipline_for_taxon_treedefs,
-    fix_tectonic_unit_treedef_discipline_links
+    set_discipline_for_taxon_treedefs
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils.router import use_migration_connection
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
-from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
+from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node, fix_tectonic_unit_treedef_discipline_links
 from specifyweb.backend.patches.migration_utils import apply_migrations as apply_patches
 
 logger = logging.getLogger(__name__)
@@ -221,7 +221,7 @@ class Command(BaseCommand):
             nargs="*",
             type=str,
             choices=tuple(self.funcs.keys()),
-            help=f"Optional: specify one or more functions to run",
+            help="Optional: specify one or more functions to run",
         )
         parser.add_argument(
             "--verbose",
@@ -235,7 +235,10 @@ class Command(BaseCommand):
         verbose = options.get("verbose", False)
 
         try:
-            with transaction.atomic():
+            with (transaction.atomic(),
+                # WARNING: With this context manager, all functions will be run
+                # with the Migration connection and use the Migrator user
+                use_migration_connection()):
                 if len(functions) > 0:
                     for function in functions:
                         if function:
@@ -254,6 +257,6 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
+        except Exception:
+            logger.exception("An error occurred while running key migrations")
             raise
