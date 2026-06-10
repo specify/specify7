@@ -10,10 +10,12 @@ import type { SerializedResource } from '../../DataModel/helperTypes';
 import type { SpAppResourceDir } from '../../DataModel/types';
 import { UnloadProtectsContext } from '../../Router/UnloadProtect';
 import { CreateAppResource, exportsForTests } from '../Create';
+import { exportsForTests as editorWrapperExports } from '../EditorWrapper';
 import { appResourceTypes } from '../types';
 import { testAppResources } from './testAppResources';
 
 const { buildNewAppResource } = exportsForTests;
+const { newAppResourceSkeleton } = editorWrapperExports;
 
 requireContext();
 
@@ -109,8 +111,10 @@ describe('buildNewAppResource', () => {
     resource_uri: '/api/specify/spappresourcedir/1/',
   } as SerializedResource<SpAppResourceDir>;
 
-  // Specify 6 hard-fails on labels whose spappresource.Description is NULL,
-  // so a freshly created resource must carry a non-null description (#824).
+  /*
+   * Specify 6 hard-fails on labels whose spappresource.Description is NULL,
+   * so a freshly created resource must carry a non-null description (#824).
+   */
   test('defaults description to the trimmed name', () => {
     const resource = buildNewAppResource(
       appResourceTypes.appResources,
@@ -120,5 +124,28 @@ describe('buildNewAppResource', () => {
     );
     expect(resource.get('name')).toBe('My Label');
     expect(resource.get('description')).toBe('My Label');
+  });
+});
+
+describe('newAppResourceSkeleton', () => {
+  /*
+   * The skeleton built in EditorWrapper is the record that is actually
+   * persisted (the Create.tsx dialog only collects the name and navigates),
+   * so it must carry the description default too (#824).
+   */
+  test('defaults description to the trimmed name', () => {
+    const skeleton = newAppResourceSkeleton(
+      'appResources',
+      '  My Label  ',
+      'text/xml'
+    );
+    expect(skeleton.name).toBe('My Label');
+    expect(skeleton.description).toBe('My Label');
+  });
+
+  test('defaults description for view sets', () => {
+    const skeleton = newAppResourceSkeleton('viewSets', 'My Forms', undefined);
+    expect(skeleton.name).toBe('My Forms');
+    expect(skeleton.description).toBe('My Forms');
   });
 });
