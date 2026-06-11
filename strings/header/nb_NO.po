@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:21+0000\n"
+"PO-Revision-Date: 2026-06-24 18:22+0000\n"
 "Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
@@ -46,45 +46,41 @@ msgstr "Opprett DwC-arkiv"
 #: components/Router/OverlayRoutes.tsx:271
 #: components/Toolbar/BackupDatabase.tsx:84
 #: components/Toolbar/BackupStatus.tsx:84
-#, fuzzy
 msgid "backupDatabase"
 msgstr "Sikkerhetskopiering av database"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:130
 #: components/Router/OverlayRoutes.tsx:207
-#, fuzzy
 msgid "updateExportFeed"
-msgstr "Oppdater RSS-feed"
+msgstr "Oppdater RSS-strøm"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:50
-#, fuzzy
 msgid "updateExportFeedConfirmation"
-msgstr "Oppdatere eksportstrømmen?"
+msgstr "Oppdatere eksport-strømmen?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
-#, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle tekniske innholdsstrømmer nå?"
+msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
 msgid "feedExportStarted"
-msgstr "Oppdatering av eksport startet"
+msgstr "Oppdatering av eksportstrøm har startet"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
-#, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
-"Oppdatering startet. Du vil motta et varsel for hvert element som oppdateres."
+"Oppdatering har startet. Du vil motta et varsel for hvert strømelement som "
+"er oppdatert."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
 msgid "dwcaExportStarted"
-msgstr "DwCA-eksport startet"
+msgstr "DwCA-eksport har startet"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:132
@@ -95,7 +91,6 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #: components/Header/userToolDefinitions.ts:138
 #: components/LocalityUpdate/index.tsx:83
-#, fuzzy
 msgid "localityUpdateTool"
 msgstr "Verktøy for lokalitetsoppdatering"
 
@@ -145,7 +140,6 @@ msgstr "Velg"
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
 #: components/ExportFeed/Editor.tsx:323
-#, fuzzy
 msgid "chooseDwca"
 msgstr "Velg DwCA"
 
@@ -277,7 +271,6 @@ msgstr "Utvikler-ressurser"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:159
-#, fuzzy
 msgid "forum"
 msgstr "Fellesskapsforum"
 
