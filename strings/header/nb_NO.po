@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-08 10:04+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-11 12:01+0000\n"
+"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -13,35 +13,30 @@ msgstr ""
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:66
-#, fuzzy
 msgid "skipToContent"
 msgstr "Hopp til innhold"
 
 #. 🟥As in "main menu". Used in: Components > Header > Menu Item Processing
 #: components/Header/menuItemProcessing.ts:65
-#, fuzzy
 msgid "main"
 msgstr "Hoved"
 
 #. 🟥Example: Current Collection. Used in: Components > Header > Choose Collection
 #: components/Header/ChooseCollection.tsx:75
 #: components/Header/ChooseCollection.tsx:81
-#, fuzzy
 msgid "currentCollection"
-msgstr "Nåværende {collectionTable:string}"
+msgstr "Gjeldende {collectionTable:string}"
 
 #. Used in: Components > Data Entry Tables > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes
 #: components/DataEntryTables/index.tsx:43
 #: components/Header/menuItemDefinitions.ts:43
 #: components/Router/OverlayRoutes.tsx:72
-#, fuzzy
 msgid "dataEntry"
 msgstr "Dataregistrering"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:124
 #: components/Router/OverlayRoutes.tsx:199
-#, fuzzy
 msgid "makeDwca"
 msgstr "Opprett DwC-arkiv"
 
@@ -51,52 +46,44 @@ msgstr "Opprett DwC-arkiv"
 #: components/Router/OverlayRoutes.tsx:271
 #: components/Toolbar/BackupDatabase.tsx:84
 #: components/Toolbar/BackupStatus.tsx:84
-#, fuzzy
 msgid "backupDatabase"
 msgstr "Sikkerhetskopiering av database"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:130
 #: components/Router/OverlayRoutes.tsx:207
-#, fuzzy
 msgid "updateExportFeed"
-msgstr "Oppdater RSS-feed"
+msgstr "Oppdater RSS-strøm"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:50
-#, fuzzy
 msgid "updateExportFeedConfirmation"
-msgstr "Oppdatere eksportfeeden?"
+msgstr "Oppdatere eksport-strømmen?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:53
-#, fuzzy
 msgid "updateExportFeedConfirmationDescription"
-msgstr "Oppdatere alle RSS-eksportfeedelementer nå?"
+msgstr "Oppdatere alle RSS-eksportstrømelementer nå?"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:24
-#, fuzzy
 msgid "feedExportStarted"
-msgstr "Oppdatering av eksportfeed startet"
+msgstr "Oppdatering av eksportstrøm har startet"
 
 #. Used in: Components > Export Feed > Force Update
 #: components/ExportFeed/ForceUpdate.tsx:27
-#, fuzzy
 msgid "feedExportStartedDescription"
 msgstr ""
-"Oppdatering startet. Du vil motta et varsel for hvert feedelement som "
-"oppdateres."
+"Oppdatering har startet. Du vil motta et varsel for hvert strømelement som "
+"er oppdatert."
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:129
-#, fuzzy
 msgid "dwcaExportStarted"
-msgstr "DwCA-eksport startet"
+msgstr "DwCA-eksport har startet"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:132
-#, fuzzy
 msgid "dwcaExportStartedDescription"
 msgstr ""
 "Eksporten har startet. Du vil motta et varsel når eksporten er fullført."
@@ -104,7 +91,6 @@ msgstr ""
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Locality Update > Index
 #: components/Header/userToolDefinitions.ts:138
 #: components/LocalityUpdate/index.tsx:83
-#, fuzzy
 msgid "localityUpdateTool"
 msgstr "Verktøy for lokalitetsoppdatering"
 
@@ -112,7 +98,6 @@ msgstr "Verktøy for lokalitetsoppdatering"
 #: components/QueryBuilder/Edit.tsx:209
 #: components/QueryBuilder/Edit.tsx:213
 #: components/QueryBuilder/Edit.tsx:216
-#, fuzzy
 msgid "labelName"
 msgstr "Etikettnavn"
 
@@ -120,19 +105,16 @@ msgstr "Etikettnavn"
 #: components/QueryBuilder/Edit.tsx:209
 #: components/QueryBuilder/Edit.tsx:213
 #: components/QueryBuilder/Edit.tsx:216
-#, fuzzy
 msgid "reportName"
 msgstr "Rapportnavn"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:178
-#, fuzzy
 msgid "createLabel"
 msgstr "Opprett ny etikett"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:178
-#, fuzzy
 msgid "createReport"
 msgstr "Opprett ny rapport"
 
@@ -152,33 +134,28 @@ msgstr "Reparasjonen av treet er fullført."
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:329
-#, fuzzy
 msgid "choose"
-msgstr "Velge"
+msgstr "Velg"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:42
 #: components/ExportFeed/Editor.tsx:323
-#, fuzzy
 msgid "chooseDwca"
 msgstr "Velg DwCA"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:213
-#, fuzzy
 msgid "dwcaResource"
 msgstr "DwCA-ressurs"
 
 #. Used in: Components > Export Feed > Dwca ⬤ Components > Export Feed > Editor
 #: components/ExportFeed/Dwca.tsx:52
 #: components/ExportFeed/Editor.tsx:324
-#, fuzzy
 msgid "chooseMetadataResource"
 msgstr "Velg metadataressurs"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:228
-#, fuzzy
 msgid "metadataResource"
 msgstr "Metadata-ressurs"
 
@@ -187,9 +164,8 @@ msgstr "Metadata-ressurs"
 #: components/Header/ExpressSearchTask.tsx:169
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Router/Routes.tsx:33
-#, fuzzy
 msgid "simpleSearch"
-msgstr "Ekspresssøk"
+msgstr "Hurtigsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:203
@@ -214,13 +190,11 @@ msgstr "Menyelementer"
 #: components/Header/UserTools.tsx:79
 #: components/Preferences/Renderers.tsx:125
 #: components/Router/OverlayRoutes.tsx:44
-#, fuzzy
 msgid "userTools"
 msgstr "Brukerverktøy"
 
 #. Used in: Components > Header > User Tools
 #: components/Header/UserTools.tsx:78
-#, fuzzy
 msgid "userToolsForUser"
 msgstr "Brukerverktøy ({userName:string})"
 
@@ -242,13 +216,11 @@ msgstr ""
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:149
-#, fuzzy
 msgid "incompleteInline"
 msgstr "(ufullstendig)"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:115
-#, fuzzy
 msgid "incompleteLocalization"
 msgstr "Ufullstendig lokalisering"
 
@@ -264,7 +236,6 @@ msgstr ""
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:181
-#, fuzzy
 msgid "tableApi"
 msgstr "Tabeller API"
 
@@ -286,13 +257,11 @@ msgstr "Operasjoner API"
 #: components/Preferences/index.tsx:71
 #: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
-#, fuzzy
 msgid "documentation"
 msgstr "Dokumentasjon"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:74
-#, fuzzy
 msgid "administration"
 msgstr "Administrative verktøy"
 
@@ -304,7 +273,6 @@ msgstr "Utviklerressurser"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:159
-#, fuzzy
 msgid "forum"
 msgstr "Fellesskapsforum"
 
@@ -325,12 +293,10 @@ msgstr "Hurtigbufferen er tømt. Vennligst last inn siden på nytt."
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:164
-#, fuzzy
 msgid "technicalDocumentation"
 msgstr "Dokumentasjon"
 
 #. Used in: Components > Attachments > Chrono Chart
 #: components/Attachments/ChronoChart.tsx:29
-#, fuzzy
 msgid "chronostratigraphicChart"
 msgstr "Kronostratigrafisk diagram"
