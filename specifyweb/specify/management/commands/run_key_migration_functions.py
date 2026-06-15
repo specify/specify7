@@ -21,6 +21,7 @@ from specifyweb.specify.migration_utils.default_cots import (
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils.Deduplication import deduplicate_schema_config_orm
 from specifyweb.specify.migration_utils.router import use_migration_connection
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node, fix_tectonic_unit_treedef_discipline_links
@@ -104,8 +105,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.create_discipline_type_picklist, # specify 0042
         # usc.update_discipline_type_splocalecontaineritem, # specify 0042
         apply_schema_overrides_for_all_disciplines,
-        #TODO: Update mport for below line
-        usc.deduplicate_schema_config_orm,
+        deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
 
