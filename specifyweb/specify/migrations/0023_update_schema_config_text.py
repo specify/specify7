@@ -3,7 +3,7 @@ This migration updates descriptions, caption and isHidden value for various fiel
 """
 
 from django.db import migrations
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils import MigrationHelpers as usc
 
 class Migration(migrations.Migration):
     dependencies = [

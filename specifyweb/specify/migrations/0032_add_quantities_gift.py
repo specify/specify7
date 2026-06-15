@@ -3,7 +3,7 @@
 from django.db import migrations, models
 
 from django.apps import apps as specify_apps
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils import MigrationHelpers as usc
 
 class Migration(migrations.Migration):
 

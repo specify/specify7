@@ -16,7 +16,7 @@ Creates a picklist for COGType -> type and updates an existing incorrect picklis
 from django.db import migrations, models
 import django.db.models.deletion
 
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils import MigrationHelpers as usc
 
 class Migration(migrations.Migration):
     dependencies = [

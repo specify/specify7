@@ -7,7 +7,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils.update_schema_config import update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults, revert_table_field_schema_config, revert_table_schema_config 
+from specifyweb.specify.migration_utils.MigrationHelpers import update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults, revert_table_field_schema_config, revert_table_schema_config 
 
 MIGRATION_0007_TABLES = [
     ('SpDataSetAttachment', 'An attachment temporarily associated with a Specify Data Set for use in a WorkBench upload.')

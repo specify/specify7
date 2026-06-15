@@ -4,7 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils import MigrationHelpers as usc
 from specifyweb.specify.models import protect_with_blockers
 
 class Migration(migrations.Migration):

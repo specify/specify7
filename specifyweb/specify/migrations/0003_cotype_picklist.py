@@ -1,5 +1,5 @@
 from django.db import migrations
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils import MigrationHelpers as usc
 from specifyweb.specify.migration_utils.default_cots import create_cotype_picklist, COTYPE_PICKLIST_NAME
 
 def revert_cotype_picklist(apps):
