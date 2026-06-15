@@ -12,7 +12,7 @@ def delete_tectonicunit_trees(apps, schema_editor=None):
     Discipline = apps.get_model('specify', 'Discipline')
 
     TectonicUnit.objects.all().update(parent=None, acceptedtectonicunit=None)
-    TectonicUnit.objects.delete()
+    TectonicUnit.objects.all().delete()
 
     TectonicUnitTreeDefItem.objects.all().update(parent=None)
     TectonicUnitTreeDefItem.objects.all().delete()
