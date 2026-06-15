@@ -1,11 +1,19 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0029_UPDATE_FIELDS,
-    MIGRATION_0029_FIELDS,
-)
+
 # ##########################################
 # Used in 0029_remove_collectionobject_parentco.py
 # ##########################################
+
+MIGRATION_0029_FIELDS = {
+    'CollectionObject': ['componentParent', 'components'],
+}
+
+MIGRATION_0029_UPDATE_FIELDS = {
+    'CollectionObject': [
+        ('componentParent', 'Component Parent', 'Parent of a component Collection Object'), 
+        ('components', 'Components', 'Component parts of a Collection Object'),
+    ]
+}
 
 def remove_collectionobject_parentco(apps):
     def update_fields(apps):

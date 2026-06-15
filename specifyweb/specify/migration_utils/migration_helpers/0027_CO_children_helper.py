@@ -1,11 +1,17 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0027_FIELDS,
-    MIGRATION_0027_UPDATE_FIELDS,
-    )
 # ##########################################
 # Used in 0027_CO_children.py
 # ##########################################
+
+MIGRATION_0027_FIELDS = {
+    'CollectionObject': ['parentCO', 'children'],
+}
+MIGRATION_0027_UPDATE_FIELDS = {
+    'CollectionObject': [
+        ('parentCO', 'Parent Collection Object', 'Parent CollectionObject'), 
+        ('children', 'Children', 'Children'),
+    ]
+}
 
 def update_co_children_fields(apps):
     def update_discipline_fields(apps):

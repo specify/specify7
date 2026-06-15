@@ -1,10 +1,11 @@
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0033_TABLES,
-)
 
 # ##########################################
 # Used in 0033_update_paleo_desc.py
 # ##########################################
+
+MIGRATION_0033_TABLES = [
+    ('Paleocontext', 'Paleo Context provides contextual information on the chronostratigraphy, lithostratigraphy, and biostratigraphy of a collection object, collecting event, or locality.'),
+]
 
 def update_paleo_desc(apps):
     def fix_table_description(apps):

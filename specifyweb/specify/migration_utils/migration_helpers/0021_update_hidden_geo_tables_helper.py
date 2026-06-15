@@ -1,10 +1,12 @@
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0021_FIELDS,
-)
+
 # ##########################################
 # Used in 0021_update_hidden_geo_tables.py
 # ##########################################
+
+MIGRATION_0021_FIELDS = {
+    'CollectionObject': ['relativeAges', 'absoluteAges', 'cojo'],
+}
 
 def fix_hidden_geo_prop(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')

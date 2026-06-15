@@ -1,10 +1,13 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0012_FIELDS,
-)
+
 # ##########################################
 # Used in 0012_add_cojo_to_schema_config.py
 # ##########################################
+
+MIGRATION_0012_FIELDS = {
+    'CollectionObjectGroup': ['cojo'],
+    'CollectionObject': ['cojo']
+}
 
 def add_cojo_to_schema_config(apps):
     Discipline = apps.get_model('specify', 'Discipline')

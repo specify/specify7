@@ -1,11 +1,19 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0032_FIELDS,
-    MIGRATION_0032_UPDATE_FIELDS,
-)
+
 # ##########################################
 # Used in 0032_add_quantities_gift.py
 # ##########################################
+
+MIGRATION_0032_FIELDS = {
+    'GiftPreparation': ['quantityResolved', 'quantityReturned'],
+}
+
+MIGRATION_0032_UPDATE_FIELDS = {
+    'GiftPreparation': [
+        ('quantityResolved','Quantity Resolved', 'Number of specimens returned, deaccessioned or otherwise accounted for. (necessary for Lots).'), 
+        ('quantityReturned', 'Quantity Returned', 'Number of specimens returned. (necessary for Lots)'),
+    ]
+}
 
 def add_quantities_gift(apps):
     def update_fields(apps):

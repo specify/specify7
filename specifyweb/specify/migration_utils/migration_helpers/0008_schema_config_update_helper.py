@@ -1,10 +1,12 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0008_FIELDS,
-)
 # ##########################################
 # Used in 0008_schema_config_update.py
 # ##########################################
+
+MIGRATION_0008_FIELDS = {
+    'AbsoluteAge': ['absoluteAgeCitations'],
+    'RelativeAge': ['relativeAgeCitations']
+}
 
 def update_relative_age_fields(apps):
     Discipline = apps.get_model('specify', 'Discipline')

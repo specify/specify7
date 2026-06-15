@@ -1,11 +1,13 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0007_FIELDS,
-)
 
 # ##########################################
 # Used in 0007_schema_config_update.py
 # ##########################################
+
+MIGRATION_0007_FIELDS = {
+    'StorageTreeDef': ['institution'],
+    'CollectionObjectGroup': ['children']
+}
 
 COG_PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'

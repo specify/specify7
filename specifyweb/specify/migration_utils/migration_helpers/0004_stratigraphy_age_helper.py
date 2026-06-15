@@ -1,15 +1,29 @@
-
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0004_FIELDS,
-    MIGRATION_0004_TABLES,
-)
+from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
 # ##########################################
 # Used in 0004_stratigraphy_age.py
 # ##########################################
 
-from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
+MIGRATION_0004_TABLES = [
+    ('AbsoluteAge', None),
+    ('RelativeAge', None),
+    ('TectonicUnitTreeDef', None),
+    ('TectonicUnitTreeDefItem', None),
+    ('TectonicUnit', None),
+    ('RelativeAgeCitation', None),
+    ('RelativeAgeAttachment', None),
+    ('AbsoluteAgeCitation', None),
+    ('AbsoluteAgeAttachment', None),
+]
+
+MIGRATION_0004_FIELDS = {
+    'CollectionObject': ['relativeAges', 'absoluteAges', 'collectionObjectType'],
+    'Collection': ['collectionObjectType'],
+    'GeographyTreeDef': ['discipline'],
+    'GeologicTimePeriodTreeDef': ['discipline'],
+    'LithoStratTreeDef': ['discipline'],
+}
 
 AGETYPE_PICKLIST_NAME = 'AgeType'
 DEFAULT_AGE_TYPES = [

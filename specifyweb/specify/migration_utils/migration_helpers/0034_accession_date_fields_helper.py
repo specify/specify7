@@ -3,9 +3,22 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0034_FIELDS,
     MIGRATION_0034_UPDATE_FIELDS,
 )
-# ##########################################
-# Used in 0034_accession_date_fields.py
-# ##########################################
+
+MIGRATION_0034_FIELDS = {
+    'Accession': ['dateAccessionedPrecision', 'dateAcknowledgedPrecision', 'dateReceivedPrecision', 'date1', 'date1Precision', 'date2', 'date2Precision'],
+}
+
+MIGRATION_0034_UPDATE_FIELDS = {
+    'Accession': [
+        ('dateAccessionedPrecision',    'Date Accessioned Precision',    'Date Accessioned Precision'),
+        ('dateAcknowledgedPrecision',   'Date Acknowledged Precision',   'Date Acknowledged Precision'),
+        ('dateReceivedPrecision',       'Date Received Precision',       'Date Received Precision'),
+        ('date1',                       'Date 1',                        'Date 1'),
+        ('date1Precision',              'Date 1 Precision',              'Date 1 Precision'),
+        ('date2',                       'Date 2',                        'Date 2'),
+        ('date2Precision',              'Date 2 Precision',              'Date 2 Precision'),
+    ]
+}
 
 def update_accession_date_fields(apps):
     def update_0034_fields(apps):

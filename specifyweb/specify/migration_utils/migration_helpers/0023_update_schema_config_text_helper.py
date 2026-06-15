@@ -2,16 +2,86 @@ import logging
 from django.db.models import Count
 
 from specifyweb.specify.migration_utils.schema_reader import _fields_without_explicit_hidden_override, _schema_override_hidden_values_for_discipline
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0023_FIELDS,
-    MIGRATION_0023_FIELDS_BIS,
-)
 
 logger = logging.getLogger(__name__)
 
 # ##########################################
 # Used in 0023_update_schema_config_text.py
 # ##########################################
+
+
+MIGRATION_0023_FIELDS = {
+    'CollectionObjectGroup': [
+        ('guid', 'GUID', 'GUID'), 
+        ('cogType', 'Type', 'Determines the logic Specify should use when managing the children within that COG'),
+        ('igsn', 'IGSN', 'An International Generic Sample Number (IGSN) provides an unambiguous globally unique and persistent identifier for physical samples.'),
+        ('cojo', 'Parent COG', 'This connects a Collection Object Group to its parent Collection Object Group, which is used for managing a hierarchy.'), 
+        ('yesno2', 'YesNo2', 'YesNo2'),
+        ('yesno1', 'YesNo1', 'YesNo1'),
+        ],
+
+    'CollectionObjectGroupJoin' : [
+        ('yesno2', 'YesNo2', 'YesNo2'),
+        ('isSubstrate', 'Is Substrate?', 'The Collection Object that serves as the physical base for other items within the COG. This designation is useful for COGs with shared substrates.'),
+        ('yesno1', 'YesNo1', 'YesNo1'),
+        ('isPrimary', 'Is Primary?', 'The Collection Object designated as the most significant item in a Consolidated COG. A CO child must be set as “primary” when using a “Consolidated” COG.'),
+        ('childCo', 'Child Collection Object', 'Child Collection Object'),
+        ('childCog', 'Child Collection Object Group', 'Child Collection Object Group'),
+        ('ParentCog', 'Parent', 'Parent Collection Object Group'),
+        ('yesno3', 'YesNo3', 'YesNo3'),
+    ],
+
+    'CollectionObjectGroupType' : [
+        ('cogTypeId', 'Collection Object Group Type ID', 'Collection Object Group Type ID'),
+        ('yesno3', 'YesNo3', 'YesNo3'),
+    ],
+
+    'CollectionObjectType': [
+        ('collectionObjectTypeId', 'Collection Object Type ID', 'Collection Object Type ID'),
+        ('taxonTreeDef', 'Taxon Tree', 'The Taxon Tree associated with this Collection Object Type'),
+    ],
+
+    'AbsoluteAge': [
+        ('yesno2', 'YesNo2', 'YesNo2'),
+    ],
+
+    'RelativeAge': [
+        ('yesno2', 'YesNo2', 'YesNo2'),
+        ('yesno1', 'YesNo1', 'YesNo1'),
+    ],
+
+    'CollectionObject': [
+        ('collectionObjectType', 'Type', 'The type of object, such as a fish, mammal, mineral, rock, or meteorite.'),
+        ('cojo', 'Parent COG', 'Connects a Collection Object to its Collection Object Group'),
+    ],
+
+    'TectonicUnit': [
+        ('guid', 'GUID', 'GUID'),
+        ('yesno1', 'YesNo1', 'YesNo1'),
+        ('tectonicUnitId', 'Tectonic Unit ID', 'Tectonic Unit Id'),
+        ('yesno2', 'YesNo2', 'YesNo2'),
+    ],
+
+    'TectonicUnitTreeDefItem': [
+        ('createdbyagent', 'Created By Agent', 'Created By Agent'),
+        ('rankId', 'Rank ID', 'Rank Id'),
+    ]
+}
+
+MIGRATION_0023_FIELDS_BIS = {
+    'CollectionObjectGroup': ['guid', ' text3', 'decimal2', 'igsn', 'text2', 'collection', 'description', 'text1', 'cojo', 'decimal1', 'yesno3', 'integer3', 'yesno2', 'collectionObjectGroupId', 'integer2', 'yesno1', 'integer1', 'decimal3', ],
+    'CollectionObjectGroupJoin' : ['yesno2', 'text1', 'yesno1', 'integer3', 'integer2', 'integer1', 'text3', 'yesno3', 'precedence', 'text2'],
+    'CollectionObjectGroupType' : ['collection'],
+    'CollectionObjectType': ['text3', 'collectionObjectTypeId', 'text2', 'text1', 'collection'],
+    'AbsoluteAge': ['collectionDate', 'absoluteAgeId', 'date1', 'date2', 'yesno1', 'yesno2', 'agent1', 'number1', 'number2', 'collectionObject', 'absoluteAgeCitations', 'text1', 'text2'],
+    'RelativeAge': ['number2', 'yesno2', 'relativeAgeId', 'relativeAgePeriod', 'text1', 'agent1', 'collectionDate', 'text2', 'agent2', 'date1', 'date2', 'collectionObject', 'relativeAgeCitations', 'number1', 'yesno1'],
+    'CollectionObject': ['collectionObjectType', 'relativeAges', 'absoluteAges', 'cojo'],
+    'AbsoluteAgeCitation': ['collectionMember', 'absoluteAgeCitationId'],
+    'RelativeAgeCitation': ['relativeAgeCitationId', 'collectionMember'],
+    'TectonicUnit': ['collectionMember', 'nodeNumber', 'yesno1', 'tectonicUnitId', 'number1', 'yesno2', 'number2', 'rankId', 'text1'],
+    'TectonicUnitTreeDefItem': ['children', 'rankId', 'parent', 'treeDef', 'treeEntries', 'tectonicUnitTreeDefItemId'],
+    'TectonicUnitTreeDef': ['discipline', 'treeEntries', 'tectonicUnitTreeDefId']
+}
 
 def update_schema_config_field_desc(apps, schema_editor=None):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
