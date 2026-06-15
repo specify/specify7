@@ -130,7 +130,10 @@ def revert_table_schema_config(table_name, apps=global_apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    containers = Splocalecontainer.objects.filter(name=table_name)
+    containers = Splocalecontainer.objects.filter(
+        name=table_name.lower(),
+        schematype=0,
+    )    
     items = Splocalecontaineritem.objects.filter(container__in=containers)
     Splocaleitemstr.objects.filter(
         Q(itemname__in=items) |
@@ -277,8 +280,14 @@ def revert_table_field_schema_config(table_name, field_name, apps=global_apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    containers = Splocalecontainer.objects.filter(name=table_name)
-    items = Splocalecontaineritem.objects.filter(container__in=containers, name=field_name)
+    containers = Splocalecontainer.objects.filter(
+        name=table_name.lower(),
+        schematype=0,
+    )
+    items = Splocalecontaineritem.objects.filter(
+        container__in=containers,
+        name__iexact=field_name,
+    )
     Splocaleitemstr.objects.filter(
         Q(itemname__in=items) |
         Q(itemdesc__in=items)
