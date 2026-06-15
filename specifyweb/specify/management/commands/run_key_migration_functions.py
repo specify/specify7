@@ -20,7 +20,7 @@ from specifyweb.specify.migration_utils.default_cots import (
     set_discipline_for_taxon_treedefs
 )
 from specifyweb.backend.permissions.initialize import initialize
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 from specifyweb.specify.migration_utils.Deduplication import deduplicate_schema_config_orm
 from specifyweb.specify.migration_utils.router import use_migration_connection
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false

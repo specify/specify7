@@ -9,7 +9,7 @@ from specifyweb.specify.models import (
     protect_with_blockers
 )
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0002_TABLES as SCHEMA_CONFIG_TABLES
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 from specifyweb.specify.migration_utils.default_cots import (
     create_cogtype_type_picklist,
     create_default_collection_types,

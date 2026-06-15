@@ -4,7 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
 from specifyweb.specify.models import protect_with_blockers
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 
 def revert_agetype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')

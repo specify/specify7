@@ -1,5 +1,5 @@
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
-from specifyweb.specify.migration_utils.MigrationHelpers import update_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.migration_helpers import update_table_schema_config_with_defaults
 from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
 from .task_tracking import queue_discipline_background_task, finish_discipline_background_task

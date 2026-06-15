@@ -3,7 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 class Migration(migrations.Migration):
 
     dependencies = [

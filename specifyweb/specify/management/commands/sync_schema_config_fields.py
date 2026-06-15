@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.apps import apps
 
-from specifyweb.specify.migration_utils import MigrationHelpers as update_schema
+from specifyweb.specify.migration_utils import migration_helpers as update_schema
 
 
 class Command(BaseCommand):

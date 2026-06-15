@@ -7,7 +7,7 @@ from django.apps import apps as global_apps
 
 from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.migration_utils.SchemaReader import (
+from specifyweb.specify.migration_utils.schema_reader import (
     FieldSchemaConfig,
     TableDefaults,
     bulk_create_splocaleitemstr_idempotent,

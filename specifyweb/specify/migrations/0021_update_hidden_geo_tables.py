@@ -3,7 +3,7 @@ This migration updates the geo tables hidden proprety in schema config.
 """
 
 from django.db import migrations
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0021_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 

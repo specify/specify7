@@ -1,6 +1,6 @@
 from django.db import migrations, models
 from specifyweb.backend.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 
 class Migration(migrations.Migration):
 

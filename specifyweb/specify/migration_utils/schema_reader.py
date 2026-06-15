@@ -12,7 +12,7 @@ from django.db.models import Q
 from django.conf import settings
 from django.apps import apps as global_apps
 
-from specifyweb.specify.migration_utils.SchemaWriter import FieldDefaults
+from specifyweb.specify.migration_utils.schema_writer import FieldDefaults
 
 from specifyweb.specify.models import (
     datamodel,

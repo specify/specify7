@@ -1,5 +1,5 @@
 from django.db import migrations
-from specifyweb.specify.migration_utils import MigrationHelpers as usc
+from specifyweb.specify.migration_utils import migration_helpers as usc
 
 def schemaconfig_fixes(apps, schema_editor):
     usc.update_paleo_desc(apps)
