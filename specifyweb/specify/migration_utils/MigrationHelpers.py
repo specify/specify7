@@ -11,8 +11,6 @@ import logging
 
 from django.db.models import Q, Count
 
-from typing import NamedTuple, Tuple, TypedDict, NotRequired
-
 from specifyweb.specify.migration_utils.SchemaWriter import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_params, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (

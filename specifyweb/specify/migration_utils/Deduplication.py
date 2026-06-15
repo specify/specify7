@@ -1,5 +1,5 @@
 from django.db import connection, transaction
-from django.db.models import Count, Q, F, Window, OuterRef, Exists
+from django.db.models import F, Window, OuterRef, Exists
 from django.apps import apps as global_apps
 import logging
 from django.db.models.functions import RowNumber
