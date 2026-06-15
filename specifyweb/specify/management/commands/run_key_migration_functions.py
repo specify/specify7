@@ -104,6 +104,7 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         usc.create_discipline_type_picklist, # specify 0042
         # usc.update_discipline_type_splocalecontaineritem, # specify 0042
         apply_schema_overrides_for_all_disciplines,
+        #TODO: Update mport for below line
         usc.deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
