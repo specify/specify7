@@ -5,7 +5,7 @@ import logging
 from django.db import migrations, models
 # from django.db.models import F
 import django.utils.timezone
-from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import MIGRATION_0002_TABLES, create_geo_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.migration_helpers import MIGRATION_0002_TABLES, create_geo_table_schema_config_with_defaults
 from specifyweb.specify.migration_utils.schema_writer import revert_table_schema_config
 from specifyweb.specify.models import (
     protect_with_blockers

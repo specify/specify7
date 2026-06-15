@@ -3,7 +3,7 @@ This migration adds COG -> cojo and CO -> cojo to Schema Config.
 """
 from django.db import migrations
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers.helper_0012_add_cojo_to_schema_config import add_cojo_to_schema_config, remove_cojo_from_schema_config
+from specifyweb.specify.migration_utils.migration_helpers import add_cojo_to_schema_config, remove_cojo_from_schema_config
 
 class Migration(migrations.Migration):
 

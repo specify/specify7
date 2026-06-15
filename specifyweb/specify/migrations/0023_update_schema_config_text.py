@@ -4,7 +4,7 @@ This migration updates descriptions, caption and isHidden value for various fiel
 
 from django.db import migrations
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers.helper_0023_update_schema_config_text import reverse_update_hidden_prop, reverse_update_schema_config_field_desc, update_hidden_prop, update_schema_config_field_desc
+from specifyweb.specify.migration_utils.migration_helpers import reverse_update_hidden_prop, reverse_update_schema_config_field_desc, update_hidden_prop, update_schema_config_field_desc
 
 class Migration(migrations.Migration):
     dependencies = [

@@ -2,7 +2,7 @@
 
 from django.db import migrations
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers.helper_0017_schemaconfig_fixes import schemaconfig_fixes
+from specifyweb.specify.migration_utils.migration_helpers import schemaconfig_fixes
 
 """
 This migration fixes two bugs introduced in other migrations by the functions 

@@ -4,7 +4,7 @@ from django.db import migrations, models
 
 from django.apps import apps as specify_apps
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers.helper_0032_add_quantities_gift import add_quantities_gift, revert_add_quantities_gift
+from specifyweb.specify.migration_utils.migration_helpers import add_quantities_gift, revert_add_quantities_gift
 
 class Migration(migrations.Migration):
 

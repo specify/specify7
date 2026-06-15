@@ -2,7 +2,7 @@
 
 from django.db import migrations, models
 
-from specifyweb.specify.migration_utils.migration_helpers.helper_0035_version_required import revert_version_required, update_version_required
+from specifyweb.specify.migration_utils.migration_helpers import revert_version_required, update_version_required
 
 def apply_migration(apps, schema_editor):
     update_version_required(apps)

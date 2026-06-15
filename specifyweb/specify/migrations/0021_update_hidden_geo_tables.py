@@ -3,10 +3,7 @@ This migration updates the geo tables hidden proprety in schema config.
 """
 
 from django.db import migrations
-from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers.helper_0021_update_hidden_geo_tables import fix_hidden_geo_prop, reverse_fix_hidden_geo_prop
-from specifyweb.specify.migration_utils.sp7_schemaconfig import MIGRATION_0021_FIELDS as SCHEMA_CONFIG_MOD_TABLE_FIELDS
-from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
+from specifyweb.specify.migration_utils.migration_helpers import fix_hidden_geo_prop, reverse_fix_hidden_geo_prop
 
 # def fix_hidden_geo_prop(apps, schema_editor):
 #     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
