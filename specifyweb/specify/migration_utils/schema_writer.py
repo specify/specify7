@@ -14,9 +14,12 @@ from specifyweb.specify.migration_utils.schema_reader import (
     camel_to_spaced_title_case,
     find_missing_schema_config_fields,
     uncapitilize,
-    HIDDEN_FIELDS,
     datamodel_type_to_schematype
 )
+
+HIDDEN_FIELDS = [
+    "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
+]
 
 logger = logging.getLogger(__name__)
 
