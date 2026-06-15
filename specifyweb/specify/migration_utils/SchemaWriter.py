@@ -1,14 +1,13 @@
 from typing import TypedDict, NotRequired
 import logging
-from collections import defaultdict
+from typing import NamedTuple, TypedDict, NotRequired
 
 from django.db.models import Q
 from django.apps import apps as global_apps
 
-from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.migration_utils.SchemaReader import (
-    TableSchemaConfig,
     FieldSchemaConfig,
     TableDefaults,
     bulk_create_splocaleitemstr_idempotent,
@@ -20,6 +19,13 @@ from specifyweb.specify.migration_utils.SchemaReader import (
 )
 
 logger = logging.getLogger(__name__)
+
+class TableSchemaConfig(NamedTuple):
+    name: str
+    discipline_id: int
+    schema_type: int = 0
+    description: str = "TBD"
+    language: str = "en"
 
 class FieldDefaults(TypedDict):
     name: NotRequired[str]

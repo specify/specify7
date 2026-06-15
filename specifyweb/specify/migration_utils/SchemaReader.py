@@ -8,50 +8,14 @@ from functools import lru_cache
 from pathlib import Path
 
 
-from django.db.models import Q, Count, Window, F, Exists, OuterRef
+from django.db.models import Q
 from django.conf import settings
 from django.apps import apps as global_apps
-from django.core.exceptions import MultipleObjectsReturned
-from django.db import connection, transaction
-from django.db.models.functions import RowNumber
 
 from specifyweb.specify.migration_utils.SchemaWriter import FieldDefaults
-from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
 
-from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
-from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
-    Discipline,
     datamodel,
-)
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0002_TABLES,
-    MIGRATION_0004_FIELDS,
-    MIGRATION_0004_TABLES,
-    MIGRATION_0007_FIELDS,
-    MIGRATION_0008_FIELDS,
-    MIGRATION_0012_FIELDS,
-    MIGRATION_0013_FIELDS,
-    MIGRATION_0020_FIELDS,
-    MIGRATION_0021_FIELDS,
-    MIGRATION_0023_FIELDS,
-    MIGRATION_0023_FIELDS_BIS,
-    MIGRATION_0024_FIELDS,
-    MIGRATION_0027_FIELDS,
-    MIGRATION_0027_UPDATE_FIELDS,
-    MIGRATION_0029_FIELDS,
-    MIGRATION_0029_UPDATE_FIELDS,
-    MIGRATION_0032_FIELDS,
-    MIGRATION_0032_UPDATE_FIELDS,
-    MIGRATION_0033_TABLES,
-    MIGRATION_0034_FIELDS,
-    MIGRATION_0034_UPDATE_FIELDS,
-    MIGRATION_0035_FIELDS,
-    MIGRATION_0038_FIELDS,
-    MIGRATION_0040_TABLES,
-    MIGRATION_0040_FIELDS,
-    MIGRATION_0040_UPDATE_FIELDS,
-    MIGRATION_0040_HIDDEN_FIELDS,
 )
 
 logger = logging.getLogger(__name__)
@@ -170,13 +134,6 @@ def camel_to_spaced_title_case(camel_case: str) -> str:
     - `cojo` -> `Cojo`
     """
     return re.sub(r"(?<!^)(?=[A-Z])", " ", camel_case).title()
-
-class TableSchemaConfig(NamedTuple):
-    name: str
-    discipline_id: int
-    schema_type: int = 0
-    description: str = "TBD"
-    language: str = "en"
 
 class FieldSchemaConfig(NamedTuple):
     name: str
