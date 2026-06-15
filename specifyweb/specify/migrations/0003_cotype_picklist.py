@@ -1,6 +1,6 @@
 from django.db import migrations
-from specifyweb.specify.migration_utils import migration_helpers as usc
 from specifyweb.specify.migration_utils.default_cots import create_cotype_picklist, COTYPE_PICKLIST_NAME
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import COT_FIELD_NAME, COT_TEXT, create_cotype_splocalecontaineritem
 
 def revert_cotype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
@@ -11,17 +11,17 @@ def revert_cotype_splocalecontaineritem(apps):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
     Splocaleitemstr.objects.filter(
-        text=usc.COT_TEXT,
+        text=COT_TEXT,
         itemdesc__container__name="collectionobject",
         itemdesc__container__schematype=0,
     ).delete()
     Splocaleitemstr.objects.filter(
-        text=usc.COT_TEXT,
+        text=COT_TEXT,
         itemname__container__name="collectionobject",
         itemname__container__schematype=0,
     ).delete()
     Splocalecontaineritem.objects.filter(
-        name=usc.COT_FIELD_NAME, container__name="collectionobject", container__schematype=0
+        name=COT_FIELD_NAME, container__name="collectionobject", container__schematype=0
     ).delete()
 
 class Migration(migrations.Migration):
@@ -31,7 +31,7 @@ class Migration(migrations.Migration):
 
     def apply_migration(apps, schema_editor):
         create_cotype_picklist(apps)
-        usc.create_cotype_splocalecontaineritem(apps)
+        create_cotype_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
         revert_cotype_picklist(apps)

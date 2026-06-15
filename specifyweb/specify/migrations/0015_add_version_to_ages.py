@@ -2,6 +2,7 @@
 
 from django.db import migrations, models
 from specifyweb.specify.migration_utils import migration_helpers as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0015_add_version_to_ages import revert_update_age_schema_config, update_age_schema_config
 
 class Migration(migrations.Migration):
 
@@ -10,10 +11,10 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.update_age_schema_config(apps)
+        update_age_schema_config(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_update_age_schema_config(apps)
+        revert_update_age_schema_config(apps)
 
     operations = [
         migrations.AddField(

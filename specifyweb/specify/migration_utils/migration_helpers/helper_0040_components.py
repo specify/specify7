@@ -92,7 +92,7 @@ def update_schema_config_field_desc_for_components(apps, schema_editor=None):
                 language="en",
             ).update(text=new_name)
 
-def update_hidden_prop_for_compoenents(apps, schema_editor=None):
+def update_hidden_prop_for_components(apps, schema_editor=None):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
     for table, fields in MIGRATION_0040_FIELDS.items():

@@ -2,6 +2,7 @@
 
 from django.db import migrations
 from specifyweb.specify.migration_utils import migration_helpers as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0017_schemaconfig_fixes import schemaconfig_fixes
 
 """
 This migration fixes two bugs introduced in other migrations by the functions 
@@ -20,6 +21,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(usc.schemaconfig_fixes,
+        migrations.RunPython(schemaconfig_fixes,
                              migrations.RunPython.noop, atomic=True)
     ]

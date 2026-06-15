@@ -1,5 +1,6 @@
 from django.db import migrations
-from specifyweb.specify.migration_utils import migration_helpers as usc
+
+from specifyweb.specify.migration_utils.migration_helpers.helper_0042_discipline_type_picklist import create_discipline_type_picklist, revert_discipline_type_picklist, revert_discipline_type_splocalecontaineritem, update_discipline_type_splocalecontaineritem
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -7,12 +8,12 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.create_discipline_type_picklist(apps)
-        usc.update_discipline_type_splocalecontaineritem(apps)
+        create_discipline_type_picklist(apps)
+        update_discipline_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_discipline_type_picklist(apps)
-        usc.revert_discipline_type_splocalecontaineritem(apps)
+        revert_discipline_type_picklist(apps)
+        revert_discipline_type_splocalecontaineritem(apps)
         
     operations = [
         migrations.RunPython(

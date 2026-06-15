@@ -3,8 +3,8 @@ from django.apps import apps as specify_apps
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
+from specifyweb.specify.migration_utils.migration_helpers.helper_0040_components import create_cotype_splocalecontaineritem_for_components, create_table_schema_config_with_defaults, hide_component_fields, remove_0029_schema_config_fields, restore_0029_schema_config_fields, reverse_hide_component_fields, revert_table_schema_config_with_defaults, update_hidden_prop_for_components, update_schema_config_field_desc_for_components
 import specifyweb.specify.models
-from specifyweb.specify.migration_utils import migration_helpers as usc
 from specifyweb.specify.models import protect_with_blockers
 
 class Migration(migrations.Migration):
@@ -14,17 +14,17 @@ class Migration(migrations.Migration):
     ]
 
     def consolidated_python_django_migration_operations(apps, schema_editor):
-        usc.remove_0029_schema_config_fields(apps, schema_editor)
-        usc.create_table_schema_config_with_defaults(apps, schema_editor)
-        usc.update_schema_config_field_desc_for_components(apps, schema_editor)
-        usc.update_hidden_prop_for_compoenents(apps, schema_editor)
-        usc.create_cotype_splocalecontaineritem_for_components(apps)
-        usc.hide_component_fields(apps, schema_editor)
+        remove_0029_schema_config_fields(apps, schema_editor)
+        create_table_schema_config_with_defaults(apps, schema_editor)
+        update_schema_config_field_desc_for_components(apps, schema_editor)
+        update_hidden_prop_for_components(apps, schema_editor)
+        create_cotype_splocalecontaineritem_for_components(apps)
+        hide_component_fields(apps, schema_editor)
 
     def revert_cosolidated_python_django_migration_operations(apps, schema_editor):
-        usc.restore_0029_schema_config_fields(apps, schema_editor)
-        usc.revert_table_schema_config_with_defaults(apps, schema_editor)
-        usc.reverse_hide_component_fields(apps, schema_editor)
+        restore_0029_schema_config_fields(apps, schema_editor)
+        revert_table_schema_config_with_defaults(apps, schema_editor)
+        reverse_hide_component_fields(apps, schema_editor)
 
     operations = [
         migrations.CreateModel(

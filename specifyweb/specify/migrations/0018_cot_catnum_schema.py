@@ -2,6 +2,7 @@
 
 from django.db import migrations
 from specifyweb.specify.migration_utils import migration_helpers as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0018_cot_catnum_schema import add_cot_catnum_to_schema, remove_cot_catnum_from_schema
 
 class Migration(migrations.Migration):
 
@@ -10,6 +11,6 @@ class Migration(migrations.Migration):
     ]
 
     operations = [
-        migrations.RunPython(usc.add_cot_catnum_to_schema,
-                             usc.remove_cot_catnum_from_schema, atomic=True)
+        migrations.RunPython(add_cot_catnum_to_schema,
+                             remove_cot_catnum_from_schema, atomic=True)
     ]

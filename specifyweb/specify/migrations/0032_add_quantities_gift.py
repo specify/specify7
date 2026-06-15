@@ -4,6 +4,7 @@ from django.db import migrations, models
 
 from django.apps import apps as specify_apps
 from specifyweb.specify.migration_utils import migration_helpers as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0032_add_quantities_gift import add_quantities_gift, revert_add_quantities_gift
 
 class Migration(migrations.Migration):
 
@@ -12,10 +13,10 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.add_quantities_gift(apps)
+        add_quantities_gift(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_add_quantities_gift(apps)
+        revert_add_quantities_gift(apps)
 
     operations = [
         migrations.AddField(

@@ -2,15 +2,16 @@
 
 from django.apps import apps as specify_apps
 from django.db import migrations, models
+from specifyweb.specify.migration_utils.migration_helpers.helper_0039_agent_fields_for_loan_and_gift import revert_loan_and_gift_agent_fields, update_loan_and_gift_agent_fields
 from specifyweb.specify.models import protect_with_blockers
 
 from specifyweb.specify.migration_utils import migration_helpers as usc
 
 def consolidated_0038_forward(apps, schema_editor):
-    usc.update_loan_and_gift_agent_fields(apps)
+    update_loan_and_gift_agent_fields(apps)
 
 def consolidated_0038_backward(apps, schema_editor):
-    usc.revert_loan_and_gift_agent_fields(apps)
+    revert_loan_and_gift_agent_fields(apps)
 
 class Migration(migrations.Migration):
 
