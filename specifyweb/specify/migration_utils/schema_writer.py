@@ -27,13 +27,6 @@ class TableSchemaConfig(NamedTuple):
     description: str = "TBD"
     language: str = "en"
 
-class FieldDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    ishidden: NotRequired[bool]
-    isrequired: NotRequired[bool]
-    picklistname: NotRequired[str]
-
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,

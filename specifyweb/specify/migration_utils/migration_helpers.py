@@ -3,6 +3,7 @@ from specifyweb.specify.migration_utils.schema_reader import (
     _schema_override_hidden_values_for_discipline,
     camel_to_spaced_title_case,
     datamodel_type_to_schematype,
+    find_missing_schema_config_fields,
     uncapitilize
 )
 
@@ -11,7 +12,14 @@ import logging
 
 from django.db.models import Q, Count
 
-from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_params, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.schema_writer import (
+    create_missing_schema_config_fields,
+    revert_table_field_schema_config,
+    revert_table_schema_config,
+    update_table_field_schema_config_params,
+    update_table_field_schema_config_with_defaults,
+    update_table_schema_config_with_defaults,
+)
 from specifyweb.specify.models import datamodel
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0002_TABLES,

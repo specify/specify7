@@ -12,8 +12,6 @@ from django.db.models import Q
 from django.conf import settings
 from django.apps import apps as global_apps
 
-from specifyweb.specify.migration_utils.schema_writer import FieldDefaults
-
 from specifyweb.specify.models import (
     datamodel,
 )
@@ -213,10 +211,16 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
 
     return total_created
 
+class FieldDefaults(TypedDict):
+    name: NotRequired[str]
+    desc: NotRequired[str]
+    ishidden: NotRequired[bool]
+    isrequired: NotRequired[bool]
+    picklistname: NotRequired[str]
 class TableDefaults(TypedDict):
     name: NotRequired[str]
     desc: NotRequired[str]
-    items: "NotRequired[dict[str, FieldDefaults]]"
+    items: NotRequired[dict[str, FieldDefaults]]
 
 def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
