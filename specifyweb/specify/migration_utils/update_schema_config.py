@@ -1,26 +1,25 @@
 import re
 import json
 
-from typing import NamedTuple, Tuple, TypedDict, NotRequired
+from typing import NamedTuple, Tuple, TypedDict, NotRequired, Iterable
 import logging
 from collections import defaultdict
 from functools import lru_cache
+from itertools import islice
 from pathlib import Path
 
 
 from django.db.models import Q, Count, Window, F, Exists, OuterRef
 from django.conf import settings
 from django.apps import apps as global_apps
-from django.core.exceptions import MultipleObjectsReturned
 from django.db import connection, transaction
 from django.db.models.functions import RowNumber
 
-from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
 
-from specifyweb.specify.models_utils.load_datamodel import Table, FieldDoesNotExistError, TableDoesNotExistError
+from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
 from specifyweb.specify.models import (
-    Discipline,
     datamodel,
 )
 from specifyweb.specify.migration_utils.sp7_schemaconfig import (
@@ -2128,34 +2127,70 @@ def create_discipline_type_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
 
-    # Create a discipline type picklist for each collection
-    for collection in Collection.objects.all():
-        picklist, created = Picklist.objects.get_or_create(
-            name=DISCIPLINE_TYPE_PICKLIST_NAME,
-            type=0,
-            collection=collection,
-            defaults={
-                "issystem": True,
-                "readonly": True,
-                "sizelimit": -1,
-                "sorttype": 1,
-            }
+    def batch_iterable[T](iterable: Iterable[T], batch_size: int):
+        """
+        A generator that takes any Iterable and yields tuples containing up to
+        batch_size elements until the iterable is exhausted.
+
+        This is useful when you want to perform some operation over all
+        elements in the iterable, but the operation is memory intensive and can
+        be batched.
+
+        Example:
+        ```py
+        example = [1, 2, 3]
+        for batched in batch_iterable(example, 2):
+            print(batched)
+        # prints (1, 2) then (3,)
+        ```
+        """
+        iterator = iter(iterable)
+        while batch := tuple(islice(iterator, batch_size)):
+            yield batch
+
+    collections_missing_picklist = Collection.objects.annotate(
+        has_existing_picklist=Exists(
+            Picklist.objects.filter(
+                collection=OuterRef("pk"),
+                name=DISCIPLINE_TYPE_PICKLIST_NAME,
+                type=0
+            )
         )
-        # If the picklist doesn't exist, create a new one
-        if created:
-            ordinal = 1
-            items = []
-            for value, title in DISCIPLINE_NAMES.items():
-                items.append(
-                    Picklistitem(
-                        picklist=picklist,
-                        ordinal=ordinal,
-                        value=value,
-                        title=title,
-                    )
+    ).filter(
+        has_existing_picklist=False
+    ).values_list("pk", flat=True).iterator(chunk_size=1000)
+
+    COLLECTION_BATCH_SIZE=200
+
+    for collection_ids in batch_iterable(collections_missing_picklist, COLLECTION_BATCH_SIZE):
+        created_picklists = Picklist.objects.bulk_create(
+            [
+                Picklist(
+                    collection_id=collection_id,
+                    name=DISCIPLINE_TYPE_PICKLIST_NAME,
+                    type=0,
+                    issystem=True,
+                    readonly=True,
+                    sizelimit=-1,
+                    sorttype=1
                 )
-                ordinal += 1
-            Picklistitem.objects.bulk_create(items)
+                for collection_id in collection_ids
+            ],
+            batch_size=COLLECTION_BATCH_SIZE
+        )
+
+        Picklistitem.objects.bulk_create(
+            [
+                Picklistitem(
+                    picklist=picklist,
+                    value=value,
+                    title=title,
+                    ordinal=ordinal
+                )
+                for ordinal, (value, title) in enumerate(DISCIPLINE_NAMES.items(), start=1)
+                for picklist in created_picklists
+            ]
+        )
 
 def revert_discipline_type_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
