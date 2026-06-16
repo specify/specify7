@@ -117,6 +117,6 @@ def parse_search_str(collection, search_str):
     if match_quoted:
         terms = [ match_quoted.groups()[1] ]
     else:
-        terms = search_str.split()
+        terms = search_str.split(',')
 
     return list(map(TermForCollection.make_term, terms))
