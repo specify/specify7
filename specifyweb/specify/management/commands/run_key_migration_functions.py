@@ -21,7 +21,7 @@ from specifyweb.specify.migration_utils.default_cots import (
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.Deduplication import deduplicate_schema_config_orm
+from specifyweb.specify.migration_utils.deduplication import deduplicate_schema_config_orm
 from specifyweb.specify.migration_utils.router import use_migration_connection
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node, fix_tectonic_unit_treedef_discipline_links
