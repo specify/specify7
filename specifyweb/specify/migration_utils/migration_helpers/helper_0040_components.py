@@ -1,4 +1,5 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
+from django.db.models import Q
 
 # ##########################################
 # Used in 0040_components.py
