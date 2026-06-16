@@ -2169,13 +2169,19 @@ def update_discipline_type_splocalecontaineritem(apps):
         container__name="discipline",
         container__schematype=0,
         name="type",
-    ).update(picklistname=DISCIPLINE_TYPE_PICKLIST_NAME, isrequired=True)
+    ).update(
+        picklistname=DISCIPLINE_TYPE_PICKLIST_NAME,
+        isrequired=True
+    )
 
 def revert_discipline_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
 
     Splocalecontaineritem.objects.filter(
         container__name="discipline",
+        picklistname=DISCIPLINE_TYPE_PICKLIST_NAME,
         container__schematype=0,
         name="type",
-    ).update(picklistname=None, isrequired=None)
+    ).update(
+        picklistname=None
+    )
