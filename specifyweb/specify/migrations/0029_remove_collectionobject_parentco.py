@@ -4,7 +4,7 @@ from django.db import migrations, models
 import django.db.models.deletion
 
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers import remove_collectionobject_parentco, revert_remove_collectionobject_parentco
+from specifyweb.specify.migration_utils.migration_helpers.helper_0029_remove_collectionobject_parentco import remove_collectionobject_parentco, revert_remove_collectionobject_parentco
 class Migration(migrations.Migration):
 
     dependencies = [

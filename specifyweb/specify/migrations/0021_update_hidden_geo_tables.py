@@ -3,7 +3,7 @@ This migration updates the geo tables hidden proprety in schema config.
 """
 
 from django.db import migrations
-from specifyweb.specify.migration_utils.migration_helpers import fix_hidden_geo_prop, reverse_fix_hidden_geo_prop
+from specifyweb.specify.migration_utils.migration_helpers.helper_0021_update_hidden_geo_tables import fix_hidden_geo_prop, reverse_fix_hidden_geo_prop
 
 # def fix_hidden_geo_prop(apps, schema_editor):
 #     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')

@@ -1,8 +1,4 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
-    MIGRATION_0034_FIELDS,
-    MIGRATION_0034_UPDATE_FIELDS,
-)
 
 MIGRATION_0034_FIELDS = {
     'Accession': ['dateAccessionedPrecision', 'dateAcknowledgedPrecision', 'dateReceivedPrecision', 'date1', 'date1Precision', 'date2', 'date2Precision'],

@@ -16,7 +16,7 @@ Creates a picklist for COGType -> type and updates an existing incorrect picklis
 from django.db import migrations, models
 import django.db.models.deletion
 
-from specifyweb.specify.migration_utils.migration_helpers import create_cogtype_picklist, revert_cog_type_fields, revert_cogtype_picklist, revert_cogtype_splocalecontaineritem, revert_cogtype_type_splocalecontaineritem, revert_systemcogtypes_picklist, update_cog_type_fields, update_cogtype_splocalecontaineritem, update_cogtype_type_splocalecontaineritem, update_systemcogtypes_picklist
+from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import create_cogtype_picklist, revert_cog_type_fields, revert_cogtype_picklist, revert_cogtype_splocalecontaineritem, revert_cogtype_type_splocalecontaineritem, revert_systemcogtypes_picklist, update_cog_type_fields, update_cogtype_splocalecontaineritem, update_cogtype_type_splocalecontaineritem, update_systemcogtypes_picklist
 
 class Migration(migrations.Migration):
     dependencies = [

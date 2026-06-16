@@ -1,6 +1,6 @@
 from django.db import migrations
 
-from specifyweb.specify.migration_utils.migration_helpers import create_discipline_type_picklist, revert_discipline_type_picklist, revert_discipline_type_splocalecontaineritem, update_discipline_type_splocalecontaineritem
+from specifyweb.specify.migration_utils.migration_helpers.helper_0042_discipline_type_picklist import create_discipline_type_picklist, revert_discipline_type_picklist, revert_discipline_type_splocalecontaineritem, update_discipline_type_splocalecontaineritem
 
 class Migration(migrations.Migration):
     dependencies = [

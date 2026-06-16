@@ -1,7 +1,7 @@
 from django.db import migrations, models
 from specifyweb.backend.businessrules.uniqueness_rules import DEFAULT_UNIQUENESS_RULES
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.migration_helpers import revert_storage_unique_id_fields, update_storage_unique_id_fields
+from specifyweb.specify.migration_utils.migration_helpers.helper_0024_add_uniqueIdentifier_storage import revert_storage_unique_id_fields, update_storage_unique_id_fields
 
 class Migration(migrations.Migration):
 

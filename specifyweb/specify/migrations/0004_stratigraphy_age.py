@@ -3,7 +3,7 @@
 from django.db import migrations, models
 import django.db.models.deletion
 import django.utils.timezone
-from specifyweb.specify.migration_utils.migration_helpers import  AGETYPE_PICKLIST_NAME, create_agetype_picklist, create_strat_table_schema_config_with_defaults, revert_strat_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import  AGETYPE_PICKLIST_NAME, create_agetype_picklist, create_strat_table_schema_config_with_defaults, revert_strat_table_schema_config_with_defaults
 
 from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.migration_utils import migration_helpers as usc
