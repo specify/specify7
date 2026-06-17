@@ -6,6 +6,7 @@ from django.db.models.functions import RowNumber
 
 logger = logging.getLogger(__name__)
 
+
 def deduplicate_schema_config_sql(apps=None):
     dedupe_sql = '''
     /*
