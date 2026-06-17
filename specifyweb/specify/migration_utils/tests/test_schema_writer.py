@@ -47,7 +47,6 @@ class SchemaWriterTests(TestCase):
 
         mock_bulk_create.assert_called_once()
 
-
     def test_revert_table_field_schema_config(self):
         mock_apps = MagicMock()
 
@@ -65,10 +64,23 @@ class SchemaWriterTests(TestCase):
 
         mock_apps.get_model.side_effect = get_model
 
-        mock_container.objects.filter.return_value = MagicMock()
-        mock_containeritem.objects.filter.return_value = MagicMock()
+        # --- queryset mocks
+        container_qs = MagicMock()
+        itemstr_qs = MagicMock()
+        containeritem_qs = MagicMock()
 
+        mock_container.objects.filter.return_value = container_qs
+        mock_itemstr.objects.filter.return_value = itemstr_qs
+        mock_containeritem.objects.filter.return_value = containeritem_qs
+
+        # --- execute ---
         revert_table_field_schema_config("TestTable", "field", apps=mock_apps)
 
-        mock_containeritem.objects.filter.assert_called_once()
+        # --- assert filters were called ---
+        mock_container.objects.filter.assert_called_once()
         mock_itemstr.objects.filter.assert_called_once()
+        mock_containeritem.objects.filter.assert_called_once()
+
+        # --- assert deletes ---
+        itemstr_qs.delete.assert_called_once()
+        containeritem_qs.delete.assert_called_once()
