@@ -19,7 +19,7 @@ export const statsText = createDictionary({
     'pt-br': 'Participações',
     'uk-ua': 'Холдинги',
     'hr-hr': 'Udjeli',
-    nb: '',
+    nb: 'Beholdninger',
   },
   collectionObjects: {
     'en-us': 'Collection Objects',
@@ -30,7 +30,7 @@ export const statsText = createDictionary({
     'pt-br': 'Objetos da Coleção',
     'uk-ua': "Об'єкти колекції",
     'hr-hr': 'Objekti kolekcije',
-    nb: '',
+    nb: 'Samlingsobjekter',
   },
   typeSpecimens: {
     'en-us': 'Type Specimens',
@@ -41,7 +41,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Типовые образцы',
     'uk-ua': 'Типові зразки',
     'hr-hr': 'Tipični uzorci',
-    nb: '',
+    nb: 'Typeprøver',
   },
   curation: {
     'en-us': 'Curation',
@@ -52,7 +52,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Кураторство',
     'uk-ua': 'Кураторство',
     'hr-hr': 'Kuratorstvo',
-    nb: '',
+    nb: 'Kuratering',
   },
   loans: {
     'en-us': 'Loans',
@@ -63,7 +63,7 @@ export const statsText = createDictionary({
     'pt-br': 'Empréstimos',
     'uk-ua': 'Кредити',
     'hr-hr': 'Zajmovi',
-    nb: '',
+    nb: 'Lån',
   },
   itemsOnLoans: {
     'en-us': 'Items on Loan',
@@ -74,7 +74,7 @@ export const statsText = createDictionary({
     'pt-br': 'Itens emprestados',
     'uk-ua': 'Речі в оренду',
     'hr-hr': 'Predmeti na posudbu',
-    nb: '',
+    nb: 'Utlånte gjenstander',
   },
   openLoansStat: {
     'en-us': 'Open Loans',
@@ -85,7 +85,7 @@ export const statsText = createDictionary({
     'pt-br': 'Empréstimos abertos',
     'uk-ua': 'Відкриті позики',
     'hr-hr': 'Otvoreni krediti',
-    nb: '',
+    nb: 'Åpne lån',
   },
   overdueLoans: {
     'en-us': 'Overdue Loans',
@@ -96,7 +96,7 @@ export const statsText = createDictionary({
     'pt-br': 'Empréstimos em atraso',
     'uk-ua': 'Прострочені кредити',
     'hr-hr': 'Dospjeli krediti',
-    nb: '',
+    nb: 'Forfalte lån',
   },
   localityGeography: {
     'en-us': 'Locality / Geography',
@@ -107,7 +107,7 @@ export const statsText = createDictionary({
     'pt-br': 'Localidade / Geografia',
     'uk-ua': 'Місцевість / Географія',
     'hr-hr': 'Lokalitet / Geografija',
-    nb: '',
+    nb: 'Lokalitet / Geografi',
   },
   localities: {
     'en-us': 'Localities',
@@ -118,7 +118,7 @@ export const statsText = createDictionary({
     'pt-br': 'Localidades',
     'uk-ua': 'Населені пункти',
     'hr-hr': 'Lokaliteti',
-    nb: '',
+    nb: 'Lokaliteter',
   },
   geographyEntries: {
     'en-us': 'Geography Entries',
@@ -129,7 +129,7 @@ export const statsText = createDictionary({
     'pt-br': 'Entradas de Geografia',
     'uk-ua': 'Географічні записи',
     'hr-hr': 'Geografski unosi',
-    nb: '',
+    nb: 'Geografiske oppføringer',
   },
   countries: {
     'en-us': 'Countries',
@@ -140,7 +140,7 @@ export const statsText = createDictionary({
     'pt-br': 'Países',
     'uk-ua': 'Країни',
     'hr-hr': 'Zemlje',
-    nb: '',
+    nb: 'Land',
   },
   georeferencedLocalities: {
     'en-us': 'Georeferenced Localities',
@@ -151,7 +151,7 @@ export const statsText = createDictionary({
     'pt-br': 'Localidades georreferenciadas',
     'uk-ua': "Геоприв'язані населені пункти",
     'hr-hr': 'Georeferencirani lokaliteti',
-    nb: '',
+    nb: 'Georefererte lokaliteter',
   },
   digitization: {
     'en-us': 'Digitization',
@@ -162,7 +162,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Оцифровка',
     'uk-ua': 'Оцифрування',
     'hr-hr': 'Digitalizacija',
-    nb: '',
+    nb: 'Digitalisering',
   },
   digitizedLastSevenDays: {
     'en-us': 'Digitized Last 7 Days',
@@ -173,7 +173,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Оцифровано за последние 7 дней',
     'uk-ua': 'Оцифровано за останні 7 днів',
     'hr-hr': 'Digitalizirano posljednjih 7 dana',
-    nb: '',
+    nb: 'Digitaliserte siste 7 dager',
   },
   digitizedLastMonth: {
     'en-us': 'Digitized Last Month',
@@ -184,7 +184,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Оцифровано в прошлом месяце',
     'uk-ua': 'Оцифровано минулого місяця',
     'hr-hr': 'Digitalizirano prošli mjesec',
-    nb: '',
+    nb: 'Digitalisert forrige måned',
   },
   digitizedLastYear: {
     'en-us': 'Digitized Last Year',
@@ -195,7 +195,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Оцифровано в прошлом году',
     'uk-ua': 'Оцифровано минулого року',
     'hr-hr': 'Digitalizirano prošle godine',
-    nb: '',
+    nb: 'Digitalisert i fjor',
   },
   chooseStatistics: {
     'en-us': 'Choose Statistics',
@@ -206,7 +206,7 @@ export const statsText = createDictionary({
     'pt-br': 'Selecione Estatísticas',
     'uk-ua': 'Виберіть Статистику',
     'hr-hr': 'Odaberite Statistiku',
-    nb: '',
+    nb: 'Velg statistikk',
   },
   selectFromQueries: {
     'en-us': 'Select From Queries',
@@ -217,7 +217,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Выберите из запросов',
     'uk-ua': 'Вибрати з запитів',
     'hr-hr': 'Odaberite iz upita',
-    nb: '',
+    nb: 'Velg fra spørringer',
   },
   selectFromAvailableDefault: {
     'en-us': 'Select From Available Default Statistics',
@@ -228,7 +228,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Выберите из доступных статистических данных по умолчанию.',
     'uk-ua': 'Виберіть із доступної статистики за замовчуванням',
     'hr-hr': 'Odaberite iz dostupnih zadanih statistika',
-    nb: '',
+    nb: 'Velg fra tilgjengelig standardstatistikk',
   },
   collection: {
     'en-us': 'Collection',
@@ -239,7 +239,7 @@ export const statsText = createDictionary({
     'pt-br': 'Coleção',
     'uk-ua': 'Колекція',
     'hr-hr': 'Kolekcija',
-    nb: '',
+    nb: 'Samling',
   },
   personal: {
     'en-us': 'Personal',
@@ -250,7 +250,7 @@ export const statsText = createDictionary({
     'pt-br': 'Pessoal',
     'uk-ua': 'Особисте',
     'hr-hr': 'Osobno',
-    nb: '',
+    nb: 'Personlig',
   },
   private: {
     'en-us': 'Private',
@@ -261,7 +261,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Частный',
     'uk-ua': 'Приватний',
     'hr-hr': 'Privatno',
-    nb: '',
+    nb: 'Privat',
   },
   collectionObjectsCataloged: {
     'en-us': 'Collection Objects Cataloged',
@@ -272,7 +272,7 @@ export const statsText = createDictionary({
     'pt-br': 'Objetos da Coleção Catalogados',
     'uk-ua': "Каталогізовані об'єкти колекції",
     'hr-hr': 'Katalogizirani objekti zbirke',
-    nb: '',
+    nb: 'Samlingsobjekter katalogisert',
   },
   collectionObjectsDetermined: {
     'en-us': 'Collection Objects Determined',
@@ -283,7 +283,7 @@ export const statsText = createDictionary({
     'pt-br': 'Objetos da Coleção Determinados',
     'uk-ua': "Визначено об'єкти колекції",
     'hr-hr': 'Određeni objekti zbirke',
-    nb: '',
+    nb: 'Samlingsobjekter bestemt',
   },
   lastRefreshed: {
     'en-us': 'Last refreshed',
@@ -294,7 +294,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Последнее обновление',
     'uk-ua': 'Останнє оновлення',
     'hr-hr': 'Zadnje osvježeno',
-    nb: '',
+    nb: 'Sist oppdatert',
   },
   categoryName: {
     'en-us': 'Category Name',
@@ -305,7 +305,7 @@ export const statsText = createDictionary({
     'pt-br': 'Nome da categoria',
     'uk-ua': 'Назва категорії',
     'hr-hr': 'Naziv kategorije',
-    nb: '',
+    nb: 'Kategorinavn',
   },
   itemName: {
     'en-us': 'Item Name',
@@ -316,7 +316,7 @@ export const statsText = createDictionary({
     'pt-br': 'Nome do item',
     'uk-ua': 'Назва елемента',
     'hr-hr': 'Naziv stavke',
-    nb: '',
+    nb: 'Varenavn',
   },
   itemValue: {
     'en-us': 'Item Value',
@@ -327,7 +327,7 @@ export const statsText = createDictionary({
     'pt-br': 'Valor do item',
     'uk-ua': 'Значення елемента',
     'hr-hr': 'Vrijednost stavke',
-    nb: '',
+    nb: 'Elementverdi',
   },
   downloadAsTSV: {
     'en-us': 'Download as TSV',
@@ -338,7 +338,7 @@ export const statsText = createDictionary({
     'pt-br': 'Baixar como TSV',
     'uk-ua': 'Завантажити як TSV',
     'hr-hr': 'Preuzmi kao TSV',
-    nb: '',
+    nb: 'Last ned som TSV',
   },
   shared: {
     'en-us': 'Shared',
@@ -349,7 +349,7 @@ export const statsText = createDictionary({
     'pt-br': 'Compartilhado',
     'uk-ua': 'Спільний доступ',
     'hr-hr': 'Dijeljeno',
-    nb: '',
+    nb: 'Delt',
   },
   statistics: {
     'en-us': 'Statistics',
@@ -360,7 +360,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Статистика',
     'uk-ua': 'Статистика',
     'hr-hr': 'Statistika',
-    nb: '',
+    nb: 'Statistikk',
   },
   deleteCategory: {
     'en-us': 'Delete Category',
@@ -371,7 +371,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Удалить категорию',
     'uk-ua': 'Видалити категорію',
     'hr-hr': 'Izbriši kategoriju',
-    nb: '',
+    nb: 'Slett kategori',
   },
   editPage: {
     'en-us': 'Edit Page',
@@ -382,7 +382,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Редактировать страницу',
     'uk-ua': 'Редагувати сторінку',
     'hr-hr': 'Uredi stranicu',
-    nb: '',
+    nb: 'Rediger side',
   },
   addPage: {
     'en-us': 'Add Page',
@@ -393,7 +393,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Добавить страницу',
     'uk-ua': 'Додати сторінку',
     'hr-hr': 'Dodaj stranicu',
-    nb: '',
+    nb: 'Legg til side',
   },
   addACategory: {
     'en-us': 'Add a Category',
@@ -404,7 +404,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Добавить категорию',
     'uk-ua': 'Додати категорію',
     'hr-hr': 'Dodaj kategoriju',
-    nb: '',
+    nb: 'Legg til en kategori',
   },
   refresh: {
     'en-us': 'Refresh',
@@ -415,7 +415,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Обновить',
     'uk-ua': 'Оновити',
     'hr-hr': 'Osvježiti',
-    nb: '',
+    nb: 'Forfriske',
   },
   collectionObjectsWithImages: {
     'en-us': 'Collection Objects with images',
@@ -426,7 +426,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Коллекция объектов с изображениями',
     'uk-ua': "Об'єкти колекції із зображеннями",
     'hr-hr': 'Objekti kolekcije sa slikama',
-    nb: '',
+    nb: 'Samlingsobjekter med bilder',
   },
   collectionObjectsWithAttachments: {
     'en-us': 'Collection Objects with attachments',
@@ -437,7 +437,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Объекты коллекции с вложениями',
     'uk-ua': "Об'єкти колекції з вкладеннями",
     'hr-hr': 'Objekti kolekcije s prilozima',
-    nb: '',
+    nb: 'Samlingsobjekter med vedlegg',
   },
   error: {
     'en-us': 'Error',
@@ -448,7 +448,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Ошибка',
     'uk-ua': 'Помилка',
     'hr-hr': 'Pogreška',
-    nb: '',
+    nb: 'Feil',
   },
   taxonRepresented: {
     'en-us': 'Taxa Represented',
@@ -459,7 +459,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Представленные таксоны',
     'uk-ua': 'Представлені таксони',
     'hr-hr': 'Zastupljene taksone',
-    nb: '',
+    nb: 'Taxa representert',
   },
   geographiesRepresented: {
     'en-us': 'Geographies Represented',
@@ -470,7 +470,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Представленные географические регионы',
     'uk-ua': 'Представлені географічні регіони',
     'hr-hr': 'Zastupljena geografska područja',
-    nb: '',
+    nb: 'Representerte geografiske områder',
   },
   percentGeoReferenced: {
     'en-us': 'Percent Georeferenced',
@@ -481,7 +481,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Процент географически привязанных данных',
     'uk-ua': "Відсоток геоприв'язаних",
     'hr-hr': 'Postotak georeferenciranja',
-    nb: '',
+    nb: 'Prosent georeferert',
   },
   percentImaged: {
     'en-us': 'Percent Imaged',
@@ -492,7 +492,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Процент изображений',
     'uk-ua': 'Відсоток зображень',
     'hr-hr': 'Postotak snimljenih',
-    nb: '',
+    nb: 'Prosent avbildet',
   },
   deleteWarning: {
     'en-us': 'Are you sure you want to delete the category?',
@@ -503,7 +503,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Вы уверены, что хотите удалить категорию?',
     'uk-ua': 'Ви впевнені, що хочете видалити категорію?',
     'hr-hr': 'Jeste li sigurni da želite izbrisati kategoriju?',
-    nb: '',
+    nb: 'Er du sikker på at du vil slette kategorien?',
   },
   categoryToDelete: {
     'en-us': 'This will permanently delete the following category',
@@ -514,7 +514,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Это навсегда удалит следующую категорию.',
     'uk-ua': 'Це остаточно видалить наступну категорію',
     'hr-hr': 'Ovim će se trajno izbrisati sljedeća kategorija',
-    nb: '',
+    nb: 'Dette vil slette følgende kategori permanent',
   },
   layoutPreference: {
     'en-us': 'Defines the layout of the statistics page',
@@ -525,7 +525,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Определяет структуру страницы статистики.',
     'uk-ua': 'Визначає макет сторінки статистики',
     'hr-hr': 'Definira izgled stranice sa statistikom',
-    nb: '',
+    nb: 'Definerer oppsettet til statistikksiden',
   },
   showPreparationsTotal: {
     'en-us': 'Show {preparationTableName:string} Totals',
@@ -536,7 +536,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Показать {preparationTableName:string} Итоги',
     'uk-ua': 'Показати {preparationTableName:string} підсумки',
     'hr-hr': 'Prikaži {preparationTableName:string} ukupne iznose',
-    nb: '',
+    nb: 'Vis {preparationTableName:string} Totaler',
   },
   showPreparationsTotalDescription: {
     'en-us':
@@ -555,7 +555,7 @@ export const statsText = createDictionary({
       'Якщо ввімкнено, панель статистики {preparationTableName:string} за замовчуванням включатиме загальну кількість для кожного {lowerPreparationTableName:string} конкретного {prepTypeTableName:string} поряд із загальною сумою. Це корисно для колекцій на основі лотів.',
     'hr-hr':
       'Ako je omogućeno, zadana ploča sa statistikom {preparationTableName:string} uključivat će ukupan broj za svaki {lowerPreparationTableName:string} određenog {prepTypeTableName:string} uz ukupan zbroj. Ovo je korisno za kolekcije temeljene na lotovima.',
-    nb: '',
+    nb: 'Hvis aktivert, vil standardstatistikkpanelet {preparationTableName:string} inkludere et totalt antall for hver {lowerPreparationTableName:string} av en bestemt {prepTypeTableName:string} sammen med den totale summen. Dette er nyttig for lottbaserte samlinger.',
   },
   autoRefreshRate: {
     'en-us': 'Auto-Refresh Rate (Hours)',
@@ -566,7 +566,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Частота автоматического обновления (в часах)',
     'uk-ua': 'Частота автоматичного оновлення (години)',
     'hr-hr': 'Brzina automatskog osvježavanja (sati)',
-    nb: '',
+    nb: 'Automatisk oppdateringsfrekvens (timer)',
   },
   autoRefreshRateDescription: {
     'en-us':
@@ -585,7 +585,7 @@ export const statsText = createDictionary({
       'Інтервал часу в годинах, через який сторінка статистики автоматично оновлюватиме свої дані. Значення за замовчуванням – 24.',
     'hr-hr':
       'Vremenski interval, u satima, u kojem će stranica sa statistikom automatski osvježiti svoje podatke. Zadana vrijednost je 24.',
-    nb: '',
+    nb: 'Tidsintervallet, i timer, som statistikksiden automatisk oppdaterer dataene sine med. Standard er 24.',
   },
 } as const);
 /* eslint-enable @typescript-eslint/naming-convention */
