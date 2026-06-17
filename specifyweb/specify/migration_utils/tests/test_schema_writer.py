@@ -9,10 +9,9 @@ from specifyweb.specify.migration_utils.schema_writer import (
 
 class SchemaWriterTests(TestCase):
 
-    @patch("specifyweb.specify.migration_utils.schema_writer.apps")
     @patch("specifyweb.specify.migration_utils.schema_writer.bulk_create_splocaleitemstr_idempotent")
-    def test_update_table_schema_config_with_defaults(self, mock_bulk_create, mock_apps):
-
+    def test_update_table_schema_config_with_defaults(self, mock_bulk_create):
+        mock_apps = MagicMock()
         # -----------------------
         # Mock models via apps.get_model
         # -----------------------
@@ -44,13 +43,13 @@ class SchemaWriterTests(TestCase):
         with patch("specifyweb.specify.migration_utils.schema_writer.datamodel") as mock_datamodel:
             mock_datamodel.get_table.return_value = mock_table
 
-            update_table_schema_config_with_defaults("TestTable", 1)
+            update_table_schema_config_with_defaults("TestTable", 1, apps=mock_apps)
 
         mock_bulk_create.assert_called_once()
 
 
-    @patch("specifyweb.specify.migration_utils.schema_writer.apps")
-    def test_revert_table_field_schema_config(self, mock_apps):
+    def test_revert_table_field_schema_config(self):
+        mock_apps = MagicMock()
 
         mock_container = MagicMock()
         mock_itemstr = MagicMock()
@@ -69,7 +68,7 @@ class SchemaWriterTests(TestCase):
         mock_container.objects.filter.return_value = MagicMock()
         mock_containeritem.objects.filter.return_value = MagicMock()
 
-        revert_table_field_schema_config("TestTable", "field")
+        revert_table_field_schema_config("TestTable", "field", apps=mock_apps)
 
         mock_containeritem.objects.filter.assert_called_once()
         mock_itemstr.objects.filter.assert_called_once()
