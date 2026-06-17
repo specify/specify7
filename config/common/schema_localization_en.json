@@ -2497,7 +2497,7 @@
       "taxontreedef": {"name": "Taxon Tree Def", "desc": "Taxon Tree Def", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "timestampcreated": {"name": "Timestamp Created", "desc": "Timestamp Created", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "timestampmodified": {"name": "Timestamp Modified", "desc": "Timestamp Modified", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "type": {"name": "Type", "desc": "Type", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "type": {"name": "Type", "desc": "Type", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": "DisciplineType", "type": null, "isrequired": false, "weblinkname": null},
       "usergroups": {"name": "User Groups", "desc": "User Groups", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
