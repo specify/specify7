@@ -55,4 +55,4 @@ export const batchIdentifyText = createDictionary({
     'en-us':
       'Choose a different record set, or edit the query used to create this record set so all collection objects use the same taxon tree.',
   },
-});
+} as const);

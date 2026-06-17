@@ -330,7 +330,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us':
       'Outgoing exchanges with collection objects in exchanged preparations.',
   },
-}) as any;
+} as const);
 
 export function getExpressSearchQueryTitle(id: number | string): string {
   const key = String(id);
