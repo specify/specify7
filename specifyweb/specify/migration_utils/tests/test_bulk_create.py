@@ -1,25 +1,29 @@
 import unittest
-from unittest.mock import MagicMock, patch
+from unittest.mock import MagicMock, call
 
 from specifyweb.specify.migration_utils.schema_reader import (
-    bulk_create_splocaleitemstr_idempotent
+    bulk_create_splocaleitemstr_idempotent,
 )
 
 
 class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
 
-    @patch("specifyweb.specify.migration_utils.schema_reader.bulk_create_splocaleitemstr_idempotent")
-    def test_bulk_create_splocaleitemstr_idempotent(self, mock_bulk_create):
+    def test_bulk_create_splocaleitemstr_idempotent(self):
         # -----------------------
-        # Mock model + queryset
+        # Mock model + manager
         # -----------------------
         mock_model = MagicMock()
-        mock_model.objects = MagicMock()
+        mock_manager = MagicMock()
+        mock_model.objects = mock_manager
 
-        # Simulate existing DB rows (empty = nothing exists yet)
-        mock_qs = MagicMock()
-        mock_qs.filter.return_value.order_by.return_value = []
-        mock_model.objects.filter.return_value = mock_qs
+        # Simulate queryset chain:
+        # objects.filter(...).order_by(...)
+        mock_queryset = MagicMock()
+        mock_queryset.order_by.return_value = []  # no existing rows
+        mock_manager.filter.return_value = mock_queryset
+
+        # bulk_create should be called on manager
+        mock_manager.bulk_create = MagicMock()
 
         # -----------------------
         # Input rows
@@ -36,19 +40,34 @@ class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
         ]
 
         # -----------------------
-        # Call function
+        # Call function under test
         # -----------------------
         result = bulk_create_splocaleitemstr_idempotent(mock_model, rows)
 
         # -----------------------
-        # Assertions
+        # Assertions: result
         # -----------------------
         self.assertEqual(result, 2)
-        mock_model.objects.filter.assert_called()
 
-        # Should have attempted bulk create once
-        self.assertTrue(mock_bulk_create.called)
+        # -----------------------
+        # Assertions: ORM behavior
+        # -----------------------
+        self.assertTrue(mock_manager.filter.called)
 
+        # Ensure filter was called at least once
+        mock_manager.filter.assert_called()
 
-if __name__ == "__main__":
-    unittest.main()
+        # Ensure bulk_create was used (core behavior of idempotent insert)
+        self.assertTrue(mock_manager.bulk_create.called)
+
+        # Inspect bulk_create payload
+        args, kwargs = mock_manager.bulk_create.call_args
+
+        created_objects = args[0]
+        self.assertEqual(len(created_objects), 2)
+
+        # Optional: verify structure of created objects
+        self.assertEqual(created_objects[0].text, "Test1")
+        self.assertEqual(created_objects[0].language, "en")
+        self.assertEqual(created_objects[1].text, "Test2")
+        self.assertEqual(created_objects[1].language, "es")
