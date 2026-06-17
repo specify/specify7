@@ -17,6 +17,7 @@ from specifyweb.specify.models import (
     Specifyuser,
     Collectionobject,
     Loan,
+    Loanpreparation,
     Deaccession,
     Accession,
     Collectionobjectgroupjoin,
@@ -109,6 +110,18 @@ def calculate_extra_fields(obj, data: dict[str, Any]) -> dict[str, Any]:
         )
 
         extra["isMemberOfCOG"] = Collectionobjectgroupjoin.objects.filter(childco=obj).exists()
+
+
+     
+    elif isinstance(obj, Loanpreparation):
+            """calculate the resolved status based on quantity and quantityresolved. 
+            added fallback to handle null values for quantity and quantityresolved, 
+            treating them as 0 if they are null or not provided"""
+            quantity_resolved = int(data.get('quantityresolved')) or 0
+            total_quantity = int(data.get('quantity')) or 0
+            is_resolved = (quantity_resolved >= total_quantity)
+            extra['isresolved'] = is_resolved
+
 
     elif isinstance(obj, Loan):
         preps = data["loanpreparations"]
