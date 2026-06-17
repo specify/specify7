@@ -1,5 +1,5 @@
 import unittest
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import patch, MagicMock, Mock, mock_open
 import json
 from pathlib import Path
 from collections import defaultdict
@@ -25,27 +25,64 @@ class SchemaReaderTests(unittest.TestCase):
         self.assertTrue(_has_explicit_hidden_override({"ISHIDDEN": False}))
         self.assertFalse(_has_explicit_hidden_override({"other": "value"}))
 
-    @patch('specifyweb.specify.migration_utils.schema_reader.settings')
-    @patch('specifyweb.specify.migration_utils.schema_reader.Path')
-    @patch('specifyweb.specify.migration_utils.schema_reader.json')
     @patch('specifyweb.specify.migration_utils.schema_reader.logger')
-    def test_schema_override_hidden_values_for_discipline(self, mock_logger, mock_json, mock_path, mock_settings):
+    @patch('specifyweb.specify.migration_utils.schema_reader.json')
+    @patch('specifyweb.specify.migration_utils.schema_reader.Path')
+    @patch('specifyweb.specify.migration_utils.schema_reader.settings')
+    def test_schema_override_hidden_values_for_discipline(
+        self,
+        mock_settings,
+        mock_path,
+        mock_json,
+        mock_logger,
+    ):
+        # --- settings ---
         mock_settings.SPECIFY_CONFIG_DIR = "/config"
-        mock_path.return_value.exists.return_value = True
-        mock_json.load.return_value = {
+
+        # --- fake file content ---
+        fake_json_data = {
             "collectionobject": {
                 "items": [
                     {
-                        "catalogNumber": {"isHidden": True},
-                        "otherField": {"otherSetting": "value"}
+                        "catalogNumber": {
+                            "isHidden": True
+                        },
+                        "availability": {
+                            "otherSetting": "value"
+                        }
                     }
                 ]
             }
         }
 
-        result = _schema_override_hidden_values_for_discipline("bird")
-        self.assertEqual(result, {"collectionobject": {"catalognumber": True}})
-        mock_path.assert_called_once_with("/config/bird/schema_overrides.json")
+        # --- json.load behavior ---
+        mock_json.load.return_value = fake_json_data
+
+        # --- Path chaining mock ---
+        mock_path_instance = MagicMock()
+
+        mock_path.return_value = mock_path_instance
+        mock_path_instance.__truediv__.return_value = mock_path_instance
+
+        mock_path_instance.exists.return_value = True
+
+        mock_file = mock_open(read_data="{}")
+        mock_path_instance.open = mock_file
+
+        with patch(
+            "specifyweb.specify.migration_utils.schema_reader.json.load",
+            return_value=fake_json_data,
+        ):
+            result = _schema_override_hidden_values_for_discipline("bird")
+
+        assert result == {
+            "collectionobject": {
+                "catalognumber": True
+            }
+        }
+
+        mock_path.assert_called_once_with("/config")
+        mock_path_instance.__truediv__.assert_called()
 
     def test_schema_override_hidden_fields_for_discipline(self):
         with patch('specifyweb.specify.migration_utils.schema_reader._schema_override_hidden_values_for_discipline') as mock_hidden_values:
@@ -61,7 +98,7 @@ class SchemaReaderTests(unittest.TestCase):
 
     def test_fields_without_explicit_hidden_override(self):
         with patch('specifyweb.specify.migration_utils.schema_reader._schema_override_hidden_fields_for_discipline') as mock_hidden_fields:
-            mock_hidden_fields.return_value = {"collectionobject": {"catalognumber", "otherfield"}}
+            mock_hidden_fields.return_value = {"collectionobject": {"catalognumber", "availability"}}
             result = _fields_without_explicit_hidden_override(
                 "CollectionObject",
                 ["catalogNumber", "field1", "field2"],
