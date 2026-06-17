@@ -6,11 +6,10 @@ from specifyweb.specify.migration_utils.migration_helpers import helper_0003_cot
 
 class Helper0003CotypePicklistTest(TestCase):
 
-    def test_create_cotype_splocalecontaineritem_new(self, mock_apps):
+    def test_create_cotype_splocalecontaineritem_new(self):
         mock_apps = MagicMock()
-
         # -----------------------
-        # Mock models returned by apps.get_model
+        # Mock models
         # -----------------------
         mock_container = MagicMock()
         mock_containeritem = MagicMock()
@@ -27,19 +26,28 @@ class Helper0003CotypePicklistTest(TestCase):
         mock_apps.get_model.side_effect = get_model
 
         # -----------------------
-        # Mock container queryset
+        # Mock queryset chain for container
         # -----------------------
-        container = MagicMock()
-        mock_container.objects.filter.return_value = [container]
+        container_qs = MagicMock()
+        mock_container.objects.filter.return_value = container_qs
+        container_qs.__iter__.return_value = [MagicMock()]
 
-        # No existing item
-        mock_containeritem.objects.filter.return_value.order_by.return_value.first.return_value = None
+        # -----------------------
+        # No existing container item
+        # -----------------------
+        item_qs = MagicMock()
+        mock_containeritem.objects.filter.return_value = item_qs
+        item_qs.order_by.return_value.first.return_value = None
 
         created_item = MagicMock()
         mock_containeritem.objects.create.return_value = created_item
 
+        # -----------------------
         # No existing strings
-        mock_itemstr.objects.filter.return_value.order_by.return_value.first.return_value = None
+        # -----------------------
+        str_qs = MagicMock()
+        mock_itemstr.objects.filter.return_value = str_qs
+        str_qs.order_by.return_value.first.return_value = None
 
         # -----------------------
         # Act
@@ -49,5 +57,5 @@ class Helper0003CotypePicklistTest(TestCase):
         # -----------------------
         # Assert
         # -----------------------
-        mock_containeritem.objects.create.assert_called()
-        self.assertTrue(mock_itemstr.objects.create.called)
+        mock_containeritem.objects.create.assert_called_once()
+        mock_itemstr.objects.create.assert_called()
