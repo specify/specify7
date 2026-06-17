@@ -46,7 +46,7 @@ class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
         self.assertEqual(result, 2)
         mock_model.objects.filter.assert_called()
 
-        # Should have attempted bulk create once (or per batch depending on implementation)
+        # Should have attempted bulk create once
         self.assertTrue(mock_bulk_create.called)
 
 
