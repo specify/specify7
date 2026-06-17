@@ -2,6 +2,10 @@
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
 # ##########################################
+from typing import Iterable
+from itertools import islice
+
+from django.db.models import Exists, OuterRef
 
 from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
 
@@ -89,7 +93,10 @@ def update_discipline_type_splocalecontaineritem(apps):
         container__name="discipline",
         container__schematype=0,
         name="type",
-    ).update(picklistname=DISCIPLINE_TYPE_PICKLIST_NAME, isrequired=True)
+    ).update(
+        picklistname=DISCIPLINE_TYPE_PICKLIST_NAME,
+        isrequired=True
+    )
 
 def revert_discipline_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
@@ -99,4 +106,6 @@ def revert_discipline_type_splocalecontaineritem(apps):
         picklistname=DISCIPLINE_TYPE_PICKLIST_NAME,
         container__schematype=0,
         name="type",
-    ).update(picklistname=None)
+    ).update(
+        picklistname=None
+    )
