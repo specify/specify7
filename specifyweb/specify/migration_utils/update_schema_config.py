@@ -19,10 +19,8 @@ from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistErro
 
 from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
 from specifyweb.specify.models_utils.model_extras import GEOLOGY_DISCIPLINES, PALEO_DISCIPLINES
-from specifyweb.specify.models import (
-    datamodel,
-)
-from specifyweb.specify.migration_utils.sp7_schemaconfig import (
+from specifyweb.specify.models import datamodel
+from specifyweb.specify.migration_utils.migration_helpers import (
     MIGRATION_0002_TABLES,
     MIGRATION_0004_FIELDS,
     MIGRATION_0004_TABLES,
@@ -45,7 +43,7 @@ from specifyweb.specify.migration_utils.sp7_schemaconfig import (
     MIGRATION_0034_FIELDS,
     MIGRATION_0034_UPDATE_FIELDS,
     MIGRATION_0035_FIELDS,
-    MIGRATION_0038_FIELDS,
+    MIGRATION_0039_FIELDS,
     MIGRATION_0040_TABLES,
     MIGRATION_0040_FIELDS,
     MIGRATION_0040_UPDATE_FIELDS,
@@ -1977,12 +1975,12 @@ def update_loan_and_gift_agent_fields(apps):
         "ishidden": True
     }
     for discipline in Discipline.objects.all():
-        for table, fields in MIGRATION_0038_FIELDS.items():
+        for table, fields in MIGRATION_0039_FIELDS.items():
             for field_name in fields:
                 update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps, defaults=field_defaults)
 
 def revert_loan_and_gift_agent_fields(apps):
-    for table, fields in MIGRATION_0038_FIELDS.items():
+    for table, fields in MIGRATION_0039_FIELDS.items():
         for field_name in fields:
             revert_table_field_schema_config(table, field_name, apps)
 
