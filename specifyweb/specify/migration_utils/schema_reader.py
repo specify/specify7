@@ -1,7 +1,7 @@
 import re
 import json
 
-from typing import NamedTuple, Tuple, TypedDict, NotRequired
+from typing import NamedTuple, Tuple, TypedDict
 import logging
 from collections import defaultdict
 from functools import lru_cache
@@ -211,16 +211,16 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
 
     return total_created
 
-class FieldDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    ishidden: NotRequired[bool]
-    isrequired: NotRequired[bool]
-    picklistname: NotRequired[str]
-class TableDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    items: NotRequired[dict[str, FieldDefaults]]
+class FieldDefaults(TypedDict, total=False):
+    name: str
+    desc: str 
+    ishidden: bool
+    isrequired: bool
+    picklistname: str
+class TableDefaults(TypedDict, total=False):
+    name: str
+    desc: str
+    items: dict[str, FieldDefaults]
 
 def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')

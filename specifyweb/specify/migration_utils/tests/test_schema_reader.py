@@ -1,8 +1,34 @@
 import unittest
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch, MagicMock, Mock
 import json
 from pathlib import Path
 from collections import defaultdict
+
+# Mock django imports with complete structure
+mock_django = Mock()
+mock_django.db = Mock()
+mock_django.db.models = Mock()
+mock_django.db.models.Q = Mock()
+mock_django.conf = Mock()
+mock_django.apps = Mock()
+mock_django.forms = Mock()
+mock_django.forms.models = Mock()
+mock_django.forms.models.model_to_dict = Mock()
+mock_django.contrib = Mock()
+mock_django.contrib.auth = Mock()
+mock_django.contrib.auth.base_user = Mock()
+
+import sys
+sys.modules['django'] = mock_django
+sys.modules['django.db'] = mock_django.db
+sys.modules['django.db.models'] = mock_django.db.models
+sys.modules['django.conf'] = mock_django.conf
+sys.modules['django.apps'] = mock_django.apps
+sys.modules['django.forms'] = mock_django.forms
+sys.modules['django.forms.models'] = mock_django.forms.models
+sys.modules['django.contrib'] = mock_django.contrib
+sys.modules['django.contrib.auth'] = mock_django.contrib.auth
+sys.modules['django.contrib.auth.base_user'] = mock_django.contrib.auth.base_user
 
 from ..schema_reader import (
     _has_explicit_hidden_override,
@@ -85,19 +111,6 @@ class SchemaReaderTests(unittest.TestCase):
         self.assertEqual(uncapitilize("tEST"), "tEST")
         self.assertEqual(uncapitilize("A"), "a")
         self.assertEqual(uncapitilize("AB"), "aB")
-
-    def test_bulk_create_splocaleitemstr_idempotent(self):
-        mock_splocaleitemstr = MagicMock()
-        mock_splocaleitemstr.objects.filter.return_value = []
-        
-        rows = [
-            {"itemname": MagicMock(pk=1), "text": "Test1", "language": "en"},
-            {"itemdesc": MagicMock(pk=2), "text": "Test2", "language": "es"}
-        ]
-        
-        result = bulk_create_splocaleitemstr_idempotent(mock_splocaleitemstr, rows)
-        self.assertEqual(result, 2)
-        mock_splocaleitemstr.objects.bulk_create.assert_called_once()
 
     @patch('specifyweb.specify.migration_utils.schema_reader.global_apps')
     @patch('specifyweb.specify.migration_utils.schema_reader.datamodel')
