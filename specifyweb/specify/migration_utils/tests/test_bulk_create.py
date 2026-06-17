@@ -63,7 +63,7 @@ class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
         # -----------------------
         # Inspect bulk_create payload
         # -----------------------
-        args, kwargs = mock_manager.bulk_create.call_args
+        args, _kwargs = mock_manager.bulk_create.call_args
         created_objects = args[0]
 
         self.assertEqual(len(created_objects), 2)
