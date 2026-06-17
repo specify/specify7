@@ -18,6 +18,7 @@ export const localityText = createDictionary({
     'de-ch': 'Karte öffnen',
     'pt-br': 'Abrir mapa',
     'hr-hr': 'Otvori kartu',
+    nb: '',
   },
   geoMap: {
     'en-us': 'GeoMap',
@@ -28,6 +29,7 @@ export const localityText = createDictionary({
     'de-ch': 'Karte',
     'pt-br': 'Mapa geográfico',
     'hr-hr': 'Geokarta',
+    nb: '',
   },
   queryMapSubset: {
     comment: 'Used in GeoMap header while records are still being fetched',
@@ -47,6 +49,7 @@ export const localityText = createDictionary({
       'GeoMapa - Plotado {plotted:number|formatted} de {total:number|formatted} registros',
     'hr-hr':
       'GeoMap - Iscrtano {plotted:number|formatted} od {total:number|formatted} zapisa',
+    nb: '',
   },
   queryMapAll: {
     'en-us': 'GeoMap - Plotted {plotted:number|formatted} records',
@@ -57,6 +60,7 @@ export const localityText = createDictionary({
     'de-ch': 'GeoMap hat {plotted:number|formatted} Datensätze gezeichnet',
     'pt-br': 'GeoMapa - Registros plotados {plotted:number|formatted}',
     'hr-hr': 'GeoMap - Ucrtani {plotted:number|formatted} zapisi',
+    nb: '',
   },
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
@@ -67,6 +71,7 @@ export const localityText = createDictionary({
     'de-ch': 'Polygon-Grenzen',
     'pt-br': 'Limites de Polígonos',
     'hr-hr': 'Granice poligona',
+    nb: '',
   },
   errorRadius: {
     'en-us': 'Error Radius',
@@ -77,6 +82,7 @@ export const localityText = createDictionary({
     'de-ch': 'Fehlerradius',
     'pt-br': 'Raio de erro',
     'hr-hr': 'Radijus pogreške',
+    nb: '',
   },
   showMap: {
     'en-us': 'Show Map',
@@ -87,6 +93,7 @@ export const localityText = createDictionary({
     'de-ch': 'Karte anzeigen',
     'pt-br': 'Mostrar mapa',
     'hr-hr': 'Prikaži kartu',
+    nb: '',
   },
   noCoordinates: {
     'en-us': 'No coordinates',
@@ -97,6 +104,7 @@ export const localityText = createDictionary({
     'de-ch': 'Keine Koordinaten',
     'pt-br': 'Sem coordenadas',
     'hr-hr': 'Nema koordinata',
+    nb: '',
   },
   notEnoughInformationToMap: {
     'en-us': '{localityTable:string} must have coordinates to be mapped.',
@@ -110,6 +118,7 @@ export const localityText = createDictionary({
       '{localityTable:string} muss Koordinaten haben, um kartiert werden zu können.',
     'pt-br': '{localityTable:string} deve ter coordenadas para ser mapeado.',
     'hr-hr': '{localityTable:string} mora imati koordinate za mapiranje.',
+    nb: '',
   },
   occurrencePoints: {
     'en-us': 'Pins',
@@ -120,6 +129,7 @@ export const localityText = createDictionary({
     'de-ch': 'Stecknadeln',
     'pt-br': 'Alfinetes',
     'hr-hr': 'Igle',
+    nb: '',
   },
   occurrencePolygons: {
     'en-us': 'Polygons',
@@ -130,6 +140,7 @@ export const localityText = createDictionary({
     'de-ch': 'Polygone',
     'pt-br': 'Polígonos',
     'hr-hr': 'Poligoni',
+    nb: '',
   },
   geoLocate: {
     'en-us': 'GEOLocate',
@@ -140,6 +151,7 @@ export const localityText = createDictionary({
     'de-ch': 'GEO Lokalisierung',
     'pt-br': 'GEOLocate',
     'hr-hr': 'GEOLocate',
+    nb: '',
   },
   geographyRequired: {
     'en-us': '{geographyTable:string} must be mapped',
@@ -150,6 +162,7 @@ export const localityText = createDictionary({
     'de-ch': '{geographyTable:string} muss kartiert werden',
     'pt-br': '{geographyTable:string} deve ser mapeado.',
     'hr-hr': '{geographyTable:string} mora biti mapiran',
+    nb: '',
   },
   geographyRequiredDescription: {
     'en-us':
@@ -166,6 +179,7 @@ export const localityText = createDictionary({
       'O plugin GeoLocate requer que o campo de geografia esteja preenchido.',
     'hr-hr':
       'Dodatak GeoLocate zahtijeva da polje za geografiju bude popunjeno.',
+    nb: '',
   },
   coordinates: {
     'en-us': 'Coordinates',
@@ -176,6 +190,7 @@ export const localityText = createDictionary({
     'de-ch': 'Koordinaten',
     'pt-br': 'Coordenadas',
     'hr-hr': 'Koordinate',
+    nb: '',
   },
   northWestCorner: {
     comment: 'Represents coordinates. Careful with translation',
@@ -187,6 +202,7 @@ export const localityText = createDictionary({
     'de-ch': 'NW-Ecke',
     'pt-br': 'Canto noroeste',
     'hr-hr': 'SZ kut',
+    nb: '',
   },
   southEastCorner: {
     comment: 'Represents coordinates. Careful with translation',
@@ -198,6 +214,7 @@ export const localityText = createDictionary({
     'de-ch': 'SO-Ecke',
     'pt-br': 'Canto sudeste',
     'hr-hr': 'JI kut',
+    nb: '',
   },
   coordinateType: {
     'en-us': 'Coordinate Type',
@@ -208,6 +225,7 @@ export const localityText = createDictionary({
     'de-ch': 'Koordinatentyp',
     'pt-br': 'Tipo de coordenada',
     'hr-hr': 'Vrsta koordinate',
+    nb: '',
   },
   point: {
     'en-us': 'Point',
@@ -218,6 +236,7 @@ export const localityText = createDictionary({
     'de-ch': 'Punkt',
     'pt-br': 'Apontar',
     'hr-hr': 'Točka',
+    nb: '',
   },
   line: {
     'en-us': 'Line',
@@ -228,6 +247,7 @@ export const localityText = createDictionary({
     'de-ch': 'Linie',
     'pt-br': 'Linha',
     'hr-hr': 'Linija',
+    nb: '',
   },
   rectangle: {
     'en-us': 'Rectangle',
@@ -238,6 +258,7 @@ export const localityText = createDictionary({
     'de-ch': 'Rechteck',
     'pt-br': 'Retângulo',
     'hr-hr': 'Pravokutnik',
+    nb: '',
   },
   parsed: {
     'en-us': 'Parsed',
@@ -248,6 +269,7 @@ export const localityText = createDictionary({
     'de-ch': 'Geparst',
     'pt-br': 'Analisado',
     'hr-hr': 'Analizirano',
+    nb: '',
   },
   latitude: {
     'en-us': 'Latitude',
@@ -258,6 +280,7 @@ export const localityText = createDictionary({
     'de-ch': 'Breitengrad',
     'pt-br': 'Latitude',
     'hr-hr': 'Geografska širina',
+    nb: '',
   },
   longitude: {
     'en-us': 'Longitude',
@@ -268,6 +291,7 @@ export const localityText = createDictionary({
     'de-ch': 'Längengrad',
     'pt-br': 'Longitude',
     'hr-hr': 'Geografska dužina',
+    nb: '',
   },
   toggleFullScreen: {
     'en-us': 'Toggle Full Screen',
@@ -278,6 +302,7 @@ export const localityText = createDictionary({
     'de-ch': 'Vollbildmodus',
     'pt-br': 'Alternar tela cheia',
     'hr-hr': 'Uključi/isključi cijeli zaslon',
+    nb: '',
   },
   degrees: {
     'en-us': 'DD.DDDD (32.7619)',
@@ -288,6 +313,7 @@ export const localityText = createDictionary({
     'de-ch': 'DD.DDDD (32.7619)',
     'pt-br': 'DD.DDDD (32.7619)',
     'hr-hr': 'DD.DDDD (32,7619)',
+    nb: '',
   },
   degreesMinutes: {
     'en-us': 'DD MMMM (32. 45.714)',
@@ -298,6 +324,7 @@ export const localityText = createDictionary({
     'de-ch': 'DD MMMM (32. 45.714)',
     'pt-br': 'DD MMMM (32. 45.714)',
     'hr-hr': 'DD MMMM (32. 45.714)',
+    nb: '',
   },
   degreesMinutesSeconds: {
     'en-us': 'DD MM SS.SS (32 45 42.84)',
@@ -308,6 +335,7 @@ export const localityText = createDictionary({
     'de-ch': 'DD MM SS.SS (32 45 42.84)',
     'pt-br': 'DD MM SS.SS (32 45 42,84)',
     'hr-hr': 'DD MM SS.SS (32 45 42,84)',
+    nb: '',
   },
   degreesWithDirection: {
     'en-us': 'DD.DDDD N/S/E/W (32.7619 N)',
@@ -318,6 +346,7 @@ export const localityText = createDictionary({
     'de-ch': 'DD.DDDD N/S/O/W (32.7619 N)',
     'pt-br': 'DD.DDDD N/S/E/O (32,7619 N)',
     'hr-hr': 'DD.DDDD S/J/I/Z (32.7619 S)',
+    nb: '',
   },
   degreesMinutesWithDirection: {
     'en-us': 'DD MM.MM N/S/E/W (32 45.714 N)',
@@ -328,6 +357,7 @@ export const localityText = createDictionary({
     'de-ch': 'DD MM.MM N/S/O/W (32 45.714 N)',
     'pt-br': 'DD MM.MM N/S/E/O (32 45.714 N)',
     'hr-hr': 'DD MM.MM S/J/I/Z (32 45.714 S)',
+    nb: '',
   },
   degreesMinutesSecondsWithDirection: {
     'en-us': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
@@ -338,6 +368,7 @@ export const localityText = createDictionary({
     'de-ch': 'DD MM SS.SS N/S/O/W (32 45 42.84 N)',
     'pt-br': 'DD MM SS.SS N/S/E/W (32 45 42.84 N)',
     'hr-hr': 'DD MM SS.SS S/J/I/Z (32 45 42,84 S)',
+    nb: '',
   },
   localityUpdateHeaderError: {
     'en-us': 'Errors Found in Column Headers',
@@ -348,6 +379,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Знайдено помилки в заголовках стовпців',
     'pt-br': 'Erros encontrados nos cabeçalhos das colunas',
     'hr-hr': 'Pogreške pronađene u zaglavljima stupaca',
+    nb: '',
   },
   localityUpdateMissingHeader: {
     'en-us': 'The following columns are required but missing in the data set',
@@ -362,6 +394,7 @@ export const localityText = createDictionary({
     'pt-br':
       'As colunas a seguir são obrigatórias, mas estão ausentes no conjunto de dados.',
     'hr-hr': 'Sljedeći stupci su obavezni, ali nedostaju u skupu podataka',
+    nb: '',
   },
   localityUpdateUnrecognizedHeaders: {
     'en-us':
@@ -380,6 +413,7 @@ export const localityText = createDictionary({
       'As seguintes colunas no conjunto de dados não são reconhecidas e serão ignoradas na importação.',
     'hr-hr':
       'Sljedeći stupci u skupu podataka nisu prepoznati i bit će zanemareni prilikom uvoza',
+    nb: '',
   },
   localityUpdateAcceptedHeaders: {
     'en-us': 'Only the following headers are accepted',
@@ -390,6 +424,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Приймаються лише такі заголовки',
     'pt-br': 'Somente os seguintes cabeçalhos são aceitos.',
     'hr-hr': 'Prihvaćaju se samo sljedeći zaglavlja',
+    nb: '',
   },
   localityUpdateStarting: {
     'en-us': 'Starting Locality Update',
@@ -400,6 +435,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Початок оновлення місцевості',
     'pt-br': 'Iniciando a atualização de localidade',
     'hr-hr': 'Započetak ažuriranja lokacije',
+    nb: '',
   },
   localityUpdateParsing: {
     'en-us': 'Parsing Locality Data Set',
@@ -410,6 +446,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Розбір набору даних місцевості',
     'pt-br': 'Conjunto de dados de localidade de análise sintática',
     'hr-hr': 'Raščlanjivanje skupa podataka o lokaciji',
+    nb: '',
   },
   localityUpdateProgressing: {
     'en-us': 'Importing Locality Data Set',
@@ -420,6 +457,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Імпорт набору даних місцевості',
     'pt-br': 'Importando o conjunto de dados de localidade',
     'hr-hr': 'Uvoz skupa podataka o lokaciji',
+    nb: '',
   },
   localityUpdateParsed: {
     'en-us': 'Locality Update Data Set Parsed',
@@ -431,6 +469,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Проаналізовано набір даних оновлення місцевості',
     'pt-br': 'Conjunto de dados de atualização de localidade analisado',
     'hr-hr': 'Skup podataka za ažuriranje lokacije analiziran',
+    nb: '',
   },
   localityUpdateFailed: {
     'en-us': 'Locality Update Failed',
@@ -441,6 +480,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Помилка оновлення місцевості',
     'pt-br': 'Falha na atualização de localidade',
     'hr-hr': 'Ažuriranje lokacije nije uspjelo',
+    nb: '',
   },
   localityUpdateParseFailure: {
     'en-us': 'Locality Update Parsing Failed',
@@ -451,6 +491,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Помилка аналізу оновлення місцевості',
     'pt-br': 'Falha na análise da atualização de localidade',
     'hr-hr': 'Raščlanjivanje ažuriranja lokacije nije uspjelo',
+    nb: '',
   },
   localityUpdateCancelled: {
     'en-us': 'Locality Update Cancelled',
@@ -461,6 +502,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Оновлення місцевості скасовано',
     'pt-br': 'Atualização de localidade cancelada',
     'hr-hr': 'Ažuriranje lokacije otkazano',
+    nb: '',
   },
   localityUpdateSucceeded: {
     'en-us': 'Locality Update Succeeded',
@@ -471,6 +513,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Місцезнаходження оновлено',
     'pt-br': 'Atualização de localidade concluída com sucesso',
     'hr-hr': 'Ažuriranje lokaliteta uspješno',
+    nb: '',
   },
   localityUpdateWentWrong: {
     'en-us': 'Something went wrong during the Locality Update process',
@@ -482,6 +525,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Щось пішло не так під час процесу оновлення місцевості',
     'pt-br': 'Algo deu errado durante o processo de atualização de localidade.',
     'hr-hr': 'Došlo je do pogreške tijekom procesa ažuriranja lokacije',
+    nb: '',
   },
   localityUpdateParseErrorFileName: {
     comment: `
@@ -496,6 +540,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Помилки оновлення місцевості - {date:string}',
     'pt-br': 'Erros de atualização de localidade - {date:string}',
     'hr-hr': 'Pogreške ažuriranja lokacije - {date:string}',
+    nb: '',
   },
   localityUpdateCrashFileName: {
     comment: `
@@ -517,6 +562,7 @@ export const localityText = createDictionary({
       'Atualização de localidade {taskId: string} Relatório de falha - {date: string}',
     'hr-hr':
       'Ažuriranje lokacije {taskId: string} Izvješće o rušenju programa - {date: string}',
+    nb: '',
   },
   guidHeaderNotProvided: {
     'en-us': "The Dataset must contain a 'guid' header",
@@ -527,6 +573,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Набір даних має містити заголовок «guid».',
     'pt-br': "O conjunto de dados deve conter um cabeçalho 'guid'.",
     'hr-hr': "Skup podataka mora sadržavati zaglavlje 'guid'",
+    nb: '',
   },
   noLocalityMatchingGuid: {
     'en-us': "No Locality with guid: '{guid:string}'",
@@ -537,6 +584,7 @@ export const localityText = createDictionary({
     'uk-ua': "Немає місцевості з guid: '{guid:string}'",
     'pt-br': "Nenhuma localidade com guid: '{guid:string}'",
     'hr-hr': "Nema lokaliteta s guid-om: '{guid:string}'",
+    nb: '',
   },
   multipleLocalitiesWithGuid: {
     'en-us':
@@ -555,6 +603,7 @@ export const localityText = createDictionary({
       'Mais de uma localidade encontrada com o GUID: {guid:string}. IDs das localidades: {localityIds: string}',
     'hr-hr':
       'Pronađeno je više od jednog lokaliteta s guid-om: {guid:string}. ID-ovi lokaliteta: {localityIds: string}',
+    nb: '',
   },
   localityUpdateEffectCounts: {
     'en-us':
@@ -573,6 +622,7 @@ export const localityText = createDictionary({
       'O seguinte número de registros {localityTabelLabel: string} será afetado pela atualização e registros {geoCoordDetailTableLabel: string} serão criados:',
     'hr-hr':
       'Ažuriranje će utjecati na sljedeći broj zapisa {localityTabelLabel: string} i bit će kreirani zapisi {geoCoordDetailTableLabel: string}:',
+    nb: '',
   },
   localityUploadedDescription: {
     'en-us':
@@ -591,6 +641,7 @@ export const localityText = createDictionary({
       'O seguinte número de registros {localityTabelLabel: string} foram atualizados e o seguinte número de registros {geoCoordDetailTableLabel: string} foram criados:',
     'hr-hr':
       'Sljedeći broj zapisa {localityTabelLabel: string} je ažuriran i {geoCoordDetailTableLabel: string} je kreiran:',
+    nb: '',
   },
   localityUpdateStarted: {
     'en-us': 'The Locality Update process has started',
@@ -602,6 +653,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Розпочато процес оновлення місцевості',
     'pt-br': 'O processo de atualização de localidades foi iniciado.',
     'hr-hr': 'Proces ažuriranja lokacije je započeo',
+    nb: '',
   },
   localityUpdateResults: {
     'en-us': 'Locality Update Results',
@@ -612,6 +664,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Результати оновлення місцевості',
     'pt-br': 'Resultados da atualização de localidade',
     'hr-hr': 'Rezultati ažuriranja lokacije',
+    nb: '',
   },
   localityUpdateFailureResults: {
     'en-us': 'Locality Update Failure Results',
@@ -622,6 +675,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Результати помилки оновлення місцевості',
     'pt-br': 'Resultados da falha na atualização de localidade',
     'hr-hr': 'Rezultati neuspjeha ažuriranja lokacije',
+    nb: '',
   },
   taskId: {
     'en-us': 'Task ID',
@@ -632,6 +686,7 @@ export const localityText = createDictionary({
     'uk-ua': 'ID завдання',
     'pt-br': 'ID da tarefa',
     'hr-hr': 'ID zadatka',
+    nb: '',
   },
   validLatitude: {
     'en-us': 'Latitude needs to have a value between -90° and 90°',
@@ -642,6 +697,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Значення широти має бути від -90° до 90°',
     'pt-br': 'A latitude deve ter um valor entre -90° e 90°.',
     'hr-hr': 'Geografska širina mora imati vrijednost između -90° i 90°',
+    nb: '',
   },
   validLongitude: {
     'en-us': 'Longitude needs to have a value between -180° and 180°',
@@ -654,5 +710,6 @@ export const localityText = createDictionary({
       'Оновлення вплине на таку кількість записів {localityTabelLabel: string} і буде створено записи {geoCoordDetailTableLabel: string}:',
     'pt-br': 'A longitude deve ter um valor entre -180° e 180°.',
     'hr-hr': 'Geografska dužina mora imati vrijednost između -180° i 180°',
+    nb: '',
   },
 } as const);

@@ -18,6 +18,7 @@ export const userText = createDictionary({
     'de-ch': 'Anmelden',
     'pt-br': 'Conecte-se',
     'hr-hr': 'Prijava',
+    nb: '',
   },
   username: {
     'en-us': 'Username',
@@ -28,6 +29,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzername',
     'pt-br': 'Nome de usuário',
     'hr-hr': 'Korisničko ime',
+    nb: '',
   },
   password: {
     'en-us': 'Password',
@@ -38,6 +40,7 @@ export const userText = createDictionary({
     'de-ch': 'Kennwort',
     'pt-br': 'Senha',
     'hr-hr': 'Lozinka',
+    nb: '',
   },
   collectionAccessDenied: {
     'en-us': 'You do not have access to this collection',
@@ -48,6 +51,7 @@ export const userText = createDictionary({
     'de-ch': 'Sie haben keinen Zugang zu dieser Sammlung',
     'pt-br': 'Você não tem acesso a esta coleção.',
     'hr-hr': 'Nemate pristup ovoj kolekciji',
+    nb: '',
   },
   collectionAccessDeniedDescription: {
     'en-us':
@@ -66,6 +70,7 @@ export const userText = createDictionary({
       'A conta atualmente conectada não tem acesso à coleção {collectionName:string}.',
     'hr-hr':
       'Trenutno prijavljeni račun nema pristup kolekciji {collectionName:string}.',
+    nb: '',
   },
   changePassword: {
     'en-us': 'Change Password',
@@ -76,6 +81,7 @@ export const userText = createDictionary({
     'de-ch': 'Kennwort ändern',
     'pt-br': 'Alterar a senha',
     'hr-hr': 'Promjena lozinke',
+    nb: '',
   },
   oldPassword: {
     'en-us': 'Old password',
@@ -86,6 +92,7 @@ export const userText = createDictionary({
     'de-ch': 'Altes Kennwort',
     'pt-br': 'Senha Antiga',
     'hr-hr': 'Stara lozinka',
+    nb: '',
   },
   newPassword: {
     'en-us': 'New password',
@@ -96,6 +103,7 @@ export const userText = createDictionary({
     'de-ch': 'Neues Kennwort',
     'pt-br': 'Nova Senha',
     'hr-hr': 'Nova lozinka',
+    nb: '',
   },
   repeatPassword: {
     'en-us': 'Repeat new password',
@@ -106,6 +114,7 @@ export const userText = createDictionary({
     'de-ch': 'Wiederhole das neue Kennwort',
     'pt-br': 'Repita a nova senha',
     'hr-hr': 'Ponovite novu lozinku',
+    nb: '',
   },
   logOut: {
     'en-us': 'Log Out',
@@ -116,6 +125,7 @@ export const userText = createDictionary({
     'de-ch': 'Ausloggen',
     'pt-br': 'Sair',
     'hr-hr': 'Odjava',
+    nb: '',
   },
   setUserAgents: {
     'en-us': 'Set User Agents',
@@ -126,6 +136,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzeragenten festlegen',
     'pt-br': 'Configurar agentes de usuário',
     'hr-hr': 'Postavljanje korisničkih agenata',
+    nb: '',
   },
   noAgent: {
     'en-us': 'Current user does not have an agent assigned',
@@ -136,6 +147,7 @@ export const userText = createDictionary({
     'de-ch': 'Dem aktuellen Benutzer ist kein Agent zugewiesen.',
     'pt-br': 'O usuário atual não possui um agente atribuído.',
     'hr-hr': 'Trenutni korisnik nema dodijeljenog agenta',
+    nb: '',
   },
   noAgentDescription: {
     'en-us': 'Please log in as admin and assign an agent to this user',
@@ -153,6 +165,7 @@ export const userText = createDictionary({
       'Faça login como administrador e atribua um agente a este usuário.',
     'hr-hr':
       'Prijavite se kao administrator i dodijelite agenta ovom korisniku',
+    nb: '',
   },
   helloMessage: {
     'en-us': 'Hello, {userName:string}!',
@@ -163,6 +176,7 @@ export const userText = createDictionary({
     'uk-ua': 'Привіт, {userName:string}!',
     'pt-br': 'Olá, {userName:string}!',
     'hr-hr': 'Pozdrav, {userName:string}!',
+    nb: '',
   },
   oicWelcomeMessage: {
     'en-us':
@@ -181,6 +195,7 @@ export const userText = createDictionary({
       'Você foi convidado a associar um login externo à sua conta de usuário do Specify. Isso permitirá que você faça login no Specify com o provedor escolhido daqui para frente.',
     'hr-hr':
       'Pozvani ste da svom Specify korisničkom računu povežete vanjsku prijavu. To će vam omogućiti prijavu na Specify s odabranim pružateljem usluga u budućnosti.',
+    nb: '',
   },
   legacyLogin: {
     'en-us': 'Sign in with Specify Account',
@@ -191,6 +206,7 @@ export const userText = createDictionary({
     'de-ch': 'Mit dem angegebenen Konto anmelden',
     'pt-br': 'Faça login com a conta especificada.',
     'hr-hr': 'Prijavite se s Navedite račun',
+    nb: '',
   },
   unknownOicUser: {
     'en-us':
@@ -209,6 +225,7 @@ export const userText = createDictionary({
       'Atualmente, não há nenhum usuário "Especifique" associado à sua conta {providerName:string}. Se você tiver um nome de usuário e senha "Especifique", poderá inseri-los abaixo para associar esse usuário à sua conta {providerName:string} para logins futuros.',
     'hr-hr':
       'Trenutno nijedan Navedite korisnika nije povezan s vašim {providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, možete ih unijeti u nastavku kako biste povezali tog korisnika s vašim {providerName:string} računom za buduće prijave.',
+    nb: '',
   },
   generateMasterKey: {
     'en-us': 'Generate Master Key',
@@ -219,6 +236,7 @@ export const userText = createDictionary({
     'uk-ua': 'Згенерувати головний ключ',
     'pt-br': 'Gerar chave mestra',
     'hr-hr': 'Generiraj glavni ključ',
+    nb: '',
   },
   userPassword: {
     'en-us': 'User Password',
@@ -229,6 +247,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer-Kennwort',
     'pt-br': 'Senha do usuário',
     'hr-hr': 'Korisnička lozinka',
+    nb: '',
   },
   generate: {
     'en-us': 'Generate',
@@ -239,6 +258,7 @@ export const userText = createDictionary({
     'de-ch': 'Generieren',
     'pt-br': 'Gerar',
     'hr-hr': 'Generirati',
+    nb: '',
   },
   masterKeyGenerated: {
     'en-us': 'Master key generated',
@@ -249,6 +269,7 @@ export const userText = createDictionary({
     'de-ch': 'Hauptschlüssel wurde generiert',
     'pt-br': 'Chave mestra gerada',
     'hr-hr': 'Generiran glavni ključ',
+    nb: '',
   },
   masterKeyFieldLabel: {
     'en-us': 'Master Key',
@@ -259,6 +280,7 @@ export const userText = createDictionary({
     'de-ch': 'Hauptschlüssel',
     'pt-br': 'Chave Mestra',
     'hr-hr': 'Glavni ključ',
+    nb: '',
   },
   incorrectPassword: {
     'en-us': 'Password was incorrect.',
@@ -269,6 +291,7 @@ export const userText = createDictionary({
     'de-ch': 'Das Passwort war falsch.',
     'pt-br': 'A senha estava incorreta.',
     'hr-hr': 'Lozinka je bila netočna.',
+    nb: '',
   },
   noAccessToResource: {
     'en-us':
@@ -287,6 +310,7 @@ export const userText = createDictionary({
       'Você não tem acesso a nenhum {collectionTable:string} que contenha este recurso através da conta atualmente conectada.',
     'hr-hr':
       'Nemate pristup nijednom {collectionTable:string} koji sadrži ovaj resurs putem trenutno prijavljenog računa',
+    nb: '',
   },
   resourceInaccessible: {
     'en-us':
@@ -304,6 +328,7 @@ export const userText = createDictionary({
       'O recurso solicitado não pode ser acessado enquanto você estiver conectado à coleção atual.',
     'hr-hr':
       'Zatraženom resursu nije moguće pristupiti dok ste prijavljeni u trenutnu kolekciju.',
+    nb: '',
   },
   selectCollection: {
     'en-us': 'Select one of the following collections:',
@@ -314,6 +339,7 @@ export const userText = createDictionary({
     'fr-fr': "Sélectionnez l'une des collections suivantes :",
     'pt-br': 'Selecione uma das seguintes coleções:',
     'hr-hr': 'Odaberite jednu od sljedećih kolekcija:',
+    nb: '',
   },
   loginToProceed: {
     comment: 'Example: You can login to the Collection, to proceed:',
@@ -330,6 +356,7 @@ export const userText = createDictionary({
       'Você pode fazer login no {collectionTable:string} para prosseguir:',
     'hr-hr':
       'Možete se prijaviti na {collectionTable:string} kako biste nastavili:',
+    nb: '',
   },
   sessionTimeOut: {
     'en-us': 'Insufficient Privileges',
@@ -340,6 +367,7 @@ export const userText = createDictionary({
     'de-ch': 'Unzureichende Berechtigungen',
     'pt-br': 'Privilégios insuficientes',
     'hr-hr': 'Nedovoljne privilegije',
+    nb: '',
   },
   sessionTimeOutDescription: {
     'en-us':
@@ -358,6 +386,7 @@ export const userText = createDictionary({
       'Você não possui privilégios suficientes para realizar essa ação, ou sua sessão atual foi encerrada.',
     'hr-hr':
       'Nemate dovoljna prava za tu radnju ili je vaša trenutna sesija odjavljena.',
+    nb: '',
   },
   noPermission: {
     comment: `
@@ -372,6 +401,7 @@ export const userText = createDictionary({
     'de-ch': 'KEINE ERLAUBNIS',
     'pt-br': 'SEM PERMISSÃO',
     'hr-hr': 'BEZ DOZVOLE',
+    nb: '',
   },
   permissionDeniedError: {
     'en-us': 'Permission denied error',
@@ -382,6 +412,7 @@ export const userText = createDictionary({
     'de-ch': 'Zugriff verweigert',
     'pt-br': 'Erro de permissão negada',
     'hr-hr': 'Pogreška odbijenog pristupa',
+    nb: '',
   },
   permissionDeniedDescription: {
     'en-us':
@@ -400,6 +431,7 @@ export const userText = createDictionary({
       'Você não possui nenhuma política ou função que lhe dê permissão para realizar a seguinte ação:',
     'hr-hr':
       'Nemate nikakvu politiku ili ulogu koja vam daje dopuštenje za sljedeću radnju:',
+    nb: '',
   },
   emptyRecordSetsReadOnly: {
     'en-us': 'Cannot open empty {recordSetTable:string} when in Read-Only mode',
@@ -417,6 +449,7 @@ export const userText = createDictionary({
       'Não é possível abrir {recordSetTable:string} vazio no modo somente leitura.',
     'hr-hr':
       'Ne može se otvoriti prazan {recordSetTable:string} u načinu rada samo za čitanje',
+    nb: '',
   },
   permissionDeniedForUrl: {
     'en-us': 'Permission denied when accessing <url />',
@@ -427,6 +460,7 @@ export const userText = createDictionary({
     'de-ch': 'Zugriff verweigert beim Zugriff auf <url />',
     'pt-br': 'Permissão negada ao acessar <url />',
     'hr-hr': 'Dozvola odbijena prilikom pristupa <url />',
+    nb: '',
   },
   noAccessToCollections: {
     'en-us':
@@ -445,6 +479,7 @@ export const userText = createDictionary({
       'O usuário conectado não tem acesso a nenhuma coleção neste banco de dados. Você precisa entrar com outra conta de usuário.',
     'hr-hr':
       'Prijavljeni korisnik nije dobio pristup nijednoj kolekciji u ovoj bazi podataka. Morate se prijaviti kao drugi korisnik.',
+    nb: '',
   },
   userAccount: {
     'en-us': 'User Account',
@@ -455,6 +490,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzerkonto',
     'pt-br': 'Conta de usuário',
     'hr-hr': 'Korisnički račun',
+    nb: '',
   },
   removeAdmin: {
     'en-us': 'Remove Admin',
@@ -465,6 +501,7 @@ export const userText = createDictionary({
     'de-ch': 'Administrator entfernen',
     'pt-br': 'Remover administrador',
     'hr-hr': 'Ukloni administratora',
+    nb: '',
   },
   canNotRemoveYourself: {
     'en-us': 'You cannot revoke your own admin status',
@@ -476,6 +513,7 @@ export const userText = createDictionary({
     'de-ch': 'Sie können Ihren eigenen Administratorstatus nicht widerrufen.',
     'pt-br': 'Você não pode revogar seu próprio status de administrador.',
     'hr-hr': 'Ne možete opozvati vlastiti administratorski status',
+    nb: '',
   },
   makeAdmin: {
     'en-us': 'Make Admin',
@@ -486,6 +524,7 @@ export const userText = createDictionary({
     'de-ch': 'Administrator erstellen',
     'pt-br': 'Tornar administrador',
     'hr-hr': 'Postavi kao administrator',
+    nb: '',
   },
   saveUserFirst: {
     'en-us': 'Save user first',
@@ -496,6 +535,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer zuerst speichern',
     'pt-br': 'Salvar usuário primeiro',
     'hr-hr': 'Prvo spremi korisnika',
+    nb: '',
   },
   mustBeManager: {
     'en-us': 'User must be saved as Manager first',
@@ -507,6 +547,7 @@ export const userText = createDictionary({
     'uk-ua': 'Спочатку користувача потрібно зберегти як менеджера',
     'pt-br': 'O usuário deve ser salvo como Gerente primeiro.',
     'hr-hr': 'Korisnik prvo mora biti spremljen kao Upravitelj',
+    nb: '',
   },
   users: {
     'en-us': 'User Accounts',
@@ -517,6 +558,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzerkonten',
     'pt-br': 'Contas de usuário',
     'hr-hr': 'Korisnički računi',
+    nb: '',
   },
   institutionUsers: {
     'en-us': 'User Accounts Defined in this {institutionTable:string}',
@@ -529,6 +571,7 @@ export const userText = createDictionary({
     'de-ch': 'In diesem {institutionTable:string} definierte Benutzerkonten',
     'pt-br': 'Contas de usuário definidas neste {institutionTable:string}',
     'hr-hr': 'Korisnički računi definirani u ovom {institutionTable:string}',
+    nb: '',
   },
   collectionUsers: {
     'en-us': 'User Accounts Assigned to this {collectionTable:string}',
@@ -542,6 +585,7 @@ export const userText = createDictionary({
       'Benutzerkonten, die diesem {collectionTable:string} zugewiesen sind',
     'pt-br': 'Contas de usuário atribuídas a este {collectionTable:string}',
     'hr-hr': 'Korisnički računi dodijeljeni ovome {collectionTable:string}',
+    nb: '',
   },
   setPassword: {
     'en-us': 'Set Password',
@@ -552,6 +596,7 @@ export const userText = createDictionary({
     'de-ch': 'Passwort festlegen',
     'pt-br': 'Definir senha',
     'hr-hr': 'Postavi lozinku',
+    nb: '',
   },
   passwordsDoNotMatchError: {
     'en-us': 'Passwords do not match.',
@@ -562,6 +607,7 @@ export const userText = createDictionary({
     'de-ch': 'Die Passwörter stimmen nicht überein.',
     'pt-br': 'As senhas não coincidem.',
     'hr-hr': 'Lozinke se ne podudaraju.',
+    nb: '',
   },
   confirmPassword: {
     'en-us': 'Confirm',
@@ -572,6 +618,7 @@ export const userText = createDictionary({
     'de-ch': 'Bestätigen',
     'pt-br': 'Confirmar',
     'hr-hr': 'Potvrdi',
+    nb: '',
   },
   collections: {
     'en-us': 'Collections',
@@ -582,6 +629,7 @@ export const userText = createDictionary({
     'de-ch': 'Sammlungen',
     'pt-br': 'Coleções',
     'hr-hr': 'Zbirke',
+    nb: '',
   },
   configureCollectionAccess: {
     'en-us': 'Select user collection access',
@@ -592,6 +640,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzerzugriff auswählen',
     'pt-br': 'Selecione o acesso à coleção de usuários',
     'hr-hr': 'Odaberite pristup korisničke zbirke',
+    nb: '',
   },
   securityPanel: {
     'en-us': 'Security and Accounts',
@@ -602,6 +651,7 @@ export const userText = createDictionary({
     'ru-ru': 'Безопасность и учетные записи',
     'pt-br': 'Segurança e Contas',
     'hr-hr': 'Sigurnost i računi',
+    nb: '',
   },
   userRoleLibrary: {
     'en-us': 'Institution Library of Role Templates',
@@ -612,6 +662,7 @@ export const userText = createDictionary({
     'de-ch': 'Institutionelle Bibliothek mit Rollenvorlagen',
     'pt-br': 'Biblioteca Institucional de Modelos de Funções',
     'hr-hr': 'Knjižnica predložaka uloga institucije',
+    nb: '',
   },
   userRoles: {
     'en-us': 'User Roles',
@@ -622,6 +673,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzerrollen',
     'pt-br': 'Funções do usuário',
     'hr-hr': 'Korisničke uloge',
+    nb: '',
   },
   collectionUserRoles: {
     'en-us': '{collectionTable:string} User Roles',
@@ -632,6 +684,7 @@ export const userText = createDictionary({
     'de-ch': '{collectionTable:string} Benutzerrollen',
     'pt-br': '{collectionTable:string} Funções do Usuário',
     'hr-hr': '{collectionTable:string} Korisničke uloge',
+    nb: '',
   },
   assignedUserRoles: {
     'en-us': 'Assigned User Roles',
@@ -642,6 +695,7 @@ export const userText = createDictionary({
     'ru-ru': 'Назначенные роли пользователей',
     'pt-br': 'Funções de usuário atribuídas',
     'hr-hr': 'Dodijeljene korisničke uloge',
+    nb: '',
   },
   rolePolicies: {
     'en-us': 'Role Permission Policies',
@@ -652,6 +706,7 @@ export const userText = createDictionary({
     'de-ch': 'Rollenberechtigungsrichtlinien',
     'pt-br': 'Políticas de permissão de funções',
     'hr-hr': 'Pravila o dopuštenjima uloga',
+    nb: '',
   },
   userPolicies: {
     'en-us': 'User Permission Policies',
@@ -662,6 +717,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzerberechtigungsrichtlinien',
     'pt-br': 'Políticas de permissão do usuário',
     'hr-hr': 'Pravila korisničkih dopuštenja',
+    nb: '',
   },
   customUserPolices: {
     'en-us':
@@ -680,6 +736,7 @@ export const userText = createDictionary({
       'Políticas personalizadas ao nível da coleção (aplicam-se apenas a esta coleção)',
     'hr-hr':
       'Prilagođene politike na razini zbirke (primjenjuje se samo na ovu zbirku)',
+    nb: '',
   },
   role: {
     'en-us': 'Role',
@@ -690,6 +747,7 @@ export const userText = createDictionary({
     'de-ch': 'Rolle',
     'pt-br': 'Papel',
     'hr-hr': 'Uloga',
+    nb: '',
   },
   read: {
     'en-us': 'Read',
@@ -700,6 +758,7 @@ export const userText = createDictionary({
     'de-ch': 'Lesen',
     'pt-br': 'Ler',
     'hr-hr': 'Čitaj',
+    nb: '',
   },
   userPermissionPreview: {
     'en-us': "User's Permission Profile (read-only)",
@@ -710,6 +769,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzerberechtigungsprofil (schreibgeschützt)',
     'pt-br': 'Perfil de permissões do usuário (somente leitura)',
     'hr-hr': 'Profil korisničkih dozvola (samo za čitanje)',
+    nb: '',
   },
   outOfDateWarning: {
     'en-us':
@@ -728,6 +788,7 @@ export const userText = createDictionary({
       'Observação: a pré-visualização pode estar desatualizada. Salve as alterações para atualizar a pré-visualização.',
     'hr-hr':
       'Napomena: pregled je možda zastario. Spremite promjene da biste ažurirali pregled.',
+    nb: '',
   },
   allUsers: {
     'en-us': 'All Users',
@@ -738,6 +799,7 @@ export const userText = createDictionary({
     'de-ch': 'Alle Benutzer',
     'pt-br': 'Todos os usuários',
     'hr-hr': 'Svi korisnici',
+    nb: '',
   },
   thisUser: {
     'en-us': 'This user',
@@ -748,6 +810,7 @@ export const userText = createDictionary({
     'de-ch': 'Dieser Benutzer',
     'pt-br': 'Este usuário',
     'hr-hr': 'Ovaj korisnik',
+    nb: '',
   },
   action: {
     'en-us': 'Action',
@@ -758,6 +821,7 @@ export const userText = createDictionary({
     'de-ch': 'Aktion',
     'pt-br': 'Ação',
     'hr-hr': 'Akcijski',
+    nb: '',
   },
   resource: {
     'en-us': 'Resource',
@@ -768,6 +832,7 @@ export const userText = createDictionary({
     'de-ch': 'Ressource',
     'pt-br': 'Recurso',
     'hr-hr': 'Resurs',
+    nb: '',
   },
   allCollections: {
     'en-us': 'All Collections',
@@ -778,6 +843,7 @@ export const userText = createDictionary({
     'de-ch': 'Alle Kollektionen',
     'pt-br': 'Todas as coleções',
     'hr-hr': 'Sve kolekcije',
+    nb: '',
   },
   thisCollection: {
     'en-us': 'This collection',
@@ -788,6 +854,7 @@ export const userText = createDictionary({
     'de-ch': 'Diese Sammlung',
     'pt-br': 'Esta coleção',
     'hr-hr': 'Ova kolekcija',
+    nb: '',
   },
   allActions: {
     'en-us': 'All Actions',
@@ -798,6 +865,7 @@ export const userText = createDictionary({
     'de-ch': 'Alle Aktionen',
     'pt-br': 'Todas as ações',
     'hr-hr': 'Sve radnje',
+    nb: '',
   },
   collectionAccess: {
     'en-us': 'Enable Collection Access',
@@ -808,6 +876,7 @@ export const userText = createDictionary({
     'de-ch': 'Zugriff auf Sammlungen aktivieren',
     'pt-br': 'Habilitar acesso à coleção',
     'hr-hr': 'Omogući pristup zbirci',
+    nb: '',
   },
   createRole: {
     'en-us': 'Create Role',
@@ -818,6 +887,7 @@ export const userText = createDictionary({
     'de-ch': 'Rolle erstellen',
     'pt-br': 'Criar função',
     'hr-hr': 'Stvori ulogu',
+    nb: '',
   },
   newRole: {
     'en-us': 'New Role',
@@ -828,6 +898,7 @@ export const userText = createDictionary({
     'de-ch': 'Neue Rolle',
     'pt-br': 'Novo cargo',
     'hr-hr': 'Nova uloga',
+    nb: '',
   },
   fromLibrary: {
     'en-us': 'From library:',
@@ -838,6 +909,7 @@ export const userText = createDictionary({
     'de-ch': 'Aus der Bibliothek:',
     'pt-br': 'Da biblioteca:',
     'hr-hr': 'Iz knjižnice:',
+    nb: '',
   },
   fromExistingRole: {
     'en-us': 'From an existing role:',
@@ -848,6 +920,7 @@ export const userText = createDictionary({
     'de-ch': 'Aus einer bestehenden Position:',
     'pt-br': 'De uma função já existente:',
     'hr-hr': 'Iz postojeće uloge:',
+    nb: '',
   },
   createNewRoles: {
     'en-us': 'Create new roles:',
@@ -858,6 +931,7 @@ export const userText = createDictionary({
     'de-ch': 'Neue Rollen erstellen:',
     'pt-br': 'Criar novas funções:',
     'hr-hr': 'Stvorite nove uloge:',
+    nb: '',
   },
   updateExistingRoles: {
     'en-us': 'Update existing roles:',
@@ -868,6 +942,7 @@ export const userText = createDictionary({
     'de-ch': 'Bestehende Rollen aktualisieren:',
     'pt-br': 'Atualizar funções existentes:',
     'hr-hr': 'Ažuriraj postojeće uloge:',
+    nb: '',
   },
   unchangedRoles: {
     'en-us': 'Unchanged roles:',
@@ -878,6 +953,7 @@ export const userText = createDictionary({
     'de-ch': 'Unveränderte Rollen:',
     'pt-br': 'Funções inalteradas:',
     'hr-hr': 'Nepromijenjene uloge:',
+    nb: '',
   },
   institutionAdmin: {
     'en-us': 'Institution Admin',
@@ -888,6 +964,7 @@ export const userText = createDictionary({
     'de-ch': 'Institutionsverwaltung',
     'pt-br': 'Administração da Instituição',
     'hr-hr': 'Administrator ustanove',
+    nb: '',
   },
   createInviteLink: {
     'en-us': 'Create Invite Link',
@@ -898,6 +975,7 @@ export const userText = createDictionary({
     'de-ch': 'Einladungslink erstellen',
     'pt-br': 'Criar link de convite',
     'hr-hr': 'Izradi poveznicu za poziv',
+    nb: '',
   },
   userInviteLink: {
     'en-us': 'User Invite Link',
@@ -908,6 +986,7 @@ export const userText = createDictionary({
     'de-ch': 'Benutzer-Einladungslink',
     'pt-br': 'Link de convite do usuário',
     'hr-hr': 'Veza za poziv korisnika',
+    nb: '',
   },
   userInviteLinkDescription: {
     'en-us':
@@ -926,6 +1005,7 @@ export const userText = createDictionary({
       'Envie o seguinte link para {userName:string} para permitir que eles façam login pela primeira vez.',
     'hr-hr':
       'Pošaljite sljedeću poveznicu korisniku {userName:string} kako biste im omogućili prvu prijavu.',
+    nb: '',
   },
   noProvidersForUserInviteLink: {
     'en-us':
@@ -944,6 +1024,7 @@ export const userText = createDictionary({
       'Nenhum provedor de identidade externo está configurado. Você pode configurar alguns em Especificar 7 configurações do servidor.',
     'hr-hr':
       'Nije konfiguriran nijedan vanjski pružatelj identiteta. Možete konfigurirati neke u postavkama poslužitelja u odjeljku Navedite 7.',
+    nb: '',
   },
   legacyPermissions: {
     'en-us': 'Specify 6 Permissions',
@@ -954,6 +1035,7 @@ export const userText = createDictionary({
     'de-ch': 'Geben Sie 6 Berechtigungen an',
     'pt-br': 'Especifique 6 permissões',
     'hr-hr': 'Navedite 6 dozvola',
+    nb: '',
   },
   setPasswordBeforeSavePrompt: {
     'en-us':
@@ -972,6 +1054,7 @@ export const userText = createDictionary({
       'Considere definir uma senha para este usuário. Usuários sem senha não poderão fazer login.',
     'hr-hr':
       'Razmislite o postavljanju lozinke za ovog korisnika. Korisnici bez lozinke neće se moći prijaviti.',
+    nb: '',
   },
   setCollections: {
     'en-us': 'Set Collections',
@@ -982,6 +1065,7 @@ export const userText = createDictionary({
     'de-ch': 'Set-Kollektionen',
     'pt-br': 'Conjuntos de Coleções',
     'hr-hr': 'Set kolekcije',
+    nb: '',
   },
   agentInUse: {
     'en-us': 'This agent is already associated with a different user.',
@@ -992,6 +1076,7 @@ export const userText = createDictionary({
     'de-ch': 'Dieser Agent ist bereits einem anderen Benutzer zugeordnet.',
     'pt-br': 'Este agente já está associado a um usuário diferente.',
     'hr-hr': 'Ovaj agent je već povezan s drugim korisnikom.',
+    nb: '',
   },
   setAgentsBeforeProceeding: {
     'en-us': 'Please set the following agents before proceeding:',
@@ -1003,6 +1088,7 @@ export const userText = createDictionary({
     'fr-fr': 'Veuillez configurer les agents suivants avant de continuer :',
     'pt-br': 'Por favor, configure os seguintes agentes antes de prosseguir:',
     'hr-hr': 'Prije nastavka postavite sljedeće agente:',
+    nb: '',
   },
   cannotReadAgentsForUserAssignment: {
     'en-us':
@@ -1021,6 +1107,7 @@ export const userText = createDictionary({
       'Não foi possível carregar os agentes atribuídos porque você não tem permissão de leitura para acessar os registros de agentes.',
     'hr-hr':
       'Nije moguće učitati dodijeljene agente jer nemate pristup za čitanje zapisa agenata.',
+    nb: '',
   },
   cannotReadDisciplinesForUserAssignment: {
     'en-us':
@@ -1039,6 +1126,7 @@ export const userText = createDictionary({
       'Não foi possível carregar completamente os agentes atribuídos porque você não tem acesso de leitura aos registros disciplinares.',
     'hr-hr':
       'Nije moguće u potpunosti učitati dodijeljene agente jer nemate pristup za čitanje disciplinskih zapisa.',
+    nb: '',
   },
   externalIdentityProviders: {
     'en-us': 'External identity providers:',
@@ -1049,6 +1137,7 @@ export const userText = createDictionary({
     'uk-ua': 'Зовнішні постачальники ідентифікаційних даних:',
     'pt-br': 'Fornecedores de identidade externos:',
     'hr-hr': 'Vanjski pružatelji usluga identiteta:',
+    nb: '',
   },
   allTables: {
     'en-us': 'All tables',
@@ -1059,6 +1148,7 @@ export const userText = createDictionary({
     'de-ch': 'Alle Tabellen',
     'pt-br': 'Todas as tabelas',
     'hr-hr': 'Sve tablice',
+    nb: '',
   },
   loadingAdmins: {
     'en-us': 'Loading admins...',
@@ -1069,6 +1159,7 @@ export const userText = createDictionary({
     'de-ch': 'Administratoren werden geladen...',
     'pt-br': 'Carregando administradores...',
     'hr-hr': 'Učitavanje administratora...',
+    nb: '',
   },
   specifyAdmin: {
     comment: 'Shown next to user name for admin users',
@@ -1080,6 +1171,7 @@ export const userText = createDictionary({
     'de-ch': '(7 Administratoren angeben)',
     'pt-br': '(Especifique 7 administradores)',
     'hr-hr': '(Navedite 7 administratora)',
+    nb: '',
   },
   legacyAdmin: {
     comment: 'Shown next to user name for admin users',
@@ -1091,6 +1183,7 @@ export const userText = createDictionary({
     'de-ch': '(6 Administratoren angeben)',
     'pt-br': '(Especifique 6 administradores)',
     'hr-hr': '(Navedite 6 administratora)',
+    nb: '',
   },
   deleteRoleWithUsers: {
     'en-us': 'Delete role that has users?',
@@ -1101,6 +1194,7 @@ export const userText = createDictionary({
     'de-ch': 'Rolle mit Benutzern löschen?',
     'pt-br': 'Excluir função que possui usuários?',
     'hr-hr': 'Izbrisati ulogu koja ima korisnike?',
+    nb: '',
   },
   deleteRoleWithUsersDescription: {
     'en-us': 'Users will not be deleted, but they would lose this role.',
@@ -1113,6 +1207,7 @@ export const userText = createDictionary({
       'Die Benutzer werden nicht gelöscht, aber sie verlieren diese Rolle.',
     'pt-br': 'Os usuários não serão excluídos, mas perderão essa função.',
     'hr-hr': 'Korisnici neće biti izbrisani, ali će izgubiti ovu ulogu.',
+    nb: '',
   },
   institutionPolicies: {
     'en-us':
@@ -1131,6 +1226,7 @@ export const userText = createDictionary({
       'Políticas personalizadas a nível institucional (aplicáveis a todas as coleções atribuídas)',
     'hr-hr':
       'Prilagođene politike na razini institucije (primjenjuju se na sve dodijeljene zbirke)',
+    nb: '',
   },
   cantRemoveLastAdmin: {
     'en-us': "Can't remove Institution Admin status",
@@ -1143,6 +1239,7 @@ export const userText = createDictionary({
     'de-ch': 'Institutionsadministratorstatus kann nicht entfernt werden',
     'pt-br': 'Não é possível remover o status de Administrador da Instituição.',
     'hr-hr': 'Ne mogu ukloniti status administratora ustanove',
+    nb: '',
   },
   cantRemoveLastAdminDescription: {
     'en-us': 'There must be at least one Institution Admin in institution',
@@ -1157,6 +1254,7 @@ export const userText = createDictionary({
     'pt-br':
       'Deve haver pelo menos um Administrador Institucional na instituição.',
     'hr-hr': 'U ustanovi mora postojati barem jedan administrator ustanove',
+    nb: '',
   },
   switchToHorizontalLayout: {
     'en-us': 'Switch to horizontal layout',
@@ -1167,6 +1265,7 @@ export const userText = createDictionary({
     'de-ch': 'Zur horizontalen Anordnung wechseln',
     'pt-br': 'Alternar para o layout horizontal',
     'hr-hr': 'Prebaci na horizontalni raspored',
+    nb: '',
   },
   switchToVerticalLayout: {
     'en-us': 'Switch to vertical layout',
@@ -1177,6 +1276,7 @@ export const userText = createDictionary({
     'uk-ua': 'Перейти до вертикального розташування',
     'pt-br': 'Alternar para o layout vertical',
     'hr-hr': 'Prebaci na vertikalni raspored',
+    nb: '',
   },
   advancedTables: {
     'en-us': 'Advanced tables',
@@ -1187,6 +1287,7 @@ export const userText = createDictionary({
     'de-ch': 'Erweiterte Tabellen',
     'pt-br': 'Tabelas avançadas',
     'hr-hr': 'Napredne tablice',
+    nb: '',
   },
   excludedInstitutionalPolicies: {
     'en-us': 'Excluded institutional policies:',
@@ -1197,6 +1298,7 @@ export const userText = createDictionary({
     'de-ch': 'Ausgeschlossene institutionelle Richtlinien:',
     'pt-br': 'Políticas institucionais excluídas:',
     'hr-hr': 'Isključene institucionalne politike:',
+    nb: '',
   },
   excludedInstitutionalPoliciesDescription: {
     'en-us':
@@ -1215,6 +1317,7 @@ export const userText = createDictionary({
       '(Algumas políticas que se aplicam apenas ao nível institucional não estão presentes aqui ao nível da coleção.)',
     'hr-hr':
       '(Neke politike koje se primjenjuju samo na razini institucije nisu ovdje prisutne na razini zbirke.)',
+    nb: '',
   },
   accountSetupOptions: {
     'en-us': 'Account Setup Options',
@@ -1225,6 +1328,7 @@ export const userText = createDictionary({
     'de-ch': 'Kontoeinrichtungsoptionen',
     'pt-br': 'Opções de configuração da conta',
     'hr-hr': 'Opcije postavljanja računa',
+    nb: '',
   },
   currentUser: {
     'en-us': 'Current User',
@@ -1235,6 +1339,7 @@ export const userText = createDictionary({
     'uk-ua': 'Поточний користувач',
     'pt-br': 'Usuário atual',
     'hr-hr': 'Trenutni korisnik',
+    nb: '',
   },
   addRole: {
     'en-us': 'Add Role',
@@ -1245,6 +1350,7 @@ export const userText = createDictionary({
     'uk-ua': 'Додати роль',
     'pt-br': 'Adicionar função',
     'hr-hr': 'Dodaj ulogu',
+    nb: '',
   },
   addUser: {
     'en-us': 'Add User',
@@ -1255,6 +1361,7 @@ export const userText = createDictionary({
     'uk-ua': 'Додати користувача',
     'pt-br': 'Adicionar usuário',
     'hr-hr': 'Dodaj korisnika',
+    nb: '',
   },
   systemConfigurationTool: {
     'en-us': 'System Configuration Tool',
@@ -1265,6 +1372,7 @@ export const userText = createDictionary({
     'pt-br': 'Ferramenta de Configuração do Sistema',
     'ru-ru': 'Инструмент настройки системы',
     'uk-ua': 'Інструмент конфігурації системи',
+    nb: '',
   },
   systemConfig: {
     'en-us': 'System Config',
@@ -1275,5 +1383,6 @@ export const userText = createDictionary({
     'pt-br': 'Configuração do sistema',
     'ru-ru': 'Конфигурация системы',
     'uk-ua': 'Конфігурація системи',
+    nb: '',
   },
 } as const);
