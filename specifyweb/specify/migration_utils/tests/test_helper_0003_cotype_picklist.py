@@ -6,8 +6,8 @@ from specifyweb.specify.migration_utils.migration_helpers import helper_0003_cot
 
 class Helper0003CotypePicklistTest(TestCase):
 
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.apps")
     def test_create_cotype_splocalecontaineritem_new(self, mock_apps):
+        mock_apps = MagicMock()
 
         # -----------------------
         # Mock models returned by apps.get_model
