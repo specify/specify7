@@ -4,32 +4,6 @@ import json
 from pathlib import Path
 from collections import defaultdict
 
-# Mock django imports with complete structure
-mock_django = Mock()
-mock_django.db = Mock()
-mock_django.db.models = Mock()
-mock_django.db.models.Q = Mock()
-mock_django.conf = Mock()
-mock_django.apps = Mock()
-mock_django.forms = Mock()
-mock_django.forms.models = Mock()
-mock_django.forms.models.model_to_dict = Mock()
-mock_django.contrib = Mock()
-mock_django.contrib.auth = Mock()
-mock_django.contrib.auth.base_user = Mock()
-
-import sys
-sys.modules['django'] = mock_django
-sys.modules['django.db'] = mock_django.db
-sys.modules['django.db.models'] = mock_django.db.models
-sys.modules['django.conf'] = mock_django.conf
-sys.modules['django.apps'] = mock_django.apps
-sys.modules['django.forms'] = mock_django.forms
-sys.modules['django.forms.models'] = mock_django.forms.models
-sys.modules['django.contrib'] = mock_django.contrib
-sys.modules['django.contrib.auth'] = mock_django.contrib.auth
-sys.modules['django.contrib.auth.base_user'] = mock_django.contrib.auth.base_user
-
 from ..schema_reader import (
     _has_explicit_hidden_override,
     _schema_override_hidden_values_for_discipline,
