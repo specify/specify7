@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-08 10:01+0000\n"
+"PO-Revision-Date: 2026-06-17 10:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.6\n"
+"X-Generator: Weblate 2026.7.dev0\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:54
@@ -444,7 +444,7 @@ msgstr ""
 #: components/Notifications/NotificationRenderers.tsx:368
 #, fuzzy
 msgid "defaultTreeTaskStarted"
-msgstr "Le processus de création de l'arborescence par défaut a démarré."
+msgstr "Le processus de création d'arbre par défaut a démarré."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:376
@@ -456,7 +456,7 @@ msgstr "La création de l'arborescence par défaut a échoué."
 #: components/Notifications/NotificationRenderers.tsx:384
 #, fuzzy
 msgid "defaultTreeTaskCancelled"
-msgstr "La création de l'arborescence par défaut a été annulée."
+msgstr "La création de l'arbre par défaut a été annulée."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:392
@@ -483,7 +483,7 @@ msgstr ""
 #: components/TreeView/CreateTree.tsx:551
 #, fuzzy
 msgid "missingRanks"
-msgstr "Grades manquants"
+msgstr "Rangs manquants"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:555
