@@ -1,191 +1,267 @@
-import unittest
-from unittest.mock import patch, MagicMock
+import re
+import json
 
-from specifyweb.specify.migration_utils.schema_reader import (
-    _has_explicit_hidden_override,
-    _schema_override_hidden_values_for_discipline,
-    _schema_override_hidden_fields_for_discipline,
-    _fields_without_explicit_hidden_override,
-    datamodel_type_to_schematype,
-    camel_to_spaced_title_case,
-    uncapitilize,
-    bulk_create_splocaleitemstr_idempotent,
-    find_missing_schema_config_fields,
+from typing import NamedTuple, Tuple, TypedDict, NotRequired
+import logging
+from collections import defaultdict
+from functools import lru_cache
+from pathlib import Path
+
+
+from django.db.models import Q
+from django.conf import settings
+from django.apps import apps as global_apps
+
+from specifyweb.specify.models import (
+    datamodel,
 )
 
+logger = logging.getLogger(__name__)
 
-# -----------------------------
-# Pure function tests
-# -----------------------------
-class SchemaPureFunctionTests(unittest.TestCase):
+HIDDEN_FIELDS = [
+    "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
+]
 
-    def test_has_explicit_hidden_override(self):
-        self.assertTrue(_has_explicit_hidden_override({"isHidden": True}))
-        self.assertTrue(_has_explicit_hidden_override({"ISHIDDEN": False}))
-        self.assertFalse(_has_explicit_hidden_override({"other": "value"}))
+def _has_explicit_hidden_override(field_config: dict) -> bool:
+    return any(key.lower() == "ishidden" for key in field_config.keys())
 
-    def test_datamodel_type_to_schematype(self):
-        self.assertEqual(datamodel_type_to_schematype("many-to-one"), "ManyToOne")
-        self.assertEqual(datamodel_type_to_schematype("one-to-many"), "OneToMany")
-        self.assertEqual(datamodel_type_to_schematype("many-to-many"), "ManyToMany")
+@lru_cache(maxsize=None)
+def _schema_override_hidden_values_for_discipline(
+    discipline_type: str,
+) -> dict[str, dict[str, bool]]:
+    """
+    Return a mapping of {table_name -> {field_name -> ishidden_value}} for fields
+    that have an
+    explicit `ishidden` override in config/<discipline>/schema_overrides.json.
+    """
+    normalized_discipline = (discipline_type or "").lower()
+    if not normalized_discipline:
+        return {}
 
-    def test_camel_to_spaced_title_case(self):
-        self.assertEqual(camel_to_spaced_title_case("catalogNumber"), "Catalog Number")
-        self.assertEqual(camel_to_spaced_title_case("modifiedByAgent"), "Modified By Agent")
-        self.assertEqual(camel_to_spaced_title_case("yesNo6"), "Yes No6")
-        self.assertEqual(camel_to_spaced_title_case("cojo"), "Cojo")
+    schema_overrides_path = (
+        Path(settings.SPECIFY_CONFIG_DIR) / normalized_discipline / "schema_overrides.json"
+    )
+    if not schema_overrides_path.exists():
+        return {}
 
-    def test_uncapitilize(self):
-        self.assertEqual(uncapitilize("Test"), "test")
-        self.assertEqual(uncapitilize("tEST"), "tEST")
-        self.assertEqual(uncapitilize("A"), "a")
-        self.assertEqual(uncapitilize("AB"), "aB")
+    try:
+        with schema_overrides_path.open("r", encoding="utf-8") as schema_overrides_file:
+            overrides = json.load(schema_overrides_file)
+    except (OSError, json.JSONDecodeError) as exc:
+        logger.warning(
+            "Unable to read schema overrides for discipline '%s' at %s: %s",
+            normalized_discipline,
+            schema_overrides_path,
+            exc,
+        )
+        return {}
 
+    if not isinstance(overrides, dict):
+        return {}
 
-# -----------------------------
-# Schema override tests
-# -----------------------------
-class SchemaOverrideTests(unittest.TestCase):
+    hidden_override_values_by_table: dict[str, dict[str, bool]] = {}
+    for table_name, table_config in overrides.items():
+        if not isinstance(table_config, dict):
+            continue
 
-    @patch("specifyweb.specify.migration_utils.schema_reader.Path")
-    @patch("specifyweb.specify.migration_utils.schema_reader.settings")
-    @patch("specifyweb.specify.migration_utils.schema_reader.json.load")
-    def test_schema_override_hidden_values_for_discipline(
-        self,
-        mock_json_load,
-        mock_settings,
-        mock_path,
-    ):
-        mock_settings.SPECIFY_CONFIG_DIR = "/config"
+        explicit_hidden_override_values: dict[str, bool] = {}
+        items = table_config.get("items", [])
+        if not isinstance(items, list):
+            continue
 
-        mock_path.return_value.exists.return_value = True
+        for item in items:
+            if not isinstance(item, dict):
+                continue
 
-        mock_json_load.return_value = {
-            "collectionobject": {
-                "items": [
-                    {
-                        "catalogNumber": {"isHidden": True},
-                        "otherField": {"otherSetting": "value"},
-                    }
-                ]
-            }
-        }
+            for field_name, field_config in item.items():
+                if not isinstance(field_config, dict):
+                    continue
+                if not _has_explicit_hidden_override(field_config):
+                    continue
+                for key, value in field_config.items():
+                    if key.lower() == "ishidden":
+                        explicit_hidden_override_values[field_name.lower()] = bool(value)
+                        break
 
-        result = _schema_override_hidden_values_for_discipline("bird")
+        if explicit_hidden_override_values:
+            hidden_override_values_by_table[table_name.lower()] = explicit_hidden_override_values
 
-        self.assertEqual(
-            result,
-            {"collectionobject": {"catalognumber": True}},
+    return hidden_override_values_by_table
+
+@lru_cache(maxsize=None)
+def _schema_override_hidden_fields_for_discipline(discipline_type: str) -> dict[str, set[str]]:
+    hidden_override_values = _schema_override_hidden_values_for_discipline(discipline_type)
+    return {
+        table_name: set(table_values.keys())
+        for table_name, table_values in hidden_override_values.items()
+    }
+
+def _fields_without_explicit_hidden_override(
+    table_name: str,
+    field_names: list[str],
+    discipline_type: str,
+) -> list[str]:
+    table_hidden_overrides = _schema_override_hidden_fields_for_discipline(
+        discipline_type
+    ).get(table_name.lower(), set())
+    return [
+        field_name
+        for field_name in field_names
+        if field_name.lower() not in table_hidden_overrides
+    ]
+
+def datamodel_type_to_schematype(datamodel_type: str) -> str: 
+    """
+    Converts a string like `many-to-one` to `ManyToOne` by: 
+    - Splitting on hyphens
+      - e.g., ['many', 'to', 'one']
+    - Lowering then capitilizing each string in the split
+      - e.g., ['Many', 'To', 'One']
+    - Joining the split strings back together
+      - e.g., 'ManyToOne'
+    """
+    return "".join(map(lambda type_part: type_part.lower().capitalize(), datamodel_type.split('-')))
+
+def camel_to_spaced_title_case(camel_case: str) -> str: 
+    """
+    Given a camel case string, convert it to title case and add spaces
+
+    - `catalogNumber` -> `Catalog Number`
+    - `modifiedByAgent` -> `Modified By Agent`
+    - `yesNo6` -> `Yes No6`
+    - `cojo` -> `Cojo`
+    """
+    return re.sub(r"(?<!^)(?=[A-Z])", " ", camel_case).title()
+
+class FieldSchemaConfig(NamedTuple):
+    name: str
+    column: str
+    java_type: str
+    description: str = ""
+    language: str = "en"
+
+def uncapitilize(string: str) -> str: 
+    return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
+
+def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) -> int:
+    if not rows:
+        return 0
+
+    fk_fields = ("itemname", "itemdesc", "containername", "containerdesc")
+    groups: dict[str, list[dict]] = defaultdict(list)
+    for r in rows:
+        present = [f for f in fk_fields if r.get(f) is not None]
+        if len(present) != 1:
+            raise ValueError(f"Each row must set exactly one FK among {fk_fields}. Got: {present}")
+        groups[present[0]].append(r)
+
+    total_created = 0
+
+    for fk_field, group_rows in groups.items():
+        fk_ids: set[int] = set()
+        languages: set[str] = set()
+
+        for r in group_rows:
+            fk_ids.add(r[fk_field].pk)
+            languages.add(r["language"])
+
+        existing_rows = list(
+            Splocaleitemstr.objects.filter(
+                **{
+                    f"{fk_field}_id__in": fk_ids,
+                    "language__in": languages,
+                }
+            )
+            .filter(
+                Q(country__isnull=True) | Q(country=""),
+                Q(variant__isnull=True) | Q(variant=""),
+            )
+            .order_by("id")
         )
 
-    def test_schema_override_hidden_fields_for_discipline(self):
-        with patch(
-            "specifyweb.specify.migration_utils.schema_reader._schema_override_hidden_values_for_discipline"
-        ) as mock_hidden_values:
+        existing_by_key: dict[Tuple[str, int], list] = defaultdict(list)
+        fk_field_id = f"{fk_field}_id"
+        for existing_row in existing_rows:
+            key = (existing_row.language, getattr(existing_row, fk_field_id))
+            existing_by_key[key].append(existing_row)
 
-            mock_hidden_values.return_value = {
-                "accession": {"accessionnumber": True, "status": False},
-                "collectingtrip": {"collectingtripname": True},
-            }
+        desired_by_key: dict[Tuple[str, int], dict] = {}
+        for r in group_rows:
+            key = (r["language"], r[fk_field].pk)
+            desired_by_key[key] = r
 
-            result = _schema_override_hidden_fields_for_discipline("biology")
+        ids_to_delete: set[int] = set()
+        to_create = []
+        for key, desired_row in desired_by_key.items():
+            existing_for_key = existing_by_key.get(key, [])
 
-            self.assertEqual(
-                result,
-                {
-                    "accession": {"accessionnumber", "status"},
-                    "table2": {"collectingtripname"},
-                },
+            if not existing_for_key:
+                to_create.append(Splocaleitemstr(**desired_row))
+                continue
+
+            for duplicate in existing_for_key[1:]:
+                ids_to_delete.add(duplicate.id)
+
+        if ids_to_delete:
+            Splocaleitemstr.objects.filter(id__in=ids_to_delete).delete()
+
+        if to_create:
+            Splocaleitemstr.objects.bulk_create(to_create)
+            total_created += len(to_create)
+
+    return total_created
+
+class FieldDefaults(TypedDict):
+    name: NotRequired[str]
+    desc: NotRequired[str]
+    ishidden: NotRequired[bool]
+    isrequired: NotRequired[bool]
+    picklistname: NotRequired[str]
+class TableDefaults(TypedDict):
+    name: NotRequired[str]
+    desc: NotRequired[str]
+    items: NotRequired[dict[str, FieldDefaults]]
+
+def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+
+    missing_tables: list[str] = []
+    missing_fields: dict[str, list[str]] = {}
+
+    containers = Splocalecontainer.objects.filter(
+        discipline_id=discipline_id,
+        schematype=0,
+    )
+    container_names = set(
+        containers.values_list('name', flat=True)
+    )
+
+    existing_fields_by_table: dict[str, set[str]] = defaultdict(set)
+    for table_name, field_name in Splocalecontaineritem.objects.filter(
+        container__in=containers
+    ).values_list('container__name', 'name'):
+        if table_name and field_name:
+            existing_fields_by_table[table_name].add(field_name.lower())
+
+    for table in datamodel.tables:
+        table_name = table.name
+        table_name_lower = table_name.lower()
+        if table_name_lower not in container_names:
+            missing_tables.append(table_name)
+            missing_fields[table_name] = sorted(
+                field.name for field in table._all_fields(exclude_id_field=True) if field.name
             )
+            continue
 
-
-# -----------------------------
-# Field filtering logic tests
-# -----------------------------
-class SchemaFieldFilterTests(unittest.TestCase):
-
-    def test_fields_without_explicit_hidden_override(self):
-        with patch(
-            "specifyweb.specify.migration_utils.schema_reader._schema_override_hidden_fields_for_discipline"
-        ) as mock_hidden_fields:
-
-            mock_hidden_fields.return_value = {
-                "collectionobject": {"catalognumber", "availability"}
-            }
-
-            result = _fields_without_explicit_hidden_override(
-                "CollectionObject",
-                ["catalogNumber", "availability", "name"],
-                "bird",
-            )
-
-            self.assertEqual(result, ["availability", "name"])
-
-
-# -----------------------------
-# Bulk create tests
-# -----------------------------
-class BulkCreateTests(unittest.TestCase):
-
-    def test_bulk_create_splocaleitemstr_idempotent(self):
-
-        Splocaleitemstr = MagicMock()
-
-        # mock queryset chain
-        qs = MagicMock()
-        Splocaleitemstr.objects.filter.return_value = qs
-        qs.filter.return_value.order_by.return_value = []
-
-        fake_fk = MagicMock()
-        fake_fk.pk = 1
-
-        rows = [
-            {
-                "language": "en",
-                "itemname": fake_fk,
-            }
-        ]
-
-        result = bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows)
-
-        self.assertEqual(result, 1)
-        Splocaleitemstr.objects.bulk_create.assert_called_once()
-
-
-# -----------------------------
-# Missing schema fields tests
-# -----------------------------
-class MissingSchemaFieldsTests(unittest.TestCase):
-
-    @patch("specifyweb.specify.migration_utils.schema_reader.datamodel")
-    @patch("specifyweb.specify.migration_utils.schema_reader.global_apps")
-    def test_find_missing_schema_config_fields(self, mock_apps, mock_datamodel):
-
-        mock_container = MagicMock()
-        mock_item = MagicMock()
-
-        mock_apps.get_model.side_effect = [mock_container, mock_item]
-
-        mock_container.objects.filter.return_value = []
-        mock_item.objects.filter.return_value.values_list.return_value = []
-
-        mock_table = MagicMock()
-        mock_table.name = "CollectionObject"
-        mock_table._all_fields.return_value = [
-            MagicMock(name="date1"),
-            MagicMock(name="date2"),
-        ]
-
-        mock_datamodel.tables = [mock_table]
-
-        missing_tables, missing_fields = find_missing_schema_config_fields(1)
-
-        self.assertEqual(missing_tables, [])
-        self.assertEqual(
-            missing_fields,
-            {"CollectionObject": ["date1", "date2"]},
+        existing_fields = existing_fields_by_table.get(table_name_lower, set())
+        missing_in_table = sorted( # sort for better reproducablity
+            field.name
+            for field in table._all_fields(exclude_id_field=True)
+            if field.name and field.name.lower() not in existing_fields
         )
 
+        if missing_in_table:
+            missing_fields[table_name] = missing_in_table
 
-if __name__ == "__main__":
-    unittest.main()
+    return missing_tables, missing_fields
