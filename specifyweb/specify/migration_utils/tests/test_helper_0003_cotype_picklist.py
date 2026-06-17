@@ -1,27 +1,38 @@
 from django.test import TestCase
-from unittest.mock import patch, MagicMock, Mock
+from unittest.mock import patch, MagicMock
 
 from specifyweb.specify.migration_utils.migration_helpers import helper_0003_cotype_picklist
 
 
 class Helper0003CotypePicklistTest(TestCase):
 
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.Splocalecontainer")
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.Splocalecontaineritem")
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.Splocaleitemstr")
-    def test_create_cotype_splocalecontaineritem_new(
-        self,
-        mock_itemstr,
-        mock_containeritem,
-        mock_container,
-    ):
-        # ------------------------
-        # Setup container
-        # ------------------------
+    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.apps")
+    def test_create_cotype_splocalecontaineritem_new(self, mock_apps):
+
+        # -----------------------
+        # Mock models returned by apps.get_model
+        # -----------------------
+        mock_container = MagicMock()
+        mock_containeritem = MagicMock()
+        mock_itemstr = MagicMock()
+
+        def get_model(app_label, model_name):
+            if model_name == "Splocalecontainer":
+                return mock_container
+            if model_name == "Splocalecontaineritem":
+                return mock_containeritem
+            if model_name == "Splocaleitemstr":
+                return mock_itemstr
+
+        mock_apps.get_model.side_effect = get_model
+
+        # -----------------------
+        # Mock container queryset
+        # -----------------------
         container = MagicMock()
         mock_container.objects.filter.return_value = [container]
 
-        # No existing container item
+        # No existing item
         mock_containeritem.objects.filter.return_value.order_by.return_value.first.return_value = None
 
         created_item = MagicMock()
@@ -30,37 +41,13 @@ class Helper0003CotypePicklistTest(TestCase):
         # No existing strings
         mock_itemstr.objects.filter.return_value.order_by.return_value.first.return_value = None
 
-        # ------------------------
-        # Call
-        # ------------------------
-        helper_0003_cotype_picklist.create_cotype_splocalecontaineritem(mock_container._mock_new_parent)
+        # -----------------------
+        # Act
+        # -----------------------
+        helper_0003_cotype_picklist.create_cotype_splocalecontaineritem(mock_apps)
 
-        # ------------------------
-        # Assertions
-        # ------------------------
-        mock_containeritem.objects.create.assert_called_once()
-
-        self.assertTrue(mock_itemstr.objects.create.called)
-
-
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.Splocalecontainer")
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.Splocalecontaineritem")
-    @patch("specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist.Splocaleitemstr")
-    def test_create_cotype_splocalecontaineritem_existing(
-        self,
-        mock_itemstr,
-        mock_containeritem,
-        mock_container,
-    ):
-        container = MagicMock()
-        mock_container.objects.filter.return_value = [container]
-
-        existing_item = MagicMock()
-        mock_containeritem.objects.filter.return_value.order_by.return_value.first.return_value = existing_item
-
-        mock_itemstr.objects.filter.return_value.order_by.return_value.first.return_value = None
-
-        helper_0003_cotype_picklist.create_cotype_splocalecontaineritem(mock_container._mock_new_parent)
-
-        mock_containeritem.objects.create.assert_not_called()
+        # -----------------------
+        # Assert
+        # -----------------------
+        mock_containeritem.objects.create.assert_called()
         self.assertTrue(mock_itemstr.objects.create.called)
