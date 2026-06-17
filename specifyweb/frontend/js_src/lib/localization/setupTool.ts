@@ -18,7 +18,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Configuração guiada',
     'ru-ru': 'Пошаговая настройка',
     'uk-ua': 'Кероване налаштування',
-    nb: '',
+    nb: 'Veiledet oppsett',
   },
   setupProgress: {
     'en-us': 'Progress:',
@@ -29,7 +29,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Progresso:',
     'ru-ru': 'Прогресс:',
     'uk-ua': 'Прогрес:',
-    nb: '',
+    nb: 'Framgang:',
   },
   overview: {
     'en-us': 'Overview',
@@ -40,7 +40,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Visão geral',
     'ru-ru': 'Обзор',
     'uk-ua': 'Огляд',
-    nb: '',
+    nb: 'Oversikt',
   },
   settingUp: {
     'en-us': 'Setting up the database...',
@@ -51,7 +51,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Configurando o banco de dados...',
     'ru-ru': 'Настройка базы данных...',
     'uk-ua': 'Налаштування бази даних...',
-    nb: '',
+    nb: 'Setter opp databasen...',
   },
   creating: {
     'en-us': 'Creating the',
@@ -62,7 +62,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Criando o',
     'ru-ru': 'Создание',
     'uk-ua': 'Створення',
-    nb: '',
+    nb: 'Opprette',
   },
   setupError: {
     'en-us': 'An error occurred during the last setup attempt.',
@@ -74,7 +74,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Ocorreu um erro durante a última tentativa de configuração.',
     'ru-ru': 'При последней попытке настройки произошла ошибка.',
     'uk-ua': 'Під час останньої спроби налаштування сталася помилка.',
-    nb: '',
+    nb: 'Det oppsto en feil under siste oppsettforsøk.',
   },
   institution: {
     'en-us': 'Institution',
@@ -85,7 +85,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Instituição',
     'ru-ru': 'Учреждение',
     'uk-ua': 'Установа',
-    nb: '',
+    nb: 'Institusjon',
   },
   institutionDescription: {
     'en-us': 'Enter Institution Information.',
@@ -96,7 +96,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Insira as informações da instituição.',
     'ru-ru': 'Введите информацию об учреждении.',
     'uk-ua': 'Введіть інформацію про установу.',
-    nb: '',
+    nb: 'Skriv inn institusjonsinformasjon.',
   },
   institutionName: {
     'en-us': 'Name',
@@ -107,7 +107,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome',
     'ru-ru': 'Имя',
     'uk-ua': "Ім'я",
-    nb: '',
+    nb: 'Navn',
   },
   institutionNameDescription: {
     'en-us':
@@ -126,7 +126,7 @@ export const setupToolText = createDictionary({
       'Полное официальное название учреждения (например, «Институт биоразнообразия Канзасского университета»).',
     'uk-ua':
       'Повна офіційна назва установи (наприклад, «Інститут біорізноманіття Канзаського університету»).',
-    nb: '',
+    nb: 'Det fulle, offisielle navnet på institusjonen (f.eks. «University of Kansas Biodiversity Institute»).',
   },
   institutionCode: {
     'en-us': 'Code',
@@ -137,7 +137,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Código',
     'ru-ru': 'Код',
     'uk-ua': 'Код',
-    nb: '',
+    nb: 'Kode',
   },
   institutionCodeDescription: {
     'en-us':
@@ -156,7 +156,7 @@ export const setupToolText = createDictionary({
       'Краткий, уникальный код или аббревиатура учреждения (например, "KUBI").',
     'uk-ua':
       'Короткий, унікальний код або абревіатура для установи (наприклад, «KUBI»).',
-    nb: '',
+    nb: 'En kort, unik kode eller et akronym for institusjonen (f.eks. «KUBI»).',
   },
   institutionAddress: {
     'en-us': 'Address',
@@ -167,7 +167,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Endereço',
     'ru-ru': 'Адрес',
     'uk-ua': 'Адреса',
-    nb: '',
+    nb: 'Adresse',
   },
   institutionAddressDescription: {
     'en-us': 'The address of the institution. Optional.',
@@ -178,7 +178,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Endereço da instituição. Opcional.',
     'ru-ru': 'Адрес учреждения. (Необязательно)',
     'uk-ua': "Адреса установи. Необов'язково.",
-    nb: '',
+    nb: 'Adressen til institusjonen. Valgfritt.',
   },
   institutionIsAccessionGlobal: {
     'en-us': 'Define Accession Globally',
@@ -189,7 +189,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Definir Adesão Globalmente',
     'ru-ru': 'Определение доступа на глобальном уровне',
     'uk-ua': 'Визначте приєднання глобально',
-    nb: '',
+    nb: 'Definer tiltredelse globalt',
   },
   institutionIsAccessionGlobalDescription: {
     'en-us':
@@ -208,7 +208,7 @@ export const setupToolText = createDictionary({
       'Глобальная область действия позволяет обмениваться данными о поступлении между всеми подразделениями. Область действия на уровне подразделений гарантирует, что данные о поступлении будут специфичны для каждого подразделения.',
     'uk-ua':
       'Глобальна область дії дозволяє вам ділитися приєднаннями між усіма підрозділами. Дивізіональна область дії гарантує, що приєднання є специфічними для кожного підрозділу.',
-    nb: '',
+    nb: 'Globalt omfang lar deg dele tilganger mellom alle divisjoner. Divisjonsomfang sikrer at tilgangene er spesifikke for hver divisjon.',
   },
   address: {
     'en-us': 'Address',
@@ -219,7 +219,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Endereço',
     'ru-ru': 'Адрес',
     'uk-ua': 'Адреса',
-    nb: '',
+    nb: 'Adresse',
   },
   addressDescription: {
     'en-us': 'The street address of the institution.',
@@ -230,7 +230,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'O endereço da instituição.',
     'ru-ru': 'Адрес учреждения.',
     'uk-ua': 'Вулиця та адреса установи.',
-    nb: '',
+    nb: 'Gateadressen til institusjonen.',
   },
   addressCity: {
     'en-us': 'City',
@@ -241,7 +241,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Cidade',
     'ru-ru': 'Город',
     'uk-ua': 'Місто',
-    nb: '',
+    nb: 'By',
   },
   addressCityDescription: {
     'en-us': 'The city where the institution is located.',
@@ -252,7 +252,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'A cidade onde a instituição está localizada.',
     'ru-ru': 'Город, в котором расположено данное учреждение.',
     'uk-ua': 'Місто, де розташований заклад.',
-    nb: '',
+    nb: 'Byen der institusjonen ligger.',
   },
   addressState: {
     'en-us': 'Province/State',
@@ -263,7 +263,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Província/Estado',
     'ru-ru': 'Провинция/штат',
     'uk-ua': 'Провінція/Штат',
-    nb: '',
+    nb: 'Provins/Stat',
   },
   addressStateDescription: {
     'en-us': 'The state or province.',
@@ -274,7 +274,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'O estado ou província.',
     'ru-ru': 'Штат или провинция.',
     'uk-ua': 'Штат або провінція.',
-    nb: '',
+    nb: 'Staten eller provinsen.',
   },
   addressCountry: {
     'en-us': 'Country',
@@ -285,7 +285,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'País',
     'ru-ru': 'Страна',
     'uk-ua': 'Країна',
-    nb: '',
+    nb: 'Land',
   },
   addressCountryDescription: {
     'en-us': 'The country.',
@@ -296,7 +296,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'O país.',
     'ru-ru': 'Страна.',
     'uk-ua': 'Країна.',
-    nb: '',
+    nb: 'Landet.',
   },
   addressPostalCode: {
     'en-us': 'Zip/Postal Code',
@@ -307,7 +307,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'CEP / Código Postal',
     'ru-ru': 'Почтовый индекс',
     'uk-ua': 'Поштовий індекс',
-    nb: '',
+    nb: 'Postnummer',
   },
   addressPostalCodeDescription: {
     'en-us': 'The postal code.',
@@ -318,7 +318,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'O código postal.',
     'ru-ru': 'Почтовый индекс.',
     'uk-ua': 'Поштовий індекс.',
-    nb: '',
+    nb: 'Postnummeret.',
   },
   addressPhone1: {
     'en-us': 'Phone',
@@ -329,7 +329,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Telefone',
     'ru-ru': 'Телефон',
     'uk-ua': 'Телефон',
-    nb: '',
+    nb: 'Telefon',
   },
   addressPhone1Description: {
     'en-us': 'A contact phone number.',
@@ -340,7 +340,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Um número de telefone para contato.',
     'ru-ru': 'Контактный номер телефона.',
     'uk-ua': 'Контактний номер телефону.',
-    nb: '',
+    nb: 'Et kontakttelefonnummer.',
   },
   treeRanks: {
     'en-us': 'Tree Ranks',
@@ -351,7 +351,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Classificações da árvore',
     'ru-ru': 'Ранги деревьев',
     'uk-ua': 'Ряди дерев',
-    nb: '',
+    nb: 'Trerangeringer',
   },
   rank: {
     'en-us': 'Rank',
@@ -362,7 +362,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Classificação',
     'ru-ru': 'Классифицировать',
     'uk-ua': 'Ранг',
-    nb: '',
+    nb: 'Rang',
   },
   fullNameDirection: {
     'en-us': 'Full Name Direction',
@@ -373,7 +373,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome completo Direção',
     'ru-ru': 'Полное имя Направление',
     'uk-ua': "Повне ім'я Напрямок",
-    nb: '',
+    nb: 'Fullt navn Retning',
   },
   preloadTree: {
     'en-us': 'Populate tree with default records',
@@ -384,7 +384,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Preencher a árvore com registros padrão',
     'ru-ru': 'Заполнить дерево записями по умолчанию',
     'uk-ua': 'Заповнити дерево записами за замовчуванням',
-    nb: '',
+    nb: 'Fyll treet med standardoppføringer',
   },
   preloadTreeDescription: {
     'en-us': 'Download default records for this tree.',
@@ -395,7 +395,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Baixe os registros padrão para esta árvore.',
     'ru-ru': 'Загрузить записи по умолчанию для этого дерева.',
     'uk-ua': 'Завантажити записи за замовчуванням для цього дерева.',
-    nb: '',
+    nb: 'Last ned standardoppføringer for dette treet.',
   },
   treeToPreload: {
     'en-us': 'Tree to download:',
@@ -406,7 +406,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Árvore para baixar:',
     'ru-ru': 'Дерево для скачивания:',
     'uk-ua': 'Дерево для завантаження:',
-    nb: '',
+    nb: 'Tre å laste ned:',
   },
   selectATree: {
     'en-us': 'Select a tree',
@@ -417,7 +417,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Selecione uma árvore',
     'ru-ru': 'Выберите дерево',
     'uk-ua': 'Виберіть дерево',
-    nb: '',
+    nb: 'Velg et tre',
   },
   include: {
     'en-us': 'Include',
@@ -428,7 +428,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Incluir',
     'ru-ru': 'Включать',
     'uk-ua': 'Включити',
-    nb: '',
+    nb: 'Inkludere',
   },
   includeDescription: {
     'en-us': 'Include places the Level in the tree definition.',
@@ -438,10 +438,9 @@ export const setupToolText = createDictionary({
       "Inclure les emplacements du niveau dans la définition de l'arbre.",
     'hr-hr': 'Uključite mjesta Level u definiciji stabla.',
     'pt-br': 'Inclua os locais do Nível na definição da árvore.',
-    'ru-ru':
-      'Включение этого параметра размещает уровень в определении дерева.',
+    'ru-ru': 'Включение размещает уровень в определении дерева.',
     'uk-ua': 'Включити місця рівня у визначення дерева.',
-    nb: '',
+    nb: 'Inkluder plasserer nivået i tredefinisjonen.',
   },
   enforced: {
     'en-us': 'Enforced',
@@ -452,7 +451,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Aplicado',
     'ru-ru': 'Принудительное исполнение',
     'uk-ua': 'Примусово',
-    nb: '',
+    nb: 'Håndhevet',
   },
   enforcedDescription: {
     'en-us':
@@ -466,12 +465,12 @@ export const setupToolText = createDictionary({
     'hr-hr':
       'Opcija "Je li provedeno" osigurava da se razina ne može preskočiti prilikom dodavanja čvorova niže u stablu.',
     'pt-br':
-      'A opção "Is Enforced" garante que o nível não possa ser ignorado ao adicionar nós mais abaixo na árvore.',
+      'A opção "Is Enforced" garante que o nível não possa ser ignorado ao adicionar nós em níveis inferiores da árvore.',
     'ru-ru':
       'Функция Is Enforced гарантирует, что этот уровень нельзя пропустить при добавлении узлов, расположенных ниже по дереву.',
     'uk-ua':
       '«Примусово» гарантує, що рівень не можна пропустити під час додавання вузлів нижче по дереву.',
-    nb: '',
+    nb: 'Is Enforced sikrer at nivået ikke kan hoppes over når man legger til noder lenger nede i treet.',
   },
   inFullName: {
     'en-us': 'In Full Name',
@@ -482,7 +481,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome completo',
     'ru-ru': 'Полное имя',
     'uk-ua': "Повне ім'я",
-    nb: '',
+    nb: 'I fullt navn',
   },
   inFullNameDescription: {
     'en-us':
@@ -501,7 +500,7 @@ export const setupToolText = createDictionary({
       'Функция «Указание полного имени» включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
     'uk-ua':
       '«У повному імені» враховує рівень під час створення виразу повного імені, який можна запитувати та використовувати у звітах.',
-    nb: '',
+    nb: '«Er i fullt navn» inkluderer nivået når du bygger et uttrykk for fullt navn, som kan spørres og brukes i rapporter.',
   },
   fullNameSeparator: {
     'en-us': 'Separator',
@@ -512,7 +511,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Separador',
     'ru-ru': 'Сепаратор',
     'uk-ua': 'Роздільник',
-    nb: '',
+    nb: 'Separator',
   },
   fullNameSeparatorDescription: {
     'en-us':
@@ -531,7 +530,7 @@ export const setupToolText = createDictionary({
       'Разделитель — это символ, который разделяет уровни при отображении полного названия.',
     'uk-ua':
       'Роздільник – це символ, який розділяє рівні під час відображення повної назви.',
-    nb: '',
+    nb: 'Skilletegn refererer til tegnet som skiller nivåene når hele navnet vises.',
   },
   storageTree: {
     'en-us': 'Storage Tree',
@@ -542,7 +541,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Árvore de armazenamento',
     'ru-ru': 'Дерево для хранения',
     'uk-ua': 'Дерево сховища',
-    nb: '',
+    nb: 'Lagringstre',
   },
   geographyTree: {
     'en-us': 'Geography Tree',
@@ -553,7 +552,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Árvore Geográfica',
     'ru-ru': 'Географическое дерево',
     'uk-ua': 'Географічне дерево',
-    nb: '',
+    nb: 'Geografitre',
   },
   taxonTree: {
     'en-us': 'Taxon Tree',
@@ -564,7 +563,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Árvore taxonômica',
     'ru-ru': 'Древо таксонов',
     'uk-ua': 'Дерево таксонів',
-    nb: '',
+    nb: 'Taksontre',
   },
   division: {
     'en-us': 'Division',
@@ -575,7 +574,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Divisão',
     'ru-ru': 'Разделение',
     'uk-ua': 'Дивізіон',
-    nb: '',
+    nb: 'Inndeling',
   },
   divisionName: {
     'en-us': 'Name',
@@ -586,7 +585,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome',
     'ru-ru': 'Имя',
     'uk-ua': "Ім'я",
-    nb: '',
+    nb: 'Navn',
   },
   divisionAbbrev: {
     'en-us': 'Abbreviation',
@@ -597,7 +596,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Abreviação',
     'ru-ru': 'Сокращение',
     'uk-ua': 'Абревіатура',
-    nb: '',
+    nb: 'Forkortelse',
   },
   discipline: {
     'en-us': 'Discipline',
@@ -608,7 +607,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Disciplina',
     'ru-ru': 'Дисциплина',
     'uk-ua': 'Дисципліна',
-    nb: '',
+    nb: 'Disiplin',
   },
   disciplineName: {
     'en-us': 'Name',
@@ -619,7 +618,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome',
     'ru-ru': 'Имя',
     'uk-ua': "Ім'я",
-    nb: '',
+    nb: 'Navn',
   },
   disciplineType: {
     'en-us': 'Type',
@@ -630,7 +629,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Tipo',
     'ru-ru': 'Тип',
     'uk-ua': 'Тип',
-    nb: '',
+    nb: 'Type',
   },
   collectionName: {
     'en-us': 'Collection Name',
@@ -641,7 +640,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome da coleção',
     'ru-ru': 'Название коллекции',
     'uk-ua': 'Назва колекції',
-    nb: '',
+    nb: 'Samlingsnavn',
   },
   collectionCode: {
     'en-us': 'Code',
@@ -652,7 +651,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Código',
     'ru-ru': 'Код',
     'uk-ua': 'Код',
-    nb: '',
+    nb: 'Kode',
   },
   collectionCatalogNumFormatName: {
     'en-us': 'Catalog Number Format',
@@ -663,7 +662,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Formato do número de catálogo',
     'ru-ru': 'Формат каталожного номера',
     'uk-ua': 'Формат каталожного номера',
-    nb: '',
+    nb: 'Katalognummerformat',
   },
   specifyUser: {
     'en-us': 'Specify User',
@@ -674,7 +673,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Especificar usuário',
     'ru-ru': 'Укажите пользователя',
     'uk-ua': 'Вказати користувача',
-    nb: '',
+    nb: 'Spesifiser bruker',
   },
   specifyUserName: {
     'en-us': 'Username',
@@ -685,7 +684,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Nome de usuário',
     'ru-ru': 'Имя пользователя',
     'uk-ua': "Ім'я користувача",
-    nb: '',
+    nb: 'Brukernavn',
   },
   specifyUserNameDescription: {
     'en-us': 'The username for the primary administrator account.',
@@ -696,7 +695,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'O nome de usuário da conta de administrador principal.',
     'ru-ru': 'Имя пользователя для основной учетной записи администратора.',
     'uk-ua': "Ім'я користувача для основного облікового запису адміністратора.",
-    nb: '',
+    nb: 'Brukernavnet for den primære administratorkontoen.',
   },
   specifyUserPassword: {
     'en-us': 'Password',
@@ -707,7 +706,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Senha',
     'ru-ru': 'Пароль',
     'uk-ua': 'Пароль',
-    nb: '',
+    nb: 'Passord',
   },
   specifyUserPasswordDescription: {
     'en-us': 'The password for the account.',
@@ -718,7 +717,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'A senha da conta.',
     'ru-ru': 'Пароль от учетной записи.',
     'uk-ua': 'Пароль для облікового запису.',
-    nb: '',
+    nb: 'Passordet for kontoen.',
   },
   specifyUserConfirmPassword: {
     'en-us': 'Confirm Password',
@@ -729,7 +728,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Confirme sua senha',
     'ru-ru': 'Подтвердите пароль',
     'uk-ua': 'Підтвердьте пароль',
-    nb: '',
+    nb: 'Bekreft passord',
   },
   specifyUserConfirmPasswordDescription: {
     'en-us': 'Must match the password entered above.',
@@ -740,7 +739,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'A senha deve ser a mesma que foi inserida acima.',
     'ru-ru': 'Пароль должен совпадать с паролем, введенным выше.',
     'uk-ua': 'Має збігатися з паролем, введеним вище.',
-    nb: '',
+    nb: 'Må samsvare med passordet som er oppgitt ovenfor.',
   },
   specifyUserFirstName: {
     'en-us': 'First Name',
@@ -751,7 +750,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Primeiro nome',
     'ru-ru': 'Имя',
     'uk-ua': "Ім'я",
-    nb: '',
+    nb: 'Fornavn',
   },
   specifyUserFirstNameDescription: {
     'en-us':
@@ -763,7 +762,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Primeiro nome do agente associado à conta. Opcional.',
     'ru-ru': 'Имя агента, связанного с учетной записью. Необязательно.',
     'uk-ua': "Ім'я агента, пов'язаного з обліковим записом. Необов'язково.",
-    nb: '',
+    nb: 'Fornavnet til agenten som er knyttet til kontoen. Valgfritt.',
   },
   specifyUserLastName: {
     'en-us': 'Last Name',
@@ -774,7 +773,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Sobrenome',
     'ru-ru': 'Фамилия',
     'uk-ua': 'Прізвище',
-    nb: '',
+    nb: 'Etternavn',
   },
   specifyUserLastNameDescription: {
     'en-us': 'The last name of the agent associated with the account.',
@@ -785,7 +784,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Sobrenome do agente associado à conta.',
     'ru-ru': 'Фамилия агента, связанного с данным счетом.',
     'uk-ua': 'Прізвище агента, пов’язаного з обліковим записом.',
-    nb: '',
+    nb: 'Etternavnet til agenten som er knyttet til kontoen.',
   },
   addNewGeographyTree: {
     'en-us': 'Add new Geography Tree',
@@ -796,7 +795,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Adicionar nova árvore geográfica',
     'ru-ru': 'Добавить новое географическое дерево',
     'uk-ua': 'Додати нове географічне дерево',
-    nb: '',
+    nb: 'Legg til nytt geografisk tre',
   },
   addNewTaxonTree: {
     'en-us': 'Add new Taxon Tree',
@@ -807,7 +806,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Adicionar nova árvore taxonômica',
     'ru-ru': 'Добавить новое дерево таксонов',
     'uk-ua': 'Додати нове дерево таксонів',
-    nb: '',
+    nb: 'Legg til nytt taksontre',
   },
   hierarchyStructureTitle: {
     'en-us': 'View the Institutional Hierarchy',
@@ -818,7 +817,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Veja a hierarquia institucional.',
     'ru-ru': 'Просмотрите институциональную иерархию',
     'uk-ua': 'Переглянути інституційну ієрархію',
-    nb: '',
+    nb: 'Se det institusjonelle hierarkiet',
   },
   hierarchyStructureHint: {
     'en-us': 'Click any block to open its edit form.',
@@ -833,7 +832,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Clique em qualquer bloco para abrir o formulário de edição.',
     'ru-ru': 'Нажмите на любой блок, чтобы открыть форму его редактирования.',
     'uk-ua': 'Клацніть будь-який блок, щоб відкрити його форму редагування.',
-    nb: '',
+    nb: 'Klikk på en hvilken som helst blokk for å åpne redigeringsskjemaet.',
   },
   hierarchySwitchToHorizontal: {
     'en-us': 'Switch to horizontal',
@@ -844,7 +843,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Mudar para o modo horizontal',
     'ru-ru': 'Переключиться в горизонтальное положение',
     'uk-ua': 'Переключитися на горизонтальне положення',
-    nb: '',
+    nb: 'Bytt til horisontal',
   },
   hierarchySwitchToVertical: {
     'en-us': 'Switch to vertical',
@@ -855,7 +854,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Mudar para a vertical',
     'ru-ru': 'Переключиться в вертикальное положение',
     'uk-ua': 'Перейти на вертикальний режим',
-    nb: '',
+    nb: 'Bytt til vertikal',
   },
   hierarchyAddNew: {
     'en-us': 'Add',
@@ -866,7 +865,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Adicionar',
     'ru-ru': 'Добавлять',
     'uk-ua': 'Додати',
-    nb: '',
+    nb: 'Legge til',
   },
   hierarchyDiagram: {
     'en-us': 'Institutional Hierarchy',
@@ -877,7 +876,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Hierarquia Institucional',
     'ru-ru': 'Институциональная иерархия',
     'uk-ua': 'Інституційна ієрархія',
-    nb: '',
+    nb: 'Institusjonelt hierarki',
   },
   emptyTaxonTree: {
     'en-us': 'An empty taxon tree will be created',
@@ -888,7 +887,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Uma árvore taxonômica vazia será criada.',
     'ru-ru': 'Будет создано пустое таксономическое дерево.',
     'uk-ua': 'Буде створено порожнє дерево таксонів',
-    nb: '',
+    nb: 'Et tomt taksontre vil bli opprettet',
   },
   collectionCreationStarted: {
     'en-us':
@@ -907,6 +906,6 @@ export const setupToolText = createDictionary({
       'В настоящее время создаётся новая коллекция. Для того чтобы коллекция стала доступна, может потребоваться некоторое время.',
     'uk-ua':
       'Новостворена колекція налаштовується. Може знадобитися деякий час, перш ніж вона стане доступною.',
-    nb: '',
+    nb: 'Den nyopprettede samlingen blir satt opp. Det kan ta litt tid før samlingen blir tilgjengelig.',
   },
 } as const);

@@ -16,7 +16,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Specify Network',
     'pt-br': 'Especificar rede',
     'hr-hr': 'Navedite mrežu',
-    nb: '',
+    nb: 'Spesifiser nettverk',
   },
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
@@ -33,7 +33,7 @@ export const specifyNetworkText = createDictionary({
     'pt-br':
       'É necessário fornecer o nome da espécie ou o GUID para exibir esta página.',
     'hr-hr': 'Za prikaz ove stranice potrebno je navesti naziv vrste ili GUID',
-    nb: '',
+    nb: 'Artsnavn eller GUID må oppgis for å vise denne siden',
   },
   noDataError: {
     'en-us': 'Unable to find any data for this request',
@@ -45,7 +45,7 @@ export const specifyNetworkText = createDictionary({
     'pt-br':
       'Não foi possível encontrar quaisquer dados para esta solicitação.',
     'hr-hr': 'Nije moguće pronaći nikakve podatke za ovaj zahtjev',
-    nb: '',
+    nb: 'Finner ingen data for denne forespørselen',
   },
   noDataErrorDescription: {
     'en-us': 'Please try searching for a different record',
@@ -56,30 +56,36 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Будь ласка, спробуйте знайти інший запис',
     'pt-br': 'Por favor, tente pesquisar um registro diferente.',
     'hr-hr': 'Pokušajte pretražiti drugi zapis',
-    nb: '',
+    nb: 'Prøv å søke etter en annen oppføring',
   },
   brokerUnavailable: {
     'en-us': 'Specify Network unavailable',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Netzwerk nicht verfügbar angeben',
+    'es-es': 'Especificar red no disponible',
+    'fr-fr': 'Veuillez préciser : Réseau indisponible',
+    'hr-hr': 'Navedite mrežu koja nije dostupna',
+    nb: 'Spesifiser nettverk utilgjengelig',
+    'pt-br': 'Especifique a rede indisponível.',
+    'ru-ru': 'Укажите, что сеть недоступна.',
+    'uk-ua': 'Вкажіть, що мережа недоступна',
   },
   brokerUnavailableDescription: {
     'en-us':
       'Specify could not connect to Specify Network. Please try again later.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Die Verbindung zum angegebenen Netzwerk konnte nicht hergestellt werden. Bitte versuchen Sie es später erneut.',
+    'es-es':
+      'No se pudo conectar a la red especificada. Inténtelo de nuevo más tarde.',
+    'fr-fr':
+      'Impossible de se connecter au réseau Specify. Veuillez réessayer plus tard.',
+    'hr-hr':
+      'Navedite nije se moglo povezati s Navedite mrežom. Pokušajte ponovno kasnije.',
+    nb: 'Spesifiser kunne ikke koble til Spesifiser nettverk. Prøv igjen senere.',
+    'pt-br':
+      'Não foi possível conectar-se à rede especificada. Tente novamente mais tarde.',
+    'ru-ru':
+      'Не удалось подключиться к указанной сети. Пожалуйста, попробуйте позже.',
+    'uk-ua': 'Не вдалося підключитися до мережі «Указати». Спробуйте пізніше.',
   },
   dataQuality: {
     'en-us': 'Data Quality',
@@ -90,7 +96,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Якість даних',
     'pt-br': 'Qualidade dos dados',
     'hr-hr': 'Kvaliteta podataka',
-    nb: '',
+    nb: 'Datakvalitet',
   },
   reportedBy: {
     'en-us': 'Reported by {provider:string}',
@@ -100,8 +106,8 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Сообщение от {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
     'pt-br': 'Relatado por {provider:string}',
-    'hr-hr': 'Prijavio/la {provider:string}',
-    nb: '',
+    'hr-hr': 'Prijavio {provider:string}',
+    nb: 'Rapportert av {provider:string}',
   },
   collectionDate: {
     'en-us': 'Collection Date',
@@ -112,7 +118,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Дата збору',
     'pt-br': 'Data de coleta',
     'hr-hr': 'Datum prikupljanja',
-    nb: '',
+    nb: 'Hente dato',
   },
   mapDescription: {
     'en-us':
@@ -131,7 +137,7 @@ export const specifyNetworkText = createDictionary({
       'Este mapa mostra a ocorrência deste táxon a partir dos agregadores iDigBio e GBIF.',
     'hr-hr':
       'Ova karta prikazuje pojave ovog taksona iz agregatora iDigBio i GBIF.',
-    nb: '',
+    nb: 'Dette kartet viser forekomster av dette taksonet fra iDigBio- og GBIF-aggregatorene.',
   },
   iDigBioDescription: {
     'en-us':
@@ -150,7 +156,7 @@ export const specifyNetworkText = createDictionary({
       'As ocorrências registradas no iDigBio são mostradas como pontos verdes redondos, exceto aquelas da coleção atual registradas no iDigBio, que são pontos vermelhos redondos. Ao ampliar os pontos vermelhos, um marcador azul em forma de lágrima aparece; clicar no marcador executa uma consulta de localidade no Specify, que mostra todas as espécies no banco de dados atual do Specify coletadas naquele local.',
     'hr-hr':
       'Pojavljivanja zabilježena u iDigBio prikazana su kao okrugle zelene točke, osim onih iz trenutne zbirke zabilježene u iDigBio koje su okrugle crvene točke. Zumiranjem crvenih točaka prikazuje se plava pribadača u obliku suze, a klikom na pribadaču izvršava se upit o lokaciji u Specify koji prikazuje sve vrste u trenutnoj Specify bazi podataka prikupljene s te lokacije.',
-    nb: '',
+    nb: 'Forekomster registrert i iDigBio vises som runde grønne punkter, bortsett fra de fra den gjeldende samlingen registrert i iDigBio som er runde røde punkter. Hvis du zoomer inn på de røde punktene, vises en blå dråpeformet nål. Ved å klikke på nålen utføres en lokalitetsspørring i Specifice som viser alle artene i den gjeldende Specifice-databasen samlet inn fra den lokasjonen.',
   },
   gbifDescription: {
     'en-us':
@@ -169,7 +175,7 @@ export const specifyNetworkText = createDictionary({
       'Nos dados do GBIF, pontos individuais e agrupamentos de pontos são representados por hexágonos de cores diferentes, variando do amarelo ao laranja e ao vermelho. Hexágonos em vermelho escuro correspondem às distribuições mais densas de espécimes coletados daquela espécie.',
     'hr-hr':
       'Za GBIF podatke, pojedinačne točke i skupine točaka prikazane su kao šesterokuti različitih boja, od žute preko narančaste do crvene. Tamnocrveni šesterokuti odgovaraju najgušćoj rasprostranjenosti prikupljenih primjeraka te vrste.',
-    nb: '',
+    nb: 'For GBIF-data vises individuelle punkter og klynger av punkter som sekskanter i forskjellige farger, fra gul til oransje til rød. Mørkerøde sekskanter tilsvarer den tetteste fordeling av innsamlede eksemplarer av den arten.',
   },
   connectToGbif: {
     'en-us': 'Connect to GBIF',
@@ -180,7 +186,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Підключіться до GBIF',
     'pt-br': 'Conecte-se ao GBIF',
     'hr-hr': 'Povežite se s GBIF-om',
-    nb: '',
+    nb: 'Koble til GBIF',
   },
   searchForInstitution: {
     'en-us': 'Search for your institution:',
@@ -191,7 +197,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Підключіться до GBIF',
     'pt-br': 'Procure sua instituição:',
     'hr-hr': 'Potražite svoju ustanovu:',
-    nb: '',
+    nb: 'Søk etter din institusjon:',
   },
   institutionDistributionMap: {
     'en-us':
@@ -210,7 +216,7 @@ export const specifyNetworkText = createDictionary({
       'Mapa de distribuição de todos os espécimes digitalizados sob a guarda da sua instituição.',
     'hr-hr':
       'Karta distribucije svih digitaliziranih uzoraka koji se čuvaju u vašoj ustanovi',
-    nb: '',
+    nb: 'Distribusjonskart over alle digitaliserte eksemplarer kuratert ved din institusjon',
   },
   collectionDistributionMap: {
     'en-us':
@@ -228,7 +234,7 @@ export const specifyNetworkText = createDictionary({
       'Mapa de distribuição de todos os espécimes digitalizados e catalogados em sua coleção.',
     'hr-hr':
       'Karta rasprostranjenosti svih digitaliziranih primjeraka u vašoj kolekciji',
-    nb: '',
+    nb: 'Distribusjonskart over alle digitaliserte eksemplarer som er kuratert i samlingen din',
   },
   startYear: {
     'en-us': 'Start Year',
@@ -239,7 +245,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Рік початку',
     'pt-br': 'Ano de início',
     'hr-hr': 'Početna godina',
-    nb: '',
+    nb: 'Startår',
   },
   endYear: {
     'en-us': 'End Year',
@@ -250,7 +256,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Кінцевий рік',
     'pt-br': 'Fim do ano',
     'hr-hr': 'Kraj godine',
-    nb: '',
+    nb: 'Sluttår',
   },
   publishingOrganizationKey: {
     'en-us': 'GBIF Publishing Organization Key',
@@ -261,7 +267,7 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Ключ к издательской организации GBIF',
     'uk-ua': 'Ключ видавничої організації GBIF',
     'hr-hr': 'Ključ izdavačke organizacije GBIF',
-    nb: '',
+    nb: 'GBIF Publishing Organization Key',
   },
   publishingOrganizationKeyDescription: {
     'en-us':
@@ -280,7 +286,7 @@ export const specifyNetworkText = createDictionary({
       'GBIF "publishingOrgKey" (UUID) для цієї колекції, що використовується для інтеграції Specify Network.',
     'hr-hr':
       'GBIF "publishingOrgKey" (UUID) za ovu kolekciju, koji se koristi za integraciju Specify Network.',
-    nb: '',
+    nb: 'GBIF «publishingOrgKey» (en UUID) for denne samlingen, brukt for Angi nettverksintegrasjon.',
   },
   collectionKey: {
     'en-us': 'GBIF Data Set Key',
@@ -291,7 +297,7 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Ключ набора данных GBIF',
     'uk-ua': 'Ключ набору даних GBIF',
     'hr-hr': 'Ključ skupa podataka GBIF',
-    nb: '',
+    nb: 'GBIF-datasettnøkkel',
   },
   collectionKeyDescription: {
     'en-us':
@@ -310,6 +316,6 @@ export const specifyNetworkText = createDictionary({
       'GBIF "dataSetKey" (UUID) для цієї колекції, що використовується для інтеграції Specify Network.',
     'hr-hr':
       'GBIF "dataSetKey" (UUID) za ovu kolekciju, koji se koristi za integraciju Specify Network.',
-    nb: '',
+    nb: 'GBIF-en «dataSetKey» (en UUID) for denne samlingen, brukt for Angi nettverksintegrasjon.',
   },
 } as const);

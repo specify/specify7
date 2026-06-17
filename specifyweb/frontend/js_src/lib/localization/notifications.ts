@@ -18,7 +18,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Mitteilungen',
     'pt-br': 'Notificações',
     'hr-hr': 'Obavijesti',
-    nb: '',
+    nb: 'Varsler',
   },
   notificationsCount: {
     comment: 'Used for button label in the top menu',
@@ -30,7 +30,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Mitteilungen: {count:number|formatted}',
     'pt-br': 'Notificações: {count:number|formatted}',
     'hr-hr': 'Obavijesti: {count:number|formatted}',
-    nb: '',
+    nb: 'Varsler: {count:number|formatted}',
   },
   notificationsLoading: {
     comment: `
@@ -44,7 +44,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Mitteilungen: …',
     'pt-br': 'Notificações: …',
     'hr-hr': 'Obavijesti: …',
-    nb: '',
+    nb: 'Varsler: …',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
@@ -55,7 +55,7 @@ export const notificationsText = createDictionary({
     'de-ch': '(Geordnet von neu zu alt)',
     'pt-br': '(Ordenado do mais recente para o mais antigo.)',
     'hr-hr': '(Poređano od najnovijeg do najstarijeg.)',
-    nb: '',
+    nb: '(Sortert fra nyeste til eldste.)',
   },
   exception: {
     comment: 'Used as a label for a button that downloads the error message',
@@ -67,7 +67,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Fehler',
     'pt-br': 'Erro',
     'hr-hr': 'Pogreška',
-    nb: '',
+    nb: 'Feil',
   },
   download: {
     'en-us': 'Download',
@@ -78,7 +78,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Herunterladen',
     'pt-br': 'Download',
     'hr-hr': 'Preuzmi',
-    nb: '',
+    nb: 'Last ned',
   },
   feedItemUpdated: {
     'en-us': 'RSS Export feed has been updated.',
@@ -89,7 +89,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der RSS-Export-Feed wurde aktualisiert.',
     'pt-br': 'O feed de exportação RSS foi atualizado.',
     'hr-hr': 'RSS feed za izvoz je ažuriran.',
-    nb: '',
+    nb: 'RSS-eksportfeeden er oppdatert.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
@@ -100,7 +100,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
     'pt-br': 'A atualização do feed de exportação falhou.',
     'hr-hr': 'Ažuriranje feeda izvoza nije uspjelo.',
-    nb: '',
+    nb: 'Oppdatering av eksport av feed mislyktes.',
   },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
@@ -111,7 +111,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der DwCA-Export wurde abgeschlossen.',
     'pt-br': 'Exportação do DwCA concluída.',
     'hr-hr': 'Izvoz DwCA-e je završen.',
-    nb: '',
+    nb: 'DwCA-eksport fullført.',
   },
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',
@@ -122,7 +122,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der DwCA-Export ist fehlgeschlagen.',
     'pt-br': 'A exportação para DwCA falhou.',
     'hr-hr': 'Izvoz DwCA nije uspio.',
-    nb: '',
+    nb: 'DwCA-eksport mislyktes.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
@@ -133,7 +133,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach CSV wurde abgeschlossen.',
     'pt-br': 'Exportação da consulta para CSV concluída.',
     'hr-hr': 'Izvoz upita u CSV je završen.',
-    nb: '',
+    nb: 'Spørreeksport til CSV fullført.',
   },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
@@ -144,7 +144,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
     'pt-br': 'Exportação da consulta para KML concluída.',
     'hr-hr': 'Izvoz upita u KML je završen.',
-    nb: '',
+    nb: 'Spørreeksport til KML fullført.',
   },
   dataSetOwnershipTransferred: {
     'en-us':
@@ -163,6 +163,6 @@ export const notificationsText = createDictionary({
       '<userName /> transferiu a propriedade do conjunto de dados <dataSetName /> para você.',
     'hr-hr':
       '<userName /> vam je prenio vlasništvo nad skupom podataka <dataSetName />.',
-    nb: '',
+    nb: '<userName /> overførte eierskapet av datasettet <dataSetName /> til deg.',
   },
 } as const);
