@@ -16,6 +16,11 @@ from ..schema_reader import (
 
 
 class SchemaReaderTests(unittest.TestCase):
+    def setUp(self):
+        _schema_override_hidden_values_for_discipline.cache_clear()
+
+    def tearDown(self):
+        _schema_override_hidden_values_for_discipline.cache_clear()
 
     def test_has_explicit_hidden_override(self):
         self.assertTrue(_has_explicit_hidden_override({"isHidden": True}))
