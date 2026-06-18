@@ -69,6 +69,10 @@ class CreateDefaultTectonicRanksTests(unittest.TestCase):
             TectonicUnitTreeDefItem.objects.get_or_create.call_count,
             len(DEFAULT_RANKS) * 2,
         )
+        TectonicUnitTreeDefItem.objects.get_or_create.assert_has_calls(
+            expected_calls,
+            any_order=False,
+        )
 
     @patch(
         "specifyweb.specify.migration_utils.tectonic_ranks._create_tectonic_unit_for_discipline"
