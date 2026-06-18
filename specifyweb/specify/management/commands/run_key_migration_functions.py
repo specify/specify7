@@ -3,7 +3,9 @@ from typing import Any
 from collections.abc import Callable, Iterable
 from django.core.management.base import BaseCommand
 from django.apps import apps
+import time
 from django.db import transaction
+from django.db.utils import OperationalError
 from django.db.models import Exists, OuterRef, Q
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import (
@@ -247,12 +249,24 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         functions = options.get("functions")
         verbose = options.get("verbose", False)
+        max_retries = 3
+        retry_delay = 1  # seconds
+
+        def run_with_retries(func):
+            for attempt in range(max_retries):
+                try:
+                    with transaction.atomic():
+                        func()
+                    break
+                except Exception as e:
+                    if "Lock wait timeout" in str(e) and attempt < max_retries - 1:
+                        logger.warning(f"Lock timeout occurred, retrying ({attempt + 1}/{max_retries})...")
+                        time.sleep(retry_delay)
+                    else:
+                        raise
 
         try:
-            with (transaction.atomic(),
-                # WARNING: With this context manager, all functions will be run
-                # with the Migration connection and use the Migrator user
-                use_migration_connection()):
+            with use_migration_connection():
                 if len(functions) > 0:
                     for function in functions:
                         if function:
@@ -264,12 +278,16 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(f"Applying {function}...")
                             )
-                            self.funcs[function](self.stdout.write if verbose else None)
+                            run_with_retries(
+                                lambda: self.funcs[function](self.stdout.write if verbose else None)
+                            )
                 else:
                     self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
                     for func_name, func in self.funcs.items():
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
-                        func(self.stdout.write if verbose else None)
+                        run_with_retries(
+                            lambda: func(self.stdout.write if verbose else None)
+                        )
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
         except Exception:
             logger.exception("An error occurred while running key migrations")
