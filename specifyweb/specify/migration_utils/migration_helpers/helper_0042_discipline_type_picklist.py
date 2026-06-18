@@ -2,11 +2,10 @@
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
 # ##########################################
-from typing import Iterable
-from itertools import islice
 
 from django.db.models import Exists, OuterRef
 
+from specifyweb.specify.migration_utils.utils import batch_query
 from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
 
 DISCIPLINE_TYPE_PICKLIST_NAME = 'DisciplineType'
@@ -15,27 +14,6 @@ def create_discipline_type_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
-
-    def batch_iterable[T](iterable: Iterable[T], batch_size: int):
-        """
-        A generator that takes any Iterable and yields tuples containing up to
-        batch_size elements until the iterable is exhausted.
-
-        This is useful when you want to perform some operation over all
-        elements in the iterable, but the operation is memory intensive and can
-        be batched.
-
-        Example:
-        ```py
-        example = [1, 2, 3]
-        for batched in batch_iterable(example, 2):
-            print(batched)
-        # prints (1, 2) then (3,)
-        ```
-        """
-        iterator = iter(iterable)
-        while batch := tuple(islice(iterator, batch_size)):
-            yield batch
 
     collections_missing_picklist = Collection.objects.annotate(
         has_existing_picklist=Exists(
@@ -47,11 +25,9 @@ def create_discipline_type_picklist(apps):
         )
     ).filter(
         has_existing_picklist=False
-    ).values_list("pk", flat=True).iterator(chunk_size=1000)
+    ).values_list("pk", flat=True)
 
-    COLLECTION_BATCH_SIZE=200
-
-    for collection_ids in batch_iterable(collections_missing_picklist, COLLECTION_BATCH_SIZE):
+    for collection_ids in batch_query(collections_missing_picklist):
         created_picklists = Picklist.objects.bulk_create(
             [
                 Picklist(
@@ -64,8 +40,7 @@ def create_discipline_type_picklist(apps):
                     sorttype=1
                 )
                 for collection_id in collection_ids
-            ],
-            batch_size=COLLECTION_BATCH_SIZE
+            ]
         )
 
         Picklistitem.objects.bulk_create(

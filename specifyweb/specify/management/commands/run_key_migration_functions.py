@@ -20,7 +20,6 @@ from specifyweb.specify.migration_utils.default_cots import (
     set_discipline_for_taxon_treedefs
 )
 from specifyweb.backend.permissions.initialize import initialize
-from specifyweb.specify.migration_utils import migration_helpers as usc
 from specifyweb.specify.migration_utils.deduplication import deduplicate_schema_config_orm
 from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_geo_table_schema_config_with_defaults
 from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem
