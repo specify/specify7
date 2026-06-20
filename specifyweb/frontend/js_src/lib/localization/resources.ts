@@ -273,7 +273,7 @@ export const resourcesText = createDictionary({
     'uk-ua':
       '«Формат таблиці» керує тим, як дані з певної таблиці відображаються в результатах запитів, експорті та комбінованих полях запитів. Він визначає поля для відображення та їх порядок. Умовне форматування можна налаштувати на основі значення в записі.',
     'pt-br':
-      'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consulta. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
+      'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consultas. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
     'hr-hr':
       '„Format tablice“ kontrolira kako se podaci iz određene tablice prikazuju u rezultatima upita, izvozima i kombiniranim okvirima upita. Određuje polja za prikaz i njihov redoslijed. Uvjetno oblikovanje može se konfigurirati na temelju vrijednosti u zapisu.',
     nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksporter og kombinasjonsbokser for spørringer. Den bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
@@ -412,7 +412,7 @@ export const resourcesText = createDictionary({
     'en-us': 'Other XML Resource',
     'ru-ru': 'Выберите тип ресурса',
     'es-es': 'Otro recurso XML',
-    'fr-fr': 'Autre ressource XML',
+    'fr-fr': 'Autres ressources XML',
     'uk-ua': 'Інший XML-ресурс',
     'de-ch': 'Andere XML-Ressource',
     'pt-br': 'Outro recurso XML',
@@ -981,7 +981,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Условный формат',
     'uk-ua': 'Умовний формат',
     'pt-br': 'Formatação condicional',
-    'hr-hr': 'Uvjetno formatiranje',
+    'hr-hr': 'Uvjetni format',
     nb: 'Betinget formatering',
   },
   customizeFieldFormatters: {
@@ -1141,7 +1141,7 @@ export const resourcesText = createDictionary({
       'Ein im Vorfeld ausgetauschter Eintrag kann nicht gelöscht werden.',
     'es-es': 'Un intercambio en preparación no se puede eliminar',
     'fr-fr': 'Un échange en cours de préparation ne peut pas être supprimé.',
-    'pt-br': 'Uma troca realizada em preparação não pode ser excluída.',
+    'pt-br': 'Um item trocado em preparação não pode ser excluído.',
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
@@ -1223,7 +1223,7 @@ export const resourcesText = createDictionary({
     'es-es': 'La preparación se utiliza en un préstamo.',
     'fr-fr': "Ce document est utilisé dans le cadre d'un prêt.",
     'pt-br': 'O preparo é utilizado em um empréstimo.',
-    'ru-ru': 'Данный препарат используется при оформлении кредита.',
+    'ru-ru': 'Данный препарат используется в кредите.',
     'uk-ua': 'Препарат використовується у позиці.',
     'hr-hr': 'Priprema se koristi u zajmu.',
     nb: 'Preparatet brukes i et lån.',
