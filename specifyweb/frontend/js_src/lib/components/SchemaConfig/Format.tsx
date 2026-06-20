@@ -24,7 +24,7 @@ import { ResourceLink } from '../Molecules/ResourceLink';
 import { hasToolPermission } from '../Permissions/helpers';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { PickList } from './Components';
-import { getItemType } from './helpers';
+import { filterCompatibleFormatters, getItemType } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { fetchSchemaPickLists } from './schemaData';
@@ -53,7 +53,7 @@ export function SchemaConfigFormat({
   const [otherFormatters, formattersForField] = React.useMemo(
     () =>
       split(
-        schemaData.uiFormatters,
+        filterCompatibleFormatters(schemaData.uiFormatters, field.type),
         ({ field: formatterField }) => formatterField === field
       ),
     [field, schemaData.uiFormatters]
@@ -400,3 +400,4 @@ function FieldFormatterEditing({
     </>
   );
 }
+
