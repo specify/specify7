@@ -9,7 +9,7 @@ Django==4.2.30
 mysqlclient==2.1.1
 SQLAlchemy==1.4.54
 sqlalchemy2-stubs
-requests==2.32.4
+requests==2.33.0
 pycryptodome==3.21.0
 PyJWT==2.12.1
 django-auth-ldap==1.2.17
