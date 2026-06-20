@@ -19,6 +19,24 @@ const baseData = {
   georef: 'run',
 };
 
+/**
+ * Sanitize data values for GEOLocate by removing quote characters.
+ *
+ * GEOLocate's web page fails to render the map when locality names or other
+ * parameters contain `"` or `'` characters because its internal page scripts
+ * do not handle embedded quotes safely. Stripping them is the simplest fix
+ * that preserves the useful content of the string.
+ *
+ * See: https://github.com/specify/specify7/issues/7664
+ */
+export const sanitizeGeoLocateData = (data: IR<string>): IR<string> =>
+  Object.fromEntries(
+    Object.entries(data).map(([key, value]) => [
+      key,
+      value.replaceAll(/["']/gu, ''),
+    ])
+  );
+
 export function GenericGeoLocate({
   data,
   onClose: handleClose,
@@ -54,7 +72,7 @@ export function GenericGeoLocate({
     () =>
       formatUrl('https://www.geo-locate.org/web/webgeoreflight.aspx', {
         ...baseData,
-        ...data,
+        ...sanitizeGeoLocateData(data),
       }).replaceAll(/%7c/giu, '|'),
     [data]
   );
