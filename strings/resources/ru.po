@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:05+0000\n"
+"PO-Revision-Date: 2026-06-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "resources/ru/>\n"
@@ -625,7 +625,7 @@ msgstr ""
 #: components/DataModel/businessRuleDefs.ts:877
 #, fuzzy
 msgid "preparationUsedInLoan"
-msgstr "Данный препарат используется при оформлении кредита."
+msgstr "Данный препарат используется в кредите."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:870
