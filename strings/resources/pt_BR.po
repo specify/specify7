@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-20 23:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/resources/pt_BR/>\n"
@@ -175,7 +175,7 @@ msgid "formatterDescription"
 msgstr ""
 "O “Formato da Tabela” controla como os dados de uma tabela específica são "
 "exibidos nos resultados da consulta, nas exportações e nas caixas de "
-"combinação de consulta. Ele determina os campos a serem exibidos e a ordem "
+"combinação de consultas. Ele determina os campos a serem exibidos e a ordem "
 "em que serão exibidos. A formatação condicional pode ser configurada com "
 "base em um valor no registro."
 
@@ -672,7 +672,7 @@ msgstr "Uma preparação substituída não pode ser excluída."
 #: components/DataModel/businessRuleDefs.ts:934
 #, fuzzy
 msgid "deleteExchangeInPrep"
-msgstr "Uma troca realizada em preparação não pode ser excluída."
+msgstr "Um item trocado em preparação não pode ser excluído."
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:906
