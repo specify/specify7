@@ -121,8 +121,7 @@ export const batchEditText = createDictionary({
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
-    'de-ch':
-      'Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich.',
+    'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes',
     'fr-fr':
@@ -239,7 +238,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Haga clic en el botón "Resultados" para ver el número de registros afectados en cada tabla de la base de datos',
     'fr-fr':
-      "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements affectés dans chaque table de la base de données.",
+      "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements affectés dans chaque table de base de données.",
     'pt-br':
       'Clique no botão "Resultados" para ver o número de registros afetados em cada tabela do banco de dados.',
     'ru-ru':
