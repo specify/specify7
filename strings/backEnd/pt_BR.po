@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:03+0000\n"
+"PO-Revision-Date: 2026-06-21 08:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/backEnd/pt_BR/>\n"
@@ -296,7 +296,7 @@ msgstr ""
 #: components/WorkBench/resultsParser.ts:287
 #, fuzzy
 msgid "multipleTreeDefsInRow"
-msgstr "Definições de árvores múltiplas em uma linha"
+msgstr "Definições de múltiplas árvores em uma linha"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:288
