@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-21 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/batchEdit/de_CH/>\n"
@@ -75,7 +75,7 @@ msgstr "Bei der Abfrage wurden folgende Fehler gefunden."
 #: components/BatchEdit/MissingRanks.tsx:48
 #, fuzzy
 msgid "missingRanksInQuery"
-msgstr "Für die Stapelbearbeitung sind zusätzliche Rangfolgen erforderlich."
+msgstr "Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
