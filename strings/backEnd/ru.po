@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-21 08:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/ru/>\n"
@@ -226,7 +226,7 @@ msgstr ""
 msgid "invalidReportMimetype"
 msgstr ""
 "Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "
-"\"jrxml/label\" или \"jrxml/report\"."
+"\"jrxml/label\", ни \"jrxml/report\"."
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:219
