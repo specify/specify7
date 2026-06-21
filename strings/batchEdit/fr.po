@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
+"PO-Revision-Date: 2026-06-21 17:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/fr/>\n"
@@ -130,7 +130,7 @@ msgstr ""
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements "
-"affectés dans chaque table de la base de données."
+"affectés dans chaque table de base de données."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
