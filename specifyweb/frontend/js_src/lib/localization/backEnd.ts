@@ -541,7 +541,7 @@ export const backEndText = createDictionary({
     'fr-fr':
       'Impossible de créer un rapport : {mimeTypeField:string} n\'est pas l\'un des "jrxml/label" ou "jrxml/report"',
     'ru-ru':
-      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label" или "jrxml/report".',
+      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label", ни "jrxml/report".',
     'uk-ua':
       'Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label" або "jrxml/report"',
     'de-ch':
@@ -670,7 +670,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Mehrere Baumdefinitionen in einer Zeile',
     'es-es': 'Múltiples definiciones de árbol en una fila',
     'fr-fr': "Plusieurs définitions d'arbres dans la ligne",
-    'pt-br': 'Definições de árvores múltiplas em uma linha',
+    'pt-br': 'Definições de múltiplas árvores em uma linha',
     'ru-ru': 'Несколько определений деревьев подряд',
     'uk-ua': 'Кілька визначень дерев у рядку',
     'hr-hr': 'Više definicija stabla u retku',
