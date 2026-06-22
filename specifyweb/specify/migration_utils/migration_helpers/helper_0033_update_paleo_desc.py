@@ -8,12 +8,9 @@ MIGRATION_0033_TABLES = [
 ]
 
 def update_paleo_desc(apps):
-    def fix_table_description(apps):
-        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
-        Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
+    Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-        for table_name, table_desc in MIGRATION_0033_TABLES:
-            containers = Splocalecontainer.objects.filter(name=table_name.lower(), schematype=0)
-            Splocaleitemstr.objects.filter(containerdesc__in=containers).update(text=table_desc)
-
-    fix_table_description(apps)
+    for table_name, table_desc in MIGRATION_0033_TABLES:
+        containers = Splocalecontainer.objects.filter(name=table_name.lower(), schematype=0)
+        Splocaleitemstr.objects.filter(containerdesc__in=containers).update(text=table_desc)
