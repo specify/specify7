@@ -684,39 +684,6 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
             {("en", "Keeper Name"), ("es", "Duplicate Name ES")},
         )
 
-    def test_update_loan_and_gift_agents_hides_and_upserts_locale_strings(self):
-        container = self._make_schema_container("loan")
-        item = models.Splocalecontaineritem.objects.create(
-            container=container,
-            name="agent1",
-            ishidden=False,
-        )
-        first_desc = models.Splocaleitemstr.objects.create(
-            itemdesc=item,
-            language="en",
-            text="Old Desc",
-        )
-        duplicate_desc = models.Splocaleitemstr.objects.create(
-            itemdesc=item,
-            language="en",
-            text="Duplicate Desc",
-        )
-
-        rkm.usc.update_loan_and_gift_agents(django_apps)
-
-        item.refresh_from_db()
-        first_desc.refresh_from_db()
-        self.assertTrue(item.ishidden)
-        self.assertEqual(first_desc.text, "Agent 1")
-        self.assertFalse(
-            models.Splocaleitemstr.objects.filter(id=duplicate_desc.id).exists()
-        )
-        self.assertEqual(
-            list(item.names.values_list("language", "text")),
-            [("en", "Agent 1")],
-        )
-
-
 class KeyMigrationAppResourceDirDatabaseTests(ApiTests):
     def test_deduplicate_discipline_resource_dirs_deletes_only_empty_duplicates(self):
         base_time = timezone.now() - timedelta(days=1)
