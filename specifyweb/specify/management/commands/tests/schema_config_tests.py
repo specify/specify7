@@ -29,34 +29,22 @@ class SchemaConfigTests(MigrationCommandTestCase):
             calls.append(("apply_schema_defaults_task.apply", args))
 
         names = [
+            # Ordered per fix_schema_config implementation
             "create_geo_table_schema_config_with_defaults",
             "create_cotype_splocalecontaineritem",
             "create_strat_table_schema_config_with_defaults",
             "create_agetype_picklist",
-            "update_cog_type_fields",
             "create_cogtype_picklist",
-            "update_cogtype_splocalecontaineritem",
-            "update_systemcogtypes_picklist",
-            "update_cogtype_type_splocalecontaineritem",
             "update_relative_age_fields",
             "add_cojo_to_schema_config",
             "update_cog_schema_config",
             "update_age_schema_config",
-            "schemaconfig_fixes",
-            "add_cot_catnum_to_schema",
             "add_tectonicunit_to_pc_in_schema_config",
-            "fix_hidden_geo_prop",
-            "update_schema_config_field_desc",
-            "update_hidden_prop",
             "update_storage_unique_id_fields",
-            "update_co_children_fields",
-            "remove_collectionobject_parentco",
-            "add_quantities_gift",
-            "update_paleo_desc",
-            "update_accession_date_fields",
-            "componets_schema_config_migrations",
+            "remove_componentparent_item",
+            "create_table_schema_config_with_defaults",
             "create_discipline_type_picklist",
-            "update_discipline_type_splocalecontaineritem",
+            "apply_schema_overrides_for_all_disciplines",
             "deduplicate_schema_config_orm",
         ]
         fake_apps = FakeApps()
