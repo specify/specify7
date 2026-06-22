@@ -130,11 +130,21 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
         )
 
         keeper.refresh_from_db()
+
         self.assertEqual(created_count, 1)
-        self.assertEqual(keeper.text, "Updated Name")
+
+        self.assertEqual(
+            models.Splocaleitemstr.objects.filter(
+                itemname=item,
+                language="en",
+            ).count(),
+            1,
+        )
+
         self.assertFalse(
             models.Splocaleitemstr.objects.filter(id=duplicate.id).exists()
         )
+
         self.assertEqual(
             list(
                 models.Splocaleitemstr.objects.filter(
