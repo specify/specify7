@@ -2,6 +2,10 @@
 # ##########################################
 # Used in 0042_discipline_type_picklist.py
 # ##########################################
+from typing import Iterable
+from itertools import islice
+
+from django.db.models import Exists, OuterRef
 
 from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
 
@@ -12,34 +16,70 @@ def create_discipline_type_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
     Picklistitem = apps.get_model('specify', 'Picklistitem')
 
-    # Create a discipline type picklist for each collection
-    for collection in Collection.objects.all():
-        picklist, created = Picklist.objects.get_or_create(
-            name=DISCIPLINE_TYPE_PICKLIST_NAME,
-            type=0,
-            collection=collection,
-            defaults={
-                "issystem": True,
-                "readonly": True,
-                "sizelimit": -1,
-                "sorttype": 1,
-            }
+    def batch_iterable[T](iterable: Iterable[T], batch_size: int):
+        """
+        A generator that takes any Iterable and yields tuples containing up to
+        batch_size elements until the iterable is exhausted.
+
+        This is useful when you want to perform some operation over all
+        elements in the iterable, but the operation is memory intensive and can
+        be batched.
+
+        Example:
+        ```py
+        example = [1, 2, 3]
+        for batched in batch_iterable(example, 2):
+            print(batched)
+        # prints (1, 2) then (3,)
+        ```
+        """
+        iterator = iter(iterable)
+        while batch := tuple(islice(iterator, batch_size)):
+            yield batch
+
+    collections_missing_picklist = Collection.objects.annotate(
+        has_existing_picklist=Exists(
+            Picklist.objects.filter(
+                collection=OuterRef("pk"),
+                name=DISCIPLINE_TYPE_PICKLIST_NAME,
+                type=0
+            )
         )
-        # If the picklist doesn't exist, create a new one
-        if created:
-            ordinal = 1
-            items = []
-            for value, title in DISCIPLINE_NAMES.items():
-                items.append(
-                    Picklistitem(
-                        picklist=picklist,
-                        ordinal=ordinal,
-                        value=value,
-                        title=title,
-                    )
+    ).filter(
+        has_existing_picklist=False
+    ).values_list("pk", flat=True).iterator(chunk_size=1000)
+
+    COLLECTION_BATCH_SIZE=200
+
+    for collection_ids in batch_iterable(collections_missing_picklist, COLLECTION_BATCH_SIZE):
+        created_picklists = Picklist.objects.bulk_create(
+            [
+                Picklist(
+                    collection_id=collection_id,
+                    name=DISCIPLINE_TYPE_PICKLIST_NAME,
+                    type=0,
+                    issystem=True,
+                    readonly=True,
+                    sizelimit=-1,
+                    sorttype=1
                 )
-                ordinal += 1
-            Picklistitem.objects.bulk_create(items)
+                for collection_id in collection_ids
+            ],
+            batch_size=COLLECTION_BATCH_SIZE
+        )
+
+        Picklistitem.objects.bulk_create(
+            [
+                Picklistitem(
+                    picklist=picklist,
+                    value=value,
+                    title=title,
+                    ordinal=ordinal
+                )
+                for ordinal, (value, title) in enumerate(DISCIPLINE_NAMES.items(), start=1)
+                for picklist in created_picklists
+            ]
+        )
 
 def revert_discipline_type_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
@@ -53,13 +93,19 @@ def update_discipline_type_splocalecontaineritem(apps):
         container__name="discipline",
         container__schematype=0,
         name="type",
-    ).update(picklistname=DISCIPLINE_TYPE_PICKLIST_NAME, isrequired=True)
+    ).update(
+        picklistname=DISCIPLINE_TYPE_PICKLIST_NAME,
+        isrequired=True
+    )
 
 def revert_discipline_type_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model("specify", "Splocalecontaineritem")
 
     Splocalecontaineritem.objects.filter(
         container__name="discipline",
+        picklistname=DISCIPLINE_TYPE_PICKLIST_NAME,
         container__schematype=0,
         name="type",
-    ).update(picklistname=None, isrequired=None)
+    ).update(
+        picklistname=None
+    )
