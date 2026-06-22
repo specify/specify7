@@ -290,8 +290,6 @@ class KeyMigrationSectionTests(SimpleTestCase):
             "add_quantities_gift",
             "update_paleo_desc",
             "update_accession_date_fields",
-            "update_loan_and_gift_agent_fields",
-            "update_loan_and_gift_agents",
             "componets_schema_config_migrations",
             "create_discipline_type_picklist",
             "update_discipline_type_splocalecontaineritem",

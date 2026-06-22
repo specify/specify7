@@ -21,7 +21,7 @@ from specifyweb.specify.migration_utils.default_cots import (
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.deduplication import deduplicate_schema_config_orm
+from specifyweb.specify.migration_utils.deduplication import deduplicate_discipline_resource_dirs, deduplicate_schema_config_orm
 from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_geo_table_schema_config_with_defaults
 from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem
 from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import create_agetype_picklist, create_strat_table_schema_config_with_defaults
@@ -121,35 +121,6 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
         deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
-
-def deduplicate_discipline_resource_dirs(apps):
-    """
-    De-deuplicate SpAppResourceDirs scoped to Discipline.
-    We will attempt to preserve the oldest SpAppResourceDir, and will only
-    remove SpAppResourceDirs that are completely empty (do not have any related
-    view sets or appresources)
-    """
-    SpAppResourceDir = apps.get_model('specify', 'SpAppResourceDir')
-    with transaction.atomic():
-        common_filters = {
-            "collection__isnull": True,
-            "usertype__isnull": True,
-            "ispersonal": False,
-        }
-        duplicate_dirs = SpAppResourceDir.objects.filter(
-            sppersistedviewsets__isnull=True,
-            sppersistedappresources__isnull=True,
-            **common_filters
-            ).annotate(
-                earlier_exists=Exists(
-                    SpAppResourceDir.objects.filter(
-                        discipline_id=OuterRef('discipline_id'),
-                        timestampcreated__lt=OuterRef('timestampcreated'),
-                        **common_filters
-                )
-            )
-        ).filter(earlier_exists=True)
-        duplicate_dirs.delete()
 
 def create_missing_app_resource_dirs(stdout, apps):
     from specifyweb.backend.setup_tool.app_resource_defaults import ensure_all_discipline_resource_dirs

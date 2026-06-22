@@ -156,3 +156,32 @@ def deduplicate_schema_config_orm(apps, schema_editor=None):
     with transaction.atomic():
         deduplicate_splocalecontainers(apps)
         deduplicate_containeritems_and_strings(apps)
+
+def deduplicate_discipline_resource_dirs(apps):
+    """
+    De-deuplicate SpAppResourceDirs scoped to Discipline.
+    We will attempt to preserve the oldest SpAppResourceDir, and will only
+    remove SpAppResourceDirs that are completely empty (do not have any related
+    view sets or appresources)
+    """
+    SpAppResourceDir = apps.get_model('specify', 'SpAppResourceDir')
+    with transaction.atomic():
+        common_filters = {
+            "collection__isnull": True,
+            "usertype__isnull": True,
+            "ispersonal": False,
+        }
+        duplicate_dirs = SpAppResourceDir.objects.filter(
+            sppersistedviewsets__isnull=True,
+            sppersistedappresources__isnull=True,
+            **common_filters
+            ).annotate(
+                earlier_exists=Exists(
+                    SpAppResourceDir.objects.filter(
+                        discipline_id=OuterRef('discipline_id'),
+                        timestampcreated__lt=OuterRef('timestampcreated'),
+                        **common_filters
+                )
+            )
+        ).filter(earlier_exists=True)
+        duplicate_dirs.delete()
