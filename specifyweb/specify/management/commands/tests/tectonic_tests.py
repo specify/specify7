@@ -1,9 +1,9 @@
-from django.test import TestCase
+from .test_migration_base import MigrationDatabaseTestCase
 from specifyweb.specify import models
 from specifyweb.specify.management.commands import run_key_migration_functions as rkm
 from django.apps import apps as django_apps
 
-class TectonicDatabaseTests(TestCase):
+class TectonicDatabaseTests(MigrationDatabaseTestCase):
     def test_create_default_tectonic_ranks_creates_chain_and_assigns_discipline(self):
         self.discipline.tectonicunittreedef = None
         self.discipline.save()
