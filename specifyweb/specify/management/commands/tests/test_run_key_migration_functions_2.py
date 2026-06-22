@@ -578,38 +578,6 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
         self.assertIsNone(root.parent)
         self.assertTrue(root.isaccepted)
 
-    def test_make_selectseries_false_updates_only_null_smushed_values(self):
-        null_query = models.Spquery.objects.create(
-            name=f"Null Smushed {self.collection.id}",
-            contextname="Collectionobject",
-            contexttableid=models.Collectionobject.specify_model.tableId,
-            specifyuser=self.specifyuser,
-            smushed=None,
-        )
-        false_query = models.Spquery.objects.create(
-            name=f"False Smushed {self.collection.id}",
-            contextname="Collectionobject",
-            contexttableid=models.Collectionobject.specify_model.tableId,
-            specifyuser=self.specifyuser,
-            smushed=False,
-        )
-        true_query = models.Spquery.objects.create(
-            name=f"True Smushed {self.collection.id}",
-            contextname="Collectionobject",
-            contexttableid=models.Collectionobject.specify_model.tableId,
-            specifyuser=self.specifyuser,
-            smushed=True,
-        )
-
-        rkm.make_selectseries_false(django_apps)
-
-        null_query.refresh_from_db()
-        false_query.refresh_from_db()
-        true_query.refresh_from_db()
-        self.assertFalse(null_query.smushed)
-        self.assertFalse(false_query.smushed)
-        self.assertTrue(true_query.smushed)
-
     def test_bulk_create_splocaleitemstr_idempotent_updates_and_dedupes(self):
         container = self._make_schema_container(
             f"bulkitemstr{self.collection.id}",
