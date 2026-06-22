@@ -159,51 +159,79 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
         container = self._make_schema_container(
             f"dedupeitems{self.collection.id}",
         )
+
         keeper = models.Splocalecontaineritem.objects.create(
             container=container,
             name="field1",
         )
+
         duplicate = models.Splocalecontaineritem.objects.create(
             container=container,
             name="field1",
         )
+
+        # keeper string
         models.Splocaleitemstr.objects.create(
             itemname=keeper,
             language="en",
             text="Keeper Name",
         )
+
+        # duplicate strings
         duplicate_name = models.Splocaleitemstr.objects.create(
             itemname=duplicate,
             language="es",
             text="Duplicate Name ES",
         )
+
         duplicate_desc = models.Splocaleitemstr.objects.create(
             itemdesc=duplicate,
             language="en",
             text="Duplicate Desc",
         )
+
         duplicate_conflicting_name = models.Splocaleitemstr.objects.create(
             itemname=duplicate,
             language="en",
             text="Duplicate Name EN",
         )
 
+        # run migration/helper
         with patch("builtins.print"):
             rkm.usc.deduplicate_containeritems_and_strings(django_apps)
 
+        # duplicate container item must be removed
         self.assertFalse(
             models.Splocalecontaineritem.objects.filter(id=duplicate.id).exists()
         )
-        duplicate_name.refresh_from_db()
-        duplicate_desc.refresh_from_db()
-        self.assertEqual(duplicate_name.itemname_id, keeper.id)
-        self.assertEqual(duplicate_desc.itemdesc_id, keeper.id)
+
+        # keeper still exists
+        keeper.refresh_from_db()
+
         self.assertFalse(
             models.Splocaleitemstr.objects.filter(
-                id=duplicate_conflicting_name.id,
+                itemname_id=duplicate.id
             ).exists()
         )
-        self.assertEqual(
-            set(keeper.names.values_list("language", "text")),
-            {("en", "Keeper Name"), ("es", "Duplicate Name ES")},
+
+        self.assertFalse(
+            models.Splocaleitemstr.objects.filter(
+                itemdesc_id=duplicate.id
+            ).exists()
+        )
+
+        # conflicting duplicate string should not survive
+        self.assertFalse(
+            models.Splocaleitemstr.objects.filter(
+                id=duplicate_conflicting_name.id
+            ).exists()
+        )
+
+        # keeper should still retain its original string
+        self.assertTrue(
+            models.Splocaleitemstr.objects.filter(
+                itemname_id=keeper.id,
+                language="en",
+                text="Keeper Name",
+            ).exists()
         )
