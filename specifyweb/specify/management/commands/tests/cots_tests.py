@@ -1,11 +1,10 @@
-from unittest.mock import Mock, sentinel
 from django.apps import apps as django_apps
-from django.test import SimpleTestCase
 from specifyweb.specify import models
-from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.management.commands import run_key_migration_functions as rkm
-from specifyweb.specify.management.commands.tests.test_migration_base import MigrationCommandTestCase
-
+from specifyweb.specify.management.commands.tests.test_migration_base import (
+    MigrationCommandTestCase,
+    MigrationDatabaseTestCase,
+)
 
 class CotsMigrationTests(MigrationCommandTestCase):
     def test_fix_cots_runs_migrations_in_order(self):
@@ -25,7 +24,7 @@ class CotsMigrationTests(MigrationCommandTestCase):
         )
 
 
-class CotsDatabaseTests(MigrationCommandTestCase):
+class CotsDatabaseTests(MigrationDatabaseTestCase):    
     def test_set_discipline_for_taxon_treedefs_uses_collection_discipline(self):
         taxon_tree_def = models.Taxontreedef.objects.create(
             name=f"Unlinked Taxon Tree {self.collection.id}",
