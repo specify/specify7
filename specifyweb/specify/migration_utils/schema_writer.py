@@ -1,6 +1,5 @@
-from typing import TypedDict, NotRequired
 import logging
-from typing import NamedTuple, TypedDict, NotRequired
+from typing import NamedTuple, TypedDict, Required, NotRequired, Unpack
 
 from django.db.models import Q
 from django.apps import apps as global_apps
@@ -29,6 +28,70 @@ class TableSchemaConfig(NamedTuple):
     schema_type: int = 0
     description: str = "TBD"
     language: str = "en"
+
+class ContainerAttrs(TypedDict):
+    name: Required[str]
+    discipline_id: Required[int]
+    schematype: NotRequired[int]
+    ishidden: NotRequired[bool]
+    issystem: NotRequired[bool]
+    version: NotRequired[int]
+
+def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_label: str | None = None, table_description: str | None = None, **container_attrs: Unpack[ContainerAttrs]):
+    if "name" not in container_attrs.keys():
+        raise ValueError("Trying to create a SpLocaleContainer without a name!")
+
+    if "discipline_id" not in container_attrs.keys():
+        raise ValueError("Trying to create a SpLocaleContianer without a Discipline")
+
+    resolved_container_attrs: ContainerAttrs = {
+        "ishidden": False,
+        "issystem": False,
+        "schematype": 0,
+        "version": 0,
+        # The order of this unpacking matters
+        # If the defaults were specified in container_attrs, make sure to prioritize them over the defaults
+        **container_attrs
+    }
+
+    resolved_container_attrs['name'] = resolved_container_attrs['name'].lower()
+
+    sp_local_container = (
+        Splocalecontainer.objects.filter(
+            name=resolved_container_attrs['name'],
+            discipline_id=resolved_container_attrs['discipline_id'],
+            schematype=resolved_container_attrs['schematype']
+        )
+        .order_by('id')
+        .first()
+    )
+
+    if sp_local_container is not None:
+        # BUG?: Not sure if we want to handle also checking for and (if needed)
+        # creating the container strings here
+        return sp_local_container
+
+    sp_local_container = Splocalecontainer.objects.create(**resolved_container_attrs)
+
+    common_string_attrs = {
+        "language": "en",
+        "version": 0
+    }
+    container_string_rows = [
+        {
+            **common_string_attrs,
+            "containername": sp_local_container,
+            "text": table_label or camel_to_spaced_title_case(uncapitilize(resolved_container_attrs["name"]))
+        },
+        {
+            **common_string_attrs,
+            "containerdesc": sp_local_container,
+            "text": table_description or camel_to_spaced_title_case(uncapitilize(resolved_container_attrs["name"]))
+        }
+    ]
+
+    bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, container_string_rows)
+    return sp_local_container
 
 def update_table_schema_config_with_defaults(
     table_name,
@@ -172,35 +235,16 @@ def update_table_field_schema_config_with_defaults(
         return
 
     table_name = table.name
-    table_config = TableSchemaConfig(
-        name=table_name.lower(),
-        discipline_id=discipline_id,
-        schema_type=0,
-        language="en"
-    )
 
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-    sp_local_container = (
-        Splocalecontainer.objects.filter(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-        )
-        .order_by('id')
-            .first()
-    )
-
-    if sp_local_container is None:
-        sp_local_container = Splocalecontainer.objects.create(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-            ishidden=False,
-            issystem=table.system,
-            version=0,
+    sp_local_container = get_or_create_splocalecontainer(
+        Splocalecontainer,
+        Splocaleitemstr,
+        name=table.name.lower(),
+        discipline_id=discipline_id
         )
 
     try:
@@ -320,25 +364,13 @@ def update_table_field_schema_config_params(
 
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
+    Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
 
-    sp_local_container = (
-        Splocalecontainer.objects.filter(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-        )
-        .order_by('id')
-            .first()
-    )
-
-    if sp_local_container is None:
-        sp_local_container = Splocalecontainer.objects.create(
-            name=table.name.lower(),
-            discipline_id=discipline_id,
-            schematype=table_config.schema_type,
-            ishidden=False,
-            issystem=table.system,
-            version=0,
+    sp_local_container = get_or_create_splocalecontainer(
+        Splocalecontainer,
+        Splocaleitemstr,
+        discipline_id=discipline_id,
+        name=table.name.lower()
         )
 
     try:
