@@ -20,14 +20,13 @@ class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
         # Mock queryset chain
         # -----------------------
         mock_qs = MagicMock()
-
-        # Allow: filter().filter().order_by()
         mock_qs.filter.return_value = mock_qs
         mock_qs.order_by.return_value = []
-
         mock_manager.filter.return_value = mock_qs
 
-        # Mock bulk_create on manager
+        # -----------------------
+        # Mock bulk_create
+        # -----------------------
         mock_manager.bulk_create = MagicMock()
 
         # -----------------------
@@ -61,21 +60,25 @@ class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
         self.assertTrue(mock_manager.bulk_create.called)
 
         # -----------------------
-        # Inspect bulk_create payload
+        # IMPORTANT: validate call structure
         # -----------------------
-        args, _kwargs = mock_manager.bulk_create.call_args
-        created_objects = args[0]
+        self.assertEqual(mock_manager.bulk_create.call_count, 2)
 
-        self.assertEqual(len(created_objects), 2)
+        # First call (itemname)
+        first_args, _ = mock_manager.bulk_create.call_args_list[0]
+        first_batch = first_args[0]
 
-        # -----------------------
-        # Validate mapping correctness
-        # -----------------------
-        self.assertEqual(created_objects[0].text, "Test1")
-        self.assertEqual(created_objects[0].language, "en")
+        self.assertEqual(len(first_batch), 1)
+        self.assertEqual(first_batch[0].text, "Test1")
+        self.assertEqual(first_batch[0].language, "en")
 
-        self.assertEqual(created_objects[1].text, "Test2")
-        self.assertEqual(created_objects[1].language, "es")
+        # Second call (itemdesc)
+        second_args, _ = mock_manager.bulk_create.call_args_list[1]
+        second_batch = second_args[0]
+
+        self.assertEqual(len(second_batch), 1)
+        self.assertEqual(second_batch[0].text, "Test2")
+        self.assertEqual(second_batch[0].language, "es")
 
 
 if __name__ == "__main__":
