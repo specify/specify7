@@ -5,10 +5,10 @@ from django.db import migrations, models
 from specifyweb.specify.migration_utils.migration_helpers.helper_0039_agent_fields_for_loan_and_gift import revert_loan_and_gift_agent_fields, update_loan_and_gift_agent_fields
 from specifyweb.specify.models import protect_with_blockers
 
-def consolidated_0038_forward(apps, schema_editor):
+def consolidated_0039_forward(apps, schema_editor):
     update_loan_and_gift_agent_fields(apps)
 
-def consolidated_0038_backward(apps, schema_editor):
+def consolidated_0039_backward(apps, schema_editor):
     revert_loan_and_gift_agent_fields(apps)
 
 class Migration(migrations.Migration):
@@ -69,8 +69,8 @@ class Migration(migrations.Migration):
             field=models.ForeignKey(db_column='Agent5ID', null=True, on_delete=protect_with_blockers, related_name='+', to='specify.agent'),
         ),
         migrations.RunPython(
-            consolidated_0038_forward,
-            consolidated_0038_backward,
+            consolidated_0039_forward,
+            consolidated_0039_backward,
             atomic=True,
         ),
     ]
