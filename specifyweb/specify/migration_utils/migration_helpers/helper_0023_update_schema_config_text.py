@@ -201,10 +201,12 @@ def reverse_update_hidden_prop(apps, schema_editor=None):
     Discipline = apps.get_model('specify', 'Discipline')
     discipline_types_by_id = dict(Discipline.objects.values_list("id", "type"))
 
+    # REFACTOR: optimize
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
         field_names = [field_name.lower() for field_name in fields]
         containers = Splocalecontainer.objects.filter(
             name=table.lower(),
+            schematype=0
         )
         for container in containers:
             discipline_type = discipline_types_by_id.get(container.discipline_id, "")
