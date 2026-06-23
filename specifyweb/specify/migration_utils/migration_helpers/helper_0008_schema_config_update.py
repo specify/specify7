@@ -18,7 +18,7 @@ def update_relative_age_fields(apps):
                 update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
 
 def revert_relative_age_fields(apps):
-    # Remove absoluteAgeCitation -> absoluteAge and relativeAgeCitation -> relativeAge
+        # Remove absoluteAgeCitation -> absoluteAge and relativeAgeCitation -> relativeAge
         for table, fields in MIGRATION_0008_FIELDS.items(): 
             for field in fields: 
                 revert_table_field_schema_config(table, field, apps)
