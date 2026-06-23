@@ -7,6 +7,26 @@ COT_PICKLIST_NAME = 'CollectionObjectType'
 COT_FIELD_NAME = 'collectionObjectType'
 COT_TEXT = 'Collection Object Type'
 
+# REFACTOR: optimize
+def create_cotype_picklist(apps):
+    Collection = apps.get_model('specify', 'Collection')
+    Picklist = apps.get_model('specify', 'Picklist')
+    # Create a cotype picklist for each collection
+    for collection in Collection.objects.all():
+        Picklist.objects.get_or_create(
+            name=COT_PICKLIST_NAME,
+            type=1,
+            tablename='collectionobjecttype',
+            collection=collection,
+            defaults={
+                "issystem": True,
+                "readonly": True,
+                "sizelimit": -1,
+                "sorttype": 1,
+                "formatter": COT_PICKLIST_NAME,
+            }
+        )
+
 # FEAT: Replace this implementation with
 # update_table_field_schema_config_with_defaults
 def create_cotype_splocalecontaineritem(apps):

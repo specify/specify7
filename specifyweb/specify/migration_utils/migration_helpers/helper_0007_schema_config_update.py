@@ -1,5 +1,7 @@
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
 
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import HISTORICAL_COGTYPES_PICKLIST
+
 # ##########################################
 # Used in 0007_schema_config_update.py
 # ##########################################
@@ -11,7 +13,6 @@ MIGRATION_0007_FIELDS = {
 
 COG_PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'
-SYSTEM_COGTYPE_PICKLIST_NAME = "SystemCOGTypes"
 
 def update_cog_type_fields(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -98,7 +99,7 @@ def update_systemcogtypes_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
     Picklist.objects.filter(name='Default Collection Object Group Types').update(
-        name=SYSTEM_COGTYPE_PICKLIST_NAME,
+        name=HISTORICAL_COGTYPES_PICKLIST,
         type=0,
         issystem=True,
         readonly=True,
@@ -110,7 +111,7 @@ def revert_systemcogtypes_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
     # revert only changes the name and not the other attributes as those were incorrect
-    Picklist.objects.filter(name=SYSTEM_COGTYPE_PICKLIST_NAME).update(
+    Picklist.objects.filter(name=HISTORICAL_COGTYPES_PICKLIST).update(
         name='Default Collection Object Group Types',
     )
 
@@ -123,7 +124,7 @@ def update_cogtype_type_splocalecontaineritem(apps):
         container__name="collectionobjectgrouptype",
         container__schematype=0,
         name="type",
-    ).update(picklistname=SYSTEM_COGTYPE_PICKLIST_NAME, isrequired=True)
+    ).update(picklistname=HISTORICAL_COGTYPES_PICKLIST, isrequired=True)
 
 
 def revert_cogtype_type_splocalecontaineritem(apps):
@@ -134,3 +135,4 @@ def revert_cogtype_type_splocalecontaineritem(apps):
         container__schematype=0,
         name="type",
     ).update(picklistname=None, isrequired=None)
+

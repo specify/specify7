@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import (
     apply_default_uniqueness_rules,
@@ -12,17 +12,13 @@ from specifyweb.backend.businessrules.uniqueness_rules import (
 )
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import (
-    create_cogtype_type_picklist,
-    create_cotype_picklist,
     create_default_collection_types,
-    create_default_discipline_for_tree_defs,
     fix_taxon_treedef_discipline_links,
-    set_discipline_for_taxon_treedefs
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils.deduplication import deduplicate_schema_config_orm
-from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_geo_table_schema_config_with_defaults
-from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_geo_table_schema_config_with_defaults, create_cogtype_type_picklist, create_default_discipline_for_tree_defs, set_discipline_for_taxon_treedefs
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem, create_cotype_picklist
 from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import create_agetype_picklist, create_strat_table_schema_config_with_defaults
 from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import create_cogtype_picklist
 from specifyweb.specify.migration_utils.migration_helpers.helper_0008_schema_config_update import update_relative_age_fields

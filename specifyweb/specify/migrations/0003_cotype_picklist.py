@@ -1,9 +1,8 @@
 from django.db import migrations
-from specifyweb.specify.migration_utils.default_cots import create_cotype_picklist, COTYPE_PICKLIST_NAME
-from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import COT_FIELD_NAME, COT_TEXT, create_cotype_splocalecontaineritem
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import COT_PICKLIST_NAME, COT_FIELD_NAME, COT_TEXT, create_cotype_splocalecontaineritem, create_cotype_picklist
 def revert_cotype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
-    Picklist.objects.filter(name=COTYPE_PICKLIST_NAME).delete()
+    Picklist.objects.filter(name=COT_PICKLIST_NAME).delete()
 
 def revert_cotype_splocalecontaineritem(apps):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
