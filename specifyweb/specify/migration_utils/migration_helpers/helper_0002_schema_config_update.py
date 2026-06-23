@@ -19,7 +19,7 @@ MIGRATION_0002_TABLES = [
     ('Message', 'Stores user notifications.'),
     ('SpMerging', 'Tracks record and task IDs of records being merged.'),
     ('UserPolicy', 'Records permissions for a user within a collection.'),
-    ('UserRole', 'Records roles associated with ecify users.'),
+    ('UserRole', 'Records roles associated with Specify users.'),
     ('Role', 'Stores names, descriptions, and collection information for user-created roles.'),
     ('RolePolicy', 'Stores resource and action permissions for user-created roles within a collection.'),
     ('LibraryRole', 'Stores names and descriptions of default roles that can be added to any collection.'),
