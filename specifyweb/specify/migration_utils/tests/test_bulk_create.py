@@ -12,8 +12,15 @@ class BulkCreateSplocaleitemstrIdempotentTest(unittest.TestCase):
         # -----------------------
         # Mock model + manager
         # -----------------------
-        mock_model = MagicMock()
-        mock_manager = MagicMock()
+        class FakeSplocaleitemstr:
+            objects = MagicMock()
+
+            def __init__(self, **kwargs):
+                for k, v in kwargs.items():
+                    setattr(self, k, v)
+
+        mock_model = FakeSplocaleitemstr
+        mock_manager = mock_model.objects
         mock_model.objects = mock_manager
 
         # -----------------------
