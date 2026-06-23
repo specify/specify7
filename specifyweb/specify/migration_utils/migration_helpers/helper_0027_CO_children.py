@@ -60,7 +60,7 @@ def revert_co_children_fields(apps):
             Splocalecontaineritem.objects.filter(
                 container__name=table.lower(),
                 container__schematype=0,
-                name__in=list(map(lambda field: field.lower(), fields))
+                name__in=fields
             ).update(
                 ishidden=False
             )
