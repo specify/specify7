@@ -64,23 +64,16 @@ def revert_co_children_fields(apps):
                 revert_table_field_schema_config(table, field, apps)
 
     def revert_update_schema_field(apps):
-        Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
         Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
 
-        for table, fields in MIGRATION_0027_UPDATE_FIELDS.items():
-            containers = Splocalecontainer.objects.filter(
-                name=table.lower(),
+        for table, fields in MIGRATION_0027_FIELDS.items():
+            Splocalecontaineritem.objects.filter(
+                container__name=table.lower(),
+                container__schematype=0,
+                name__in=list(map(lambda field: field.lower(), fields))
+            ).update(
+                ishidden=False
             )
-            for container in containers:
-                for field_name in fields:
-                    items = Splocalecontaineritem.objects.filter(
-                        container=container,
-                        name=field_name
-                    )
-
-                    for item in items:
-                        item.ishidden = False
-                        item.save()
 
     revert_update_fields(apps)
     revert_update_schema_field(apps)
