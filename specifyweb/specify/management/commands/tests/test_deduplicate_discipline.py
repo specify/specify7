@@ -57,14 +57,15 @@ class KeyMigrationAppResourceDirDatabaseTests(ApiTests):
             ).exists()
         )
 
-    def test_deduplicate_discipline_resource_dirs_tie_breaks_on_id(self):
+    def test_deduplicate_discipline_resource_dirs_equal_timestamps_are_preserved(self):
         timestamp = timezone.now()
-        keep_lower_id = models.Spappresourcedir.objects.create(
+
+        first = models.Spappresourcedir.objects.create(
             discipline=self.discipline,
             ispersonal=False,
             timestampcreated=timestamp,
         )
-        delete_higher_id = models.Spappresourcedir.objects.create(
+        second = models.Spappresourcedir.objects.create(
             discipline=self.discipline,
             ispersonal=False,
             timestampcreated=timestamp,
@@ -73,10 +74,10 @@ class KeyMigrationAppResourceDirDatabaseTests(ApiTests):
         rkm.deduplicate_discipline_resource_dirs(django_apps)
 
         self.assertTrue(
-            models.Spappresourcedir.objects.filter(id=keep_lower_id.id).exists()
+            models.Spappresourcedir.objects.filter(id=first.id).exists()
         )
-        self.assertFalse(
-            models.Spappresourcedir.objects.filter(id=delete_higher_id.id).exists()
+        self.assertTrue(
+            models.Spappresourcedir.objects.filter(id=second.id).exists()
         )
 
     def test_deduplicate_discipline_resource_dirs_preserves_scoped_dirs(self):
