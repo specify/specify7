@@ -18,7 +18,7 @@ def create_discipline_type_picklist(apps):
     collections_missing_picklist = Collection.objects.annotate(
         has_existing_picklist=Exists(
             Picklist.objects.filter(
-                collection=OuterRef("pk"),
+                collection_id=OuterRef("pk"),
                 name=DISCIPLINE_TYPE_PICKLIST_NAME,
                 type=0
             )
