@@ -51,6 +51,16 @@ def fix_table_captions(apps):
                 ).update(text=camel_to_spaced_title_case(uncapitilize(table.name)))
 
             # Update the types for the fields in the table
+            # REFACTOR: Find some way to optimize this.
+            # We can easily optimize (perform in bulk) everything except
+            # determining the type and whether or not the field is a
+            # relationship or not and whether the field is required.
+            # For example, we could do something like the following:
+            # Splocalecontaineritem.objects.filter(...)
+            # .update(type=CASE(WHEN(..., then=...)), isrequired=CASE(...))
+            # See https://docs.djangoproject.com/en/4.2/ref/models/conditional-expressions/
+            # e.g., We need to determine whether we can convert as much of the
+            # logic as possible to utilize database constructs like F objects
             items = Splocalecontaineritem.objects.filter(
                 container__in=containers)
             for item in items:
@@ -80,6 +90,16 @@ def fix_item_types(apps):
             items = Splocalecontaineritem.objects.filter(
                 container__name=table_name.lower(), container__schematype=0, name__in=fields)
 
+            # REFACTOR: Find some way to optimize this.
+            # We can easily optimize (perform in bulk) everything except
+            # determining the type and whether or not the field is a
+            # relationship or not and whether the field is required.
+            # For example, we could do something like the following:
+            # Splocalecontaineritem.objects.filter(...)
+            # .update(type=CASE(WHEN(..., then=...)), isrequired=CASE(...))
+            # See https://docs.djangoproject.com/en/4.2/ref/models/conditional-expressions/
+            # e.g., We need to determine whether we can convert as much of the
+            # logic as possible to utilize database constructs like F objects
             for item in items:
                 datamodel_field = table.get_field(item.name)
                 if not datamodel_field:
