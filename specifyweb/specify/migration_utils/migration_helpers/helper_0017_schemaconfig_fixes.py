@@ -6,7 +6,7 @@ import logging
 from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import MIGRATION_0002_TABLES
 from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import MIGRATION_0004_FIELDS, MIGRATION_0004_TABLES
 from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import MIGRATION_0007_FIELDS
-from specifyweb.specify.migration_utils.migration_helpers.helper_0008_schema_config_update import MIGRATION_0008_FIELDS
+from specifyweb.specify.migration_utils.migration_helpers.helper_0008_ageCitations_fix import MIGRATION_0008_FIELDS
 from specifyweb.specify.migration_utils.migration_helpers.helper_0012_add_cojo_to_schema_config import MIGRATION_0012_FIELDS
 from specifyweb.specify.migration_utils.migration_helpers.helper_0013_collectionobjectgroup_parentcog import MIGRATION_0013_FIELDS
 # ##########################################
