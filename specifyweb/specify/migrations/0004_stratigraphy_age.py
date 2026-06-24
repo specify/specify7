@@ -6,19 +6,21 @@ import django.utils.timezone
 from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import  AGETYPE_PICKLIST_NAME, create_agetype_picklist, create_strat_table_schema_config_with_defaults, revert_strat_table_schema_config_with_defaults
 
 from specifyweb.specify.models import protect_with_blockers
-from specifyweb.specify.migration_utils import migration_helpers as usc
 
 def revert_agetype_picklist(apps):
-    Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
     PicklistItem = apps.get_model('specify', 'Picklistitem')
 
-    for collection in Collection.objects.all():
-        age_type_pick_lists = Picklist.objects.filter(name=AGETYPE_PICKLIST_NAME, collection=collection)
+    picklists_to_delete = Picklist.objects.filter(
+        name=AGETYPE_PICKLIST_NAME
+    )
 
-        for age_type_pick_list in age_type_pick_lists:
-            PicklistItem.objects.filter(picklist=age_type_pick_list).delete()
-            age_type_pick_list.delete()
+    items_to_delete = PicklistItem.objects.filter(
+        picklist__name=AGETYPE_PICKLIST_NAME
+    )
+
+    items_to_delete.delete()
+    picklists_to_delete.delete()
 
 class Migration(migrations.Migration):
 

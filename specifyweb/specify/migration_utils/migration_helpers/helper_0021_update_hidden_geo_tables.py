@@ -20,14 +20,14 @@ def fix_hidden_geo_prop(apps, schema_editor=None):
     for discipline in filtered_disciplines:
         for table, fields in MIGRATION_0021_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
-                name=table.lower(),
+                name__iexact=table,
                 discipline_id=discipline.id,
             )
             for container in containers:
                 # BUG: What if the user wants the field unhidden?
                 Splocalecontaineritem.objects.filter(
                     container=container,
-                    name__in=tuple(map(lambda field_name: field_name.lower(), fields))
+                    name__in=fields
                 ).update(ishidden=True)
 
 def reverse_fix_hidden_geo_prop(apps, schema_editor=None):
@@ -49,5 +49,5 @@ def reverse_fix_hidden_geo_prop(apps, schema_editor=None):
                 # BUG: What if the user wants the field hidden? 
                 Splocalecontaineritem.objects.filter(
                     container=container,
-                    name__in=tuple(map(lambda field_name: field_name.lower(), fields))
+                    name__in=fields
                 ).update(ishidden=False)

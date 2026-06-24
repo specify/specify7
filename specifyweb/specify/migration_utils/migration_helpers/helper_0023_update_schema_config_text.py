@@ -69,7 +69,7 @@ MIGRATION_0023_FIELDS = {
 }
 
 MIGRATION_0023_FIELDS_BIS = {
-    'CollectionObjectGroup': ['guid', ' text3', 'decimal2', 'igsn', 'text2', 'collection', 'description', 'text1', 'cojo', 'decimal1', 'yesno3', 'integer3', 'yesno2', 'collectionObjectGroupId', 'integer2', 'yesno1', 'integer1', 'decimal3', ],
+    'CollectionObjectGroup': ['guid', 'text3', 'decimal2', 'igsn', 'text2', 'collection', 'description', 'text1', 'cojo', 'decimal1', 'yesno3', 'integer3', 'yesno2', 'collectionObjectGroupId', 'integer2', 'yesno1', 'integer1', 'decimal3', ],
     'CollectionObjectGroupJoin' : ['yesno2', 'text1', 'yesno1', 'integer3', 'integer2', 'integer1', 'text3', 'yesno3', 'precedence', 'text2'],
     'CollectionObjectGroupType' : ['collection'],
     'CollectionObjectType': ['text3', 'collectionObjectTypeId', 'text2', 'text1', 'collection'],
@@ -201,10 +201,12 @@ def reverse_update_hidden_prop(apps, schema_editor=None):
     Discipline = apps.get_model('specify', 'Discipline')
     discipline_types_by_id = dict(Discipline.objects.values_list("id", "type"))
 
+    # REFACTOR: optimize
     for table, fields in MIGRATION_0023_FIELDS_BIS.items():
         field_names = [field_name.lower() for field_name in fields]
         containers = Splocalecontainer.objects.filter(
             name=table.lower(),
+            schematype=0
         )
         for container in containers:
             discipline_type = discipline_types_by_id.get(container.discipline_id, "")

@@ -1,3 +1,5 @@
+from django.db.models import Q
+
 from specifyweb.specify.migration_utils.schema_reader import camel_to_spaced_title_case
 from specifyweb.specify.models import datamodel
 

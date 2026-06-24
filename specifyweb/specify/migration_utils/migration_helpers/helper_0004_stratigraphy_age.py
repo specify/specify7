@@ -1,3 +1,4 @@
+from specifyweb.specify.migration_utils.utils import batch_query
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, revert_table_schema_config, update_table_field_schema_config_with_defaults, update_table_schema_config_with_defaults
 
 # ##########################################
@@ -38,25 +39,39 @@ def create_agetype_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
     PicklistItem = apps.get_model('specify', 'Picklistitem')
 
-    for collection in Collection.objects.all():
-        age_type_picklist, created = Picklist.objects.get_or_create(
-            name=AGETYPE_PICKLIST_NAME,
-            type=0,
-            collection_id=collection.id,
-            defaults={
-                "issystem": False,
-                "readonly": False,
-                "sizelimit": -1,
-                "sorttype": 1,
-            }
+    collections_missing_picklist = Collection.objects.exclude(
+        picklists__name=AGETYPE_PICKLIST_NAME,
+        picklists__type=0
+    ).values_list("pk", flat=True)
+
+    for collection_ids in batch_query(collections_missing_picklist):
+        created_picklists = Picklist.objects.bulk_create(
+            [
+                Picklist(
+                    name=AGETYPE_PICKLIST_NAME,
+                    type=0,
+                    collection_id=collection_id,
+                    issystem=False,
+                    readonly=False,
+                    sizelimit=-1,
+                    sorttype=1
+                )
+                for collection_id in collection_ids
+            ]
         )
-        if created: 
-            for age_type in DEFAULT_AGE_TYPES:
-                PicklistItem.objects.get_or_create(
+
+        PicklistItem.objects.bulk_create(
+            [
+                PicklistItem(
                     title=age_type,
                     value=age_type,
-                    picklist=age_type_picklist
+                    picklist=picklist
                 )
+                for age_type in DEFAULT_AGE_TYPES
+                for picklist in created_picklists
+            ],
+            batch_size=1000
+        )
 
 def create_strat_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')

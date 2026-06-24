@@ -1,4 +1,8 @@
+from django.db.models import Q, Exists, OuterRef
+
 from specifyweb.specify.migration_utils.schema_writer import revert_table_field_schema_config, update_table_field_schema_config_with_defaults
+from specifyweb.specify.migration_utils.utils import batch_query
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import HISTORICAL_COGTYPES_PICKLIST
 
 # ##########################################
 # Used in 0007_schema_config_update.py
@@ -11,7 +15,6 @@ MIGRATION_0007_FIELDS = {
 
 COG_PICKLIST_NAME = 'COGTypes'
 COGTYPE_FIELD_NAME = 'cogType'
-SYSTEM_COGTYPE_PICKLIST_NAME = "SystemCOGTypes"
 
 def update_cog_type_fields(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -34,10 +37,12 @@ def update_cog_type_fields(apps):
         name="collectionObjectType",
         picklistname=None,
         container__name="collectionobject",
+        container__schematype=0
     )
-    for container_item in container_items:
-        Splocaleitemstr.objects.filter(itemname=container_item).delete()
-        Splocaleitemstr.objects.filter(itemdesc=container_item).delete()
+    Splocaleitemstr.objects.filter(
+        Q(itemname__in=container_items) | Q(itemdesc__in=container_items),
+        language="en"
+    ).delete()
     container_items.delete()
 
 # NOTE: The reverse function will not re-add the duplicate CO -> coType or COG -> cojo as its unnecessary
@@ -47,24 +52,38 @@ def revert_cog_type_fields(apps):
             for field in fields: 
                 revert_table_field_schema_config(table, field, apps)
 
+
 def create_cogtype_picklist(apps):
     Collection = apps.get_model('specify', 'Collection')
     Picklist = apps.get_model('specify', 'Picklist')
 
+    collections_without_picklists = Collection.objects.annotate(
+        has_existing_picklist=Exists(
+            Picklist.objects.filter(
+                collection_id=OuterRef("pk"),
+                name=COG_PICKLIST_NAME,
+                type=0
+            )
+        )
+    ).filter(has_existing_picklist=False).values_list("pk", flat=True)
+
     # Create a cogtype picklist for each collection
-    for collection in Collection.objects.all():
-        Picklist.objects.update_or_create(
-            collection=collection,
-            name=COG_PICKLIST_NAME,
-            defaults={
-                "type": 1,
-                "tablename": "collectionobjectgrouptype",
-                "issystem": True,
-                "readonly": True,
-                "sizelimit": -1,
-                "sorttype": 1,
-                "formatter": "CollectionObjectGroupType",
-            },
+    for collection_ids in batch_query(collections_without_picklists):
+        Picklist.objects.bulk_create(
+            [
+                Picklist(
+                    name=COG_PICKLIST_NAME,
+                    collection_id=collection_id,
+                    type=1,
+                    tablename="collectionobjectgrouptype",
+                    formatter="CollectionObjectGroupType",
+                    issystem=True,
+                    readonly=True,
+                    sizelimit=-1,
+                    sorttype=1
+                )
+                for collection_id in collection_ids
+            ]
         )
 
 def revert_cogtype_picklist(apps):
@@ -98,7 +117,7 @@ def update_systemcogtypes_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
     Picklist.objects.filter(name='Default Collection Object Group Types').update(
-        name=SYSTEM_COGTYPE_PICKLIST_NAME,
+        name=HISTORICAL_COGTYPES_PICKLIST,
         type=0,
         issystem=True,
         readonly=True,
@@ -110,7 +129,7 @@ def revert_systemcogtypes_picklist(apps):
     Picklist = apps.get_model('specify', 'Picklist')
 
     # revert only changes the name and not the other attributes as those were incorrect
-    Picklist.objects.filter(name=SYSTEM_COGTYPE_PICKLIST_NAME).update(
+    Picklist.objects.filter(name=HISTORICAL_COGTYPES_PICKLIST).update(
         name='Default Collection Object Group Types',
     )
 
@@ -123,7 +142,7 @@ def update_cogtype_type_splocalecontaineritem(apps):
         container__name="collectionobjectgrouptype",
         container__schematype=0,
         name="type",
-    ).update(picklistname=SYSTEM_COGTYPE_PICKLIST_NAME, isrequired=True)
+    ).update(picklistname=HISTORICAL_COGTYPES_PICKLIST, isrequired=True)
 
 
 def revert_cogtype_type_splocalecontaineritem(apps):
@@ -134,3 +153,4 @@ def revert_cogtype_type_splocalecontaineritem(apps):
         container__schematype=0,
         name="type",
     ).update(picklistname=None, isrequired=None)
+

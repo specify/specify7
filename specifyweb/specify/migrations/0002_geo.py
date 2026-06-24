@@ -3,20 +3,13 @@
 
 import logging
 from django.db import migrations, models
-# from django.db.models import F
 import django.utils.timezone
-from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import MIGRATION_0002_TABLES, create_geo_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import MIGRATION_0002_TABLES, create_geo_table_schema_config_with_defaults, create_default_discipline_for_tree_defs, set_discipline_for_taxon_treedefs, create_cogtype_type_picklist
 from specifyweb.specify.migration_utils.schema_writer import revert_table_schema_config
 from specifyweb.specify.models import (
     protect_with_blockers
 )
-from specifyweb.specify.migration_utils import migration_helpers as usc
-from specifyweb.specify.migration_utils.default_cots import (
-    create_cogtype_type_picklist,
-    create_default_collection_types,
-    create_default_discipline_for_tree_defs,
-    set_discipline_for_taxon_treedefs,
-)
+from specifyweb.specify.migration_utils.default_cots import create_default_collection_types
 
 logger = logging.getLogger(__name__)
 
