@@ -1,9 +1,10 @@
 import unittest
 from unittest.mock import MagicMock
 
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import DEFAULT_COG_TYPES
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import COT_PICKLIST_NAME
+
 from ..default_cots import (
-    DEFAULT_COG_TYPES,
-    COTYPE_PICKLIST_NAME,
     create_default_collection_types,
     create_default_discipline_for_tree_defs,
     create_cogtype_type_picklist,
@@ -224,7 +225,7 @@ class CreateCotypePicklistTests(unittest.TestCase):
 
         for collection in collections:
             Picklist.objects.get_or_create.assert_any_call(
-                name=COTYPE_PICKLIST_NAME,
+                name=COT_PICKLIST_NAME,
                 type=1,
                 tablename="collectionobjecttype",
                 collection=collection,
@@ -233,7 +234,7 @@ class CreateCotypePicklistTests(unittest.TestCase):
                     "readonly": True,
                     "sizelimit": -1,
                     "sorttype": 1,
-                    "formatter": COTYPE_PICKLIST_NAME,
+                    "formatter": COT_PICKLIST_NAME,
                 },
             )
 
