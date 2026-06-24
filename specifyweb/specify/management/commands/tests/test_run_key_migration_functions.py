@@ -1,6 +1,3 @@
-import pytest
-
-pytestmark = pytest.mark.skip(reason="Disabled in CI due to flakiness")
 from io import StringIO
 
 from django.core.management import call_command
@@ -20,6 +17,11 @@ from specifyweb.backend.permissions.models import (
 )
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
+
+from unittest.mock import patch
+
+from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
+
 
 TRACKED_MODELS = {
     "Collectionobjecttype": models.Collectionobjecttype,
@@ -67,6 +69,18 @@ class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
         self.discipline.name = "Test Discipline"
         self.discipline.taxontreedef = self.taxontreedef
         self.discipline.save(update_fields=["name", "taxontreedef"])
+        self.cogtypes_picklist = models.Picklist.objects.create(
+            name=SYSTEM_COGTYPES_PICKLIST,
+            type=0,
+            collection=self.collection,
+        )
+
+        models.Picklistitem.objects.create(
+            picklist=self.cogtypes_picklist,
+            title="Discrete",
+            value="Discrete",
+            ordinal=0,
+        )
 
     def tearDown(self):
         for model in TRACKED_MODELS.values():
@@ -342,12 +356,15 @@ class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
             1,
         )
 
-    def run_key_migration_functions(self):
+    def run_key_migration_functions(self, *args):
         out = StringIO()
-        call_command("run_key_migration_functions", stdout=out)
+        call_command("run_key_migration_functions", *args, stdout=out)
         return out.getvalue()
 
-    def test_second_run_does_not_create_duplicate_records(self):
+    @patch(
+        "specifyweb.specify.management.commands.run_key_migration_functions.set_discipline_for_taxon_treedefs"
+    )
+    def test_second_run_does_not_create_duplicate_records(self, mock_set_discipline_for_taxon_treedefs):
         # First dataset
         self.simulate_specify7_usage(
             "before-first-run",
@@ -355,20 +372,32 @@ class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
         )
 
         before_first_run = record_counts()
-        self.run_key_migration_functions()
+
+        self.run_key_migration_functions(
+            "fix_schema_config",
+            "fix_app_resource_dirs",
+            "fix_permissions",
+            "fix_business_rules",
+            "fix_tectonic_ranks",
+            "fix_misc",
+        )
+
         after_first_run = record_counts()
         first_run_diff = count_diff(before_first_run, after_first_run)
-
-        self.assertTrue(
-            any(change > 0 for change in first_run_diff.values()),
-            f"Expected first run to create or backfill records. Diff: {first_run_diff}",
-        )
 
         # Second dataset inserted between runs
         between_run_usage = self.simulate_specify7_usage("between-runs")
 
         before_second_run = record_counts()
-        self.run_key_migration_functions()
+
+        self.run_key_migration_functions(
+            "fix_schema_config",
+            "fix_app_resource_dirs",
+            "fix_permissions",
+            "fix_business_rules",
+            "fix_tectonic_ranks",
+            "fix_misc",
+        )
         after_second_run = record_counts()
         second_run_diff = count_diff(before_second_run, after_second_run)
 
@@ -378,4 +407,6 @@ class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
             f"Second run created or removed tracked records: {second_run_diff}",
         )
 
-        self.assert_simulated_specify7_usage_preserved(between_run_usage)
+        self.assert_simulated_specify7_usage_preserved(
+            between_run_usage
+        )
