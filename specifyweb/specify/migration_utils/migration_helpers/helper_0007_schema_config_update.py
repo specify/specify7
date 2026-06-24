@@ -62,7 +62,7 @@ def create_cogtype_picklist(apps):
             Picklist.objects.filter(
                 collection_id=OuterRef("pk"),
                 name=COG_PICKLIST_NAME,
-                type=0
+                type=1
             )
         )
     ).filter(has_existing_picklist=False).values_list("pk", flat=True)
