@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:22+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"PO-Revision-Date: 2026-06-24 20:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -171,13 +171,13 @@ msgstr "Hurtigsøk"
 #: components/Header/ExpressSearchTask.tsx:203
 #, fuzzy
 msgid "primarySearch"
-msgstr "Enkelt søk"
+msgstr "Primærsøk"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:209
 #, fuzzy
 msgid "secondarySearch"
-msgstr "Utvidet søk"
+msgstr "Sekundærsøk"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:127
@@ -203,14 +203,14 @@ msgstr "Brukerverktøy ({userName:string})"
 #: components/Toolbar/Language.tsx:155
 #, fuzzy
 msgid "helpLocalizeSpecify"
-msgstr "Hjelp Lokaliser Specify 7"
+msgstr "Hjelp Lokaliser Spesifiser 7"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
 #, fuzzy
 msgid "helpLocalizeSpecifyDescription"
 msgstr ""
-"Vi vil sette stor pris på din støtte med å lokalisere Specificy 7-"
+"Vi vil sette stor pris på din støtte med å lokalisere Specifice 7-"
 "brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene "
 "</link>."
 
