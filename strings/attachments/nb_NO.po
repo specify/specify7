@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:17+0000\n"
-"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
+"PO-Revision-Date: 2026-06-24 20:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -85,13 +85,13 @@ msgstr "Det finnes ingen vedlegg"
 #: components/Attachments/Cell.tsx:147
 #, fuzzy
 msgid "unableToFindRelatedRecord"
-msgstr "Finner ikke tilknyttet post"
+msgstr "Finner ikke relatert oppføring"
 
 #. Used in: Components > Attachments > Cell
 #: components/Attachments/Cell.tsx:150
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
-msgstr "Finner ikke en post som dette vedlegget er relatert til."
+msgstr "Finner ikke en oppføring som dette vedlegget er relatert til."
 
 #. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
