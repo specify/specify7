@@ -22,7 +22,7 @@ export const commonText = createDictionary({
     'de-ch': 'Specify 7',
     'pt-br': 'Specify 7',
     'hr-hr': 'Navedite 7',
-    nb: 'Spesifiser 7',
+    nb: 'Specify 7',
   },
   no: {
     'en-us': 'No',
@@ -33,7 +33,7 @@ export const commonText = createDictionary({
     'de-ch': 'Nein',
     'pt-br': 'Não',
     'hr-hr': 'Ne',
-    nb: 'Ingen',
+    nb: 'Nei',
   },
   cancel: {
     'en-us': 'Cancel',
@@ -44,7 +44,7 @@ export const commonText = createDictionary({
     'de-ch': 'Abbrechen',
     'pt-br': 'Cancelar',
     'hr-hr': 'Otkazati',
-    nb: 'Kansellere',
+    nb: 'Avbryt',
   },
   back: {
     'en-us': 'Back',
@@ -77,7 +77,7 @@ export const commonText = createDictionary({
     'de-ch': 'Erstellen',
     'pt-br': 'Criar',
     'hr-hr': 'Stvoriti',
-    nb: 'Skape',
+    nb: 'Opprett',
   },
   close: {
     'en-us': 'Close',
@@ -88,7 +88,7 @@ export const commonText = createDictionary({
     'de-ch': 'Schliessen',
     'pt-br': 'Fechar',
     'hr-hr': 'Zatvoriti',
-    nb: 'Lukke',
+    nb: 'Lukk',
   },
   configureExpressSearch: {
     'en-us': 'Configure Express Search',
@@ -123,7 +123,7 @@ export const commonText = createDictionary({
       "Séparez les termes de recherche multiples par des espaces, utilisez % n'importe où, * au début ou à la fin, et placez les termes entre guillemets pour obtenir des correspondances exactes avec plusieurs mots.",
     'hr-hr':
       'Odvojite više pojmova za pretraživanje razmacima, koristite % bilo gdje, * na početku ili kraju i stavite pojmove u navodnike za točna podudaranja više riječi.',
-    nb: 'Skill flere søkeord med mellomrom, bruk % hvor som helst, * i begynnelsen eller slutten, og bryt søkeord i anførselstegn for eksakte treff med flere ord.',
+    nb: 'Skill flere søkeord med mellomrom, bruk % hvor som helst, * i begynnelsen eller slutten, og omslutt søkeord med anførselstegn for eksakte treff med flere ord.',
     'pt-br':
       'Separe vários termos de pesquisa com espaços, use % em qualquer lugar, * no início ou no fim e coloque os termos entre aspas para correspondências exatas de várias palavras.',
     'ru-ru':
@@ -141,7 +141,7 @@ export const commonText = createDictionary({
     'fr-fr':
       'Les dates peuvent être recherchées au format AAAA-MM-JJ ou MM/JJ/AAAA.',
     'hr-hr': 'Datumi se mogu pretraživati u formatu GGGG-MM-DD ili MM/DD/GGGG.',
-    nb: 'Datoer kan søkes etter enten i formatet ÅÅÅÅ-MM-DD eller MM/DD/ÅÅÅÅ.',
+    nb: 'Datoer kan søkes på formatene ÅÅÅÅ-MM-DD eller MM/DD/ÅÅÅÅ.',
     'pt-br':
       'As datas podem ser pesquisadas usando o formato AAAA-MM-DD ou MM/DD/AAAA.',
     'ru-ru':
@@ -159,7 +159,7 @@ export const commonText = createDictionary({
       "Pour rechercher un terme contenant des espaces, placez l'expression entre guillemets, par exemple « Clinton Lake ».",
     'hr-hr':
       'Za pretraživanje pojma s razmacima, stavite frazu u navodnike, na primjer "Clinton Lake".',
-    nb: 'For å søke etter et ord med mellomrom, sett frasen i anførselstegn, for eksempel «Clinton Lake».',
+    nb: 'For å søke etter et ord med mellomrom, sett frasen i anførselstegn, for eksempel "Clinton Lake".',
     'pt-br':
       'Para pesquisar um termo com espaços, coloque a frase entre aspas, por exemplo, "Lago Clinton".',
     'ru-ru':
@@ -176,7 +176,7 @@ export const commonText = createDictionary({
     'de-ch': 'Anwenden',
     'pt-br': 'Aplicar',
     'hr-hr': 'Primijeni',
-    nb: 'Søke',
+    nb: 'Anvend',
   },
   applyAll: {
     'en-us': 'Apply All',
@@ -220,7 +220,7 @@ export const commonText = createDictionary({
     'de-ch': 'Speichern',
     'pt-br': 'Salvar',
     'hr-hr': 'Uštedjeti',
-    nb: 'Spare',
+    nb: 'Lagre',
   },
   add: {
     'en-us': 'Add',
@@ -231,7 +231,7 @@ export const commonText = createDictionary({
     'de-ch': 'Hinzufügen',
     'pt-br': 'Adicionar',
     'hr-hr': 'Dodati',
-    nb: 'Legge til',
+    nb: 'Legg til',
   },
   open: {
     'en-us': 'Open',
@@ -275,7 +275,7 @@ export const commonText = createDictionary({
     'de-ch': 'Zurück',
     'pt-br': 'Anterior',
     'hr-hr': 'Prethodno',
-    nb: 'Tidligere',
+    nb: 'Forrige',
   },
   tool: {
     'en-us': 'Tool',
@@ -330,7 +330,7 @@ export const commonText = createDictionary({
     'de-ch': 'Entfernen',
     'pt-br': 'Remover',
     'hr-hr': 'Ukloniti',
-    nb: 'Fjerne',
+    nb: 'Fjern',
   },
   search: {
     'en-us': 'Search',
@@ -385,7 +385,7 @@ export const commonText = createDictionary({
     'de-ch': 'Bearbeiten',
     'pt-br': 'Editar',
     'hr-hr': 'Uredi',
-    nb: 'Redigere',
+    nb: 'Rediger',
   },
   ignore: {
     'en-us': 'Ignore',
@@ -407,7 +407,7 @@ export const commonText = createDictionary({
     'de-ch': 'Fortfahren',
     'pt-br': 'Prosseguir',
     'hr-hr': 'Nastaviti',
-    nb: 'Fortsette',
+    nb: 'Fortsett',
   },
   start: {
     comment: 'Noun',
@@ -443,7 +443,7 @@ export const commonText = createDictionary({
     'de-ch': 'Aktualisieren',
     'pt-br': 'Atualizar',
     'hr-hr': 'Ažurirati',
-    nb: 'Oppdatering',
+    nb: 'Oppdater',
   },
   fullDate: {
     'en-us': 'Full Date',
@@ -591,7 +591,7 @@ export const commonText = createDictionary({
     'de-ch': 'In Arbeit …',
     'pt-br': 'Correndo…',
     'hr-hr': 'Trčanje…',
-    nb: 'Løping…',
+    nb: 'Løpende…',
   },
   noMatches: {
     'en-us': 'No Matches',
@@ -757,7 +757,7 @@ export const commonText = createDictionary({
     'de-ch': 'Ablehnen',
     'pt-br': 'Liberar',
     'hr-hr': 'Odbaciti',
-    nb: 'Avskjedige',
+    nb: 'Avvis',
   },
   id: {
     'en-us': 'ID',
@@ -867,7 +867,7 @@ export const commonText = createDictionary({
     'de-ch': 'Zuklappen',
     'pt-br': 'Colapso',
     'hr-hr': 'Kolaps',
-    nb: 'Kollapse',
+    nb: 'Skjul',
   },
   collapseAll: {
     'en-us': 'Collapse All',

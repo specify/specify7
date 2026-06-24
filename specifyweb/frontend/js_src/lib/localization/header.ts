@@ -19,7 +19,7 @@ export const headerText = createDictionary({
     'de-ch': 'Weiter zum Inhalt',
     'pt-br': 'Ir para o conteúdo',
     'hr-hr': 'Preskoči na sadržaj',
-    nb: 'Hopp til innhold',
+    nb: 'Gå til innhold',
   },
   main: {
     comment: 'As in "main menu"',
@@ -43,7 +43,7 @@ export const headerText = createDictionary({
     'de-ch': 'Derzeitige {collectionTable:string}',
     'pt-br': 'Atual {collectionTable:string}',
     'hr-hr': 'Trenutni {collectionTable:string}',
-    nb: 'Nåværende {collectionTable:string}',
+    nb: 'Gjeldende {collectionTable:string}',
   },
   dataEntry: {
     'en-us': 'Data Entry',
@@ -87,7 +87,7 @@ export const headerText = createDictionary({
     'de-ch': 'RSS-Feed aktualisieren',
     'pt-br': 'Atualizar feed RSS',
     'hr-hr': 'Ažuriranje RSS feeda',
-    nb: 'Oppdater RSS-feed',
+    nb: 'Oppdater RSS-strøm',
   },
   updateExportFeedConfirmation: {
     'en-us': 'Update export feed?',
@@ -98,7 +98,7 @@ export const headerText = createDictionary({
     'de-ch': 'Export-Feed aktualisieren?',
     'pt-br': 'Atualizar feed de exportação?',
     'hr-hr': 'Ažurirati feed za izvoz?',
-    nb: 'Oppdatere eksportfeeden?',
+    nb: 'Oppdatere eksport-strømmen?',
   },
   updateExportFeedConfirmationDescription: {
     'en-us': 'Update all RSS export feed items now?',
@@ -112,7 +112,7 @@ export const headerText = createDictionary({
     'pt-br':
       'Agora é necessário atualizar todos os itens do feed RSS exportado?',
     'hr-hr': 'Ažurirati sve stavke RSS izvoza feeda sada?',
-    nb: 'Oppdatere alle RSS-eksportfeedelementer nå?',
+    nb: 'Oppdatere alle RSS-eksportstrømelementer nå?',
   },
   feedExportStarted: {
     'en-us': 'Export feed update started',
@@ -123,7 +123,7 @@ export const headerText = createDictionary({
     'de-ch': 'Aktualisierung des Export-Feeds gestartet',
     'pt-br': 'Atualização do feed de exportação iniciada',
     'hr-hr': 'Započeto je ažuriranje feeda izvoza',
-    nb: 'Oppdatering av eksportfeed startet',
+    nb: 'Oppdatering av eksportstrøm har startet',
   },
   feedExportStartedDescription: {
     'en-us':
@@ -142,7 +142,7 @@ export const headerText = createDictionary({
       'Atualização iniciada. Você receberá uma notificação para cada item do feed atualizado.',
     'hr-hr':
       'Ažuriranje je započelo. Primit ćete obavijest za svaku ažuriranu stavku feeda.',
-    nb: 'Oppdatering startet. Du vil motta et varsel for hvert feedelement som oppdateres.',
+    nb: 'Oppdatering har startet. Du vil motta et varsel for hvert strømelement som er oppdatert.',
   },
   dwcaExportStarted: {
     'en-us': 'DwCA export started',
@@ -153,7 +153,7 @@ export const headerText = createDictionary({
     'de-ch': 'DwCA-Export gestartet',
     'pt-br': 'A exportação DwCA foi iniciada.',
     'hr-hr': 'Izvoz DwCA-a je započeo',
-    nb: 'DwCA-eksport startet',
+    nb: 'DwCA-eksport har startet',
   },
   dwcaExportStartedDescription: {
     'en-us':
@@ -259,7 +259,7 @@ export const headerText = createDictionary({
     'uk-ua': 'Виберіте',
     'pt-br': 'Escolher',
     'hr-hr': 'Odaberite',
-    nb: 'Velge',
+    nb: 'Velg',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -314,7 +314,7 @@ export const headerText = createDictionary({
     'de-ch': 'Expresssuche',
     'pt-br': 'Busca expressa',
     'hr-hr': 'Brzo pretraživanje',
-    nb: 'Ekspresssøk',
+    nb: 'Hurtigsøk',
   },
   primarySearch: {
     'en-us': 'Primary Search',
@@ -325,7 +325,7 @@ export const headerText = createDictionary({
     'de-ch': 'Primäre Suche',
     'pt-br': 'Busca principal',
     'hr-hr': 'Primarno pretraživanje',
-    nb: 'Primærsøk',
+    nb: 'Enkelt søk',
   },
   secondarySearch: {
     'en-us': 'Secondary Search',
@@ -336,7 +336,7 @@ export const headerText = createDictionary({
     'de-ch': 'Sekundäre Suche',
     'pt-br': 'Pesquisa secundária',
     'hr-hr': 'Sekundarno pretraživanje',
-    nb: 'Sekundærsøk',
+    nb: 'Utvidet søk',
   },
   menuItems: {
     'en-us': 'Menu Items',
@@ -380,7 +380,7 @@ export const headerText = createDictionary({
     'de-ch': 'Hilf beim übersetzen von Specify 7',
     'pt-br': 'Ajuda Localizar Especificar 7',
     'hr-hr': 'Pomoć pri lokalizaciji Navedite 7',
-    nb: 'Hjelp Lokaliser Spesifiser 7',
+    nb: 'Hjelp Lokaliser Specify 7',
   },
   helpLocalizeSpecifyDescription: {
     'en-us':
@@ -399,7 +399,7 @@ export const headerText = createDictionary({
       'Agradecemos muito o seu apoio na localização da Interface de Usuário do Specify 7. Se estiver interessado, por favor, <link>consulte as instruções</link>.',
     'hr-hr':
       'Bili bismo vam vrlo zahvalni na podršci u lokalizaciji korisničkog sučelja Specify 7. Ako ste zainteresirani, molimo <link>pogledajte upute</link>.',
-    nb: 'Vi vil sette stor pris på din støtte med å lokalisere Specifice 7-brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene </link>.',
+    nb: 'Vi vil sette stor pris på din støtte med å lokalisere Specificy 7-brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene </link>.',
   },
   incompleteInline: {
     'en-us': '(incomplete)',
@@ -495,7 +495,7 @@ export const headerText = createDictionary({
     'de-ch': 'Ressourcen für Entwickler',
     'pt-br': 'Recursos para desenvolvedores',
     'hr-hr': 'Resursi za razvojne programere',
-    nb: 'Utviklerressurser',
+    nb: 'Utvikler-ressurser',
   },
   forum: {
     'en-us': 'Community Forum',
