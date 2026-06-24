@@ -16,7 +16,7 @@ Creates a picklist for COGType -> type and updates an existing incorrect picklis
 from django.db import migrations, models
 import django.db.models.deletion
 
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import create_cogtype_picklist, revert_cog_type_fields, revert_cogtype_picklist, revert_cogtype_splocalecontaineritem, revert_cogtype_type_splocalecontaineritem, revert_systemcogtypes_picklist, update_cog_type_fields, update_cogtype_splocalecontaineritem, update_cogtype_type_splocalecontaineritem, update_systemcogtypes_picklist
 
 class Migration(migrations.Migration):
     dependencies = [
@@ -24,18 +24,18 @@ class Migration(migrations.Migration):
     ]
 
     def apply_migration(apps, schema_editor):
-        usc.update_cog_type_fields(apps)
-        usc.create_cogtype_picklist(apps)
-        usc.update_cogtype_splocalecontaineritem(apps)
-        usc.update_systemcogtypes_picklist(apps)
-        usc.update_cogtype_type_splocalecontaineritem(apps)
+        update_cog_type_fields(apps)
+        create_cogtype_picklist(apps)
+        update_cogtype_splocalecontaineritem(apps)
+        update_systemcogtypes_picklist(apps)
+        update_cogtype_type_splocalecontaineritem(apps)
 
     def revert_migration(apps, schema_editor):
-        usc.revert_cog_type_fields(apps)
-        usc.revert_cogtype_picklist(apps)
-        usc.revert_cogtype_splocalecontaineritem(apps)
-        usc.revert_systemcogtypes_picklist(apps)
-        usc.revert_cogtype_type_splocalecontaineritem(apps)
+        revert_cog_type_fields(apps)
+        revert_cogtype_picklist(apps)
+        revert_cogtype_splocalecontaineritem(apps)
+        revert_systemcogtypes_picklist(apps)
+        revert_cogtype_type_splocalecontaineritem(apps)
 
     operations = [
         migrations.AlterField(

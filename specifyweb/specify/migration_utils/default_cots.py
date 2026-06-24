@@ -1,14 +1,11 @@
 import logging
-from django.db.models import F, OuterRef, Subquery
+from django.db.models import OuterRef, Subquery
 
 logger = logging.getLogger(__name__)
 
-DEFAULT_COG_TYPES = [
-    'Discrete',
-    'Consolidated',
-    'Drill Core',
-]
-
+# REFACTOR: Combine this with create_default_collection_types in
+# specifyweb.specify.api.utils.py:
+# https://github.com/specify/specify7/blob/3d13255b21afcd27fa891a38858661ad6e1914e7/specifyweb/specify/api/utils.py#L32-L75
 def create_default_collection_types(apps):
     Collection = apps.get_model('specify', 'Collection')
     Collectionobject = apps.get_model('specify', 'Collectionobject')
@@ -29,98 +26,6 @@ def create_default_collection_types(apps):
             collection=collection).update(collectionobjecttype=cot)
         collection.collectionobjecttype = cot
         collection.save()
-
-def create_default_discipline_for_tree_defs(apps):
-    Discipline = apps.get_model('specify', 'Discipline')
-    Institution = apps.get_model('specify', 'Institution')
-
-    # Use the specified DB alias for all queries
-    for discipline in Discipline.objects.all():
-        geography_tree_def = discipline.geographytreedef
-        if geography_tree_def and geography_tree_def.discipline_id is None:
-            geography_tree_def.discipline = discipline
-            geography_tree_def.save()
-
-        geologic_time_period_tree_def = discipline.geologictimeperiodtreedef
-        if geologic_time_period_tree_def and geologic_time_period_tree_def.discipline_id is None:
-            geologic_time_period_tree_def.discipline = discipline
-            geologic_time_period_tree_def.save()
-
-        lithostrat_tree_def = discipline.lithostrattreedef
-        if lithostrat_tree_def and lithostrat_tree_def.discipline_id is None:
-            lithostrat_tree_def.discipline = discipline
-            lithostrat_tree_def.save()
-
-        taxon_tree_def = discipline.taxontreedef
-        if taxon_tree_def and taxon_tree_def.discipline_id is None:
-            taxon_tree_def.discipline = discipline
-            taxon_tree_def.save()
-
-    for institution in Institution.objects.all():
-        storage_tree_def = institution.storagetreedef
-        if storage_tree_def and storage_tree_def.institution_id is None:
-            storage_tree_def.institution = institution
-            storage_tree_def.save()
-
-def create_cogtype_type_picklist(apps):
-    Collection = apps.get_model('specify', 'Collection')
-    Picklist = apps.get_model('specify', 'Picklist')
-    Picklistitem = apps.get_model('specify', 'Picklistitem')
-
-    for collection in Collection.objects.all():
-        cog_type_picklist, picklist_created = Picklist.objects.get_or_create(
-            name='SystemCOGTypes', # Default Collection Object Group Types
-            type=0,
-            collection=collection,
-            defaults={
-                "issystem": False,
-                "readonly": False,
-            }
-        )
-        if picklist_created:
-            for cog_type in DEFAULT_COG_TYPES:
-                Picklistitem.objects.get_or_create(
-                    title=cog_type,
-                    value=cog_type,
-                    picklist=cog_type_picklist
-                )
-
-COTYPE_PICKLIST_NAME = 'CollectionObjectType'
-FIELD_NAME = 'collectionObjectType'
-COTYPE_TEXT = 'Collection Object Type'
-
-def create_cotype_picklist(apps):
-    Collection = apps.get_model('specify', 'Collection')
-    Picklist = apps.get_model('specify', 'Picklist')
-    # Create a cotype picklist for each collection
-    for collection in Collection.objects.all():
-        Picklist.objects.get_or_create(
-            name=COTYPE_PICKLIST_NAME,
-            type=1,
-            tablename='collectionobjecttype',
-            collection=collection,
-            defaults={
-                "issystem": True,
-                "readonly": True,
-                "sizelimit": -1,
-                "sorttype": 1,
-                "formatter": COTYPE_PICKLIST_NAME,
-            }
-        )
-
-def set_discipline_for_taxon_treedefs(apps):
-    Collectionobjecttype = apps.get_model('specify', 'Collectionobjecttype')
-    Taxontreedef = apps.get_model('specify', 'Taxontreedef')
-
-    Taxontreedef.objects.filter(
-        discipline__isnull=True
-    ).update(
-        discipline=Subquery(
-            Collectionobjecttype.objects.filter(
-                taxontreedef=OuterRef("pk")
-            ).order_by("pk").values("collection__discipline")[:1]
-        )
-    )
 
 def fix_taxon_treedef_discipline_links(apps):
     Discipline = apps.get_model('specify', 'Discipline')
