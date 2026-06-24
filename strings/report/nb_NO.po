@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 18:05+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-06-24 20:01+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/report/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -88,7 +88,7 @@ msgstr "Manglende rapportforespørsel"
 #: components/Reports/Report.tsx:56
 #, fuzzy
 msgid "missingReportQueryDescription"
-msgstr "Denne rapporten har ingen tilknyttet søk"
+msgstr "Denne rapporten har ingen tilknyttet spørring"
 
 #. Used in: Components > Reports > Report
 #: components/Reports/Report.tsx:61
