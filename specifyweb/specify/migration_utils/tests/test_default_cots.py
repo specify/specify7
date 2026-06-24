@@ -1,15 +1,11 @@
 import unittest
 from unittest.mock import MagicMock
 
-from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import DEFAULT_COG_TYPES
-from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import COT_PICKLIST_NAME
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import DEFAULT_COG_TYPES, create_cogtype_type_picklist, create_default_discipline_for_tree_defs, set_discipline_for_taxon_treedefs
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import COT_PICKLIST_NAME, create_cotype_picklist
 
 from ..default_cots import (
     create_default_collection_types,
-    create_default_discipline_for_tree_defs,
-    create_cogtype_type_picklist,
-    create_cotype_picklist,
-    set_discipline_for_taxon_treedefs,
     fix_taxon_treedef_discipline_links,
 )
 
