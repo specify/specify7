@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:04+0000\n"
+"PO-Revision-Date: 2026-06-24 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/schema/de_CH/>\n"
@@ -379,4 +379,4 @@ msgstr "versteckt"
 #: components/Formatters/Fields.tsx:76
 #, fuzzy
 msgid "customFieldFormat"
-msgstr "Format für benutzerdefinierte Felder"
+msgstr "Benutzerdefiniertes Feldformat"
