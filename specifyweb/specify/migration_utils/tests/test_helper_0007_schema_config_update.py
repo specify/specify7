@@ -87,7 +87,7 @@ class CreateCogTypePicklistTests(ApiTests):
         )
         self.assertEqual(
             picklists.count(),
-            Collection.objects.count()
+            Collection.objects.all().count()
         )
 
 
