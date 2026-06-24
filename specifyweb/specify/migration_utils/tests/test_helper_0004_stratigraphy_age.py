@@ -1,45 +1,58 @@
-from django.test import TestCase
 from unittest.mock import patch, MagicMock
 
-from specifyweb.specify.migration_utils.migration_helpers import helper_0004_stratigraphy_age
+from django.apps import apps
+from django.db.models import Prefetch
+from django.test import TestCase
 
-class CreateAgetypePicklistTests(TestCase):
+from specifyweb.specify.models import Picklist, Picklistitem, Collection
+from specifyweb.specify.migration_utils.migration_helpers import helper_0004_stratigraphy_age
+from specifyweb.specify.tests.test_api import ApiTests
+
+class CreateAgetypePicklistTests(ApiTests):
+
+    def setUp(self):
+        super().setUp()
+        self.other_collection = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='OtherCollection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
 
     def test_create_agetype_picklist_creates_items_for_new_picklist(self):
-        mock_apps = MagicMock()
+        helper_0004_stratigraphy_age.create_agetype_picklist(apps)
 
-        collection_model = MagicMock()
-        picklist_model = MagicMock()
-        picklistitem_model = MagicMock()
+        picklists = Picklist.objects.filter(
+            name=helper_0004_stratigraphy_age.AGETYPE_PICKLIST_NAME
+        ).prefetch_related(
+            Prefetch(
+                "picklistitems",
+                queryset=Picklistitem.objects.order_by("value"),
+                to_attr="testitems"
+            )
+        )
 
-        collection1 = MagicMock(id=1)
-        collection2 = MagicMock(id=2)
-
-        def get_model(app_label, model_name):
-            return {
-                "Collection": collection_model,
-                "Picklist": picklist_model,
-                "Picklistitem": picklistitem_model,
-            }[model_name]
-
-        mock_apps.get_model.side_effect = get_model
-
-        collection_model.objects.all.return_value = [
-            collection1,
-            collection2,
-        ]
-
-        picklist_model.objects.get_or_create.side_effect = [
-            (MagicMock(), True),
-            (MagicMock(), False),
-        ]
-
-        helper_0004_stratigraphy_age.create_agetype_picklist(mock_apps)
+        collection_count = Collection.objects.all().count()
 
         self.assertEqual(
-            picklistitem_model.objects.get_or_create.call_count,
-            len(helper_0004_stratigraphy_age.DEFAULT_AGE_TYPES),
+            picklists.count(),
+            collection_count
         )
+
+        ordered_age_types = tuple(
+            (val, val) for val in
+            sorted(helper_0004_stratigraphy_age.DEFAULT_AGE_TYPES)
+        )
+        for picklist in picklists:
+            picklist_item_values = tuple(
+                (item.title, item.value)
+                for item in picklist.testitems
+            )
+
+            self.assertEqual(
+                ordered_age_types,
+                picklist_item_values
+            )
 
 class CreateStratSchemaConfigTests(TestCase):
 
