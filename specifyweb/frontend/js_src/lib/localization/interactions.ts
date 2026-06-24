@@ -108,7 +108,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
     'pt-br': 'Existem problemas com a entrada:',
     'hr-hr': 'Postoje problemi s unosom:',
-    nb: 'Det er problemer med inntasting',
+    nb: 'Det er problemer med inntastingen:',
   },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',
@@ -206,7 +206,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
     'pt-br': 'Neste contexto, os produtos não podem ser devolvidos.',
     'hr-hr': 'Pripreme se u ovom kontekstu ne mogu vratiti.',
-    nb: 'Forberedelser kan ikke returneres i denne sammenhengen.',
+    nb: 'Preparater kan ikke returneres i denne sammenhengen.',
   },
   noUnresolvedPreparations: {
     'en-us': 'There are no unresolved preparations for this loan.',

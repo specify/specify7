@@ -95,7 +95,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
     'hr-hr': 'Nije moguće pronaći povezani zapis',
-    nb: 'Finner ikke tilknyttet post',
+    nb: 'Finner ikke relatert oppføring',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -110,7 +110,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
     'hr-hr': 'Nije moguće pronaći zapis na koji se odnosi ovaj privitak.',
-    nb: 'Finner ikke en post som dette vedlegget er relatert til.',
+    nb: 'Finner ikke en oppføring som dette vedlegget er relatert til.',
   },
   showForm: {
     'en-us': 'Show Form',

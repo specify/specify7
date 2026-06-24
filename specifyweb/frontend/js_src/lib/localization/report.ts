@@ -150,7 +150,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Dieser Bericht hat keine zugehörige Abfrage',
     'pt-br': 'Este relatório não possui uma consulta associada.',
     'hr-hr': 'Ovo izvješće nema pridruženi upit',
-    nb: 'Denne rapporten har ingen tilknyttet søk',
+    nb: 'Denne rapporten har ingen tilknyttet spørring',
   },
   missingReport: {
     'en-us': 'Missing report',

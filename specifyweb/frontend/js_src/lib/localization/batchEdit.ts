@@ -417,7 +417,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Для проверки на пустую запись используйте только видимые поля.',
     'uk-ua': 'Використовуйте лише видимі поля для перевірки порожніх записів',
     'hr-hr': 'Koristite samo vidljiva polja za provjeru praznih zapisa',
-    nb: 'Bruk bare synlige felt for sjekk av tomme poster',
+    nb: 'Bruk bare synlige felt for tom postsjekk',
   },
   deferForNullCheckDescription: {
     'en-us':
