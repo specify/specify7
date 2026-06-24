@@ -1,7 +1,11 @@
-from django.test import TestCase
 from unittest.mock import patch, MagicMock
 
+from django.test import TestCase
+from django.apps import apps
+
+from specifyweb.specify.models import Collection, Picklist
 from specifyweb.specify.migration_utils.migration_helpers import helper_0007_schema_config_update
+from specifyweb.specify.tests.test_api import ApiTests
 
 class UpdateCogTypeFieldsTests(TestCase):
 
@@ -61,33 +65,31 @@ class UpdateCogTypeFieldsTests(TestCase):
         itemstr_model.objects.filter.assert_called()
         container_qs.delete.assert_called_once()
 
-class CreateCogTypePicklistTests(TestCase):
+class CreateCogTypePicklistTests(ApiTests):
+
+    def setUp(self):
+        super().setUp()
+        self.other_collection = Collection.objects.create(
+            catalognumformatname='test',
+            collectionname='OtherCollection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
 
     def test_create_cogtype_picklist(self):
-        mock_apps = MagicMock()
+        helper_0007_schema_config_update.create_cogtype_picklist(apps)
 
-        collection_model = MagicMock()
-        picklist_model = MagicMock()
-
-        collection_model.objects.all.return_value = [
-            MagicMock(),
-            MagicMock(),
-        ]
-
-        def get_model(app_label, model_name):
-            return {
-                "Collection": collection_model,
-                "Picklist": picklist_model,
-            }[model_name]
-
-        mock_apps.get_model.side_effect = get_model
-
-        helper_0007_schema_config_update.create_cogtype_picklist(mock_apps)
-
-        self.assertEqual(
-            picklist_model.objects.update_or_create.call_count,
-            2,
+        picklists = Picklist.objects.filter(
+            name=helper_0007_schema_config_update.COG_PICKLIST_NAME,
+            tablename="collectionobjectgrouptype",
+            formatter="CollectionObjectGroupType",
+            type=1
         )
+        self.assertEqual(
+            picklists.count(),
+            Collection.objects.count()
+        )
+
 
 class RevertCogTypePicklistTests(TestCase):
 
