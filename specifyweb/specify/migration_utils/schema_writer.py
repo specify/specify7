@@ -54,6 +54,7 @@ def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_la
         **container_attrs
     }
 
+    string_label = resolved_container_attrs["name"]
     resolved_container_attrs['name'] = resolved_container_attrs['name'].lower()
 
     sp_local_container = (
@@ -62,7 +63,7 @@ def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_la
             discipline_id=resolved_container_attrs['discipline_id'],
             schematype=resolved_container_attrs['schematype']
         )
-        .order_by('id')
+        .order_by('pk')
         .first()
     )
 
@@ -81,12 +82,12 @@ def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_la
         {
             **common_string_attrs,
             "containername": sp_local_container,
-            "text": table_label or camel_to_spaced_title_case(uncapitilize(resolved_container_attrs["name"]))
+            "text": table_label or camel_to_spaced_title_case(uncapitilize(string_label))
         },
         {
             **common_string_attrs,
             "containerdesc": sp_local_container,
-            "text": table_description or camel_to_spaced_title_case(uncapitilize(resolved_container_attrs["name"]))
+            "text": table_description or camel_to_spaced_title_case(uncapitilize(string_label))
         }
     ]
 
@@ -243,7 +244,7 @@ def update_table_field_schema_config_with_defaults(
     sp_local_container = get_or_create_splocalecontainer(
         Splocalecontainer,
         Splocaleitemstr,
-        name=table.name.lower(),
+        name=table.name,
         discipline_id=discipline_id
         )
 
@@ -370,7 +371,7 @@ def update_table_field_schema_config_params(
         Splocalecontainer,
         Splocaleitemstr,
         discipline_id=discipline_id,
-        name=table.name.lower()
+        name=table.name
         )
 
     try:
