@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-25 21:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/query/pt_BR/>\n"
@@ -480,7 +480,7 @@ msgstr "Configurar tabelas de consulta visíveis"
 #: components/QueryBuilder/Edit.tsx:148
 #, fuzzy
 msgid "exportQueryForDwca"
-msgstr "Exportar consulta para definição de DwCA"
+msgstr "Consulta de exportação para definição de DwCA"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
