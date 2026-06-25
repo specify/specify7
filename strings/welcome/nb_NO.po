@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-25 07:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/welcome/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -86,48 +86,40 @@ msgstr "Specify 7 versjon:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:100
-#, fuzzy
 msgid "gitSha"
 msgstr "Git SHA:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
-#, fuzzy
 msgid "buildDate"
-msgstr "Byggedato:"
+msgstr "Versjonsdato:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
-#, fuzzy
 msgid "specifySixVersion"
-msgstr "Spesifiser 6 versjon:"
+msgstr "Specify 6 versjon:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
-#, fuzzy
 msgid "databaseVersion"
 msgstr "Databaseversjon:"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
-#, fuzzy
 msgid "schemaVersion"
 msgstr "Databaseskjema"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
-#, fuzzy
 msgid "databaseName"
 msgstr "Databasenavn:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:128
-#, fuzzy
 msgid "browser"
 msgstr "Nettleser:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:111
-#, fuzzy
 msgid "databaseCreationDate"
 msgstr "Dato for opprettelse av database:"
