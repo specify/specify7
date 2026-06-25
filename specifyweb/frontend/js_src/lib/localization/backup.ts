@@ -55,7 +55,7 @@ export const backupText = createDictionary({
     'uk-ua': 'Попередньої резервної копії не знайдено. Розпочати нову?',
     'hr-hr':
       'Nije pronađena prethodna sigurnosna kopija. Želite li pokrenuti novu?',
-    nb: 'Ingen tidligere sikkerhetskopi ble funnet. Starte en ny?',
+    nb: 'Ingen tidligere sikkerhetskopi ble funnet. Lag en ny?',
   },
   previousSizeMB: {
     'en-us': '({size:string} MB)',
@@ -77,7 +77,7 @@ export const backupText = createDictionary({
     'ru-ru': 'Эта резервная копия была создана на {date:string}',
     'uk-ua': 'Цю резервну копію було створено {date:string}',
     'hr-hr': 'Ova sigurnosna kopija je kreirana na {date:string}',
-    nb: 'Denne sikkerhetskopien ble opprettet på {date:string}',
+    nb: 'Denne sikkerhetskopien ble opprettet den {date:string}',
   },
   checkPreviousFailed: {
     'en-us': 'Failed to check previous backup.',

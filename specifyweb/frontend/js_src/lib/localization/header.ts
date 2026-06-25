@@ -325,7 +325,7 @@ export const headerText = createDictionary({
     'de-ch': 'Primäre Suche',
     'pt-br': 'Busca principal',
     'hr-hr': 'Primarno pretraživanje',
-    nb: 'Enkelt søk',
+    nb: 'Primærsøk',
   },
   secondarySearch: {
     'en-us': 'Secondary Search',
@@ -336,7 +336,7 @@ export const headerText = createDictionary({
     'de-ch': 'Sekundäre Suche',
     'pt-br': 'Pesquisa secundária',
     'hr-hr': 'Sekundarno pretraživanje',
-    nb: 'Utvidet søk',
+    nb: 'Sekundærsøk',
   },
   menuItems: {
     'en-us': 'Menu Items',
@@ -380,7 +380,7 @@ export const headerText = createDictionary({
     'de-ch': 'Hilf beim übersetzen von Specify 7',
     'pt-br': 'Ajuda Localizar Especificar 7',
     'hr-hr': 'Pomoć pri lokalizaciji Navedite 7',
-    nb: 'Hjelp Lokaliser Specify 7',
+    nb: 'Hjelp Lokaliser Spesifiser 7',
   },
   helpLocalizeSpecifyDescription: {
     'en-us':
@@ -399,7 +399,7 @@ export const headerText = createDictionary({
       'Agradecemos muito o seu apoio na localização da Interface de Usuário do Specify 7. Se estiver interessado, por favor, <link>consulte as instruções</link>.',
     'hr-hr':
       'Bili bismo vam vrlo zahvalni na podršci u lokalizaciji korisničkog sučelja Specify 7. Ako ste zainteresirani, molimo <link>pogledajte upute</link>.',
-    nb: 'Vi vil sette stor pris på din støtte med å lokalisere Specificy 7-brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene </link>.',
+    nb: 'Vi vil sette stor pris på din støtte med å lokalisere Specifice 7-brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene </link>.',
   },
   incompleteInline: {
     'en-us': '(incomplete)',
