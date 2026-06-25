@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 20:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-25 07:01+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/development/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -14,9 +14,8 @@ msgstr ""
 #. Used in: Components > Developer > Crash Report Visualizer ⬤ Components > Router > Routes
 #: components/Developer/CrashReportVisualizer.tsx:21
 #: components/Router/Routes.tsx:478
-#, fuzzy
 msgid "crashReportVisualizer"
-msgstr "Visualisator for krasjrapporter"
+msgstr "Avbruddslogg"
 
 #. Used in: Components > Developer > Crash Report Visualizer
 #: components/Developer/CrashReportVisualizer.tsx:34
