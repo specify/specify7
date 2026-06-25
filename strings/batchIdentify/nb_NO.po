@@ -44,15 +44,13 @@ msgstr "Identifisere"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:792
-#, fuzzy
 msgid "successMessage"
-msgstr "Alle poster ble identifisert til det spesifiserte taksonet."
+msgstr "Alle poster ble identifisert til det angitte taksonet."
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:206
-#, fuzzy
 msgid "updatedRecordSet"
-msgstr "Gruppeidentifiser oppdaterte poster"
+msgstr "Batch-identifiser oppdaterte poster"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:610
