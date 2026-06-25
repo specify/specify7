@@ -34,3 +34,38 @@ class FixHiddenGeoPropTests(TestCase):
         )
 
         item_model.objects.filter.return_value.update.assert_called()
+
+
+class ReverseFixHiddenGeoPropTests(TestCase):
+
+    def test_reverse_fix_hidden_geo_prop(self):
+        mock_apps = MagicMock()
+
+        discipline_model = MagicMock()
+        container_model = MagicMock()
+        item_model = MagicMock()
+
+        discipline_model.objects.exclude.return_value = [
+            MagicMock(id=1)
+        ]
+
+        container_model.objects.filter.return_value = [
+            MagicMock()
+        ]
+
+        def get_model(app_label, model_name):
+            return {
+                "Discipline": discipline_model,
+                "Splocalecontainer": container_model,
+                "Splocalecontaineritem": item_model,
+            }[model_name]
+
+        mock_apps.get_model.side_effect = get_model
+
+        helper_0021_update_hidden_geo_tables.reverse_fix_hidden_geo_prop(
+            mock_apps
+        )
+
+        item_model.objects.filter.return_value.update.assert_called_with(
+            ishidden=False
+        )
