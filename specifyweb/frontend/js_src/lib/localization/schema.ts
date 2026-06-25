@@ -649,7 +649,7 @@ export const schemaText = createDictionary({
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
-    'de-ch': 'Format für benutzerdefinierte Felder',
+    'de-ch': 'Benutzerdefiniertes Feldformat',
     'es-es': 'Formato de campo personalizado',
     'fr-fr': 'Format de champ personnalisé',
     'ru-ru': 'Формат пользовательского поля',

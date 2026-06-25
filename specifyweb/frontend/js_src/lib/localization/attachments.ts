@@ -62,7 +62,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Sortiere nach',
     'pt-br': 'Ordenar por',
     'hr-hr': 'Poredaj po',
-    nb: 'Bestill etter',
+    nb: 'Sorter etter',
   },
   uploadingInline: {
     'en-us': 'Uploading…',

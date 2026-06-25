@@ -20,7 +20,7 @@ export const mainText = createDictionary({
     'de-ch': '{baseTitle:string} | Specify 7',
     'pt-br': '{baseTitle:string} | Specify 7',
     'hr-hr': '{baseTitle:string} | Navedite 7',
-    nb: '{baseTitle:string} | Spesifiser 7',
+    nb: '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
     comment: 'Default page title',
@@ -32,7 +32,7 @@ export const mainText = createDictionary({
     'de-ch': 'Specify 7',
     'pt-br': 'Specify 7',
     'hr-hr': 'Navedite 7',
-    nb: 'Spesifiser 7',
+    nb: 'Specify 7',
   },
   pageNotFound: {
     comment: 'Used in title',
@@ -128,7 +128,7 @@ export const mainText = createDictionary({
       'Pedimos desculpas, parece que você encontrou um erro no Specify 7 do qual talvez não tenhamos conhecimento.',
     'hr-hr':
       'Žao nam je, čini se da ste naišli na grešku u Specify 7 za koju možda nismo svjesni.',
-    nb: 'Beklager, det ser ut til at du har støtt på en feil i Specifice 7 som vi kanskje ikke er klar over.',
+    nb: 'Beklager, det ser ut til at du har støtt på en feil i Specify 7 som vi kanskje ikke er klar over.',
   },
   criticalErrorOccurredDescription: {
     'en-us':
@@ -166,7 +166,7 @@ export const mainText = createDictionary({
       'Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados Specify Cloud, faça o download da mensagem de erro e envie para <email />.',
     'hr-hr':
       'Ako se ovaj problem nastavi, obratite se IT podršci. Ako se radi o Specify Cloud bazi podataka, preuzmite poruku o pogrešci i pošaljite je na <email />.',
-    nb: 'Hvis problemet vedvarer, kan du kontakte IT-støtte. Hvis dette er en Specifice Cloud-database, kan du laste ned feilmeldingen og sende den til <email />.',
+    nb: 'Hvis problemet vedvarer, kan du kontakte IT-støtte. Hvis dette er en Specify Cloud-database, kan du laste ned feilmeldingen og sende den til <email />.',
   },
   errorResolutionSecondDescription: {
     comment: 'Careful with the <xml> tags when localizing',

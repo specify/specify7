@@ -51,7 +51,7 @@ export const treeText = createDictionary({
     'de-ch': 'Zusammenführen',
     'pt-br': 'Fusão',
     'hr-hr': 'Spojiti',
-    nb: 'Fusjonere',
+    nb: 'Slå sammen',
   },
   undoSynonymy: {
     'en-us': 'Undo Synonymy',
@@ -121,7 +121,7 @@ export const treeText = createDictionary({
     'de-ch': 'Kind hinzuzufügen',
     'pt-br': 'Adicionar filho',
     'hr-hr': 'Dodaj dijete',
-    nb: 'Legg til barn',
+    nb: 'Legg til undernode',
   },
   moveNodeHere: {
     'en-us': 'Move "{nodeName:string}" here',

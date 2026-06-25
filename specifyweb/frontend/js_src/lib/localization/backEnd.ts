@@ -68,7 +68,7 @@ export const backEndText = createDictionary({
       '{value:string} não é um valor válido neste campo de lista de opções.\n\nClique na seta para escolher entre as opções disponíveis.',
     'hr-hr':
       '{value:string} nije dopuštena vrijednost u ovom polju s popisa za odabir.\n\nKliknite na strelicu za odabir između dostupnih opcija.',
-    nb: '{value:string} er ikke en lovlig verdi i dette valglistefeltet.\n\nKlikk på pilen for å velge blant tilgjengelige alternativer.',
+    nb: '{value:string} er ikke en lovlig verdi i dette plukklistefeltet.\n\nKlikk på pilen for å velge blant tilgjengelige alternativer.',
   },
   failedParsingAgentType: {
     comment: `
@@ -145,7 +145,7 @@ export const backEndText = createDictionary({
       'O valor da data deve conter o ano com quatro dígitos: {value:string}',
     'hr-hr':
       'Vrijednost datuma mora sadržavati četiri znamenke godine: {value:string}',
-    nb: 'datoverdien må inneholde fire sifre i året: {value:string}',
+    nb: 'dato må inneholde fire sifre i året: {value:string}',
   },
   badDateFormat: {
     'en-us': 'bad date value: {value:string}. expected: {format:string}',
@@ -492,7 +492,7 @@ export const backEndText = createDictionary({
       'Ressource {resource:string} ist bereits im Berechtigungsregister vorhanden',
     'pt-br': 'Recurso {resource:string} já está no registro de permissões',
     'hr-hr': 'Resurs {resource:string} već je u registru dozvola',
-    nb: 'Ressurs {resource:string} finnes allerede i tillatelsesregisteret',
+    nb: 'Ressurs {resource:string} finnes allerede i registeret for tillatelser',
   },
   actorIsNotSpecifyUser: {
     comment: 'Agent "Abc" is not a Specify User',
@@ -614,7 +614,7 @@ export const backEndText = createDictionary({
       'Parte da data inválida "{datePart:string}". Esperava-se uma das seguintes opções: {validDateParts:string}',
     'hr-hr':
       'Nevažeći dio datuma "{datePart:string}". Očekivao se jedan od {validDateParts:string}',
-    nb: 'Ugyldig datodel «{datePart:string}». Forventet én av {validDateParts:string}',
+    nb: 'Ugyldig del av dato «{datePart:string}». Forventet én av {validDateParts:string}',
   },
   invalidUploadStatus: {
     'en-us':

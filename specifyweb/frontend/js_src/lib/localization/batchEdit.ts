@@ -16,7 +16,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Пакетное редактирование',
     'uk-ua': 'Пакетне редагування',
     'hr-hr': 'Skupno uređivanje',
-    nb: 'Grupperedigering',
+    nb: 'Masseredigering',
   },
   batchEditPrefs: {
     'en-us': 'Batch Edit Preferences',
@@ -27,7 +27,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Настройки пакетного редактирования',
     'uk-ua': 'Налаштування пакетного редагування',
     'hr-hr': 'Postavke grupnog uređivanja',
-    nb: 'Innstillinger for batchredigering',
+    nb: 'Innstillinger for masseredigering',
   },
   numberOfRecords: {
     'en-us': 'Number of records selected from the query',
@@ -38,7 +38,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Количество записей, выбранных из запроса.',
     'uk-ua': 'Кількість записів, вибраних із запиту',
     'hr-hr': 'Broj zapisa odabranih iz upita',
-    nb: 'Antall poster valgt fra spørringen',
+    nb: 'Antall treff valgt fra søket',
   },
   removeField: {
     'en-us':
@@ -57,7 +57,7 @@ export const batchEditText = createDictionary({
       'Поле не підтримується для пакетного редагування. Видаліть поле або приховайте його.',
     'hr-hr':
       'Polje nije podržano za skupno uređivanje. Uklonite polje ili ga sakrijte.',
-    nb: 'Feltet støttes ikke for batchredigering. Fjern feltet, eller gjør det skjult.',
+    nb: 'Feltet støttes ikke ved masseredigering. Fjern feltet eller skjul det.',
   },
   addTreeRank: {
     'en-us':
@@ -76,7 +76,7 @@ export const batchEditText = createDictionary({
       'Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування',
     'hr-hr':
       'Sljedeći rangovi bit će dodani upitu kako bi se omogućilo skupno uređivanje',
-    nb: 'Følgende ranger vil bli lagt til spørringen for å muliggjøre batchredigering',
+    nb: 'Følgende ranger vil bli lagt til i søket for å aktivere masseredigering',
   },
   pickTreesToFilter: {
     'en-us':
@@ -95,7 +95,7 @@ export const batchEditText = createDictionary({
       'Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування',
     'hr-hr':
       'Odabrani rang(ovi) nalaze se u više stabala. Odaberite stablo(a) za skupno uređivanje',
-    nb: 'Den/de valgte rangeringen(e) finnes i flere trær. Velg tre(r) for batchredigering med',
+    nb: 'Den/de valgte rangeringen(e) finnes i flere trær. Velg tre(r) for massredigering med',
   },
   datasetName: {
     'en-us': '{queryName:string} {datePart:string}',
@@ -117,7 +117,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'В запросе были обнаружены следующие ошибки.',
     'uk-ua': 'У запиті виявлено такі помилки',
     'hr-hr': 'U upitu su pronađene sljedeće greške',
-    nb: 'Følgende feil ble funnet i spørringen',
+    nb: 'Følgende feil ble funnet i søket',
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
@@ -131,7 +131,7 @@ export const batchEditText = createDictionary({
       'Для пакетного редактирования запроса требуются дополнительные ранги.',
     'uk-ua': 'Запит потребує додаткових рангів для пакетного редагування',
     'hr-hr': 'Upit zahtijeva dodatne rangove za skupno uređivanje',
-    nb: 'Spørringen krever flere ranger for batchredigering',
+    nb: 'Søket krever flere ranger for massredigering',
   },
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
@@ -149,7 +149,7 @@ export const batchEditText = createDictionary({
       'Використовуйте конструктор запитів для створення нового набору даних для пакетного редагування',
     'hr-hr':
       'Pomoću alata za izradu upita napravite novi skup podataka za grupno uređivanje',
-    nb: 'Bruk spørrebyggeren til å opprette et nytt datasett for batchredigering',
+    nb: 'Bruk søkbyggeren til å opprette et nytt datasett for masseredigering',
   },
   showRollback: {
     'en-us': 'Show rollback button',
@@ -179,7 +179,7 @@ export const batchEditText = createDictionary({
       'Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр приховає кнопку',
     'hr-hr':
       'Vraćanje u skupnom uređivanju je eksperimentalna značajka. Ova će postavka sakriti gumb',
-    nb: 'Tilbakerulling i batchredigering er en eksperimentell funksjon. Denne innstillingen vil skjule knappen',
+    nb: 'Tilbakeføring i masseredigering er en eksperimentell funksjon. Denne innstillingen skjuler knappen.',
   },
   commit: {
     'en-us': 'Commit',
@@ -190,7 +190,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Совершить',
     'uk-ua': 'Здійснити',
     'hr-hr': 'Potvrdi',
-    nb: 'Begå',
+    nb: 'Lagre',
   },
   startCommitDescription: {
     'en-us':
@@ -209,7 +209,7 @@ export const batchEditText = createDictionary({
       'Запис набору даних призведе до оновлення, додавання та видалення даних з електронної таблиці до бази даних Specify.',
     'hr-hr':
       'Potvrdom skupa podataka ažurirat će se, dodavati i brisati podaci iz proračunske tablice u bazu podataka Specify.',
-    nb: 'Når datasettet er lagret, vil det oppdatere, legge til og slette dataene fra regnearket til Specify-databasen.',
+    nb: 'Når datasettet bekreftes, blir dataene i regnearket oppdatert, lagt til og slettet i Specify-databasen.',
   },
   startRevertDescription: {
     'en-us':
@@ -228,7 +228,7 @@ export const batchEditText = createDictionary({
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів',
     'hr-hr':
       'Vraćanjem skupa podataka unatrag ponovno će se ažurirati vrijednosti, izbrisati kreirani zapisi i kreirati novi zapisi',
-    nb: 'Tilbakestilling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
+    nb: 'Tilbakeføring av datasettet vil gjenopprette tidligere verdier, slette opprettede poster og gjenopprette slettede poster',
   },
   commitSuccessfulDescription: {
     'en-us':
@@ -247,7 +247,7 @@ export const batchEditText = createDictionary({
       'Натисніть кнопку «Результати», щоб побачити кількість записів, на які вплинула зміна, у кожній таблиці бази даних',
     'hr-hr':
       'Kliknite gumb "Rezultati" da biste vidjeli broj pogođenih zapisa u svakoj tablici baze podataka',
-    nb: 'Klikk på «Resultater»-knappen for å se antall poster som er berørt i hver databasetabell.',
+    nb: 'Klikk på «Resultater»-knappen for å se antall treff som blir berørt i hver databasetabell',
   },
   dateSetRevertDescription: {
     'en-us':
@@ -266,7 +266,7 @@ export const batchEditText = createDictionary({
       'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит',
     'hr-hr':
       'Ovaj vraćeni skup podataka je spremljen, međutim, ne može se uređivati. Ponovno pokrenite upit.',
-    nb: 'Dette tilbakerullede datasettet er lagret, men det kan ikke redigeres. Kjør spørringen på nytt.',
+    nb: 'Dette tilbakerullede datasettet er lagret, men kan ikke redigeres. Kjør søket på nytt',
   },
   committing: {
     'en-us': 'Committing',
@@ -277,7 +277,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Совершение',
     'uk-ua': 'Здійснення',
     'hr-hr': 'Počinjanje',
-    nb: 'Forpliktelse',
+    nb: 'Lagrer datasettet',
   },
   beStatusCommit: {
     'en-us': 'Data Set Commit Status',
@@ -288,7 +288,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Статус фиксации набора данных',
     'uk-ua': 'Стан фіксації набору даних',
     'hr-hr': 'Status potvrđivanja skupa podataka',
-    nb: 'Status for iverksettelse av datasett',
+    nb: 'Lagringsstatus for datasett',
   },
   startCommit: {
     'en-us': 'Begin Data Set Commit?',
@@ -299,7 +299,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Начало фиксации набора данных?',
     'uk-ua': 'Почати фіксацію набору даних?',
     'hr-hr': 'Započeti potvrđivanje skupa podataka?',
-    nb: 'Starte datasett-iverksettelse?',
+    nb: 'Starte lagring av datasettet?',
   },
   commitErrors: {
     'en-us': 'Commit Failed due to Error Cells',
@@ -310,7 +310,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Фиксация не удалась из-за ошибок в ячейках.',
     'uk-ua': 'Не вдалося виконати фіксацію через комірки з помилками',
     'hr-hr': 'Potvrda nije uspjela zbog ćelija s pogreškom',
-    nb: 'Utføring mislyktes på grunn av feilceller',
+    nb: 'Lagring mislyktes på grunn av feil i celler',
   },
   commitErrorsDescription: {
     'en-us': 'The Commit failed due to one or more cell value errors.',
@@ -328,7 +328,7 @@ export const batchEditText = createDictionary({
       'Фіксацію не вдалося виконати через одну або декілька помилок у значенні клітинки.',
     'hr-hr':
       'Potvrda nije uspjela zbog jedne ili više pogrešaka u vrijednosti ćelije.',
-    nb: 'Iverksettelsen mislyktes på grunn av én eller flere celleverdifeil.',
+    nb: 'Lagringen mislyktes på grunn av én eller flere feil i celleverdier.',
   },
   commitCancelled: {
     'en-us': 'Commit Cancelled',
@@ -339,7 +339,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Подтверждение отменено',
     'uk-ua': 'Зміна фіксації',
     'hr-hr': 'Potvrda otkazana',
-    nb: 'Forpliktelse avbrutt',
+    nb: 'Lagring avbrutt',
   },
   commitCancelledDescription: {
     'en-us': 'Commit Cancelled Description',
@@ -350,7 +350,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Подтверждение отменено Описание',
     'uk-ua': 'Опис скасованого підтвердження',
     'hr-hr': 'Opis otkazanog potvrđivanja',
-    nb: 'Beskrivelse av forpliktelse avbrutt',
+    nb: 'Forklaring på avbrutt lagring',
   },
   commitSuccessful: {
     'en-us': 'Commit Completed with No Errors',
@@ -361,7 +361,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Фиксация изменений завершена без ошибок.',
     'uk-ua': 'Коміт завершено без помилок',
     'hr-hr': 'Potvrda završena bez grešaka',
-    nb: 'Utføring fullført uten feil',
+    nb: 'Lagring fullført uten feil',
   },
   batchEditRecordSetName: {
     'en-us': 'BE commit of "{dataSet:string}"',
@@ -455,7 +455,7 @@ export const batchEditText = createDictionary({
       'Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії області видимості',
     'hr-hr':
       'Skupno uređivanje onemogućeno je za sistemske tablice i tablice hijerarhije opsega',
-    nb: 'Grupperedigering er deaktivert for systemtabeller og omfangshierarktabeller',
+    nb: 'Masseredigering er deaktivert for systemtabeller og tabeller i skop- og hierarkitabeller',
   },
   cannotEditAfterRollback: {
     'en-us':
@@ -474,7 +474,7 @@ export const batchEditText = createDictionary({
       '(Набори даних пакетного редагування не можна редагувати після відкату – лише для читання)',
     'hr-hr':
       '(Skupni skupovi podataka za skupno uređivanje ne mogu se uređivati nakon vraćanja na prethodno stanje - samo za čitanje)',
-    nb: '(Datasett for batchredigering kan ikke redigeres etter tilbakestilling – skrivebeskyttet)',
+    nb: '(Datasett for masseredigering kan ikke redigeres etter tilbakeføring – skrivebeskyttet)',
   },
   enableRelationships: {
     'en-us': 'Enable relationships',
@@ -504,7 +504,7 @@ export const batchEditText = createDictionary({
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
     'hr-hr':
       'Omogućuje skupno uređivanje odnosa osnovne tablice. Vraćanje unatrag je onemogućeno kada su odnosi omogućeni.',
-    nb: 'Tillater batchredigering av relasjoner i basistabellen. Tilbakerulling er deaktivert når relasjoner er aktivert',
+    nb: 'Tillater masseredigering av relasjoner i basistabellen. Tilbakeføring er deaktivert når relasjoner er aktivert',
   },
   commitDataSet: {
     'en-us': 'Commit Data Set',
@@ -534,6 +534,6 @@ export const batchEditText = createDictionary({
       'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для певних користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати',
     'hr-hr':
       'Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete u obzir utjecaj na njihovo iskustvo. Ova se radnja ne može poništiti.',
-    nb: 'Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan dette påvirker brukeropplevelsen deres. Denne handlingen kan ikke angres.',
+    nb: 'Før du fortsetter, vær oppmerksom på at denne handlingen kan påvirke andre brukere. Den kan føre til forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner i Specify. Vennligst vurder konsekvensene for brukeropplevelsen. Handlingen kan ikke angres.',
   },
 } as const);

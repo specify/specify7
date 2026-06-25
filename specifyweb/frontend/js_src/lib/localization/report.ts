@@ -18,7 +18,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Etikett',
     'pt-br': 'Rótulo',
     'hr-hr': 'Označiti',
-    nb: 'Merkelapp',
+    nb: 'Etikett',
   },
   labels: {
     'en-us': 'Labels',
@@ -40,7 +40,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Auswertung',
     'pt-br': 'Relatório',
     'hr-hr': 'Izvješće',
-    nb: 'Rapportere',
+    nb: 'Rapporter',
   },
   reports: {
     'en-us': 'Reports',
@@ -84,7 +84,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Fehlende Anhänge',
     'pt-br': 'Anexos ausentes',
     'hr-hr': 'Nedostaju prilozi',
-    nb: 'Manglende vedlegg',
+    nb: 'Mangler vedlegg',
   },
   fix: {
     'en-us': 'Fix',
@@ -95,7 +95,7 @@ export const reportsText = createDictionary({
     'de-ch': 'Korrektur',
     'pt-br': 'Consertar',
     'hr-hr': 'Popraviti',
-    nb: 'Fastsette',
+    nb: 'Fastsett',
   },
   chooseFile: {
     'en-us': 'Choose file',
