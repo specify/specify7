@@ -13,7 +13,7 @@ export const batchIdentifyText = createDictionary({
     'es-es': 'Identificador de lote',
     'fr-fr': 'Identification du lot',
     'hr-hr': 'Identifikacija serije',
-    nb: 'Batchidentifikasjon',
+    nb: 'Batch-identifikasjon',
     'pt-br': 'Identificação de lote',
     'ru-ru': 'Идентификация пакета',
     'uk-ua': 'Пакетна ідентифікація',
@@ -29,7 +29,7 @@ export const batchIdentifyText = createDictionary({
       "Saisissez les numéros de catalogue en utilisant n'importe quel délimiteur non numérique (virgules, espaces, préfixes textuels, etc.). Utilisez un tiret pour indiquer les plages numériques, par exemple 0001 - 0150.",
     'hr-hr':
       'Unesite kataloške brojeve koristeći nenumeričke razdjelnike (zareze, razmake, tekstualne prefikse itd.). Koristite crticu za označavanje numeričkih raspona poput 0001 - 0150.',
-    nb: 'Skriv inn katalognumre ved hjelp av ikke-numeriske skilletegn (komma, mellomrom, tekstprefikser osv.). Bruk en bindestrek for å definere numeriske områder som 0001–0150.',
+    nb: 'Skriv inn katalognumre ved hjelp av ikke-numeriske skilletegn (komma, mellomrom, tekstprefikser osv.). Bruk en bindestrek for å definere numeriske områder som 0001 - 0150.',
     'pt-br':
       'Insira os números de catálogo usando quaisquer delimitadores não numéricos (vírgulas, espaços, prefixos de texto, etc.). Use um hífen para declarar intervalos numéricos, como 0001 - 0150.',
     'ru-ru':
@@ -54,7 +54,7 @@ export const batchIdentifyText = createDictionary({
     'es-es': 'Identificar',
     'fr-fr': 'Identifier',
     'hr-hr': 'Identificirati',
-    nb: 'Identifisere',
+    nb: 'Identifiser',
     'pt-br': 'Identificar',
     'ru-ru': 'Идентифицировать',
     'uk-ua': 'Ідентифікувати',
@@ -67,7 +67,7 @@ export const batchIdentifyText = createDictionary({
     'fr-fr':
       'Tous les enregistrements ont été identifiés selon le taxon spécifié.',
     'hr-hr': 'Svi zapisi su identificirani s navedenim taksonom.',
-    nb: 'Alle poster ble identifisert til det spesifiserte taksonet.',
+    nb: 'Alle poster ble identifisert til det angitte taksonet.',
     'pt-br': 'Todos os registros foram identificados até o táxon especificado.',
     'ru-ru': 'Все записи были идентифицированы до указанного таксона.',
     'uk-ua': 'Усі записи були ідентифіковані до зазначеного таксону.',
@@ -78,7 +78,7 @@ export const batchIdentifyText = createDictionary({
     'es-es': 'Identificación por lotes de registros actualizados',
     'fr-fr': 'Lot Identifier les enregistrements mis à jour',
     'hr-hr': 'Grupna identifikacija ažuriranih zapisa',
-    nb: 'Gruppeidentifiser oppdaterte poster',
+    nb: 'Batch-identifiser oppdaterte poster',
     'pt-br': 'Identificar em lote os registros atualizados',
     'ru-ru': 'Пакетная идентификация обновленных записей',
     'uk-ua': 'Пакетна ідентифікація оновлених записів',
@@ -111,7 +111,7 @@ export const batchIdentifyText = createDictionary({
     'es-es': '0001 0002 0003 - 0150',
     'fr-fr': '0001 0002 0003 - 0150',
     'hr-hr': '0001 0002 0003 - 0150',
-    nb: '0001 0002 0003–0150',
+    nb: '0001 0002 0003 - 0150',
     'pt-br': '0001 0002 0003 - 0150',
     'ru-ru': '0001 0002 0003 - 0150',
     'uk-ua': '0001 0002 0003 - 0150',
@@ -122,7 +122,7 @@ export const batchIdentifyText = createDictionary({
     'es-es': 'Vista previa de identificación por lotes',
     'fr-fr': "Aperçu de l'identification par lot",
     'hr-hr': 'Pregled skupne identifikacije',
-    nb: 'Forhåndsvisning av gruppeidentifikasjon',
+    nb: 'Forhåndsvisning av batch-identifikasjon',
     'pt-br': 'Visualização de identificação em lote',
     'ru-ru': 'Предварительный просмотр идентификации пакета',
     'uk-ua': 'Попередній перегляд пакетної ідентифікації',
@@ -171,7 +171,7 @@ export const batchIdentifyText = createDictionary({
       "L'ensemble d'enregistrements sélectionné contient des objets de collection provenant de plusieurs arbres taxonomiques.",
     'hr-hr':
       'Odabrani skup zapisa sadrži objekte kolekcije iz više od jednog taksonskog stabla.',
-    nb: 'Det valgte postsettet inneholder samlingsobjekter fra mer enn ett taksontre.',
+    nb: 'Den valgte databasepost-lista inneholder samlingsobjekter fra mer enn ett taksontre.',
     'pt-br':
       'O conjunto de registros selecionado contém objetos de coleção de mais de uma árvore taxonômica.',
     'ru-ru':
@@ -190,7 +190,7 @@ export const batchIdentifyText = createDictionary({
       "Choisissez un autre ensemble d'enregistrements, ou modifiez la requête utilisée pour créer cet ensemble d'enregistrements afin que tous les objets de la collection utilisent le même arbre taxonomique.",
     'hr-hr':
       'Odaberite drugi skup zapisa ili uredite upit korišten za stvaranje ovog skupa zapisa tako da svi objekti kolekcije koriste isto stablo taksona.',
-    nb: 'Velg et annet postsett, eller rediger spørringen som ble brukt til å opprette dette postsettet, slik at alle samlingsobjekter bruker samme taksontre.',
+    nb: 'Velg en annen databasepost-liste, eller rediger søket som ble brukt til å opprette denne listen, slik at alle samlingsobjekter bruker samme taksontre.',
     'pt-br':
       'Escolha um conjunto de registros diferente ou edite a consulta usada para criar este conjunto de registros para que todos os objetos da coleção usem a mesma árvore taxonômica.',
     'ru-ru':
