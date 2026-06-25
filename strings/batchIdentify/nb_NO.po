@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:04+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-25 07:02+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/batchIdentify/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -17,9 +17,8 @@ msgstr ""
 #: components/BatchIdentify/index.tsx:877
 #: components/Header/userToolDefinitions.ts:144
 #: components/Router/OverlayRoutes.tsx:80
-#, fuzzy
 msgid "batchIdentify"
-msgstr "Batchidentifikasjon"
+msgstr "Batch-identifikasjon"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:883
