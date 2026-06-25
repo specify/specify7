@@ -1158,7 +1158,7 @@ export const resourcesText = createDictionary({
     nb: 'Velg ett taksontresett for å fortsette med:',
     'pt-br': 'Selecione um conjunto de árvores taxonômicas para continuar:',
     'ru-ru': 'Выберите один набор таксономических деревьев, чтобы продолжить:',
-    'uk-ua': 'Виберіть один набір таксонів для продовження:',
+    'uk-ua': 'Оберіть один набір дерева-таксону з яким продовжувати:',
   },
   invalidDeterminationTaxon: {
     'en-us':
