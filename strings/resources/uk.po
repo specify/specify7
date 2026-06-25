@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:04+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-25 16:01+0000\n"
+"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "resources/uk/>\n"
 "Language: uk\n"
@@ -576,9 +576,8 @@ msgstr "Обмін, що готується, не можна видалити"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:906
-#, fuzzy
 msgid "selectDeterminationTaxon"
-msgstr "Виберіть один набір таксонів для продовження:"
+msgstr "Оберіть один набір дерева-таксону з яким продовжувати:"
 
 #. Used in: Components > Data Model > Business Rule Defs ⬤ Data Model > __tests__ > Business Rules
 #: components/DataModel/businessRuleDefs.ts:196
