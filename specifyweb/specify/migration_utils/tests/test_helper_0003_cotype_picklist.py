@@ -1,5 +1,5 @@
 from django.test import TestCase
-from unittest.mock import patch, MagicMock
+from unittest.mock import MagicMock
 
 from specifyweb.specify.migration_utils.migration_helpers import helper_0003_cotype_picklist
 
