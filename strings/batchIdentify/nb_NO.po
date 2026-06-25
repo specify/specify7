@@ -66,15 +66,13 @@ msgstr "Validerer katalognumre..."
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:887
-#, fuzzy
 msgid "placeholder"
-msgstr "0001 0002 0003–0150"
+msgstr "0001 0002 0003 - 0150"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:156
-#, fuzzy
 msgid "previewQueryName"
-msgstr "Forhåndsvisning av gruppeidentifikasjon"
+msgstr "Forhåndsvisning av batch-identifikasjon"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:915
