@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
+"PO-Revision-Date: 2026-06-27 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
@@ -416,7 +416,7 @@ msgstr ""
 #: components/FormSliders/AttachmentsCollection.tsx:84
 #, fuzzy
 msgid "downloadAll"
-msgstr "Tout télécharger"
+msgstr "Télécharger tout"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
