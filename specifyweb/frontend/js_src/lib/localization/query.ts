@@ -656,7 +656,7 @@ export const queryText = createDictionary({
     'uk-ua': 'True або Empty',
     'de-ch': 'Wahr oder leer',
     'pt-br': 'Verdadeiro ou Vazio',
-    'hr-hr': 'True ili Prazno',
+    'hr-hr': 'Točno ili prazno',
     nb: 'Sant eller Tom',
   },
   falseOrNull: {
@@ -753,7 +753,7 @@ export const queryText = createDictionary({
     'es-es': 'Termina con',
     'fr-fr': 'Se termine par',
     'pt-br': 'Termina com',
-    'ru-ru': 'Заканчивается',
+    'ru-ru': 'Заканчивается на',
     'uk-ua': 'Закінчується на',
     'hr-hr': 'Završava s',
     nb: 'Slutter med',
@@ -810,7 +810,7 @@ export const queryText = createDictionary({
     'uk-ua': 'Налаштувати видимі таблиці запитів',
     'de-ch': 'Sichtbare Abfragetabellen konfigurieren',
     'pt-br': 'Configurar tabelas de consulta visíveis',
-    'hr-hr': 'Konfiguriranje vidljivih tablica upita',
+    'hr-hr': 'Konfiguriraj vidljive tablice upita',
     nb: 'Konfigurer synlige søketabeller',
   },
   exportQueryForDwca: {
@@ -820,7 +820,7 @@ export const queryText = createDictionary({
     'fr-fr': "Requête d'exportation pour la définition DwCA",
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
-    'pt-br': 'Exportar consulta para definição de DwCA',
+    'pt-br': 'Consulta de exportação para definição de DwCA',
     'hr-hr': 'Izvoz upita za definiciju DwCA-a',
     nb: 'Eksporer utvidet søk for DwCA-definisjon',
   },
@@ -914,7 +914,7 @@ export const queryText = createDictionary({
     'es-es':
       'El valor del campo es demasiado largo. La longitud máxima permitida es {maxLength:number|formatted}.',
     'fr-fr':
-      'La valeur du champ est trop longue. La longueur maximale autorisée est de {maxLength:number|formatted}.',
+      'La valeur du champ est trop longue. La longueur maximale autorisée est {maxLength:number|formatted}.',
     'uk-ua':
       'Значення поля задовге. Максимальна дозволена довжина {maxLength:number|formatted}',
     'de-ch':
