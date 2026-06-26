@@ -18,6 +18,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Willkommen',
     'pt-br': 'Bem-vindo',
     'hr-hr': 'Dobrodošli',
+    nb: 'Velkommen',
   },
   aboutSpecify: {
     'en-us': 'About Specify 7',
@@ -28,6 +29,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Über Specify 7',
     'pt-br': 'Sobre Especificar 7',
     'hr-hr': 'O Specify 7',
+    nb: 'Om Specify 7',
   },
   downloadInformation: {
     'en-us': 'Download Information',
@@ -38,6 +40,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Про Specify 7',
     'pt-br': 'Informações para download',
     'hr-hr': 'Preuzimanje informacija',
+    nb: 'Last ned informasjon',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -48,6 +51,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Taxon-Kacheln',
     'pt-br': 'Blocos de táxon',
     'hr-hr': 'Pločice taksona',
+    nb: 'Taksonkart',
   },
   taxonTilesDescription: {
     'en-us':
@@ -66,6 +70,7 @@ export const welcomeText = createDictionary({
       'Exibindo táxons com {count:number|formatted} ou mais registros {collectionObjectTable:string}',
     'hr-hr':
       'Prikazuju se taksoni s {count:number|formatted} ili više {collectionObjectTable:string} zapisa',
+    nb: 'Viser taksa med {count:number|formatted} eller flere {collectionObjectTable:string} poster',
   },
   fullAddress: {
     'en-us':
@@ -84,6 +89,7 @@ export const welcomeText = createDictionary({
       'Consórcio de Coleções Específicas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA',
     'hr-hr':
       'Konzorcij za navođenje zbirki <br />\n\nInstitut za bioraznolikost <br />\n\nSveučilište u Kansasu <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 SAD',
+    nb: 'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
   },
   disclosure: {
     'en-us':
@@ -102,6 +108,7 @@ export const welcomeText = createDictionary({
       "O software Specify é um produto do Specify Collections Consortium, que é governado e financiado por suas instituições membros. Os membros fundadores do Consórcio incluem: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas e University of Michigan. O Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos EUA (NSF).",
     'hr-hr':
       "Specify softver je proizvod konzorcija Specify Collections kojim upravljaju i financiraju ga njegove institucije članice. Osnivači konzorcija uključuju: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Danski konzorcij muzeja, Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, Sveučilište Kansas i Sveučilište Michigan. Konzorcij djeluje pod neprofitnim, poreznim statusom 501(c)3 Sveučilišnog centra za istraživanje u Kansasu. Specify je od 1996. do 2018. godine financiran bespovratnim sredstvima američke Nacionalne zaklade za znanost.",
+    nb: "Specify-programvaren er et produkt fra Specify Collections Consortium, som styres og finansieres av medlemsinstitusjonene. Blant konsortiets grunnleggere er: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas og University of Michigan. Konsortiet opererer under den ideelle skatteformen 501(c)(3) i USA, gjennom University of Kansas Center for Research. Specify ble støttet fra 1996 til 2018 av tilskudd fra U.S. National Science Foundation.",
   },
   licence: {
     'en-us':
@@ -120,6 +127,7 @@ export const welcomeText = createDictionary({
       'Specify 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v2.',
     'hr-hr':
       'Specify 7, autorsko pravo 2025., Sveučilišni centar za istraživanje u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v2.',
+    nb: 'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen kildekode-programvare, lisensiert under GNU General Public License v2.',
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -130,6 +138,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Systeminformationen',
     'pt-br': 'Informações do sistema',
     'hr-hr': 'Informacije o sustavu',
+    nb: 'Systeminformasjon',
   },
   specifyVersion: {
     'en-us': 'Specify 7 Version:',
@@ -140,6 +149,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Specify 7 Version:',
     'pt-br': 'Especificar versão 7:',
     'hr-hr': 'Navedite verziju 7:',
+    nb: 'Specify 7 versjon:',
   },
   gitSha: {
     'en-us': 'Git SHA:',
@@ -150,6 +160,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Git SHA:',
     'pt-br': 'SHA do Git:',
     'hr-hr': 'Git SHA:',
+    nb: 'Git SHA:',
   },
   buildDate: {
     'en-us': 'Build Date:',
@@ -160,6 +171,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datum des Builds:',
     'pt-br': 'Data de compilação:',
     'hr-hr': 'Datum izrade:',
+    nb: 'Versjonsdato:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
@@ -170,6 +182,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Specify 6 Version:',
     'pt-br': 'Especifique a versão 6:',
     'hr-hr': 'Navedite 6 verzija:',
+    nb: 'Specify 6 versjon:',
   },
   databaseVersion: {
     'en-us': 'Database Version:',
@@ -180,6 +193,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbankversion:',
     'pt-br': 'Versão do banco de dados:',
     'hr-hr': 'Verzija baze podataka:',
+    nb: 'Databaseversjon:',
   },
   schemaVersion: {
     'en-us': 'Database Schema',
@@ -190,6 +204,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbankschema',
     'pt-br': 'Esquema do banco de dados',
     'hr-hr': 'Shema baze podataka',
+    nb: 'Databaseskjema',
   },
   databaseName: {
     'en-us': 'Database Name:',
@@ -200,6 +215,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbank-Name:',
     'pt-br': 'Nome do banco de dados:',
     'hr-hr': 'Naziv baze podataka:',
+    nb: 'Databasenavn:',
   },
   browser: {
     'en-us': 'Browser:',
@@ -210,6 +226,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Browser:',
     'pt-br': 'Navegador:',
     'hr-hr': 'Preglednik:',
+    nb: 'Nettleser:',
   },
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
@@ -220,5 +237,6 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbank Erstelldatum:',
     'pt-br': 'Data de criação do banco de dados:',
     'hr-hr': 'Datum kreiranja baze podataka:',
+    nb: 'Dato for opprettelse av database:',
   },
 } as const);

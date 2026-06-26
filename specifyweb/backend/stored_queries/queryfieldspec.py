@@ -10,14 +10,14 @@ from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
-from specifyweb.specify.models_utils.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
+from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
-from specifyweb.specify.models_utils.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,10 @@ TREE_ID_FIELD_RE = re.compile(r"(.*) (ID)$")
 # Precalculated fields that are not in the database. Map from table name to field name.
 PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
+}
+
+TREE_TABLE_NAMES = {
+    table.name.lower() for table in datamodel.tables if is_tree_table(table)
 }
 
 class SpQueryAttrs(TypedDict):
@@ -243,7 +247,9 @@ class QueryFieldSpec(
 
         join_path = []
         node = root_table
-        for elem in path:
+        extracted_fieldname, date_part = extract_date_part(field_name)
+        path_elems = list(path)
+        for idx, elem in enumerate(path_elems):
             try:
                 tableid, fieldname = elem.split("-")
             except ValueError:
@@ -252,14 +258,33 @@ class QueryFieldSpec(
             field = (
                 node.get_field(fieldname) if fieldname else node.get_field(table.name)
             )
+            if (
+                is_relation
+                and idx == len(path_elems) - 1
+                and (fieldname is not None or table.name.lower() in TREE_TABLE_NAMES)
+                and isinstance(field, Relationship)
+                and field.name.lower() == extracted_fieldname.lower()
+            ):
+                break
             join_path.append(field)
             node = table
 
         extracted_fieldname, date_part = extract_date_part(field_name)
-        field = node.get_field(extracted_fieldname, strict=False)
+        relation_already_in_path = (
+            is_relation
+            and len(join_path) > 0
+            and isinstance(join_path[-1], Relationship)
+            and join_path[-1].type not in {"many-to-one", "one-to-one"}
+            and join_path[-1].name.lower() == extracted_fieldname.lower()
+        )
+        field = (
+            None
+            if relation_already_in_path
+            else node.get_field(extracted_fieldname, strict=False)
+        )
 
         tree_rank_name = None
-        if field is None:  # try finding tree
+        if field is None and not relation_already_in_path:  # try finding tree
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
                 tree_rank = TreeRankQuery.create(
@@ -425,7 +450,8 @@ class QueryFieldSpec(
 
             if negate:
                 if op_num in NULL_SAFE_NEGATE_OPS:
-                    predicate = null_safe_not(mod_orm_field or orm_field, f)
+                    field_expr = mod_orm_field if mod_orm_field is not None else orm_field
+                    predicate = null_safe_not(field_expr, f)
                 else:
                     predicate = sql.not_(f)
             else:
@@ -499,26 +525,17 @@ class QueryFieldSpec(
                     cycle_detector,
                 )
         else:
-            tree_rank_idxs = [i for i, n in enumerate(self.join_path) if isinstance(n, TreeRankQuery)]
-            if tree_rank_idxs:
-                tree_rank_idx = tree_rank_idxs[0]
-                prefix = self.join_path[:tree_rank_idx] # up to (but not including) the tree-rank node
-                tree_rank_node = self.join_path[tree_rank_idx]
-                suffix = self.join_path[tree_rank_idx + 1 :] # field after the rank, e.g., "Name"
-
-                # Join only the prefix to obtain the correct starting alias (e.g., HostTaxon)
-                query, orm_model, table, _ = self.build_join(query, prefix)
-
-                # Build the CASE/joins for the tree rank starting at that alias
+            query, orm_model, table, field = self.build_join(query, self.join_path)
+            if isinstance(field, TreeRankQuery):
+                tree_rank_idx = self.join_path.index(field)
                 query, orm_field, field, table = query.handle_tree_field(
                     orm_model,
                     table,
-                    tree_rank_node,
-                    suffix,
+                    field,
+                    self.join_path[tree_rank_idx + 1 :],
                     self,
                 )
             else:
-                query, orm_model, table, field = self.build_join(query, self.join_path)
                 try:
                     field_name = self.get_field().name
                     orm_field = getattr(orm_model, field_name)
