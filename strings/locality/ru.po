@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:04+0000\n"
+"PO-Revision-Date: 2026-06-27 06:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "locality/ru/>\n"
@@ -283,8 +283,7 @@ msgstr "Ошибки обновления местоположения - {date:s
 #, fuzzy
 msgid "localityUpdateCrashFileName"
 msgstr ""
-"Обновление локальной инфраструктуры {taskId: string} Отчет о сбое - {date: "
-"string}"
+"Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:53
