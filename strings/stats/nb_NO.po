@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-27 19:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/stats/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -252,54 +252,46 @@ msgstr "Prosent med koordinater"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:553
-#, fuzzy
 msgid "percentImaged"
 msgstr "Prosent avbildet"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:49
-#, fuzzy
 msgid "deleteWarning"
 msgstr "Er du sikker på at du vil slette kategorien?"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:55
-#, fuzzy
 msgid "categoryToDelete"
 msgstr "Dette vil slette følgende kategori permanent"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:127
-#, fuzzy
 msgid "layoutPreference"
 msgstr "Definerer oppsettet til statistikksiden"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:136
-#, fuzzy
 msgid "showPreparationsTotal"
-msgstr "Vis {preparationTableName:string} Totaler"
+msgstr "Vis {preparationTableName:string} Antall"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:140
-#, fuzzy
 msgid "showPreparationsTotalDescription"
 msgstr ""
 "Hvis aktivert, vil standardstatistikkpanelet {preparationTableName:string} "
 "inkludere et totalt antall for hver {lowerPreparationTableName:string} av en "
 "bestemt {prepTypeTableName:string} sammen med den totale summen. Dette er "
-"nyttig for lottbaserte samlinger."
+"nyttig for bulkbaserte samlinger."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:152
-#, fuzzy
 msgid "autoRefreshRate"
 msgstr "Automatisk oppdateringsfrekvens (timer)"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:153
-#, fuzzy
 msgid "autoRefreshRateDescription"
 msgstr ""
-"Tidsintervallet, i timer, som statistikksiden automatisk oppdaterer dataene "
-"sine med. Standard er 24."
+"Tidsintervallet, i timer, for hvor ofte statistikksiden automatisk "
+"oppdaterer dataene. Standard er 24."
