@@ -173,14 +173,12 @@ msgstr "Elementverdi"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:545
-#, fuzzy
 msgid "downloadAsTSV"
 msgstr "Last ned som TSV"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:140
 #: components/Statistics/index.tsx:494
-#, fuzzy
 msgid "shared"
 msgstr "Delt"
 
@@ -191,78 +189,66 @@ msgstr "Delt"
 #: components/Router/Routes.tsx:469
 #: components/Statistics/hooks.tsx:118
 #: components/Statistics/index.tsx:512
-#, fuzzy
 msgid "statistics"
 msgstr "Statistikk"
 
 #. Used in: Components > Statistics > Delete Category
 #: components/Statistics/DeleteCategory.tsx:26
 #: components/Statistics/DeleteCategory.tsx:45
-#, fuzzy
 msgid "deleteCategory"
 msgstr "Slett kategori"
 
 #. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
-#, fuzzy
 msgid "editPage"
 msgstr "Rediger side"
 
 #. Used in: Components > Statistics > Stats Page Editing
 #: components/Statistics/StatsPageEditing.tsx:52
-#, fuzzy
 msgid "addPage"
 msgstr "Legg til side"
 
 #. Used in: Components > Statistics > Categories
 #: components/Statistics/Categories.tsx:298
-#, fuzzy
 msgid "addACategory"
 msgstr "Legg til en kategori"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:521
-#, fuzzy
 msgid "refresh"
-msgstr "Forfriske"
+msgstr "Last inn på nytt"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:532
-#, fuzzy
 msgid "collectionObjectsWithImages"
 msgstr "Samlingsobjekter med bilder"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:511
-#, fuzzy
 msgid "collectionObjectsWithAttachments"
 msgstr "Samlingsobjekter med vedlegg"
 
 #. Used in: Components > Statistics > Stat Items
 #: components/Statistics/StatItems.tsx:271
-#, fuzzy
 msgid "error"
 msgstr "Feil"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:204
 #: components/Statistics/StatsSpec.tsx:207
-#, fuzzy
 msgid "taxonRepresented"
-msgstr "Taxa representert"
+msgstr "Taksa representert"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:345
 #: components/Statistics/StatsSpec.tsx:348
-#, fuzzy
 msgid "geographiesRepresented"
 msgstr "Representerte geografiske områder"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:334
-#, fuzzy
 msgid "percentGeoReferenced"
-msgstr "Prosent georeferert"
+msgstr "Prosent med koordinater"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:553
