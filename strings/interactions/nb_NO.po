@@ -92,7 +92,7 @@ msgstr "Uten preparater"
 #: components/Interactions/InteractionDialog.tsx:429
 #, fuzzy
 msgid "continueWithoutPreparations"
-msgstr "Fortsett uten forberedelser"
+msgstr "Fortsett uten preparater"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:464
