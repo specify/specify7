@@ -131,13 +131,11 @@ msgstr "Uløst"
 #. 🟥Verb. Used in: Components > Interactions > Loan Return ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/LoanReturn.tsx:318
 #: components/QueryBuilder/LoanReturn.tsx:164
-#, fuzzy
 msgid "return"
-msgstr "Retur"
+msgstr "Tilbake"
 
 #. 🟥As in "Resolve preparations". Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:321
-#, fuzzy
 msgid "resolve"
 msgstr "Løse"
 
