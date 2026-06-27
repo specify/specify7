@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-27 19:02+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/stats/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -14,14 +14,12 @@ msgstr ""
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18
-#, fuzzy
 msgid "holdings"
-msgstr "Beholdninger"
+msgstr "Beholdning"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:32
 #: components/Statistics/__tests__/layout.tests.ts:21
-#, fuzzy
 msgid "collectionObjects"
 msgstr "Samlingsobjekter"
 
@@ -31,110 +29,92 @@ msgstr "Samlingsobjekter"
 #: components/Statistics/StatsSpec.tsx:401
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
-#, fuzzy
 msgid "typeSpecimens"
-msgstr "Typeprøver"
+msgstr "Typer"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:569
-#, fuzzy
 msgid "curation"
 msgstr "Kuratering"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:137
-#, fuzzy
 msgid "loans"
 msgstr "Lån"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:140
-#, fuzzy
 msgid "itemsOnLoans"
-msgstr "Utlånte gjenstander"
+msgstr "Utlånte objekter"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:159
-#, fuzzy
 msgid "openLoansStat"
-msgstr "Åpne lån"
+msgstr "Pågående lån"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:178
-#, fuzzy
 msgid "overdueLoans"
 msgstr "Forfalte lån"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:267
 #: components/Statistics/__tests__/layout.tests.ts:68
-#, fuzzy
 msgid "localityGeography"
 msgstr "Lokalitet / Geografi"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:270
-#, fuzzy
 msgid "localities"
 msgstr "Lokaliteter"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:296
-#, fuzzy
 msgid "geographyEntries"
 msgstr "Geografiske oppføringer"
 
 #. Used in: Statistics > __tests__ > Layout
 #: components/Statistics/__tests__/layout.tests.ts:71
-#, fuzzy
 msgid "countries"
 msgstr "Land"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:314
-#, fuzzy
 msgid "georeferencedLocalities"
-msgstr "Georefererte lokaliteter"
+msgstr "Lokaliteter med koordinater"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:446
-#, fuzzy
 msgid "digitization"
 msgstr "Digitalisering"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:449
-#, fuzzy
 msgid "digitizedLastSevenDays"
-msgstr "Digitaliserte siste 7 dager"
+msgstr "Digitaliserte siste syv dager"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:468
-#, fuzzy
 msgid "digitizedLastMonth"
 msgstr "Digitalisert forrige måned"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:487
-#, fuzzy
 msgid "digitizedLastYear"
 msgstr "Digitalisert i fjor"
 
 #. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:82
-#, fuzzy
 msgid "chooseStatistics"
 msgstr "Velg statistikk"
 
 #. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:86
-#, fuzzy
 msgid "selectFromQueries"
-msgstr "Velg fra spørringer"
+msgstr "Velg fra avansert søk"
 
 #. Used in: Components > Statistics > Add Stat Dialog
 #: components/Statistics/AddStatDialog.tsx:110
-#, fuzzy
 msgid "selectFromAvailableDefault"
 msgstr "Velg fra tilgjengelig standardstatistikk"
 
@@ -143,46 +123,39 @@ msgstr "Velg fra tilgjengelig standardstatistikk"
 #: components/Statistics/StatsSpec.tsx:25
 #: components/Statistics/__tests__/layout.tests.ts:14
 #: components/Statistics/__tests__/layout.tests.ts:103
-#, fuzzy
 msgid "collection"
 msgstr "Samling"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:565
 #: components/Statistics/__tests__/layout.tests.ts:99
-#, fuzzy
 msgid "personal"
 msgstr "Personlig"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:141
 #: components/Statistics/index.tsx:494
-#, fuzzy
 msgid "private"
 msgstr "Privat"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:572
 #: components/Statistics/__tests__/layout.tests.ts:106
-#, fuzzy
 msgid "collectionObjectsCataloged"
-msgstr "Samlingsobjekter katalogisert"
+msgstr "Antall samlingsobjekter registert"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:588
-#, fuzzy
 msgid "collectionObjectsDetermined"
-msgstr "Samlingsobjekter bestemt"
+msgstr "Antall samlingsobjekter identifisert"
 
 #. Used in: Components > Statistics > Index
 #: components/Statistics/index.tsx:516
-#, fuzzy
 msgid "lastRefreshed"
 msgstr "Sist oppdatert"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:376
-#, fuzzy
 msgid "categoryName"
 msgstr "Kategorinavn"
 
@@ -190,7 +163,7 @@ msgstr "Kategorinavn"
 #: components/Statistics/hooks.tsx:377
 #, fuzzy
 msgid "itemName"
-msgstr "Varenavn"
+msgstr "Preparat navn"
 
 #. Used in: Components > Statistics > Hooks
 #: components/Statistics/hooks.tsx:378
