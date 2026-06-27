@@ -85,7 +85,7 @@ msgstr "Skriv inn {fieldName: string}"
 #: components/Interactions/InteractionDialog.tsx:468
 #, fuzzy
 msgid "withoutPreparations"
-msgstr "Uten forberedelser"
+msgstr "Uten preparater"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:425
