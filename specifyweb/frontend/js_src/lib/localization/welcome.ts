@@ -180,7 +180,7 @@ export const welcomeText = createDictionary({
     'fr-fr': 'Spécifiez la version 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
-    'pt-br': 'Especifique a versão 6:',
+    'pt-br': 'Especificar versão 6:',
     'hr-hr': 'Navedite 6 verzija:',
     nb: 'Specify 6 versjon:',
   },
