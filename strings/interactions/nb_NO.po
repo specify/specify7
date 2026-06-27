@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-27 19:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/interactions/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -77,7 +77,6 @@ msgstr "Skriv inn {tableName:string} {fieldName:string}"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:507
-#, fuzzy
 msgid "enterLoanNumbers"
 msgstr "Skriv inn {fieldName: string}"
 
@@ -258,12 +257,10 @@ msgstr "Ingen av disse postene har forberedelser. Vil du fortsette?"
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:480
 #: components/TreeView/AddRank.tsx:62
-#, fuzzy
 msgid "continue"
-msgstr "Fortsette"
+msgstr "Fortsett"
 
 #. Used in: Components > Interactions > Prep Dialog Row
 #: components/Interactions/PrepDialogRow.tsx:175
-#, fuzzy
 msgid "notAvailable"
 msgstr "Ikke tilgjengelig"
