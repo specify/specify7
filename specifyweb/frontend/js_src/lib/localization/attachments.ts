@@ -831,7 +831,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Download All',
     'de-ch': 'Alle herunterladen',
     'es-es': 'Descargar todo',
-    'fr-fr': 'Tout télécharger',
+    'fr-fr': 'Télécharger tout',
     'pt-br': 'Baixar tudo',
     'ru-ru': 'Скачать все',
     'uk-ua': 'Завантажити все',
