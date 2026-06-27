@@ -96,9 +96,8 @@ msgstr "Fortsett uten preparater"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:464
-#, fuzzy
 msgid "addUnassociated"
-msgstr "Legg til et ikke-tilknyttet element"
+msgstr "Legg til et ikke-tilknyttet objekt"
 
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Interactions/PrepDialog.tsx:157
@@ -109,7 +108,7 @@ msgstr "Legg til et ikke-tilknyttet element"
 #: components/Statistics/__tests__/layout.tests.ts:42
 #, fuzzy
 msgid "preparations"
-msgstr "Forberedelser"
+msgstr "Preparater"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:101
