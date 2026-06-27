@@ -555,7 +555,7 @@ export const localityText = createDictionary({
     'fr-fr':
       "Mise à jour de la localisation {taskId : chaîne} Rapport d'incident - {date : chaîne}",
     'ru-ru':
-      'Обновление локальной инфраструктуры {taskId: string} Отчет о сбое - {date: string}',
+      'Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}',
     'uk-ua':
       'Оновлення місцевості {taskId: string} Звіт про збій - {date: string}',
     'pt-br':
