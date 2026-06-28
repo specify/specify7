@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-29 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -397,7 +397,7 @@ msgstr "Algoritmo de búsqueda (para relaciones con tablas de árbol)"
 #: components/Preferences/UserDefinitions.tsx:1196
 #, fuzzy
 msgid "startsWithInsensitive"
-msgstr "Comienza con (sin distinción entre mayúsculas y minúsculas)"
+msgstr "Comienza con (sin distinción de mayúsculas y minúsculas)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1129
@@ -502,7 +502,7 @@ msgstr "Mostrar autor en el árbol"
 #: components/Preferences/UserDefinitions.tsx:607
 #, fuzzy
 msgid "welcomePage"
-msgstr "Página de inicio"
+msgstr "Página principal"
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Preferences > Renderers ⬤ Components > Preferences > User Definitions
 #: components/Errors/JsonError.tsx:65
@@ -982,7 +982,7 @@ msgstr "Hacer que los cuadros de diálogo de formulario tengan el fondo gris."
 #: components/Preferences/UserDefinitions.tsx:1481
 #, fuzzy
 msgid "autoScrollTree"
-msgstr "Desplazamiento automático del árbol al nodo enfocado"
+msgstr "Árbol de desplazamiento automático al nodo enfocado"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1497
@@ -1043,7 +1043,7 @@ msgstr "Autocompletar"
 #: components/Preferences/UserDefinitions.tsx:1488
 #, fuzzy
 msgid "searchCaseSensitive"
-msgstr "Búsqueda sensible a mayúsculas y minúsculas"
+msgstr "Búsqueda que distingue entre mayúsculas y minúsculas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1521
