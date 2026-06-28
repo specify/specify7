@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-28 18:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "preferences/hr/>\n"
@@ -73,7 +73,7 @@ msgstr "Tema"
 #: components/Preferences/UserDefinitions.tsx:269
 #, fuzzy
 msgid "useSystemSetting"
-msgstr "Koristi postavke sustava"
+msgstr "Koristi sistemske postavke"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:192
@@ -487,7 +487,7 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:1150
 #, fuzzy
 msgid "highlightMatch"
-msgstr "Označi podudarni podniz"
+msgstr "Označi odgovarajući podniz"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:830
@@ -1225,7 +1225,7 @@ msgstr "Postavke kolekcije"
 #: components/Preferences/UserDefinitions.tsx:573
 #, fuzzy
 msgid "rememberDialogSizes"
-msgstr "Zapamti veličine dijaloških prozora"
+msgstr "Zapamtite veličine dijaloških prozora"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:566
