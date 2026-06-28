@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-29 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -1018,7 +1018,7 @@ msgstr "Automatische Vervollständigung"
 #: components/Preferences/UserDefinitions.tsx:1488
 #, fuzzy
 msgid "searchCaseSensitive"
-msgstr "Suche mit Berücksichtigung der Groß- und Kleinschreibung"
+msgstr "Suche mit Berücksichtigung der Groß-/Kleinschreibung"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1521
@@ -1282,7 +1282,7 @@ msgstr "Farbe der Schaltfläche „Speichern“"
 #: components/Preferences/UserDefinitions.tsx:489
 #, fuzzy
 msgid "secondaryButtonColor"
-msgstr "Farbe der Sekundärtaste"
+msgstr "Sekundäre Tastenfarbe"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:436
