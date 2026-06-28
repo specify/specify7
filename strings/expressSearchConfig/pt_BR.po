@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 20:37+0000\n"
+"PO-Revision-Date: 2026-06-28 03:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/expressSearchConfig/pt_BR/>\n"
@@ -371,7 +371,7 @@ msgstr "Avaliações e seus respectivos agentes."
 #. Used in: 
 #, fuzzy
 msgid "GeoTimePeriodToCO"
-msgstr "Cronoestratigrafia de objetos da coleção"
+msgstr "Cronoestratigrafia de objetos de coleção"
 
 #. Used in: 
 #, fuzzy
@@ -424,7 +424,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "GeographyCO"
-msgstr "Coleção de Geografia de Objetos"
+msgstr "Geografia de Objetos de Coleção"
 
 #. Used in: 
 #, fuzzy
@@ -507,7 +507,7 @@ msgstr "Agente autorizado a emitir licença"
 #. Used in: 
 #, fuzzy
 msgid "PermitIssuedToAgent_desc"
-msgstr "Licenças e os agentes a quem foram emitidas."
+msgstr "As autorizações e os agentes a quem foram emitidas."
 
 #. Used in: 
 #, fuzzy
