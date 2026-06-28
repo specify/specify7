@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 20:37+0000\n"
+"PO-Revision-Date: 2026-06-28 03:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "expressSearchConfig/ru/>\n"
@@ -309,7 +309,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "CEToCO"
-msgstr "Событие по сбору коллекционных объектов"
+msgstr "Событие по сбору коллекционных предметов"
 
 #. Used in: 
 #, fuzzy
@@ -462,7 +462,7 @@ msgstr "Подарки и лица, связанные с этими подар�
 #. Used in: 
 #, fuzzy
 msgid "LoanCO"
-msgstr "Объект сбора займа"
+msgstr "Заем объекта коллекции"
 
 #. Used in: 
 #, fuzzy
