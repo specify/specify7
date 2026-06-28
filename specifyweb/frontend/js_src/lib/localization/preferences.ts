@@ -94,7 +94,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Використовуйте налаштування системи',
     'de-ch': 'Systemeinstellung verwenden',
     'pt-br': 'Usar as configurações do sistema',
-    'hr-hr': 'Koristi postavke sustava',
+    'hr-hr': 'Koristi sistemske postavke',
     nb: 'Bruk systeminnstillingen',
   },
   inheritOsSettings: {
@@ -488,12 +488,12 @@ export const preferencesText = createDictionary({
   },
   alwaysPrompt: {
     'en-us': 'Always prompt to choose collection',
-    'ru-ru': 'Всегда на связи, выбирайте коллекцию',
+    'ru-ru': 'Всегда оперативно выбирайте коллекцию.',
     'es-es': 'Siempre solicitando elegir la colección',
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
-    'pt-br': 'Sempre solicitando a seleção da coleção',
+    'pt-br': 'Sempre solicitando a escolha da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
     nb: 'Alltid oppfordret til å velge samling',
   },
@@ -812,7 +812,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
-    'hr-hr': 'Označi podudarni podniz',
+    'hr-hr': 'Označi odgovarajući podniz',
     nb: 'Marker samsvarende delstreng',
   },
   languageDescription: {
@@ -2188,7 +2188,7 @@ export const preferencesText = createDictionary({
     'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
     'pt-br': 'Lembre-se dos tamanhos das janelas de diálogo.',
-    'hr-hr': 'Zapamti veličine dijaloških prozora',
+    'hr-hr': 'Zapamtite veličine dijaloških prozora',
     nb: 'Husk størrelsen på dialogvinduene',
   },
   rememberDialogPositions: {
