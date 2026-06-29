@@ -107,6 +107,7 @@ export function WbActions({
             isResultsOpen={isResultsOpen}
             startUpload={startUpload}
             validation={workbench.validation}
+            isInWorkBench={!dataset.isupdate}
           />
         </ErrorBoundary>
       ) : undefined}

@@ -14,12 +14,14 @@ export function WbValidate({
   validation,
   isMapped,
   isResultsOpen,
+  isInWorkBench = true,
 }: {
   readonly hasUnsavedChanges: boolean;
   readonly startUpload: (mode: WbStatus) => void;
   readonly validation: WbValidation;
   readonly isMapped: boolean;
   readonly isResultsOpen: boolean;
+  readonly isInWorkBench?: boolean;
 }): JSX.Element {
   const [canLiveValidate] = userPreferences.use(
     'workBench',
@@ -35,7 +37,7 @@ export function WbValidate({
 
   return (
     <>
-      {canLiveValidate && (
+      {canLiveValidate && isInWorkBench && (
         <Button.Small
           aria-pressed={validation.validationMode === 'live'}
           disabled={!isMapped || isResultsOpen}
