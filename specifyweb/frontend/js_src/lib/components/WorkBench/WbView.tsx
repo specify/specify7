@@ -189,6 +189,7 @@ export function WbView({
     hot,
     workbench,
     triggerDatasetRefresh,
+    cellCounts,
   });
 
   const { openDisambiguationDialog, disambiguationDialogs } =
