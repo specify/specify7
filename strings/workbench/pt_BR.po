@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:04+0000\n"
+"PO-Revision-Date: 2026-06-29 07:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/pt_BR/>\n"
@@ -160,7 +160,7 @@ msgstr "Substituir"
 #: components/WbUtils/index.tsx:78
 #, fuzzy
 msgid "replacementValue"
-msgstr "Valor de reposição"
+msgstr "Valor de substituição"
 
 #. Used in: Components > Specify Network Collection > Setup ⬤ Components > Wb Utils > Index
 #: components/SpecifyNetworkCollection/Setup.tsx:69
