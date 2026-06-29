@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-29 07:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -874,7 +874,6 @@ msgstr "Alle"
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:189
 #: components/Attachments/index.tsx:192
-#, fuzzy
 msgid "unused"
 msgstr "Ubrukt"
 
