@@ -877,6 +877,13 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Prikaži autora u stablu',
     nb: 'Vis forfatter i treet',
   },
+  queryButtonTaxonField: {
+    'en-us': 'Field used by Taxon Query button',
+  },
+  queryButtonTaxonFieldDescription: {
+    'en-us':
+      'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
