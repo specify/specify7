@@ -1847,8 +1847,6 @@ export const wbText = createDictionary({
     'uk-ua': 'Оновлені записи',
     'de-ch': 'Aktualisierte Datensätze',
     'pt-br': 'Registros atualizados',
-    'ru-ru': 'Записи обновлены.',
-    'uk-ua': 'Записи оновлено',
     'hr-hr': 'Zapisi ažurirani',
     nb: 'Oppføringer oppdatert',
   },
