@@ -4,21 +4,35 @@
 
 import React from 'react';
 
+import { json } from '@codemirror/lang-json';
+import type { Diagnostic } from '@codemirror/lint';
+import { lintGutter } from '@codemirror/lint';
+import { EditorView } from 'codemirror';
+import { okaidia } from '@uiw/codemirror-theme-okaidia';
+import { xcodeLight } from '@uiw/codemirror-theme-xcode';
+import CodeMirror from '@uiw/react-codemirror';
+
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { wbPlanText } from '../../localization/wbPlan';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import type { RA } from '../../utils/types';
 import { overwriteReadOnly } from '../../utils/types';
+import { jsonLinter } from '../AppResources/codeMirrorLinters';
 import { Button } from '../Atoms/Button';
 import { LoadingContext } from '../Core/Contexts';
-import { AutoGrowTextArea } from '../Molecules/AutoGrowTextArea';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { downloadFile, fileToText } from '../Molecules/FilePicker';
+import { useDarkMode } from '../Preferences/Hooks';
 import type { UploadPlan } from '../WbPlanView/uploadPlanParser';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { dialogIcons, icons } from '../Atoms/Icons';
 
+/**
+ * Button + dialog that opens a CodeMirror-powered JSON editor for
+ * viewing and editing a workbench dataset's upload plan.
+ */
 export function WbRawPlan({
   dataset,
   onDatasetDeleted: handleDatasetDeleted,
@@ -58,6 +72,14 @@ export function WbRawPlan({
   );
 }
 
+/**
+ * Dialog with a CodeMirror JSON editor for the raw upload plan.
+ *
+ * Provides import/export via file picker, real-time JSON validation
+ * through CodeMirror's lint gutter, and a save button that PUTs the
+ * plan back to the API. The save button is disabled while lint errors
+ * are present, preventing invalid JSON from being submitted.
+ */
 function RawUploadPlan({
   datasetId,
   datasetName: name,
@@ -75,12 +97,21 @@ function RawUploadPlan({
   readonly onChanged: (plan: UploadPlan) => void;
   readonly onDeleted: () => void;
 }): JSX.Element {
+  // Current editor text as a string — initialized from the JSON-serialized plan
   const [uploadPlan, setUploadPlane] = React.useState<string>(() =>
     JSON.stringify(rawPlan, null, 4)
   );
+
+  // Shown when a file import fails JSON.parse() or when Save encounters
+  // invalid JSON that bypassed lint detection
   const [invalidJson, showInvalid, closeInvalid] = useBooleanState();
+
+  // Errors disable the Save button to prevent submitting invalid JSON.
+  const [lintErrors, setLintErrors] = React.useState<RA<Diagnostic>>([]);
+
   const loading = React.useContext(LoadingContext);
   const fileInputRef = React.useRef<HTMLInputElement>(null);
+  const isDarkMode = useDarkMode();
 
   function handleFileSelected(
     event: React.ChangeEvent<HTMLInputElement>
@@ -111,6 +142,7 @@ function RawUploadPlan({
         </Dialog>
       )}
       <Dialog
+        className={{ container: dialogClassNames.extraWideContainer }}
         icon={icons.clipboard}
         buttons={
           <>
@@ -135,11 +167,21 @@ function RawUploadPlan({
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
             <Button.Save
               disabled={
-                JSON.stringify(rawPlan, null, 4) === uploadPlan || isUploaded
+                JSON.stringify(rawPlan, null, 4) === uploadPlan ||
+                isUploaded ||
+                lintErrors.length > 0
               }
               onClick={(): void => {
-                const plan =
-                  uploadPlan.length === 0 ? null : JSON.parse(uploadPlan);
+                let plan: UploadPlan | null;
+                try {
+                  plan =
+                    uploadPlan.length === 0
+                      ? null
+                      : (JSON.parse(uploadPlan) as UploadPlan);
+                } catch {
+                  showInvalid();
+                  return;
+                }
                 loading(
                   ping(`/api/workbench/dataset/${datasetId}/`, {
                     method: 'PUT',
@@ -149,7 +191,7 @@ function RawUploadPlan({
                     .then((status) =>
                       status === Http.NOT_FOUND
                         ? handleDeleted()
-                        : handleChanged(plan)
+                        : handleChanged(plan!)
                     )
                     .finally(handleClose)
                 );
@@ -165,7 +207,19 @@ function RawUploadPlan({
         <p className="text-wrap mb-4">
           {wbPlanText.importExportMappingDescription()}
         </p>
-        <AutoGrowTextArea value={uploadPlan} onValueChange={setUploadPlane} />
+        <CodeMirror
+          value={uploadPlan}
+          height="300px"
+          extensions={[
+            json(),
+            lintGutter(),
+            jsonLinter(setLintErrors),
+            EditorView.lineWrapping,
+          ]}
+          theme={isDarkMode ? okaidia : xcodeLight}
+          className="border-brand-300 w-full overflow-y-auto overflow-x-hidden border dark:border-none"
+          onChange={(value): void => setUploadPlane(value)}
+        />
       </Dialog>
     </>
   );
