@@ -594,6 +594,8 @@ datamodel = Datamodel(tables=[
             Index(name='AttchmentGuidIDX', column_names=['GUID'])
         ],
         relationships=[
+            Relationship(name='absoluteAgeAttachments', type='one-to-many',required=False, relatedModelName='AbsoluteAgeAttachment', otherSideName='attachment'),
+            Relationship(name='relativeAgeAttachments', type='one-to-many',required=False, relatedModelName='RelativeAgeAttachment', otherSideName='attachment'),
             Relationship(name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='attachment'),
             Relationship(name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='attachment'),
             Relationship(name='attachmentImageAttribute', type='many-to-one',required=False, relatedModelName='AttachmentImageAttribute', column='AttachmentImageAttributeID', otherSideName='attachments'),
