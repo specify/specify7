@@ -455,6 +455,77 @@ class TreeViewsTest(SqlTreeSetup):
             ]
             self.assertCountEqual(results, expected)
 
+    def test_taxon_rows_include_author_and_synonyms(self):
+        root = self.make_taxontree(
+            "Life",
+            "Taxonomy Root",
+            definition=self.taxontreedef,
+        )
+        animalia = self.make_taxontree(
+            "Animalia",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+            author="L.",
+        )
+        metazoa = self.make_taxontree(
+            "Metazoa",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+            acceptedtaxon=animalia,
+            fullname="Metazoa",
+            author="Haeckel",
+        )
+        animalia.refresh_from_db()
+        metazoa.refresh_from_db()
+
+        @contextmanager
+        def _run_for_row():
+            with TreeViewsTest.test_session_context() as session:
+                set_group_concat_max_len(connection.cursor())
+                yield session
+
+        with _run_for_row() as session:
+            results = get_tree_rows(
+                self.taxontreedef.id,
+                "Taxon",
+                root.id,
+                "name",
+                True,
+                session,
+            )
+            expected = [
+                (
+                    animalia.id,
+                    animalia.name,
+                    animalia.fullname,
+                    animalia.nodenumber,
+                    animalia.highestchildnodenumber,
+                    animalia.rankid,
+                    None,
+                    None,
+                    animalia.author,
+                    0,
+                    metazoa.fullname,
+                ),
+                (
+                    metazoa.id,
+                    metazoa.name,
+                    metazoa.fullname,
+                    metazoa.nodenumber,
+                    metazoa.highestchildnodenumber,
+                    metazoa.rankid,
+                    animalia.id,
+                    animalia.fullname,
+                    metazoa.author,
+                    0,
+                    None,
+                ),
+            ]
+
+            self.assertCountEqual(results, expected)
+
 
 class AddDeleteRankResourcesTest(ApiTests):
     def test_add_ranks_without_defaults(self):
