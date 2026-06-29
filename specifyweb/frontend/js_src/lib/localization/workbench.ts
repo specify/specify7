@@ -1841,10 +1841,8 @@ export const wbText = createDictionary({
   },
   recordsUpdated: {
     'en-us': 'Updated records',
-    'ru-ru': 'Обновлённые записи',
     'es-es': 'Registros actualizados',
     'fr-fr': 'Enregistrements mis à jour',
-    'uk-ua': 'Оновлені записи',
     'de-ch': 'Aktualisierte Datensätze',
     'pt-br': 'Registros atualizados',
     'hr-hr': 'Zapisi ažurirani',
