@@ -724,7 +724,7 @@ export const commonText = createDictionary({
     'de-ch': 'Reihenfolge',
     'pt-br': 'Ordinal',
     'hr-hr': 'Redni',
-    nb: 'Ordinal',
+    nb: 'Rekkefølge',
   },
   export: {
     'en-us': 'Export',
@@ -845,7 +845,7 @@ export const commonText = createDictionary({
     'de-ch': 'Aufklappen',
     'pt-br': 'Expandir',
     'hr-hr': 'Proširiti',
-    nb: 'Utvide',
+    nb: 'Utvid',
   },
   expandAll: {
     'en-us': 'Expand All',
@@ -900,7 +900,7 @@ export const commonText = createDictionary({
     'de-ch': 'Auswählen',
     'pt-br': 'Selecione',
     'hr-hr': 'Odaberite',
-    nb: 'Velge',
+    nb: 'Velg',
   },
   none: {
     'en-us': 'None',
@@ -1012,7 +1012,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Масовий вибір',
     'pt-br': 'Seleção em massa',
     'hr-hr': 'Skupni odabir',
-    nb: 'Masseutvalg',
+    nb: 'Velg flere',
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
@@ -1023,7 +1023,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Масове повернення',
     'pt-br': 'Devolução em massa',
     'hr-hr': 'Povrat robe u skupnom stanju',
-    nb: 'Masseretur',
+    nb: 'Returner flere samtidig',
   },
   bulkResolve: {
     'en-us': 'Bulk Resolve',
