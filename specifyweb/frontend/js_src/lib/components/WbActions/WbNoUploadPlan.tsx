@@ -42,7 +42,7 @@ export function WbNoUploadPlan({
 
   return (
     <>
-      {noUploadPlan && (
+      {noUploadPlan && !isChoosingPlan && (
         <Dialog
           buttons={
             <>
