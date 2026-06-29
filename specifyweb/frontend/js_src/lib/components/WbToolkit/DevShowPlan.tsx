@@ -7,6 +7,7 @@ import React from 'react';
 import { json } from '@codemirror/lang-json';
 import type { Diagnostic } from '@codemirror/lint';
 import { lintGutter } from '@codemirror/lint';
+import { search } from '@codemirror/search';
 import { EditorView } from 'codemirror';
 import { okaidia } from '@uiw/codemirror-theme-okaidia';
 import { xcodeLight } from '@uiw/codemirror-theme-xcode';
@@ -215,6 +216,7 @@ function RawUploadPlan({
             lintGutter(),
             jsonLinter(setLintErrors),
             EditorView.lineWrapping,
+            search(),
           ]}
           theme={isDarkMode ? okaidia : xcodeLight}
           className="border-brand-300 w-full overflow-y-auto overflow-x-hidden border dark:border-none"
