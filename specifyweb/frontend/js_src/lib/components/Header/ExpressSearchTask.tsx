@@ -49,27 +49,55 @@ export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
   const formId = useId('express-search')('form');
   const handleClose = React.useContext(OverlayContext);
+  const [isConfigOpen, setIsConfigOpen] = React.useState(false);
+  const [, setConfigRefreshTrigger] = React.useState(0);
+  const canEditExpressSearchConfig =
+    hasToolPermission('resources', 'read') &&
+    hasToolPermission('resources', 'create') &&
+    hasToolPermission('resources', 'update');
+
   return (
-    <Dialog
-      buttons={
-        <>
-          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
-        </>
-      }
-      header={headerText.simpleSearch()}
-      icon={icons.search}
-      onClose={handleClose}
-    >
-      <SearchForm formId={formId} />
-    </Dialog>
+    <>
+      <Dialog
+        buttons={
+          <>
+            <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+            <Submit.Info form={formId}>{commonText.search()}</Submit.Info>
+          </>
+        }
+        header={headerText.simpleSearch()}
+        icon={icons.search}
+        onClose={handleClose}
+      >
+        <SearchForm formId={formId}>
+          {canEditExpressSearchConfig && (
+            <Button.BorderedGray
+              className="!px-2"
+              title={commonText.configureExpressSearch()}
+              onClick={() => setIsConfigOpen(true)}
+            >
+              {icons.cog}
+            </Button.BorderedGray>
+          )}
+        </SearchForm>
+      </Dialog>
+      {canEditExpressSearchConfig && (
+        <ExpressSearchConfigDialog
+          isOpen={isConfigOpen}
+          onClose={() => setIsConfigOpen(false)}
+          onSave={() => setConfigRefreshTrigger((value) => value + 1)}
+        />
+      )}
+    </>
   );
 }
 
 export function SearchForm({
   formId,
+  children,
 }: {
   readonly formId: string;
+  readonly children?: React.ReactNode;
 }): JSX.Element {
   const navigate = useNavigate();
   const [query = ''] = useSearchParameter('q');
@@ -82,7 +110,10 @@ export function SearchForm({
         navigate(formatUrl('/specify/express-search/', { q: pendingQuery }))
       }
     >
-      <SearchField value={value} />
+      <div className="flex items-center gap-2">
+        <SearchField value={value} />
+        {children}
+      </div>
     </Form>
   );
 }
