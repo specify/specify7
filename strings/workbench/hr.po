@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:02+0000\n"
+"PO-Revision-Date: 2026-06-29 07:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/hr/>\n"
@@ -402,9 +402,9 @@ msgstr "Prijenos nije uspio zbog jedne ili više pogrešaka u vrijednosti ćelij
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Validirajte skup podataka i pregledajte natuknice za prelazak mišem preko "
-"svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i "
-"ponovno pokušajte {type:string}."
+"Provjerite valjanost skupa podataka i pregledajte upute za prelazak mišem "
+"preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. "
+"Spremite i ponovno pokušajte {type:string}."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:360
@@ -707,7 +707,7 @@ msgstr "Točka-zarez"
 #: components/Preferences/UserDefinitions.tsx:2073
 #, fuzzy
 msgid "tab"
-msgstr "Kartica"
+msgstr "Tab"
 
 #. Used in: Components > Molecules > Csv File Picker ⬤ Components > Preferences > User Definitions
 #: components/Molecules/CsvFilePicker.tsx:175
