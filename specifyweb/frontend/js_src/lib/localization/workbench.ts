@@ -245,7 +245,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Valeur de remplacement',
     'uk-ua': 'Відновна вартість',
     'de-ch': 'Wiederbeschaffungswert',
-    'pt-br': 'Valor de reposição',
+    'pt-br': 'Valor de substituição',
     'hr-hr': 'Zamjenska vrijednost',
     nb: 'Erstatningsverdi',
   },
@@ -411,7 +411,7 @@ export const wbText = createDictionary({
       'A reversão removerá os novos registros de dados que este Conjunto de Dados adicionou ao banco de dados especificado. A reversão será totalmente cancelada se algum dos dados carregados tiver sido referenciado (reutilizado) por outros registros de dados desde o seu carregamento.',
     'hr-hr':
       'Vraćanje će ukloniti nove podatkovne zapise koje je ovaj skup podataka dodao u bazu podataka Specify. Cijelo vraćanje bit će otkazano ako su bilo koji od prenesenih podataka referencirani (ponovno korišteni) od strane drugih podatkovnih zapisa od njihovog prijenosa.',
-    nb: 'Tilbakerulling vil fjerne de nye datapostene som dette datasettet har lagt til i Specify-databasen. Hele tilbakerullingen vil bli avbrutt hvis noen av de opplastede dataene har blitt referert til (gjenbrukt) av andre dataposter siden de ble lastet opp.',
+    nb: 'Tilbakerulling vil fjerne de nye datapostene som dette datasettet la til i Specify-databasen. Hele tilbakerullingen vil bli avbrutt hvis noen av de opplastede dataene har blitt referert til (brukt på nytt) av andre dataposter siden de ble lastet opp.',
   },
   startUpload: {
     'en-us': 'Begin Data Set Upload?',
@@ -725,7 +725,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Перевірте набір даних і перегляньте підказки під час наведення курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть і повторіть спробу {type:string}.',
     'hr-hr':
-      'Validirajte skup podataka i pregledajte natuknice za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
+      'Provjerite valjanost skupa podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
     nb: 'Valider datasettet og se gjennom musepekertipsene for hver feilcelle, og gjør deretter de nødvendige rettelsene. Lagre og prøv {type:string} på nytt.',
   },
   dataSetRollback: {
@@ -1181,7 +1181,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Importer un fichier pour créer un nouvel ensemble de données',
     'uk-ua': 'Імпортуйте файл, щоб створити новий набір даних',
     'de-ch':
-      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen',
+      'Importieren Sie eine Datei, um einen neuen Datensatz zu erstellen.',
     'pt-br': 'Importe um arquivo para criar um novo conjunto de dados.',
     'hr-hr': 'Uvoz datoteke za stvaranje novog skupa podataka',
     nb: 'Importer en fil for å opprette et nytt datasett',
@@ -1274,7 +1274,7 @@ export const wbText = createDictionary({
     'uk-ua': 'вкладка',
     'de-ch': 'Tab',
     'pt-br': 'Aba',
-    'hr-hr': 'Kartica',
+    'hr-hr': 'Tab',
     nb: 'Fane',
   },
   space: {
@@ -1480,7 +1480,7 @@ export const wbText = createDictionary({
     'de-ch': '(kein Dateiname)',
     'pt-br': '(sem nome de arquivo)',
     'hr-hr': '(bez naziva datoteke)',
-    nb: '(uten filnavn)',
+    nb: '(ingen filnavn)',
   },
   changeDataSetOwner: {
     'en-us': 'Change Data Set Owner',
@@ -1672,7 +1672,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Якщо це повідомлення зберігається довше 30 секунд, процес {operationName:string} зайнятий іншим набором даних. Будь-ласка спробуйте пізніше.',
     'de-ch':
-      'Wenn diese Meldung länger als 30 Sekunden angezeigt wird, verarbeitet der Prozess {operationName:string} gerade einen anderen Datensatz. Bitte versuchen Sie es später erneut.',
+      'Wenn diese Meldung länger als 30 Sekunden angezeigt wird, ist der Prozess {operationName:string} mit einem anderen Datensatz beschäftigt. Bitte versuchen Sie es später erneut.',
     'pt-br':
       'Se esta mensagem persistir por mais de 30 segundos, o processo {operationName:string} está ocupado com outro conjunto de dados. Tente novamente mais tarde.',
     'hr-hr':

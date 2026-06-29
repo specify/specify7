@@ -466,7 +466,7 @@ export const commonText = createDictionary({
     'de-ch': 'Ansicht',
     'pt-br': 'Visualizar',
     'hr-hr': 'Pogled',
-    nb: 'Utsikt',
+    nb: 'Visning',
   },
   opensInNewTab: {
     comment: 'Used in a hover-over message for links that open in new tab',
@@ -558,7 +558,7 @@ export const commonText = createDictionary({
     'de-ch': 'Satzgruppen',
     'pt-br': 'Conjuntos de discos',
     'hr-hr': 'Skupovi zapisa',
-    nb: 'Rekordsett',
+    nb: 'Datasett med poster',
   },
   recordCount: {
     'en-us': 'Record Count',
@@ -613,7 +613,7 @@ export const commonText = createDictionary({
     'de-ch': 'Suchabfrage',
     'pt-br': 'Consulta de pesquisa',
     'hr-hr': 'Upit za pretraživanje',
-    nb: 'Søkeforespørsel',
+    nb: 'Avansert søk',
   },
   unknown: {
     'en-us': 'Unknown',
@@ -657,7 +657,7 @@ export const commonText = createDictionary({
     'de-ch': 'Datensatz anzeigen',
     'pt-br': 'Ver registro',
     'hr-hr': 'Prikaži zapis',
-    nb: 'Vis oppføring',
+    nb: 'Vis post',
   },
   nullInline: {
     'en-us': '(null)',
