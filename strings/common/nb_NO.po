@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-29 07:01+0000\n"
+"PO-Revision-Date: 2026-06-29 09:01+0000\n"
 "Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
@@ -879,9 +879,8 @@ msgstr "Ubrukt"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:56
-#, fuzzy
 msgid "ordinal"
-msgstr "Ordinal"
+msgstr "Rekkefølge"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
 #: components/Header/userToolDefinitions.ts:122
@@ -890,7 +889,6 @@ msgstr "Ordinal"
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:90
 #: components/WbToolkit/index.tsx:116
-#, fuzzy
 msgid "export"
 msgstr "Eksport"
 
@@ -906,7 +904,6 @@ msgstr "Eksport"
 #: components/Toolbar/QueryTablesWrapper.tsx:151
 #: components/TreeView/CreateTree.tsx:313
 #: components/TreeView/CreateTree.tsx:341
-#, fuzzy
 msgid "import"
 msgstr "Import"
 
@@ -921,7 +918,6 @@ msgstr "Avvis"
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
 #: components/WbPlanView/navigator.ts:542
-#, fuzzy
 msgid "id"
 msgstr "ID"
 
@@ -929,14 +925,12 @@ msgstr "ID"
 #: components/Attachments/index.tsx:163
 #: components/QueryBuilder/QueryLineFilters.tsx:176
 #: components/QueryBuilder/QueryLineFilters.tsx:184
-#, fuzzy
 msgid "filter"
 msgstr "Filter"
 
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #: components/QueryBuilder/Results.tsx:99
 #: components/WbActions/index.tsx:123
-#, fuzzy
 msgid "results"
 msgstr "Resultater"
 
@@ -945,26 +939,22 @@ msgstr "Resultater"
 #: components/LocalityUpdate/Status.tsx:464
 #: components/LocalityUpdate/Status.tsx:505
 #: components/Merging/Status.tsx:100
-#, fuzzy
 msgid "downloadErrorMessage"
 msgstr "Last ned feilmelding"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:29
-#, fuzzy
 msgid "copied"
 msgstr "Kopiert!"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:13
-#, fuzzy
 msgid "copyToClipboard"
 msgstr "Kopier til utklippstavlen"
 
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #: components/Interactions/PrepDialog.tsx:269
 #: components/WbPlanView/CustomSelectElement.tsx:296
-#, fuzzy
 msgid "selected"
 msgstr "Valgt"
 
@@ -976,13 +966,11 @@ msgstr "Valgt"
 #: components/Formatters/Definitions.tsx:243
 #: components/Header/index.tsx:154
 #: components/Molecules/AutoComplete.tsx:569
-#, fuzzy
 msgid "expand"
-msgstr "Utvide"
+msgstr "Utvid"
 
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:186
-#, fuzzy
 msgid "expandAll"
 msgstr "Utvid alle"
 
@@ -997,7 +985,6 @@ msgstr "Skjul"
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:322
-#, fuzzy
 msgid "collapseAll"
 msgstr "Skjul alle"
 
@@ -1008,7 +995,6 @@ msgstr "Skjul alle"
 #: components/Preferences/index.tsx:271
 #: components/Statistics/index.tsx:564
 #: components/Toolbar/QueryTablesEdit.tsx:70
-#, fuzzy
 msgid "reset"
 msgstr "Tilbakestill"
 
@@ -1018,9 +1004,8 @@ msgstr "Tilbakestill"
 #: components/QueryBuilder/ResultsTable.tsx:185
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
-#, fuzzy
 msgid "select"
-msgstr "Velge"
+msgstr "Velg"
 
 #. Used in: Components > Field Formatters > Index ⬤ Components > Pick Lists > Definitions ⬤ Components > Preferences > Renderers ⬤ Components > Schema Config > Components ⬤ Components > Schema Config > Format ⬤ Components > Security > Collection ⬤ Components > Security > Import Export ⬤ Components > Security > Preview Components ⬤ Components > Security > Role Template ⬤ Components > Setup Tool > Setup Resources
 #: components/FieldFormatters/index.ts:343
@@ -1034,13 +1019,11 @@ msgstr "Velge"
 #: components/Security/PreviewComponents.tsx:190
 #: components/Security/RoleTemplate.tsx:111
 #: components/SetupTool/setupResources.ts:93
-#, fuzzy
 msgid "none"
 msgstr "Ingen"
 
 #. Used in: Components > Schema Config > Components
 #: components/SchemaConfig/Components.tsx:73
-#, fuzzy
 msgid "noneAvailable"
 msgstr "Ingen tilgjengelige"
 
@@ -1063,19 +1046,16 @@ msgstr "Ingen tilgjengelige"
 #: components/WbUtils/datasetVariants.tsx:29
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
-#, fuzzy
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234+). Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:167
-#, fuzzy
 msgid "countLineOrMore"
 msgstr "{resource:string} ({count:number|formatted}+)"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:250
-#, fuzzy
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap> ({count:number|formatted}) </wrap>"
 
@@ -1088,7 +1068,6 @@ msgstr "{resource:string} <wrap> ({count:number|formatted}) </wrap>"
 #: components/Security/RoleTemplate.tsx:182
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:230
-#, fuzzy
 msgid "colonHeader"
 msgstr "{header:string}:"
 
@@ -1131,7 +1110,6 @@ msgstr "{header:string}:"
 #: components/WorkBench/DataSetMeta.tsx:381
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:161
-#, fuzzy
 msgid "colonLine"
 msgstr "{label:string}: {value:string}"
 
@@ -1144,21 +1122,18 @@ msgstr "{label:string}: {value:string}"
 #: components/WorkBench/DataSetMeta.tsx:317
 #: components/WorkBench/DataSetMeta.tsx:337
 #: components/WorkBench/DataSetMeta.tsx:347
-#, fuzzy
 msgid "jsxColonLine"
 msgstr "{label:string}: <wrap />"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:161
-#, fuzzy
 msgid "bulkSelect"
-msgstr "Masseutvalg"
+msgstr "Velg flere"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:273
-#, fuzzy
 msgid "bulkReturn"
-msgstr "Masseretur"
+msgstr "Returner flere samtidig"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:287
