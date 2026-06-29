@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-24 20:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-06-29 07:01+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -624,7 +624,6 @@ msgstr "Ingen resultater"
 #: components/Merging/Header.tsx:122
 #: components/Merging/Usages.tsx:20
 #: components/WorkBench/DataSetMeta.tsx:332
-#, fuzzy
 msgid "notApplicable"
 msgstr "Ikke aktuelt"
 
@@ -721,9 +720,8 @@ msgstr "Full dato"
 #: components/Atoms/__tests__/index.test.tsx:15
 #: components/Molecules/ResourceLink.tsx:70
 #: components/TreeView/Actions.tsx:123
-#, fuzzy
 msgid "view"
-msgstr "Utsikt"
+msgstr "Visning"
 
 #. 🟥Used in a hover-over message for links that open in new tab. Used in: Components > Leaflet > Index ⬤ Components > Work Bench > Wb Spreadsheet
 #: components/Leaflet/index.ts:186
@@ -754,7 +752,6 @@ msgstr "Gå til hjemmesiden"
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Query Builder > Edit
 #: components/FormCells/FormTable.tsx:367
 #: components/QueryBuilder/Edit.tsx:93
-#, fuzzy
 msgid "actions"
 msgstr "Handlinger"
 
@@ -787,9 +784,8 @@ msgstr "Synkende"
 #: components/Security/registry.ts:214
 #: components/Toolbar/RecordSets.tsx:231
 #: components/Toolbar/RecordSets.tsx:258
-#, fuzzy
 msgid "recordSets"
-msgstr "Rekordsett"
+msgstr "Datasett med poster"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:313
@@ -818,9 +814,8 @@ msgstr "Ingen treff"
 #: components/QueryBuilder/FieldFilterSpec.tsx:241
 #: components/WbUtils/index.tsx:57
 #: components/WbUtils/index.tsx:62
-#, fuzzy
 msgid "searchQuery"
-msgstr "Søkeforespørsel"
+msgstr "Avansert søk"
 
 #. Used in: Components > Attachments > Attachments ⬤ Components > Home Page > About Specify
 #: components/Attachments/attachments.ts:123
@@ -846,9 +841,8 @@ msgstr "Land"
 
 #. Used in: Components > Leaflet > Index
 #: components/Leaflet/index.ts:188
-#, fuzzy
 msgid "viewRecord"
-msgstr "Vis oppføring"
+msgstr "Vis post"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Form Cells > Index ⬤ Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/AppResources/Aside.tsx:400
