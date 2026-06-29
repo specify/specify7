@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-29 15:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/locality/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -89,9 +89,8 @@ msgstr "{geographyTable:string} må kartlegges"
 
 #. Used in: Components > Form Plugins > Geo Locate
 #: components/FormPlugins/GeoLocate.tsx:118
-#, fuzzy
 msgid "geographyRequiredDescription"
-msgstr "GeoLocate-pluginen krever at geografifeltet fylles ut."
+msgstr "GeoLocate-plugin krever at geografifeltet fylles ut."
 
 #. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:278
@@ -161,55 +160,46 @@ msgstr "Slå av/på fullskjerm"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:83
-#, fuzzy
 msgid "degrees"
 msgstr "DD.DDDD (32,7619)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:88
-#, fuzzy
 msgid "degreesMinutes"
 msgstr "DD MMMM (32,45,714)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:93
-#, fuzzy
 msgid "degreesMinutesSeconds"
 msgstr "DD MM SS.SS (32 45 42,84)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:98
-#, fuzzy
 msgid "degreesWithDirection"
 msgstr "DD.DDDD N/S/Ø/V (32.7619 N)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:103
-#, fuzzy
 msgid "degreesMinutesWithDirection"
 msgstr "DD MM.MM N/S/Ø/V (32 45,714 N)"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:108
-#, fuzzy
 msgid "degreesMinutesSecondsWithDirection"
 msgstr "DD MM SS.SS N/S/Ø/V (32 45 42,84 N)"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:140
-#, fuzzy
 msgid "localityUpdateHeaderError"
 msgstr "Feil funnet i kolonneoverskrifter"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:151
-#, fuzzy
 msgid "localityUpdateMissingHeader"
 msgstr "Følgende kolonner er obligatoriske, men mangler i datasettet"
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:161
-#, fuzzy
 msgid "localityUpdateUnrecognizedHeaders"
 msgstr ""
 "Følgende kolonner i datasettet gjenkjennes ikke og vil bli ignorert ved "
@@ -217,74 +207,63 @@ msgstr ""
 
 #. Used in: Components > Locality Update > Index
 #: components/LocalityUpdate/index.tsx:169
-#, fuzzy
 msgid "localityUpdateAcceptedHeaders"
-msgstr "Bare følgende overskrifter godtas"
+msgstr "Bare følgende kolonneoverskrifter godtas"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:36
-#, fuzzy
 msgid "localityUpdateStarting"
 msgstr "Starter lokalitetsoppdatering"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:35
-#, fuzzy
 msgid "localityUpdateParsing"
-msgstr "Analyse av lokalitetsdatasett"
+msgstr "Tolker lokalitetsdatasett"
 
 #. Used in: Components > Locality Update > Utils
 #: components/LocalityUpdate/utils.ts:37
-#, fuzzy
 msgid "localityUpdateProgressing"
 msgstr "Importerer lokalitetsdatasett"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:34
 #: components/Notifications/NotificationRenderers.tsx:296
-#, fuzzy
 msgid "localityUpdateParsed"
-msgstr "Datasett for lokalitetsoppdatering analysert"
+msgstr "Datasett for lokalitetsoppdatering tolket"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/Status.tsx:470
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:264
-#, fuzzy
 msgid "localityUpdateFailed"
 msgstr "Oppdatering av lokalitet mislyktes"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:39
 #: components/Notifications/NotificationRenderers.tsx:240
-#, fuzzy
 msgid "localityUpdateParseFailure"
-msgstr "Parsing av lokalitetsoppdatering mislyktes"
+msgstr "Tolking av lokalitetsoppdatering feilet"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:40
 #: components/Notifications/NotificationRenderers.tsx:285
-#, fuzzy
 msgid "localityUpdateCancelled"
 msgstr "Oppdatering av lokalitet avbrutt"
 
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 #: components/LocalityUpdate/utils.ts:41
 #: components/Notifications/NotificationRenderers.tsx:308
-#, fuzzy
 msgid "localityUpdateSucceeded"
 msgstr "Oppdatering av lokalitet vellykket"
 
 #. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:474
 #: components/LocalityUpdate/Status.tsx:512
-#, fuzzy
 msgid "localityUpdateWentWrong"
-msgstr "Noe gikk galt under lokalitetsoppdateringsprosessen"
+msgstr "Noe gikk galt under lokalitetsoppdateringen"
 
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #: components/LocalityUpdate/Status.tsx:371
-#, fuzzy
 msgid "localityUpdateParseErrorFileName"
 msgstr "Feil ved lokalitetsoppdatering – {date:string}"
 
