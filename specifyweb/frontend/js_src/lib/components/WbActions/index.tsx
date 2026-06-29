@@ -207,10 +207,10 @@ export function WbActions({
                 ? dialogIcons.success
                 : dialogIcons.error
               : mode === 'upload'
-              ? cellCounts.invalidCells === 0
-                ? dialogIcons.success
-                : dialogIcons.error
-              : dialogIcons.success
+                ? cellCounts.invalidCells === 0
+                  ? dialogIcons.success
+                  : dialogIcons.error
+                : dialogIcons.success
           }
           buttons={
             <>
@@ -239,7 +239,8 @@ export function WbActions({
               (mode === 'validate' || mode === 'upload') &&
               Object.keys(recordCounts).some(
                 (key) =>
-                  recordCounts[key as keyof typeof recordCounts] !== undefined &&
+                  recordCounts[key as keyof typeof recordCounts] !==
+                    undefined &&
                   Object.keys(
                     recordCounts[key as keyof typeof recordCounts] ?? {}
                   ).length > 0
