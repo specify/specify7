@@ -676,7 +676,7 @@ export const preferencesText = createDictionary({
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (регистр не учитывается)',
-    'es-es': 'Comienza con (sin distinción entre mayúsculas y minúsculas)',
+    'es-es': 'Comienza con (sin distinción de mayúsculas y minúsculas)',
     'fr-fr': 'Commence par (insensible à la casse)',
     'uk-ua': 'Починається з (без урахування регістру)',
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
@@ -880,7 +880,7 @@ export const preferencesText = createDictionary({
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
-    'es-es': 'Página de inicio',
+    'es-es': 'Página principal',
     'fr-fr': "Page d'accueil",
     'uk-ua': 'Домашня сторінка',
     'de-ch': 'Startseite',
@@ -1771,7 +1771,7 @@ export const preferencesText = createDictionary({
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru': 'Автоматическая прокрутка дерева к сфокусированному узлу',
-    'es-es': 'Desplazamiento automático del árbol al nodo enfocado',
+    'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
     'fr-fr': 'Arbre de défilement automatique vers le nœud ciblé',
     'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
@@ -1882,10 +1882,10 @@ export const preferencesText = createDictionary({
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
-    'es-es': 'Búsqueda sensible a mayúsculas y minúsculas',
+    'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Suche mit Berücksichtigung der Groß- und Kleinschreibung',
+    'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
     'hr-hr': 'Pretraživanje koje razlikuje velika i mala slova',
@@ -2377,7 +2377,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Вторичный цвет кнопки',
     'uk-ua': 'Колір вторинної кнопки',
-    'de-ch': 'Farbe der Sekundärtaste',
+    'de-ch': 'Sekundäre Tastenfarbe',
     'pt-br': 'Cor do botão secundário',
     'hr-hr': 'Boja sekundarnog gumba',
     nb: 'Farge på sekundær knapp',
