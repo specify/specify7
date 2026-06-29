@@ -13,6 +13,7 @@ import { resourceOn } from '../DataModel/resource';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import { raise } from '../Errors/Crash';
 import { fetchPathAsString } from '../Formatters/formatters';
+import { SeriesFormContext } from '../Forms/BulkCarryForward';
 import { collectionPreferences } from '../Preferences/collectionPreferences';
 import { userPreferences } from '../Preferences/userPreferences';
 
@@ -24,10 +25,13 @@ export function UiField({
   readonly name: string | undefined;
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly field: LiteralField | Relationship | undefined;
+  readonly isSeries: boolean | undefined;
   readonly parser?: Parser;
 }): JSX.Element {
   return field?.isRelationship === true ? (
     <RelationshipField field={field} {...props} />
+  ) : props.isSeries === true ? (
+    <SeriesField field={field} {...props} />
   ) : (
     <Field field={field} {...props} />
   );
@@ -90,18 +94,26 @@ function RelationshipField({
   );
 }
 
+type FieldSeriesInput = (props: {
+  readonly name: string | undefined;
+  readonly placeholder: string | undefined;
+  readonly validationAttributes: ReturnType<typeof getValidationAttributes>;
+}) => React.ReactNode;
+
 function Field({
   resource,
   id,
   name,
   field,
   parser: defaultParser,
+  seriesInput,
 }: {
   readonly resource: SpecifyResource<AnySchema> | undefined;
   readonly id: string | undefined;
   readonly name: string | undefined;
   readonly field: LiteralField | undefined;
   readonly parser?: Parser;
+  readonly seriesInput?: FieldSeriesInput;
 }): JSX.Element {
   const { value, updateValue, validationRef, parser } = useResourceValue(
     resource,
@@ -217,36 +229,116 @@ function Field({
     validationAttributes;
 
   return (
-    <Input.Generic
-      forwardRef={validationRef}
-      key={parser.title}
-      max={Number.MAX_SAFE_INTEGER}
-      name={name}
-      placeholder={customPlaceholder ?? parserPlaceholder}
-      {...restValidationAttributes}
-      className={rightAlignClassName}
-      id={id}
-      isReadOnly={isReadOnly}
-      required={'required' in validationAttributes && !isInSearchDialog}
-      tabIndex={isReadOnly ? -1 : undefined}
-      value={value?.toString() ?? ''}
-      onBlur={
-        isReadOnly ? undefined : ({ target }): void => updateValue(target.value)
-      }
-      onValueChange={(value): void => updateValue(value, false)}
-      /*
-       * Update data model value before onBlur, as onBlur fires after onSubmit
-       * if form is submitted using the ENTER key
-       */
-      onChange={(event): void => {
-        const input = event.target as HTMLInputElement;
+    <>
+      <Input.Generic
+        forwardRef={validationRef}
+        key={parser.title}
+        max={Number.MAX_SAFE_INTEGER}
+        name={name}
+        placeholder={customPlaceholder ?? parserPlaceholder}
+        {...restValidationAttributes}
+        className={rightAlignClassName}
+        id={id}
+        isReadOnly={isReadOnly}
+        required={'required' in validationAttributes && !isInSearchDialog}
+        tabIndex={isReadOnly ? -1 : undefined}
+        value={value?.toString() ?? ''}
+        onBlur={
+          isReadOnly
+            ? undefined
+            : ({ target }): void => updateValue(target.value)
+        }
+        onValueChange={(value): void => updateValue(value, false)}
         /*
-         * Don't show validation errors on value change for input fields until
-         * field is blurred, unless user tried to paste a date (see definition
-         * of Input.Generic)
+         * Update data model value before onBlur, as onBlur fires after onSubmit
+         * if form is submitted using the ENTER key
          */
-        updateValue(input.value, event.type === 'paste');
-      }}
+        onChange={(event): void => {
+          const input = event.target as HTMLInputElement;
+          /*
+           * Don't show validation errors on value change for input fields until
+           * field is blurred, unless user tried to paste a date (see definition
+           * of Input.Generic)
+           */
+          updateValue(input.value, event.type === 'paste');
+        }}
+      />
+      {seriesInput?.({
+        name,
+        placeholder: customPlaceholder,
+        validationAttributes,
+      })}
+    </>
+  );
+}
+
+function SeriesField({
+  resource,
+  field,
+  id,
+  name,
+  isSeries,
+  parser,
+}: {
+  readonly id: string | undefined;
+  readonly name: string | undefined;
+  readonly resource: SpecifyResource<AnySchema> | undefined;
+  readonly field: LiteralField | undefined;
+  readonly isSeries: boolean | undefined;
+  readonly parser?: Parser;
+}): JSX.Element {
+  const {
+    seriesEnd: seriesRangeEnd,
+    setSeriesEnd: setSeriesRangeEnd,
+    setUsingSeries,
+  } = React.useContext(SeriesFormContext);
+  const tableName = resource?.specifyTable.name;
+  const [enableCarryForward] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableCarryForward'
+  );
+  const [enableBulkCarryForwardRange] = userPreferences.use(
+    'form',
+    'preferences',
+    'enableBulkCarryForwardRange'
+  );
+  const showSeriesInput =
+    isSeries === true &&
+    tableName !== undefined &&
+    enableCarryForward.includes(tableName) &&
+    enableBulkCarryForwardRange.includes(tableName) &&
+    resource?.isNew() === true;
+  const handleSeriesRangeEndChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ): void => {
+    const input = event.target as HTMLInputElement;
+    setSeriesRangeEnd(input.value);
+    setUsingSeries(true);
+  };
+
+  return (
+    <Field
+      field={field}
+      id={id}
+      name={name}
+      parser={parser}
+      resource={resource}
+      seriesInput={({ name, placeholder, validationAttributes }) =>
+        showSeriesInput ? (
+          <Input.Generic
+            id="formSeriesRangeEnd"
+            key="formSeriesRangeEnd"
+            max={Number.MAX_SAFE_INTEGER}
+            name={name}
+            placeholder={placeholder}
+            value={seriesRangeEnd}
+            onChange={handleSeriesRangeEndChange}
+            {...validationAttributes}
+            required={false}
+          />
+        ) : null
+      }
     />
   );
 }
