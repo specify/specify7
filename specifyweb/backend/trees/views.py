@@ -547,7 +547,7 @@ def get_all_tree_information(collection, user_id) -> dict[str, list[TREE_INFORMA
         treedef_model = getattr(spmodels, f'{tree.lower().capitalize()}treedef')
         tree_defs = treedef_model.objects.filter(get_search_filters(collection, tree)).distinct()
         for definition in tree_defs:
-            ranks = definition.treedefitems.order_by('rankid')            
+            ranks = definition.treedefitems.order_by('rankid').iterator(chunk_size=2000)
             result[tree].append({
                 'definition': obj_to_data(definition),
                 'ranks': [obj_to_data(rank) for rank in ranks]
