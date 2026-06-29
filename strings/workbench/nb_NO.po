@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-25 07:02+0000\n"
+"PO-Revision-Date: 2026-06-29 07:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/workbench/nb_NO/>\n"
@@ -249,10 +249,10 @@ msgstr "Start tilbakestilling av datasett?"
 #, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
-"Tilbakerulling vil fjerne de nye datapostene som dette datasettet har lagt "
-"til i Specify-databasen. Hele tilbakerullingen vil bli avbrutt hvis noen av "
-"de opplastede dataene har blitt referert til (gjenbrukt) av andre dataposter "
-"siden de ble lastet opp."
+"Tilbakerulling vil fjerne de nye datapostene som dette datasettet la til i "
+"Specify-databasen. Hele tilbakerullingen vil bli avbrutt hvis noen av de "
+"opplastede dataene har blitt referert til (brukt på nytt) av andre "
+"dataposter siden de ble lastet opp."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:42
@@ -823,7 +823,7 @@ msgstr "Importer filnavn"
 #: components/WorkBench/DataSetMeta.tsx:345
 #, fuzzy
 msgid "noFileName"
-msgstr "(uten filnavn)"
+msgstr "(ingen filnavn)"
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:93
