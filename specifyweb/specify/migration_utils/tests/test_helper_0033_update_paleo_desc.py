@@ -1,30 +1,44 @@
-from django.test import TestCase
-from unittest.mock import MagicMock
+from django.apps import apps
 
-from specifyweb.specify.migration_utils.migration_helpers import helper_0003_cotype_picklist
-
-
-from specifyweb.specify.migration_utils.migration_helpers import (
-    helper_0033_update_paleo_desc,
+from specifyweb.specify.models import (
+    Splocalecontainer,
+    Splocalecontaineritem,
+    Splocaleitemstr,
 )
+from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.migration_utils.migration_helpers import helper_0033_update_paleo_desc
 
 
-class UpdatePaleoDescTests(TestCase):
+class UpdatePaleoDescTests(ApiTests):
+
+    def setUp(self):
+        super().setUp()
+        self.paleo_container = Splocalecontainer.objects.create(
+            name='paleocontext',
+            schematype=0,
+            discipline=self.discipline,
+            aggregator='',
+            defaultui='',
+            format='',
+            ishidden=False,
+            issystem=False,
+        )
+        self.paleo_item = Splocalecontaineritem.objects.create(
+            container=self.paleo_container,
+            name='paleoDescItem',
+            ishidden=False,
+            issystem=False,
+        )
+        self.paleo_desc = Splocaleitemstr.objects.create(
+            language='en',
+            country='US',
+            text='old-description',
+            itemdesc=self.paleo_item,
+        )
 
     def test_update_paleo_desc(self):
-        mock_apps = MagicMock()
+        helper_0033_update_paleo_desc.update_paleo_desc(apps)
 
-        itemstr_model = MagicMock()
-
-        def get_model(app_label, model_name):
-            return itemstr_model
-
-        mock_apps.get_model.side_effect = get_model
-
-        helper_0033_update_paleo_desc.update_paleo_desc(
-            mock_apps
-        )
-
-        itemstr_model.objects.filter.return_value.update.assert_called_once_with(
-            text=helper_0033_update_paleo_desc.MIGRATION_0033_TABLES[0][1]
-        )
+        self.paleo_desc.refresh_from_db()
+        expected_desc = helper_0033_update_paleo_desc.MIGRATION_0033_TABLES[0][1]
+        self.assertEqual(self.paleo_desc.text, expected_desc)

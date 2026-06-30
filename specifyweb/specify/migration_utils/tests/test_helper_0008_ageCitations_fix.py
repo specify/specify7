@@ -3,9 +3,10 @@ from unittest.mock import patch, MagicMock
 
 from specifyweb.specify.migration_utils.migration_helpers import helper_0008_ageCitations_fix
 from specifyweb.specify.models import Discipline
+from specifyweb.specify.tests.test_api import ApiTests
 #
 
-class RelativeAgeFieldTests(TestCase):
+class RelativeAgeFieldTests(ApiTests):
 
     @patch(
         "specifyweb.specify.migration_utils.migration_helpers.helper_0008_ageCitations_fix.update_table_field_schema_config_with_defaults"

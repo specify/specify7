@@ -1,61 +1,71 @@
-from django.test import TestCase
-from unittest.mock import MagicMock
+from django.apps import apps
 
+from specifyweb.specify.models import (
+    Collection,
+    Picklist,
+    Splocalecontainer,
+    Splocalecontaineritem,
+    Splocaleitemstr,
+)
+from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.migration_utils.migration_helpers import helper_0003_cotype_picklist
 
 
-class Helper0003CotypePicklistTest(TestCase):
+class Helper0003CotypePicklistTest(ApiTests):
 
-    def test_create_cotype_splocalecontaineritem_new(self):
-        mock_apps = MagicMock()
-        # -----------------------
-        # Mock models
-        # -----------------------
-        mock_container = MagicMock()
-        mock_containeritem = MagicMock()
-        mock_itemstr = MagicMock()
+    def setUp(self):
+        super().setUp()
+        self.other_collection = Collection.objects.create(
+            catalognumformatname='test2',
+            collectionname='OtherCollection',
+            isembeddedcollectingevent=False,
+            discipline=self.discipline,
+        )
+        self.collectionobject_container = Splocalecontainer.objects.create(
+            name='collectionobject',
+            schematype=0,
+            discipline=self.discipline,
+            aggregator='',
+            defaultui='',
+            format='',
+            ishidden=False,
+            issystem=False,
+        )
 
-        def get_model(app_label, model_name):
-            if model_name == "Splocalecontainer":
-                return mock_container
-            if model_name == "Splocalecontaineritem":
-                return mock_containeritem
-            if model_name == "Splocaleitemstr":
-                return mock_itemstr
+    def test_create_cotype_picklist_creates_picklists_for_each_collection(self):
+        helper_0003_cotype_picklist.create_cotype_picklist(apps)
 
-        mock_apps.get_model.side_effect = get_model
+        self.assertEqual(
+            Picklist.objects.filter(
+                name=helper_0003_cotype_picklist.COT_PICKLIST_NAME,
+                tablename='collectionobjecttype',
+                type=1,
+            ).count(),
+            Collection.objects.count(),
+        )
 
-        # -----------------------
-        # Mock queryset chain for container
-        # -----------------------
-        container_qs = MagicMock()
-        mock_container.objects.filter.return_value = container_qs
-        container_qs.__iter__.return_value = [MagicMock()]
+    def test_create_cotype_splocalecontaineritem_creates_schema_items_and_strings(self):
+        helper_0003_cotype_picklist.create_cotype_splocalecontaineritem(apps)
 
-        # -----------------------
-        # No existing container item
-        # -----------------------
-        item_qs = MagicMock()
-        mock_containeritem.objects.filter.return_value = item_qs
-        item_qs.order_by.return_value.first.return_value = None
-
-        created_item = MagicMock()
-        mock_containeritem.objects.create.return_value = created_item
-
-        # -----------------------
-        # No existing strings
-        # -----------------------
-        str_qs = MagicMock()
-        mock_itemstr.objects.filter.return_value = str_qs
-        str_qs.order_by.return_value.first.return_value = None
-
-        # -----------------------
-        # Act
-        # -----------------------
-        helper_0003_cotype_picklist.create_cotype_splocalecontaineritem(mock_apps)
-
-        # -----------------------
-        # Assert
-        # -----------------------
-        mock_containeritem.objects.create.assert_called_once()
-        mock_itemstr.objects.create.assert_called()
+        schema_item = Splocalecontaineritem.objects.get(
+            container=self.collectionobject_container,
+            name=helper_0003_cotype_picklist.COT_FIELD_NAME,
+        )
+        self.assertEqual(
+            schema_item.picklistname,
+            helper_0003_cotype_picklist.COT_PICKLIST_NAME,
+        )
+        self.assertEqual(schema_item.type, 'ManyToOne')
+        self.assertTrue(schema_item.isrequired)
+        self.assertTrue(
+            Splocaleitemstr.objects.filter(
+                itemname=schema_item,
+                text=helper_0003_cotype_picklist.COT_TEXT,
+            ).exists()
+        )
+        self.assertTrue(
+            Splocaleitemstr.objects.filter(
+                itemdesc=schema_item,
+                text=helper_0003_cotype_picklist.COT_TEXT,
+            ).exists()
+        )

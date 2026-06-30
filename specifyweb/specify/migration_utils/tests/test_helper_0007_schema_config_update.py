@@ -1,13 +1,49 @@
-from unittest.mock import patch, MagicMock
+from unittest.mock import patch
 
-from django.test import TestCase
 from django.apps import apps
-
-from specifyweb.specify.models import Collection, Picklist
+from specifyweb.specify.models import (
+    Collection,
+    Picklist,
+    Splocalecontainer,
+    Splocalecontaineritem,
+    Splocaleitemstr,
+)
 from specifyweb.specify.migration_utils.migration_helpers import helper_0007_schema_config_update
 from specifyweb.specify.tests.test_api import ApiTests
 
-class UpdateCogTypeFieldsTests(TestCase):
+
+class UpdateCogTypeFieldsTests(ApiTests):
+
+    def setUp(self):
+        super().setUp()
+        self.cog_container = Splocalecontainer.objects.create(
+            name="collectionobject",
+            schematype=0,
+            discipline=self.discipline,
+            aggregator="",
+            defaultui="",
+            format="",
+            ishidden=False,
+            issystem=False,
+        )
+        self.cog_item = Splocalecontaineritem.objects.create(
+            container=self.cog_container,
+            name="collectionObjectType",
+            ishidden=False,
+            issystem=False,
+        )
+        self.cog_item_name = Splocaleitemstr.objects.create(
+            language="en",
+            country="US",
+            text="old-type-name",
+            itemname=self.cog_item,
+        )
+        self.cog_item_desc = Splocaleitemstr.objects.create(
+            language="en",
+            country="US",
+            text="old-type-desc",
+            itemdesc=self.cog_item,
+        )
 
     @patch(
         "specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update.revert_table_field_schema_config"
@@ -20,50 +56,37 @@ class UpdateCogTypeFieldsTests(TestCase):
         mock_update,
         mock_revert,
     ):
-        mock_apps = MagicMock()
-
-        discipline_model = MagicMock()
-        containeritem_model = MagicMock()
-        itemstr_model = MagicMock()
-
-        discipline_model.objects.all.return_value = [
-            MagicMock(id=1),
-            MagicMock(id=2),
-        ]
-
-        container_qs = MagicMock()
-        container_qs.__iter__.return_value = [
-            MagicMock(),
-            MagicMock(),
-        ]
-
-        containeritem_model.objects.filter.return_value = container_qs
-
-        def get_model(app_label, model_name):
-            return {
-                "Discipline": discipline_model,
-                "Splocalecontaineritem": containeritem_model,
-                "Splocaleitemstr": itemstr_model,
-            }[model_name]
-
-        mock_apps.get_model.side_effect = get_model
-
-        helper_0007_schema_config_update.update_cog_type_fields(mock_apps)
+        helper_0007_schema_config_update.update_cog_type_fields(apps)
 
         mock_revert.assert_any_call(
             "CollectionObjectGroup",
             "children",
-            mock_apps,
+            apps,
         )
 
         mock_revert.assert_any_call(
             "CollectionObjectGroup",
             "cojo",
-            mock_apps,
+            apps,
         )
 
-        itemstr_model.objects.filter.assert_called()
-        container_qs.delete.assert_called_once()
+        self.assertEqual(
+            mock_update.call_count,
+            sum(
+                len(fields)
+                for fields in helper_0007_schema_config_update.MIGRATION_0007_FIELDS.values()
+            ),
+        )
+
+        self.assertFalse(
+            Splocaleitemstr.objects.filter(
+                id__in=[self.cog_item_name.id, self.cog_item_desc.id]
+            ).exists()
+        )
+        self.assertFalse(
+            Splocalecontaineritem.objects.filter(id=self.cog_item.id).exists()
+        )
+
 
 class CreateCogTypePicklistTests(ApiTests):
 
@@ -83,55 +106,100 @@ class CreateCogTypePicklistTests(ApiTests):
             name=helper_0007_schema_config_update.COG_PICKLIST_NAME,
             tablename="collectionobjectgrouptype",
             formatter="CollectionObjectGroupType",
-            type=1
+            type=1,
         )
         self.assertEqual(
             picklists.count(),
-            Collection.objects.all().count()
+            Collection.objects.all().count(),
         )
 
 
-class RevertCogTypePicklistTests(TestCase):
+class RevertCogTypePicklistTests(ApiTests):
+
+    def setUp(self):
+        super().setUp()
+        self.target_picklist = Picklist.objects.create(
+            name=helper_0007_schema_config_update.COG_PICKLIST_NAME,
+            type=1,
+            tablename="collectionobjectgrouptype",
+            formatter="CollectionObjectGroupType",
+            collection=self.collection,
+            issystem=False,
+            readonly=False,
+            sizelimit=-1,
+            sorttype=1,
+        )
 
     def test_revert_cogtype_picklist(self):
-        mock_apps = MagicMock()
+        helper_0007_schema_config_update.revert_cogtype_picklist(apps)
 
-        picklist_model = MagicMock()
+        self.assertFalse(
+            Picklist.objects.filter(name=helper_0007_schema_config_update.COG_PICKLIST_NAME).exists()
+        )
 
-        mock_apps.get_model.return_value = picklist_model
 
-        helper_0007_schema_config_update.revert_cogtype_picklist(mock_apps)
+class UpdateCogTypeSplocaleContainerItemTests(ApiTests):
 
-        picklist_model.objects.filter.return_value.delete.assert_called_once()
-
-class UpdateCogTypeSplocaleContainerItemTests(TestCase):
+    def setUp(self):
+        super().setUp()
+        self.cog_container = Splocalecontainer.objects.create(
+            name="collectionobjectgroup",
+            schematype=0,
+            discipline=self.discipline,
+            aggregator="",
+            defaultui="",
+            format="",
+            ishidden=False,
+            issystem=False,
+        )
+        self.cog_type_item = Splocalecontaineritem.objects.create(
+            container=self.cog_container,
+            name=helper_0007_schema_config_update.COGTYPE_FIELD_NAME,
+            picklistname=None,
+            type="",
+            isrequired=False,
+            ishidden=False,
+            issystem=False,
+        )
 
     def test_update_cogtype_splocalecontaineritem(self):
-        mock_apps = MagicMock()
+        helper_0007_schema_config_update.update_cogtype_splocalecontaineritem(apps)
 
-        model = MagicMock()
-        mock_apps.get_model.return_value = model
-
-        helper_0007_schema_config_update.update_cogtype_splocalecontaineritem(
-            mock_apps
+        self.cog_type_item.refresh_from_db()
+        self.assertEqual(
+            self.cog_type_item.picklistname,
+            helper_0007_schema_config_update.COG_PICKLIST_NAME,
         )
+        self.assertEqual(self.cog_type_item.type, "ManyToOne")
+        self.assertTrue(self.cog_type_item.isrequired)
 
-        model.objects.filter.return_value.update.assert_called_once_with(
-            picklistname=helper_0007_schema_config_update.COG_PICKLIST_NAME,
-            type="ManyToOne",
-            isrequired=True,
+
+class UpdateSystemCogTypesPicklistTests(ApiTests):
+
+    def setUp(self):
+        super().setUp()
+        self.system_picklist = Picklist.objects.create(
+            name="Default Collection Object Group Types",
+            type=1,
+            tablename="collectionobjectgrouptype",
+            formatter="foo",
+            collection=self.collection,
+            issystem=False,
+            readonly=False,
+            sizelimit=0,
+            sorttype=1,
         )
-
-class UpdateSystemCogTypesPicklistTests(TestCase):
 
     def test_update_systemcogtypes_picklist(self):
-        mock_apps = MagicMock()
+        helper_0007_schema_config_update.update_systemcogtypes_picklist(apps)
 
-        model = MagicMock()
-        mock_apps.get_model.return_value = model
-
-        helper_0007_schema_config_update.update_systemcogtypes_picklist(
-            mock_apps
+        self.system_picklist.refresh_from_db()
+        self.assertEqual(
+            self.system_picklist.name,
+            helper_0007_schema_config_update.HISTORICAL_COGTYPES_PICKLIST,
         )
-
-        model.objects.filter.return_value.update.assert_called_once()
+        self.assertEqual(self.system_picklist.type, 0)
+        self.assertTrue(self.system_picklist.issystem)
+        self.assertTrue(self.system_picklist.readonly)
+        self.assertEqual(self.system_picklist.sizelimit, 3)
+        self.assertIsNone(self.system_picklist.tablename)
