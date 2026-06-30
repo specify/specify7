@@ -1021,6 +1021,9 @@ export type CollectingEvent = {
     readonly verbatimLocality: string | null;
     readonly version: number | null;
     readonly visibility: number | null;
+    readonly associatedTaxa: string | null;
+    readonly habitat: string | null;
+    readonly eventType: string | null;
   };
   readonly toOneDependent: {
     readonly collectingEventAttribute: CollectingEventAttribute | null;
@@ -1349,6 +1352,7 @@ export type Collection = {
     readonly version: number | null;
     readonly webPortalURI: string | null;
     readonly webSiteURI: string | null;
+    readonly basisOfRecord: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -1439,6 +1443,8 @@ export type CollectionObject = {
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
     readonly yesNo6: boolean | null;
+    readonly disposition: string | null;
+    readonly establishmentMeans: string | null;
   };
   readonly toOneDependent: {
     readonly cojo: CollectionObjectGroupJoin | null;
@@ -1650,6 +1656,9 @@ export type CollectionObjectAttribute = {
     readonly yesNo7: boolean | null;
     readonly yesNo8: boolean | null;
     readonly yesNo9: boolean | null;
+    readonly lifeStage: string | null;
+    readonly sex: string | null;
+    readonly behavior: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -2560,6 +2569,7 @@ export type Determination = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
+    readonly identificationVerificationStatus: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -3587,6 +3597,8 @@ export type Institution = {
     readonly timestampModified: string | null;
     readonly uri: string | null;
     readonly version: number | null;
+    readonly rightsHolder: string | null;
+    readonly datasetName: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -3981,6 +3993,12 @@ export type Locality = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
+    readonly coordinatePrecision: string | null;
+    readonly verbatimCoordinates: string | null;
+    readonly verbatimSRS: string | null;
+    readonly footrintSRS: string | null;
+    readonly footprintWKT: string | null;
+    readonly footprintSpatialFit: number | null;
   };
   readonly toOneDependent: {
     readonly geoCoordDetails: GeoCoordDetail | null;
@@ -3993,6 +4011,7 @@ export type Locality = {
     readonly modifiedByAgent: Agent | null;
     readonly paleoContext: PaleoContext | null;
     readonly visibilitySetBy: SpecifyUser | null;
+    readonly locationAccordingTo: Agent | null;
   };
   readonly toManyDependent: {
     readonly latLonpolygons: RA<LatLonPolygon>;
@@ -4098,6 +4117,7 @@ export type LocalityDetail = {
     readonly yesNo3: boolean | null;
     readonly yesNo4: boolean | null;
     readonly yesNo5: boolean | null;
+    readonly verbatimDepth: string | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
@@ -4493,6 +4513,7 @@ export type Preparation = {
     readonly yesNo1: boolean | null;
     readonly yesNo2: boolean | null;
     readonly yesNo3: boolean | null;
+    readonly disposition: string | null;
   };
   readonly toOneDependent: {
     readonly preparationAttribute: PreparationAttribute | null;
