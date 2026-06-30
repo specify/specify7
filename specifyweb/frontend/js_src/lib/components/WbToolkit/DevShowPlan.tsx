@@ -170,7 +170,7 @@ function RawUploadPlan({
               disabled={
                 JSON.stringify(rawPlan, null, 4) === uploadPlan ||
                 isUploaded ||
-                lintErrors.length > 0
+                (uploadPlan.trim().length > 0 && lintErrors.length > 0)
               }
               onClick={(): void => {
                 let plan: UploadPlan | null;
