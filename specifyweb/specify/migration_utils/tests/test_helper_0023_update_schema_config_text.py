@@ -1,87 +1,120 @@
-from unittest.mock import MagicMock, patch
+from unittest.mock import patch
 
-from django.test import TestCase
+from django.apps import apps
 
+from specifyweb.specify.models import Splocalecontainer, Splocalecontaineritem, Splocaleitemstr
+from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.migration_utils.migration_helpers import helper_0023_update_schema_config_text
 
 
-class UpdateSchemaConfigTextTests(TestCase):
+class UpdateSchemaConfigTextTests(ApiTests):
 
-    def _setup_apps(self):
-        Splocalecontainer = MagicMock()
-        Splocalecontaineritem = MagicMock()
-        Splocaleitemstr = MagicMock()
-        Discipline = MagicMock()
+    def setUp(self):
+        super().setUp()
 
-        apps = MagicMock()
+        self.container = Splocalecontainer.objects.create(
+            name="collectionobjectgroup",
+            schematype=0,
+            discipline=self.discipline,
+            aggregator="",
+            defaultui="",
+            format="",
+            ishidden=False,
+            issystem=False,
+        )
 
-        def get_model(app_label, model_name):
-            if model_name == "Splocalecontainer":
-                return Splocalecontainer
-            if model_name == "Splocalecontaineritem":
-                return Splocalecontaineritem
-            if model_name == "Splocaleitemstr":
-                return Splocaleitemstr
-            if model_name == "Discipline":
-                return Discipline
-            raise KeyError(model_name)
+        self.item = Splocalecontaineritem.objects.create(
+            container=self.container,
+            name="guid",
+            ishidden=False,
+            issystem=False,
+        )
 
-        apps.get_model.side_effect = get_model
-        return apps, Splocalecontainer, Splocalecontaineritem, Splocaleitemstr, Discipline
+        self.desc = Splocaleitemstr.objects.create(
+            language="en",
+            country="US",
+            text="old-desc",
+            itemdesc=self.item,
+        )
+
+        self.name = Splocaleitemstr.objects.create(
+            language="en",
+            country="US",
+            text="old-name",
+            itemname=self.item,
+        )
+
+        self.absolute_container = Splocalecontainer.objects.create(
+            name="absoluteage",
+            schematype=0,
+            discipline=self.discipline,
+            aggregator="",
+            defaultui="",
+            format="",
+            ishidden=False,
+            issystem=False,
+        )
+
+        self.yesno2 = Splocalecontaineritem.objects.create(
+            container=self.absolute_container,
+            name="yesno2",
+            ishidden=False,
+            issystem=False,
+        )
+        self.date1 = Splocalecontaineritem.objects.create(
+            container=self.absolute_container,
+            name="date1",
+            ishidden=True,
+            issystem=False,
+        )
+        self.date2 = Splocalecontaineritem.objects.create(
+            container=self.absolute_container,
+            name="date2",
+            ishidden=False,
+            issystem=False,
+        )
+
+        self.duplicate_keep = Splocalecontaineritem.objects.create(
+            container=self.absolute_container,
+            name="dupfield",
+            ishidden=False,
+            issystem=False,
+        )
+        self.duplicate_delete = Splocalecontaineritem.objects.create(
+            container=self.absolute_container,
+            name="dupfield",
+            ishidden=False,
+            issystem=False,
+        )
+
+        self.duplicate_desc = Splocaleitemstr.objects.create(
+            language="en",
+            country="US",
+            text="dup-desc",
+            itemdesc=self.duplicate_delete,
+        )
+        self.duplicate_name = Splocaleitemstr.objects.create(
+            language="en",
+            country="US",
+            text="dup-name",
+            itemname=self.duplicate_delete,
+        )
 
     def test_update_schema_config_field_desc(self):
-        apps, Splocalecontainer, Splocalecontaineritem, Splocaleitemstr, _ = self._setup_apps()
-
-        container = MagicMock(id=1)
-        item = MagicMock(id=10, name="guid")
-        desc = MagicMock()
-        name = MagicMock()
-
-        Splocalecontainer.objects.filter.return_value = [container]
-        Splocalecontaineritem.objects.filter.return_value = [item]
-
-        def itemstr_filter(**kwargs):
-            if kwargs == {"itemdesc_id": item.id}:
-                return MagicMock(first=MagicMock(return_value=desc))
-            if kwargs == {"itemname_id": item.id}:
-                return MagicMock(first=MagicMock(return_value=name))
-            return MagicMock(first=MagicMock(return_value=None))
-
-        Splocaleitemstr.objects.filter.side_effect = itemstr_filter
-
         helper_0023_update_schema_config_text.update_schema_config_field_desc(apps)
 
-        self.assertEqual(desc.text, "GUID")
-        self.assertEqual(name.text, "GUID")
-        desc.save.assert_called_once()
-        name.save.assert_called_once()
+        self.desc.refresh_from_db()
+        self.name.refresh_from_db()
+        self.assertEqual(self.desc.text, "GUID")
+        self.assertEqual(self.name.text, "GUID")
 
     def test_reverse_update_schema_config_field_desc(self):
-        apps, Splocalecontainer, Splocalecontaineritem, Splocaleitemstr, _ = self._setup_apps()
-
-        container = MagicMock(id=1)
-        item = MagicMock(id=10, name="cogType")
-        desc = MagicMock()
-        name = MagicMock()
-
-        Splocalecontainer.objects.filter.return_value = [container]
-        Splocalecontaineritem.objects.filter.return_value = [item]
-
-        def itemstr_filter(**kwargs):
-            if kwargs == {"itemdesc_id": item.id}:
-                return MagicMock(first=MagicMock(return_value=desc))
-            if kwargs == {"itemname_id": item.id}:
-                return MagicMock(first=MagicMock(return_value=name))
-            return MagicMock(first=MagicMock(return_value=None))
-
-        Splocaleitemstr.objects.filter.side_effect = itemstr_filter
-
         helper_0023_update_schema_config_text.reverse_update_schema_config_field_desc(apps)
 
-        self.assertEqual(desc.text, "cogType")
-        self.assertEqual(name.text, "cogType")
-        desc.save.assert_called_once()
-        name.save.assert_called_once()
+        self.desc.refresh_from_db()
+        self.name.refresh_from_db()
+        self.assertEqual(self.desc.text, "guid")
+        self.assertEqual(self.name.text, "guid")
 
     @patch(
         "specifyweb.specify.migration_utils.migration_helpers.helper_0023_update_schema_config_text._schema_override_hidden_values_for_discipline"
@@ -94,12 +127,6 @@ class UpdateSchemaConfigTextTests(TestCase):
         mock_fields_without_override,
         mock_schema_override,
     ):
-        apps, Splocalecontainer, Splocalecontaineritem, Splocaleitemstr, Discipline = self._setup_apps()
-
-        container = MagicMock(id=1, discipline_id=10)
-        Splocalecontainer.objects.filter.return_value = [container]
-        Discipline.objects.values_list.return_value = [(10, "bird")]
-
         mock_schema_override.return_value = {
             "absoluteage": {
                 "yesno2": True,
@@ -108,58 +135,39 @@ class UpdateSchemaConfigTextTests(TestCase):
         }
         mock_fields_without_override.return_value = ["date2"]
 
-        explicit_hide_qs = MagicMock()
-        explicit_show_qs = MagicMock()
-        implicit_hide_qs = MagicMock()
-        duplicates_qs = MagicMock()
-        duplicate_items_qs = MagicMock()
-        duplicate_items_qs.first.return_value = MagicMock(id=99)
-        duplicate_items_qs.exclude.return_value = MagicMock()
-
-        def filter_side_effect(*args, **kwargs):
-            if kwargs == {"container": container, "ishidden": False, "name__in": ["yesno2"]}:
-                return explicit_hide_qs
-            if kwargs == {"container": container, "ishidden": True, "name__in": ["date1"]}:
-                return explicit_show_qs
-            if kwargs == {"container": container, "ishidden": False, "name__in": ["date2"]}:
-                implicit_hide_qs.update.return_value = 1
-                return implicit_hide_qs
-            if kwargs == {"container_id": container.id, "name": "guid"}:
-                return duplicate_items_qs
-            return MagicMock()
-
-        Splocalecontaineritem.objects.filter.side_effect = filter_side_effect
-        Splocalecontaineritem.objects.values.return_value.annotate.return_value.filter.return_value = [
-            {"container": container.id, "name": "guid"}
-        ]
-
         helper_0023_update_schema_config_text.update_hidden_prop(apps)
 
-        explicit_hide_qs.update.assert_called_once_with(ishidden=True)
-        explicit_show_qs.update.assert_called_once_with(ishidden=False)
-        implicit_hide_qs.update.assert_called_once_with(ishidden=True)
-        Splocaleitemstr.objects.filter.assert_any_call(itemdesc_id__in=duplicate_items_qs.exclude.return_value)
-        Splocaleitemstr.objects.filter.assert_any_call(itemname_id__in=duplicate_items_qs.exclude.return_value)
+        self.yesno2.refresh_from_db()
+        self.date1.refresh_from_db()
+        self.date2.refresh_from_db()
+
+        self.assertTrue(self.yesno2.ishidden)
+        self.assertFalse(self.date1.ishidden)
+        self.assertTrue(self.date2.ishidden)
+
+        self.assertEqual(
+            Splocalecontaineritem.objects.filter(
+                container=self.absolute_container,
+                name="dupfield",
+            ).count(),
+            1,
+        )
+
+        self.duplicate_desc.refresh_from_db()
+        self.duplicate_name.refresh_from_db()
+
+        self.assertEqual(self.duplicate_desc.itemdesc_id, self.duplicate_keep.id)
+        self.assertEqual(self.duplicate_name.itemname_id, self.duplicate_keep.id)
 
     @patch(
         "specifyweb.specify.migration_utils.migration_helpers.helper_0023_update_schema_config_text._fields_without_explicit_hidden_override"
     )
     def test_reverse_update_hidden_prop_unhides_fields(self, mock_fields_without_override):
-        apps, Splocalecontainer, Splocalecontaineritem, _, _ = self._setup_apps()
-
-        container = MagicMock(id=1, discipline_id=10)
-        Splocalecontainer.objects.filter.return_value = [container]
+        self.date2.ishidden = True
+        self.date2.save()
         mock_fields_without_override.return_value = ["date2"]
-
-        unhiding_qs = MagicMock()
-
-        def filter_side_effect(*args, **kwargs):
-            if kwargs == {"container": container, "name__in": ["date2"]}:
-                return unhiding_qs
-            return MagicMock()
-
-        Splocalecontaineritem.objects.filter.side_effect = filter_side_effect
 
         helper_0023_update_schema_config_text.reverse_update_hidden_prop(apps)
 
-        unhiding_qs.update.assert_called_once_with(ishidden=False)
+        self.date2.refresh_from_db()
+        self.assertFalse(self.date2.ishidden)
