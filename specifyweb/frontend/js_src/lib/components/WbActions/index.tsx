@@ -6,6 +6,7 @@ import { commonText } from '../../localization/common';
 import { wbText } from '../../localization/workbench';
 import { Http } from '../../utils/ajax/definitions';
 import { ping } from '../../utils/ajax/ping';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
@@ -19,6 +20,7 @@ import type { WbMapping } from '../WorkBench/mapping';
 import { CreateRecordSetButton } from '../WorkBench/RecordSet';
 import { TableRecordCounts } from '../WorkBench/Results';
 import { WbStatus as WbStatusComponent } from '../WorkBench/Status';
+import { RecordCountPriority } from '../WorkBench/WbValidation';
 import type { WbStatus, Workbench } from '../WorkBench/WbView';
 import { WbNoUploadPlan } from './WbNoUploadPlan';
 import { WbRevert } from './WbRevert';
@@ -246,8 +248,13 @@ export function WbActions({
                   ).length > 0
               ) && (
                 <div className="flex flex-col gap-2">
-                  {Object.entries(recordCounts).map(
-                    ([resultType, recordsPerType]) =>
+                  {Object.entries(recordCounts)
+                    .sort(
+                      sortFunction(
+                        ([value]) => RecordCountPriority.indexOf(value)
+                      )
+                    )
+                    .map(([resultType, recordsPerType]) =>
                       recordsPerType !== undefined &&
                       Object.keys(recordsPerType).length > 0 ? (
                         <div key={resultType}>
@@ -263,12 +270,12 @@ export function WbActions({
                           <TableRecordCounts
                             recordCounts={recordsPerType}
                             sortFunction={([, recordCount]) =>
-                              -(recordCount ?? 0)
+                              recordCount ?? 0
                             }
                           />
                         </div>
                       ) : null
-                  )}
+                    )}
                 </div>
               )}
           </div>
