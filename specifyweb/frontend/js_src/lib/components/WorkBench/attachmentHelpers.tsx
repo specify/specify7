@@ -1,13 +1,28 @@
 import type Handsontable from 'handsontable';
 
+import { ajax } from '../../utils/ajax';
+import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
-import type { SerializedResource } from '../DataModel/helperTypes';
+import { uploadFile } from '../Attachments/attachments';
+import type {
+  SerializedResource,
+  SerializedRecord,
+} from '../DataModel/helperTypes';
+import type { SpecifyResource } from '../DataModel/legacyTypes';
+import {
+  deserializeResource,
+  serializeResource,
+} from '../DataModel/serializers';
+import { tables } from '../DataModel/tables';
 import type {
   Attachment,
+  Spdataset,
   SpDataSetAttachment,
   Tables,
 } from '../DataModel/types';
+import { raise } from '../Errors/Crash';
 import type { Dataset } from '../WbPlanView/Wrapped';
+import { ping } from '../../utils/ajax/ping';
 
 export const ATTACHMENTS_COLUMN = '_UPLOADED_ATTACHMENTS';
 export const BASE_TABLE_NAME = 'baseTable' as const;
@@ -103,4 +118,139 @@ export function getAttachmentsColumnFromHeaders(headers: RA<string>): number {
     return -1;
   }
   return headers.indexOf(ATTACHMENTS_COLUMN);
+}
+
+export function uploadFiles(
+  files: RA<File>,
+  handleProgress: (progress: (progress: number | undefined) => number) => void,
+  attachmentIsPublicDefault: boolean
+): RA<Promise<SpecifyResource<Attachment>>> {
+  return files.map(async (file) =>
+    uploadFile({ file, attachmentIsPublicDefault })
+      .then(async (attachment) =>
+        attachment === undefined
+          ? Promise.reject(`Upload failed for file ${file.name}`)
+          : attachment
+      )
+      .finally(() =>
+        handleProgress((progress) =>
+          typeof progress === 'number' ? progress + 1 : 1
+        )
+      )
+  );
+}
+
+export async function createDataSetAttachments(
+  attachments: RA<SpecifyResource<Attachment>>,
+  dataSet: SpecifyResource<Spdataset> | number
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return Promise.all(
+    attachments.map(
+      (attachment) =>
+        new tables.SpDataSetAttachment.Resource({
+          attachment: attachment as never,
+          spdataset:
+            typeof dataSet === 'number'
+              ? `/api/specify/spdataset/${dataSet}/`
+              : dataSet.url(),
+          ordinal: 0,
+        })
+    )
+  );
+}
+
+export async function saveDataSetAttachments(
+  dataSetAttachments: RA<SpecifyResource<SpDataSetAttachment>>
+): Promise<RA<SpecifyResource<SpDataSetAttachment>>> {
+  return ajax<RA<SerializedRecord<SpDataSetAttachment>>>(
+    `/bulk_copy/bulk/${tables.SpDataSetAttachment.name.toLowerCase()}/`,
+    {
+      method: 'POST',
+      headers: { Accept: 'application/json' },
+      body: dataSetAttachments.map((dataSetAttachment) =>
+        serializeResource(dataSetAttachment)
+      ),
+    }
+  ).then(({ data }) =>
+    data.map((resource) => deserializeResource(serializeResource(resource)))
+  );
+}
+
+export async function uploadAttachmentsToRow(
+  files: RA<File>,
+  dataset: Dataset,
+  hot: Handsontable,
+  row: number,
+  existingAttachments: RA<SerializedResource<SpDataSetAttachment>>,
+  targetTable: AttachmentTargetTable,
+  attachmentIsPublicDefault: boolean,
+  setFileUploadLength: React.Dispatch<React.SetStateAction<number>>,
+  setFileUploadProgress: React.Dispatch<
+    React.SetStateAction<number | undefined>
+  >
+): Promise<void> {
+  const attachmentColumn = getVisualAttachmentsColumn(dataset, hot);
+  if (attachmentColumn === -1) return;
+  setFileUploadProgress(0);
+  setFileUploadLength(files.length);
+  const currentCount = existingAttachments.length;
+  await Promise.all(
+    uploadFiles(files, setFileUploadProgress, attachmentIsPublicDefault)
+  )
+    .then(async (attachments) =>
+      // Create SpDataSetAttachments for each attachment
+      f.all({
+        dataSetAttachments: createDataSetAttachments(
+          attachments,
+          dataset.id
+        ).then(async (unsavedDataSetAttachments) => {
+          unsavedDataSetAttachments.forEach((dataSetAttachment, index) => {
+            dataSetAttachment.set('ordinal', currentCount + index);
+          });
+          return saveDataSetAttachments(unsavedDataSetAttachments);
+        }),
+      })
+    )
+    .then(async ({ dataSetAttachments }) => {
+      const allDataSetAttachments = [
+        ...existingAttachments,
+        ...dataSetAttachments.map((att) => serializeResource(att)),
+      ] as RA<SerializedResource<SpDataSetAttachment>>;
+
+      const data = attachmentsToCell(allDataSetAttachments, targetTable);
+      hot.setDataAtCell(row, attachmentColumn, data);
+
+      setFileUploadProgress(undefined);
+      // The dataset still needs to be saved after this.
+    })
+    .catch(async (error) => {
+      setFileUploadProgress(undefined);
+      raise(error);
+    });
+}
+
+export async function deleteAttachmentFromRow(
+  idToDelete: number,
+  dataset: Dataset,
+  hot: Handsontable,
+  row: number,
+  existingAttachments: RA<SerializedResource<SpDataSetAttachment>>
+): Promise<void> {
+  const attachmentColumn = getVisualAttachmentsColumn(dataset, hot);
+  if (attachmentColumn === -1) return;
+
+  const allDataSetAttachments = existingAttachments.filter(
+    (att) => att.id !== idToDelete
+  );
+
+  await ping(`/api/specify/spdatasetattachment/${idToDelete}/`, {
+    method: 'DELETE',
+  });
+
+  // The previous target table is not preserved. Safe for now since only uploading to the base table is supported.
+  const targetTable = BASE_TABLE_NAME;
+  const data = attachmentsToCell(allDataSetAttachments, targetTable);
+  hot.setDataAtCell(row, attachmentColumn, data);
+
+  // The dataset still needs to be saved after this.
 }

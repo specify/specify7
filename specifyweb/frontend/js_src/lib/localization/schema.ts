@@ -18,6 +18,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabelle',
     'pt-br': 'Mesa',
     'hr-hr': 'Stol',
+    nb: 'Bord',
   },
   tables: {
     'en-us': 'Tables',
@@ -28,6 +29,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabellen',
     'pt-br': 'Tabelas',
     'hr-hr': 'Tablice',
+    nb: 'Tabeller',
   },
   tableName: {
     'en-us': 'Table Name',
@@ -38,6 +40,7 @@ export const schemaText = createDictionary({
     'es-es': 'Nombre de la tabla',
     'pt-br': 'Nome da tabela',
     'hr-hr': 'Naziv tablice',
+    nb: 'Tabellnavn',
   },
   withoutTable: {
     'en-us': 'Without Table',
@@ -48,6 +51,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Без столу',
     'pt-br': 'Sem mesa',
     'hr-hr': 'Bez stola',
+    nb: 'Uten bord',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -58,6 +62,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Schema konfigurieren',
     'pt-br': 'Configuração do esquema',
     'hr-hr': 'Konfiguracija sheme',
+    nb: 'Skjemakonfigurasjon',
   },
   unsavedSchemaUnloadProtect: {
     'en-us': 'Schema changes have not been saved',
@@ -68,6 +73,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Schema Änderungen wurden nicht gespeichert',
     'pt-br': 'As alterações de esquema não foram salvas.',
     'hr-hr': 'Promjene sheme nisu spremljene',
+    nb: 'Skjemaendringer er ikke lagret',
   },
   changeBaseTable: {
     'en-us': 'Change Base Table',
@@ -78,6 +84,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Basis-Tabelle ändern',
     'pt-br': 'Alterar tabela base',
     'hr-hr': 'Promijeni osnovnu tablicu',
+    nb: 'Endre basistabell',
   },
   field: {
     'en-us': 'Field',
@@ -88,6 +95,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Feld',
     'pt-br': 'Campo',
     'hr-hr': 'Polje',
+    nb: 'Felt',
   },
   fields: {
     'en-us': 'Fields',
@@ -98,6 +106,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Felder',
     'pt-br': 'Campos',
     'hr-hr': 'Polja',
+    nb: 'Felt',
   },
   relationships: {
     'en-us': 'Relationships',
@@ -108,6 +117,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Beziehungen',
     'pt-br': 'Relacionamentos',
     'hr-hr': 'Odnosi',
+    nb: 'Relasjoner',
   },
   database: {
     'en-us': 'Database',
@@ -118,6 +128,7 @@ export const schemaText = createDictionary({
     'es-es': 'Base de datos',
     'pt-br': 'Banco de dados',
     'hr-hr': 'Baza podataka',
+    nb: 'Database',
   },
   setScope: {
     'en-us': 'Set Scope',
@@ -128,6 +139,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Встановити область дії',
     'pt-br': 'Definir Escopo',
     'hr-hr': 'Postavi opseg',
+    nb: 'Angi omfang',
   },
   caption: {
     'en-us': 'Caption',
@@ -138,6 +150,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Beschriftung',
     'pt-br': 'Rubrica',
     'hr-hr': 'Naslov',
+    nb: 'Tekst',
   },
   description: {
     'en-us': 'Description',
@@ -148,6 +161,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Beschreibung',
     'pt-br': 'Descrição',
     'hr-hr': 'Opis',
+    nb: 'Beskrivelse',
   },
   hideTable: {
     'en-us': 'Hide Table',
@@ -158,6 +172,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabelle verbergen',
     'pt-br': 'Ocultar tabela',
     'hr-hr': 'Sakrij tablicu',
+    nb: 'Skjul tabell',
   },
   hideField: {
     'en-us': 'Hide Field',
@@ -168,6 +183,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Feld verbergen',
     'pt-br': 'Ocultar campo',
     'hr-hr': 'Sakrij polje',
+    nb: 'Skjul felt',
   },
   tableFormat: {
     'en-us': 'Table Format',
@@ -178,6 +194,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabellenformat',
     'pt-br': 'Formato de tabela',
     'hr-hr': 'Format tablice',
+    nb: 'Tabellformat',
   },
   tableAggregation: {
     'en-us': 'Table Aggregation',
@@ -188,6 +205,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabellenaggregation',
     'pt-br': 'Agregação de tabelas',
     'hr-hr': 'Agregacija tablica',
+    nb: 'Tabellaggregering',
   },
   oneToOne: {
     'en-us': 'One-to-one',
@@ -198,6 +216,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Eins zu eins',
     'pt-br': 'Um para um',
     'hr-hr': 'Jedan na jedan',
+    nb: 'En-til-en',
   },
   oneToMany: {
     'en-us': 'One-to-many',
@@ -208,6 +227,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Eins zu vielen',
     'pt-br': 'Um para muitos',
     'hr-hr': 'Jedan-na-mnogo',
+    nb: 'En-til-mange',
   },
   manyToOne: {
     'en-us': 'Many-to-one',
@@ -218,6 +238,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Viele zu eins',
     'pt-br': 'Muitos para um',
     'hr-hr': 'Više prema jedan',
+    nb: 'Mange-til-en',
   },
   manyToMany: {
     'en-us': 'many-to-many',
@@ -228,6 +249,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Viele zu viele',
     'pt-br': 'muitos para muitos',
     'hr-hr': 'mnogo-na-mnogo',
+    nb: 'mange-til-mange',
   },
   fieldLength: {
     'en-us': 'Length',
@@ -238,6 +260,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Длина',
     'pt-br': 'Comprimento',
     'hr-hr': 'Duljina',
+    nb: 'Lengde',
   },
   readOnly: {
     'en-us': 'Read-only',
@@ -248,6 +271,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Nur-Lesen',
     'pt-br': 'Somente leitura',
     'hr-hr': 'Samo za čitanje',
+    nb: 'Skrivebeskyttet',
   },
   fieldFormat: {
     'en-us': 'Field Format',
@@ -258,6 +282,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Feldformat',
     'pt-br': 'Formato do campo',
     'hr-hr': 'Format polja',
+    nb: 'Feltformat',
   },
   uiFormattersForField: {
     'en-us': 'Field Formatters for {fieldLabel:string}',
@@ -268,6 +293,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Форматирование полей для {fieldLabel:string}',
     'uk-ua': 'Форматування полів для {fieldLabel:string}',
     'hr-hr': 'Formateri polja za {fieldLabel:string}',
+    nb: 'Feltformateringer for {fieldLabel:string}',
   },
   formatted: {
     'en-us': 'Formatted',
@@ -278,6 +304,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Formatiert',
     'pt-br': 'Formatado',
     'hr-hr': 'Formatirano',
+    nb: 'Formatert',
   },
   webLink: {
     'en-us': 'Web Link',
@@ -288,6 +315,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Web-Link',
     'pt-br': 'Link da Web',
     'hr-hr': 'Web-veza',
+    nb: 'Nettlenke',
   },
   userDefined: {
     'en-us': 'User Defined',
@@ -298,6 +326,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Определяется пользователем',
     'pt-br': 'Definido pelo usuário',
     'hr-hr': 'Korisnički definirano',
+    nb: 'Brukerdefinert',
   },
   addLanguage: {
     'en-us': 'Add Language',
@@ -308,6 +337,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Добавить язык',
     'pt-br': 'Adicionar idioma',
     'hr-hr': 'Dodaj jezik',
+    nb: 'Legg til språk',
   },
   databaseColumn: {
     'en-us': 'Database Column',
@@ -318,6 +348,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Datenbank-Spalte',
     'pt-br': 'Coluna do banco de dados',
     'hr-hr': 'Stupac baze podataka',
+    nb: 'Databasekolonne',
   },
   relatedTable: {
     'en-us': 'Related Model',
@@ -328,6 +359,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Zugehöriges Modell',
     'pt-br': 'Modelo relacionado',
     'hr-hr': 'Povezani model',
+    nb: 'Relatert modell',
   },
   otherSideName: {
     'en-us': 'Other side name',
@@ -338,6 +370,7 @@ export const schemaText = createDictionary({
     'es-es': 'Nombre del otro lado',
     'pt-br': 'Outro nome do lado',
     'hr-hr': 'Drugo bočno ime',
+    nb: 'Andre sidenavn',
   },
   dependent: {
     'en-us': 'Dependent',
@@ -348,6 +381,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Abhängig',
     'pt-br': 'Dependente',
     'hr-hr': 'Ovisnik',
+    nb: 'Avhengig',
   },
   independent: {
     'en-us': 'Independent',
@@ -358,6 +392,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Unabhängig',
     'pt-br': 'Independente',
     'hr-hr': 'Neovisni',
+    nb: 'Selvstendig',
   },
   downloadAsJson: {
     'en-us': 'Download as JSON',
@@ -368,6 +403,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Als JSON herunterladen',
     'pt-br': 'Baixar como JSON',
     'hr-hr': 'Preuzmi kao JSON',
+    nb: 'Last ned som JSON',
   },
   downloadAsTsv: {
     'en-us': 'Download as TSV',
@@ -378,6 +414,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Als TSV herunterladen',
     'pt-br': 'Baixar como TSV',
     'hr-hr': 'Preuzmi kao TSV',
+    nb: 'Last ned som TSV',
   },
   tableId: {
     'en-us': 'Table ID',
@@ -388,6 +425,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabellen-ID',
     'pt-br': 'ID da tabela',
     'hr-hr': 'ID tablice',
+    nb: 'Tabell-ID',
   },
   fieldCount: {
     'en-us': 'Field count',
@@ -398,6 +436,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Anzahl Felder',
     'pt-br': 'Contagem de campos',
     'hr-hr': 'Broj polja',
+    nb: 'Antall felt',
   },
   relationshipCount: {
     'en-us': 'Relationship count',
@@ -408,6 +447,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Anzahl Beziehungen',
     'pt-br': 'Contagem de relacionamentos',
     'hr-hr': 'Broj odnosa',
+    nb: 'Antall relasjoner',
   },
   databaseSchema: {
     'en-us': 'Database Schema',
@@ -418,6 +458,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Datenbankschema',
     'pt-br': 'Esquema do banco de dados',
     'hr-hr': 'Shema baze podataka',
+    nb: 'Databaseskjema',
   },
   selectedTables: {
     'en-us': 'Selected Tables',
@@ -428,6 +469,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Ausgewählte Tabellen',
     'pt-br': 'Tabelas selecionadas',
     'hr-hr': 'Odabrane tablice',
+    nb: 'Valgte tabeller',
   },
   possibleTables: {
     'en-us': 'Possible Tables',
@@ -438,6 +480,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Mögliche Tabellen',
     'pt-br': 'Tabelas possíveis',
     'hr-hr': 'Moguće tablice',
+    nb: 'Mulige tabeller',
   },
   goToTop: {
     'en-us': 'Go to top',
@@ -448,6 +491,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Перейти наверх',
     'pt-br': 'Voltar ao topo',
     'hr-hr': 'Idi na vrh',
+    nb: 'Gå til toppen',
   },
   idField: {
     'en-us': 'ID Field',
@@ -458,6 +502,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Feld-ID',
     'pt-br': 'Campo de identificação',
     'hr-hr': 'Polje za identifikaciju',
+    nb: 'ID-felt',
   },
   tableUniquenessRules: {
     'en-us': '{tableName:string} Uniqueness Rules',
@@ -468,6 +513,7 @@ export const schemaText = createDictionary({
     'uk-ua': '{tableName:string} Правила унікальності',
     'pt-br': '{tableName:string} Regras de Unicidade',
     'hr-hr': '{tableName:string} Pravila jedinstvenosti',
+    nb: '{tableName:string} Unikhetsregler',
   },
   uniquenessRules: {
     'en-us': 'Uniqueness Rules',
@@ -478,6 +524,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Правила унікальності',
     'pt-br': 'Regras de Unicidade',
     'hr-hr': 'Pravila jedinstvenosti',
+    nb: 'Unikhetsregler',
   },
   uniqueFields: {
     'en-us': 'Unique Fields',
@@ -488,6 +535,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Унікальні поля',
     'pt-br': 'Campos únicos',
     'hr-hr': 'Jedinstvena polja',
+    nb: 'Unike felt',
   },
   addUniquenessRule: {
     'en-us': 'Add Uniqueness Rule',
@@ -498,6 +546,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Додати правило унікальності',
     'pt-br': 'Adicionar regra de unicidade',
     'hr-hr': 'Dodaj pravilo jedinstvenosti',
+    nb: 'Legg til unikhetsregel',
   },
   configureUniquenessRule: {
     'en-us': 'Configure Uniqueness Rule',
@@ -508,6 +557,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Налаштувати правило унікальності',
     'pt-br': 'Configurar regra de unicidade',
     'hr-hr': 'Konfiguriraj pravilo jedinstvenosti',
+    nb: 'Konfigurer unikhetsregel',
   },
   scope: {
     'en-us': 'Scope',
@@ -518,6 +568,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Anwendungsbereich',
     'pt-br': 'Escopo',
     'hr-hr': 'Opseg',
+    nb: 'Omfang',
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
@@ -528,6 +579,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'У базі даних знайдено дублікати',
     'pt-br': 'Foram encontrados duplicados no banco de dados.',
     'hr-hr': 'Duplikati pronađeni u bazi podataka',
+    nb: 'Duplikater funnet i databasen',
   },
   exportDuplicates: {
     'en-us': 'Export Duplicates',
@@ -538,6 +590,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Експорт дублікатів',
     'pt-br': 'Exportar duplicados',
     'hr-hr': 'Izvoz duplikata',
+    nb: 'Eksporter duplikater',
   },
   numberOfDuplicates: {
     'en-us': 'Number of Duplicates',
@@ -548,6 +601,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Кількість дублікатів',
     'pt-br': 'Número de duplicados',
     'hr-hr': 'Broj duplikata',
+    nb: 'Antall duplikater',
   },
   schemaViewTitle: {
     'en-us': 'Schema Config: {tableName:string}',
@@ -558,6 +612,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Schema-Konfiguration: {tableName:string}',
     'pt-br': 'Configuração do esquema: {tableName:string}',
     'hr-hr': 'Konfiguracija sheme: {tableName:string}',
+    nb: 'Skjemakonfigurasjon: {tableName:string}',
   },
   schemaExportFileName: {
     'en-us': 'Specify 7 Data Model',
@@ -568,6 +623,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Specify 7 Datenmodell',
     'pt-br': 'Especifique 7 modelos de dados',
     'hr-hr': 'Navedite 7 podatkovnih modela',
+    nb: 'Spesifiser 7 datamodell',
   },
   sortByHiddenFields: {
     'en-us': 'Sort by hidden fields',
@@ -578,6 +634,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Сортувати за прихованими полями',
     'pt-br': 'Ordenar por campos ocultos',
     'hr-hr': 'Sortiraj po skrivenim poljima',
+    nb: 'Sorter etter skjulte felt',
   },
   hidden: {
     'en-us': 'hidden',
@@ -588,15 +645,17 @@ export const schemaText = createDictionary({
     'uk-ua': 'прихований',
     'pt-br': 'escondido',
     'hr-hr': 'skriven',
+    nb: 'skjult',
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
-    'de-ch': 'Format für benutzerdefinierte Felder',
+    'de-ch': 'Benutzerdefiniertes Feldformat',
     'es-es': 'Formato de campo personalizado',
     'fr-fr': 'Format de champ personnalisé',
     'ru-ru': 'Формат пользовательского поля',
     'uk-ua': 'Формат користувацького поля',
     'pt-br': 'Formato de campo personalizado',
     'hr-hr': 'Prilagođeni format polja',
+    nb: 'Tilpasset feltformat',
   },
 } as const);
