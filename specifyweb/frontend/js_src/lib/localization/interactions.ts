@@ -40,7 +40,7 @@ export const interactionsText = createDictionary({
     'de-ch': '{table:string} Rückkehr',
     'pt-br': '{table:string} Retornar',
     'hr-hr': '{table:string} Povratak',
-    nb: '{table:string} Retur',
+    nb: '{table:string} Tilbake',
   },
   noInteractions: {
     comment: 'Example: There are no interactions linked to this {preparation}',
@@ -184,7 +184,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Nicht assoziierter Gegenstand hinzufügen',
     'pt-br': 'Adicionar item não associado',
     'hr-hr': 'Dodaj nepovezanu stavku',
-    nb: 'Legg til et ikke-tilknyttet element',
+    nb: 'Legg til et ikke-tilknyttet objekt',
   },
   preparations: {
     'en-us': 'Preparations',
@@ -242,7 +242,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Rückgabe',
     'pt-br': 'Retornar',
     'hr-hr': 'Povratak',
-    nb: 'Retur',
+    nb: 'Tilbake',
   },
   resolve: {
     comment: 'As in "Resolve preparations"',
@@ -320,7 +320,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Zurückgegebene Anzahl',
     'pt-br': 'Valor devolvido',
     'hr-hr': 'Vraćeni iznos',
-    nb: 'Returnert beløp',
+    nb: 'Returnert antall',
   },
   resolvedAmount: {
     'en-us': 'Resolved Amount',
@@ -331,7 +331,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Gelöste Anzahl',
     'pt-br': 'Valor Resolvido',
     'hr-hr': 'Riješeni iznos',
-    nb: 'Løst beløp',
+    nb: 'Løst antall',
   },
   prepReturnFormatter: {
     comment: 'Used to format preparations in the prep return dialog',
@@ -354,7 +354,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'nicht katalogisiert',
     'pt-br': 'não catalogado',
     'hr-hr': 'nekatalogizirano',
-    nb: 'ukatalogisert',
+    nb: 'uregistert',
   },
   returnedPreparations: {
     comment: 'Example: Preparation records',
@@ -386,7 +386,7 @@ export const interactionsText = createDictionary({
       'Registros {count:number|formatted} {tablePreparation:string} foram retornados e salvos',
     'hr-hr':
       'Vraćeno je i spremljeno {count:number|formatted} {tablePreparation:string} zapisa',
-    nb: '{count:number|formatted} {tablePreparation:string} poster er returnert og lagret',
+    nb: '{count:number|formatted} {tablePreparation:string} poster er funnet og lagret',
   },
   deselectAll: {
     'en-us': 'Deselect all',
@@ -397,7 +397,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Alle abwählen',
     'pt-br': 'Desmarque tudo',
     'hr-hr': 'Poništi odabir svih',
-    nb: 'Fjern merkingen av alt',
+    nb: 'Fjern alle valgte',
   },
   available: {
     'en-us': 'Available',
@@ -468,7 +468,7 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Продовжити',
     'pt-br': 'Continuar',
     'hr-hr': 'Nastaviti',
-    nb: 'Fortsette',
+    nb: 'Fortsett',
   },
   notAvailable: {
     'en-us': 'Not available',

@@ -46,7 +46,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
-    nb: 'Vedleggsserveren er ikke tilgjengelig',
+    nb: 'Kan ikke koble til vVedleggsserveren',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -101,7 +101,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
     'hr-hr': 'Nije moguće pronaći povezani zapis',
-    nb: 'Finner ikke relatert oppføring',
+    nb: 'Finner ikke tilknyttet post',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -116,7 +116,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
     'hr-hr': 'Nije moguće pronaći zapis na koji se odnosi ovaj privitak.',
-    nb: 'Finner ikke en oppføring som dette vedlegget er relatert til.',
+    nb: 'Finner ikke posten som dette vedlegget er knyttet til.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -196,7 +196,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Неправильно відформатований',
     'pt-br': 'Formatação incorreta',
     'hr-hr': 'Neispravno formatirano',
-    nb: 'Feil formatert',
+    nb: 'Ugyldig format',
   },
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
@@ -229,7 +229,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avlyst',
+    nb: 'Avbrutt',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -243,7 +243,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       '{action:string} estava em andamento quando ocorreu a interrupção.',
     'hr-hr': '{action:string} je bio u tijeku kada je došlo do prekida',
-    nb: '{action:string} var i gang da avbruddet oppsto',
+    nb: '{action:string} var i gang da avbruddet oppstod',
   },
   matchError: {
     'en-us': 'Match Error',
@@ -287,7 +287,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Набори даних імпорту вкладених файлів ({count:number})',
     'pt-br': 'Conjuntos de dados de importação de anexos ({count:number})',
     'hr-hr': 'Skupovi podataka za uvoz priloga ({count:number})',
-    nb: 'Datasett for import av vedlegg ({count:number})',
+    nb: '({count:number}) datasett for import av vedlegg',
   },
   newAttachmentDataset: {
     'en-us': 'New Attachment Data Set {date: string}',
@@ -837,7 +837,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Download All',
     'de-ch': 'Alle herunterladen',
     'es-es': 'Descargar todo',
-    'fr-fr': 'Tout télécharger',
+    'fr-fr': 'Télécharger tout',
     'pt-br': 'Baixar tudo',
     'ru-ru': 'Скачать все',
     'uk-ua': 'Завантажити все',

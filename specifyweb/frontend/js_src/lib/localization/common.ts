@@ -466,7 +466,7 @@ export const commonText = createDictionary({
     'de-ch': 'Ansicht',
     'pt-br': 'Visualizar',
     'hr-hr': 'Pogled',
-    nb: 'Utsikt',
+    nb: 'Visning',
   },
   opensInNewTab: {
     comment: 'Used in a hover-over message for links that open in new tab',
@@ -558,7 +558,7 @@ export const commonText = createDictionary({
     'de-ch': 'Satzgruppen',
     'pt-br': 'Conjuntos de discos',
     'hr-hr': 'Skupovi zapisa',
-    nb: 'Rekordsett',
+    nb: 'Datasett med poster',
   },
   recordCount: {
     'en-us': 'Record Count',
@@ -613,7 +613,7 @@ export const commonText = createDictionary({
     'de-ch': 'Suchabfrage',
     'pt-br': 'Consulta de pesquisa',
     'hr-hr': 'Upit za pretraživanje',
-    nb: 'Søkeforespørsel',
+    nb: 'Avansert søk',
   },
   unknown: {
     'en-us': 'Unknown',
@@ -657,7 +657,7 @@ export const commonText = createDictionary({
     'de-ch': 'Datensatz anzeigen',
     'pt-br': 'Ver registro',
     'hr-hr': 'Prikaži zapis',
-    nb: 'Vis oppføring',
+    nb: 'Vis post',
   },
   nullInline: {
     'en-us': '(null)',
@@ -724,7 +724,7 @@ export const commonText = createDictionary({
     'de-ch': 'Reihenfolge',
     'pt-br': 'Ordinal',
     'hr-hr': 'Redni',
-    nb: 'Ordinal',
+    nb: 'Rekkefølge',
   },
   export: {
     'en-us': 'Export',
@@ -845,7 +845,7 @@ export const commonText = createDictionary({
     'de-ch': 'Aufklappen',
     'pt-br': 'Expandir',
     'hr-hr': 'Proširiti',
-    nb: 'Utvide',
+    nb: 'Utvid',
   },
   expandAll: {
     'en-us': 'Expand All',
@@ -900,7 +900,7 @@ export const commonText = createDictionary({
     'de-ch': 'Auswählen',
     'pt-br': 'Selecione',
     'hr-hr': 'Odaberite',
-    nb: 'Velge',
+    nb: 'Velg',
   },
   none: {
     'en-us': 'None',
@@ -1012,7 +1012,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Масовий вибір',
     'pt-br': 'Seleção em massa',
     'hr-hr': 'Skupni odabir',
-    nb: 'Masseutvalg',
+    nb: 'Velg flere',
   },
   bulkReturn: {
     'en-us': 'Bulk Return',
@@ -1023,7 +1023,7 @@ export const commonText = createDictionary({
     'uk-ua': 'Масове повернення',
     'pt-br': 'Devolução em massa',
     'hr-hr': 'Povrat robe u skupnom stanju',
-    nb: 'Masseretur',
+    nb: 'Returner flere samtidig',
   },
   bulkResolve: {
     'en-us': 'Bulk Resolve',

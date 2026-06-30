@@ -60,7 +60,7 @@ export const localityText = createDictionary({
     'de-ch': 'GeoMap hat {plotted:number|formatted} Datensätze gezeichnet',
     'pt-br': 'GeoMapa - Registros plotados {plotted:number|formatted}',
     'hr-hr': 'GeoMap - Ucrtani {plotted:number|formatted} zapisi',
-    nb: 'GeoMap – Plottede {plotted:number|formatted}-poster',
+    nb: 'GeoMap – Plottede {plotted:number|formatted} poster',
   },
   polygonBoundaries: {
     'en-us': 'Polygon Boundaries',
@@ -82,7 +82,7 @@ export const localityText = createDictionary({
     'de-ch': 'Fehlerradius',
     'pt-br': 'Raio de erro',
     'hr-hr': 'Radijus pogreške',
-    nb: 'Feilradius',
+    nb: 'Usikkerhets radius',
   },
   showMap: {
     'en-us': 'Show Map',
@@ -129,7 +129,7 @@ export const localityText = createDictionary({
     'de-ch': 'Stecknadeln',
     'pt-br': 'Alfinetes',
     'hr-hr': 'Igle',
-    nb: 'Pins',
+    nb: 'Kartnål',
   },
   occurrencePolygons: {
     'en-us': 'Polygons',
@@ -179,7 +179,7 @@ export const localityText = createDictionary({
       'O plugin GeoLocate requer que o campo de geografia esteja preenchido.',
     'hr-hr':
       'Dodatak GeoLocate zahtijeva da polje za geografiju bude popunjeno.',
-    nb: 'GeoLocate-pluginen krever at geografifeltet fylles ut.',
+    nb: 'GeoLocate-plugin krever at geografifeltet fylles ut.',
   },
   coordinates: {
     'en-us': 'Coordinates',
@@ -424,7 +424,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Приймаються лише такі заголовки',
     'pt-br': 'Somente os seguintes cabeçalhos são aceitos.',
     'hr-hr': 'Prihvaćaju se samo sljedeći zaglavlja',
-    nb: 'Bare følgende overskrifter godtas',
+    nb: 'Bare følgende kolonneoverskrifter godtas',
   },
   localityUpdateStarting: {
     'en-us': 'Starting Locality Update',
@@ -446,7 +446,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Розбір набору даних місцевості',
     'pt-br': 'Conjunto de dados de localidade de análise sintática',
     'hr-hr': 'Raščlanjivanje skupa podataka o lokaciji',
-    nb: 'Analyse av lokalitetsdatasett',
+    nb: 'Tolker lokalitetsdatasett',
   },
   localityUpdateProgressing: {
     'en-us': 'Importing Locality Data Set',
@@ -469,7 +469,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Проаналізовано набір даних оновлення місцевості',
     'pt-br': 'Conjunto de dados de atualização de localidade analisado',
     'hr-hr': 'Skup podataka za ažuriranje lokacije analiziran',
-    nb: 'Datasett for lokalitetsoppdatering analysert',
+    nb: 'Datasett for lokalitetsoppdatering tolket',
   },
   localityUpdateFailed: {
     'en-us': 'Locality Update Failed',
@@ -491,7 +491,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Помилка аналізу оновлення місцевості',
     'pt-br': 'Falha na análise da atualização de localidade',
     'hr-hr': 'Raščlanjivanje ažuriranja lokacije nije uspjelo',
-    nb: 'Parsing av lokalitetsoppdatering mislyktes',
+    nb: 'Tolking av lokalitetsoppdatering feilet',
   },
   localityUpdateCancelled: {
     'en-us': 'Locality Update Cancelled',
@@ -525,7 +525,7 @@ export const localityText = createDictionary({
     'uk-ua': 'Щось пішло не так під час процесу оновлення місцевості',
     'pt-br': 'Algo deu errado durante o processo de atualização de localidade.',
     'hr-hr': 'Došlo je do pogreške tijekom procesa ažuriranja lokacije',
-    nb: 'Noe gikk galt under lokalitetsoppdateringsprosessen',
+    nb: 'Noe gikk galt under lokalitetsoppdateringen',
   },
   localityUpdateParseErrorFileName: {
     comment: `
@@ -555,7 +555,7 @@ export const localityText = createDictionary({
     'fr-fr':
       "Mise à jour de la localisation {taskId : chaîne} Rapport d'incident - {date : chaîne}",
     'ru-ru':
-      'Обновление локальной инфраструктуры {taskId: string} Отчет о сбое - {date: string}',
+      'Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}',
     'uk-ua':
       'Оновлення місцевості {taskId: string} Звіт про збій - {date: string}',
     'pt-br':
