@@ -51,27 +51,37 @@ export function useResults({
         }
       })
     );
-    const rowsToHide = workbench.data
+    const physicalRowsToHide = workbench.data
       .map((_, physicalRow) => physicalRow)
       .filter(
         (physicalRow) =>
           !rowsToInclude.has(physicalRow) &&
           !initialHiddenRows.includes(physicalRow)
-      )
-      .map(hot.toVisualRow);
-    const colsToHide = workbench.dataset.columns
+      );
+    const physicalColsToHide = workbench.dataset.columns
       .map((_, physicalCol) => physicalCol)
       .filter(
         (physicalCol) =>
           !colsToInclude.has(physicalCol) &&
           !initialHiddenCols.includes(physicalCol)
-      )
-      .map(hot.toVisualColumn);
+      );
 
     hot.batch(() => {
       identifyDefaultValues(hot, workbench.mappings);
-      getHotPlugin(hot, 'hiddenRows').hideRows(rowsToHide);
-      getHotPlugin(hot, 'hiddenColumns').hideColumns(colsToHide);
+      const hiddenRowsPlugin = getHotPlugin(hot, 'hiddenRows');
+      const hiddenColsPlugin = getHotPlugin(hot, 'hiddenColumns');
+      hiddenRowsPlugin.showRows(
+        hiddenRowsPlugin
+          .getHiddenRows()
+          .filter((visualRow) => !initialHiddenRows.includes(visualRow))
+      );
+      hiddenColsPlugin.showColumns(
+        hiddenColsPlugin
+          .getHiddenColumns()
+          .filter((visualCol) => !initialHiddenCols.includes(visualCol))
+      );
+      hiddenRowsPlugin.hideRows(physicalRowsToHide.map(hot.toVisualRow));
+      hiddenColsPlugin.hideColumns(physicalColsToHide.map(hot.toVisualColumn));
       workbench.utils.toggleCellTypes('newCells', 'remove');
     });
   }, [showResults, cellCounts]);
