@@ -232,19 +232,19 @@ export const batchEditText = createDictionary({
   },
   commitSuccessfulDescription: {
     'en-us':
-      'Click on the "Results" button to see the number of records affected in each database table',
+      'Your changes have been applied to the database. See the number of records affected in each table below:',
     'de-ch':
-      'Klicken Sie auf die Schaltfläche „Ergebnisse“, um die Anzahl der betroffenen Datensätze in jeder Datenbanktabelle anzuzeigen.',
+      'Ihre Änderungen wurden in die Datenbank übernommen. Um die Anzahl der betroffenen Datensätze in jeder Tabelle anzuzeigen, klicken Sie in der Symbolleiste über dem Datenraster auf „Ergebnisse".',
     'es-es':
-      'Haga clic en el botón "Resultados" para ver el número de registros afectados en cada tabla de la base de datos',
+      'Sus cambios se han aplicado a la base de datos. Para ver el número de registros afectados en cada tabla, haga clic en "Resultados" en la barra de herramientas sobre la cuadrícula de datos.',
     'fr-fr':
-      "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements affectés dans chaque table de base de données.",
+      "Vos modifications ont été appliquées à la base de données. Pour voir le nombre d'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données.",
     'pt-br':
-      'Clique no botão "Resultados" para ver o número de registros afetados em cada tabela do banco de dados.',
+      'Suas alterações foram aplicadas ao banco de dados. Para ver o número de registros afetados em cada tabela, clique em "Resultados" na barra de ferramentas acima da grade de dados.',
     'ru-ru':
-      'Нажмите кнопку «Результаты», чтобы увидеть количество затронутых записей в каждой таблице базы данных.',
+      'Ваши изменения были применены к базе данных. Чтобы увидеть количество затронутых записей в каждой таблице, нажмите «Результаты» на панели инструментов над сеткой данных.',
     'uk-ua':
-      'Натисніть кнопку «Результати», щоб побачити кількість записів, на які вплинула зміна, у кожній таблиці бази даних',
+      'Ваші зміни було застосовано до бази даних. Щоб переглянути кількість записів, на які вплинули зміни, у кожній таблиці, натисніть «Результати» на панелі інструментів над сіткою даних.',
     'hr-hr':
       'Kliknite gumb "Rezultati" da biste vidjeli broj pogođenih zapisa u svakoj tablici baze podataka',
     nb: 'Klikk på «Resultater»-knappen for å se antall treff som blir berørt i hver databasetabell',
@@ -519,7 +519,7 @@ export const batchEditText = createDictionary({
   },
   warningBatchEditText: {
     'en-us':
-      'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone',
+      'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone.',
     'de-ch':
       'Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere Nutzer beeinträchtigen kann. Dies kann zu Verzögerungen oder vorübergehender Nichtverfügbarkeit bestimmter Funktionen für bestimmte Nutzer führen. Bitte berücksichtigen Sie die Auswirkungen auf deren Nutzungserfahrung. Diese Aktion kann nicht rückgängig gemacht werden.',
     'es-es':

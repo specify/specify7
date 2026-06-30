@@ -20,8 +20,14 @@ export const wbPlanText = createDictionary({
     'hr-hr': 'Maper podataka',
     nb: 'Datakartlegger',
   },
+  importExportMapping: {
+    'en-us': 'Import/Export Mapping'
+  },
+  importExportMappingDescription: {
+    'en-us': 'You can export the current data set mapping as a JSON file or import an existing data set mapping.',
+  },
   noUploadPlan: {
-    'en-us': 'No Upload Plan is Defined',
+    'en-us': 'No Data Set Mapping is Defined',
     'ru-ru': 'План загрузки не определен',
     'es-es': 'No hay definido ningún plan de carga',
     'fr-fr': "Aucun plan de téléchargement n'est défini.",
@@ -33,7 +39,7 @@ export const wbPlanText = createDictionary({
   },
   noUploadPlanDescription: {
     'en-us':
-      'No Upload Plan has been defined for this Data Set. Create one now?',
+      'No mapping has been defined for this data set. Please choose an existing mapping or create a new one.',
     'ru-ru':
       'Для этого набора данных не определен план загрузки. Создать эго сейчас?',
     'es-es':
@@ -226,7 +232,7 @@ export const wbPlanText = createDictionary({
   },
   ignoreAlwaysDescription: {
     'en-us':
-      'When set to "Ignore Always" the value in this column will never be considered for matching purposes, only for uploading.',
+      'When set to "Always Ignore," the value in this column will not be used for matching purposes, only for uploading.',
     'ru-ru':
       'Если задано значение «Всегда игнорировать», значение в этом столбце никогда не будет рассматривается для целей сопоставления, только для загрузки',
     'es-es':
@@ -341,7 +347,7 @@ export const wbPlanText = createDictionary({
   },
   validationFailedDescription: {
     'en-us':
-      'This data mapping is missing one or more data fields required for uploading by your Specify configuration. Add the missing mappings shown or save this Upload Plan as unfinished.',
+      'This data mapping is missing one or more data fields required for uploading by your Specify configuration. Add the missing mappings shown or save this mapping as unfinished.',
     'ru-ru':
       'В этом сопоставлении данные отсутствует в одном или нескольких полей данных, необходимых для загрузки по вашей Specify конфигурацию. Добавьте недостающие сопоставления или сохраните этот план загрузки как незавершенный.',
     'es-es':
@@ -448,7 +454,7 @@ export const wbPlanText = createDictionary({
     nb: 'Velg en basistabell',
   },
   chooseExistingPlan: {
-    'en-us': 'Choose Existing Plan',
+    'en-us': 'Choose Existing Mapping',
     'ru-ru': 'Выберите существующий план',
     'es-es': 'Elegir un Plan ya Existente',
     'fr-fr': 'Choisir un régime existant',
@@ -469,6 +475,14 @@ export const wbPlanText = createDictionary({
     'hr-hr': 'Prikaži sve tablice',
     nb: 'Vis alle tabeller',
   },
+  baseTableDescription: {
+    'en-us':
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Once uploaded, each row in your data set will result in a new record in Specify in the base table you select. Click on a base table in the list to get started.",
+  },
+  baseTableWithAttachmentsDescription: {
+    'en-us':
+      "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Each imported attachment record will be added as a new row in the base table you select. Click on a base table in the list to get started.",
+  },
   selectBaseTableWithAttachments: {
     'en-us': 'Select a Base Table with Attachments',
     'de-ch': 'Wählen Sie eine Basistabelle mit Anhängen aus',
@@ -481,7 +495,7 @@ export const wbPlanText = createDictionary({
     nb: 'Velg en basistabell med vedlegg',
   },
   dataSetUploaded: {
-    'en-us': 'Data Set uploaded. This Upload Plan cannot be changed',
+    'en-us': 'Data Set uploaded. This mapping cannot be changed',
     'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',
     'es-es':
       'Conjunto de Datos cargado. El Plan de Carga ya no puede modificarse',
@@ -544,7 +558,7 @@ export const wbPlanText = createDictionary({
   },
   goToBaseTableDescription: {
     'en-us':
-      'Choosing a different Base Table for a Data Set Upload will make that table the new starting point for column-to-data field mappings and will erase existing mappings. The AutoMapper will attempt to map columns to the new Base Table fields.',
+      'Choosing a different base table for a data set will make that table the new starting point for column-to-data field mappings and will erase existing mappings. The AutoMapper will attempt to map columns to the new base table fields.',
     'ru-ru':
       'Выбор другой базовой таблице для загрузки набора данных сделает ту таблицу новой отправной точкой для сопоставлений полей столбцов и данных и сотрет существующие сопоставления. AutoMapper попытается сопоставить столбцы в новые поля базовой таблицы.',
     'es-es':
@@ -691,7 +705,7 @@ export const wbPlanText = createDictionary({
     nb: 'Trykk på knappen «Legg til ny kolonne» under kartleggingslinjene for å legge til nye kolonner.',
   },
   reRunAutoMapperConfirmation: {
-    'en-us': 'Automap to start a new Upload Plan?',
+    'en-us': 'Automap to start a new mapping?',
     'ru-ru': 'Автоматически сопоставить?',
     'es-es': '¿Automap para iniciar un nuevo plan de carga?',
     'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
@@ -711,6 +725,26 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Isso apagará os mapeamentos de campos de dados existentes.',
     'hr-hr': 'Ovo će izbrisati postojeća mapiranja podatkovnih polja.',
     nb: 'Dette vil slette eksisterende datafelttilordninger.',
+  },
+  clearMappingsConfirmation: {
+    'en-us': 'Clear all existing mappings?',
+    'ru-ru': 'Очистить все существующие сопоставления?',
+    'es-es': '¿Borrar todas las asignaciones existentes?',
+    'fr-fr': 'Effacer toutes les correspondances existantes\u202F?',
+    'uk-ua': 'Очистити всі існуючі зіставлення?',
+    'de-ch': 'Alle bestehenden Zuordnungen löschen?',
+    'pt-br': 'Limpar todos os mapeamentos existentes?',
+    'hr-hr': 'Izbrisati sva postojeća mapiranja?',
+  },
+  clearMappingsConfirmationDescription: {
+    'en-us': 'This will erase existing data field mappings.',
+    'ru-ru': 'Это сотрет существующие сопоставления.',
+    'es-es': 'Esto borrará las asignaciones de campos de datos existentes.',
+    'fr-fr': 'Cela effacera les mappages de champs de données existants.',
+    'uk-ua': 'Це призведе до видалення наявних зіставлень полів даних.',
+    'de-ch': 'Damit werden bestehende Zuordnungen von Datenfeldern gelöscht.',
+    'pt-br': 'Isso apagará os mapeamentos de campos de dados existentes.',
+    'hr-hr': 'Ovo će izbrisati postojeća mapiranja podatkovnih polja.',
   },
   changeMatchingLogic: {
     'en-us': 'Change Matching Logic',
@@ -822,7 +856,7 @@ export const wbPlanText = createDictionary({
   },
   invalidTemplatePlan: {
     'en-us':
-      'Selected Data Set has no upload plan. Please select a different one.',
+      'Selected data set has no mapping. Please select a different one.',
     'ru-ru':
       'Выбранный набор данных не имеет плана загрузки. Выберите другой набор данных.',
     'es-es':
@@ -837,4 +871,24 @@ export const wbPlanText = createDictionary({
     'hr-hr': 'Odabrani skup podataka nema plan prijenosa. Odaberite drugi.',
     nb: 'Det valgte datasettet har ingen opplastingsplan. Vennligst velg en annen.',
   },
+  invalidJsonFile: {
+    'en-us': 'The selected file is not valid JSON.',
+    'ru-ru': 'Выбранный файл не является допустимым JSON.',
+    'es-es': 'El archivo seleccionado no es un JSON válido.',
+    'fr-fr': 'Le fichier sélectionné n\'est pas un JSON valide.',
+    'uk-ua': 'Вибраний файл не є дійсним JSON.',
+    'de-ch': 'Die ausgewählte Datei ist kein gültiges JSON.',
+    'pt-br': 'O arquivo selecionado não é um JSON válido.',
+    'hr-hr': 'Odabrana datoteka nije valjani JSON.',
+  },
+  invalidJsonFileDescription: {
+    'en-us': 'Please select a valid JSON data set mapping file.',
+    'ru-ru': 'Пожалуйста, выберите допустимый файл JSON.',
+    'es-es': 'Seleccione un archivo JSON válido.',
+    'fr-fr': 'Veuillez sélectionner un fichier JSON valide.',
+    'uk-ua': 'Будь ласка, виберіть дійсний файл JSON.',
+    'de-ch': 'Bitte wählen Sie eine gültige JSON-Datei aus.',
+    'pt-br': 'Por favor, selecione um arquivo JSON válido.',
+    'hr-hr': 'Odaberite valjani JSON file.',
+  }
 } as const);
