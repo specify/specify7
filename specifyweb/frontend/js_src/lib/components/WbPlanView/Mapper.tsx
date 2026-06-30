@@ -354,7 +354,7 @@ export function Mapper(props: {
             <ClearMappings
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
-                  mappingPathIsComplete(mappingPath)
+                  mappingPath.some((segment) => segment !== emptyMapping)
                 )
               }
               onClick={(): void =>
