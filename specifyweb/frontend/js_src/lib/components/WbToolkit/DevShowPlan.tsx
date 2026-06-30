@@ -154,13 +154,13 @@ function RawUploadPlan({
               type="file"
               onChange={handleFileSelected}
             />
-            <Button.Info
-              onClick={(): void => fileInputRef.current?.click()}
-            >
+            <Button.Info onClick={(): void => fileInputRef.current?.click()}>
               {commonText.import()}
             </Button.Info>
             <Button.Info
-              onClick={(): void => void downloadFile(`${name}.json`, uploadPlan)}
+              onClick={(): void =>
+                void downloadFile(`${name}.json`, uploadPlan)
+              }
             >
               {commonText.export()}
             </Button.Info>
