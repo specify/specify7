@@ -4,7 +4,7 @@ from collections.abc import Callable, Iterable
 from django.core.management.base import BaseCommand
 from django.apps import apps
 from django.db import transaction
-from django.db.models import Exists, OuterRef, Q
+from django.db.models import Exists, OuterRef
 from specifyweb.backend.businessrules.migration_utils import catnum_rule_editable
 from specifyweb.backend.businessrules.uniqueness_rules import (
     apply_default_uniqueness_rules,
@@ -12,18 +12,27 @@ from specifyweb.backend.businessrules.uniqueness_rules import (
 )
 from specifyweb.permissions.migration_utils.edit_permissions import add_permission, add_stats_edit_permission
 from specifyweb.specify.migration_utils.default_cots import (
-    create_cogtype_type_picklist,
-    create_cotype_picklist,
     create_default_collection_types,
-    create_default_discipline_for_tree_defs,
     fix_taxon_treedef_discipline_links,
-    set_discipline_for_taxon_treedefs,
-    fix_tectonic_unit_treedef_discipline_links
 )
 from specifyweb.backend.permissions.initialize import initialize
-from specifyweb.specify.migration_utils import update_schema_config as usc
+from specifyweb.specify.migration_utils.deduplication import deduplicate_schema_config_orm
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_geo_table_schema_config_with_defaults, create_cogtype_type_picklist, create_default_discipline_for_tree_defs, set_discipline_for_taxon_treedefs
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem, create_cotype_picklist
+from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import create_agetype_picklist, create_strat_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import create_cogtype_picklist
+from specifyweb.specify.migration_utils.migration_helpers.helper_0008_schema_config_update import update_relative_age_fields
+from specifyweb.specify.migration_utils.migration_helpers.helper_0012_add_cojo_to_schema_config import add_cojo_to_schema_config
+from specifyweb.specify.migration_utils.migration_helpers.helper_0013_collectionobjectgroup_parentcog import update_cog_schema_config
+from specifyweb.specify.migration_utils.migration_helpers.helper_0015_add_version_to_ages import update_age_schema_config
+from specifyweb.specify.migration_utils.migration_helpers.helper_0020_add_tectonicunit_to_pc_in_schema_config import add_tectonicunit_to_pc_in_schema_config
+from specifyweb.specify.migration_utils.migration_helpers.helper_0024_add_uniqueIdentifier_storage import update_storage_unique_id_fields
+from specifyweb.specify.migration_utils.migration_helpers.helper_0039_agent_fields_for_loan_and_gift import update_loan_and_gift_agent_fields
+from specifyweb.specify.migration_utils.migration_helpers.helper_0040_components import create_table_schema_config_with_defaults, remove_componentparent_item
+from specifyweb.specify.migration_utils.migration_helpers.helper_0042_discipline_type_picklist import create_discipline_type_picklist
+from specifyweb.specify.migration_utils.router import use_migration_connection
 from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
-from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node
+from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node, fix_tectonic_unit_treedef_discipline_links
 from specifyweb.backend.patches.migration_utils import apply_migrations as apply_patches
 
 logger = logging.getLogger(__name__)
@@ -63,48 +72,48 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
     # update_table_schema_config_with_defaults
     funcs = [
         # usc.update_all_table_schema_config_with_defaults,
-        usc.create_geo_table_schema_config_with_defaults, # specify 0002
-        usc.create_cotype_splocalecontaineritem, # specify 0003
-        usc.create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
-        usc.create_agetype_picklist, # specify 0004
+        create_geo_table_schema_config_with_defaults, # specify 0002
+        create_cotype_splocalecontaineritem, # specify 0003
+        create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
+        create_agetype_picklist, # specify 0004
         # BUG: This should really only be run in the context of the migration,
-        # and not on startup. See the below BUG comment above usc.update_hidden_prop
-        # usc.update_cog_type_fields, # specify 0007
-        usc.create_cogtype_picklist, # specify 0007
+        # and not on startup. See the below BUG comment above update_hidden_prop
+        # update_cog_type_fields, # specify 0007
+        create_cogtype_picklist, # specify 0007
         # BUG: These also shouldn't be run with this suite. These are one way
         # data migrations in the contect of migrations meant to resolve
         # eariler migrations.
         # The functions can be destructive as we can't really discern whether
         # or not these functions should be applied
-        # usc.update_cogtype_splocalecontaineritem, # specify 0007
-        # usc.update_systemcogtypes_picklist, # specify 0007
-        # usc.update_cogtype_type_splocalecontaineritem, # specify 0007
-        usc.update_relative_age_fields, # specify 0008
-        usc.add_cojo_to_schema_config, # specify 0012
-        usc.update_cog_schema_config, # specify 0013
-        usc.update_age_schema_config, # specify 0015
-        # usc.schemaconfig_fixes, # specify 0017
-        # usc.add_cot_catnum_to_schema, # specify 0018
-        usc.add_tectonicunit_to_pc_in_schema_config, # specify 0020
-        # usc.fix_hidden_geo_prop, # specify 0021
-        # usc.update_schema_config_field_desc, # specify 0023
+        # update_cogtype_splocalecontaineritem, # specify 0007
+        # update_systemcogtypes_picklist, # specify 0007
+        # update_cogtype_type_splocalecontaineritem, # specify 0007
+        update_relative_age_fields, # specify 0008
+        add_cojo_to_schema_config, # specify 0012
+        update_cog_schema_config, # specify 0013
+        update_age_schema_config, # specify 0015
+        # schemaconfig_fixes, # specify 0017
+        # add_cot_catnum_to_schema, # specify 0018
+        add_tectonicunit_to_pc_in_schema_config, # specify 0020
+        # fix_hidden_geo_prop, # specify 0021
+        # update_schema_config_field_desc, # specify 0023
         # BUG: We can't reliably run this function at startup, as there is no
         # easy way to differentiate Schema Config tables/fields that should or
         # should not be updated for already existing Disciplines.
-        # usc.update_hidden_prop, # specify 0023
-        usc.update_storage_unique_id_fields, # specify 0024
-        # usc.update_co_children_fields, # specify 0027
-        # usc.remove_collectionobject_parentco, # specify 0029
-        # usc.add_quantities_gift, # specify 0032
-        # usc.update_paleo_desc, # specify 0033
-        # usc.update_accession_date_fields, # specify 0034
-        usc.update_loan_and_gift_agent_fields, # specify 0039
-        usc.remove_componentparent_item, # specify 0040
-        usc.create_table_schema_config_with_defaults, # specify 0040
-        usc.create_discipline_type_picklist, # specify 0042
-        # usc.update_discipline_type_splocalecontaineritem, # specify 0042
+        # update_hidden_prop, # specify 0023
+        update_storage_unique_id_fields, # specify 0024
+        # update_co_children_fields, # specify 0027
+        # remove_collectionobject_parentco, # specify 0029
+        # add_quantities_gift, # specify 0032
+        # update_paleo_desc, # specify 0033
+        # update_accession_date_fields, # specify 0034
+        update_loan_and_gift_agent_fields, # specify 0039
+        remove_componentparent_item, # specify 0040
+        create_table_schema_config_with_defaults, # specify 0040
+        create_discipline_type_picklist, # specify 0042
+        # update_discipline_type_splocalecontaineritem, # specify 0042
         apply_schema_overrides_for_all_disciplines,
-        usc.deduplicate_schema_config_orm,
+        deduplicate_schema_config_orm,
     ]
     log_and_run(funcs, stdout)
 
@@ -221,7 +230,7 @@ class Command(BaseCommand):
             nargs="*",
             type=str,
             choices=tuple(self.funcs.keys()),
-            help=f"Optional: specify one or more functions to run",
+            help="Optional: specify one or more functions to run",
         )
         parser.add_argument(
             "--verbose",
@@ -235,7 +244,10 @@ class Command(BaseCommand):
         verbose = options.get("verbose", False)
 
         try:
-            with transaction.atomic():
+            with (transaction.atomic(),
+                # WARNING: With this context manager, all functions will be run
+                # with the Migration connection and use the Migrator user
+                use_migration_connection()):
                 if len(functions) > 0:
                     for function in functions:
                         if function:
@@ -254,6 +266,6 @@ class Command(BaseCommand):
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
-        except Exception as e:
-            logger.error(f"An error occurred: {e}")
+        except Exception:
+            logger.exception("An error occurred while running key migrations")
             raise

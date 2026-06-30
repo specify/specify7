@@ -53,13 +53,28 @@ def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
 
-    if UserPolicy.objects.filter(collection__isnull=True, resource='%', action='%').exists():
-        # don't do anything if there is already any admin.
-        return
-
     users = Specifyuser.objects.all()
     for user in users:
-        if is_sp6_user_permissions_migrated(user, apps):
+        # REFACTOR: Try and fold the following checks into a single query to
+        # avoid making multiple queries per user.
+        # Ideally, we only make a single query to fetch all users that:
+        # - Are not already Institution Admins
+        # - Have not already seen activity in Sp 7 (don't have Sp7 permissions)
+        #   - (The Institution Admin permission could have been intentionally
+        #      removed)
+        # - Are admins in Sp 6
+
+        # The ordering here for checks here is intentional: it's more likely a
+        # user has Sp 7 permissions than being an admin, so we do the former
+        # check first
+        if is_sp6_user_permissions_migrated(user=user, apps=apps):
+            continue
+        if UserPolicy.objects.filter(
+            collection__isnull=True,
+            specifyuser_id=user.id,
+            resource="%",
+            action="%",
+        ).exists():
             continue
         if is_legacy_admin(user):
             UserPolicy.objects.get_or_create(
@@ -93,14 +108,6 @@ def assign_users_to_roles(apps=apps) -> None:
     results = []
     with connection.cursor() as cursor:
         cursor.execute("""
-            SELECT COUNT(*)
-            FROM information_schema.tables
-            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
-            AND table_schema = DATABASE();
-        """)
-        if cursor.fetchone()[0] < 2:
-            return # Newly created sp7 databases don't have these sp6 specific tables.
-        cursor.execute("""
             SELECT
                 u.SpecifyUserID as user_id,
                 u.Name as user_name,
@@ -112,37 +119,34 @@ def assign_users_to_roles(apps=apps) -> None:
             JOIN spprincipal p ON p.SpPrincipalID = up.SpPrincipalID
             JOIN collection c ON c.UserGroupScopeId = p.userGroupScopeID
             WHERE p.groupType IS NULL
-            AND u.SpecifyUserID NOT IN (
-                SELECT ur.specifyuser_id
+            AND NOT EXISTS (
+                SELECT 1
                 FROM spuserrole ur 
                 JOIN sprole r ON r.id = ur.role_id 
-                WHERE r.collection_id = p.usergroupscopeid
-            )
-            AND c.UserGroupScopeId NOT IN (
-                SELECT DISTINCT r.collection_id
-                FROM spuserrole ur 
-                JOIN sprole r ON r.id = ur.role_id
-                JOIN collection c ON c.UserGroupScopeId = r.collection_id
+                WHERE r.collection_id = c.UserGroupScopeId
+                AND ur.specifyuser_id = u.SpecifyUserID
             );
         """)
 
         results = cursor.fetchall()
     
     for user_id, user_name, user_type, collection_id, collection_name in results:
-        if user_type not in {'Manager', 'FullAccess', 'LimitedAccess', 'Guest'}:
+        # REFACTOR: If we want to exlcude all other roles, why don't we write
+        # the exlcusion in the query rather than evaluate in Python?
+        if user_type not in ROLE_NAMES.keys():
             continue
 
         role_name = ROLE_NAMES.get(user_type, f"{user_type} - {collection_name}")
         role_description = ROLE_DESCRIPTIONS.get(user_type, "No description available.")
         logger.info(f"Assigned user {user_name} to role {role_name} for collection {collection_name}.")
 
-        role, is_new_role = Role.objects.get_or_create(
+        role, _ = Role.objects.get_or_create(
             collection_id=collection_id,
-            name=role_name
+            name=role_name,
+            defaults={
+                "description": role_description
+            }
         )
-        if is_new_role:
-            role.description = role_description
-            role.save()
         UserRole.objects.get_or_create(
             specifyuser_id=user_id,
             role=role
