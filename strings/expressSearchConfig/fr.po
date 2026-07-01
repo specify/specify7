@@ -222,7 +222,6 @@ msgid "AcceptedTaxon"
 msgstr "Taxon préféré"
 
 #. Used in: 
-#, fuzzy
 msgid "AcceptedTaxon_desc"
 msgstr ""
 "Taxons avec noms de taxons acceptés privilégiés, à l'exclusion des "
