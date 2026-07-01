@@ -72,7 +72,7 @@ export const interactionsText = createDictionary({
       'Für die folgenden Datensätze wurden keine Vorbereitungen gefunden:',
     'es-es': 'No se encontraron preparaciones para los siguientes registros:',
     'fr-fr':
-      "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
+      "Aucune préparation n'a été trouvée pour les enregistrements suivants :",
     'ru-ru':
       'Не было обнаружено никаких подготовительных работ для следующих записей:',
     'uk-ua': 'Для наступних записів не знайдено жодних підготовчих матеріалів:',
@@ -88,7 +88,7 @@ export const interactionsText = createDictionary({
     'es-es':
       'No hay preparaciones disponibles para al menos un tipo de preparación en los folgenden registros:',
     'fr-fr':
-      "Aucune préparation n'est disponible pour au moins un type de préparation dans les enregistrements suivants :",
+      "Aucune préparation n'est disponible pour au moins un type de préparation dans les enregistrements suivants :",
     'ru-ru':
       'В следующих записях отсутствуют данные как минимум об одном из видов препаратов:',
     'uk-ua':
@@ -452,7 +452,7 @@ export const interactionsText = createDictionary({
       'Keiner dieser Datensätze enthält Vorbereitungen. Möchten Sie fortfahren?',
     'es-es': 'Ninguno de estos discos tiene preparativos. ¿Desea continuar?',
     'fr-fr':
-      "Aucun de ces enregistrements n'est préparé. Souhaitez-vous continuer ?",
+      "Aucun de ces enregistrements n'a de préparation. Souhaitez-vous continuer ?",
     'pt-br': 'Nenhum desses registros possui preparativos. Deseja continuar?',
     'ru-ru': 'Ни одна из этих записей не была подготовлена. Хотите продолжить?',
     'uk-ua': 'Жоден із цих записів не має підготовки. Бажаєте продовжити?',

@@ -711,7 +711,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado.',
     'fr-fr':
-      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées.',
+      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées ?',
     'pt-br': 'Um ou mais anexos não existem. Eles podem ter sido excluídos.',
     'ru-ru':
       'Одно или несколько вложений отсутствуют. Возможно, они были удалены.',

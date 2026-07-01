@@ -728,7 +728,7 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Требовать сопоставления данных с существующими записями',
     'es-es': 'Requerir datos para que coincidan con los registros existentes',
     'fr-fr':
-      'Exiger que les données correspondent aux enregistrements existants',
+      'Exiger que les données correspondent à des enregistrements existants',
     'uk-ua': 'Вимагати відповідності даних існуючим записам',
     'de-ch': 'Benötigt Daten um vorhandene Datensätze vergleichen zu können',
     'pt-br': 'Exigir que os dados correspondam aos registros existentes',

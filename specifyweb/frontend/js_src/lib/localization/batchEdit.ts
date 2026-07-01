@@ -367,7 +367,7 @@ export const batchEditText = createDictionary({
     'en-us': 'BE commit of "{dataSet:string}"',
     'de-ch': 'BE-Commit von "{dataSet:string}"',
     'es-es': 'Confirmación BE de "{dataSet:string}"',
-    'fr-fr': 'COMMISSION BE de "{dataSet:string}"',
+    'fr-fr': 'Commit BE de "{dataSet:string}"',
     'pt-br': 'Confirmação BE de "{dataSet:string}"',
     'ru-ru': 'BE commit of "{dataSet:string}"',
     'uk-ua': 'BE коміт "{dataSet:string}"',
