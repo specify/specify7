@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
 "Language: fr\n"
@@ -116,15 +116,14 @@ msgstr "Annuler"
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
 #: components/SetupTool/index.tsx:299
-#, fuzzy
 msgid "back"
-msgstr "Dos"
+msgstr "Retour arrière"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
 #, fuzzy
 msgid "skip"
-msgstr "Sauter"
+msgstr "Passer"
 
 #. Used in: Components > Form Editor > Create ⬤ Components > Pick Lists > Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Security > Institution ⬤ Components > Security > Preview Tables ⬤ Components > Setup Tool > Index ⬤ Components > Wb Actions > Wb No Upload Plan
 #: components/FormEditor/Create.tsx:60
