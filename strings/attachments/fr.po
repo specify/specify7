@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
 "Language: fr\n"
@@ -434,7 +434,6 @@ msgstr "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?"
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:57
-#, fuzzy
 msgid "attachmentDelition"
 msgstr "Suppression de la pièce jointe"
 
