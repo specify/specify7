@@ -4,6 +4,8 @@ import json
 import unittest
 from jsonschema import validate, Draft7Validator # type: ignore
 
+from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+
 from ..upload_result import *
 from ..upload_results_schema import schema
 
@@ -35,6 +37,37 @@ class UploadResultsTests(unittest.TestCase):
     def testFailedBusinessRule(self, failedBusinessRule: FailedBusinessRule):
         j = json.dumps(failedBusinessRule.to_json())
         self.assertEqual(failedBusinessRule, FailedBusinessRule.from_json(json.loads(j)))
+
+    def testBusinessRuleExceptionPayload(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+        payload = {
+            "localizationKey": "childFieldNotUnique",
+            "table": "Collectionobject",
+            "fieldName": "catalognumber",
+            "fieldData": {"catalognumber": "0037481"},
+            "parentField": "collection",
+            "parentData": {"collection": "Collection object (360449)"},
+            "conflicting": [3347460],
+        }
+
+        self.assertEqual(
+            to_failed_business_rule(
+                BusinessRuleException(
+                    "Collectionobject must have unique catalognumber in collection",
+                    payload,
+                ),
+                info,
+            ),
+            FailedBusinessRule(
+                "Collectionobject must have unique catalognumber in collection",
+                payload,
+                info,
+            ),
+        )
 
     @given(noMatch=infer)
     def testNoMatch(self, noMatch: NoMatch):
