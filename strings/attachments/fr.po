@@ -136,7 +136,7 @@ msgstr "Déjà téléchargé"
 #: components/AttachmentsBulkImport/utils.ts:460
 #, fuzzy
 msgid "skipped"
-msgstr "Omission"
+msgstr "Passé"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:461
