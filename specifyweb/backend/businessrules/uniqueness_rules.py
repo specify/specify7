@@ -99,7 +99,11 @@ def _initial_businessrules_migration_applied():
         ).applied_migrations()
     )
 
+def businessrule_app_is_ready(registry):
+    return any(app.label == 'businessrules' for app in registry.get_app_configs())
 
+# BUG: If we reverse past the initial businessrule migration, Specify can still
+# consider the migration applied within those earlier migrations
 def _cached_businessrules_migration_applied() -> bool:
     cache_key = "default"
     cache_is_active, is_set = _uniqueness_migration_cache.get(cache_key, default=False)
@@ -188,11 +192,18 @@ def validate_unique(model, instance):
                 f"Skipping uniqueness rule check on non-Specify model: '{model_name}'")
         return
 
-    if not _cached_businessrules_migration_applied():
-        return
-
     # We can't directly use the main app registry in the context of migrations, which uses fake models
     registry = model._meta.apps
+
+    # If we're in a migration where businessrules have not been loaded and/or
+    # the initial businessrule migration has not been applied, then skip
+    # checking the rule for now.
+    # Note that the former can exist where the latter does: if we're reversing
+    # a migration which does not have a dependency on businessrules (so the
+    # businessrules app does not need to be loaded) but the businessrule
+    # migration is still applied
+    if not businessrule_app_is_ready(registry) or not _cached_businessrules_migration_applied():
+        return
 
     # REFACTOR(perf): We should look into batching UniquenessRule queries.
     # That is, instead of making a query to the DB for each rule, aggregate
@@ -490,58 +501,48 @@ def rule_is_global(scopes: Iterable[str]) -> bool:
 
 
 def fix_global_default_rules(registry=None):
+    """
+    Removes UniquenessRules that are scoped to Discipline that already exist
+    globally.
+
+    There were historically cases where UniquenessRules were incorrectly
+    created in two places: globally and scoped to a particular discipline.
+
+    See https://github.com/specify/specify7/pull/6308#issuecomment-3247556491
+    """
     UniquenessRule = registry.get_model('businessrules', 'UniquenessRule') \
         if registry \
         else models.UniquenessRule
-    UniquenessRuleField = registry.get_model('businessrules', 'UniquenessRuleField') \
-        if registry \
-        else models.UniquenessRuleField
 
-    global_rule_fields = UniquenessRuleField.objects.filter(
-        uniquenessrule__discipline__isnull=True
-    ).values(
-        "uniquenessrule__modelName",
-        "uniquenessrule__isDatabaseConstraint",
-        "fieldPath",
-        "isScope",
-    )
+    global_rule_signatures = {
+            (
+                rule.modelName,
+                rule.isDatabaseConstraint,
+                frozenset(
+                    (field.fieldPath, field.isScope)
+                        for field in rule.uniquenessrulefield_set.all()
+                ),
+            )
+            for rule in UniquenessRule.objects.filter(
+                discipline__isnull=True
+            ).prefetch_related("uniquenessrulefield_set")
+        }
 
-    global_rule_exists = UniquenessRule.objects.filter(
-        discipline__isnull=True,
-        modelName=OuterRef("modelName"),
-        isDatabaseConstraint=OuterRef("isDatabaseConstraint"),
-    )
-
-    discipline_ids = (
-        UniquenessRule.objects.exclude(discipline__isnull=True)
-        .values_list("discipline_id", flat=True)
-        .distinct()
-    )
-
-    for discipline_id in discipline_ids:
-        with transaction.atomic():
-            # Delete matching fields for this discipline
-            matching_fields_qs = UniquenessRuleField.objects.filter(
-                uniquenessrule__discipline_id=discipline_id
-            ).filter(
-                Exists(
-                    global_rule_fields.filter(
-                        **{
-                            "uniquenessrule__modelName": OuterRef("uniquenessrule__modelName"),
-                            "uniquenessrule__isDatabaseConstraint": OuterRef("uniquenessrule__isDatabaseConstraint"),
-                            "fieldPath": OuterRef("fieldPath"),
-                            "isScope": OuterRef("isScope"),
-                        }
+    with transaction.atomic():
+        # REFACTOR: See if we can simplify this even further. We should be able
+        # to collapse this query -> iteration -> check workflow to a single
+        # query.
+        # That would eliminate the N + 1 problem with this current approach,
+        # where every scoped rule needs to be evaluated.
+        for rule in UniquenessRule.objects.exclude(discipline__isnull=True).prefetch_related("uniquenessrulefield_set"):
+            signature = (
+                        rule.modelName,
+                        rule.isDatabaseConstraint,
+                        frozenset(
+                            (field.fieldPath, field.isScope)
+                            for field in rule.uniquenessrulefield_set.all()
+                        ),
                     )
-                )
-            )
-            matching_fields_qs.delete()
-
-            # Delete UniquenessRule rows for this discipline that are now empty
-            empty_rules_qs = (
-                UniquenessRule.objects.filter(discipline_id=discipline_id)
-                .annotate(field_count=Count("uniquenessrulefield"))
-                .filter(field_count=0)  # now empty after field deletions
-                .filter(Exists(global_rule_exists))
-            )
-            empty_rules_qs.delete()
+            if signature in global_rule_signatures:
+                    rule.uniquenessrulefield_set.all().delete()
+                    rule.delete()
