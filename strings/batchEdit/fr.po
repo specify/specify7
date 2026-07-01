@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-21 17:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/fr/>\n"
 "Language: fr\n"
@@ -18,20 +18,17 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:263
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#, fuzzy
 msgid "batchEdit"
 msgstr "Modification par lots"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
-#, fuzzy
 msgid "batchEditPrefs"
 msgstr "Préférences de modification par lots"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2261
-#, fuzzy
 msgid "numberOfRecords"
 msgstr "Nombre d'enregistrements sélectionnés dans la requête"
 
@@ -118,7 +115,6 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
-#, fuzzy
 msgid "startRevertDescription"
 msgstr ""
 "La restauration des données permettra de mettre à jour les valeurs, de "
@@ -126,7 +122,6 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:126
-#, fuzzy
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements "
@@ -192,9 +187,8 @@ msgstr "Commit terminé sans erreur"
 
 #. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
-#, fuzzy
 msgid "batchEditRecordSetName"
-msgstr "COMMISSION BE de \"{dataSet:string}\""
+msgstr "Commit BE de \"{dataSet:string}\""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:518
