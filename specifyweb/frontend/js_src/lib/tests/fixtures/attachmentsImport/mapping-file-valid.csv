@@ -1,0 +1,6 @@
+filename,parsedName
+fake-image-1.jpg,ID_001
+ "fake-image-2.png" , "ID_002"
+"fake-image,3.jpg",ID_003
+fake-image-4.png,"ID_004"
+"fake-image-5.jpg","ID_005"

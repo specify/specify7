@@ -13,7 +13,7 @@ import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
 import type { RA, WritableArray } from '../../utils/types';
 import type { IR } from '../../utils/types';
-import { removeKey, sortFunction } from '../../utils/utils';
+import { removeKey, sortFunction, stripFileExtension } from '../../utils/utils';
 import { Container } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { strictGetTable } from '../DataModel/tables';
@@ -132,19 +132,37 @@ function AttachmentsImport({
     );
 
   const applyFileNames = React.useCallback(
-    (file: UnBoundFile): PartialUploadableFileSpec =>
-      eagerDataSet.uploadplan.staticPathKey === undefined
-        ? { uploadFile: file }
-        : {
-            uploadFile: {
-              ...file,
-              parsedName: resolveFileNames(
-                file.file.name,
-                eagerDataSet.uploadplan.formatQueryResults,
-                eagerDataSet.uploadplan.fieldFormatter
-              ),
-            },
-          },
+    (
+      file: UnBoundFile,
+      preserveParseName = true
+    ): PartialUploadableFileSpec => {
+      if (eagerDataSet.uploadplan.staticPathKey === undefined)
+        return { uploadFile: file };
+      let parsedName = undefined;
+
+      if (file.parsedName !== undefined && preserveParseName)
+        // Maybe we are being too nice. Users should correctly format this?
+        // This wil also correctly handle the case where formatter is no longer valid
+        // because it was changed.
+        parsedName = resolveFileNames(
+          file.parsedName,
+          eagerDataSet.uploadplan.formatQueryResults,
+          eagerDataSet.uploadplan.fieldFormatter
+        );
+      if (parsedName === undefined)
+        parsedName = resolveFileNames(
+          stripFileExtension(file.file.name),
+          eagerDataSet.uploadplan.formatQueryResults,
+          eagerDataSet.uploadplan.fieldFormatter
+        );
+
+      return {
+        uploadFile: {
+          ...file,
+          parsedName,
+        },
+      };
+    },
     [eagerDataSet.uploadplan.staticPathKey]
   );
 
@@ -154,10 +172,15 @@ function AttachmentsImport({
   React.useEffect(() => {
     // Reset all parsed names if matching path is changed
     if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
-      previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
-        files.map(({ uploadFile }) => applyFileNames(uploadFile))
+        files.map(({ uploadFile }) =>
+          // Do not preserve parsed name if previous static key was not undefined.
+          // Otherwise, a numeric formatter can be applied after a text formatter and we will match
+          // records incorrectly
+          applyFileNames(uploadFile, previousKeyRef.current === undefined)
+        )
       );
+      previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
     }
   }, [applyFileNames, commitFileChange]);
 
@@ -176,7 +199,11 @@ function AttachmentsImport({
   );
 
   const handleFilesSelected = (files: FileList) => {
-    const filesList = Array.from(files, (file) => applyFileNames({ file }));
+    const filesList: RA<PartialUploadableFileSpec> = Array.from(
+      files,
+      (file) => ({ uploadFile: { file } })
+    );
+
     const oldRows = eagerDataSet.rows;
     const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
       oldRows,
@@ -185,10 +212,13 @@ function AttachmentsImport({
     (resolvedFiles as WritableArray<PartialUploadableFileSpec>).sort(
       sortFunction((file) => file.uploadFile.file.name)
     );
+    const fileNamesApplied = resolvedFiles.map(({ uploadFile }) =>
+      applyFileNames(uploadFile)
+    );
     commitChange((oldState) => ({
       ...oldState,
       uploaderstatus: 'main',
-      rows: resolvedFiles,
+      rows: fileNamesApplied,
     }));
     setDuplicatedFiles(duplicateFiles);
   };

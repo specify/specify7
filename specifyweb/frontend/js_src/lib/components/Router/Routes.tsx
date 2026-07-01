@@ -200,6 +200,13 @@ export const routes: RA<EnhancedRoute> = [
             ({ AttachmentImportById }) => AttachmentImportById
           ),
       },
+      {
+        path: 'import',
+        element: () =>
+          import('../AttachmentsBulkImport/ImportFromMappingFile').then(
+            ({ ImportFromMappingFile }) => ImportFromMappingFile
+          ),
+      },
     ],
   },
   {

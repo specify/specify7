@@ -31,6 +31,12 @@ export const attachmentsText = createDictionary({
     'hr-hr': 'Skala',
     nb: 'Skala',
   },
+  importFromMMappingFile: {
+    'en-us': 'Import from Mapping File',
+  },
+  importMatchingAttachments: {
+    'en-us': 'Import Matching Attachments',
+  },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
     'ru-ru': 'Сервер прикрепленных файлов недоступен',
@@ -919,5 +925,8 @@ export const attachmentsText = createDictionary({
     'hr-hr':
       'Ovo kontrolira hoće li se novi privitci dodani u ovu kolekciju prema zadanim postavkama označavati kao "Javni". Javni privitci automatski će biti vidljivi na Navedite web portalu. Ova se postavka može poništiti za svaki pojedinačni privitak i ne utječe na postojeće privitke.',
     nb: 'Dette kontrollerer om nye vedlegg som legges til i denne samlingen skal flagges som «Offentlige» som standard. Offentlige vedlegg vil automatisk være synlige på en Specify-nettportal. Denne innstillingen kan overstyres for hvert vedlegg og påvirker ikke eksisterende vedlegg.',
+  },
+  importFromMappingFile: {
+    'en-us': 'Import from Mapping File',
   },
 } as const);
