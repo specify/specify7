@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:04+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
 "Language: fr\n"
@@ -191,12 +191,11 @@ msgstr "Impossible de lever l'ambiguïté"
 msgid "noDisambiguationResultsDescription"
 msgstr ""
 "Aucun des enregistrements correspondants n'existe actuellement dans la base "
-"de données. Cela peut se produire si tous les enregistrements "
-"correspondants ont été supprimés depuis le processus de validation, ou si "
-"toutes les correspondances étaient ambiguës par rapport aux autres "
-"enregistrements de cet ensemble de données. Dans ce dernier cas, vous "
-"devrez ajouter des champs et des valeurs à l'ensemble de données pour lever "
-"l'ambiguïté."
+"de données. Cela peut se produire si tous les enregistrements correspondants "
+"ont été supprimés depuis le processus de validation, ou si toutes les "
+"correspondances étaient ambiguës par rapport aux autres enregistrements de "
+"cet ensemble de données. Dans ce dernier cas, vous devrez ajouter des champs "
+"et des valeurs à l'ensemble de données pour lever l'ambiguïté."
 
 #. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:68
@@ -222,8 +221,8 @@ msgstr "Commencer la restauration de l'ensemble de données ?"
 msgid "beginRollbackDescription"
 msgstr ""
 "La restauration supprimera les nouveaux enregistrements de données que cet "
-"ensemble de données a ajoutés à la base de données Specify. L'intégralité "
-"de la restauration sera annulée si l'une des données téléchargées a été "
+"ensemble de données a ajoutés à la base de données Specify. L'intégralité de "
+"la restauration sera annulée si l'une des données téléchargées a été "
 "référencée (réutilisée) par d'autres enregistrements de données depuis leur "
 "téléchargement."
 
@@ -299,8 +298,8 @@ msgstr ""
 #: components/WorkBench/WbValidation.tsx:363
 msgid "matchedMultipleErrorMessage"
 msgstr ""
-"Cette valeur correspond à deux enregistrements de base de données existants "
-"ou plus et la correspondance doit être levée avant le téléchargement."
+"Cette valeur correspond à deux enregistrements existants ou plus et la "
+"correspondance doit être levée avant le téléchargement."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:319
@@ -888,7 +887,6 @@ msgstr "Cellules supprimées"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:54
-#, fuzzy
 msgid "affectedResults"
 msgstr "Enregistrements concernés"
 
@@ -896,7 +894,7 @@ msgstr "Enregistrements concernés"
 #: components/WorkBench/Results.tsx:55
 #, fuzzy
 msgid "potentialAffectedResults"
-msgstr "Des enregistrements potentiels ont été affectés."
+msgstr "Enregistrements potentiellement affectés."
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:59
