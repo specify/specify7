@@ -1,4 +1,4 @@
-from django.test import TestCase
+from django.apps import apps
 from unittest.mock import patch, MagicMock
 
 from specifyweb.specify.migration_utils.migration_helpers import helper_0008_ageCitations_fix
@@ -12,6 +12,8 @@ class RelativeAgeFieldTests(ApiTests):
         "specifyweb.specify.migration_utils.migration_helpers.helper_0008_ageCitations_fix.update_table_field_schema_config_with_defaults"
     )
     def test_update_relative_age_fields(self, mock_update):
+        helper_0008_ageCitations_fix.update_relative_age_fields(apps)
+
         expected = (
             Discipline.objects.count()
             * sum(
