@@ -150,10 +150,6 @@ SITE_ID = 1
 # to load the internationalization machinery.
 USE_I18N = True
 
-# If you set this to False, Django will not format dates, numbers and
-# calendars according to the current locale
-USE_L10N = True
-
 LANGUAGE_COOKIE_NAME='language'
 
 # Absolute filesystem path to the directory that will hold user-uploaded files.
