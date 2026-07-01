@@ -799,9 +799,8 @@ msgstr "Listes d'enregistrements"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:313
-#, fuzzy
 msgid "recordCount"
-msgstr "Nombre de records"
+msgstr "Nombre d'enregistrements"
 
 #. Used in: Components > Field Formatters > Parts ⬤ Components > Toolbar > Record Sets
 #: components/FieldFormatters/Parts.tsx:52
@@ -847,19 +846,16 @@ msgstr "Inconnu"
 #: components/Preferences/UserDefinitions.tsx:829
 #: components/SchemaConfig/Languages.tsx:39
 #: components/SchemaConfig/Languages.tsx:93
-#, fuzzy
 msgid "language"
 msgstr "Langue"
 
 #. Used in: Components > Schema Config > Languages
 #: components/SchemaConfig/Languages.tsx:104
-#, fuzzy
 msgid "country"
 msgstr "Pays"
 
 #. Used in: Components > Leaflet > Index
 #: components/Leaflet/index.ts:188
-#, fuzzy
 msgid "viewRecord"
 msgstr "Afficher l'enregistrement"
 
@@ -868,13 +864,11 @@ msgstr "Afficher l'enregistrement"
 #: components/FormCells/index.tsx:315
 #: components/FormCommands/index.tsx:110
 #: components/FormPlugins/index.tsx:190
-#, fuzzy
 msgid "nullInline"
 msgstr "(nul)"
 
 #. 🟥Generic. Could refer to any file. Used in: Components > Molecules > File Picker
 #: components/Molecules/FilePicker.tsx:107
-#, fuzzy
 msgid "filePickerMessage"
 msgstr "Choisissez un fichier ou faites-le glisser ici"
 
