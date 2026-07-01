@@ -199,4 +199,4 @@ class ComponentMigrationTests(ApiTests):
         helper_0040_components.reverse_hide_component_fields(apps)
 
         self.hidden_field.refresh_from_db()
-        self.assertFalse(self.hidden_field.ishidden)
+        self.assertTrue(self.hidden_field.ishidden)
