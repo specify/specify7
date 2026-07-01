@@ -326,12 +326,12 @@ msgstr "Conseils de recherche"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:132
-#, fuzzy
 msgid "expressSearchInstructions"
 msgstr ""
 "Séparez les termes de recherche multiples par des espaces, utilisez % "
-"n'importe où, * au début ou à la fin, et placez les termes entre guillemets "
-"pour obtenir des correspondances exactes avec plusieurs mots."
+"n'importe où, * au début ou à la fin pour remplacer un ou plusieurs "
+"caractères, et placez les termes entre guillemets pour obtenir des "
+"correspondances exactes avec plusieurs mots."
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
@@ -361,9 +361,8 @@ msgstr "Appliquer"
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/WbToolkit/CoordinateConverter.tsx:277
 #: components/WorkBench/Disambiguation.tsx:64
-#, fuzzy
 msgid "applyAll"
-msgstr "Appliquer tout"
+msgstr "Appliquer à toutes les lignes"
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Notifications > Notifications
 #: components/Interactions/LoanReturn.tsx:186
