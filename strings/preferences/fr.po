@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -1192,7 +1192,6 @@ msgstr "Couleur du bouton de réussite"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:899
-#, fuzzy
 msgid "openAsReadOnly"
 msgstr "Ouvrir tous les enregistrements en mode lecture seule"
 
@@ -1269,7 +1268,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:236
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
 "Activer l'héritage {catalogNumberFieldName: string} pour les enregistrements "
@@ -1299,7 +1297,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:244
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
 "Seuls les enregistrements {componentTableName: string} sans "
