@@ -175,7 +175,12 @@ class TestTree:
 
 
 class GeographyTree(TestTree, TestTreeSetup):
-    pass
+
+    def _make_locality(self, geo):
+        return models.Locality.objects.create(
+            discipline=self.discipline,
+            geography=geo
+        )
 
 
 class SqlTreeSetup(SQLAlchemySetup, GeographyTree):
