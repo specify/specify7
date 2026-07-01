@@ -1,13 +1,14 @@
+import sys
+import logging
+
+from collections import defaultdict
+
 from django.db import transaction, connection
 from django.apps import apps
 
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models_utils.model_extras import is_legacy_admin
-
 from .permissions import CollectionAccessPT
-
-import sys
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -32,22 +33,16 @@ def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     return UserRole.objects.filter(specifyuser=user).exists() or \
         UserPolicy.objects.filter(specifyuser=user).exists()
 
-def initialize(
-    wipe: bool = False,
-    apps=apps,
-    *,
-    migrate_sp6_users: bool = True,
-) -> None:
+def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
             wipe_permissions(apps)
         create_admins(apps)
         create_roles(apps)
-        if migrate_sp6_users:
-            if 'test' in ''.join(sys.argv):
-                assign_users_to_roles_during_testing(apps)
-            else:
-                assign_users_to_roles(apps)
+        if 'test' in ''.join(sys.argv):
+            assign_users_to_roles_during_testing(apps)
+        else:
+            assign_users_to_roles(apps)
 
 def create_admins(apps=apps) -> None:
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
@@ -106,6 +101,7 @@ def assign_users_to_roles(apps=apps) -> None:
     }
 
     results = []
+
     with connection.cursor() as cursor:
         cursor.execute("""
             SELECT
@@ -165,30 +161,49 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
 
     Role = apps.get_model('permissions', 'Role')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    Collection = apps.get_model('specify', 'Collection')
+    UserRole = apps.get_model('permissions', 'UserPolicy')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     Agent = apps.get_model('specify', 'Agent')
 
-    cursor = connection.cursor()
-    for user in Specifyuser.objects.all():
-        for collection in Collection.objects.all():
-            if user.usertype == 'Manager':
-                user.roles.create(role=Role.objects.get(collection=collection, name="Collection Admin"))
-            if user.usertype == 'FullAccess':
-                user.roles.create(role=Role.objects.get(collection=collection, name="Full Access - Legacy"))
-            if user.usertype in ('LimitedAccess', 'Guest'):
-                user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
+    roles_queryset = Role.objects.order_by("collection").values_list("pk","name", "collection__pk")
 
-        for colid, _ in users_collections_for_sp6(cursor, user.id):
-            # Does the user has an agent for the collection?
-            if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
-                # Give them access to the collection.
-                UserPolicy.objects.create(
-                    collection_id=colid,
-                    specifyuser_id=user.id,
-                    resource=CollectionAccessPT.access.resource(),
-                    action=CollectionAccessPT.access.action(),
-                )
+    roles = defaultdict(dict)
+
+    for (role_id, role_name, collection_id) in roles_queryset:
+        roles[collection_id][role_name] = role_id
+
+    user_type_to_userrole = {
+        "Manager": "Collection Admin",
+        "FullAccess": "Full Access - Legacy",
+        "LimitedAccess": "Read Only - Legacy",
+        "Guest": "Read Only - Legacy"
+    }
+
+    users = Specifyuser.objects.filter(usertype__in=user_type_to_userrole.keys()).values_list("pk", "usertype")
+
+    user_roles = []
+
+    for collection_id in roles.keys():
+        for (user_id, usertype) in users:
+            role_name = user_type_to_userrole[usertype]
+            user_roles.append(
+                UserRole(specifyuser_id=user_id, role_id=roles[collection_id][role_name])
+            )
+
+    UserRole.objects.bulk_create(user_roles)
+
+    with connection.cursor() as cursor:
+        for user in Specifyuser.objects.all():
+            for colid, _ in users_collections_for_sp6(cursor, user.id):
+                # Does the user has an agent for the collection?
+                if Agent.objects.filter(specifyuser=user, division__disciplines__collections__id=colid).exists():
+                    # Give them access to the collection.
+                    UserPolicy.objects.get_or_create(
+                        collection_id=colid,
+                        specifyuser_id=user.id,
+                        resource=CollectionAccessPT.access.resource(),
+                        action=CollectionAccessPT.access.action(),
+                    )
 
 def create_roles(apps = apps) -> None:
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
