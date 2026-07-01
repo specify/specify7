@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 10:01+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "batchIdentify/fr/>\n"
 "Language: fr\n"
@@ -52,7 +52,7 @@ msgstr "Tous les enregistrements ont été identifiés au taxon spécifié."
 #: components/BatchIdentify/index.tsx:206
 #, fuzzy
 msgid "updatedRecordSet"
-msgstr "Identifer un lot d'enregistrements mis-à-jour"
+msgstr "Lot Identifier les enregistrements mis à jour"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:610
