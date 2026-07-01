@@ -165,4 +165,15 @@ export const notificationsText = createDictionary({
       '<userName /> vam je prenio vlasništvo nad skupom podataka <dataSetName />.',
     nb: '<userName /> overførte eierskapet av <dataSetName /> datasettet til deg.',
   },
+  bulkDeleteHasStarted: {
+    'en-us': 'Bulk delete has started in the background',
+  },
+  bulkDeleteHasSucceeded: {
+    'en-us':
+      'Bulk delete of {count:number} {tableName:string} records has completed.',
+  },
+  bulkDeleteHasFailed: {
+    'en-us':
+      'Bulk delete of {tableName:string} records has failed.',
+  },
 } as const);

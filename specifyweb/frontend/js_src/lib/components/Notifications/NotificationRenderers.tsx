@@ -397,6 +397,43 @@ export const notificationRenderers: IR<
   'collection-creation-starting'() {
     return <p>{setupToolText.collectionCreationStarted()}</p>;
   },
+  'bulk-delete-started'(notification) {
+    const tableName = notification.payload.table;
+    const table = getTable(tableName);
+    return (
+      <>
+        <p>
+          {notificationsText.bulkDeleteHasStarted()} —{' '}
+          {table?.label ?? tableName}
+          {'.'}
+        </p>
+      </>
+    );
+  },
+  'bulk-delete-succeeded'(notification) {
+    const tableName = notification.payload.table;
+    const count = notification.payload.count as number;
+    const table = getTable(tableName);
+    return (
+      <p>
+        {notificationsText.bulkDeleteHasSucceeded({
+          count,
+          tableName: table?.label ?? tableName,
+        })}
+      </p>
+    );
+  },
+  'bulk-delete-failed'(notification) {
+    const tableName = notification.payload.table;
+    const table = getTable(tableName);
+    return (
+      <p>
+        {notificationsText.bulkDeleteHasFailed({
+          tableName: table?.label ?? tableName,
+        })}
+      </p>
+    );
+  },
   default(notification) {
     console.error('Unknown notification type', { notification });
     return <pre>{JSON.stringify(notification, null, 2)}</pre>;

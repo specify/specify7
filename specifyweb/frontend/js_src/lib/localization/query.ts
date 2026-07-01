@@ -1263,4 +1263,7 @@ export const queryText = createDictionary({
     'hr-hr': 'Stavke su vraćene',
     nb: 'Varene har blitt returnert',
   },
+  bulkDelete: {
+    'en-us': 'Bulk Delete',
+  },
 } as const);
