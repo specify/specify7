@@ -1,13 +1,14 @@
+import sys
+import logging
+
+from collections import defaultdict
+
 from django.db import transaction, connection
 from django.apps import apps
 
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models_utils.model_extras import is_legacy_admin
-
 from .permissions import CollectionAccessPT
-
-import sys
-import logging
 
 logger = logging.getLogger(__name__)
 
@@ -160,18 +161,36 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
 
     Role = apps.get_model('permissions', 'Role')
     UserPolicy = apps.get_model('permissions', 'UserPolicy')
-    Collection = apps.get_model('specify', 'Collection')
+    UserRole = apps.get_model('permissions', 'UserPolicy')
     Specifyuser = apps.get_model('specify', 'Specifyuser')
     Agent = apps.get_model('specify', 'Agent')
 
-    for user in Specifyuser.objects.all():
-        for collection in Collection.objects.all():
-            if user.usertype == 'Manager':
-                user.roles.create(role=Role.objects.get(collection=collection, name="Collection Admin"))
-            if user.usertype == 'FullAccess':
-                user.roles.create(role=Role.objects.get(collection=collection, name="Full Access - Legacy"))
-            if user.usertype in ('LimitedAccess', 'Guest'):
-                user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
+    roles_queryset = Role.objects.order_by("collection").values_list("pk","name", "collection__pk")
+
+    roles = defaultdict(dict)
+
+    for (role_id, role_name, collection_id) in roles_queryset:
+        roles[collection_id][role_name] = role_id
+
+    user_type_to_userrole = {
+        "Manager": "Collection Admin",
+        "FullAccess": "Full Access - Legacy",
+        "LimitedAccess": "Read Only - Legacy",
+        "Guest": "Read Only - Legacy"
+    }
+
+    users = Specifyuser.objects.filter(usertype__in=user_type_to_userrole.keys()).values_list("pk", "usertype")
+
+    user_roles = []
+
+    for collection_id in roles.keys():
+        for (user_id, usertype) in users:
+            role_name = user_type_to_userrole[usertype]
+            user_roles.append(
+                UserRole(specifyuser_id=user_id, role_id=roles[collection_id][role_name])
+            )
+
+    UserRole.objects.bulk_create(user_roles)
 
     with connection.cursor() as cursor:
         for user in Specifyuser.objects.all():
