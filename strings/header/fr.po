@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/header/"
 "fr/>\n"
 "Language: fr\n"
@@ -13,7 +13,6 @@ msgstr ""
 
 #. 🟥For accessibility purposes. Allows jumping to page content. Used in: Components > Core > Main
 #: components/Core/Main.tsx:66
-#, fuzzy
 msgid "skipToContent"
 msgstr "Passer au contenu"
 
