@@ -124,9 +124,8 @@ msgstr "Créer un nouveau document"
 #: components/Header/userToolDefinitions.ts:102
 #: components/Router/OverlayRoutes.tsx:175
 #: components/Toolbar/TreeRepair.tsx:173
-#, fuzzy
 msgid "repairTree"
-msgstr "Réparer l'arbre"
+msgstr "Réparer les arbres"
 
 #. Used in: Components > Toolbar > Tree Repair
 #: components/Toolbar/TreeRepair.tsx:168
