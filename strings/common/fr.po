@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
 "Language: fr\n"
@@ -121,7 +121,6 @@ msgstr "Retour arrière"
 
 #. Used in: Components > Export Feed > Dwca
 #: components/ExportFeed/Dwca.tsx:96
-#, fuzzy
 msgid "skip"
 msgstr "Sauter"
 
@@ -335,7 +334,6 @@ msgstr ""
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:134
-#, fuzzy
 msgid "expressSearchDateFormats"
 msgstr "Les dates peuvent être recherchées au format AAAA-MM-JJ ou MM/JJ/AAAA."
 
@@ -1186,27 +1184,23 @@ msgstr "Changement"
 #. Used in: Components > Merging > Index ⬤ Components > Wb Actions > Wb Upload
 #: components/Merging/index.tsx:392
 #: components/WbActions/WbUpload.tsx:109
-#, fuzzy
 msgid "dontShowAgain"
 msgstr "Ne plus afficher ceci"
 
 #. Used in: Components > Molecules > File Picker ⬤ Components > Wb Import Attachments > Index
 #: components/Molecules/FilePicker.tsx:106
 #: components/WbImportAttachments/index.tsx:45
-#, fuzzy
 msgid "multipleFilePickerMessage"
 msgstr "Choisissez des fichiers ou faites-les glisser ici"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:49
 #: components/Attachments/Viewer.tsx:352
-#, fuzzy
 msgid "zoom"
 msgstr "Zoomer"
 
 #. Used in: Components > Attachments > Image Viewer ⬤ Components > Attachments > Viewer
 #: components/Attachments/ImageViewer.tsx:54
 #: components/Attachments/Viewer.tsx:359
-#, fuzzy
 msgid "unzoom"
 msgstr "Dézoomer"
