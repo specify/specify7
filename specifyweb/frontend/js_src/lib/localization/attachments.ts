@@ -18,6 +18,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Anhänge',
     'pt-br': 'Anexos',
     'hr-hr': 'Prilozi',
+    nb: 'Vedlegg',
   },
   scale: {
     'en-us': 'Scale',
@@ -28,6 +29,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Massstab',
     'pt-br': 'Escala',
     'hr-hr': 'Skala',
+    nb: 'Skala',
   },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
@@ -38,6 +40,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
+    nb: 'Kan ikke koble til vVedleggsserveren',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -48,6 +51,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
     'pt-br': 'Configure seu servidor de anexos.',
     'hr-hr': 'Postavite svoj poslužitelj priloga',
+    nb: 'Konfigurer vedleggsserveren din',
   },
   orderBy: {
     'en-us': 'Order By',
@@ -56,8 +60,9 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати по',
     'de-ch': 'Sortiere nach',
-    'pt-br': 'Ordem por',
+    'pt-br': 'Ordenar por',
     'hr-hr': 'Poredaj po',
+    nb: 'Sorter etter',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
@@ -68,6 +73,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Am Hochladen…',
     'pt-br': 'Carregando…',
     'hr-hr': 'Prijenos…',
+    nb: 'Laster opp…',
   },
   noAttachments: {
     'en-us': 'There are no attachments',
@@ -78,6 +84,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Es gibt keine Anhänge',
     'pt-br': 'Não há anexos.',
     'hr-hr': 'Nema privitaka',
+    nb: 'Det finnes ingen vedlegg',
   },
   unableToFindRelatedRecord: {
     'en-us': 'Unable to find related record',
@@ -88,6 +95,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
     'hr-hr': 'Nije moguće pronaći povezani zapis',
+    nb: 'Finner ikke tilknyttet post',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -102,6 +110,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
     'hr-hr': 'Nije moguće pronaći zapis na koji se odnosi ovaj privitak.',
+    nb: 'Finner ikke posten som dette vedlegget er knyttet til.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -112,6 +121,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Formular anzeigen',
     'pt-br': 'Mostrar formulário',
     'hr-hr': 'Prikaži obrazac',
+    nb: 'Vis skjema',
   },
   multipleFilesSelected: {
     'en-us': 'Multiple files selected',
@@ -122,6 +132,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Вибрано декілька файлів',
     'pt-br': 'Vários arquivos selecionados',
     'hr-hr': 'Odabrano je više datoteka',
+    nb: 'Flere filer valgt',
   },
   fileSize: {
     'en-us': 'File Size',
@@ -132,6 +143,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Розмір файлу',
     'pt-br': 'Tamanho do arquivo',
     'hr-hr': 'Veličina datoteke',
+    nb: 'Filstørrelse',
   },
   deleted: {
     'en-us': 'Deleted',
@@ -142,6 +154,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Видалено',
     'pt-br': 'Excluído',
     'hr-hr': 'Izbrisano',
+    nb: 'Slettet',
   },
   noFile: {
     'en-us': 'No File',
@@ -152,6 +165,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Нет файла',
     'pt-br': 'Nenhum arquivo',
     'hr-hr': 'Nema datoteke',
+    nb: 'Ingen fil',
   },
   pleaseReselectAllFiles: {
     'en-us': 'Please reselect all files before uploading.',
@@ -165,6 +179,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Por favor, selecione todos os arquivos novamente antes de fazer o upload.',
     'hr-hr': 'Molimo vas da ponovno odaberete sve datoteke prije prijenosa.',
+    nb: 'Vennligst velg alle filene på nytt før opplasting.',
   },
   incorrectFormatter: {
     'en-us': 'Incorrectly Formatted',
@@ -175,6 +190,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Неправильно відформатований',
     'pt-br': 'Formatação incorreta',
     'hr-hr': 'Neispravno formatirano',
+    nb: 'Ugyldig format',
   },
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
@@ -185,6 +201,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Вже завантажено',
     'pt-br': 'Já foi carregado',
     'hr-hr': 'Već preneseno',
+    nb: 'Allerede lastet opp',
   },
   skipped: {
     'en-us': 'Skipped',
@@ -195,6 +212,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
     'hr-hr': 'Preskočeno',
+    nb: 'Hoppet over',
   },
   cancelled: {
     'en-us': 'Cancelled',
@@ -205,6 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
+    nb: 'Avbrutt',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -218,6 +237,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       '{action:string} estava em andamento quando ocorreu a interrupção.',
     'hr-hr': '{action:string} je bio u tijeku kada je došlo do prekida',
+    nb: '{action:string} var i gang da avbruddet oppstod',
   },
   matchError: {
     'en-us': 'Match Error',
@@ -228,6 +248,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка збігу',
     'pt-br': 'Erro de correspondência',
     'hr-hr': 'Pogreška podudaranja',
+    nb: 'Samsvarsfeil',
   },
   errorReadingFile: {
     'en-us': 'Error reading file',
@@ -238,16 +259,18 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка читання файлу',
     'pt-br': 'Erro ao ler o arquivo',
     'hr-hr': 'Greška pri čitanju datoteke',
+    nb: 'Feil ved lesing av fil',
   },
   unhandledFatalResourceError: {
     'en-us': 'Unhandled fatal resource error:',
     'de-ch': 'Unbehandelter schwerwiegender Ressourcenfehler:',
     'es-es': 'Error de recurso fatal no controlado:',
-    'fr-fr': 'Erreur fatale de ressource non gérée :',
+    'fr-fr': 'Erreur, ressource non gérée :',
     'ru-ru': 'Необработанная фатальная ошибка доступа к ресурсам:',
     'uk-ua': 'Необроблена критична помилка ресурсу:',
     'pt-br': 'Erro fatal de recurso não tratado:',
     'hr-hr': 'Neobrađena fatalna pogreška resursa:',
+    nb: 'Uhåndtert fatal ressursfeil:',
   },
   attachmentImportDatasetsCount: {
     'en-us': 'Attachment Import Data Sets ({count:number})',
@@ -258,6 +281,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Набори даних імпорту вкладених файлів ({count:number})',
     'pt-br': 'Conjuntos de dados de importação de anexos ({count:number})',
     'hr-hr': 'Skupovi podataka za uvoz priloga ({count:number})',
+    nb: '({count:number}) datasett for import av vedlegg',
   },
   newAttachmentDataset: {
     'en-us': 'New Attachment Data Set {date: string}',
@@ -268,6 +292,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Новий набір даних вкладень {date: string}',
     'pt-br': 'Novo conjunto de dados de anexos {date: string}',
     'hr-hr': 'Novi skup podataka za priloge {date: string}',
+    nb: 'Nytt vedleggsdatasett {date: string}',
   },
   newAttachmentDatasetBase: {
     'en-us': 'New Attachment Data Set',
@@ -278,6 +303,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Новый набор данных вложений',
     'pt-br': 'Novo conjunto de dados de anexos',
     'hr-hr': 'Novi skup podataka za priloge',
+    nb: 'Nytt vedleggsdatasett',
   },
   uploadInterrupted: {
     'en-us': 'Upload Interrupted',
@@ -288,6 +314,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Завантаження перервано',
     'pt-br': 'Upload interrompido',
     'hr-hr': 'Prijenos prekinut',
+    nb: 'Opplasting avbrutt',
   },
   uploadInterruptedDescription: {
     'en-us':
@@ -306,6 +333,7 @@ export const attachmentsText = createDictionary({
       'O carregamento estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido carregados.',
     'hr-hr':
       'Prijenos je bio u tijeku kada je došlo do prekida. Neke datoteke su možda prenesene.',
+    nb: 'Opplastingen var i gang da det oppsto et avbrudd. Noen filer kan ha blitt lastet opp.',
   },
   rollbackInterrupted: {
     'en-us': 'Rollback Interrupted',
@@ -316,6 +344,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Відкат перервано',
     'pt-br': 'Reversão interrompida',
     'hr-hr': 'Povratak prekinut',
+    nb: 'Tilbakerulling avbrutt',
   },
   rollbackInterruptedDescription: {
     'en-us':
@@ -334,6 +363,7 @@ export const attachmentsText = createDictionary({
       'O processo de reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
     'hr-hr':
       'Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda izbrisane.',
+    nb: 'Tilbakerullingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet.',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -344,6 +374,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'ID вкладення',
     'pt-br': 'ID do anexo',
     'hr-hr': 'ID privitka',
+    nb: 'Vedleggs-ID',
   },
   choosePath: {
     'en-us': 'Choose Path',
@@ -354,6 +385,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Виберіть шлях',
     'pt-br': 'Escolha o caminho',
     'hr-hr': 'Odaberite put',
+    nb: 'Velg sti',
   },
   beginAttachmentUpload: {
     'en-us': 'Begin Attachment Upload?',
@@ -364,6 +396,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Почати завантаження вкладених файлів?',
     'pt-br': 'Iniciar o envio do anexo?',
     'hr-hr': 'Započeti prijenos priloga?',
+    nb: 'Starte opplasting av vedlegg?',
   },
   beginUploadDescription: {
     'en-us':
@@ -381,6 +414,7 @@ export const attachmentsText = createDictionary({
       'O envio dos anexos os criará no servidor de ativos e no banco de dados especificado.',
     'hr-hr':
       'Prijenosom privitaka stvorit će se privitci na poslužitelju imovine i u Navedite bazu podataka',
+    nb: 'Opplasting av vedlegg vil opprette vedlegg på ressursserveren og i Specify-databasen.',
   },
   interrupted: {
     'en-us': 'Interrupted',
@@ -391,6 +425,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Перерваний',
     'pt-br': 'Interrompido',
     'hr-hr': 'Prekinuto',
+    nb: 'Avbrutt',
   },
   tryNow: {
     'en-us': 'Try Now',
@@ -401,6 +436,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Спробуйте зараз',
     'pt-br': 'Experimente agora',
     'hr-hr': 'Isprobajte sada',
+    nb: 'Prøv nå',
   },
   interruptedTime: {
     'en-us': 'Interrupted. Retrying in {remainingTime:string}',
@@ -411,6 +447,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Перерваний. Повторна спроба через {remainingTime:string}',
     'pt-br': 'Interrompido. Tentando novamente em {remainingTime:string}',
     'hr-hr': 'Prekinuto. Ponovni pokušaj za {remainingTime:string}',
+    nb: 'Avbrutt. Prøver på nytt i {remainingTime:string}',
   },
   rollbackDescription: {
     'en-us':
@@ -420,7 +457,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
+      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de médias.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
     'uk-ua':
@@ -429,6 +466,7 @@ export const attachmentsText = createDictionary({
       'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
     'hr-hr':
       'Vraćanje na prethodno stanje će izbrisati priloge iz Navedite bazu podataka i Poslužitelja imovine',
+    nb: 'Tilbakerulling vil slette vedleggene fra Specify-databasen og Asset Server',
   },
   noMatch: {
     'en-us': 'No match',
@@ -439,6 +477,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Немає відповідності',
     'pt-br': 'Nenhuma correspondência',
     'hr-hr': 'Nema podudaranja',
+    nb: 'Ingen treff',
   },
   attachmentHaltLimit: {
     'en-us':
@@ -454,6 +493,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Nenhum anexo foi encontrado nos primeiros registros {halt:number}.',
     'hr-hr': 'U prvim zapisima {halt:number} nisu pronađeni prilozi.',
+    nb: 'Ingen vedlegg er funnet i de første {halt:number}-postene.',
   },
   fetchNextAttachments: {
     'en-us': 'Look for more attachments',
@@ -464,6 +504,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Шукайте більше вкладень',
     'pt-br': 'Procure mais anexos',
     'hr-hr': 'Potražite više priloga',
+    nb: 'Se etter flere vedlegg',
   },
   hideForm: {
     'en-us': 'Hide Form',
@@ -474,6 +515,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Сховати форму',
     'pt-br': 'Ocultar formulário',
     'hr-hr': 'Sakrij obrazac',
+    nb: 'Skjul skjema',
   },
   collapseFormByDefault: {
     'en-us': 'Collapse form by default',
@@ -484,6 +526,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Згортати форму за замовчуванням',
     'pt-br': 'Recolher formulário por padrão',
     'hr-hr': 'Sažmi obrazac prema zadanim postavkama',
+    nb: 'Skjul skjema som standard',
   },
   collapseFormByDefaultDescription: {
     'en-us':
@@ -502,6 +545,7 @@ export const attachmentsText = createDictionary({
       'Se deve ou não recolher o formulário de anexos por padrão ao visualizar anexos existentes.',
     'hr-hr':
       'Treba li se obrazac za prilog prema zadanim postavkama sažeti prilikom pregleda postojećih priloga. Ako su kontrole priloga skrivene, ova postavka nema učinka.',
+    nb: 'Om vedleggsskjemaet skal skjules som standard når eksisterende vedlegg vises. Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt.',
   },
   showControls: {
     'en-us': 'Show attachment controls',
@@ -512,6 +556,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Показувати елементи керування вкладеннями',
     'pt-br': 'Mostrar controles de anexos',
     'hr-hr': 'Prikaži kontrole privitaka',
+    nb: 'Vis vedleggskontroller',
   },
   showControlsDescription: {
     'en-us':
@@ -530,6 +575,7 @@ export const attachmentsText = createDictionary({
       'Mostrar ou ocultar os botões de zoom, zoom out, reset e ocultar/mostrar formulário no visualizador de anexos.',
     'hr-hr':
       'Gumbi za zumiranje, smanjivanje, resetiranje i skrivanje/prikazivanje obrasca pri pregledu privitka prikazuju ili skrivaju privitak.',
+    nb: 'Vis eller skjul knappene for å zoome inn, zoome ut, tilbakestille og skjul/vis skjema for vedlegg når du viser et vedlegg.',
   },
   multipleMatches: {
     'en-us': 'Multiple matches',
@@ -540,6 +586,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Кілька збігів',
     'pt-br': 'Vários confrontos',
     'hr-hr': 'Višestruka podudaranja',
+    nb: 'Flere kamper',
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
@@ -551,6 +598,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність',
     'pt-br': 'Vários resultados. Clique para desambiguar.',
     'hr-hr': 'Višestruka podudaranja. Kliknite za razrješenje dvosmislenosti',
+    nb: 'Flere treff. Klikk for å gjøre det mer entydig.',
   },
   totalFiles: {
     'en-us': 'Total files',
@@ -561,6 +609,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Всього файлів',
     'pt-br': 'Total de arquivos',
     'hr-hr': 'Ukupno datoteka',
+    nb: 'Totalt antall filer',
   },
   correctlyFormatted: {
     'en-us': 'Correctly Formatted',
@@ -571,6 +620,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Правильно відформатований',
     'pt-br': 'Formatação correta',
     'hr-hr': 'Ispravno formatirano',
+    nb: 'Riktig formatert',
   },
   stoppedByUser: {
     'en-us': 'Stopped By User',
@@ -581,6 +631,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Зупинено користувачем',
     'pt-br': 'Interrompido pelo usuário',
     'hr-hr': 'Zaustavio korisnik',
+    nb: 'Stoppet av bruker',
   },
   importAttachments: {
     'en-us': 'Import Attachments',
@@ -591,6 +642,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Імпорт вкладень',
     'pt-br': 'Importar anexos',
     'hr-hr': 'Uvoz privitaka',
+    nb: 'Importer vedlegg',
   },
   onFile: {
     'en-us': 'On File',
@@ -601,6 +653,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Dans le fichier',
     'pt-br': 'Em arquivo',
     'hr-hr': 'U datoteci',
+    nb: 'På fil',
   },
   duplicateFilesFound: {
     'en-us': 'Duplicate Files Found',
@@ -611,6 +664,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Знайдено дублікати файлів',
     'pt-br': 'Arquivos duplicados encontrados',
     'hr-hr': 'Pronađene duplikatne datoteke',
+    nb: 'Duplikatfiler funnet',
   },
   duplicateFilesDescription: {
     'en-us':
@@ -629,6 +683,7 @@ export const attachmentsText = createDictionary({
       'Os seguintes arquivos não foram selecionados porque já existem neste conjunto de dados.',
     'hr-hr':
       'Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka.',
+    nb: 'Følgende filer er ikke valgt fordi de allerede finnes i dette datasettet.',
   },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
@@ -639,6 +694,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка отримання запису',
     'pt-br': 'Erro ao buscar registro',
     'hr-hr': 'Pogreška pri dohvaćanju zapisa',
+    nb: 'Feil ved henting av oppføring',
   },
   errorSavingRecord: {
     'en-us': 'Error saving record',
@@ -649,6 +705,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка збереження запису',
     'pt-br': 'Erro ao salvar o registro',
     'hr-hr': 'Pogreška pri spremanju zapisa',
+    nb: 'Feil ved lagring av oppføring',
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
@@ -661,6 +718,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Зупинено через помилку завантаження попереднього файлу',
     'pt-br': 'Interrompido devido a erro ao carregar um arquivo anterior.',
     'hr-hr': 'Zaustavljeno zbog pogreške pri učitavanju prethodne datoteke',
+    nb: 'Stoppet på grunn av feil ved opplasting av en tidligere fil',
   },
   chooseFilesToGetStarted: {
     'en-us': 'Choose files or drag them here to get started.',
@@ -673,6 +731,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Щоб почати, виберіть файли або перетягніть їх сюди.',
     'pt-br': 'Selecione os arquivos ou arraste-os para cá para começar.',
     'hr-hr': 'Odaberite datoteke ili ih povucite ovdje da biste započeli.',
+    nb: 'Velg filer eller dra dem hit for å komme i gang.',
   },
   selectIdentifier: {
     'en-us': 'Select an identifier to match the files name against.',
@@ -687,6 +746,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Виберіть ідентифікатор для відповідності імені файлу.',
     'pt-br': 'Selecione um identificador para comparar com o nome do arquivo.',
     'hr-hr': 'Odaberite identifikator s kojim ćete pronaći ime datoteke.',
+    nb: 'Velg en identifikator som skal matches med filnavnet.',
   },
   progress: {
     'en-us': 'Progress',
@@ -697,6 +757,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Прогрес',
     'pt-br': 'Progresso',
     'hr-hr': 'Napredak',
+    nb: 'Framgang',
   },
   rollbackResults: {
     'en-us': 'Rollback Results',
@@ -707,6 +768,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Результати відкату',
     'pt-br': 'Resultados da reversão',
     'hr-hr': 'Rezultati vraćanja',
+    nb: 'Tilbakerullingsresultater',
   },
   resultValue: {
     'en-us':
@@ -725,6 +787,7 @@ export const attachmentsText = createDictionary({
       '{success: number} dos {total: number} anexos no conjunto de dados foram {action: string}.',
     'hr-hr':
       '{success: number} od {total: number} privitaka u skupu podataka je {action: string}.',
+    nb: '{success: number} av {total: number} vedlegg i datasettet har vært {action: string}.',
   },
   deleteAttachmentDataSetDescription: {
     'en-us':
@@ -743,6 +806,7 @@ export const attachmentsText = createDictionary({
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
     'hr-hr':
       'Trajnim brisanjem skupa podataka uklanja se on i njegov put prijenosa. Također, nakon brisanja, vraćanje na prethodno stanje više neće biti moguće za preneseni skup podataka.',
+    nb: 'Hvis du sletter et datasett permanent, fjernes det og opplastingsbanen. Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for et opplastet datasett.',
   },
   attachmentUploadError: {
     'en-us':
@@ -761,16 +825,18 @@ export const attachmentsText = createDictionary({
       'Erro ao enviar o anexo. O servidor de anexos pode estar indisponível ou ocorreu um erro ao ler o arquivo.',
     'hr-hr':
       'Pogreška pri učitavanju privitka. Poslužitelj privitka možda nije dostupan ili je došlo do pogreške pri čitanju datoteke.',
+    nb: 'Feil under opplasting av vedlegg. Vedleggsserveren er kanskje ikke tilgjengelig, eller det oppsto en feil under lesing av filen.',
   },
   downloadAll: {
     'en-us': 'Download All',
     'de-ch': 'Alle herunterladen',
     'es-es': 'Descargar todo',
-    'fr-fr': 'Tout télécharger',
+    'fr-fr': 'Télécharger tout',
     'pt-br': 'Baixar tudo',
     'ru-ru': 'Скачать все',
     'uk-ua': 'Завантажити все',
     'hr-hr': 'Preuzmi sve',
+    nb: 'Last ned alle',
   },
   downloadAllDescription: {
     'en-us': 'Download all found attachments',
@@ -781,6 +847,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Загрузите все найденные вложения.',
     'uk-ua': 'Завантажити всі знайдені вкладення',
     'hr-hr': 'Preuzmi sve pronađene priloge',
+    nb: 'Last ned alle vedlegg som er funnet',
   },
   createRecordSetToDownloadAll: {
     'en-us':
@@ -790,7 +857,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un groupe d'enregistrements de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
       'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':
@@ -799,6 +866,7 @@ export const attachmentsText = createDictionary({
       'Не всі вкладення завантажено. Будь ласка, створіть набір записів результатів запиту, щоб завантажити всі вкладення.',
     'hr-hr':
       'Nisu učitani svi privitci. Izradite skup zapisa rezultata upita kako biste preuzeli sve privitke.',
+    nb: 'Ikke alle vedleggene er lastet inn. Vennligst opprett et postsett med søkeresultatene for å laste ned alle vedleggene.',
   },
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',
@@ -809,6 +877,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Вы уверены, что хотите удалить это вложение?',
     'uk-ua': 'Ви впевнені, що хочете видалити цей вкладений файл?',
     'hr-hr': 'Jeste li sigurni da želite izbrisati ovaj privitak?',
+    nb: 'Er du sikker på at du vil slette dette vedlegget?',
   },
   attachmentDelition: {
     'en-us': 'Attachment deletion',
@@ -819,6 +888,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Удаление вложения',
     'uk-ua': 'Видалення вкладень',
     'hr-hr': 'Brisanje privitka',
+    nb: 'Sletting av vedlegg',
   },
   publicDefault: {
     'en-us': 'Make Attachments Public by Default',
@@ -829,6 +899,7 @@ export const attachmentsText = createDictionary({
     'ru-ru': 'Сделать вложения общедоступными по умолчанию',
     'uk-ua': 'Зробити вкладення загальнодоступними за замовчуванням',
     'hr-hr': 'Učini privitke javnim prema zadanim postavkama',
+    nb: 'Gjør vedlegg offentlige som standard',
   },
   publicDefaultDescription: {
     'en-us':
@@ -847,5 +918,6 @@ export const attachmentsText = createDictionary({
       'Це налаштування контролює, чи нові вкладення, додані до цієї колекції, позначатимуться як «Публічні» за замовчуванням. Публічні вкладення автоматично відображатимуться на веб-порталі Specify. Цей параметр можна змінити для кожного вкладення окремо, і він не впливає на існуючі вкладення.',
     'hr-hr':
       'Ovo kontrolira hoće li se novi privitci dodani u ovu kolekciju prema zadanim postavkama označavati kao "Javni". Javni privitci automatski će biti vidljivi na Navedite web portalu. Ova se postavka može poništiti za svaki pojedinačni privitak i ne utječe na postojeće privitke.',
+    nb: 'Dette kontrollerer om nye vedlegg som legges til i denne samlingen skal flagges som «Offentlige» som standard. Offentlige vedlegg vil automatisk være synlige på en Specify-nettportal. Denne innstillingen kan overstyres for hvert vedlegg og påvirker ikke eksisterende vedlegg.',
   },
 } as const);

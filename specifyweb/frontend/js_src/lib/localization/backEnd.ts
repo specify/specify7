@@ -23,6 +23,7 @@ export const backEndText = createDictionary({
       'O valor "{value:string}" não pode ser resolvido para Verdadeiro ou Falso.',
     'hr-hr':
       'vrijednost "{value:string}" se ne može razlučiti na True ili False',
+    nb: 'Verdien «{value:string}» kan ikke løses til Sann eller Usann',
   },
   failedParsingDecimal: {
     'en-us': 'value "{value:string}" is not a valid decimal value',
@@ -33,6 +34,7 @@ export const backEndText = createDictionary({
     'de-ch': '"{value:string}" ist kein gültiger Dezimalwert',
     'pt-br': 'O valor "{value:string}" não é um valor decimal válido.',
     'hr-hr': 'vrijednost "{value:string}" nije valjana decimalna vrijednost',
+    nb: 'Verdien «{value:string}» er ikke en gyldig desimalverdi',
   },
   failedParsingFloat: {
     'en-us': 'value "{value:string}" is not a valid floating point value',
@@ -47,6 +49,7 @@ export const backEndText = createDictionary({
       'O valor "{value:string}" não é um valor de ponto flutuante válido.',
     'hr-hr':
       'vrijednost "{value:string}" nije valjana vrijednost s pomičnim zarezom',
+    nb: 'Verdien «{value:string}» er ikke en gyldig flyttallverdi',
   },
   failedParsingPickList: {
     'en-us':
@@ -65,6 +68,7 @@ export const backEndText = createDictionary({
       '{value:string} não é um valor válido neste campo de lista de opções.\n\nClique na seta para escolher entre as opções disponíveis.',
     'hr-hr':
       '{value:string} nije dopuštena vrijednost u ovom polju s popisa za odabir.\n\nKliknite na strelicu za odabir između dostupnih opcija.',
+    nb: '{value:string} er ikke en lovlig verdi i dette plukklistefeltet.\n\nKlikk på pilen for å velge blant tilgjengelige alternativer.',
   },
   failedParsingAgentType: {
     comment: `
@@ -87,6 +91,7 @@ export const backEndText = createDictionary({
       'ruim {agentTypeField:string}: "{badType:string}". Esperava-se um de {validTypes:string}',
     'hr-hr':
       'loše {agentTypeField:string}: "{badType:string}". Očekivano jedno od {validTypes:string}',
+    nb: 'dårlig {agentTypeField:string}: "{badType:string}". Forventet en av {validTypes:string}',
   },
   pickListValueTooLong: {
     'en-us':
@@ -105,6 +110,7 @@ export const backEndText = createDictionary({
       'valor de {pickListTable:string} {pickList:string} maior que o máximo de {maxLength:number|formatted} para o campo',
     'hr-hr':
       'vrijednost iz {pickListTable:string} {pickList:string} dulja od maksimuma od {maxLength:number|formatted} za polje',
+    nb: 'verdi fra {pickListTable:string} {pickList:string} lengre enn maksimumsverdien på {maxLength:number|formatted} for feltet',
   },
   valueTooLong: {
     'en-us':
@@ -122,6 +128,7 @@ export const backEndText = createDictionary({
       'O valor não deve ter comprimento maior que {maxLength:number|formatted}',
     'hr-hr':
       'vrijednost ne smije imati duljinu veću od {maxLength:number|formatted}',
+    nb: 'Verdien må ikke ha en lengde som er større enn {maxLength:number|formatted}',
   },
   invalidYear: {
     'en-us': 'date value must contain four digit year: {value:string}',
@@ -138,6 +145,7 @@ export const backEndText = createDictionary({
       'O valor da data deve conter o ano com quatro dígitos: {value:string}',
     'hr-hr':
       'Vrijednost datuma mora sadržavati četiri znamenke godine: {value:string}',
+    nb: 'dato må inneholde fire sifre i året: {value:string}',
   },
   badDateFormat: {
     'en-us': 'bad date value: {value:string}. expected: {format:string}',
@@ -155,6 +163,7 @@ export const backEndText = createDictionary({
       'Valor de data inválido: {value:string}. Esperado: {format:string}',
     'hr-hr':
       'loša vrijednost datuma: {value:string}. očekivano: {format:string}',
+    nb: 'ugyldig datoverdi: {value:string}. forventet: {format:string}',
   },
   coordinateBadFormat: {
     'en-us': 'bad latitude or longitude value: {value:string}',
@@ -165,6 +174,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Ungültiger Breiten- oder Längengradwert: {value:string}',
     'pt-br': 'Valor de latitude ou longitude inválido: {value:string}',
     'hr-hr': 'loša vrijednost geografske širine ili dužine: {value:string}',
+    nb: 'Ugyldig verdi for breddegrad eller lengdegrad: {value:string}',
   },
   latitudeOutOfRange: {
     'en-us': 'latitude must be between -90 and 90. Actual: {value:string}',
@@ -178,6 +188,7 @@ export const backEndText = createDictionary({
     'pt-br': 'A latitude deve estar entre -90 e 90. Valor real: {value:string}',
     'hr-hr':
       'Zemljopisna širina mora biti između -90 i 90. Stvarno: {value:string}',
+    nb: 'breddegrad må være mellom -90 og 90. Faktisk: {value:string}',
   },
   longitudeOutOfRange: {
     'en-us': 'longitude must be between -180 and 180. Actual: {value:string}',
@@ -192,6 +203,7 @@ export const backEndText = createDictionary({
       'A longitude deve estar entre -180 e 180. Valor real: {value:string}',
     'hr-hr':
       'Geografska dužina mora biti između -180 i 180. Stvarna: {value:string}',
+    nb: 'Lengdegrad må være mellom -180 og 180. Faktisk: {value:string}',
   },
   formatMismatch: {
     'en-us': 'value {value:string} does not match formatter {formatter:string}',
@@ -208,6 +220,7 @@ export const backEndText = createDictionary({
       'O valor {value:string} não corresponde ao formatador {formatter:string}',
     'hr-hr':
       'vrijednost {value:string} ne odgovara formateru {formatter:string}',
+    nb: 'Verdien {value:string} samsvarer ikke med formateringsprogrammet {formatter:string}',
   },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
@@ -218,6 +231,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Dieses Feld muss leer sein, wenn {column:string} leer ist.',
     'pt-br': 'Este campo deve estar vazio se {column:string} estiver vazio.',
     'hr-hr': 'Ovo polje mora biti prazno ako je {column:string} prazno',
+    nb: 'Dette feltet må være tomt hvis {column:string} er tomt',
   },
   fieldRequiredByUploadPlan: {
     'en-us': 'field is required by upload plan mapping',
@@ -229,6 +243,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Das Feld ist für die Upload-Planzuordnung erforderlich.',
     'pt-br': 'Este campo é obrigatório para o mapeamento do plano de upload.',
     'hr-hr': 'polje je obavezno za mapiranje plana prijenosa',
+    nb: 'feltet er obligatorisk for opplasting av plankartlegging',
   },
   invalidTreeStructure: {
     'en-us': 'There are multiple "Uploaded" placeholder values in the tree!',
@@ -242,6 +257,7 @@ export const backEndText = createDictionary({
     'pt-br': 'Existem vários valores de espaço reservado "Enviado" na árvore!',
     'hr-hr':
       'U stablu postoji više vrijednosti rezerviranog mjesta "Preneseno"!',
+    nb: 'Det finnes flere plassholderverdier for «Opplastede» i treet!',
   },
   missingRequiredTreeParent: {
     'en-us':
@@ -260,6 +276,7 @@ export const backEndText = createDictionary({
       'Valor de classificação de árvore pai obrigatório ausente ou não mapeado para "{names:string}".',
     'hr-hr':
       'Nedostaje ili nije mapirana obavezna vrijednost ranga roditeljskog stabla za "{names:string}".',
+    nb: 'Manglende eller ikke-kartlagt obligatorisk rangverdi for foreldretre for «{names:string}».',
   },
   showTraceback: {
     'en-us': 'Show Traceback',
@@ -270,6 +287,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Traceback anzeigen',
     'pt-br': 'Mostrar rastreamento',
     'hr-hr': 'Prikaži povratno praćenje',
+    nb: 'Vis tilbakesporing',
   },
   fieldNotUnique: {
     'en-us': '{tableName:string} must have unique {fieldName:string}',
@@ -281,6 +299,7 @@ export const backEndText = createDictionary({
       '{tableName:string} muss ein eindeutiges {fieldName:string} haben.',
     'pt-br': '{tableName:string} deve ter {fieldName:string} único',
     'hr-hr': '{tableName:string} mora imati jedinstveni {fieldName:string}',
+    nb: '{tableName:string} må ha en unik {fieldName:string}',
   },
   childFieldNotUnique: {
     'en-us':
@@ -299,6 +318,7 @@ export const backEndText = createDictionary({
       '{tableName:string} deve ter {fieldName:string} único em {parentField:string}',
     'hr-hr':
       '{tableName:string} mora imati jedinstveni {fieldName:string} u {parentField:string}',
+    nb: '{tableName:string} må ha unik {fieldName:string} i {parentField:string}',
   },
   deletingTreeRoot: {
     'en-us': 'Can not delete root level tree definition item',
@@ -312,6 +332,7 @@ export const backEndText = createDictionary({
       'Não é possível excluir o item de definição da árvore de nível raiz.',
     'hr-hr':
       'Nije moguće izbrisati stavku definicije stabla na korijenskoj razini',
+    nb: 'Kan ikke slette definisjonselementet på rotnivåtreet',
   },
   nodeParentInvalidRank: {
     'en-us': "Tree node's parent has rank greater than itself",
@@ -325,6 +346,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'O nó pai da árvore tem uma classificação maior que a sua própria.',
     'hr-hr': 'Roditelj čvora stabla ima veći rang od samog sebe',
+    nb: 'Trenodens overordnede har en høyere rang enn seg selv',
   },
   nodeChildrenInvalidRank: {
     'en-us': "Tree node's rank is greater than some of its children",
@@ -339,6 +361,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'A classificação do nó da árvore é maior que a de alguns de seus filhos.',
     'hr-hr': 'Rang čvora stabla je veći od ranga nekih njegovih potomaka',
+    nb: 'Trenodens rangering er høyere enn noen av dens barn',
   },
   nodeOperationToSynonymizedParent: {
     'en-us':
@@ -357,6 +380,7 @@ export const backEndText = createDictionary({
       '{operation:string} nó "{nodeName:string}" para pai sinonimizado "{parentName:string}"',
     'hr-hr':
       'Čvor {operation:string} "{nodeName:string}" u sinonimizirani nadređeni "{parentName:string}"',
+    nb: '{operation:string}-noden «{nodeName:string}» til den synonymiserte overordnede noden «{parentName:string}»',
   },
   nodeSynonymizeToSynonymized: {
     'en-us':
@@ -375,6 +399,7 @@ export const backEndText = createDictionary({
       'Sinônimos de "{nodeName:string}" para o nó sinonimizado "{intoName:string}"',
     'hr-hr':
       'Sinonimiziranje "{nodeName:string}" za sinonimizirani čvor "{intoName:string}"',
+    nb: 'Synonymisering av «{nodeName:string}» til den synonymiserte noden «{intoName:string}»',
   },
   nodeSynonimizeWithChildren: {
     'en-us': 'Synonymizing node "{nodeName:string}" which has children',
@@ -385,6 +410,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Synonymisierender Knoten "{nodeName:string}", der Kinder hat',
     'pt-br': 'Sinônimo do nó "{nodeName:string}" que possui filhos',
     'hr-hr': 'Sinonimizirajući čvor "{nodeName:string}" koji ima djecu',
+    nb: 'Synonymiserende node «{nodeName:string}» som har underordnede',
   },
   badTreeStructureInvalidRanks: {
     'en-us':
@@ -403,6 +429,7 @@ export const backEndText = createDictionary({
       'Estrutura de árvore ruim: Encontrados {badRanks:number|formatted} casos em que a classificação do nó não é maior que a do seu pai.',
     'hr-hr':
       'Loša struktura stabla: Pronađeno je {badRanks:number|formatted} slučajeva gdje rang čvora nije veći od njegovog roditelja',
+    nb: 'Dårlig trestruktur: Fant {badRanks:number|formatted} tilfeller der noderang ikke er høyere enn den overordnede',
   },
   invalidNodeType: {
     'en-us':
@@ -421,6 +448,7 @@ export const backEndText = createDictionary({
       'Tipo de nó inesperado "{node:string}" durante {operation:string}. Esperava-se "{nodeModel:string}"',
     'hr-hr':
       'Neočekivana vrsta čvora "{node:string}" tijekom {operation:string}. Očekivana "{nodeModel:string}"',
+    nb: 'Uventet nodetype «{node:string}» under {operation:string}. Forventet «{nodeModel:string}»',
   },
   operationAcrossTrees: {
     'en-us': '{operation:string} across trees',
@@ -431,6 +459,7 @@ export const backEndText = createDictionary({
     'uk-ua': '{operation:string} поміж деревами',
     'pt-br': '{operation:string} através de árvores',
     'hr-hr': '{operation:string} preko drveća',
+    nb: '{operation:string} over trær',
   },
   limitReachedDeterminingAccepted: {
     'en-us':
@@ -449,6 +478,7 @@ export const backEndText = createDictionary({
       'Não foi possível encontrar um táxon aceito para o táxon sinonimizado com ID {taxonId:number}',
     'hr-hr':
       'Nije pronađen prihvaćeni takson za sinonimizirani takson s ID-om {taxonId:number}',
+    nb: 'Finner ikke godkjent takson for synonymisert takson med ID-en {taxonId:number}',
   },
   resourceInPermissionRegistry: {
     'en-us': 'Resource {resource:string} already in Permissions registry',
@@ -462,6 +492,7 @@ export const backEndText = createDictionary({
       'Ressource {resource:string} ist bereits im Berechtigungsregister vorhanden',
     'pt-br': 'Recurso {resource:string} já está no registro de permissões',
     'hr-hr': 'Resurs {resource:string} već je u registru dozvola',
+    nb: 'Ressurs {resource:string} finnes allerede i registeret for tillatelser',
   },
   actorIsNotSpecifyUser: {
     comment: 'Agent "Abc" is not a Specify User',
@@ -481,6 +512,7 @@ export const backEndText = createDictionary({
       '{agentTable:string} {actor:string} não é um {specifyUserTable:string}',
     'hr-hr':
       '{agentTable:string} {actor:string} nije {specifyUserTable:string}',
+    nb: '{agentTable:string} {actor:string} er ikke en {specifyUserTable:string}',
   },
   unexpectedCollectionType: {
     'en-us':
@@ -499,6 +531,7 @@ export const backEndText = createDictionary({
       'Tipo de coleção inesperado "{unexpectedTypeName:string}". Esperado "{collectionName:string}"',
     'hr-hr':
       'Neočekivana vrsta kolekcije "{unexpectedTypeName:string}". Očekivana "{collectionName:string}"',
+    nb: 'Uventet samlingstype «{unexpectedTypeName:string}». Forventet «{collectionName:string}».',
   },
   invalidReportMimetype: {
     'en-us':
@@ -508,7 +541,7 @@ export const backEndText = createDictionary({
     'fr-fr':
       'Impossible de créer un rapport : {mimeTypeField:string} n\'est pas l\'un des "jrxml/label" ou "jrxml/report"',
     'ru-ru':
-      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label" или "jrxml/report"',
+      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label", ни "jrxml/report".',
     'uk-ua':
       'Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label" або "jrxml/report"',
     'de-ch':
@@ -517,6 +550,7 @@ export const backEndText = createDictionary({
       'Não foi possível criar o relatório: {mimeTypeField:string} não é um dos seguintes: "jrxml/label" ou "jrxml/report"',
     'hr-hr':
       'Ne mogu stvoriti izvješće: {mimeTypeField:string} nije jedan od "jrxml/label" ili "jrxml/report"',
+    nb: 'Kan ikke opprette rapport: {mimeTypeField:string} er ikke en av «jrxml/label» eller «jrxml/report»',
   },
   fieldNotRelationship: {
     'en-us': 'Field {field:string} is not a Relationship',
@@ -527,6 +561,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Feld {field:string} ist keine Beziehung',
     'pt-br': 'O campo {field:string} não é um relacionamento.',
     'hr-hr': 'Polje {field:string} nije odnos',
+    nb: 'Feltet {field:string} er ikke en relasjon',
   },
   unexpectedTableId: {
     'en-us':
@@ -545,6 +580,7 @@ export const backEndText = createDictionary({
       'ID de tabela inesperado "{tableId:string}" na solicitação. Esperava-se "{expectedTableId:string}"',
     'hr-hr':
       'Neočekivani ID tablice "{tableId:string}" u zahtjevu. Očekivani "{expectedTableId:string}"',
+    nb: 'Uventet tabell-ID «{tableId:string}» i forespørselen. Forventet «{expectedTableId:string}»',
   },
   noCollectionInQuery: {
     'en-us': 'No Collection found in Query for table {table:string}',
@@ -559,6 +595,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'Nenhuma coleção encontrada na consulta para a tabela {table:string}',
     'hr-hr': 'Nije pronađena kolekcija u upitu za tablicu {table:string}',
+    nb: 'Ingen samling funnet i spørringen for tabell {table:string}',
   },
   invalidDatePart: {
     'en-us':
@@ -577,6 +614,7 @@ export const backEndText = createDictionary({
       'Parte da data inválida "{datePart:string}". Esperava-se uma das seguintes opções: {validDateParts:string}',
     'hr-hr':
       'Nevažeći dio datuma "{datePart:string}". Očekivao se jedan od {validDateParts:string}',
+    nb: 'Ugyldig del av dato «{datePart:string}». Forventet én av {validDateParts:string}',
   },
   invalidUploadStatus: {
     'en-us':
@@ -595,6 +633,7 @@ export const backEndText = createDictionary({
       'Status inválido "{uploadStatus:string}" para {operation:string}. Esperado {expectedUploadStatus:string}',
     'hr-hr':
       'Nevažeći status "{uploadStatus:string}" za {operation:string}. Očekivano {expectedUploadStatus:string}',
+    nb: 'Ugyldig status «{uploadStatus:string}» for {operation:string}. Forventet {expectedUploadStatus:string}',
   },
   datasetAlreadyUploaded: {
     'en-us': 'Dataset already uploaded',
@@ -605,6 +644,7 @@ export const backEndText = createDictionary({
     'de-ch': 'Datensatz bereits hochgeladen',
     'pt-br': 'Conjunto de dados já carregado',
     'hr-hr': 'Skup podataka je već prenesen',
+    nb: 'Datasettet er allerede lastet opp',
   },
   scopeChangeDetected: {
     'en-us':
@@ -623,6 +663,7 @@ export const backEndText = createDictionary({
       'У цьому рядку виявлено зміну області застосування. Рекомендується видалити цей рядок з набору даних',
     'hr-hr':
       'U ovom retku otkrivena je promjena opsega. Preporučuje se brisanje ovog retka iz skupa podataka.',
+    nb: 'En endring i omfanget er oppdaget i denne raden. Det anbefales å slette denne raden fra datasettet.',
   },
   multipleTreeDefsInRow: {
     'en-us': 'Multiple tree definitions in row',
@@ -633,6 +674,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'Несколько определений деревьев подряд',
     'uk-ua': 'Кілька визначень дерев у рядку',
     'hr-hr': 'Više definicija stabla u retku',
+    nb: 'Flere tredefinisjoner på rad',
   },
   invalidCotype: {
     'en-us': 'Invalid type for selected tree rank(s)',
@@ -644,6 +686,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'Недопустимый тип для выбранного(ых) ранга(ов) дерева.',
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
     'hr-hr': 'Nevažeća vrsta za odabrani rang(ove) stabla',
+    nb: 'Ugyldig type for valgte trerangering(er)',
   },
   invalidComponentType: {
     'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
@@ -659,6 +702,7 @@ export const backEndText = createDictionary({
       'Недопустимый {componentType: string} для выбранного(ых) ранга(ов) дерева.',
     'uk-ua': 'Недійсний {componentType: string} для вибраних рангів дерев',
     'hr-hr': 'Nevažeći {componentType: string} za odabrani rang stabla',
+    nb: 'Ugyldig {componentType: string} for valgte trerangering(er)',
   },
   attachmentNotFound: {
     'en-us':
@@ -667,13 +711,14 @@ export const backEndText = createDictionary({
     'es-es':
       'Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado.',
     'fr-fr':
-      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées.',
+      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées ?',
     'pt-br': 'Um ou mais anexos não existem. Eles podem ter sido excluídos.',
     'ru-ru':
       'Одно или несколько вложений отсутствуют. Возможно, они были удалены.',
     'uk-ua':
       'Один або декілька вкладень не існують. Можливо, їх було видалено.',
     'hr-hr': 'Jedan ili više privitaka ne postoje. Moguće su izbrisani.',
+    nb: 'Ett eller flere vedlegg finnes ikke. De kan ha blitt slettet.',
   },
   tableDoesNotSupportAttachments: {
     'en-us': "The attachment's destination table does not support attachments.",
@@ -686,6 +731,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'Таблица назначения вложений не поддерживает вложения.',
     'uk-ua': 'Таблиця призначення вкладення не підтримує вкладення.',
     'hr-hr': 'Odredišna tablica priloga ne podržava priloge.',
+    nb: 'Vedleggets måltabell støtter ikke vedlegg.',
   },
   attachmentAlreadyLinked: {
     'en-us':
@@ -701,5 +747,6 @@ export const backEndText = createDictionary({
     'uk-ua':
       'Один або декілька вкладень вже пов’язані із завантаженим записом.',
     'hr-hr': 'Jedan ili više privitaka već su povezani s prenesenim zapisom.',
+    nb: 'Ett eller flere vedlegg er allerede knyttet til en opplastet oppføring.',
   },
 } as const);
