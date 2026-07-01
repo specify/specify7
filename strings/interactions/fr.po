@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "interactions/fr/>\n"
 "Language: fr\n"
@@ -46,14 +46,14 @@ msgstr "{tableLabel:string} enregistrements"
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:578
 msgid "preparationsNotFoundFor"
-msgstr "Aucune préparation n'a été trouvée pour les enregistrements suivants :"
+msgstr "Aucune préparation n'a été trouvée pour les enregistrements suivants :"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:587
 msgid "preparationsNotAvailableFor"
 msgstr ""
 "Aucune préparation n'est disponible pour au moins un type de préparation "
-"dans les enregistrements suivants :"
+"dans les enregistrements suivants :"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:568
