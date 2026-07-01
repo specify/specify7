@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 11:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "expressSearchConfig/fr/>\n"
 "Language: fr\n"
@@ -299,7 +299,6 @@ msgid "LocalityAlias"
 msgstr "Localité Localité Alias"
 
 #. Used in: 
-#, fuzzy
 msgid "LocalityAlias_desc"
 msgstr ""
 "Enregistrements de localité avec leurs alias de noms de localité associés."
@@ -559,9 +558,8 @@ msgid "TaxCollObject"
 msgstr "Taxon d'objet de collection"
 
 #. Used in: 
-#, fuzzy
 msgid "TaxCollObject_desc"
-msgstr "Objets de collection et leurs fiches taxonomiques de détermination."
+msgstr "Objets et leurs enregistrements taxonomiques de détermination."
 
 #. Used in: 
 #, fuzzy
