@@ -84,17 +84,6 @@ DATABASES = {
 
 DATABASE_ROUTERS = ["specifyweb.specify.migration_utils.router.MigrationRouter"]
 
-DB_ALIAS = os.getenv("DJANGO_DB_ALIAS", "default") # Might want to set to "app" in the future
-if DB_ALIAS not in DATABASES:
-    valid_aliases = ", ".join(sorted(DATABASES))
-    raise ValueError(
-        f"Invalid DJANGO_DB_ALIAS '{DB_ALIAS}'. "
-        f"Expected one of: {valid_aliases}."
-    )
-if DB_ALIAS != "default":
-    from copy import deepcopy
-    DATABASES['default'] = deepcopy(DATABASES[DB_ALIAS])
-
 def get_sa_db_url(db_name):
     return 'mysql://{}:{}@{}:{}/{}?charset=utf8'.format(
         MASTER_NAME,
