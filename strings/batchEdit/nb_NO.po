@@ -3,229 +3,229 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-24 20:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/batchEdit/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/batchEdit/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #: components/BatchEdit/index.tsx:221
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2255
 #: components/Router/OverlayRoutes.tsx:263
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
+#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Masseredigering"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:550
 #: components/WbPlanView/MapperComponents.tsx:560
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Innstillinger for masseredigering"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2261
+#. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Antall treff valgt fra søket"
 
-#. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
+#. Used in: Components > Batch Edit > Query Error
 msgid "removeField"
 msgstr "Feltet støttes ikke ved masseredigering. Fjern feltet eller skjul det."
 
-#. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "addTreeRank"
 msgstr "Følgende ranger vil bli lagt til i søket for å aktivere masseredigering"
 
-#. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:89
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "pickTreesToFilter"
 msgstr ""
 "Den/de valgte rangeringen(e) finnes i flere trær. Velg tre(r) for "
 "massredigering med"
 
-#. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:194
+#. Used in: Components > Batch Edit > Index
 #, fuzzy
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
 
-#. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
+#. Used in: Components > Batch Edit > Query Error
 msgid "errorInQuery"
 msgstr "Følgende feil ble funnet i søket"
 
-#. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
+#. Used in: Components > Batch Edit > Missing Ranks
 msgid "missingRanksInQuery"
 msgstr "Søket krever flere ranger for massredigering"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "createUpdateDataSetInstructions"
 msgstr "Bruk søkbyggeren til å opprette et nytt datasett for masseredigering"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2284
+#. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Vis tilbakestillingsknapp"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2289
+#. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
 "Tilbakeføring i masseredigering er en eksperimentell funksjon. Denne "
 "innstillingen skjuler knappen."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commit"
 msgstr "Lagre"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommitDescription"
 msgstr ""
 "Når datasettet bekreftes, blir dataene i regnearket oppdatert, lagt til og "
 "slettet i Specify-databasen."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startRevertDescription"
 msgstr ""
 "Tilbakeføring av datasettet vil gjenopprette tidligere verdier, slette "
 "opprettede poster og gjenopprette slettede poster"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:126
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Klikk på «Resultater»-knappen for å se antall treff som blir berørt i hver "
 "databasetabell"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "dateSetRevertDescription"
 msgstr ""
 "Dette tilbakerullede datasettet er lagret, men kan ikke redigeres. Kjør "
 "søket på nytt"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "committing"
 msgstr "Lagrer datasettet"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "beStatusCommit"
 msgstr "Lagringsstatus for datasett"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommit"
 msgstr "Starte lagring av datasettet?"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrors"
 msgstr "Lagring mislyktes på grunn av feil i celler"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrorsDescription"
 msgstr "Lagringen mislyktes på grunn av én eller flere feil i celleverdier."
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelled"
 msgstr "Lagring avbrutt"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelledDescription"
 msgstr "Forklaring på avbrutt lagring"
 
-#. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:130
+#. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessful"
 msgstr "Lagring fullført uten feil"
 
-#. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
+#. Used in: Components > Work Bench > Record Set
 #, fuzzy
 msgid "batchEditRecordSetName"
 msgstr "BE-commit av \"{dataSet:string}\""
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:518
+#. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatch"
 msgstr "Bruk bare synlige felt for treff"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:519
+#. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatchDescription"
 msgstr ""
 "Hvis dette er sant, vil ikke usynlige databasefelt brukes til samsvar. "
 "Standardverdien er {default:boolean}"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:524
+#. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheck"
 msgstr "Bruk bare synlige felt for tom postsjekk"
 
-#. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:525
+#. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheckDescription"
 msgstr ""
 "Hvis dette er sant, vil ikke usynlige databasefelt brukes til å avgjøre om "
 "posten er tom eller ikke. Standardverdien er {default: boolean}"
 
-#. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:215
+#. Used in: Components > Batch Edit > Index
 msgid "batchEditDisabled"
 msgstr ""
 "Masseredigering er deaktivert for systemtabeller og tabeller i skop- og "
 "hierarkitabeller"
 
-#. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:390
+#. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr ""
 "(Datasett for masseredigering kan ikke redigeres etter tilbakeføring – "
 "skrivebeskyttet)"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2276
+#. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationships"
 msgstr "Aktiver relasjoner"
 
-#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2281
+#. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""
 "Tillater masseredigering av relasjoner i basistabellen. Tilbakeføring er "
 "deaktivert når relasjoner er aktivert"
 
-#. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:125
+#. Used in: Components > Wb Actions > Wb Upload
 msgid "commitDataSet"
 msgstr "Bekreft datasett"
 
-#. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:128
+#. Used in: Components > Wb Actions > Wb Upload
 msgid "warningBatchEditText"
 msgstr ""
 "Før du fortsetter, vær oppmerksom på at denne handlingen kan påvirke andre "
-"brukere. Den kan føre til forsinkelser eller midlertidig utilgjengelighet av "
-"enkelte funksjoner i Specify. Vennligst vurder konsekvensene for "
+"brukere. Den kan føre til forsinkelser eller midlertidig utilgjengelighet "
+"av enkelte funksjoner i Specify. Vennligst vurder konsekvensene for "
 "brukeropplevelsen. Handlingen kan ikke angres."

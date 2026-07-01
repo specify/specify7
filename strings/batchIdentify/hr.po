@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-17 22:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
-"batchIdentify/hr/>\n"
+"Language-Team: Croatian "
+"<https://hosted.weblate.org/projects/specify-7/batchIdentify/hr/>\n"
 "Language: hr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,18 +12,18 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/BatchIdentify/index.tsx:787
 #: components/BatchIdentify/index.tsx:812
 #: components/BatchIdentify/index.tsx:877
 #: components/Header/userToolDefinitions.ts:144
 #: components/Router/OverlayRoutes.tsx:80
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #, fuzzy
 msgid "batchIdentify"
 msgstr "Identifikacija serije"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:883
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "instructions"
 msgstr ""
@@ -31,84 +31,84 @@ msgstr ""
 "razmake, tekstualne prefikse itd.). Koristite crticu za označavanje "
 "numeričkih raspona poput 0001 - 0150."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:940
 #: components/BatchIdentify/index.tsx:951
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "catalogNumbersNotFound"
 msgstr "Brojevi kataloga nisu pronađeni"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:865
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "identify"
 msgstr "Identificirati"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:792
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "successMessage"
 msgstr "Svi zapisi su identificirani s navedenim taksonom."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:206
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "updatedRecordSet"
 msgstr "Grupna identifikacija ažuriranih zapisa"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:610
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "noCatalogNumbersParsed"
 msgstr "Unesite barem jedan numerički kataloški broj."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:902
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "validatingCatalogNumbers"
 msgstr "Provjera kataloških brojeva..."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:887
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "placeholder"
 msgstr "0001 0002 0003 - 0150"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:156
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "previewQueryName"
 msgstr "Pregled skupne identifikacije"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:915
 #: components/BatchIdentify/index.tsx:1023
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "unknownTaxonTree"
 msgstr "Nepoznato stablo taksona"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:920
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "collectionObjectTypes"
 msgstr "Vrste objekata kolekcija"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1012
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "invalidRecordSetTitle"
 msgstr "Mješoviti set ploča"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1016
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "invalidRecordSetMessage"
 msgstr ""
 "Odabrani skup zapisa sadrži objekte kolekcije iz više od jednog taksonskog "
 "stabla."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1029
+#. Used in: Components > Batch Identify > Index
 #, fuzzy
 msgid "invalidRecordSetInstructions"
 msgstr ""

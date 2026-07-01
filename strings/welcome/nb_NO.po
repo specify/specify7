@@ -3,47 +3,47 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-25 07:02+0000\n"
 "Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/welcome/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/welcome/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:101
 #: components/Router/Routes.tsx:488
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Velkommen"
 
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:154
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:215
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "Om Specify 7"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:56
+#. Used in: Components > Home Page > About Specify
 msgid "downloadInformation"
 msgstr "Last ned informasjon"
 
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:260
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Taksonkart"
 
-#. Used in: Components > Home Page > Taxon Tiles
 #: components/HomePage/TaxonTiles.tsx:73
+#. Used in: Components > Home Page > Taxon Tiles
 msgid "taxonTilesDescription"
 msgstr ""
 "Viser taksa med {count:number|formatted} eller flere "
 "{collectionObjectTable:string} poster"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:79
+#. Used in: Components > Home Page > About Specify
 msgid "fullAddress"
 msgstr ""
 "Specify Collections Consortium <br />\n"
@@ -52,8 +52,8 @@ msgstr ""
 "1345 Jayhawk Blvd. <br />\n"
 "Lawrence, KS 66045 USA"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:91
+#. Used in: Components > Home Page > About Specify
 msgid "disclosure"
 msgstr ""
 "Specify-programvaren er et produkt fra Specify Collections Consortium, som "
@@ -66,60 +66,60 @@ msgstr ""
 "University of Kansas Center for Research. Specify ble støttet fra 1996 til "
 "2018 av tilskudd fra U.S. National Science Foundation."
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
+#. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
-"Specify 7, Copyright 2025, University of Kansas Center for Research. Specify "
-"leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen kildekode-"
-"programvare, lisensiert under GNU General Public License v2."
+"Specify 7, Copyright 2025, University of Kansas Center for Research. "
+"Specify leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen "
+"kildekode-programvare, lisensiert under GNU General Public License v2."
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
+#. Used in: Components > Home Page > About Specify
 msgid "systemInformation"
 msgstr "Systeminformasjon"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:99
+#. Used in: Components > Home Page > About Specify
 msgid "specifyVersion"
 msgstr "Specify 7 versjon:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:100
+#. Used in: Components > Home Page > About Specify
 msgid "gitSha"
 msgstr "Git SHA:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
+#. Used in: Components > Home Page > About Specify
 msgid "buildDate"
 msgstr "Versjonsdato:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
+#. Used in: Components > Home Page > About Specify
 msgid "specifySixVersion"
 msgstr "Specify 6 versjon:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
+#. Used in: Components > Home Page > About Specify
 msgid "databaseVersion"
 msgstr "Databaseversjon:"
 
-#. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
+#. Used in: Components > Schema Viewer > Index
 msgid "schemaVersion"
 msgstr "Databaseskjema"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
+#. Used in: Components > Home Page > About Specify
 msgid "databaseName"
 msgstr "Databasenavn:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:128
+#. Used in: Components > Home Page > About Specify
 msgid "browser"
 msgstr "Nettleser:"
 
-#. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:111
+#. Used in: Components > Home Page > About Specify
 msgid "databaseCreationDate"
 msgstr "Dato for opprettelse av database:"

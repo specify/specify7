@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-17 20:37+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/hr/>\n"
+"Language-Team: Croatian "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/hr/>\n"
 "Language: hr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,148 +12,147 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "loadingConfig"
 msgstr "Učitavanje..."
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "loadingMetadata"
 msgstr "Učitavanje metapodataka..."
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 #, fuzzy
 msgid "expressSearchConfigTitle"
 msgstr "Konfiguracija brzog pretraživanja"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "searchFieldsTab"
 msgstr "Polja za pretraživanje"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "relatedTablesTab"
 msgstr "Povezane tablice"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "resultsOrderingTab"
 msgstr "Redoslijed rezultata"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "availableTables"
 msgstr "Dostupni stolovi"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchableFields"
 msgstr "Polja za pretraživanje"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchLabel"
 msgstr "Pretraživanje"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "fieldName"
 msgstr "Polje"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "sortMode"
 msgstr "Način sortiranja"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchNone"
 msgstr "Ništa"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "ascendingOrder"
 msgstr "Uzlazno"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "descendingOrder"
 msgstr "Silazni"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "displayFields"
 msgstr "Polja za prikaz"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
 msgstr "Konfiguriranje redoslijeda rezultata"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
-msgstr ""
-"Promijenite redoslijed prikaza odjeljaka u oknu s rezultatima pretraživanja."
+msgstr "Promijenite redoslijed prikaza odjeljaka u oknu s rezultatima pretraživanja."
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
 msgstr "Povezani upit: {query:string}"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
 msgstr "Nema konfiguriranih stavki za prikaz."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectAllQueries"
 msgstr "Odaberi sve"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "deselectAllQueries"
 msgstr "Poništi odabir svega"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
 msgstr "Nema dostupnih povezanih upita za odabrane tablice."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
 msgstr "Odaberite povezani upit da biste vidjeli njegov opis."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noDescriptionAvailable"
 msgstr "Nema dostupnog opisa."
@@ -179,8 +178,8 @@ msgstr "Mjesto prikupljanja događaja"
 #, fuzzy
 msgid "CollObToLocality_desc"
 msgstr ""
-"Prikupljanje podataka o događajima i njihovim lokacijama, uključujući datume "
-"događaja i geografske koordinate."
+"Prikupljanje podataka o događajima i njihovim lokacijama, uključujući "
+"datume događaja i geografske koordinate."
 
 #. Used in: 
 #, fuzzy
@@ -332,8 +331,7 @@ msgstr "Pristup objektu zbirke"
 #. Used in: 
 #, fuzzy
 msgid "AccessionToCo_desc"
-msgstr ""
-"Pristupi i njihovi objekti zbirki, filtrirani prema trenutnim određenjima."
+msgstr "Pristupi i njihovi objekti zbirki, filtrirani prema trenutnim određenjima."
 
 #. Used in: 
 #, fuzzy

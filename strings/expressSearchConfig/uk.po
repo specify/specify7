@@ -3,8 +3,8 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-28 03:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/uk/>\n"
+"Language-Team: Ukrainian "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/uk/>\n"
 "Language: uk\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
@@ -12,147 +12,147 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "loadingConfig"
 msgstr "Завантаження..."
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "loadingMetadata"
 msgstr "Завантаження метаданих..."
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 #, fuzzy
 msgid "expressSearchConfigTitle"
 msgstr "Конфігурація експрес-пошуку"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "searchFieldsTab"
 msgstr "Поля пошуку"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "relatedTablesTab"
 msgstr "Пов'язані таблиці"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "resultsOrderingTab"
 msgstr "Результати сортування"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "availableTables"
 msgstr "Доступні столи"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchableFields"
 msgstr "Поля для пошуку"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchLabel"
 msgstr "Пошук"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "fieldName"
 msgstr "Поле"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "sortMode"
 msgstr "Режим сортування"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchNone"
 msgstr "Жоден"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "ascendingOrder"
 msgstr "Зростаючий"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "descendingOrder"
 msgstr "Спадання"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "displayFields"
 msgstr "Поля відображення"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
 msgstr "Налаштувати порядок результатів"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr "Змінити порядок відображення розділів на панелі результатів пошуку."
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
 msgstr "Пов'язаний запит: {query:string}"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
 msgstr "Не налаштовано жодних елементів відображення."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectAllQueries"
 msgstr "Вибрати все"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "deselectAllQueries"
 msgstr "Зняти вибір усіх"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
 msgstr "Для вибраних таблиць немає пов’язаних запитів."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
 msgstr "Виберіть пов’язаний запит, щоб переглянути його опис."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noDescriptionAvailable"
 msgstr "Опис відсутній."
@@ -246,8 +246,8 @@ msgstr "Таксон об'єкта колекції (усі синоніми)"
 #, fuzzy
 msgid "OtherSynsCollObjs_desc"
 msgstr ""
-"Об'єкти колекції, що показують визначення, бажані назви таксонів та прийняті "
-"назви синонімів-дочірніх об'єктів."
+"Об'єкти колекції, що показують визначення, бажані назви таксонів та "
+"прийняті назви синонімів-дочірніх об'єктів."
 
 #. Used in: 
 #, fuzzy
@@ -298,7 +298,8 @@ msgstr "Населений пункт Псевдонім населеного п
 #, fuzzy
 msgid "LocalityAlias_desc"
 msgstr ""
-"Записи про населені пункти з пов'язаними псевдонімами назв населених пунктів."
+"Записи про населені пункти з пов'язаними псевдонімами назв населених "
+"пунктів."
 
 #. Used in: 
 #, fuzzy
@@ -434,8 +435,7 @@ msgstr "Подарунок з колекційних предметів"
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
-msgstr ""
-"Подарунки з колекційними предметами, доданими до подарункових препаратів."
+msgstr "Подарунки з колекційними предметами, доданими до подарункових препаратів."
 
 #. Used in: 
 #, fuzzy

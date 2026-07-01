@@ -3,157 +3,157 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 11:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "loadingConfig"
 msgstr "Chargement..."
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "loadingMetadata"
 msgstr "Chargement des métadonnées..."
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 #, fuzzy
 msgid "expressSearchConfigTitle"
 msgstr "Configuration de la recherche express"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "searchFieldsTab"
 msgstr "Champs de recherche"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "relatedTablesTab"
 msgstr "Tableaux associés"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "resultsOrderingTab"
 msgstr "Résultats de la commande"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "availableTables"
 msgstr "Tables disponibles"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchableFields"
 msgstr "Champs de recherche"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchLabel"
 msgstr "Recherche"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "fieldName"
 msgstr "Champ"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "sortMode"
 msgstr "Mode de tri"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchNone"
 msgstr "Aucun"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "ascendingOrder"
 msgstr "Ascendant"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "descendingOrder"
 msgstr "Descendant"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "displayFields"
 msgstr "Afficher les champs"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
 msgstr "Configurer le tri des résultats"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr ""
 "Modifier l'ordre d'affichage des sections dans le volet des résultats de "
 "recherche."
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
 msgstr "Requête associée : {query:string}"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
 msgstr "Aucun élément d'affichage configuré."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectAllQueries"
 msgstr "Tout sélectionner"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "deselectAllQueries"
 msgstr "Désélectionnez tout"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
 msgstr "Aucune requête associée disponible pour les tables sélectionnées."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
 msgstr "Sélectionnez une requête associée pour afficher sa description."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noDescriptionAvailable"
 msgstr "Aucune description disponible."
@@ -300,8 +300,7 @@ msgstr "Localité Localité Alias"
 
 #. Used in: 
 msgid "LocalityAlias_desc"
-msgstr ""
-"Enregistrements de localité avec leurs alias de noms de localité associés."
+msgstr "Enregistrements de localité avec leurs alias de noms de localité associés."
 
 #. Used in: 
 #, fuzzy
@@ -345,8 +344,7 @@ msgstr "Accès des agents"
 #. Used in: 
 #, fuzzy
 msgid "AccessionToAgent_desc"
-msgstr ""
-"Les accessions et les agents associés via les rôles d'agent d'accession."
+msgstr "Les accessions et les agents associés via les rôles d'agent d'accession."
 
 #. Used in: 
 #, fuzzy
@@ -356,8 +354,7 @@ msgstr "Agent Borrow"
 #. Used in: 
 #, fuzzy
 msgid "BorrowToAgent_desc"
-msgstr ""
-"Les emprunts et les agents liés par le biais des rôles d'agent d'emprunt."
+msgstr "Les emprunts et les agents liés par le biais des rôles d'agent d'emprunt."
 
 #. Used in: 
 #, fuzzy
@@ -421,8 +418,7 @@ msgstr "Collecte de la géographie des événements"
 #. Used in: 
 #, fuzzy
 msgid "GeographyCE_desc"
-msgstr ""
-"Recueillir les événements en précisant la zone géographique de chaque lieu."
+msgstr "Recueillir les événements en précisant la zone géographique de chaque lieu."
 
 #. Used in: 
 #, fuzzy
@@ -476,8 +472,7 @@ msgstr "Prêt d'agent"
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent_desc"
-msgstr ""
-"Les prêts et les agents impliqués, à travers leurs rôles d'agents de prêt."
+msgstr "Les prêts et les agents impliqués, à travers leurs rôles d'agents de prêt."
 
 #. Used in: 
 #, fuzzy
@@ -500,7 +495,8 @@ msgstr "Permis d'objet de collection"
 #, fuzzy
 msgid "PermitToCO_desc"
 msgstr ""
-"Permis et objets de collection liés par des relations d'autorisation d'accès."
+"Permis et objets de collection liés par des relations d'autorisation "
+"d'accès."
 
 #. Used in: 
 #, fuzzy
@@ -559,7 +555,7 @@ msgstr "Taxon d'objet de collection"
 
 #. Used in: 
 msgid "TaxCollObject_desc"
-msgstr "Objets et leurs enregistrements taxonomiques de détermination."
+msgstr "Objets de collection et leurs fiches taxonomiques de détermination."
 
 #. Used in: 
 #, fuzzy

@@ -3,158 +3,157 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-06-28 03:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/es/>\n"
+"Language-Team: Spanish "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/es/>\n"
 "Language: es\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.7.dev0\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "loadingConfig"
 msgstr "Cargando..."
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "loadingMetadata"
 msgstr "Cargando metadatos..."
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 #, fuzzy
 msgid "expressSearchConfigTitle"
 msgstr "Configuración de búsqueda rápida"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "searchFieldsTab"
 msgstr "Campos de búsqueda"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "relatedTablesTab"
 msgstr "Tablas relacionadas"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 #, fuzzy
 msgid "resultsOrderingTab"
 msgstr "Orden de resultados"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "availableTables"
 msgstr "Mesas disponibles"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchableFields"
 msgstr "Campos que se pueden buscar"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchLabel"
 msgstr "Buscar"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "fieldName"
 msgstr "Campo"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "sortMode"
 msgstr "Modo de ordenación"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "searchNone"
 msgstr "Ninguno"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "ascendingOrder"
 msgstr "Ascendente"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "descendingOrder"
 msgstr "Descendiendo"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 #, fuzzy
 msgid "displayFields"
 msgstr "Campos de visualización"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "configureResultsOrdering"
 msgstr "Configurar el orden de los resultados"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "reorderResultsOrderingDescription"
 msgstr ""
-"Reordena la forma en que aparecen las secciones en el panel de resultados de "
-"búsqueda."
+"Reordena la forma en que aparecen las secciones en el panel de resultados "
+"de búsqueda."
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "relatedQueryLabel"
 msgstr "Consulta relacionada: {query:string}"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
+#. Used in: Components > Express Search Config > Results Ordering Tab
 #, fuzzy
 msgid "noDisplayItemsConfigured"
 msgstr "No se han configurado elementos de visualización."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectAllQueries"
 msgstr "Seleccionar todo"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "deselectAllQueries"
 msgstr "Deseleccionar todo"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noRelatedQueriesAvailable"
-msgstr ""
-"No hay consultas relacionadas disponibles para las tablas seleccionadas."
+msgstr "No hay consultas relacionadas disponibles para las tablas seleccionadas."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "selectRelatedQueryDescription"
 msgstr "Seleccione una consulta relacionada para ver su descripción."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 #, fuzzy
 msgid "noDescriptionAvailable"
 msgstr "No hay descripción disponible."
@@ -168,8 +167,8 @@ msgstr "Objeto de colección de taxones"
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Objetos de la colección con determinaciones actuales, que muestran el nombre "
-"del taxón determinado, el nombre común del taxón y el determinante."
+"Objetos de la colección con determinaciones actuales, que muestran el "
+"nombre del taxón determinado, el nombre común del taxón y el determinante."
 
 #. Used in: 
 #, fuzzy
@@ -262,8 +261,8 @@ msgstr "Taxón del objeto de la colección (determinado)"
 #, fuzzy
 msgid "CurrCollObject_desc"
 msgstr ""
-"Solo se incluyen en la colección los objetos con su determinación taxonómica "
-"actual."
+"Solo se incluyen en la colección los objetos con su determinación "
+"taxonómica actual."
 
 #. Used in: 
 #, fuzzy
@@ -326,7 +325,8 @@ msgstr "Localidad del objeto de colección"
 #, fuzzy
 msgid "LocToCO_desc"
 msgstr ""
-"Localidades y objetos de colección encontrados en sus eventos de recolección."
+"Localidades y objetos de colección encontrados en sus eventos de "
+"recolección."
 
 #. Used in: 
 #, fuzzy
@@ -450,8 +450,7 @@ msgstr "Objeto de colección Regalo"
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
-msgstr ""
-"Regalos con objetos de la colección adjuntos a los preparativos del regalo."
+msgstr "Regalos con objetos de la colección adjuntos a los preparativos del regalo."
 
 #. Used in: 
 #, fuzzy
