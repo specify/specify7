@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "interactions/fr/>\n"
 "Language: fr\n"
@@ -197,13 +197,11 @@ msgstr "non catalogué"
 #. 🟥Example: Preparation records. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:394
 #: components/Interactions/InteractionDialog.tsx:435
-#, fuzzy
 msgid "returnedPreparations"
 msgstr "Enregistrements {tablePreparation:string} retournés"
 
 #. 🟥Example: 2 Preparation records have been returned and saved. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:399
-#, fuzzy
 msgid "returnedAndSaved"
 msgstr ""
 "Les enregistrements {count:number|formatted} {tablePreparation:string} ont "
@@ -233,7 +231,6 @@ msgstr "Indisponible"
 #. 🟥Example: Return Loan records. Used in: Components > Interactions > Interactions Dialog ⬤ Components > Query Builder > Loan Return
 #: components/Interactions/InteractionsDialog.tsx:81
 #: components/QueryBuilder/LoanReturn.tsx:148
-#, fuzzy
 msgid "returnLoan"
 msgstr "Retourner les enregistrements {tableLoan:string}"
 
@@ -246,9 +243,9 @@ msgstr "Créer {table:string}"
 
 #. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:440
-#, fuzzy
 msgid "noPreparationsWarning"
-msgstr "Aucun de ces enregistrements n'est préparé. Souhaitez-vous continuer ?"
+msgstr ""
+"Aucun de ces enregistrements n'a de préparation. Souhaitez-vous continuer ?"
 
 #. Used in: Components > Batch Edit > Missing Ranks ⬤ Components > Form Sliders > Attachment Warning Deletion ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Tree View > Add Rank
 #: components/BatchEdit/MissingRanks.tsx:44
