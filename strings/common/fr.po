@@ -808,7 +808,6 @@ msgstr "Taille"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:242
-#, fuzzy
 msgid "running"
 msgstr "En cours d'exécution…"
 
@@ -871,7 +870,6 @@ msgstr "Choisissez un fichier ou faites-le glisser ici"
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #: components/AttachmentsBulkImport/Import.tsx:204
 #: components/Molecules/FilePicker.tsx:114
-#, fuzzy
 msgid "selectedFileName"
 msgstr "Fichier sélectionné"
 
@@ -880,14 +878,12 @@ msgstr "Fichier sélectionné"
 #: components/Attachments/index.tsx:183
 #: components/Security/registry.ts:117
 #: components/Security/registry.ts:145
-#, fuzzy
 msgid "all"
 msgstr "Tous"
 
 #. Used in: Components > Attachments > Index
 #: components/Attachments/index.tsx:189
 #: components/Attachments/index.tsx:192
-#, fuzzy
 msgid "unused"
 msgstr "Inutilisé"
 
