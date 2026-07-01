@@ -83,8 +83,6 @@ class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
         )
 
     def tearDown(self):
-        for model in TRACKED_MODELS.values():
-            model.objects.all().delete()
         super().tearDown()
 
     def simulate_specify7_usage(
@@ -384,6 +382,10 @@ class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
 
         after_first_run = record_counts()
         first_run_diff = count_diff(before_first_run, after_first_run)
+        self.assertTrue(
+            first_run_diff,
+            "First run should create or backfill expected migration records",
+        )
 
         # Second dataset inserted between runs
         between_run_usage = self.simulate_specify7_usage("between-runs")
