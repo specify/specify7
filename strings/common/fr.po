@@ -970,7 +970,6 @@ msgstr "Message d'erreur de téléchargement"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:29
-#, fuzzy
 msgid "copied"
 msgstr "Copié !"
 
