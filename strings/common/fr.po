@@ -341,11 +341,10 @@ msgstr "Les dates peuvent être recherchées au format AAAA-MM-JJ ou MM/JJ/AAAA.
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:133
-#, fuzzy
 msgid "expressSearchPhraseExample"
 msgstr ""
 "Pour rechercher un terme contenant des espaces, placez l'expression entre "
-"guillemets, par exemple « Clinton Lake »."
+"guillemets, par exemple « Lac Léman »."
 
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/Interactions/LoanReturn.tsx:203
