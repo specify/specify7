@@ -982,9 +982,8 @@ msgstr "Copier dans le presse-papiers"
 #. Used in: Components > Interactions > Prep Dialog ⬤ Components > Wb Plan View > Custom Select Element
 #: components/Interactions/PrepDialog.tsx:269
 #: components/WbPlanView/CustomSelectElement.tsx:296
-#, fuzzy
 msgid "selected"
-msgstr "Choisi"
+msgstr "Selectionné"
 
 #. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
 #: components/FormCells/FormTable.tsx:322
@@ -1009,9 +1008,8 @@ msgstr "Développer tout"
 #: components/FormCells/FormTable.tsx:380
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Header/index.tsx:154
-#, fuzzy
 msgid "collapse"
-msgstr "Effondrement"
+msgstr "Réduire"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
