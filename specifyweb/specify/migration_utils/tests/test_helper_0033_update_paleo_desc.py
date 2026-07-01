@@ -33,6 +33,7 @@ class UpdatePaleoDescTests(ApiTests):
             language='en',
             country='US',
             text='old-description',
+            containerdesc=self.paleo_container,
             itemdesc=self.paleo_item,
         )
 
