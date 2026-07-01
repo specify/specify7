@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 11:01+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "expressSearchConfig/fr/>\n"
 "Language: fr\n"
@@ -201,8 +201,8 @@ msgstr "Géographie des taxons"
 #, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taxons liés aux données géographiques par la détermination des objets et aux "
-"localités des événements de collecte."
+"Taxons liés aux données géographiques par la détermination des objets de "
+"collection et des lieux de collecte."
 
 #. Used in: 
 #, fuzzy
