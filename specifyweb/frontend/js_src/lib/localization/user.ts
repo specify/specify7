@@ -225,7 +225,7 @@ export const userText = createDictionary({
       'Atualmente, não há nenhum usuário "Especifique" associado à sua conta {providerName:string}. Se você tiver um nome de usuário e senha "Especifique", poderá inseri-los abaixo para associar esse usuário à sua conta {providerName:string} para logins futuros.',
     'hr-hr':
       'Trenutno nijedan Navedite korisnika nije povezan s vašim {providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, možete ih unijeti u nastavku kako biste tog korisnika povezali s vašim {providerName:string} računom za buduće prijave.',
-    nb: 'Det er for øyeblikket ingen Spesifiser-bruker tilknyttet {providerName:string}-kontoen din. Hvis du har et Spesifiser-brukernavn og -passord, kan du skrive dem inn nedenfor for å tilknytte den brukeren til {providerName:string}-kontoen din for fremtidige pålogginger.',
+    nb: 'Det er for øyeblikket ingen Spesifiser-bruker tilknyttet din {providerName:string}-konto. Hvis du har et Spesifiser-brukernavn og -passord, kan du skrive dem inn nedenfor for å tilknytte den brukeren til din {providerName:string}-konto for fremtidige pålogginger.',
   },
   generateMasterKey: {
     'en-us': 'Generate Master Key',
