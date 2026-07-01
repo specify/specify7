@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-01 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "setupTool/fr/>\n"
 "Language: fr\n"
@@ -221,7 +221,6 @@ msgstr "Remplir l'arbre avec les enregistrements par défaut"
 #: components/SetupTool/setupResources.ts:331
 #: components/SetupTool/setupResources.ts:401
 #: components/SetupTool/setupResources.ts:408
-#, fuzzy
 msgid "preloadTreeDescription"
 msgstr "Télécharger les enregistrements par défaut pour cet arbre."
 
