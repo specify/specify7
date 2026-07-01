@@ -485,7 +485,6 @@ msgstr "Outil"
 #: components/Header/userToolDefinitions.ts:136
 #: components/WbToolkit/index.tsx:92
 #: components/WorkBench/WbView.tsx:246
-#, fuzzy
 msgid "tools"
 msgstr "Outils"
 
@@ -704,7 +703,6 @@ msgstr "Fin"
 #: components/Interactions/InteractionDialog.tsx:559
 #: components/PickLists/definitions.ts:44
 #: components/Security/PreviewTables.tsx:67
-#, fuzzy
 msgid "update"
 msgstr "Mise à jour"
 
@@ -792,9 +790,8 @@ msgstr "Descendant"
 #: components/Security/registry.ts:214
 #: components/Toolbar/RecordSets.tsx:231
 #: components/Toolbar/RecordSets.tsx:258
-#, fuzzy
 msgid "recordSets"
-msgstr "Ensembles d'enregistrements"
+msgstr "Groupe d'enregistrements"
 
 #. Used in: Components > Toolbar > Record Sets
 #: components/Toolbar/RecordSets.tsx:313
