@@ -161,9 +161,8 @@ msgstr "Erreur de lecture du fichier"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:472
-#, fuzzy
 msgid "unhandledFatalResourceError"
-msgstr "Erreur fatale de ressource non gérée :"
+msgstr "Erreur, ressource non gérée :"
 
 #. Used in: Components > Attachments Bulk Import > Datasets
 #: components/AttachmentsBulkImport/Datasets.tsx:141
@@ -245,11 +244,10 @@ msgstr "Interrompu. Réessayer dans {remainingTime:string}"
 
 #. Used in: Components > Attachments Bulk Import > Rollback
 #: components/AttachmentsBulkImport/Rollback.tsx:137
-#, fuzzy
 msgid "rollbackDescription"
 msgstr ""
-"La restauration supprimera les pièces jointes de la base de données "
-"Specification et du serveur d'actifs."
+"La restauration supprimera les pièces jointes de la base de données Specify "
+"et du serveur de médias."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:474
@@ -271,7 +269,6 @@ msgstr "Rechercher plus de pièces jointes"
 #. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:376
-#, fuzzy
 msgid "hideForm"
 msgstr "Masquer le formulaire"
 
@@ -345,7 +342,6 @@ msgstr "Fichiers en double trouvés"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:421
-#, fuzzy
 msgid "duplicateFilesDescription"
 msgstr ""
 "Les fichiers suivants ne sont pas sélectionnés car ils existent déjà dans "
@@ -414,25 +410,21 @@ msgstr ""
 #: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#, fuzzy
 msgid "downloadAll"
 msgstr "Télécharger tout"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#, fuzzy
 msgid "downloadAllDescription"
 msgstr "Télécharger toutes les pièces jointes trouvées"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:224
-#, fuzzy
 msgid "createRecordSetToDownloadAll"
 msgstr ""
-"Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un "
-"enregistrement des résultats de la requête pour télécharger toutes les "
-"pièces jointes."
+"Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un groupe "
+"d'enregistrements de la requête pour télécharger toutes les pièces jointes."
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
