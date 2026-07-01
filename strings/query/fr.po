@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-25 21:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -124,20 +124,17 @@ msgstr "La définition de requête nouvelle ou modifiée n'a pas été enregistr
 
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:267
-#, fuzzy
 msgid "recordSetToQuery"
 msgstr "Création d'un {recordSetTable:string} à partir d'une requête"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/QueryBuilder/Components.tsx:272
 #: components/QueryBuilder/CreateRecordSet.tsx:134
-#, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "Génération de {recordSetTable:string}..."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:289
-#, fuzzy
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Créé"
 
@@ -177,7 +174,6 @@ msgstr "{value:string} (valeur actuelle, non valide)"
 
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:91
-#, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
 "Requête : \"{queryName:string}\" sur {recordSetTable:string} : \""
@@ -236,7 +232,6 @@ msgstr "Créer un fichier KML"
 #: components/QueryBuilder/Components.tsx:231
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #: components/WorkBench/RecordSet.tsx:43
-#, fuzzy
 msgid "createRecordSet"
 msgstr "Créer {recordSetTable:string}"
 
@@ -633,7 +628,6 @@ msgstr "Défilez vers l'éditeur"
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:308
 #: components/QueryBuilder/ResultsTable.tsx:205
-#, fuzzy
 msgid "viewRecords"
 msgstr "Consulter les enregistrements"
 
