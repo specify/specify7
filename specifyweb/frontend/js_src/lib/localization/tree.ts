@@ -894,7 +894,7 @@ export const treeText = createDictionary({
     'pt-br': 'O processo padrão de criação da árvore foi iniciado.',
     'ru-ru': 'Начался процесс создания дерева по умолчанию.',
     'uk-ua': 'Процес створення дерева за замовчуванням розпочато.',
-    nb: 'Standardprosessen for oppretting av tre har startet.',
+    nb: 'Standardprosessen for oppretting av treet har startet.',
   },
   defaultTreeTaskFailed: {
     'en-us': 'Default tree creation failed.',

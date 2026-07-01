@@ -1257,7 +1257,8 @@ export const expressSearchConfigText = createDictionary({
     'de-ch': 'Sammlungsobjekte und ihre zugehörigen Taxon-Datensätze.',
     'es-es':
       'Objetos de la colección y sus registros taxonómicos de determinación.',
-    'fr-fr': 'Objets et leurs enregistrements taxonomiques de détermination.',
+    'fr-fr':
+      'Objets de collection et leurs fiches taxonomiques de détermination.',
     'hr-hr': 'Zbirni objekti i njihovi taksonomski zapisi o determinaciji.',
     nb: 'Samlingsobjekter og deres bestemmelsestaksonposter.',
     'pt-br': 'Objetos da coleção e seus registros taxonômicos de determinação.',
