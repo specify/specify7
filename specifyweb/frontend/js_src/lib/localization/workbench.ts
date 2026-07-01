@@ -569,7 +569,7 @@ export const wbText = createDictionary({
     'es-es':
       'Este valor coincide con dos o más registros existentes en la base de datos y han de desambigüarse antes de cargar.',
     'fr-fr':
-      'Cette valeur correspond à deux enregistrements de base de données existants ou plus et la correspondance doit être levée avant le téléchargement.',
+      'Cette valeur correspond à deux enregistrements existants ou plus et la correspondance doit être levée avant le téléchargement.',
     'uk-ua':
       'Це значення збігається з двома чи більше існуючими записами бази даних, і збіг необхідно усунути перед завантаженням.',
     'de-ch':
@@ -1855,7 +1855,7 @@ export const wbText = createDictionary({
     'en-us': 'Records updated',
     'de-ch': 'Datensätze aktualisiert',
     'es-es': 'Registros actualizados',
-    'fr-fr': 'Mise à jour des enregistrements',
+    'fr-fr': 'Enregistrements mis-à-jour',
     'pt-br': 'Registros atualizados',
     'ru-ru': 'Записи обновлены.',
     'uk-ua': 'Записи оновлено',
@@ -1866,7 +1866,8 @@ export const wbText = createDictionary({
     'en-us': 'Records deleted (not including dependents)',
     'de-ch': 'Gelöschte Datensätze (ohne Angehörige)',
     'es-es': 'Registros eliminados (sin incluir a los dependientes)',
-    'fr-fr': "Enregistrements supprimés (à l'exclusion des personnes à charge)",
+    'fr-fr':
+      "Enregistrements supprimés (à l'exclusion des enregistrements dépendants)",
     'pt-br': 'Registros excluídos (exceto dependentes)',
     'ru-ru': 'Удаленные записи (за исключением записей о иждивенцах)',
     'uk-ua': 'Записи видалено (без урахування утриманців)',

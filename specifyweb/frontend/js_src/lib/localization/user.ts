@@ -1121,7 +1121,7 @@ export const userText = createDictionary({
     'de-ch':
       'Die zugewiesenen Agenten konnten nicht vollständig geladen werden, da Sie keinen Lesezugriff auf die Disziplinarakten haben.',
     'fr-fr':
-      "Impossible de charger complètement les agents assignés car vous n'avez pas accès en lecture aux dossiers disciplinaires.",
+      "Impossible de charger complètement les agents assignés car vous n'avez pas accès en lecture aux enregistrements de la discipline.",
     'pt-br':
       'Não foi possível carregar completamente os agentes atribuídos porque você não tem acesso de leitura aos registros disciplinares.',
     'hr-hr':

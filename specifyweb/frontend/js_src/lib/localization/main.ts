@@ -138,7 +138,7 @@ export const mainText = createDictionary({
     'es-es':
       'Para evitar corromper los registros de datos, debe comenzar de nuevo desde un lugar seguro: la página de inicio.',
     'fr-fr':
-      "Pour éviter de corrompre les enregistrements de données, vous devez recommencer à partir d'un endroit sûr : la page d'accueil.",
+      "Pour éviter de corrompre les enregistrements de données, vous devez recommencer à partir d'un endroit sûr (page d'accueil).",
     'uk-ua':
       'Щоб уникнути пошкодження записів даних, вам потрібно почати знову з безпечного місця – головної сторінки.',
     'de-ch':

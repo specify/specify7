@@ -64,8 +64,7 @@ export const batchIdentifyText = createDictionary({
     'de-ch': 'Alle Datensätze wurden dem jeweiligen Taxon zugeordnet.',
     'es-es':
       'Todos los registros fueron identificados con el taxón especificado.',
-    'fr-fr':
-      'Tous les enregistrements ont été identifiés selon le taxon spécifié.',
+    'fr-fr': 'Tous les enregistrements ont été identifiés au taxon spécifié.',
     'hr-hr': 'Svi zapisi su identificirani s navedenim taksonom.',
     nb: 'Alle poster ble identifisert til det angitte taksonet.',
     'pt-br': 'Todos os registros foram identificados até o táxon especificado.',
@@ -153,7 +152,7 @@ export const batchIdentifyText = createDictionary({
     'en-us': 'Mixed Record Set',
     'de-ch': 'Gemischtes Schallplattenset',
     'es-es': 'Conjunto de récords mixtos',
-    'fr-fr': 'Coffret de disques mixtes',
+    'fr-fr': "Groupe d'enregistrements mixte",
     'hr-hr': 'Mješoviti set ploča',
     nb: 'Blandet platesett',
     'pt-br': 'Conjunto de discos variados',
@@ -168,7 +167,7 @@ export const batchIdentifyText = createDictionary({
     'es-es':
       'El conjunto de registros seleccionado contiene objetos de colección de más de un árbol taxonómico.',
     'fr-fr':
-      "L'ensemble d'enregistrements sélectionné contient des objets de collection provenant de plusieurs arbres taxonomiques.",
+      "Le groupe d'enregistrements sélectionné contient des objets de collection provenant de plusieurs arbres taxonomiques.",
     'hr-hr':
       'Odabrani skup zapisa sadrži objekte kolekcije iz više od jednog taksonskog stabla.',
     nb: 'Den valgte databasepost-lista inneholder samlingsobjekter fra mer enn ett taksontre.',
@@ -187,7 +186,7 @@ export const batchIdentifyText = createDictionary({
     'es-es':
       'Seleccione un conjunto de registros diferente o edite la consulta utilizada para crear este conjunto de registros para que todos los objetos de la colección utilicen el mismo árbol taxonómico.',
     'fr-fr':
-      "Choisissez un autre ensemble d'enregistrements, ou modifiez la requête utilisée pour créer cet ensemble d'enregistrements afin que tous les objets de la collection utilisent le même arbre taxonomique.",
+      "Choisissez un autre groupe d'enregistrements, ou modifiez la requête utilisée pour créer ce groupe d'enregistrements afin que tous les objets de la collection utilisent le même arbre taxonomique.",
     'hr-hr':
       'Odaberite drugi skup zapisa ili uredite upit korišten za stvaranje ovog skupa zapisa tako da svi objekti kolekcije koriste isto stablo taksona.',
     nb: 'Velg en annen databasepost-liste, eller rediger søket som ble brukt til å opprette denne listen, slik at alle samlingsobjekter bruker samme taksontre.',
