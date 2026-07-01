@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/user/"
 "fr/>\n"
 "Language: fr\n"
@@ -231,7 +231,6 @@ msgstr ""
 
 #. Used in: Components > Forms > Data Task
 #: components/Forms/DataTask.tsx:138
-#, fuzzy
 msgid "emptyRecordSetsReadOnly"
 msgstr ""
 "Impossible d'ouvrir un {recordSetTable:string} vide en mode lecture seule"
@@ -559,7 +558,6 @@ msgstr "Veuillez configurer les agents suivants avant de continuer :"
 
 #. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:252
-#, fuzzy
 msgid "cannotReadAgentsForUserAssignment"
 msgstr ""
 "Impossible de charger les agents assignés car vous ne disposez pas des "
@@ -567,11 +565,10 @@ msgstr ""
 
 #. Used in: Components > Security > User Collections
 #: components/Security/UserCollections.tsx:254
-#, fuzzy
 msgid "cannotReadDisciplinesForUserAssignment"
 msgstr ""
 "Impossible de charger complètement les agents assignés car vous n'avez pas "
-"accès en lecture aux dossiers disciplinaires."
+"accès en lecture aux enregistrements de la discipline."
 
 #. Used in: Components > Security > User Components
 #: components/Security/UserComponents.tsx:211
