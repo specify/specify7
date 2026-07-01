@@ -32,16 +32,6 @@ def is_sp6_user_permissions_migrated(user, apps=apps) -> bool:
     return UserRole.objects.filter(specifyuser=user).exists() or \
         UserPolicy.objects.filter(specifyuser=user).exists()
 
-def has_sp6_permissions_tables() -> bool:
-    with connection.cursor() as cursor:
-        cursor.execute("""
-            SELECT COUNT(*)
-            FROM information_schema.tables
-            WHERE table_name IN ('specifyuser_spprincipal', 'spuserrole')
-            AND table_schema = DATABASE();
-        """)
-        return cursor.fetchone()[0] == 2
-
 def initialize(wipe: bool=False, apps=apps) -> None:
     with transaction.atomic():
         if wipe:
@@ -95,8 +85,6 @@ def assign_users_to_roles(apps=apps) -> None:
     }
 
     results = []
-    if not has_sp6_permissions_tables():
-        return # Newly created sp7 databases don't have these sp6 specific tables.
 
     with connection.cursor() as cursor:
         cursor.execute("""
@@ -172,9 +160,6 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
                 user.roles.create(role=Role.objects.get(collection=collection, name="Full Access - Legacy"))
             if user.usertype in ('LimitedAccess', 'Guest'):
                 user.roles.create(role=Role.objects.get(collection=collection, name="Read Only - Legacy"))
-
-    if not has_sp6_permissions_tables():
-        return
 
     with connection.cursor() as cursor:
         for user in Specifyuser.objects.all():
