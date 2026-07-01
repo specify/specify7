@@ -900,7 +900,6 @@ msgstr "Ordinal"
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:90
 #: components/WbToolkit/index.tsx:116
-#, fuzzy
 msgid "export"
 msgstr "Exporter"
 
@@ -947,7 +946,6 @@ msgstr "Filtre"
 #. Used in: Components > Query Builder > Results ⬤ Components > Wb Actions > Index
 #: components/QueryBuilder/Results.tsx:99
 #: components/WbActions/index.tsx:123
-#, fuzzy
 msgid "results"
 msgstr "Résultats"
 
@@ -956,7 +954,6 @@ msgstr "Résultats"
 #: components/LocalityUpdate/Status.tsx:464
 #: components/LocalityUpdate/Status.tsx:505
 #: components/Merging/Status.tsx:100
-#, fuzzy
 msgid "downloadErrorMessage"
 msgstr "Message d'erreur de téléchargement"
 
@@ -967,7 +964,6 @@ msgstr "Copié !"
 
 #. Used in: Components > Molecules > Copy
 #: components/Molecules/Copy.tsx:13
-#, fuzzy
 msgid "copyToClipboard"
 msgstr "Copier dans le presse-papiers"
 
@@ -985,13 +981,11 @@ msgstr "Selectionné"
 #: components/Formatters/Definitions.tsx:243
 #: components/Header/index.tsx:154
 #: components/Molecules/AutoComplete.tsx:569
-#, fuzzy
 msgid "expand"
 msgstr "Développer"
 
 #. Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:186
-#, fuzzy
 msgid "expandAll"
 msgstr "Développer tout"
 
@@ -1006,7 +1000,6 @@ msgstr "Réduire"
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #: components/AppResources/Aside.tsx:189
 #: components/TreeView/index.tsx:322
-#, fuzzy
 msgid "collapseAll"
 msgstr "Tout réduire"
 
@@ -1017,7 +1010,6 @@ msgstr "Tout réduire"
 #: components/Preferences/index.tsx:271
 #: components/Statistics/index.tsx:564
 #: components/Toolbar/QueryTablesEdit.tsx:70
-#, fuzzy
 msgid "reset"
 msgstr "Réinitialiser"
 
@@ -1027,7 +1019,6 @@ msgstr "Réinitialiser"
 #: components/QueryBuilder/ResultsTable.tsx:185
 #: components/SearchDialog/index.tsx:379
 #: components/SetupTool/SetupForm.tsx:219
-#, fuzzy
 msgid "select"
 msgstr "Sélectionner"
 
@@ -1043,13 +1034,11 @@ msgstr "Sélectionner"
 #: components/Security/PreviewComponents.tsx:190
 #: components/Security/RoleTemplate.tsx:111
 #: components/SetupTool/setupResources.ts:93
-#, fuzzy
 msgid "none"
 msgstr "Aucun"
 
 #. Used in: Components > Schema Config > Components
 #: components/SchemaConfig/Components.tsx:73
-#, fuzzy
 msgid "noneAvailable"
 msgstr "Aucun disponible"
 
