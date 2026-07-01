@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-06-17 22:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-01 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backup/"
 "fr/>\n"
 "Language: fr\n"
@@ -19,13 +19,11 @@ msgstr "Sauvegarde effectuée avec succès."
 
 #. Used in: Components > Toolbar > Backup Status
 #: components/Toolbar/BackupStatus.tsx:90
-#, fuzzy
 msgid "failed"
 msgstr "La sauvegarde a échoué."
 
 #. Used in: Components > Toolbar > Backup Database
 #: components/Toolbar/BackupDatabase.tsx:94
-#, fuzzy
 msgid "previousFound"
 msgstr "Une sauvegarde précédente a été trouvée :"
 
