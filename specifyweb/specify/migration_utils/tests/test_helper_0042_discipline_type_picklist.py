@@ -135,6 +135,16 @@ class DisciplineTypeSplocaleContainerItemTests(ApiTests):
 class DisciplineTypeSplocaleContainerItemRevertTests(ApiTests):
 
     def test_revert_splocalecontaineritem(self):
+        container = Splocalecontainer.objects.create(
+            name="discipline",
+            schematype=0,
+            discipline=self.discipline
+        )
+        item = Splocalecontaineritem.objects.create(
+            container=container,
+            name="type"
+        )
+
         helper_0042_discipline_type_picklist.update_discipline_type_splocalecontaineritem(
             apps
         )
@@ -143,5 +153,5 @@ class DisciplineTypeSplocaleContainerItemRevertTests(ApiTests):
             apps
         )
 
-        qs = self.collection.__class__.objects.all()
-        self.assertTrue(qs.exists())
+        item.refresh_from_db()
+        self.assertIsNone(item.picklistname)
