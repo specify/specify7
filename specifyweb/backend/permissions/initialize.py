@@ -167,7 +167,9 @@ def assign_users_to_roles_during_testing(apps=apps) -> None:
 
     roles_queryset = Role.objects.order_by("collection").values_list("pk","name", "collection__pk")
 
-    roles = defaultdict(dict)
+    # This contains a mapping of Role Names -> Role IDs for each collection
+    # Specifically, the mapping is: CollectionID -> RoleName -> RoleID
+    roles: dict[int, dict[str, int]] = defaultdict(dict)
 
     for (role_id, role_name, collection_id) in roles_queryset:
         roles[collection_id][role_name] = role_id
