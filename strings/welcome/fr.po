@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:04+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
 "fr/>\n"
 "Language: fr\n"
@@ -69,7 +69,6 @@ msgstr ""
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
-#, fuzzy
 msgid "licence"
 msgstr ""
 "Specify 7, © 2025, Centre de recherche de l'Université du Kansas. Specify "
@@ -84,54 +83,45 @@ msgstr "Informations système"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:99
-#, fuzzy
 msgid "specifyVersion"
-msgstr "Spécifiez la version 7 :"
+msgstr "Version de Specify 7 :"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:100
-#, fuzzy
 msgid "gitSha"
 msgstr "SHA Git :"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:101
-#, fuzzy
 msgid "buildDate"
-msgstr "Date de construction :"
+msgstr "Date de mise-en-route :"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:103
-#, fuzzy
 msgid "specifySixVersion"
-msgstr "Spécifiez la version 6 :"
+msgstr "Version de Specify 6 :"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
-#, fuzzy
 msgid "databaseVersion"
 msgstr "Version de la base de données :"
 
 #. Used in: Components > Schema Viewer > Index
 #: components/SchemaViewer/index.tsx:44
-#, fuzzy
 msgid "schemaVersion"
 msgstr "Schéma de base de données"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:107
-#, fuzzy
 msgid "databaseName"
 msgstr "Nom de la base de données :"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:128
-#, fuzzy
 msgid "browser"
-msgstr "Navigateur:"
+msgstr "Navigateur :"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:111
-#, fuzzy
 msgid "databaseCreationDate"
 msgstr "Date de création de la base de données :"
