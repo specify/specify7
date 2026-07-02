@@ -295,7 +295,6 @@ msgstr ""
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:145
 #: components/WbPlanView/MapperComponents.tsx:385
-#, fuzzy
 msgid "hideFieldMapper"
 msgstr "Masquer le mappeur de champs"
 
@@ -304,7 +303,7 @@ msgstr "Masquer le mappeur de champs"
 #: components/WbPlanView/MapperComponents.tsx:386
 #, fuzzy
 msgid "showFieldMapper"
-msgstr "Afficher le mappeur de terrain"
+msgstr "Afficher le mappeur"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:569
