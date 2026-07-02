@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/stats/"
 "fr/>\n"
 "Language: fr\n"
@@ -14,16 +14,14 @@ msgstr ""
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:29
 #: components/Statistics/__tests__/layout.tests.ts:18
-#, fuzzy
 msgid "holdings"
 msgstr "Participations"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:32
 #: components/Statistics/__tests__/layout.tests.ts:21
-#, fuzzy
 msgid "collectionObjects"
-msgstr "Objets de collection"
+msgstr "Objets"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:63
