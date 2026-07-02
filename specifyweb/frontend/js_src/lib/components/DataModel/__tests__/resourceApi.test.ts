@@ -15,6 +15,7 @@ import type {
   CollectionObjectAttribute,
   CollectionObjectType,
   Determination,
+  Accession,
 } from '../types';
 
 requireContext();
@@ -467,6 +468,51 @@ test('save', async () => {
   const newDetermination =
     resource.getDependentResource('determinations')!.models[0];
   expect(newDetermination.get('number1')).toBe(2);
+});
+
+describe('independent resource change propagation', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&accession=11&offset=0',
+    emptyCollection
+  );
+  overrideAjax(accessionUrl, accessionResponse, { method: 'PUT' });
+
+  test('needsSaved propagates from independent collection to parent', async () => {
+    const parentResource = new tables.Accession.Resource({ id: accessionId });
+    expect(parentResource.needsSaved).toBe(false);
+
+    const collectionObjectRel =
+      tables.CollectionObject.strictGetRelationship('accession')!;
+
+    const independentCollection =
+      new tables.CollectionObject.IndependentCollection({
+        related: parentResource,
+        field: collectionObjectRel,
+      }) as Collection<CollectionObject>;
+
+    await independentCollection.fetch();
+
+    // Connect the collection to the parent's event system, as rgetCollection would do internally.
+    // storeIndependent is not in the public TS types so cast to any.
+    (parentResource as any).storeIndependent(
+      collectionObjectRel.getReverse(),
+      independentCollection
+    );
+
+    const newCollectionObject = new tables.CollectionObject.Resource({
+      id: 998,
+    });
+    independentCollection.add(newCollectionObject);
+
+    // Adding an existing resource to an independent collection does not mark the resource itself needsSaved;
+    // only the parent is notified via saverequired
+    expect(newCollectionObject.needsSaved).toBe(false);
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+  });
 });
 
 describe('resource initialization', () => {
