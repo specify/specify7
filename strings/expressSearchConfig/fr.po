@@ -295,6 +295,7 @@ msgid "BorrowToAgent_desc"
 msgstr "Emprunts et agents liés par le rôle d'emprunteur"
 
 #. Used in: 
+#, fuzzy
 msgid "AppraisalToAgent"
 msgstr "Évaluation de l'agent"
 
