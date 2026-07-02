@@ -5,7 +5,14 @@ from django.apps import apps as django_apps
 from django.test import TestCase
 
 from specifyweb.backend.businessrules.models import UniquenessRule, UniquenessRuleField
-from specifyweb.specify.models import Discipline
+from specifyweb.specify.models import (
+    Datatype,
+    Discipline,
+    Division,
+    Geographytreedef,
+    Geologictimeperiodtreedef,
+    Institution,
+)
 from specifyweb.specify.management.commands import run_key_migration_functions as rkm
 from specifyweb.specify.management.commands.tests.test_migration_base import MigrationCommandTestCase
 
@@ -65,7 +72,29 @@ class BusinessRulesMigrationTests(MigrationCommandTestCase):
 
 class BusinessRulesDatabaseTests(TestCase):
     def test_catnum_rule_editable_only_updates_matching_catalog_number_rule(self):
-        discipline = Discipline.objects.create(name="Test Discipline")
+        institution = Institution.objects.create(
+            name="Test Institution",
+            isaccessionsglobal=True,
+            issecurityon=False,
+            isserverbased=False,
+            issharinglocalities=True,
+            issinglegeographytree=True,
+        )
+        division = Division.objects.create(institution=institution, name="Test Division")
+        geologictimeperiodtreedef = Geologictimeperiodtreedef.objects.create(
+            name="Test gtptd"
+        )
+        geographytreedef = Geographytreedef.objects.create(name="Test gtd")
+        geographytreedef.treedefitems.create(name="Planet", rankid="0")
+        datatype = Datatype.objects.create(name="Test datatype")
+        discipline = Discipline.objects.create(
+            name="Test Discipline",
+            division=division,
+            datatype=datatype,
+            geographytreedef=geographytreedef,
+            geologictimeperiodtreedef=geologictimeperiodtreedef,
+            type="paleobotany",
+        )
         matching_rule = UniquenessRule.objects.create(
             modelName="Collectionobject",
             discipline=discipline,
