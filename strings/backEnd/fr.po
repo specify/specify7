@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 17:15+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
 "fr/>\n"
 "Language: fr\n"
@@ -97,10 +97,8 @@ msgstr "ce champ doit être vide si {column:string} est vide"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:282
-#, fuzzy
 msgid "fieldRequiredByUploadPlan"
-msgstr ""
-"Ce champ est obligatoire pour le téléchargement du plan de cartographie."
+msgstr "Ce champ est obligatoire pour le plan de téléchargement choisi"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:284
