@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-02 15:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
 "Language: fr\n"
@@ -256,7 +256,6 @@ msgstr "Table de base"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:339
-#, fuzzy
 msgid "goToBaseTable"
 msgstr ""
 "Modifier la table de base pour le mappage des colonnes de l'ensemble de "
@@ -292,7 +291,7 @@ msgstr "Lancer le mapping automatique"
 #: components/WbPlanView/MapperComponents.tsx:174
 #, fuzzy
 msgid "mappingEditor"
-msgstr "Explorateur de cartes"
+msgstr "Explorateur de mappings"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:145
@@ -309,31 +308,26 @@ msgstr "Afficher le mappeur de terrain"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:569
-#, fuzzy
 msgid "mappings"
-msgstr "Cartographie"
+msgstr "Mappings"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:361
-#, fuzzy
 msgid "clearMappings"
-msgstr "Cartographie claire"
+msgstr "Réinitialiser les mappings"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:213
-#, fuzzy
 msgid "emptyDataSet"
-msgstr "Ensemble de données vide"
+msgstr "Jeu de données vide"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:217
-#, fuzzy
 msgid "emptyDataSetDescription"
-msgstr "Cet ensemble de données ne comporte aucune colonne."
+msgstr "Ce jeu de données ne comporte aucune colonne."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:220
-#, fuzzy
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Appuyez sur le bouton « Ajouter une nouvelle colonne » situé sous les lignes "
@@ -341,21 +335,18 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:365
-#, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Automap pour démarrer un nouveau plan de téléchargement ?"
+msgstr "Mapping automatique pour démarrer un nouveau plan de téléchargement ?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:366
-#, fuzzy
 msgid "reRunAutoMapperConfirmationDescription"
-msgstr "Cela effacera les mappages de champs de données existants."
+msgstr "Cela effacera les mappings de champs de données existants."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:435
-#, fuzzy
 msgid "changeMatchingLogic"
-msgstr "Logique de correspondance des modifications"
+msgstr "Changer la logique de correspondance"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:443
@@ -364,7 +355,6 @@ msgstr "Exiger que les données correspondent à des enregistrements existants"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:439
-#, fuzzy
 msgid "matchingLogicUnavailable"
 msgstr ""
 "La logique de correspondance est indisponible pour les mappages actuels."
@@ -372,37 +362,31 @@ msgstr ""
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:421
 #: components/WbPlanView/MapperComponents.tsx:455
-#, fuzzy
 msgid "mustMatch"
 msgstr "Doit correspondre"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:194
-#, fuzzy
 msgid "unloadProtectMessage"
-msgstr "Cette cartographie n'a pas été enregistrée."
+msgstr "Ce mapping n'a pas été enregistré."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:58
-#, fuzzy
 msgid "newHeaderName"
 msgstr "Nouvelle colonne {index:number}"
 
 #. Used in: Components > Wb Plan View > Header Helper
 #: components/WbPlanView/headerHelper.ts:19
-#, fuzzy
 msgid "noHeader"
 msgstr "(sans en-tête)"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:73
-#, fuzzy
 msgid "copyPlan"
-msgstr "Copier le plan à partir de l'ensemble de données existant"
+msgstr "Copier le plan de téléchargement à partir d'un jeu de données existant"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:74
-#, fuzzy
 msgid "noPlansToCopyFrom"
 msgstr ""
 "Aucun plan n'est disponible pour le moment. Veuillez continuer à créer un "
@@ -410,7 +394,6 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:38
-#, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""
 "L'ensemble de données sélectionné ne dispose d'aucun plan de chargement. "
