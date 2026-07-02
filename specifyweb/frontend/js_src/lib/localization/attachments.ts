@@ -207,7 +207,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
     'es-es': 'Omitido',
-    'fr-fr': 'Omission',
+    'fr-fr': 'Ommis',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
@@ -405,7 +405,7 @@ export const attachmentsText = createDictionary({
       'Durch das Hochladen der Anhänge werden diese auf dem Asset-Server und in der Specify-Datenbank erstellt.',
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr':
-      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specification.',
+      'Le chargement des pièces jointes les ajoutera au serveur de médias et à la base de données Specify.',
     'ru-ru':
       'Загрузка вложений создаст их на сервере активов и в базе данных Specify.',
     'uk-ua':
