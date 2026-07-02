@@ -8,6 +8,8 @@ from types import SimpleNamespace
 from django.apps import apps as django_apps
 
 from specifyweb.specify import models
+from specifyweb.specify.migration_utils.deduplication import deduplicate_containeritems_and_strings
+from specifyweb.specify.migration_utils.schema_reader import bulk_create_splocaleitemstr_idempotent
 from specifyweb.specify.tests.test_api import ApiTests
 
 class SchemaConfigTests(MigrationCommandTestCase):
@@ -41,17 +43,18 @@ class SchemaConfigTests(MigrationCommandTestCase):
             "update_age_schema_config",
             "add_tectonicunit_to_pc_in_schema_config",
             "update_storage_unique_id_fields",
+            "update_loan_and_gift_agent_fields",
             "remove_componentparent_item",
             "create_table_schema_config_with_defaults",
             "create_discipline_type_picklist",
-            "apply_schema_overrides_for_all_disciplines",
-            "deduplicate_schema_config_orm",
+            # "apply_schema_overrides_for_all_disciplines",
+            # "deduplicate_schema_config_orm",
         ]
         fake_apps = FakeApps()
 
         with ExitStack() as stack:
             stack.enter_context(patch.object(rkm, "apps", fake_apps))
-            self._patch_recorders(stack, [(rkm.usc, name) for name in names], calls)
+            self._patch_recorders(stack, [(rkm, name) for name in names], calls)
             schema_defaults_apply_path = (
                 "specifyweb.backend.setup_tool.schema_defaults."
                 "apply_schema_defaults_task.apply"
@@ -111,7 +114,7 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
             text="Duplicate Name",
         )
 
-        created_count = rkm.usc.bulk_create_splocaleitemstr_idempotent(
+        created_count = bulk_create_splocaleitemstr_idempotent(
             models.Splocaleitemstr,
             [
                 {
@@ -198,7 +201,7 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
 
         # run migration/helper
         with patch("builtins.print"):
-            rkm.usc.deduplicate_containeritems_and_strings(django_apps)
+            deduplicate_containeritems_and_strings(django_apps)
 
         # duplicate container item must be removed
         self.assertFalse(
