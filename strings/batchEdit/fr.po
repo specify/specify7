@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/fr/>\n"
 "Language: fr\n"
@@ -34,7 +34,6 @@ msgstr "Nombre d'enregistrements sélectionnés dans la requête"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:42
-#, fuzzy
 msgid "removeField"
 msgstr ""
 "Ce champ n'est pas compatible avec la modification par lots. Veuillez le "
@@ -42,7 +41,6 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:73
-#, fuzzy
 msgid "addTreeRank"
 msgstr ""
 "Les rangs suivants seront ajoutés à la requête pour permettre l'édition par "
@@ -50,27 +48,23 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:89
-#, fuzzy
 msgid "pickTreesToFilter"
 msgstr ""
 "Le ou les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez "
-"le ou les arbres à modifier par lots."
+"le ou les arbres à modifier par lots"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:194
-#, fuzzy
 msgid "datasetName"
 msgstr "{queryName:string} {datePart:string}"
 
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
-#, fuzzy
 msgid "errorInQuery"
 msgstr "Les erreurs suivantes ont été détectées dans la requête."
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
-#, fuzzy
 msgid "missingRanksInQuery"
 msgstr ""
 "La requête nécessite des niveaux hiérarchiques supplémentaires pour "
@@ -78,21 +72,18 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
-#, fuzzy
 msgid "createUpdateDataSetInstructions"
 msgstr ""
-"Utilisez le générateur de requêtes pour créer un nouvel ensemble de données "
+"Utilisez le générateur de requêtes pour créer un nouveau jeu de données "
 "d'édition par lots."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2284
-#, fuzzy
 msgid "showRollback"
 msgstr "Afficher le bouton de restauration"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2289
-#, fuzzy
 msgid "showRollbackDescription"
 msgstr ""
 "La fonction « Annuler » dans l’édition par lots est expérimentale. Cette "
@@ -100,18 +91,15 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:116
-#, fuzzy
 msgid "commit"
-msgstr "Commettre"
+msgstr "Verser en base"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:121
-#, fuzzy
 msgid "startCommitDescription"
 msgstr ""
-"L'enregistrement de l'ensemble de données mettra à jour, ajoutera et "
-"supprimera les données de la feuille de calcul dans la base de données "
-"Specification."
+"L'enregistrement du jeu de données mettra à jour, ajoutera et supprimera les "
+"données de la feuille de calcul dans la base de données Specify."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:125
@@ -129,7 +117,6 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:127
-#, fuzzy
 msgid "dateSetRevertDescription"
 msgstr ""
 "Ce jeu de données restauré est enregistré, mais ne peut pas être modifié. "
@@ -137,53 +124,44 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:128
-#, fuzzy
 msgid "committing"
-msgstr "S'engager"
+msgstr "Téléverser"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
-#, fuzzy
 msgid "beStatusCommit"
-msgstr "État de validation de l'ensemble de données"
+msgstr "État de versement du jeu de données"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:117
-#, fuzzy
 msgid "startCommit"
-msgstr "Début de la validation de l'ensemble de données ?"
+msgstr "Commencer à verser le jeu de données ?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:118
-#, fuzzy
 msgid "commitErrors"
-msgstr "Échec de la validation en raison de cellules d'erreur"
+msgstr "Échec de la validation en raison de cellules en erreur"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:120
-#, fuzzy
 msgid "commitErrorsDescription"
 msgstr ""
-"La validation a échoué en raison d'une ou plusieurs erreurs de valeur de "
-"cellule."
+"La validation a échoué en raison d'une ou plusieurs cellule(s) en erreur."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:119
-#, fuzzy
 msgid "commitCancelled"
-msgstr "Validation annulée"
+msgstr "Versement annulé"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:122
-#, fuzzy
 msgid "commitCancelledDescription"
-msgstr "Description de l'annulation de l'engagement"
+msgstr "Description de l'annulation du versement"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:130
-#, fuzzy
 msgid "commitSuccessful"
-msgstr "Commit terminé sans erreur"
+msgstr "Versement terminé sans erreur"
 
 #. Used in: Components > Work Bench > Record Set
 #: components/WorkBench/RecordSet.tsx:78
@@ -192,13 +170,11 @@ msgstr "Commit BE de \"{dataSet:string}\""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:518
-#, fuzzy
 msgid "deferForMatch"
 msgstr "Utilisez uniquement les champs visibles pour la correspondance"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:519
-#, fuzzy
 msgid "deferForMatchDescription"
 msgstr ""
 "Si cette option est activée, les champs invisibles de la base de données ne "
@@ -207,7 +183,6 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:524
-#, fuzzy
 msgid "deferForNullCheck"
 msgstr ""
 "Utiliser uniquement les champs visibles pour la vérification des "
@@ -215,7 +190,6 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:525
-#, fuzzy
 msgid "deferForNullCheckDescription"
 msgstr ""
 "Si cette option est activée, les champs invisibles de la base de données ne "
@@ -224,7 +198,6 @@ msgstr ""
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:215
-#, fuzzy
 msgid "batchEditDisabled"
 msgstr ""
 "L'édition par lots est désactivée pour les tables système et les tables de "
@@ -232,39 +205,33 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:390
-#, fuzzy
 msgid "cannotEditAfterRollback"
 msgstr ""
-"(Les ensembles de données modifiés par lots ne peuvent pas être modifiés "
-"après une restauration - Lecture seule)"
+"(Les jeux de données modifiés par lots ne peuvent pas être modifiés après "
+"une restauration - Lecture seule)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2276
-#, fuzzy
 msgid "enableRelationships"
-msgstr "Favoriser les relations"
+msgstr "Activer les relations"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2281
-#, fuzzy
 msgid "enableRelationshipsDescription"
 msgstr ""
-"Permet la modification par lots des relations de la table de base. La "
+"Permet la modification par lots des tables liées à la table de base. La "
 "restauration est désactivée lorsque les relations sont activées."
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:125
-#, fuzzy
 msgid "commitDataSet"
-msgstr "Ensemble de données de validation"
+msgstr "Verser le jeu de données."
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:128
-#, fuzzy
 msgid "warningBatchEditText"
 msgstr ""
 "Avant de continuer, veuillez noter que l'action suivante peut perturber "
-"d'autres utilisateurs. Cette action peut entraîner des retards ou "
-"l'indisponibilité temporaire de certaines fonctionnalités pour les "
-"utilisateurs de Specific. Veuillez tenir compte de l'impact sur leur "
-"expérience. Cette action est irréversible."
+"d'autres utilisateurs si effectuée sur un grand jeu de données. Cette action "
+"peut entraîner des lenteurs ou l'indisponibilité temporaire de certaines "
+"fonctionnalités. Cette action est irréversible."
