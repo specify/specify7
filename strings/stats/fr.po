@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-02 15:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/stats/"
 "fr/>\n"
 "Language: fr\n"
@@ -29,58 +29,49 @@ msgstr "Objets"
 #: components/Statistics/StatsSpec.tsx:401
 #: components/Statistics/__tests__/layout.tests.ts:83
 #: components/Statistics/__tests__/layout.tests.ts:86
-#, fuzzy
 msgid "typeSpecimens"
 msgstr "Spécimens types"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:569
-#, fuzzy
 msgid "curation"
 msgstr "Conservation"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:137
-#, fuzzy
 msgid "loans"
 msgstr "Prêts"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:140
-#, fuzzy
 msgid "itemsOnLoans"
 msgstr "Objets prêtés"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:159
-#, fuzzy
 msgid "openLoansStat"
 msgstr "Prêts ouverts"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:178
-#, fuzzy
 msgid "overdueLoans"
-msgstr "Prêts en souffrance"
+msgstr "Prêts en retards"
 
 #. Used in: Components > Statistics > Stats Spec ⬤ Statistics > __tests__ > Layout
 #: components/Statistics/StatsSpec.tsx:267
 #: components/Statistics/__tests__/layout.tests.ts:68
-#, fuzzy
 msgid "localityGeography"
 msgstr "Localité / Géographie"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:270
-#, fuzzy
 msgid "localities"
 msgstr "Localités"
 
 #. Used in: Components > Statistics > Stats Spec
 #: components/Statistics/StatsSpec.tsx:296
-#, fuzzy
 msgid "geographyEntries"
-msgstr "Articles de géographie"
+msgstr "Entrées géographiques"
 
 #. Used in: Statistics > __tests__ > Layout
 #: components/Statistics/__tests__/layout.tests.ts:71
