@@ -224,6 +224,7 @@ msgid "AgentFromAgentVariant"
 msgstr "Variante de l'agent"
 
 #. Used in: 
+#, fuzzy
 msgid "AgentFromAgentVariant_desc"
 msgstr "Variantes d'agents associées à leurs enregistrements d'agents parents."
 
