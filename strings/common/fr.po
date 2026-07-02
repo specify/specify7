@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
 "Language: fr\n"
@@ -475,7 +475,6 @@ msgstr "Précédent"
 
 #. Used in: Components > Security > Registry
 #: components/Security/registry.ts:86
-#, fuzzy
 msgid "tool"
 msgstr "Outil"
 
@@ -680,7 +679,6 @@ msgstr "Ignorer"
 #: components/Merging/index.tsx:400
 #: components/Toolbar/Language.tsx:108
 #: components/WbActions/WbUpload.tsx:117
-#, fuzzy
 msgid "proceed"
 msgstr "Procéder"
 
