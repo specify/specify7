@@ -274,27 +274,23 @@ msgstr ""
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:152
 #: components/WbPlanView/LineComponents.tsx:155
-#, fuzzy
 msgid "clearMapping"
-msgstr "Cartographie claire"
+msgstr "Réinitialiser le mapping"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:361
-#, fuzzy
 msgid "reRunAutoMapper"
-msgstr "Relancer AutoMapper"
+msgstr "Relancer le mapping automatique"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:370
-#, fuzzy
 msgid "autoMapper"
-msgstr "AutoMapper"
+msgstr "Lancer le mapping automatique"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:174
-#, fuzzy
 msgid "mappingEditor"
-msgstr "Explorateur de cartes"
+msgstr ""
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:145
