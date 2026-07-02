@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:06+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
 "Language: fr\n"
@@ -21,7 +21,6 @@ msgstr "Table de travail"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:39
-#, fuzzy
 msgid "uploadPlan"
 msgstr "Plan de téléchargement"
 
@@ -110,7 +109,6 @@ msgstr "Vérification des données : activée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1962
-#, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
 "Notez que la validation en direct est une fonctionnalité expérimentale et ne "
@@ -359,7 +357,6 @@ msgstr ""
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:353
-#, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Validez l'ensemble de données et consultez les infobulles pour chaque "
@@ -403,7 +400,6 @@ msgstr "Restauration de l’ensemble de données annulée."
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:110
 #: components/WbUtils/datasetVariants.tsx:44
-#, fuzzy
 msgid "uploadCanceled"
 msgstr "Téléchargement annulé"
 
@@ -500,7 +496,6 @@ msgstr "Inclure les symboles DMS"
 
 #. Used in: Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Upload.tsx:271
-#, fuzzy
 msgid "uploadResults"
 msgstr "Télécharger les résultats"
 
@@ -521,7 +516,6 @@ msgstr "Priorité du curseur"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:131
-#, fuzzy
 msgid "columnFirst"
 msgstr "Colonne en premier"
 
@@ -651,13 +645,11 @@ msgstr "Tuyau"
 #: components/Preferences/UserDefinitions.tsx:742
 #: components/Preferences/UserDefinitions.tsx:763
 #: components/Preferences/UserDefinitions.tsx:784
-#, fuzzy
 msgid "determineAutomatically"
 msgstr "Déterminer automatiquement"
 
 #. Used in: Components > Wb Import > Index
 #: components/WbImport/index.tsx:118
-#, fuzzy
 msgid "chooseDataSetName"
 msgstr "Nom du nouveau jeu de données :"
 
@@ -686,9 +678,8 @@ msgstr "Nouvel ensemble de données {date}"
 #: components/WbUtils/datasetVariants.tsx:30
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
-#, fuzzy
 msgid "dataSets"
-msgstr "{variant:string} Ensembles de données"
+msgstr "{variant:string} ensemble de données"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:34
@@ -759,13 +750,11 @@ msgstr "Le propriétaire de l'ensemble de données a changé"
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:382
-#, fuzzy
 msgid "dataSet"
 msgstr "Ensemble de données"
 
 #. Used in: Components > Toolbar > Wbs Dialog
 #: components/Toolbar/WbsDialog.tsx:122
-#, fuzzy
 msgid "dataSetTimestampUploaded"
 msgstr "Horodatage de la mise en ligne"
 
@@ -852,37 +841,31 @@ msgstr "Téléchargement WB de \"{dataSet:string}\""
 
 #. Used in: Components > Work Bench > Disambiguation
 #: components/WorkBench/Disambiguation.tsx:100
-#, fuzzy
 msgid "ambiguousTaxaChild"
 msgstr "{node:string} {author:string} (dans {parent:string})"
 
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #: components/WorkBench/WbAttachmentsPreview.tsx:198
-#, fuzzy
 msgid "attachmentsForRow"
 msgstr "Pièces jointes pour la ligne {row:number} :"
 
 #. Used in: Components > Work Bench > Wb Attachments Preview
 #: components/WorkBench/WbAttachmentsPreview.tsx:557
-#, fuzzy
 msgid "detachWindow"
 msgstr "Détacher la fenêtre"
 
 #. Used in: Components > Wb Attachment Viewer > Index
 #: components/WbAttachmentViewer/index.tsx:148
-#, fuzzy
 msgid "attachWindow"
 msgstr "Fenêtre attachée"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:137
-#, fuzzy
 msgid "updatedCells"
 msgstr "Cellules mises à jour"
 
 #. Used in: Components > Wb Utils > Index
 #: components/WbUtils/index.tsx:143
-#, fuzzy
 msgid "deletedCells"
 msgstr "Cellules supprimées"
 
@@ -893,9 +876,8 @@ msgstr "Enregistrements concernés"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:55
-#, fuzzy
 msgid "potentialAffectedResults"
-msgstr "Des enregistrements potentiels ont été affectés."
+msgstr "Des enregistrements ont été affectés"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:59
