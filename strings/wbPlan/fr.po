@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-02 15:01+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
 "Language: fr\n"
@@ -256,9 +256,10 @@ msgstr "Table de base"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:339
+#, fuzzy
 msgid "goToBaseTable"
 msgstr ""
-"Modifier la table de base pour le mapping des colonnes de l'ensemble de "
+"Modifier la table de base pour le mappage des colonnes de l'ensemble de "
 "données ?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
@@ -289,8 +290,9 @@ msgstr "Lancer le mapping automatique"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:174
+#, fuzzy
 msgid "mappingEditor"
-msgstr ""
+msgstr "Explorateur de cartes"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:145
@@ -303,7 +305,7 @@ msgstr "Masquer le mappeur de champs"
 #: components/WbPlanView/MapperComponents.tsx:386
 #, fuzzy
 msgid "showFieldMapper"
-msgstr "Afficher le mappeur"
+msgstr "Afficher le mappeur de terrain"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:569
