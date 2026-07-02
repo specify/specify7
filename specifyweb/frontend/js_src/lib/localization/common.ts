@@ -50,7 +50,7 @@ export const commonText = createDictionary({
     'en-us': 'Back',
     'ru-ru': 'Назад',
     'es-es': 'Atrás',
-    'fr-fr': 'Dos',
+    'fr-fr': 'Retour arrière',
     'uk-ua': 'Назад',
     'de-ch': 'Zurück',
     'pt-br': 'Voltar',
@@ -120,7 +120,7 @@ export const commonText = createDictionary({
     'es-es':
       'Separe los términos de búsqueda con espacios, use % en cualquier parte, * al principio o al final, y ponga los términos entre comillas para coincidencias exactas de varias palabras.',
     'fr-fr':
-      "Séparez les termes de recherche multiples par des espaces, utilisez % n'importe où, * au début ou à la fin, et placez les termes entre guillemets pour obtenir des correspondances exactes avec plusieurs mots.",
+      "Séparez les termes de recherche multiples par des espaces, utilisez % n'importe où, * au début ou à la fin pour remplacer un ou plusieurs caractères, et placez les termes entre guillemets pour obtenir des correspondances exactes avec plusieurs mots.",
     'hr-hr':
       'Odvojite više pojmova za pretraživanje razmacima, koristite % bilo gdje, * na početku ili kraju i stavite pojmove u navodnike za točna podudaranja više riječi.',
     nb: 'Skill flere søkeord med mellomrom, bruk % hvor som helst, * i begynnelsen eller slutten, og omslutt søkeord med anførselstegn for eksakte treff med flere ord.',
@@ -156,7 +156,7 @@ export const commonText = createDictionary({
     'es-es':
       'Para buscar un término con espacios, encierre la frase entre comillas, por ejemplo "Clinton Lake".',
     'fr-fr':
-      "Pour rechercher un terme contenant des espaces, placez l'expression entre guillemets, par exemple « Clinton Lake ».",
+      "Pour rechercher un terme contenant des espaces, placez l'expression entre guillemets, par exemple « Lac Léman ».",
     'hr-hr':
       'Za pretraživanje pojma s razmacima, stavite frazu u navodnike, na primjer "Clinton Lake".',
     nb: 'For å søke etter et ord med mellomrom, sett frasen i anførselstegn, for eksempel "Clinton Lake".',
@@ -182,7 +182,7 @@ export const commonText = createDictionary({
     'en-us': 'Apply All',
     'ru-ru': 'Применить все',
     'es-es': 'Aplicar todo',
-    'fr-fr': 'Appliquer tout',
+    'fr-fr': 'Appliquer à toutes les lignes',
     'uk-ua': 'Застосувати все',
     'de-ch': 'Alle Anwenden',
     'pt-br': 'Aplicar tudo',
@@ -507,7 +507,7 @@ export const commonText = createDictionary({
     'en-us': 'Actions',
     'ru-ru': 'Действия',
     'es-es': 'Comportamientos',
-    'fr-fr': 'Actes',
+    'fr-fr': 'Actions',
     'uk-ua': 'Дії',
     'de-ch': 'Aktionen',
     'pt-br': 'Ações',
@@ -553,7 +553,7 @@ export const commonText = createDictionary({
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы записей',
     'es-es': 'Conjuntos de registros',
-    'fr-fr': "Ensembles d'enregistrements",
+    'fr-fr': "Groupe d'enregistrements",
     'uk-ua': 'Набори рекордів',
     'de-ch': 'Satzgruppen',
     'pt-br': 'Conjuntos de discos',
@@ -564,7 +564,7 @@ export const commonText = createDictionary({
     'en-us': 'Record Count',
     'ru-ru': 'Количество записей',
     'es-es': 'Número de registros',
-    'fr-fr': 'Nombre de records',
+    'fr-fr': "Nombre d'enregistrements",
     'uk-ua': 'Підрахунок записів',
     'de-ch': 'Anzahl der Datensätze',
     'pt-br': 'Contagem de recordes',
@@ -829,7 +829,7 @@ export const commonText = createDictionary({
     'en-us': 'Selected',
     'ru-ru': 'Избранные',
     'es-es': 'Seleccionado',
-    'fr-fr': 'Choisi',
+    'fr-fr': 'Selectionné',
     'uk-ua': 'Вибране',
     'de-ch': 'Ausgewählt',
     'pt-br': 'Selecionado',
@@ -861,7 +861,7 @@ export const commonText = createDictionary({
   collapse: {
     'en-us': 'Collapse',
     'es-es': 'Contraer',
-    'fr-fr': 'Effondrement',
+    'fr-fr': 'Réduire',
     'ru-ru': 'Крах',
     'uk-ua': 'Згорнути',
     'de-ch': 'Zuklappen',

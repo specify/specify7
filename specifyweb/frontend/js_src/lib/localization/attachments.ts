@@ -207,7 +207,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
     'es-es': 'Omitido',
-    'fr-fr': 'Omission',
+    'fr-fr': 'Ommis',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
@@ -265,7 +265,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Unhandled fatal resource error:',
     'de-ch': 'Unbehandelter schwerwiegender Ressourcenfehler:',
     'es-es': 'Error de recurso fatal no controlado:',
-    'fr-fr': 'Erreur fatale de ressource non gérée :',
+    'fr-fr': 'Erreur, ressource non gérée :',
     'ru-ru': 'Необработанная фатальная ошибка доступа к ресурсам:',
     'uk-ua': 'Необроблена критична помилка ресурсу:',
     'pt-br': 'Erro fatal de recurso não tratado:',
@@ -405,7 +405,7 @@ export const attachmentsText = createDictionary({
       'Durch das Hochladen der Anhänge werden diese auf dem Asset-Server und in der Specify-Datenbank erstellt.',
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr':
-      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specification.',
+      'Le chargement des pièces jointes les ajoutera au serveur de médias et à la base de données Specify.',
     'ru-ru':
       'Загрузка вложений создаст их на сервере активов и в базе данных Specify.',
     'uk-ua':
@@ -457,7 +457,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
+      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de médias.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
     'uk-ua':
@@ -857,7 +857,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un groupe d'enregistrements de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
       'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':

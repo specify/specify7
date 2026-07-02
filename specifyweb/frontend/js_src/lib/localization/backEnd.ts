@@ -237,8 +237,7 @@ export const backEndText = createDictionary({
     'en-us': 'field is required by upload plan mapping',
     'ru-ru': 'поле обязательно для загрузки плана',
     'es-es': 'el campo es obligatorio para la asignación del plan de mapeo',
-    'fr-fr':
-      'Ce champ est obligatoire pour le téléchargement du plan de cartographie.',
+    'fr-fr': 'Ce champ est obligatoire pour le plan de téléchargement choisi',
     'uk-ua': 'це поле є обов’язковим (згідно з визначенням)',
     'de-ch': 'Das Feld ist für die Upload-Planzuordnung erforderlich.',
     'pt-br': 'Este campo é obrigatório para o mapeamento do plano de upload.',
@@ -711,7 +710,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Uno o más archivos adjuntos no existen. Es posible que se hayan eliminado.',
     'fr-fr':
-      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées.',
+      'Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été supprimées ?',
     'pt-br': 'Um ou mais anexos não existem. Eles podem ter sido excluídos.',
     'ru-ru':
       'Одно или несколько вложений отсутствуют. Возможно, они были удалены.',

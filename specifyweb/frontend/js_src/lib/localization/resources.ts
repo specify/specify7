@@ -276,7 +276,7 @@ export const resourcesText = createDictionary({
       'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consultas. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
     'hr-hr':
       '„Format tablice“ kontrolira kako se podaci iz određene tablice prikazuju u rezultatima upita, izvozima i kombiniranim okvirima upita. Određuje polja za prikaz i njihov redoslijed. Uvjetno oblikovanje može se konfigurirati na temelju vrijednosti u zapisu.',
-    nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksporter og kombinasjonsbokser for spørringer. Den bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
+    nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksporter og kombinasjonsbokser for spørringer. Det bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
   },
   aggregator: {
     'en-us': 'Table Aggregation',
