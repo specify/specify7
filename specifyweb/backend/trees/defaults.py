@@ -9,7 +9,7 @@ import specifyweb.specify.models as spmodels
 from specifyweb.backend.trees.default_tree_files import stream_default_tree_csv
 from specifyweb.backend.trees.utils import get_models, TREE_ROOT_NODES
 from specifyweb.backend.trees.extras import renumber_tree, set_fullnames
-from specifyweb.backend.redis_cache.store import add_to_set, remove_from_set, set_members
+from specifyweb.backend.cache.redis import add_to_set, remove_from_set, set_members
 from specifyweb.backend.trees.redis import ACTIVE_DEFAULT_TREE_TASK_REDIS_KEY
 
 import logging
