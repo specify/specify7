@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "attachments/fr/>\n"
 "Language: fr\n"
@@ -92,7 +92,6 @@ msgstr "Impossible de trouver un enregistrement auquel cette pièce jointe est l
 #. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:377
-#, fuzzy
 msgid "showForm"
 msgstr "Afficher le formulaire"
 
@@ -134,9 +133,8 @@ msgstr "Déjà téléchargé"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:460
-#, fuzzy
 msgid "skipped"
-msgstr "Omission"
+msgstr "Ommis"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:461
@@ -221,11 +219,10 @@ msgstr "Commencer le téléchargement des pièces jointes ?"
 
 #. Used in: Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Upload.tsx:250
-#, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
-"Le chargement des pièces jointes les ajoutera au serveur de ressources et à "
-"la base de données Specification."
+"Le chargement des pièces jointes les ajoutera au serveur de médias et à la "
+"base de données Specify."
 
 #. Used in: Components > Attachments Bulk Import > Action State
 #: components/AttachmentsBulkImport/ActionState.tsx:59
@@ -428,7 +425,6 @@ msgstr ""
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
-#, fuzzy
 msgid "deleteAttachmentWarning"
 msgstr "Êtes-vous sûr de vouloir supprimer cette pièce jointe ?"
 
@@ -439,13 +435,11 @@ msgstr "Suppression de la pièce jointe"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:50
-#, fuzzy
 msgid "publicDefault"
 msgstr "Rendre les pièces jointes publiques par défaut"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:51
-#, fuzzy
 msgid "publicDefaultDescription"
 msgstr ""
 "Ce paramètre détermine si les nouvelles pièces jointes ajoutées à cette "
