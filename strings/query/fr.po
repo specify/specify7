@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-02 15:01+0000\n"
+"PO-Revision-Date: 2026-07-02 17:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -184,13 +184,13 @@ msgstr "Distinct"
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:58
 msgid "series"
-msgstr "Série"
+msgstr ""
+"Série (regroupe les résultats dont les valeurs recherchées sont identifiques)"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:81
-#, fuzzy
 msgid "searchSynonyms"
-msgstr "Rechercher des synonymes"
+msgstr "Rechercher les synonymes"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:175
@@ -236,9 +236,8 @@ msgstr "(n'importe quel arbre)"
 #: components/QueryBuilder/QueryLineTools.tsx:103
 #: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
-#, fuzzy
 msgid "moveUp"
-msgstr "Monter en gamme"
+msgstr ""
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:230
