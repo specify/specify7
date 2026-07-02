@@ -66,11 +66,11 @@ Mesozoic,Jurassic,Upper Jurassic,Kimmeridgian,154.8,0.8,149.2,0.7
 Mesozoic,Jurassic,Upper Jurassic,Oxfordian,161.5,1,154.8,0.8
 Mesozoic,Jurassic,Upper Jurassic,Tithonian,149.2,0.7,143.1,0.6
 Mesozoic,Triassic,,,251.902,0.024,201.4,0.2
-Mesozoic,Triassic,Lower Triassic,,251.902,0.024,247,
-Mesozoic,Triassic,Lower Triassic,Induan,251.902,0.024,250.8,
-Mesozoic,Triassic,Lower Triassic,Olenekian,250.8,,247,
-Mesozoic,Triassic,Middle Triassic,,247,,237,
-Mesozoic,Triassic,Middle Triassic,Anisian,247,,241.464,0.28
+Mesozoic,Triassic,Lower Triassic,,251.902,0.024,246.7,
+Mesozoic,Triassic,Lower Triassic,Induan,251.902,0.024,249.9,
+Mesozoic,Triassic,Lower Triassic,Olenekian,249.9,,246.7,
+Mesozoic,Triassic,Middle Triassic,,246.7,,237,
+Mesozoic,Triassic,Middle Triassic,Anisian,246.7,,241.464,0.28
 Mesozoic,Triassic,Middle Triassic,Ladinian,241.464,0.28,237,
 Mesozoic,Triassic,Upper Triassic,,237,,201.4,0.2
 Mesozoic,Triassic,Upper Triassic,Carnian,237,,227.3,
@@ -78,20 +78,20 @@ Mesozoic,Triassic,Upper Triassic,Norian,227.3,,205.7,
 Mesozoic,Triassic,Upper Triassic,Rhaetian,205.7,,201.4,0.2
 Paleozoic,,,,538.8,0.6,251.902,0.024
 Paleozoic,Cambrian,,,538.8,0.6,486.85,1.5
-Paleozoic,Cambrian,Cambrian Series 2,,521,,506.5,
-Paleozoic,Cambrian,Cambrian Series 2,Cambrian Stage 3,521,,514.5,
-Paleozoic,Cambrian,Cambrian Series 2,Cambrian Stage 4,514.5,,506.5,
 Paleozoic,Cambrian,Furongian,,497,,486.85,1.5
-Paleozoic,Cambrian,Furongian,Cambrian Stage 10,491,,486.85,1.5
 Paleozoic,Cambrian,Furongian,Jiangshanian,494.2,,491,
 Paleozoic,Cambrian,Furongian,Paibian,497,,494.2,
+Paleozoic,Cambrian,Furongian,Stage 10,491,,486.85,1.5
 Paleozoic,Cambrian,Miaolingian,,506.5,,497,
 Paleozoic,Cambrian,Miaolingian,Drumian,504.5,,500.5,
 Paleozoic,Cambrian,Miaolingian,Guzhangian,500.5,,497,
 Paleozoic,Cambrian,Miaolingian,Wuliuan,506.5,,504.5,
+Paleozoic,Cambrian,Series 2,,521,,506.5,
+Paleozoic,Cambrian,Series 2,Stage 3,521,,514.5,
+Paleozoic,Cambrian,Series 2,Stage 4,514.5,,506.5,
 Paleozoic,Cambrian,Terreneuvian,,538.8,0.6,521,
-Paleozoic,Cambrian,Terreneuvian,Cambrian Stage 2,529,,521,
 Paleozoic,Cambrian,Terreneuvian,Fortunian,538.8,0.6,529,
+Paleozoic,Cambrian,Terreneuvian,Stage 2,529,,521,
 Paleozoic,Carboniferous,,,358.86,0.19,298.9,0.15
 Paleozoic,Mississippian,,,358.86,0.19,323.4,0.4
 Paleozoic,Mississippian,Lower Mississippian,,358.86,0.19,346.7,0.4
@@ -136,13 +136,13 @@ Paleozoic,Permian,Cisuralian,Artinskian,290.1,0.26,283.3,0.4
 Paleozoic,Permian,Cisuralian,Asselian,298.9,0.15,293.52,0.17
 Paleozoic,Permian,Cisuralian,Kungurian,283.3,0.4,274.4,0.4
 Paleozoic,Permian,Cisuralian,Sakmarian,293.52,0.17,290.1,0.26
-Paleozoic,Permian,Guadalupian,,274.4,0.4,259.857,0.084
-Paleozoic,Permian,Guadalupian,Capitanian,264.28,0.16,259.857,0.084
+Paleozoic,Permian,Guadalupian,,274.4,0.4,259.51,0.21
+Paleozoic,Permian,Guadalupian,Capitanian,264.28,0.16,259.51,0.21
 Paleozoic,Permian,Guadalupian,Roadian,274.4,0.4,266.9,0.4
 Paleozoic,Permian,Guadalupian,Wordian,266.9,0.4,264.28,0.16
-Paleozoic,Permian,Lopingian,,259.857,0.084,251.902,0.024
+Paleozoic,Permian,Lopingian,,259.51,0.21,251.902,0.024
 Paleozoic,Permian,Lopingian,Changhsingian,254.14,0.07,251.902,0.024
-Paleozoic,Permian,Lopingian,Wuchiapingian,259.857,0.084,254.14,0.07
+Paleozoic,Permian,Lopingian,Wuchiapingian,259.51,0.21,254.14,0.07
 Paleozoic,Silurian,,,443.1,1,419.62,1.36
 Paleozoic,Silurian,Llandovery,,443.1,1,432.9,1.2
 Paleozoic,Silurian,Llandovery,Aeronian,440.5,1,438.6,1
