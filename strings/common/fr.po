@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-02 15:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/common/"
 "fr/>\n"
 "Language: fr\n"
@@ -689,7 +689,6 @@ msgstr "Commencer"
 
 #. 🟥Noun. Used in: Components > Form Plugins > Lat Long Ui
 #: components/FormPlugins/LatLongUi.tsx:291
-#, fuzzy
 msgid "end"
 msgstr "Fin"
 
@@ -798,7 +797,6 @@ msgstr "Nombre d'enregistrements"
 #: components/FieldFormatters/Parts.tsx:52
 #: components/FieldFormatters/Parts.tsx:138
 #: components/Toolbar/RecordSets.tsx:172
-#, fuzzy
 msgid "size"
 msgstr "Taille"
 
@@ -809,7 +807,6 @@ msgstr "En cours d'exécution…"
 
 #. Used in: Components > Header > Express Search Task
 #: components/Header/ExpressSearchTask.tsx:244
-#, fuzzy
 msgid "noMatches"
 msgstr "Aucune correspondance"
 
@@ -818,7 +815,6 @@ msgstr "Aucune correspondance"
 #: components/QueryBuilder/FieldFilterSpec.tsx:241
 #: components/WbUtils/index.tsx:57
 #: components/WbUtils/index.tsx:62
-#, fuzzy
 msgid "searchQuery"
 msgstr "Requête de recherche"
 
@@ -826,7 +822,6 @@ msgstr "Requête de recherche"
 #: components/Attachments/attachments.ts:123
 #: components/HomePage/AboutSpecify.tsx:178
 #: components/HomePage/AboutSpecify.tsx:204
-#, fuzzy
 msgid "unknown"
 msgstr "Inconnu"
 
@@ -885,7 +880,6 @@ msgstr "Inutilisé"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:56
-#, fuzzy
 msgid "ordinal"
 msgstr "Ordinal"
 
@@ -911,7 +905,6 @@ msgstr "Exporter"
 #: components/Toolbar/QueryTablesWrapper.tsx:151
 #: components/TreeView/CreateTree.tsx:313
 #: components/TreeView/CreateTree.tsx:341
-#, fuzzy
 msgid "import"
 msgstr "Importer"
 
@@ -919,7 +912,6 @@ msgstr "Importer"
 #: components/Errors/ErrorDialog.tsx:177
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
-#, fuzzy
 msgid "dismiss"
 msgstr "Rejeter"
 
@@ -927,7 +919,6 @@ msgstr "Rejeter"
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
 #: components/WbPlanView/navigator.ts:542
-#, fuzzy
 msgid "id"
 msgstr "IDENTIFIANT"
 
@@ -935,7 +926,6 @@ msgstr "IDENTIFIANT"
 #: components/Attachments/index.tsx:163
 #: components/QueryBuilder/QueryLineFilters.tsx:176
 #: components/QueryBuilder/QueryLineFilters.tsx:184
-#, fuzzy
 msgid "filter"
 msgstr "Filtre"
 
@@ -1057,19 +1047,16 @@ msgstr "Aucun disponible"
 #: components/WbUtils/datasetVariants.tsx:29
 #: components/WbUtils/datasetVariants.tsx:88
 #: components/WbUtils/datasetVariants.tsx:104
-#, fuzzy
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"
 
 #. 🟥Example usage: Record Sets (1,234+). Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:167
-#, fuzzy
 msgid "countLineOrMore"
 msgstr "{resource:string} ({count:number|formatted}+)"
 
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Aside
 #: components/AppResources/Aside.tsx:250
-#, fuzzy
 msgid "jsxCountLine"
 msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 
@@ -1082,7 +1069,6 @@ msgstr "{resource:string} <wrap>({count:number|formatted})</wrap>"
 #: components/Security/RoleTemplate.tsx:182
 #: components/WebLinks/Definition.tsx:44
 #: components/WorkBench/DataSetMeta.tsx:230
-#, fuzzy
 msgid "colonHeader"
 msgstr "{header:string} :"
 
@@ -1125,7 +1111,6 @@ msgstr "{header:string} :"
 #: components/WorkBench/DataSetMeta.tsx:381
 #: components/WorkBench/RemainingLoadingTime.tsx:44
 #: components/WorkBench/Results.tsx:161
-#, fuzzy
 msgid "colonLine"
 msgstr "{label:string} : {value:string}"
 
@@ -1138,44 +1123,37 @@ msgstr "{label:string} : {value:string}"
 #: components/WorkBench/DataSetMeta.tsx:317
 #: components/WorkBench/DataSetMeta.tsx:337
 #: components/WorkBench/DataSetMeta.tsx:347
-#, fuzzy
 msgid "jsxColonLine"
 msgstr "{label:string} : <wrap />"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:161
-#, fuzzy
 msgid "bulkSelect"
 msgstr "Sélection en masse"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:273
-#, fuzzy
 msgid "bulkReturn"
 msgstr "Retour en masse"
 
 #. Used in: Components > Interactions > Loan Return
 #: components/Interactions/LoanReturn.tsx:287
-#, fuzzy
 msgid "bulkResolve"
 msgstr "Résolution en vrac"
 
 #. Used in: Components > Work Bench > Remaining Loading Time
 #: components/WorkBench/RemainingLoadingTime.tsx:45
-#, fuzzy
 msgid "timeRemaining"
 msgstr "Temps restant"
 
 #. Used in: Components > Molecules > Paginator
 #: components/Molecules/Paginator.tsx:63
-#, fuzzy
 msgid "unlimited"
 msgstr "Illimité"
 
 #. 🟥Verb. Used in: Components > Molecules > Sync Attachment Picker ⬤ Components > Specify Network Collection > Index
 #: components/Molecules/SyncAttachmentPicker.tsx:76
 #: components/SpecifyNetworkCollection/index.tsx:71
-#, fuzzy
 msgid "change"
 msgstr "Changement"
 
