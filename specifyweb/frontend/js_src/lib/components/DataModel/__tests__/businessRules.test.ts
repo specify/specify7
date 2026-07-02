@@ -497,6 +497,19 @@ describe.skip('Dependent Collections isPrimary', () => {
   });
 });
 
+describe('Collector business rule', () => {
+  test('isPrimary being automatically set', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+    const collector = new tables.Collector.Resource();
+
+    //This initializes the dependent collection
+    collectingEvent.set('collectors', []);
+    collectingEvent.getDependentResource('collectors')?.add(collector);
+
+    expect(collector.get('isPrimary')).toBe(true);
+  });
+});
+
 describe('Collecting Event', () => {
   test('Removing Collector sets first Collector as primary', () => {
     const collectingEvent = new tables.CollectingEvent.Resource({
