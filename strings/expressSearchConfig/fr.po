@@ -139,6 +139,7 @@ msgid "CollObjToDeterminer"
 msgstr "Taxon lié à l'objet"
 
 #. Used in: 
+#, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
 "Objets avec déterminations actuelles, indiquant le nom du taxon déterminé, "
