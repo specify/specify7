@@ -175,8 +175,7 @@ export const queryText = createDictionary({
     'en-us': 'The new or modified query definition has not been saved',
     'ru-ru': 'Новое или измененное определение запроса не было сохранено.',
     'es-es': 'La definición de consulta nueva o modificada no se ha guardado',
-    'fr-fr':
-      "La définition de requête nouvelle ou modifiée n'a pas été enregistrée.",
+    'fr-fr': "La requête nouvelle ou modifiée n'a pas été enregistrée.",
     'uk-ua': 'Нове або змінене визначення запиту не було збережено',
     'de-ch':
       'Die neue oder geänderte Abfragedefinition wurde nicht gespeichert.',
@@ -246,7 +245,7 @@ export const queryText = createDictionary({
     'en-us': 'Export File Being Created',
     'ru-ru': 'Создается файл экспорта',
     'es-es': 'Creando archivo de exportación',
-    'fr-fr': "Création du fichier d'exportation",
+    'fr-fr': "Création du fichier d'exportation en cours...",
     'uk-ua': 'Експортний файл створюється',
     'de-ch': 'Exportdatei wird erstellt',
     'pt-br': 'Arquivo de exportação sendo criado',
@@ -277,7 +276,7 @@ export const queryText = createDictionary({
     'en-us': '{value:string} (current, invalid value)',
     'ru-ru': '{value:string} (текущее, недопустимое значение)',
     'es-es': '{value:string} (valor actual, no válido)',
-    'fr-fr': '{value:string} (valeur actuelle, non valide)',
+    'fr-fr': '{value:string} (valeur actuelle, invalide)',
     'uk-ua': '{value:string} (поточне, недійсне значення)',
     'de-ch': '{value:string} (aktueller, ungültiger Wert)',
     'pt-br': '{value:string} (valor atual inválido)',
