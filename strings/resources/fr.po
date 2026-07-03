@@ -27,7 +27,7 @@ msgstr "Ressources de l'application"
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:908
 msgid "formDefinition"
-msgstr "Formulaires"
+msgstr "Masques de saisie"
 
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
@@ -39,26 +39,22 @@ msgstr ""
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
-#, fuzzy
 msgid "newViewDefinition"
-msgstr "Définition de la nouvelle vue"
+msgstr "Nouveau masque de saisie"
 
 #. Used in: Components > App Resources > Editor Components
 #: components/AppResources/EditorComponents.tsx:114
 #: components/AppResources/EditorComponents.tsx:119
-#, fuzzy
 msgid "loadFile"
 msgstr "Charger le fichier"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:41
-#, fuzzy
 msgid "globalResources"
-msgstr "Ressources mondiales"
+msgstr "Ressources partagées"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:47
-#, fuzzy
 msgid "disciplineResources"
 msgstr "Ressources disciplinaires"
 
@@ -67,9 +63,8 @@ msgstr "Ressources disciplinaires"
 #: components/FieldFormatters/Parts.tsx:51
 #: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
-#, fuzzy
 msgid "type"
-msgstr "Taper"
+msgstr ""
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:239
