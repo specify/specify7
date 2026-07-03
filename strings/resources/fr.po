@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:05+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-03 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #. Used in: Components > App Resources > Filters ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Security > Registry
 #: components/AppResources/Filters.tsx:87
@@ -18,7 +18,6 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:2130
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
-#, fuzzy
 msgid "appResources"
 msgstr "Ressources de l'application"
 
@@ -27,18 +26,16 @@ msgstr "Ressources de l'application"
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:908
-#, fuzzy
 msgid "formDefinition"
-msgstr "Définition de la forme"
+msgstr "Formulaires"
 
 #. Used in: Components > App Resources > Editor Components ⬤ Components > App Resources > Filters ⬤ Components > App Resources > Types
 #: components/AppResources/EditorComponents.tsx:51
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/types.tsx:35
-#, fuzzy
 msgid "formDefinitions"
-msgstr "Définition de la forme"
+msgstr ""
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
