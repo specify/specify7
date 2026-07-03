@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-03 10:01+0000\n"
+"PO-Revision-Date: 2026-07-03 14:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
 "fr/>\n"
@@ -46,11 +46,11 @@ msgstr ""
 #: components/HomePage/AboutSpecify.tsx:79
 msgid "fullAddress"
 msgstr ""
-"Préciser le consortium de collections <br />\n"
-"Institut de la Biodiversité <br />\n"
-"Université du Kansas <br />\n"
-"1345, boulevard Jayhawk. <br />\n"
-"Lawrence, KS 66045 États-Unis"
+"Specify Collections Consortium <br />\n"
+"Biodiversity Institute <br />\n"
+"University of Kansas <br />\n"
+"1345 Jayhawk Blvd. <br />\n"
+"Lawrence, KS 66045 USA"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:91
