@@ -302,8 +302,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                               startValue: trimDecimal(row.startPeriod),
                               startUncertainty:
                                 typeof row.startUncertainty === 'string'
-                                  ? trimDecimal(row.startUncertainty)
-                                  : '0',
+                                  ? ` ± ${trimDecimal(row.startUncertainty)}`
+                                  : '',
                               endLabel:
                                 getField(
                                   tables.GeologicTimePeriod,
@@ -312,8 +312,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                               endValue: trimDecimal(row.endPeriod),
                               endUncertainty:
                                 typeof row.endUncertainty === 'string'
-                                  ? trimDecimal(row.endUncertainty)
-                                  : '0',
+                                  ? ` ± ${trimDecimal(row.endUncertainty)}`
+                                  : '',
                               megaAnnum: treeText.megaAnnum(),
                             })
                           : treeText.geologicTimePeriodSingle({
@@ -325,8 +325,8 @@ export function TreeRow<SCHEMA extends AnyTree>({
                               startValue: trimDecimal(row.startPeriod),
                               startUncertainty:
                                 typeof row.startUncertainty === 'string'
-                                  ? trimDecimal(row.startUncertainty)
-                                  : '0',
+                                  ? ` ± ${trimDecimal(row.startUncertainty)}`
+                                  : '',
                               megaAnnum: treeText.megaAnnum(),
                             })
                       }
