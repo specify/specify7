@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-03 09:01+0000\n"
+"PO-Revision-Date: 2026-07-03 14:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/forms/"
 "fr/>\n"
@@ -445,7 +445,7 @@ msgstr "Création d'un nouvel enregistrement"
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:376
 msgid "createNewRecordSet"
-msgstr "Créer un nouveau jeu d'enregistrements"
+msgstr "Créer un nouvel ensemble d'enregistrements"
 
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 #: components/PickLists/definitions.ts:154
