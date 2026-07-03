@@ -536,12 +536,14 @@ export const treeText = createDictionary({
     nb: 'Indirekte {collectionObjectTable:string}-telling',
   },
   geologicTimePeriodRange: {
-    comment: 'Tooltip showing the start/end period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
+    comment:
+      'Tooltip showing the start/end period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
     'en-us':
       '{startLabel:string}: {startValue:string}{startUncertainty:string} {megaAnnum:string}\n{endLabel:string}: {endValue:string}{endUncertainty:string} {megaAnnum:string}',
   },
   geologicTimePeriodSingle: {
-    comment: 'Tooltip showing a single period with uncertainty (no end). Example: Period: 298.9 (± 0.15 Ma)',
+    comment:
+      'Tooltip showing a single period with uncertainty (no end). Example: Period: 298.9 (± 0.15 Ma)',
     'en-us':
       '{periodLabel:string}: {startValue:string}{startUncertainty:string} {megaAnnum:string}',
   },

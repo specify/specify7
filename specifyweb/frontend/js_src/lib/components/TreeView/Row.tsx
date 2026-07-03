@@ -294,21 +294,19 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       title={
                         typeof row.endPeriod === 'string'
                           ? treeText.geologicTimePeriodRange({
-                              startLabel:
-                                getField(
-                                  tables.GeologicTimePeriod,
-                                  'startPeriod'
-                                ).label,
+                              startLabel: getField(
+                                tables.GeologicTimePeriod,
+                                'startPeriod'
+                              ).label,
                               startValue: trimDecimal(row.startPeriod),
                               startUncertainty:
                                 typeof row.startUncertainty === 'string'
                                   ? ` ± ${trimDecimal(row.startUncertainty)}`
                                   : '',
-                              endLabel:
-                                getField(
-                                  tables.GeologicTimePeriod,
-                                  'endPeriod'
-                                ).label,
+                              endLabel: getField(
+                                tables.GeologicTimePeriod,
+                                'endPeriod'
+                              ).label,
                               endValue: trimDecimal(row.endPeriod),
                               endUncertainty:
                                 typeof row.endUncertainty === 'string'
@@ -317,11 +315,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                               megaAnnum: treeText.megaAnnum(),
                             })
                           : treeText.geologicTimePeriodSingle({
-                              periodLabel:
-                                getField(
-                                  tables.GeologicTimePeriod,
-                                  'startPeriod'
-                                ).label,
+                              periodLabel: getField(
+                                tables.GeologicTimePeriod,
+                                'startPeriod'
+                              ).label,
                               startValue: trimDecimal(row.startPeriod),
                               startUncertainty:
                                 typeof row.startUncertainty === 'string'
