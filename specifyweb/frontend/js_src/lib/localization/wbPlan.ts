@@ -21,10 +21,11 @@ export const wbPlanText = createDictionary({
     nb: 'Datakartlegger',
   },
   importExportMapping: {
-    'en-us': 'Import/Export Mapping'
+    'en-us': 'Import/Export Mapping',
   },
   importExportMappingDescription: {
-    'en-us': 'You can export the current data set mapping as a JSON file or import an existing data set mapping.',
+    'en-us':
+      'You can export the current data set mapping as a JSON file or import an existing data set mapping.',
   },
   noUploadPlan: {
     'en-us': 'No Data Set Mapping is Defined',
@@ -857,8 +858,7 @@ export const wbPlanText = createDictionary({
     nb: 'Det finnes ingen tilgjengelige planer. Fortsett med å opprette en opplastingsplan.',
   },
   invalidTemplatePlan: {
-    'en-us':
-      'Selected data set has no mapping. Please select a different one.',
+    'en-us': 'Selected data set has no mapping. Please select a different one.',
     'ru-ru':
       'Выбранный набор данных не имеет плана загрузки. Выберите другой набор данных.',
     'es-es':
@@ -877,7 +877,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'The selected file is not valid JSON.',
     'ru-ru': 'Выбранный файл не является допустимым JSON.',
     'es-es': 'El archivo seleccionado no es un JSON válido.',
-    'fr-fr': 'Le fichier sélectionné n\'est pas un JSON valide.',
+    'fr-fr': "Le fichier sélectionné n'est pas un JSON valide.",
     'uk-ua': 'Вибраний файл не є дійсним JSON.',
     'de-ch': 'Die ausgewählte Datei ist kein gültiges JSON.',
     'pt-br': 'O arquivo selecionado não é um JSON válido.',
@@ -892,5 +892,5 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Bitte wählen Sie eine gültige JSON-Datei aus.',
     'pt-br': 'Por favor, selecione um arquivo JSON válido.',
     'hr-hr': 'Odaberite valjani JSON file.',
-  }
+  },
 } as const);

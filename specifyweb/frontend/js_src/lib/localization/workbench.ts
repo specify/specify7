@@ -758,7 +758,8 @@ export const wbText = createDictionary({
     nb: 'Validering avbrutt',
   },
   validationCanceledDescription: {
-    'en-us': 'The validation operation was cancelled. Please try again before uploading.',
+    'en-us':
+      'The validation operation was cancelled. Please try again before uploading.',
     'ru-ru': 'Проверка набора данных отменена.',
     'es-es': 'Se canceló la validación del conjunto de datos.',
     'fr-fr': "Validation de l'ensemble de données annulée.",
@@ -780,7 +781,8 @@ export const wbText = createDictionary({
     nb: 'Tilbakerulling avbrutt',
   },
   rollbackCanceledDescription: {
-    'en-us': 'The rollback was cancelled. No changes were made to the database.',
+    'en-us':
+      'The rollback was cancelled. No changes were made to the database.',
     'ru-ru': 'Откат набора данных отменен.',
     'es-es': 'Reversión del conjunto de datos cancelada.',
     'fr-fr': 'Restauration de l’ensemble de données annulée.',
@@ -1581,7 +1583,8 @@ export const wbText = createDictionary({
     nb: 'Avbryter...',
   },
   wbStatusAbortFailed: {
-    'en-us': 'Failed cancelling the {operationName:string} operation. Please try again later',
+    'en-us':
+      'Failed cancelling the {operationName:string} operation. Please try again later',
     'ru-ru':
       'Не удалось прервать операцию {operationName:string}. Пожалуйста, попробуйте позже',
     'es-es':
