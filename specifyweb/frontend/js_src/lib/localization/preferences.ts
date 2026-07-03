@@ -878,7 +878,7 @@ export const preferencesText = createDictionary({
     nb: 'Vis forfatter i treet',
   },
   displayChronoPeriods: {
-    'en-us': 'Show start and end periods in Chronostratigraphy',
+    'en-us': 'Show start and end periods',
   },
   welcomePage: {
     'en-us': 'Home Page',
