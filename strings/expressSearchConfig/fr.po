@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-02 16:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-03 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "expressSearchConfig/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
@@ -139,11 +139,10 @@ msgid "CollObjToDeterminer"
 msgstr "Taxon lié à l'objet"
 
 #. Used in: 
-#, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Objets de la collection avec déterminations actuelles, indiquant le nom du "
-"taxon déterminé, le nom commun du taxon et le déterminant."
+"Objets avec déterminations actuelles, indiquant le nom du taxon déterminé, "
+"le nom commun du taxon et le déterminant."
 
 #. Used in: 
 msgid "CollObToLocality"
@@ -225,7 +224,6 @@ msgid "AgentFromAgentVariant"
 msgstr "Variante de l'agent"
 
 #. Used in: 
-#, fuzzy
 msgid "AgentFromAgentVariant_desc"
 msgstr "Variantes d'agents associées à leurs enregistrements d'agents parents."
 
