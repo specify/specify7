@@ -4,17 +4,22 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { collectionStatsText } from '../../localization/collectionStats';
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
-import type { RA } from '../../utils/types';
+import { localized, type RA } from '../../utils/types';
+import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { formatNumber } from '../Atoms/Internationalization';
 import { loadingBar } from '../Molecules';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import type { SortConfig } from '../Molecules/Sorting';
+import { SortIndicator } from '../Molecules/Sorting';
 
 export type CollectionStat = {
   readonly name: string;
   readonly specimenCount: number;
   readonly collectionType: string;
 };
+
+type SortField = keyof CollectionStat;
 
 const statsEndpoint = '/context/collection_stats.json';
 
@@ -36,6 +41,7 @@ export function CollectionStatisticsButton(): JSX.Element {
 /**
  * handleFetch:   Fetches collection statistics from the backend
  * stats:         The fetch state tracked for loading, empty and error states
+ * sortConfig:    The column and direction used for client side sorting
  */
 function CollectionStatistics({
   onClose: handleClose,
@@ -59,29 +65,101 @@ function CollectionStatistics({
 
   React.useEffect(() => handleFetch(), [handleFetch]);
 
+  const [sortConfig, setSortConfig] = React.useState<SortConfig<SortField>>({
+    sortField: 'name',
+    ascending: true,
+  });
+  const handleSort = (sortField: SortField): void =>
+    setSortConfig((old) => ({
+      sortField,
+      ascending: sortField === old.sortField ? !old.ascending : true,
+    }));
+
+  const rows = React.useMemo(
+    () =>
+      Array.isArray(stats)
+        ? Array.from(stats).sort(
+          sortFunction(
+            (row) => row[sortConfig.sortField],
+            !sortConfig.ascending
+          )
+        )
+        : [],
+    [stats, sortConfig]
+  );
+
+  // Loading Dialog
+  if (stats === 'loading')
+    return (
+      <Dialog
+        buttons={undefined}
+        className={{ container: dialogClassNames.narrowContainer }}
+        header={commonText.loading()}
+        onClose={undefined}
+      >
+        {loadingBar}
+      </Dialog>
+    );
+
+  const header = Array.isArray(stats)
+    ? localized(
+      `${collectionStatsText.collectionStatistics()} (${formatNumber(
+        stats.length
+      )})`
+    )
+    : collectionStatsText.collectionStatistics();
+
   return (
     <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-      header={collectionStatsText.collectionStatistics()}
+      buttons={
+        <>
+          <Button.Info onClick={handleFetch}>
+            {collectionStatsText.refresh()}
+          </Button.Info>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
+      header={header}
       onClose={handleClose}
     >
-      {stats === 'loading' ? (
-        loadingBar
-      ) : stats === 'error' ? (
+      {stats === 'error' ? (
         <p>{collectionStatsText.unableToLoad()}</p>
       ) : stats.length === 0 ? (
         <p>{collectionStatsText.noStatistics()}</p>
       ) : (
         <table className="grid-table grid-cols-[auto_auto_auto] gap-x-4 gap-y-1">
+          {/* Table Header */}
           <thead>
             <tr>
-              <th scope="col">{collectionStatsText.collectionName()}</th>
-              <th scope="col">{collectionStatsText.numberOfSpecimens()}</th>
-              <th scope="col">{collectionStatsText.collectionType()}</th>
+              <th scope="col">
+                <Button.LikeLink onClick={() => handleSort('name')}>
+                  {collectionStatsText.collectionName()}
+                  <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={() => handleSort('specimenCount')}>
+                  {collectionStatsText.numberOfSpecimens()}
+                  <SortIndicator
+                    fieldName="specimenCount"
+                    sortConfig={sortConfig}
+                  />
+                </Button.LikeLink>
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={() => handleSort('collectionType')}>
+                  {collectionStatsText.collectionType()}
+                  <SortIndicator
+                    fieldName="collectionType"
+                    sortConfig={sortConfig}
+                  />
+                </Button.LikeLink>
+              </th>
             </tr>
           </thead>
+          {/* Table Body */}
           <tbody>
-            {stats.map((row, index) => (
+            {rows.map((row, index) => (
               <tr key={index}>
                 <td>{row.name}</td>
                 <td className="tabular-nums">

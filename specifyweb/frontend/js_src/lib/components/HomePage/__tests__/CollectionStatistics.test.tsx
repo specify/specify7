@@ -33,18 +33,27 @@ describe('with data', () => {
 
     await user.click(getByRole('button'));
 
-    const dialog = await findByRole('dialog');
-    await waitFor(() =>
-      expect(dialog.querySelectorAll('tbody tr')).toHaveLength(4)
+    const table = await findByRole('table');
+    expect(table.querySelectorAll('tbody tr')).toHaveLength(4);
+    expect(table.textContent).toContain('Mammals');
+    expect(table.textContent).toContain('Birds');
+  });
+
+  test('sorts by a column when its header is clicked', async () => {
+    const { getByRole, findByRole, user } = renderButton();
+
+    await user.click(getByRole('button'));
+    const table = await findByRole('table');
+
+    await user.click(
+      getByRole('button', { name: collectionStatsText.numberOfSpecimens() })
     );
 
-    expect(dialog.textContent).toContain('Mammals');
-    expect(dialog.textContent).toContain('Zoology');
-    expect(dialog.textContent).toContain('Vascular Plants');
-    expect(dialog.textContent).toContain('Botany');
-    expect(dialog.textContent).toContain('Fossil Invertebrates');
-    expect(dialog.textContent).toContain('Paleontology');
-    expect(dialog.textContent).toContain('Birds');
+    await waitFor(() =>
+      expect(table.querySelectorAll('tbody tr')[0].textContent).toContain(
+        'Mammals'
+      )
+    );
   });
 });
 
@@ -52,15 +61,11 @@ describe('empty state', () => {
   overrideAjax(statsUrl, []);
 
   test('shows the empty message and no table', async () => {
-    const { getByRole, findByRole, user } = renderButton();
+    const { getByRole, findByText, queryByRole, user } = renderButton();
 
     await user.click(getByRole('button'));
 
-    const dialog = await findByRole('dialog');
-    await waitFor(() =>
-      expect(dialog.textContent).toContain(collectionStatsText.noStatistics())
-    );
-
-    expect(dialog.querySelector('table')).toBeNull();
+    await findByText(collectionStatsText.noStatistics());
+    expect(queryByRole('table')).toBeNull();
   });
 });

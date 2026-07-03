@@ -27,4 +27,7 @@ export const collectionStatsText = createDictionary({
   unableToLoad: {
     'en-us': 'Unable to load collection statistics. Please try again.',
   },
+  refresh: {
+    'en-us': 'Refresh',
+  },
 } as const);
