@@ -893,8 +893,9 @@ describe('treeBusinessRules', () => {
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
   test('saveBlocker not on synonymized parent w/preference', async () => {
-    const { collectionPreferences } =
-      await import('../../Preferences/collectionPreferences');
+    const { collectionPreferences } = await import(
+      '../../Preferences/collectionPreferences'
+    );
     const originalRaw = collectionPreferences.getRaw();
     collectionPreferences.setRaw({
       ...originalRaw,

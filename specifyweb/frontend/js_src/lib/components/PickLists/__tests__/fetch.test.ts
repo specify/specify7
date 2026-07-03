@@ -162,8 +162,9 @@ describe('fetchPickListItems', () => {
   });
 
   test('Picklistitems unscoped for sp7_scope_table_picklists', async () => {
-    const { collectionPreferences } =
-      await import('../../Preferences/collectionPreferences');
+    const { collectionPreferences } = await import(
+      '../../Preferences/collectionPreferences'
+    );
 
     const originalRaw = collectionPreferences.getRaw();
 

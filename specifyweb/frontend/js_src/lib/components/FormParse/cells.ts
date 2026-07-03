@@ -118,17 +118,6 @@ export type SubViewSortField = {
 export const cellAlign = ['left', 'center', 'right'] as const;
 export const cellVerticalAlign = ['stretch', 'center', 'start', 'end'] as const;
 
-const specialFieldNames = new Set([
-  /*
-   * Legacy synthetic form controls that are not schema-backed fields.
-   * These are still parsed intentionally by some field renderers.
-   */
-  'this',
-  'generateLabelChk',
-  'generateInvoice',
-  'sendEMail',
-]);
-
 const processCellType: {
   readonly [KEY in keyof CellTypes]: (props: {
     readonly cell: SimpleXmlNode;
@@ -167,7 +156,6 @@ const processCellType: {
 
     if (
       resolvedFields === undefined &&
-      !specialFieldNames.has(rawFieldName ?? '') &&
       (fieldDefinition.type !== 'Plugin' ||
         fieldDefinition.pluginDefinition.type === 'PartialDateUI')
     )

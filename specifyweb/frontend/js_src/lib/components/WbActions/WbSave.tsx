@@ -12,34 +12,6 @@ import { loadingBar } from '../Molecules';
 import { Dialog } from '../Molecules/Dialog';
 import type { Workbench } from '../WorkBench/WbView';
 
-export const handleWorkbenchSave = async (
-  workbench: Workbench,
-  searchRef: React.MutableRefObject<HTMLInputElement | null>,
-  checkDeletedFail: (statusCode: number) => void,
-  handleSpreadsheetUpToDate: () => void
-): Promise<void> => {
-  // Clear validation
-  overwriteReadOnly(workbench.dataset, 'rowresults', null);
-  workbench.validation.stopLiveValidation();
-
-  // Send data
-  return ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
-    method: 'PUT',
-    body: workbench.data,
-    expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
-  })
-    .then((status) => checkDeletedFail(status))
-    .then(() => {
-      handleSpreadsheetUpToDate();
-      workbench.cells.cellMeta = [];
-      workbench.utils?.searchCells(
-        { key: 'SettingsChange' },
-        searchRef.current
-      );
-      workbench.hot?.render();
-    });
-};
-
 export function WbSave({
   workbench,
   hasUnsavedChanges,
@@ -56,18 +28,31 @@ export function WbSave({
   const [showProgressBar, openProgressBar, closeProgressBar] =
     useBooleanState();
 
-  const handleSave = async (): Promise<void> => {
+  const handleSave = () => {
+    // Clear validation
+    overwriteReadOnly(workbench.dataset, 'rowresults', null);
+    workbench.validation.stopLiveValidation();
+
     // Show saving progress bar
     openProgressBar();
 
-    await handleWorkbenchSave(
-      workbench,
-      searchRef,
-      checkDeletedFail,
-      handleSpreadsheetUpToDate
-    );
-
-    closeProgressBar();
+    // Send data
+    ping(`/api/workbench/rows/${workbench.dataset.id}/`, {
+      method: 'PUT',
+      body: workbench.data,
+      expectedErrors: [Http.NO_CONTENT, Http.NOT_FOUND],
+    })
+      .then((status) => checkDeletedFail(status))
+      .then(() => {
+        handleSpreadsheetUpToDate();
+        workbench.cells.cellMeta = [];
+        workbench.utils?.searchCells(
+          { key: 'SettingsChange' },
+          searchRef.current
+        );
+        workbench.hot?.render();
+        closeProgressBar();
+      });
   };
 
   return (

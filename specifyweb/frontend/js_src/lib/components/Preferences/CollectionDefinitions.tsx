@@ -280,7 +280,7 @@ export const collectionPreferenceDefinitions = {
               }),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },

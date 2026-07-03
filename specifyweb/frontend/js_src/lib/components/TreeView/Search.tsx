@@ -79,8 +79,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
               definition: treeDefinitionId,
               limit: DEFAULT_FETCH_SEARCH_LIMIT,
               orderBy: 'name',
-              // Tree search already scopes by the selected definition; allow shared trees.
-              domainFilter: false,
+              domainFilter: true,
             },
             {
               [resolvedSearchField]: searchCaseSensitive

@@ -98,22 +98,7 @@ const fetchToManyCollection = async <SCHEMA extends AnySchema>({
           related: parentResource,
           field: relationship.getReverse(),
         }) as Collection<AnySchema>;
-
-      if (sortBy === undefined) {
-        if (
-          relationship.relatedTable.name.endsWith('Attachment') &&
-          relationship.relatedTable.getField('ordinal') !== undefined
-        ) {
-          overwriteReadOnly(
-            collection,
-            'models',
-            Array.from(collection.models).sort(
-              sortFunction((resource) => resource.get('ordinal'), false)
-            )
-          );
-        }
-        return collection;
-      }
+      if (sortBy === undefined) return collection;
 
       // BUG: this does not look into related tables
       const field = sortBy.fieldNames[0];

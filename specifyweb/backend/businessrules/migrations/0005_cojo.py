@@ -15,12 +15,7 @@ def apply_migration(apps, schema_editor):
 
         for discipline in Discipline.objects.all():
             create_uniqueness_rule(
-                model_name='Collectionobjectgroupjoin',
-                discipline=discipline,
-                is_database_constraint=isDatabaseConstraint,
-                fields=fields,
-                scopes=scopes,
-                registry=apps
+                'Collectionobjectgroupjoin', discipline, isDatabaseConstraint, fields, scopes, apps
             )
 
 """
