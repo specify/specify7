@@ -8,7 +8,9 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { getField } from '../DataModel/helpers';
 import type { AnyTree } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
@@ -287,7 +289,48 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   {doIncludeChronoPeriodsPref &&
                   treeName === 'GeologicTimePeriod' &&
                   typeof row.startPeriod === 'string' ? (
-                    <span className="text-sm font-normal">
+                    <span
+                      className="text-sm font-normal"
+                      title={
+                        typeof row.endPeriod === 'string'
+                          ? treeText.geologicTimePeriodRange({
+                              startLabel:
+                                getField(
+                                  tables.GeologicTimePeriod,
+                                  'startPeriod'
+                                ).label,
+                              startValue: trimDecimal(row.startPeriod),
+                              startUncertainty:
+                                typeof row.startUncertainty === 'string'
+                                  ? trimDecimal(row.startUncertainty)
+                                  : '0',
+                              endLabel:
+                                getField(
+                                  tables.GeologicTimePeriod,
+                                  'endPeriod'
+                                ).label,
+                              endValue: trimDecimal(row.endPeriod),
+                              endUncertainty:
+                                typeof row.endUncertainty === 'string'
+                                  ? trimDecimal(row.endUncertainty)
+                                  : '0',
+                              megaAnnum: treeText.megaAnnum(),
+                            })
+                          : treeText.geologicTimePeriodSingle({
+                              periodLabel:
+                                getField(
+                                  tables.GeologicTimePeriod,
+                                  'startPeriod'
+                                ).label,
+                              startValue: trimDecimal(row.startPeriod),
+                              startUncertainty:
+                                typeof row.startUncertainty === 'string'
+                                  ? trimDecimal(row.startUncertainty)
+                                  : '0',
+                              megaAnnum: treeText.megaAnnum(),
+                            })
+                      }
+                    >
                       {' '}
                       ({trimDecimal(row.startPeriod)}
                       {typeof row.startUncertainty === 'string'
