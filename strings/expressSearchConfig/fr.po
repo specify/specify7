@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-03 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-03 12:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "expressSearchConfig/fr/>\n"
 "Language: fr\n"
@@ -224,7 +224,6 @@ msgid "AgentFromAgentVariant"
 msgstr "Variante de l'agent"
 
 #. Used in: 
-#, fuzzy
 msgid "AgentFromAgentVariant_desc"
 msgstr "Variantes d'agents associées à leurs enregistrements d'agents parents."
 
@@ -296,7 +295,6 @@ msgid "BorrowToAgent_desc"
 msgstr "Emprunts et agents liés par le rôle d'emprunteur"
 
 #. Used in: 
-#, fuzzy
 msgid "AppraisalToAgent"
 msgstr "Évaluation de l'agent"
 
@@ -466,7 +464,6 @@ msgid "ExchangeOutCO"
 msgstr "Objets échangé (sortant)"
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeOutCO_desc"
 msgstr ""
 "Échanges sortants avec des objets de collection dans les préparations "
