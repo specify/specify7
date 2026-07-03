@@ -535,15 +535,10 @@ export const treeText = createDictionary({
     'hr-hr': 'Neizravno {collectionObjectTable:string} brojanje',
     nb: 'Indirekte {collectionObjectTable:string}-telling',
   },
-  geologicTimePeriodRange: {
-    comment: 'Tooltip showing the start/end period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
+  geologicTimePeriodLine: {
+    comment: 'Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
     'en-us':
-      '{startLabel:string}: {startValue:string} {startRangeSuffix:string}\n{endLabel:string}: {endValue:string} {endRangeSuffix:string}',
-  },
-  geologicTimePeriodSingle: {
-    comment: 'Tooltip showing a single period with uncertainty (no end). Example: Period: 298.9 (± 0.15 Ma)',
-    'en-us':
-      '{periodLabel:string}: {startValue:string} {startRangeSuffix:string}',
+      '{label:string}: {value:string} {suffix:string}',
   },
   megaAnnum: {
     comment: 'Abbreviation for millions of years (Mega annum)',

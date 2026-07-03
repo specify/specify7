@@ -291,43 +291,32 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   typeof row.startPeriod === 'string' ? (
                     <span
                       className="text-sm font-normal"
-                      title={
+                      title={[
+                        treeText.geologicTimePeriodLine({
+                          label:
+                            getField(tables.GeologicTimePeriod, 'startPeriod')
+                              .label,
+                          value: trimDecimal(row.startPeriod!),
+                          suffix:
+                            typeof row.startUncertainty === 'string'
+                              ? `± ${trimDecimal(row.startUncertainty)} ${treeText.megaAnnum()}`
+                              : treeText.megaAnnum(),
+                        }),
                         typeof row.endPeriod === 'string'
-                          ? treeText.geologicTimePeriodRange({
-                              startLabel:
-                                getField(
-                                  tables.GeologicTimePeriod,
-                                  'startPeriod'
-                                ).label,
-                              startValue: trimDecimal(row.startPeriod),
-                              startRangeSuffix:
-                                typeof row.startUncertainty === 'string'
-                                  ? `(± ${trimDecimal(row.startUncertainty)} ${treeText.megaAnnum()})`
-                                  : treeText.megaAnnum(),
-                              endLabel:
-                                getField(
-                                  tables.GeologicTimePeriod,
-                                  'endPeriod'
-                                ).label,
-                              endValue: trimDecimal(row.endPeriod),
-                              endRangeSuffix:
+                          ? treeText.geologicTimePeriodLine({
+                              label:
+                                getField(tables.GeologicTimePeriod, 'endPeriod')
+                                  .label,
+                              value: trimDecimal(row.endPeriod),
+                              suffix:
                                 typeof row.endUncertainty === 'string'
-                                  ? `(± ${trimDecimal(row.endUncertainty)} ${treeText.megaAnnum()})`
+                                  ? `± ${trimDecimal(row.endUncertainty)} ${treeText.megaAnnum()}`
                                   : treeText.megaAnnum(),
                             })
-                          : treeText.geologicTimePeriodSingle({
-                              periodLabel:
-                                getField(
-                                  tables.GeologicTimePeriod,
-                                  'startPeriod'
-                                ).label,
-                              startValue: trimDecimal(row.startPeriod),
-                              startRangeSuffix:
-                                typeof row.startUncertainty === 'string'
-                                  ? `(± ${trimDecimal(row.startUncertainty)} ${treeText.megaAnnum()})`
-                                  : treeText.megaAnnum(),
-                            })
-                      }
+                          : undefined,
+                      ]
+                        .filter(Boolean)
+                        .join('\n\n')}
                     >
                       {' '}
                       ({trimDecimal(row.startPeriod)}
