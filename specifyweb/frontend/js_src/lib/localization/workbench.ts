@@ -557,7 +557,7 @@ export const wbText = createDictionary({
     'es-es':
       'Este valor coincide con dos o más registros existentes en la base de datos y han de desambiguarse antes de cargar.',
     'fr-fr':
-      'Cette valeur correspond à deux enregistrements de base de données existants ou plus et la correspondance doit être levée avant le téléchargement.',
+      'Cette valeur correspond à deux enregistrements existants ou plus et la correspondance doit être levée avant le téléchargement.',
     'uk-ua':
       'Це значення збігається з двома чи більше існуючими записами бази даних, і збіг необхідно усунути перед завантаженням.',
     'de-ch':
@@ -758,7 +758,8 @@ export const wbText = createDictionary({
     nb: 'Validering avbrutt',
   },
   validationCanceledDescription: {
-    'en-us': 'The validation operation was cancelled. Please try again before uploading.',
+    'en-us':
+      'The validation operation was cancelled. Please try again before uploading.',
     'ru-ru': 'Проверка набора данных отменена.',
     'es-es': 'Se canceló la validación del conjunto de datos.',
     'fr-fr': "Validation de l'ensemble de données annulée.",
@@ -780,7 +781,8 @@ export const wbText = createDictionary({
     nb: 'Tilbakerulling avbrutt',
   },
   rollbackCanceledDescription: {
-    'en-us': 'The rollback was cancelled. No changes were made to the database.',
+    'en-us':
+      'The rollback was cancelled. No changes were made to the database.',
     'ru-ru': 'Откат набора данных отменен.',
     'es-es': 'Reversión del conjunto de datos cancelada.',
     'fr-fr': 'Restauration de l’ensemble de données annulée.',
@@ -1357,7 +1359,7 @@ export const wbText = createDictionary({
     'en-us': '{variant:string} Data Sets',
     'de-ch': '{variant:string} Datensätze',
     'es-es': '{variant:string} Conjuntos de datos',
-    'fr-fr': '{variant:string} Ensembles de données',
+    'fr-fr': '{variant:string} ensemble de données',
     'pt-br': '{variant:string} Conjuntos de dados',
     'ru-ru': '{variant:string} Наборы данных',
     'uk-ua': '{variant:string} Набори даних',
@@ -1581,7 +1583,8 @@ export const wbText = createDictionary({
     nb: 'Avbryter...',
   },
   wbStatusAbortFailed: {
-    'en-us': 'Failed cancelling the {operationName:string} operation. Please try again later',
+    'en-us':
+      'Failed cancelling the {operationName:string} operation. Please try again later',
     'ru-ru':
       'Не удалось прервать операцию {operationName:string}. Пожалуйста, попробуйте позже',
     'es-es':
@@ -1795,7 +1798,7 @@ export const wbText = createDictionary({
     'en-us': 'Potential records affected',
     'de-ch': 'Möglicherweise betroffene Datensätze',
     'es-es': 'Registros potencialmente afectados',
-    'fr-fr': 'Enregistrements potentiellement affectés',
+    'fr-fr': 'Des enregistrements ont été affectés',
     'pt-br': 'Registros potencialmente afetados',
     'ru-ru': 'Возможные затронутые записи',
     'uk-ua': 'Потенційно постраждалі записи',
@@ -1842,7 +1845,7 @@ export const wbText = createDictionary({
   recordsUpdated: {
     'en-us': 'Updated records',
     'es-es': 'Registros actualizados',
-    'fr-fr': 'Enregistrements mis à jour',
+    'fr-fr': 'Enregistrements mis-à-jour',
     'de-ch': 'Aktualisierte Datensätze',
     'pt-br': 'Registros atualizados',
     'hr-hr': 'Zapisi ažurirani',
@@ -1852,7 +1855,8 @@ export const wbText = createDictionary({
     'en-us': 'Records deleted (not including dependents)',
     'de-ch': 'Gelöschte Datensätze (ohne Abhängige)',
     'es-es': 'Registros eliminados (sin incluir a los dependientes)',
-    'fr-fr': "Enregistrements supprimés (à l'exclusion des personnes à charge)",
+    'fr-fr':
+      "Enregistrements supprimés (à l'exclusion des enregistrements dépendants)",
     'pt-br': 'Registros excluídos (exceto dependentes)',
     'ru-ru': 'Удаленные записи (за исключением записей о иждивенцах)',
     'uk-ua': 'Записи видалено (без урахування утриманців)',
