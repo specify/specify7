@@ -93,21 +93,19 @@ Paleozoic,Cambrian,Terreneuvian,,538.8,0.6,521,
 Paleozoic,Cambrian,Terreneuvian,Fortunian,538.8,0.6,529,
 Paleozoic,Cambrian,Terreneuvian,Stage 2,529,,521,
 Paleozoic,Carboniferous,,,358.86,0.19,298.9,0.15
-Paleozoic,Mississippian,,,358.86,0.19,323.4,0.4
-Paleozoic,Mississippian,Lower Mississippian,,358.86,0.19,346.7,0.4
-Paleozoic,Mississippian,Lower Mississippian,Tournaisian,358.86,0.19,346.7,0.4
-Paleozoic,Mississippian,Middle Mississippian,,346.7,0.4,330.3,0.4
-Paleozoic,Mississippian,Middle Mississippian,Visean,346.7,0.4,330.3,0.4
-Paleozoic,Mississippian,Upper Mississippian,,330.3,0.4,323.4,0.4
-Paleozoic,Mississippian,Upper Mississippian,Serpukhovian,330.3,0.4,323.4,0.4
-Paleozoic,Pennsylvanian,,,323.4,0.4,298.9,0.15
-Paleozoic,Pennsylvanian,Lower Pennsylvanian,,323.4,0.4,315.2,0.2
-Paleozoic,Pennsylvanian,Lower Pennsylvanian,Bashkirian,323.4,0.4,315.2,0.2
-Paleozoic,Pennsylvanian,Middle Pennsylvanian,,315.2,0.2,307,0.1
-Paleozoic,Pennsylvanian,Middle Pennsylvanian,Moscovian,315.2,0.2,307,0.1
-Paleozoic,Pennsylvanian,Upper Pennsylvanian,,307,0.1,298.9,0.15
-Paleozoic,Pennsylvanian,Upper Pennsylvanian,Gzhelian,303.7,0.1,298.9,0.15
-Paleozoic,Pennsylvanian,Upper Pennsylvanian,Kasimovian,307,0.1,303.7,0.1
+Paleozoic,Carboniferous,Lower Mississippian,,358.86,0.19,346.7,0.4
+Paleozoic,Carboniferous,Lower Mississippian,Tournaisian,358.86,0.19,346.7,0.4
+Paleozoic,Carboniferous,Middle Mississippian,,346.7,0.4,330.3,0.4
+Paleozoic,Carboniferous,Middle Mississippian,Visean,346.7,0.4,330.3,0.4
+Paleozoic,Carboniferous,Upper Mississippian,,330.3,0.4,323.4,0.4
+Paleozoic,Carboniferous,Upper Mississippian,Serpukhovian,330.3,0.4,323.4,0.4
+Paleozoic,Carboniferous,Lower Pennsylvanian,,323.4,0.4,315.2,0.2
+Paleozoic,Carboniferous,Lower Pennsylvanian,Bashkirian,323.4,0.4,315.2,0.2
+Paleozoic,Carboniferous,Middle Pennsylvanian,,315.2,0.2,307,0.1
+Paleozoic,Carboniferous,Middle Pennsylvanian,Moscovian,315.2,0.2,307,0.1
+Paleozoic,Carboniferous,Upper Pennsylvanian,,307,0.1,298.9,0.15
+Paleozoic,Carboniferous,Upper Pennsylvanian,Gzhelian,303.7,0.1,298.9,0.15
+Paleozoic,Carboniferous,Upper Pennsylvanian,Kasimovian,307,0.1,303.7,0.1
 Paleozoic,Devonian,,,419.62,1.36,358.86,0.19
 Paleozoic,Devonian,Lower Devonian,,419.62,1.36,393.47,0.99
 Paleozoic,Devonian,Lower Devonian,Emsian,410.62,1.95,393.47,0.99
