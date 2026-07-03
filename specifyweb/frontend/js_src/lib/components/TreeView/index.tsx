@@ -179,6 +179,12 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     'displayAuthor'
   );
 
+  const includeStartEndPeriods = userPreferences.get(
+    'treeEditor',
+    'geologicTimePeriod',
+    'displayChronoPeriods'
+  );
+
   const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
@@ -186,15 +192,15 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(
-        // See above comment for sortField being hard coded as name here
         formatUrl(
           `${baseUrl}/${parentId}/${tableName === 'GeologicTimePeriod' ? 'startPeriod' : 'name'}/`,
           {
             includeAuthor: includeAuthor.toString(),
+            includeStartEndPeriods: includeStartEndPeriods.toString(),
           }
         )
       ),
-    [baseUrl, tableName, includeAuthor]
+    [baseUrl, tableName, includeAuthor, includeStartEndPeriods]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(

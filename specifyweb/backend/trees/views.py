@@ -165,13 +165,14 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     implementation/design decisions
     """
     include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
+    include_start_end_periods = request.GET.get('includestartendperiods', False) and tree == 'geologictimeperiod'
     with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
-        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, session)
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, session)
     return HttpResponse(toJson(results), content_type='application/json')
 
 
-def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -207,6 +208,27 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
             if include_author
             else func.min(literal("NULL"))
         ).label("author"),
+
+        (
+            func.min(node.startPeriod)
+            if include_start_end_periods
+            else func.min(literal("NULL"))
+        ).label("start_period"),
+        (
+            func.min(node.startUncertainty)
+            if include_start_end_periods
+            else func.min(literal("NULL"))
+        ).label("start_uncertainty"),
+        (
+            func.min(node.endPeriod)
+            if include_start_end_periods
+            else func.min(literal("NULL"))
+        ).label("end_period"),
+        (
+            func.min(node.endUncertainty)
+            if include_start_end_periods
+            else func.min(literal("NULL"))
+        ).label("end_uncertainty"),
 
         func.count(distinct(child._id)).label("child_count"),
         group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),

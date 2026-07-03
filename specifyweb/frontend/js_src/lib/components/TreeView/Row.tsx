@@ -13,6 +13,12 @@ import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
 
+/**
+ * This is needed to trim trailing zeros from time periods
+ */
+const trimDecimal = (value: string): string =>
+  value.includes('.') ? value.replace(/\.?0+$/, '') : value;
+
 export function TreeRow<SCHEMA extends AnyTree>({
   row,
   getRows,
@@ -165,6 +171,12 @@ export function TreeRow<SCHEMA extends AnyTree>({
     'displayAuthor'
   );
 
+  const doIncludeChronoPeriodsPref = userPreferences.get(
+    'treeEditor',
+    'geologicTimePeriod',
+    'displayChronoPeriods'
+  );
+
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
       if (element === null) return;
@@ -271,7 +283,19 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   treeName === 'Taxon' &&
                   typeof row.author === 'string'
                     ? `${row.name} ${row.author}`
-                    : row.name}
+                    : doIncludeChronoPeriodsPref &&
+                        treeName === 'GeologicTimePeriod' &&
+                        typeof row.startPeriod === 'string'
+                      ? `${row.name} (${trimDecimal(row.startPeriod)}${
+                          typeof row.startUncertainty === 'string'
+                            ? ` ± ${trimDecimal(row.startUncertainty)}`
+                            : ''
+                        }-${typeof row.endPeriod === 'string' ? trimDecimal(row.endPeriod) : '?'}${
+                          typeof row.endUncertainty === 'string'
+                            ? `±${trimDecimal(row.endUncertainty)}`
+                            : ''
+                        })`
+                      : row.name}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
