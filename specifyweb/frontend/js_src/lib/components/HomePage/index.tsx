@@ -28,7 +28,7 @@ export function WelcomeView(): JSX.Element {
 
   return (
     <div className="flex h-full flex-col">
-      <div className="flex justify-end gap-2 pr-4 pt-4">
+      <div className="flex flex-wrap justify-end gap-2 pr-4 pt-4">
         {displaySearchBar && (
           <>
             <SearchForm formId={formId} />
