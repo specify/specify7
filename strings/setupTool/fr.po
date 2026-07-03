@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-03 10:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "setupTool/fr/>\n"
 "Language: fr\n"
@@ -215,42 +215,36 @@ msgstr "Inclure les emplacements du niveau dans la définition de l'arbre."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:126
-#, fuzzy
 msgid "enforced"
-msgstr "Appliqué"
+msgstr "Forcé"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
-#, fuzzy
 msgid "enforcedDescription"
 msgstr ""
-"L'option « Is Enforced » garantit que le niveau ne peut pas être ignoré lors "
-"de l'ajout de nœuds plus bas dans l'arbre."
+"L'option « Forcé/is enforced » garantit que le niveau ne peut pas être "
+"ignoré lors de l'ajout de nœuds plus bas dans l'arbre."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:135
-#, fuzzy
 msgid "inFullName"
-msgstr "Nom complet"
+msgstr "Présent dans le nom complet"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:136
-#, fuzzy
 msgid "inFullNameDescription"
 msgstr ""
-"L'option « Is in Full Name » inclut le niveau lors de la construction d'une "
-"expression de nom complet, qui peut être interrogée et utilisée dans les "
+"L'option « Présent dans le nom complet » inclut le niveau lors de la "
+"construction d'une du nom complet, qui peut être requêté et utilisé dans les "
 "rapports."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:143
-#, fuzzy
 msgid "fullNameSeparator"
 msgstr "Séparateur"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:144
-#, fuzzy
 msgid "fullNameSeparatorDescription"
 msgstr ""
 "Le séparateur désigne le caractère qui sépare les niveaux lors de "
@@ -258,151 +252,126 @@ msgstr ""
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:236
-#, fuzzy
 msgid "storageTree"
 msgstr "Arbre de stockage"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:304
-#, fuzzy
 msgid "geographyTree"
 msgstr "Arbre géographique"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:340
-#, fuzzy
 msgid "taxonTree"
-msgstr "Arbre taxon"
+msgstr "Arbre taxinomique"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:277
-#, fuzzy
 msgid "division"
 msgstr "Division"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:279
-#, fuzzy
 msgid "divisionName"
 msgstr "Nom"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:280
-#, fuzzy
 msgid "divisionAbbrev"
 msgstr "Abréviation"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:285
-#, fuzzy
 msgid "discipline"
 msgstr "Discipline"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:296
-#, fuzzy
 msgid "disciplineName"
 msgstr "Nom"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:289
-#, fuzzy
 msgid "disciplineType"
 msgstr "Taper"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:420
-#, fuzzy
 msgid "collectionName"
 msgstr "Nom de la collection"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:426
-#, fuzzy
 msgid "collectionCode"
 msgstr "Code"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:432
-#, fuzzy
 msgid "collectionCatalogNumFormatName"
 msgstr "Format du numéro de catalogue"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:442
-#, fuzzy
 msgid "specifyUser"
-msgstr "Spécifiez l'utilisateur"
+msgstr "Utilisateur Specify"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:460
-#, fuzzy
 msgid "specifyUserName"
 msgstr "Nom d'utilisateur"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:461
-#, fuzzy
 msgid "specifyUserNameDescription"
 msgstr "Nom d'utilisateur du compte administrateur principal."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:467
-#, fuzzy
 msgid "specifyUserPassword"
 msgstr "Mot de passe"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:468
-#, fuzzy
 msgid "specifyUserPasswordDescription"
 msgstr "Le mot de passe du compte."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:473
-#, fuzzy
 msgid "specifyUserConfirmPassword"
 msgstr "Confirmez le mot de passe"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:474
-#, fuzzy
 msgid "specifyUserConfirmPasswordDescription"
 msgstr "Doit correspondre au mot de passe saisi ci-dessus."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:446
-#, fuzzy
 msgid "specifyUserFirstName"
 msgstr "Prénom"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:447
-#, fuzzy
 msgid "specifyUserFirstNameDescription"
 msgstr "Prénom de l'agent associé au compte. Facultatif."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:453
-#, fuzzy
 msgid "specifyUserLastName"
 msgstr "Nom de famille"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:454
-#, fuzzy
 msgid "specifyUserLastNameDescription"
 msgstr "Le nom de famille de l'agent associé au compte."
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:597
-#, fuzzy
 msgid "addNewGeographyTree"
 msgstr "Ajouter un nouvel arbre géographique"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:615
-#, fuzzy
 msgid "addNewTaxonTree"
 msgstr "Ajouter un nouvel arbre taxonomique"
 
@@ -410,49 +379,41 @@ msgstr "Ajouter un nouvel arbre taxonomique"
 #: components/SystemConfigurationTool/Hierarchy.tsx:189
 #: components/SystemConfigurationTool/Hierarchy.tsx:714
 #: components/SystemConfigurationTool/Hierarchy.tsx:719
-#, fuzzy
 msgid "hierarchyStructureTitle"
 msgstr "Afficher la hiérarchie institutionnelle"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:193
-#, fuzzy
 msgid "hierarchyStructureHint"
 msgstr "Cliquez sur n'importe quel bloc pour ouvrir son formulaire d'édition."
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:197
-#, fuzzy
 msgid "hierarchySwitchToHorizontal"
 msgstr "Passer en mode horizontal"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:198
-#, fuzzy
 msgid "hierarchySwitchToVertical"
 msgstr "Passer en mode vertical"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:430
-#, fuzzy
 msgid "hierarchyAddNew"
 msgstr "Ajouter"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:204
-#, fuzzy
 msgid "hierarchyDiagram"
 msgstr "Hiérarchie institutionnelle"
 
 #. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:182
-#, fuzzy
 msgid "emptyTaxonTree"
 msgstr "Un arbre taxonomique vide sera créé."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:398
-#, fuzzy
 msgid "collectionCreationStarted"
 msgstr ""
 "La nouvelle collection est en cours de création. Il se peut qu'elle ne soit "
