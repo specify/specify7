@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-02 17:15+0000\n"
+"PO-Revision-Date: 2026-07-03 09:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
 "fr/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:213
@@ -102,10 +102,10 @@ msgstr "Ce champ est obligatoire pour le plan de téléchargement choisi"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:284
-#, fuzzy
 msgid "invalidTreeStructure"
 msgstr ""
-"L'arborescence contient plusieurs valeurs d'espace réservé « Téléchargé » !"
+"Il y a plusieurs valeurs de remplacement « téléchargées» dans "
+"l'arborescence !"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:294
@@ -133,9 +133,8 @@ msgstr ""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:154
-#, fuzzy
 msgid "deletingTreeRoot"
-msgstr "Impossible de supprimer l'élément de définition d'arbre racine."
+msgstr "Impossible de supprimer l'élément racine de l'arbre."
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:156
@@ -149,7 +148,6 @@ msgstr "Le rang du nœud d'arbre est supérieur à celui de certains de ses enfa
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:160
-#, fuzzy
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
 "{operation:string} nœud \"{nodeName:string}\" vers parent synonymisé \""
