@@ -1120,3 +1120,18 @@ def stats_counts(request):
         'Collection': collection_count,
         'Specifyuser': user_count,
     })
+
+# Mocked collection statistics for the home page Collection Statistics dialog
+# TODO: Implement a real endpoint that queries the database
+COLLECTION_STATS = [
+    {'name': 'Mammals', 'specimenCount': 1111, 'collectionType': 'Zoology'},
+    {'name': 'Vascular Plants', 'specimenCount': 22222, 'collectionType': 'Botany'},
+    {'name': 'Fossil Invertebrates', 'specimenCount': 3333, 'collectionType': 'Paleontology'},
+    {'name': 'Birds', 'specimenCount': 44444, 'collectionType': 'Zoology'},
+]
+
+@require_http_methods(['GET', 'HEAD'])
+@login_maybe_required
+def collection_stats(request):
+    """Return summary statistics for each collection as a list"""
+    return JsonResponse(COLLECTION_STATS, safe=False)
