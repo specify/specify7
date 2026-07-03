@@ -553,7 +553,7 @@ export const commonText = createDictionary({
     'en-us': 'Record Sets',
     'ru-ru': 'Наборы записей',
     'es-es': 'Conjuntos de registros',
-    'fr-fr': "Groupe d'enregistrements",
+    'fr-fr': "Ensemble d'enregistrements",
     'uk-ua': 'Набори рекордів',
     'de-ch': 'Satzgruppen',
     'pt-br': 'Conjuntos de discos',
