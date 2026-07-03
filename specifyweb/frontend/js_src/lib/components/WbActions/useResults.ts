@@ -100,8 +100,8 @@ export function useResults({
     hot.batch(() => {
       getHotPlugin(hot, 'hiddenRows').showRows(rowsToShow);
       getHotPlugin(hot, 'hiddenColumns').showColumns(colsToShow);
+      hot.render();
     });
-    triggerDatasetRefresh();
   }, [showResults]);
 
   return { showResults, closeResults, toggleResults };
