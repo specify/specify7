@@ -360,7 +360,13 @@ def do_upload(
         allow_partial = True
 
     failed_rows = []
-    with savepoint("main upload"):
+    with (
+        savepoint("main upload"),
+        cache_unique_catnum_preferences(),
+        cache_uniqueness_rules(),
+        cache_remote_preferences(),
+        cache_permission_queries()
+    ):
         tic = time.perf_counter()
         results: list[UploadResult] = []
         for i, row in enumerate(rows):
