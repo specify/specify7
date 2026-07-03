@@ -84,19 +84,26 @@ export function TreeRow<SCHEMA extends AnyTree>({
     if (!isLoading) return undefined;
 
     void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
-      const sortedRows = Array.from(fetchedRows).sort(
-        sortFunction<Row, number | string>(
-          orderByField === 'rankId'
-            ? (row) => row.rankId
-            : orderByField === 'nodeNumber'
-              ? (row) => row.nodeNumber
-              : orderByField === 'name'
-                ? (row) => row.name
-                : orderByField === 'fullName'
-                  ? (row) => row.fullName
-                  : () => 0
-        )
-      );
+      const sortedRows =
+        treeName === 'GeologicTimePeriod'
+          ? /*
+             * GeologicTimePeriod shoud always be sorted by startPeriod.
+             * This skips the client-side sort to preserve that order.
+             */
+            fetchedRows
+          : Array.from(fetchedRows).sort(
+              sortFunction<Row, number | string>(
+                orderByField === 'rankId'
+                  ? (row) => row.rankId
+                  : orderByField === 'nodeNumber'
+                    ? (row) => row.nodeNumber
+                    : orderByField === 'name'
+                      ? (row) => row.name
+                      : orderByField === 'fullName'
+                        ? (row) => row.fullName
+                        : () => 0
+              )
+            );
       destructorCalled ? undefined : setRows(sortedRows);
     });
 
@@ -104,7 +111,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row, orderByField]);
+  }, [isLoading, getRows, row, orderByField, treeName]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;

@@ -187,11 +187,14 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     async (parentId: number | 'null') =>
       fetchRows(
         // See above comment for sortField being hard coded as name here
-        formatUrl(`${baseUrl}/${parentId}/name/`, {
-          includeAuthor: includeAuthor.toString(),
-        })
+        formatUrl(
+          `${baseUrl}/${parentId}/${tableName === 'GeologicTimePeriod' ? 'startPeriod' : 'name'}/`,
+          {
+            includeAuthor: includeAuthor.toString(),
+          }
+        )
       ),
-    [baseUrl]
+    [baseUrl, tableName, includeAuthor]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
