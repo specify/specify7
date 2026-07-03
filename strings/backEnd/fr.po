@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-03 09:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
 "fr/>\n"
 "Language: fr\n"
@@ -14,7 +14,7 @@ msgstr ""
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:213
 msgid "failedParsingBoolean"
-msgstr "Valeur \"{value:string}\"  non résolvable en Vrai ou Faux"
+msgstr "Valeur \"{value:string}\" non résolvable en Vrai ou Faux"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:215
@@ -33,8 +33,7 @@ msgstr "valeur \"{value:string}\" n'est pas une valeur à virgule flottante vali
 #: components/WorkBench/resultsParser.ts:268
 msgid "failedParsingPickList"
 msgstr ""
-"{value:string} n'est pas une valeur acceptée dans ce champ de liste de "
-"sélection.\n"
+"{value:string} n'est pas une valeur acceptée dans cette liste à choix.\n"
 "Cliquez sur la flèche pour choisir parmi les options disponibles."
 
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
@@ -48,7 +47,7 @@ msgstr ""
 #: components/WorkBench/resultsParser.ts:272
 msgid "pickListValueTooLong"
 msgstr ""
-"valeur de {pickListTable:string} {pickList:string} est plus longue que le "
+"valeur de {pickListTable:string} {pickList:string} plus longue que le "
 "maximum de {maxLength:number|formatted} pour le champ"
 
 #. Used in: Components > Work Bench > Results Parser
@@ -62,7 +61,7 @@ msgstr ""
 #: components/WorkBench/resultsParser.ts:231
 msgid "invalidYear"
 msgstr ""
-"la valeur de la date doit contenir quatre chiffres pour l'année "
+"la valeur de la date doit contenir quatre chiffres pour l'année "
 "{value:string}"
 
 #. Used in: Components > Work Bench > Results Parser
@@ -73,17 +72,20 @@ msgstr "valeur de date invalide: {value:string}. {format:string} est attendu"
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:240
 msgid "coordinateBadFormat"
-msgstr "Nœud [X0X] \"[X25X]\" vers le parent synonymisé \"[X67X]\""
+msgstr "mauvaise valeur pour la latitude ou la longitude : {value:string}"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:244
 msgid "latitudeOutOfRange"
-msgstr "la latitude doit être comprise entre -90 et 90. Réel : {value:string}"
+msgstr ""
+"la latitude doit être comprise entre -90 et 90. Actuellement : {value:string}"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:248
 msgid "longitudeOutOfRange"
-msgstr "la longitude doit être comprise entre -180 et 180. Réel : {value:string}"
+msgstr ""
+"la longitude doit être comprise entre -180 et 180. Actuellement : "
+"{value:string}"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:252
@@ -122,7 +124,7 @@ msgstr "Afficher le traçage"
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:189
 msgid "fieldNotUnique"
-msgstr "Type de collection inattendu \"[X31X]\". \"[X71X]\" attendu"
+msgstr "{tableName:string} doit avoir une valeur unique {fieldName:string}"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:194
@@ -157,19 +159,19 @@ msgstr ""
 #: components/Errors/JsonError.tsx:166
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
-"Synonymisation de \"{nodeName:string}\" en nœud synonymisé "
-"\"{intoName:string}\""
+"Synonymisation de \"{nodeName:string}\" vers le nœud synonymisé : \""
+"{intoName:string}\""
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:171
 msgid "nodeSynonimizeWithChildren"
-msgstr "Type de collection inattendu \"[X31X]\". \"[X71X]\" attendu"
+msgstr "Synonymisation de \"{nodeName:string}\" qui a des enfants"
 
 #. Used in: Components > Errors > Json Error
 #: components/Errors/JsonError.tsx:150
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
-"Mauvaise structure d'arborescence : cas {badRanks:number|formatted} trouvés "
+"Mauvaise structure d'arborescence trouvée, {badRanks:number|formatted} cas "
 "où le rang du nœud n'est pas supérieur à celui de son parent"
 
 #. Used in: Components > Errors > Json Error
@@ -236,7 +238,7 @@ msgstr "Aucune collection trouvée dans la requête pour la table {table:string}
 #: components/Errors/JsonError.tsx:228
 msgid "invalidDatePart"
 msgstr ""
-"Partie de date \"{datePart:string}\" non valide. Attendu l'un des "
+"Partie de date \"{datePart:string}\" non valide. Type de valeur attendue :  "
 "{validDateParts:string}"
 
 #. Used in: Components > Errors > Json Error
@@ -253,27 +255,23 @@ msgstr "Ensemble de données déjà téléchargé"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:285
-#, fuzzy
 msgid "scopeChangeDetected"
 msgstr ""
-"Un changement de portée a été détecté sur cette ligne. Il est recommandé de "
-"supprimer cette ligne de l'ensemble de données."
+"Un changement de périmètre a été détecté sur cette ligne. Il est recommandé "
+"de supprimer cette ligne de l'ensemble de données."
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:287
-#, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Plusieurs définitions d'arbres dans la ligne"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:288
-#, fuzzy
 msgid "invalidCotype"
 msgstr "Type invalide pour le(s) rang(s) d'arbre sélectionné(s)"
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:290
-#, fuzzy
 msgid "invalidComponentType"
 msgstr ""
 "{componentType: string} invalide pour le(s) rang(s) d'arbre sélectionné(s)"
@@ -295,7 +293,6 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Results Parser
 #: components/WorkBench/resultsParser.ts:314
-#, fuzzy
 msgid "attachmentAlreadyLinked"
 msgstr ""
 "Une ou plusieurs pièces jointes sont déjà associées à un enregistrement "
