@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-03 10:01+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "resources/fr/>\n"
 "Language: fr\n"
@@ -34,8 +34,9 @@ msgstr "Masques de saisie"
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/types.tsx:35
+#, fuzzy
 msgid "formDefinitions"
-msgstr ""
+msgstr "Définition de la forme"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
@@ -63,8 +64,9 @@ msgstr "Ressources disciplinaires"
 #: components/FieldFormatters/Parts.tsx:51
 #: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
+#, fuzzy
 msgid "type"
-msgstr ""
+msgstr "Taper"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:239
