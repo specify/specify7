@@ -536,9 +536,9 @@ export const treeText = createDictionary({
     nb: 'Indirekte {collectionObjectTable:string}-telling',
   },
   geologicTimePeriodLine: {
-    comment: 'Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
-    'en-us':
-      '{label:string}: {value:string} {suffix:string}',
+    comment:
+      'Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
+    'en-us': '{label:string}: {value:string} {suffix:string}',
   },
   megaAnnum: {
     comment: 'Abbreviation for millions of years (Mega annum)',
