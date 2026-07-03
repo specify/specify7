@@ -10,6 +10,7 @@ import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
+import { CollectionStatisticsButton } from './CollectionStatistics';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -27,14 +28,17 @@ export function WelcomeView(): JSX.Element {
 
   return (
     <div className="flex h-full flex-col">
-      {displaySearchBar && (
-        <div className="flex justify-end gap-2 pr-4 pt-4">
-          <SearchForm formId={formId} />
-          <Submit.Secondary form={formId}>
-            {commonText.search()}
-          </Submit.Secondary>
-        </div>
-      )}
+      <div className="flex justify-end gap-2 pr-4 pt-4">
+        {displaySearchBar && (
+          <>
+            <SearchForm formId={formId} />
+            <Submit.Secondary form={formId}>
+              {commonText.search()}
+            </Submit.Secondary>
+          </>
+        )}
+        <CollectionStatisticsButton />
+      </div>
       <div
         className={`
         mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4
