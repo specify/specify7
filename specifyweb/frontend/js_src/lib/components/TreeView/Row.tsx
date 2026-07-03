@@ -283,19 +283,26 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   treeName === 'Taxon' &&
                   typeof row.author === 'string'
                     ? `${row.name} ${row.author}`
-                    : doIncludeChronoPeriodsPref &&
-                        treeName === 'GeologicTimePeriod' &&
-                        typeof row.startPeriod === 'string'
-                      ? `${row.name} (${trimDecimal(row.startPeriod)}${
-                          typeof row.startUncertainty === 'string'
-                            ? ` ± ${trimDecimal(row.startUncertainty)}`
-                            : ''
-                        }-${typeof row.endPeriod === 'string' ? trimDecimal(row.endPeriod) : '?'}${
-                          typeof row.endUncertainty === 'string'
-                            ? `±${trimDecimal(row.endUncertainty)}`
-                            : ''
-                        })`
-                      : row.name}
+                    : row.name}
+                  {doIncludeChronoPeriodsPref &&
+                  treeName === 'GeologicTimePeriod' &&
+                  typeof row.startPeriod === 'string' ? (
+                    <span className="text-sm font-normal">
+                      {' '}
+                      ({trimDecimal(row.startPeriod)}
+                      {typeof row.startUncertainty === 'string'
+                        ? ` ± ${trimDecimal(row.startUncertainty)}`
+                        : ''}
+                      {' – '}
+                      {typeof row.endPeriod === 'string'
+                        ? trimDecimal(row.endPeriod)
+                        : ''}
+                      {typeof row.endUncertainty === 'string'
+                        ? ` ± ${trimDecimal(row.endUncertainty)}`
+                        : ''}
+                      )
+                    </span>
+                  ) : undefined}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
