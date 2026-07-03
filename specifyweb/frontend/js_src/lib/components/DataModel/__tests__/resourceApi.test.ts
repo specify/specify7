@@ -15,7 +15,6 @@ import type {
   CollectionObjectAttribute,
   CollectionObjectType,
   Determination,
-  Accession,
 } from '../types';
 
 requireContext();
@@ -531,6 +530,7 @@ describe('save base record which has independent subviews', () => {
       tables.CollectionObject.strictGetRelationship('accession')!;
     const independentCollection =
       new tables.CollectionObject.IndependentCollection({
+        //creates a new form with
         related: parentResource,
         field: collectionObjectRel,
       }) as Collection<CollectionObject>;
@@ -544,20 +544,42 @@ describe('save base record which has independent subviews', () => {
 
   test('modifying a field on an independent resource marks base record as needsSaved and save applies the change', async () => {
     const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection(); //creates fake parent form and fake list of independent subviews
+
+    expect(parentResource.needsSaved).toBe(false); //since we just created a new record, the needsSaved needs to be false
+
+    const existingCollectionObject = independentCollection.models[0]; //get the first collection object from collection
+    existingCollectionObject.set('text1', 'changed-value'); //change a field in the collection object
+
+    expect(parentResource.needsSaved).toBe(true); //after you change, the save button should light up
+
+    await parentResource.save(); //save
+
+    expect(parentResource.needsSaved).toBe(false); //after saving, save button should be disabled
+    // Change is preserved in memory after save
+    expect(existingCollectionObject.get('text1')).toBe('changed-value'); //the change we made is still in memory
+  });
+
+  test('modifying a sub-record of an independent resource propagates needsSaved to base record and save completes', async () => {
+    const { parentResource, independentCollection } =
       await setupParentWithIndependentCollection();
 
     expect(parentResource.needsSaved).toBe(false);
 
-    const existingCollectionObject = independentCollection.models[0];
-    existingCollectionObject.set('text1', 'changed-value');
+    const collectionObject = independentCollection.models[0];
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+    const determination = determinations!.models[0];
+    determination.set('number1', 99);
 
+    // Change to sub-record propagates needsSaved all the way up to base record
     expect(parentResource.needsSaved).toBe(true);
 
     await parentResource.save();
 
     expect(parentResource.needsSaved).toBe(false);
-    // Change is preserved in memory after save
-    expect(existingCollectionObject.get('text1')).toBe('changed-value');
+    // Change to sub-record is preserved in memory after save
+    expect(determination.get('number1')).toBe(99);
   });
 });
 
