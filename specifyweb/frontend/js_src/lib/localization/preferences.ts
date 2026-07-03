@@ -903,7 +903,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Specify Splash',
     'ru-ru': 'Укажите заставку',
     'es-es': 'Especificar Splash',
-    'fr-fr': 'Spécifiez Splash',
+    'fr-fr': 'Specify Splash',
     'uk-ua': 'Вкажіть логотип',
     'de-ch': 'Splash angeben',
     'pt-br': 'Especificar Splash',
@@ -1600,7 +1600,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Specify Network Badge',
     'ru-ru': 'Укажите сетевой значок',
     'es-es': 'Especificar insignia de red',
-    'fr-fr': 'Spécifiez le badge réseau',
+    'fr-fr': 'Badge réseau Specify',
     'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerkabzeichen angeben',
     'pt-br': 'Especificar o ícone de rede',
@@ -2246,7 +2246,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Lokalisieren Sie die Namen der erkannten App-Ressourcen',
     'es-es':
       'Localizar los nombres de los recursos de la aplicación reconocidos',
-    'fr-fr': "Localiser les noms des ressources d'application reconnues",
+    'fr-fr': "Localisez les noms de ressources de l'application reconnues",
     'ru-ru': 'Локализуйте названия распознанных ресурсов приложения.',
     'uk-ua': 'Локалізувати назви розпізнаних ресурсів програми',
     'pt-br': 'Localize os nomes dos recursos de aplicativos reconhecidos.',
@@ -2635,7 +2635,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Scope "Entire Table" Picklists',
     'de-ch': 'Bereich „Gesamte Tabelle“ Auswahllisten',
     'es-es': 'Listas desplegables de alcance "Tabla completa"',
-    'fr-fr': 'Listes de sélection « Tableau entier »',
+    'fr-fr': 'Perimètre des picklists de type "table entière"',
     'pt-br': 'Escopo "Tabela Inteira" Listas de seleção',
     'ru-ru': 'Область действия: Списки выбора "Вся таблица"',
     'uk-ua': 'Списки вибору «Уся таблиця»',
@@ -2650,7 +2650,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Si está habilitada, las listas desplegables de tipo "Tabla completa" solo mostrarán los elementos que se estén utilizando en la colección actual.',
     'fr-fr':
-      "Si cette option est activée, les listes de sélection de type « Tableau entier » n'afficheront que les éléments utilisés dans la collection actuelle.",
+      "Si cette option est activée, les picklists de type « table entière » n'afficheront que les éléments utilisés dans la collection actuelle.",
     'pt-br':
       'Se ativada, a opção "Lista de opções" do tipo "Tabela inteira" exibirá apenas os itens que estão em uso na coleção atual.',
     'ru-ru':
