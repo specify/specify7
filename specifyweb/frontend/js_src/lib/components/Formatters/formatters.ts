@@ -198,9 +198,12 @@ async function formatField(
 
   if (trimZeros) {
     const num = Number(formatted);
-    formatted = Number.isNaN(num) || (formatted ?? '').trim() === '' || !Number.isSafeInteger(num)
-      ? formatted
-      : num.toString();
+    formatted =
+      Number.isNaN(num) ||
+      (formatted ?? '').trim() === '' ||
+      !Number.isSafeInteger(num)
+        ? formatted
+        : num.toString();
   }
 
   return {
