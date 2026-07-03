@@ -300,21 +300,20 @@ export function TreeRow<SCHEMA extends AnyTree>({
                                   'startPeriod'
                                 ).label,
                               startValue: trimDecimal(row.startPeriod),
-                              startUncertainty:
+                              startRangeSuffix:
                                 typeof row.startUncertainty === 'string'
-                                  ? ` ± ${trimDecimal(row.startUncertainty)}`
-                                  : '',
+                                  ? `(± ${trimDecimal(row.startUncertainty)} ${treeText.megaAnnum()})`
+                                  : treeText.megaAnnum(),
                               endLabel:
                                 getField(
                                   tables.GeologicTimePeriod,
                                   'endPeriod'
                                 ).label,
                               endValue: trimDecimal(row.endPeriod),
-                              endUncertainty:
+                              endRangeSuffix:
                                 typeof row.endUncertainty === 'string'
-                                  ? ` ± ${trimDecimal(row.endUncertainty)}`
-                                  : '',
-                              megaAnnum: treeText.megaAnnum(),
+                                  ? `(± ${trimDecimal(row.endUncertainty)} ${treeText.megaAnnum()})`
+                                  : treeText.megaAnnum(),
                             })
                           : treeText.geologicTimePeriodSingle({
                               periodLabel:
@@ -323,11 +322,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                                   'startPeriod'
                                 ).label,
                               startValue: trimDecimal(row.startPeriod),
-                              startUncertainty:
+                              startRangeSuffix:
                                 typeof row.startUncertainty === 'string'
-                                  ? ` ± ${trimDecimal(row.startUncertainty)}`
-                                  : '',
-                              megaAnnum: treeText.megaAnnum(),
+                                  ? `(± ${trimDecimal(row.startUncertainty)} ${treeText.megaAnnum()})`
+                                  : treeText.megaAnnum(),
                             })
                       }
                     >
