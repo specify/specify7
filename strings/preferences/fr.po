@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-03 10:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Preferences/index.tsx:103
@@ -103,7 +103,6 @@ msgstr "Désactivez les animations et les transitions non essentielles."
 #: components/Preferences/UserDefinitions.tsx:1713
 #: components/Preferences/UserDefinitions.tsx:1745
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#, fuzzy
 msgid "rankThreshold"
 msgstr "Afficher le nombre d'objets ci-dessous"
 
@@ -171,7 +170,6 @@ msgstr "Famille de polices"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:308
 #: components/Preferences/UserDefinitions.tsx:943
-#, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
 "Vous pouvez spécifier n'importe quelle police installée sur votre "
@@ -473,9 +471,8 @@ msgstr "Contenu"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:252
-#, fuzzy
 msgid "defaultImage"
-msgstr "Spécifiez Splash"
+msgstr "Specify Splash"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:256
@@ -513,7 +510,6 @@ msgstr "Comportement"
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:192
 #: components/Preferences/CollectionDefinitions.tsx:232
-#, fuzzy
 msgid "inheritance"
 msgstr "Héritage"
 
@@ -783,7 +779,6 @@ msgstr "Largeur de colonne flexible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:918
-#, fuzzy
 msgid "flexibleSubGridColumnWidth"
 msgstr "Largeur de colonne flexible de la grille de sous-vue"
 
@@ -799,9 +794,8 @@ msgstr "Fermer sur clic extérieur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:977
-#, fuzzy
 msgid "specifyNetworkBadge"
-msgstr "Spécifiez le badge réseau"
+msgstr "Badge réseau Specify"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:984
@@ -825,7 +819,6 @@ msgstr "Coins arrondis"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:963
-#, fuzzy
 msgid "showSubviewBorders"
 msgstr "Afficher les bordures autour des sous-vues"
 
@@ -981,7 +974,6 @@ msgstr "Détecter automatiquement en fonction du format du numéro de catalogue.
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:269
-#, fuzzy
 msgid "uniqueness"
 msgstr "Unicité"
 
@@ -1093,9 +1085,8 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2136
-#, fuzzy
 msgid "localizeResourceNames"
-msgstr "Localiser les noms des ressources d'application reconnues"
+msgstr "Localisez les noms de ressources de l'application reconnues"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2174
@@ -1124,13 +1115,11 @@ msgstr "Choisissez une image"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:675
-#, fuzzy
 msgid "customLogo"
 msgstr "URL de l'image étendue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:683
-#, fuzzy
 msgid "customLogoCollapsed"
 msgstr "URL de l'image réduite"
 
@@ -1155,14 +1144,12 @@ msgstr "Couleur du bouton Enregistrer"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:428
 #: components/Preferences/UserDefinitions.tsx:489
-#, fuzzy
 msgid "secondaryButtonColor"
 msgstr "Couleur du bouton secondaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:436
 #: components/Preferences/UserDefinitions.tsx:497
-#, fuzzy
 msgid "secondaryLightButtonColor"
 msgstr "Couleur du bouton d'éclairage secondaire"
 
@@ -1198,7 +1185,6 @@ msgstr "Ouvrir tous les enregistrements en mode lecture seule"
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:297
 #: components/Preferences/UserDefinitions.tsx:1848
-#, fuzzy
 msgid "displayBasicView"
 msgstr "Afficher la vue de base"
 
@@ -1209,7 +1195,6 @@ msgstr "Afficher les opérateurs de comparaison pour les champs textuels"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1856
-#, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
 "Permet d'appliquer les filtres suivants aux champs de texte : Supérieur à, "
@@ -1229,13 +1214,11 @@ msgstr "Vue détaillée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1439
-#, fuzzy
 msgid "attachmentPreviewMode"
 msgstr "Mode aperçu des pièces jointes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1446
-#, fuzzy
 msgid "fullResolution"
 msgstr "Résolution maximale"
 
@@ -1251,7 +1234,6 @@ msgstr "Ajouter une barre de recherche sur la page d'accueil"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:206
-#, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
 "Seuls les enregistrements {collectionObjectTableName: string} sans "
@@ -1260,7 +1242,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:196
-#, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
 "Activer l'héritage de {catalogNumberFieldName: string} pour les éléments "
@@ -1275,7 +1256,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:273
-#, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
 "Imposer l'unicité du champ {catalogNumberFieldName: string} entre "
@@ -1283,17 +1263,15 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:37
-#, fuzzy
 msgid "scopeEntireTablePicklists"
-msgstr "Listes de sélection « Tableau entier »"
+msgstr "Perimètre des picklists de type \"table entière\""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:38
-#, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
-"Si cette option est activée, les listes de sélection de type « Tableau entier"
-" » n'afficheront que les éléments utilisés dans la collection actuelle."
+"Si cette option est activée, les picklists de type « table entière » "
+"n'afficheront que les éléments utilisés dans la collection actuelle."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:244
