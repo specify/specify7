@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-01 13:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-03 11:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "interactions/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
-"X-Generator: Weblate 2026.7.dev0\n"
+"X-Generator: Weblate 2026.7.1.dev0\n"
 
 #. Used in: Components > Form Commands > Show Transactions ⬤ Components > Header > Menu Item Definitions ⬤ Components > Interactions > Interactions Dialog ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes
 #: components/FormCommands/ShowTransactions.tsx:70
@@ -33,7 +33,6 @@ msgstr "{table:string} Retour"
 
 #. 🟥Example: There are no interactions linked to this {preparation}. Used in: Components > Form Commands > Show Transactions
 #: components/FormCommands/ShowTransactions.tsx:83
-#, fuzzy
 msgid "noInteractions"
 msgstr "Aucune interaction n'est liée à cette préparation."
 
@@ -62,7 +61,6 @@ msgstr "Il y a des problèmes avec la saisie :"
 
 #. 🟥See documentation for syntax for plural rules. Used in: Components > Interactions > Interaction Dialog
 #: components/Interactions/InteractionDialog.tsx:497
-#, fuzzy
 msgid "byChoosingRecordSet"
 msgstr "Choisissez un {recordSet:string} ({count:number|formatted} disponible)"
 
@@ -184,13 +182,11 @@ msgstr "Montant résolu"
 
 #. 🟥Used to format preparations in the prep return dialog. Used in: Components > Interactions > Prep Dialog Row
 #: components/Interactions/PrepDialogRow.tsx:263
-#, fuzzy
 msgid "prepReturnFormatter"
 msgstr "{tableName:string} : {resource:string}"
 
 #. Used in: Components > Interactions > Prep Return Row
 #: components/Interactions/PrepReturnRow.tsx:41
-#, fuzzy
 msgid "unCataloged"
 msgstr "non catalogué"
 
@@ -212,19 +208,16 @@ msgstr ""
 #: components/Interactions/LoanReturn.tsx:197
 #: components/Interactions/PrepDialog.tsx:140
 #: components/QueryBuilder/Results.tsx:364
-#, fuzzy
 msgid "deselectAll"
 msgstr "Désélectionnez tout"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:270
-#, fuzzy
 msgid "available"
 msgstr "Disponible"
 
 #. Used in: Components > Interactions > Prep Dialog
 #: components/Interactions/PrepDialog.tsx:271
-#, fuzzy
 msgid "unavailable"
 msgstr "Indisponible"
 
@@ -237,7 +230,6 @@ msgstr "Retourner les enregistrements {tableLoan:string}"
 #. 🟥Example: Create a Loan. Used in: Components > Interactions > Interaction Dialog ⬤ Components > Interactions > Prep Dialog
 #: components/Interactions/InteractionDialog.tsx:491
 #: components/Interactions/PrepDialog.tsx:147
-#, fuzzy
 msgid "createRecord"
 msgstr "Créer {table:string}"
 
@@ -251,12 +243,10 @@ msgstr "Aucun de ces enregistrements n'a de préparation. Souhaitez-vous continu
 #: components/FormSliders/AttachmentWarningDeletion.tsx:53
 #: components/Interactions/InteractionDialog.tsx:480
 #: components/TreeView/AddRank.tsx:62
-#, fuzzy
 msgid "continue"
 msgstr "Continuer"
 
 #. Used in: Components > Interactions > Prep Dialog Row
 #: components/Interactions/PrepDialogRow.tsx:175
-#, fuzzy
 msgid "notAvailable"
 msgstr "Pas disponible"
