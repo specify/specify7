@@ -189,6 +189,11 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     treeDefinition.id
   }`;
 
+  const [biostratFilter = 'all', setBiostratFilter] = useCachedState(
+    'tree',
+    'biostratFilter'
+  );
+
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(
@@ -197,10 +202,11 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           {
             includeAuthor: includeAuthor.toString(),
             includeStartEndPeriods: includeStartEndPeriods.toString(),
+            biostrat: biostratFilter,
           }
         )
       ),
-    [baseUrl, tableName, includeAuthor, includeStartEndPeriods]
+    [baseUrl, tableName, includeAuthor, includeStartEndPeriods, biostratFilter]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
@@ -409,13 +415,29 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       ) : (
         treeContainer('first')
       )}
-      <Label.Inline>
-        <Input.Checkbox
-          checked={hideEmptyNodes}
-          onValueChange={setHideEmptyNodes}
-        />
-        {treeText.associatedNodesOnly()}
-      </Label.Inline>
+      <div className="flex items-center justify-between">
+        <Label.Inline>
+          <Input.Checkbox
+            checked={hideEmptyNodes}
+            onValueChange={setHideEmptyNodes}
+          />
+          {treeText.associatedNodesOnly()}
+        </Label.Inline>
+        {tableName === 'GeologicTimePeriod' && (
+          <Select
+            className="w-max"
+            value={biostratFilter}
+            onValueChange={(value: string): void => {
+              setBiostratFilter(value as 'all' | 'bio' | 'chrono');
+              setRows(undefined);
+            }}
+          >
+            <option value="all">{treeText.biostratAll()}</option>
+            <option value="chrono">{treeText.biostratChrono()}</option>
+            <option value="bio">{treeText.biostratBio()}</option>
+          </Select>
+        )}
+      </div>
     </Container.Full>
   );
 }

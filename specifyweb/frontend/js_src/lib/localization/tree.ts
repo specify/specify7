@@ -544,6 +544,15 @@ export const treeText = createDictionary({
     comment: 'Abbreviation for millions of years (Mega annum)',
     'en-us': 'Ma',
   },
+  biostratAll: {
+    'en-us': 'All Nodes',
+  },
+  biostratChrono: {
+    'en-us': 'Chronostratigraphy',
+  },
+  biostratBio: {
+    'en-us': 'Biostratigraphy',
+  },
   editRanks: {
     'en-us': 'Edit Ranks',
     'ru-ru': 'Редактировать ранги',

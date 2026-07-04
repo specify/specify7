@@ -166,13 +166,14 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     """
     include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
     include_start_end_periods = request.GET.get('includestartendperiods', False) and tree == 'geologictimeperiod'
+    biostrat = request.GET.get('biostrat', 'all')
     with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
-        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, session)
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session)
     return HttpResponse(toJson(results), content_type='application/json')
 
 
-def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, session):
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -241,9 +242,21 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
         .outerjoin(synonym, synonym.AcceptedID == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
-        .group_by(node._id)
-        .order_by(orderby)
     )
+
+    if biostrat != 'all' and tree == 'geologictimeperiod':
+        if biostrat == 'bio':
+            query = query.where(
+                (node.ParentID == None) | (node.isBioStrat == True)
+            )
+        elif biostrat == 'chrono':
+            query = query.where(
+                (node.ParentID == None)
+                | (node.isBioStrat == False)
+                | (node.isBioStrat == None)
+            )
+
+    query = query.group_by(node._id).order_by(orderby)
 
     return session.execute(query).all()
 
