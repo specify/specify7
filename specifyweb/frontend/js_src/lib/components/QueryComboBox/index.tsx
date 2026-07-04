@@ -341,6 +341,7 @@ export function QueryComboBox({
                     relatedTable,
                     subViewRelationship,
                     treeDefinition,
+                    typeSearchName: typeSearch.name,
                   }),
                 })
               )
@@ -547,6 +548,10 @@ export function QueryComboBox({
                                 relatedTable,
                                 subViewRelationship,
                                 treeDefinition,
+                                typeSearchName:
+                                  typeof typeSearch === 'object'
+                                    ? typeSearch.name
+                                    : undefined,
                               })
                                 .map(serializeResource)
                                 .map(({ fieldName, startValue }) =>
@@ -587,6 +592,8 @@ export function QueryComboBox({
                                               isNot: false,
                                               value: startValue,
                                             }
+                                          : fieldName === 'isBioStrat'
+                                            ? undefined
                                           : f.error(
                                               `extended filter not created`,
                                               {
