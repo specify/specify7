@@ -593,7 +593,13 @@ export function QueryComboBox({
                                               value: startValue,
                                             }
                                           : fieldName === 'isBioStrat'
-                                            ? undefined
+                                            ? {
+                                                field: 'isBioStrat',
+                                                isRelationship: false,
+                                                operation: 'in',
+                                                isNot: false,
+                                                value: 'true',
+                                              }
                                           : f.error(
                                               `extended filter not created`,
                                               {
