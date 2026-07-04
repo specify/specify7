@@ -64,12 +64,7 @@ export const getDerivedPermissions = () => derivedPermissions;
 const sortPolicies = (policy: typeof operationPolicies) =>
   JSON.stringify(
     Object.fromEntries(
-      Object.entries(policy)
-        .sort(sortFunction(([key]) => key))
-        .map(([key, actions]) => [
-          key,
-          Array.from(actions).sort(sortFunction((action) => action)),
-        ])
+      Object.entries(policy).sort(sortFunction(([key]) => key))
     )
   );
 

@@ -135,6 +135,9 @@ export const notificationsText = createDictionary({
     'hr-hr': 'Izvoz upita u CSV je završen.',
     nb: 'Eksport av avansert søk til CSV fullført.',
   },
+  workbenchFailedRows: {
+    'en-us': 'Csv with failed rows for dataset {name:string}.',
+  },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
     'ru-ru': 'Экспорт запроса в KML завершен.',

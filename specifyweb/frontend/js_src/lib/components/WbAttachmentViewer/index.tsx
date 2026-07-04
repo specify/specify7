@@ -30,7 +30,6 @@ import { serializeResource } from '../DataModel/serializers';
 import type { Attachment } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { NotFoundView } from '../Router/NotFoundView';
-import { Slider } from '../FormSliders/Slider';
 
 const { parseCacheKey } = exportsForTests;
 
@@ -132,13 +131,6 @@ export function WbAttachmentViewerView(): JSX.Element {
       header={attachmentsText.attachments()}
       headerButtons={
         <div className="flex items-center gap-2 md:gap-2 ml-auto">
-          <Slider
-            value={selectedAttachment}
-            count={attachmentIds?.length ?? 1}
-            onChange={(newValue: number) => {
-              setSelectedAttachment(newValue);
-            }}
-          />
           <Button.Secondary
             onClick={(): void => {
               removeCache('workBenchAttachmentViewer', viewerId);

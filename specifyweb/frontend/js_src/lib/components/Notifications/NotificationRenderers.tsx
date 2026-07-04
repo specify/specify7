@@ -131,6 +131,22 @@ export const notificationRenderers: IR<
       </>
     );
   },
+  'workbench-failed-rows'(notification) {
+    return (
+      <>
+        {notificationsText.workbenchFailedRows({name:notification.payload.datasetname})}
+        <Link.Success
+          className="w-fit"
+          download
+          href={`/static/depository/${encodeURIComponent(
+            notification.payload.file
+          )}`}
+        >
+          {notificationsText.download()}
+        </Link.Success>
+      </>
+    );
+  },
   'dataset-ownership-transferred'(notification) {
     return (
       <StringToJsx
