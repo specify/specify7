@@ -275,6 +275,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
+        biostratFilter={biostratFilter}
         conformation={[conformation, setConformation]}
         focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}

@@ -233,35 +233,41 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 
         func.count(distinct(child._id)).label("child_count"),
         group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        (
+            func.min(node.isBioStrat)
+            if tree == 'geologictimeperiod'
+            else func.min(literal("NULL"))
+        ).label("is_biostrat"),
     ]
 
-    child_biostrat_filter = True
     if biostrat != 'all' and tree == 'geologictimeperiod':
+        # Count all matching descendants (any depth) using nested-set ranges
         if biostrat == 'bio':
-            child_biostrat_filter = child.isBioStrat == True
-        elif biostrat == 'chrono':
-            child_biostrat_filter = (child.isBioStrat == False) | (child.isBioStrat == None)
+            descendant_match = child.isBioStrat == True
+        else:
+            descendant_match = (child.isBioStrat == False) | (child.isBioStrat == None)
+        matching_descendant_count = (
+            select(func.count(distinct(child._id)))
+            .where(
+                child.nodeNumber > node.nodeNumber,
+                child.nodeNumber <= node.highestChildNodeNumber,
+                descendant_match,
+                getattr(child, tree_table.name + "TreeDefID") == int(treedef),
+            )
+            .correlate(node)
+            .scalar_subquery()
+            .label("matching_descendant_count")
+        )
+        cols.append(matching_descendant_count)
 
     query = (
         select(*cols)
-        .outerjoin(child, and_(child.ParentID == node._id, child_biostrat_filter))
+        .outerjoin(child, child.ParentID == node._id)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
         .outerjoin(synonym, synonym.AcceptedID == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
     )
-
-    if biostrat != 'all' and tree == 'geologictimeperiod':
-        if biostrat == 'bio':
-            query = query.where(
-                (node.ParentID == None) | (node.isBioStrat == True)
-            )
-        elif biostrat == 'chrono':
-            query = query.where(
-                (node.ParentID == None)
-                | (node.isBioStrat == False)
-                | (node.isBioStrat == None)
-            )
 
     query = query.group_by(node._id).order_by(orderby)
 
