@@ -88,8 +88,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
               [resolvedSearchField]: searchCaseSensitive
                 ? value
                 : value.toLowerCase(),
-              ...(biostratFilter === 'bio' &&
-              tableName === 'GeologicTimePeriod'
+              ...(biostratFilter === 'bio' && tableName === 'GeologicTimePeriod'
                 ? { isBioStrat: 'True' }
                 : {}),
             }
@@ -108,16 +107,16 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
                 return isBioStrat !== true;
               })
               .map((node) => {
-              const rankDefinition = treeDefinitionItems.find(
-                ({ rankId }) => rankId === node.rankId
-              );
-              const rankName = rankDefinition?.title || rankDefinition?.name;
-              return {
-                label: node.fullName ?? node.name,
-                subLabel: rankName,
-                data: node as SerializedResource<SCHEMA>,
-              };
-            })
+                const rankDefinition = treeDefinitionItems.find(
+                  ({ rankId }) => rankId === node.rankId
+                );
+                const rankName = rankDefinition?.title || rankDefinition?.name;
+                return {
+                  label: node.fullName ?? node.name,
+                  subLabel: rankName,
+                  data: node as SerializedResource<SCHEMA>,
+                };
+              })
           )
         }
         value={searchValue}
