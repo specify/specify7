@@ -13,7 +13,7 @@ from sqlalchemy import distinct
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import get_object_or_404
 from specifyweb.specify.api.serializers import obj_to_data, toJson
-from sqlalchemy import select, func, distinct, literal
+from sqlalchemy import and_, select, func, distinct, literal
 from sqlalchemy.orm import aliased
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
@@ -235,9 +235,16 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
         group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
     ]
 
+    child_biostrat_filter = True
+    if biostrat != 'all' and tree == 'geologictimeperiod':
+        if biostrat == 'bio':
+            child_biostrat_filter = child.isBioStrat == True
+        elif biostrat == 'chrono':
+            child_biostrat_filter = (child.isBioStrat == False) | (child.isBioStrat == None)
+
     query = (
         select(*cols)
-        .outerjoin(child, child.ParentID  == node._id)
+        .outerjoin(child, and_(child.ParentID == node._id, child_biostrat_filter))
         .outerjoin(accepted, node.AcceptedID == accepted._id)
         .outerjoin(synonym, synonym.AcceptedID == node._id)
         .where(treedef_col == int(treedef))
