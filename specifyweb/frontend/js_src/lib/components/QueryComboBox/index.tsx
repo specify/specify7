@@ -598,7 +598,7 @@ export function QueryComboBox({
                                                 isRelationship: false,
                                                 operation: 'in',
                                                 isNot: false,
-                                                value: 'true',
+                                                value: '1',
                                               }
                                           : f.error(
                                               `extended filter not created`,
