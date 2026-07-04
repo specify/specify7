@@ -341,6 +341,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           }}
         />
         <TreeViewSearch
+          biostratFilter={biostratFilter}
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionId={treeDefinition.id}
