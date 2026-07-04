@@ -293,9 +293,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       className="text-sm font-normal"
                       title={[
                         treeText.geologicTimePeriodLine({
-                          label:
-                            getField(tables.GeologicTimePeriod, 'startPeriod')
-                              .label,
+                          label: getField(
+                            tables.GeologicTimePeriod,
+                            'startPeriod'
+                          ).label,
                           value: trimDecimal(row.startPeriod!),
                           suffix:
                             typeof row.startUncertainty === 'string'
@@ -304,9 +305,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                         }),
                         typeof row.endPeriod === 'string'
                           ? treeText.geologicTimePeriodLine({
-                              label:
-                                getField(tables.GeologicTimePeriod, 'endPeriod')
-                                  .label,
+                              label: getField(
+                                tables.GeologicTimePeriod,
+                                'endPeriod'
+                              ).label,
                               value: trimDecimal(row.endPeriod),
                               suffix:
                                 typeof row.endUncertainty === 'string'

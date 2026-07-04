@@ -600,13 +600,13 @@ export function QueryComboBox({
                                                 isNot: false,
                                                 value: '1',
                                               }
-                                          : f.error(
-                                              `extended filter not created`,
-                                              {
-                                                fieldName,
-                                                startValue,
-                                              }
-                                            )
+                                            : f.error(
+                                                `extended filter not created`,
+                                                {
+                                                  fieldName,
+                                                  startValue,
+                                                }
+                                              )
                                 )
                             ),
                           })
