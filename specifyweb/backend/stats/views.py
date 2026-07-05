@@ -182,3 +182,41 @@ def get_percent_imaged(request):
     (select count(*) as co_count from collectionobject co where co.CollectionID = %(coid)s) as sub) as percent_imaged""", {"coid": request.specify_collection.id})
     percent_imaged = round(cursor.fetchone()[0], 2)
     return percent_imaged
+
+
+# Hardcoded collection statistics for the Collection Statistics home page widget.
+# This data is mocked. The keys match the shape expected by the frontend widget.
+COLLECTION_STATISTICS = [
+    {"name": "Mammals", "specimenCount": 12543, "collectionType": "Zoology"},
+    {"name": "Herbarium", "specimenCount": 8210, "collectionType": "Botany"},
+    {"name": "Fossil Invertebrates", "specimenCount": 3387, "collectionType": "Paleontology"},
+]
+
+
+@login_maybe_required
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns summary statistics for each collection.',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'array',
+                            'items': {
+                                'type': 'object',
+                                'properties': {
+                                    'name': {'type': 'string'},
+                                    'specimenCount': {'type': 'integer'},
+                                    'collectionType': {'type': 'string'},
+                                },
+                            },
+                        }
+                    }
+                }
+            }
+        }
+    }}, )
+def collection_summary(request) -> HttpResponse:
+    # safe=False is required for JsonResponse to serialize a top-level list.
+    return http.JsonResponse(COLLECTION_STATISTICS, safe=False)
