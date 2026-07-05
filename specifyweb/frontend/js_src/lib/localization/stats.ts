@@ -483,5 +483,23 @@ export const statsText = createDictionary({
     'uk-ua':
       'Інтервал часу в годинах, через який сторінка статистики автоматично оновлюватиме свої дані. Значення за замовчуванням – 24.',
   },
+  collectionStatistics: {
+    'en-us': 'Collection Statistics',
+  },
+  collectionName: {
+    'en-us': 'Collection Name',
+  },
+  numberOfSpecimens: {
+    'en-us': 'Number of Specimens',
+  },
+  collectionType: {
+    'en-us': 'Collection Type',
+  },
+  noCollectionStatistics: {
+    'en-us': 'No collection statistics are available.',
+  },
+  unableToLoadStatistics: {
+    'en-us': 'Unable to load collection statistics. Please try again.',
+  },
 } as const);
 /* eslint-enable @typescript-eslint/naming-convention */
