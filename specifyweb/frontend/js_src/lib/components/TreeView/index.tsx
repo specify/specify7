@@ -142,15 +142,31 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     `conformations${tableName}`
   );
 
-  React.useEffect(
-    () => setUrlConformation(serializeConformation(conformation)),
-    [conformation, setUrlConformation]
-  );
+  // On initial mount, restore conformation from URL or cache.
+  // The URL is the single source of truth during a session;
+  // the cache persists state for when the user closes and reopens the tab.
+  const isFirstRender = React.useRef(true);
   React.useEffect(() => {
-    if (typeof urlConformation !== 'string') return;
-    const parsed = deserializeConformation(urlConformation);
-    setConformation(parsed);
-  }, [setConformation]);
+    if (!isFirstRender.current) return;
+    isFirstRender.current = false;
+
+    if (typeof urlConformation === 'string') {
+      // URL has a conformation → use it as the initial state
+      const parsed = deserializeConformation(urlConformation);
+      setConformation(parsed);
+    } else if (conformation !== defaultConformation) {
+      // No URL conformation but cache has one → promote to URL
+      setUrlConformation(serializeConformation(conformation));
+    }
+    // If neither URL nor cache has a conformation, use the default (empty).
+  }, [conformation, urlConformation, setConformation, setUrlConformation]);
+
+  // When the user interacts with the tree, persist the conformation
+  // to both the URL (primary) and the cache (for session restoration).
+  React.useEffect(() => {
+    if (isFirstRender.current) return;
+    setUrlConformation(serializeConformation(conformation));
+  }, [conformation, setUrlConformation]);
 
   useTitle(treeText.treeViewTitle({ treeName: table.label }));
 
