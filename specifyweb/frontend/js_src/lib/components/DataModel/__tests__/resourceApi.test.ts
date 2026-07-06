@@ -558,6 +558,34 @@ describe('save base record which has independent subviews', () => {
     // Change is preserved in memory after save
     expect(existingCollectionObject.get('text1')).toBe('changed-value');
   });
+
+  test('modifying a sub-record of an independent resource propagates needsSaved to base record and save completes', async () => {
+    const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    const collectionObject = independentCollection.models[0];
+
+    const determinations =
+      collectionObject.getDependentResource('determinations');
+
+    const determination = determinations!.models[0];
+
+    determination.set('number1', 99);
+
+    // Change to sub-record propagates needsSaved all the way up to base record
+
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    // Change to sub-record is preserved in memory after save
+
+    expect(determination.get('number1')).toBe(99);
+  });
 });
 
 describe('resource initialization', () => {
