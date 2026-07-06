@@ -302,7 +302,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es':
       'Objetos de la colección con determinaciones actuales, que muestran el nombre del taxón determinado, el nombre común del taxón y el determinante.',
     'fr-fr':
-      'Objets de la collection avec déterminations actuelles, indiquant le nom du taxon déterminé, le nom commun du taxon et le déterminant.',
+      'Objets avec déterminations actuelles, indiquant le nom du taxon déterminé, le nom commun du taxon et le déterminant.',
     'hr-hr':
       'Objekti zbirke s trenutnim određenjima, koji prikazuju određeni naziv taksona, uobičajeni naziv taksona i odrednicu.',
     nb: 'Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte taksonnavnet, taksonets vanlige navn og bestemmer.',

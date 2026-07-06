@@ -201,7 +201,7 @@ export const userText = createDictionary({
     'en-us': 'Sign in with Specify Account',
     'ru-ru': 'Войти, указав учетную запись',
     'es-es': 'Iniciar sesión con una cuenta de Specify',
-    'fr-fr': 'Se connecter avec le compte spécifié',
+    'fr-fr': 'Se connecter avec un compte Specify',
     'uk-ua': 'Увійти за допомогою Вказати обліковий запис',
     'de-ch': 'Mit dem angegebenen Konto anmelden',
     'pt-br': 'Faça login com a conta especificada.',
@@ -407,7 +407,7 @@ export const userText = createDictionary({
     'en-us': 'Permission denied error',
     'ru-ru': 'Ошибка "Доступ запрещен"',
     'es-es': 'Error de permiso denegado',
-    'fr-fr': "Erreur d'autorisation refusée",
+    'fr-fr': 'Erreur, autorisation refusée',
     'uk-ua': 'Помилка відмови у доступі',
     'de-ch': 'Zugriff verweigert',
     'pt-br': 'Erro de permissão negada',
@@ -421,8 +421,7 @@ export const userText = createDictionary({
       'У вас нет никаких правил или ролей, которые позволяли бы вам выполнять следующее действие:',
     'es-es':
       'No tiene ninguna política o función que le otorgue permiso para realizar la siguiente acción:',
-    'fr-fr':
-      "Vous ne disposez d'aucune politique ni d'aucun rôle vous autorisant à effectuer l'action suivante :",
+    'fr-fr': "Votre rôle ne vous autorise pas à effectuer l'action suivante :",
     'uk-ua':
       'У вас немає жодної політики чи ролі, яка б давала вам дозвіл на виконання наступної дії:',
     'de-ch':
@@ -470,7 +469,7 @@ export const userText = createDictionary({
     'es-es':
       'Al usuario que inició sesión no se le ha dado acceso a ninguna colección de esta base de datos. Debe iniciar sesión como otro usuario.',
     'fr-fr':
-      "L'utilisateur connecté n'a pas accès aux collections de cette base de données. Vous devez vous connecter en tant qu'autre utilisateur.",
+      "L'utilisateur connecté n'a pas accès aux collections de cette base de données. Merci de choisir un autre compte.",
     'uk-ua':
       'Користувач, який зареєстрований, не має доступу до жодної колекції в цій базі даних. Ви повинні увійти як інший користувач.',
     'de-ch':
@@ -530,7 +529,7 @@ export const userText = createDictionary({
     'en-us': 'Save user first',
     'ru-ru': 'Сначала сохраните пользователя.',
     'es-es': 'Guardar usuario primero',
-    'fr-fr': "Sauvegarder l'utilisateur en premier",
+    'fr-fr': "Sauvegarder l'utilisateur d'abord",
     'uk-ua': 'Спочатку збережіть користувача',
     'de-ch': 'Benutzer zuerst speichern',
     'pt-br': 'Salvar usuário primeiro',
@@ -1060,7 +1059,7 @@ export const userText = createDictionary({
     'en-us': 'Set Collections',
     'ru-ru': 'Наборы коллекций',
     'es-es': 'Establecer colecciones',
-    'fr-fr': "Collections d'ensembles",
+    'fr-fr': 'Choisir les collections',
     'uk-ua': 'Колекції наборів',
     'de-ch': 'Set-Kollektionen',
     'pt-br': 'Conjuntos de Coleções',
@@ -1166,7 +1165,7 @@ export const userText = createDictionary({
     'en-us': '(Specify 7 Admin)',
     'ru-ru': '(Укажите 7 администраторов)',
     'es-es': '(Administradores de Specify 7)',
-    'fr-fr': '(Préciser 7 Administrateurs)',
+    'fr-fr': '(Administrateurs Specify 7)',
     'uk-ua': '(Specify 7 Адміністратор)',
     'de-ch': '(7 Administratoren angeben)',
     'pt-br': '(Especifique 7 administradores)',
@@ -1178,7 +1177,7 @@ export const userText = createDictionary({
     'en-us': '(Specify 6 Admin)',
     'ru-ru': '(Укажите 6 администраторов)',
     'es-es': '(Administradores de Specify 6)',
-    'fr-fr': '(Préciser 6 Administrateurs)',
+    'fr-fr': '(Administrateurs Specify 6)',
     'uk-ua': '(Specify 6 Адміністратор)',
     'de-ch': '(6 Administratoren angeben)',
     'pt-br': '(Especifique 6 administradores)',
@@ -1189,7 +1188,7 @@ export const userText = createDictionary({
     'en-us': 'Delete role that has users?',
     'ru-ru': 'Удалить роль, которая содержит пользователей?',
     'es-es': '¿Eliminar rol que tiene usuarios?',
-    'fr-fr': 'Supprimer le rôle qui a des utilisateurs ?',
+    'fr-fr': 'Supprimer ce rôle qui a des utilisateurs assignés ?',
     'uk-ua': 'Видалити роль, яка має користувачів?',
     'de-ch': 'Rolle mit Benutzern löschen?',
     'pt-br': 'Excluir função que possui usuários?',

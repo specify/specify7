@@ -80,7 +80,7 @@ export const welcomeText = createDictionary({
     'es-es':
       'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'fr-fr':
-      'Préciser le consortium de collections <br />\n\nInstitut de la Biodiversité <br />\n\nUniversité du Kansas <br />\n\n1345, boulevard Jayhawk. <br />\n\nLawrence, KS 66045 États-Unis',
+      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'uk-ua':
       'Укажіть консорціум колекцій <br />\n\nІнститут біорізноманіття <br />\n\nУніверситет Канзасу <br />\n\n1345 Jayhawk Blvd. <br />\n\nЛоуренс, KS 66045 США',
     'de-ch':
