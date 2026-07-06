@@ -15,7 +15,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'значение "{value:string}" не разрешается to True or False',
     'es-es':
       'el valor "{value:string}" no se puede resolver en Verdadero o Falso',
-    'fr-fr': 'Valeur "{value:string}"  non résolvable en Vrai ou Faux',
+    'fr-fr': 'Valeur "{value:string}" non résolvable en Vrai ou Faux',
     'uk-ua': 'значення "{value:string}" не являється "True" або "False"',
     'de-ch':
       'Der Wert "{value:string}" kann nicht in True oder False aufgelöst werden.',
@@ -59,7 +59,7 @@ export const backEndText = createDictionary({
     'es-es':
       '{value:string} no es un valor legal en este campo de lista de selección.\n\nHaga clic en la flecha para elegir entre las opciones disponibles.',
     'fr-fr':
-      "{value:string} n'est pas une valeur acceptée dans ce champ de liste de sélection.\n\nCliquez sur la flèche pour choisir parmi les options disponibles.",
+      "{value:string} n'est pas une valeur acceptée dans cette liste à choix.\n\nCliquez sur la flèche pour choisir parmi les options disponibles.",
     'uk-ua':
       '{value:string} не є допустимим значенням у цьому полі списку вибору.\n\nНатисніть на стрілку, щоб вибрати серед доступних варіантів.',
     'de-ch':
@@ -101,7 +101,7 @@ export const backEndText = createDictionary({
     'es-es':
       'valor de {pickListTable:string} {pickList:string} más largo que el máximo de {maxLength:number|formatted} para el campo',
     'fr-fr':
-      'valeur de {pickListTable:string} {pickList:string} est plus longue que le maximum de {maxLength:number|formatted} pour le champ',
+      'valeur de {pickListTable:string} {pickList:string} plus longue que le maximum de {maxLength:number|formatted} pour le champ',
     'uk-ua':
       'значення з {pickListTable:string} {pickList:string} довше, ніж максимальне значення {maxLength:number|formatted} для поля',
     'de-ch':
@@ -137,7 +137,7 @@ export const backEndText = createDictionary({
     'es-es':
       'el valor de fecha debe contener el año de cuatro dígitos: {value:string}',
     'fr-fr':
-      "la valeur de la date doit contenir quatre chiffres pour l'année {value:string}",
+      "la valeur de la date doit contenir quatre chiffres pour l'année {value:string}",
     'uk-ua': 'дата має містити чотири цифри року: {value:string}',
     'de-ch':
       'Der Datumswert muss die vierstellige Jahreszahl enthalten: {value:string}',
@@ -169,7 +169,8 @@ export const backEndText = createDictionary({
     'en-us': 'bad latitude or longitude value: {value:string}',
     'ru-ru': 'неверное значение широты или долготы: {value:string}',
     'es-es': 'valor de latitud o longitud incorrecto: {value:string}',
-    'fr-fr': 'Nœud [X0X] "[X25X]" vers le parent synonymisé "[X67X]"',
+    'fr-fr':
+      'mauvaise valeur pour la latitude ou la longitude : {value:string}',
     'uk-ua': 'неправильне значення широти або довготи: {value:string}',
     'de-ch': 'Ungültiger Breiten- oder Längengradwert: {value:string}',
     'pt-br': 'Valor de latitude ou longitude inválido: {value:string}',
@@ -181,7 +182,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'широта должна быть между -90 и 90. Фактически: {value:string}',
     'es-es': 'la latitud debe estar entre -90 y 90. Actual: {value:string}',
     'fr-fr':
-      'la latitude doit être comprise entre -90 et 90. Réel : {value:string}',
+      'la latitude doit être comprise entre -90 et 90. Actuellement : {value:string}',
     'uk-ua': 'широта має бути між -90 і 90. Поточна: {value:string}',
     'de-ch':
       'Der Breitengrad muss zwischen -90 und 90 liegen. Tatsächlich: {value:string}',
@@ -195,7 +196,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'долгота должна быть между -180 и 180. Фактически: {value:string}',
     'es-es': 'la longitud debe estar entre -180 y 180. Actual: {value:string}',
     'fr-fr':
-      'la longitude doit être comprise entre -180 et 180. Réel : {value:string}',
+      'la longitude doit être comprise entre -180 et 180. Actuellement : {value:string}',
     'uk-ua': 'довгота має бути між -180 і 180. Поточна: {value:string}',
     'de-ch':
       'Der Längengrad muss zwischen -180 und 180 liegen. Tatsächlich: {value:string}',
@@ -250,7 +251,7 @@ export const backEndText = createDictionary({
     'es-es':
       '¡Hay varios valores de marcador de posición "Subidos" en el árbol!',
     'fr-fr':
-      "L'arborescence contient plusieurs valeurs d'espace réservé « Téléchargé » !",
+      "Il y a plusieurs valeurs de remplacement « téléchargées» dans l'arborescence !",
     'uk-ua': 'У дереві є кілька вузлів з назвою "Uploaded"!',
     'de-ch': 'Im Baum gibt es mehrere Platzhalterwerte für „Hochgeladen“!',
     'pt-br': 'Existem vários valores de espaço reservado "Enviado" na árvore!',
@@ -291,7 +292,8 @@ export const backEndText = createDictionary({
   fieldNotUnique: {
     'en-us': '{tableName:string} must have unique {fieldName:string}',
     'es-es': '{tableName:string} debe tener un {fieldName:string} único',
-    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
+    'fr-fr':
+      '{tableName:string} doit avoir une valeur unique {fieldName:string}',
     'ru-ru': '{tableName:string} должен иметь уникальный {fieldName:string}',
     'uk-ua': '{tableName:string} має мати унікальний {fieldName:string}',
     'de-ch':
@@ -323,7 +325,7 @@ export const backEndText = createDictionary({
     'en-us': 'Can not delete root level tree definition item',
     'es-es':
       'No se puede eliminar la definición del elemento de nivel raíz del árbol',
-    'fr-fr': "Impossible de supprimer l'élément de définition d'arbre racine.",
+    'fr-fr': "Impossible de supprimer l'élément racine de l'arbre.",
     'ru-ru': 'Невозможно удалить элемент определения дерева корневого уровня.',
     'uk-ua': 'Неможливо видалити корінь дерева',
     'de-ch': 'Definitionselement der Wurzelstruktur kann nicht gelöscht werden',
@@ -387,7 +389,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Sinonimizando "{nodeName:string}" al nodo sinonimizado "{intoName:string}"',
     'fr-fr':
-      'Synonymisation de "{nodeName:string}" en nœud synonymisé "{intoName:string}"',
+      'Synonymisation de "{nodeName:string}" vers le nœud synonymisé : "{intoName:string}"',
     'ru-ru':
       'Синонимизация "{nodeName:string}" в синонимизированный узел "{intoName:string}"',
     'uk-ua':
@@ -403,7 +405,7 @@ export const backEndText = createDictionary({
   nodeSynonimizeWithChildren: {
     'en-us': 'Synonymizing node "{nodeName:string}" which has children',
     'es-es': 'Sinonimizando el nodo "{nodeName:string}" que tiene hijos',
-    'fr-fr': 'Type de collection inattendu "[X31X]". "[X71X]" attendu',
+    'fr-fr': 'Synonymisation de "{nodeName:string}" qui a des enfants',
     'ru-ru': 'Синонимизирующий узел "{nodeName:string}", имеющий дочерние узлы',
     'uk-ua': 'Синонімується вузол "{nodeName:string}", який має дітей',
     'de-ch': 'Synonymisierender Knoten "{nodeName:string}", der Kinder hat',
@@ -417,7 +419,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Estructura de árbol incorrecta: se encontraron {badRanks:number|formatted} casos en los que el rango del nodo no es mayor que el de su padre',
     'fr-fr':
-      "Mauvaise structure d'arborescence : cas {badRanks:number|formatted} trouvés où le rang du nœud n'est pas supérieur à celui de son parent",
+      "Mauvaise structure d'arborescence trouvée, {badRanks:number|formatted} cas où le rang du nœud n'est pas supérieur à celui de son parent",
     'ru-ru':
       'Неправильная структура дерева: обнаружено {badRanks:number|formatted} случаев, когда ранг узла не превышает ранг его родителя.',
     'uk-ua':
@@ -602,7 +604,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Parte de la fecha no válida "{datePart:string}". Se esperaba {validDateParts:string}',
     'fr-fr':
-      'Partie de date "{datePart:string}" non valide. Attendu l\'un des {validDateParts:string}',
+      'Partie de date "{datePart:string}" non valide. Type de valeur attendue :  {validDateParts:string}',
     'ru-ru':
       'Недопустимая часть даты "{datePart:string}". Ожидалось одно из значений {validDateParts:string}.',
     'uk-ua':
@@ -653,7 +655,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Se ha detectado un cambio de alcance en esta fila. Se recomienda eliminar esta fila del conjunto de datos.',
     'fr-fr':
-      "Un changement de portée a été détecté sur cette ligne. Il est recommandé de supprimer cette ligne de l'ensemble de données.",
+      "Un changement de périmètre a été détecté sur cette ligne. Il est recommandé de supprimer cette ligne de l'ensemble de données.",
     'pt-br':
       'Foi detectada uma alteração de escopo nesta linha. Recomenda-se excluir esta linha do conjunto de dados.',
     'ru-ru':
