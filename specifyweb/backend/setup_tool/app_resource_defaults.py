@@ -89,7 +89,6 @@ def _ensure_discipline_resource_dir(
         Spappresourcedir.objects.filter(
             discipline=discipline,
             collection__isnull=True,
-            specifyuser__isnull=True,
             usertype__isnull=True,
             ispersonal=False
         )
@@ -100,7 +99,12 @@ def _ensure_discipline_resource_dir(
         return (
             Spappresourcedir.objects.create(
             discipline=discipline,
-            disciplinetype=discipline.type,
+            # This is intentional and not a typo.
+            # DisciplineType is actually the Discipline Name for
+            # SpAppResourceDir records...
+            # This is another weird behavior from Specify 6 :/
+            # See #7984
+            disciplinetype=discipline.name,
             ispersonal=False,
             ),
             True,
@@ -108,8 +112,8 @@ def _ensure_discipline_resource_dir(
         )
 
     was_updated = False
-    if existing_dir.disciplinetype != discipline.type:
-        existing_dir.disciplinetype = discipline.type
+    if existing_dir.disciplinetype != discipline.name:
+        existing_dir.disciplinetype = discipline.name
         existing_dir.save(update_fields=['disciplinetype'])
         was_updated = True
 
@@ -125,7 +129,7 @@ def ensure_all_discipline_resource_dirs() -> dict[str, int]:
     created = 0
     updated = 0
 
-    for discipline in Discipline.objects.only('id', 'type'):
+    for discipline in Discipline.objects.only('id', 'name'):
         total += 1
         _, was_created, was_updated = _ensure_discipline_resource_dir(discipline)
         if was_created:

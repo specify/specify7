@@ -58,7 +58,7 @@ export const filterAppResources = (
   );
 
   const finalAppResources = baseAppResources.filter((resource) => {
-    if (resource.name !== 'CollectionPreferences') {
+    if (resource.name === 'CollectionPreferences') {
       return hasEditPermission;
     }
     return true;

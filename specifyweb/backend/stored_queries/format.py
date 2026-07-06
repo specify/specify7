@@ -19,7 +19,6 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
 import specifyweb.backend.context.app_resource as app_resource
-from specifyweb.backend.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer
@@ -28,6 +27,7 @@ from specifyweb.specify.datamodel import Field, Relationship, Table
 from specifyweb.backend.stored_queries.queryfield import QueryField
 
 from . import models
+from .build_models import get_many_to_many_join_info
 from .group_concat import group_concat
 from .blank_nulls import blank_nulls
 from .query_construct import QueryConstruct
@@ -342,12 +342,24 @@ class ObjectFormatter:
         limit = None if limit == '' or int(limit) == 0 else limit
         orm_table = getattr(models, field.relatedModelName)
 
-        join_column = list(inspect(
-            getattr(orm_table, field.otherSideName)).property.local_columns)[0]
-        subquery_query = Query([]) \
-            .select_from(orm_table) \
-            .filter(join_column == rel_table._id) \
-            .correlate(rel_table)
+        join_info = get_many_to_many_join_info(datamodel, field)
+        if join_info is not None:
+            secondary_table = models.tables[join_info.table]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .join(
+                    secondary_table,
+                    secondary_table.c[join_info.remote_column] == orm_table._id,
+                ) \
+                .filter(secondary_table.c[join_info.local_column] == rel_table._id) \
+                .correlate(rel_table)
+        else:
+            join_column = list(inspect(
+                getattr(orm_table, field.otherSideName)).property.local_columns)[0]
+            subquery_query = Query([]) \
+                .select_from(orm_table) \
+                .filter(join_column == rel_table._id) \
+                .correlate(rel_table)
 
         try:
             from_table_name = query.query.selectable.froms[0].name.lower()
@@ -448,7 +460,11 @@ class ObjectFormatter:
 
     def _fieldformat(self, table: Table, specify_field: Field,
                      field: InstrumentedAttribute | Extract):
-        if self.format_types and specify_field.is_temporal():
+        if (
+            self.format_types
+            and specify_field.is_temporal()
+            and isinstance(field, InstrumentedAttribute)
+        ):
             return self._dateformat(specify_field, field)
         
         if self.format_agent_type and specify_field is Agent_model.get_field("agenttype"):
@@ -502,8 +518,11 @@ class ObjectFormatter:
 
 
 def get_date_format() -> str:
-    match = re.search(r'ui\.formatting\.scrdateformat=(.+)', get_remote_prefs())
-    date_format = match.group(1).strip() if match is not None else 'yyyy-MM-dd'
+    from specifyweb.backend.context.remote_prefs import get_remote_pref
+
+    source_date_format = get_remote_pref('ui.formatting.scrdateformat')
+    
+    date_format = source_date_format.strip() if source_date_format is not None else 'yyyy-MM-dd'
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
     return mysql_date_format

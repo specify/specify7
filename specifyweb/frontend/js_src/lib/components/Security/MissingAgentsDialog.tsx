@@ -15,6 +15,7 @@ import { Button } from '../Atoms/Button';
 import { Form, Label } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
+import { toTable } from '../DataModel/helpers';
 import { fetchResource, idFromUrl } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import { Dialog } from '../Molecules/Dialog';
@@ -156,6 +157,12 @@ export function MissingAgentsDialog({
                  */
                 resource={address}
                 typeSearch={undefined}
+                onSavingNewRecord={(resource) => {
+                  toTable(resource, 'Agent')?.set(
+                    'division',
+                    division.resource_uri
+                  );
+                }}
               />
               {f.includes(
                 response.AgentInUseException ?? [],
