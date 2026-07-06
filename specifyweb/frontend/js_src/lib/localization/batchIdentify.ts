@@ -11,7 +11,7 @@ export const batchIdentifyText = createDictionary({
     'en-us': 'Batch Identify',
     'de-ch': 'Chargenidentifizierung',
     'es-es': 'Identificador de lote',
-    'fr-fr': 'Identification du lot',
+    'fr-fr': 'Identification par lot',
     'hr-hr': 'Identifikacija serije',
     nb: 'Batch-identifikasjon',
     'pt-br': 'Identificação de lote',
@@ -75,7 +75,7 @@ export const batchIdentifyText = createDictionary({
     'en-us': 'Batch Identify Updated Records',
     'de-ch': 'Stapelidentifizierung aktualisierter Datensätze',
     'es-es': 'Identificación por lotes de registros actualizados',
-    'fr-fr': 'Lot Identifier les enregistrements mis à jour',
+    'fr-fr': 'Identifier par lot les enregistrements mis-à-jour',
     'hr-hr': 'Grupna identifikacija ažuriranih zapisa',
     nb: 'Batch-identifiser oppdaterte poster',
     'pt-br': 'Identificar em lote os registros atualizados',
@@ -130,7 +130,7 @@ export const batchIdentifyText = createDictionary({
     'en-us': 'Unknown Taxon Tree',
     'de-ch': 'Unbekannter Taxonbaum',
     'es-es': 'Árbol taxonómico desconocido',
-    'fr-fr': 'Arbre taxon inconnu',
+    'fr-fr': 'Arbre taxinomique inconnu',
     'hr-hr': 'Nepoznato stablo taksona',
     nb: 'Ukjent taksontre',
     'pt-br': 'Árvore taxonômica desconhecida',
@@ -152,7 +152,7 @@ export const batchIdentifyText = createDictionary({
     'en-us': 'Mixed Record Set',
     'de-ch': 'Gemischtes Schallplattenset',
     'es-es': 'Conjunto de récords mixtos',
-    'fr-fr': "Groupe d'enregistrements mixte",
+    'fr-fr': "Ensemble d'enregistrements mixte",
     'hr-hr': 'Mješoviti set ploča',
     nb: 'Blandet platesett',
     'pt-br': 'Conjunto de discos variados',
@@ -167,7 +167,7 @@ export const batchIdentifyText = createDictionary({
     'es-es':
       'El conjunto de registros seleccionado contiene objetos de colección de más de un árbol taxonómico.',
     'fr-fr':
-      "Le groupe d'enregistrements sélectionné contient des objets de collection provenant de plusieurs arbres taxonomiques.",
+      "L'ensemble d'enregistrements sélectionné contient des objets de collection provenant de plusieurs arbres taxonomiques.",
     'hr-hr':
       'Odabrani skup zapisa sadrži objekte kolekcije iz više od jednog taksonskog stabla.',
     nb: 'Den valgte databasepost-lista inneholder samlingsobjekter fra mer enn ett taksontre.',
@@ -186,7 +186,7 @@ export const batchIdentifyText = createDictionary({
     'es-es':
       'Seleccione un conjunto de registros diferente o edite la consulta utilizada para crear este conjunto de registros para que todos los objetos de la colección utilicen el mismo árbol taxonómico.',
     'fr-fr':
-      "Choisissez un autre groupe d'enregistrements, ou modifiez la requête utilisée pour créer ce groupe d'enregistrements afin que tous les objets de la collection utilisent le même arbre taxonomique.",
+      "Choisissez un autre ensemble d'enregistrements, ou modifiez la requête utilisée pour créer ce groupe d'enregistrements afin que tous les objets de la collection utilisent le même arbre taxonomique.",
     'hr-hr':
       'Odaberite drugi skup zapisa ili uredite upit korišten za stvaranje ovog skupa zapisa tako da svi objekti kolekcije koriste isto stablo taksona.',
     nb: 'Velg en annen databasepost-liste, eller rediger søket som ble brukt til å opprette denne listen, slik at alle samlingsobjekter bruker samme taksontre.',

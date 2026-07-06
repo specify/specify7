@@ -86,7 +86,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Los rangos seleccionados se encuentran en varios árboles. Seleccione los árboles para editarlos por lotes.',
     'fr-fr':
-      'Le ou les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez le ou les arbres à modifier par lots.',
+      'Le ou les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez le ou les arbres à modifier par lots',
     'pt-br':
       'Os rankings selecionados são encontrados em várias árvores. Selecione a(s) árvore(s) para editar em lote.',
     'ru-ru':
@@ -140,7 +140,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes',
     'fr-fr':
-      "Utilisez le générateur de requêtes pour créer un nouvel ensemble de données d'édition par lots.",
+      "Utilisez le générateur de requêtes pour créer un nouveau jeu de données d'édition par lots.",
     'pt-br':
       'Use o construtor de consultas para criar um novo conjunto de dados para edição em lote.',
     'ru-ru':
@@ -185,7 +185,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit',
     'de-ch': 'Begehen',
     'es-es': 'Comprometerse',
-    'fr-fr': 'Commettre',
+    'fr-fr': 'Verser en base',
     'pt-br': 'Comprometer-se',
     'ru-ru': 'Совершить',
     'uk-ua': 'Здійснити',
@@ -200,7 +200,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Al confirmar el conjunto de datos, se actualizarán, agregarán y eliminarán los datos de la hoja de cálculo en la base de datos especificada.',
     'fr-fr':
-      "L'enregistrement de l'ensemble de données mettra à jour, ajoutera et supprimera les données de la feuille de calcul dans la base de données Specification.",
+      "L'enregistrement du jeu de données mettra à jour, ajoutera et supprimera les données de la feuille de calcul dans la base de données Specify.",
     'pt-br':
       'Ao confirmar o conjunto de dados, os dados da planilha serão atualizados, adicionados e excluídos do banco de dados especificado.',
     'ru-ru':
@@ -272,7 +272,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Committing',
     'de-ch': 'Verpflichtung',
     'es-es': 'Comprometerse',
-    'fr-fr': "S'engager",
+    'fr-fr': 'Téléverser',
     'pt-br': 'Comprometer-se',
     'ru-ru': 'Совершение',
     'uk-ua': 'Здійснення',
@@ -283,7 +283,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Data Set Commit Status',
     'de-ch': 'Commit-Status des Datensatzes',
     'es-es': 'Estado de confirmación del conjunto de datos',
-    'fr-fr': "État de validation de l'ensemble de données",
+    'fr-fr': 'État de versement du jeu de données',
     'pt-br': 'Status de confirmação do conjunto de dados',
     'ru-ru': 'Статус фиксации набора данных',
     'uk-ua': 'Стан фіксації набору даних',
@@ -294,7 +294,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Begin Data Set Commit?',
     'de-ch': 'Datensatz-Commit starten?',
     'es-es': '¿Iniciar confirmación del conjunto de datos?',
-    'fr-fr': "Début de la validation de l'ensemble de données ?",
+    'fr-fr': 'Commencer à verser le jeu de données ?',
     'pt-br': 'Iniciar confirmação do conjunto de dados?',
     'ru-ru': 'Начало фиксации набора данных?',
     'uk-ua': 'Почати фіксацію набору даних?',
@@ -305,7 +305,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit Failed due to Error Cells',
     'de-ch': 'Commit fehlgeschlagen aufgrund von Fehlerzellen',
     'es-es': 'Error al confirmar la transacción debido a celdas con errores.',
-    'fr-fr': "Échec de la validation en raison de cellules d'erreur",
+    'fr-fr': 'Échec de la validation en raison de cellules en erreur',
     'pt-br': 'Falha na confirmação devido a células com erro.',
     'ru-ru': 'Фиксация не удалась из-за ошибок в ячейках.',
     'uk-ua': 'Не вдалося виконати фіксацію через комірки з помилками',
@@ -319,7 +319,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'La confirmación falló debido a uno o más errores en los valores de las celdas.',
     'fr-fr':
-      "La validation a échoué en raison d'une ou plusieurs erreurs de valeur de cellule.",
+      "La validation a échoué en raison d'une ou plusieurs cellule(s) en erreur.",
     'pt-br':
       'A operação de confirmação (Commit) falhou devido a um ou mais erros nos valores das células.',
     'ru-ru':
@@ -334,7 +334,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit Cancelled',
     'de-ch': 'Commit abgebrochen',
     'es-es': 'Compromiso cancelado',
-    'fr-fr': 'Validation annulée',
+    'fr-fr': 'Versement annulé',
     'pt-br': 'Compromisso cancelado',
     'ru-ru': 'Подтверждение отменено',
     'uk-ua': 'Зміна фіксації',
@@ -345,7 +345,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit Cancelled Description',
     'de-ch': 'Commit abgebrochen Beschreibung',
     'es-es': 'Compromiso Cancelado Descripción',
-    'fr-fr': "Description de l'annulation de l'engagement",
+    'fr-fr': "Description de l'annulation du versement",
     'pt-br': 'Descrição do Compromisso Cancelado',
     'ru-ru': 'Подтверждение отменено Описание',
     'uk-ua': 'Опис скасованого підтвердження',
@@ -356,7 +356,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit Completed with No Errors',
     'de-ch': 'Commit erfolgreich abgeschlossen (keine Fehler)',
     'es-es': 'Confirmación completada sin errores',
-    'fr-fr': 'Commit terminé sans erreur',
+    'fr-fr': 'Versement terminé sans erreur',
     'pt-br': 'Commit concluído sem erros.',
     'ru-ru': 'Фиксация изменений завершена без ошибок.',
     'uk-ua': 'Коміт завершено без помилок',
@@ -465,7 +465,7 @@ export const batchEditText = createDictionary({
     'es-es':
       '(Los conjuntos de datos de edición por lotes no se pueden editar después de la reversión; solo lectura).',
     'fr-fr':
-      '(Les ensembles de données modifiés par lots ne peuvent pas être modifiés après une restauration - Lecture seule)',
+      '(Les jeux de données modifiés par lots ne peuvent pas être modifiés après une restauration - Lecture seule)',
     'pt-br':
       '(Os conjuntos de dados editados em lote não podem ser editados após o rollback - Somente leitura)',
     'ru-ru':
@@ -480,7 +480,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Enable relationships',
     'de-ch': 'Beziehungen ermöglichen',
     'es-es': 'Facilitar las relaciones',
-    'fr-fr': 'Favoriser les relations',
+    'fr-fr': 'Activer les relations',
     'pt-br': 'Promover relacionamentos',
     'ru-ru': 'Обеспечьте развитие отношений',
     'uk-ua': "Увімкнути зв'язки",
@@ -495,7 +495,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Permite la edición por lotes de las relaciones de la tabla base. La reversión se desactiva cuando las relaciones están habilitadas.',
     'fr-fr':
-      'Permet la modification par lots des relations de la table de base. La restauration est désactivée lorsque les relations sont activées.',
+      'Permet la modification par lots des tables liées à la table de base. La restauration est désactivée lorsque les relations sont activées.',
     'pt-br':
       'Permite a edição em lote de relacionamentos da tabela base. O rollback é desativado quando os relacionamentos estão ativados.',
     'ru-ru':
@@ -510,7 +510,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Commit Data Set',
     'de-ch': 'Datensatz übertragen',
     'es-es': 'Confirmar conjunto de datos',
-    'fr-fr': 'Ensemble de données de validation',
+    'fr-fr': 'Verser le jeu de données.',
     'pt-br': 'Conjunto de dados de confirmação',
     'ru-ru': 'Набор данных для фиксации',
     'uk-ua': 'Набір даних для фіксації',
@@ -525,7 +525,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría causar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción no se puede deshacer.',
     'fr-fr':
-      "Avant de continuer, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specific. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
+      "Avant de continuer, veuillez noter que l'action suivante peut perturber d'autres utilisateurs si effectuée sur un grand jeu de données. Cette action peut entraîner des lenteurs ou l'indisponibilité temporaire de certaines fonctionnalités. Cette action est irréversible.",
     'pt-br':
       'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de certos recursos para os usuários especificados. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
     'ru-ru':
