@@ -110,6 +110,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     icon: icons.chartBar,
     enabled: () => hasPermission('/querybuilder/query', 'execute'),
   },
+  collectionStatistics: {
+    url: '/specify/overlay/collection-statistics/',
+    title: statsText.collectionStatistics(),
+    icon: icons.viewList,
+  },
   batchEdit: {
     url: '/specify/overlay/batch-edit',
     title: batchEditText.batchEdit(),

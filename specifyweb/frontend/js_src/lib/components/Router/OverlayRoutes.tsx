@@ -9,6 +9,7 @@ import { mergingText } from '../../localization/merging';
 import { queryText } from '../../localization/query';
 import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
+import { statsText } from '../../localization/stats';
 import { treeText } from '../../localization/tree';
 import { userText } from '../../localization/user';
 import { welcomeText } from '../../localization/welcome';
@@ -44,6 +45,14 @@ export const overlayRoutes: RA<EnhancedRoute> = [
         element: () =>
           import('../Header/UserTools').then(
             ({ UserToolsOverlay }) => UserToolsOverlay
+          ),
+      },
+      {
+        path: 'collection-statistics',
+        title: statsText.collectionStatistics(),
+        element: () =>
+          import('../Statistics/CollectionStatistics').then(
+            ({ CollectionStatisticsOverlay }) => CollectionStatisticsOverlay
           ),
       },
       {
