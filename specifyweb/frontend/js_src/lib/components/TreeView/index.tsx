@@ -148,7 +148,6 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   const isFirstRender = React.useRef(true);
   React.useEffect(() => {
     if (!isFirstRender.current) return;
-    isFirstRender.current = false;
 
     if (typeof urlConformation === 'string') {
       // URL has a conformation → use it as the initial state
@@ -164,7 +163,10 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
   // When the user interacts with the tree, persist the conformation
   // to both the URL (primary) and the cache (for session restoration).
   React.useEffect(() => {
-    if (isFirstRender.current) return;
+    if (isFirstRender.current) {
+      isFirstRender.current = false;
+      return;
+    }
     setUrlConformation(serializeConformation(conformation));
   }, [conformation, setUrlConformation]);
 
