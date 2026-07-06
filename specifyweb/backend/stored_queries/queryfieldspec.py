@@ -10,14 +10,14 @@ from specifyweb.specify.utils.uiformatters import get_uiformatter
 from sqlalchemy import sql, Table as SQLTable
 from sqlalchemy.orm.query import Query
 
-from specifyweb.specify.models_utils.load_datamodel import Field, Table
-from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component, datamodel
+from specifyweb.specify.datamodel import datamodel, is_tree_table
+from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
+from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component
 from specifyweb.backend.stored_queries.models import CollectionObject as sq_CollectionObject
 from specifyweb.backend.stored_queries.models import Component as sq_Component
 
 from . import models
 from .query_ops import QueryOps
-from specifyweb.specify.models_utils.load_datamodel import Table, Field, Relationship
 
 logger = logging.getLogger(__name__)
 
@@ -43,6 +43,10 @@ TREE_ID_FIELD_RE = re.compile(r"(.*) (ID)$")
 # Precalculated fields that are not in the database. Map from table name to field name.
 PRECALCULATED_FIELDS = {
     "CollectionObject": "age",
+}
+
+TREE_TABLE_NAMES = {
+    table.name.lower() for table in datamodel.tables if is_tree_table(table)
 }
 
 class SpQueryAttrs(TypedDict):
@@ -235,15 +239,11 @@ class QueryFieldSpec(
         path = deque(path_str.split(","))
         root_table = datamodel.get_table_by_id(int(path.popleft()))
 
-        if is_relation:
-            extracted_fieldname, _ = extract_date_part(field_name)
-            root_field = root_table.get_field(extracted_fieldname, strict=False)
-            if isinstance(root_field, Relationship):
-                path.pop()
-
         join_path = []
         node = root_table
-        for elem in path:
+        extracted_fieldname, date_part = extract_date_part(field_name)
+        path_elems = list(path)
+        for idx, elem in enumerate(path_elems):
             try:
                 tableid, fieldname = elem.split("-")
             except ValueError:
@@ -252,14 +252,71 @@ class QueryFieldSpec(
             field = (
                 node.get_field(fieldname) if fieldname else node.get_field(table.name)
             )
+            if (
+                is_relation
+                and idx == len(path_elems) - 1
+                and (fieldname is not None or table.name.lower() in TREE_TABLE_NAMES)
+                and isinstance(field, Relationship)
+                and field.name.lower() == extracted_fieldname.lower()
+            ):
+                break
             join_path.append(field)
             node = table
 
         extracted_fieldname, date_part = extract_date_part(field_name)
-        field = node.get_field(extracted_fieldname, strict=False)
+
+        if is_relation:
+            relation = None
+            if join_path and isinstance(join_path[-1], Relationship):
+                last_relation = join_path[-1]
+                related_table = datamodel.get_table(
+                    last_relation.relatedModelName, strict=True
+                )
+                if related_table.name.lower() == table_name.lower():
+                    relation = last_relation
+
+            if relation is None:
+                relation = node.get_field(extracted_fieldname, strict=False)
+                if isinstance(relation, Relationship):
+                    join_path.append(relation)
+                    node = datamodel.get_table(relation.relatedModelName, strict=True)
+                else:
+                    relation = None
+
+            if relation is not None:
+                result = cls(
+                    root_table=root_table,
+                    root_sql_table=getattr(models, root_table.name),
+                    join_path=tuple(join_path),
+                    table=node,
+                    date_part=None,
+                    tree_rank=None,
+                    tree_field=relation,
+                )
+                logger.debug(
+                    "parsed %s (is_relation %s) to %s. extracted_fieldname = %s",
+                    stringid,
+                    is_relation,
+                    result,
+                    extracted_fieldname,
+                )
+                return result
+
+        relation_already_in_path = (
+            is_relation
+            and len(join_path) > 0
+            and isinstance(join_path[-1], Relationship)
+            and join_path[-1].type not in {"many-to-one", "one-to-one"}
+            and join_path[-1].name.lower() == extracted_fieldname.lower()
+        )
+        field = (
+            None
+            if relation_already_in_path
+            else node.get_field(extracted_fieldname, strict=False)
+        )
 
         tree_rank_name = None
-        if field is None:  # try finding tree
+        if field is None and not relation_already_in_path:  # try finding tree
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
                 tree_rank = TreeRankQuery.create(
