@@ -1,6 +1,6 @@
 import { resourcesText } from '../../localization/resources';
 import { resolveParser } from '../../utils/parser/definitions';
-import type { ValueOf } from '../../utils/types';
+import type { RA, ValueOf } from '../../utils/types';
 import type { BusinessRuleResult } from './businessRules';
 import {
   CATALOG_NUMBER_EXISTS,
@@ -22,7 +22,7 @@ import {
   PREPARATION_NEGATIVE_KEY,
 } from './businessRuleUtils';
 import { fetchCollection } from './collection';
-import { cogTypes } from './helpers';
+import { backendFilter, cogTypes } from './helpers';
 import type { AnySchema, CommonFields, TableFields } from './helperTypes';
 import {
   checkPrepAvailability,
@@ -212,7 +212,12 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           'uniqueness'
         );
 
-        if (!uniqueCatalogNumberAccrossComponentAndCOPref) {
+        const catalogNumberValue = resource.get('catalogNumber');
+
+        if (
+          !uniqueCatalogNumberAccrossComponentAndCOPref ||
+          catalogNumberValue === null
+        ) {
           setSaveBlockers(
             resource,
             resource.specifyTable.field.catalogNumber,
@@ -222,17 +227,35 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
           return undefined;
         }
 
-        const catalogNumberValue = resource.get('catalogNumber');
+        const databaseContainsComponentDuplicates = await fetchCollection(
+          'Component',
+          {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+          }
+        ).then(({ totalCount }) => totalCount !== 0);
 
-        const containsComponentDuplicates = await fetchCollection('Component', {
-          catalogNumber: catalogNumberValue,
-          domainFilter: true,
-        }).then(({ totalCount }) => totalCount !== 0);
+        // BUG: When a local Component is modified to have a catalogNumber that
+        // matches this CollectionObject, a change event is being triggered on
+        // the CO -> catalogNumber and triggering this rule as well
+        // Found out what is causing the change event...
+        const localCollectionContainsComponentDuplicates = resource
+          .getDependentResource('components')
+          ?.models.some(
+            (component) =>
+              catalogNumberValue !== null &&
+              component.get('catalogNumber') === catalogNumberValue
+          );
+
+        const isInvalid =
+          databaseContainsComponentDuplicates ||
+          localCollectionContainsComponentDuplicates;
 
         setSaveBlockers(
           resource,
           resource.specifyTable.field.catalogNumber,
-          containsComponentDuplicates
+          isInvalid
             ? [
                 resourcesText.catalogNumberAlreadyUsed({
                   catalogNumberFieldName:
@@ -453,17 +476,93 @@ export const businessRuleDefs: MappedBusinessRuleDefs = {
 
         const catalogNumberValue = resource.get('catalogNumber');
 
-        const containsCoDuplicates = await fetchCollection('CollectionObject', {
-          domainFilter: true,
-          catalogNumber: catalogNumberValue,
-        }).then(({ totalCount }) => totalCount !== 0);
+        // Check the Database for CollectionObject records that have the same
+        // catalogNumber
+        const containsCoDuplicates = () =>
+          fetchCollection('CollectionObject', {
+            domainFilter: true,
+            catalogNumber: catalogNumberValue,
+            limit: 1,
+          }).then(({ totalCount }) => totalCount !== 0);
 
-        const containsComponentDuplicates = await fetchCollection('Component', {
-          catalogNumber: catalogNumberValue,
-          domainFilter: true,
-        }).then(({ totalCount }) => totalCount !== 0);
+        // Check the Database for other existing Component records with the
+        // same catalogNumber
+        const containsComponentDuplicates = () =>
+          fetchCollection('Component', {
+            catalogNumber: catalogNumberValue,
+            domainFilter: true,
+            limit: 1,
+            ...(resource.id === undefined
+              ? {}
+              : backendFilter('id').not.equals(resource.id)),
+          }).then(({ totalCount }) => totalCount !== 0);
 
-        const isInvalid = containsCoDuplicates || containsComponentDuplicates;
+        // If the Components are in a collection (such as when viewing the
+        // Components SubView from CollectionObject), then make sure that no
+        // unsaved Component in the collection has the same catalogNumber as
+        // this Component
+        // BUG: Consider the following case:
+        // - There's a Component collection with a saved Component (1) with
+        //   catalogNumber A
+        // - a Component (2) is added to the Collection with catalogNumber A
+        // - Component 1's catalogNumber is changed from A
+        // - a saveblocker will be set on Component 2, even though we know the
+        //   existing duplicate has been locally changed
+        const localComponentCollectionHasValue = () =>
+          Promise.resolve(
+            resource.collection === undefined || catalogNumberValue === null
+              ? false
+              : resource.collection.models
+                  .filter((component) =>
+                    resource.id === undefined
+                      ? component.cid !== resource.cid
+                      : resource.id !== component.id
+                  )
+                  .map((component) => component.get('catalogNumber'))
+                  .filter(
+                    (catalogNumber) => catalogNumber === catalogNumberValue
+                  ).length >= 1
+          );
+
+        // Finally, check whether the Component's CollectionObject has the same
+        // catalogNumber as the Component
+        const collectionObjectHasValue = () =>
+          resource.collection?.related?.specifyTable.name === 'CollectionObject'
+            ? Promise.resolve(
+                catalogNumberValue !== null &&
+                  (
+                    resource.collection
+                      .related as SpecifyResource<CollectionObject>
+                  ).get('catalogNumber') === catalogNumberValue
+              )
+            : // This case should be subsumed by the prior check in
+              // containsCoDuplicates, but leaving this here just in case
+              resource
+                .rgetPromise('collectionObject')
+                .then(
+                  (collectionObject) =>
+                    collectionObject !== null &&
+                    collectionObject.get('catalogNumber') === catalogNumberValue
+                );
+        // REFACTOR: Change this when we upgrade to HTTP 2+
+        // Aggregate all of the invalid checks into a singe array to be
+        // processed sequentially
+        // It would be slightly more performant to have these all executing at
+        // the same time, but don't want to overwhelm the browser with the 6
+        // in-flight request limit of HTTP 1.1
+        const invalidChecks: RA<() => Promise<boolean>> = [
+          containsCoDuplicates,
+          containsComponentDuplicates,
+          localComponentCollectionHasValue,
+          collectionObjectHasValue,
+        ];
+
+        let isInvalid = false;
+
+        for (const checkInvalid of invalidChecks) {
+          isInvalid = await checkInvalid();
+          if (isInvalid) break;
+        }
 
         setSaveBlockers(
           resource,

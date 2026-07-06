@@ -497,6 +497,19 @@ describe.skip('Dependent Collections isPrimary', () => {
   });
 });
 
+describe('Collector business rule', () => {
+  test('isPrimary being automatically set', () => {
+    const collectingEvent = new tables.CollectingEvent.Resource();
+    const collector = new tables.Collector.Resource();
+
+    //This initializes the dependent collection
+    collectingEvent.set('collectors', []);
+    collectingEvent.getDependentResource('collectors')?.add(collector);
+
+    expect(collector.get('isPrimary')).toBe(true);
+  });
+});
+
 describe('Collecting Event', () => {
   test('Removing Collector sets first Collector as primary', () => {
     const collectingEvent = new tables.CollectingEvent.Resource({
@@ -893,9 +906,8 @@ describe('treeBusinessRules', () => {
     expect(fieldChangeResult.current[0]).toStrictEqual(['Bad tree structure.']);
   });
   test('saveBlocker not on synonymized parent w/preference', async () => {
-    const { collectionPreferences } = await import(
-      '../../Preferences/collectionPreferences'
-    );
+    const { collectionPreferences } =
+      await import('../../Preferences/collectionPreferences');
     const originalRaw = collectionPreferences.getRaw();
     collectionPreferences.setRaw({
       ...originalRaw,
