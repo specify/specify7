@@ -890,11 +890,6 @@ expected_errors = {
       ]
     }
   },
-  "Project": {
-    "not_found": [
-      "collectionObjects"
-    ]
-  },
   "SpExportSchema": {
     "not_found": [
       "spExportSchemaMappings"
