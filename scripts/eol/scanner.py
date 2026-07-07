@@ -45,12 +45,12 @@ def detect_python():
     if python_version.exists():
         try:
             content = python_version.read_text().strip()
-            # Extract X.Y format
-            match = re.search(r"^(\d+)\.(\d+)", content)
-            if match:
-                return f"{match.group(1)}.{match.group(2)}"
         except OSError:
-            pass
+            content = ""
+        # Extract X.Y format
+        match = re.search(r"^(\d+)\.(\d+)", content)
+        if match:
+            return f"{match.group(1)}.{match.group(2)}"
 
     # Try runtime.txt
     runtime = Path("runtime.txt")
