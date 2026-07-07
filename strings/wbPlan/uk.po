@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:23+0000\n"
-"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/uk/>\n"
 "Language: uk\n"
@@ -21,26 +21,32 @@ msgstr "Папки даних"
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:54
 #: components/WbToolkit/DevShowPlan.tsx:205
+#, fuzzy
 msgid "importExportMapping"
-msgstr ""
+msgstr "Зіставлення імпорту/експорту"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:209
+#, fuzzy
 msgid "importExportMappingDescription"
 msgstr ""
+"Ви можете експортувати поточне зіставлення набору даних як файл JSON або "
+"імпортувати існуюче зіставлення набору даних."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
 #, fuzzy
 msgid "noUploadPlan"
-msgstr "План завантаження не визначено"
+msgstr "Відображення набору даних не визначено"
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:61
 #, fuzzy
 msgid "noUploadPlanDescription"
-msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
+msgstr ""
+"Для цього набору даних не визначено жодного зіставлення. Виберіть існуюче "
+"зіставлення або створіть нове."
 
 #. Used in: Components > Work Bench > Hot Props
 #: components/WorkBench/hotProps.tsx:160
@@ -133,8 +139,8 @@ msgstr "Завжди ігнорувати"
 #, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці "
-"ніколи не розглядатиметься для цілей зіставлення, лише для завантаження."
+"Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці не "
+"використовуватиметься для зіставлення, а лише для завантаження."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:263
@@ -183,9 +189,9 @@ msgstr "Перевірка виявила відсутні зіставленн�
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні "
-"для завантаження вашою конфігурацією Specify. Додайте відсутні відображення "
-"або збережіть цей план завантаження як незавершений."
+"У цьому зіставленні даних відсутнє одне або кілька полів даних, необхідних "
+"для завантаження згідно з вашою конфігурацією Specify. Додайте відсутні "
+"зіставлення або збережіть це зіставлення як незавершене."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
@@ -233,7 +239,7 @@ msgstr "Виберіть базову таблицю"
 #: components/WbPlanView/State.tsx:96
 #, fuzzy
 msgid "chooseExistingPlan"
-msgstr "Виберіть існуючий план"
+msgstr "Виберіть існуюче відображення"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:166
@@ -242,13 +248,23 @@ msgstr "Показати всі таблиці"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:113
+#, fuzzy
 msgid "baseTableDescription"
 msgstr ""
+"«Базова таблиця» – це таблиця, яка слугує відправною точкою для зіставлення "
+"стовпців із полями даних. Після завантаження кожен рядок у вашому наборі "
+"даних призведе до створення нового запису в . Укажіть у вибраній базовій "
+"таблиці. Натисніть на базову таблицю у списку, щоб розпочати."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
+#, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
+"«Базова таблиця» – це таблиця, яка слугує відправною точкою для зіставлення "
+"стовпців із полями даних. Кожен імпортований вкладений запис буде додано як "
+"новий рядок у вибрану базову таблицю. Щоб розпочати, натисніть на базову "
+"таблицю у списку."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:105
@@ -259,7 +275,7 @@ msgstr "Виберіть базову таблицю з вкладеннями"
 #: components/WbPlanView/Mapper.tsx:499
 #, fuzzy
 msgid "dataSetUploaded"
-msgstr "Набір даних завантажено. Цей план завантаження не можна змінити"
+msgstr "Набір даних завантажено. Це зіставлення не можна змінити."
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:497
@@ -285,8 +301,8 @@ msgstr "Змінити базову таблицю для зіставлення
 #, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Вибір іншої базової таблиці для завантаження набору даних зробить цю таблицю "
-"новою відправною точкою для зіставлення стовпців і полів даних і видалить "
+"Вибір іншої базової таблиці для набору даних зробить цю таблицю новою "
+"відправною точкою для зіставлення стовпців з полями даних та видалить "
 "існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими полями "
 "базової таблиці."
 
@@ -355,7 +371,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:372
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Автоматична карта, щоб почати новий план завантаження?"
+msgstr "Автоматичне створення карти, щоб розпочати нове відображення?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:373
@@ -422,7 +438,7 @@ msgstr "Немає доступних планів, продовжуйте ст�
 #: components/WbPlanView/State.tsx:38
 #, fuzzy
 msgid "invalidTemplatePlan"
-msgstr "Вибраний набір даних не має плану завантаження. Виберіть інший."
+msgstr "Вибраний набір даних не має зіставлення. Виберіть інший."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:139
