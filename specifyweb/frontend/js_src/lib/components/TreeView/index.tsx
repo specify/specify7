@@ -428,6 +428,8 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
         {tableName === 'GeologicTimePeriod' && (
           <Select
             className="w-max"
+            aria-label={treeText.biostratFilter()}
+            title={treeText.biostratFilter()}
             value={biostratFilter}
             onValueChange={(value: string): void => {
               setBiostratFilter(value as 'all' | 'bio' | 'chrono');
