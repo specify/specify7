@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:23+0000\n"
-"Last-Translator: Manuel Sánchez Ruiz <manuel_sr@mncn.csic.es>\n"
+"Last-Translator: Anonymous <noreply@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "es/>\n"
 "Language: es\n"
@@ -182,6 +182,7 @@ msgstr "La validación encontró asignaciones faltantes:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:116
+#, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
 "A este mapeo de datos le faltan uno o más campos de datos requeridos para "
@@ -285,11 +286,12 @@ msgstr "¿Cambiar la tabla base para mapear columnas de conjuntos de datos?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
+#, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Si elige una tabla base diferente para la carga de un conjunto de datos, "
-"esa tabla se convertirá en el nuevo punto de partida para las asignaciones "
-"de campo de columna a datos y borrará las asignaciones existentes. El "
+"Si elige una tabla base diferente para la carga de un conjunto de datos, esa "
+"tabla se convertirá en el nuevo punto de partida para las asignaciones de "
+"campo de columna a datos y borrará las asignaciones existentes. El "
 "AutoMapper intentará asignar columnas a los nuevos campos de la tabla base."
 
 #. Used in: Components > Wb Plan View > Line Components
