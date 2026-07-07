@@ -51,6 +51,19 @@ class PermitTests(ApiTests):
             text1='Filed under drawer 3',
             number1=42.5,
         )
+
+        # Save + verify all fields persisted
+        self.assertIsNotNone(permit.id)
+        fetched = models.Permit.objects.get(id=permit.id) # fetch the permit object
+        self.assertEqual(fetched.permitnumber, 'P-FIELDS-001') # check all the things in
+        self.assertEqual(fetched.type, 'Collection')
+        self.assertEqual(fetched.startdate, datetime.datetime(2024, 1, 1))
+        self.assertEqual(fetched.enddate, datetime.datetime(2024, 12, 31))
+        self.assertEqual(fetched.issueddate, datetime.datetime(2024, 1, 15))
+        self.assertEqual(fetched.renewaldate, datetime.datetime(2025, 1, 15))
+        self.assertEqual(fetched.status, 'Active')
+        self.assertEqual(fetched.remarks, 'Annual collection permit')
+        self.assertEqual(fetched.yesno1, True)
         
 
     
