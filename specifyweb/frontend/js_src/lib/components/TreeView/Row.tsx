@@ -208,7 +208,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
    */
   const isDimmed = isGeo && biostratFilter !== 'all' && !matchesFilter;
   const isHiddenInFilter =
-    isGeo && biostratFilter !== 'all' && !matchesFilter && descendantCount === 0;
+    isGeo &&
+    biostratFilter !== 'all' &&
+    !matchesFilter &&
+    descendantCount === 0;
 
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
@@ -290,9 +293,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
                 }
               >
                 <span
-                  className={
-                    isDimmed ? 'italic text-gray-400' : undefined
-                  }
+                  className={isDimmed ? 'italic text-gray-400' : undefined}
                   title={
                     typeof row.acceptedId === 'number'
                       ? treeText.acceptedName({
