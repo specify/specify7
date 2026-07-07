@@ -14,10 +14,6 @@ DB_NAME="${DATABASE_NAME}"
 APP_USER_NAME="${APP_USER_NAME:-}"
 APP_USER_PASSWORD="${APP_USER_PASSWORD:-}"
 
-MASTER_USER_HOST="${MASTER_USER_HOST:-%}"
-MIGRATOR_USER_HOST="${MIGRATOR_USER_HOST:-%}"
-APP_USER_HOST="${APP_USER_HOST:-%}"
-
 # If no explicit migrator password, fall back to DB root password
 MIGRATOR_PASSWORD="${MIGRATOR_PASSWORD:-$DB_ROOT_PASSWORD}"
 
@@ -131,10 +127,8 @@ SQL_DB_NAME=$(sql_string_literal "$DB_NAME")
 SQL_DB_IDENTIFIER=$(sql_identifier "$DB_NAME")
 SQL_MIGRATOR_NAME=$(sql_string_literal "$MIGRATOR_NAME")
 SQL_MIGRATOR_PASSWORD=$(sql_string_literal "$MIGRATOR_PASSWORD")
-SQL_MIGRATOR_USER_HOST=$(sql_string_literal "$MIGRATOR_USER_HOST")
 SQL_APP_USER_NAME=$(sql_string_literal "$APP_USER_NAME")
 SQL_APP_USER_PASSWORD=$(sql_string_literal "$APP_USER_PASSWORD")
-SQL_APP_USER_HOST=$(sql_string_literal "$APP_USER_HOST")
 DB_NAME_REGEX=$(regex_escape "$DB_NAME")
 SQL_DB_IDENTIFIER_REGEX=$(regex_escape "$SQL_DB_IDENTIFIER")
 MIGRATION_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "DELETE" "CREATE" "ALTER" "INDEX" "DROP")
@@ -145,9 +139,9 @@ echo "DB Configuration:"
 echo "  DB Host: $DB_HOST"
 echo "  DB Port: $DB_PORT"
 echo "  DB Name: $DB_NAME"
-echo "  Master User:    $MASTER_USER_NAME@$MASTER_USER_HOST"
-echo "  Migrator User:  $MIGRATOR_NAME@$MIGRATOR_USER_HOST"
-echo "  App User:       $APP_USER_NAME@$APP_USER_HOST"
+echo "  Master User:    $MASTER_USER_NAME"
+echo "  Migrator User:  $MIGRATOR_NAME"
+echo "  App User:       $APP_USER_NAME"
 echo "--------------------------------------------------"
 
 NEW_DATABASE_CREATED=0
@@ -165,7 +159,7 @@ echo "MariaDB is up and running."
 
 # Check master (admin) login
 if ! mariadb -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "SELECT 1;" &> /dev/null; then
-  echo "Error: Unable to connect to MariaDB with provided master user credentials ($MASTER_USER_NAME@$MASTER_USER_HOST)."
+  echo "Error: Unable to connect to MariaDB with provided master user credentials ($MASTER_USER_NAME)."
   echo "       Check that MYSQL_ROOT_PASSWORD / MASTER_* env vars match the actual DB root/master user."
   exit 1
 fi
@@ -184,7 +178,7 @@ fi
 
 # Create database if it doesn't exist
 DB_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = '$DB_NAME';")
+"SELECT COUNT(*) FROM information_schema.schemata WHERE schema_name = $SQL_DB_NAME;")
 
 if [[ "$DB_EXISTS" -eq 0 ]]; then
   echo "Creating database '$DB_NAME'..."
@@ -202,13 +196,13 @@ fi
 
 # Create migrator user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_MIGRATOR_NAME AND host = $SQL_MIGRATOR_USER_HOST;")
+"SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_MIGRATOR_NAME AND host = '$CLIENT_HOST';")
 
 if [[ "$USER_EXISTS" -eq 0 && "$MIGRATOR_NAME" != "root" ]]; then
   echo "Creating migrator user '$MIGRATOR_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${MIGRATOR_NAME}'@'${CLIENT_HOST}' IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE USER $SQL_MIGRATOR_NAME@$SQL_MIGRATOR_USER_HOST IDENTIFIED BY $SQL_MIGRATOR_PASSWORD;"; then    
+    -e "CREATE USER $SQL_MIGRATOR_NAME@$CLIENT_HOST IDENTIFIED BY $SQL_MIGRATOR_PASSWORD;"; then    
     NEW_MIGRATOR_USER_CREATED=1
   else
     echo "Error: Failed to create user."
@@ -220,8 +214,8 @@ fi
 
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST}; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_MIGRATOR_NAME}@${SQL_MIGRATOR_USER_HOST}; FLUSH PRIVILEGES;"; then    
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_MIGRATOR_NAME}@${CLIENT_HOST}; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_MIGRATOR_NAME}@${CLIENT_HOST}; FLUSH PRIVILEGES;"; then    
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
@@ -231,10 +225,10 @@ fi
 
 GRANTS_OUTPUT="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" \
   -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-  -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}';" 2>/dev/null || true)"
+  -e "SHOW GRANTS FOR '${MIGRATOR_NAME}'@'${CLIENT_HOST}';" 2>/dev/null || true)"
 
 if [[ -z "$GRANTS_OUTPUT" ]]; then
-  echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}'."
+  echo "Error: Could not retrieve grants for '${MIGRATOR_NAME}'@'${CLIENT_HOST}'."
   exit 1
 fi
 
@@ -249,9 +243,9 @@ for g in "${MIGRATOR_GRANTS_LINES[@]}"; do
 done
 
 if [[ "$migrator_has_required_permissions" == true ]]; then
-  echo "Verified: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' has migration privileges on '${DB_NAME}'."
+  echo "Verified: '${MIGRATOR_NAME}'@'${CLIENT_HOST}' has migration privileges on '${DB_NAME}'."
 else
-  echo "Error: '${MIGRATOR_NAME}'@'${MIGRATOR_USER_HOST}' lacks migration privileges on '${DB_NAME}'."
+  echo "Error: '${MIGRATOR_NAME}'@'${CLIENT_HOST}' lacks migration privileges on '${DB_NAME}'."
   echo "Required for migrations (any one GRANT must include all of): ${MIGRATION_REQUIRED_PRIVS[*]}"
   echo "Grants found:"
   echo "$GRANTS_OUTPUT"
@@ -260,16 +254,16 @@ fi
 
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
-"SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_APP_USER_NAME AND host = $SQL_APP_USER_HOST;")
+"SELECT COUNT(*) FROM mysql.user WHERE user = $SQL_APP_USER_NAME AND host = '$CLIENT_HOST';")
 
 if [[ "$USER_EXISTS" -eq 0 && "$APP_USER_NAME" != "root" ]]; then
   echo "Creating app user '$APP_USER_NAME'..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${APP_USER_HOST}' IDENTIFIED BY '<hidden>';\""
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"CREATE USER '${APP_USER_NAME}'@'${CLIENT_HOST}' IDENTIFIED BY '<hidden>';\""
   if mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-    -e "CREATE USER $SQL_APP_USER_NAME@$SQL_APP_USER_HOST IDENTIFIED BY $SQL_APP_USER_PASSWORD;"; then
+    -e "CREATE USER $SQL_APP_USER_NAME@'$CLIENT_HOST' IDENTIFIED BY $SQL_APP_USER_PASSWORD;"; then
     NEW_APP_USER_CREATED=1
   else
-    echo "Error: Failed to create app user '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+    echo "Error: Failed to create app user '${APP_USER_NAME}'@'${CLIENT_HOST}'."
     echo "Falling back to migrator credentials for app user."
     APP_USER_NAME="$MIGRATOR_NAME"
     APP_USER_PASSWORD="$MIGRATOR_PASSWORD"
@@ -295,8 +289,8 @@ else
 
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@${SQL_APP_USER_HOST}; FLUSH PRIVILEGES;"; then    
+  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
+  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON ${SQL_DB_IDENTIFIER}.* TO ${SQL_APP_USER_NAME}@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then    
     echo "Error: Failed to grant privileges to new user."
     exit 1
   fi
@@ -305,10 +299,10 @@ else
 fi
 
 APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-                  -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${APP_USER_HOST}';" 2>/dev/null || true)"
+                  -e "SHOW GRANTS FOR '${APP_USER_NAME}'@'${CLIENT_HOST}';" 2>/dev/null || true)"
 
 if [[ -z "$APP_GRANTS_RAW" ]]; then
-  echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${APP_USER_HOST}'."
+  echo "Error: Could not retrieve grants for '${APP_USER_NAME}'@'${CLIENT_HOST}'."
   exit 1
 fi
 
@@ -324,9 +318,9 @@ for g in "${APP_GRANTS_LINES[@]}"; do
 done
 
 if [[ "$app_has_required_permissions" == true ]]; then
-  echo "Verified: '${APP_USER_NAME}'@'${APP_USER_HOST}' has required privileges on '${DB_NAME}'."
+  echo "Verified: '${APP_USER_NAME}'@'${CLIENT_HOST}' has required privileges on '${DB_NAME}'."
 else
-  echo "Error: '${APP_USER_NAME}'@'${APP_USER_HOST}' lacks required privileges on '${DB_NAME}'."
+  echo "Error: '${APP_USER_NAME}'@'${CLIENT_HOST}' lacks required privileges on '${DB_NAME}'."
   echo "Required (any one GRANT must include all of): ${APP_REQUIRED_PRIVS[*]}"
   echo "Grants found:"
   echo "$APP_GRANTS_RAW"
