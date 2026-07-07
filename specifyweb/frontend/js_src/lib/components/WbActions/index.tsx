@@ -250,8 +250,8 @@ export function WbActions({
                 <div className="flex flex-col gap-2">
                   {Object.entries(recordCounts)
                     .sort(
-                      sortFunction(
-                        ([value]) => RecordCountPriority.indexOf(value)
+                      sortFunction(([value]) =>
+                        RecordCountPriority.indexOf(value)
                       )
                     )
                     .map(([resultType, recordsPerType]) =>
@@ -269,9 +269,7 @@ export function WbActions({
                           </p>
                           <TableRecordCounts
                             recordCounts={recordsPerType}
-                            sortFunction={([, recordCount]) =>
-                              recordCount ?? 0
-                            }
+                            sortFunction={([, recordCount]) => recordCount ?? 0}
                           />
                         </div>
                       ) : null

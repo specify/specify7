@@ -120,10 +120,13 @@ function parseTreeTypes(
 function resolveField(table: SpecifyTable, fieldName: string): RA<string> {
   const field = table.strictGetField(fieldName);
   if (field.isRelationship) {
-    softFail(new Error('Data set mapping has a column mapped to a relationship'), {
-      table,
-      fieldName,
-    });
+    softFail(
+      new Error('Data set mapping has a column mapped to a relationship'),
+      {
+        table,
+        fieldName,
+      }
+    );
     return [field.name, field.relatedTable.idField.name];
   }
   return [field.name];

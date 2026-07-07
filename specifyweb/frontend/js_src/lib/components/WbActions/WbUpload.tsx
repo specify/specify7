@@ -156,7 +156,9 @@ export function WbUpload({
               <div className="flex flex-col gap-2">
                 {Object.entries(recordCounts)
                   .sort(
-                    sortFunction(([value]) => RecordCountPriority.indexOf(value))
+                    sortFunction(([value]) =>
+                      RecordCountPriority.indexOf(value)
+                    )
                   )
                   .map(([resultType, recordsPerType]) =>
                     recordsPerType !== undefined &&
