@@ -4,16 +4,13 @@ import { useHueDifference } from '../../hooks/useHueDifference';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
-import { ajax } from '../../utils/ajax';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
-import { Button } from '../Atoms/Button';
-import { Dialog } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
+import { CollectionStats } from './CollectionStats';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -22,9 +19,6 @@ const TaxonTiles = ReactLazy(async () =>
 export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const formId = useId('express-search')('form');
-  const [showCollStatsDialog, setShowCollStatsDialog] = React.useState(false);
-  const [tableData, setTableData] = React.useState<Record<string, unknown> | null>(null);
-
   const [displaySearchBar] = userPreferences.use(
     'welcomePage',
     'general',
@@ -41,38 +35,7 @@ export function WelcomeView(): JSX.Element {
           </Submit.Secondary>
         </div>
       )}
-      <div className="flex justify-end gap-2 pr-4 pt-4">
-        <Button.Secondary
-          onClick={(): void => {
-            void ajax('/stats/collection/statistics/', {
-              headers: {
-                Accept: 'application/json',
-              },
-            }).then(({ data }) => {
-              console.log('collection/statistics response:', data);
-              setTableData(data);
-            });
-
-            setShowCollStatsDialog(true);
-          }}
-        >
-          {commonText.collStats()}
-        </Button.Secondary>
-      </div>
-      {showCollStatsDialog && (
-        <Dialog
-          buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
-          header={commonText.collStats()}
-          onClose={(): void => setShowCollStatsDialog(false)}
-        >
-          <p>{commonText.collStats()}</p>
-          {tableData && tableData.length > 0 ? (
-            <Table data={tableData} />
-          ) : (
-            <p>{commonText.noData()}</p>
-          )}
-        </Dialog>
-      )}
+      <CollectionStats />
       <div
         className={`
         mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4
@@ -92,6 +55,8 @@ export function WelcomeView(): JSX.Element {
     </div>
   );
 }
+
+
 
 function getCritterlessWelcomePageImage(isDarkMode: boolean): string {
   return isDarkMode

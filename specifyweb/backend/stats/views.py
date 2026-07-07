@@ -217,6 +217,11 @@ def collection_statistics(request) -> HttpResponse:
             'name': 'Mammals',
             'specimenCount': 12543,
             'collectionType': 'Zoology',
+        },
+        {
+            'name': 'Bugs',
+            'specimenCount': 1254300,
+            'collectionType': 'Entomology',
         }
     ]
     return http.JsonResponse(stats, safe=False)
