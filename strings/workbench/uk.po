@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:27+0000\n"
-"Last-Translator: Ardev Prisec <prisecardev@gmail.com>\n"
+"Last-Translator: Максим Горпиніч <maksimgorpinic4@gmail.com>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
 "Language: uk\n"
@@ -352,6 +352,7 @@ msgstr "Помилка завантаження через одну або кі�
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:416
+#, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Перевірте набір даних і перегляньте підказки під час наведення курсора миші "
