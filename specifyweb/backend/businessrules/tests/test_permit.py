@@ -95,6 +95,3 @@ class PermitTests(ApiTests):
         self.assertEqual(fetched.issuedby.firstname, 'Test')
         self.assertEqual(fetched.issuedto, new_issuedto)
         self.assertEqual(fetched.issuedto.firstname, 'Issued')
-
-    
-        
