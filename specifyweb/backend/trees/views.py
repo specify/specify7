@@ -13,7 +13,7 @@ from sqlalchemy import distinct
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import get_object_or_404
 from specifyweb.specify.api.serializers import obj_to_data, toJson
-from sqlalchemy import and_, select, func, distinct, literal
+from sqlalchemy import select, func, distinct, literal
 from sqlalchemy.orm import aliased
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
