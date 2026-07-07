@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:23+0000\n"
-"Last-Translator: Daniel Fernandez <daniel.fernandez@sac-cas.ch>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/de_CH/>\n"
 "Language: de_CH\n"
@@ -21,28 +21,32 @@ msgstr "Datenzuordnung"
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:54
 #: components/WbToolkit/DevShowPlan.tsx:205
+#, fuzzy
 msgid "importExportMapping"
-msgstr ""
+msgstr "Import-/Export-Zuordnung"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:209
+#, fuzzy
 msgid "importExportMappingDescription"
 msgstr ""
+"Sie können die aktuelle Datensatzzuordnung als JSON-Datei exportieren oder "
+"eine bestehende Datensatzzuordnung importieren."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
 #, fuzzy
 msgid "noUploadPlan"
-msgstr "Es wurde kein Uploadplan definiert"
+msgstr "Es ist keine Datensatzzuordnung definiert."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:61
 #, fuzzy
 msgid "noUploadPlanDescription"
 msgstr ""
-"Für diesen Datensatz wurde noch kein Upload-Plan definiert. Jetzt einen "
-"erstellen?"
+"Für diesen Datensatz ist keine Zuordnung definiert. Bitte wählen Sie eine "
+"vorhandene Zuordnung aus oder erstellen Sie eine neue."
 
 #. Used in: Components > Work Bench > Hot Props
 #: components/WorkBench/hotProps.tsx:160
@@ -135,8 +139,8 @@ msgstr "Immer ignorieren"
 #, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Bei der Einstellung \"Immer ignorieren\" wird der Wert in dieser Spalte "
-"niemals für den Abgleich, sondern nur für das Hochladen berücksichtigt."
+"Wenn die Option „Immer ignorieren“ ausgewählt ist, wird der Wert in dieser "
+"Spalte nicht für Abgleichzwecke, sondern nur für den Upload verwendet."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:263
@@ -185,10 +189,10 @@ msgstr "Die Validierung hat fehlende Zuordnungen gefunden:"
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"In dieser Datenzuordnung fehlen ein oder mehrere Datenfelder, die für das "
-"Hochladen gemäss Ihrer Specify-Konfiguration erforderlich sind. Fügen Sie "
-"die fehlenden Mappings hinzu oder speichern Sie diesen Upload-Plan als "
-"unvollendet."
+"Diese Datenzuordnung weist ein oder mehrere fehlende Datenfelder auf, die "
+"gemäß Ihrer Specify-Konfiguration für den Upload erforderlich sind. Fügen "
+"Sie die fehlenden Zuordnungen hinzu oder speichern Sie diese Zuordnung als "
+"unvollständig."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
@@ -237,7 +241,7 @@ msgstr "Basistabelle auswählen"
 #: components/WbPlanView/State.tsx:96
 #, fuzzy
 msgid "chooseExistingPlan"
-msgstr "Bestehenden Plan auswählen"
+msgstr "Vorhandene Zuordnung auswählen"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:166
@@ -246,13 +250,23 @@ msgstr "Erweiterte Tabellen anzeigen"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:113
+#, fuzzy
 msgid "baseTableDescription"
 msgstr ""
+"Eine „Basistabelle“ dient als Ausgangspunkt für die Zuordnung von Spalten zu "
+"Datenfeldern. Nach dem Hochladen wird jede Zeile Ihres Datensatzes in der "
+"von Ihnen ausgewählten Basistabelle als neuer Datensatz angelegt. Klicken "
+"Sie in der Liste auf eine Basistabelle, um zu beginnen."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
+#, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
+"Eine „Basistabelle“ dient als Ausgangspunkt für die Zuordnung von Spalten zu "
+"Datenfeldern. Jeder importierte Anhangsdatensatz wird als neue Zeile in die "
+"ausgewählte Basistabelle eingefügt. Klicken Sie in der Liste auf eine "
+"Basistabelle, um zu beginnen."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:105
@@ -264,7 +278,7 @@ msgstr "Wählen Sie eine Basistabelle mit Anhängen aus"
 #: components/WbPlanView/Mapper.tsx:499
 #, fuzzy
 msgid "dataSetUploaded"
-msgstr "Datensatz hochgeladen. Dieser Upload-Plan kann nicht geändert werden"
+msgstr "Datensatz hochgeladen. Diese Zuordnung kann nicht geändert werden."
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:497
@@ -291,10 +305,10 @@ msgstr "Die Basistabelle für die Zuordnung von Datensatzspalten ändern?"
 #, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird "
-"diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu "
+"Wenn Sie eine andere Basistabelle für einen Datensatz auswählen, wird diese "
+"Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu "
 "Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper "
-"wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen."
+"versucht dann, die Spalten den Feldern der neuen Basistabelle zuzuordnen."
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:152
@@ -361,7 +375,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:372
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Automap, um einen neuen Upload-Plan zu starten?"
+msgstr "Automap soll eine neue Kartierung starten?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:373
@@ -429,8 +443,8 @@ msgstr "Es sind keine Pläne verfügbar, bitte erstellen Sie einen Upload-Plan."
 #, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""
-"Das ausgewählte Datenset hat keinen Upload-Plan. Bitte wählen Sie einen "
-"anderen Plan."
+"Der ausgewählte Datensatz hat keine Zuordnung. Bitte wählen Sie einen "
+"anderen aus."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:139
