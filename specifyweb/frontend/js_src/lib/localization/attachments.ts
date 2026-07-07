@@ -857,7 +857,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un groupe d'enregistrements de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un ensemble d'enregistrements de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
       'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':

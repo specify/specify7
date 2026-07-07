@@ -905,7 +905,7 @@ export const formsText = createDictionary({
     'en-us': 'Create a new record set',
     'ru-ru': 'Создать новый набор записей',
     'es-es': 'Crear un nuevo conjunto de registros',
-    'fr-fr': "Créer un nouveau jeu d'enregistrements",
+    'fr-fr': "Créer un nouvel ensemble d'enregistrements",
     'uk-ua': 'Створити новий набір записів',
     'de-ch': 'Erstellen Sie einen neuen Datensatz',
     'pt-br': 'Criar um novo conjunto de registros',
