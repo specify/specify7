@@ -4,6 +4,7 @@ import { useHueDifference } from '../../hooks/useHueDifference';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
+import { ajax } from '../../utils/ajax';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -12,6 +13,7 @@ import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
 import { Button } from '../Atoms/Button';
 import { Dialog } from '../Molecules/Dialog';
+import { TableIcon } from '../Molecules/TableIcon';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -21,6 +23,7 @@ export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const formId = useId('express-search')('form');
   const [showCollStatsDialog, setShowCollStatsDialog] = React.useState(false);
+  const [tableData, setTableData] = React.useState<Record<string, unknown> | null>(null);
 
   const [displaySearchBar] = userPreferences.use(
     'welcomePage',
@@ -39,7 +42,20 @@ export function WelcomeView(): JSX.Element {
         </div>
       )}
       <div className="flex justify-end gap-2 pr-4 pt-4">
-        <Button.Secondary onClick={(): void => setShowCollStatsDialog(true)}>
+        <Button.Secondary
+          onClick={(): void => {
+            void ajax('/stats/collection/statistics/', {
+              headers: {
+                Accept: 'application/json',
+              },
+            }).then(({ data }) => {
+              console.log('collection/statistics response:', data);
+              setTableData(data);
+            });
+
+            setShowCollStatsDialog(true);
+          }}
+        >
           {commonText.collStats()}
         </Button.Secondary>
       </div>
@@ -50,6 +66,11 @@ export function WelcomeView(): JSX.Element {
           onClose={(): void => setShowCollStatsDialog(false)}
         >
           <p>{commonText.collStats()}</p>
+          {tableData && tableData.length > 0 ? (
+            <Table data={tableData} />
+          ) : (
+            <p>{commonText.noData()}</p>
+          )}
         </Dialog>
       )}
       <div
