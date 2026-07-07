@@ -79,7 +79,7 @@ def detect_python():
                 except OSError:
                     continue
         except OSError:
-            pass
+            continue
 
     return None
 
