@@ -182,3 +182,41 @@ def get_percent_imaged(request):
     (select count(*) as co_count from collectionobject co where co.CollectionID = %(coid)s) as sub) as percent_imaged""", {"coid": request.specify_collection.id})
     percent_imaged = round(cursor.fetchone()[0], 2)
     return percent_imaged
+
+
+@login_maybe_required
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns mocked collection statistics for Specify',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'array',
+                            'items': {
+                                'type': 'object',
+                                'properties': {
+                                    'name': {'type': 'string'},
+                                    'specimenCount': {'type': 'integer'},
+                                    'collectionType': {'type': 'string'},
+                                },
+                                'required': ['name', 'specimenCount', 'collectionType']
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }
+}, )
+def collection_statistics(request) -> HttpResponse:
+    # Fake data for now
+    stats = [
+        {
+            'name': 'Mammals',
+            'specimenCount': 12543,
+            'collectionType': 'Zoology',
+        }
+    ]
+    return http.JsonResponse(stats, safe=False)

@@ -5,6 +5,7 @@ from . import views
 urlpatterns = [
     path('collection/user/<int:user_id>/', views.collection_user),
     path('collection/preparations/', views.collection_preparations),
+    path('collection/statistics/', views.collection_statistics),
     path('collection/type_specimens/', views.collection_type_specimens),
     re_path(r'^collection/locality_geography/(?P<stat>\w+)/', views.collection_locality_geography),
     re_path(r'^collection/attachments/(?P<stat>\w+)/', views.collection_attachments)
