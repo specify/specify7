@@ -115,7 +115,7 @@ export const formsText = createDictionary({
     'en-us': 'Checking if this record is currently in use…',
     'de-ch': 'Es wird geprüft, ob dieser Datensatz aktuell verwendet wird…',
     'es-es': 'Comprobando si este registro está actualmente en uso…',
-    'fr-fr': 'Vérification de la disponibilité de cet enregistrement…',
+    'fr-fr': "Vérification de l'utilisation actuelle de cet enregistrement…",
     'pt-br': 'Verificando se este registro está em uso…',
     'ru-ru': 'Проверка, используется ли эта запись в данный момент…',
     'uk-ua': 'Перевірка, чи цей запис зараз використовується…',
@@ -216,7 +216,7 @@ export const formsText = createDictionary({
       'Das Paleo Map-Plugin setzt voraus, dass die {localityTable:string}-Daten geografische Koordinaten besitzen und dass der Paläokontext ein geografisches Alter mit mindestens einer Start- oder Endzeit aufweist.',
     'es-es': 'Seleccionar fuente de tablas',
     'fr-fr':
-      'Le plugin Paleo Map exige que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec au moins une heure de début ou une heure de fin renseignées.',
+      'Le plugin Paleo Map exige que les {localityTable:string} aient des coordonnées géographiques et que le contexte paléo ait un âge géographique avec un temps de début et de fin renseigné.',
     'ru-ru':
       'Для работы плагина Paleo Map необходимо, чтобы {localityTable:string} содержал географические координаты, а палеоконтекст — географический возраст, как минимум с указанием времени начала или окончания.',
     'uk-ua':
@@ -447,7 +447,7 @@ export const formsText = createDictionary({
     'de-ch': 'Letzter Datensatz',
     'pt-br': 'Último registro',
     'hr-hr': 'Posljednji zapis',
-    nb: 'Siste oppføring',
+    nb: 'Siste post',
   },
   previousRecord: {
     'en-us': 'Previous Record',
@@ -590,7 +590,7 @@ export const formsText = createDictionary({
     'es-es':
       'Probablemente se incluyó en este formulario de la Especificación 6 y es posible que se admita en el futuro.',
     'fr-fr':
-      "Il était probablement déjà inclus dans ce formulaire à partir de la spécification 6 et pourrait être pris en charge à l'avenir.",
+      "Il était probablement déjà inclus dans ce formulaire dans de Specify 6 et pourrait être pris en charge à l'avenir.",
     'uk-ua':
       'Ймовірно, це було включено до цієї форми з Specify 6 і може бути підтримано в майбутньому.',
     'de-ch':
@@ -905,7 +905,7 @@ export const formsText = createDictionary({
     'en-us': 'Create a new record set',
     'ru-ru': 'Создать новый набор записей',
     'es-es': 'Crear un nuevo conjunto de registros',
-    'fr-fr': "Créer un nouveau jeu d'enregistrements",
+    'fr-fr': "Créer un nouvel ensemble d'enregistrements",
     'uk-ua': 'Створити новий набір записів',
     'de-ch': 'Erstellen Sie einen neuen Datensatz',
     'pt-br': 'Criar um novo conjunto de registros',
@@ -927,7 +927,7 @@ export const formsText = createDictionary({
     'en-us': 'Reverse',
     'ru-ru': 'Обеспечить регресс',
     'es-es': 'Contrarrestar',
-    'fr-fr': 'Inverse',
+    'fr-fr': 'Arrière',
     'uk-ua': 'Зворотний',
     'de-ch': 'Umkehren',
     'pt-br': 'Reverter',
@@ -1032,7 +1032,7 @@ export const formsText = createDictionary({
     'en-us': 'Show Bulk Carry Forward count',
     'de-ch': 'Anzahl der Massenüberträge anzeigen',
     'es-es': 'Mostrar recuento de arrastre masivo',
-    'fr-fr': 'Afficher le nombre de reports en bloc',
+    'fr-fr': 'Afficher le nombre de reports en masse',
     'pt-br': 'Mostrar contagem de transferência em massa',
     'ru-ru': 'Показать количество перенесенных пакетов данных',
     'uk-ua': 'Показати кількість групового перенесення',
@@ -1043,7 +1043,7 @@ export const formsText = createDictionary({
     'en-us': 'Bulk Carry Forward count',
     'de-ch': 'Zählung der Massenüberträge',
     'es-es': 'Recuento de arrastre masivo',
-    'fr-fr': 'Nombre de report en vrac',
+    'fr-fr': 'Nombre de report en masse',
     'pt-br': 'Contagem de transferência em massa',
     'ru-ru': 'Перенос данных на будущие периоды',
     'uk-ua': 'Кількість перенесених даних',
@@ -1108,7 +1108,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Настройка полей для массового переноса ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для масового перенесення ({tableName:string})',
     'hr-hr': 'Konfigurirajte polja za skupni prijenos ({tableName:string})',
-    nb: 'Konfigurer felt for masseoverføring fremover ({tableName:string})',
+    nb: 'Konfigurer felt for masseoverføring ({tableName:string})',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
@@ -1227,7 +1227,7 @@ export const formsText = createDictionary({
     'de-ch': 'Schaltfläche „Klonen anzeigen“',
     'pt-br': 'Mostrar botão Clonar',
     'hr-hr': 'Prikaži gumb Kloniraj',
-    nb: 'Vis klone-knapp',
+    nb: 'Vis klone-knappen',
   },
   addButtonEnabled: {
     'en-us': 'Show Add button',

@@ -40,7 +40,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Attachment-Server nicht verfügbar',
     'pt-br': 'Servidor de anexos indisponível',
     'hr-hr': 'Poslužitelj priloga nije dostupan',
-    nb: 'Vedleggsserveren er ikke tilgjengelig',
+    nb: 'Kan ikke koble til vVedleggsserveren',
   },
   attachmentServerUnavailableDescription: {
     'en-us': 'Setup your attachment server',
@@ -95,7 +95,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
     'hr-hr': 'Nije moguće pronaći povezani zapis',
-    nb: 'Finner ikke relatert oppføring',
+    nb: 'Finner ikke tilknyttet post',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -110,7 +110,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
     'hr-hr': 'Nije moguće pronaći zapis na koji se odnosi ovaj privitak.',
-    nb: 'Finner ikke en oppføring som dette vedlegget er relatert til.',
+    nb: 'Finner ikke posten som dette vedlegget er knyttet til.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -190,7 +190,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Неправильно відформатований',
     'pt-br': 'Formatação incorreta',
     'hr-hr': 'Neispravno formatirano',
-    nb: 'Feil formatert',
+    nb: 'Ugyldig format',
   },
   alreadyUploaded: {
     'en-us': 'Already Uploaded',
@@ -207,7 +207,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
     'es-es': 'Omitido',
-    'fr-fr': 'Omission',
+    'fr-fr': 'Ommis',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
@@ -223,7 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avlyst',
+    nb: 'Avbrutt',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -237,7 +237,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       '{action:string} estava em andamento quando ocorreu a interrupção.',
     'hr-hr': '{action:string} je bio u tijeku kada je došlo do prekida',
-    nb: '{action:string} var i gang da avbruddet oppsto',
+    nb: '{action:string} var i gang da avbruddet oppstod',
   },
   matchError: {
     'en-us': 'Match Error',
@@ -265,7 +265,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Unhandled fatal resource error:',
     'de-ch': 'Unbehandelter schwerwiegender Ressourcenfehler:',
     'es-es': 'Error de recurso fatal no controlado:',
-    'fr-fr': 'Erreur fatale de ressource non gérée :',
+    'fr-fr': 'Erreur, ressource non gérée :',
     'ru-ru': 'Необработанная фатальная ошибка доступа к ресурсам:',
     'uk-ua': 'Необроблена критична помилка ресурсу:',
     'pt-br': 'Erro fatal de recurso não tratado:',
@@ -281,7 +281,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Набори даних імпорту вкладених файлів ({count:number})',
     'pt-br': 'Conjuntos de dados de importação de anexos ({count:number})',
     'hr-hr': 'Skupovi podataka za uvoz priloga ({count:number})',
-    nb: 'Datasett for import av vedlegg ({count:number})',
+    nb: '({count:number}) datasett for import av vedlegg',
   },
   newAttachmentDataset: {
     'en-us': 'New Attachment Data Set {date: string}',
@@ -405,7 +405,7 @@ export const attachmentsText = createDictionary({
       'Durch das Hochladen der Anhänge werden diese auf dem Asset-Server und in der Specify-Datenbank erstellt.',
     'es-es': 'Interrumpido. Reintentando en [X25X]',
     'fr-fr':
-      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specification.',
+      'Le chargement des pièces jointes les ajoutera au serveur de médias et à la base de données Specify.',
     'ru-ru':
       'Загрузка вложений создаст их на сервере активов и в базе данных Specify.',
     'uk-ua':
@@ -457,7 +457,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
+      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de médias.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
     'uk-ua':
@@ -831,7 +831,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Download All',
     'de-ch': 'Alle herunterladen',
     'es-es': 'Descargar todo',
-    'fr-fr': 'Tout télécharger',
+    'fr-fr': 'Télécharger tout',
     'pt-br': 'Baixar tudo',
     'ru-ru': 'Скачать все',
     'uk-ua': 'Завантажити все',
@@ -857,7 +857,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un ensemble d'enregistrements de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
       'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':

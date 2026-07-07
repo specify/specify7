@@ -201,7 +201,7 @@ export const userText = createDictionary({
     'en-us': 'Sign in with Specify Account',
     'ru-ru': 'Войти, указав учетную запись',
     'es-es': 'Iniciar sesión con una cuenta de Specify',
-    'fr-fr': 'Se connecter avec le compte spécifié',
+    'fr-fr': 'Se connecter avec un compte Specify',
     'uk-ua': 'Увійти за допомогою Вказати обліковий запис',
     'de-ch': 'Mit dem angegebenen Konto anmelden',
     'pt-br': 'Faça login com a conta especificada.',
@@ -225,7 +225,7 @@ export const userText = createDictionary({
       'Atualmente, não há nenhum usuário "Especifique" associado à sua conta {providerName:string}. Se você tiver um nome de usuário e senha "Especifique", poderá inseri-los abaixo para associar esse usuário à sua conta {providerName:string} para logins futuros.',
     'hr-hr':
       'Trenutno nijedan Navedite korisnika nije povezan s vašim {providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, možete ih unijeti u nastavku kako biste tog korisnika povezali s vašim {providerName:string} računom za buduće prijave.',
-    nb: 'Det er for øyeblikket ingen Spesifiser-bruker tilknyttet {providerName:string}-kontoen din. Hvis du har et Spesifiser-brukernavn og -passord, kan du skrive dem inn nedenfor for å tilknytte den brukeren til {providerName:string}-kontoen din for fremtidige pålogginger.',
+    nb: 'Det er for øyeblikket ingen Spesifiser-bruker tilknyttet din {providerName:string}-konto. Hvis du har et Spesifiser-brukernavn og -passord, kan du skrive dem inn nedenfor for å tilknytte den brukeren til din {providerName:string}-konto for fremtidige pålogginger.',
   },
   generateMasterKey: {
     'en-us': 'Generate Master Key',
@@ -407,7 +407,7 @@ export const userText = createDictionary({
     'en-us': 'Permission denied error',
     'ru-ru': 'Ошибка "Доступ запрещен"',
     'es-es': 'Error de permiso denegado',
-    'fr-fr': "Erreur d'autorisation refusée",
+    'fr-fr': 'Erreur, autorisation refusée',
     'uk-ua': 'Помилка відмови у доступі',
     'de-ch': 'Zugriff verweigert',
     'pt-br': 'Erro de permissão negada',
@@ -421,8 +421,7 @@ export const userText = createDictionary({
       'У вас нет никаких правил или ролей, которые позволяли бы вам выполнять следующее действие:',
     'es-es':
       'No tiene ninguna política o función que le otorgue permiso para realizar la siguiente acción:',
-    'fr-fr':
-      "Vous ne disposez d'aucune politique ni d'aucun rôle vous autorisant à effectuer l'action suivante :",
+    'fr-fr': "Votre rôle ne vous autorise pas à effectuer l'action suivante :",
     'uk-ua':
       'У вас немає жодної політики чи ролі, яка б давала вам дозвіл на виконання наступної дії:',
     'de-ch':
@@ -470,7 +469,7 @@ export const userText = createDictionary({
     'es-es':
       'Al usuario que inició sesión no se le ha dado acceso a ninguna colección de esta base de datos. Debe iniciar sesión como otro usuario.',
     'fr-fr':
-      "L'utilisateur connecté n'a pas accès aux collections de cette base de données. Vous devez vous connecter en tant qu'autre utilisateur.",
+      "L'utilisateur connecté n'a pas accès aux collections de cette base de données. Merci de choisir un autre compte.",
     'uk-ua':
       'Користувач, який зареєстрований, не має доступу до жодної колекції в цій базі даних. Ви повинні увійти як інший користувач.',
     'de-ch':
@@ -530,7 +529,7 @@ export const userText = createDictionary({
     'en-us': 'Save user first',
     'ru-ru': 'Сначала сохраните пользователя.',
     'es-es': 'Guardar usuario primero',
-    'fr-fr': "Sauvegarder l'utilisateur en premier",
+    'fr-fr': "Sauvegarder l'utilisateur d'abord",
     'uk-ua': 'Спочатку збережіть користувача',
     'de-ch': 'Benutzer zuerst speichern',
     'pt-br': 'Salvar usuário primeiro',
@@ -1060,7 +1059,7 @@ export const userText = createDictionary({
     'en-us': 'Set Collections',
     'ru-ru': 'Наборы коллекций',
     'es-es': 'Establecer colecciones',
-    'fr-fr': "Collections d'ensembles",
+    'fr-fr': 'Choisir les collections',
     'uk-ua': 'Колекції наборів',
     'de-ch': 'Set-Kollektionen',
     'pt-br': 'Conjuntos de Coleções',
@@ -1121,7 +1120,7 @@ export const userText = createDictionary({
     'de-ch':
       'Die zugewiesenen Agenten konnten nicht vollständig geladen werden, da Sie keinen Lesezugriff auf die Disziplinarakten haben.',
     'fr-fr':
-      "Impossible de charger complètement les agents assignés car vous n'avez pas accès en lecture aux dossiers disciplinaires.",
+      "Impossible de charger complètement les agents assignés car vous n'avez pas accès en lecture aux enregistrements de la discipline.",
     'pt-br':
       'Não foi possível carregar completamente os agentes atribuídos porque você não tem acesso de leitura aos registros disciplinares.',
     'hr-hr':
@@ -1166,7 +1165,7 @@ export const userText = createDictionary({
     'en-us': '(Specify 7 Admin)',
     'ru-ru': '(Укажите 7 администраторов)',
     'es-es': '(Administradores de Specify 7)',
-    'fr-fr': '(Préciser 7 Administrateurs)',
+    'fr-fr': '(Administrateurs Specify 7)',
     'uk-ua': '(Specify 7 Адміністратор)',
     'de-ch': '(7 Administratoren angeben)',
     'pt-br': '(Especifique 7 administradores)',
@@ -1178,7 +1177,7 @@ export const userText = createDictionary({
     'en-us': '(Specify 6 Admin)',
     'ru-ru': '(Укажите 6 администраторов)',
     'es-es': '(Administradores de Specify 6)',
-    'fr-fr': '(Préciser 6 Administrateurs)',
+    'fr-fr': '(Administrateurs Specify 6)',
     'uk-ua': '(Specify 6 Адміністратор)',
     'de-ch': '(6 Administratoren angeben)',
     'pt-br': '(Especifique 6 administradores)',
@@ -1189,7 +1188,7 @@ export const userText = createDictionary({
     'en-us': 'Delete role that has users?',
     'ru-ru': 'Удалить роль, которая содержит пользователей?',
     'es-es': '¿Eliminar rol que tiene usuarios?',
-    'fr-fr': 'Supprimer le rôle qui a des utilisateurs ?',
+    'fr-fr': 'Supprimer ce rôle qui a des utilisateurs assignés ?',
     'uk-ua': 'Видалити роль, яка має користувачів?',
     'de-ch': 'Rolle mit Benutzern löschen?',
     'pt-br': 'Excluir função que possui usuários?',

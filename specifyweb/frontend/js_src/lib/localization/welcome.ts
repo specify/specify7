@@ -80,7 +80,7 @@ export const welcomeText = createDictionary({
     'es-es':
       'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'fr-fr':
-      'Préciser le consortium de collections <br />\n\nInstitut de la Biodiversité <br />\n\nUniversité du Kansas <br />\n\n1345, boulevard Jayhawk. <br />\n\nLawrence, KS 66045 États-Unis',
+      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'uk-ua':
       'Укажіть консорціум колекцій <br />\n\nІнститут біорізноманіття <br />\n\nУніверситет Канзасу <br />\n\n1345 Jayhawk Blvd. <br />\n\nЛоуренс, KS 66045 США',
     'de-ch':
@@ -144,7 +144,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Spécifiez la version 7 :',
+    'fr-fr': 'Version de Specify 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
     'pt-br': 'Especificar versão 7:',
@@ -166,7 +166,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
     'es-es': 'La fecha de construcción:',
-    'fr-fr': 'Date de construction :',
+    'fr-fr': 'Date de mise-en-route :',
     'uk-ua': 'Дата збірки:',
     'de-ch': 'Datum des Builds:',
     'pt-br': 'Data de compilação:',
@@ -177,10 +177,10 @@ export const welcomeText = createDictionary({
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Versión de Specify 6:',
-    'fr-fr': 'Spécifiez la version 6 :',
+    'fr-fr': 'Version de Specify 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
-    'pt-br': 'Especifique a versão 6:',
+    'pt-br': 'Especificar versão 6:',
     'hr-hr': 'Navedite 6 verzija:',
     nb: 'Specify 6 versjon:',
   },
@@ -221,7 +221,7 @@ export const welcomeText = createDictionary({
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
     'es-es': 'Navegador:',
-    'fr-fr': 'Navigateur:',
+    'fr-fr': 'Navigateur :',
     'uk-ua': 'Браузер:',
     'de-ch': 'Browser:',
     'pt-br': 'Navegador:',

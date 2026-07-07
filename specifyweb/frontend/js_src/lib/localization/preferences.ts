@@ -94,7 +94,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Використовуйте налаштування системи',
     'de-ch': 'Systemeinstellung verwenden',
     'pt-br': 'Usar as configurações do sistema',
-    'hr-hr': 'Koristi postavke sustava',
+    'hr-hr': 'Koristi sistemske postavke',
     nb: 'Bruk systeminnstillingen',
   },
   inheritOsSettings: {
@@ -488,12 +488,12 @@ export const preferencesText = createDictionary({
   },
   alwaysPrompt: {
     'en-us': 'Always prompt to choose collection',
-    'ru-ru': 'Всегда на связи, выбирайте коллекцию',
+    'ru-ru': 'Всегда оперативно выбирайте коллекцию.',
     'es-es': 'Siempre solicitando elegir la colección',
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
-    'pt-br': 'Sempre solicitando a seleção da coleção',
+    'pt-br': 'Sempre solicitando a escolha da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
     nb: 'Alltid oppfordret til å velge samling',
   },
@@ -676,7 +676,7 @@ export const preferencesText = createDictionary({
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (регистр не учитывается)',
-    'es-es': 'Comienza con (sin distinción entre mayúsculas y minúsculas)',
+    'es-es': 'Comienza con (sin distinción de mayúsculas y minúsculas)',
     'fr-fr': 'Commence par (insensible à la casse)',
     'uk-ua': 'Починається з (без урахування регістру)',
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
@@ -812,7 +812,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
-    'hr-hr': 'Označi podudarni podniz',
+    'hr-hr': 'Označi odgovarajući podniz',
     nb: 'Marker samsvarende delstreng',
   },
   languageDescription: {
@@ -880,7 +880,7 @@ export const preferencesText = createDictionary({
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
-    'es-es': 'Página de inicio',
+    'es-es': 'Página principal',
     'fr-fr': "Page d'accueil",
     'uk-ua': 'Домашня сторінка',
     'de-ch': 'Startseite',
@@ -903,7 +903,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Specify Splash',
     'ru-ru': 'Укажите заставку',
     'es-es': 'Especificar Splash',
-    'fr-fr': 'Spécifiez Splash',
+    'fr-fr': 'Specify Splash',
     'uk-ua': 'Вкажіть логотип',
     'de-ch': 'Splash angeben',
     'pt-br': 'Especificar Splash',
@@ -1600,7 +1600,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Specify Network Badge',
     'ru-ru': 'Укажите сетевой значок',
     'es-es': 'Especificar insignia de red',
-    'fr-fr': 'Spécifiez le badge réseau',
+    'fr-fr': 'Badge réseau Specify',
     'uk-ua': 'Укажіть значок мережі',
     'de-ch': 'Netzwerkabzeichen angeben',
     'pt-br': 'Especificar o ícone de rede',
@@ -1771,7 +1771,7 @@ export const preferencesText = createDictionary({
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru': 'Автоматическая прокрутка дерева к сфокусированному узлу',
-    'es-es': 'Desplazamiento automático del árbol al nodo enfocado',
+    'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
     'fr-fr': 'Arbre de défilement automatique vers le nœud ciblé',
     'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
@@ -1882,10 +1882,10 @@ export const preferencesText = createDictionary({
   },
   searchCaseSensitive: {
     'en-us': 'Case-sensitive search',
-    'es-es': 'Búsqueda sensible a mayúsculas y minúsculas',
+    'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Suche mit Berücksichtigung der Groß- und Kleinschreibung',
+    'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
     'hr-hr': 'Pretraživanje koje razlikuje velika i mala slova',
@@ -2188,7 +2188,7 @@ export const preferencesText = createDictionary({
     'uk-ua': "Запам'ятайте розміри діалогових вікон",
     'de-ch': 'Dialogfenstergrößen merken',
     'pt-br': 'Lembre-se dos tamanhos das janelas de diálogo.',
-    'hr-hr': 'Zapamti veličine dijaloških prozora',
+    'hr-hr': 'Zapamtite veličine dijaloških prozora',
     nb: 'Husk størrelsen på dialogvinduene',
   },
   rememberDialogPositions: {
@@ -2246,7 +2246,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Lokalisieren Sie die Namen der erkannten App-Ressourcen',
     'es-es':
       'Localizar los nombres de los recursos de la aplicación reconocidos',
-    'fr-fr': "Localiser les noms des ressources d'application reconnues",
+    'fr-fr': "Localisez les noms de ressources de l'application reconnues",
     'ru-ru': 'Локализуйте названия распознанных ресурсов приложения.',
     'uk-ua': 'Локалізувати назви розпізнаних ресурсів програми',
     'pt-br': 'Localize os nomes dos recursos de aplicativos reconhecidos.',
@@ -2377,7 +2377,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Вторичный цвет кнопки',
     'uk-ua': 'Колір вторинної кнопки',
-    'de-ch': 'Farbe der Sekundärtaste',
+    'de-ch': 'Sekundäre Tastenfarbe',
     'pt-br': 'Cor do botão secundário',
     'hr-hr': 'Boja sekundarnog gumba',
     nb: 'Farge på sekundær knapp',
@@ -2635,7 +2635,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Scope "Entire Table" Picklists',
     'de-ch': 'Bereich „Gesamte Tabelle“ Auswahllisten',
     'es-es': 'Listas desplegables de alcance "Tabla completa"',
-    'fr-fr': 'Listes de sélection « Tableau entier »',
+    'fr-fr': 'Perimètre des picklists de type "table entière"',
     'pt-br': 'Escopo "Tabela Inteira" Listas de seleção',
     'ru-ru': 'Область действия: Списки выбора "Вся таблица"',
     'uk-ua': 'Списки вибору «Уся таблиця»',
@@ -2650,7 +2650,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Si está habilitada, las listas desplegables de tipo "Tabla completa" solo mostrarán los elementos que se estén utilizando en la colección actual.',
     'fr-fr':
-      "Si cette option est activée, les listes de sélection de type « Tableau entier » n'afficheront que les éléments utilisés dans la collection actuelle.",
+      "Si cette option est activée, les picklists de type « table entière » n'afficheront que les éléments utilisés dans la collection actuelle.",
     'pt-br':
       'Se ativada, a opção "Lista de opções" do tipo "Tabela inteira" exibirá apenas os itens que estão em uso na coleção atual.',
     'ru-ru':

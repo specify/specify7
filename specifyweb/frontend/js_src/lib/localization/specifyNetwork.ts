@@ -62,12 +62,12 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'Specify Network unavailable',
     'de-ch': 'Netzwerk nicht verfügbar angeben',
     'es-es': 'Especificar red no disponible',
-    'fr-fr': 'Veuillez préciser : Réseau indisponible',
+    'fr-fr': 'Specify Network indisponible',
     'hr-hr': 'Navedite mrežu koja nije dostupna',
     nb: 'Spesifiser nettverk utilgjengelig',
     'pt-br': 'Especifique a rede indisponível.',
     'ru-ru': 'Укажите, что сеть недоступна.',
-    'uk-ua': 'Вкажіть, що мережа недоступна',
+    'uk-ua': 'Specify Мережа недоступна',
   },
   brokerUnavailableDescription: {
     'en-us':
@@ -77,7 +77,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'No se pudo conectar a la red especificada. Inténtelo de nuevo más tarde.',
     'fr-fr':
-      'Impossible de se connecter au réseau Specify. Veuillez réessayer plus tard.',
+      'Impossible de se connecter Specify network. Veuillez réessayer plus tard.',
     'hr-hr':
       'Navedite nije se moglo povezati s Navedite mrežom. Pokušajte ponovno kasnije.',
     nb: 'Spesifiser kunne ikke koble til Spesifiser nettverk. Prøv igjen senere.',
@@ -85,7 +85,8 @@ export const specifyNetworkText = createDictionary({
       'Não foi possível conectar-se à rede especificada. Tente novamente mais tarde.',
     'ru-ru':
       'Не удалось подключиться к указанной сети. Пожалуйста, попробуйте позже.',
-    'uk-ua': 'Не вдалося підключитися до мережі «Указати». Спробуйте пізніше.',
+    'uk-ua':
+      'Specify не вдалося підключитися до Specify Мережі. Спробуйте пізніше.',
   },
   dataQuality: {
     'en-us': 'Data Quality',
@@ -147,7 +148,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'Los registros recogidos en iDigBio se muestran como puntos verdes redondos, excepto los de esta colección, registrados en iDigBio, que son puntos rojos redondos. Al acercarse a los puntos rojos, aparece una chincheta en forma de lágrima azul; al hacer clic en la chincheta, se ejecuta una consulta de localidad en Specify que muestra todas las especies en la base de datos actual de Specify colectadas en esa localización.',
     'fr-fr':
-      "Les occurrences enregistrées dans iDigBio sont représentées par des points verts ronds, à l'exception de celles de la collection actuelle, qui sont représentées par des points rouges ronds. Un zoom sur les points rouges fait apparaître une épingle bleue en forme de larme ; cliquer dessus lance une requête de localisation dans Specify, affichant toutes les espèces de la base de données Specify actuelle collectées à cet endroit.",
+      "Les occurrences enregistrées dans iDigBio sont représentées par des points verts ronds, à l'exception de celles de la collection actuelle, qui sont représentées par des points rouges ronds. Un zoom sur les points rouges fait apparaître une épingle bleue en forme de larme ; cliquer dessus lance une requête des localités dans Specify, affichant toutes les espèces de la base de données Specify collectées à cet endroit.",
     'ru-ru':
       'Зарегистрированные в iDigBio находки отображаются в виде круглых зеленых точек, за исключением тех, что относятся к текущей коллекции, зарегистрированной в iDigBio, которые отображаются в виде круглых красных точек. При увеличении масштаба красных точек появляется синяя метка в форме капли; щелчок по этой метке запускает запрос по местонахождению в Specify, который отображает все виды из текущей базы данных Specify, собранные в этом месте.',
     'uk-ua':
@@ -251,7 +252,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'End Year',
     'de-ch': 'Jahresende',
     'es-es': 'Año final',
-    'fr-fr': "Fin d'année",
+    'fr-fr': 'Année de fin',
     'ru-ru': 'Конец года',
     'uk-ua': 'Кінцевий рік',
     'pt-br': 'Fim do ano',
@@ -262,7 +263,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'GBIF Publishing Organization Key',
     'de-ch': 'GBIF-Veröffentlichungsorganisationsschlüssel',
     'es-es': 'Clave de la organización editorial GBIF',
-    'fr-fr': "Clé de l'organisation d'édition GBIF",
+    'fr-fr': 'Clé GBIF du publisher',
     'pt-br': 'Chave da Organização de Publicação do GBIF',
     'ru-ru': 'Ключ к издательской организации GBIF',
     'uk-ua': 'Ключ видавничої організації GBIF',
@@ -277,7 +278,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'La clave GBIF "publishingOrgKey" (un UUID) para esta colección, utilizada para la integración de Specify Network.',
     'fr-fr':
-      "La clé GBIF « publishingOrgKey » (un UUID) pour cette collection, utilisée pour l'intégration du réseau Specify.",
+      'La clé GBIF « publishingOrgKey » (un UUID) pour cette collection, est utilisée pour le Specify Network.',
     'pt-br':
       'A chave "publishingOrgKey" (um UUID) do GBIF para esta coleção, usada para a integração com a rede Specify.',
     'ru-ru':
@@ -292,7 +293,7 @@ export const specifyNetworkText = createDictionary({
     'en-us': 'GBIF Data Set Key',
     'de-ch': 'GBIF-Datensatzschlüssel',
     'es-es': 'Clave del conjunto de datos GBIF',
-    'fr-fr': "Clé d'identification des données GBIF",
+    'fr-fr': 'Clé du jeu de données GBIF',
     'pt-br': 'Chave do conjunto de dados GBIF',
     'ru-ru': 'Ключ набора данных GBIF',
     'uk-ua': 'Ключ набору даних GBIF',
@@ -307,7 +308,7 @@ export const specifyNetworkText = createDictionary({
     'es-es':
       'La clave "dataSetKey" de GBIF (un UUID) para esta colección, utilizada para la integración de Specify Network.',
     'fr-fr':
-      "Le « dataSetKey » GBIF (un UUID) pour cette collection, utilisé pour l'intégration du réseau Specification.",
+      "Le « dataSetKey » GBIF (un UUID) pour cette collection, utilisé pour l'intégration du Specify Network.",
     'pt-br':
       'A "dataSetKey" do GBIF (um UUID) para esta coleção, usada para a integração do Specify Network.',
     'ru-ru':

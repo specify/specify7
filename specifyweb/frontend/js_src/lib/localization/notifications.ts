@@ -89,7 +89,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der RSS-Export-Feed wurde aktualisiert.',
     'pt-br': 'O feed de exportação RSS foi atualizado.',
     'hr-hr': 'RSS feed za izvoz je ažuriran.',
-    nb: 'RSS-eksportfeeden er oppdatert.',
+    nb: 'RSS eksportstrøm er oppdatert.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
@@ -100,7 +100,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
     'pt-br': 'A atualização do feed de exportação falhou.',
     'hr-hr': 'Ažuriranje feeda izvoza nije uspjelo.',
-    nb: 'Oppdatering av eksport av feed mislyktes.',
+    nb: 'Oppdatering av eksportstrøm mislyktes.',
   },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
@@ -111,7 +111,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der DwCA-Export wurde abgeschlossen.',
     'pt-br': 'Exportação do DwCA concluída.',
     'hr-hr': 'Izvoz DwCA-e je završen.',
-    nb: 'DwCA-eksport fullført.',
+    nb: 'DwCA eksport fullført.',
   },
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',
@@ -122,7 +122,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der DwCA-Export ist fehlgeschlagen.',
     'pt-br': 'A exportação para DwCA falhou.',
     'hr-hr': 'Izvoz DwCA nije uspio.',
-    nb: 'DwCA-eksport mislyktes.',
+    nb: 'DwCA eksport mislyktes.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
@@ -133,7 +133,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach CSV wurde abgeschlossen.',
     'pt-br': 'Exportação da consulta para CSV concluída.',
     'hr-hr': 'Izvoz upita u CSV je završen.',
-    nb: 'Spørreeksport til CSV fullført.',
+    nb: 'Eksport av avansert søk til CSV fullført.',
   },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
@@ -144,7 +144,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
     'pt-br': 'Exportação da consulta para KML concluída.',
     'hr-hr': 'Izvoz upita u KML je završen.',
-    nb: 'Spørreeksport til KML fullført.',
+    nb: 'Eksporten av avansertsøk til KML fullført.',
   },
   dataSetOwnershipTransferred: {
     'en-us':
@@ -163,6 +163,6 @@ export const notificationsText = createDictionary({
       '<userName /> transferiu a propriedade do conjunto de dados <dataSetName /> para você.',
     'hr-hr':
       '<userName /> vam je prenio vlasništvo nad skupom podataka <dataSetName />.',
-    nb: '<userName /> overførte eierskapet av datasettet <dataSetName /> til deg.',
+    nb: '<userName /> overførte eierskapet av <dataSetName /> datasettet til deg.',
   },
 } as const);

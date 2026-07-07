@@ -19,14 +19,14 @@ export const statsText = createDictionary({
     'pt-br': 'Participações',
     'uk-ua': 'Холдинги',
     'hr-hr': 'Udjeli',
-    nb: 'Beholdninger',
+    nb: 'Beholdning',
   },
   collectionObjects: {
     'en-us': 'Collection Objects',
     'ru-ru': 'Объекты коллекции',
     'es-es': 'Objetos de la Colección',
     'de-ch': 'Sammlungsobjekte',
-    'fr-fr': 'Objets de collection',
+    'fr-fr': 'Objets',
     'pt-br': 'Objetos da Coleção',
     'uk-ua': "Об'єкти колекції",
     'hr-hr': 'Objekti kolekcije',
@@ -41,7 +41,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Типовые образцы',
     'uk-ua': 'Типові зразки',
     'hr-hr': 'Tipični uzorci',
-    nb: 'Typeprøver',
+    nb: 'Typer',
   },
   curation: {
     'en-us': 'Curation',
@@ -74,7 +74,7 @@ export const statsText = createDictionary({
     'pt-br': 'Itens emprestados',
     'uk-ua': 'Речі в оренду',
     'hr-hr': 'Predmeti na posudbu',
-    nb: 'Utlånte gjenstander',
+    nb: 'Utlånte objekter',
   },
   openLoansStat: {
     'en-us': 'Open Loans',
@@ -85,14 +85,14 @@ export const statsText = createDictionary({
     'pt-br': 'Empréstimos abertos',
     'uk-ua': 'Відкриті позики',
     'hr-hr': 'Otvoreni krediti',
-    nb: 'Åpne lån',
+    nb: 'Pågående lån',
   },
   overdueLoans: {
     'en-us': 'Overdue Loans',
     'ru-ru': 'Просроченные Займы',
     'es-es': 'Préstamos Atrasados',
     'de-ch': 'Überfällige Kredite',
-    'fr-fr': 'Prêts en souffrance',
+    'fr-fr': 'Prêts en retards',
     'pt-br': 'Empréstimos em atraso',
     'uk-ua': 'Прострочені кредити',
     'hr-hr': 'Dospjeli krediti',
@@ -125,7 +125,7 @@ export const statsText = createDictionary({
     'ru-ru': 'География Записи',
     'es-es': 'Entradas de Geografía',
     'de-ch': 'Geographie-Einträge',
-    'fr-fr': 'Articles de géographie',
+    'fr-fr': 'Entrées géographiques',
     'pt-br': 'Entradas de Geografia',
     'uk-ua': 'Географічні записи',
     'hr-hr': 'Geografski unosi',
@@ -151,7 +151,7 @@ export const statsText = createDictionary({
     'pt-br': 'Localidades georreferenciadas',
     'uk-ua': "Геоприв'язані населені пункти",
     'hr-hr': 'Georeferencirani lokaliteti',
-    nb: 'Georefererte lokaliteter',
+    nb: 'Lokaliteter med koordinater',
   },
   digitization: {
     'en-us': 'Digitization',
@@ -173,7 +173,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Оцифровано за последние 7 дней',
     'uk-ua': 'Оцифровано за останні 7 днів',
     'hr-hr': 'Digitalizirano posljednjih 7 dana',
-    nb: 'Digitaliserte siste 7 dager',
+    nb: 'Digitaliserte siste syv dager',
   },
   digitizedLastMonth: {
     'en-us': 'Digitized Last Month',
@@ -217,7 +217,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Выберите из запросов',
     'uk-ua': 'Вибрати з запитів',
     'hr-hr': 'Odaberite iz upita',
-    nb: 'Velg fra spørringer',
+    nb: 'Velg fra avansert søk',
   },
   selectFromAvailableDefault: {
     'en-us': 'Select From Available Default Statistics',
@@ -246,7 +246,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Личный',
     'es-es': 'Personal',
     'de-ch': 'Persönlich',
-    'fr-fr': 'Personnel',
+    'fr-fr': 'Espace personnel',
     'pt-br': 'Pessoal',
     'uk-ua': 'Особисте',
     'hr-hr': 'Osobno',
@@ -268,11 +268,11 @@ export const statsText = createDictionary({
     'ru-ru': 'Объекты коллекции каталогизированы',
     'es-es': 'Objetos de la Colección Catalogados',
     'de-ch': 'Katalogisierte Sammlungsobjekte',
-    'fr-fr': 'Objets de la collection catalogués',
+    'fr-fr': 'Objets informatisés',
     'pt-br': 'Objetos da Coleção Catalogados',
     'uk-ua': "Каталогізовані об'єкти колекції",
     'hr-hr': 'Katalogizirani objekti zbirke',
-    nb: 'Samlingsobjekter katalogisert',
+    nb: 'Antall samlingsobjekter registert',
   },
   collectionObjectsDetermined: {
     'en-us': 'Collection Objects Determined',
@@ -283,7 +283,7 @@ export const statsText = createDictionary({
     'pt-br': 'Objetos da Coleção Determinados',
     'uk-ua': "Визначено об'єкти колекції",
     'hr-hr': 'Određeni objekti zbirke',
-    nb: 'Samlingsobjekter bestemt',
+    nb: 'Antall samlingsobjekter identifisert',
   },
   lastRefreshed: {
     'en-us': 'Last refreshed',
@@ -415,7 +415,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Обновить',
     'uk-ua': 'Оновити',
     'hr-hr': 'Osvježiti',
-    nb: 'Forfriske',
+    nb: 'Last inn på nytt',
   },
   collectionObjectsWithImages: {
     'en-us': 'Collection Objects with images',
@@ -459,13 +459,13 @@ export const statsText = createDictionary({
     'ru-ru': 'Представленные таксоны',
     'uk-ua': 'Представлені таксони',
     'hr-hr': 'Zastupljene taksone',
-    nb: 'Taxa representert',
+    nb: 'Taksa representert',
   },
   geographiesRepresented: {
     'en-us': 'Geographies Represented',
     'es-es': 'Geografías Representadas',
     'de-ch': 'Vertretene Regionen',
-    'fr-fr': 'Géographies représentées',
+    'fr-fr': 'Lieux représentées',
     'pt-br': 'Geografias representadas',
     'ru-ru': 'Представленные географические регионы',
     'uk-ua': 'Представлені географічні регіони',
@@ -481,7 +481,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Процент географически привязанных данных',
     'uk-ua': "Відсоток геоприв'язаних",
     'hr-hr': 'Postotak georeferenciranja',
-    nb: 'Prosent georeferert',
+    nb: 'Prosent med koordinater',
   },
   percentImaged: {
     'en-us': 'Percent Imaged',
@@ -536,7 +536,7 @@ export const statsText = createDictionary({
     'ru-ru': 'Показать {preparationTableName:string} Итоги',
     'uk-ua': 'Показати {preparationTableName:string} підсумки',
     'hr-hr': 'Prikaži {preparationTableName:string} ukupne iznose',
-    nb: 'Vis {preparationTableName:string} Totaler',
+    nb: 'Vis {preparationTableName:string} Antall',
   },
   showPreparationsTotalDescription: {
     'en-us':
@@ -546,7 +546,7 @@ export const statsText = createDictionary({
     'es-es':
       'Si está habilitado, el panel de estadísticas predeterminado {preparationTableName:string} incluirá un recuento total para cada {lowerPreparationTableName:string} de un {prepTypeTableName:string} en particular junto con el total general. Esto es útil para colecciones basadas en lotes.',
     'fr-fr':
-      "Si cette option est activée, le panneau de statistiques par défaut {preparationTableName:string} affichera le nombre total pour chaque {lowerPreparationTableName:string} d'un {prepTypeTableName:string} donné, ainsi que le total général. Ceci est utile pour les collections par lots.",
+      "Si cette option est activée, le panneau de statistiques par défaut {preparationTableName:string} affichera le nombre total pour chaque {lowerPreparationTableName:string} d'un {prepTypeTableName:string} donné, ainsi que le total général. Ceci est utile pour les collections utilisant le concept de lot.",
     'pt-br':
       'Se ativado, o painel de estatísticas padrão {preparationTableName:string} incluirá uma contagem total para cada {lowerPreparationTableName:string} de um determinado {prepTypeTableName:string}, juntamente com o total geral. Isso é útil para coleções baseadas em lotes.',
     'ru-ru':
@@ -555,7 +555,7 @@ export const statsText = createDictionary({
       'Якщо ввімкнено, панель статистики {preparationTableName:string} за замовчуванням включатиме загальну кількість для кожного {lowerPreparationTableName:string} конкретного {prepTypeTableName:string} поряд із загальною сумою. Це корисно для колекцій на основі лотів.',
     'hr-hr':
       'Ako je omogućeno, zadana ploča sa statistikom {preparationTableName:string} uključivat će ukupan broj za svaki {lowerPreparationTableName:string} određenog {prepTypeTableName:string} uz ukupan zbroj. Ovo je korisno za kolekcije temeljene na lotovima.',
-    nb: 'Hvis aktivert, vil standardstatistikkpanelet {preparationTableName:string} inkludere et totalt antall for hver {lowerPreparationTableName:string} av en bestemt {prepTypeTableName:string} sammen med den totale summen. Dette er nyttig for lottbaserte samlinger.',
+    nb: 'Hvis aktivert, vil standardstatistikkpanelet {preparationTableName:string} inkludere et totalt antall for hver {lowerPreparationTableName:string} av en bestemt {prepTypeTableName:string} sammen med den totale summen. Dette er nyttig for bulkbaserte samlinger.',
   },
   autoRefreshRate: {
     'en-us': 'Auto-Refresh Rate (Hours)',
@@ -585,7 +585,7 @@ export const statsText = createDictionary({
       'Інтервал часу в годинах, через який сторінка статистики автоматично оновлюватиме свої дані. Значення за замовчуванням – 24.',
     'hr-hr':
       'Vremenski interval, u satima, u kojem će stranica sa statistikom automatski osvježiti svoje podatke. Zadana vrijednost je 24.',
-    nb: 'Tidsintervallet, i timer, som statistikksiden automatisk oppdaterer dataene sine med. Standard er 24.',
+    nb: 'Tidsintervallet, i timer, for hvor ofte statistikksiden automatisk oppdaterer dataene. Standard er 24.',
   },
 } as const);
 /* eslint-enable @typescript-eslint/naming-convention */
