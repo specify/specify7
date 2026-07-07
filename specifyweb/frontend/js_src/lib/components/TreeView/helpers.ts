@@ -31,6 +31,8 @@ export const fetchRows = async (fetchUrl: string) =>
         string | null,
         number,
         string | null,
+        boolean | null,
+        number | null,
       ]
     >
   >(fetchUrl, {
@@ -54,6 +56,8 @@ export const fetchRows = async (fetchUrl: string) =>
           endUncertainty = undefined,
           children,
           synonyms = undefined,
+          isBioStrat = undefined,
+          matchingDescendantCount = undefined,
         ],
         index,
         { length }
@@ -74,6 +78,8 @@ export const fetchRows = async (fetchUrl: string) =>
         children,
         isLastChild: index + 1 === length,
         synonyms,
+        isBioStrat: isBioStrat as boolean | null | undefined,
+        matchingDescendantCount: matchingDescendantCount as number | undefined,
       })
     )
   );

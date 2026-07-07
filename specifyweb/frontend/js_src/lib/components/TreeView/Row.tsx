@@ -40,6 +40,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   synonymColor,
   treeName,
   hideEmptyNodes,
+  biostratFilter = 'all',
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -64,6 +65,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   readonly synonymColor: string;
   readonly treeName: SCHEMA['tableName'];
   readonly hideEmptyNodes: boolean;
+  readonly biostratFilter?: 'all' | 'bio' | 'chrono';
 }): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -189,10 +191,29 @@ export function TreeRow<SCHEMA extends AnyTree>({
     []
   );
 
+  const isGeo = treeName === 'GeologicTimePeriod';
+  const matchesFilter =
+    !isGeo || biostratFilter === 'all'
+      ? true
+      : biostratFilter === 'bio'
+        ? row.isBioStrat === true
+        : row.isBioStrat !== true;
+  const descendantCount =
+    row.matchingDescendantCount ??
+    (isGeo && biostratFilter !== 'all' ? row.children : undefined) ??
+    0;
+  /*
+   * Non-matching nodes with zero matching descendants are hidden.
+   * Non-matching nodes with matching descendants are shown italic/gray.
+   */
+  const isDimmed = isGeo && biostratFilter !== 'all' && !matchesFilter;
+  const isHiddenInFilter =
+    isGeo && biostratFilter !== 'all' && !matchesFilter && descendantCount === 0;
+
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
-  return hideEmptyNodes && hasNoChildrenNodes ? null : (
+  return (hideEmptyNodes && hasNoChildrenNodes) || isHiddenInFilter ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
         if (row.rankId === rankId) {
@@ -269,6 +290,9 @@ export function TreeRow<SCHEMA extends AnyTree>({
                 }
               >
                 <span
+                  className={
+                    isDimmed ? 'italic text-gray-400' : undefined
+                  }
                   title={
                     typeof row.acceptedId === 'number'
                       ? treeText.acceptedName({
@@ -293,9 +317,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                       className="text-sm font-normal"
                       title={[
                         treeText.geologicTimePeriodLine({
-                          label:
-                            getField(tables.GeologicTimePeriod, 'startPeriod')
-                              .label,
+                          label: getField(
+                            tables.GeologicTimePeriod,
+                            'startPeriod'
+                          ).label,
                           value: trimDecimal(row.startPeriod!),
                           suffix:
                             typeof row.startUncertainty === 'string'
@@ -304,9 +329,10 @@ export function TreeRow<SCHEMA extends AnyTree>({
                         }),
                         typeof row.endPeriod === 'string'
                           ? treeText.geologicTimePeriodLine({
-                              label:
-                                getField(tables.GeologicTimePeriod, 'endPeriod')
-                                  .label,
+                              label: getField(
+                                tables.GeologicTimePeriod,
+                                'endPeriod'
+                              ).label,
                               value: trimDecimal(row.endPeriod),
                               suffix:
                                 typeof row.endUncertainty === 'string'
@@ -387,6 +413,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
           {rows.map((childRow, index) => (
             <TreeRow
               actionRow={actionRow}
+              biostratFilter={biostratFilter}
               collapsedRanks={collapsedRanks}
               conformation={
                 conformation

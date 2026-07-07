@@ -3479,7 +3479,7 @@
       "guid": {"name": "GUID", "desc": "GUID", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "highestchildnodenumber": {"name": "Highest Child Node Number", "desc": "Highest Child Node Number", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null},
       "isaccepted": {"name": "Is Preferred", "desc": "Is Preferred", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Boolean", "isrequired": false, "weblinkname": null},
-      "isbiostrat": {"name": "Is BioStratigraphy", "desc": "Is BioStratigraphy", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
+      "isbiostrat": {"name": "Is Biostratigraphy", "desc": "Is Biostratigraphy", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Modified By Agent", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "name": {"name": "Name", "desc": "Name", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "nodenumber": {"name": "Node Number", "desc": "Node Number", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null},

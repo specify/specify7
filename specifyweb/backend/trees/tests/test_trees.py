@@ -345,6 +345,7 @@ class TreeViewsTest(SqlTreeSetup):
                 "geographyid",
                 False,
                 False,
+                'all',
                 session,
             )
             expected = [
@@ -399,6 +400,7 @@ class TreeViewsTest(SqlTreeSetup):
                 "name",
                 False,
                 False,
+                'all',
                 session,
             )
             expected = [

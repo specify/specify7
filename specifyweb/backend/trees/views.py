@@ -13,7 +13,7 @@ from sqlalchemy import distinct
 from specifyweb.specify import models as spmodels
 from specifyweb.specify.api.crud import get_object_or_404
 from specifyweb.specify.api.serializers import obj_to_data, toJson
-from sqlalchemy import select, func, distinct, literal
+from sqlalchemy import and_, select, func, distinct, literal
 from sqlalchemy.orm import aliased
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
@@ -166,13 +166,14 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     """
     include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
     include_start_end_periods = request.GET.get('includestartendperiods', False) and tree == 'geologictimeperiod'
+    biostrat = request.GET.get('biostrat', 'all')
     with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
-        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, session)
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session)
     return HttpResponse(toJson(results), content_type='application/json')
 
 
-def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, session):
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -232,18 +233,43 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 
         func.count(distinct(child._id)).label("child_count"),
         group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        (
+            func.min(node.isBioStrat)
+            if tree == 'geologictimeperiod'
+            else func.min(literal("NULL"))
+        ).label("is_biostrat"),
     ]
+
+    if biostrat != 'all' and tree == 'geologictimeperiod':
+        # Count all matching descendants (any depth) using nested-set ranges
+        if biostrat == 'bio':
+            descendant_match = child.isBioStrat == True
+        else:
+            descendant_match = (child.isBioStrat == False) | (child.isBioStrat == None)
+        matching_descendant_count = (
+            select(func.count(distinct(child._id)))
+            .where(
+                child.nodeNumber > node.nodeNumber,
+                child.nodeNumber <= node.highestChildNodeNumber,
+                descendant_match,
+                getattr(child, tree_table.name + "TreeDefID") == int(treedef),
+            )
+            .correlate(node)
+            .scalar_subquery()
+            .label("matching_descendant_count")
+        )
+        cols.append(matching_descendant_count)
 
     query = (
         select(*cols)
-        .outerjoin(child, child.ParentID  == node._id)
+        .outerjoin(child, child.ParentID == node._id)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
         .outerjoin(synonym, synonym.AcceptedID == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
-        .group_by(node._id)
-        .order_by(orderby)
     )
+
+    query = query.group_by(node._id).order_by(orderby)
 
     return session.execute(query).all()
 
