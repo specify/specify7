@@ -10,7 +10,6 @@ import type { Workbench } from '../WorkBench/WbView';
 export function useResults({
   hot,
   workbench,
-  triggerDatasetRefresh,
   cellCounts,
 }: {
   readonly hot: Handsontable | undefined;
