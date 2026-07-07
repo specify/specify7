@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:27+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
 "Language: fr\n"
@@ -107,8 +107,9 @@ msgstr "Vérification des données : activée"
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
-"Notez que la validation en direct est une fonctionnalité expérimentale et ne "
-"remplace pas la validation régulière."
+"La validation en direct ne remplace pas entièrement la validation régulière. "
+"Assurez-vous d'effectuer une validation régulière avant de mettre en ligne "
+"vos données."
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:38
@@ -216,11 +217,10 @@ msgstr "Commencer la restauration de l'ensemble de données ?"
 #, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
-"La restauration supprimera les nouveaux enregistrements de données que cet "
-"ensemble de données a ajoutés à la base de données Specify. L'intégralité de "
-"la restauration sera annulée si l'une des données téléchargées a été "
-"référencée (réutilisée) par d'autres enregistrements de données depuis leur "
-"téléchargement."
+"L'annulation supprimera les nouveaux enregistrements de données ajoutés par "
+"cet ensemble de données à la base de données Specify. L'annulation complète "
+"sera annulée si des données importées ont été référencées (réutilisées) par "
+"d'autres enregistrements de données depuis leur importation."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:42
@@ -229,35 +229,39 @@ msgstr "Commencer le téléchargement de l'ensemble de données ?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:46
+#, fuzzy
 msgid "startUploadDescription"
 msgstr ""
-"Le téléchargement de l'ensemble de données ajoutera les données à la base "
-"de données Specify."
+"Le chargement de ce fichier ajoutera tous les nouveaux enregistrements de "
+"cet ensemble de données à votre base de données."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:169
+#, fuzzy
 msgid "deleteDataSet"
 msgstr "Supprimer cet ensemble de données ?"
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:89
+#, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
-"La suppression d'un ensemble de données le supprime définitivement ainsi "
-"que son plan de téléchargement. Les mappages de données ne pourront plus "
-"être réutilisés avec d'autres ensembles de données. De plus, après la "
-"suppression, la restauration ne sera plus une option pour un ensemble de "
-"données téléchargé."
+"La suppression d'un jeu de données entraîne sa suppression définitive ainsi "
+"que celle de son plan de chargement. Ce mappage ne pourra plus être "
+"réutilisé avec d'autres jeux de données. Une fois supprimé, il ne sera plus "
+"possible de revenir en arrière."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:131
+#, fuzzy
 msgid "dataSetDeleted"
 msgstr "Ensemble de données supprimé avec succès"
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:134
+#, fuzzy
 msgid "dataSetDeletedDescription"
-msgstr "Ensemble de données supprimé avec succès."
+msgstr "Ces données ont été supprimées."
 
 #. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:45
@@ -266,10 +270,11 @@ msgstr "Annuler les modifications non enregistrées ?"
 
 #. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:48
+#, fuzzy
 msgid "revertChangesDescription"
 msgstr ""
 "Cette action annulera toutes les modifications apportées à l'ensemble de "
-"données depuis le dernier enregistrement."
+"données depuis la dernière sauvegarde."
 
 #. Used in: Components > Wb Actions > Wb Save
 #: components/WbActions/WbSave.tsx:86
@@ -278,6 +283,7 @@ msgstr "Enregistrement..."
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/WbView.tsx:124
+#, fuzzy
 msgid "wbUnloadProtect"
 msgstr ""
 "Les modifications apportées à cet ensemble de données n'ont pas été "
@@ -299,24 +305,26 @@ msgstr ""
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:383
+#, fuzzy
 msgid "validationNoErrors"
 msgstr "Validation terminée sans erreur"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:386
+#, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
-"La validation n'a trouvé aucune erreur, elle est prête à être téléchargée "
-"dans la base de données."
+"Le processus de validation n'a détecté aucune erreur. Vos données sont "
+"prêtes à être importées."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:388
 #: components/WbActions/index.tsx:399
+#, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
-"Remarque : Si cet ensemble de données est modifié et réenregistré, la "
-"validation doit être réexécutée avant le téléchargement pour vérifier "
-"qu'aucune erreur n'a été introduite."
+"Si ces données sont modifiées, assurez-vous de les valider avant de les "
+"télécharger."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:393
@@ -343,8 +351,9 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:43
+#, fuzzy
 msgid "uploadErrors"
-msgstr "Échec du téléchargement en raison de cellules d'erreur"
+msgstr "Échec du chargement en raison de cellules erronées"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:47
@@ -364,15 +373,17 @@ msgstr ""
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:423
+#, fuzzy
 msgid "dataSetRollback"
-msgstr "L'ensemble de données a été restauré avec succès"
+msgstr "Les données ont été restaurées avec succès."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:52
+#, fuzzy
 msgid "dataSetRollbackDescription"
 msgstr ""
-"Cet ensemble de données restaurées est enregistré et peut être modifié ou "
-"téléchargé à nouveau."
+"Ces données ont été restaurées avec succès et peuvent être modifiées ou "
+"téléchargées à nouveau."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:290
@@ -381,8 +392,11 @@ msgstr "Validation annulée"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:298
+#, fuzzy
 msgid "validationCanceledDescription"
-msgstr "Validation de l'ensemble de données annulée."
+msgstr ""
+"L'opération de validation a été annulée. Veuillez réessayer avant de "
+"télécharger."
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:30
@@ -393,8 +407,11 @@ msgstr "Restauration annulée"
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WbActions/index.tsx:300
+#, fuzzy
 msgid "rollbackCanceledDescription"
-msgstr "Restauration de l’ensemble de données annulée."
+msgstr ""
+"La restauration a été annulée. Aucune modification n'a été apportée à la "
+"base de données."
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:110
@@ -405,8 +422,11 @@ msgstr "Téléchargement annulé"
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:111
 #: components/WbUtils/datasetVariants.tsx:45
+#, fuzzy
 msgid "uploadCanceledDescription"
-msgstr "Téléchargement de l'ensemble de données annulé."
+msgstr ""
+"Le chargement a été annulé. Aucune modification n'a été apportée à la base "
+"de données."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:232
@@ -431,10 +451,11 @@ msgstr "L'ensemble de données doit être validé ou téléchargé"
 #. Used in: Components > Wb Actions > Wb Validate
 #: components/WbActions/WbValidate.tsx:56
 #: components/WbActions/WbValidate.tsx:78
+#, fuzzy
 msgid "wbValidateUnavailable"
 msgstr ""
-"Un plan de téléchargement doit être défini avant que cet ensemble de "
-"données puisse être validé"
+"Il est nécessaire de définir une correspondance avant de pouvoir valider cet "
+"ensemble de données."
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #: components/WbActions/WbUpload.tsx:76
@@ -480,13 +501,15 @@ msgstr "Cet outil nécessite que les colonnes de localité soient mappées"
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 #: components/WbToolkit/CoordinateConverter.tsx:54
 #: components/WbToolkit/GeoLocate.tsx:52
+#, fuzzy
 msgid "unavailableWhenUploaded"
-msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés"
+msgstr "Cet outil ne fonctionne pas avec les ensembles de données téléchargés."
 
 #. Used in: Components > Work Bench > Index
 #: components/WorkBench/index.tsx:53
+#, fuzzy
 msgid "dataSetDeletedOrNotFound"
-msgstr "L'ensemble de données a été supprimé par une autre session."
+msgstr "Ces données ont été supprimées par une autre session."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:268
@@ -683,8 +706,9 @@ msgstr "{variant:string} ensemble de données"
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:34
 #: components/WbUtils/datasetVariants.tsx:109
+#, fuzzy
 msgid "wbsDialogEmpty"
-msgstr "Actuellement, aucun ensemble de données n'existe."
+msgstr "Il n'existe actuellement aucun ensemble de données."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:36
@@ -786,8 +810,11 @@ msgstr "Annulation..."
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:96
+#, fuzzy
 msgid "wbStatusAbortFailed"
-msgstr "Échec de l'abandon de {operationName:string}. Veuillez réessayer plus tard"
+msgstr ""
+"L'annulation de l'opération {operationName:string} a échoué. Veuillez "
+"réessayer ultérieurement."
 
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:123
@@ -803,18 +830,19 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:110
+#, fuzzy
 msgid "wbStatusPendingDescription"
 msgstr ""
-"{operationName:string} de cet ensemble de données devrait commencer sous "
-"peu."
+"{operationName:string} de cet ensemble de données devrait commencer sous peu."
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:113
+#, fuzzy
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
-"Si ce message persiste plus de 30 secondes, le processus "
-"{operationName:string} est occupé avec un autre ensemble de données. "
-"Veuillez réessayer plus tard."
+"Si ce message persiste pendant plus de 30 secondes, le processus "
+"{operationName:string} est occupé par le traitement d'un autre ensemble de "
+"données. Veuillez réessayer plus tard."
 
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:24
@@ -894,7 +922,7 @@ msgstr "Nombre de nouveaux enregistrements qui seraient affectés dans chaque ta
 #: components/WorkBench/Results.tsx:27
 #, fuzzy
 msgid "recordsCreated"
-msgstr "Enregistrements créés"
+msgstr "Nouveaux records"
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #: components/WbActions/WbUpload.tsx:169
@@ -902,7 +930,7 @@ msgstr "Enregistrements créés"
 #: components/WorkBench/Results.tsx:30
 #, fuzzy
 msgid "recordsUpdated"
-msgstr "Enregistrements mis-à-jour"
+msgstr "Archives mises à jour"
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #: components/WbActions/WbUpload.tsx:171
