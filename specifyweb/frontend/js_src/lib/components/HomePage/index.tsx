@@ -1,9 +1,12 @@
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 import { useHueDifference } from '../../hooks/useHueDifference';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { statsText } from '../../localization/stats';
 import { welcomeText } from '../../localization/welcome';
+import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { useDarkMode } from '../Preferences/Hooks';
@@ -18,6 +21,7 @@ const TaxonTiles = ReactLazy(async () =>
 export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const formId = useId('express-search')('form');
+  const navigate = useNavigate();
 
   const [displaySearchBar] = userPreferences.use(
     'welcomePage',
@@ -27,14 +31,23 @@ export function WelcomeView(): JSX.Element {
 
   return (
     <div className="flex h-full flex-col">
-      {displaySearchBar && (
-        <div className="flex justify-end gap-2 pr-4 pt-4">
-          <SearchForm formId={formId} />
-          <Submit.Secondary form={formId}>
-            {commonText.search()}
-          </Submit.Secondary>
-        </div>
-      )}
+      <div className="flex justify-end gap-2 pr-4 pt-4">
+        {displaySearchBar && (
+          <>
+            <SearchForm formId={formId} />
+            <Submit.Secondary form={formId}>
+              {commonText.search()}
+            </Submit.Secondary>
+          </>
+        )}
+        <Button.Secondary
+          onClick={(): void =>
+            navigate('/specify/overlay/collection-statistics/')
+          }
+        >
+          {statsText.collectionStatistics()}
+        </Button.Secondary>
+      </div>
       <div
         className={`
         mx-auto flex w-full max-w-[1000px] flex-1 flex-col justify-center gap-4 p-4
