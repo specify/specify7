@@ -51,6 +51,39 @@ def collection_preparations(request) -> HttpResponse:
         }
     return http.JsonResponse(preptypelotstotal_dict)
 
+@login_maybe_required
+@openapi(schema={
+    'get': {
+        'responses': {
+            '200': {
+                'description': 'Returns List of Collection Statistics for Specify',
+                'content': {
+                    'application/json': {
+                        'schema': {
+                            'type': 'array',
+                            'items': {
+                                'type': 'object',
+                                'properties': {
+                                    'name': {'type': 'string'},
+                                    'specimenCount': {'type': 'integer'},
+                                    'collectionType': {'type': 'string'},
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+        }
+    }}, )
+def collection_statistics(request) -> HttpResponse:
+    data = [
+    {"name": "Mammals", "specimenCount": 8214, "collectionType": "Zoology"},
+    {"name": "Fish", "specimenCount": 15872, "collectionType": "Ichthyology"},
+    {"name": "Insects", "specimenCount": 42109, "collectionType": "Entomology"},
+    {"name": "Birds", "specimenCount": 5637, "collectionType": "Ornithology"},
+]
+    return http.JsonResponse(data, safe=False)
+
 
 @login_maybe_required
 @openapi(schema={
