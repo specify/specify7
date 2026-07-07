@@ -172,6 +172,7 @@ export type CacheDefinitions = {
 };
 
 export type SortConfigs = {
+  readonly collectionStatistics: 'collectionType' | 'name' | 'specimenCount';
   readonly listOfQueries: keyof SpQuery['fields'] &
     ('name' | 'timestampCreated' | 'timestampModified');
   readonly listOfRecordSets: 'name' | 'timestampCreated';

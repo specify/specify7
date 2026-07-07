@@ -40,6 +40,20 @@ describe('CollectionStatisticsOverlay with data', () => {
     getByRole('cell', { name: '12543' });
     getByRole('cell', { name: 'Zoology' });
   });
+
+  test('toggles the row order when a column header is clicked', async () => {
+    const { findByRole, getAllByRole, getByRole, user } = renderOverlay();
+
+    await findByRole('cell', { name: 'Mammals' });
+
+    // The first data cell is the name of the first row; clicking the
+    // "Collection Name" header flips the ascending/descending order.
+    const firstNameBefore = getAllByRole('cell')[0].textContent;
+    await user.click(getByRole('button', { name: /Collection Name/u }));
+    const firstNameAfter = getAllByRole('cell')[0].textContent;
+
+    expect(firstNameAfter).not.toBe(firstNameBefore);
+  });
 });
 
 describe('CollectionStatisticsOverlay with no data', () => {

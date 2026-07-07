@@ -486,6 +486,9 @@ export const statsText = createDictionary({
   collectionStatistics: {
     'en-us': 'Collection Statistics',
   },
+  collectionStatisticsCount: {
+    'en-us': 'Collection Statistics ({count:number})',
+  },
   collectionName: {
     'en-us': 'Collection Name',
   },
