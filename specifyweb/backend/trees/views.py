@@ -208,15 +208,22 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
             else func.min(literal("NULL"))
         ).label("author"),
 
-        func.count(distinct(child._id)).label("child_count"),
-        group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        select(func.count(child._id))
+            .where(child.ParentID == node._id)
+            .correlate(node)
+            .scalar_subquery()
+            .label("child_count"),
+
+        select(group_concat(distinct(synonym.fullName), separator=", "))
+            .where(synonym.AcceptedID == node._id)
+            .correlate(node)
+            .scalar_subquery()
+            .label("synonyms"),
     ]
 
     query = (
         select(*cols)
-        .outerjoin(child, child.ParentID  == node._id)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
-        .outerjoin(synonym, synonym.AcceptedID == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
         .group_by(node._id)
