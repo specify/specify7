@@ -38,7 +38,7 @@ def detect_python():
                 if version_match:
                     return f"{version_match.group(1)}.{version_match.group(2)}"
         except (OSError, ValueError):
-            pass
+            return None
 
     # Try .python-version
     python_version = Path(".python-version")
