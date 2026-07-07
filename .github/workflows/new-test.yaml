@@ -13,3 +13,6 @@ jobs:
         id: cpuinfo
         run: |
           lscpu
+      - name: get meminfo
+        id: meminfo
+        run: free -h
