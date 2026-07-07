@@ -1850,6 +1850,8 @@ export const wbText = createDictionary({
     'pt-br': 'Registros atualizados',
     'hr-hr': 'Zapisi ažurirani',
     nb: 'Oppføringer oppdatert',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   recordsDeleted: {
     'en-us': 'Records deleted (not including dependents)',

@@ -22,10 +22,26 @@ export const wbPlanText = createDictionary({
   },
   importExportMapping: {
     'en-us': 'Import/Export Mapping',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   importExportMappingDescription: {
     'en-us':
       'You can export the current data set mapping as a JSON file or import an existing data set mapping.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   noUploadPlan: {
     'en-us': 'No Data Set Mapping is Defined',
@@ -479,10 +495,26 @@ export const wbPlanText = createDictionary({
   baseTableDescription: {
     'en-us':
       "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Once uploaded, each row in your data set will result in a new record in Specify in the base table you select. Click on a base table in the list to get started.",
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   baseTableWithAttachmentsDescription: {
     'en-us':
       "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Each imported attachment record will be added as a new row in the base table you select. Click on a base table in the list to get started.",
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   selectBaseTableWithAttachments: {
     'en-us': 'Select a Base Table with Attachments',
@@ -519,7 +551,7 @@ export const wbPlanText = createDictionary({
     'es-es':
       'Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya cargado.\n\nPara editar los mapeos, d´s marcha-atrás para los datos cargados o cree un nuevo conjunto de datos',
     'fr-fr':
-      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
+      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
     'uk-ua':
       'Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних',
     'de-ch':
@@ -732,11 +764,12 @@ export const wbPlanText = createDictionary({
     'en-us': 'Clear all existing mappings?',
     'ru-ru': 'Очистить все существующие сопоставления?',
     'es-es': '¿Borrar todas las asignaciones existentes?',
-    'fr-fr': 'Effacer toutes les correspondances existantes\u202F?',
+    'fr-fr': 'Effacer toutes les correspondances existantes ?',
     'uk-ua': 'Очистити всі існуючі зіставлення?',
     'de-ch': 'Alle bestehenden Zuordnungen löschen?',
     'pt-br': 'Limpar todos os mapeamentos existentes?',
     'hr-hr': 'Izbrisati sva postojeća mapiranja?',
+    nb: '',
   },
   clearMappingsConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -747,6 +780,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Damit werden bestehende Zuordnungen von Datenfeldern gelöscht.',
     'pt-br': 'Isso apagará os mapeamentos de campos de dados existentes.',
     'hr-hr': 'Ovo će izbrisati postojeća mapiranja podatkovnih polja.',
+    nb: '',
   },
   changeMatchingLogic: {
     'en-us': 'Change Matching Logic',
@@ -882,6 +916,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Die ausgewählte Datei ist kein gültiges JSON.',
     'pt-br': 'O arquivo selecionado não é um JSON válido.',
     'hr-hr': 'Odabrana datoteka nije valjani JSON.',
+    nb: '',
   },
   invalidJsonFileDescription: {
     'en-us': 'Please select a valid JSON data set mapping file.',
@@ -892,5 +927,6 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Bitte wählen Sie eine gültige JSON-Datei aus.',
     'pt-br': 'Por favor, selecione um arquivo JSON válido.',
     'hr-hr': 'Odaberite valjani JSON file.',
+    nb: '',
   },
 } as const);
