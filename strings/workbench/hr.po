@@ -330,20 +330,20 @@ msgstr ""
 "Ova vrijednost odgovara dvama ili više postojećih zapisa u bazi podataka, a "
 "podudaranje mora biti razjašnjeno prije prijenosa."
 
-#: components/WbActions/index.tsx:383
+#: components/WbActions/index.tsx:381
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrors"
 msgstr "Validacija završena bez grešaka"
 
-#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:384
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr "Validacija nije pronašla greške, spremno je za učitavanje u bazu podataka."
 
-#: components/WbActions/index.tsx:388
-#: components/WbActions/index.tsx:399
+#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:397
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationReEditWarning"
@@ -352,13 +352,13 @@ msgstr ""
 "treba ponovno pokrenuti Validaciju kako bi se provjerilo da nisu unesene "
 "nikakve pogreške."
 
-#: components/WbActions/index.tsx:393
+#: components/WbActions/index.tsx:391
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrors"
 msgstr "Validacija završena s pogreškama"
 
-#: components/WbActions/index.tsx:396
+#: components/WbActions/index.tsx:394
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrorsDescription"
@@ -390,7 +390,7 @@ msgstr "Prijenos nije uspio zbog ćelija s pogreškom"
 msgid "uploadErrorsDescription"
 msgstr "Prijenos nije uspio zbog jedne ili više pogrešaka u vrijednosti ćelije."
 
-#: components/WbActions/index.tsx:416
+#: components/WbActions/index.tsx:414
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
@@ -399,7 +399,7 @@ msgstr ""
 "preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. "
 "Spremite i ponovno pokušajte {type:string}."
 
-#: components/WbActions/index.tsx:423
+#: components/WbActions/index.tsx:421
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "dataSetRollback"
@@ -413,27 +413,27 @@ msgstr ""
 "Ovaj vraćeni skup podataka je spremljen i može se uređivati ili ponovno "
 "prenijeti."
 
-#: components/WbActions/index.tsx:290
+#: components/WbActions/index.tsx:288
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceled"
 msgstr "Validacija otkazana"
 
-#: components/WbActions/index.tsx:298
+#: components/WbActions/index.tsx:296
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr "Validacija skupa podataka otkazana."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:292
+#: components/WbActions/index.tsx:290
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr "Vraćanje otkazano"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:300
+#: components/WbActions/index.tsx:298
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceledDescription"
@@ -800,25 +800,25 @@ msgstr "Svojstva skupa podataka"
 msgid "dataSetName"
 msgstr "Naziv skupa podataka"
 
-#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:240
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Broj redaka"
 
-#: components/WorkBench/DataSetMeta.tsx:249
+#: components/WorkBench/DataSetMeta.tsx:247
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Broj stupaca"
 
-#: components/WorkBench/DataSetMeta.tsx:348
+#: components/WorkBench/DataSetMeta.tsx:346
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Naziv datoteke za uvoz"
 
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
@@ -843,7 +843,7 @@ msgstr "Odaberite novog vlasnika:"
 msgid "dataSetOwnerChanged"
 msgstr "Vlasnik skupa podataka promijenjen je"
 
-#: components/WorkBench/DataSetMeta.tsx:382
+#: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
@@ -855,7 +855,7 @@ msgstr "Skup podataka"
 msgid "dataSetTimestampUploaded"
 msgstr "Vremenska oznaka prenesena"
 
-#: components/WorkBench/DataSetMeta.tsx:386
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"
@@ -1008,7 +1008,7 @@ msgstr "Broj novih zapisa na koje utječe svaka tablica:"
 msgid "wbAffectedPotentialDescription"
 msgstr "Broj novih zapisa na koje bi to utjecalo u svakoj tablici:"
 
-#: components/WbActions/WbUpload.tsx:167
+#: components/WbActions/WbUpload.tsx:169
 #: components/WbActions/index.tsx:263
 #: components/WorkBench/Results.tsx:27
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1016,7 +1016,7 @@ msgstr "Broj novih zapisa na koje bi to utjecalo u svakoj tablici:"
 msgid "recordsCreated"
 msgstr "Stvoreni zapisi"
 
-#: components/WbActions/WbUpload.tsx:169
+#: components/WbActions/WbUpload.tsx:171
 #: components/WbActions/index.tsx:265
 #: components/WorkBench/Results.tsx:30
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1024,7 +1024,7 @@ msgstr "Stvoreni zapisi"
 msgid "recordsUpdated"
 msgstr "Zapisi ažurirani"
 
-#: components/WbActions/WbUpload.tsx:171
+#: components/WbActions/WbUpload.tsx:173
 #: components/WbActions/index.tsx:267
 #: components/WorkBench/Results.tsx:28
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1032,7 +1032,7 @@ msgstr "Zapisi ažurirani"
 msgid "recordsDeleted"
 msgstr "Zapisi izbrisani (ne uključujući uzdržavane osobe)"
 
-#: components/WbActions/WbUpload.tsx:172
+#: components/WbActions/WbUpload.tsx:174
 #: components/WbActions/index.tsx:268
 #: components/WorkBench/Results.tsx:29
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1046,8 +1046,8 @@ msgstr "Povezani zapisi koji se podudaraju s različitim zapisima"
 msgid "matchAndChanged"
 msgstr "Usklađene i promijenjene ćelije"
 
-#: components/WorkBench/DataSetMeta.tsx:238
-#: components/WorkBench/DataSetMeta.tsx:395
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:392
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "metadata"
 msgstr "Metapodaci"

@@ -286,20 +286,20 @@ msgstr ""
 "Este valor coincide con dos o más registros existentes en la base de datos "
 "y han de desambiguarse antes de cargar."
 
-#: components/WbActions/index.tsx:383
+#: components/WbActions/index.tsx:381
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Validación completada sin errores"
 
-#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:384
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr ""
 "La validación no encontró errores, está listo para ser cargado en la base "
 "de datos."
 
-#: components/WbActions/index.tsx:388
-#: components/WbActions/index.tsx:399
+#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:397
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -307,12 +307,12 @@ msgstr ""
 "volver a ejecutar Validar antes de cargar para verificar que no se hayan "
 "introducido errores."
 
-#: components/WbActions/index.tsx:393
+#: components/WbActions/index.tsx:391
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Validación completada con errores"
 
-#: components/WbActions/index.tsx:396
+#: components/WbActions/index.tsx:394
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "La validación encontró errores en el conjunto de datos."
@@ -340,7 +340,7 @@ msgstr "Carga fallida debido a celdas de error"
 msgid "uploadErrorsDescription"
 msgstr "La carga falló debido a uno o más errores de valor de celda."
 
-#: components/WbActions/index.tsx:416
+#: components/WbActions/index.tsx:414
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
@@ -349,7 +349,7 @@ msgstr ""
 "el ratón por encima de cada celda con errores, luego realice las "
 "correcciones pertinentes. Guarde y vuelva a intentarlo {type:string}."
 
-#: components/WbActions/index.tsx:423
+#: components/WbActions/index.tsx:421
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "El conjunto de datos se revirtió con éxito"
@@ -361,24 +361,24 @@ msgstr ""
 "Este conjunto de datos revertidos se guarda y se puede editar o volver a "
 "cargar."
 
-#: components/WbActions/index.tsx:290
+#: components/WbActions/index.tsx:288
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Validación cancelada"
 
-#: components/WbActions/index.tsx:298
+#: components/WbActions/index.tsx:296
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Se canceló la validación del conjunto de datos."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:292
+#: components/WbActions/index.tsx:290
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Reversión cancelada"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:300
+#: components/WbActions/index.tsx:298
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Reversión del conjunto de datos cancelada."
@@ -691,22 +691,22 @@ msgstr "Propiedades del conjunto de datos"
 msgid "dataSetName"
 msgstr "Nombre de Conjunto de Datos"
 
-#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:240
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Número de filas"
 
-#: components/WorkBench/DataSetMeta.tsx:249
+#: components/WorkBench/DataSetMeta.tsx:247
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Número de columnas"
 
-#: components/WorkBench/DataSetMeta.tsx:348
+#: components/WorkBench/DataSetMeta.tsx:346
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Nombre del archivo de importación"
 
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(sin nombre de archivo)"
@@ -727,7 +727,7 @@ msgstr "Seleccionar nuevo propietario:"
 msgid "dataSetOwnerChanged"
 msgstr "El propietario del conjunto de datos cambió"
 
-#: components/WorkBench/DataSetMeta.tsx:382
+#: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Conjunto de Datos"
@@ -737,7 +737,7 @@ msgstr "Conjunto de Datos"
 msgid "dataSetTimestampUploaded"
 msgstr "Marca de tiempo cargada"
 
-#: components/WorkBench/DataSetMeta.tsx:386
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Cargado, Solo lectura)"
@@ -875,7 +875,7 @@ msgstr "Número de registros nuevos afectados en cada tabla:"
 msgid "wbAffectedPotentialDescription"
 msgstr "Número de nuevos registros que se verían afectados en cada tabla:"
 
-#: components/WbActions/WbUpload.tsx:167
+#: components/WbActions/WbUpload.tsx:169
 #: components/WbActions/index.tsx:263
 #: components/WorkBench/Results.tsx:27
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -883,7 +883,7 @@ msgstr "Número de nuevos registros que se verían afectados en cada tabla:"
 msgid "recordsCreated"
 msgstr "Registros creados"
 
-#: components/WbActions/WbUpload.tsx:169
+#: components/WbActions/WbUpload.tsx:171
 #: components/WbActions/index.tsx:265
 #: components/WorkBench/Results.tsx:30
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -891,7 +891,7 @@ msgstr "Registros creados"
 msgid "recordsUpdated"
 msgstr "Registros actualizados"
 
-#: components/WbActions/WbUpload.tsx:171
+#: components/WbActions/WbUpload.tsx:173
 #: components/WbActions/index.tsx:267
 #: components/WorkBench/Results.tsx:28
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -899,7 +899,7 @@ msgstr "Registros actualizados"
 msgid "recordsDeleted"
 msgstr "Registros eliminados (sin incluir a los dependientes)"
 
-#: components/WbActions/WbUpload.tsx:172
+#: components/WbActions/WbUpload.tsx:174
 #: components/WbActions/index.tsx:268
 #: components/WorkBench/Results.tsx:29
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -913,8 +913,8 @@ msgstr "Registros relacionados coincidentes con registros diferentes"
 msgid "matchAndChanged"
 msgstr "Células coincidentes y modificadas"
 
-#: components/WorkBench/DataSetMeta.tsx:238
-#: components/WorkBench/DataSetMeta.tsx:395
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:392
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "metadata"
 msgstr "Metadatos"

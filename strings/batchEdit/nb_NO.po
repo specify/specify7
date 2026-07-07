@@ -196,7 +196,7 @@ msgstr ""
 "Masseredigering er deaktivert for systemtabeller og tabeller i skop- og "
 "hierarkitabeller"
 
-#: components/WorkBench/DataSetMeta.tsx:390
+#: components/WorkBench/DataSetMeta.tsx:388
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr ""

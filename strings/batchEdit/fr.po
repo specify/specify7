@@ -203,7 +203,7 @@ msgstr ""
 "L'édition par lots est désactivée pour les tables système et les tables de "
 "hiérarchie de portée."
 
-#: components/WorkBench/DataSetMeta.tsx:390
+#: components/WorkBench/DataSetMeta.tsx:388
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "cannotEditAfterRollback"
 msgstr ""

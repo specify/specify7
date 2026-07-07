@@ -330,13 +330,13 @@ msgstr ""
 "Dieser Wert stimmt mit zwei oder mehr vorhandenen Datenbankeinträgen "
 "überein, und die Übereinstimmung muss vor dem Hochladen geklärt werden."
 
-#: components/WbActions/index.tsx:383
+#: components/WbActions/index.tsx:381
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrors"
 msgstr "Validierung erfolgreich abgeschlossen (keine Fehler)"
 
-#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:384
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrorsDescription"
@@ -344,8 +344,8 @@ msgstr ""
 "Bei der Validierung wurden keine Fehler festgestellt, die Datei kann nun in "
 "die Datenbank hochgeladen werden."
 
-#: components/WbActions/index.tsx:388
-#: components/WbActions/index.tsx:399
+#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:397
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationReEditWarning"
@@ -354,13 +354,13 @@ msgstr ""
 "sollte die Validierung vor dem Hochladen erneut ausgeführt werden, um "
 "sicherzustellen, dass keine Fehler entstanden sind."
 
-#: components/WbActions/index.tsx:393
+#: components/WbActions/index.tsx:391
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrors"
 msgstr "Validierung mit Fehlern abgeschlossen"
 
-#: components/WbActions/index.tsx:396
+#: components/WbActions/index.tsx:394
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrorsDescription"
@@ -393,7 +393,7 @@ msgstr "Upload aufgrund fehlerhafter Zellen fehlgeschlagen"
 msgid "uploadErrorsDescription"
 msgstr "Der Upload ist aufgrund eines oder mehrerer Zellenwertfehler fehlgeschlagen."
 
-#: components/WbActions/index.tsx:416
+#: components/WbActions/index.tsx:414
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
@@ -402,7 +402,7 @@ msgstr ""
 "Fehlerzelle. Nehmen Sie anschließend die entsprechenden Korrekturen vor. "
 "Speichern Sie die Daten und versuchen Sie es erneut mit {type:string}."
 
-#: components/WbActions/index.tsx:423
+#: components/WbActions/index.tsx:421
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "dataSetRollback"
@@ -416,27 +416,27 @@ msgstr ""
 "Dieser zurückgesetzte Datensatz ist gespeichert und kann bearbeitet oder "
 "erneut hochgeladen werden."
 
-#: components/WbActions/index.tsx:290
+#: components/WbActions/index.tsx:288
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceled"
 msgstr "Validierung abgebrochen"
 
-#: components/WbActions/index.tsx:298
+#: components/WbActions/index.tsx:296
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr "Die Validierung des Datensatzes wurde abgebrochen."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:292
+#: components/WbActions/index.tsx:290
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr "Rollback abgebrochen"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:300
+#: components/WbActions/index.tsx:298
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceledDescription"
@@ -805,25 +805,25 @@ msgstr "Eigenschaften des Datensatzes"
 msgid "dataSetName"
 msgstr "Name des Datensatzes"
 
-#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:240
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Anzahl der Zeilen"
 
-#: components/WorkBench/DataSetMeta.tsx:249
+#: components/WorkBench/DataSetMeta.tsx:247
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Anzahl der Spalten"
 
-#: components/WorkBench/DataSetMeta.tsx:348
+#: components/WorkBench/DataSetMeta.tsx:346
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Name der Importdatei"
 
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
@@ -848,7 +848,7 @@ msgstr "Neuen Besitzer auswählen:"
 msgid "dataSetOwnerChanged"
 msgstr "Datensatzbesitzer geändert"
 
-#: components/WorkBench/DataSetMeta.tsx:382
+#: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
@@ -860,7 +860,7 @@ msgstr "Datensatz"
 msgid "dataSetTimestampUploaded"
 msgstr "Zeitstempel Hochgeladen"
 
-#: components/WorkBench/DataSetMeta.tsx:386
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"
@@ -1015,7 +1015,7 @@ msgstr "Anzahl der betroffenen neuen Datensätze in jeder Tabelle:"
 msgid "wbAffectedPotentialDescription"
 msgstr "Anzahl der neuen Datensätze, die in jeder Tabelle betroffen wären:"
 
-#: components/WbActions/WbUpload.tsx:167
+#: components/WbActions/WbUpload.tsx:169
 #: components/WbActions/index.tsx:263
 #: components/WorkBench/Results.tsx:27
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1023,7 +1023,7 @@ msgstr "Anzahl der neuen Datensätze, die in jeder Tabelle betroffen wären:"
 msgid "recordsCreated"
 msgstr "Datensätze erstellt"
 
-#: components/WbActions/WbUpload.tsx:169
+#: components/WbActions/WbUpload.tsx:171
 #: components/WbActions/index.tsx:265
 #: components/WorkBench/Results.tsx:30
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1031,7 +1031,7 @@ msgstr "Datensätze erstellt"
 msgid "recordsUpdated"
 msgstr "Aktualisierte Datensätze"
 
-#: components/WbActions/WbUpload.tsx:171
+#: components/WbActions/WbUpload.tsx:173
 #: components/WbActions/index.tsx:267
 #: components/WorkBench/Results.tsx:28
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1039,7 +1039,7 @@ msgstr "Aktualisierte Datensätze"
 msgid "recordsDeleted"
 msgstr "Gelöschte Datensätze (ohne Abhängige)"
 
-#: components/WbActions/WbUpload.tsx:172
+#: components/WbActions/WbUpload.tsx:174
 #: components/WbActions/index.tsx:268
 #: components/WorkBench/Results.tsx:29
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1053,8 +1053,8 @@ msgstr "Verwandte Datensätze wurden verschiedenen Datensätzen zugeordnet."
 msgid "matchAndChanged"
 msgstr "Übereinstimmende und veränderte Zellen"
 
-#: components/WorkBench/DataSetMeta.tsx:238
-#: components/WorkBench/DataSetMeta.tsx:395
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:392
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "metadata"
 msgstr "Metadaten"

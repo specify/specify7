@@ -284,20 +284,20 @@ msgstr ""
 "Это значение соответствует двум или более существующим записям базы данных, "
 "и совпадение необходимо устранить перед загрузкой."
 
-#: components/WbActions/index.tsx:383
+#: components/WbActions/index.tsx:381
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrors"
 msgstr "Проверка завершена без ошибок"
 
-#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:384
 #. Used in: Components > Wb Actions > Index
 msgid "validationNoErrorsDescription"
 msgstr ""
 "Проверка завершена без ошибок. Этот набора данных готов к загрузке в базу "
 "данных."
 
-#: components/WbActions/index.tsx:388
-#: components/WbActions/index.tsx:399
+#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:397
 #. Used in: Components > Wb Actions > Index
 msgid "validationReEditWarning"
 msgstr ""
@@ -305,12 +305,12 @@ msgstr ""
 "необходимо заново запустить проверку перед загрузкой, чтобы убедиться, что "
 "ошибки не были внесены."
 
-#: components/WbActions/index.tsx:393
+#: components/WbActions/index.tsx:391
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrors"
 msgstr "Проверка завершена с ошибками"
 
-#: components/WbActions/index.tsx:396
+#: components/WbActions/index.tsx:394
 #. Used in: Components > Wb Actions > Index
 msgid "validationErrorsDescription"
 msgstr "Проверка обнаружила ошибки в наборе данных."
@@ -338,7 +338,7 @@ msgstr "Ошибка загрузки из-за ошибок"
 msgid "uploadErrorsDescription"
 msgstr "Загрузка не удалась из-за одной или нескольких ошибок значений ячеек."
 
-#: components/WbActions/index.tsx:416
+#: components/WbActions/index.tsx:414
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
@@ -347,7 +347,7 @@ msgstr ""
 "на каждую ячейку с ошибкой, затем внесите соответствующие исправления. "
 "Сохраните и повторите попытку {type:string}."
 
-#: components/WbActions/index.tsx:423
+#: components/WbActions/index.tsx:421
 #. Used in: Components > Wb Actions > Index
 msgid "dataSetRollback"
 msgstr "Набор данных был успешно откачен"
@@ -359,24 +359,24 @@ msgstr ""
 "Этот откаченный набор данных сохранен и может быть отредактирован или "
 "повторно загружен."
 
-#: components/WbActions/index.tsx:290
+#: components/WbActions/index.tsx:288
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceled"
 msgstr "Проверка отменена"
 
-#: components/WbActions/index.tsx:298
+#: components/WbActions/index.tsx:296
 #. Used in: Components > Wb Actions > Index
 msgid "validationCanceledDescription"
 msgstr "Проверка набора данных отменена."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:292
+#: components/WbActions/index.tsx:290
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceled"
 msgstr "Откат отменен"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:300
+#: components/WbActions/index.tsx:298
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 msgid "rollbackCanceledDescription"
 msgstr "Откат набора данных отменен."
@@ -689,22 +689,22 @@ msgstr "Свойства набора данных"
 msgid "dataSetName"
 msgstr "Название набора данных"
 
-#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:240
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfRows"
 msgstr "Количество рядов"
 
-#: components/WorkBench/DataSetMeta.tsx:249
+#: components/WorkBench/DataSetMeta.tsx:247
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "numberOfColumns"
 msgstr "Количество столбцов"
 
-#: components/WorkBench/DataSetMeta.tsx:348
+#: components/WorkBench/DataSetMeta.tsx:346
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "importedFileName"
 msgstr "Имя файла импорта"
 
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "noFileName"
 msgstr "(файл без имени)"
@@ -725,7 +725,7 @@ msgstr "Выберите нового владельца:"
 msgid "dataSetOwnerChanged"
 msgstr "Владелец набора данных изменен"
 
-#: components/WorkBench/DataSetMeta.tsx:382
+#: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSet"
 msgstr "Набор данных"
@@ -736,7 +736,7 @@ msgstr "Набор данных"
 msgid "dataSetTimestampUploaded"
 msgstr "Отметка времени Загружено"
 
-#: components/WorkBench/DataSetMeta.tsx:386
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "dataSetUploadedLabel"
 msgstr "(Загружено, только для чтения)"
@@ -878,7 +878,7 @@ msgstr "Количество новых записей, затронутых в 
 msgid "wbAffectedPotentialDescription"
 msgstr "Количество новых записей, которые будут затронуты в каждой таблице:"
 
-#: components/WbActions/WbUpload.tsx:167
+#: components/WbActions/WbUpload.tsx:169
 #: components/WbActions/index.tsx:263
 #: components/WorkBench/Results.tsx:27
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -886,7 +886,7 @@ msgstr "Количество новых записей, которые буду�
 msgid "recordsCreated"
 msgstr "Созданы записи"
 
-#: components/WbActions/WbUpload.tsx:169
+#: components/WbActions/WbUpload.tsx:171
 #: components/WbActions/index.tsx:265
 #: components/WorkBench/Results.tsx:30
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -894,7 +894,7 @@ msgstr "Созданы записи"
 msgid "recordsUpdated"
 msgstr ""
 
-#: components/WbActions/WbUpload.tsx:171
+#: components/WbActions/WbUpload.tsx:173
 #: components/WbActions/index.tsx:267
 #: components/WorkBench/Results.tsx:28
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -902,7 +902,7 @@ msgstr ""
 msgid "recordsDeleted"
 msgstr "Удаленные записи (за исключением записей о иждивенцах)"
 
-#: components/WbActions/WbUpload.tsx:172
+#: components/WbActions/WbUpload.tsx:174
 #: components/WbActions/index.tsx:268
 #: components/WorkBench/Results.tsx:29
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -916,8 +916,8 @@ msgstr "Связанные записи сопоставлены с различ
 msgid "matchAndChanged"
 msgstr "Сопоставленные и измененные клетки"
 
-#: components/WorkBench/DataSetMeta.tsx:238
-#: components/WorkBench/DataSetMeta.tsx:395
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:392
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "metadata"
 msgstr "Метаданные"

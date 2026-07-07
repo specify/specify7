@@ -328,20 +328,20 @@ msgstr ""
 "Denne verdien samsvarer med to eller flere eksisterende "
 "databaseoppføringer, og samsvaret må tydeliggjøres før opplasting."
 
-#: components/WbActions/index.tsx:383
+#: components/WbActions/index.tsx:381
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrors"
 msgstr "Validering fullført uten feil"
 
-#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:384
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr "Valideringen fant ingen feil, den er klar til å lastes opp til databasen."
 
-#: components/WbActions/index.tsx:388
-#: components/WbActions/index.tsx:399
+#: components/WbActions/index.tsx:386
+#: components/WbActions/index.tsx:397
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationReEditWarning"
@@ -350,13 +350,13 @@ msgstr ""
 "kjøres på nytt før opplasting for å bekrefte at det ikke har oppstått noen "
 "feil."
 
-#: components/WbActions/index.tsx:393
+#: components/WbActions/index.tsx:391
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrors"
 msgstr "Validering fullført med feil"
 
-#: components/WbActions/index.tsx:396
+#: components/WbActions/index.tsx:394
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationErrorsDescription"
@@ -388,7 +388,7 @@ msgstr "Opplasting mislyktes på grunn av feilceller"
 msgid "uploadErrorsDescription"
 msgstr "Opplastingen mislyktes på grunn av én eller flere celleverdifeil."
 
-#: components/WbActions/index.tsx:416
+#: components/WbActions/index.tsx:414
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
@@ -396,7 +396,7 @@ msgstr ""
 "Valider datasettet og se gjennom musepekertipsene for hver feilcelle, og "
 "gjør deretter de nødvendige rettelsene. Lagre og prøv {type:string} på nytt."
 
-#: components/WbActions/index.tsx:423
+#: components/WbActions/index.tsx:421
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "dataSetRollback"
@@ -410,27 +410,27 @@ msgstr ""
 "Dette tilbakerullede datasettet er lagret og kan redigeres eller lastes opp "
 "på nytt."
 
-#: components/WbActions/index.tsx:290
+#: components/WbActions/index.tsx:288
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceled"
 msgstr "Validering avbrutt"
 
-#: components/WbActions/index.tsx:298
+#: components/WbActions/index.tsx:296
 #. Used in: Components > Wb Actions > Index
 #, fuzzy
 msgid "validationCanceledDescription"
 msgstr "Validering av datasett avbrutt."
 
 #: components/AttachmentsBulkImport/Rollback.tsx:30
-#: components/WbActions/index.tsx:292
+#: components/WbActions/index.tsx:290
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceled"
 msgstr "Tilbakerulling avbrutt"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:31
-#: components/WbActions/index.tsx:300
+#: components/WbActions/index.tsx:298
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #, fuzzy
 msgid "rollbackCanceledDescription"
@@ -795,25 +795,25 @@ msgstr "Egenskaper for datasett"
 msgid "dataSetName"
 msgstr "Navn på datasett"
 
-#: components/WorkBench/DataSetMeta.tsx:242
+#: components/WorkBench/DataSetMeta.tsx:240
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfRows"
 msgstr "Antall rader"
 
-#: components/WorkBench/DataSetMeta.tsx:249
+#: components/WorkBench/DataSetMeta.tsx:247
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "numberOfColumns"
 msgstr "Antall kolonner"
 
-#: components/WorkBench/DataSetMeta.tsx:348
+#: components/WorkBench/DataSetMeta.tsx:346
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "importedFileName"
 msgstr "Importer filnavn"
 
-#: components/WorkBench/DataSetMeta.tsx:345
+#: components/WorkBench/DataSetMeta.tsx:343
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "noFileName"
@@ -838,7 +838,7 @@ msgstr "Velg ny eier:"
 msgid "dataSetOwnerChanged"
 msgstr "Eieren av datasettet er endret"
 
-#: components/WorkBench/DataSetMeta.tsx:382
+#: components/WorkBench/DataSetMeta.tsx:380
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSet"
@@ -850,7 +850,7 @@ msgstr "Datasett"
 msgid "dataSetTimestampUploaded"
 msgstr "Tidsstempel lastet opp"
 
-#: components/WorkBench/DataSetMeta.tsx:386
+#: components/WorkBench/DataSetMeta.tsx:384
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "dataSetUploadedLabel"
@@ -1003,7 +1003,7 @@ msgstr "Antall nye poster som er berørt i hver tabell:"
 msgid "wbAffectedPotentialDescription"
 msgstr "Antall nye poster som ville bli påvirket i hver tabell:"
 
-#: components/WbActions/WbUpload.tsx:167
+#: components/WbActions/WbUpload.tsx:169
 #: components/WbActions/index.tsx:263
 #: components/WorkBench/Results.tsx:27
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1011,7 +1011,7 @@ msgstr "Antall nye poster som ville bli påvirket i hver tabell:"
 msgid "recordsCreated"
 msgstr "Opprettede poster"
 
-#: components/WbActions/WbUpload.tsx:169
+#: components/WbActions/WbUpload.tsx:171
 #: components/WbActions/index.tsx:265
 #: components/WorkBench/Results.tsx:30
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1019,7 +1019,7 @@ msgstr "Opprettede poster"
 msgid "recordsUpdated"
 msgstr "Oppføringer oppdatert"
 
-#: components/WbActions/WbUpload.tsx:171
+#: components/WbActions/WbUpload.tsx:173
 #: components/WbActions/index.tsx:267
 #: components/WorkBench/Results.tsx:28
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1027,7 +1027,7 @@ msgstr "Oppføringer oppdatert"
 msgid "recordsDeleted"
 msgstr "Slettede poster (ikke inkludert forsørgede)"
 
-#: components/WbActions/WbUpload.tsx:172
+#: components/WbActions/WbUpload.tsx:174
 #: components/WbActions/index.tsx:268
 #: components/WorkBench/Results.tsx:29
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
@@ -1041,8 +1041,8 @@ msgstr "Relaterte poster samsvarer med forskjellige poster"
 msgid "matchAndChanged"
 msgstr "Matchede og endrede celler"
 
-#: components/WorkBench/DataSetMeta.tsx:238
-#: components/WorkBench/DataSetMeta.tsx:395
+#: components/WorkBench/DataSetMeta.tsx:237
+#: components/WorkBench/DataSetMeta.tsx:392
 #. Used in: Components > Work Bench > Data Set Meta
 msgid "metadata"
 msgstr "Metadata"

@@ -230,7 +230,7 @@ msgstr ""
 "Die Stapelbearbeitung ist für Systemtabellen und Bereichshierarchietabellen "
 "deaktiviert."
 
-#: components/WorkBench/DataSetMeta.tsx:390
+#: components/WorkBench/DataSetMeta.tsx:388
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "cannotEditAfterRollback"

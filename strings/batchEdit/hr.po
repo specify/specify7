@@ -226,7 +226,7 @@ msgstr ""
 "Skupno uređivanje onemogućeno je za sistemske tablice i tablice hijerarhije "
 "opsega"
 
-#: components/WorkBench/DataSetMeta.tsx:390
+#: components/WorkBench/DataSetMeta.tsx:388
 #. Used in: Components > Work Bench > Data Set Meta
 #, fuzzy
 msgid "cannotEditAfterRollback"
