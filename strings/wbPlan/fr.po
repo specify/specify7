@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:23+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
 "Language: fr\n"
@@ -20,28 +20,32 @@ msgstr "Mappeur de données"
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:54
 #: components/WbToolkit/DevShowPlan.tsx:205
+#, fuzzy
 msgid "importExportMapping"
-msgstr ""
+msgstr "Cartographie d'import/export"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:209
+#, fuzzy
 msgid "importExportMappingDescription"
 msgstr ""
+"Vous pouvez exporter le mappage de jeu de données actuel sous forme de "
+"fichier JSON ou importer un mappage de jeu de données existant."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
 #, fuzzy
 msgid "noUploadPlan"
-msgstr "Aucun plan de téléchargement n'est défini."
+msgstr "Aucun mappage de jeu de données n'est défini."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:61
 #, fuzzy
 msgid "noUploadPlanDescription"
 msgstr ""
-"Aucun plan de chargement n'a été défini pour cet ensemble de données. En "
-"créer un maintenant ?"
+"Aucun mappage n'a été défini pour cet ensemble de données. Veuillez choisir "
+"un mappage existant ou en créer un nouveau."
 
 #. Used in: Components > Work Bench > Hot Props
 #: components/WorkBench/hotProps.tsx:160
@@ -135,9 +139,9 @@ msgstr "Ignorer toujours"
 #, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Si l'option « Ignorer toujours » est sélectionnée, la valeur de cette "
-"colonne ne sera jamais prise en compte pour la mise en correspondance, mais "
-"uniquement pour le chargement."
+"Si l'option « Toujours ignorer » est sélectionnée, la valeur de cette "
+"colonne ne sera pas utilisée à des fins de correspondance, mais uniquement "
+"pour le chargement."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:263
@@ -186,9 +190,9 @@ msgstr "La validation a détecté des correspondances manquantes :"
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Il manque un ou plusieurs mappings requis pour le chargement selon votre "
-"configuration. Ajoutez les mappings manquants ou enregistrez ce plan de "
-"chargement comme inachevé."
+"Il manque un ou plusieurs champs de données requis pour le chargement selon "
+"votre configuration. Ajoutez les correspondances manquantes indiquées ou "
+"enregistrez cette correspondance comme inachevée."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
@@ -236,7 +240,7 @@ msgstr "Sélectionnez une table de base"
 #: components/WbPlanView/State.tsx:96
 #, fuzzy
 msgid "chooseExistingPlan"
-msgstr "Choisir un plan de téléchargement existant"
+msgstr "Choisir une cartographie existante"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:166
@@ -245,13 +249,23 @@ msgstr "Afficher toutes les tables"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:113
+#, fuzzy
 msgid "baseTableDescription"
 msgstr ""
+"Une « table de base » sert de point de départ pour la correspondance entre "
+"les colonnes et les champs de données. Une fois importée, chaque ligne de "
+"votre jeu de données créera un nouvel enregistrement dans la table de base "
+"sélectionnée. Cliquez sur une table de base dans la liste pour commencer."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
+#, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
+"Une « table de base » sert de point de départ pour la correspondance entre "
+"les colonnes et les champs de données. Chaque enregistrement de pièce jointe "
+"importée sera ajouté comme une nouvelle ligne dans la table de base "
+"sélectionnée. Cliquez sur une table de base dans la liste pour commencer."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:105
@@ -262,9 +276,7 @@ msgstr "Sélectionnez une table de base avec pièces jointes"
 #: components/WbPlanView/Mapper.tsx:499
 #, fuzzy
 msgid "dataSetUploaded"
-msgstr ""
-"Jeu de données téléchargé. Ce plan de téléchargement ne peut pas être "
-"modifié."
+msgstr "Jeu de données téléchargé. Ce mappage ne peut pas être modifié."
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:497
@@ -296,9 +308,9 @@ msgstr ""
 #, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Choisir une autre table de base pour l'importation d'un jeu de données "
-"définira cette table comme nouveau point de départ pour la correspondance "
-"entre les colonnes et les champs de données, et effacera les correspondances "
+"Choisir une autre table de base pour un ensemble de données définira cette "
+"table comme nouveau point de départ pour la correspondance entre les "
+"colonnes et les champs de données, et effacera les correspondances "
 "existantes. L'outil de mappage automatique tentera d'associer les colonnes "
 "aux champs de la nouvelle table de base."
 
@@ -367,7 +379,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:372
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Mapping automatique pour démarrer un nouveau plan de téléchargement ?"
+msgstr "Automap pour démarrer une nouvelle cartographie ?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:373
@@ -437,8 +449,8 @@ msgstr ""
 #, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""
-"L'ensemble de données sélectionné ne dispose d'aucun plan de chargement. "
-"Veuillez en sélectionner un autre."
+"L'ensemble de données sélectionné ne possède aucune correspondance. Veuillez "
+"en sélectionner un autre."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:139
