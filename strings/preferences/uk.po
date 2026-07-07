@@ -623,8 +623,8 @@ msgstr ""
 msgid "column"
 msgstr "Колонка"
 
-#: components/LocalityUpdate/Status.tsx:376
-#: components/LocalityUpdate/Status.tsx:419
+#: components/LocalityUpdate/Status.tsx:380
+#: components/LocalityUpdate/Status.tsx:423
 #: components/Preferences/UserDefinitions.tsx:2011
 #: components/Preferences/UserDefinitions.tsx:2028
 #. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions

@@ -11,8 +11,8 @@ msgstr "Content-Type: text/plain\n"
 msgid "batchEdit"
 msgstr "Batch Edit"
 
-#: components/WbPlanView/MapperComponents.tsx:550
-#: components/WbPlanView/MapperComponents.tsx:560
+#: components/WbPlanView/MapperComponents.tsx:584
+#: components/WbPlanView/MapperComponents.tsx:594
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Batch Edit Preferences"
@@ -96,8 +96,8 @@ msgstr ""
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
-"Click on the \"Results\" button to see the number of records affected in "
-"each database table"
+"Your changes have been applied to the database. See the number of records "
+"affected in each table below:"
 
 #: components/WbUtils/datasetVariants.tsx:127
 #. Used in: Components > Wb Utils > Dataset Variants
@@ -146,29 +146,29 @@ msgstr "Commit Cancelled Description"
 msgid "commitSuccessful"
 msgstr "Commit Completed with No Errors"
 
-#: components/WorkBench/RecordSet.tsx:78
+#: components/WorkBench/RecordSet.tsx:77
 #. Used in: Components > Work Bench > Record Set
 msgid "batchEditRecordSetName"
 msgstr "BE commit of \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:518
+#: components/WbPlanView/MapperComponents.tsx:552
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatch"
 msgstr "Use only visible fields for match"
 
-#: components/WbPlanView/MapperComponents.tsx:519
+#: components/WbPlanView/MapperComponents.tsx:553
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatchDescription"
 msgstr ""
 "If true, invisible database fields will not be used for matching. Default "
 "value is {default:boolean}"
 
-#: components/WbPlanView/MapperComponents.tsx:524
+#: components/WbPlanView/MapperComponents.tsx:558
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheck"
 msgstr "Use only visible fields for empty record check"
 
-#: components/WbPlanView/MapperComponents.tsx:525
+#: components/WbPlanView/MapperComponents.tsx:559
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheckDescription"
 msgstr ""
@@ -197,16 +197,16 @@ msgstr ""
 "Allows batch editing relationships of the base table. Rollback is disabled "
 "when relationships are enabled"
 
-#: components/WbActions/WbUpload.tsx:125
+#: components/WbActions/WbUpload.tsx:132
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "commitDataSet"
 msgstr "Commit Data Set"
 
-#: components/WbActions/WbUpload.tsx:128
+#: components/WbActions/WbUpload.tsx:135
 #. Used in: Components > Wb Actions > Wb Upload
 msgid "warningBatchEditText"
 msgstr ""
 "Before proceeding, please note that the following action may interrupt "
 "other users. This action may cause delays or temporary unavailability of "
 "certain features for Specify users. Please consider the impact on their "
-"experience. This action cannot be undone"
+"experience. This action cannot be undone."

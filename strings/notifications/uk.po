@@ -41,7 +41,7 @@ msgstr "Помилка"
 #: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Cell.tsx:80
 #: components/Attachments/Viewer.tsx:241
-#: components/LocalityUpdate/Status.tsx:396
+#: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:83
 #: components/Notifications/NotificationRenderers.tsx:113
 #: components/Notifications/NotificationRenderers.tsx:129

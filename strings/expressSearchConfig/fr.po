@@ -3,134 +3,134 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-03 12:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
-"Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
-"expressSearchConfig/fr/>\n"
+"Language-Team: French "
+"<https://hosted.weblate.org/projects/specify-7/expressSearchConfig/fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.7.1.dev0\n"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "loadingConfig"
 msgstr "Chargement..."
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "loadingMetadata"
 msgstr "Chargement des métadonnées..."
 
-#. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
+#. Used in: Components > Express Search Config > Express Search Config Dialog
 msgid "expressSearchConfigTitle"
 msgstr "Configuration de la recherche express"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "searchFieldsTab"
 msgstr "Champs de recherche"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "relatedTablesTab"
 msgstr "Tables associés"
 
-#. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
+#. Used in: Components > Express Search Config > Express Search Config Editor
 msgid "resultsOrderingTab"
 msgstr "Ordre des résultats"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "availableTables"
 msgstr "Tables disponibles"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "searchableFields"
 msgstr "Champs recherchables"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "searchLabel"
 msgstr "Recherche"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "fieldName"
 msgstr "Champ"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "sortMode"
 msgstr "Mode de tri"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "searchNone"
 msgstr "Aucun"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "ascendingOrder"
 msgstr "Ascendant"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "descendingOrder"
 msgstr "Descendant"
 
-#. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
+#. Used in: Components > Express Search Config > Search Fields Tab
 msgid "displayFields"
 msgstr "Afficher les champs"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "configureResultsOrdering"
 msgstr "Configurer le tri des résultats"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "reorderResultsOrderingDescription"
 msgstr ""
 "Modifier l'ordre d'affichage des sections dans le volet des résultats de "
 "recherche."
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "relatedQueryLabel"
 msgstr "Requête associée : {query:string}"
 
-#. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
+#. Used in: Components > Express Search Config > Results Ordering Tab
 msgid "noDisplayItemsConfigured"
 msgstr "Aucun élément d'affichage configuré."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "selectAllQueries"
 msgstr "Tout sélectionner"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "deselectAllQueries"
 msgstr "Désélectionnez tout"
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "noRelatedQueriesAvailable"
 msgstr "Aucune requête associée disponible pour les tables sélectionnées."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "selectRelatedQueryDescription"
 msgstr "Sélectionnez une requête associée pour afficher sa description."
 
-#. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
+#. Used in: Components > Express Search Config > Related Tables Tab
 msgid "noDescriptionAvailable"
 msgstr "Aucune description disponible."
 
@@ -208,8 +208,7 @@ msgstr "Objets et leurs taxons (tous les synonymes)"
 
 #. Used in: 
 msgid "OtherSynsCollObjs_desc"
-msgstr ""
-"Objets avec déterminations, noms de taxons préférés et synonymes acceptés."
+msgstr "Objets avec déterminations, noms de taxons préférés et synonymes acceptés."
 
 #. Used in: 
 msgid "CurrCollObject"
@@ -274,7 +273,8 @@ msgstr "Acquisition et objets"
 #. Used in: 
 msgid "AccessionToCo_desc"
 msgstr ""
-"Les acquisitions et leurs objets, filtrés selon les déterminations actuelles."
+"Les acquisitions et leurs objets, filtrés selon les déterminations "
+"actuelles."
 
 #. Used in: 
 msgid "AccessionToAgent"
@@ -342,8 +342,7 @@ msgstr "Événements de collecte et lieux"
 
 #. Used in: 
 msgid "GeographyCE_desc"
-msgstr ""
-"Événéments de collecte avec les lieux géographiques associés aux localités"
+msgstr "Événéments de collecte avec les lieux géographiques associés aux localités"
 
 #. Used in: 
 msgid "GeographyCO"

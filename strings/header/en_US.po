@@ -144,20 +144,20 @@ msgstr "Choose Metadata resource"
 msgid "metadataResource"
 msgstr "Metadata Resource"
 
-#: components/Header/ExpressSearchTask.tsx:60
-#: components/Header/ExpressSearchTask.tsx:169
+#: components/Header/ExpressSearchTask.tsx:68
+#: components/Header/ExpressSearchTask.tsx:200
 #: components/Router/OverlayRoutes.tsx:52
 #: components/Router/Routes.tsx:33
 #. Used in: Components > Header > Express Search Task ⬤ Components > Router > Overlay Routes ⬤ Components > Router > Routes
 msgid "simpleSearch"
 msgstr "Express Search"
 
-#: components/Header/ExpressSearchTask.tsx:203
+#: components/Header/ExpressSearchTask.tsx:234
 #. Used in: Components > Header > Express Search Task
 msgid "primarySearch"
 msgstr "Primary Search"
 
-#: components/Header/ExpressSearchTask.tsx:209
+#: components/Header/ExpressSearchTask.tsx:240
 #. Used in: Components > Header > Express Search Task
 msgid "secondarySearch"
 msgstr "Secondary Search"
@@ -226,14 +226,15 @@ msgstr "Operations API"
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:171
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:235
-#: components/Header/ExpressSearchTask.tsx:125
+#: components/Header/ExpressSearchTask.tsx:156
 #: components/Header/userToolDefinitions.ts:152
 #: components/Preferences/UserDefinitions.tsx:623
 #: components/Preferences/index.tsx:65
 #: components/Preferences/index.tsx:71
 #: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
-#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > Express Search Task ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog
+#: components/WbPlanView/MapperComponents.tsx:83
+#. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > Express Search Task ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "documentation"
 msgstr "Documentation"
 

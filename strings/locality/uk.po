@@ -225,7 +225,7 @@ msgstr "Імпорт набору даних місцевості"
 msgid "localityUpdateParsed"
 msgstr "Проаналізовано набір даних оновлення місцевості"
 
-#: components/LocalityUpdate/Status.tsx:470
+#: components/LocalityUpdate/Status.tsx:474
 #: components/LocalityUpdate/utils.ts:38
 #: components/Notifications/NotificationRenderers.tsx:264
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
@@ -250,19 +250,19 @@ msgstr "Оновлення місцевості скасовано"
 msgid "localityUpdateSucceeded"
 msgstr "Місцезнаходження оновлено"
 
-#: components/LocalityUpdate/Status.tsx:474
-#: components/LocalityUpdate/Status.tsx:512
+#: components/LocalityUpdate/Status.tsx:478
+#: components/LocalityUpdate/Status.tsx:516
 #. Used in: Components > Locality Update > Status
 msgid "localityUpdateWentWrong"
 msgstr "Щось пішло не так під час процесу оновлення місцевості"
 
-#: components/LocalityUpdate/Status.tsx:371
+#: components/LocalityUpdate/Status.tsx:375
 #. 🟥The file name which is used when Parse Errors are exported. The .csv file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 msgid "localityUpdateParseErrorFileName"
 msgstr "Помилки оновлення місцевості - {date:string}"
 
-#: components/LocalityUpdate/Status.tsx:456
-#: components/LocalityUpdate/Status.tsx:497
+#: components/LocalityUpdate/Status.tsx:460
+#: components/LocalityUpdate/Status.tsx:501
 #. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 msgid "localityUpdateCrashFileName"
 msgstr "Оновлення місцевості {taskId: string} Звіт про збій - {date: string}"
@@ -284,14 +284,14 @@ msgstr ""
 "За допомогою guid: {guid:string} знайдено більше одного населеного пункту. "
 "Ідентифікатори населених пунктів: {localityIds: рядок}"
 
-#: components/LocalityUpdate/Status.tsx:242
+#: components/LocalityUpdate/Status.tsx:245
 #. Used in: Components > Locality Update > Status
 msgid "localityUpdateEffectCounts"
 msgstr ""
 "Оновлення вплине на таку кількість записів {localityTabelLabel: string} і "
 "буде створено записи {geoCoordDetailTableLabel: string}:"
 
-#: components/LocalityUpdate/Status.tsx:292
+#: components/LocalityUpdate/Status.tsx:296
 #. Used in: Components > Locality Update > Status
 msgid "localityUploadedDescription"
 msgstr ""
@@ -303,13 +303,13 @@ msgstr ""
 msgid "localityUpdateStarted"
 msgstr "Розпочато процес оновлення місцевості"
 
-#: components/LocalityUpdate/Status.tsx:339
+#: components/LocalityUpdate/Status.tsx:343
 #: components/Notifications/NotificationRenderers.tsx:310
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateResults"
 msgstr "Результати оновлення місцевості"
 
-#: components/LocalityUpdate/Status.tsx:400
+#: components/LocalityUpdate/Status.tsx:404
 #: components/Notifications/NotificationRenderers.tsx:242
 #: components/Notifications/NotificationRenderers.tsx:266
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers

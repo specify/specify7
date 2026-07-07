@@ -19,7 +19,7 @@ msgid "tables"
 msgstr "Tables"
 
 #: components/Preferences/UserDefinitions.tsx:883
-#: components/WbPlanView/MapperComponents.tsx:452
+#: components/WbPlanView/MapperComponents.tsx:486
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Table Name"
@@ -45,15 +45,15 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr "Schema changes have not been saved"
 
 #: components/SchemaConfig/Components.tsx:38
-#: components/WbPlanView/MapperComponents.tsx:335
+#: components/WbPlanView/MapperComponents.tsx:342
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Change Base Table"
 
 #: components/FieldFormatters/FieldFormatter.tsx:59
 #: components/Formatters/Fields.tsx:75
-#: components/LocalityUpdate/Status.tsx:377
-#: components/LocalityUpdate/Status.tsx:422
+#: components/LocalityUpdate/Status.tsx:381
+#: components/LocalityUpdate/Status.tsx:426
 #: components/SchemaConfig/Field.tsx:43
 #: components/WebLinks/Definition.tsx:25
 #. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Formatters > Fields ⬤ Components > Locality Update > Status ⬤ Components > Schema Config > Field ⬤ Components > Web Links > Definition

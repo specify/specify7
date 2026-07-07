@@ -13,19 +13,29 @@ msgstr ""
 "X-Generator: Weblate 5.17.1\n"
 
 #: components/Preferences/UserDefinitions.tsx:2092
-#: components/WbToolkit/DevShowPlan.tsx:119
-#: components/WorkBench/WbView.tsx:251
-#. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Work Bench > Wb View
+#: components/WorkBench/WbView.tsx:252
+#. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Wb View
 msgid "dataMapper"
 msgstr "Папки даних"
 
-#: components/WbActions/WbNoUploadPlan.tsx:49
+#: components/WbToolkit/DevShowPlan.tsx:54
+#: components/WbToolkit/DevShowPlan.tsx:205
+#. Used in: Components > Wb Toolkit > Dev Show Plan
+msgid "importExportMapping"
+msgstr ""
+
+#: components/WbToolkit/DevShowPlan.tsx:209
+#. Used in: Components > Wb Toolkit > Dev Show Plan
+msgid "importExportMappingDescription"
+msgstr ""
+
+#: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 msgid "noUploadPlan"
 msgstr "План завантаження не визначено"
 
-#: components/WbActions/WbNoUploadPlan.tsx:52
+#: components/WbActions/WbNoUploadPlan.tsx:61
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 msgid "noUploadPlanDescription"
 msgstr "Для цього набору даних не визначено план завантаження. Створити зараз?"
@@ -52,7 +62,7 @@ msgstr "Не зіставлений"
 msgid "mapped"
 msgstr "Нанесено на карту"
 
-#: components/WbPlanView/MapperComponents.tsx:244
+#: components/WbPlanView/MapperComponents.tsx:251
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
 msgstr "Поведінка відповідності:"
@@ -86,24 +96,24 @@ msgstr "Приховані поля"
 
 #: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:46
-#: components/WbPlanView/MapperComponents.tsx:76
+#: components/WbPlanView/MapperComponents.tsx:79
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
 msgstr "Відкрийте приховані поля форми"
 
-#: components/WbPlanView/Mapper.tsx:658
-#: components/WbPlanView/Mapper.tsx:660
-#: components/WbPlanView/Mapper.tsx:668
+#: components/WbPlanView/Mapper.tsx:661
+#: components/WbPlanView/Mapper.tsx:663
+#: components/WbPlanView/Mapper.tsx:671
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Параметри відображення"
 
-#: components/WbPlanView/MapperComponents.tsx:248
+#: components/WbPlanView/MapperComponents.tsx:255
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
 msgstr "Ігнорувати, коли пусто"
 
-#: components/WbPlanView/MapperComponents.tsx:249
+#: components/WbPlanView/MapperComponents.tsx:256
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
@@ -111,61 +121,61 @@ msgstr ""
 "стовпці не розглядатимуться для цілей зіставлення. Порожні значення "
 "ігноруються під час збігу, навіть якщо вказано значення за умовчанням"
 
-#: components/WbPlanView/MapperComponents.tsx:252
+#: components/WbPlanView/MapperComponents.tsx:259
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
 msgstr "Завжди ігнорувати"
 
-#: components/WbPlanView/MapperComponents.tsx:253
+#: components/WbPlanView/MapperComponents.tsx:260
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці "
 "ніколи не розглядатиметься для цілей зіставлення, лише для завантаження."
 
-#: components/WbPlanView/MapperComponents.tsx:256
+#: components/WbPlanView/MapperComponents.tsx:263
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
 msgstr "Ніколи не ігноруйте"
 
-#: components/WbPlanView/MapperComponents.tsx:257
+#: components/WbPlanView/MapperComponents.tsx:264
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
 "Цей стовпець завжди розглядатиметься для цілей зіставлення, незалежно від "
 "його значення"
 
-#: components/WbPlanView/MapperComponents.tsx:285
+#: components/WbPlanView/MapperComponents.tsx:292
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
 msgstr "Дозволити нульові значення"
 
-#: components/WbPlanView/MapperComponents.tsx:302
+#: components/WbPlanView/MapperComponents.tsx:309
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
 msgstr "Використовувати значення за умовчанням"
 
-#: components/WbPlanView/MapperComponents.tsx:311
+#: components/WbPlanView/MapperComponents.tsx:318
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
 msgstr "Значення за замовчуванням"
 
-#: components/WbPlanView/MapperComponents.tsx:319
+#: components/WbPlanView/MapperComponents.tsx:326
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
 msgstr "Це значення використовуватиметься замість порожніх клітинок"
 
-#: components/WbPlanView/MapperComponents.tsx:63
+#: components/WbPlanView/MapperComponents.tsx:66
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
 msgstr "Додати новий стовпець"
 
-#: components/WbPlanView/MapperComponents.tsx:105
+#: components/WbPlanView/MapperComponents.tsx:112
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailed"
 msgstr "Перевірка виявила відсутні зіставлення:"
 
-#: components/WbPlanView/MapperComponents.tsx:109
+#: components/WbPlanView/MapperComponents.tsx:116
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailedDescription"
 msgstr ""
@@ -178,17 +188,17 @@ msgstr ""
 msgid "mappingIsRequired"
 msgstr "Потрібне відображення"
 
-#: components/WbPlanView/MapperComponents.tsx:98
+#: components/WbPlanView/MapperComponents.tsx:105
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "continueEditing"
 msgstr "Продовжити редагування"
 
-#: components/WbPlanView/MapperComponents.tsx:101
+#: components/WbPlanView/MapperComponents.tsx:108
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "saveUnfinished"
 msgstr "Зберегти незавершене"
 
-#: components/WbPlanView/Mapper.tsx:554
+#: components/WbPlanView/Mapper.tsx:557
 #. Used in: Components > Wb Plan View > Mapper
 msgid "map"
 msgstr "Карта"
@@ -198,7 +208,7 @@ msgstr "Карта"
 msgid "unmap"
 msgstr "Відмінити карту"
 
-#: components/WbPlanView/Mapper.tsx:551
+#: components/WbPlanView/Mapper.tsx:554
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mapButtonDescription"
 msgstr "Зіставити вибране поле з вибраним заголовком"
@@ -214,8 +224,9 @@ msgstr "Відношення до таблиці {tableName:string}"
 msgid "selectBaseTable"
 msgstr "Виберіть базову таблицю"
 
+#: components/WbActions/WbNoUploadPlan.tsx:51
 #: components/WbPlanView/State.tsx:96
-#. Used in: Components > Wb Plan View > State
+#. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 msgid "chooseExistingPlan"
 msgstr "Виберіть існуючий план"
 
@@ -224,17 +235,27 @@ msgstr "Виберіть існуючий план"
 msgid "showAllTables"
 msgstr "Показати всі таблиці"
 
+#: components/WbPlanView/State.tsx:113
+#. Used in: Components > Wb Plan View > State
+msgid "baseTableDescription"
+msgstr ""
+
+#: components/WbPlanView/State.tsx:112
+#. Used in: Components > Wb Plan View > State
+msgid "baseTableWithAttachmentsDescription"
+msgstr ""
+
 #: components/WbPlanView/State.tsx:105
 #. Used in: Components > Wb Plan View > State
 msgid "selectBaseTableWithAttachments"
 msgstr "Виберіть базову таблицю з вкладеннями"
 
-#: components/WbPlanView/Mapper.tsx:496
+#: components/WbPlanView/Mapper.tsx:499
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploaded"
 msgstr "Набір даних завантажено. Цей план завантаження не можна змінити"
 
-#: components/WbPlanView/Mapper.tsx:494
+#: components/WbPlanView/Mapper.tsx:497
 #. Used in: Components > Wb Plan View > Mapper
 msgid "dataSetUploadedDescription"
 msgstr ""
@@ -242,18 +263,18 @@ msgstr ""
 "Щоб редагувати зіставлення, відкотіть завантажені дані або створіть новий "
 "набір даних"
 
-#: components/WbPlanView/Mapper.tsx:488
-#: components/WbPlanView/MapperComponents.tsx:343
+#: components/WbPlanView/Mapper.tsx:491
+#: components/WbPlanView/MapperComponents.tsx:350
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
 msgstr "Базовий стіл"
 
-#: components/WbPlanView/MapperComponents.tsx:339
+#: components/WbPlanView/MapperComponents.tsx:346
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTable"
 msgstr "Змінити базову таблицю для зіставлення стовпців набору даних?"
 
-#: components/WbPlanView/MapperComponents.tsx:340
+#: components/WbPlanView/MapperComponents.tsx:347
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTableDescription"
 msgstr ""
@@ -268,97 +289,108 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Очистити відображення"
 
-#: components/WbPlanView/MapperComponents.tsx:361
+#: components/WbPlanView/MapperComponents.tsx:368
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
 msgstr "Перезапустіть AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:370
+#: components/WbPlanView/MapperComponents.tsx:377
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
 msgstr "Auto Mapper"
 
-#: components/WbPlanView/MapperComponents.tsx:174
+#: components/WbPlanView/MapperComponents.tsx:181
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
 msgstr "Оглядач карти"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:385
+#: components/WbPlanView/MapperComponents.tsx:419
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Приховати Field Mapper"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:386
+#: components/WbPlanView/MapperComponents.tsx:420
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Показати Field Mapper"
 
-#: components/WbPlanView/Mapper.tsx:569
+#: components/WbPlanView/Mapper.tsx:572
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappings"
 msgstr "Відображення"
 
-#: components/WbPlanView/Mapper.tsx:361
-#. Used in: Components > Wb Plan View > Mapper
+#: components/WbPlanView/MapperComponents.tsx:395
+#: components/WbPlanView/MapperComponents.tsx:404
+#. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappings"
 msgstr "Очистити зіставлення"
 
-#: components/WbPlanView/MapperComponents.tsx:213
+#: components/WbPlanView/MapperComponents.tsx:220
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
 msgstr "Порожній набір даних"
 
-#: components/WbPlanView/MapperComponents.tsx:217
+#: components/WbPlanView/MapperComponents.tsx:224
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
 msgstr "Цей набір даних не має стовпців."
 
-#: components/WbPlanView/MapperComponents.tsx:220
+#: components/WbPlanView/MapperComponents.tsx:227
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Натисніть кнопку «Додати новий стовпець» під лініями відображення, щоб "
 "додати нові стовпці."
 
-#: components/WbPlanView/MapperComponents.tsx:365
+#: components/WbPlanView/MapperComponents.tsx:372
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmation"
 msgstr "Автоматична карта, щоб почати новий план завантаження?"
 
-#: components/WbPlanView/MapperComponents.tsx:366
+#: components/WbPlanView/MapperComponents.tsx:373
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Це призведе до видалення наявних зіставлень полів даних."
 
-#: components/WbPlanView/MapperComponents.tsx:435
+#: components/WbPlanView/MapperComponents.tsx:399
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "clearMappingsConfirmation"
+msgstr "Очистити всі існуючі зіставлення?"
+
+#: components/WbPlanView/MapperComponents.tsx:400
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "clearMappingsConfirmationDescription"
+msgstr "Це призведе до видалення наявних зіставлень полів даних."
+
+#: components/WbPlanView/MapperComponents.tsx:469
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
 msgstr "Змінити логіку відповідності"
 
-#: components/WbPlanView/MapperComponents.tsx:443
+#: components/WbPlanView/MapperComponents.tsx:477
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicDescription"
 msgstr "Вимагати відповідності даних існуючим записам"
 
-#: components/WbPlanView/MapperComponents.tsx:439
+#: components/WbPlanView/MapperComponents.tsx:473
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr "Логіка зіставлення недоступна для поточних зіставлень"
 
-#: components/WbPlanView/MapperComponents.tsx:421
 #: components/WbPlanView/MapperComponents.tsx:455
+#: components/WbPlanView/MapperComponents.tsx:489
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
 msgstr "Має відповідати"
 
-#: components/WbPlanView/Mapper.tsx:194
+#: components/WbPlanView/Mapper.tsx:195
 #. Used in: Components > Wb Plan View > Mapper
 msgid "unloadProtectMessage"
 msgstr "Це відображення не збережено."
 
-#: components/WbPlanView/MapperComponents.tsx:58
+#: components/WbPlanView/MapperComponents.tsx:61
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
 msgstr "Нова колонка {index:number}"
@@ -382,3 +414,13 @@ msgstr "Немає доступних планів, продовжуйте ст�
 #. Used in: Components > Wb Plan View > State
 msgid "invalidTemplatePlan"
 msgstr "Вибраний набір даних не має плану завантаження. Виберіть інший."
+
+#: components/WbToolkit/DevShowPlan.tsx:139
+#. Used in: Components > Wb Toolkit > Dev Show Plan
+msgid "invalidJsonFile"
+msgstr "Вибраний файл не є дійсним JSON."
+
+#: components/WbToolkit/DevShowPlan.tsx:142
+#. Used in: Components > Wb Toolkit > Dev Show Plan
+msgid "invalidJsonFileDescription"
+msgstr "Будь ласка, виберіть дійсний файл JSON."
