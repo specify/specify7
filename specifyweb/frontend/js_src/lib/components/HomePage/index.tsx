@@ -10,6 +10,8 @@ import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
+import { Button } from '../Atoms/Button';
+import { Dialog } from '../Molecules/Dialog';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -18,6 +20,7 @@ const TaxonTiles = ReactLazy(async () =>
 export function WelcomeView(): JSX.Element {
   const [mode] = userPreferences.use('welcomePage', 'general', 'mode');
   const formId = useId('express-search')('form');
+  const [showCollStatsDialog, setShowCollStatsDialog] = React.useState(false);
 
   const [displaySearchBar] = userPreferences.use(
     'welcomePage',
@@ -34,6 +37,20 @@ export function WelcomeView(): JSX.Element {
             {commonText.search()}
           </Submit.Secondary>
         </div>
+      )}
+      <div className="flex justify-end gap-2 pr-4 pt-4">
+        <Button.Secondary onClick={(): void => setShowCollStatsDialog(true)}>
+          {commonText.collStats()}
+        </Button.Secondary>
+      </div>
+      {showCollStatsDialog && (
+        <Dialog
+          buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+          header={commonText.collStats()}
+          onClose={(): void => setShowCollStatsDialog(false)}
+        >
+          <p>{commonText.collStats()}</p>
+        </Dialog>
       )}
       <div
         className={`

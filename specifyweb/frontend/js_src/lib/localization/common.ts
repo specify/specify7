@@ -847,12 +847,21 @@ export const commonText = createDictionary({
     'uk-ua': 'Збільшити масштаб',
   },
   unzoom: {
-    'en-us': 'Zoom Out',
-    'fr-fr': 'Dézoomer',
-    'de-ch': 'Herauszoomen',
-    'es-es': 'Alejar',
-    'pt-br': 'Diminuir o zoom',
-    'ru-ru': 'Отдалиться',
-    'uk-ua': 'Зменшити масштаб',
+      'en-us': 'Zoom Out',
+      'fr-fr': 'Dézoomer',
+      'de-ch': 'Herauszoomen',
+      'es-es': 'Alejar',
+      'pt-br': 'Diminuir o zoom',
+      'ru-ru': 'Отдалиться',
+      'uk-ua': 'Зменшити масштаб',
   },
+  collStats: {
+    'en-us': 'Collection Statistics',
+    'fr-fr': 'Statistiques de la collection',
+    'de-ch': 'Sammlungsstatistiken',
+    'es-es': 'Estadísticas de la colección',
+    'pt-br': 'Estatísticas da coleção',
+    'ru-ru': 'Статистика коллекции',
+    'uk-ua': 'Статистика колекції',
+  }
 } as const);
