@@ -1,0 +1,15 @@
+name: Coverage
+
+on: 
+  push:
+  workflow_dispatch:
+
+jobs:
+  check:
+    name: Get cpu info
+    runs-on: ubuntu-latest
+    steps:
+      - name: get cpuinfo
+        id: cpuinfo
+        run: |
+          lscpu
