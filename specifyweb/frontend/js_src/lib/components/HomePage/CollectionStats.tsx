@@ -24,8 +24,8 @@ export function CollectionStats(): JSX.Element {
           setIsLoadingStats(true);
           setTableData([]);
           setShowCollStatsDialog(true);
-
-          void ajax<ReadonlyArray<CollectionStatsRow>>(
+          setTimeout(()=>{console.log("deleteMe done")
+            void ajax<ReadonlyArray<CollectionStatsRow>>(
             '/stats/collection/statistics/',
             {
               headers: {
@@ -42,6 +42,25 @@ export function CollectionStats(): JSX.Element {
             .finally(() => {
               setIsLoadingStats(false);
             });
+          }, 10000);
+
+        //   void ajax<ReadonlyArray<CollectionStatsRow>>(
+        //     '/stats/collection/statistics/',
+        //     {
+        //       headers: {
+        //         Accept: 'application/json',
+        //       },
+        //     }
+        //   )
+        //     .then(({ data }) => {
+        //       setTableData(Array.isArray(data) ? data : []);
+        //     })
+        //     .catch(() => {
+        //       setTableData([]);
+        //     })
+        //     .finally(() => {
+        //       setIsLoadingStats(false);
+        //     });
         }}
       >
         {commonText.collStats()}
