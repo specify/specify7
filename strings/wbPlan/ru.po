@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:23+0000\n"
-"Last-Translator: Anonymous <noreply@weblate.org>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "ru/>\n"
 "Language: ru\n"
@@ -21,26 +21,32 @@ msgstr "Сопоставления"
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:54
 #: components/WbToolkit/DevShowPlan.tsx:205
+#, fuzzy
 msgid "importExportMapping"
-msgstr ""
+msgstr "Сопоставление импорта/экспорта"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:209
+#, fuzzy
 msgid "importExportMappingDescription"
 msgstr ""
+"Вы можете экспортировать текущее сопоставление наборов данных в файл JSON "
+"или импортировать существующее сопоставление наборов данных."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
 #, fuzzy
 msgid "noUploadPlan"
-msgstr "План загрузки не определен"
+msgstr "Сопоставление наборов данных не определено."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:61
 #, fuzzy
 msgid "noUploadPlanDescription"
-msgstr "Для этого набора данных не определен план загрузки. Создать эго сейчас?"
+msgstr ""
+"Для этого набора данных не определено сопоставление. Пожалуйста, выберите "
+"существующее сопоставление или создайте новое."
 
 #. Used in: Components > Work Bench > Hot Props
 #: components/WorkBench/hotProps.tsx:160
@@ -133,8 +139,8 @@ msgstr "Всегда игнорировать"
 #, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
-"Если задано значение «Всегда игнорировать», значение в этом столбце никогда "
-"не будет рассматривается для целей сопоставления, только для загрузки"
+"Если установлено значение \"Всегда игнорировать\", значение в этом столбце "
+"не будет использоваться для сопоставления, а только для загрузки."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:263
@@ -183,9 +189,10 @@ msgstr "Проверка обнаружила недостающие сопос�
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"В этом сопоставлении данные отсутствует в одном или нескольких полей данных, "
-"необходимых для загрузки по вашей Specify конфигурацию. Добавьте недостающие "
-"сопоставления или сохраните этот план загрузки как незавершенный."
+"В этом сопоставлении данных отсутствует одно или несколько полей, "
+"необходимых для загрузки в соответствии с вашей конфигурацией Specify. "
+"Добавьте недостающие сопоставления, указанные выше, или сохраните это "
+"сопоставление как незавершенное."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
@@ -233,7 +240,7 @@ msgstr "Выберите базовую таблицу"
 #: components/WbPlanView/State.tsx:96
 #, fuzzy
 msgid "chooseExistingPlan"
-msgstr "Выберите существующий план"
+msgstr "Выберите существующее сопоставление"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:166
@@ -242,13 +249,23 @@ msgstr "Показать дополнительные таблицы"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:113
+#, fuzzy
 msgid "baseTableDescription"
 msgstr ""
+"«Базовая таблица» — это таблица, которая служит отправной точкой для "
+"сопоставления столбцов с полями данных. После загрузки каждая строка в вашем "
+"наборе данных будет приводить к созданию новой записи в указанной вами "
+"базовой таблице. Щелкните по базовой таблице в списке, чтобы начать."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
+#, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
+"«Базовая таблица» — это таблица, которая служит отправной точкой для "
+"сопоставления столбцов с полями данных. Каждая импортированная запись "
+"вложения будет добавлена в выбранную вами базовую таблицу в виде новой "
+"строки. Щелкните по базовой таблице в списке, чтобы начать."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:105
@@ -260,7 +277,7 @@ msgstr "Выберите базовую таблицу с вложениями."
 #: components/WbPlanView/Mapper.tsx:499
 #, fuzzy
 msgid "dataSetUploaded"
-msgstr "Набор данных загружен. Этот план загрузки нельзя изменить"
+msgstr "Набор данных загружен. Это сопоставление изменить нельзя."
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:497
@@ -286,10 +303,10 @@ msgstr "Изменить базовую таблицу для сопоставл
 #, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
-"Выбор другой базовой таблице для загрузки набора данных сделает ту таблицу "
-"новой отправной точкой для сопоставлений полей столбцов и данных и сотрет "
-"существующие сопоставления. AutoMapper попытается сопоставить столбцы в "
-"новые поля базовой таблицы."
+"Выбор другой базовой таблицы для набора данных сделает эту таблицу новой "
+"отправной точкой для сопоставления столбцов с полями данных и удалит "
+"существующие сопоставления. AutoMapper попытается сопоставить столбцы с "
+"полями новой базовой таблицы."
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:152
@@ -356,7 +373,7 @@ msgstr ""
 #: components/WbPlanView/MapperComponents.tsx:372
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Автоматически сопоставить?"
+msgstr "Чтобы начать создание новой карты с помощью функции Automap?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:373
@@ -424,7 +441,8 @@ msgstr "Нет доступных планов, продолжайте созд�
 #, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""
-"Выбранный набор данных не имеет плана загрузки. Выберите другой набор данных."
+"Для выбранного набора данных отсутствует сопоставление. Пожалуйста, выберите "
+"другой набор."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:139
