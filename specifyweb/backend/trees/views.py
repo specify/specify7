@@ -184,59 +184,60 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
+    child_counts = (
+        select(
+            child.ParentID.label("parent_id"),
+            func.count(child._id).label("child_count"),
+        )
+        .group_by(child.ParentID)
+        .subquery()
+    )
+    synonym_names = (
+        select(
+            synonym.AcceptedID.label("accepted_id"),
+            group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        )
+        .where(synonym.AcceptedID.is_not(None))
+        .group_by(synonym.AcceptedID)
+        .subquery()
+    )
 
-    # We use min for grouped columns because for some reason, SQL is rejecting
-    # the group_by in some dbs due to "only_full_group_by". It is somehow not
-    # smart enough to see that there is no dependency in the columns going from
-    # main table to the to-manys (child, and syns).
-    # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
-    # I don't want to disable "only_full_group_by" in case someone misuses it...
-    # applying min to fool into thinking it is aggregated.
-    # these values are guarenteed to be the same
     cols = [
         node._id.label("id"),
-        func.min(node.name).label("name"),
-        func.min(node.fullName).label("full_name"),
-        func.min(node.nodeNumber).label("node_number"),
-        func.min(node.highestChildNodeNumber).label("highest_child_number"),
-        func.min(node.rankId).label("rank_id"),
-
-        func.min(node.AcceptedID).label("accepted_id"),
-        func.min(accepted.fullName).label("accepted_fullname"),
-
+        node.name.label("name"),
+        node.fullName.label("full_name"),
+        node.nodeNumber.label("node_number"),
+        node.highestChildNodeNumber.label("highest_child_number"),
+        node.rankId.label("rank_id"),
+        node.AcceptedID.label("accepted_id"),
+        accepted.fullName.label("accepted_fullname"),
+        (node.author if include_author else literal("NULL")).label("author"),
         (
-            func.min(node.author)
-            if include_author
-            else func.min(literal("NULL"))
-        ).label("author"),
-
-        (
-            func.min(node.startPeriod)
+            node.startPeriod
             if include_start_end_periods
-            else func.min(literal("NULL"))
+            else literal("NULL")
         ).label("start_period"),
         (
-            func.min(node.startUncertainty)
+            node.startUncertainty
             if include_start_end_periods
-            else func.min(literal("NULL"))
+            else literal("NULL")
         ).label("start_uncertainty"),
         (
-            func.min(node.endPeriod)
+            node.endPeriod
             if include_start_end_periods
-            else func.min(literal("NULL"))
+            else literal("NULL")
         ).label("end_period"),
         (
-            func.min(node.endUncertainty)
+            node.endUncertainty
             if include_start_end_periods
-            else func.min(literal("NULL"))
+            else literal("NULL")
         ).label("end_uncertainty"),
-
-        func.count(distinct(child._id)).label("child_count"),
-        group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        func.coalesce(child_counts.c.child_count, 0).label("child_count"),
+        synonym_names.c.synonyms.label("synonyms"),
         (
-            func.min(node.isBioStrat)
+            node.isBioStrat
             if tree == 'geologictimeperiod'
-            else func.min(literal("NULL"))
+            else literal("NULL")
         ).label("is_biostrat"),
     ]
 
@@ -262,14 +263,13 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
 
     query = (
         select(*cols)
-        .outerjoin(child, child.ParentID == node._id)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
-        .outerjoin(synonym, synonym.AcceptedID == node._id)
+        .outerjoin(child_counts, child_counts.c.parent_id == node._id)
+        .outerjoin(synonym_names, synonym_names.c.accepted_id == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
+        .order_by(orderby)
     )
-
-    query = query.group_by(node._id).order_by(orderby)
 
     return session.execute(query).all()
 
