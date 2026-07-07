@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:25+0000\n"
-"Last-Translator: Neat <neatsecundario@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "workbench/es/>\n"
 "Language: es\n"
@@ -27,8 +27,9 @@ msgstr "banco de trabajo"
 #: components/WbUtils/datasetVariants.tsx:48
 #: components/WbUtils/datasetVariants.tsx:123
 #: components/WorkBench/Status.tsx:80
+#, fuzzy
 msgid "rollback"
-msgstr "Retroceder"
+msgstr "Revertir"
 
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
 #: components/AttachmentsBulkImport/Import.tsx:290
@@ -53,8 +54,9 @@ msgstr "Cargar"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:86
+#, fuzzy
 msgid "rollingBack"
-msgstr "Retrocediendo"
+msgstr "Retroceder"
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:109
@@ -107,8 +109,9 @@ msgstr "Verificar Datos: ON"
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
-"Tenga en cuenta que la validación en vivo es una función experimental y no "
-"sustituye a la validación regular."
+"La validación en tiempo real no sustituye por completo la validación "
+"periódica. Asegúrese de realizar la validación periódica antes de subir los "
+"archivos."
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:38
@@ -224,34 +227,39 @@ msgstr "¿Comenzar carga de conjunto de datos?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:46
+#, fuzzy
 msgid "startUploadDescription"
 msgstr ""
-"Cargar el conjunto de datos agregará los datos a la base de datos de "
-"especificación."
+"Al subir este archivo, se añadirán todos los registros nuevos de este "
+"conjunto de datos a su base de datos."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:169
+#, fuzzy
 msgid "deleteDataSet"
 msgstr "¿Eliminar este conjunto de datos?"
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:89
+#, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
-"Eliminar un conjunto de datos lo elimina de forma permanente junto con su "
-"plan de carga. Las asignaciones de datos ya no estarán disponibles para su "
-"reutilización con otros conjuntos de datos. Además, después de eliminar, la "
-"reversión ya no será una opción para un conjunto de datos cargado."
+"Al eliminar un conjunto de datos, este se elimina permanentemente, junto con "
+"su plan de carga. Esta asignación ya no estará disponible para su "
+"reutilización con otros conjuntos de datos. Una vez eliminado, la opción de "
+"revertir los cambios ya no estará disponible."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:131
+#, fuzzy
 msgid "dataSetDeleted"
-msgstr "Conjunto de datos eliminado con éxito"
+msgstr "Conjunto de datos eliminado correctamente"
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:134
+#, fuzzy
 msgid "dataSetDeletedDescription"
-msgstr "Conjunto de datos eliminado con éxito."
+msgstr "Este conjunto de datos fue eliminado."
 
 #. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:45
@@ -260,10 +268,11 @@ msgstr "¿Revertir cambios no guardados?"
 
 #. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:48
+#, fuzzy
 msgid "revertChangesDescription"
 msgstr ""
 "Esta acción descartará todos los cambios realizados en el conjunto de datos "
-"desde la última vez que se guardó."
+"desde el último guardado."
 
 #. Used in: Components > Wb Actions > Wb Save
 #: components/WbActions/WbSave.tsx:86
@@ -272,8 +281,9 @@ msgstr "Guardando..."
 
 #. Used in: Components > Work Bench > Wb View
 #: components/WorkBench/WbView.tsx:124
+#, fuzzy
 msgid "wbUnloadProtect"
-msgstr "Los cambios a este conjunto de datos no se han guardado."
+msgstr "Los cambios realizados en este conjunto de datos no se han guardado."
 
 #. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:334
@@ -294,19 +304,19 @@ msgstr "Validación completada sin errores"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:386
+#, fuzzy
 msgid "validationNoErrorsDescription"
 msgstr ""
-"La validación no encontró errores, está listo para ser cargado en la base "
-"de datos."
+"El proceso de validación no detectó errores. Su conjunto de datos está listo "
+"para ser importado."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:388
 #: components/WbActions/index.tsx:399
+#, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
-"Nota: si este conjunto de datos se edita y se vuelve a guardar, se debe "
-"volver a ejecutar Validar antes de cargar para verificar que no se hayan "
-"introducido errores."
+"Si edita este conjunto de datos, asegúrese de validarlo antes de subirlo."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:393
@@ -333,8 +343,9 @@ msgstr ""
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:43
+#, fuzzy
 msgid "uploadErrors"
-msgstr "Carga fallida debido a celdas de error"
+msgstr "Error al cargar debido a celdas con errores."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:47
@@ -348,19 +359,21 @@ msgid "uploadErrorsSecondDescription"
 msgstr ""
 "Valide el conjunto de datos y revise las sugerencias que aparecen al pasar "
 "el ratón por encima de cada celda con errores, luego realice las "
-"correcciones pertinentes. Guarde y vuelva a intentarlo {type:string}."
+"correcciones pertinentes. Guarde y vuelva a intentarlo con {type:string}."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:423
+#, fuzzy
 msgid "dataSetRollback"
-msgstr "El conjunto de datos se revirtió con éxito"
+msgstr "El conjunto de datos se revirtió correctamente."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:52
+#, fuzzy
 msgid "dataSetRollbackDescription"
 msgstr ""
-"Este conjunto de datos revertidos se guarda y se puede editar o volver a "
-"cargar."
+"Este conjunto de datos se ha restaurado correctamente y se puede editar o "
+"volver a cargar."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:290
@@ -369,8 +382,11 @@ msgstr "Validación cancelada"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:298
+#, fuzzy
 msgid "validationCanceledDescription"
-msgstr "Se canceló la validación del conjunto de datos."
+msgstr ""
+"La operación de validación se ha cancelado. Inténtelo de nuevo antes de "
+"subir el archivo."
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:30
@@ -381,8 +397,10 @@ msgstr "Reversión cancelada"
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:31
 #: components/WbActions/index.tsx:300
+#, fuzzy
 msgid "rollbackCanceledDescription"
-msgstr "Reversión del conjunto de datos cancelada."
+msgstr ""
+"La reversión fue cancelada. No se realizaron cambios en la base de datos."
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:110
@@ -393,8 +411,9 @@ msgstr "Carga cancelada"
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:111
 #: components/WbUtils/datasetVariants.tsx:45
+#, fuzzy
 msgid "uploadCanceledDescription"
-msgstr "Carga de conjunto de datos cancelada."
+msgstr "La carga fue cancelada. No se realizaron cambios en la base de datos."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:232
@@ -419,10 +438,11 @@ msgstr "Se ha de validar o cargar el conjunto de datos"
 #. Used in: Components > Wb Actions > Wb Validate
 #: components/WbActions/WbValidate.tsx:56
 #: components/WbActions/WbValidate.tsx:78
+#, fuzzy
 msgid "wbValidateUnavailable"
 msgstr ""
-"Se necesita definir un Plan de Carga antes de poder Validar este Conjunto "
-"de Datos"
+"Es necesario definir una correspondencia antes de poder validar este "
+"conjunto de datos."
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #: components/WbActions/WbUpload.tsx:76
@@ -462,8 +482,9 @@ msgstr "Esta herramienta requiere Columnas de Localidad mapeadas/asignadas"
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 #: components/WbToolkit/CoordinateConverter.tsx:54
 #: components/WbToolkit/GeoLocate.tsx:52
+#, fuzzy
 msgid "unavailableWhenUploaded"
-msgstr "Esta herramienta no funciona con Conjuntos de Datos cargados"
+msgstr "Esta herramienta no funciona con conjuntos de datos cargados."
 
 #. Used in: Components > Work Bench > Index
 #: components/WorkBench/index.tsx:53
@@ -666,6 +687,7 @@ msgstr "{variant:string} Conjuntos de datos"
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:34
 #: components/WbUtils/datasetVariants.tsx:109
+#, fuzzy
 msgid "wbsDialogEmpty"
 msgstr "Actualmente no existen conjuntos de datos."
 
@@ -767,8 +789,11 @@ msgstr "Cancelando..."
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:96
+#, fuzzy
 msgid "wbStatusAbortFailed"
-msgstr "No se pudo abortar {operationName:string}. Por favor inténtelo más tarde"
+msgstr ""
+"No se pudo cancelar la operación {operationName:string}. Inténtelo de nuevo "
+"más tarde."
 
 #. 🟥E.x, Validating... Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:123
@@ -784,16 +809,19 @@ msgstr ""
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:110
+#, fuzzy
 msgid "wbStatusPendingDescription"
-msgstr "{operationName:string} de este Conjunto de Datos debería comenzar en breve."
+msgstr ""
+"{operationName:string} de este conjunto de datos debería comenzar en breve."
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:113
+#, fuzzy
 msgid "wbStatusPendingSecondDescription"
 msgstr ""
-"Si este mensaje persiste por más de 30 segundos, el proceso "
-"{operationName:string} está ocupado con otro Conjunto de Datos. Por favor "
-"inténtelo más tarde."
+"Si este mensaje persiste durante más de 30 segundos, el proceso "
+"{operationName:string} está ocupado con otro conjunto de datos. Inténtelo de "
+"nuevo más tarde."
 
 #. Used in: Components > Attachments Bulk Import > Action State ⬤ Components > Work Bench > Status
 #: components/AttachmentsBulkImport/ActionState.tsx:24
@@ -882,7 +910,7 @@ msgstr "Número de nuevos registros que se verían afectados en cada tabla:"
 #: components/WorkBench/Results.tsx:27
 #, fuzzy
 msgid "recordsCreated"
-msgstr "Registros creados"
+msgstr "Nuevos récords"
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #: components/WbActions/WbUpload.tsx:169
