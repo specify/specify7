@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-07-07 19:27+0000\n"
-"Last-Translator: Deleted User <mgorpinic2005@gmail.com>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Ukrainian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/uk/>\n"
 "Language: uk\n"
@@ -110,8 +110,8 @@ msgstr "Перевірка даних: увімкнено"
 #, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
-"Зауважте, що перевірка в реальному часі є експериментальною функцією і не "
-"замінює звичайну перевірку."
+"Перевірка в реальному часі не є повною заміною регулярної перевірки. "
+"Обов’язково виконуйте регулярну перевірку перед завантаженням."
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:38
@@ -215,10 +215,10 @@ msgstr "Почати відкат набору даних?"
 #, fuzzy
 msgid "beginRollbackDescription"
 msgstr ""
-"Відкат видалить нові записи даних, додані цим набором даних до бази даних "
-"Specify. Повний відкат буде скасовано, якщо на будь-які завантажені дані "
-"посилалися (повторно використовували) інші записи даних після їх "
-"завантаження."
+"Відкат видалить нові записи даних, які цей набір даних додав до бази даних "
+"Specify. Повний відкат буде скасовано, якщо будь-які завантажені дані були "
+"використані повторно (повторно використані) іншими записами даних з моменту "
+"їх завантаження."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:42
@@ -229,7 +229,9 @@ msgstr "Почати завантаження набору даних?"
 #: components/WbUtils/datasetVariants.tsx:46
 #, fuzzy
 msgid "startUploadDescription"
-msgstr "Завантаження набору даних додасть дані до бази даних Specify."
+msgstr ""
+"Завантаження цього додасть усі нові записи з цього набору даних до вашої "
+"бази даних."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:169
@@ -242,10 +244,9 @@ msgstr "Видалити цей набір даних?"
 #, fuzzy
 msgid "deleteDataSetDescription"
 msgstr ""
-"Видалення набору даних остаточно видаляє його та його план завантаження. "
-"Зіставлення даних більше не буде доступним для повторного використання з "
-"іншими наборами даних. Крім того, після видалення відкат більше не буде "
-"доступним для завантаженого набору даних."
+"Видалення набору даних назавжди видаляє його та його план завантаження. Це "
+"зіставлення більше не буде доступним для повторного використання з іншими "
+"наборами даних. Після видалення відкат більше не буде можливим."
 
 #. Used in: Components > Work Bench > Data Set Meta
 #: components/WorkBench/DataSetMeta.tsx:131
@@ -257,7 +258,7 @@ msgstr "Набір даних успішно видалено"
 #: components/WorkBench/DataSetMeta.tsx:134
 #, fuzzy
 msgid "dataSetDeletedDescription"
-msgstr "Набір даних успішно видалено."
+msgstr "Цей набір даних було видалено."
 
 #. Used in: Components > Wb Actions > Wb Revert
 #: components/WbActions/WbRevert.tsx:45
@@ -269,8 +270,8 @@ msgstr "Скасувати незбережені зміни?"
 #, fuzzy
 msgid "revertChangesDescription"
 msgstr ""
-"Ця дія призведе до скасування всіх змін, внесених до набору даних після "
-"останнього збереження."
+"Ця дія скасує всі зміни, внесені до набору даних з моменту останнього "
+"збереження."
 
 #. Used in: Components > Wb Actions > Wb Save
 #: components/WbActions/WbSave.tsx:86
@@ -281,7 +282,7 @@ msgstr "Збереження..."
 #: components/WorkBench/WbView.tsx:124
 #, fuzzy
 msgid "wbUnloadProtect"
-msgstr "Зміни в цьому наборі даних не збережено."
+msgstr "Зміни до цього набору даних не збережено."
 
 #. Used in: Components > Work Bench > Wb Validation
 #: components/WorkBench/WbValidation.tsx:334
@@ -299,12 +300,13 @@ msgstr ""
 #: components/WbActions/index.tsx:383
 #, fuzzy
 msgid "validationNoErrors"
-msgstr "Перевірка завершена без помилок"
+msgstr "Перевірку завершено без помилок"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:386
+#, fuzzy
 msgid "validationNoErrorsDescription"
-msgstr "Перевірка не виявила помилок, вона готова до завантаження в базу даних."
+msgstr "Процес перевірки не виявив помилок. Ваш набір даних готовий до імпорту."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:388
@@ -312,15 +314,14 @@ msgstr "Перевірка не виявила помилок, вона гото
 #, fuzzy
 msgid "validationReEditWarning"
 msgstr ""
-"Примітка. Якщо цей набір даних відредаговано та повторно збережено, перед "
-"завантаженням слід повторно запустити перевірку, щоб переконатися, що не "
-"було допущено помилок."
+"Якщо цей набір даних редагується, обов’язково перевірте його перед "
+"завантаженням."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:393
 #, fuzzy
 msgid "validationErrors"
-msgstr "Перевірка виконана з помилками"
+msgstr "Перевірку завершено з помилками"
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:396
@@ -344,7 +345,7 @@ msgstr ""
 #: components/WbUtils/datasetVariants.tsx:43
 #, fuzzy
 msgid "uploadErrors"
-msgstr "Помилка завантаження через клітинки помилок"
+msgstr "Завантаження не вдалося через помилки в клітинках"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:47
@@ -356,23 +357,23 @@ msgstr "Помилка завантаження через одну або кі�
 #, fuzzy
 msgid "uploadErrorsSecondDescription"
 msgstr ""
-"Перевірте набір даних і перегляньте підказки під час наведення курсора миші "
-"для кожної клітинки з помилкою, потім внесіть відповідні виправлення. "
-"Збережіть і повторіть спробу {type:string}."
+"Перевірте набір даних і перегляньте підказки при наведенні курсора миші для "
+"кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть "
+"дані та повторіть спробу {type:string}."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:423
 #, fuzzy
 msgid "dataSetRollback"
-msgstr "Набір даних успішно повернуто"
+msgstr "Набір даних успішно відкочено"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:52
 #, fuzzy
 msgid "dataSetRollbackDescription"
 msgstr ""
-"Цей відкочений набір даних зберігається та може бути відредагований або "
-"повторно завантажений."
+"Цей набір даних успішно відкочено, і його можна редагувати або повторно "
+"завантажити."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:290
@@ -383,7 +384,9 @@ msgstr "Перевірку скасовано"
 #: components/WbActions/index.tsx:298
 #, fuzzy
 msgid "validationCanceledDescription"
-msgstr "Перевірку набору даних скасовано."
+msgstr ""
+"Операцію перевірки скасовано. Будь ласка, спробуйте ще раз перед "
+"завантаженням."
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Wb Actions > Index
 #: components/AttachmentsBulkImport/Rollback.tsx:30
@@ -396,7 +399,7 @@ msgstr "Відкат скасовано"
 #: components/WbActions/index.tsx:300
 #, fuzzy
 msgid "rollbackCanceledDescription"
-msgstr "Відкат набору даних скасовано."
+msgstr "Відкат скасовано. До бази даних не внесено жодних змін."
 
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:110
@@ -409,7 +412,7 @@ msgstr "Завантаження скасовано"
 #: components/WbUtils/datasetVariants.tsx:45
 #, fuzzy
 msgid "uploadCanceledDescription"
-msgstr "Завантаження набору даних скасовано."
+msgstr "Завантаження скасовано. До бази даних не внесено жодних змін."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:232
@@ -437,7 +440,8 @@ msgstr "Набір даних має бути перевірений або за
 #, fuzzy
 msgid "wbValidateUnavailable"
 msgstr ""
-"Перед перевіркою цього набору даних необхідно визначити план завантаження"
+"Перш ніж цей набір даних можна буде перевірити, необхідно визначити "
+"зіставлення."
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Change Owner ⬤ Components > Wb Toolkit > Index
 #: components/WbActions/WbUpload.tsx:76
@@ -485,7 +489,7 @@ msgstr "Цей інструмент не працює із завантажен�
 #: components/WorkBench/index.tsx:53
 #, fuzzy
 msgid "dataSetDeletedOrNotFound"
-msgstr "Набір даних видалено іншим сеансом."
+msgstr "Цей набір даних було видалено іншим сеансом."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:268
@@ -684,7 +688,7 @@ msgstr "{variant:string} Набори даних"
 #: components/WbUtils/datasetVariants.tsx:109
 #, fuzzy
 msgid "wbsDialogEmpty"
-msgstr "Наразі не існує наборів даних."
+msgstr "Наразі наборів даних не існує."
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:36
@@ -803,7 +807,8 @@ msgstr ""
 #: components/WorkBench/Status.tsx:110
 #, fuzzy
 msgid "wbStatusPendingDescription"
-msgstr "{operationName:string} цього набору даних має початися незабаром."
+msgstr ""
+"{operationName:string} цього набору даних має розпочатися найближчим часом."
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:113
@@ -891,14 +896,15 @@ msgstr "Кількість нових записів у кожній табли�
 #: components/WorkBench/Results.tsx:27
 #, fuzzy
 msgid "recordsCreated"
-msgstr "Створені записи"
+msgstr "Нові рекорди"
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #: components/WbActions/WbUpload.tsx:169
 #: components/WbActions/index.tsx:265
 #: components/WorkBench/Results.tsx:30
+#, fuzzy
 msgid "recordsUpdated"
-msgstr ""
+msgstr "Оновлені записи"
 
 #. Used in: Components > Wb Actions > Wb Upload ⬤ Components > Wb Actions > Index ⬤ Components > Work Bench > Results
 #: components/WbActions/WbUpload.tsx:171
