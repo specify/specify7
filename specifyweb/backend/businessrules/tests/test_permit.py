@@ -51,6 +51,7 @@ class PermitTests(ApiTests):
             text1='Filed under drawer 3',
             number1=42.5,
         )
+        
 
         # Save + verify all fields persisted
         self.assertIsNotNone(permit.id)
