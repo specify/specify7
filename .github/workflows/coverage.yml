@@ -63,7 +63,7 @@ jobs:
         id: apt
         run: |
           sudo apt update
-          sudo apt install docker-compose-v2
+          sudo apt install docker-compose-v2 openssh-client
 
       - uses: actions/checkout@v4
 
