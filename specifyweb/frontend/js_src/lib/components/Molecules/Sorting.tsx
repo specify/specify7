@@ -89,7 +89,9 @@ export function useSortConfig<NAME extends keyof SortConfigs>(
 }
 
 export const toSmallSortConfig = (sortConfig: SubViewSortField): string =>
-  `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.fieldNames.join()}`;
+  `${sortConfig.direction === 'desc' ? '-' : ''}${sortConfig.fieldNames.join(
+    backboneFieldSeparator
+  )}`;
 
 export const toLargeSortConfig = (sortConfig: string): SubViewSortField => ({
   fieldNames: (sortConfig.startsWith('-')
