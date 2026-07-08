@@ -863,5 +863,23 @@ export const commonText = createDictionary({
     'pt-br': 'Estatísticas da coleção',
     'ru-ru': 'Статистика коллекции',
     'uk-ua': 'Статистика колекції',
+  },
+  noCollectionStats:{
+    'en-us': 'No collection statistics are available',
+    'fr-fr': 'Pas de statistiques de la collection',
+    'de-ch': 'Keine Sammlungsstatistiken verfügbar',
+    'es-es': 'No hay estadísticas de la colección disponibles',
+    'pt-br': 'Não há estatísticas da coleção disponíveis',
+    'ru-ru': 'Нет статистики коллекции',
+    'uk-ua': 'Немає статистики колекції',
+  },
+  failedCollectionStats:{
+    'en-us': 'Unable to load collection statistics. Please try again.',
+    'fr-fr': 'Impossible de charger les statistiques de la collection. Veuillez réessayer.',
+    'de-ch': 'Konnte die Sammlungsstatistiken nicht laden. Bitte versuchen Sie es erneut.',
+    'es-es': 'No se pudieron cargar las estadísticas de la colección',
+    'pt-br': 'Não foi possível carregar as estatísticas da coleção. Por favor, tente novamente.',
+    'ru-ru': 'Не удалось загрузить статистику коллекции. Пожалуйста, попробуйте снова.',
+    'uk-ua': 'Не вдалося завантажити статистику колекції. Будь ласка, спробуйте ще раз.',
   }
 } as const);

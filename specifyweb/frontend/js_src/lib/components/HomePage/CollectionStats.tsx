@@ -12,20 +12,21 @@ type CollectionStatsRow = {
 
 export function CollectionStats(): JSX.Element {
   const [showCollStatsDialog, setShowCollStatsDialog] = React.useState(false);
-  const [tableData, setTableData] = React.useState<
-    ReadonlyArray<CollectionStatsRow>
-  >([]);
+//   const [tableData, setTableData] = React.useState<
+//     string|ReadonlyArray<CollectionStatsRow>
+//   >('Data not added');
+  const [tableData, setTableData] = React.useState<any>('Data not added');
   const [isLoadingStats, setIsLoadingStats] = React.useState(false);
+  const errorMsg: string = commonText.failedCollectionStats();
 
   return (
     <div className="flex justify-end gap-2 pr-4 pt-4">
       <Button.Secondary
         onClick={(): void => {
           setIsLoadingStats(true);
-          setTableData([]);
+        //   setTableData([]);
           setShowCollStatsDialog(true);
-          setTimeout(()=>{console.log("deleteMe done")
-            void ajax<ReadonlyArray<CollectionStatsRow>>(
+          void ajax<ReadonlyArray<CollectionStatsRow>>(
             '/stats/collection/statistics/',
             {
               headers: {
@@ -34,33 +35,15 @@ export function CollectionStats(): JSX.Element {
             }
           )
             .then(({ data }) => {
-              setTableData(Array.isArray(data) ? data : []);
+              setTableData(Array.isArray(data) ? data : errorMsg);
             })
             .catch(() => {
-              setTableData([]);
+            //   setTableData([]);
+            setTableData(errorMsg);
             })
             .finally(() => {
               setIsLoadingStats(false);
             });
-          }, 10000);
-
-        //   void ajax<ReadonlyArray<CollectionStatsRow>>(
-        //     '/stats/collection/statistics/',
-        //     {
-        //       headers: {
-        //         Accept: 'application/json',
-        //       },
-        //     }
-        //   )
-        //     .then(({ data }) => {
-        //       setTableData(Array.isArray(data) ? data : []);
-        //     })
-        //     .catch(() => {
-        //       setTableData([]);
-        //     })
-        //     .finally(() => {
-        //       setIsLoadingStats(false);
-        //     });
         }}
       >
         {commonText.collStats()}
@@ -74,11 +57,14 @@ export function CollectionStats(): JSX.Element {
         >
           {isLoadingStats ? (
             <p>{commonText.loading()}</p>
-          ) : tableData.length > 0 ? (
+          ) : (!Array.isArray(tableData) ? (
+            <p>{commonText.failedCollectionStats()}</p>
+          ) :
+          (tableData.length > 0 ? (
             <CollectionStatsTable rows={tableData} />
           ) : (
-            <p>{commonText.noResults()}</p>
-          )}
+            <p>{commonText.noCollectionStats()}</p>
+          )))}
         </Dialog>
       )}
     </div>
