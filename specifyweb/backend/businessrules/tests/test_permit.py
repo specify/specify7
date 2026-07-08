@@ -66,4 +66,13 @@ class PermitTests(ApiTests):
         self.assertEqual(fetched.yesno1, True)
         
 
+    def test_create_permit_with_agents(self):
+        # Create new Issued By agent
+        new_issuedby = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Issued",
+            lastname="ByAgent",
+            division=self.division,
+        )
+        
     
