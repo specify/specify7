@@ -7,6 +7,7 @@ import { ajax } from '../../utils/ajax';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 
 type CollectionStatistic = {
   readonly name: string;
@@ -41,6 +42,11 @@ export function CollectionStatistics({
     false
   );
 
+  const [sortConfig, handleSort, applySortConfig] = useSortConfig(
+    'collectionStatistics',
+    'name'
+  );
+
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
@@ -61,21 +67,43 @@ export function CollectionStatistics({
         <table className="grid-table grid-cols-[auto,auto,auto] gap-2">
           <thead>
             <tr>
-              <th scope="col">{welcomeText.collectionName()}</th>
-              <th scope="col">{welcomeText.numberOfSpecimens()}</th>
-              <th scope="col">{welcomeText.collectionTypeHeader()}</th>
+              <th scope="col">
+                <Button.LikeLink onClick={() => handleSort('name')}>
+                  {welcomeText.collectionName()}
+                </Button.LikeLink>
+                <SortIndicator fieldName="name" sortConfig={sortConfig} />
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={() => handleSort('specimenCount')}>
+                  {welcomeText.numberOfSpecimens()}
+                </Button.LikeLink>
+                <SortIndicator
+                  fieldName="specimenCount"
+                  sortConfig={sortConfig}
+                />
+              </th>
+              <th scope="col">
+                <Button.LikeLink onClick={() => handleSort('collectionType')}>
+                  {welcomeText.collectionTypeHeader()}
+                </Button.LikeLink>
+                <SortIndicator
+                  fieldName="collectionType"
+                  sortConfig={sortConfig}
+                />
+              </th>
             </tr>
           </thead>
           <tbody>
-            {result.statistics.map(
-              ({ name, specimenCount, collectionType }, index) => (
-                <tr key={index}>
-                  <td>{name}</td>
-                  <td>{specimenCount}</td>
-                  <td>{collectionType}</td>
-                </tr>
-              )
-            )}
+            {applySortConfig(
+              result.statistics,
+              (item) => item[sortConfig.sortField]
+            ).map(({ name, specimenCount, collectionType }, index) => (
+              <tr key={index}>
+                <td>{name}</td>
+                <td>{specimenCount}</td>
+                <td>{collectionType}</td>
+              </tr>
+            ))}
           </tbody>
         </table>
       )}

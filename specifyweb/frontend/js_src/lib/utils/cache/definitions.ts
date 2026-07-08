@@ -178,6 +178,7 @@ export type SortConfigs = {
   readonly listOfDataSets: 'dateCreated' | 'dateUploaded' | 'name';
   readonly listOfReports: 'name' | 'timestampCreated';
   readonly listOfLabels: 'name' | 'timestampCreated';
+  readonly collectionStatistics: 'name' | 'specimenCount' | 'collectionType';
   readonly schemaViewerFields:
     | 'databaseColumn'
     | 'description'
