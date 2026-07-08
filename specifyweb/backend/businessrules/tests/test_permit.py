@@ -130,3 +130,17 @@ class PermitTests(ApiTests):
         self.assertEqual(permit.permitattachments.count(), 0)
         self.assertEqual(models.Attachment.objects.filter(id=attachment.id).count(), 0)
 
+
+    def test_delete_permit_without_blockers(self):
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-DEL-001',
+        )
+        permit_id = permit.id
+
+        permit.delete()
+
+        self.assertEqual(
+            models.Permit.objects.filter(id=permit_id).count(),
+            0,
+        )
