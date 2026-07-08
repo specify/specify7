@@ -63,7 +63,7 @@ def detect_python():
                 return f"{match.group(1)}.{match.group(2)}"
         except OSError:
             # Ignore unreadable runtime.txt and continue with other detection strategies.
-            continue
+            pass
 
     # Try GitHub Actions workflows
     workflows_dir = Path(".github/workflows")
@@ -79,7 +79,7 @@ def detect_python():
                 except OSError:
                     continue
         except OSError:
-            continue
+            pass
 
     return None
 
