@@ -49,7 +49,7 @@ jobs:
           echo "Changed back-end files: ${changed_files}"
           echo "changed=$([[ -z "${changed_files}" ]] && echo "" || echo "1")" >> $GITHUB_OUTPUT
 
-  setup:
+  setup-and-run:
     needs: changes
     if: |
       (needs.changes.outputs.backend_changed  ||
@@ -87,16 +87,10 @@ jobs:
           sudo chmod -R a+rw .
           docker compose up --build -d
 
-
-  run:
-    needs: setup
-    runs-on: ubuntu-latest
-
-    steps:
       - name: Run the script
         id: run-coverage
         run: |
-          /usr/bin/run-coverage -t pj -a pj -d pj -o csv,html
+          PATH="/usr/bin:$PATH" run-coverage -t pj -a pj -d pj -o csv,html
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
