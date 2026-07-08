@@ -544,6 +544,9 @@ export const treeText = createDictionary({
     comment: 'Abbreviation for millions of years (Mega annum)',
     'en-us': 'Ma',
   },
+  biostratFilter: {
+    'en-us': 'Filter by biostratigraphy',
+  },
   biostratAll: {
     'en-us': 'All Nodes',
   },
