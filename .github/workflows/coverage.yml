@@ -71,7 +71,7 @@ jobs:
         id: clone-coverage
         run: |
           eval "$(ssh-agent -s)"
-          ssh-add <<< '${{ secrets.COVERAGE_SCRIPT_CLONE }}'
+          ssh-add - <<< '${{ secrets.COVERAGE_SCRIPT_CLONE }}'
           echo "ssh key registered"
           cd ~
           echo "cd-ed home"
