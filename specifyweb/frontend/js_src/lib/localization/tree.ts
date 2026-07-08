@@ -535,6 +535,27 @@ export const treeText = createDictionary({
     'hr-hr': 'Neizravno {collectionObjectTable:string} brojanje',
     nb: 'Indirekte {collectionObjectTable:string}-telling',
   },
+  geologicTimePeriodLine: {
+    comment:
+      'Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma)',
+    'en-us': '{label:string}: {value:string} {suffix:string}',
+  },
+  megaAnnum: {
+    comment: 'Abbreviation for millions of years (Mega annum)',
+    'en-us': 'Ma',
+  },
+  biostratFilter: {
+    'en-us': 'Filter by biostratigraphy',
+  },
+  biostratAll: {
+    'en-us': 'All Nodes',
+  },
+  biostratChrono: {
+    'en-us': 'Chronostratigraphy',
+  },
+  biostratBio: {
+    'en-us': 'Biostratigraphy',
+  },
   editRanks: {
     'en-us': 'Edit Ranks',
     'ru-ru': 'Редактировать ранги',

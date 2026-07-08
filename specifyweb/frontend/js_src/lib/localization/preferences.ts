@@ -877,6 +877,9 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Prikaži autora u stablu',
     nb: 'Vis forfatter i treet',
   },
+  displayChronoPeriods: {
+    'en-us': 'Show start and end periods',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',

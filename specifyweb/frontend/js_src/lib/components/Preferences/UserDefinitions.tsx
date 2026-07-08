@@ -1677,6 +1677,13 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          displayChronoPeriods: definePref<boolean>({
+            title: preferencesText.displayChronoPeriods(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
             description: preferencesText.rankThresholdDescription(),
