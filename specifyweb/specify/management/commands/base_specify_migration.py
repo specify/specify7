@@ -25,28 +25,20 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         use_override = bool(options.get('use_override', False))
         alias = options["database"]
-        conn = connections[alias]
         logger.info(f"Running base_specify_migration using database alias '{alias}'")
 
+        # Validate the alias exists and is usable; fallback to 'master' if not
+        original_alias = alias
         try:
-            transaction.atomic(using=alias)
-        except:
+            connections[alias].ensure_connection()
+        except Exception as e:
             alias = 'master'
+            logger.warning(f"Database alias '{original_alias}' unavailable ({e}), falling back to 'master'")
 
+        conn = connections[alias]
         with transaction.atomic(using=alias):
             with conn.cursor() as cursor:
-                # Check django table
-                try:
-                    cursor.execute("""
-                        SELECT 1
-                        FROM django_migrations
-                        LIMIT 1;
-                    """)
-                    exists = True
-                except:
-                    exists = False
-                
-                if not exists:
+                if "django_migrations" not in conn.introspection.table_names(cursor):
                     # Check if the django_migrations table exists and create it if it doesn't
                     cursor.execute("""
                         CREATE TABLE IF NOT EXISTS `django_migrations` (
