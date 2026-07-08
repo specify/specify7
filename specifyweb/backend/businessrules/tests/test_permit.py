@@ -106,28 +106,30 @@ class PermitTests(ApiTests):
 
         # Create an attachment
         attachment = models.Attachment.objects.create(
-        origfilename='permit_doc.pdf',
-        tableid=permit.specify_model.tableId,
-        title='Field Permit',
+            origfilename='permit_doc.pdf',
+            tableid=permit.specify_model.tableId,
+            title='Field Permit',
         )
-        
         permit_attachment = models.Permitattachment.objects.create(
-        permit=permit,
-        attachment=attachment,
-        ordinal=0,
+            permit=permit,
+            attachment=attachment,
+            ordinal=0,
         )
 
         # Verify attachment is linked
         self.assertEqual(permit.permitattachments.count(), 1)
         self.assertEqual(
-        permit.permitattachments.first().attachment.origfilename,
-        'permit_doc.pdf'
+            permit.permitattachments.first().attachment.origfilename,
+            'permit_doc.pdf'
         )
 
         # Delete the attachment
         attachment_id = attachment.id
         permit_attachment.delete()
-        attachment.delete()
+        # Re-fetch from DB instead of using stale in-memory object
+        attachment_to_delete = models.Attachment.objects.get(id=attachment_id)
+        attachment_to_delete.delete()
+
 
         # Verifying it's gone
         self.assertEqual(permit.permitattachments.count(), 0)
