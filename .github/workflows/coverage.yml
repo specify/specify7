@@ -81,7 +81,7 @@ jobs:
         id: config-specify
         run: |
           sed -i 's/\(.*\)\(NAME=\).*/\1\2root/; s/\(.*\)\(PASSWORD=\).*/\1\2password/; s/\(.*\) = \(.*\)/\1=\2/' .env
-          sed -i 's/#[ ]*\(.*requirements-testing.txt\)/\1/; s/\(COPY\) \(requirements-testing.txt\)/\1 --chown=specify:specify \2' Dockerfile 
+          sed -i 's/#[ ]*\(.*requirements-testing.txt\)/\1/; s/\(COPY\) \(requirements-testing.txt\)/\1 --chown=specify:specify \2/' Dockerfile 
           sed -i 's/\(\(DATABASE_\|MASTER_\|MIGRATOR\|APP_USER_\)[^O].*\) = \(.*\)/\1 = os.environ.get("\1", "")/' specifyweb/settings/specify_settings.py
           sudo chmod a+x $(find . -type d)
           sudo chmod -R a+rw .
