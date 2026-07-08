@@ -93,6 +93,7 @@ jobs:
 
   run:
     needs: setup
+    runs-on: ubuntu-latest
 
     steps:
       - name: Run the script
