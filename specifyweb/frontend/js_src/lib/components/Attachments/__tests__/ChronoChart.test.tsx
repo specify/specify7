@@ -11,7 +11,7 @@ describe('ChronoChart', () => {
   });
 
   test('dialog open and close', async () => {
-    const { getAllByRole, user } = mount(
+    const { getAllByRole, getByRole, queryAllByRole, user } = mount(
       <UnloadProtectsContext.Provider value={[]}>
         <ChronoChart />
       </UnloadProtectsContext.Provider>
@@ -21,14 +21,16 @@ describe('ChronoChart', () => {
 
     await user.click(button);
 
-    const dialog = getAllByRole('dialog')[0];
-
-    expect(dialog).toMatchSnapshot();
+    expect(
+      getByRole('heading', { name: 'Chronostratigraphic Chart' })
+    ).toBeInTheDocument();
+    expect(getByRole('img', { name: 'Chrono Chart' })).toBeInTheDocument();
+    expect(getAllByRole('dialog')).toHaveLength(1);
 
     const closeButton = getAllByRole('button')[4];
 
     await user.click(closeButton);
 
-    expect(() => getAllByRole('dialog')).toThrow();
+    expect(queryAllByRole('dialog')).toHaveLength(0);
   });
 });

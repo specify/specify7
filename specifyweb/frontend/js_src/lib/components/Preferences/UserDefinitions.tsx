@@ -1189,7 +1189,7 @@ export const userPreferenceDefinitions = {
             title: preferencesText.treeSearchAlgorithm(),
             requiresReload: false,
             visible: true,
-            defaultValue: 'contains',
+            defaultValue: 'startsWith',
             values: [
               {
                 value: 'startsWith',
