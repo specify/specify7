@@ -103,3 +103,16 @@ class PermitTests(ApiTests):
             institution=self.institution,
             permitnumber='P-ATT-001',
         )
+
+        # Create an attachment
+        attachment = models.Attachment.objects.create(
+        origfilename='permit_doc.pdf',
+        tableid=permit.specify_model.tableId,
+        title='Field Permit',
+        )
+        
+        permit_attachment = models.Permitattachment.objects.create(
+        permit=permit,
+        attachment=attachment,
+        ordinal=0,
+        )
