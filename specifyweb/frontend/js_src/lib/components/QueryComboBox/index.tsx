@@ -341,6 +341,7 @@ export function QueryComboBox({
                     relatedTable,
                     subViewRelationship,
                     treeDefinition,
+                    typeSearchName: typeSearch.name,
                   }),
                 })
               )
@@ -547,6 +548,10 @@ export function QueryComboBox({
                                 relatedTable,
                                 subViewRelationship,
                                 treeDefinition,
+                                typeSearchName:
+                                  typeof typeSearch === 'object'
+                                    ? typeSearch.name
+                                    : undefined,
                               })
                                 .map(serializeResource)
                                 .map(({ fieldName, startValue }) =>
@@ -587,13 +592,21 @@ export function QueryComboBox({
                                               isNot: false,
                                               value: startValue,
                                             }
-                                          : f.error(
-                                              `extended filter not created`,
-                                              {
-                                                fieldName,
-                                                startValue,
+                                          : fieldName === 'isBioStrat'
+                                            ? {
+                                                field: 'isBioStrat',
+                                                isRelationship: false,
+                                                operation: 'in',
+                                                isNot: false,
+                                                value: '1',
                                               }
-                                            )
+                                            : f.error(
+                                                `extended filter not created`,
+                                                {
+                                                  fieldName,
+                                                  startValue,
+                                                }
+                                              )
                                 )
                             ),
                           })

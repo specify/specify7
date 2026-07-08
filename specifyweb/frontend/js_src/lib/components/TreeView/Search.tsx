@@ -27,6 +27,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
   treeDefinitionId,
   treeDefinitionItems,
   forwardRef,
+  biostratFilter = 'all',
   onFocusPath: handleFocusPath,
 }: {
   readonly tableName: SCHEMA['tableName'];
@@ -35,6 +36,7 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
     SerializedResource<FilterTablesByEndsWith<'TreeDefItem'>>
   >;
   readonly forwardRef: React.RefObject<HTMLInputElement | null>;
+  readonly biostratFilter?: 'all' | 'bio' | 'chrono';
   readonly onFocusPath: (focusPath: RA<number>) => void;
 }): JSX.Element {
   const [searchValue, setSearchValue] = React.useState<string>('');
@@ -86,19 +88,35 @@ export function TreeViewSearch<SCHEMA extends AnyTree>({
               [resolvedSearchField]: searchCaseSensitive
                 ? value
                 : value.toLowerCase(),
+              ...(biostratFilter === 'bio' && tableName === 'GeologicTimePeriod'
+                ? { isBioStrat: 'True' }
+                : {}),
             }
           ).then(({ records }) =>
-            records.map((node) => {
-              const rankDefinition = treeDefinitionItems.find(
-                ({ rankId }) => rankId === node.rankId
-              );
-              const rankName = rankDefinition?.title || rankDefinition?.name;
-              return {
-                label: node.fullName ?? node.name,
-                subLabel: rankName,
-                data: node as SerializedResource<SCHEMA>,
-              };
-            })
+            records
+              .filter((node) => {
+                if (
+                  tableName !== 'GeologicTimePeriod' ||
+                  biostratFilter === 'all'
+                )
+                  return true;
+                // isBioStrat is a nullable boolean field
+                const isBioStrat = (node as any).isBioStrat;
+                if (biostratFilter === 'bio') return isBioStrat === true;
+                // show nodes where isBioStrat is false or null
+                return isBioStrat !== true;
+              })
+              .map((node) => {
+                const rankDefinition = treeDefinitionItems.find(
+                  ({ rankId }) => rankId === node.rankId
+                );
+                const rankName = rankDefinition?.title || rankDefinition?.name;
+                return {
+                  label: node.fullName ?? node.name,
+                  subLabel: rankName,
+                  data: node as SerializedResource<SCHEMA>,
+                };
+              })
           )
         }
         value={searchValue}
