@@ -67,10 +67,6 @@ jobs:
 
       - uses: actions/checkout@v4
 
-      - name: Start the containers
-        id: startup
-        run: docker compose up --build -d
-
       - name: Fetch coverage script
         id: clone-coverage
         run: |
