@@ -24,6 +24,11 @@ export function CollectionStatistics({
 }: {
   readonly onClose: () => void;
 }): JSX.Element {
+  // Bumping this state gives useAsyncState's callback a new identity,
+  // which re-triggers the fetch (and the loading state) — this is what
+  // the refresh button below does.
+  const [refreshCount, setRefreshCount] = React.useState(0);
+
   const [result] = useAsyncState<FetchResult>(
     React.useCallback(
       async () =>
@@ -37,7 +42,7 @@ export function CollectionStatistics({
           // "non-2xx response, network error, or malformed response" wording
           // — we don't distinguish between these cases in the UI.
           .catch(() => ({ type: 'error' }) as const),
-      []
+      [refreshCount]
     ),
     false
   );
@@ -49,7 +54,14 @@ export function CollectionStatistics({
 
   return (
     <Dialog
-      buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
+      buttons={
+        <>
+          <Button.Secondary onClick={() => setRefreshCount((prev) => prev + 1)}>
+            {welcomeText.refresh()}
+          </Button.Secondary>
+          <Button.DialogClose>{commonText.close()}</Button.DialogClose>
+        </>
+      }
       className={{
         container: dialogClassNames.normalContainer,
         content: dialogClassNames.flexContent,
