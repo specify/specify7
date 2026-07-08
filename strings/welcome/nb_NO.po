@@ -56,23 +56,11 @@ msgstr ""
 #. Used in: Components > Home Page > About Specify
 msgid "disclosure"
 msgstr ""
-"Specify-programvaren er et produkt fra Specify Collections Consortium, som "
-"styres og finansieres av medlemsinstitusjonene. Blant konsortiets "
-"grunnleggere er: Commonwealth Scientific and Industrial Research "
-"Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, "
-"Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, "
-"University of Florida, University of Kansas og University of Michigan. "
-"Konsortiet opererer under den ideelle skatteformen 501(c)(3) i USA, gjennom "
-"University of Kansas Center for Research. Specify ble støttet fra 1996 til "
-"2018 av tilskudd fra U.S. National Science Foundation."
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
 msgid "licence"
 msgstr ""
-"Specify 7, Copyright 2025, University of Kansas Center for Research. "
-"Specify leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen "
-"kildekode-programvare, lisensiert under GNU General Public License v2."
 
 #: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify

@@ -65,24 +65,12 @@ msgstr ""
 #, fuzzy
 msgid "disclosure"
 msgstr ""
-"Specify softver je proizvod konzorcija Specify Collections kojim upravljaju "
-"i financiraju ga njegove institucije članice. Osnivači konzorcija "
-"uključuju: Commonwealth Scientific and Industrial Research Organisation "
-"(CSIRO), Consejo Superior de Investigaciones Científicas, Danski konzorcij "
-"muzeja, Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, "
-"Sveučilište Kansas i Sveučilište Michigan. Konzorcij djeluje pod "
-"neprofitnim, poreznim statusom 501(c)3 Sveučilišnog centra za istraživanje "
-"u Kansasu. Specify je od 1996. do 2018. godine financiran bespovratnim "
-"sredstvima američke Nacionalne zaklade za znanost."
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Specify 7, autorsko pravo 2025., Sveučilišni centar za istraživanje u "
-"Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver "
-"otvorenog koda licenciran pod GNU General Public License v2."
 
 #: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify

@@ -63,25 +63,12 @@ msgstr ""
 #, fuzzy
 msgid "disclosure"
 msgstr ""
-"O software Specify é um produto do Specify Collections Consortium, que é "
-"governado e financiado por suas instituições membros. Os membros fundadores "
-"do Consórcio incluem: Commonwealth Scientific and Industrial Research "
-"Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, "
-"Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, "
-"University of Florida, University of Kansas e University of Michigan. O "
-"Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, "
-"do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi "
-"financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos "
-"EUA (NSF)."
 
 #: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
 #, fuzzy
 msgid "licence"
 msgstr ""
-"Specify 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. "
-"Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de "
-"código aberto licenciado sob a Licença Pública Geral GNU v2."
 
 #: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify
