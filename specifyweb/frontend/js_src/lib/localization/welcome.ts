@@ -217,4 +217,7 @@ export const welcomeText = createDictionary({
   collectionTypeHeader: {
     'en-us': 'Collection Type',
   },
+  collectionStatisticsCount: {
+  'en-us': 'Collection Statistics ({count:number})',
+  },
 } as const);

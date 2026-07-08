@@ -54,7 +54,13 @@ export function CollectionStatistics({
         container: dialogClassNames.normalContainer,
         content: dialogClassNames.flexContent,
       }}
-      header={welcomeText.collectionStatistics()}
+      header={
+        result?.type === 'data'
+          ? welcomeText.collectionStatisticsCount({
+              count: result.statistics.length,
+            })
+          : welcomeText.collectionStatistics()
+      }
       onClose={handleClose}
     >
       {result === undefined ? (
