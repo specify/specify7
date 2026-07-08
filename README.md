@@ -14,7 +14,7 @@ Specify prioritizes security with support for Single Sign-On (SSO), integrating 
 
 Specify is developed with accessibility at its core, meeting and exceeding international standards. It largely complies with the WCAG 2.1 (AA) guidelines, ensuring compatibility with screen readers. Users can customize their visual experience by adjusting color schemes, reducing motion, and resizing elements. Our design respects user preferences for date formats, language, themes, and animations, creating a more personalized experience for everyone.
 
-Specify 7's web-based architecture supports collaborative digitization projects across institutions and enables remote hosting of specimen databases, eliminating the need for campus VPNs or local network access to connect to your data. Whether you choose to self-host on your own infrastructure or use our [Specify Cloud](https://www.specifysoftware.org/products/cloud/) service, **your institution retains full ownership and control of your data at all times.** Specify imposes no vendor lock-in — your database runs on standard MariaDB (MySQL-compatible), can be backed up or migrated at any time, and remains entirely yours. If your institution has strict data sovereignty or on-premises hosting requirements, the [self-hosted Docker deployment](#self-hosted-docker) puts you in complete control of your infrastructure, security policies, and data access.
+Whether you choose to self-host on your own infrastructure or use our [Specify Cloud](https://www.specifysoftware.org/products/cloud/) service, your institution retains full ownership and control of your data at all times. Specify imposes no vendor lock-in as your database runs on standard MariaDB, can be backed up or migrated at any time, and remains entirely yours. If your institution has strict data sovereignty or on-premises hosting requirements, the [self-hosted Docker/Podman deployment](#self-hosted-docker--podman) puts you in complete control of your infrastructure, security policies, and data access.
 
 To get started, [send us a message to learn more](mailto:membership@specifysoftware.org)! We are happy to meet with you and your team to discuss how we can address your collections data management needs with Specify.
 
@@ -27,7 +27,7 @@ To get started, [send us a message to learn more](mailto:membership@specifysoftw
 
 - [Installation](#installation)
   - [Specify Cloud (Recommended)](#specify-cloud-recommended)
-  - [Self-hosted (Docker)](#self-hosted-docker)
+  - [Self-hosted (Docker / Podman)](#self-hosted-docker--podman)
   - [Development Setup](#development-setup)
 - [Tech Stack](#tech-stack)
 - [Specify Components](#specify-components)
@@ -54,17 +54,17 @@ for evaluation purposes.
 
 Our hosting platform, Specify Cloud, enables biological collections to easily share their current Specify database with us. If a collection is new to Specify, we are happy to create a new database [upon request](mailto:membership@specifysoftware.org)! We handle all updates, maintenance, backups, resource management, billing, and asset management. Our cloud platform has regions located worldwide, enabling Specify to be hosted near your collection and staff. We will collaborate with your team to ensure compliance with all institutional and legal regulations regarding data storage and accessibility. Your local IT teams can request access to our cloud servers to prepare backups, access assets, and connect to your database directly whenever necessary. This platform also enables our support team to respond to inquiries quickly and resolve any issues.
 
-## Self-hosted (Docker)
+## Self-hosted (Docker / Podman)
 
-For institutions that require their collections data to remain on-site or in a region not served by Specify Cloud, Specify 7 is designed to be deployed using [Docker](https://www.docker.com/). The project provides a [Dockerfile](./Dockerfile) based on Ubuntu and [docker-compositions](https://github.com/specify/docker-compositions) that bundle Specify 7 with its supporting services (MariaDB, Redis, Asset Server, Report Runner). This is the only supported production self-hosted deployment method.
+For institutions that require their collections data to remain on-site or in a region not served by Specify Cloud, Specify 7 is designed to be deployed using [Docker](https://www.docker.com/) or [Podman](https://podman.io/). The project provides a [Dockerfile](./Dockerfile) based on Ubuntu and [docker-compositions](https://github.com/specify/docker-compositions) that bundle Specify 7 with its supporting services (MariaDB, Redis, Asset Server, Report Runner). This is the only supported production self-hosted deployment method.
 
-We encourage SCC members to use our [Dockerized compositions](https://github.com/specify/docker-compositions) of Specify 7. You can choose your desired version, make the necessary adjustments and then run a single command to get everything working. It is very simple and can be easily updated when new versions are released. Documentation for deploying Specify using Docker is available within the repository.
+We encourage SCC members to use our [Dockerized compositions](https://github.com/specify/docker-compositions) of Specify 7. You can choose your desired version, make the necessary adjustments and then run a single command to get everything working. It is very simple and can be easily updated when new versions are released. Documentation for deploying Specify using Docker/Podman is available within the repository.
 
 [**📨 Click here to request access**](mailto:support@specifysoftware.org?subject=Requesting%20Docker%20Repository%20Access&body=My%20GitHub%20username%20is%3A%20%0D%0AMy%20Specify%20Member%20Institution%20is%3A%20%0D%0AAdditional%20Questions%20or%20Notes%3A%20), including your GitHub username, member institution, collection, and any additional questions or notes you have for us.
 
 ## Development Setup
 
-For contributing to Specify 7, the recommended approach is a [Docker-based development workflow](https://discourse.specifysoftware.org/t/guide-to-contributing-code-to-specify/3511). The included [Dockerfile](./Dockerfile) provides a multi-stage build with a dedicated `run-development` stage that includes testing dependencies and tools like mypy. If you are interested in contributing to Specify, please read our [guide to contributing code to Specify](run-development) for instructions!
+For contributing to Specify 7, the recommended approach is a [Docker/Podman-based development workflow](https://discourse.specifysoftware.org/t/guide-to-contributing-code-to-specify/3511). The included [Dockerfile](./Dockerfile) provides a multi-stage build with a dedicated `run-development` stage that includes testing dependencies and tools like mypy. If you are interested in contributing to Specify, please read our [guide to contributing code to Specify](run-development) for instructions!
 
 If you want to contribute to our code from an external institution, please reach out to a [member of our team](mailto:support@specifysoftware.org) for further guidance. We are always looking for new collaboration opportunities.
 
@@ -72,7 +72,7 @@ If you want to contribute to our code from an external institution, please reach
 
 # Tech Stack
 
-- **Host:** Ubuntu on Docker
+- **Host:** Ubuntu on Docker / Podman
 - **Database Management System:** MariaDB
 - **Front-end:** TypeScript, React, JavaScript, Tailwind CSS
 - **Back-end:** Django and Python
@@ -83,7 +83,7 @@ You can learn more about the architecture here: https://discourse.specifysoftwar
 
 # Specify Components
 
-A full Specify 7 deployment consists of several services working together. The Docker compositions bundle all of these into a single, cohesive container stack.
+A full Specify 7 deployment consists of several services working together. The Docker / Podman compositions bundle all of these into a single, cohesive container stack.
 
 ## Specify 7
 
