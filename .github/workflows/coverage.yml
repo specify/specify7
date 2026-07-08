@@ -71,7 +71,7 @@ jobs:
         id: clone-coverage
         run: |
           eval "$(ssh-agent -s)"
-          ssh-add <<< '${{ secrets.PRIVATE_SSH_KEY }}'
+          ssh-add <<< '${{ secrets.COVERAGE_SCRIPT_CLONE }}'
           cd ~
           git clone git@github.com:specify/specify-development
           sudo install -m 0777 -o "$USER" specify-development/scripts/tests/{run-coverage,test_coverage.py} /usr/bin/
