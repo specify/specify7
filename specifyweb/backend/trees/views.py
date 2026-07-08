@@ -246,7 +246,7 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_st
         if biostrat == 'bio':
             descendant_match = child.isBioStrat == True
         else:
-            descendant_match = (child.isBioStrat == False) | (child.isBioStrat == None)
+            descendant_match = (child.isBioStrat == False) | (child.isBioStrat.is_(None))
         matching_descendant_count = (
             select(func.count(distinct(child._id)))
             .where(
