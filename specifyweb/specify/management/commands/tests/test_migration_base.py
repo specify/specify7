@@ -5,10 +5,30 @@ from django.test import TestCase
 
 from specifyweb.specify.management.commands import run_key_migration_functions as rkm
 from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.models import Discipline
 
 
-class MigrationCommandTestCase(TestCase):
+class MigrationCommandTestCase(ApiTests):
     """Base class for migration command tests"""
+
+    def setUp(self):
+        super().setUp()
+        self.fish = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            type="Ichthyology",
+            name="Ichthyology"
+        )
+        self.birds = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            type="Ornithology",
+            name="Ornithology"
+        )
     
     section_names = (
         "apply_patches",
@@ -60,5 +80,4 @@ class MigrationCommandTestCase(TestCase):
 
 class MigrationDatabaseTestCase(ApiTests):
     """Base class for database-backed migration tests"""
-    
     pass

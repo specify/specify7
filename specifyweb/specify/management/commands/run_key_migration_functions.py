@@ -152,7 +152,6 @@ def create_missing_app_resource_dirs(stdout, apps):
     if stdout is not None:
         stdout(
             "Ensured discipline app resource directories: "
-            f"total={results['total_disciplines']}, "
             f"created={results['created']}, "
             f"updated={results['updated']}"
         )

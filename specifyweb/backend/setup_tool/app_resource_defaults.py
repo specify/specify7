@@ -1,4 +1,7 @@
-from typing import Optional
+import logging
+from typing import Optional, Iterable
+
+from django.db.models import Subquery, F, Exists, OuterRef
 
 from specifyweb.specify.models import (
     Discipline,
@@ -7,7 +10,8 @@ from specifyweb.specify.models import (
     Spappresourcedir,
     Specifyuser,
 )
-import logging
+from specifyweb.specify.migration_utils.utils import batch_query
+
 logger = logging.getLogger(__name__)
 
 DEFAULT_REMOTE_PREFS = b'''ui.formatting.scrdateformat=yyyy-MM-dd
@@ -119,26 +123,69 @@ def _ensure_discipline_resource_dir(
 
     return existing_dir, False, was_updated
 
+
+def _update_discipline_dirs_to_correct_type():
+    discipline_name_query = Discipline.objects.filter(
+        pk=OuterRef("discipline_id")
+    ).values("name")[:1]
+
+    return Spappresourcedir.objects.filter(
+        collection__isnull=True,
+        usertype__isnull=True,
+        ispersonal=False,
+        discipline__isnull=False
+    ).exclude(
+        disciplinetype=Subquery(discipline_name_query)
+    ).update(
+        disciplinetype=Subquery(discipline_name_query)
+    )
+
+def _create_missing_discipline_dirs():
+    created = 0
+    disciplines_missing_resourcedirs = Discipline.objects.filter(
+        ~Exists(
+            Spappresourcedir.objects.filter(
+                collection__isnull=True,
+                usertype__isnull=True,
+                ispersonal=False,
+                discipline_id=OuterRef("pk")
+            )
+        )
+    ).values_list("pk", "name")
+
+    # will be tuple[tuple[int, str]...]
+    for aggregated_disciplines in batch_query(disciplines_missing_resourcedirs):
+        created_rows = Spappresourcedir.objects.bulk_create(
+            [
+                Spappresourcedir(
+                    discipline_id=discipline_id,
+                    # This is intentional and not a typo.
+                    # DisciplineType is actually the Discipline Name for
+                    # SpAppResourceDir records...
+                    # This is another weird behavior from Specify 6 :/
+                    # See #7984
+                    disciplinetype=discipline_name,
+                    ispersonal=False,
+                    usertype=None,
+                    collection=None
+                )
+                for (discipline_id, discipline_name) in aggregated_disciplines
+            ]
+        )
+        created += len(created_rows)
+    return created
+
 def ensure_all_discipline_resource_dirs() -> dict[str, int]:
     """
     Ensure every discipline has a discipline-scoped app resource directory.
 
     Returns summary counts for auditability.
+    This is somewhat optimized for an arbitary amount of disciplines
     """
-    total = 0
-    created = 0
-    updated = 0
-
-    for discipline in Discipline.objects.only('id', 'name'):
-        total += 1
-        _, was_created, was_updated = _ensure_discipline_resource_dir(discipline)
-        if was_created:
-            created += 1
-        if was_updated:
-            updated += 1
+    updated = _update_discipline_dirs_to_correct_type()
+    created = _create_missing_discipline_dirs()
 
     return {
-        'total_disciplines': total,
         'created': created,
         'updated': updated,
     }
