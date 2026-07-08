@@ -129,3 +129,7 @@ class PermitTests(ApiTests):
         permit_attachment.delete()
         attachment.delete()
 
+        # Verifying it's gone
+        self.assertEqual(permit.permitattachments.count(), 0)
+        self.assertEqual(models.Attachment.objects.filter(id=attachment_id).count(), 0)
+
