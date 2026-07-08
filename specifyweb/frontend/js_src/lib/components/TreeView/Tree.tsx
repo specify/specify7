@@ -61,6 +61,7 @@ export function Tree<
   searchBoxRef,
   baseUrl,
   setLastFocusedTree,
+  biostratFilter = 'all',
   onToggleEditingRanks: handleToggleEditingRanks,
 }: {
   readonly treeDefinitionItems: RA<
@@ -80,6 +81,7 @@ export function Tree<
   readonly searchBoxRef: React.RefObject<HTMLInputElement | null>;
   readonly baseUrl: string;
   readonly setLastFocusedTree: () => void;
+  readonly biostratFilter?: 'all' | 'bio' | 'chrono';
   readonly onToggleEditingRanks: () => void;
 }): JSX.Element {
   const highContrast = useHighContrast();
@@ -308,6 +310,7 @@ export function Tree<
             {rows.map((row, index) => (
               <TreeRow
                 actionRow={actionRow}
+                biostratFilter={biostratFilter}
                 collapsedRanks={collapsedRanks ?? []}
                 conformation={
                   conformation
