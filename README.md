@@ -14,6 +14,8 @@ Specify prioritizes security with support for Single Sign-On (SSO), integrating 
 
 Specify is developed with accessibility at its core, meeting and exceeding international standards. It largely complies with the WCAG 2.1 (AA) guidelines, ensuring compatibility with screen readers. Users can customize their visual experience by adjusting color schemes, reducing motion, and resizing elements. Our design respects user preferences for date formats, language, themes, and animations, creating a more personalized experience for everyone.
 
+Specify 7's web-based architecture supports collaborative digitization projects across institutions and enables remote hosting of specimen databases, eliminating the need for campus VPNs or local network access to connect to your data. Whether you choose to self-host on your own infrastructure or use our [Specify Cloud](https://www.specifysoftware.org/products/cloud/) service, **your institution retains full ownership and control of your data at all times.** Specify imposes no vendor lock-in — your database runs on standard MariaDB (MySQL-compatible), can be backed up or migrated at any time, and remains entirely yours. If your institution has strict data sovereignty or on-premises hosting requirements, the [self-hosted Docker deployment](#self-hosted-docker) puts you in complete control of your infrastructure, security policies, and data access.
+
 To get started, [send us a message to learn more](mailto:membership@specifysoftware.org)! We are happy to meet with you and your team to discuss how we can address your collections data management needs with Specify.
 
 > [!IMPORTANT]  
