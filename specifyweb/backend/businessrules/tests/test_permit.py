@@ -88,6 +88,13 @@ class PermitTests(ApiTests):
             issuedby=self.agent,        # Issue By (existing agent)
             issuedto=new_issuedto,      # Issue To (new agent)
         )
+        # Verify save + agent relationships
+        self.assertIsNotNone(permit.id)
+        fetched = models.Permit.objects.get(id=permit.id)
+        self.assertEqual(fetched.issuedby, self.agent)
+        self.assertEqual(fetched.issuedby.firstname, 'Test')
+        self.assertEqual(fetched.issuedto, new_issuedto)
+        self.assertEqual(fetched.issuedto.firstname, 'Issued')
 
     
         
