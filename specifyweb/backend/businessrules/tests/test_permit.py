@@ -81,6 +81,13 @@ class PermitTests(ApiTests):
             lastname="ToAgent",
             division=self.division,
         )
+        # Create permit with existing agent + new agents
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-AGENTS-001',
+            issuedby=self.agent,        # Issue By (existing agent)
+            issuedto=new_issuedto,      # Issue To (new agent)
+        )
 
     
         
