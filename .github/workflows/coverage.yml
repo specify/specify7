@@ -51,9 +51,10 @@ jobs:
 
   setup:
     needs: changes
-    #if: |
-    #  needs.changes.outputs.backend_changed  ||
-    #  needs.changes.outputs.frontend_changed
+    if: |
+      (needs.changes.outputs.backend_changed  ||
+      needs.changes.outputs.frontend_changed) ||
+      github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
 
