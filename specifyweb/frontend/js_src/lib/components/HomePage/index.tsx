@@ -1,15 +1,17 @@
 import React from 'react';
-
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { useHueDifference } from '../../hooks/useHueDifference';
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
 import { welcomeText } from '../../localization/welcome';
+import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { SearchForm } from '../Header/ExpressSearchTask';
 import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
+import { CollectionStatistics } from './CollectionStatistics';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -25,6 +27,9 @@ export function WelcomeView(): JSX.Element {
     'addSearchBar'
   );
 
+  const [isStatisticsOpen, handleOpenStatistics, handleCloseStatistics] =
+  useBooleanState();
+
   return (
     <div className="flex h-full flex-col">
       {displaySearchBar && (
@@ -34,6 +39,14 @@ export function WelcomeView(): JSX.Element {
             {commonText.search()}
           </Submit.Secondary>
         </div>
+      )}
+       <div className="flex justify-end gap-2 pr-4 pt-4">
+        <Button.Secondary onClick={handleOpenStatistics}>
+          {welcomeText.collectionStatistics()}
+        </Button.Secondary>
+      </div>
+      {isStatisticsOpen && (
+        <CollectionStatistics onClose={handleCloseStatistics} />
       )}
       <div
         className={`

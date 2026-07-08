@@ -199,4 +199,22 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbank Erstelldatum:',
     'pt-br': 'Data de criação do banco de dados:',
   },
+  collectionStatistics: {
+  'en-us': 'Collection Statistics',
+  },
+  unableToLoadStatistics: {
+    'en-us': 'Unable to load collection statistics. Please try again.',
+  },
+  noStatisticsAvailable: {
+    'en-us': 'No collection statistics are available.',
+  },
+  collectionName: {
+    'en-us': 'Collection Name',
+  },
+  numberOfSpecimens: {
+    'en-us': 'Number of Specimens',
+  },
+  collectionTypeHeader: {
+    'en-us': 'Collection Type',
+  },
 } as const);

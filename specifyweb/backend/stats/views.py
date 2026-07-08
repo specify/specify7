@@ -50,7 +50,7 @@ def collection_preparations(request) -> HttpResponse:
             'total': int(total)
         }
     return http.JsonResponse(preptypelotstotal_dict)
-
+# Assumption: no check_table_permissions() call here — the data is hardcoded per the issue, so there's no real table to check permissions against (unlike the other views in this file).
 @login_maybe_required
 @openapi(schema={
     'get': {
