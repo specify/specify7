@@ -4,7 +4,7 @@ from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 import datetime
 from specifyweb.specify.api.crud import update_obj, get_resource
-
+from specifyweb.specify.api.exceptions import StaleObjectException
 
 class PermitTests(ApiTests):
     def test_number_is_unique(self):
@@ -168,6 +168,19 @@ class PermitTests(ApiTests):
         fetched = models.Permit.objects.get(id=permit.id)
         self.assertEqual(fetched.remarks, 'Updated remark')
         self.assertEqual(fetched.version, permit.version + 1)
+
+        # Stale object detection
+        data['version'] = 0
+        with self.assertRaises(StaleObjectException):
+            update_obj(
+                self.collection,
+                self.agent,
+                'permit',
+                data['id'],
+                data['version'],
+                data,
+            )
+
 
     
 
