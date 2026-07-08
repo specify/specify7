@@ -93,11 +93,27 @@ export const welcomeText = createDictionary({
   },
   disclosure: {
     'en-us':
-      "Specify is developed by the Specify Collections Consortium (SCC), a collaborative initiative governed by its members and supported by institutional partners. Software support and development are made possible by consortium members, including the UniMus:Natur Consortium of Norway, the Commonwealth Scientific and Industrial Research Organisation (CSIRO), the Consejo Superior de Investigaciones Científicas (CSIC), the Denmark Consortium of Museums, the Muséum d’Histoire Naturelle Geneva, the University of Florida, the University of Kansas, and the University of Michigan, along with numerous other member collections and institutions within the Consortium. The SCC operates under the University of Kansas Center for Research’s non-profit 501(c)(3) U.S. tax status and received support from U.S. National Science Foundation grants from 1996 to 2018.",
+      'Specify is developed by the Specify Collections Consortium (SCC), a collaborative initiative governed by its members and supported by institutional partners. Software support and development are made possible by consortium members, including the UniMus:Natur Consortium of Norway, the Commonwealth Scientific and Industrial Research Organisation (CSIRO), the Consejo Superior de Investigaciones Científicas (CSIC), the Denmark Consortium of Museums, the Muséum d’Histoire Naturelle Geneva, the University of Florida, the University of Kansas, and the University of Michigan, along with numerous other member collections and institutions within the Consortium. The SCC operates under the University of Kansas Center for Research’s non-profit 501(c)(3) U.S. tax status and received support from U.S. National Science Foundation grants from 1996 to 2018.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   licence: {
     'en-us':
       'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v3.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   systemInformation: {
     'en-us': 'System Information',
