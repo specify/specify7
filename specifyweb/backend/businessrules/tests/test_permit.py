@@ -66,6 +66,38 @@ class PermitTests(ApiTests):
         self.assertEqual(fetched.yesno1, True)
         
 
+    def test_create_permit_with_agents(self):
+        # Create new Issued By agent
+        new_issuedby = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Issued",
+            lastname="ByAgent",
+            division=self.division,
+        )
+        # Create new Issued To agent
+        new_issuedto = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Issued",
+            lastname="ToAgent",
+            division=self.division,
+        )
+        # Create permit with existing agent + new agents
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-AGENTS-001',
+            issuedby=self.agent,        # Issue By (existing agent)
+            issuedto=new_issuedto,      # Issue To (new agent)
+        )
+        # Verify save + agent relationships
+        self.assertIsNotNone(permit.id)
+        fetched = models.Permit.objects.get(id=permit.id)
+        self.assertEqual(fetched.issuedby, self.agent)
+        self.assertEqual(fetched.issuedby.firstname, 'Test')
+        self.assertEqual(fetched.issuedto, new_issuedto)
+        self.assertEqual(fetched.issuedto.firstname, 'Issued')
+
+    
+        
     
         
 
