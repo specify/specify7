@@ -411,12 +411,13 @@ jobs:
 
             const body =
               marker + '\n' +
-              '# Dependency EOL Warnings\n\n' +
+              '> [!WARNING]\n' +
+              '> One or more dependencies are approaching or past End-of-Life.\n' +
+              '> Please plan upgrades accordingly.\n' +
+              '\n' +
               '```text\n' +
               warnings.replace(/```/g, '``\\`') +
-              '\n```\n\n' +
-              'One or more dependencies are approaching or past End-of-Life.\n' +
-              'Please plan upgrades accordingly.';
+              '\n```';
 
             const { data: comments } = await github.rest.issues.listComments({
               owner: context.repo.owner,
