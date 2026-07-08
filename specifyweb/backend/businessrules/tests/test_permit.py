@@ -97,10 +97,9 @@ class PermitTests(ApiTests):
         self.assertEqual(fetched.issuedto.firstname, 'Issued')
 
     
-        
-    
-        
-
-    
-        
-    
+    def test_add_and_delete_attachment(self):
+        # Create a permit first
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-ATT-001',
+        )
