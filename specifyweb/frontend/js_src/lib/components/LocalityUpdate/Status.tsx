@@ -18,6 +18,7 @@ import { localized } from '../../utils/types';
 import { H2, Progress } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Label } from '../Atoms/Form';
+import { dialogIcons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { SECOND } from '../Atoms/timeUnits';
 import { LoadingContext } from '../Core/Contexts';
@@ -157,6 +158,7 @@ export function LocalityUpdateStatus({
       children={null}
       dimensionsKey={statusDimensionKey}
       header={title}
+      icon={dialogIcons.error}
       modal={false}
       onClose={handleClose}
     />
@@ -234,6 +236,7 @@ function LocalityUpdateParsed({
         </>
       }
       header={localityUpdateStatusLocalization.PARSED}
+      icon={dialogIcons.question}
       modal={false}
       onClose={handleClose}
     >
@@ -284,6 +287,7 @@ export function LocalityUpdateSuccess({
     <Dialog
       buttons={<Button.DialogClose>{commonText.close()}</Button.DialogClose>}
       header={localityUpdateStatusLocalization.SUCCEEDED}
+      icon={dialogIcons.success}
       modal={false}
       onClose={handleClose}
     >

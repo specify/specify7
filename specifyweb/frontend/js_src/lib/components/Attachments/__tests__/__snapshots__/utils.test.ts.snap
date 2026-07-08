@@ -2,6 +2,7 @@
 
 exports[`allTablesWithAttachments 1`] = `
 [
+  "[table AbsoluteAge]",
   "[table Accession]",
   "[table Agent]",
   "[table Borrow]",
@@ -10,10 +11,10 @@ exports[`allTablesWithAttachments 1`] = `
   "[table CollectionObject]",
   "[table ConservDescription]",
   "[table ConservEvent]",
-  "[table DNASequence]",
-  "[table DNASequencingRun]",
   "[table Deaccession]",
   "[table Disposal]",
+  "[table DNASequence]",
+  "[table DNASequencingRun]",
   "[table ExchangeIn]",
   "[table ExchangeOut]",
   "[table FieldNotebook]",
@@ -25,18 +26,18 @@ exports[`allTablesWithAttachments 1`] = `
   "[table Permit]",
   "[table Preparation]",
   "[table ReferenceWork]",
+  "[table RelativeAge]",
   "[table RepositoryAgreement]",
+  "[table Spdataset]",
   "[table Storage]",
   "[table Taxon]",
   "[table TreatmentEvent]",
-  "[table AbsoluteAge]",
-  "[table RelativeAge]",
-  "[table Spdataset]",
 ]
 `;
 
 exports[`attachmentRelatedTables 1`] = `
 [
+  "AbsoluteAgeAttachment",
   "AccessionAttachment",
   "AgentAttachment",
   "Attachment",
@@ -46,10 +47,10 @@ exports[`attachmentRelatedTables 1`] = `
   "CollectionObjectAttachment",
   "ConservDescriptionAttachment",
   "ConservEventAttachment",
-  "DNASequenceAttachment",
-  "DNASequencingRunAttachment",
   "DeaccessionAttachment",
   "DisposalAttachment",
+  "DNASequenceAttachment",
+  "DNASequencingRunAttachment",
   "ExchangeInAttachment",
   "ExchangeOutAttachment",
   "FieldNotebookAttachment",
@@ -61,12 +62,11 @@ exports[`attachmentRelatedTables 1`] = `
   "PermitAttachment",
   "PreparationAttachment",
   "ReferenceWorkAttachment",
+  "RelativeAgeAttachment",
   "RepositoryAgreementAttachment",
+  "SpDataSetAttachment",
   "StorageAttachment",
   "TaxonAttachment",
   "TreatmentEventAttachment",
-  "AbsoluteAgeAttachment",
-  "RelativeAgeAttachment",
-  "SpDataSetAttachment",
 ]
 `;

@@ -165,13 +165,15 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     implementation/design decisions
     """
     include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
+    include_start_end_periods = request.GET.get('includestartendperiods', False) and tree == 'geologictimeperiod'
+    biostrat = request.GET.get('biostrat', 'all')
     with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
-        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, session)
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session)
     return HttpResponse(toJson(results), content_type='application/json')
 
 
-def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -182,44 +184,90 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
 
     treedef_col = getattr(node, tree_table.name + "TreeDefID")
     orderby     = getattr(node, tree_table.get_field_strict(sortfield).name)
+    child_counts = (
+        select(
+            child.ParentID.label("parent_id"),
+            func.count(child._id).label("child_count"),
+        )
+        .group_by(child.ParentID)
+        .subquery()
+    )
+    synonym_names = (
+        select(
+            synonym.AcceptedID.label("accepted_id"),
+            group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+        )
+        .where(synonym.AcceptedID.is_not(None))
+        .group_by(synonym.AcceptedID)
+        .subquery()
+    )
 
-    # We use min for grouped columns because for some reason, SQL is rejecting
-    # the group_by in some dbs due to "only_full_group_by". It is somehow not
-    # smart enough to see that there is no dependency in the columns going from
-    # main table to the to-manys (child, and syns).
-    # I want to use ANY_VALUE() but that's not supported by MySQL 5.6- and MariaDB.
-    # I don't want to disable "only_full_group_by" in case someone misuses it...
-    # applying min to fool into thinking it is aggregated.
-    # these values are guarenteed to be the same
     cols = [
         node._id.label("id"),
-        func.min(node.name).label("name"),
-        func.min(node.fullName).label("full_name"),
-        func.min(node.nodeNumber).label("node_number"),
-        func.min(node.highestChildNodeNumber).label("highest_child_number"),
-        func.min(node.rankId).label("rank_id"),
-
-        func.min(node.AcceptedID).label("accepted_id"),
-        func.min(accepted.fullName).label("accepted_fullname"),
-
+        node.name.label("name"),
+        node.fullName.label("full_name"),
+        node.nodeNumber.label("node_number"),
+        node.highestChildNodeNumber.label("highest_child_number"),
+        node.rankId.label("rank_id"),
+        node.AcceptedID.label("accepted_id"),
+        accepted.fullName.label("accepted_fullname"),
+        (node.author if include_author else literal("NULL")).label("author"),
         (
-            func.min(node.author)
-            if include_author
-            else func.min(literal("NULL"))
-        ).label("author"),
-
-        func.count(distinct(child._id)).label("child_count"),
-        group_concat(distinct(synonym.fullName), separator=", ").label("synonyms"),
+            node.startPeriod
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("start_period"),
+        (
+            node.startUncertainty
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("start_uncertainty"),
+        (
+            node.endPeriod
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("end_period"),
+        (
+            node.endUncertainty
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("end_uncertainty"),
+        func.coalesce(child_counts.c.child_count, 0).label("child_count"),
+        synonym_names.c.synonyms.label("synonyms"),
+        (
+            node.isBioStrat
+            if tree == 'geologictimeperiod'
+            else literal("NULL")
+        ).label("is_biostrat"),
     ]
+
+    if biostrat != 'all' and tree == 'geologictimeperiod':
+        # Count all matching descendants (any depth) using nested-set ranges
+        if biostrat == 'bio':
+            descendant_match = child.isBioStrat == True
+        else:
+            descendant_match = (child.isBioStrat == False) | (child.isBioStrat.is_(None))
+        matching_descendant_count = (
+            select(func.count(distinct(child._id)))
+            .where(
+                child.nodeNumber > node.nodeNumber,
+                child.nodeNumber <= node.highestChildNodeNumber,
+                descendant_match,
+                getattr(child, tree_table.name + "TreeDefID") == int(treedef),
+            )
+            .correlate(node)
+            .scalar_subquery()
+            .label("matching_descendant_count")
+        )
+        cols.append(matching_descendant_count)
 
     query = (
         select(*cols)
-        .outerjoin(child, child.ParentID  == node._id)
         .outerjoin(accepted, node.AcceptedID == accepted._id)
-        .outerjoin(synonym, synonym.AcceptedID == node._id)
+        .outerjoin(child_counts, child_counts.c.parent_id == node._id)
+        .outerjoin(synonym_names, synonym_names.c.accepted_id == node._id)
         .where(treedef_col == int(treedef))
         .where(node.ParentID == parentid)
-        .group_by(node._id)
         .order_by(orderby)
     )
 

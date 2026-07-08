@@ -8,10 +8,18 @@ import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
+import { getField } from '../DataModel/helpers';
 import type { AnyTree } from '../DataModel/helperTypes';
+import { tables } from '../DataModel/tables';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Conformations, KeyAction, Row, Stats } from './helpers';
 import { formatTreeStats, mapKey, scrollIntoView } from './helpers';
+
+/**
+ * This is needed to trim trailing zeros from time periods
+ */
+const trimDecimal = (value: string): string =>
+  value.includes('.') ? value.replace(/\.?0+$/, '') : value;
 
 export function TreeRow<SCHEMA extends AnyTree>({
   row,
@@ -32,6 +40,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   synonymColor,
   treeName,
   hideEmptyNodes,
+  biostratFilter = 'all',
 }: {
   readonly row: Row;
   readonly getRows: (parentId: number | 'null') => Promise<RA<Row>>;
@@ -56,6 +65,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
   readonly synonymColor: string;
   readonly treeName: SCHEMA['tableName'];
   readonly hideEmptyNodes: boolean;
+  readonly biostratFilter?: 'all' | 'bio' | 'chrono';
 }): JSX.Element | null {
   const [rows, setRows] = React.useState<RA<Row> | undefined>(undefined);
   const [childStats, setChildStats] = React.useState<Stats | undefined>(
@@ -84,19 +94,26 @@ export function TreeRow<SCHEMA extends AnyTree>({
     if (!isLoading) return undefined;
 
     void getRows(row.nodeId).then((fetchedRows: RA<Row>) => {
-      const sortedRows = Array.from(fetchedRows).sort(
-        sortFunction<Row, number | string>(
-          orderByField === 'rankId'
-            ? (row) => row.rankId
-            : orderByField === 'nodeNumber'
-              ? (row) => row.nodeNumber
-              : orderByField === 'name'
-                ? (row) => row.name
-                : orderByField === 'fullName'
-                  ? (row) => row.fullName
-                  : () => 0
-        )
-      );
+      const sortedRows =
+        treeName === 'GeologicTimePeriod'
+          ? /*
+             * GeologicTimePeriod shoud always be sorted by startPeriod.
+             * This skips the client-side sort to preserve that order.
+             */
+            fetchedRows
+          : Array.from(fetchedRows).sort(
+              sortFunction<Row, number | string>(
+                orderByField === 'rankId'
+                  ? (row) => row.rankId
+                  : orderByField === 'nodeNumber'
+                    ? (row) => row.nodeNumber
+                    : orderByField === 'name'
+                      ? (row) => row.name
+                      : orderByField === 'fullName'
+                        ? (row) => row.fullName
+                        : () => 0
+              )
+            );
       destructorCalled ? undefined : setRows(sortedRows);
     });
 
@@ -104,7 +121,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
     return (): void => {
       destructorCalled = true;
     };
-  }, [isLoading, getRows, row, orderByField]);
+  }, [isLoading, getRows, row, orderByField, treeName]);
 
   // Fetch children stats
   const isLoadingStats = displayChildren && childStats === undefined;
@@ -158,6 +175,12 @@ export function TreeRow<SCHEMA extends AnyTree>({
     'displayAuthor'
   );
 
+  const doIncludeChronoPeriodsPref = userPreferences.get(
+    'treeEditor',
+    'geologicTimePeriod',
+    'displayChronoPeriods'
+  );
+
   const handleRef = React.useCallback(
     (element: HTMLButtonElement | null): void => {
       if (element === null) return;
@@ -168,10 +191,32 @@ export function TreeRow<SCHEMA extends AnyTree>({
     []
   );
 
+  const isGeo = treeName === 'GeologicTimePeriod';
+  const matchesFilter =
+    !isGeo || biostratFilter === 'all'
+      ? true
+      : biostratFilter === 'bio'
+        ? row.isBioStrat === true
+        : row.isBioStrat !== true;
+  const descendantCount =
+    row.matchingDescendantCount ??
+    (isGeo && biostratFilter !== 'all' ? row.children : undefined) ??
+    0;
+  /*
+   * Non-matching nodes with zero matching descendants are hidden.
+   * Non-matching nodes with matching descendants are shown italic/gray.
+   */
+  const isDimmed = isGeo && biostratFilter !== 'all' && !matchesFilter;
+  const isHiddenInFilter =
+    isGeo &&
+    biostratFilter !== 'all' &&
+    !matchesFilter &&
+    descendantCount === 0;
+
   const hasNoChildrenNodes =
     nodeStats?.directCount === 0 && nodeStats.childCount === 0;
 
-  return hideEmptyNodes && hasNoChildrenNodes ? null : (
+  return (hideEmptyNodes && hasNoChildrenNodes) || isHiddenInFilter ? null : (
     <li role="treeitem row">
       {ranks.map((rankId) => {
         if (row.rankId === rankId) {
@@ -248,6 +293,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
                 }
               >
                 <span
+                  className={isDimmed ? 'italic text-gray-400' : undefined}
                   title={
                     typeof row.acceptedId === 'number'
                       ? treeText.acceptedName({
@@ -265,6 +311,55 @@ export function TreeRow<SCHEMA extends AnyTree>({
                   typeof row.author === 'string'
                     ? `${row.name} ${row.author}`
                     : row.name}
+                  {doIncludeChronoPeriodsPref &&
+                  treeName === 'GeologicTimePeriod' &&
+                  typeof row.startPeriod === 'string' ? (
+                    <span
+                      className="text-sm font-normal"
+                      title={[
+                        treeText.geologicTimePeriodLine({
+                          label: getField(
+                            tables.GeologicTimePeriod,
+                            'startPeriod'
+                          ).label,
+                          value: trimDecimal(row.startPeriod!),
+                          suffix:
+                            typeof row.startUncertainty === 'string'
+                              ? `± ${trimDecimal(row.startUncertainty)} ${treeText.megaAnnum()}`
+                              : treeText.megaAnnum(),
+                        }),
+                        typeof row.endPeriod === 'string'
+                          ? treeText.geologicTimePeriodLine({
+                              label: getField(
+                                tables.GeologicTimePeriod,
+                                'endPeriod'
+                              ).label,
+                              value: trimDecimal(row.endPeriod),
+                              suffix:
+                                typeof row.endUncertainty === 'string'
+                                  ? `± ${trimDecimal(row.endUncertainty)} ${treeText.megaAnnum()}`
+                                  : treeText.megaAnnum(),
+                            })
+                          : undefined,
+                      ]
+                        .filter(Boolean)
+                        .join('\n\n')}
+                    >
+                      {' '}
+                      ({trimDecimal(row.startPeriod)}
+                      {typeof row.startUncertainty === 'string'
+                        ? ` ± ${trimDecimal(row.startUncertainty)}`
+                        : ''}
+                      {' – '}
+                      {typeof row.endPeriod === 'string'
+                        ? trimDecimal(row.endPeriod)
+                        : ''}
+                      {typeof row.endUncertainty === 'string'
+                        ? ` ± ${trimDecimal(row.endUncertainty)}`
+                        : ''}
+                      )
+                    </span>
+                  ) : undefined}
                   {typeof row.acceptedId === 'number' && (
                     <span className="sr-only">
                       <br />
@@ -319,6 +414,7 @@ export function TreeRow<SCHEMA extends AnyTree>({
           {rows.map((childRow, index) => (
             <TreeRow
               actionRow={actionRow}
+              biostratFilter={biostratFilter}
               collapsedRanks={collapsedRanks}
               conformation={
                 conformation

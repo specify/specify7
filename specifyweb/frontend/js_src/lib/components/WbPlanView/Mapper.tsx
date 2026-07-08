@@ -43,6 +43,7 @@ import { columnOptionsAreDefault } from './linesGetter';
 import {
   BatchEditPrefsView,
   ChangeBaseTable,
+  ClearMappings,
   EmptyDataSetDialog,
   mappingOptionsMenu,
   MappingsControlPanel,
@@ -350,16 +351,18 @@ export function Mapper(props: {
         isReadOnly ? undefined : (
           <>
             <ChangeBaseTable onClick={props.onChangeBaseTable} />
-            <Button.Small
-              aria-haspopup="dialog"
+            <ClearMappings
+              showConfirmation={(): boolean =>
+                state.lines.some(({ mappingPath }) =>
+                  mappingPath.some((segment) => segment !== emptyMapping)
+                )
+              }
               onClick={(): void =>
                 dispatch({
                   type: 'ResetMappingsAction',
                 })
               }
-            >
-              {wbPlanText.clearMappings()}
-            </Button.Small>
+            />
             <ReRunAutoMapper
               showConfirmation={(): boolean =>
                 state.lines.some(({ mappingPath }) =>
@@ -446,7 +449,7 @@ export function Mapper(props: {
             <Button.Small
               className={
                 state.mappingsAreValidated
-                  ? 'bg-brand-400 dark:bg-brand-400'
+                  ? 'bg-brand-100 dark:bg-brand-300'
                   : undefined
               }
               disabled={state.lines.every(
@@ -467,7 +470,7 @@ export function Mapper(props: {
             aria-haspopup="dialog"
             href={`/specify/workbench/${props.dataset.id}/`}
           >
-            {isReadOnly ? wbText.dataEditor() : commonText.cancel()}
+            {wbText.dataEditor()}
           </Link.Small>
           {!disableSave && (
             <Button.Small

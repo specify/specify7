@@ -89,6 +89,7 @@ export type CacheDefinitions = {
     readonly hideEmptyNodes: boolean;
     readonly isSplit: boolean;
     readonly isHorizontal: boolean;
+    readonly biostratFilter: 'all' | 'bio' | 'chrono';
   };
   readonly workBenchSortConfig: {
     /**
