@@ -124,3 +124,8 @@ class PermitTests(ApiTests):
         'permit_doc.pdf'
         )
 
+        # Delete the attachment
+        attachment_id = attachment.id
+        permit_attachment.delete()
+        attachment.delete()
+
