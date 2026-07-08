@@ -108,5 +108,6 @@ jobs:
           name: coverage-report
           path: ./report.tar.bz2
           archive: false
+          retention-days: 1
 
 
