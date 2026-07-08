@@ -3,6 +3,7 @@ from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 import datetime
+from specifyweb.specify.api.crud import update_obj, get_resource
 
 
 class PermitTests(ApiTests):
@@ -144,3 +145,29 @@ class PermitTests(ApiTests):
             models.Permit.objects.filter(id=permit_id).count(),
             0,
         )
+    
+    def test_edit_permit_updates_version(self):
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-EDIT-001',
+        )
+        skip_perms_check = lambda x: None #skip the permissions checks
+        data = get_resource('permit', permit.id, skip_perms_check) # fetches the permit from the database and stores in the data dictionary
+        data['remarks'] = 'Updated remark'
+
+        updated = update_obj(
+            self.collection,
+            self.agent,
+            'permit',
+            data['id'],
+            data['version'],
+            data,
+        )
+        self.assertEqual(updated.version, permit.version + 1)
+
+        fetched = models.Permit.objects.get(id=permit.id)
+        self.assertEqual(fetched.remarks, 'Updated remark')
+        self.assertEqual(fetched.version, permit.version + 1)
+
+    
+
