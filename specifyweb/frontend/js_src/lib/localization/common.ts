@@ -882,7 +882,7 @@ export const commonText = createDictionary({
     'ru-ru': 'Не удалось загрузить статистику коллекции. Пожалуйста, попробуйте снова.',
     'uk-ua': 'Не вдалося завантажити статистику колекції. Будь ласка, спробуйте ще раз.',
   },
-  collectionName: {
+  collName: {
     'en-us': 'Collection Name',
     'fr-fr': 'Nom de la collection',
     'de-ch': 'Sammlungsname',

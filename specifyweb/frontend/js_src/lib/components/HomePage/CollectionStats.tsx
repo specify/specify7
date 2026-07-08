@@ -77,7 +77,7 @@ function CollectionStatsTable({
         <thead>
           <tr className="bg-gray-300">
             <th className="border border-gray-400 px-3 py-1 text-xl font-bold text-black">
-              {commonText.collectionName()}
+              {commonText.collName()}
             </th>
             <th className="border border-gray-400 px-3 py-1 text-xl font-bold text-black">
               {commonText.numberOfSpecimens()}
