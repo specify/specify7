@@ -74,5 +74,14 @@ class PermitTests(ApiTests):
             lastname="ByAgent",
             division=self.division,
         )
+        # Create new Issued To agent
+        new_issuedto = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Issued",
+            lastname="ToAgent",
+            division=self.division,
+        )
+
+    
         
     
