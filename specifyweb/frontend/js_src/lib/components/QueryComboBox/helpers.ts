@@ -81,6 +81,7 @@ export function getQueryComboBoxConditions({
   subViewRelationship,
   relatedTable,
   treeDefinition,
+  typeSearchName,
 }: {
   readonly resource: SpecifyResource<AnySchema>;
   readonly fieldName: string;
@@ -89,6 +90,7 @@ export function getQueryComboBoxConditions({
   readonly relatedTable: SpecifyTable;
   readonly subViewRelationship: Relationship | undefined;
   readonly treeDefinition: string | undefined;
+  readonly typeSearchName?: string | undefined;
 }): RA<SpecifyResource<SpQueryField>> {
   const fields: WritableArray<SpecifyResource<SpQueryField>> = [];
   const treeResource = toTreeTable(resource);
@@ -163,6 +165,22 @@ export function getQueryComboBoxConditions({
         .set('operStart', queryFieldFilterSpecs.equal.id)
     );
   }
+
+  /**
+   * When looking up BioStrat values for PaleoContext, only show
+   * GeologicTimePeriod nodes where isBioStrat is TRUE.
+   */
+  if (
+    typeSearchName === 'BioStrat' &&
+    relatedTable === tables.GeologicTimePeriod
+  )
+    fields.push(
+      QueryFieldSpec.fromPath(tables.GeologicTimePeriod.name, ['isBioStrat'])
+        .toSpQueryField()
+        .set('isDisplay', false)
+        .set('operStart', queryFieldFilterSpecs.true.id)
+        .set('startValue', 'true')
+    );
 
   if (
     typeof collectionRelationships === 'object' &&

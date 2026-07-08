@@ -165,13 +165,15 @@ def tree_view(request, treedef, tree: TREE_TABLE, parentid, sortfield):
     implementation/design decisions
     """
     include_author = request.GET.get('includeauthor', False) and tree == 'taxon'
+    include_start_end_periods = request.GET.get('includestartendperiods', False) and tree == 'geologictimeperiod'
+    biostrat = request.GET.get('biostrat', 'all')
     with sqlmodels.session_context() as session:
         set_group_concat_max_len(session.connection())
-        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, session)
+        results = get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session)
     return HttpResponse(toJson(results), content_type='application/json')
 
 
-def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
+def get_tree_rows(treedef, tree, parentid, sortfield, include_author, include_start_end_periods, biostrat, session):
     tree_table = spmodels.datamodel.get_table(tree)
     parentid = None if parentid == 'null' else int(parentid)
 
@@ -210,9 +212,54 @@ def get_tree_rows(treedef, tree, parentid, sortfield, include_author, session):
         node.AcceptedID.label("accepted_id"),
         accepted.fullName.label("accepted_fullname"),
         (node.author if include_author else literal("NULL")).label("author"),
+        (
+            node.startPeriod
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("start_period"),
+        (
+            node.startUncertainty
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("start_uncertainty"),
+        (
+            node.endPeriod
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("end_period"),
+        (
+            node.endUncertainty
+            if include_start_end_periods
+            else literal("NULL")
+        ).label("end_uncertainty"),
         func.coalesce(child_counts.c.child_count, 0).label("child_count"),
         synonym_names.c.synonyms.label("synonyms"),
+        (
+            node.isBioStrat
+            if tree == 'geologictimeperiod'
+            else literal("NULL")
+        ).label("is_biostrat"),
     ]
+
+    if biostrat != 'all' and tree == 'geologictimeperiod':
+        # Count all matching descendants (any depth) using nested-set ranges
+        if biostrat == 'bio':
+            descendant_match = child.isBioStrat == True
+        else:
+            descendant_match = (child.isBioStrat == False) | (child.isBioStrat.is_(None))
+        matching_descendant_count = (
+            select(func.count(distinct(child._id)))
+            .where(
+                child.nodeNumber > node.nodeNumber,
+                child.nodeNumber <= node.highestChildNodeNumber,
+                descendant_match,
+                getattr(child, tree_table.name + "TreeDefID") == int(treedef),
+            )
+            .correlate(node)
+            .scalar_subquery()
+            .label("matching_descendant_count")
+        )
+        cols.append(matching_descendant_count)
 
     query = (
         select(*cols)

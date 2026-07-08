@@ -349,6 +349,8 @@ class TreeViewsTest(SqlTreeSetup):
                 self.earth.id,
                 "geographyid",
                 False,
+                False,
+                'all',
                 session,
             )
             expected = [
@@ -362,8 +364,13 @@ class TreeViewsTest(SqlTreeSetup):
                     None,
                     None,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     self.na.children.count(),
                     "NA Syn 0, NA Syn 1",
+                    "NULL",
                 ),
                 (
                     na_syn_0.id,
@@ -375,8 +382,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.na.id,
                     self.na.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     na_syn_0.children.count(),
                     None,
+                    "NULL",
                 ),
                 (
                     na_syn_1.id,
@@ -388,8 +400,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.na.id,
                     self.na.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     na_syn_1.children.count(),
                     None,
+                    "NULL",
                 ),
             ]
 
@@ -402,6 +419,8 @@ class TreeViewsTest(SqlTreeSetup):
                 self.na.id,
                 "name",
                 False,
+                False,
+                'all',
                 session,
             )
             expected = [
@@ -415,8 +434,13 @@ class TreeViewsTest(SqlTreeSetup):
                     None,
                     None,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     self.usa.children.count(),
                     "USA Syn 0, USA Syn 1, USA Syn 2",
+                    "NULL",
                 ),
                 (
                     usa_syn_0.id,
@@ -428,8 +452,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.usa.id,
                     self.usa.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
                 (
                     usa_syn_1.id,
@@ -441,8 +470,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.usa.id,
                     self.usa.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
                 (
                     usa_syn_2.id,
@@ -454,8 +488,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.usa.id,
                     self.usa.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
             ]
             self.assertCountEqual(results, expected)
@@ -498,6 +537,8 @@ class TreeViewsTest(SqlTreeSetup):
                 root.id,
                 "name",
                 True,
+                False,
+                'all',
                 session,
             )
             expected = [
@@ -511,8 +552,13 @@ class TreeViewsTest(SqlTreeSetup):
                     None,
                     None,
                     animalia.author,
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     metazoa.fullname,
+                    "NULL",
                 ),
                 (
                     metazoa.id,
@@ -524,8 +570,13 @@ class TreeViewsTest(SqlTreeSetup):
                     animalia.id,
                     animalia.fullname,
                     metazoa.author,
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
             ]
 
