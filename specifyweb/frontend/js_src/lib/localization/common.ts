@@ -881,5 +881,33 @@ export const commonText = createDictionary({
     'pt-br': 'Não foi possível carregar as estatísticas da coleção. Por favor, tente novamente.',
     'ru-ru': 'Не удалось загрузить статистику коллекции. Пожалуйста, попробуйте снова.',
     'uk-ua': 'Не вдалося завантажити статистику колекції. Будь ласка, спробуйте ще раз.',
+  },
+  collectionName: {
+    'en-us': 'Collection Name',
+    'fr-fr': 'Nom de la collection',
+    'de-ch': 'Sammlungsname',
+    'es-es': 'Nombre de la colección',
+    'pt-br': 'Nome da coleção',
+    'ru-ru': 'Название коллекции',
+    'uk-ua': 'Назва колекції',
+  },
+  numberOfSpecimens: {
+    'en-us': 'Number of Specimens',
+    'fr-fr': 'Nombre de spécimens',
+    'de-ch': 'Anzahl der Exemplare',
+    'es-es': 'Número de especímenes',
+    'pt-br': 'Número de espécimes',
+    'ru-ru': 'Количество образцов',
+    'uk-ua': 'Кількість зразків',
+  },
+  collectionType: {
+    'en-us': 'Collection Type',
+    'fr-fr': 'Type de collection',
+    'de-ch': 'Sammlungstyp',
+    'es-es': 'Tipo de colección',
+    'pt-br': 'Tipo de coleção',
+    'ru-ru': 'Тип коллекции',
+    'uk-ua': 'Тип колекції',
   }
+
 } as const);

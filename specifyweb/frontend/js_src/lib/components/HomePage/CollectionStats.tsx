@@ -12,10 +12,7 @@ type CollectionStatsRow = {
 
 export function CollectionStats(): JSX.Element {
   const [showCollStatsDialog, setShowCollStatsDialog] = React.useState(false);
-//   const [tableData, setTableData] = React.useState<
-//     string|ReadonlyArray<CollectionStatsRow>
-//   >('Data not added');
-  const [tableData, setTableData] = React.useState<any>('Data not added');
+  const [tableData, setTableData] = React.useState<string | ReadonlyArray<CollectionStatsRow>>(commonText.failedCollectionStats());
   const [isLoadingStats, setIsLoadingStats] = React.useState(false);
   const errorMsg: string = commonText.failedCollectionStats();
 
@@ -24,7 +21,6 @@ export function CollectionStats(): JSX.Element {
       <Button.Secondary
         onClick={(): void => {
           setIsLoadingStats(true);
-        //   setTableData([]);
           setShowCollStatsDialog(true);
           void ajax<ReadonlyArray<CollectionStatsRow>>(
             '/stats/collection/statistics/',
@@ -38,7 +34,6 @@ export function CollectionStats(): JSX.Element {
               setTableData(Array.isArray(data) ? data : errorMsg);
             })
             .catch(() => {
-            //   setTableData([]);
             setTableData(errorMsg);
             })
             .finally(() => {
@@ -82,13 +77,13 @@ function CollectionStatsTable({
         <thead>
           <tr className="bg-gray-300">
             <th className="border border-gray-400 px-3 py-1 text-xl font-bold text-black">
-              Collection Name
+              {commonText.collectionName()}
             </th>
             <th className="border border-gray-400 px-3 py-1 text-xl font-bold text-black">
-              Number of Specimens
+              {commonText.numberOfSpecimens()}
             </th>
             <th className="border border-gray-400 px-3 py-1 text-xl font-bold text-black">
-              Collection Type
+              {commonText.collectionType()}
             </th>
           </tr>
         </thead>
