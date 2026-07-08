@@ -116,3 +116,11 @@ class PermitTests(ApiTests):
         attachment=attachment,
         ordinal=0,
         )
+
+        # Verify attachment is linked
+        self.assertEqual(permit.permitattachments.count(), 1)
+        self.assertEqual(
+        permit.permitattachments.first().attachment.origfilename,
+        'permit_doc.pdf'
+        )
+
