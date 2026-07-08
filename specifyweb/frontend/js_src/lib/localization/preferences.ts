@@ -879,6 +879,14 @@ export const preferencesText = createDictionary({
   },
   displayChronoPeriods: {
     'en-us': 'Show start and end periods',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   welcomePage: {
     'en-us': 'Home Page',
