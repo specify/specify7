@@ -22524,8 +22524,8 @@
         "type": null,
         "isrequired": false,
         "weblinkname": null,
-        "name": "Is BioStratigraphy",
-        "desc": "Is BioStratigraphy"
+        "name": "Is Biostratigraphy",
+        "desc": "Is Biostratigraphy"
       },
       "modifiedbyagent": {
         "format": null,
