@@ -72,9 +72,13 @@ jobs:
         run: |
           eval "$(ssh-agent -s)"
           ssh-add <<< '${{ secrets.COVERAGE_SCRIPT_CLONE }}'
+          echo "ssh key registered"
           cd ~
+          echo "cd-ed home"
           git clone git@github.com:specify/specify-development
+          echo "repo cloned"
           sudo install -m 0777 -o "$USER" specify-development/scripts/tests/{run-coverage,test_coverage.py} /usr/bin/
+          echo "installed scripts"
           cd -
 
       - name: Configure specify
