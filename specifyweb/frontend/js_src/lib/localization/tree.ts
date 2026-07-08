@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
     'pt-br': 'Não é possível mover este nó da árvore para cá.',
     'hr-hr': 'Ovaj čvor stabla ne može se premjestiti ovdje',
-    nb: 'Kan ikke flytte denne treknuten hit',
+    nb: 'Kan ikke flytte denne trenoden hit',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",

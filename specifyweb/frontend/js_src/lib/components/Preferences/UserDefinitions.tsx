@@ -1969,7 +1969,7 @@ export const userPreferenceDefinitions = {
             description: wbText.dataCheckDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },
