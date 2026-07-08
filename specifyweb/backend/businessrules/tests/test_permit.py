@@ -124,14 +124,9 @@ class PermitTests(ApiTests):
         )
 
         # Delete the attachment
-        attachment_id = attachment.id
         permit_attachment.delete()
-        # Re-fetch from DB instead of using stale in-memory object
-        attachment_to_delete = models.Attachment.objects.get(id=attachment_id)
-        attachment_to_delete.delete()
-
 
         # Verifying it's gone
         self.assertEqual(permit.permitattachments.count(), 0)
-        self.assertEqual(models.Attachment.objects.filter(id=attachment_id).count(), 0)
+        self.assertEqual(models.Attachment.objects.filter(id=attachment.id).count(), 0)
 
