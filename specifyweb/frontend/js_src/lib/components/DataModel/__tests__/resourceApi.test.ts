@@ -514,6 +514,52 @@ describe('independent resource change propagation', () => {
   });
 });
 
+describe('save base record which has independent subviews', () => {
+  overrideAjax(
+    '/api/specify/collectionobject/?domainfilter=false&accession=11&offset=0',
+    {
+      objects: [collectionObjectResponse],
+      meta: { limit: 20, offset: 0, total_count: 1 },
+    }
+  );
+  overrideAjax(accessionUrl, accessionResponse, { method: 'PUT' });
+
+  async function setupParentWithIndependentCollection() {
+    const parentResource = new tables.Accession.Resource({ id: accessionId });
+    const collectionObjectRel =
+      tables.CollectionObject.strictGetRelationship('accession')!;
+    const independentCollection =
+      new tables.CollectionObject.IndependentCollection({
+        related: parentResource,
+        field: collectionObjectRel,
+      }) as Collection<CollectionObject>;
+    await independentCollection.fetch();
+    (parentResource as any).storeIndependent(
+      collectionObjectRel.getReverse(),
+      independentCollection
+    );
+    return { parentResource, independentCollection };
+  }
+
+  test('modifying a field on an independent resource marks base record as needsSaved and save applies the change', async () => {
+    const { parentResource, independentCollection } =
+      await setupParentWithIndependentCollection();
+
+    expect(parentResource.needsSaved).toBe(false);
+
+    const existingCollectionObject = independentCollection.models[0];
+    existingCollectionObject.set('text1', 'changed-value');
+
+    expect(parentResource.needsSaved).toBe(true);
+
+    await parentResource.save();
+
+    expect(parentResource.needsSaved).toBe(false);
+    // Change is preserved in memory after save
+    expect(existingCollectionObject.get('text1')).toBe('changed-value');
+  });
+});
+
 describe('resource initialization', () => {
   test('Initialization with dependent resources does not trigger saveRequired', () => {
     const resource = new tables.CollectionObject.Resource({
