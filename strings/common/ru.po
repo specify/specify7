@@ -17,7 +17,7 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Укажите 7"
 
-#: components/Preferences/UserDefinitions.tsx:2049
+#: components/Preferences/UserDefinitions.tsx:2056
 #: components/SetupTool/SetupOverview.tsx:85
 #: components/TreeView/CreateTree.tsx:546
 #: components/WorkBench/DataSetMeta.tsx:292
@@ -256,7 +256,7 @@ msgstr "Создать"
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222
 #: components/QueryBuilder/Save.tsx:66
-#: components/QueryComboBox/index.tsx:612
+#: components/QueryComboBox/index.tsx:625
 #: components/Reports/Report.tsx:51
 #: components/Reports/Report.tsx:60
 #: components/Router/RouterUtils.tsx:193
@@ -529,7 +529,7 @@ msgstr "Инструменты"
 #: components/QueryBuilder/QueryLineFilter.tsx:90
 #: components/QueryBuilder/Results.tsx:352
 #: components/QueryBuilder/Results.tsx:353
-#: components/QueryComboBox/index.tsx:449
+#: components/QueryComboBox/index.tsx:450
 #: components/SchemaConfig/Fields.tsx:62
 #: components/SchemaConfig/index.tsx:165
 #: components/SchemaConfig/index.tsx:166
@@ -555,7 +555,7 @@ msgstr "Инструменты"
 #: components/Toolbar/BackupDatabase.tsx:89
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
-#: components/TreeView/Row.tsx:229
+#: components/TreeView/Row.tsx:274
 #: components/WorkBench/Disambiguation.tsx:124
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
@@ -1013,7 +1013,7 @@ msgid "collapse"
 msgstr "Крах"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:322
+#: components/TreeView/index.tsx:338
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 #, fuzzy
 msgid "collapseAll"
@@ -1141,8 +1141,8 @@ msgstr "{header:string}:"
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
 #: components/Security/Role.tsx:116
-#: components/TreeView/helpers.ts:195
-#: components/TreeView/helpers.ts:203
+#: components/TreeView/helpers.ts:213
+#: components/TreeView/helpers.ts:221
 #: components/WorkBench/DataSetMeta.tsx:239
 #: components/WorkBench/DataSetMeta.tsx:246
 #: components/WorkBench/DataSetMeta.tsx:379

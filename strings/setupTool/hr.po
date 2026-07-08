@@ -210,7 +210,7 @@ msgstr "Puno ime Smjer"
 
 #: components/SetupTool/setupResources.ts:330
 #: components/SetupTool/setupResources.ts:400
-#: components/TreeView/Tree.tsx:299
+#: components/TreeView/Tree.tsx:301
 #. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 #, fuzzy
 msgid "preloadTree"

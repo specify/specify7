@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:221
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2255
+#: components/Preferences/UserDefinitions.tsx:2262
 #: components/Router/OverlayRoutes.tsx:263
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -27,7 +27,7 @@ msgstr "Masseredigering"
 msgid "batchEditPrefs"
 msgstr "Innstillinger for masseredigering"
 
-#: components/Preferences/UserDefinitions.tsx:2261
+#: components/Preferences/UserDefinitions.tsx:2268
 #. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Antall treff valgt fra søket"
@@ -70,12 +70,12 @@ msgstr "Søket krever flere ranger for massredigering"
 msgid "createUpdateDataSetInstructions"
 msgstr "Bruk søkbyggeren til å opprette et nytt datasett for masseredigering"
 
-#: components/Preferences/UserDefinitions.tsx:2284
+#: components/Preferences/UserDefinitions.tsx:2291
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Vis tilbakestillingsknapp"
 
-#: components/Preferences/UserDefinitions.tsx:2289
+#: components/Preferences/UserDefinitions.tsx:2296
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
@@ -203,13 +203,13 @@ msgstr ""
 "(Datasett for masseredigering kan ikke redigeres etter tilbakeføring – "
 "skrivebeskyttet)"
 
-#: components/Preferences/UserDefinitions.tsx:2276
+#: components/Preferences/UserDefinitions.tsx:2283
 #. Used in: Components > Preferences > User Definitions
 #, fuzzy
 msgid "enableRelationships"
 msgstr "Aktiver relasjoner"
 
-#: components/Preferences/UserDefinitions.tsx:2281
+#: components/Preferences/UserDefinitions.tsx:2288
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""

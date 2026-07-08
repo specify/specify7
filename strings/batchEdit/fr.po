@@ -13,7 +13,7 @@ msgstr ""
 
 #: components/BatchEdit/index.tsx:221
 #: components/Header/menuItemDefinitions.ts:115
-#: components/Preferences/UserDefinitions.tsx:2255
+#: components/Preferences/UserDefinitions.tsx:2262
 #: components/Router/OverlayRoutes.tsx:263
 #: components/WbUtils/datasetVariants.tsx:89
 #: components/WbUtils/datasetVariants.tsx:105
@@ -27,7 +27,7 @@ msgstr "Modification par lots"
 msgid "batchEditPrefs"
 msgstr "Préférences de modification par lots"
 
-#: components/Preferences/UserDefinitions.tsx:2261
+#: components/Preferences/UserDefinitions.tsx:2268
 #. Used in: Components > Preferences > User Definitions
 msgid "numberOfRecords"
 msgstr "Nombre d'enregistrements sélectionnés dans la requête"
@@ -77,12 +77,12 @@ msgstr ""
 "Utilisez le générateur de requêtes pour créer un nouveau jeu de données "
 "d'édition par lots."
 
-#: components/Preferences/UserDefinitions.tsx:2284
+#: components/Preferences/UserDefinitions.tsx:2291
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollback"
 msgstr "Afficher le bouton de restauration"
 
-#: components/Preferences/UserDefinitions.tsx:2289
+#: components/Preferences/UserDefinitions.tsx:2296
 #. Used in: Components > Preferences > User Definitions
 msgid "showRollbackDescription"
 msgstr ""
@@ -210,12 +210,12 @@ msgstr ""
 "(Les jeux de données modifiés par lots ne peuvent pas être modifiés après "
 "une restauration - Lecture seule)"
 
-#: components/Preferences/UserDefinitions.tsx:2276
+#: components/Preferences/UserDefinitions.tsx:2283
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationships"
 msgstr "Activer les relations"
 
-#: components/Preferences/UserDefinitions.tsx:2281
+#: components/Preferences/UserDefinitions.tsx:2288
 #. Used in: Components > Preferences > User Definitions
 msgid "enableRelationshipsDescription"
 msgstr ""

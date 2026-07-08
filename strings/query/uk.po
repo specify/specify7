@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 5.17.1\n"
 
-#: components/Preferences/UserDefinitions.tsx:2258
+#: components/Preferences/UserDefinitions.tsx:2265
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:88
 #: components/Reports/RecordSets.tsx:95
@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1760
+#: components/Preferences/UserDefinitions.tsx:1767
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210

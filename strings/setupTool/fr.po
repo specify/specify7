@@ -180,7 +180,7 @@ msgstr "Sens de lecture du nom complet"
 
 #: components/SetupTool/setupResources.ts:330
 #: components/SetupTool/setupResources.ts:400
-#: components/TreeView/Tree.tsx:299
+#: components/TreeView/Tree.tsx:301
 #. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 msgid "preloadTree"
 msgstr "Remplir l'arbre avec les enregistrements par défaut"
