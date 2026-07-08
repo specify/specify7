@@ -189,7 +189,7 @@ def get_percent_imaged(request):
     'get': {
         'responses': {
             '200': {
-                'description': 'Returns mocked collection statistics for Specify',
+                'description': 'Returns (currently fake) collection statistics',
                 'content': {
                     'application/json': {
                         'schema': {
@@ -213,15 +213,17 @@ def get_percent_imaged(request):
 def collection_statistics(request) -> HttpResponse:
     # Fake data for now
     stats = [
-        {
-            'name': 'Mammals',
-            'specimenCount': 12543,
-            'collectionType': 'Zoology',
-        },
-        {
-            'name': 'Bugs',
-            'specimenCount': 1254300,
-            'collectionType': 'Entomology',
-        }
+        # {
+        #     'name': 'Mammals',
+        #     'specimenCount': 12543,
+        #     'collectionType': 'Zoology',
+        # },
+        # {
+        #     'name': 'Bugs',
+        #     'specimenCount': 1254300,
+        #     'collectionType': 'Entomology',
+        # }
     ]
+
+    # stats = "bloop"
     return http.JsonResponse(stats, safe=False)
