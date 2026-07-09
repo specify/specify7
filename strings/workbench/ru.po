@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:27+0000\n"
+"PO-Revision-Date: 2026-07-09 19:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/ru/>\n"
@@ -368,7 +368,6 @@ msgid "dataSetRollbackDescription"
 msgstr ""
 "Этот откаченный набор данных сохранен и может быть отредактирован или "
 "повторно загружен."
-
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:288
