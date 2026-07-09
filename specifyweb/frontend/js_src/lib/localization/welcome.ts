@@ -93,41 +93,27 @@ export const welcomeText = createDictionary({
   },
   disclosure: {
     'en-us':
-      "Specify software is a product of the Specify Collections Consortium that is governed and funded by its member institutions. Consortium Founding Members include: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, and University of Michigan. The Consortium operates under the non-profit, 501(c)3, U.S. tax status of the University of Kansas Center for Research. Specify was supported from 1996 to 2018 by grants from the U.S. National Science Foundation.",
-    'ru-ru':
-      "Specify software является продуктом консорциума Specify Collections. который управляется и финансируется организациями-членами. Члены-учредители консорциума включают: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, и University of Michigan. Консорциум действует под некоммерческой организацией, 501(c)3, налоговым статусом США университета University of Kansas. Specify поддерживался с 1996 по 2018 год грантами фонда U.S. National Science Foundation.",
-    'es-es':
-      "Specify Software es un producto de Specify Collections Consortium, financiado por sus instituciones miembro. Los Miembros Fundadores del Consorcio incluyen: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas (CSIC), Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas y University of Michigan. El Consorcio opera bajo las condiciones fiscales de 501(c)3 de EE.UU. como organización sin ánimo de lucro, University of Kansas Center for Research. Specify ha sido financiado entre 1996 y 2018 por múltiples ayudas de U.S. National Science Foundation.",
-    'fr-fr':
-      "Le logiciel Specify est un produit du Specify Collections Consortium qui est régi et financé par ses institutions membres. Les membres fondateurs du consortium comprennent : l'Organisation de recherche scientifique et industrielle du Commonwealth (CSIRO), le Consejo Superior de Investigaciones Científicas, le Consortium danois des musées, le Muséum d'Histoire Naturelle de Genève, l'Université de Floride, l'Université du Kansas et l'Université du Michigan. Le Consortium opère sous le statut fiscal américain à but non lucratif 501(c)3 du Centre de recherche de l'Université du Kansas. Specify a été soutenu de 1996 à 2018 par des subventions de la National Science Foundation des États-Unis.",
-    'uk-ua':
-      "Програмне забезпечення Specify є продуктом консорціуму Specify Collections Consortium, яким керують і фінансують установи-члени. Члени-засновники консорціуму включають: Науково-промислову дослідницьку організацію Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas, Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva, Університет Флориди, Університет Канзасу та Університет Мічигану. Консорціум працює відповідно до некомерційного, 501(c)3, податкового статусу США дослідницького центру Канзаського університету. З 1996 по 2018 рік Specify підтримувався грантами Національного наукового фонду США.",
-    'de-ch':
-      "Die Specify-Software ist ein Produkt des Specify Collections Consortiums, das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu den Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, University of Michigan. Das Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S. Steuerstatus des University of Kansas Center for Research. Specify wurde von 1996 bis 2018 durch Zuschüsse der U.S. National Science Foundation unterstützt.",
-    'pt-br':
-      "O software Specify é um produto do Specify Collections Consortium, que é governado e financiado por suas instituições membros. Os membros fundadores do Consórcio incluem: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas e University of Michigan. O Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos EUA (NSF).",
-    'hr-hr':
-      "Specify softver je proizvod konzorcija Specify Collections kojim upravljaju i financiraju ga njegove institucije članice. Osnivači konzorcija uključuju: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Danski konzorcij muzeja, Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, Sveučilište Kansas i Sveučilište Michigan. Konzorcij djeluje pod neprofitnim, poreznim statusom 501(c)3 Sveučilišnog centra za istraživanje u Kansasu. Specify je od 1996. do 2018. godine financiran bespovratnim sredstvima američke Nacionalne zaklade za znanost.",
-    nb: "Specify-programvaren er et produkt fra Specify Collections Consortium, som styres og finansieres av medlemsinstitusjonene. Blant konsortiets grunnleggere er: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas og University of Michigan. Konsortiet opererer under den ideelle skatteformen 501(c)(3) i USA, gjennom University of Kansas Center for Research. Specify ble støttet fra 1996 til 2018 av tilskudd fra U.S. National Science Foundation.",
+      'Specify is developed by the Specify Collections Consortium (SCC), a collaborative initiative governed by its members and supported by institutional partners. Software support and development are made possible by consortium members, including the UniMus:Natur Consortium of Norway, the Commonwealth Scientific and Industrial Research Organisation (CSIRO), the Consejo Superior de Investigaciones Científicas (CSIC), the Denmark Consortium of Museums, the Muséum d’Histoire Naturelle Geneva, the University of Florida, the University of Kansas, and the University of Michigan, along with numerous other member collections and institutions within the Consortium. The SCC operates under the University of Kansas Center for Research’s non-profit 501(c)(3) U.S. tax status and received support from U.S. National Science Foundation grants from 1996 to 2018.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   licence: {
     'en-us':
-      'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v2.',
-    'ru-ru':
-      'Specify 7, Авторские права 2025, University of Kansas для исследования. Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное программное обеспечение с открытым исходным кодом под лицензией GNU General Public License v2.',
-    'es-es':
-      'Specify 7 Copyright © 2025 University of Kansas Center for Research. Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, bajo licencia GNU General Public License 2 (GPL2).',
-    'fr-fr':
-      "Specify 7, © 2025, Centre de recherche de l'Université du Kansas. Specify est fourni SANS AUCUNE GARANTIE. Ce logiciel libre et open source est distribué sous licence GNU GPL v2.",
-    'uk-ua':
-      'Укажіть 7, авторське право 2025, Дослідницький центр Канзаського університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public License v2.',
-    'de-ch':
-      'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.',
-    'pt-br':
-      'Specify 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v2.',
-    'hr-hr':
-      'Specify 7, autorsko pravo 2025., Sveučilišni centar za istraživanje u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v2.',
-    nb: 'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify leveres UTEN NOEN FORM FOR GARANTI. Dette er fri, åpen kildekode-programvare, lisensiert under GNU General Public License v2.',
+      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v3.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   systemInformation: {
     'en-us': 'System Information',

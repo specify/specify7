@@ -197,19 +197,34 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
     'displayAuthor'
   );
 
+  const includeStartEndPeriods = userPreferences.get(
+    'treeEditor',
+    'geologicTimePeriod',
+    'displayChronoPeriods'
+  );
+
   const baseUrl = `/trees/specify_tree/${tableName.toLowerCase()}/${
     treeDefinition.id
   }`;
 
+  const [biostratFilter = 'all', setBiostratFilter] = useCachedState(
+    'tree',
+    'biostratFilter'
+  );
+
   const getRows = React.useCallback(
     async (parentId: number | 'null') =>
       fetchRows(
-        // See above comment for sortField being hard coded as name here
-        formatUrl(`${baseUrl}/${parentId}/name/`, {
-          includeAuthor: includeAuthor.toString(),
-        })
+        formatUrl(
+          `${baseUrl}/${parentId}/${tableName === 'GeologicTimePeriod' ? 'startPeriod' : 'name'}/`,
+          {
+            includeAuthor: includeAuthor.toString(),
+            includeStartEndPeriods: includeStartEndPeriods.toString(),
+            biostrat: biostratFilter,
+          }
+        )
       ),
-    [baseUrl]
+    [baseUrl, tableName, includeAuthor, includeStartEndPeriods, biostratFilter]
   );
 
   const [rows, setRows] = useAsyncState<RA<Row>>(
@@ -278,6 +293,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       <Tree
         actionRow={actionRow}
         baseUrl={baseUrl}
+        biostratFilter={biostratFilter}
         conformation={[conformation, setConformation]}
         focusPath={states[type].focusPath}
         focusRef={toolbarButtonRef}
@@ -344,6 +360,7 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
           }}
         />
         <TreeViewSearch
+          biostratFilter={biostratFilter}
           forwardRef={searchBoxRef}
           tableName={tableName}
           treeDefinitionId={treeDefinition.id}
@@ -418,13 +435,31 @@ function TreeView<TREE_NAME extends AnyTree['tableName']>({
       ) : (
         treeContainer('first')
       )}
-      <Label.Inline>
-        <Input.Checkbox
-          checked={hideEmptyNodes}
-          onValueChange={setHideEmptyNodes}
-        />
-        {treeText.associatedNodesOnly()}
-      </Label.Inline>
+      <div className="flex items-center justify-between">
+        <Label.Inline>
+          <Input.Checkbox
+            checked={hideEmptyNodes}
+            onValueChange={setHideEmptyNodes}
+          />
+          {treeText.associatedNodesOnly()}
+        </Label.Inline>
+        {tableName === 'GeologicTimePeriod' && (
+          <Select
+            className="w-max"
+            aria-label={treeText.biostratFilter()}
+            title={treeText.biostratFilter()}
+            value={biostratFilter}
+            onValueChange={(value: string): void => {
+              setBiostratFilter(value as 'all' | 'bio' | 'chrono');
+              setRows(undefined);
+            }}
+          >
+            <option value="all">{treeText.biostratAll()}</option>
+            <option value="chrono">{treeText.biostratChrono()}</option>
+            <option value="bio">{treeText.biostratBio()}</option>
+          </Select>
+        )}
+      </div>
     </Container.Full>
   );
 }

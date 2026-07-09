@@ -9,6 +9,8 @@ export const dialogIconTriggers = {
   warning: 'dialog-icon-warning',
   success: 'dialog-icon-success',
   info: 'dialog-icon-info',
+  question: 'dialog-icon-question',
+  failure: 'dialog-icon-failure',
 };
 
 const buttonClassName = 'button';

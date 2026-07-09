@@ -234,9 +234,7 @@ export function DataSetMeta({
           <AutoGrowTextArea value={remarks} onValueChange={setRemarks} />
         </Label.Block>
         <div className="flex flex-col">
-          <b>
-            {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
-          </b>
+          <b>{wbText.metadata()}</b>
           <span>
             {commonText.colonLine({
               label: wbText.numberOfRows(),
@@ -391,9 +389,7 @@ export function DataSetName({
           </span>
         )}
       </h2>
-      <Button.Small onClick={handleOpen}>
-        {getField(tables.WorkbenchTemplateMappingItem, 'metaData').label}
-      </Button.Small>
+      <Button.Small onClick={handleOpen}>{wbText.metadata()}</Button.Small>
       {showMeta && (
         <WbDataSetMeta
           dataset={dataset}
