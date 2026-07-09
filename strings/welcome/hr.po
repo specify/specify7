@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:24+0000\n"
+"PO-Revision-Date: 2026-07-09 19:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "welcome/hr/>\n"
@@ -65,21 +65,26 @@ msgstr ""
 #, fuzzy
 msgid "disclosure"
 msgstr ""
-"Specify softver je proizvod konzorcija Specify Collections kojim upravljaju "
-"i financiraju ga njegove institucije članice. Osnivači konzorcija uključuju: "
-"Commonwealth Scientific and Industrial Research Organisation (CSIRO), "
-"Consejo Superior de Investigaciones Científicas, Danski konzorcij muzeja, "
-"Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, Sveučilište Kansas "
-"i Sveučilište Michigan. Konzorcij djeluje pod neprofitnim, poreznim statusom "
-"501(c)3 Sveučilišnog centra za istraživanje u Kansasu. Specify je od 1996. "
-"do 2018. godine financiran bespovratnim sredstvima američke Nacionalne "
-"zaklade za znanost."
+"Specify je razvio Konzorcij za zbirke Specify (SCC), suradnička inicijativa "
+"kojom upravljaju njegovi članovi, a podržavaju je institucionalni partneri. "
+"Podršku i razvoj softvera omogućuju članovi konzorcija, uključujući "
+"UniMus:Natur konzorcij Norveške, Organizaciju za znanstvena i industrijska "
+"istraživanja Commonwealtha (CSIRO), Consejo Superior de Investigaciones "
+"Científicas (CSIC), Danski konzorcij muzeja, Muzej prirodne povijesti "
+"Ženeva, Sveučilište Florida, Sveučilište Kansas i Sveučilište Michigan, "
+"zajedno s brojnim drugim zbirkama i institucijama članicama Konzorcija. SCC "
+"djeluje pod neprofitnim poreznim statusom 501(c)(3) Sveučilišnog centra za "
+"istraživanje u Kansasu i primao je potporu od Nacionalne zaklade za znanost "
+"SAD-a od 1996. do 2018. godine."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
 #, fuzzy
 msgid "licence"
 msgstr ""
+"Specify 7, Autorsko pravo 2026., Istraživački centar Sveučilišta u Kansasu. "
+"Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog "
+"koda licenciran pod GNU General Public License v3."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
