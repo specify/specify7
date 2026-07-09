@@ -148,6 +148,27 @@ describe('Resource initialization preferences', () => {
     expect(determinations?.models.at(0)?.get('isCurrent')).toBe(true);
   });
 
+  test('Cloning a loan does not carry over loan preparations', async () => {
+    const loan = new tables.Loan.Resource(
+      addMissingFields('Loan', {
+        loanPreparations: [
+          {
+            _tableName: 'LoanPreparation',
+          },
+        ],
+      })
+    );
+
+    jest.spyOn(console, 'warn').mockImplementation();
+    const cloned = await loan.clone(true);
+
+    await expect(
+      cloned
+        .rgetCollection('loanPreparations')
+        .then((collection) => collection.models.length)
+    ).resolves.toBe(0);
+  });
+
   test('Cloning resource does not create duplicates', async () => {
     // See Issue #3278
 
