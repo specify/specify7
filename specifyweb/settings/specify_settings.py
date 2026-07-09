@@ -45,11 +45,11 @@ SPECIFY_CONFIG_DIR = os.environ.get(
 # want to access which must be a Specify database already
 # be initialized from a backup or by using the Specify Wizard
 # from a Specify 6 installation.
-DATABASE_NAME = 'SpecifyDB'
+DATABASE_NAME = os.environ.get("DATABASE_NAME", "")
 
 # Database hostname or IP. Will use localhost:3306 by default.
-DATABASE_HOST = ''
-DATABASE_PORT = ''
+DATABASE_HOST = os.environ.get("DATABASE_HOST", "")
+DATABASE_PORT = os.environ.get("DATABASE_PORT", "")
 
 # Any extra options for the database connection
 # https://docs.djangoproject.com/en/4.2/ref/settings/#std-setting-OPTIONS
@@ -57,19 +57,19 @@ DATABASE_OPTIONS = {}
 
 # The master user login. This is the MySQL user used to connect to the
 # database. This can be the same as the Specify 6 master user.
-MASTER_NAME = 'MasterUser'
-MASTER_PASSWORD = 'MasterPassword'
-MIGRATOR_NAME = 'MasterUser'
-MIGRATOR_PASSWORD = 'MasterPassword'
-APP_USER_NAME = 'MasterUser'
-APP_USER_PASSWORD = 'MasterPassword'
+MASTER_NAME = os.environ.get("MASTER_NAME", "")
+MASTER_PASSWORD = os.environ.get("MASTER_PASSWORD", "")
+MIGRATOR_NAME = os.environ.get("MIGRATOR_NAME", "")
+MIGRATOR_PASSWORD = os.environ.get("MIGRATOR_PASSWORD", "")
+APP_USER_NAME = os.environ.get("APP_USER_NAME", "")
+APP_USER_PASSWORD = os.environ.get("APP_USER_PASSWORD", "")
 
-# MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
-# MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
-# MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
-# MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
-# APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
-# APP_USER_PASSWORD = os.environ.get('APP_USER_PASSWORD', MIGRATOR_PASSWORD)
+# MASTER_NAME = os.environ.get("MASTER_NAME", "")
+# MASTER_PASSWORD = os.environ.get("MASTER_PASSWORD", "")
+# MIGRATOR_NAME = os.environ.get("MIGRATOR_NAME", "")
+# MIGRATOR_PASSWORD = os.environ.get("MIGRATOR_PASSWORD", "")
+# APP_USER_NAME = os.environ.get("APP_USER_NAME", "")
+# APP_USER_PASSWORD = os.environ.get("APP_USER_PASSWORD", "")
 
 # The Specify web attachment server URL.
 WEB_ATTACHMENT_URL = None
