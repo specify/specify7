@@ -7,7 +7,7 @@
 
 from django.db import migrations, models
 
-from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
+from specifyweb.specify.migration_utils.migration_helpers.helper_0031_add_default_for_selectseries import make_selectseries_false
 
 
 # def make_selectseries_false(apps):

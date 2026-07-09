@@ -21,7 +21,7 @@ from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_con
 from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem, create_cotype_picklist
 from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import create_agetype_picklist, create_strat_table_schema_config_with_defaults
 from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import create_cogtype_picklist
-from specifyweb.specify.migration_utils.migration_helpers.helper_0008_schema_config_update import update_relative_age_fields
+from specifyweb.specify.migration_utils.migration_helpers.helper_0008_ageCitations_fix import update_relative_age_fields
 from specifyweb.specify.migration_utils.migration_helpers.helper_0012_add_cojo_to_schema_config import add_cojo_to_schema_config
 from specifyweb.specify.migration_utils.migration_helpers.helper_0013_collectionobjectgroup_parentcog import update_cog_schema_config
 from specifyweb.specify.migration_utils.migration_helpers.helper_0015_add_version_to_ages import update_age_schema_config
@@ -31,7 +31,7 @@ from specifyweb.specify.migration_utils.migration_helpers.helper_0039_agent_fiel
 from specifyweb.specify.migration_utils.migration_helpers.helper_0040_components import create_table_schema_config_with_defaults, remove_componentparent_item
 from specifyweb.specify.migration_utils.migration_helpers.helper_0042_discipline_type_picklist import create_discipline_type_picklist
 from specifyweb.specify.migration_utils.router import use_migration_connection
-from specifyweb.specify.migration_utils.misc_migrations import make_selectseries_false
+from specifyweb.specify.migration_utils.migration_helpers.helper_0031_add_default_for_selectseries import make_selectseries_false
 from specifyweb.specify.migration_utils.tectonic_ranks import create_default_tectonic_ranks, create_root_tectonic_node, fix_tectonic_unit_treedef_discipline_links
 from specifyweb.backend.patches.migration_utils import apply_migrations as apply_patches
 
@@ -152,7 +152,6 @@ def create_missing_app_resource_dirs(stdout, apps):
     if stdout is not None:
         stdout(
             "Ensured discipline app resource directories: "
-            f"total={results['total_disciplines']}, "
             f"created={results['created']}, "
             f"updated={results['updated']}"
         )
@@ -210,26 +209,27 @@ def fix_misc(stdout: WriteToStdOut | None = None):
     ]
     log_and_run(funcs, stdout)
 
+
+ALL_FUNCTIONS: dict[str, Callable[[WriteToStdOut | None], None]] = {
+    "apply_patches": lambda _stdout: apply_patches(apps),
+    "fix_cots": fix_cots,
+    "fix_permissions": fix_permissions,
+    "fix_business_rules": fix_business_rules,
+    "fix_schema_config": fix_schema_config,
+    "fix_app_resource_dirs": fix_app_resource_dirs,
+    "fix_tectonic_ranks": fix_tectonic_ranks,
+    "fix_misc": fix_misc,
+}
+
 class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
-
-    funcs = {
-            "apply_patches": lambda _stdout: apply_patches(apps),
-            "fix_cots": fix_cots,
-            "fix_permissions": fix_permissions,
-            "fix_business_rules": fix_business_rules,
-            "fix_schema_config": fix_schema_config,
-            "fix_app_resource_dirs": fix_app_resource_dirs,
-            "fix_tectonic_ranks": fix_tectonic_ranks,
-            "fix_misc": fix_misc,
-        }
 
     def add_arguments(self, parser):
         parser.add_argument(
             "functions",
             nargs="*",
             type=str,
-            choices=tuple(self.funcs.keys()),
+            choices=tuple(ALL_FUNCTIONS.keys()),
             help="Optional: specify one or more functions to run",
         )
         parser.add_argument(
@@ -251,7 +251,7 @@ class Command(BaseCommand):
                 if len(functions) > 0:
                     for function in functions:
                         if function:
-                            if function not in self.funcs:
+                            if function not in ALL_FUNCTIONS:
                                 self.stderr.write(
                                     self.style.ERROR(f"Unknown function: {function}")
                                 )
@@ -259,10 +259,10 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(f"Applying {function}...")
                             )
-                            self.funcs[function](self.stdout.write if verbose else None)
+                            ALL_FUNCTIONS[function](self.stdout.write if verbose else None)
                 else:
                     self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
-                    for func_name, func in self.funcs.items():
+                    for func_name, func in ALL_FUNCTIONS.items():
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
