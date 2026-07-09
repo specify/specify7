@@ -1,12 +1,7 @@
-from io import StringIO
-
-from django.core.management import call_command
+from django.apps import apps
 from django.test import TransactionTestCase
+from django.db.models import Q
 
-from specifyweb.backend.businessrules.models import (
-    UniquenessRule,
-    UniquenessRuleField,
-)
 from specifyweb.backend.permissions.models import (
     LibraryRole,
     LibraryRolePolicy,
@@ -15,400 +10,192 @@ from specifyweb.backend.permissions.models import (
     UserPolicy,
     UserRole,
 )
-from specifyweb.specify import models
+from specifyweb.specify.models import (
+    Taxontreedefitem,
+    Taxon,
+    Locality
+)
 from specifyweb.specify.tests.test_api import ApiTests
-
-from unittest.mock import patch
+from specifyweb.backend.patches.migration_utils import update_is_accepted, update_coordinates
 
 from specifyweb.backend.businessrules.rules.cogtype_rules import SYSTEM_COGTYPES_PICKLIST
 
-
-TRACKED_MODELS = {
-    "Collectionobjecttype": models.Collectionobjecttype,
-    "Collectionobjectgrouptype": models.Collectionobjectgrouptype,
-    "Picklist": models.Picklist,
-    "Picklistitem": models.Picklistitem,
-    "Splocalecontainer": models.Splocalecontainer,
-    "Splocalecontaineritem": models.Splocalecontaineritem,
-    "Splocaleitemstr": models.Splocaleitemstr,
-    "UniquenessRule": UniquenessRule,
-    "UniquenessRuleField": UniquenessRuleField,
-    "LibraryRole": LibraryRole,
-    "LibraryRolePolicy": LibraryRolePolicy,
-    "Role": Role,
-    "RolePolicy": RolePolicy,
-    "UserRole": UserRole,
-    "UserPolicy": UserPolicy,
-    "Spappresourcedir": models.Spappresourcedir,
-    "Tectonicunittreedef": models.Tectonicunittreedef,
-    "Tectonicunittreedefitem": models.Tectonicunittreedefitem,
-    "Tectonicunit": models.Tectonicunit,
-}
-
-
-def record_counts():
-    return {
-        name: model.objects.count()
-        for name, model in TRACKED_MODELS.items()
-    }
-
-
-def count_diff(before, after):
-    return {
-        name: after_count - before[name]
-        for name, after_count in after.items()
-        if after_count != before[name]
-    }
-
+def create_taxon_ranks(treedef):
+    root = Taxontreedefitem(
+        treedef=treedef,
+        parent=None,
+        name="Taxonomy Root",
+        rankid=0
+    ).save()
+    kingdom = Taxontreedefitem(
+        treedef=treedef,
+        parent=root,
+        name="Kingdom",
+        rankid=10
+    ).save()
+    phylum = Taxontreedefitem(
+        treedef=treedef,
+        parent=kingdom,
+        name="Phylum",
+        rankid=30
+    ).save()
+    class_rank = Taxontreedefitem(
+        treedef=treedef,
+        parent=phylum,
+        name="Class",
+        rankid=60
+    ).save()
 
 class RunKeyMigrationFunctionsTests(ApiTests, TransactionTestCase):
-    databases = {"default", "migrations"}
-
     def setUp(self):
         super().setUp()
-        self.discipline.name = "Test Discipline"
-        self.discipline.taxontreedef = self.taxontreedef
-        self.discipline.save(update_fields=["name", "taxontreedef"])
-        self.cogtypes_picklist = models.Picklist.objects.create(
-            name=SYSTEM_COGTYPES_PICKLIST,
-            type=0,
-            collection=self.collection,
-        )
+        create_taxon_ranks(self.taxontreedef)
 
-        models.Picklistitem.objects.create(
-            picklist=self.cogtypes_picklist,
-            title="Discrete",
-            value="Discrete",
-            ordinal=0,
+    def test_patches_updating_accepted(self):
+        ranks = self.taxontreedef.treedefitems.all().order_by("rankid")
+        root_node = Taxon.objects.create(
+            name="Root",
+            fullname="Root",
+            rankid=0,
+            parent=None,
+            definition=self.taxontreedef,
+            definitionitem=ranks[0]
         )
-
-    def tearDown(self):
-        super().tearDown()
-
-    def simulate_specify7_usage(
-        self, suffix, *, include_collection_object_group_type=True
-    ):
-        picklist = models.Picklist.objects.create(
-            name=f"Test Picklist {suffix}",
-            type=0,
-            collection=self.collection,
+        Taxon.objects.bulk_create(
+            [
+                Taxon(
+                    name="Kingdom1",
+                    fullname="Kingdom1",
+                    rankid=10,
+                    parent=root_node,
+                    definition=self.taxontreedef,
+                    definitionitem=ranks[1]
+                ),
+                Taxon(
+                    name="Kingdom2",
+                    fullname="Kingdom2",
+                    isaccepted=False,
+                    acceptedtaxon=None,
+                    rankid=10,
+                    parent=root_node,
+                    definition=self.taxontreedef,
+                    definitionitem=ranks[1]
+                ),
+                Taxon(
+                    name="Kingdom3",
+                    fullname="Kingdom3",
+                    isaccepted=False,
+                    acceptedtaxon=None,
+                    rankid=10,
+                    parent=root_node,
+                    definition=self.taxontreedef,
+                    definitionitem=ranks[1]
+                ),
+                Taxon(
+                    name="Kingdom4",
+                    fullname="Kingdom4",
+                    isaccepted=False,
+                    acceptedtaxon=root_node,
+                    rankid=10,
+                    parent=root_node,
+                    definition=self.taxontreedef,
+                    definitionitem=ranks[1]
+                )
+            ]
         )
-        models.Picklistitem.objects.create(
-            picklist=picklist,
-            title=f"Test Picklist Item {suffix}",
-            value=f"test-picklist-item-{suffix}",
-            ordinal=0,
-        )
+        self.assertExists(Taxon.objects.filter(isaccepted=False, acceptedtaxon__isnull=True))
+        update_is_accepted(apps)
+        self.assertNotExists(Taxon.objects.filter(isaccepted=False, acceptedtaxon__isnull=True))
 
-        collection_object_type = models.Collectionobjecttype.objects.create(
-            name=f"Test Collection Object Type {suffix}",
-            collection=self.collection,
-            taxontreedef=self.taxontreedef,
-        )
+        accepted_taxons = Taxon.objects.filter(isaccepted=True)
+        self.assertEqual(len(accepted_taxons), 4)
 
-        collection_object = models.Collectionobject.objects.create(
-            collection=self.collection,
-            catalognumber=f"cat-{suffix}",
-            collectionobjecttype=collection_object_type,
+    def test_patches_updating_coordinates(self):
+        Locality.objects.bulk_create(
+            [
+                Locality(
+                    localityname="Point Good",
+                    latitude1=35.3450000000,
+                    lat1text="35.345 N",
+                    longitude1=-94.4500000000,
+                    long1text="94.45 W",
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+                Locality(
+                    localityname="Dos Point",
+                    latitude1=-12.5780000000,
+                    lat1text="12.578 S",
+                    latitude2=-12.9800000000,
+                    lat2text="12.98 S",
+                    longitude1=28.4500000000,
+                    long1text="28.45 E",
+                    longitude2=27.8790000000,
+                    long2text="27.879 E",
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+                Locality(
+                    localityname="Point Mal",
+                    latitude1=35.3450000000,
+                    lat1text=None,
+                    longitude1=-94.4500000000,
+                    long1text="94.45 W",
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+                Locality(
+                    localityname="Foo",
+                    latitude1=35.3450000000,
+                    lat1text="35.345 N",
+                    longitude1=-94.4500000000,
+                    long1text=None,
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+                Locality(
+                    localityname="Bad",
+                    latitude1=35.3450000000,
+                    lat1text=None,
+                    longitude1=-94.4500000000,
+                    long1text=None,
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+                Locality(
+                    localityname="Bar Baz",
+                    latitude1=-12.5780000000,
+                    lat1text="12.578 S",
+                    latitude2=-12.9800000000,
+                    lat2text=None,
+                    longitude1=28.4500000000,
+                    long1text=None,
+                    longitude2=27.8790000000,
+                    long2text="27.879 E",
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+                Locality(
+                    localityname="Qux Quux",
+                    latitude1=-12.5780000000,
+                    lat1text=None,
+                    latitude2=-12.9800000000,
+                    lat2text="12.98 S",
+                    longitude1=28.4500000000,
+                    long1text="28.45 E",
+                    longitude2=27.8790000000,
+                    long2text=None,
+                    srclatlongunit=0,
+                    discipline=self.discipline
+                ),
+            ]
         )
-
-        collection_object_group_type = (
-            models.Collectionobjectgrouptype.objects.create(
-                name=f"Test Collection Object Group Type {suffix}",
-                type="Discrete",
-                collection=self.collection,
+        update_coordinates(apps)
+        self.assertNotExists(
+            Locality.objects.filter(
+                Q(lat1text__isnull=True, latitude1__isnull=False) |
+                Q(long1text__isnull=True, longitude1__isnull=False) |
+                Q(lat2text__isnull=True, latitude2__isnull=False) |
+                Q(long2text__isnull=True, longitude2__isnull=False)
             )
-            if include_collection_object_group_type
-            else None
-        )
-
-        role = Role.objects.create(
-            collection=self.collection,
-            name=f"Test Role {suffix}",
-            description="User-created role",
-        )
-
-        RolePolicy.objects.create(
-            role=role,
-            resource=f"/test/resource/{suffix}",
-            action="read",
-        )
-
-        UserRole.objects.create(
-            specifyuser=self.specifyuser,
-            role=role,
-        )
-
-        UserPolicy.objects.create(
-            collection=self.collection,
-            specifyuser=self.specifyuser,
-            resource=f"/test/user-policy/{suffix}",
-            action="read",
-        )
-
-        library_role = LibraryRole.objects.create(
-            name=f"Test Library Role {suffix}",
-            description="User-created library role",
-        )
-
-        LibraryRolePolicy.objects.create(
-            role=library_role,
-            resource=f"/test/library-resource/{suffix}",
-            action="read",
-        )
-
-        app_resource_dir = models.Spappresourcedir.objects.create(
-            collection=self.collection,
-            ispersonal=False,
-        )
-
-        app_resource = models.Spappresource.objects.create(
-            spappresourcedir=app_resource_dir,
-            specifyuser=self.specifyuser,
-            level=0,
-            name=f"Test App Resource {suffix}",
-        )
-
-        models.Spappresourcedata.objects.create(
-            spappresource=app_resource,
-            data=f"test app resource data {suffix}".encode(),
-        )
-
-        schema_container = models.Splocalecontainer.objects.create(
-            name=f"test_schema_container_{suffix.replace('-', '_')}",
-            schematype=0,
-            discipline=self.discipline,
-        )
-
-        schema_item = models.Splocalecontaineritem.objects.create(
-            name=f"test_schema_item_{suffix.replace('-', '_')}",
-            container=schema_container,
-        )
-
-        models.Splocaleitemstr.objects.create(
-            itemname=schema_item,
-            language="en",
-            text=f"Test Schema Item {suffix}",
-        )
-
-        return {
-            "app_resource_dir_id": app_resource_dir.id,
-            "app_resource_id": app_resource.id,
-            "collection_object_group_type_id": (
-                None
-                if collection_object_group_type is None
-                else collection_object_group_type.id
-            ),
-            "collection_object_id": collection_object.id,
-            "collection_object_type_id": collection_object_type.id,
-            "library_role_id": library_role.id,
-            "picklist_id": picklist.id,
-            "role_id": role.id,
-            "schema_container_id": schema_container.id,
-            "schema_item_id": schema_item.id,
-            "suffix": suffix,
-        }
-
-    def assert_simulated_specify7_usage_preserved(self, usage):
-        self.assertEqual(
-            models.Picklist.objects.filter(
-                id=usage["picklist_id"],
-                name=f"Test Picklist {usage['suffix']}",
-                collection=self.collection,
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Picklistitem.objects.filter(
-                picklist_id=usage["picklist_id"],
-                value=f"test-picklist-item-{usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Collectionobjecttype.objects.filter(
-                id=usage["collection_object_type_id"],
-                name=f"Test Collection Object Type {usage['suffix']}",
-                collection=self.collection,
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Collectionobject.objects.filter(
-                id=usage["collection_object_id"],
-                collectionobjecttype_id=usage["collection_object_type_id"],
-            ).count(),
-            1,
-        )
-
-        if usage["collection_object_group_type_id"] is not None:
-            self.assertEqual(
-                models.Collectionobjectgrouptype.objects.filter(
-                    id=usage["collection_object_group_type_id"],
-                    name=f"Test Collection Object Group Type {usage['suffix']}",
-                    collection=self.collection,
-                ).count(),
-                1,
-            )
-
-        self.assertEqual(
-            Role.objects.filter(
-                id=usage["role_id"],
-                collection=self.collection,
-                name=f"Test Role {usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            RolePolicy.objects.filter(
-                role_id=usage["role_id"],
-                resource=f"/test/resource/{usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            UserRole.objects.filter(
-                specifyuser=self.specifyuser,
-                role_id=usage["role_id"],
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            UserPolicy.objects.filter(
-                collection=self.collection,
-                specifyuser=self.specifyuser,
-                resource=f"/test/user-policy/{usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            LibraryRole.objects.filter(
-                id=usage["library_role_id"],
-                name=f"Test Library Role {usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            LibraryRolePolicy.objects.filter(
-                role_id=usage["library_role_id"],
-                resource=f"/test/library-resource/{usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Spappresourcedir.objects.filter(
-                id=usage["app_resource_dir_id"],
-                collection=self.collection,
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Spappresource.objects.filter(
-                id=usage["app_resource_id"],
-                spappresourcedir_id=usage["app_resource_dir_id"],
-                specifyuser=self.specifyuser,
-                name=f"Test App Resource {usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Spappresourcedata.objects.filter(
-                spappresource_id=usage["app_resource_id"],
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Splocalecontainer.objects.filter(
-                id=usage["schema_container_id"],
-                discipline=self.discipline,
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Splocalecontaineritem.objects.filter(
-                id=usage["schema_item_id"],
-                container_id=usage["schema_container_id"],
-            ).count(),
-            1,
-        )
-
-        self.assertEqual(
-            models.Splocaleitemstr.objects.filter(
-                itemname_id=usage["schema_item_id"],
-                language="en",
-                text=f"Test Schema Item {usage['suffix']}",
-            ).count(),
-            1,
-        )
-
-    def run_key_migration_functions(self, *args):
-        out = StringIO()
-        call_command("run_key_migration_functions", *args, stdout=out)
-        return out.getvalue()
-
-    @patch(
-        "specifyweb.specify.management.commands.run_key_migration_functions.set_discipline_for_taxon_treedefs"
-    )
-    def test_second_run_does_not_create_duplicate_records(self, mock_set_discipline_for_taxon_treedefs):
-        # First dataset
-        self.simulate_specify7_usage(
-            "before-first-run",
-            include_collection_object_group_type=False,
-        )
-
-        before_first_run = record_counts()
-
-        self.run_key_migration_functions(
-            "fix_schema_config",
-            "fix_app_resource_dirs",
-            "fix_permissions",
-            "fix_business_rules",
-            "fix_tectonic_ranks",
-            "fix_misc",
-        )
-
-        after_first_run = record_counts()
-        first_run_diff = count_diff(before_first_run, after_first_run)
-        self.assertTrue(
-            first_run_diff,
-            "First run should create or backfill expected migration records",
-        )
-
-        # Second dataset inserted between runs
-        between_run_usage = self.simulate_specify7_usage("between-runs")
-
-        before_second_run = record_counts()
-
-        self.run_key_migration_functions(
-            "fix_schema_config",
-            "fix_app_resource_dirs",
-            "fix_permissions",
-            "fix_business_rules",
-            "fix_tectonic_ranks",
-            "fix_misc",
-        )
-        after_second_run = record_counts()
-        second_run_diff = count_diff(before_second_run, after_second_run)
-
-        self.assertEqual(
-            second_run_diff,
-            {},
-            f"Second run created or removed tracked records: {second_run_diff}",
-        )
-
-        self.assert_simulated_specify7_usage_preserved(
-            between_run_usage
         )

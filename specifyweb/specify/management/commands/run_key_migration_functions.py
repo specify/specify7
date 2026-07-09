@@ -209,26 +209,27 @@ def fix_misc(stdout: WriteToStdOut | None = None):
     ]
     log_and_run(funcs, stdout)
 
+
+ALL_FUNCTIONS: dict[str, Callable[[WriteToStdOut | None], None]] = {
+    "apply_patches": lambda _stdout: apply_patches(apps),
+    "fix_cots": fix_cots,
+    "fix_permissions": fix_permissions,
+    "fix_business_rules": fix_business_rules,
+    "fix_schema_config": fix_schema_config,
+    "fix_app_resource_dirs": fix_app_resource_dirs,
+    "fix_tectonic_ranks": fix_tectonic_ranks,
+    "fix_misc": fix_misc,
+}
+
 class Command(BaseCommand):
     help = "Runs this Django command to re-run important data migrations functions"
-
-    funcs = {
-            "apply_patches": lambda _stdout: apply_patches(apps),
-            "fix_cots": fix_cots,
-            "fix_permissions": fix_permissions,
-            "fix_business_rules": fix_business_rules,
-            "fix_schema_config": fix_schema_config,
-            "fix_app_resource_dirs": fix_app_resource_dirs,
-            "fix_tectonic_ranks": fix_tectonic_ranks,
-            "fix_misc": fix_misc,
-        }
 
     def add_arguments(self, parser):
         parser.add_argument(
             "functions",
             nargs="*",
             type=str,
-            choices=tuple(self.funcs.keys()),
+            choices=tuple(ALL_FUNCTIONS.keys()),
             help="Optional: specify one or more functions to run",
         )
         parser.add_argument(
@@ -250,7 +251,7 @@ class Command(BaseCommand):
                 if len(functions) > 0:
                     for function in functions:
                         if function:
-                            if function not in self.funcs:
+                            if function not in ALL_FUNCTIONS:
                                 self.stderr.write(
                                     self.style.ERROR(f"Unknown function: {function}")
                                 )
@@ -258,10 +259,10 @@ class Command(BaseCommand):
                             self.stdout.write(
                                 self.style.SUCCESS(f"Applying {function}...")
                             )
-                            self.funcs[function](self.stdout.write if verbose else None)
+                            ALL_FUNCTIONS[function](self.stdout.write if verbose else None)
                 else:
                     self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
-                    for func_name, func in self.funcs.items():
+                    for func_name, func in ALL_FUNCTIONS.items():
                         self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
                         func(self.stdout.write if verbose else None)
                         self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))

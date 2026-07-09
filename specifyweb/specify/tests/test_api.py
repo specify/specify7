@@ -184,6 +184,9 @@ class MainSetupTearDown:
     def assertExists(self, queryset: QuerySet):
         self.assertTrue(queryset.exists(), "Record does not exist!")
 
+    def assertNotExists(self, queryset: QuerySet):
+        self.assertFalse(queryset.exists(), "Record is supposed to not exist!")
+
 class ApiTests(MainSetupTearDown, TestCase): pass
 
 # This test gets used when there are some transactional behavior that needs to be tested
