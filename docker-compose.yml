@@ -20,7 +20,7 @@ services:
       - "database:/var/lib/mysql" # the data directory for mariadb
       - "./seed-database:/docker-entrypoint-initdb.d"
     ports:
-      - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
+      - "127.0.0.1:3307:3306" # host 3307 -> container 3306 (host 3306 is used by a local MySQL)
     command: --max_allowed_packet=1073741824
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
