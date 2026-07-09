@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:26+0000\n"
+"PO-Revision-Date: 2026-07-09 19:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -498,10 +498,11 @@ msgstr ""
 msgid "displayAuthor"
 msgstr "Mostrar autor en el árbol"
 
-#: components/Preferences/UserDefinitions.tsx:1681
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1681
+#, fuzzy
 msgid "displayChronoPeriods"
-msgstr ""
+msgstr "Mostrar los períodos de inicio y fin"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:607
