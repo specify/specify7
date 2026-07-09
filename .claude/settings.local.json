@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(docker exec *)",
+      "Bash(rm -f /tmp/pwcheck.py)",
+      "PowerShell(docker exec specify7 ve/bin/python manage.py test specifyweb.backend.context.tests.test_collection_stats --verbosity=2 2>&1)",
+      "PowerShell(if \\($?\\) { \"grant applied\" })",
+      "PowerShell(docker exec specify7 ve/bin/python manage.py test specifyweb.backend.context.tests.test_collection_stats --verbosity=2)",
+      "PowerShell(docker exec -w /home/node webpack npx jest lib/components/HomePage/__tests__/CollectionStatistics.test.tsx --no-coverage 2>&1)",
+      "PowerShell(docker restart webpack 2>&1)",
+      "PowerShell(if \\($?\\) { \"webpack restarted\" })",
+      "PowerShell(docker exec -w /home/node webpack npx eslint lib/components/HomePage/CollectionStatistics.tsx lib/components/HomePage/index.tsx lib/localization/collectionStatistics.ts \"lib/components/HomePage/__tests__/CollectionStatistics.test.tsx\" 2>&1)",
+      "PowerShell(docker exec -w /home/node webpack npx eslint lib/components/HomePage/CollectionStatistics.tsx lib/localization/collectionStatistics.ts \"lib/components/HomePage/__tests__/CollectionStatistics.test.tsx\" 2>&1)",
+      "PowerShell(if \\($?\\) { \"webpack rebuilding \\(final code\\)\" })",
+      "Read(//c/Users/miles/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/7c3fbd69-edf8-44e4-8bec-e07f2f22c922/0af3820d-89f2-40d7-892d-159d5e2eb8e6/skills/docx/**)",
+      "Bash(node -e \"console.log\\(require\\('docx'\\).version || 'ok'\\)\")",
+      "Bash(npm install *)",
+      "Bash(node build.js)",
+      "Bash(python scripts/office/validate.py \"C:/Users/miles/AppData/Local/Temp/claude/D--specify7/d320b79d-98d0-41cd-a832-87c31ae34e6b/scratchpad/CollectionStatistics_Writeup.docx\")",
+      "Bash(python -c \"import zipfile,xml.dom.minidom as m; z=zipfile.ZipFile\\('CollectionStatistics_Writeup.docx'\\); bad=z.testzip\\(\\); print\\('zip ok' if bad is None else 'BAD:'+bad\\); [m.parseString\\(z.read\\(n\\)\\) for n in z.namelist\\(\\) if n.endswith\\('.xml'\\)]; print\\('all xml well-formed:', z.namelist\\(\\)\\)\")",
+      "Bash(python \"C:/Users/miles/AppData/Roaming/Claude/local-agent-mode-sessions/skills-plugin/7c3fbd69-edf8-44e4-8bec-e07f2f22c922/0af3820d-89f2-40d7-892d-159d5e2eb8e6/skills/docx/scripts/office/soffice.py\" --headless --convert-to pdf CollectionStatistics_Writeup.docx)",
+      "Bash(command -v soffice libreoffice)",
+      "Read(//c/Program Files/LibreOffice/program/**)",
+      "Bash(git diff *)",
+      "Bash(grep -iE \"\\\\.\\(png|jpg|jpeg\\)$\")"
+    ]
+  }
+}

@@ -1,0 +1,4 @@
+# Shell scripts must use LF so they run inside Linux containers.
+*.sh text eol=lf
+docker-entrypoint.sh text eol=lf
+sp7_db_setup_check.sh text eol=lf
