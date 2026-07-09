@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:25+0000\n"
+"PO-Revision-Date: 2026-07-09 19:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/preferences/nb_NO/>\n"
@@ -521,10 +521,11 @@ msgstr "Skaler grensesnittet slik at det samsvarer med skriftstørrelsen."
 msgid "displayAuthor"
 msgstr "Vis forfatter i treet"
 
-#: components/Preferences/UserDefinitions.tsx:1681
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1681
+#, fuzzy
 msgid "displayChronoPeriods"
-msgstr ""
+msgstr "Vis start- og sluttperioder"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:607
