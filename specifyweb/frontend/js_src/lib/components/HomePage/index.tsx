@@ -10,6 +10,7 @@ import { useDarkMode } from '../Preferences/Hooks';
 import { getDefaultWelcomePageImage } from '../Preferences/Renderers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { ReactLazy } from '../Router/ReactLazy';
+import { CollectionStatistics } from './CollectionStatistics';
 
 const TaxonTiles = ReactLazy(async () =>
   import('./TaxonTiles').then(({ TaxonTiles }) => TaxonTiles)
@@ -48,6 +49,9 @@ export function WelcomeView(): JSX.Element {
         `}
         >
           {mode === 'taxonTiles' ? <TaxonTiles /> : <WelcomeScreenContent />}
+        </div>
+        <div className="flex justify-center">
+          <CollectionStatistics />
         </div>
         <span className="-ml-2 flex-1" />
       </div>
