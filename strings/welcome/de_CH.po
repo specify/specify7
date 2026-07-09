@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:28+0000\n"
+"PO-Revision-Date: 2026-07-09 19:04+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/de_CH/>\n"
@@ -55,13 +55,31 @@ msgstr ""
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:91
+#, fuzzy
 msgid "disclosure"
 msgstr ""
+"Specify wird vom Specify Collections Consortium (SCC) entwickelt, einer "
+"Kooperationsinitiative, die von ihren Mitgliedern geleitet und von "
+"institutionellen Partnern unterstützt wird. Die Softwareentwicklung und -"
+"unterstützung werden durch die Konsortiumsmitglieder ermöglicht, darunter "
+"das UniMus:Natur Consortium aus Norwegen, die Commonwealth Scientific and "
+"Industrial Research Organisation (CSIRO), der Consejo Superior de "
+"Investigaciones Científicas (CSIC), das Dänische Museumskonsortium, das "
+"Muséum d’Histoire Naturelle Genf, die University of Florida, die University "
+"of Kansas und die University of Michigan sowie zahlreiche weitere Sammlungen "
+"und Institutionen innerhalb des Konsortiums. Das SCC ist als gemeinnützige "
+"Organisation (501(c)(3)) des University of Kansas Center for Research "
+"anerkannt und wurde von 1996 bis 2018 von der U.S. National Science "
+"Foundation gefördert."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
+#, fuzzy
 msgid "licence"
 msgstr ""
+"Specify 7, Copyright 2026, University of Kansas Center for Research. Specify "
+"wird OHNE JEGLICHE GEWÄHRLEISTUNG bereitgestellt. Dies ist freie Open-Source-"
+"Software, lizenziert unter der GNU General Public License v3."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
