@@ -1120,3 +1120,21 @@ def stats_counts(request):
         'Collection': collection_count,
         'Specifyuser': user_count,
     })
+
+@require_http_methods(['GET', 'HEAD'])
+@login_maybe_required
+def collection_stats(request):
+    """Return summary statistics for the collections as a list of objects
+    with the shape {name, specimenCount, collectionType}.
+
+    NOTE: The data is intentionally mocked/hardcoded per the feature request;
+    it does not query the database.
+    """
+    stats = [
+        {'name': 'Mammals', 'specimenCount': 12543, 'collectionType': 'Zoology'},
+        {'name': 'Birds', 'specimenCount': 8391, 'collectionType': 'Zoology'},
+        {'name': 'Vascular Plants', 'specimenCount': 45210, 'collectionType': 'Botany'},
+        {'name': 'Fossil Invertebrates', 'specimenCount': 3078, 'collectionType': 'Paleontology'},
+    ]
+    # safe=False is required to serialize a top-level list (see schema_language above).
+    return JsonResponse(stats, safe=False)
