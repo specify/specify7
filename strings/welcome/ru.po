@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:27+0000\n"
+"PO-Revision-Date: 2026-07-09 19:03+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "welcome/ru/>\n"
@@ -55,13 +55,31 @@ msgstr ""
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:91
+#, fuzzy
 msgid "disclosure"
 msgstr ""
+"Программа Specify разработана Консорциумом Specify Collections (SCC), "
+"совместной инициативой, управляемой его членами и поддерживаемой "
+"институциональными партнерами. Поддержка и разработка программного "
+"обеспечения стали возможны благодаря членам консорциума, включая консорциум "
+"UniMus:Natur из Норвегии, Организацию научных и промышленных исследований "
+"Содружества (CSIRO), Высший совет по научным исследованиям (CSIC), Датский "
+"консорциум музеев, Музей естественной истории Женевы, Университет Флориды, "
+"Университет Канзаса и Университет Мичигана, а также многочисленные другие "
+"коллекции и учреждения-члены консорциума. SCC работает в рамках "
+"некоммерческого налогового статуса 501(c)(3) Центра исследований "
+"Университета Канзаса и получал поддержку в виде грантов Национального "
+"научного фонда США с 1996 по 2018 год."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:92
+#, fuzzy
 msgid "licence"
 msgstr ""
+"Specify 7, Copyright 2026, Центр исследований Канзасского университета. "
+"Программа Specify предоставляется БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ. Это бесплатное "
+"программное обеспечение с открытым исходным кодом, распространяемое по "
+"лицензии GNU General Public License v3."
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:95
