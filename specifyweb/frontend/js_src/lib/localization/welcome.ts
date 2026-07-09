@@ -97,9 +97,11 @@ export const welcomeText = createDictionary({
     'de-ch': '',
     'es-es': '',
     'fr-fr': '',
-    'hr-hr': '',
+    'hr-hr':
+      "Specify softver je proizvod konzorcija Specify Collections kojim upravljaju i financiraju ga njegove institucije članice. Osnivači konzorcija uključuju: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Danski konzorcij muzeja, Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, Sveučilište Kansas i Sveučilište Michigan. Konzorcij djeluje pod neprofitnim, poreznim statusom 501(c)3 Sveučilišnog centra za istraživanje u Kansasu. Specify je od 1996. do 2018. godine financiran bespovratnim sredstvima američke Nacionalne zaklade za znanost.",
     nb: '',
-    'pt-br': '',
+    'pt-br':
+      "O software Specify é um produto do Specify Collections Consortium, que é governado e financiado por suas instituições membros. Os membros fundadores do Consórcio incluem: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas e University of Michigan. O Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos EUA (NSF).",
     'ru-ru': '',
     'uk-ua': '',
   },
