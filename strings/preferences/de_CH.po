@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-07 19:23+0000\n"
+"PO-Revision-Date: 2026-07-09 19:02+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/preferences/de_CH/>\n"
@@ -35,6 +35,7 @@ msgid "defaultUserPreferences"
 msgstr "Standardbenutzereinstellungen"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
+#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:31
 #: components/Preferences/UserDefinitions.tsx:170
 #: components/Preferences/UserDefinitions.tsx:610
@@ -44,7 +45,6 @@ msgstr "Standardbenutzereinstellungen"
 #: components/Preferences/UserDefinitions.tsx:1770
 #: components/Preferences/UserDefinitions.tsx:1965
 #: components/Preferences/UserDefinitions.tsx:2280
-#. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 msgid "general"
 msgstr "Allgemein"
 
@@ -110,13 +110,13 @@ msgid "rankThreshold"
 msgstr "Objektanzahl unten anzeigen"
 
 #. Used in: Components > Preferences > User Definitions
+#. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1581
 #: components/Preferences/UserDefinitions.tsx:1620
 #: components/Preferences/UserDefinitions.tsx:1650
 #: components/Preferences/UserDefinitions.tsx:1689
 #: components/Preferences/UserDefinitions.tsx:1721
 #: components/Preferences/UserDefinitions.tsx:1753
-#. Used in: Components > Preferences > User Definitions
 msgid "rankThresholdDescription"
 msgstr ""
 "Anzahl der Sammlungsobjekte für alle Ränge einschließlich und unterhalb "
@@ -473,10 +473,11 @@ msgstr "Skalieren Sie die Benutzeroberfläche an die Schriftgröße an."
 msgid "displayAuthor"
 msgstr "Autor im Baum anzeigen"
 
-#: components/Preferences/UserDefinitions.tsx:1681
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1681
+#, fuzzy
 msgid "displayChronoPeriods"
-msgstr ""
+msgstr "Start- und Endzeitraum anzeigen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:607
