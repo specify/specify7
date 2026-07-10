@@ -1,49 +1,49 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-09 19:04+0000\n"
+"PO-Revision-Date: 2026-07-10 18:05+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: French "
-"<https://hosted.weblate.org/projects/specify-7/welcome/fr/>\n"
+"Language-Team: French <https://hosted.weblate.org/projects/specify-7/welcome/"
+"fr/>\n"
 "Language: fr\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.7.1.dev0\n"
 
+#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 #: components/HomePage/index.tsx:101
 #: components/Router/Routes.tsx:488
-#. Used in: Components > Home Page > Index ⬤ Components > Router > Routes
 msgid "pageTitle"
 msgstr "Accueillir"
 
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 #: components/Header/userToolDefinitions.ts:154
 #: components/HomePage/AboutSpecify.tsx:68
 #: components/Router/OverlayRoutes.tsx:215
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Home Page > About Specify ⬤ Components > Router > Overlay Routes
 msgid "aboutSpecify"
 msgstr "À propos de Spécifier 7"
 
-#: components/HomePage/AboutSpecify.tsx:56
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:56
 msgid "downloadInformation"
 msgstr "À propos de Spécifier 7"
 
+#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 #: components/HomePage/TaxonTiles.tsx:80
 #: components/Preferences/Renderers.tsx:260
-#. Used in: Components > Home Page > Taxon Tiles ⬤ Components > Preferences > Renderers
 msgid "taxonTiles"
 msgstr "Tuiles Taxons"
 
-#: components/HomePage/TaxonTiles.tsx:73
 #. Used in: Components > Home Page > Taxon Tiles
+#: components/HomePage/TaxonTiles.tsx:73
 msgid "taxonTilesDescription"
 msgstr ""
 "Affichage des taxons avec des enregistrements {count:number|formatted} ou "
 "plus {collectionObjectTable:string}"
 
-#: components/HomePage/AboutSpecify.tsx:79
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:79
 msgid "fullAddress"
 msgstr ""
 "Specify Collections Consortium <br />\n"
@@ -52,8 +52,8 @@ msgstr ""
 "1345 Jayhawk Blvd. <br />\n"
 "Lawrence, KS 66045 USA"
 
-#: components/HomePage/AboutSpecify.tsx:91
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:91
 #, fuzzy
 msgid "disclosure"
 msgstr ""
@@ -66,13 +66,13 @@ msgstr ""
 "scientifique (CSIC), le Consortium des musées du Danemark, le Muséum "
 "d’Histoire naturelle de Genève, l’Université de Floride, l’Université du "
 "Kansas et l’Université du Michigan, ainsi que de nombreuses autres "
-"collections et institutions membres du consortium. Le SCC fonctionne sous "
-"le statut d’organisme à but non lucratif (501(c)(3)) du Centre de recherche "
-"de l’Université du Kansas et a bénéficié de subventions de la Fondation "
+"collections et institutions membres du consortium. Le SCC fonctionne sous le "
+"statut d’organisme à but non lucratif (501(c)(3)) du Centre de recherche de "
+"l’Université du Kansas et a bénéficié de subventions de la Fondation "
 "nationale américaine pour la science (NSF) de 1996 à 2018."
 
-#: components/HomePage/AboutSpecify.tsx:92
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:92
 #, fuzzy
 msgid "licence"
 msgstr ""
@@ -80,52 +80,52 @@ msgstr ""
 "est fourni SANS AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open "
 "source distribué sous licence GNU GPL v3."
 
-#: components/HomePage/AboutSpecify.tsx:95
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:95
 msgid "systemInformation"
 msgstr "Informations système"
 
-#: components/HomePage/AboutSpecify.tsx:99
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:99
 msgid "specifyVersion"
 msgstr "Version de Specify 7 :"
 
-#: components/HomePage/AboutSpecify.tsx:100
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:100
 msgid "gitSha"
 msgstr "SHA Git :"
 
-#: components/HomePage/AboutSpecify.tsx:101
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:101
 msgid "buildDate"
 msgstr "Date de mise-en-route :"
 
-#: components/HomePage/AboutSpecify.tsx:103
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:103
 msgid "specifySixVersion"
 msgstr "Version de Specify 6 :"
 
-#: components/HomePage/AboutSpecify.tsx:106
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:106
 msgid "databaseVersion"
 msgstr "Version de la base de données :"
 
-#: components/SchemaViewer/index.tsx:44
 #. Used in: Components > Schema Viewer > Index
+#: components/SchemaViewer/index.tsx:44
 msgid "schemaVersion"
 msgstr "Schéma de base de données"
 
-#: components/HomePage/AboutSpecify.tsx:107
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:107
 msgid "databaseName"
 msgstr "Nom de la base de données :"
 
-#: components/HomePage/AboutSpecify.tsx:128
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:128
 msgid "browser"
 msgstr "Navigateur :"
 
-#: components/HomePage/AboutSpecify.tsx:111
 #. Used in: Components > Home Page > About Specify
+#: components/HomePage/AboutSpecify.tsx:111
 msgid "databaseCreationDate"
 msgstr "Date de création de la base de données :"
