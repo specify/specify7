@@ -88,15 +88,16 @@ jobs:
             sudo chmod -R a+rw .
           done
           docker compose up --build -d
+          docker stats --no-stream
 
       - name: Run the script
         id: run-coverage
         run: |
           docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';' || echo Mariadb crashed!
-          docker ps
           docker logs mariadb
           echo "================================================================================="
           docker logs specify7
+          docker ps
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
