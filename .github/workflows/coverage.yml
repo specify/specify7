@@ -83,15 +83,17 @@ jobs:
           sed -i '/DATABASE_NAME/!s/\(.*\)\(NAME=\).*/\1\2root/; s/\(.*\)\(PASSWORD=\).*/\1\2password/; s/\(.*\) = \(.*\)/\1=\2/' .env
           sed -i 's/#[ ]*\(.*requirements-testing.txt\)/\1/; s/\(COPY\) \(requirements-testing.txt\)/\1 --chown=specify:specify \2/' Dockerfile 
           sed -i 's/\(\(DATABASE_\|MASTER_\|MIGRATOR\|APP_USER_\)[^O].*\) = \(.*\)/\1 = os.environ.get("\1", "")/' specifyweb/settings/specify_settings.py
-          sudo chmod a+x $(find . -type d)
-          sudo chmod -R a+rw .
+          for i in range {0..3}; do
+            sudo chmod a+x $(find . -type d)
+            sudo chmod -R a+rw .
+          done
           docker compose up --build -d
 
       - name: Run the script
         id: run-coverage
         run: |
-          sleep 100
-          docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';'
+          docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';' || echo Mariadb crashed!
+          docker ps
           docker logs mariadb
           echo "================================================================================="
           docker logs specify7
