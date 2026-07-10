@@ -47,3 +47,8 @@ class TestQueryOps(TestCase):
 
     def test_op_between_basic(self):
         self.assert_op_sql(self.ops.op_between, "10,20", '"catalogNumber" BETWEEN \'10\' AND \'20\'')
+
+    def test_op_contains_basic(self):
+        self.assert_op_sql(self.ops.op_contains, "test", '"catalogNumber" LIKE \'%\' || \'test\' || \'%\'')
+
+    
