@@ -51,4 +51,5 @@ class TestQueryOps(TestCase):
     def test_op_contains_basic(self):
         self.assert_op_sql(self.ops.op_contains, "test", '"catalogNumber" LIKE \'%\' || \'test\' || \'%\'')
 
-    
+    def test_op_in_basic(self):
+        self.assert_op_sql(self.ops.op_in, "a,b", '"catalogNumber" IN (\'a\', \'b\')')
