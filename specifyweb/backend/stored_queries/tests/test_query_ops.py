@@ -11,3 +11,8 @@ class TestQueryOps(TestCase):
         result = self.ops.op_like(column("catalogNumber"), "%test%") # returns a SQLAlchemy object
         sql = str(result.compile(compile_kwargs={"literal_binds": True})) # converts the whole thing into string
         self.assertEqual(sql, '"catalogNumber" LIKE \'%test%\'')
+    
+    def test_op_like_percent_wildcard(self):
+        result = self.ops.op_like(column("catalogNumber"), "2025%")
+        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
+        self.assertEqual(sql, '"catalogNumber" LIKE \'2025%\'')
