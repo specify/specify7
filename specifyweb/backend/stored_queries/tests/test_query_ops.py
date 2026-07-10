@@ -5,24 +5,21 @@ from specifyweb.backend.stored_queries.query_ops import QueryOps
 class TestQueryOps(TestCase):
 
     def setUp(self):
-        self.ops = QueryOps(uiformatter=None) # clearing the formatting
+        self.ops = QueryOps(uiformatter=None)
+
+    def assert_op_sql(self, op_method, value, expected_sql):
+        result = op_method(column("catalogNumber"), value)
+        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
+        self.assertEqual(sql, expected_sql)
 
     def test_op_like_basic(self):
-        result = self.ops.op_like(column("catalogNumber"), "%test%") # returns a SQLAlchemy object
-        sql = str(result.compile(compile_kwargs={"literal_binds": True})) # converts the whole thing into string
-        self.assertEqual(sql, '"catalogNumber" LIKE \'%test%\'')
-    
+        self.assert_op_sql(self.ops.op_like, "%test%", '"catalogNumber" LIKE \'%test%\'')
+
     def test_op_like_percent_wildcard(self):
-        result = self.ops.op_like(column("catalogNumber"), "2025%")
-        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
-        self.assertEqual(sql, '"catalogNumber" LIKE \'2025%\'')
+        self.assert_op_sql(self.ops.op_like, "2025%", '"catalogNumber" LIKE \'2025%\'')
 
     def test_op_like_underscore_wildcard(self):
-        result = self.ops.op_like(column("catalogNumber"), "202_")
-        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
-        self.assertEqual(sql, '"catalogNumber" LIKE \'202_\'')
+        self.assert_op_sql(self.ops.op_like, "202_", '"catalogNumber" LIKE \'202_\'')
 
     def test_op_like_no_wildcard(self):
-        result = self.ops.op_like(column("catalogNumber"), "exact")
-        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
-        self.assertEqual(sql, '"catalogNumber" LIKE \'exact\'')
+        self.assert_op_sql(self.ops.op_like, "exact", '"catalogNumber" LIKE \'exact\'')
