@@ -86,40 +86,40 @@ regex_escape() {
   printf '%s' "$value" | sed -e 's/[][\/.^$*+?{}()|\\]/\\&/g'
 }
 
-has_all_privs_in_line() {
-  local line="$1"
-  shift
-  local missing=()
-  local p
-  for p in "$@"; do
-    # match whole words; spaces already canonicalized
-    if ! grep -qiE "(^|[, ])${p}(,| |$)" <<<"$line"; then
-      missing+=("$p")
-    fi
-  done
-  if [[ ${#missing[@]} -eq 0 ]]; then
-    return 0
-  else
-    return 1
-  fi
-}
-
 grant_line_has_required_privs() {
   local line="$1"
+  shift
+  local privileges=("$@")
 
-  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \*\.\* TO " <<<"$line"; then
+  local regex_scoped_to_database="ON[[:space:]]+(\*\.\*|\`$SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE\`\.\*[[:space:]]+TO)"
+
+  # We first make sure this grant line is even scoped to the right database
+  # Specifically, we make sure the line is scoped to *.* or DB_NAME.*
+  if [[ ! $line =~ $regex_scoped_to_database ]]; then
+    return 1
+  fi
+
+  # The trivial case for when the user is granted all privileges
+  if [[ $line =~ GRANT[[:space:]]ALL[[:space:]]PRIVILEGES ]]; then
     return 0
   fi
 
-  if grep -qiE "^GRANT .*ALL PRIVILEGES.* ON \`${SQL_DB_IDENTIFIER_REGEX}\`\.\* TO " <<<"$line"; then
-    return 0
-  fi
+  local privs_to_match=${#privileges[@]}
+  local found_privs=0
 
-  if grep -qiE " ON \*\.\* TO " <<<"$line" && has_all_privs_in_line "$line" "$@"; then
-    return 0
-  fi
+  for priv in "${privileges[@]}"; do
+    # The privelege can be in the list of priveleges, or it can be the last
+    # privelege.
+    # We match with the comma or the last with ON to prevent general priveleges
+    # like SELECT, INSERT, etc. matching against more specific priveleges (like
+    # those scoped to a specific table or column)
+    local to_match="$priv,|$priv[[:space:]]$regex_scoped_to_database"
+    if [[ $line =~ $to_match ]]; then
+      found_privs=$((found_privs+1))
+    fi
+  done
 
-  if grep -qiE " ON \`${SQL_DB_IDENTIFIER_REGEX}\`\.\* TO " <<<"$line" && has_all_privs_in_line "$line" "$@"; then
+  if [[ $found_privs -eq $privs_to_match ]]; then
     return 0
   fi
 
@@ -133,10 +133,8 @@ SQL_MIGRATOR_NAME=$(sql_string_literal "$MIGRATOR_NAME")
 SQL_MIGRATOR_PASSWORD=$(sql_string_literal "$MIGRATOR_PASSWORD")
 SQL_APP_USER_NAME=$(sql_string_literal "$APP_USER_NAME")
 SQL_APP_USER_PASSWORD=$(sql_string_literal "$APP_USER_PASSWORD")
-DB_NAME_REGEX=$(regex_escape "$DB_NAME")
-SQL_DB_IDENTIFIER_REGEX=$(regex_escape "$SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE")
-MIGRATION_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "DELETE" "CREATE" "ALTER" "INDEX" "DROP")
 APP_REQUIRED_PRIVS=("SELECT" "INSERT" "UPDATE" "DELETE" "CREATE TEMPORARY TABLES" "LOCK TABLES" "EXECUTE")
+MIGRATION_REQUIRED_PRIVS=("${APP_REQUIRED_PRIVS[@]}" "CREATE" "ALTER" "INDEX" "DROP")
 
 echo "--------------------------------------------------"
 echo "DB Configuration:"
@@ -242,7 +240,7 @@ mapfile -t MIGRATOR_GRANTS_LINES <<< "$GRANTS_OUTPUT"
 migrator_has_required_permissions=false
 
 for g in "${MIGRATOR_GRANTS_LINES[@]}"; do
-  if grant_line_has_required_privs "$g"; then
+  if grant_line_has_required_privs "$g" "${MIGRATION_REQUIRED_PRIVS[@]}"; then
     migrator_has_required_permissions=true; break
   fi
 done
@@ -317,7 +315,7 @@ app_has_required_permissions=false
 
 # Evaluate each grant line
 for g in "${APP_GRANTS_LINES[@]}"; do
-  if grant_line_has_required_privs "$g"; then
+  if grant_line_has_required_privs "$g" "${APP_REQUIRED_PRIVS[@]}"; then
     app_has_required_permissions=true; break
   fi
 done
