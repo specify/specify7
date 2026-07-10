@@ -53,3 +53,8 @@ class TestQueryOps(TestCase):
 
     def test_op_in_basic(self):
         self.assert_op_sql(self.ops.op_in, "a,b", '"catalogNumber" IN (\'a\', \'b\')')
+
+    def test_op_startswith_basic(self):
+        self.assert_op_sql(self.ops.op_startswith, "test", '"catalogNumber" LIKE \'test%\'')
+
+    
