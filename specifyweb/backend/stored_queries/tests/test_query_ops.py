@@ -23,3 +23,6 @@ class TestQueryOps(TestCase):
 
     def test_op_like_no_wildcard(self):
         self.assert_op_sql(self.ops.op_like, "exact", '"catalogNumber" LIKE \'exact\'')
+
+    def test_op_equals_basic(self):
+        self.assert_op_sql(self.ops.op_equals, "test-value", '"catalogNumber" = \'test-value\'')
