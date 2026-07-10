@@ -32,3 +32,6 @@ class TestQueryOps(TestCase):
 
     def test_op_equals_number_string(self):
         self.assert_op_sql(self.ops.op_equals, "123", '"catalogNumber" = \'123\'') # for numbers as string
+
+    def test_op_greaterthan_basic(self):
+        self.assert_op_sql(self.ops.op_greaterthan, "100", '"catalogNumber" > \'100\'')
