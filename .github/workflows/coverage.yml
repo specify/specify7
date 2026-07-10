@@ -90,9 +90,11 @@ jobs:
       - name: Run the script
         id: run-coverage
         run: |
-          PATH="/usr/bin:$PATH" run-coverage -t p 
+          sleep 100
           docker logs mariadb
+          echo "================================================================================="
           docker logs specify7
+          docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';'
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
