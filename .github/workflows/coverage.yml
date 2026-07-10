@@ -91,10 +91,10 @@ jobs:
         id: run-coverage
         run: |
           sleep 100
+          docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';'
           docker logs mariadb
           echo "================================================================================="
           docker logs specify7
-          docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';'
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
