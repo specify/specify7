@@ -28,4 +28,7 @@ class TestQueryOps(TestCase):
         self.assert_op_sql(self.ops.op_equals, "test-value", '"catalogNumber" = \'test-value\'')
     
     def test_op_equals_empty_string(self):
-        self.assert_op_sql(self.ops.op_equals, "", '"catalogNumber" = \'\'')
+        self.assert_op_sql(self.ops.op_equals, "", '"catalogNumber" = \'\'') # for empty strings
+
+    def test_op_equals_number_string(self):
+        self.assert_op_sql(self.ops.op_equals, "123", '"catalogNumber" = \'123\'') # for numbers as string
