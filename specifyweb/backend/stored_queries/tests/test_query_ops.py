@@ -16,3 +16,8 @@ class TestQueryOps(TestCase):
         result = self.ops.op_like(column("catalogNumber"), "2025%")
         sql = str(result.compile(compile_kwargs={"literal_binds": True}))
         self.assertEqual(sql, '"catalogNumber" LIKE \'2025%\'')
+
+    def test_op_like_underscore_wildcard(self):
+        result = self.ops.op_like(column("catalogNumber"), "202_")
+        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
+        self.assertEqual(sql, '"catalogNumber" LIKE \'202_\'')
