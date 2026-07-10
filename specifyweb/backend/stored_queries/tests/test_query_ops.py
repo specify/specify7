@@ -60,4 +60,7 @@ class TestQueryOps(TestCase):
     def test_op_endswith_basic(self):
         self.assert_op_sql(self.ops.op_endswith, "test", '"catalogNumber" LIKE \'%test\'')
 
+    def test_op_empty_basic(self):
+        self.assert_op_sql(self.ops.op_empty, "", '"catalogNumber" IS NULL')
+
     
