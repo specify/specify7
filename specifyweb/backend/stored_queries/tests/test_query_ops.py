@@ -41,3 +41,6 @@ class TestQueryOps(TestCase):
 
     def test_op_greaterthanequals_basic(self):
         self.assert_op_sql(self.ops.op_greaterthanequals, "100", '"catalogNumber" >= \'100\'')
+
+    def test_op_lessthanequals_basic(self):
+        self.assert_op_sql(self.ops.op_lessthanequals, "100", '"catalogNumber" <= \'100\'')
