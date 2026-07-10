@@ -196,7 +196,7 @@ msgstr "Preferred: {name:string}"
 msgid "synonyms"
 msgstr "Synonyms: {names:string}"
 
-#: components/TreeView/index.tsx:155
+#: components/TreeView/index.tsx:173
 #. Used in: Components > Tree View > Index
 msgid "treeViewTitle"
 msgstr "{treeName:string} Tree"
@@ -257,23 +257,23 @@ msgstr "{label:string}: {value:string} {suffix:string}"
 msgid "megaAnnum"
 msgstr "Ma"
 
-#: components/TreeView/index.tsx:431
-#: components/TreeView/index.tsx:432
+#: components/TreeView/index.tsx:449
+#: components/TreeView/index.tsx:450
 #. Used in: Components > Tree View > Index
 msgid "biostratFilter"
 msgstr "Filter by biostratigraphy"
 
-#: components/TreeView/index.tsx:439
+#: components/TreeView/index.tsx:457
 #. Used in: Components > Tree View > Index
 msgid "biostratAll"
 msgstr "All Nodes"
 
-#: components/TreeView/index.tsx:440
+#: components/TreeView/index.tsx:458
 #. Used in: Components > Tree View > Index
 msgid "biostratChrono"
 msgstr "Chronostratigraphy"
 
-#: components/TreeView/index.tsx:441
+#: components/TreeView/index.tsx:459
 #. Used in: Components > Tree View > Index
 msgid "biostratBio"
 msgstr "Biostratigraphy"
@@ -288,27 +288,27 @@ msgstr "Edit Ranks"
 msgid "resourceToDelete"
 msgstr "This will permanently delete the following resource"
 
-#: components/TreeView/index.tsx:426
+#: components/TreeView/index.tsx:444
 #. Used in: Components > Tree View > Index
 msgid "associatedNodesOnly"
 msgstr "Show only nodes with associated objects"
 
-#: components/TreeView/index.tsx:357
+#: components/TreeView/index.tsx:375
 #. Used in: Components > Tree View > Index
 msgid "splitView"
 msgstr "Split View"
 
-#: components/TreeView/index.tsx:363
+#: components/TreeView/index.tsx:381
 #. Used in: Components > Tree View > Index
 msgid "horizontal"
 msgstr "Horizontal"
 
-#: components/TreeView/index.tsx:363
+#: components/TreeView/index.tsx:381
 #. Used in: Components > Tree View > Index
 msgid "vertical"
 msgstr "Vertical"
 
-#: components/TreeView/index.tsx:372
+#: components/TreeView/index.tsx:390
 #. Used in: Components > Tree View > Index
 msgid "synchronize"
 msgstr "Synchronize"
@@ -338,8 +338,8 @@ msgstr "Move Items"
 msgid "addTree"
 msgstr "Add Tree"
 
-#: components/TreeView/index.tsx:308
-#: components/TreeView/index.tsx:310
+#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:328
 #. Used in: Components > Tree View > Index
 msgid "treePicker"
 msgstr "Tree Picker"

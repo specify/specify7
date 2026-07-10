@@ -985,7 +985,7 @@ msgid "collapse"
 msgstr "Collapse"
 
 #: components/AppResources/Aside.tsx:189
-#: components/TreeView/index.tsx:338
+#: components/TreeView/index.tsx:356
 #. Used in: Components > App Resources > Aside ⬤ Components > Tree View > Index
 msgid "collapseAll"
 msgstr "Collapse All"
