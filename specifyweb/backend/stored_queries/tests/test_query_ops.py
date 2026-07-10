@@ -21,3 +21,8 @@ class TestQueryOps(TestCase):
         result = self.ops.op_like(column("catalogNumber"), "202_")
         sql = str(result.compile(compile_kwargs={"literal_binds": True}))
         self.assertEqual(sql, '"catalogNumber" LIKE \'202_\'')
+
+    def test_op_like_no_wildcard(self):
+        result = self.ops.op_like(column("catalogNumber"), "exact")
+        sql = str(result.compile(compile_kwargs={"literal_binds": True}))
+        self.assertEqual(sql, '"catalogNumber" LIKE \'exact\'')
