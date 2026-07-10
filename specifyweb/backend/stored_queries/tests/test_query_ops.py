@@ -72,5 +72,6 @@ class TestQueryOps(TestCase):
     def test_op_trueornull_basic(self):
         self.assert_op_sql(self.ops.op_trueornull, "", '"catalogNumber" = true OR "catalogNumber" IS NULL')
 
-    
+    def test_op_falseornull_basic(self):
+        self.assert_op_sql(self.ops.op_falseornull, "", '"catalogNumber" = false OR "catalogNumber" IS NULL')
     
