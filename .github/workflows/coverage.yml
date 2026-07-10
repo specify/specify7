@@ -90,7 +90,9 @@ jobs:
       - name: Run the script
         id: run-coverage
         run: |
-          PATH="/usr/bin:$PATH" run-coverage -t pj -a pj -d pj -o csv,html
+          PATH="/usr/bin:$PATH" run-coverage -t p 
+          docker logs mariadb
+          docker logs specify7
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
