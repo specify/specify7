@@ -21,7 +21,7 @@ services:
       - "./seed-database:/docker-entrypoint-initdb.d"
     ports:
       - "127.0.0.1:3306:3306" # map host port 3306 to container port 3306
-    command: --max_allowed_packet=1073741824
+    command: --max_allowed_packet=1073741824 --general_log
     environment:
       - MYSQL_ROOT_PASSWORD=${MYSQL_ROOT_PASSWORD}
       - MYSQL_DATABASE=${DATABASE_NAME}
