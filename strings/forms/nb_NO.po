@@ -1,140 +1,120 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-10 18:04+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-13 14:36+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.7.1.dev0\n"
+"X-Generator: Weblate 2026.8.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:810
-#, fuzzy
 msgid "forms"
-msgstr "Skjemaer"
+msgstr "Skjema"
 
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:271
 #: components/Statistics/ResultsDialog.tsx:69
-#, fuzzy
 msgid "clone"
-msgstr "Klon"
+msgstr "Klone"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:272
-#, fuzzy
 msgid "cloneDescription"
-msgstr "Opprett en fullstendig kopi av gjeldende post"
+msgstr "Opprett en full kopi av gjeldende post"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:143
-#, fuzzy
 msgid "valueMustBeUniqueToField"
 msgstr "Verdien må være unik for {fieldName:string}"
 
 #. Used in: Components > Data Model > Uniqueness Rules ⬤ Components > Setup Tool > Setup Form
 #: components/DataModel/uniquenessRules.ts:146
 #: components/SetupTool/SetupForm.tsx:373
-#, fuzzy
 msgid "valueMustBeUniqueToDatabase"
 msgstr "Verdien må være unik for databasen"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:134
-#, fuzzy
 msgid "valuesOfMustBeUniqueToField"
 msgstr "Verdiene til {values:string} må være unike for {fieldName:string}"
 
 #. Used in: Components > Data Model > Uniqueness Rules
 #: components/DataModel/uniquenessRules.ts:138
-#, fuzzy
 msgid "valuesOfMustBeUniqueToDatabase"
 msgstr "Verdiene til {values:string} må være unike for databasen"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:139
-#, fuzzy
 msgid "checkingIfResourceCanBeDeleted"
-msgstr "Sjekker om ressursen kan slettes…"
+msgstr "Kontrollerer om ressursen kan slettes …"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:105
-#, fuzzy
 msgid "checkingIfResourceIsUsed"
-msgstr "Sjekker om denne oppføringen er i bruk for øyeblikket…"
+msgstr "Kontrollerer om denne posten er i bruk …"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:51
 #: components/Molecules/LinkedRecords.tsx:119
-#, fuzzy
 msgid "noLinkedRecords"
 msgstr "Ingen lenkede poster"
 
 #. Used in: Components > Molecules > Linked Records
 #: components/Molecules/LinkedRecords.tsx:133
-#, fuzzy
 msgid "recordUsedDescription"
-msgstr "Denne ressursen er for øyeblikket koblet til følgende poster:"
+msgstr "Denne ressursen er for øyeblikket knyttet til følgende poster:"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:96
 #: components/Forms/DeleteButton.tsx:104
 #: components/Forms/DeleteButton.tsx:194
-#, fuzzy
 msgid "deleteBlocked"
-msgstr "Slett blokkert"
+msgstr "Sletting blokkert"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:197
-#, fuzzy
 msgid "deleteBlockedDescription"
-msgstr ""
-"Ressursen kan ikke slettes fordi den refereres til av følgende ressurser:"
+msgstr "Ressursen kan ikke slettes fordi den refereres av følgende ressurser:"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 #: components/SchemaViewer/schemaToTsv.tsx:26
 #: components/WbPlanView/CustomSelectElement.tsx:295
-#, fuzzy
 msgid "relationship"
-msgstr "Forhold"
+msgstr "Relasjon"
 
 #. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:53
 #: components/FormPlugins/PaleoLocation.tsx:89
 #: components/FormPlugins/PaleoLocation.tsx:98
-#, fuzzy
 msgid "paleoMap"
-msgstr "Paleo-kart"
+msgstr "Paleokart"
 
 #. 🟥Example: Geography Required. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:76
-#, fuzzy
 msgid "paleoRequiresGeography"
 msgstr "{geographyTable:string} Obligatorisk"
 
 #. Used in: Components > Form Plugins > Paleo Location
 #: components/FormPlugins/PaleoLocation.tsx:81
-#, fuzzy
 msgid "paleoRequiresGeographyDescription"
 msgstr ""
-"Paleo Map-pluginen krever at {localityTable:string} har geografiske "
-"koordinater og at paleo-konteksten har en geografisk alder med minst en "
-"starttid eller et sluttid utfylt."
+"Paleokart-programtillegget krever at tabellen {localityTable:string} har "
+"geografiske koordinater, og at paleokonteksten har en geografisk alder med "
+"minst et starttidspunkt eller et sluttidspunkt angitt."
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:85
-#, fuzzy
 msgid "invalidDate"
 msgstr "Ugyldig dato"
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:165
-#, fuzzy
 msgid "deleteConfirmation"
 msgstr ""
 "Er du sikker på at du vil slette denne {tableName:string} permanent fra "
@@ -142,49 +122,41 @@ msgstr ""
 
 #. Used in: Components > Forms > Delete Button
 #: components/Forms/DeleteButton.tsx:54
-#, fuzzy
 msgid "deleteConfirmationDescription"
 msgstr "Denne handlingen kan ikke angres."
 
 #. Used in: Components > Form Plugins > Date Precision Picker
 #: components/FormPlugins/DatePrecisionPicker.tsx:28
-#, fuzzy
 msgid "datePrecision"
 msgstr "Datopresisjon"
 
 #. 🟥A placeholder for partial date field when "month /year" type is selected. Visible only in browsers that don't support the "month" input type. Used in: Components > Form Plugins > Date Precision Picker
 #: components/FormPlugins/DatePrecisionPicker.tsx:47
-#, fuzzy
 msgid "monthYear"
-msgstr "Man / År"
+msgstr "Mnd / år"
 
 #. 🟥A placeholder for partial date field when "year" type is selected. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:108
-#, fuzzy
 msgid "yearPlaceholder"
 msgstr "ÅÅÅÅ"
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:141
-#, fuzzy
 msgid "today"
 msgstr "I dag"
 
 #. Used in: Components > Form Plugins > Date Input
 #: components/FormPlugins/DateInput.tsx:144
-#, fuzzy
 msgid "todayButtonDescription"
-msgstr "Sett til gjeldende dato"
+msgstr "Bruk dagens dato"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:285
-#, fuzzy
 msgid "addToPickListConfirmation"
 msgstr "Legge til i {pickListTable:string}?"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:290
-#, fuzzy
 msgid "addToPickListConfirmationDescription"
 msgstr ""
 "Legge til verdien «{value:string}» til {pickListTable:string} med navnet «"
@@ -192,13 +164,11 @@ msgstr ""
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:252
-#, fuzzy
 msgid "invalidType"
 msgstr "Ugyldig type"
 
 #. Used in: Components > Pick Lists > Index
 #: components/PickLists/index.tsx:255
-#, fuzzy
 msgid "invalidNumericPicklistValue"
 msgstr "Bare numeriske verdier støttes i denne {pickListTable:string}"
 
@@ -207,13 +177,11 @@ msgstr "Bare numeriske verdier støttes i denne {pickListTable:string}"
 #: components/FormCells/FormTable.tsx:286
 #: components/FormCells/FormTable.tsx:647
 #: components/Forms/BaseResourceView.tsx:106
-#, fuzzy
 msgid "noData"
 msgstr "Ingen data."
 
 #. Used in: Components > Toolbar > Record Set Edit
 #: components/Toolbar/RecordSetEdit.tsx:42
-#, fuzzy
 msgid "recordSetDeletionWarning"
 msgstr ""
 "{recordSetTable:string} «{recordSetName:string}» vil bli slettet. De "
@@ -223,9 +191,8 @@ msgstr ""
 #: components/FormCommands/index.tsx:39
 #: components/FormMeta/EditHistory.tsx:31
 #: components/FormMeta/MergeRecord.tsx:53
-#, fuzzy
 msgid "saveRecordFirst"
-msgstr "Lagre oppføringen først"
+msgstr "Lagre posten først"
 
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #: components/FormSliders/Slider.tsx:32
