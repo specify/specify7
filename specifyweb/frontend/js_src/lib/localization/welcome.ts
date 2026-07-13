@@ -18,6 +18,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Willkommen',
     'pt-br': 'Bem-vindo',
     'hr-hr': 'Dobrodošli',
+    nb: 'Velkommen',
   },
   aboutSpecify: {
     'en-us': 'About Specify 7',
@@ -28,6 +29,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Über Specify 7',
     'pt-br': 'Sobre Especificar 7',
     'hr-hr': 'O Specify 7',
+    nb: 'Om Specify 7',
   },
   downloadInformation: {
     'en-us': 'Download Information',
@@ -38,6 +40,7 @@ export const welcomeText = createDictionary({
     'uk-ua': 'Про Specify 7',
     'pt-br': 'Informações para download',
     'hr-hr': 'Preuzimanje informacija',
+    nb: 'Last ned informasjon',
   },
   taxonTiles: {
     'en-us': 'Taxon Tiles',
@@ -48,6 +51,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Taxon-Kacheln',
     'pt-br': 'Blocos de táxon',
     'hr-hr': 'Pločice taksona',
+    nb: 'Taksonkart',
   },
   taxonTilesDescription: {
     'en-us':
@@ -66,6 +70,7 @@ export const welcomeText = createDictionary({
       'Exibindo táxons com {count:number|formatted} ou mais registros {collectionObjectTable:string}',
     'hr-hr':
       'Prikazuju se taksoni s {count:number|formatted} ili više {collectionObjectTable:string} zapisa',
+    nb: 'Viser taksa med {count:number|formatted} eller flere {collectionObjectTable:string} poster',
   },
   fullAddress: {
     'en-us':
@@ -75,7 +80,7 @@ export const welcomeText = createDictionary({
     'es-es':
       'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'fr-fr':
-      'Préciser le consortium de collections <br />\n\nInstitut de la Biodiversité <br />\n\nUniversité du Kansas <br />\n\n1345, boulevard Jayhawk. <br />\n\nLawrence, KS 66045 États-Unis',
+      'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
     'uk-ua':
       'Укажіть консорціум колекцій <br />\n\nІнститут біорізноманіття <br />\n\nУніверситет Канзасу <br />\n\n1345 Jayhawk Blvd. <br />\n\nЛоуренс, KS 66045 США',
     'de-ch':
@@ -84,42 +89,45 @@ export const welcomeText = createDictionary({
       'Consórcio de Coleções Específicas <br />\n\nInstituto de Biodiversidade <br />\n\nUniversidade do Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 EUA',
     'hr-hr':
       'Konzorcij za navođenje zbirki <br />\n\nInstitut za bioraznolikost <br />\n\nSveučilište u Kansasu <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 SAD',
+    nb: 'Specify Collections Consortium <br />\n\nBiodiversity Institute <br />\n\nUniversity of Kansas <br />\n\n1345 Jayhawk Blvd. <br />\n\nLawrence, KS 66045 USA',
   },
   disclosure: {
     'en-us':
-      "Specify software is a product of the Specify Collections Consortium that is governed and funded by its member institutions. Consortium Founding Members include: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, and University of Michigan. The Consortium operates under the non-profit, 501(c)3, U.S. tax status of the University of Kansas Center for Research. Specify was supported from 1996 to 2018 by grants from the U.S. National Science Foundation.",
-    'ru-ru':
-      "Specify software является продуктом консорциума Specify Collections. который управляется и финансируется организациями-членами. Члены-учредители консорциума включают: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, и University of Michigan. Консорциум действует под некоммерческой организацией, 501(c)3, налоговым статусом США университета University of Kansas. Specify поддерживался с 1996 по 2018 год грантами фонда U.S. National Science Foundation.",
-    'es-es':
-      "Specify Software es un producto de Specify Collections Consortium, financiado por sus instituciones miembro. Los Miembros Fundadores del Consorcio incluyen: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas (CSIC), Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas y University of Michigan. El Consorcio opera bajo las condiciones fiscales de 501(c)3 de EE.UU. como organización sin ánimo de lucro, University of Kansas Center for Research. Specify ha sido financiado entre 1996 y 2018 por múltiples ayudas de U.S. National Science Foundation.",
-    'fr-fr':
-      "Le logiciel Specify est un produit du Specify Collections Consortium qui est régi et financé par ses institutions membres. Les membres fondateurs du consortium comprennent : l'Organisation de recherche scientifique et industrielle du Commonwealth (CSIRO), le Consejo Superior de Investigaciones Científicas, le Consortium danois des musées, le Muséum d'Histoire Naturelle de Genève, l'Université de Floride, l'Université du Kansas et l'Université du Michigan. Le Consortium opère sous le statut fiscal américain à but non lucratif 501(c)3 du Centre de recherche de l'Université du Kansas. Specify a été soutenu de 1996 à 2018 par des subventions de la National Science Foundation des États-Unis.",
-    'uk-ua':
-      "Програмне забезпечення Specify є продуктом консорціуму Specify Collections Consortium, яким керують і фінансують установи-члени. Члени-засновники консорціуму включають: Науково-промислову дослідницьку організацію Співдружності (CSIRO), Consejo Superior de Investigaciones Sientíficas, Датський консорціум музеїв, Muséum d'Histoire Naturelle Geneva, Університет Флориди, Університет Канзасу та Університет Мічигану. Консорціум працює відповідно до некомерційного, 501(c)3, податкового статусу США дослідницького центру Канзаського університету. З 1996 по 2018 рік Specify підтримувався грантами Національного наукового фонду США.",
+      'Specify is developed by the Specify Collections Consortium (SCC), a collaborative initiative governed by its members and supported by institutional partners. Software support and development are made possible by consortium members, including the UniMus:Natur Consortium of Norway, the Commonwealth Scientific and Industrial Research Organisation (CSIRO), the Consejo Superior de Investigaciones Científicas (CSIC), the Denmark Consortium of Museums, the Muséum d’Histoire Naturelle Geneva, the University of Florida, the University of Kansas, and the University of Michigan, along with numerous other member collections and institutions within the Consortium. The SCC operates under the University of Kansas Center for Research’s non-profit 501(c)(3) U.S. tax status and received support from U.S. National Science Foundation grants from 1996 to 2018.',
     'de-ch':
-      "Die Specify-Software ist ein Produkt des Specify Collections Consortiums, das von seinen Mitgliedsinstitutionen verwaltet und finanziert wird. Zu den Gründungsmitgliedern des Konsortiums gehören: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas, University of Michigan. Das Konsortium arbeitet unter dem gemeinnützigen, 501(c)3, U.S. Steuerstatus des University of Kansas Center for Research. Specify wurde von 1996 bis 2018 durch Zuschüsse der U.S. National Science Foundation unterstützt.",
-    'pt-br':
-      "O software Specify é um produto do Specify Collections Consortium, que é governado e financiado por suas instituições membros. Os membros fundadores do Consórcio incluem: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Denmark Consortium of Museums, Muséum d'Histoire Naturelle Geneva, University of Florida, University of Kansas e University of Michigan. O Consórcio opera sob o status de organização sem fins lucrativos, 501(c)3, do Centro de Pesquisa da Universidade do Kansas, nos EUA. O Specify foi financiado de 1996 a 2018 por bolsas da Fundação Nacional de Ciência dos EUA (NSF).",
+      'Specify wird vom Specify Collections Consortium (SCC) entwickelt, einer Kooperationsinitiative, die von ihren Mitgliedern geleitet und von institutionellen Partnern unterstützt wird. Die Softwareentwicklung und -unterstützung werden durch die Konsortiumsmitglieder ermöglicht, darunter das UniMus:Natur Consortium aus Norwegen, die Commonwealth Scientific and Industrial Research Organisation (CSIRO), der Consejo Superior de Investigaciones Científicas (CSIC), das Dänische Museumskonsortium, das Muséum d’Histoire Naturelle Genf, die University of Florida, die University of Kansas und die University of Michigan sowie zahlreiche weitere Sammlungen und Institutionen innerhalb des Konsortiums. Das SCC ist als gemeinnützige Organisation (501(c)(3)) des University of Kansas Center for Research anerkannt und wurde von 1996 bis 2018 von der U.S. National Science Foundation gefördert.',
+    'es-es':
+      'Specify es desarrollado por el Consorcio Specify Collections (SCC), una iniciativa colaborativa gobernada por sus miembros y respaldada por socios institucionales. El desarrollo y el soporte del software son posibles gracias a los miembros del consorcio, entre los que se incluyen el Consorcio UniMus:Natur de Noruega, la Organización de Investigación Científica e Industrial de la Commonwealth (CSIRO), el Consejo Superior de Investigaciones Científicas (CSIC), el Consorcio de Museos de Dinamarca, el Museo de Historia Natural de Ginebra, la Universidad de Florida, la Universidad de Kansas y la Universidad de Michigan, junto con numerosas otras colecciones e instituciones miembros del Consorcio. El SCC opera bajo la condición de organización sin fines de lucro 501(c)(3) del Centro de Investigación de la Universidad de Kansas y recibió apoyo de subvenciones de la Fundación Nacional de Ciencias de EE. UU. desde 1996 hasta 2018.',
+    'fr-fr':
+      'Specification est développé par le Consortium des Collections Specification (SCC), une initiative collaborative gérée par ses membres et soutenue par des partenaires institutionnels. Le développement et le support logiciel sont assurés par les membres du consortium, notamment le Consortium UniMus:Natur de Norvège, l’Organisation de recherche scientifique et industrielle du Commonwealth (CSIRO), le Conseil supérieur de la recherche scientifique (CSIC), le Consortium des musées du Danemark, le Muséum d’Histoire naturelle de Genève, l’Université de Floride, l’Université du Kansas et l’Université du Michigan, ainsi que de nombreuses autres collections et institutions membres du consortium. Le SCC fonctionne sous le statut d’organisme à but non lucratif (501(c)(3)) du Centre de recherche de l’Université du Kansas et a bénéficié de subventions de la Fondation nationale américaine pour la science (NSF) de 1996 à 2018.',
     'hr-hr':
-      "Specify softver je proizvod konzorcija Specify Collections kojim upravljaju i financiraju ga njegove institucije članice. Osnivači konzorcija uključuju: Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas, Danski konzorcij muzeja, Muséum d'Histoire Naturelle Geneva, Sveučilište Florida, Sveučilište Kansas i Sveučilište Michigan. Konzorcij djeluje pod neprofitnim, poreznim statusom 501(c)3 Sveučilišnog centra za istraživanje u Kansasu. Specify je od 1996. do 2018. godine financiran bespovratnim sredstvima američke Nacionalne zaklade za znanost.",
+      'Specify je razvio Konzorcij za zbirke Specify (SCC), suradnička inicijativa kojom upravljaju njegovi članovi, a podržavaju je institucionalni partneri. Podršku i razvoj softvera omogućuju članovi konzorcija, uključujući UniMus:Natur konzorcij Norveške, Organizaciju za znanstvena i industrijska istraživanja Commonwealtha (CSIRO), Consejo Superior de Investigaciones Científicas (CSIC), Danski konzorcij muzeja, Muzej prirodne povijesti Ženeva, Sveučilište Florida, Sveučilište Kansas i Sveučilište Michigan, zajedno s brojnim drugim zbirkama i institucijama članicama Konzorcija. SCC djeluje pod neprofitnim poreznim statusom 501(c)(3) Sveučilišnog centra za istraživanje u Kansasu i primao je potporu od Nacionalne zaklade za znanost SAD-a od 1996. do 2018. godine.',
+    nb: 'Specifice er utviklet av Specifice Collections Consortium (SCC), et samarbeidsinitiativ styrt av medlemmene og støttet av institusjonelle partnere. Programvarestøtte og -utvikling er muliggjort av konsortiummedlemmer, inkludert UniMus:Natur Consortium of Norway, Commonwealth Scientific and Industrial Research Organisation (CSIRO), Consejo Superior de Investigaciones Científicas (CSIC), Denmark Consortium of Museums, Muséum d’Histoire Naturelle Geneva, University of Florida, University of Kansas og University of Michigan, sammen med en rekke andre medlemssamlinger og institusjoner innenfor konsortiet. SCC opererer under University of Kansas Center for Researchs ideelle 501(c)(3) amerikanske skattestatus og mottok støtte fra amerikanske National Science Foundation-stipend fra 1996 til 2018.',
+    'pt-br':
+      'O Specify é desenvolvido pelo Specify Collections Consortium (SCC), uma iniciativa colaborativa governada por seus membros e apoiada por parceiros institucionais. O suporte e o desenvolvimento do software são viabilizados pelos membros do consórcio, incluindo o Consórcio UniMus:Natur da Noruega, a Organização de Pesquisa Científica e Industrial da Commonwealth (CSIRO), o Conselho Superior de Investigações Científicas (CSIC), o Consórcio de Museus da Dinamarca, o Museu de História Natural de Genebra, a Universidade da Flórida, a Universidade do Kansas e a Universidade de Michigan, juntamente com inúmeras outras coleções e instituições membros do Consórcio. O SCC opera sob o status de organização sem fins lucrativos 501(c)(3) do Centro de Pesquisa da Universidade do Kansas e recebeu apoio de bolsas da Fundação Nacional de Ciência dos EUA de 1996 a 2018.',
+    'ru-ru':
+      'Программа Specify разработана Консорциумом Specify Collections (SCC), совместной инициативой, управляемой его членами и поддерживаемой институциональными партнерами. Поддержка и разработка программного обеспечения стали возможны благодаря членам консорциума, включая консорциум UniMus:Natur из Норвегии, Организацию научных и промышленных исследований Содружества (CSIRO), Высший совет по научным исследованиям (CSIC), Датский консорциум музеев, Музей естественной истории Женевы, Университет Флориды, Университет Канзаса и Университет Мичигана, а также многочисленные другие коллекции и учреждения-члены консорциума. SCC работает в рамках некоммерческого налогового статуса 501(c)(3) Центра исследований Университета Канзаса и получал поддержку в виде грантов Национального научного фонда США с 1996 по 2018 год.',
+    'uk-ua':
+      'Specify розроблено Консорціумом колекцій Specify (SCC), спільною ініціативою, що керується його членами та підтримується інституційними партнерами. Підтримка та розробка програмного забезпечення здійснюється завдяки членам консорціуму, включаючи Консорціум UniMus:Natur Норвегії, Організацію наукових та промислових досліджень Співдружності (CSIRO), Вищу раду наукових досліджень (CSIC), Данський консорціум музеїв, Музей природної історії Женеви, Університет Флориди, Університет Канзасу та Університет Мічигану, а також численні інші колекції та установи-члени Консорціуму. SCC працює відповідно до некомерційного статусу Центру досліджень Канзаського університету, що підпадає під дію 501(c)(3) податкового кодексу США, та отримував підтримку від грантів Національного наукового фонду США з 1996 по 2018 рік.',
   },
   licence: {
     'en-us':
-      'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v2.',
-    'ru-ru':
-      'Specify 7, Авторские права 2025, University of Kansas для исследования. Specify поставляется с СОВЕРШЕННО ОТСУТСТВИЕМ ГАРАНТИИ. Это бесплатное программное обеспечение с открытым исходным кодом под лицензией GNU General Public License v2.',
-    'es-es':
-      'Specify 7 Copyright © 2025 University of Kansas Center for Research. Specify viene SIN NINGUNA GARANTÍA EN ABSOLUTO. Este es un programa libre, bajo licencia GNU General Public License 2 (GPL2).',
-    'fr-fr':
-      "Specify 7, © 2025, Centre de recherche de l'Université du Kansas. Specify est fourni SANS AUCUNE GARANTIE. Ce logiciel libre et open source est distribué sous licence GNU GPL v2.",
-    'uk-ua':
-      'Укажіть 7, авторське право 2025, Дослідницький центр Канзаського університету. Specify поставляється без АБСОЛЮТНОЇ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване згідно з GNU General Public License v2.',
+      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify comes with ABSOLUTELY NO WARRANTY. This is free, open-source software licensed under GNU General Public License v3.',
     'de-ch':
-      'Specify 7, Copyright 2025, University of Kansas Center for Research. Specify kommt mit ABSOLUT KEINER GARANTIE. Dies ist freie, quelloffene Software, lizenziert unter GNU General Public License v2.',
-    'pt-br':
-      'Specify 7, Copyright 2025, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v2.',
+      'Specify 7, Copyright 2026, University of Kansas Center for Research. Specify wird OHNE JEGLICHE GEWÄHRLEISTUNG bereitgestellt. Dies ist freie Open-Source-Software, lizenziert unter der GNU General Public License v3.',
+    'es-es':
+      'Specify 7, Copyright 2026, Centro de Investigación de la Universidad de Kansas. Specify se distribuye SIN GARANTÍA ALGUNA. Este es un software libre de código abierto, licenciado bajo la Licencia Pública General GNU v3.',
+    'fr-fr':
+      "Specify 7, © 2026, Centre de recherche de l'Université du Kansas. Specify est fourni SANS AUCUNE GARANTIE. Il s'agit d'un logiciel libre et open source distribué sous licence GNU GPL v3.",
     'hr-hr':
-      'Specify 7, autorsko pravo 2025., Sveučilišni centar za istraživanje u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v2.',
+      'Specify 7, Autorsko pravo 2026., Istraživački centar Sveučilišta u Kansasu. Specify dolazi APSOLUTNO BEZ JAMSTVA. Ovo je besplatni softver otvorenog koda licenciran pod GNU General Public License v3.',
+    nb: 'Specificate 7, Copyright 2026, University of Kansas Center for Research. Specifice leveres UTEN GARANTI. Dette er gratis programvare med åpen kildekode lisensiert under GNU General Public License v3.',
+    'pt-br':
+      'Specify 7, Copyright 2026, Centro de Pesquisa da Universidade do Kansas. Specify é fornecido SEM QUALQUER GARANTIA. Este é um software livre e de código aberto licenciado sob a Licença Pública Geral GNU v3.',
+    'ru-ru':
+      'Specify 7, Copyright 2026, Центр исследований Канзасского университета. Программа Specify предоставляется БЕЗ КАКИХ-ЛИБО ГАРАНТИЙ. Это бесплатное программное обеспечение с открытым исходным кодом, распространяемое по лицензии GNU General Public License v3.',
+    'uk-ua':
+      'Specify 7, авторське право 2026, Центр досліджень Канзаського університету. Specify постачається АБСОЛЮТНО БЕЗ ГАРАНТІЇ. Це безкоштовне програмне забезпечення з відкритим кодом, ліцензоване за Загальною публічною ліцензією GNU версії 3.',
   },
   systemInformation: {
     'en-us': 'System Information',
@@ -130,16 +138,18 @@ export const welcomeText = createDictionary({
     'de-ch': 'Systeminformationen',
     'pt-br': 'Informações do sistema',
     'hr-hr': 'Informacije o sustavu',
+    nb: 'Systeminformasjon',
   },
   specifyVersion: {
     'en-us': 'Specify 7 Version:',
     'ru-ru': 'Specify 7 Версия:',
     'es-es': 'Especifique la versión 7:',
-    'fr-fr': 'Spécifiez la version 7 :',
+    'fr-fr': 'Version de Specify 7 :',
     'uk-ua': 'Вкажіть 7 версію:',
     'de-ch': 'Specify 7 Version:',
     'pt-br': 'Especificar versão 7:',
     'hr-hr': 'Navedite verziju 7:',
+    nb: 'Specify 7 versjon:',
   },
   gitSha: {
     'en-us': 'Git SHA:',
@@ -150,26 +160,29 @@ export const welcomeText = createDictionary({
     'de-ch': 'Git SHA:',
     'pt-br': 'SHA do Git:',
     'hr-hr': 'Git SHA:',
+    nb: 'Git SHA:',
   },
   buildDate: {
     'en-us': 'Build Date:',
     'ru-ru': 'Дата сборки:',
     'es-es': 'La fecha de construcción:',
-    'fr-fr': 'Date de construction :',
+    'fr-fr': 'Date de mise-en-route :',
     'uk-ua': 'Дата збірки:',
     'de-ch': 'Datum des Builds:',
     'pt-br': 'Data de compilação:',
     'hr-hr': 'Datum izrade:',
+    nb: 'Versjonsdato:',
   },
   specifySixVersion: {
     'en-us': 'Specify 6 Version:',
     'ru-ru': 'Specify 6 Версия:',
     'es-es': 'Versión de Specify 6:',
-    'fr-fr': 'Spécifiez la version 6 :',
+    'fr-fr': 'Version de Specify 6 :',
     'uk-ua': 'Вкажіть 6 версію:',
     'de-ch': 'Specify 6 Version:',
-    'pt-br': 'Especifique a versão 6:',
+    'pt-br': 'Especificar versão 6:',
     'hr-hr': 'Navedite 6 verzija:',
+    nb: 'Specify 6 versjon:',
   },
   databaseVersion: {
     'en-us': 'Database Version:',
@@ -180,6 +193,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbankversion:',
     'pt-br': 'Versão do banco de dados:',
     'hr-hr': 'Verzija baze podataka:',
+    nb: 'Databaseversjon:',
   },
   schemaVersion: {
     'en-us': 'Database Schema',
@@ -190,6 +204,7 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbankschema',
     'pt-br': 'Esquema do banco de dados',
     'hr-hr': 'Shema baze podataka',
+    nb: 'Databaseskjema',
   },
   databaseName: {
     'en-us': 'Database Name:',
@@ -200,16 +215,18 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbank-Name:',
     'pt-br': 'Nome do banco de dados:',
     'hr-hr': 'Naziv baze podataka:',
+    nb: 'Databasenavn:',
   },
   browser: {
     'en-us': 'Browser:',
     'ru-ru': 'Браузер:',
     'es-es': 'Navegador:',
-    'fr-fr': 'Navigateur:',
+    'fr-fr': 'Navigateur :',
     'uk-ua': 'Браузер:',
     'de-ch': 'Browser:',
     'pt-br': 'Navegador:',
     'hr-hr': 'Preglednik:',
+    nb: 'Nettleser:',
   },
   databaseCreationDate: {
     'en-us': 'DB Creation Date:',
@@ -220,5 +237,6 @@ export const welcomeText = createDictionary({
     'de-ch': 'Datenbank Erstelldatum:',
     'pt-br': 'Data de criação do banco de dados:',
     'hr-hr': 'Datum kreiranja baze podataka:',
+    nb: 'Dato for opprettelse av database:',
   },
 } as const);

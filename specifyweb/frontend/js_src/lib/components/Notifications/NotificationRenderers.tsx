@@ -474,9 +474,7 @@ export const notificationRenderers: IR<
     );
   },
   'collection-creation-starting'() {
-    return (
-      <p>{setupToolText.collectionCreationStarted()}</p>
-    );
+    return <p>{setupToolText.collectionCreationStarted()}</p>;
   },
   default(notification) {
     console.error('Unknown notification type', { notification });

@@ -9,6 +9,37 @@ from specifyweb.specify import models
 from unittest.mock import patch, Mock
 
 
+PROJECT_FORMATTERS = """
+<formatters>
+  <format
+    name="Project"
+    title="Project"
+    class="edu.ku.brc.specify.datamodel.Project"
+    default="true"
+  >
+    <switch single="true">
+      <fields>
+        <field>projectName</field>
+      </fields>
+    </switch>
+  </format>
+  <aggregators>
+    <aggregator
+      name="Project"
+      title="Project"
+      class="edu.ku.brc.specify.datamodel.Project"
+      default="true"
+      separator="; "
+      ending=""
+      count="0"
+      format="Project"
+      orderfieldname=""
+    />
+  </aggregators>
+</formatters>
+"""
+
+
 class TestRunEphemeralQuery(SQLAlchemySetup):
 
     @staticmethod
@@ -94,6 +125,99 @@ class TestRunEphemeralQuery(SQLAlchemySetup):
                     (self.collectionobjects[4].id, "num-4", None, None, None),
                 ]
             },
+            result,
+        )
+
+    @patch("specifyweb.backend.stored_queries.format.app_resource.get_app_resource")
+    @patch("specifyweb.backend.stored_queries.execution.models.session_context")
+    def test_query_project_many_to_many_relationship(
+        self, context: Mock, get_app_resource: Mock
+    ):
+        context.side_effect = TestRunEphemeralQuery.test_session_context
+        get_app_resource.return_value = (PROJECT_FORMATTERS, None, None)
+
+        project = models.Project.objects.create(
+            collectionmemberid=self.collection.id,
+            projectname="Test Project",
+        )
+        models.Project_colobj.objects.create(
+            project=project,
+            collectionobject=self.collectionobjects[0],
+        )
+
+        query = deepcopy(simple_query)
+        query["fields"] = [
+            {
+                "fieldname": "projectName",
+                "formatname": None,
+                "isdisplay": True,
+                "isnot": False,
+                "isrelfld": False,
+                "operstart": 8,
+                "position": 0,
+                "sorttype": 0,
+                "startvalue": "",
+                "stringid": "1,66-projects.project.projectName",
+                "isstrict": False,
+            },
+            {
+                "fieldname": "projects",
+                "formatname": None,
+                "isdisplay": True,
+                "isnot": False,
+                "isrelfld": True,
+                "operstart": 8,
+                "position": 1,
+                "sorttype": 0,
+                "startvalue": "",
+                "stringid": "1,66-projects.project.projects",
+                "isstrict": False,
+            },
+        ]
+
+        result = run_ephemeral_query(self.collection, self.specifyuser, query)
+
+        self.assertEqual(
+            {
+                "results": [
+                    (self.collectionobjects[0].id, "Test Project", "Test Project"),
+                    (self.collectionobjects[1].id, None, ""),
+                    (self.collectionobjects[2].id, None, ""),
+                    (self.collectionobjects[3].id, None, ""),
+                    (self.collectionobjects[4].id, None, ""),
+                ]
+            },
+            result,
+        )
+
+        accession = models.Accession.objects.create(
+            accessionnumber="2026-001",
+            division=self.division,
+        )
+        self._update(self.collectionobjects[0], {"accession": accession})
+
+        query = deepcopy(simple_query)
+        query["contexttableid"] = 7
+        query["fields"] = [
+            {
+                "fieldname": "projects",
+                "formatname": None,
+                "isdisplay": True,
+                "isnot": False,
+                "isrelfld": True,
+                "operstart": 8,
+                "position": 0,
+                "sorttype": 0,
+                "startvalue": "",
+                "stringid": "7,1-collectionObjects,66-projects.project.projects",
+                "isstrict": False,
+            },
+        ]
+
+        result = run_ephemeral_query(self.collection, self.specifyuser, query)
+
+        self.assertEqual(
+            {"results": [(accession.id, "Test Project")]},
             result,
         )
 

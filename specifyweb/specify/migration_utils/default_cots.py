@@ -68,7 +68,7 @@ def create_cogtype_type_picklist(apps, using='default'):
     Picklistitem = apps.get_model('specify', 'Picklistitem')
 
     for collection in Collection.objects.using(using).all():
-        cog_type_picklist, _ = Picklist.objects.using(using).get_or_create(
+        cog_type_picklist, picklist_created = Picklist.objects.using(using).get_or_create(
             name='SystemCOGTypes', # Default Collection Object Group Types
             type=0,
             collection=collection,
@@ -77,12 +77,13 @@ def create_cogtype_type_picklist(apps, using='default'):
                 "readonly": False,
             }
         )
-        for cog_type in DEFAULT_COG_TYPES:
-            Picklistitem.objects.using(using).get_or_create(
-                title=cog_type,
-                value=cog_type,
-                picklist=cog_type_picklist
-            )
+        if picklist_created:
+            for cog_type in DEFAULT_COG_TYPES:
+                Picklistitem.objects.using(using).get_or_create(
+                    title=cog_type,
+                    value=cog_type,
+                    picklist=cog_type_picklist
+                )
 
 COTYPE_PICKLIST_NAME = 'CollectionObjectType'
 FIELD_NAME = 'collectionObjectType'

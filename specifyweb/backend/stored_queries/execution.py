@@ -1239,7 +1239,6 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
 def apply_special_post_query_processing(query,
                                         processors: list[Callable[[list], list]],
                                         batch_size=7000):
-
     for raw_row in query.yield_per(batch_size):
         row = list(raw_row)
         for processor in processors:

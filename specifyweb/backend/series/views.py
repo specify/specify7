@@ -9,8 +9,49 @@ from django.views.decorators.http import require_POST
 
 from specifyweb.specify.api.crud import get_model
 from specifyweb.specify.utils.uiformatters import get_uiformatter_by_name
-from specifyweb.specify.views import login_maybe_required
+from specifyweb.specify.views import login_maybe_required, openapi
 
+@openapi(schema={
+    "post": {
+        "requestBody": {
+            "required": True,
+            "content": {
+                "application/json": {
+                    "schema": {
+                        "type": "object",
+                        "properties": {
+                            "rangestart": {"type": "string", "description": "Start value of the range"},
+                            "rangeend": {"type": "string", "description": "End value of the range"},
+                            "tablename": {"type": "string", "description": "Table being used (E.g. CollectionObject)"},
+                            "fieldname": {"type": "string", "description": "Field name being numbered"},
+                            "formattername": {"type": "string", "description": "UIFormatter name for field"},
+                            "skipstartnumber": {"type": "boolean", "description": "If true, omit the start value from returned list"}
+                        },
+                        "required": ["rangestart", "rangeend", "tablename", "fieldname", "formattername"]
+                    }
+                }
+            }
+        },
+        "responses": {
+            "200": {
+                "description": "List of generated values, along with information about existing numbers and an error message, if any.",
+                "content": {
+                    "application/json": {
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "values": {"type": "array", "items": {"type": "string"}},
+                                "existing": {"type": "array", "items": {"type": "string"}},
+                                "error": {"type": "string"}
+                            },
+                            "required": ["values"]
+                        }
+                    }
+                }
+            },
+        }
+    }
+})
 @login_maybe_required
 @require_POST
 def series_autonumber_range(request: http.HttpRequest):
