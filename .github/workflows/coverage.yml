@@ -89,6 +89,7 @@ jobs:
           done
           docker compose up --build -d
           docker stats --no-stream
+          docker logs specify7
 
       - name: Run the script
         id: run-coverage
