@@ -22,56 +22,63 @@ export const wbPlanText = createDictionary({
   },
   importExportMapping: {
     'en-us': 'Import/Export Mapping',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Import-/Export-Zuordnung',
+    'es-es': 'Mapeo de importación/exportación',
+    'fr-fr': "Cartographie d'import/export",
+    'hr-hr': 'Mapiranje uvoza/izvoza',
+    nb: 'Importer/eksporter kartlegging',
+    'pt-br': 'Mapeamento de Importação/Exportação',
+    'ru-ru': 'Сопоставление импорта/экспорта',
+    'uk-ua': 'Зіставлення імпорту/експорту',
   },
   importExportMappingDescription: {
     'en-us':
       'You can export the current data set mapping as a JSON file or import an existing data set mapping.',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Sie können die aktuelle Datensatzzuordnung als JSON-Datei exportieren oder eine bestehende Datensatzzuordnung importieren.',
+    'es-es':
+      'Puede exportar la asignación del conjunto de datos actual como un archivo JSON o importar una asignación de conjunto de datos existente.',
+    'fr-fr':
+      'Vous pouvez exporter le mappage de jeu de données actuel sous forme de fichier JSON ou importer un mappage de jeu de données existant.',
+    'hr-hr':
+      'Možete izvesti trenutno mapiranje skupa podataka kao JSON datoteku ili uvesti postojeće mapiranje skupa podataka.',
+    nb: 'Du kan eksportere den gjeldende datasetttilordningen som en JSON-fil eller importere en eksisterende datasetttilordning.',
+    'pt-br':
+      'Você pode exportar o mapeamento do conjunto de dados atual como um arquivo JSON ou importar um mapeamento de conjunto de dados existente.',
+    'ru-ru':
+      'Вы можете экспортировать текущее сопоставление наборов данных в файл JSON или импортировать существующее сопоставление наборов данных.',
+    'uk-ua':
+      'Ви можете експортувати поточне зіставлення набору даних як файл JSON або імпортувати існуюче зіставлення набору даних.',
   },
   noUploadPlan: {
     'en-us': 'No Data Set Mapping is Defined',
-    'ru-ru': 'План загрузки не определен',
-    'es-es': 'No hay definido ningún plan de carga',
-    'fr-fr': "Aucun plan de téléchargement n'est défini.",
-    'uk-ua': 'План завантаження не визначено',
-    'de-ch': 'Es wurde kein Uploadplan definiert',
-    'pt-br': 'Nenhum plano de upload foi definido.',
-    'hr-hr': 'Nije definiran plan prijenosa',
-    nb: 'Ingen opplastingsplan er definert',
+    'ru-ru': 'Сопоставление наборов данных не определено.',
+    'es-es': 'No se ha definido ninguna asignación de conjuntos de datos.',
+    'fr-fr': "Aucun mappage de jeu de données n'est défini.",
+    'uk-ua': 'Відображення набору даних не визначено',
+    'de-ch': 'Es ist keine Datensatzzuordnung definiert.',
+    'pt-br': 'Nenhum mapeamento de conjunto de dados foi definido.',
+    'hr-hr': 'Nije definirano mapiranje skupa podataka',
+    nb: 'Ingen datasetttilordning er definert',
   },
   noUploadPlanDescription: {
     'en-us':
       'No mapping has been defined for this data set. Please choose an existing mapping or create a new one.',
     'ru-ru':
-      'Для этого набора данных не определен план загрузки. Создать эго сейчас?',
+      'Для этого набора данных не определено сопоставление. Пожалуйста, выберите существующее сопоставление или создайте новое.',
     'es-es':
-      'No se ha definido ningún plan de carga para este conjunto de datos. ¿Crear uno ahora?',
+      'No se ha definido ninguna asignación para este conjunto de datos. Por favor, seleccione una asignación existente o cree una nueva.',
     'fr-fr':
-      "Aucun plan de chargement n'a été défini pour cet ensemble de données. En créer un maintenant ?",
+      "Aucun mappage n'a été défini pour cet ensemble de données. Veuillez choisir un mappage existant ou en créer un nouveau.",
     'uk-ua':
-      'Для цього набору даних не визначено план завантаження. Створити зараз?',
+      'Для цього набору даних не визначено жодного зіставлення. Виберіть існуюче зіставлення або створіть нове.',
     'de-ch':
-      'Für diesen Datensatz wurde noch kein Upload-Plan definiert. Jetzt einen erstellen?',
+      'Für diesen Datensatz ist keine Zuordnung definiert. Bitte wählen Sie eine vorhandene Zuordnung aus oder erstellen Sie eine neue.',
     'pt-br':
-      'Nenhum plano de upload foi definido para este conjunto de dados. Deseja criar um agora?',
+      'Não existe um mapeamento definido para este conjunto de dados. Por favor, escolha um mapeamento existente ou crie um novo.',
     'hr-hr':
-      'Za ovaj skup podataka nije definiran plan prijenosa. Želite li ga sada izraditi?',
-    nb: 'Ingen opplastingsplan er definert for dette datasettet. Opprette en nå?',
+      'Za ovaj skup podataka nije definirano mapiranje. Odaberite postojeće mapiranje ili stvorite novo.',
+    nb: 'Ingen kartlegging er definert for dette datasettet. Vennligst velg en eksisterende kartlegging eller opprett en ny.',
   },
   unmappedColumn: {
     'en-us': 'Unmapped Column',
@@ -251,20 +258,20 @@ export const wbPlanText = createDictionary({
     'en-us':
       'When set to "Always Ignore," the value in this column will not be used for matching purposes, only for uploading.',
     'ru-ru':
-      'Если задано значение «Всегда игнорировать», значение в этом столбце никогда не будет рассматривается для целей сопоставления, только для загрузки',
+      'Если установлено значение "Всегда игнорировать", значение в этом столбце не будет использоваться для сопоставления, а только для загрузки.',
     'es-es':
-      'Cuando se establece "Ignorar siempre", el valor de esta columna nunca se tomará en cuenta a efectos de comparación; solo al cargar datos.',
+      'Cuando se selecciona "Ignorar siempre", el valor de esta columna no se utilizará para fines de comparación, sino únicamente para la carga de archivos.',
     'fr-fr':
-      "Si l'option « Ignorer toujours » est sélectionnée, la valeur de cette colonne ne sera jamais prise en compte pour la mise en correspondance, mais uniquement pour le chargement.",
+      "Si l'option « Toujours ignorer » est sélectionnée, la valeur de cette colonne ne sera pas utilisée à des fins de correspondance, mais uniquement pour le chargement.",
     'uk-ua':
-      'Якщо встановлено значення «Ігнорувати завжди», значення в цьому стовпці ніколи не розглядатиметься для цілей зіставлення, лише для завантаження.',
+      'Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці не використовуватиметься для зіставлення, а лише для завантаження.',
     'de-ch':
-      'Bei der Einstellung "Immer ignorieren" wird der Wert in dieser Spalte niemals für den Abgleich, sondern nur für das Hochladen berücksichtigt.',
+      'Wenn die Option „Immer ignorieren“ ausgewählt ist, wird der Wert in dieser Spalte nicht für Abgleichzwecke, sondern nur für den Upload verwendet.',
     'pt-br':
-      'Quando definida como "Ignorar Sempre", o valor nesta coluna nunca será considerado para fins de correspondência, apenas para carregamento.',
+      'Quando definida como "Ignorar sempre", o valor nesta coluna não será usado para fins de correspondência, apenas para carregamento.',
     'hr-hr':
-      'Kada je postavljeno na "Uvijek zanemari", vrijednost u ovom stupcu nikada se neće uzimati u obzir za potrebe podudaranja, već samo za prijenos.',
-    nb: 'Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen aldri bli vurdert for samsvarsformål, kun for opplasting.',
+      'Kada je postavljeno na "Uvijek zanemari", vrijednost u ovom stupcu neće se koristiti za potrebe podudaranja, već samo za prijenos.',
+    nb: 'Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen ikke bli brukt til samsvarsformål, kun til opplasting.',
   },
   ignoreNever: {
     'en-us': 'Never Ignore',
@@ -366,20 +373,20 @@ export const wbPlanText = createDictionary({
     'en-us':
       'This data mapping is missing one or more data fields required for uploading by your Specify configuration. Add the missing mappings shown or save this mapping as unfinished.',
     'ru-ru':
-      'В этом сопоставлении данные отсутствует в одном или нескольких полей данных, необходимых для загрузки по вашей Specify конфигурацию. Добавьте недостающие сопоставления или сохраните этот план загрузки как незавершенный.',
+      'В этом сопоставлении данных отсутствует одно или несколько полей, необходимых для загрузки в соответствии с вашей конфигурацией Specify. Добавьте недостающие сопоставления, указанные выше, или сохраните это сопоставление как незавершенное.',
     'es-es':
-      'A este mapeo de datos le faltan uno o más campos de datos requeridos para cargar por su configuración de Especificar. Agregue las asignaciones faltantes que se muestran o guarde este plan de carga como inacabado.',
+      'A esta asignación de datos le faltan uno o más campos de datos necesarios para la carga según su configuración de Specify. Agregue las asignaciones faltantes que se muestran o guarde esta asignación como incompleta.',
     'fr-fr':
-      'Il manque un ou plusieurs mappings requis pour le chargement selon votre configuration. Ajoutez les mappings manquants ou enregistrez ce plan de chargement comme inachevé.',
+      'Il manque un ou plusieurs champs de données requis pour le chargement selon votre configuration. Ajoutez les correspondances manquantes indiquées ou enregistrez cette correspondance comme inachevée.',
     'uk-ua':
-      'У цьому відображенні даних відсутнє одне або кілька полів даних, необхідні для завантаження вашою конфігурацією Specify. Додайте відсутні відображення або збережіть цей план завантаження як незавершений.',
+      'У цьому зіставленні даних відсутнє одне або кілька полів даних, необхідних для завантаження згідно з вашою конфігурацією Specify. Додайте відсутні зіставлення або збережіть це зіставлення як незавершене.',
     'de-ch':
-      'In dieser Datenzuordnung fehlen ein oder mehrere Datenfelder, die für das Hochladen gemäss Ihrer Specify-Konfiguration erforderlich sind. Fügen Sie die fehlenden Mappings hinzu oder speichern Sie diesen Upload-Plan als unvollendet.',
+      'Diese Datenzuordnung weist ein oder mehrere fehlende Datenfelder auf, die gemäß Ihrer Specify-Konfiguration für den Upload erforderlich sind. Fügen Sie die fehlenden Zuordnungen hinzu oder speichern Sie diese Zuordnung als unvollständig.',
     'pt-br':
-      'Este mapeamento de dados está incompleto, faltando um ou mais campos de dados necessários para o carregamento de acordo com a sua configuração. Adicione os mapeamentos ausentes mostrados ou salve este Plano de Carregamento como incompleto.',
+      'Este mapeamento de dados está incompleto, faltando um ou mais campos de dados necessários para o carregamento de acordo com a sua configuração. Adicione os mapeamentos ausentes mostrados ou salve este mapeamento como incompleto.',
     'hr-hr':
-      'Ovom mapiranju podataka nedostaje jedno ili više podatkovnih polja potrebnih za prijenos prema vašoj konfiguraciji Navedite. Dodajte prikazana mapiranja koja nedostaju ili spremite ovaj plan prijenosa kao nedovršen.',
-    nb: 'Denne datatilordningen mangler ett eller flere datafelt som kreves for opplasting av din Spesifiser-konfigurasjon. Legg til de manglende tilordningene som vises, eller lagre denne opplastingsplanen som uferdig.',
+      'Ovom mapiranju podataka nedostaje jedno ili više podatkovnih polja potrebnih za učitavanje prema vašoj konfiguraciji Navedi. Dodajte prikazana mapiranja koja nedostaju ili spremite ovo mapiranje kao nedovršeno.',
+    nb: 'Denne datatilordningen mangler ett eller flere datafelt som kreves for opplasting av din Spesifiser-konfigurasjon. Legg til de manglende tilordningene som vises, eller lagre denne tilordningen som uferdig.',
   },
   mappingIsRequired: {
     comment: 'I.e, this field must be mapped before you can continue',
@@ -472,14 +479,14 @@ export const wbPlanText = createDictionary({
   },
   chooseExistingPlan: {
     'en-us': 'Choose Existing Mapping',
-    'ru-ru': 'Выберите существующий план',
-    'es-es': 'Elegir un Plan ya Existente',
-    'fr-fr': 'Choisir un plan de téléchargement existant',
-    'uk-ua': 'Виберіть існуючий план',
-    'de-ch': 'Bestehenden Plan auswählen',
-    'pt-br': 'Escolha um plano existente',
-    'hr-hr': 'Odaberite postojeći plan',
-    nb: 'Velg eksisterende plan',
+    'ru-ru': 'Выберите существующее сопоставление',
+    'es-es': 'Seleccionar un mapa existente',
+    'fr-fr': 'Choisir une cartographie existante',
+    'uk-ua': 'Виберіть існуюче відображення',
+    'de-ch': 'Vorhandene Zuordnung auswählen',
+    'pt-br': 'Selecionar mapeamento existente',
+    'hr-hr': 'Odaberite postojeće mapiranje',
+    nb: 'Velg eksisterende kartlegging',
   },
   showAllTables: {
     'en-us': 'Show All Tables',
@@ -495,26 +502,40 @@ export const wbPlanText = createDictionary({
   baseTableDescription: {
     'en-us':
       "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Once uploaded, each row in your data set will result in a new record in Specify in the base table you select. Click on a base table in the list to get started.",
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Eine „Basistabelle“ dient als Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern. Nach dem Hochladen wird jede Zeile Ihres Datensatzes in der von Ihnen ausgewählten Basistabelle als neuer Datensatz angelegt. Klicken Sie in der Liste auf eine Basistabelle, um zu beginnen.',
+    'es-es':
+      'Una «tabla base» es la tabla que sirve como punto de partida para la asignación de columnas a campos de datos. Una vez cargada, cada fila de su conjunto de datos generará un nuevo registro en la tabla base que seleccione. Haga clic en una tabla base de la lista para comenzar.',
+    'fr-fr':
+      'Une « table de base » sert de point de départ pour la correspondance entre les colonnes et les champs de données. Une fois importée, chaque ligne de votre jeu de données créera un nouvel enregistrement dans la table de base sélectionnée. Cliquez sur une table de base dans la liste pour commencer.',
+    'hr-hr':
+      "'Osnovna tablica' je tablica koja služi kao početna točka za mapiranje stupaca u podatkovna polja. Nakon prijenosa, svaki redak u vašem skupu podataka rezultirat će novim zapisom u . Navedite u odabranoj osnovnoj tablici. Kliknite na osnovnu tablicu na popisu da biste započeli.",
+    nb: 'En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger mellom kolonner og datafelt. Når den er lastet opp, vil hver rad i datasettet resultere i en ny post i Spesifiser i basistabellen du velger. Klikk på en basistabell i listen for å komme i gang.',
+    'pt-br':
+      "Uma 'tabela base' é a tabela que serve como ponto de partida para o mapeamento de colunas para campos de dados. Após o carregamento, cada linha do seu conjunto de dados resultará em um novo registro na tabela base que você selecionar. Clique em uma tabela base na lista para começar.",
+    'ru-ru':
+      '«Базовая таблица» — это таблица, которая служит отправной точкой для сопоставления столбцов с полями данных. После загрузки каждая строка в вашем наборе данных будет приводить к созданию новой записи в указанной вами базовой таблице. Щелкните по базовой таблице в списке, чтобы начать.',
+    'uk-ua':
+      '«Базова таблиця» – це таблиця, яка слугує відправною точкою для зіставлення стовпців із полями даних. Після завантаження кожен рядок у вашому наборі даних призведе до створення нового запису в . Укажіть у вибраній базовій таблиці. Натисніть на базову таблицю у списку, щоб розпочати.',
   },
   baseTableWithAttachmentsDescription: {
     'en-us':
       "A 'base table' is the table that serves as the starting point for column-to-data field mappings. Each imported attachment record will be added as a new row in the base table you select. Click on a base table in the list to get started.",
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      'Eine „Basistabelle“ dient als Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern. Jeder importierte Anhangsdatensatz wird als neue Zeile in die ausgewählte Basistabelle eingefügt. Klicken Sie in der Liste auf eine Basistabelle, um zu beginnen.',
+    'es-es':
+      'Una tabla base sirve como punto de partida para la asignación de columnas a campos de datos. Cada registro de archivo adjunto importado se añadirá como una nueva fila en la tabla base que seleccione. Haga clic en una tabla base de la lista para comenzar.',
+    'fr-fr':
+      'Une « table de base » sert de point de départ pour la correspondance entre les colonnes et les champs de données. Chaque enregistrement de pièce jointe importée sera ajouté comme une nouvelle ligne dans la table de base sélectionnée. Cliquez sur une table de base dans la liste pour commencer.',
+    'hr-hr':
+      "'Osnovna tablica' je tablica koja služi kao početna točka za mapiranje stupaca u podatkovna polja. Svaki uvezeni zapis privitka bit će dodan kao novi redak u odabranoj osnovnoj tablici. Kliknite na osnovnu tablicu na popisu da biste započeli.",
+    nb: 'En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger mellom kolonner og datafelt. Hver importerte vedleggspost legges til som en ny rad i basistabellen du velger. Klikk på en basistabell i listen for å komme i gang.',
+    'pt-br':
+      "Uma 'tabela base' é a tabela que serve como ponto de partida para o mapeamento de colunas para campos de dados. Cada registro de anexo importado será adicionado como uma nova linha na tabela base selecionada. Clique em uma tabela base na lista para começar.",
+    'ru-ru':
+      '«Базовая таблица» — это таблица, которая служит отправной точкой для сопоставления столбцов с полями данных. Каждая импортированная запись вложения будет добавлена в выбранную вами базовую таблицу в виде новой строки. Щелкните по базовой таблице в списке, чтобы начать.',
+    'uk-ua':
+      '«Базова таблиця» – це таблиця, яка слугує відправною точкою для зіставлення стовпців із полями даних. Кожен імпортований вкладений запис буде додано як новий рядок у вибрану базову таблицю. Щоб розпочати, натисніть на базову таблицю у списку.',
   },
   selectBaseTableWithAttachments: {
     'en-us': 'Select a Base Table with Attachments',
@@ -529,19 +550,16 @@ export const wbPlanText = createDictionary({
   },
   dataSetUploaded: {
     'en-us': 'Data Set uploaded. This mapping cannot be changed',
-    'ru-ru': 'Набор данных загружен. Этот план загрузки нельзя изменить',
-    'es-es':
-      'Conjunto de Datos cargado. El Plan de Carga ya no puede modificarse',
-    'fr-fr':
-      'Jeu de données téléchargé. Ce plan de téléchargement ne peut pas être modifié.',
-    'uk-ua': 'Набір даних завантажено. Цей план завантаження не можна змінити',
+    'ru-ru': 'Набор данных загружен. Это сопоставление изменить нельзя.',
+    'es-es': 'Conjunto de datos cargado. Este mapeo no se puede modificar.',
+    'fr-fr': 'Jeu de données téléchargé. Ce mappage ne peut pas être modifié.',
+    'uk-ua': 'Набір даних завантажено. Це зіставлення не можна змінити.',
     'de-ch':
-      'Datensatz hochgeladen. Dieser Upload-Plan kann nicht geändert werden',
+      'Datensatz hochgeladen. Diese Zuordnung kann nicht geändert werden.',
     'pt-br':
-      'Conjunto de dados carregado. Este plano de carregamento não pode ser alterado.',
-    'hr-hr':
-      'Skup podataka prenesen. Ovaj plan prijenosa ne može se promijeniti.',
-    nb: 'Datasettet er lastet opp. Denne opplastingsplanen kan ikke endres.',
+      'Conjunto de dados carregado. Este mapeamento não pode ser alterado.',
+    'hr-hr': 'Skup podataka prenesen. Ovo mapiranje se ne može promijeniti.',
+    nb: 'Datasettet er lastet opp. Denne kartleggingen kan ikke endres.',
   },
   dataSetUploadedDescription: {
     'en-us':
@@ -551,7 +569,7 @@ export const wbPlanText = createDictionary({
     'es-es':
       'Está viendo las asignaciones de campos/mapeo para un conjunto de datos ya cargado.\n\nPara editar los mapeos, d´s marcha-atrás para los datos cargados o cree un nuevo conjunto de datos',
     'fr-fr':
-      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
+      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
     'uk-ua':
       'Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних',
     'de-ch':
@@ -593,20 +611,20 @@ export const wbPlanText = createDictionary({
     'en-us':
       'Choosing a different base table for a data set will make that table the new starting point for column-to-data field mappings and will erase existing mappings. The AutoMapper will attempt to map columns to the new base table fields.',
     'ru-ru':
-      'Выбор другой базовой таблице для загрузки набора данных сделает ту таблицу новой отправной точкой для сопоставлений полей столбцов и данных и сотрет существующие сопоставления. AutoMapper попытается сопоставить столбцы в новые поля базовой таблицы.',
+      'Выбор другой базовой таблицы для набора данных сделает эту таблицу новой отправной точкой для сопоставления столбцов с полями данных и удалит существующие сопоставления. AutoMapper попытается сопоставить столбцы с полями новой базовой таблицы.',
     'es-es':
-      'Si elige una tabla base diferente para la carga de un conjunto de datos, esa tabla se convertirá en el nuevo punto de partida para las asignaciones de campo de columna a datos y borrará las asignaciones existentes. El AutoMapper intentará asignar columnas a los nuevos campos de la tabla base.',
+      'Al seleccionar una tabla base diferente para un conjunto de datos, dicha tabla se convertirá en el nuevo punto de partida para la asignación de columnas a campos de datos y se borrarán las asignaciones existentes. El AutoMapper intentará asignar las columnas a los campos de la nueva tabla base.',
     'fr-fr':
-      "Choisir une autre table de base pour l'importation d'un jeu de données définira cette table comme nouveau point de départ pour la correspondance entre les colonnes et les champs de données, et effacera les correspondances existantes. L'outil de mappage automatique tentera d'associer les colonnes aux champs de la nouvelle table de base.",
+      "Choisir une autre table de base pour un ensemble de données définira cette table comme nouveau point de départ pour la correspondance entre les colonnes et les champs de données, et effacera les correspondances existantes. L'outil de mappage automatique tentera d'associer les colonnes aux champs de la nouvelle table de base.",
     'uk-ua':
-      'Вибір іншої базової таблиці для завантаження набору даних зробить цю таблицю новою відправною точкою для зіставлення стовпців і полів даних і видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими полями базової таблиці.',
+      'Вибір іншої базової таблиці для набору даних зробить цю таблицю новою відправною точкою для зіставлення стовпців з полями даних та видалить існуючі зіставлення. AutoMapper спробує зіставити стовпці з новими полями базової таблиці.',
     'de-ch':
-      'Durch Auswahl einer anderen Basistabelle für einen Datensatz-Upload wird diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper wird versuchen, die Spalten den neuen Basistabellenfeldern zuzuordnen.',
+      'Wenn Sie eine andere Basistabelle für einen Datensatz auswählen, wird diese Tabelle zum neuen Ausgangspunkt für die Zuordnung von Spalten zu Datenfeldern und die bestehenden Zuordnungen werden gelöscht. Der AutoMapper versucht dann, die Spalten den Feldern der neuen Basistabelle zuzuordnen.',
     'pt-br':
-      'Ao escolher uma tabela base diferente para o carregamento de um conjunto de dados, essa tabela se tornará o novo ponto de partida para o mapeamento de colunas para campos de dados e apagará os mapeamentos existentes. O AutoMapper tentará mapear as colunas para os campos da nova tabela base.',
+      'Escolher uma tabela base diferente para um conjunto de dados fará com que essa tabela se torne o novo ponto de partida para o mapeamento de colunas para campos de dados e apagará os mapeamentos existentes. O AutoMapper tentará mapear as colunas para os campos da nova tabela base.',
     'hr-hr':
-      'Odabirom druge osnovne tablice za prijenos skupa podataka ta će tablica postati nova početna točka za mapiranje stupaca u podatkovna polja i izbrisat će se postojeća mapiranja. AutoMapper će pokušati mapirati stupce na nova polja osnovne tablice.',
-    nb: 'Hvis du velger en annen basistabell for opplasting av datasett, blir den tabellen det nye startpunktet for tilordninger mellom kolonner og datafelt, og eksisterende tilordninger slettes. AutoMapper vil forsøke å tilordne kolonner til de nye basistabellfeltene.',
+      'Odabirom druge osnovne tablice za skup podataka ta će tablica postati nova početna točka za mapiranja stupaca u podatkovna polja i izbrisat će se postojeća mapiranja. AutoMapper će pokušati mapirati stupce na nova polja osnovne tablice.',
+    nb: 'Hvis du velger en annen basistabell for et datasett, blir den tabellen det nye startpunktet for tilordninger mellom kolonner og datafelt, og eksisterende tilordninger slettes. AutoMapper vil forsøke å tilordne kolonner til de nye basistabellfeltene.',
   },
   clearMapping: {
     'en-us': 'Clear Mapping',
@@ -739,15 +757,14 @@ export const wbPlanText = createDictionary({
   },
   reRunAutoMapperConfirmation: {
     'en-us': 'Automap to start a new mapping?',
-    'ru-ru': 'Автоматически сопоставить?',
-    'es-es': '¿Automap para iniciar un nuevo plan de carga?',
-    'de-ch': 'Automap, um einen neuen Upload-Plan zu starten?',
-    'fr-fr':
-      'Mapping automatique pour démarrer un nouveau plan de téléchargement ?',
-    'uk-ua': 'Автоматична карта, щоб почати новий план завантаження?',
-    'pt-br': 'Automap para iniciar um novo Plano de Upload?',
-    'hr-hr': 'Automatsko mapiranje za pokretanje novog plana prijenosa?',
-    nb: 'For å starte en ny opplastingsplan med automatisk tilordning?',
+    'ru-ru': 'Чтобы начать создание новой карты с помощью функции Automap?',
+    'es-es': '¿Automap inicia un nuevo mapeo?',
+    'de-ch': 'Automap soll eine neue Kartierung starten?',
+    'fr-fr': 'Automap pour démarrer une nouvelle cartographie ?',
+    'uk-ua': 'Автоматичне створення карти, щоб розпочати нове відображення?',
+    'pt-br': 'Automapa para iniciar um novo mapeamento?',
+    'hr-hr': 'Automatsko mapiranje za početak novog mapiranja?',
+    nb: 'For å starte en ny kartlegging med Automap?',
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -769,7 +786,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Alle bestehenden Zuordnungen löschen?',
     'pt-br': 'Limpar todos os mapeamentos existentes?',
     'hr-hr': 'Izbrisati sva postojeća mapiranja?',
-    nb: '',
+    nb: 'Fjern alle eksisterende tilordninger?',
   },
   clearMappingsConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -780,7 +797,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Damit werden bestehende Zuordnungen von Datenfeldern gelöscht.',
     'pt-br': 'Isso apagará os mapeamentos de campos de dados existentes.',
     'hr-hr': 'Ovo će izbrisati postojeća mapiranja podatkovnih polja.',
-    nb: '',
+    nb: 'Dette vil slette eksisterende datafelttilordninger.',
   },
   changeMatchingLogic: {
     'en-us': 'Change Matching Logic',
@@ -894,18 +911,18 @@ export const wbPlanText = createDictionary({
   invalidTemplatePlan: {
     'en-us': 'Selected data set has no mapping. Please select a different one.',
     'ru-ru':
-      'Выбранный набор данных не имеет плана загрузки. Выберите другой набор данных.',
+      'Для выбранного набора данных отсутствует сопоставление. Пожалуйста, выберите другой набор.',
     'es-es':
-      'El conjunto de datos seleccionado no tiene un plan de carga. Seleccione uno diferente.',
+      'El conjunto de datos seleccionado no tiene correspondencia. Seleccione otro.',
     'fr-fr':
-      "L'ensemble de données sélectionné ne dispose d'aucun plan de chargement. Veuillez en sélectionner un autre.",
-    'uk-ua': 'Вибраний набір даних не має плану завантаження. Виберіть інший.',
+      "L'ensemble de données sélectionné ne possède aucune correspondance. Veuillez en sélectionner un autre.",
+    'uk-ua': 'Вибраний набір даних не має зіставлення. Виберіть інший.',
     'de-ch':
-      'Das ausgewählte Datenset hat keinen Upload-Plan. Bitte wählen Sie einen anderen Plan.',
+      'Der ausgewählte Datensatz hat keine Zuordnung. Bitte wählen Sie einen anderen aus.',
     'pt-br':
-      'O conjunto de dados selecionado não possui um plano de upload. Selecione outro.',
-    'hr-hr': 'Odabrani skup podataka nema plan prijenosa. Odaberite drugi.',
-    nb: 'Det valgte datasettet har ingen opplastingsplan. Vennligst velg en annen.',
+      'O conjunto de dados selecionado não possui mapeamento. Selecione outro.',
+    'hr-hr': 'Odabrani skup podataka nema mapiranje. Odaberite drugi.',
+    nb: 'Det valgte datasettet har ingen kartlegging. Vennligst velg et annet.',
   },
   invalidJsonFile: {
     'en-us': 'The selected file is not valid JSON.',
@@ -916,7 +933,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Die ausgewählte Datei ist kein gültiges JSON.',
     'pt-br': 'O arquivo selecionado não é um JSON válido.',
     'hr-hr': 'Odabrana datoteka nije valjani JSON.',
-    nb: '',
+    nb: 'Den valgte filen er ikke gyldig JSON.',
   },
   invalidJsonFileDescription: {
     'en-us': 'Please select a valid JSON data set mapping file.',
@@ -927,6 +944,6 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Bitte wählen Sie eine gültige JSON-Datei aus.',
     'pt-br': 'Por favor, selecione um arquivo JSON válido.',
     'hr-hr': 'Odaberite valjani JSON file.',
-    nb: '',
+    nb: 'Velg en gyldig JSON-datasetttilordningsfil.',
   },
 } as const);
