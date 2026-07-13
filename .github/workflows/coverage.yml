@@ -93,11 +93,13 @@ jobs:
       - name: Run the script
         id: run-coverage
         run: |
-          docker exec mariadb mariadb -uroot -ppassword -e 'select * from mysql.user where User = 'root';' || echo Mariadb crashed!
+          docker exec mariadb ls -lah /run
           docker logs mariadb
           echo "================================================================================="
-          docker logs specify7
+          docker exec mariadb ls -lah /run
           docker ps --all
+          docker exec mariadb grep '^#' /usr/lib/tmpfiles.d/mariadb.conf
+
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
