@@ -96,7 +96,8 @@ jobs:
           sleep 100 # so we can see if mariadb recovers
           docker logs mariadb
           echo "================================================================================="
-          docker exec mariadb ls -lah /run/mysqld
+          docker ps --all
+          docker exec mariadb ls -lah /run/mysqld || echo mariadb crashed!
 
 
       - name: Upload report as artifact
