@@ -8,7 +8,6 @@ import traceback
 from typing import Callable, Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
-from collections.abc import Generator
 from functools import reduce
 
 from django.conf import settings
