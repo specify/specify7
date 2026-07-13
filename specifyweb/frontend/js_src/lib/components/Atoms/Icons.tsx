@@ -151,11 +151,7 @@ export const dialogIcons: RR<
 > = {
   none: undefined,
   error: <span className="text-red-500">{icons.exclamationCircle}</span>,
-  warning: (
-    <span className="text-red-500">
-      {icons.exclamation}
-    </span>
-  ),
+  warning: <span className="text-red-500">{icons.exclamation}</span>,
   success: <span className="text-green-500">{icons.checkCircle}</span>,
   info: icons.informationCircle,
   question: icons.questionCircle,
