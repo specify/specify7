@@ -19,7 +19,7 @@ from django.apps import apps
 from django.conf import settings
 
 from specifyweb.backend.context.schema_localization import get_schema_localization
-from specifyweb.specify.datamodel import datamodel, Field
+from specifyweb.specify.datamodel import datamodel
 from specifyweb.specify.models_utils.models_by_table_id import get_model_by_table_id
 from specifyweb.specify.utils.uiformatters import CNNField, get_catalognumber_format
 
