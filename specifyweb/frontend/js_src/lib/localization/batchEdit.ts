@@ -234,20 +234,20 @@ export const batchEditText = createDictionary({
     'en-us':
       'Your changes have been applied to the database. See the number of records affected in each table below:',
     'de-ch':
-      'Ihre Änderungen wurden in die Datenbank übernommen. Um die Anzahl der betroffenen Datensätze in jeder Tabelle anzuzeigen, klicken Sie in der Symbolleiste über dem Datenraster auf „Ergebnisse".',
+      'Ihre Änderungen wurden in der Datenbank übernommen. Die Anzahl der betroffenen Datensätze in den einzelnen Tabellen finden Sie unten:',
     'es-es':
       'Sus cambios se han aplicado a la base de datos. Para ver el número de registros afectados en cada tabla, haga clic en "Resultados" en la barra de herramientas sobre la cuadrícula de datos.',
     'fr-fr':
       "Vos modifications ont été appliquées à la base de données. Pour voir le nombre d'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données.",
     'pt-br':
-      'Suas alterações foram aplicadas ao banco de dados. Para ver o número de registros afetados em cada tabela, clique em "Resultados" na barra de ferramentas acima da grade de dados.',
+      'As suas alterações foram aplicadas à base de dados. Veja abaixo o número de registos afetados em cada tabela:',
     'ru-ru':
-      'Ваши изменения были применены к базе данных. Чтобы увидеть количество затронутых записей в каждой таблице, нажмите «Результаты» на панели инструментов над сеткой данных.',
+      'Ваши изменения были применены к базе данных. Ниже вы можете увидеть количество затронутых записей в каждой таблице:',
     'uk-ua':
       'Ваші зміни було застосовано до бази даних. Щоб переглянути кількість записів, на які вплинули зміни, у кожній таблиці, натисніть «Результати» на панелі інструментів над сіткою даних.',
     'hr-hr':
-      'Kliknite gumb "Rezultati" da biste vidjeli broj pogođenih zapisa u svakoj tablici baze podataka',
-    nb: 'Klikk på «Resultater»-knappen for å se antall treff som blir berørt i hver databasetabell',
+      'Vaše su promjene primijenjene u bazi podataka. Pogledajte broj pogođenih zapisa u svakoj tablici u nastavku:',
+    nb: 'Endringene dine er implementert i databasen. Se antall berørte poster i hver tabell nedenfor:',
   },
   dateSetRevertDescription: {
     'en-us':
@@ -523,17 +523,17 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere Nutzer beeinträchtigen kann. Dies kann zu Verzögerungen oder vorübergehender Nichtverfügbarkeit bestimmter Funktionen für bestimmte Nutzer führen. Bitte berücksichtigen Sie die Auswirkungen auf deren Nutzungserfahrung. Diese Aktion kann nicht rückgängig gemacht werden.',
     'es-es':
-      'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría causar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción no se puede deshacer.',
+      'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría ocasionar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción es irreversible.',
     'fr-fr':
-      "Avant de continuer, veuillez noter que l'action suivante peut perturber d'autres utilisateurs si effectuée sur un grand jeu de données. Cette action peut entraîner des lenteurs ou l'indisponibilité temporaire de certaines fonctionnalités. Cette action est irréversible.",
+      "Avant de poursuivre, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specific. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
     'pt-br':
-      'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de certos recursos para os usuários especificados. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
+      'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Essa ação pode causar atrasos ou indisponibilidade temporária de certos recursos para usuários específicos. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
     'ru-ru':
       'Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может вызвать задержки или временную недоступность некоторых функций для указанных пользователей. Пожалуйста, учтите влияние на их опыт использования сайта. Это действие необратимо.',
     'uk-ua':
-      'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для певних користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати',
+      'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для визначених користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати.',
     'hr-hr':
       'Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete u obzir utjecaj na njihovo iskustvo. Ova se radnja ne može poništiti.',
-    nb: 'Før du fortsetter, vær oppmerksom på at denne handlingen kan påvirke andre brukere. Den kan føre til forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner i Specify. Vennligst vurder konsekvensene for brukeropplevelsen. Handlingen kan ikke angres.',
+    nb: 'Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan dette påvirker brukeropplevelsen deres. Denne handlingen kan ikke angres.',
   },
 } as const);

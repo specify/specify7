@@ -323,6 +323,8 @@ jobs:
     continue-on-error: true
     timeout-minutes: 10
 
+    if: github.event_name == 'pull_request'
+
     permissions:
       pull-requests: write
       contents: read
@@ -340,72 +342,24 @@ jobs:
           python -m pip install --upgrade pip
           pip install requests
 
-      - name: Run EOL check
-        id: eol
-        run: |
-          output=$(python -m scripts.eol.check_eol || true)
-
-          echo "$output"
-          
-          echo "$output" > eol-output.txt
-
-          {
-            echo "output<<EOF"
-            echo "$output"
-            echo "EOF"
-          } >> "$GITHUB_OUTPUT"
-      
-      - name: Upload EOL results
-        uses: actions/upload-artifact@v4
-        with:
-          name: eol-results
-          path: eol-output.txt
-
-  eol-comment:
-    name: Consolidated EOL comment
-    runs-on: ubuntu-latest
-    needs: eol-check
-
-    if: github.event_name == 'pull_request'
-
-    permissions:
-      pull-requests: write
-      contents: read
-
-    steps:
-      - name: Download EOL artifacts
-        uses: actions/download-artifact@v4
-        with:
-          path: artifacts
-
-      - name: Combine warnings
-        id: combine
-        shell: bash
-        run: |
-          combined=""
-
-          while IFS= read -r -d '' file; do
-            if grep -q '^STATUS=WARNING' "$file"; then
-              combined="${combined}
-          $(cat "$file")
-          "
-                    fi
-                  done < <(find artifacts -name '*.txt' -print0)
-
-                  {
-                    echo "warnings<<EOF"
-                    echo "$combined"
-                    echo "EOF"
-                  } >> "$GITHUB_OUTPUT"
-
-      - name: Create or update PR comment
-        if: steps.combine.outputs.warnings != ''
+      - name: Run EOL check and comment
         uses: actions/github-script@v7
-        env:
-          WARNINGS: ${{ steps.combine.outputs.warnings }}
         with:
           script: |
-            const warnings = process.env.WARNINGS || '';
+            const { execSync } = require('child_process');
+
+            const output = execSync('python -m scripts.eol.check_eol 2>&1 || true', {
+              encoding: 'utf-8',
+              cwd: process.env.GITHUB_WORKSPACE
+            });
+
+            console.log(output);
+
+            // Only post a comment if there are warnings
+            if (!output.includes('STATUS=WARNING')) {
+              console.log('No EOL warnings — skipping comment');
+              return;
+            }
 
             const marker = '<!-- consolidated-eol-warning -->';
 
@@ -416,7 +370,7 @@ jobs:
               '> Please plan upgrades accordingly.\n' +
               '\n' +
               '```text\n' +
-              warnings.replace(/```/g, '``\\`') +
+              output.replace(/```/g, '``\\`') +
               '\n```';
 
             const { data: comments } = await github.rest.issues.listComments({
