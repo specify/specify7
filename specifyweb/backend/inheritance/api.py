@@ -1,7 +1,5 @@
 from typing import Callable
 
-from collections.abc import Generator
-
 from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
 from specifyweb.specify.models import Collectionobjectgroupjoin, Component
 
