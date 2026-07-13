@@ -98,7 +98,7 @@ jobs:
           echo "================================================================================="
           docker exec mariadb ls -lah /run
           docker ps --all
-          docker exec mariadb grep '^#' /usr/lib/tmpfiles.d/mariadb.conf
+          docker exec mariadb cat /usr/lib/tmpfiles.d/mariadb.conf
 
 
       - name: Upload report as artifact
