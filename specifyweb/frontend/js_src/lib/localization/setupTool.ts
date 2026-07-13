@@ -24,7 +24,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Progress:',
     'de-ch': 'Fortschritt:',
     'es-es': 'Progreso:',
-    'fr-fr': 'Progrès:',
+    'fr-fr': 'Progrès :',
     'hr-hr': 'Napredak:',
     'pt-br': 'Progresso:',
     'ru-ru': 'Прогресс:',
@@ -147,7 +147,7 @@ export const setupToolText = createDictionary({
     'es-es':
       'Un código o acrónimo corto y único para la institución (por ejemplo, "KUBI").',
     'fr-fr':
-      "Un code court et unique ou un acronyme pour l'institution (par exemple, « KUBI »).",
+      "Un code court et unique ou un acronyme pour l'institution (par exemple, « MNHN »).",
     'hr-hr':
       'Kratki, jedinstveni kod ili akronim za instituciju (npr. "KUBI").',
     'pt-br':
@@ -184,7 +184,8 @@ export const setupToolText = createDictionary({
     'en-us': 'Define Accession Globally',
     'de-ch': 'Globale Definition des Beitritts',
     'es-es': 'Definir la adhesión a nivel global',
-    'fr-fr': "Définir l'adhésion au niveau mondial",
+    'fr-fr':
+      'Définir les acquisitions au niveau global (partagées à toute la base)',
     'hr-hr': 'Definirajte pristupanje globalno',
     'pt-br': 'Definir Adesão Globalmente',
     'ru-ru': 'Определение доступа на глобальном уровне',
@@ -269,7 +270,7 @@ export const setupToolText = createDictionary({
     'en-us': 'The state or province.',
     'de-ch': 'Der Staat oder die Provinz.',
     'es-es': 'El estado o provincia.',
-    'fr-fr': "L'État ou la province.",
+    'fr-fr': "L'état ou la province.",
     'hr-hr': 'Država ili pokrajina.',
     'pt-br': 'O estado ou província.',
     'ru-ru': 'Штат или провинция.',
@@ -302,7 +303,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Zip/Postal Code',
     'de-ch': 'Postleitzahl',
     'es-es': 'Código postal',
-    'fr-fr': 'Zip / code postal',
+    'fr-fr': 'Code postal',
     'hr-hr': 'Poštanski broj',
     'pt-br': 'CEP / Código Postal',
     'ru-ru': 'Почтовый индекс',
@@ -335,7 +336,7 @@ export const setupToolText = createDictionary({
     'en-us': 'A contact phone number.',
     'de-ch': 'Eine Kontakttelefonnummer.',
     'es-es': 'Un número de teléfono de contacto.',
-    'fr-fr': 'Un numéro de téléphone pour vous contacter.',
+    'fr-fr': 'Un numéro de téléphone de contact.',
     'hr-hr': 'Kontaktni broj telefona.',
     'pt-br': 'Um número de telefone para contato.',
     'ru-ru': 'Контактный номер телефона.',
@@ -368,7 +369,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Full Name Direction',
     'de-ch': 'Vollständiger Name Wegbeschreibung',
     'es-es': 'Dirección por nombre completo',
-    'fr-fr': 'Nom complet Direction',
+    'fr-fr': 'Sens de lecture du nom complet',
     'hr-hr': 'Puno ime Smjer',
     'pt-br': 'Nome completo Direção',
     'ru-ru': 'Полное имя Направление',
@@ -446,7 +447,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Enforced',
     'de-ch': 'Durchgesetzt',
     'es-es': 'Aplicado',
-    'fr-fr': 'Appliqué',
+    'fr-fr': 'Forcé',
     'hr-hr': 'Provedeno',
     'pt-br': 'Aplicado',
     'ru-ru': 'Принудительное исполнение',
@@ -461,7 +462,7 @@ export const setupToolText = createDictionary({
     'es-es':
       'La opción "Is Enforced" garantiza que no se pueda omitir el nivel al agregar nodos en niveles inferiores del árbol.',
     'fr-fr':
-      "L'option « Is Enforced » garantit que le niveau ne peut pas être ignoré lors de l'ajout de nœuds plus bas dans l'arbre.",
+      "L'option « Forcé/is enforced » garantit que le niveau ne peut pas être ignoré lors de l'ajout de nœuds plus bas dans l'arbre.",
     'hr-hr':
       'Opcija "Je li provedeno" osigurava da se razina ne može preskočiti prilikom dodavanja čvorova niže u stablu.',
     'pt-br':
@@ -476,7 +477,7 @@ export const setupToolText = createDictionary({
     'en-us': 'In Full Name',
     'de-ch': 'Vollständiger Name',
     'es-es': 'Nombre completo',
-    'fr-fr': 'Nom complet',
+    'fr-fr': 'Présent dans le nom complet',
     'hr-hr': 'Puno ime',
     'pt-br': 'Nome completo',
     'ru-ru': 'Полное имя',
@@ -491,11 +492,11 @@ export const setupToolText = createDictionary({
     'es-es':
       'La opción "Está en nombre completo" incluye el nivel al crear una expresión de nombre completo, que se puede consultar y utilizar en informes.',
     'fr-fr':
-      "L'option « Is in Full Name » inclut le niveau lors de la construction d'une expression de nom complet, qui peut être interrogée et utilisée dans les rapports.",
+      "L'option « Présent dans le nom complet » inclut le niveau lors de la construction d'une du nom complet, qui peut être requêté et utilisé dans les rapports.",
     'hr-hr':
       '"Je u punom imenu" uključuje razinu prilikom izrade izraza punog imena, koji se može upitati i koristiti u izvješćima.',
     'pt-br':
-      '"Está no nome completo" inclui o nível ao construir uma expressão de nome completo, que pode ser consultada e usada em relatórios.',
+      'A opção "Nome Completo" inclui o nível de detalhamento ao construir uma expressão de nome completo, que pode ser consultada e usada em relatórios.',
     'ru-ru':
       'Функция «Указание полного имени» включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
     'uk-ua':
@@ -558,7 +559,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Taxon Tree',
     'de-ch': 'Taxonbaum',
     'es-es': 'Árbol taxonómico',
-    'fr-fr': 'Arbre taxon',
+    'fr-fr': 'Arbre taxinomique',
     'hr-hr': 'Stablo taksona',
     'pt-br': 'Árvore taxonômica',
     'ru-ru': 'Древо таксонов',
@@ -668,7 +669,7 @@ export const setupToolText = createDictionary({
     'en-us': 'Specify User',
     'de-ch': 'Benutzer angeben',
     'es-es': 'Especificar usuario',
-    'fr-fr': "Spécifiez l'utilisateur",
+    'fr-fr': 'Utilisateur Specify',
     'hr-hr': 'Navedite korisnika',
     'pt-br': 'Especificar usuário',
     'ru-ru': 'Укажите пользователя',
@@ -830,7 +831,8 @@ export const setupToolText = createDictionary({
     'hr-hr':
       'Kliknite bilo koji blok da biste otvorili njegov obrazac za uređivanje.',
     'pt-br': 'Clique em qualquer bloco para abrir o formulário de edição.',
-    'ru-ru': 'Нажмите на любой блок, чтобы открыть форму его редактирования.',
+    'ru-ru':
+      'Щелкните по любому блоку, чтобы открыть форму его редактирования.',
     'uk-ua': 'Клацніть будь-який блок, щоб відкрити його форму редагування.',
     nb: 'Klikk på en hvilken som helst blokk for å åpne redigeringsskjemaet.',
   },

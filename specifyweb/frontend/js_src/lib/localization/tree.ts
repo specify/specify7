@@ -173,7 +173,7 @@ export const treeText = createDictionary({
     'es-es':
       'Las preparaciones del nodo {treeName:string} "{nodeName:string}" se colocarán en la nueva ubicación "{parentName:string}".',
     'fr-fr':
-      'Les préparatifs du nœud {treeName:string} « {nodeName:string} » seront placés sous le nouvel emplacement « {parentName:string} ».',
+      'Les préparations du nœud {treeName:string} « {nodeName:string} » seront placés sous le nouvel emplacement « {parentName:string} ».',
     'ru-ru':
       'Подготовка узла {treeName:string} "{nodeName:string}" будет размещена в новом месте "{parentName:string}".',
     'uk-ua':
@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
     'pt-br': 'Não é possível mover este nó da árvore para cá.',
     'hr-hr': 'Ovaj čvor stabla ne može se premjestiti ovdje',
-    nb: 'Kan ikke flytte denne treknuten hit',
+    nb: 'Kan ikke flytte denne trenoden hit',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",
@@ -277,7 +277,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Выберите новый целевой объект для слияния "{nodeName:string}".',
     'es-es': 'Seleccione un nuevo objetivo para fusionar "{nodeName:string}"',
     'fr-fr':
-      'Sélectionnez une nouvelle cible pour que « {nodeName:string} » soit fusionné dans',
+      'Sélectionnez une nouvelle cible pour que « {nodeName:string} » y soit fusionné',
     'uk-ua':
       'Виберіть нову ціль для «{nodeName:string}», у яку потрібно об’єднати',
     'de-ch': 'Wähle ein neues Ziel um "{nodeName:string}" zusammenzuführen',
@@ -294,7 +294,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un nuevo objetivo para los preparaciones "{nodeName:string}" que se trasladarán a',
     'fr-fr':
-      'Sélectionnez une nouvelle cible pour le déplacement des préparations « {nodeName:string} » dans',
+      'Sélectionnez une nouvelle cible pour que « {nodeName:string} » y soit déplacé',
     'ru-ru':
       'Выберите новую цель для перемещения подготовительных работ "{nodeName:string}".',
     'uk-ua':
@@ -313,7 +313,7 @@ export const treeText = createDictionary({
     'es-es':
       'Todas las referencias al nodo {treeName:string} "{nodeName:string}" serán reemplazadas por "{parentName:string}", todos los descendientes de "{nodeName:string}" se moverán a "{parentName:string}" y todos los descendientes que coincidan en nombre y rango se fusionarán de forma recursiva.',
     'fr-fr':
-      'Toutes les références au nœud {treeName:string} "{nodeName:string}" seront remplacées par "{parentName:string}", et tous les descendants de "{nodeName:string}" seront déplacés vers "{parentName:string}" avec tous les descendants correspondant en nom et en rang étant eux-mêmes fusionnés de manière récursive.',
+      'Toutes les références au nœud {treeName:string} "{nodeName:string}" seront remplacées par "{parentName:string}", et tous les descendants de "{nodeName:string}" seront déplacés vers "{parentName:string}" les descendants dont le nom et le rang correspondent seront eux-mêmes fusionnés de manière récursive.',
     'uk-ua':
       "Усі посилання на вузол {treeName:string} «{nodeName:string}» буде замінено на «{parentName:string}», а всі нащадки «{nodeName:string}» буде переміщено до «{parentName:string}», а будь-які нащадки, що відповідають імені та рангу, будуть самі собою об'єднані рекурсивно.",
     'de-ch':
@@ -354,7 +354,7 @@ export const treeText = createDictionary({
     'es-es':
       'Seleccione un objetivo para que "{nodeName:string}" se convierta en sinónimo',
     'fr-fr':
-      'Sélectionnez une cible pour que « {nodeName:string} » soit synonymisé à',
+      'Sélectionnez une cible pour que « {nodeName:string} » y soit synonymisé',
     'uk-ua': 'Виберіть ціль для "{nodeName:string}", який буде синонімічним',
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
     'pt-br': 'Selecione um alvo para "{nodeName:string}" a ser sinônimo de',
@@ -369,7 +369,7 @@ export const treeText = createDictionary({
     'es-es':
       'El nodo {treeName:string} "{nodeName:string}" se convertirá en sinónimo de "{synonymName:string}".',
     'fr-fr':
-      'Le nœud {treeName:string} «{nodeName:string}» sera rendu synonyme de «{synonymName:string}».',
+      'Le nœud {treeName:string} «{nodeName:string}» sera synonymisé avec «{synonymName:string}».',
     'de-ch':
       'Der {treeName:string}-Knoten "{nodeName:string}" wird zu einem Synonym von "{synonymName:string}".',
     'uk-ua':
@@ -535,6 +535,77 @@ export const treeText = createDictionary({
     'hr-hr': 'Neizravno {collectionObjectTable:string} brojanje',
     nb: 'Indirekte {collectionObjectTable:string}-telling',
   },
+  geologicTimePeriodLine: {
+    comment: `
+      Tooltip line showing a period with uncertainty. Example:
+      Start: 298.9 (± 0.15 Ma)
+    `,
+    'en-us': '{label:string}: {value:string} {suffix:string}',
+    'de-ch': '{label:string}: {value:string} {suffix:string}',
+    'es-es': '{label:string}: {value:string} {suffix:string}',
+    'fr-fr': '{label:string} : {value:string} {suffix:string}',
+    'hr-hr': '{label:string}: {value:string} {suffix:string}',
+    nb: '{label:string}: {value:string} {suffix:string}',
+    'pt-br': '{label:string}: {value:string} {suffix:string}',
+    'ru-ru': '{label:string}: {value:string} {suffix:string}',
+    'uk-ua': '{label:string}: {value:string} {suffix:string}',
+  },
+  megaAnnum: {
+    comment: 'Abbreviation for millions of years (Mega annum)',
+    'en-us': 'Ma',
+    'de-ch': 'Ma',
+    'es-es': 'Mamá',
+    'fr-fr': 'Ma',
+    'hr-hr': 'Ma',
+    nb: 'Mamma',
+    'pt-br': 'Ma',
+    'ru-ru': 'Ма',
+    'uk-ua': 'Ма',
+  },
+  biostratFilter: {
+    'en-us': 'Filter by biostratigraphy',
+    'de-ch': 'Filterung nach Biostratigraphie',
+    'es-es': 'Filtrar por bioestratigrafía',
+    'fr-fr': 'Filtrer par biostratigraphie',
+    'hr-hr': 'Filtriraj po biostratigrafiji',
+    nb: 'Filtrer etter biostratigrafi',
+    'pt-br': 'Filtrar por bioestratigrafia',
+    'ru-ru': 'Фильтрация по биостратиграфии',
+    'uk-ua': 'Фільтрувати за біостратиграфією',
+  },
+  biostratAll: {
+    'en-us': 'All Nodes',
+    'de-ch': 'Alle Knoten',
+    'es-es': 'Todos los nodos',
+    'fr-fr': 'Tous les nœuds',
+    'hr-hr': 'Svi čvorovi',
+    nb: 'Alle noder',
+    'pt-br': 'Todos os nós',
+    'ru-ru': 'Все узлы',
+    'uk-ua': 'Усі вузли',
+  },
+  biostratChrono: {
+    'en-us': 'Chronostratigraphy',
+    'de-ch': 'Chronostratigraphie',
+    'es-es': 'Cronoestratigrafía',
+    'fr-fr': 'Chronostratigraphie',
+    'hr-hr': 'Kronostratigrafija',
+    nb: 'Kronostratigrafi',
+    'pt-br': 'Cronoestratigrafia',
+    'ru-ru': 'Хроностратиграфия',
+    'uk-ua': 'Хроностратиграфія',
+  },
+  biostratBio: {
+    'en-us': 'Biostratigraphy',
+    'de-ch': 'Biostratigraphie',
+    'es-es': 'Bioestratigrafía',
+    'fr-fr': 'Biostratigraphie',
+    'hr-hr': 'Biostratigrafija',
+    nb: 'Biostratigrafi',
+    'pt-br': 'Bioestratigrafia',
+    'ru-ru': 'Биостратиграфия',
+    'uk-ua': 'Біостратиграфія',
+  },
   editRanks: {
     'en-us': 'Edit Ranks',
     'ru-ru': 'Редактировать ранги',
@@ -660,7 +731,7 @@ export const treeText = createDictionary({
     'en-us': 'Tree Picker',
     'de-ch': 'Baumpflücker',
     'es-es': 'Selector de árboles',
-    'fr-fr': "Cueilleur d'arbres",
+    'fr-fr': "Sélectionner l'arbre",
     'pt-br': 'apanhador de árvores',
     'ru-ru': 'Сборщик деревьев',
     'uk-ua': 'Збирач дерев',
@@ -858,7 +929,7 @@ export const treeText = createDictionary({
     'en-us': 'Default Tree Creation Started',
     'de-ch': 'Erstellung des Standardbaums gestartet',
     'es-es': 'Creación de árbol predeterminada iniciada',
-    'fr-fr': "Création de l'arborescence par défaut démarrée",
+    'fr-fr': "Création de l'arbre par défaut démarrée",
     'hr-hr': 'Započeto je stvaranje zadanog stabla',
     'pt-br': 'Criação da árvore padrão iniciada',
     'ru-ru': 'Началось создание дерева по умолчанию.',
@@ -894,7 +965,7 @@ export const treeText = createDictionary({
     'pt-br': 'O processo padrão de criação da árvore foi iniciado.',
     'ru-ru': 'Начался процесс создания дерева по умолчанию.',
     'uk-ua': 'Процес створення дерева за замовчуванням розпочато.',
-    nb: 'Standardprosessen for oppretting av tre har startet.',
+    nb: 'Standardprosessen for oppretting av treet har startet.',
   },
   defaultTreeTaskFailed: {
     'en-us': 'Default tree creation failed.',
@@ -923,8 +994,7 @@ export const treeText = createDictionary({
     'de-ch':
       'Die Erstellung der Standardbaumstruktur wurde erfolgreich abgeschlossen.',
     'es-es': 'La creación del árbol predeterminado se completó correctamente.',
-    'fr-fr':
-      "La création de l'arborescence par défaut s'est terminée avec succès.",
+    'fr-fr': "La création de l'arbre par défaut s'est terminée avec succès.",
     'hr-hr': 'Izrada zadanog stabla uspješno je dovršena.',
     'pt-br': 'Criação da árvore padrão concluída com sucesso.',
     'ru-ru': 'Создание дерева по умолчанию успешно завершено.',
@@ -984,7 +1054,7 @@ export const treeText = createDictionary({
     'es-es':
       'El árbol genealógico que seleccionaste para descargar contiene registros en rangos que faltan en tu árbol.',
     'fr-fr':
-      "L'arbre phylogénétique que vous avez sélectionné pour le téléchargement contient des enregistrements à des rangs qui sont absents de votre arbre.",
+      "L'arbreque vous avez sélectionné pour le téléchargement contient des enregistrements à des rangs qui sont absents de votre arbre.",
     'hr-hr':
       'Popunjeno stablo koje ste odabrali za preuzimanje sadrži zapise u rangovima koji nedostaju u vašem stablu.',
     'pt-br':
@@ -1043,7 +1113,7 @@ export const treeText = createDictionary({
     'en-us': 'Expand Synonym Behavior',
     'de-ch': 'Synonymverhalten erweitern',
     'es-es': 'Expandir el comportamiento de los sinónimos',
-    'fr-fr': 'Développer le comportement des synonymes',
+    'fr-fr': 'Étendre le comportement des synonymes',
     'pt-br': 'Expandir o comportamento dos sinônimos',
     'ru-ru': 'Развернуть поведение синонимов',
     'uk-ua': 'Розгорнути поведінку синонімів',
