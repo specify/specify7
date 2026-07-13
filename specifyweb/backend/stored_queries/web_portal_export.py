@@ -7,7 +7,6 @@ import uuid
 from typing import TYPE_CHECKING, Callable
 from collections import defaultdict
 from collections.abc import Generator
-from decimal import Decimal
 from io import StringIO
 from itertools import zip_longest
 from typing import Any, Callable
