@@ -89,7 +89,6 @@ jobs:
           done
           docker compose up --build -d
           docker stats --no-stream
-          docker logs specify7
 
       - name: Run the script
         id: run-coverage
@@ -99,6 +98,7 @@ jobs:
           echo "================================================================================="
           docker ps --all
           docker exec mariadb ls -lah /run/mysqld || echo mariadb crashed!
+          docker logs specify7
 
 
       - name: Upload report as artifact
