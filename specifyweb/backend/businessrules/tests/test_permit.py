@@ -123,8 +123,11 @@ class PermitTests(ApiTests):
             'permit_doc.pdf'
         )
 
-        # Delete the attachment
+        # Delete the permit_attachment connector first
         permit_attachment.delete()
+
+        # Delete the attachment then after
+
 
         # Verifying it's gone
         self.assertEqual(permit.permitattachments.count(), 0)
