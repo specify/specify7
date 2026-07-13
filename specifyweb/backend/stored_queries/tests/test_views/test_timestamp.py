@@ -45,7 +45,7 @@ class TestTimestampQuery(SQLAlchemySetup):
             }
         ]
 
-        response = c.post(f'/stored_query/ephemeral/', query, content_type="application/json")
+        response = c.post('/stored_query/ephemeral/', query, content_type="application/json")
         self._assertStatusCodeEqual(response, 200)
 
         results = json.loads(response.content.decode())["results"]
