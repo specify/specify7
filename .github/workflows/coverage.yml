@@ -97,7 +97,7 @@ jobs:
           docker logs mariadb
           echo "================================================================================="
           docker logs specify7
-          docker ps
+          docker ps --all
 
       - name: Upload report as artifact
         uses: actions/upload-artifact@v7
