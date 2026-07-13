@@ -93,12 +93,10 @@ jobs:
       - name: Run the script
         id: run-coverage
         run: |
-          docker exec mariadb ls -lah /run
+          sleep 100 # so we can see if mariadb recovers
           docker logs mariadb
           echo "================================================================================="
-          docker exec mariadb ls -lah /run
-          docker ps --all
-          docker exec mariadb cat /usr/lib/tmpfiles.d/mariadb.conf
+          docker exec mariadb ls -lah /run/mysqld
 
 
       - name: Upload report as artifact
