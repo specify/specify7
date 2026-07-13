@@ -4,7 +4,6 @@ import logging
 import os
 import re
 import traceback
-from xml.sax.saxutils import escape
 
 from typing import Callable, Literal, NamedTuple
 import xml.dom.minidom
