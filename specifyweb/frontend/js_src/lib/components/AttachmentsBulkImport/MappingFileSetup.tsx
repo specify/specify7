@@ -96,11 +96,11 @@ function autoDetectColumns(headers: RA<string>): {
   const fieldMatchers = buildFieldMatchers();
 
   const fileNamePatterns = [
-    /attachment\s*name/i,
-    /file\s*name/i,
-    /filename/i,
-    /attachment/i,
-    /file/i,
+    /^attachment\s*name$/i,
+    /^file\s*name$/i,
+    /^filename$/i,
+    /^attachment$/i,
+    /^file$/i,
   ];
 
   let matchValueIndex: number | undefined;
