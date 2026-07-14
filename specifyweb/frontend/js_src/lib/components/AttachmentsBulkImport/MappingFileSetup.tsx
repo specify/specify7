@@ -173,6 +173,8 @@ export function MappingFileSetup({
         if (detected.fileNameIndex !== undefined)
           setFileNameIndex(detected.fileNameIndex);
       } catch (err) {
+        setHeaders(undefined);
+        setRows(undefined);
         setError(
           err instanceof Error ? err.message : 'Failed to parse CSV file'
         );
