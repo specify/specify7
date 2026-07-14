@@ -307,7 +307,7 @@ export function crossReferenceMappingFiles(
     }
   }
 
-  const result: RA<PartialUploadableFileSpec> = [];
+  const result: PartialUploadableFileSpec[] = [];
   const matchedFileNames = new Set<string>();
 
   // For each CSV row, emit the best available file or a placeholder
