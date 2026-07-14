@@ -367,7 +367,10 @@ function AttachmentsImport({
 
   useErrorContext('bulkAttachmentImport', errorContextData);
 
+  const [modeDialogDismissed, setModeDialogDismissed] = React.useState(false);
+
   const showModeDialog =
+    !modeDialogDismissed &&
     (eagerDataSet.matchingmode === undefined ||
       eagerDataSet.matchingmode === null) &&
     eagerDataSet.uploadplan.staticPathKey === undefined;
@@ -579,6 +582,7 @@ function AttachmentsImport({
           initialMode={eagerDataSet.uploadplan.matchingMode}
           onClose={() => {
             // Default to filename mode if user closes without choosing
+            setModeDialogDismissed(true);
             commitChange((oldState) => ({
               ...oldState,
               matchingmode: null,
@@ -589,6 +593,7 @@ function AttachmentsImport({
             }));
           }}
           onContinue={(mode, columns, data) => {
+            setModeDialogDismissed(true);
             commitChange((oldState) => ({
               ...oldState,
               matchingmode: mode,
