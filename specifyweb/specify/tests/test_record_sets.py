@@ -27,3 +27,23 @@ class RecordSetCreationTests(ApiTests):
             recordset.recordsetitems.values_list("recordid", flat=True)
         )
         self.assertEqual(rs_item_ids, set(co_ids))
+
+    def test_add_existing_record_to_record_set(self):
+        """Add an existing Collection Object to a record set."""
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Test RS add existing",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+
+        self.assertEqual(recordset.recordsetitems.count(), 0)
+
+        existing_co = self.collectionobjects[0]
+        recordset.recordsetitems.create(recordid=existing_co.id)
+
+        self.assertEqual(recordset.recordsetitems.count(), 1)
+        self.assertEqual(
+            recordset.recordsetitems.first().recordid, existing_co.id
+        )
