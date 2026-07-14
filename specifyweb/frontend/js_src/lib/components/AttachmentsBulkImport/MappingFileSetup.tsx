@@ -154,9 +154,13 @@ export function MappingFileSetup({
   const isRestored = initialColumns !== undefined && initialData !== undefined;
   const [hasRestored] = React.useState(isRestored);
 
+  const previousMappingRef = React.useRef<string | undefined>(undefined);
   const handleFileSelected = React.useCallback(
     async (selectedFile: File) => {
       setError(undefined);
+      setMatchValueIndex(undefined);
+      setFileNameIndex(undefined);
+      previousMappingRef.current = undefined;
       try {
         const parsed = await parseMappingCsv(selectedFile);
         setHeaders(parsed.headers);
@@ -178,7 +182,6 @@ export function MappingFileSetup({
   );
 
   // Notify parent when columns are selected
-  const previousMappingRef = React.useRef<string | undefined>(undefined);
   React.useEffect(() => {
     if (
       matchValueIndex === undefined ||
