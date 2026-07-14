@@ -95,14 +95,13 @@ jobs:
           sleep 10
           docker compose up -d mariadb
           sleep 10
-          docker exec mariadb ls -lah /run/mysqld
-          docker logs mariadb
           docker exec mariadb mariadb -uroot -ppassword -e"DROP USER root; 
               CREATE USER 'root'@'%' IDENTIFIED BY 'password';
               GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'password';
               DROP DATABASE IF EXISTS specify;"
           docker compose down
-          docker compose up
+          docker compose up -d 
+          sleep 10
         
 
       - name: Run the script
