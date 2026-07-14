@@ -322,7 +322,7 @@ def query_to_csv(
     See build_query for details of the other accepted arguments.
     """
     set_group_concat_max_len(session.connection())
-    query, __ = build_query(
+    query, order_by_expers = build_query(
         session,
         collection,
         user,
@@ -330,6 +330,7 @@ def query_to_csv(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
+    query = query.order_by(*order_by_expers)
     query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
 
     logger.debug("query_to_csv starting")

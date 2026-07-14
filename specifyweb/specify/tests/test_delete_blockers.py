@@ -1,7 +1,6 @@
 from django.test import Client
 import json
 
-from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
 from specifyweb.specify import models

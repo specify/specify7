@@ -20,6 +20,7 @@ export const mainText = createDictionary({
     'de-ch': '{baseTitle:string} | Specify 7',
     'pt-br': '{baseTitle:string} | Specify 7',
     'hr-hr': '{baseTitle:string} | Navedite 7',
+    nb: '{baseTitle:string} | Specify 7',
   },
   baseAppTitle: {
     comment: 'Default page title',
@@ -31,6 +32,7 @@ export const mainText = createDictionary({
     'de-ch': 'Specify 7',
     'pt-br': 'Specify 7',
     'hr-hr': 'Navedite 7',
+    nb: 'Specify 7',
   },
   pageNotFound: {
     comment: 'Used in title',
@@ -42,6 +44,7 @@ export const mainText = createDictionary({
     'de-ch': 'Seite wurde nicht gefunden',
     'pt-br': 'Página não encontrada',
     'hr-hr': 'Stranica nije pronađena',
+    nb: 'Siden ble ikke funnet',
   },
   nothingWasFound: {
     comment: 'Used in the heading on 404 page',
@@ -53,6 +56,7 @@ export const mainText = createDictionary({
     'de-ch': 'Hoppla! Es wurde nichts gefunden :-(',
     'pt-br': 'Ops! Nada foi encontrado.',
     'hr-hr': 'Ups! Ništa nije pronađeno',
+    nb: 'Ups! Ingenting ble funnet',
   },
   pageNotFoundDescription: {
     comment: 'Used in the paragraph on 404 page',
@@ -72,6 +76,7 @@ export const mainText = createDictionary({
       'A página que você está procurando pode ter sido removida, ter tido seu nome alterado ou estar temporariamente indisponível.',
     'hr-hr':
       'Stranica koju tražite možda je uklonjena, promijenjen joj je naziv ili je privremeno nedostupna.',
+    nb: 'Siden du leter etter kan ha blitt fjernet, fått navnet endret eller er midlertidig utilgjengelig.',
   },
   returnToHomepage: {
     'en-us': 'Return to homepage',
@@ -82,6 +87,7 @@ export const mainText = createDictionary({
     'de-ch': 'Zurück zur Startseite',
     'pt-br': 'Voltar à página inicial',
     'hr-hr': 'Povratak na početnu stranicu',
+    nb: 'Gå tilbake til hjemmesiden',
   },
   errorOccurred: {
     'en-us': 'We are sorry, something has gone wrong',
@@ -92,6 +98,7 @@ export const mainText = createDictionary({
     'de-ch': 'Es tut uns leid, da ist etwas schiefgelaufen.',
     'pt-br': 'Pedimos desculpas, algo deu errado.',
     'hr-hr': 'Žao nam je, nešto je pošlo po zlu',
+    nb: 'Beklager, noe har gått galt',
   },
   clickToSeeDetails: {
     'en-us': 'Click to see details',
@@ -102,6 +109,7 @@ export const mainText = createDictionary({
     'ru-ru': 'Нажмите, чтобы посмотреть подробности',
     'pt-br': 'Clique para ver os detalhes',
     'hr-hr': 'Kliknite za detalje',
+    nb: 'Klikk for å se detaljer',
   },
   errorOccurredDescription: {
     'en-us':
@@ -120,6 +128,7 @@ export const mainText = createDictionary({
       'Pedimos desculpas, parece que você encontrou um erro no Specify 7 do qual talvez não tenhamos conhecimento.',
     'hr-hr':
       'Žao nam je, čini se da ste naišli na grešku u Specify 7 za koju možda nismo svjesni.',
+    nb: 'Beklager, det ser ut til at du har støtt på en feil i Specify 7 som vi kanskje ikke er klar over.',
   },
   criticalErrorOccurredDescription: {
     'en-us':
@@ -129,7 +138,7 @@ export const mainText = createDictionary({
     'es-es':
       'Para evitar corromper los registros de datos, debe comenzar de nuevo desde un lugar seguro: la página de inicio.',
     'fr-fr':
-      "Pour éviter de corrompre les enregistrements de données, vous devez recommencer à partir d'un endroit sûr : la page d'accueil.",
+      "Pour éviter de corrompre les enregistrements de données, vous devez recommencer à partir d'un endroit sûr (page d'accueil).",
     'uk-ua':
       'Щоб уникнути пошкодження записів даних, вам потрібно почати знову з безпечного місця – головної сторінки.',
     'de-ch':
@@ -138,6 +147,7 @@ export const mainText = createDictionary({
       'Para evitar corromper os registros de dados, você precisa começar novamente a partir de um ponto seguro: a página inicial.',
     'hr-hr':
       'Kako biste izbjegli oštećenje podatkovnih zapisa, morate ponovno započeti s sigurnog mjesta - početne stranice.',
+    nb: 'For å unngå å ødelegge dataposter, må du starte på nytt fra et trygt sted – hjemmesiden.',
   },
   errorResolutionDescription: {
     'en-us':
@@ -156,6 +166,7 @@ export const mainText = createDictionary({
       'Se o problema persistir, entre em contato com o suporte de TI. Se for um banco de dados Specify Cloud, faça o download da mensagem de erro e envie para <email />.',
     'hr-hr':
       'Ako se ovaj problem nastavi, obratite se IT podršci. Ako se radi o Specify Cloud bazi podataka, preuzmite poruku o pogrešci i pošaljite je na <email />.',
+    nb: 'Hvis problemet vedvarer, kan du kontakte IT-støtte. Hvis dette er en Specify Cloud-database, kan du laste ned feilmeldingen og sende den til <email />.',
   },
   errorResolutionSecondDescription: {
     comment: 'Careful with the <xml> tags when localizing',
@@ -175,6 +186,7 @@ export const mainText = createDictionary({
       'Usuários de instituições membros <memberLink>podem pesquisar perguntas respondidas e pedir ajuda em nosso <discourseLink>Fórum da Comunidade</discourseLink>.',
     'hr-hr':
       'Korisnici iz <memberLink>institucija članica</memberLink> mogu tražiti odgovore na pitanja i zatražiti pomoć na našem <discourseLink>Forumu zajednice</discourseLink>.',
+    nb: 'Brukere fra <memberLink>medlemsinstitusjoner</memberLink> kan søke etter besvarte spørsmål og be om hjelp på vårt <discourseLink>fellesskapsforum</discourseLink>.',
   },
   errorMessage: {
     'en-us': 'Error Message',
@@ -185,6 +197,7 @@ export const mainText = createDictionary({
     'de-ch': 'Fehlermeldung',
     'pt-br': 'Mensagem de erro',
     'hr-hr': 'Poruka o pogrešci',
+    nb: 'Feilmelding',
   },
   leavePageConfirmation: {
     'en-us': 'Are you sure you want to leave this page?',
@@ -195,6 +208,7 @@ export const mainText = createDictionary({
     'de-ch': 'Sind Sie sicher, dass Sie diese Seite verlassen wollen?',
     'pt-br': 'Tem certeza de que deseja sair desta página?',
     'hr-hr': 'Jeste li sigurni da želite napustiti ovu stranicu?',
+    nb: 'Er du sikker på at du vil forlate denne siden?',
   },
   leavePageConfirmationDescription: {
     'en-us': 'Unsaved changes will be lost if you leave this page.',
@@ -210,6 +224,7 @@ export const mainText = createDictionary({
       'As alterações não salvas serão perdidas se você sair desta página.',
     'hr-hr':
       'Nespremljene promjene bit će izgubljene ako napustite ovu stranicu.',
+    nb: 'Ulagrede endringer vil gå tapt hvis du forlater denne siden.',
   },
   leave: {
     'en-us': 'Leave',
@@ -220,6 +235,7 @@ export const mainText = createDictionary({
     'de-ch': 'Verlassen',
     'pt-br': 'Deixar',
     'hr-hr': 'Ostavite',
+    nb: 'Forlate',
   },
   versionMismatch: {
     'en-us': 'Specify version does not match database version',
@@ -234,6 +250,7 @@ export const mainText = createDictionary({
     'pt-br':
       'A versão especificada não corresponde à versão do banco de dados.',
     'hr-hr': 'Navedena verzija ne odgovara verziji baze podataka',
+    nb: 'Den angitte versjonen samsvarer ikke med databaseversjonen',
   },
   versionMismatchDescription: {
     'en-us':
@@ -252,6 +269,7 @@ export const mainText = createDictionary({
       'A versão especificada {specifySixVersion:string} não corresponde à versão do banco de dados {databaseVersion:string}.',
     'hr-hr':
       'Navedena verzija {specifySixVersion:string} ne odgovara verziji baze podataka {databaseVersion:string}.',
+    nb: 'Spesifiser versjon {specifySixVersion:string} samsvarer ikke med databaseversjonen {databaseVersion:string}.',
   },
   versionMismatchSecondDescription: {
     'en-us':
@@ -268,6 +286,7 @@ export const mainText = createDictionary({
       'Portanto, algumas funcionalidades do Specify 7 podem não funcionar corretamente.',
     'hr-hr':
       'Stoga neke značajke programa Specify 7 možda neće ispravno raditi.',
+    nb: 'Enkelte funksjoner i Specifice 7 fungerer kanskje derfor ikke som de skal.',
   },
   versionMismatchInstructions: {
     'en-us': 'Instructions for resolving Specify schema mismatch',
@@ -281,6 +300,7 @@ export const mainText = createDictionary({
     'pt-br':
       'Instruções para resolver a incompatibilidade de esquema especificado.',
     'hr-hr': 'Upute za rješavanje neusklađenosti Navedite shemu',
+    nb: 'Instruksjoner for å løse uoverensstemmelser mellom spesifiserte skjemaer',
   },
   online: {
     'en-us': 'online',
@@ -291,6 +311,7 @@ export const mainText = createDictionary({
     'de-ch': 'online',
     'pt-br': 'on-line',
     'hr-hr': 'online',
+    nb: 'på nett',
   },
   offline: {
     'en-us': 'offline',
@@ -301,5 +322,6 @@ export const mainText = createDictionary({
     'de-ch': 'offline',
     'pt-br': 'offline',
     'hr-hr': 'izvan mreže',
+    nb: 'frakoblet',
   },
 } as const);
