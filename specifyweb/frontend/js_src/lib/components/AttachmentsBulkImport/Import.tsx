@@ -185,6 +185,14 @@ function AttachmentsImport({
     ]
   );
 
+  // Single source of truth: dataset-level matchingmode (DB field) or uploadplan-level
+  const isMappingMode = React.useMemo(
+    () =>
+      (eagerDataSet.matchingmode ?? eagerDataSet.uploadplan.matchingMode) ===
+      'mappingFile',
+    [eagerDataSet.matchingmode, eagerDataSet.uploadplan.matchingMode]
+  );
+
   const previousKeyRef = React.useRef(
     `${attachmentDataSetResource.uploadplan.staticPathKey ?? ''}_${attachmentDataSetResource.uploadplan.matchingMode ?? 'filename'}`
   );
@@ -194,8 +202,11 @@ function AttachmentsImport({
     if (previousKeyRef.current !== currentKey) {
       previousKeyRef.current = currentKey;
       commitFileChange((files) => {
-        const recalculated = files.map(({ uploadFile }) =>
-          applyFileNames(uploadFile)
+        const recalculated = files.map(
+          ({ uploadFile, ...rest }) => ({
+            ...rest,
+            ...applyFileNames(uploadFile),
+          })
         );
         // If switching away from mapping mode, remove placeholder entries
         if (!isMappingMode) {
@@ -210,15 +221,7 @@ function AttachmentsImport({
         return recalculated;
       });
     }
-  }, [applyFileNames, commitFileChange]);
-
-  // Single source of truth: dataset-level matchingmode (DB field) or uploadplan-level
-  const isMappingMode = React.useMemo(
-    () =>
-      (eagerDataSet.matchingmode ?? eagerDataSet.uploadplan.matchingMode) ===
-      'mappingFile',
-    [eagerDataSet.matchingmode, eagerDataSet.uploadplan.matchingMode]
-  );
+  }, [applyFileNames, commitFileChange, isMappingMode]);
 
   // In mapping mode, seed the table with CSV rows so the user sees what to upload
   React.useEffect(() => {
