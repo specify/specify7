@@ -69,7 +69,12 @@ const resolveAttachmentDatasetData = (
         selectedFileName: [
           uploadFile.file.name,
           <div className="flex w-fit gap-1">
-            {uploadFile.file instanceof File || isMappingMode
+            {uploadFile.file instanceof File ||
+            (isMappingMode &&
+              status !== undefined &&
+              typeof status === 'object' &&
+              'reason' in status &&
+              status.reason === 'fileMissing')
               ? ''
               : dialogIcons.warning}
             {uploadFile.file.name}
@@ -187,15 +192,22 @@ export function ViewAttachmentFiles({
                   })}
                 </div>
                 <div className="flex min-w-fit gap-1">
-                  {!isMappingMode &&
-                    uploadableFiles.some(
-                      ({ uploadFile: { file } }) => !(file instanceof File)
-                    ) && (
-                      <>
-                        {dialogIcons.warning}
-                        {attachmentsText.pleaseReselectAllFiles()}
-                      </>
-                    )}
+                  {uploadableFiles.some(
+                    ({ uploadFile: { file }, status }) =>
+                      !(file instanceof File) &&
+                      !(
+                        isMappingMode &&
+                        status !== undefined &&
+                        typeof status === 'object' &&
+                        'reason' in status &&
+                        status.reason === 'fileMissing'
+                      )
+                  ) && (
+                    <>
+                      {dialogIcons.warning}
+                      {attachmentsText.pleaseReselectAllFiles()}
+                    </>
+                  )}
                 </div>
               </div>
               {isMappingMode &&
