@@ -289,6 +289,20 @@ export function crossReferenceMappingFiles(
           f.uploadFile.file instanceof File)
       ) {
         byName.set(f.uploadFile.file.name, f);
+      } else if (!existingIsPlaceholder && !newIsPlaceholder) {
+        // Keep the first entry but flag it unless already uploaded.
+        byName.set(f.uploadFile.file.name, {
+          ...existing,
+          ...(existing.attachmentId === undefined &&
+            existing.status?.type !== 'success'
+            ? {
+                status: {
+                  type: 'cancelled' as const,
+                  reason: 'duplicateInMappingFile' as const,
+                },
+              }
+            : {}),
+        });
       }
     }
   }
