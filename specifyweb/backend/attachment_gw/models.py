@@ -8,6 +8,13 @@ class Spattachmentdataset(Dataset):
 
     id = models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')
 
+    matchingmode = models.CharField(max_length=32, null=True, default=None)
+
+    object_response_fields = [
+        *Dataset.object_response_fields,
+        'matchingmode',
+    ]
+
     class Meta:
         db_table = 'attachmentdataset'
 

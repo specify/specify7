@@ -28,6 +28,7 @@ def datasets_view(request):
             createdbyagent=request.specify_user_agent,
             modifiedbyagent=request.specify_user_agent,
             uploaderstatus="main",
+            matchingmode=data.get('matchingmode', None),
             # A bit more flexible than workbench. Handles creating datasets with an uploadplan from the start.
             uploadplan=json.dumps(data['uploadplan']) if 'uploadplan' in data else None
         )
@@ -49,6 +50,7 @@ def dataset_view(request, ds: Spattachmentdataset):
         ds.name = attrs.get('name', ds.name)
         ds.remarks = attrs.get('remarks', ds.remarks)
         ds.data = attrs.get('rows', ds.data)
+        ds.matchingmode = attrs.get('matchingmode', ds.matchingmode)
         ds.uploadplan = json.dumps(attrs['uploadplan'] if 'uploadplan' in attrs else ds.uploadplan)
         # Never preserve uploaderstatus. Making it required for all requests.
         old_status = ds.uploaderstatus
