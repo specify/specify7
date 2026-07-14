@@ -11,7 +11,7 @@ import { userText } from '../../localization/user';
 import { wbText } from '../../localization/workbench';
 import { ajax } from '../../utils/ajax';
 import { f } from '../../utils/functools';
-import type { RA, WritableArray } from '../../utils/types';
+import type { RA } from '../../utils/types';
 import type { IR } from '../../utils/types';
 import { removeKey, sortFunction } from '../../utils/utils';
 import { Container } from '../Atoms';
@@ -269,15 +269,19 @@ function AttachmentsImport({
         : matchSelectedFiles(eagerDataSet.rows, filesList);
 
     // Safety net: guarantee no duplicate filenames in the final list
-    const seen = new Set<string>();
-    const deduped = (resolvedFiles as WritableArray<PartialUploadableFileSpec>).filter(
-      (f) => {
-        const name = f.uploadFile.file.name;
-        if (seen.has(name)) return false;
-        seen.add(name);
-        return true;
+    const bestByName = new Map<string, PartialUploadableFileSpec>();
+    for (const f of resolvedFiles) {
+      const name = f.uploadFile.file.name;
+      const existing = bestByName.get(name);
+      if (
+        existing === undefined ||
+        (!(existing.uploadFile.file instanceof File) &&
+          f.uploadFile.file instanceof File)
+      ) {
+        bestByName.set(name, f);
       }
-    );
+    }
+    const deduped = [...bestByName.values()];
 
     deduped.sort(sortFunction((file) => file.uploadFile.file.name));
     commitChange((oldState) => ({
