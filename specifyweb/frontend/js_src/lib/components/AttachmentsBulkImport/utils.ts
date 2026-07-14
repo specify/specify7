@@ -293,22 +293,12 @@ export function crossReferenceMappingFiles(
     }
   }
 
-  // Count duplicates in the CSV for flagging
-  const mappingFileNameCounts = new Map<string, number>();
-  for (const row of mappingData) {
-    mappingFileNameCounts.set(
-      row.fileName,
-      (mappingFileNameCounts.get(row.fileName) ?? 0) + 1
-    );
-  }
-
   const result: RA<PartialUploadableFileSpec> = [];
   const matchedFileNames = new Set<string>();
 
   // For each CSV row, emit the best available file or a placeholder
   for (const row of mappingData) {
     const existing = byName.get(row.fileName);
-    const isDuplicateInCsv = (mappingFileNameCounts.get(row.fileName) ?? 0) > 1;
 
     if (existing !== undefined) {
       // Only emit once per filename even if CSV has duplicate rows
@@ -323,14 +313,6 @@ export function crossReferenceMappingFiles(
           mappingMatchValue: row.matchValue,
           mappingFileName: row.fileName,
         },
-        ...(isDuplicateInCsv && existing.attachmentId === undefined
-          ? {
-              status: {
-                type: 'cancelled' as const,
-                reason: 'duplicateInMappingFile' as const,
-              },
-            }
-          : {}),
       });
     } else {
       // File not yet uploaded — add placeholder (once per filename)
