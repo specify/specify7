@@ -349,12 +349,18 @@ export function crossReferenceMappingFiles(
   // Flag any uploaded files not referenced by the CSV
   for (const [name, file] of byName) {
     if (!matchedFileNames.has(name)) {
+      const alreadyAttached =
+        file.attachmentId !== undefined || file.status?.type === 'success';
       result.push({
         ...file,
-        status: {
-          type: 'cancelled' as const,
-          reason: 'notInMappingFile' as const,
-        },
+        ...(alreadyAttached
+          ? {}
+          : {
+              status: {
+                type: 'cancelled' as const,
+                reason: 'notInMappingFile' as const,
+              },
+            }),
       });
     }
   }
