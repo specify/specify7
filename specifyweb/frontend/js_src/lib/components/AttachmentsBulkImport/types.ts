@@ -10,6 +10,18 @@ import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
 
+export type MatchingMode = 'filename' | 'mappingFile';
+
+export type MappingFileColumns = {
+  readonly matchValueColumnIndex: number;
+  readonly fileNameColumnIndex: number;
+};
+
+export type MappingFileRow = {
+  readonly matchValue: string;
+  readonly fileName: string;
+};
+
 export type UploadAttachmentSpec = {
   readonly token: string;
   readonly attachmentLocation: string;
@@ -62,6 +74,10 @@ export type BoundFile = Pick<File, 'name' | 'size' | 'type'>;
 export type UnBoundFile = {
   readonly file: BoundFile | File;
   readonly parsedName?: string;
+  /** Match value from mapping file CSV (used in mapping-file mode) */
+  readonly mappingMatchValue?: string;
+  /** File name from mapping file CSV (used in mapping-file mode) */
+  readonly mappingFileName?: string;
 };
 
 export type AttachmentWorkProgress = {
@@ -102,6 +118,7 @@ export type AttachmentDatasetBrief = DatasetBriefBase & {
     | 'uploading'
     | 'uploadInterrupted'
     | 'validating';
+  readonly matchingmode?: MatchingMode | null;
 };
 
 export type AttachmentDataSetPlan = AttachmentDatasetBrief & {
