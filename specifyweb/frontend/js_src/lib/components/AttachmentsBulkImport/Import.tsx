@@ -30,19 +30,25 @@ import { SelectUploadPath } from './SelectUploadPath';
 import type {
   AttachmentDataSet,
   FetchedDataSet,
+  MappingFileColumns,
+  MappingFileRow,
+  MatchingMode,
   PartialUploadableFileSpec,
   UnBoundFile,
 } from './types';
 import { AttachmentUpload } from './Upload';
 import { useEagerDataSet } from './useEagerDataset';
 import {
+  crossReferenceMappingFiles,
   matchSelectedFiles,
+  prepareMappingFileSelection,
   reconstructDeletingAttachment,
   reconstructUploadingAttachmentSpec,
   resolveFileNames,
 } from './utils';
 import { AttachmentsValidationDialog } from './ValidationDialog';
 import { ViewAttachmentFiles } from './ViewAttachmentFiles';
+import { MatchingModeDialog } from './MatchingModeDialog';
 
 export type AttachmentUploadSpec = {
   readonly staticPathKey: keyof typeof staticAttachmentImportPaths;
@@ -52,6 +58,9 @@ export type AttachmentUploadSpec = {
 };
 export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
+  readonly matchingMode?: MatchingMode;
+  readonly mappingFileColumns?: MappingFileColumns;
+  readonly mappingFileData?: RA<MappingFileRow>;
 } & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
 
 export type EagerDataSet = Omit<AttachmentDataSet, 'uploadresult'> & {
@@ -132,40 +141,112 @@ function AttachmentsImport({
     );
 
   const applyFileNames = React.useCallback(
-    (file: UnBoundFile): PartialUploadableFileSpec =>
-      eagerDataSet.uploadplan.staticPathKey === undefined
-        ? { uploadFile: file }
-        : {
-            uploadFile: {
-              ...file,
-              parsedName: resolveFileNames(
-                file.file.name,
-                eagerDataSet.uploadplan.formatQueryResults,
-                eagerDataSet.uploadplan.fieldFormatter
-              ),
-            },
+    (file: UnBoundFile): PartialUploadableFileSpec => {
+      // In mapping-file mode, look up the match value from the CSV data
+      // (works even before a field path is selected)
+      if (
+        eagerDataSet.uploadplan.matchingMode === 'mappingFile' &&
+        eagerDataSet.uploadplan.mappingFileData !== undefined
+      ) {
+        const mappingRow = eagerDataSet.uploadplan.mappingFileData.find(
+          (row) => row.fileName === file.file.name
+        );
+        return {
+          uploadFile: {
+            ...file,
+            parsedName: mappingRow?.matchValue,
+            mappingMatchValue: mappingRow?.matchValue,
+            mappingFileName: mappingRow?.fileName,
           },
-    [eagerDataSet.uploadplan.staticPathKey]
+        };
+      }
+
+      if (eagerDataSet.uploadplan.staticPathKey === undefined)
+        return { uploadFile: file };
+
+      // Default: filename pattern matching
+      return {
+        uploadFile: {
+          ...file,
+          parsedName: resolveFileNames(
+            file.file.name,
+            eagerDataSet.uploadplan.formatQueryResults,
+            eagerDataSet.uploadplan.fieldFormatter
+          ),
+        },
+      };
+    },
+    [
+      eagerDataSet.uploadplan.staticPathKey,
+      eagerDataSet.uploadplan.matchingMode,
+      eagerDataSet.uploadplan.mappingFileData,
+      eagerDataSet.uploadplan.formatQueryResults,
+      eagerDataSet.uploadplan.fieldFormatter,
+    ]
   );
 
   const previousKeyRef = React.useRef(
-    attachmentDataSetResource.uploadplan.staticPathKey
+    `${attachmentDataSetResource.uploadplan.staticPathKey ?? ''}_${attachmentDataSetResource.uploadplan.matchingMode ?? 'filename'}`
   );
   React.useEffect(() => {
-    // Reset all parsed names if matching path is changed
-    if (previousKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
-      previousKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
-      commitFileChange((files) =>
-        files.map(({ uploadFile }) => applyFileNames(uploadFile))
-      );
+    // Reset all parsed names if matching path or mode is changed
+    const currentKey = `${eagerDataSet.uploadplan.staticPathKey ?? ''}_${eagerDataSet.uploadplan.matchingMode ?? 'filename'}`;
+    if (previousKeyRef.current !== currentKey) {
+      previousKeyRef.current = currentKey;
+      commitFileChange((files) => {
+        const recalculated = files.map(({ uploadFile }) =>
+          applyFileNames(uploadFile)
+        );
+        // If switching away from mapping mode, remove placeholder entries
+        if (!isMappingMode) {
+          return recalculated.filter(
+            (f) =>
+              !(
+                f.status?.type === 'cancelled' &&
+                f.status.reason === 'fileMissing'
+              )
+          );
+        }
+        return recalculated;
+      });
     }
   }, [applyFileNames, commitFileChange]);
+
+  // In mapping mode, seed the table with CSV rows so the user sees what to upload
+  React.useEffect(() => {
+    if (
+      isMappingMode &&
+      eagerDataSet.uploadplan.mappingFileData !== undefined &&
+      eagerDataSet.uploadplan.mappingFileData.length > 0 &&
+      eagerDataSet.rows.length === 0
+    ) {
+      commitFileChange(() =>
+        crossReferenceMappingFiles(
+          [],
+          eagerDataSet.uploadplan.mappingFileData!
+        )
+      );
+    }
+  }, [
+    eagerDataSet.uploadplan.matchingMode,
+    eagerDataSet.uploadplan.mappingFileData,
+    eagerDataSet.rows.length,
+    commitFileChange,
+  ]);
 
   const currentBaseTable =
     eagerDataSet.uploadplan.staticPathKey === undefined
       ? undefined
       : staticAttachmentImportPaths[eagerDataSet.uploadplan.staticPathKey]
           .baseTable;
+
+  // Single source of truth: dataset-level matchingmode (DB field) or uploadplan-level
+  const isMappingMode = React.useMemo(
+    () =>
+      (eagerDataSet.matchingmode ?? eagerDataSet.uploadplan.matchingMode) ===
+      'mappingFile',
+    [eagerDataSet.matchingmode, eagerDataSet.uploadplan.matchingMode]
+  );
 
   const anyUploaded = React.useMemo(
     () =>
@@ -177,18 +258,31 @@ function AttachmentsImport({
 
   const handleFilesSelected = (files: FileList) => {
     const filesList = Array.from(files, (file) => applyFileNames({ file }));
-    const oldRows = eagerDataSet.rows;
-    const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
-      oldRows,
-      filesList
+    const { resolvedFiles, duplicateFiles } =
+      isMappingMode && eagerDataSet.uploadplan.mappingFileData !== undefined
+        ? prepareMappingFileSelection(
+            eagerDataSet.rows,
+            filesList,
+            eagerDataSet.uploadplan.mappingFileData
+          )
+        : matchSelectedFiles(eagerDataSet.rows, filesList);
+
+    // Safety net: guarantee no duplicate filenames in the final list
+    const seen = new Set<string>();
+    const deduped = (resolvedFiles as WritableArray<PartialUploadableFileSpec>).filter(
+      (f) => {
+        const name = f.uploadFile.file.name;
+        if (seen.has(name)) return false;
+        seen.add(name);
+        return true;
+      }
     );
-    (resolvedFiles as WritableArray<PartialUploadableFileSpec>).sort(
-      sortFunction((file) => file.uploadFile.file.name)
-    );
+
+    deduped.sort(sortFunction((file) => file.uploadFile.file.name));
     commitChange((oldState) => ({
       ...oldState,
       uploaderstatus: 'main',
-      rows: resolvedFiles,
+      rows: deduped,
     }));
     setDuplicatedFiles(duplicateFiles);
   };
@@ -200,33 +294,60 @@ function AttachmentsImport({
   >([]);
 
   const mainHeaders = React.useMemo(() => {
-    let headers: IR<JSX.Element | LocalizedString> = {
-      selectedFileName: commonText.selectedFileName(),
-      fileSize: attachmentsText.fileSize(),
-      record: (
-        <div className="flex min-w-fit items-center gap-2">
-          {currentBaseTable === undefined ? (
-            userText.resource()
-          ) : (
-            <>
-              <TableIcon label name={currentBaseTable} />
-              {eagerDataSet.uploadplan.staticPathKey === undefined
-                ? ''
-                : strictGetTable(currentBaseTable).strictGetField(
-                    staticAttachmentImportPaths[
-                      eagerDataSet.uploadplan.staticPathKey
-                    ].path
-                  ).label}
-            </>
-          )}
-        </div>
-      ),
-      progress: attachmentsText.progress(),
-    };
+    const isMapping = isMappingMode;
+    const baseHeaders: IR<JSX.Element | LocalizedString> = isMapping
+      ? {
+          selectedFileName: commonText.selectedFileName(),
+          matchValue: attachmentsText.matchValue(),
+          fileSize: attachmentsText.fileSize(),
+          record: (
+            <div className="flex min-w-fit items-center gap-2">
+              {currentBaseTable === undefined ? (
+                userText.resource()
+              ) : (
+                <>
+                  <TableIcon label name={currentBaseTable} />
+                  {eagerDataSet.uploadplan.staticPathKey === undefined
+                    ? ''
+                    : strictGetTable(currentBaseTable).strictGetField(
+                        staticAttachmentImportPaths[
+                          eagerDataSet.uploadplan.staticPathKey
+                        ].path
+                      ).label}
+                </>
+              )}
+            </div>
+          ),
+          progress: attachmentsText.progress(),
+        }
+      : {
+          selectedFileName: commonText.selectedFileName(),
+          fileSize: attachmentsText.fileSize(),
+          record: (
+            <div className="flex min-w-fit items-center gap-2">
+              {currentBaseTable === undefined ? (
+                userText.resource()
+              ) : (
+                <>
+                  <TableIcon label name={currentBaseTable} />
+                  {eagerDataSet.uploadplan.staticPathKey === undefined
+                    ? ''
+                    : strictGetTable(currentBaseTable).strictGetField(
+                        staticAttachmentImportPaths[
+                          eagerDataSet.uploadplan.staticPathKey
+                        ].path
+                      ).label}
+                </>
+              )}
+            </div>
+          ),
+          progress: attachmentsText.progress(),
+        };
+    let headers = baseHeaders;
     if (process.env.NODE_ENV === 'development')
       headers = { ...headers, attachmentId: attachmentsText.attachmentId() };
     return headers;
-  }, [eagerDataSet.uploadplan.staticPathKey]);
+  }, [eagerDataSet.uploadplan.staticPathKey, eagerDataSet.uploadplan.matchingMode]);
 
   const errorContextData = React.useMemo(
     () => ({
@@ -237,6 +358,11 @@ function AttachmentsImport({
   );
 
   useErrorContext('bulkAttachmentImport', errorContextData);
+
+  const showModeDialog =
+    (eagerDataSet.matchingmode === undefined ||
+      eagerDataSet.matchingmode === null) &&
+    eagerDataSet.uploadplan.staticPathKey === undefined;
 
   return (
     <Container.FullGray className="!h-full flex-row overflow-auto">
@@ -269,7 +395,14 @@ function AttachmentsImport({
                 : (uploadSpec) => {
                     commitChange((oldState) => ({
                       ...oldState,
-                      uploadplan: uploadSpec,
+                      uploadplan: {
+                        ...uploadSpec,
+                        matchingMode: oldState.uploadplan.matchingMode,
+                        mappingFileColumns:
+                          oldState.uploadplan.mappingFileColumns,
+                        mappingFileData:
+                          oldState.uploadplan.mappingFileData,
+                      },
                     }));
                   }
             }
@@ -330,6 +463,7 @@ function AttachmentsImport({
       <ViewAttachmentFiles
         baseTableName={currentBaseTable}
         headers={mainHeaders}
+        isMappingMode={isMappingMode}
         uploadableFiles={eagerDataSet.rows}
         uploadSpec={eagerDataSet.uploadplan}
         onDisambiguation={(disambiguatedId, indexToDisambiguate, multiple) =>
@@ -422,12 +556,43 @@ function AttachmentsImport({
             <ViewAttachmentFiles
               baseTableName={currentBaseTable}
               headers={removeKey(mainHeaders, 'attachmentId', 'progress')}
+              isMappingMode={isMappingMode}
               uploadableFiles={duplicatesFiles}
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}
             />
           </div>
         </Dialog>
+      )}
+      {showModeDialog && (
+        <MatchingModeDialog
+          initialData={eagerDataSet.uploadplan.mappingFileData}
+          initialColumns={eagerDataSet.uploadplan.mappingFileColumns}
+          initialMode={eagerDataSet.uploadplan.matchingMode}
+          onClose={() => {
+            // Default to filename mode if user closes without choosing
+            commitChange((oldState) => ({
+              ...oldState,
+              matchingmode: 'filename' as MatchingMode,
+              uploadplan: {
+                ...oldState.uploadplan,
+                matchingMode: 'filename' as MatchingMode,
+              },
+            }));
+          }}
+          onContinue={(mode, columns, data) => {
+            commitChange((oldState) => ({
+              ...oldState,
+              matchingmode: mode,
+              uploadplan: {
+                ...oldState.uploadplan,
+                matchingMode: mode,
+                mappingFileColumns: columns,
+                mappingFileData: data,
+              },
+            }));
+          }}
+        />
       )}
     </Container.FullGray>
   );

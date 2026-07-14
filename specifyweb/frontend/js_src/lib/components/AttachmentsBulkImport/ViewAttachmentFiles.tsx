@@ -27,7 +27,8 @@ import {
 const resolveAttachmentDatasetData = (
   uploadableFiles: RA<PartialUploadableFileSpec>,
   setDisambiguationIndex: (index: number) => void,
-  baseTableName: keyof Tables | undefined
+  baseTableName: keyof Tables | undefined,
+  isMappingMode: boolean = false
 ) =>
   uploadableFiles.map(
     ({ uploadFile, status, matchedId, disambiguated, attachmentId }, index) => {
@@ -46,7 +47,8 @@ const resolveAttachmentDatasetData = (
           : resolveAttachmentRecord(
               matchedId,
               disambiguated,
-              uploadFile.parsedName
+              uploadFile.parsedName,
+              isMappingMode
             );
 
       const isRuntimeError =
@@ -55,7 +57,8 @@ const resolveAttachmentDatasetData = (
         (status.type === 'cancelled' || status.type === 'skipped');
 
       const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
-      return {
+
+      const baseData = {
         selectedFileName: [
           uploadFile.file.name,
           <div className="flex w-fit gap-1">
@@ -100,6 +103,16 @@ const resolveAttachmentDatasetData = (
         isNativeError: resolvedRecord?.type === 'invalid',
         isRuntimeError,
       } as const;
+
+      return isMappingMode
+        ? {
+            ...baseData,
+            matchValue: [
+              uploadFile.mappingMatchValue ?? '',
+              <span>{uploadFile.mappingMatchValue ?? ''}</span>,
+            ] as const,
+          }
+        : baseData;
     }
   );
 
@@ -109,6 +122,7 @@ export function ViewAttachmentFiles({
   onDisambiguation: handleDisambiguation,
   onFilesDropped: handleFilesDropped,
   headers,
+  isMappingMode = false,
 }: {
   readonly uploadableFiles: RA<PartialUploadableFileSpec>;
   readonly baseTableName: keyof Tables | undefined;
@@ -122,6 +136,7 @@ export function ViewAttachmentFiles({
     | undefined;
   readonly onFilesDropped?: (file: FileList) => void;
   readonly headers: IR<JSX.Element | LocalizedString>;
+  readonly isMappingMode?: boolean;
 }): JSX.Element | null {
   const [disambiguationIndex, setDisambiguationIndex] = React.useState<
     number | undefined
@@ -132,9 +147,10 @@ export function ViewAttachmentFiles({
       resolveAttachmentDatasetData(
         uploadableFiles,
         setDisambiguationIndex,
-        baseTableName
+        baseTableName,
+        isMappingMode
       ),
-    [uploadableFiles, setDisambiguationIndex, baseTableName]
+    [uploadableFiles, setDisambiguationIndex, baseTableName, isMappingMode]
   );
 
   const fileDropDivRef = React.useRef<HTMLDivElement>(null);

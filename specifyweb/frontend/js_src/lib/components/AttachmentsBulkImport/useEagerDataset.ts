@@ -89,7 +89,14 @@ export function useEagerDataSet(baseDataSet: AttachmentDataSet): {
     needsSaved: baseDataSet.uploaderstatus !== 'main',
     rows: baseDataSet.rows ?? [],
     save: false,
-    uploadplan: generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
+    uploadplan: {
+      ...generateUploadSpec(baseDataSet.uploadplan.staticPathKey),
+      matchingMode:
+        baseDataSet.matchingmode ??
+        baseDataSet.uploadplan.matchingMode,
+      mappingFileColumns: baseDataSet.uploadplan.mappingFileColumns,
+      mappingFileData: baseDataSet.uploadplan.mappingFileData,
+    },
     uploadresult:
       baseDataSet.uploadresult === undefined ||
       baseDataSet.uploadresult === null
