@@ -13,9 +13,11 @@ import {
 import { syncFieldFormat } from '../../Formatters/fieldFormat';
 import type { PartialUploadableFileSpec, UnBoundFile } from '../types';
 import {
+  crossReferenceMappingFiles,
   inferDeletedAttachments,
   inferUploadedAttachments,
   matchFileSpec,
+  prepareMappingFileSelection,
   resolveFileNames,
 } from '../utils';
 
@@ -353,4 +355,393 @@ test('reconstruct deleting attachment spec', () => {
     },
   ];
   expect(inferDeletedAttachments(queryResults, files)).toMatchSnapshot();
+});
+
+describe('crossReferenceMappingFiles', () => {
+  const CSV: RA<{ readonly matchValue: string; readonly fileName: string }> = [
+    { matchValue: '000271806', fileName: '271806.jpg' },
+    { matchValue: '000601146', fileName: '601146.jpg' },
+    { matchValue: '000601146', fileName: '601146_2.jpg' },
+    { matchValue: '000273074', fileName: '273074.jpg' },
+  ];
+
+  const makePlaceholder = (name: string, mv: string) =>
+    ({
+      uploadFile: {
+        file: { name, size: 0, type: '' },
+        parsedName: mv,
+        mappingMatchValue: mv,
+      },
+      status: { type: 'cancelled', reason: 'fileMissing' },
+    }) as PartialUploadableFileSpec;
+
+  const makeReal = (name: string, mv: string) =>
+    ({
+      uploadFile: {
+        file: { name, size: 91, type: 'image/jpeg' },
+        parsedName: mv,
+        mappingMatchValue: mv,
+      },
+    }) as PartialUploadableFileSpec;
+
+  test('initial seeding produces all placeholders', () => {
+    const result = crossReferenceMappingFiles([], CSV);
+    expect(result).toHaveLength(4);
+    expect(result.every((r) => r.status?.reason === 'fileMissing')).toBe(true);
+  });
+
+  test('adding one real file replaces corresponding placeholder', () => {
+    const seeded = crossReferenceMappingFiles([], CSV);
+    const result = crossReferenceMappingFiles(
+      [...seeded, makeReal('601146.jpg', '000601146')],
+      CSV
+    );
+    expect(result).toHaveLength(4);
+    expect(
+      result.find((r) => r.uploadFile.file.name === '601146.jpg')
+        ?.uploadFile.file.size
+    ).toBe(91);
+    expect(
+      result.filter((r) => r.status?.reason === 'fileMissing')
+    ).toHaveLength(3);
+  });
+
+  test('adding all files removes all placeholders', () => {
+    const seeded = crossReferenceMappingFiles([], CSV);
+    const result = crossReferenceMappingFiles(
+      [
+        ...seeded,
+        makeReal('271806.jpg', '000271806'),
+        makeReal('601146.jpg', '000601146'),
+        makeReal('601146_2.jpg', '000601146'),
+        makeReal('273074.jpg', '000273074'),
+      ],
+      CSV
+    );
+    expect(result).toHaveLength(4);
+    expect(
+      result.every(
+        (r) => !r.status || r.status.reason !== 'fileMissing'
+      )
+    ).toBe(true);
+    expect(result.every((r) => r.uploadFile.file.size === 91)).toBe(true);
+  });
+
+  test('batch processing produces no duplicates', () => {
+    const seeded = crossReferenceMappingFiles([], CSV);
+    const batch1 = crossReferenceMappingFiles(
+      [
+        ...seeded,
+        makeReal('271806.jpg', '000271806'),
+        makeReal('601146.jpg', '000601146'),
+      ],
+      CSV
+    );
+    expect(batch1).toHaveLength(4);
+
+    const batch2 = crossReferenceMappingFiles(
+      [
+        ...batch1,
+        makeReal('601146_2.jpg', '000601146'),
+        makeReal('273074.jpg', '000273074'),
+      ],
+      CSV
+    );
+    expect(batch2).toHaveLength(4);
+    expect(batch2.every((r) => r.uploadFile.file.size === 91)).toBe(true);
+  });
+
+  test('file not in CSV is flagged', () => {
+    const seeded = crossReferenceMappingFiles([], CSV);
+    const result = crossReferenceMappingFiles(
+      [...seeded, makeReal('unknown.jpg', '?')],
+      CSV
+    );
+    expect(
+      result.find((r) => r.uploadFile.file.name === 'unknown.jpg')?.status
+        ?.reason
+    ).toBe('notInMappingFile');
+  });
+
+  test('duplicate filenames in CSV produce exactly one row', () => {
+    const csv2: RA<{ readonly matchValue: string; readonly fileName: string }> =
+      [
+        { matchValue: 'A', fileName: 'dup.jpg' },
+        { matchValue: 'B', fileName: 'dup.jpg' },
+      ];
+    const result = crossReferenceMappingFiles(
+      [...crossReferenceMappingFiles([], csv2), makeReal('dup.jpg', 'A')],
+      csv2
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].uploadFile.file.size).toBe(91);
+  });
+});
+
+describe('prepareMappingFileSelection', () => {
+  const CSV: RA<{ readonly matchValue: string; readonly fileName: string }> = [
+    { matchValue: '000271806', fileName: '271806.jpg' },
+    { matchValue: '000601146', fileName: '601146.jpg' },
+    { matchValue: '000601146', fileName: '601146_2.jpg' },
+  ];
+
+  const makePlaceholder = (name: string, mv: string) =>
+    ({
+      uploadFile: {
+        file: { name, size: 0, type: '' },
+        parsedName: mv,
+        mappingMatchValue: mv,
+      },
+      status: { type: 'cancelled', reason: 'fileMissing' },
+    }) as PartialUploadableFileSpec;
+
+  const makeReal = (name: string, mv: string) =>
+    ({
+      uploadFile: {
+        file: { name, size: 91, type: 'image/jpeg' },
+        parsedName: mv,
+        mappingMatchValue: mv,
+      },
+    }) as PartialUploadableFileSpec;
+
+  test('replaces seeded placeholders with matching uploaded files', () => {
+    const seeded = crossReferenceMappingFiles([], CSV);
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      seeded,
+      [makeReal('601146.jpg', '000601146')],
+      CSV
+    );
+
+    expect(duplicateFiles).toHaveLength(0);
+    expect(resolvedFiles).toHaveLength(3);
+    expect(
+      resolvedFiles.find((r) => r.uploadFile.file.name === '601146.jpg')
+        ?.uploadFile.file.size
+    ).toBe(91);
+    expect(
+      resolvedFiles.filter((r) => r.status?.reason === 'fileMissing')
+    ).toHaveLength(2);
+  });
+
+  test('keeps uploaded files that are already real while preserving missing placeholders', () => {
+    const seeded = crossReferenceMappingFiles([], CSV);
+    const { resolvedFiles } = prepareMappingFileSelection(
+      [
+        ...seeded,
+        makeReal('271806.jpg', '000271806'),
+        makePlaceholder('601146_2.jpg', '000601146'),
+      ],
+      [makeReal('601146.jpg', '000601146')],
+      CSV
+    );
+
+    expect(resolvedFiles).toHaveLength(3);
+    expect(resolvedFiles.every((r) => r.uploadFile.file.size === 91 || r.status?.reason === 'fileMissing')).toBe(true);
+    expect(
+      resolvedFiles.filter((r) => r.uploadFile.file.name === '601146.jpg')
+    ).toHaveLength(1);
+  });
+});
+
+describe('end-to-end: seeding then full file selection', () => {
+  // Simulates the real user flow: CSV uploaded → placeholders seeded → user selects files
+  const FULL_CSV: RA<{
+    readonly matchValue: string;
+    readonly fileName: string;
+  }> = [
+    { matchValue: '000271806', fileName: '271806.jpg' },
+    { matchValue: '000601146', fileName: '601146.jpg' },
+    { matchValue: '000601146', fileName: '601146_2.jpg' },
+    { matchValue: '000273074', fileName: '273074.jpg' },
+    { matchValue: '000687972', fileName: '687972.jpg' },
+    { matchValue: '000601108', fileName: '601108.jpg' },
+    { matchValue: '000728604', fileName: '728604.jpg' },
+    { matchValue: '000466309', fileName: '466309.jpg' },
+    { matchValue: '000475938', fileName: '475938.jpg' },
+    { matchValue: '000855732', fileName: '855732.jpg' },
+  ];
+
+  const EXTRA_FILES = ['601766.jpg', '601766_2.jpg', '601766_3.jpg'];
+
+  const allFileNames = [...FULL_CSV.map((r) => r.fileName), ...EXTRA_FILES];
+
+  const makeRealFile = (
+    name: string,
+    mv: string | undefined
+  ): PartialUploadableFileSpec =>
+    ({
+      uploadFile: {
+        file: { name, size: 91, type: 'image/jpeg' } as File,
+        parsedName: mv,
+        mappingMatchValue: mv,
+        mappingFileName: mv !== undefined ? name : undefined,
+      },
+    }) as PartialUploadableFileSpec;
+
+  const countNames = (
+    files: RA<PartialUploadableFileSpec>
+  ): Map<string, number> => {
+    const m = new Map<string, number>();
+    for (const f of files)
+      m.set(f.uploadFile.file.name, (m.get(f.uploadFile.file.name) ?? 0) + 1);
+    return m;
+  };
+
+  test('1: seeding then selecting all files — every name once, mappingMatchValue set', () => {
+    const seeded = crossReferenceMappingFiles([], FULL_CSV);
+    expect(seeded).toHaveLength(10);
+
+    const filesToResolve = allFileNames.map((name) => {
+      const csvRow = FULL_CSV.find((r) => r.fileName === name);
+      return makeRealFile(name, csvRow?.matchValue);
+    });
+
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      seeded,
+      filesToResolve,
+      FULL_CSV
+    );
+
+    expect(duplicateFiles).toHaveLength(0);
+    expect(resolvedFiles).toHaveLength(13);
+
+    const counts = countNames(resolvedFiles);
+    for (const [, c] of counts) expect(c).toBe(1);
+
+    const csvNames = new Set(FULL_CSV.map((r) => r.fileName));
+    for (const r of resolvedFiles) {
+      if (csvNames.has(r.uploadFile.file.name)) {
+        expect(r.uploadFile.mappingMatchValue).toBeTruthy();
+        expect(r.uploadFile.parsedName).toBeTruthy();
+      } else {
+        expect(r.status?.reason).toBe('notInMappingFile');
+      }
+    }
+  });
+
+  test('2: selecting all files on empty rows (no prior seeding)', () => {
+    const filesToResolve = allFileNames.map((name) => {
+      const csvRow = FULL_CSV.find((r) => r.fileName === name);
+      return makeRealFile(name, csvRow?.matchValue);
+    });
+
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      [],
+      filesToResolve,
+      FULL_CSV
+    );
+
+    expect(duplicateFiles).toHaveLength(0);
+    expect(resolvedFiles).toHaveLength(13);
+
+    const counts = countNames(resolvedFiles);
+    for (const [, c] of counts) expect(c).toBe(1);
+  });
+
+  test('3: reload scenario — saved rows without mappingMatchValue + re-select files', () => {
+    // Old saved rows: plain objects, File-like, NO mappingMatchValue
+    const savedRows = FULL_CSV.map(
+      (row) =>
+        ({
+          uploadFile: {
+            file: { name: row.fileName, size: 91, type: 'image/jpeg' },
+            parsedName: row.matchValue,
+          },
+        }) as PartialUploadableFileSpec
+    );
+
+    const newFiles = FULL_CSV.map((row) =>
+      makeRealFile(row.fileName, row.matchValue)
+    );
+
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      savedRows,
+      newFiles,
+      FULL_CSV
+    );
+
+    expect(duplicateFiles).toHaveLength(0);
+    expect(resolvedFiles).toHaveLength(10);
+
+    for (const r of resolvedFiles) {
+      expect(r.uploadFile.mappingMatchValue).toBeTruthy();
+    }
+
+    const counts = countNames(resolvedFiles);
+    for (const [, c] of counts) expect(c).toBe(1);
+  });
+
+  test('4: crossReferenceMappingFiles with old row (no mappingMatchValue) + new file → mappingMatchValue wins', () => {
+    const oldRow = {
+      uploadFile: {
+        file: { name: '271806.jpg', size: 91, type: 'image/jpeg' },
+        parsedName: '000271806',
+      },
+    } as PartialUploadableFileSpec;
+
+    const newFile = makeRealFile('271806.jpg', '000271806');
+
+    const result = crossReferenceMappingFiles([oldRow, newFile], FULL_CSV);
+
+    const matches = result.filter(
+      (r) => r.uploadFile.file.name === '271806.jpg'
+    );
+    expect(matches).toHaveLength(1);
+    expect(matches[0].uploadFile.mappingMatchValue).toBe('000271806');
+  });
+
+  test('5: every output row has mappingMatchValue after cross-reference with mixed data', () => {
+    const seeded = crossReferenceMappingFiles([], FULL_CSV);
+    const realFiles = FULL_CSV.map((row) =>
+      makeRealFile(row.fileName, row.matchValue)
+    );
+
+    const result = crossReferenceMappingFiles(
+      [...seeded, ...realFiles],
+      FULL_CSV
+    );
+
+    expect(result).toHaveLength(10);
+    for (const r of result) {
+      expect(r.uploadFile.mappingMatchValue).toBeTruthy();
+    }
+  });
+});
+
+describe('crossReferenceMappingFiles CSV always wins matchValue', () => {
+  test('CSV matchValue overrides row with undefined mappingMatchValue', () => {
+    const row = {
+      uploadFile: {
+        file: { name: 'test.jpg', size: 91, type: 'image/jpeg' },
+        parsedName: 'oldValue',
+      },
+    } as PartialUploadableFileSpec;
+
+    const csv = [{ fileName: 'test.jpg', matchValue: 'newValue' }];
+    const result = crossReferenceMappingFiles([row], csv);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].uploadFile.mappingMatchValue).toBe('newValue');
+    expect(result[0].uploadFile.parsedName).toBe('newValue');
+    expect(result[0].uploadFile.mappingFileName).toBe('test.jpg');
+  });
+
+  test('CSV matchValue overrides row with different mappingMatchValue', () => {
+    const row = {
+      uploadFile: {
+        file: { name: 'test.jpg', size: 91, type: 'image/jpeg' },
+        parsedName: 'oldValue',
+        mappingMatchValue: 'oldValue',
+        mappingFileName: 'old.jpg',
+      },
+    } as PartialUploadableFileSpec;
+
+    const csv = [{ fileName: 'test.jpg', matchValue: 'CORRECT_VALUE' }];
+    const result = crossReferenceMappingFiles([row], csv);
+
+    expect(result).toHaveLength(1);
+    expect(result[0].uploadFile.mappingMatchValue).toBe('CORRECT_VALUE');
+    expect(result[0].uploadFile.parsedName).toBe('CORRECT_VALUE');
+    expect(result[0].uploadFile.mappingFileName).toBe('test.jpg');
+  });
 });
