@@ -12,7 +12,7 @@ class AttachmentDataSetPT(PermissionTarget):
     upload = PermissionTargetAction()
     rollback = PermissionTargetAction()
 
-VALID_MATCHING_MODES = {'filename', 'mappingFile'}
+VALID_MATCHING_MODES = {'mappingFile'}
 
 def _get_validated_matchingmode(data, existing=None):
     """Return a validated matchingmode value or raise ValueError."""

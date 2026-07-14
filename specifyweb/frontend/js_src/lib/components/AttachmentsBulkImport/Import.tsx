@@ -58,7 +58,7 @@ export type AttachmentUploadSpec = {
 };
 export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
-  readonly matchingMode?: MatchingMode;
+  readonly matchingMode?: MatchingMode | null;
   readonly mappingFileColumns?: MappingFileColumns;
   readonly mappingFileData?: RA<MappingFileRow>;
 } & (AttachmentUploadSpec | { readonly staticPathKey: undefined });
@@ -578,10 +578,10 @@ function AttachmentsImport({
             // Default to filename mode if user closes without choosing
             commitChange((oldState) => ({
               ...oldState,
-              matchingmode: 'filename' as MatchingMode,
+              matchingmode: null,
               uploadplan: {
                 ...oldState.uploadplan,
-                matchingMode: 'filename' as MatchingMode,
+                matchingMode: null,
               },
             }));
           }}

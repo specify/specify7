@@ -10,7 +10,7 @@ import type { PartialAttachmentUploadSpec } from './Import';
 import type { staticAttachmentImportPaths } from './importPaths';
 import type { keyLocalizationMapAttachment } from './utils';
 
-export type MatchingMode = 'filename' | 'mappingFile';
+export type MatchingMode = 'mappingFile';
 
 export type MappingFileColumns = {
   readonly matchValueColumnIndex: number;

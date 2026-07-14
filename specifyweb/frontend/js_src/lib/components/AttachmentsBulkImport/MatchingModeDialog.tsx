@@ -22,17 +22,17 @@ export function MatchingModeDialog({
   initialData,
 }: {
   readonly onContinue: (
-    mode: MatchingMode,
+    mode: MatchingMode | null,
     columns?: MappingFileColumns,
     data?: RA<MappingFileRow>
   ) => void;
   readonly onClose: () => void;
-  readonly initialMode?: MatchingMode;
+  readonly initialMode?: MatchingMode | null;
   readonly initialColumns?: MappingFileColumns;
   readonly initialData?: RA<MappingFileRow>;
 }): JSX.Element {
-  const [mode, setMode] = React.useState<MatchingMode>(
-    initialMode ?? 'filename'
+  const [mode, setMode] = React.useState<MatchingMode | null>(
+    initialMode ?? null
   );
   const [mappingColumns, setMappingColumns] = React.useState<
     MappingFileColumns | undefined
@@ -42,7 +42,7 @@ export function MatchingModeDialog({
   >(initialData);
 
   const canContinue =
-    mode === 'filename' ||
+    (mode === null || mode === undefined) ||
     (mode === 'mappingFile' &&
       mappingColumns !== undefined &&
       mappingData !== undefined &&
@@ -72,17 +72,17 @@ export function MatchingModeDialog({
 
         <label
           className={`flex cursor-pointer items-start gap-3 rounded border p-3 ${
-            mode === 'filename'
+            mode === null
               ? 'border-brand-300 bg-brand-50'
               : 'border-gray-300'
           }`}
         >
           <input
-            checked={mode === 'filename'}
+            checked={mode === null}
             className="mt-0.5"
             name="matchingMode"
             type="radio"
-            onChange={() => setMode('filename')}
+            onChange={() => setMode(null)}
           />
           <div className="flex flex-col gap-1">
             <span className="font-semibold">
