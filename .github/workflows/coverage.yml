@@ -92,6 +92,8 @@ jobs:
       - name: Fix mariadb
         id: reboot-mariadb
         run: |
+          docker exec mariadb ls -lah /run/mysqld
+          sleep 30
           docker compose up -d mariadb
           docker exec mariadb mariadb -uroot -ppassword -e"DROP USER root; 
               CREATE USER 'root'@'%' IDENTIFIED BY 'password';
