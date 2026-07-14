@@ -212,6 +212,14 @@ function AttachmentsImport({
     }
   }, [applyFileNames, commitFileChange]);
 
+  // Single source of truth: dataset-level matchingmode (DB field) or uploadplan-level
+  const isMappingMode = React.useMemo(
+    () =>
+      (eagerDataSet.matchingmode ?? eagerDataSet.uploadplan.matchingMode) ===
+      'mappingFile',
+    [eagerDataSet.matchingmode, eagerDataSet.uploadplan.matchingMode]
+  );
+
   // In mapping mode, seed the table with CSV rows so the user sees what to upload
   React.useEffect(() => {
     if (
@@ -220,9 +228,9 @@ function AttachmentsImport({
       eagerDataSet.uploadplan.mappingFileData.length > 0 &&
       eagerDataSet.rows.length === 0
     ) {
-      commitFileChange(() =>
+      commitFileChange((oldRows) =>
         crossReferenceMappingFiles(
-          [],
+          oldRows,
           eagerDataSet.uploadplan.mappingFileData!
         )
       );
@@ -232,6 +240,7 @@ function AttachmentsImport({
     eagerDataSet.uploadplan.mappingFileData,
     eagerDataSet.rows.length,
     commitFileChange,
+    isMappingMode,
   ]);
 
   const currentBaseTable =
@@ -239,14 +248,6 @@ function AttachmentsImport({
       ? undefined
       : staticAttachmentImportPaths[eagerDataSet.uploadplan.staticPathKey]
           .baseTable;
-
-  // Single source of truth: dataset-level matchingmode (DB field) or uploadplan-level
-  const isMappingMode = React.useMemo(
-    () =>
-      (eagerDataSet.matchingmode ?? eagerDataSet.uploadplan.matchingMode) ===
-      'mappingFile',
-    [eagerDataSet.matchingmode, eagerDataSet.uploadplan.matchingMode]
-  );
 
   const anyUploaded = React.useMemo(
     () =>
