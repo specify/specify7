@@ -3,6 +3,7 @@ import React from 'react';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
+import { icons } from '../Atoms/Icons';
 import { Button } from '../Atoms/Button';
 import { Submit } from '../Atoms/Submit';
 import { Dialog } from '../Molecules/Dialog';
@@ -49,6 +50,7 @@ export function MatchingModeDialog({
 
   return (
     <Dialog
+      icon={icons.photos}
       buttons={
         <>
           <Button.DialogClose>{commonText.close()}</Button.DialogClose>
