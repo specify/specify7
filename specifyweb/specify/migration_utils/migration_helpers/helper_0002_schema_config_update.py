@@ -114,4 +114,4 @@ def create_geo_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all():
         for table, desc in MIGRATION_0002_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+            update_table_schema_config_with_defaults(table, discipline.id, apps, {"desc": desc})

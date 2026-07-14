@@ -1,7 +1,7 @@
 import logging
-from typing import NamedTuple, TypedDict, Required, NotRequired, Unpack
+from typing import TypedDict, Required, NotRequired, Unpack
 
-from django.db.models import Q
+from django.db.models import Q, Model
 from django.apps import apps as global_apps
 
 from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError
@@ -22,13 +22,6 @@ HIDDEN_FIELDS = [
 
 logger = logging.getLogger(__name__)
 
-class TableSchemaConfig(NamedTuple):
-    name: str
-    discipline_id: int
-    schema_type: int = 0
-    description: str = "TBD"
-    language: str = "en"
-
 class ContainerAttrs(TypedDict):
     name: Required[str]
     discipline_id: Required[int]
@@ -36,6 +29,28 @@ class ContainerAttrs(TypedDict):
     ishidden: NotRequired[bool]
     issystem: NotRequired[bool]
     version: NotRequired[int]
+
+class ContainerItemAttrs(TypedDict):
+    name: Required[str]
+    format: NotRequired[str | None]
+    ishidden: NotRequired[bool]
+    isrequired: NotRequired[bool | None]
+    issystem: NotRequired[bool | None]
+    isuiformatter: NotRequired[bool | None]
+    picklistname: NotRequired[str | None]
+    type: NotRequired[str | None]
+    weblinkname: NotRequired[str | None]
+    field_label: NotRequired[str | None]
+    field_description: NotRequired[str | None]
+
+def create_localization_strings(Splocaleitemstr, rows: list[dict]):
+    common_string_attrs = {
+        "language": "en",
+        "version": 0
+    }
+    resolved_rows = [{**common_string_attrs, **row} for row in rows]
+    return bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, resolved_rows)
+
 
 def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_label: str | None = None, table_description: str | None = None, **container_attrs: Unpack[ContainerAttrs]):
     if "name" not in container_attrs.keys():
@@ -74,33 +89,106 @@ def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_la
 
     sp_local_container = Splocalecontainer.objects.create(**resolved_container_attrs)
 
-    common_string_attrs = {
-        "language": "en",
-        "version": 0
-    }
     container_string_rows = [
         {
-            **common_string_attrs,
             "containername": sp_local_container,
             "text": table_label or camel_to_spaced_title_case(uncapitilize(string_label))
         },
         {
-            **common_string_attrs,
             "containerdesc": sp_local_container,
             "text": table_description or camel_to_spaced_title_case(uncapitilize(string_label))
         }
     ]
-
-    bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, container_string_rows)
+    create_localization_strings(Splocaleitemstr, container_string_rows)
     return sp_local_container
+
+def get_or_create_splocalecontaineritem(
+        Splocalecontaineritem: type[Model],
+        Splocaleitemstr: type[Model],
+        container: Model,
+        *,
+        field_label: str | None = None,
+        field_description: str | None = None,
+        **container_item_attrs: Unpack[ContainerItemAttrs]
+):
+    if "name" not in container_item_attrs.keys():
+        raise ValueError("Trying to create a SpLocaleContainerItem without a name!")
+
+    table_name = container.name
+    table = datamodel.get_table(table_name)
+
+    # BUG: The splocalecontainer related tables can still exist in the database,
+    # and this will result in skipping any operation if the table/field is
+    # removed, renamed, etc.
+    if table is None:
+        logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
+        return
+
+    field_name = container_item_attrs["name"]
+
+    try:
+        field = table.get_field_strict(field_name)
+    except FieldDoesNotExistError:
+        if field_name in {'parentCog', 'parentCO', 'children', 'componentParent', 'components'}:
+            return
+        logger.warning(
+            f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
+        )
+        return
+    except AttributeError:
+        logger.warning(
+            f"Field does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name} -> {field_name}"
+        )
+        return
+    
+    resolved_item_attrs: ContainerItemAttrs = {
+        "format": None,
+        "ishidden": field_name.lower() in HIDDEN_FIELDS,
+        "isrequired": field.required,
+        "issystem": False,
+        "isuiformatter": False,
+        "picklistname": None,
+        "type": datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
+        "weblinkname": None,
+        "container_id": container.pk,
+        # The order of this unpacking matters
+        # If the defaults were specified in container_item_attrs, make sure to
+        # prioritize them over the defaults
+        **container_item_attrs,
+    }
+
+    container_item = (
+        Splocalecontaineritem.objects.filter(
+            name__iexact=resolved_item_attrs['name'],
+            container_id=container.pk
+        )
+        .order_by('pk')
+        .first()
+    )
+    if container_item is not None:
+        # BUG?: Not sure if we want to handle also checking for and (if needed)
+        # creating the field strings here
+        return container_item
+
+    container_item = Splocalecontaineritem.objects.create(**resolved_item_attrs)
+    item_string_rows = [
+        {
+            "itemname": container_item,
+            "text": field_label or camel_to_spaced_title_case(field.name)
+        },
+        {
+            "itemdesc": container_item,
+            "text": field_description or camel_to_spaced_title_case(field.name)
+        }
+    ]
+    create_localization_strings(Splocaleitemstr, item_string_rows)
+    return container_item
 
 def update_table_schema_config_with_defaults(
     table_name,
     discipline_id: int,
-    description: str | None = None,
     apps = global_apps,
-    defaults: TableDefaults | None = None,
-    pending_itemstr_rows: list[dict] | None = None,
+    defaults: TableDefaults | None = None
 ):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -117,80 +205,39 @@ def update_table_schema_config_with_defaults(
         )
         return
 
-    flush_itemstr_at_end = pending_itemstr_rows is None
-    if flush_itemstr_at_end:
-        pending_itemstr_rows = []
+    table_defaults = defaults if defaults is not None else TableDefaults()
+    table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
+    table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
 
-    try:
-        table_defaults = defaults if defaults is not None else TableDefaults()
-        table_name_str = table_defaults.get('name', camel_to_spaced_title_case(uncapitilize(table.name)))
-        table_desc_str = table_defaults.get('desc', camel_to_spaced_title_case(uncapitilize(table.name)))
+    container_attrs = {
+        "name": table.name.lower(),
+        "discipline_id": discipline_id,
+    }
 
-        table_config = TableSchemaConfig(
-            name=table.name,
-            discipline_id=discipline_id,
-            schema_type=0,
-            description=table_desc_str if description is None else description,
-            language="en",
+    sp_locale_container = get_or_create_splocalecontainer(
+        Splocalecontainer,
+        Splocaleitemstr,
+        table_label=table_name_str,
+        table_description=table_desc_str,
+        **container_attrs
+    )
+
+    for field in table._all_fields(exclude_id_field=True):
+        field_defaults = {}
+        if table_defaults.get('items'):
+            field_defaults = table_defaults['items'].get(field.name.lower(), dict())
+
+        field_label = field_defaults.pop("name", None)
+        field_desc = field_defaults.pop("desc", None)
+        get_or_create_splocalecontaineritem(
+            Splocalecontaineritem,
+            Splocaleitemstr,
+            container=sp_locale_container,
+            field_label=field_label,
+            field_description=field_desc,
+            **field_defaults,
+            name=field.name
         )
-
-        container_attrs = {
-            "name": table_config.name.lower(),
-            "discipline_id": discipline_id,
-            "schematype": table_config.schema_type
-        }
-
-        fetched_sp_locale_container = Splocalecontainer.objects.filter(**container_attrs).order_by("id").first()
-
-        if fetched_sp_locale_container is None:
-            sp_local_container = Splocalecontainer.objects.create(**{
-                **container_attrs,
-                "ishidden": False,
-                "issystem": table.system,
-                "version": 0,
-            })
-        else:
-            sp_local_container = fetched_sp_locale_container
-
-        if Splocalecontaineritem.objects.filter(
-            container=sp_local_container,
-            name=table_config.name.lower(),
-        ).exists():
-            return
-
-        item_str_rows = []
-        for k, text in {
-            "containername": table_name_str,
-            "containerdesc": table_desc_str,
-        }.items():
-            item_str_rows.append(
-                {
-                    "text": text,
-                    "language": "en",
-                    "version": 0,
-                    k: sp_local_container,
-                }
-            )
-
-        pending_itemstr_rows.extend(item_str_rows)
-
-        for field in table._all_fields(exclude_id_field=True):
-            field_defaults = None
-            if table_defaults.get('items'):
-                field_defaults = table_defaults['items'].get(field.name.lower())
-
-            update_table_field_schema_config_with_defaults(
-                table_name,
-                discipline_id,
-                field.name,
-                apps,
-                defaults=field_defaults,
-                pending_itemstr_rows=pending_itemstr_rows,
-            )
-
-    finally:
-        if flush_itemstr_at_end and pending_itemstr_rows:
-            bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, pending_itemstr_rows)
 
 def revert_table_schema_config(table_name, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
@@ -356,12 +403,6 @@ def update_table_field_schema_config_params(
         return
 
     table_name = table.name
-    table_config = TableSchemaConfig(
-        name=table_name.lower(),
-        discipline_id=discipline_id,
-        schema_type=0,
-        language="en"
-    )
 
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')

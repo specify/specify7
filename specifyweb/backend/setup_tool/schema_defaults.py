@@ -53,14 +53,10 @@ def apply_schema_defaults(discipline: Discipline):
     
         # Table information
         table_defaults = defaults.get(model_name.lower())
-        table_description = None
-        if table_defaults:
-            table_description = table_defaults.get('desc')
 
         update_table_schema_config_with_defaults(
             table_name=model_name,
             discipline_id=discipline.id,
-            description=table_description,
             defaults=table_defaults,
         )
 

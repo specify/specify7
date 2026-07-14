@@ -22,7 +22,7 @@ def apply_migration(apps, schema_editor):
     Discipline = apps.get_model('specify', 'Discipline')
     for discipline in Discipline.objects.all(): # New SpDataSetAttachment table
         for table, desc in MIGRATION_0007_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+            update_table_schema_config_with_defaults(table, discipline.id, apps, {"desc": desc})
     for discipline in Discipline.objects.all(): # New relationship Spdataset -> SpDataSetAttachment
         for table, fields in MIGRATION_0007_FIELDS.items():
             for field in fields: 
