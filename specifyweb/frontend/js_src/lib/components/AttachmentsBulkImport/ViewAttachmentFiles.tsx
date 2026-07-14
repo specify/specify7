@@ -56,13 +56,22 @@ const resolveAttachmentDatasetData = (
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
 
-      const statusText = f.maybe(status, resolveAttachmentStatus) ?? '';
+      const statusText =
+        isMappingMode &&
+        status !== undefined &&
+        typeof status === 'object' &&
+        'reason' in status &&
+        status.reason === 'fileMissing'
+          ? attachmentsText.awaitingFile()
+          : f.maybe(status, resolveAttachmentStatus) ?? '';
 
       const baseData = {
         selectedFileName: [
           uploadFile.file.name,
           <div className="flex w-fit gap-1">
-            {uploadFile.file instanceof File ? '' : dialogIcons.warning}
+            {uploadFile.file instanceof File || isMappingMode
+              ? ''
+              : dialogIcons.warning}
             {uploadFile.file.name}
           </div>,
         ],
@@ -178,16 +187,27 @@ export function ViewAttachmentFiles({
                   })}
                 </div>
                 <div className="flex min-w-fit gap-1">
-                  {uploadableFiles.some(
-                    ({ uploadFile: { file } }) => !(file instanceof File)
-                  ) && (
-                    <>
-                      {dialogIcons.warning}
-                      {attachmentsText.pleaseReselectAllFiles()}
-                    </>
-                  )}
+                  {!isMappingMode &&
+                    uploadableFiles.some(
+                      ({ uploadFile: { file } }) => !(file instanceof File)
+                    ) && (
+                      <>
+                        {dialogIcons.warning}
+                        {attachmentsText.pleaseReselectAllFiles()}
+                      </>
+                    )}
                 </div>
               </div>
+              {isMappingMode &&
+                uploadableFiles.some(
+                  (f) =>
+                    f.status?.type === 'cancelled' &&
+                    f.status.reason === 'fileMissing'
+                ) && (
+                  <div className="text-gray-500">
+                    {attachmentsText.mappingAwaitingFiles()}
+                  </div>
+                )}
               <GenericSortedDataViewer
                 cellClassName={(row, column, index) =>
                   `bg-[color:var(--background)] p-2 print:p-1 ${

@@ -964,6 +964,12 @@ export const attachmentsText = createDictionary({
     'hr-hr': 'Datoteka nedostaje',
     nb: 'Fil mangler',
   },
+  awaitingFile: {
+    'en-us': 'Awaiting file',
+  },
+  mappingAwaitingFiles: {
+    'en-us': 'Please select your files, or drag and drop them, to begin.',
+  },
   notInMappingFile: {
     'en-us': 'Not in Mapping File',
     'de-ch': 'Nicht in der Zuordnungsdatei',
