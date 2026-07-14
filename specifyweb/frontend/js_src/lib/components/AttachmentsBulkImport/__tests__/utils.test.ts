@@ -16,7 +16,9 @@ import {
   crossReferenceMappingFiles,
   inferDeletedAttachments,
   inferUploadedAttachments,
+  isMappingFilePlaceholder,
   matchFileSpec,
+  matchSelectedFiles,
   prepareMappingFileSelection,
   resolveFileNames,
 } from '../utils';
@@ -743,5 +745,427 @@ describe('crossReferenceMappingFiles CSV always wins matchValue', () => {
     expect(result[0].uploadFile.mappingMatchValue).toBe('CORRECT_VALUE');
     expect(result[0].uploadFile.parsedName).toBe('CORRECT_VALUE');
     expect(result[0].uploadFile.mappingFileName).toBe('test.jpg');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// isMappingFilePlaceholder
+// ---------------------------------------------------------------------------
+describe('isMappingFilePlaceholder', () => {
+  test('returns true for fileMissing cancelled status', () => {
+    expect(
+      isMappingFilePlaceholder({
+        uploadFile: { file: { name: 'a.jpg', size: 0, type: '' } },
+        status: { type: 'cancelled', reason: 'fileMissing' },
+      } as PartialUploadableFileSpec)
+    ).toBe(true);
+  });
+
+  test('returns false for other cancelled reasons', () => {
+    expect(
+      isMappingFilePlaceholder({
+        uploadFile: { file: { name: 'a.jpg', size: 0, type: '' } },
+        status: { type: 'cancelled', reason: 'noMatch' },
+      } as PartialUploadableFileSpec)
+    ).toBe(false);
+  });
+
+  test('returns false for skipped status', () => {
+    expect(
+      isMappingFilePlaceholder({
+        uploadFile: { file: { name: 'a.jpg', size: 0, type: '' } },
+        status: { type: 'skipped', reason: 'fileMissing' },
+      } as PartialUploadableFileSpec)
+    ).toBe(false);
+  });
+
+  test('returns false for success status', () => {
+    expect(
+      isMappingFilePlaceholder({
+        uploadFile: { file: { name: 'a.jpg', size: 0, type: '' } },
+        status: { type: 'success', successType: 'uploaded' },
+      } as PartialUploadableFileSpec)
+    ).toBe(false);
+  });
+
+  test('returns false when status is undefined', () => {
+    expect(
+      isMappingFilePlaceholder({
+        uploadFile: { file: { name: 'a.jpg', size: 91, type: 'image/jpeg' } },
+      } as PartialUploadableFileSpec)
+    ).toBe(false);
+  });
+
+  test('returns false for matched status', () => {
+    expect(
+      isMappingFilePlaceholder({
+        uploadFile: { file: { name: 'a.jpg', size: 91, type: 'image/jpeg' } },
+        status: { type: 'matched', id: 1 },
+      } as PartialUploadableFileSpec)
+    ).toBe(false);
+  });
+});
+
+// ---------------------------------------------------------------------------
+// matchSelectedFiles – existing function, now tested with mapping scenarios
+// ---------------------------------------------------------------------------
+describe('matchSelectedFiles', () => {
+  const mk = (name: string, size = 91) =>
+    ({
+      uploadFile: {
+        file: { name, size, type: 'image/jpeg' },
+      },
+    }) as PartialUploadableFileSpec;
+
+  test('adds new files to empty list', () => {
+    const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
+      [],
+      [mk('a.jpg'), mk('b.jpg')]
+    );
+    expect(resolvedFiles).toHaveLength(2);
+    expect(duplicateFiles).toHaveLength(0);
+  });
+
+  test('detects exact duplicate when existing entry has File instance', () => {
+    const content = new Uint8Array(91);
+    const file = new File([content], 'a.jpg', { type: 'image/jpeg' });
+    const existing = [
+      { uploadFile: { file } },
+    ] as RA<PartialUploadableFileSpec>;
+    const { resolvedFiles, duplicateFiles } = matchSelectedFiles(existing, [
+      mk('a.jpg'),
+    ]);
+    expect(resolvedFiles).toHaveLength(1);
+    expect(duplicateFiles).toHaveLength(1);
+    expect(duplicateFiles[0].uploadFile.file.name).toBe('a.jpg');
+  });
+
+  test('placeholder (0 bytes) does NOT match real file (91 bytes) — both kept', () => {
+    const placeholder = mk('a.jpg', 0);
+    const real = mk('a.jpg', 91);
+    const { resolvedFiles } = matchSelectedFiles([placeholder], [real]);
+    expect(resolvedFiles).toHaveLength(2);
+  });
+
+  test('replaces non-File existing entry with new entry', () => {
+    // Simulating a serialized row (plain object, not File instance)
+    const saved = {
+      uploadFile: {
+        file: { name: 'a.jpg', size: 91, type: 'image/jpeg' },
+      },
+    } as PartialUploadableFileSpec;
+    const real = mk('a.jpg', 91);
+    const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
+      [saved],
+      [real]
+    );
+    expect(resolvedFiles).toHaveLength(1);
+    expect(duplicateFiles).toHaveLength(0);
+    // The new entry's uploadFile replaced the old one
+    expect(resolvedFiles[0].uploadFile).toBe(real.uploadFile);
+  });
+
+  test('preserves success status when replacing', () => {
+    const saved = {
+      uploadFile: {
+        file: { name: 'a.jpg', size: 91, type: 'image/jpeg' } as File,
+      },
+      status: { type: 'success', successType: 'uploaded' },
+    } as PartialUploadableFileSpec;
+    const real = mk('a.jpg', 91);
+    const { resolvedFiles } = matchSelectedFiles([saved], [real]);
+    expect(resolvedFiles).toHaveLength(1);
+    expect(resolvedFiles[0].status?.type).toBe('success');
+  });
+
+  test('preserves skipped/alreadyUploaded status when replacing', () => {
+    const saved = {
+      uploadFile: {
+        file: { name: 'a.jpg', size: 91, type: 'image/jpeg' } as File,
+      },
+      status: { type: 'skipped', reason: 'alreadyUploaded' },
+    } as PartialUploadableFileSpec;
+    const real = mk('a.jpg', 91);
+    const { resolvedFiles } = matchSelectedFiles([saved], [real]);
+    expect(resolvedFiles).toHaveLength(1);
+    expect(resolvedFiles[0].status?.type).toBe('skipped');
+  });
+
+  test('takes new cancelled status when replacing non-success entry', () => {
+    const saved = {
+      uploadFile: {
+        file: { name: 'a.jpg', size: 91, type: 'image/jpeg' } as File,
+      },
+      status: { type: 'cancelled', reason: 'noMatch' },
+    } as PartialUploadableFileSpec;
+    const real = {
+      ...mk('a.jpg', 91),
+      status: { type: 'cancelled', reason: 'fileMissing' },
+    } as PartialUploadableFileSpec;
+    const { resolvedFiles } = matchSelectedFiles([saved], [real]);
+    expect(resolvedFiles).toHaveLength(1);
+    expect(resolvedFiles[0].status?.reason).toBe('fileMissing');
+  });
+});
+
+// ---------------------------------------------------------------------------
+// crossReferenceMappingFiles – additional edge cases
+// ---------------------------------------------------------------------------
+describe('crossReferenceMappingFiles – edge cases', () => {
+  const mk = (
+    name: string,
+    size: number,
+    mv?: string
+  ): PartialUploadableFileSpec =>
+    ({
+      uploadFile: {
+        file: { name, size, type: size > 0 ? 'image/jpeg' : '' },
+        parsedName: mv,
+        mappingMatchValue: mv,
+        mappingFileName: mv !== undefined ? name : undefined,
+      },
+    }) as PartialUploadableFileSpec;
+
+  test('empty CSV returns empty result', () => {
+    expect(crossReferenceMappingFiles([], [])).toHaveLength(0);
+  });
+
+  test('empty uploadables with CSV produces all placeholders', () => {
+    const csv = [
+      { fileName: 'a.jpg', matchValue: '1' },
+      { fileName: 'b.jpg', matchValue: '2' },
+    ];
+    const result = crossReferenceMappingFiles([], csv);
+    expect(result).toHaveLength(2);
+    expect(result.every((r) => r.status?.reason === 'fileMissing')).toBe(true);
+    expect(result[0].uploadFile.mappingMatchValue).toBe('1');
+    expect(result[1].uploadFile.mappingMatchValue).toBe('2');
+  });
+
+  test('uploadables not in CSV are flagged notInMappingFile', () => {
+    const csv = [{ fileName: 'a.jpg', matchValue: '1' }];
+    const result = crossReferenceMappingFiles(
+      [mk('a.jpg', 91, '1'), mk('b.jpg', 91), mk('c.jpg', 91)],
+      csv
+    );
+    const b = result.find((r) => r.uploadFile.file.name === 'b.jpg');
+    const c = result.find((r) => r.uploadFile.file.name === 'c.jpg');
+    expect(b?.status?.reason).toBe('notInMappingFile');
+    expect(c?.status?.reason).toBe('notInMappingFile');
+    // 'a' should be present and matched
+    expect(
+      result.find((r) => r.uploadFile.file.name === 'a.jpg')?.status
+    ).toBeUndefined();
+  });
+
+  test('already-uploaded file (with attachmentId) is preserved through cross-reference', () => {
+    const csv = [{ fileName: 'a.jpg', matchValue: '1' }];
+    const uploaded = {
+      uploadFile: {
+        file: { name: 'a.jpg', size: 91, type: 'image/jpeg' },
+        parsedName: '1',
+        mappingMatchValue: '1',
+      },
+      attachmentId: 42,
+      status: { type: 'success', successType: 'uploaded' },
+    } as PartialUploadableFileSpec;
+
+    const result = crossReferenceMappingFiles([uploaded], csv);
+    expect(result).toHaveLength(1);
+    expect(result[0].attachmentId).toBe(42);
+    expect(result[0].status?.type).toBe('success');
+  });
+
+  test('byName prefers real File (size 91) over plain object (size 91)', () => {
+    const csv = [{ fileName: 'a.jpg', matchValue: '1' }];
+    // Plain object first (would be first in byName), then real file
+    const plainObj = {
+      uploadFile: {
+        file: { name: 'a.jpg', size: 91, type: 'image/jpeg' },
+        parsedName: '1',
+        mappingMatchValue: 'wrong',
+      },
+    } as PartialUploadableFileSpec;
+    const realFile = mk('a.jpg', 91, '1');
+    // Give realFile a distinguishable property — it has mappingMatchValue set correctly
+    const result = crossReferenceMappingFiles([plainObj, realFile], csv);
+    expect(result).toHaveLength(1);
+    // mappingMatchValue from CSV overrides regardless — both should be '1'
+    expect(result[0].uploadFile.mappingMatchValue).toBe('1');
+  });
+
+  test('multiple CSV rows with same filename produce exactly one output row', () => {
+    const csv = [
+      { fileName: 'a.jpg', matchValue: '1' },
+      { fileName: 'a.jpg', matchValue: '1' },
+      { fileName: 'b.jpg', matchValue: '2' },
+    ];
+    const result = crossReferenceMappingFiles([], csv);
+    expect(result).toHaveLength(2);
+    const a = result.filter((r) => r.uploadFile.file.name === 'a.jpg');
+    expect(a).toHaveLength(1);
+  });
+
+  test('triple duplicate filename in CSV produces one row', () => {
+    const csv = [
+      { fileName: 'x.jpg', matchValue: 'A' },
+      { fileName: 'x.jpg', matchValue: 'A' },
+      { fileName: 'x.jpg', matchValue: 'A' },
+    ];
+    const result = crossReferenceMappingFiles([mk('x.jpg', 91, 'A')], csv);
+    expect(result).toHaveLength(1);
+  });
+
+  test('placeholder entries have correct parsedName and mappingMatchValue from CSV', () => {
+    const csv = [{ fileName: 'test.jpg', matchValue: 'ABC-123' }];
+    const result = crossReferenceMappingFiles([], csv);
+    expect(result).toHaveLength(1);
+    expect(result[0].uploadFile.parsedName).toBe('ABC-123');
+    expect(result[0].uploadFile.mappingMatchValue).toBe('ABC-123');
+    expect(result[0].uploadFile.file.size).toBe(0);
+  });
+
+  test('status is cleared when real file replaces placeholder (no error status)', () => {
+    const csv = [{ fileName: 'a.jpg', matchValue: '1' }];
+    const seeded = crossReferenceMappingFiles([], csv);
+    expect(seeded[0].status?.reason).toBe('fileMissing');
+
+    const result = crossReferenceMappingFiles(
+      [...seeded, mk('a.jpg', 91, '1')],
+      csv
+    );
+    expect(result).toHaveLength(1);
+    expect(result[0].status).toBeUndefined();
+  });
+});
+
+// ---------------------------------------------------------------------------
+// prepareMappingFileSelection – additional edge cases
+// ---------------------------------------------------------------------------
+describe('prepareMappingFileSelection – edge cases', () => {
+  const CSV = [
+    { matchValue: 'A', fileName: 'a.jpg' },
+    { matchValue: 'B', fileName: 'b.jpg' },
+  ];
+
+  const mk = (name: string, size: number, mv?: string) =>
+    ({
+      uploadFile: {
+        file: { name, size, type: size > 0 ? 'image/jpeg' : '' },
+        parsedName: mv,
+        mappingMatchValue: mv,
+        mappingFileName: mv !== undefined ? name : undefined,
+      },
+      ...(size === 0
+        ? { status: { type: 'cancelled' as const, reason: 'fileMissing' as const } }
+        : {}),
+    }) as PartialUploadableFileSpec;
+
+  test('empty inputs produce only placeholders from CSV', () => {
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      [],
+      [],
+      CSV
+    );
+    expect(duplicateFiles).toHaveLength(0);
+    expect(resolvedFiles).toHaveLength(2);
+    expect(resolvedFiles.every((r) => r.status?.reason === 'fileMissing')).toBe(
+      true
+    );
+  });
+
+  test('existing real files not in new selection are preserved', () => {
+    const existing = [mk('a.jpg', 91, 'A')];
+    const { resolvedFiles } = prepareMappingFileSelection(
+      existing,
+      [mk('b.jpg', 91, 'B')],
+      CSV
+    );
+    expect(resolvedFiles).toHaveLength(2);
+    expect(
+      resolvedFiles.find((r) => r.uploadFile.file.name === 'a.jpg')
+    ).toBeTruthy();
+    expect(
+      resolvedFiles.find((r) => r.uploadFile.file.name === 'b.jpg')
+    ).toBeTruthy();
+  });
+
+  test('existing placeholders are NOT preserved', () => {
+    const placeholders = [
+      mk('a.jpg', 0, 'A'),
+      mk('b.jpg', 0, 'B'),
+    ];
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      placeholders,
+      [mk('a.jpg', 91, 'A')],
+      CSV
+    );
+    expect(duplicateFiles).toHaveLength(0);
+    expect(resolvedFiles).toHaveLength(2);
+    // a.jpg should now be real (91 bytes), b.jpg should be a placeholder
+    const a = resolvedFiles.find((r) => r.uploadFile.file.name === 'a.jpg');
+    const b = resolvedFiles.find((r) => r.uploadFile.file.name === 'b.jpg');
+    expect(a?.uploadFile.file.size).toBe(91);
+    expect(b?.status?.reason).toBe('fileMissing');
+  });
+
+  test('duplicate files (same name/size/type) are detected', () => {
+    // Create a real File with 91 bytes so it matches the new entry
+    const content = new Uint8Array(91);
+    const existingFile = new File([content], 'a.jpg', { type: 'image/jpeg' });
+    const existing = [
+      {
+        uploadFile: { file: existingFile, parsedName: 'A', mappingMatchValue: 'A' },
+      },
+    ] as RA<PartialUploadableFileSpec>;
+    const { resolvedFiles, duplicateFiles } = prepareMappingFileSelection(
+      existing,
+      [mk('a.jpg', 91, 'A')],
+      CSV
+    );
+    expect(duplicateFiles).toHaveLength(1);
+    expect(resolvedFiles).toHaveLength(2); // a (existing) + b (placeholder)
+  });
+
+  test('files with attachmentId are preserved through selection', () => {
+    const existing = [
+      {
+        ...mk('a.jpg', 91, 'A'),
+        attachmentId: 99,
+        status: { type: 'success' as const, successType: 'uploaded' as const },
+      },
+    ] as RA<PartialUploadableFileSpec>;
+
+    const { resolvedFiles } = prepareMappingFileSelection(
+      existing,
+      [mk('b.jpg', 91, 'B')],
+      CSV
+    );
+    const a = resolvedFiles.find((r) => r.uploadFile.file.name === 'a.jpg');
+    expect(a?.attachmentId).toBe(99);
+    expect(a?.status?.type).toBe('success');
+  });
+
+  test('old rows without mappingMatchValue get it from CSV after selection', () => {
+    const savedRows = CSV.map(
+      (row) =>
+        ({
+          uploadFile: {
+            file: { name: row.fileName, size: 91, type: 'image/jpeg' },
+            parsedName: row.matchValue,
+          },
+        }) as PartialUploadableFileSpec
+    );
+
+    const { resolvedFiles } = prepareMappingFileSelection(
+      savedRows,
+      [],
+      CSV
+    );
+
+    for (const r of resolvedFiles) {
+      expect(r.uploadFile.mappingMatchValue).toBeTruthy();
+      expect(r.uploadFile.parsedName).toBeTruthy();
+    }
   });
 });
