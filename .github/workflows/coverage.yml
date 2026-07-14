@@ -1,6 +1,7 @@
 name: Coverage
 
 on: 
+  pull_request:
   push:
   workflow_dispatch:
 
@@ -15,8 +16,10 @@ jobs:
     # pull_requests, but only for external ones, so as not to run the action
     # twice
     if: |
-      github.event.head_commit.committer.name != 'Hosted Weblate' &&
-      github.event.head_commit.committer.name != 'github-actions' &&
+      (github.event_name == 'workflow_dispatch' || 
+      (github.event.head_commit.committer.name != 'Hosted Weblate' &&
+      github.event.head_commit.committer.name != 'github-actions'))
+      &&
       (
         github.event_name != 'pull_request'  ||
         github.event.pull_request.head.repo.fork == true
@@ -29,6 +32,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+        with: persistent-credentials: false
 
       - name: Find all changed files
         uses: dorny/paths-filter@v3
@@ -53,7 +57,7 @@ jobs:
     needs: changes
     if: |
       (needs.changes.outputs.backend_changed  ||
-      needs.changes.outputs.frontend_changed) ||
+      needs.changes.outputs.frontend) ||
       github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
 
@@ -66,6 +70,7 @@ jobs:
           sudo apt install docker-compose-v2 openssh-client
 
       - uses: actions/checkout@v4
+        with: persistent-credentials: false
 
       - name: Fetch coverage script
         id: clone-coverage

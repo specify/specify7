@@ -73,10 +73,10 @@ Documentation for used GitHub secrets.
             <td>COVERAGE_SCRIPT_CLONE</td>
             <td>Yes</td>
             <td>
-                Github Deploy token linked to the [development repo](github.com/specify/specify-development) to allow actions to clone it.
+                Github Deploy token linked to the [development repo](https://github.com/specify/specify-development) to allow actions to clone it.
             </td>
             <td>
-                <a href="https://github.com/specify/specify7/pull/">
+                <a href="https://github.com/specify/specify7/pull/8278">
                     #8278
                 </a>
             </td>
