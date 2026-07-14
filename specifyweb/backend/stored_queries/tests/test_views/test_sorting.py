@@ -3,6 +3,7 @@ from .raw_query import get_simple_query
 from django.test import Client
 from unittest.mock import patch, Mock
 import json
+import copy
 
 class TestSorting(SQLAlchemySetup):
 
@@ -13,7 +14,7 @@ class TestSorting(SQLAlchemySetup):
         c = Client()
         c.force_login(self.specifyuser)
 
-        query = get_simple_query(self.specifyuser).copy()
+        query = copy.deepcopy(get_simple_query(self.specifyuser))
         query["fields"][0]["sorttype"] = 1 # 0 --> no sort, 1 --> ascending, 2 --> descending
 
         response = c.post('/stored_query/ephemeral/', query, content_type="application/json")
@@ -35,7 +36,7 @@ class TestSorting(SQLAlchemySetup):
         c = Client()
         c.force_login(self.specifyuser)
 
-        query = get_simple_query(self.specifyuser).copy()
+        query = copy.deepcopy(get_simple_query(self.specifyuser))
         query["fields"][0]["sorttype"] = 2 # 0 --> no sort, 1 --> ascending, 2 --> descending
 
         response = c.post('/stored_query/ephemeral/', query, content_type="application/json")
