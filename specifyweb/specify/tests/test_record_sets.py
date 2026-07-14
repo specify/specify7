@@ -47,3 +47,28 @@ class RecordSetCreationTests(ApiTests):
         self.assertEqual(
             recordset.recordsetitems.first().recordid, existing_co.id
         )
+
+    def test_create_record_set_from_query_results(self):
+        """Simulate creating a record set from query results by adding
+        records that match a query (in this case, all COs in the collection)."""
+        recordset = Recordset.objects.create(
+            collectionmemberid=self.collection.id,
+            dbtableid=Collectionobject.specify_model.tableId,
+            name="Test RS from query",
+            type=0,
+            specifyuser=self.specifyuser,
+        )
+
+        matching_cos = Collectionobject.objects.filter(
+            collection=self.collection
+        )
+
+        Recordsetitem.objects.bulk_create([
+            Recordsetitem(recordset=recordset, recordid=co.id)
+            for co in matching_cos
+        ])
+
+        self.assertEqual(
+            recordset.recordsetitems.count(),
+            matching_cos.count(),
+        )
