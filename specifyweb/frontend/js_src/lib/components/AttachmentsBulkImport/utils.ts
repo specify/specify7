@@ -337,6 +337,7 @@ export function crossReferenceMappingFiles(
           file: { name: row.fileName, size: 0, type: '' },
           parsedName: row.matchValue,
           mappingMatchValue: row.matchValue,
+          mappingFileName: row.fileName,
         },
         status: {
           type: 'cancelled' as const,
