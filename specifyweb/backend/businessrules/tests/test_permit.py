@@ -124,8 +124,12 @@ class PermitTests(ApiTests):
             'permit_doc.pdf'
         )
 
-        # Delete the attachment
+        # Delete the permit_attachment connector first
         permit_attachment.delete()
+        # The Attachment is auto-deleted by a post_delete signal handler in 
+        # attachment_rules.py (attachment_jointable_deletion). When a Permitattachment join row is deleted,
+        # the signal fires and calls obj.attachment.delete(). The test passes as-is.
+
 
         # Verifying it's gone
         self.assertEqual(permit.permitattachments.count(), 0)

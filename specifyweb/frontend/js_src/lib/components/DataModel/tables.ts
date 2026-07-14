@@ -111,10 +111,9 @@ export const fetchContext = f
 
     // Then process fields and relationships for each table.
     tablePairs.forEach(([tableDefinition, table]) => {
-      const [frontEndFields, callback] =
-        (schemaExtras[table.name] as (typeof schemaExtras)['Agent'] | undefined)?.(
-          table as SpecifyTable<Agent>
-        ) ?? [[]];
+      const [frontEndFields, callback] = (
+        schemaExtras[table.name] as (typeof schemaExtras)['Agent'] | undefined
+      )?.(table as SpecifyTable<Agent>) ?? [[]];
       const [literalFields, relationships] = split(
         frontEndFields.map((field) => {
           field.isReadOnly = true;
@@ -155,10 +154,9 @@ export const fetchContext = f
         Object.fromEntries(table.fields.map((field) => [field.name, field]))
       );
 
-      frontEndOnlyFields[table.name] = [
-        ...literalFields,
-        ...relationships,
-      ].map(({ name }) => name);
+      frontEndOnlyFields[table.name] = [...literalFields, ...relationships].map(
+        ({ name }) => name
+      );
 
       callback?.();
     });
