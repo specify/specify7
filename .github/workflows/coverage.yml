@@ -88,15 +88,22 @@ jobs:
             sudo chmod -R a+rw .
           done
           docker compose up --build -d
-          docker stats --no-stream
+
+      - name: Fix mariadb
+        id: reboot-mariadb
+        run: |
+          docker compose up -d mariadb
+          docker exec mariadb mariadb -uroot -ppassword -e"DROP USER root; 
+              CREATE USER 'root'@'%' IDENTIFIED BY 'password';
+              GRANT ALL ON *.* TO 'root'@'%' IDENTIFIED BY 'password';
+              DROP DATABASE IF EXISTS specify;"
+          docker compose down
+          docker compose up
+        
 
       - name: Run the script
         id: run-coverage
-        run: |
-          sleep 100 # so we can see if mariadb recovers
-          docker compose logs 
-          docker ps --all
-          docker exec mariadb ls -lah /run/mysqld || echo mariadb crashed!
+        run: run-coverage -t pj -a pj -d pj -o html,csv
 
 
       - name: Upload report as artifact
