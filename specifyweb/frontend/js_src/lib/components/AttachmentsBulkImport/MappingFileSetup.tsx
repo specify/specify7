@@ -4,10 +4,12 @@ import { parse } from 'csv-parse/browser/esm';
 import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import type { RA } from '../../utils/types';
-import type { GetSet } from '../../utils/types';
 import { filterArray } from '../../utils/types';
+import { escapeRegExp } from '../../utils/utils';
 import { Select } from '../Atoms/Form';
 import { FilePicker } from '../Molecules/FilePicker';
+import { strictGetTable } from '../DataModel/tables';
+import { staticAttachmentImportPaths } from './importPaths';
 import type { MappingFileColumns, MappingFileRow } from './types';
 
 /**
@@ -46,22 +48,53 @@ const parseMappingCsv = async (
 };
 
 /**
- * Attempt to auto-detect which columns are match value and file name
- * by looking at header names.
+ * Build case-insensitive regex matchers for attachment field names.
+ * Matches against both the raw field name (e.g. "catalogNumber") and
+ * the schema-localized caption (e.g. "Specimen #", "Catalog Number").
+ */
+function buildFieldMatchers(): RA<RegExp> {
+  const matchers: RegExp[] = [];
+  const seen = new Set<string>();
+
+  for (const { baseTable, path } of Object.values(
+    staticAttachmentImportPaths
+  )) {
+    const escaped = escapeRegExp(String(path));
+    const key = escaped.toLowerCase();
+    if (!seen.has(key)) {
+      seen.add(key);
+      matchers.push(new RegExp(`^${escaped}$`, 'i'));
+    }
+
+    // Also match against the schema-localized field caption
+    try {
+      const field = strictGetTable(baseTable).strictGetField(path);
+      const label = String(field.label);
+      const escapedLabel = escapeRegExp(label);
+      const labelKey = escapedLabel.toLowerCase();
+      if (label !== String(path) && !seen.has(labelKey)) {
+        seen.add(labelKey);
+        matchers.push(new RegExp(`^${escapedLabel}$`, 'i'));
+      }
+    } catch {
+      // Schema not yet loaded — skip localized labels
+    }
+  }
+
+  return matchers;
+}
+
+/**
+ * Attempt to auto-detect which columns are match value and file name.
+ * Match value columns are detected by comparing CSV headers against
+ * data model field names and schema-localized field captions.
  */
 function autoDetectColumns(headers: RA<string>): {
   matchValueIndex: number | undefined;
   fileNameIndex: number | undefined;
 } {
-  const matchValuePatterns = [
-    /catalog\s*number/i,
-    /cataloguenumber/i,
-    /guid/i,
-    /match\s*value/i,
-    /identifier/i,
-    /record\s*id/i,
-    /barcode/i,
-  ];
+  const fieldMatchers = buildFieldMatchers();
+
   const fileNamePatterns = [
     /attachment\s*name/i,
     /file\s*name/i,
@@ -76,7 +109,7 @@ function autoDetectColumns(headers: RA<string>): {
   headers.forEach((header, index) => {
     if (
       matchValueIndex === undefined &&
-      matchValuePatterns.some((p) => p.test(header))
+      fieldMatchers.some((p) => p.test(header))
     ) {
       matchValueIndex = index;
     }
@@ -105,7 +138,6 @@ export function MappingFileSetup({
   readonly initialColumns?: MappingFileColumns;
   readonly initialData?: RA<MappingFileRow>;
 }): JSX.Element {
-  const [file, setFile] = React.useState<File | undefined>(undefined);
   const [headers, setHeaders] = React.useState<RA<string> | undefined>(
     undefined
   );
@@ -124,7 +156,6 @@ export function MappingFileSetup({
 
   const handleFileSelected = React.useCallback(
     async (selectedFile: File) => {
-      setFile(selectedFile);
       setError(undefined);
       try {
         const parsed = await parseMappingCsv(selectedFile);
