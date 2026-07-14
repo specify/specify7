@@ -12,6 +12,17 @@ class AttachmentDataSetPT(PermissionTarget):
     upload = PermissionTargetAction()
     rollback = PermissionTargetAction()
 
+VALID_MATCHING_MODES = {'filename', 'mappingFile'}
+
+def _get_validated_matchingmode(data, existing=None):
+    """Return a validated matchingmode value or raise ValueError."""
+    if 'matchingmode' not in data:
+        return existing
+    value = data['matchingmode']
+    if value is not None and value not in VALID_MATCHING_MODES:
+        raise ValueError(f"Invalid matchingmode: {value!r}")
+    return value
+
 def datasets_view(request):
     if request.method == 'GET':
         return http.JsonResponse(Spattachmentdataset.get_meta_fields(request), safe=False)
@@ -28,7 +39,7 @@ def datasets_view(request):
             createdbyagent=request.specify_user_agent,
             modifiedbyagent=request.specify_user_agent,
             uploaderstatus="main",
-            matchingmode=data.get('matchingmode', None),
+            matchingmode=_get_validated_matchingmode(data),
             # A bit more flexible than workbench. Handles creating datasets with an uploadplan from the start.
             uploadplan=json.dumps(data['uploadplan']) if 'uploadplan' in data else None
         )
@@ -50,7 +61,7 @@ def dataset_view(request, ds: Spattachmentdataset):
         ds.name = attrs.get('name', ds.name)
         ds.remarks = attrs.get('remarks', ds.remarks)
         ds.data = attrs.get('rows', ds.data)
-        ds.matchingmode = attrs.get('matchingmode', ds.matchingmode)
+        ds.matchingmode = _get_validated_matchingmode(attrs, ds.matchingmode)
         ds.uploadplan = json.dumps(attrs['uploadplan'] if 'uploadplan' in attrs else ds.uploadplan)
         # Never preserve uploaderstatus. Making it required for all requests.
         old_status = ds.uploaderstatus
