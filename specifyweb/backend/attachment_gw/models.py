@@ -8,12 +8,8 @@ class Spattachmentdataset(Dataset):
 
     id = models.AutoField(auto_created=True, primary_key=True, serialize=False, verbose_name='ID')
 
-    MATCHING_MODE_CHOICES = [
-        ('mappingFile', 'Mapping File'),
-    ]
-
     matchingmode = models.CharField(
-        max_length=32, null=True, default=None, choices=MATCHING_MODE_CHOICES
+        max_length=32, null=True, default=None
     )
 
     object_response_fields = [
