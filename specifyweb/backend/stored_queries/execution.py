@@ -1241,4 +1241,4 @@ def apply_special_post_query_processing(query,
         row = list(raw_row)
         for processor in processors:
             row = processor(row)
-        yield row
+        yield tuple(row)
