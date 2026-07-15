@@ -204,7 +204,7 @@ export const interactionsText = createDictionary({
     'fr-fr': 'Les preparations ne peuvent être renvoyées dans ce contexte.',
     'uk-ua': 'У цьому контексті препарати не можна повернути.',
     'de-ch': 'Präparate können in diesem Kontext nicht zurückgegeben werden.',
-    'pt-br': 'Neste contexto, os produtos não podem ser devolvidos.',
+    'pt-br': 'Neste contexto, as preparações não podem ser devolvidas.',
     'hr-hr': 'Pripreme se u ovom kontekstu ne mogu vratiti.',
     nb: 'Preparater kan ikke returneres i denne sammenhengen.',
   },
