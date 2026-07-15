@@ -284,23 +284,31 @@ class QueryFieldSpec(
                     relation = None
 
             if relation is not None:
-                result = cls(
-                    root_table=root_table,
-                    root_sql_table=getattr(models, root_table.name),
-                    join_path=tuple(join_path),
-                    table=node,
-                    date_part=None,
-                    tree_rank=None,
-                    tree_field=relation,
-                )
-                logger.debug(
-                    "parsed %s (is_relation %s) to %s. extracted_fieldname = %s",
-                    stringid,
-                    is_relation,
-                    result,
-                    extracted_fieldname,
-                )
-                return result
+                # When extracted_fieldname matches the table name but no
+                # actual field exists on the target table (e.g.
+                # "locality.locality"), this is a legacy sentinel indicating a
+                # formatted tree rank, not a normal relation.  Fall through so
+                # the tree_rank logic below can handle it.
+                if node.get_field(extracted_fieldname, strict=False) is None:
+                    relation = None
+                else:
+                    result = cls(
+                        root_table=root_table,
+                        root_sql_table=getattr(models, root_table.name),
+                        join_path=tuple(join_path),
+                        table=node,
+                        date_part=None,
+                        tree_rank=None,
+                        tree_field=relation,
+                    )
+                    logger.debug(
+                        "parsed %s (is_relation %s) to %s. extracted_fieldname = %s",
+                        stringid,
+                        is_relation,
+                        result,
+                        extracted_fieldname,
+                    )
+                    return result
 
         relation_already_in_path = (
             is_relation

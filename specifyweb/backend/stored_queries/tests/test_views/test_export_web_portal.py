@@ -26,7 +26,7 @@ class TestExportWebPortal(SQLAlchemySetup):
         self._assertContentEqual(response, "OK")
 
     def test_portal_attachment_map(self):
-        from specifyweb.backend.stored_queries import execution
+        from specifyweb.backend.stored_queries import web_portal_export
 
         class FakeAttachment:
             id = 5291
@@ -55,10 +55,10 @@ class TestExportWebPortal(SQLAlchemySetup):
         fake_table = MagicMock()
         fake_table.attachments_field = MagicMock()
 
-        with patch.object(execution.datamodel, "get_table_by_id", return_value=fake_table), patch.object(
-            execution, "get_model_by_table_id", return_value=fake_base_model
-        ), patch.object(execution.apps, "get_model", return_value=type("Collectionobjectattachment", (), {"objects": fake_join_manager})):
-            result = execution._portal_attachment_map(1, [123])
+        with patch.object(web_portal_export.datamodel, "get_table_by_id", return_value=fake_table), patch.object(
+            web_portal_export, "get_model_by_table_id", return_value=fake_base_model
+        ), patch.object(web_portal_export.apps, "get_model", return_value=type("Collectionobjectattachment", (), {"objects": fake_join_manager})):
+            result = web_portal_export._portal_attachment_map(1, [123])
 
         self.assertEqual(
             fake_join_manager.filter_kwargs,
