@@ -58,6 +58,7 @@ export type AttachmentUploadSpec = {
 };
 export type PartialAttachmentUploadSpec = {
   readonly fieldFormatter?: UiFormatter;
+  readonly formatQueryResults?: AttachmentUploadSpec['formatQueryResults'];
   readonly matchingMode?: MatchingMode | null;
   readonly mappingFileColumns?: MappingFileColumns;
   readonly mappingFileData?: RA<MappingFileRow>;

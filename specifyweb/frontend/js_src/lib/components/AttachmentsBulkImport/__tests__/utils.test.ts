@@ -367,16 +367,6 @@ describe('crossReferenceMappingFiles', () => {
     { matchValue: '000273074', fileName: '273074.jpg' },
   ];
 
-  const makePlaceholder = (name: string, mv: string) =>
-    ({
-      uploadFile: {
-        file: { name, size: 0, type: '' },
-        parsedName: mv,
-        mappingMatchValue: mv,
-      },
-      status: { type: 'cancelled', reason: 'fileMissing' },
-    }) as PartialUploadableFileSpec;
-
   const makeReal = (name: string, mv: string) =>
     ({
       uploadFile: {
@@ -389,7 +379,7 @@ describe('crossReferenceMappingFiles', () => {
   test('initial seeding produces all placeholders', () => {
     const result = crossReferenceMappingFiles([], CSV);
     expect(result).toHaveLength(4);
-    expect(result.every((r) => r.status?.reason === 'fileMissing')).toBe(true);
+    expect(result.every((r) => (r.status as any)?.reason === 'fileMissing')).toBe(true);
   });
 
   test('adding one real file replaces corresponding placeholder', () => {
@@ -404,7 +394,7 @@ describe('crossReferenceMappingFiles', () => {
         ?.uploadFile.file.size
     ).toBe(91);
     expect(
-      result.filter((r) => r.status?.reason === 'fileMissing')
+      result.filter((r) => (r.status as any)?.reason === 'fileMissing')
     ).toHaveLength(3);
   });
 
@@ -423,7 +413,7 @@ describe('crossReferenceMappingFiles', () => {
     expect(result).toHaveLength(4);
     expect(
       result.every(
-        (r) => !r.status || r.status.reason !== 'fileMissing'
+        (r) => !r.status || (r.status as any).reason !== 'fileMissing'
       )
     ).toBe(true);
     expect(result.every((r) => r.uploadFile.file.size === 91)).toBe(true);
@@ -460,8 +450,7 @@ describe('crossReferenceMappingFiles', () => {
       CSV
     );
     expect(
-      result.find((r) => r.uploadFile.file.name === 'unknown.jpg')?.status
-        ?.reason
+      (result.find((r) => r.uploadFile.file.name === 'unknown.jpg')!.status as any).reason
     ).toBe('notInMappingFile');
   });
 
@@ -521,7 +510,7 @@ describe('prepareMappingFileSelection', () => {
         ?.uploadFile.file.size
     ).toBe(91);
     expect(
-      resolvedFiles.filter((r) => r.status?.reason === 'fileMissing')
+      resolvedFiles.filter((r) => (r.status as any)?.reason === 'fileMissing')
     ).toHaveLength(2);
   });
 
@@ -538,7 +527,7 @@ describe('prepareMappingFileSelection', () => {
     );
 
     expect(resolvedFiles).toHaveLength(3);
-    expect(resolvedFiles.every((r) => r.uploadFile.file.size === 91 || r.status?.reason === 'fileMissing')).toBe(true);
+    expect(resolvedFiles.every((r) => r.uploadFile.file.size === 91 || (r.status as any)?.reason === 'fileMissing')).toBe(true);
     expect(
       resolvedFiles.filter((r) => r.uploadFile.file.name === '601146.jpg')
     ).toHaveLength(1);
@@ -616,7 +605,7 @@ describe('end-to-end: seeding then full file selection', () => {
         expect(r.uploadFile.mappingMatchValue).toBeTruthy();
         expect(r.uploadFile.parsedName).toBeTruthy();
       } else {
-        expect(r.status?.reason).toBe('notInMappingFile');
+        expect((r.status as any)?.reason).toBe('notInMappingFile');
       }
     }
   });
@@ -904,7 +893,7 @@ describe('matchSelectedFiles', () => {
     } as PartialUploadableFileSpec;
     const { resolvedFiles } = matchSelectedFiles([saved], [real]);
     expect(resolvedFiles).toHaveLength(1);
-    expect(resolvedFiles[0].status?.reason).toBe('fileMissing');
+    expect((resolvedFiles[0].status as any)?.reason).toBe('fileMissing');
   });
 });
 
@@ -937,7 +926,7 @@ describe('crossReferenceMappingFiles – edge cases', () => {
     ];
     const result = crossReferenceMappingFiles([], csv);
     expect(result).toHaveLength(2);
-    expect(result.every((r) => r.status?.reason === 'fileMissing')).toBe(true);
+    expect(result.every((r) => (r.status as any)?.reason === 'fileMissing')).toBe(true);
     expect(result[0].uploadFile.mappingMatchValue).toBe('1');
     expect(result[1].uploadFile.mappingMatchValue).toBe('2');
   });
@@ -950,8 +939,8 @@ describe('crossReferenceMappingFiles – edge cases', () => {
     );
     const b = result.find((r) => r.uploadFile.file.name === 'b.jpg');
     const c = result.find((r) => r.uploadFile.file.name === 'c.jpg');
-    expect(b?.status?.reason).toBe('notInMappingFile');
-    expect(c?.status?.reason).toBe('notInMappingFile');
+    expect((b?.status as any)?.reason).toBe('notInMappingFile');
+    expect((c?.status as any)?.reason).toBe('notInMappingFile');
     // 'a' should be present and matched
     expect(
       result.find((r) => r.uploadFile.file.name === 'a.jpg')?.status
@@ -1028,7 +1017,7 @@ describe('crossReferenceMappingFiles – edge cases', () => {
   test('status is cleared when real file replaces placeholder (no error status)', () => {
     const csv = [{ fileName: 'a.jpg', matchValue: '1' }];
     const seeded = crossReferenceMappingFiles([], csv);
-    expect(seeded[0].status?.reason).toBe('fileMissing');
+    expect((seeded[0].status as any)?.reason).toBe('fileMissing');
 
     const result = crossReferenceMappingFiles(
       [...seeded, mk('a.jpg', 91, '1')],
@@ -1069,7 +1058,7 @@ describe('prepareMappingFileSelection – edge cases', () => {
     );
     expect(duplicateFiles).toHaveLength(0);
     expect(resolvedFiles).toHaveLength(2);
-    expect(resolvedFiles.every((r) => r.status?.reason === 'fileMissing')).toBe(
+    expect(resolvedFiles.every((r) => (r.status as any)?.reason === 'fileMissing')).toBe(
       true
     );
   });
@@ -1106,7 +1095,7 @@ describe('prepareMappingFileSelection – edge cases', () => {
     const a = resolvedFiles.find((r) => r.uploadFile.file.name === 'a.jpg');
     const b = resolvedFiles.find((r) => r.uploadFile.file.name === 'b.jpg');
     expect(a?.uploadFile.file.size).toBe(91);
-    expect(b?.status?.reason).toBe('fileMissing');
+    expect((b?.status as any)?.reason).toBe('fileMissing');
   });
 
   test('duplicate files (same name/size/type) are detected', () => {
