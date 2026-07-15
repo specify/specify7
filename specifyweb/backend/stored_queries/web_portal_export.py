@@ -463,7 +463,7 @@ def query_to_web_portal_zip(
     field_specs,
     path,
     captions,
-    query_rows: Generator[list, Any, None],
+    query_rows: Generator[tuple, Any, None],
     set_group_concat_max_len_fn: Callable[[Any], None],
 ):
     """Export a stored query as a web portal ZIP package.
