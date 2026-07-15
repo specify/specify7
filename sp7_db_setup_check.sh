@@ -216,14 +216,16 @@ fi
 
 if [[ "$NEW_MIGRATOR_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
-
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
-    echo "Error: Failed to grant privileges to new user."
-    exit 1
-  fi
 else
-  echo "Skipping privilege grant for migrator user: user already exists. Verifying privileges on '${DB_NAME}'..."
+  echo "Migrator user already exists. Refreshing privileges on '${DB_NAME}'..."
+fi
+
+echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
+
+if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
+  -e "GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Error: Failed to grant privileges to migrator user."
+  exit 1
 fi
 
 GRANTS_OUTPUT="$(mysql -N -B --raw -h "$DB_HOST" -P "$DB_PORT" \
