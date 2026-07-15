@@ -194,35 +194,22 @@ function AttachmentsImport({
     [eagerDataSet.matchingmode, eagerDataSet.uploadplan.matchingMode]
   );
 
-  const previousKeyRef = React.useRef(
-    `${attachmentDataSetResource.uploadplan.staticPathKey ?? ''}_${attachmentDataSetResource.uploadplan.matchingMode ?? 'filename'}`
+  const previousPathKeyRef = React.useRef(
+    attachmentDataSetResource.uploadplan.staticPathKey
   );
   React.useEffect(() => {
-    // Reset all parsed names if matching path or mode is changed
-    const currentKey = `${eagerDataSet.uploadplan.staticPathKey ?? ''}_${eagerDataSet.uploadplan.matchingMode ?? 'filename'}`;
-    if (previousKeyRef.current !== currentKey) {
-      previousKeyRef.current = currentKey;
-      commitFileChange((files) => {
-        const recalculated = files.map(
-          ({ uploadFile, ...rest }) => ({
-            ...rest,
-            ...applyFileNames(uploadFile),
-          })
-        );
-        // If switching away from mapping mode, remove placeholder entries
-        if (!isMappingMode) {
-          return recalculated.filter(
-            (f) =>
-              !(
-                f.status?.type === 'cancelled' &&
-                f.status.reason === 'fileMissing'
-              )
-          );
-        }
-        return recalculated;
-      });
+    if (
+      previousPathKeyRef.current !== eagerDataSet.uploadplan.staticPathKey
+    ) {
+      previousPathKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
+      commitFileChange((files) =>
+        files.map(({ uploadFile, ...rest }) => ({
+          ...rest,
+          ...applyFileNames(uploadFile),
+        }))
+      );
     }
-  }, [applyFileNames, commitFileChange, isMappingMode]);
+  }, [applyFileNames, commitFileChange, eagerDataSet.uploadplan.staticPathKey]);
 
   // In mapping mode, seed the table with CSV rows so the user sees what to upload
   React.useEffect(() => {
