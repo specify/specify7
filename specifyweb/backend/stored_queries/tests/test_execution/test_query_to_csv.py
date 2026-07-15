@@ -181,8 +181,8 @@ tests = [
 ]
 
 
-def return_first(first, *args, **kwargs):
-    return first
+def return_first(query, **kwargs):
+    return iter((query,))
 
 
 def make_test(test_fn, mock_post_processing):
