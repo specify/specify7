@@ -32,7 +32,8 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
-        with: persistent-credentials: false
+        with: 
+          persistent-credentials: false
 
       - name: Find all changed files
         uses: dorny/paths-filter@v3
@@ -70,7 +71,8 @@ jobs:
           sudo apt install docker-compose-v2 openssh-client
 
       - uses: actions/checkout@v4
-        with: persistent-credentials: false
+        with: 
+          persistent-credentials: false
 
       - name: Fetch coverage script
         id: clone-coverage
