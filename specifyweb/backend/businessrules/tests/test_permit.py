@@ -95,3 +95,42 @@ class PermitTests(ApiTests):
         self.assertEqual(fetched.issuedby.firstname, 'Test')
         self.assertEqual(fetched.issuedto, new_issuedto)
         self.assertEqual(fetched.issuedto.firstname, 'Issued')
+
+    
+    def test_add_and_delete_attachment(self):
+        # Create a permit first
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-ATT-001',
+        )
+
+        # Create an attachment
+        attachment = models.Attachment.objects.create(
+            origfilename='permit_doc.pdf',
+            tableid=permit.specify_model.tableId,
+            title='Field Permit',
+        )
+        permit_attachment = models.Permitattachment.objects.create(
+            permit=permit,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        # Verify attachment is linked
+        self.assertEqual(permit.permitattachments.count(), 1)
+        self.assertEqual(
+            permit.permitattachments.first().attachment.origfilename,
+            'permit_doc.pdf'
+        )
+
+        # Delete the permit_attachment connector first
+        permit_attachment.delete()
+        # The Attachment is auto-deleted by a post_delete signal handler in 
+        # attachment_rules.py (attachment_jointable_deletion). When a Permitattachment join row is deleted,
+        # the signal fires and calls obj.attachment.delete(). The test passes as-is.
+
+
+        # Verifying it's gone
+        self.assertEqual(permit.permitattachments.count(), 0)
+        self.assertEqual(models.Attachment.objects.filter(id=attachment.id).count(), 0)
+
