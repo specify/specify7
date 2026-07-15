@@ -213,10 +213,11 @@ def export_to_web_portal(request):
     """Executes and returns as ZIP the web portal export package for the query provided as JSON in the POST body."""
     try:
         spquery = json.load(request)
-    except ValueError as e:
-        return HttpResponseBadRequest(e)
+    except ValueError:
+        return HttpResponseBadRequest('Invalid query data.')
 
-    logger.info('export web portal query: %s', spquery)
+    logger.info('export web portal query: %s',
+                str(spquery)[:200] if isinstance(spquery, dict) else spquery)
 
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
