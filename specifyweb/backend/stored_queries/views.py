@@ -216,8 +216,9 @@ def export_to_web_portal(request):
     except ValueError:
         return HttpResponseBadRequest('Invalid query data.')
 
-    logger.info('export web portal query: %s',
-                str(spquery)[:200] if isinstance(spquery, dict) else spquery)
+    spquery_log_preview = str(spquery)[:200] if isinstance(spquery, dict) else spquery
+    spquery_log_preview = str(spquery_log_preview).replace('\r', '').replace('\n', '')
+    logger.info('export web portal query: %s', spquery_log_preview)
 
     if 'collectionid' in spquery:
         collection = Collection.objects.get(pk=spquery['collectionid'])
