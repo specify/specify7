@@ -374,7 +374,8 @@ function AttachmentsImport({
     !modeDialogDismissed &&
     (eagerDataSet.matchingmode === undefined ||
       eagerDataSet.matchingmode === null) &&
-    eagerDataSet.uploadplan.staticPathKey === undefined;
+    eagerDataSet.uploadplan.staticPathKey === undefined &&
+    eagerDataSet.rows.length === 0;
 
   return (
     <Container.FullGray className="!h-full flex-row overflow-auto">
