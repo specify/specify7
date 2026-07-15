@@ -155,7 +155,8 @@ class PermitTests(ApiTests):
             institution=self.institution,
             permitnumber='P-EDIT-001',
         )
-        skip_perms_check = lambda x: None #skip the permissions checks
+        def skip_perms_check(_):
+            return None
         data = get_resource('permit', permit.id, skip_perms_check) # fetches the permit from the database and stores in the data dictionary
         data['remarks'] = 'Updated remark'
 
