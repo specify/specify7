@@ -19,6 +19,7 @@ import type { PartialAttachmentUploadSpec } from './Import';
 import { ResourceDisambiguationDialog } from './ResourceDisambiguation';
 import type { PartialUploadableFileSpec } from './types';
 import {
+  isMappingFilePlaceholder,
   keyLocalizationMapAttachment,
   resolveAttachmentRecord,
   resolveAttachmentStatus,
@@ -56,25 +57,19 @@ const resolveAttachmentDatasetData = (
         typeof status === 'object' &&
         (status.type === 'cancelled' || status.type === 'skipped');
 
-      const statusText =
+      const isPlaceholder =
         isMappingMode &&
-        status !== undefined &&
-        typeof status === 'object' &&
-        'reason' in status &&
-        status.reason === 'fileMissing'
-          ? attachmentsText.awaitingFile()
-          : f.maybe(status, resolveAttachmentStatus) ?? '';
+        isMappingFilePlaceholder({ uploadFile, status } as PartialUploadableFileSpec);
+
+      const statusText = isPlaceholder
+        ? attachmentsText.awaitingFile()
+        : f.maybe(status, resolveAttachmentStatus) ?? '';
 
       const baseData = {
         selectedFileName: [
           uploadFile.file.name,
           <div className="flex w-fit gap-1">
-            {uploadFile.file instanceof File ||
-            (isMappingMode &&
-              status !== undefined &&
-              typeof status === 'object' &&
-              'reason' in status &&
-              status.reason === 'fileMissing')
+            {uploadFile.file instanceof File || isPlaceholder
               ? ''
               : dialogIcons.warning}
             {uploadFile.file.name}
@@ -193,15 +188,9 @@ export function ViewAttachmentFiles({
                 </div>
                 <div className="flex min-w-fit gap-1">
                   {uploadableFiles.some(
-                    ({ uploadFile: { file }, status }) =>
-                      !(file instanceof File) &&
-                      !(
-                        isMappingMode &&
-                        status !== undefined &&
-                        typeof status === 'object' &&
-                        'reason' in status &&
-                        status.reason === 'fileMissing'
-                      )
+                    (row) =>
+                      !(row.uploadFile.file instanceof File) &&
+                      !(isMappingMode && isMappingFilePlaceholder(row))
                   ) && (
                     <>
                       {dialogIcons.warning}
@@ -211,11 +200,7 @@ export function ViewAttachmentFiles({
                 </div>
               </div>
               {isMappingMode &&
-                uploadableFiles.some(
-                  (f) =>
-                    f.status?.type === 'cancelled' &&
-                    f.status.reason === 'fileMissing'
-                ) && (
+                uploadableFiles.some(isMappingFilePlaceholder) && (
                   <div className="text-gray-500">
                     {attachmentsText.mappingAwaitingFiles()}
                   </div>
