@@ -1080,4 +1080,10 @@ export const attachmentsText = createDictionary({
     'hr-hr': 'Vrijednost podudaranja',
     nb: 'Samsvarsverdi',
   },
+  csvParseError: {
+    'en-us': 'Failed to parse CSV file',
+  },
+  csvEmptyFile: {
+    'en-us': 'Empty CSV file',
+  },
 } as const);

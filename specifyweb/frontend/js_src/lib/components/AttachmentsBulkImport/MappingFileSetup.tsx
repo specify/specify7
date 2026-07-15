@@ -34,7 +34,7 @@ const parseMappingCsv = async (
           return;
         }
         if (data.length === 0) {
-          reject(new Error('Empty CSV file'));
+          reject(new Error(attachmentsText.csvEmptyFile().toString()));
           return;
         }
         const headers = data[0];
@@ -52,7 +52,9 @@ const parseMappingCsv = async (
  * Matches against both the raw field name (e.g. "catalogNumber") and
  * the schema-localized caption (e.g. "Specimen #", "Catalog Number").
  */
+let _fieldMatchersCache: RA<RegExp> | undefined;
 function buildFieldMatchers(): RA<RegExp> {
+  if (_fieldMatchersCache !== undefined) return _fieldMatchersCache;
   const matchers: RegExp[] = [];
   const seen = new Set<string>();
 
@@ -81,6 +83,7 @@ function buildFieldMatchers(): RA<RegExp> {
     }
   }
 
+  _fieldMatchersCache = matchers;
   return matchers;
 }
 
@@ -181,7 +184,9 @@ export function MappingFileSetup({
         setHeaders(undefined);
         setRows(undefined);
         setError(
-          err instanceof Error ? err.message : 'Failed to parse CSV file'
+          err instanceof Error
+            ? err.message
+            : attachmentsText.csvParseError().toString()
         );
       }
     },
