@@ -155,14 +155,18 @@ export function MappingFileSetup({
   const [hasRestored] = React.useState(isRestored);
 
   const previousMappingRef = React.useRef<string | undefined>(undefined);
+  const selectionGenerationRef = React.useRef(0);
   const handleFileSelected = React.useCallback(
     async (selectedFile: File) => {
       setError(undefined);
       setMatchValueIndex(undefined);
       setFileNameIndex(undefined);
       previousMappingRef.current = undefined;
+      selectionGenerationRef.current += 1;
+      const generation = selectionGenerationRef.current;
       try {
         const parsed = await parseMappingCsv(selectedFile);
+        if (generation !== selectionGenerationRef.current) return;
         setHeaders(parsed.headers);
         setRows(parsed.rows);
 
@@ -173,6 +177,7 @@ export function MappingFileSetup({
         if (detected.fileNameIndex !== undefined)
           setFileNameIndex(detected.fileNameIndex);
       } catch (err) {
+        if (generation !== selectionGenerationRef.current) return;
         setHeaders(undefined);
         setRows(undefined);
         setError(
