@@ -38,9 +38,9 @@ const parseMappingCsv = async (
           return;
         }
         const headers = data[0];
-        const rows = data.slice(1).filter(
-          (row) => row.some((cell) => cell.trim() !== '')
-        );
+        const rows = data
+          .slice(1)
+          .filter((row) => row.some((cell) => cell.trim() !== ''));
         resolve({ headers, rows });
       }
     );
@@ -148,9 +148,9 @@ export function MappingFileSetup({
   const [matchValueIndex, setMatchValueIndex] = React.useState<
     number | undefined
   >(initialColumns?.matchValueColumnIndex);
-  const [fileNameIndex, setFileNameIndex] = React.useState<
-    number | undefined
-  >(initialColumns?.fileNameColumnIndex);
+  const [fileNameIndex, setFileNameIndex] = React.useState<number | undefined>(
+    initialColumns?.fileNameColumnIndex
+  );
   const [error, setError] = React.useState<string | undefined>(undefined);
 
   // If initial data is provided (restoring from saved dataset), use it
@@ -159,39 +159,36 @@ export function MappingFileSetup({
 
   const previousMappingRef = React.useRef<string | undefined>(undefined);
   const selectionGenerationRef = React.useRef(0);
-  const handleFileSelected = React.useCallback(
-    async (selectedFile: File) => {
-      setError(undefined);
-      setMatchValueIndex(undefined);
-      setFileNameIndex(undefined);
-      previousMappingRef.current = undefined;
-      selectionGenerationRef.current += 1;
-      const generation = selectionGenerationRef.current;
-      try {
-        const parsed = await parseMappingCsv(selectedFile);
-        if (generation !== selectionGenerationRef.current) return;
-        setHeaders(parsed.headers);
-        setRows(parsed.rows);
+  const handleFileSelected = React.useCallback(async (selectedFile: File) => {
+    setError(undefined);
+    setMatchValueIndex(undefined);
+    setFileNameIndex(undefined);
+    previousMappingRef.current = undefined;
+    selectionGenerationRef.current += 1;
+    const generation = selectionGenerationRef.current;
+    try {
+      const parsed = await parseMappingCsv(selectedFile);
+      if (generation !== selectionGenerationRef.current) return;
+      setHeaders(parsed.headers);
+      setRows(parsed.rows);
 
-        // Auto-detect columns
-        const detected = autoDetectColumns(parsed.headers);
-        if (detected.matchValueIndex !== undefined)
-          setMatchValueIndex(detected.matchValueIndex);
-        if (detected.fileNameIndex !== undefined)
-          setFileNameIndex(detected.fileNameIndex);
-      } catch (err) {
-        if (generation !== selectionGenerationRef.current) return;
-        setHeaders(undefined);
-        setRows(undefined);
-        setError(
-          err instanceof Error
-            ? err.message
-            : attachmentsText.csvParseError().toString()
-        );
-      }
-    },
-    []
-  );
+      // Auto-detect columns
+      const detected = autoDetectColumns(parsed.headers);
+      if (detected.matchValueIndex !== undefined)
+        setMatchValueIndex(detected.matchValueIndex);
+      if (detected.fileNameIndex !== undefined)
+        setFileNameIndex(detected.fileNameIndex);
+    } catch (err) {
+      if (generation !== selectionGenerationRef.current) return;
+      setHeaders(undefined);
+      setRows(undefined);
+      setError(
+        err instanceof Error
+          ? err.message
+          : attachmentsText.csvParseError().toString()
+      );
+    }
+  }, []);
 
   // Notify parent when columns are selected
   React.useEffect(() => {
@@ -206,7 +203,8 @@ export function MappingFileSetup({
       rows.map((row) => {
         const matchValue = row[matchValueIndex]?.trim();
         const fileName = row[fileNameIndex]?.trim();
-        if (matchValue === undefined || fileName === undefined) return undefined;
+        if (matchValue === undefined || fileName === undefined)
+          return undefined;
         if (matchValue === '' || fileName === '') return undefined;
         return { matchValue, fileName };
       })

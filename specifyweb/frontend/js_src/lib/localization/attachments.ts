@@ -1028,45 +1028,73 @@ export const attachmentsText = createDictionary({
   mappingFileColumnsInfo: {
     'en-us': 'Match: {matchColumn:string} → File: {fileColumn:string}',
     'de-ch': 'Abgleich: {matchColumn:string} → Datei: {fileColumn:string}',
-    'es-es': 'Coincidencia: {matchColumn:string} → Archivo: {fileColumn:string}',
-    'fr-fr': 'Correspondance: {matchColumn:string} → Fichier: {fileColumn:string}',
+    'es-es':
+      'Coincidencia: {matchColumn:string} → Archivo: {fileColumn:string}',
+    'fr-fr':
+      'Correspondance: {matchColumn:string} → Fichier: {fileColumn:string}',
     'ru-ru': 'Сопоставление: {matchColumn:string} → Файл: {fileColumn:string}',
     'uk-ua': 'Зіставлення: {matchColumn:string} → Файл: {fileColumn:string}',
-    'pt-br': 'Correspondência: {matchColumn:string} → Arquivo: {fileColumn:string}',
-    'hr-hr': 'Podudaranje: {matchColumn:string} → Datoteka: {fileColumn:string}',
+    'pt-br':
+      'Correspondência: {matchColumn:string} → Arquivo: {fileColumn:string}',
+    'hr-hr':
+      'Podudaranje: {matchColumn:string} → Datoteka: {fileColumn:string}',
     nb: 'Samsvar: {matchColumn:string} → Fil: {fileColumn:string}',
   },
   chooseMatchingMode: {
-    'en-us': 'Choose how attachment files should be matched to database records.',
-    'de-ch': 'Wählen Sie, wie Anhangsdateien mit Datenbankeinträgen abgeglichen werden sollen.',
-    'es-es': 'Elija cómo se deben emparejar los archivos adjuntos con los registros de la base de datos.',
-    'fr-fr': "Choisissez comment les pièces jointes doivent être associées aux enregistrements de la base de données.",
-    'ru-ru': 'Выберите способ сопоставления файлов вложений с записями базы данных.',
-    'uk-ua': 'Виберіть спосіб зіставлення файлів вкладень із записами бази даних.',
-    'pt-br': 'Escolha como os arquivos anexos devem ser combinados com os registros do banco de dados.',
-    'hr-hr': 'Odaberite kako se datoteke privitaka trebaju podudarati s zapisima baze podataka.',
+    'en-us':
+      'Choose how attachment files should be matched to database records.',
+    'de-ch':
+      'Wählen Sie, wie Anhangsdateien mit Datenbankeinträgen abgeglichen werden sollen.',
+    'es-es':
+      'Elija cómo se deben emparejar los archivos adjuntos con los registros de la base de datos.',
+    'fr-fr':
+      'Choisissez comment les pièces jointes doivent être associées aux enregistrements de la base de données.',
+    'ru-ru':
+      'Выберите способ сопоставления файлов вложений с записями базы данных.',
+    'uk-ua':
+      'Виберіть спосіб зіставлення файлів вкладень із записами бази даних.',
+    'pt-br':
+      'Escolha como os arquivos anexos devem ser combinados com os registros do banco de dados.',
+    'hr-hr':
+      'Odaberite kako se datoteke privitaka trebaju podudarati s zapisima baze podataka.',
     nb: 'Velg hvordan vedleggsfiler skal matches mot databaseposter.',
   },
   matchByFilenameDescription: {
-    'en-us': 'Parse the record identifier from each filename using a field formatter. Works best with structured numeric fields.',
-    'de-ch': 'Analysieren Sie die Datensatzkennung aus jedem Dateinamen mit einem Feldformatierer. Funktioniert am besten mit strukturierten, numerischen Feldern.',
-    'es-es': 'Analice el identificador de registro de cada nombre de archivo utilizando un formateador de campo. Funciona mejor con campos numéricos estructurados.',
-    'fr-fr': "Analysez l'identifiant d'enregistrement à partir de chaque nom de fichier à l'aide d'un formateur de champ. Fonctionne mieux avec des champs numériques structurés.",
-    'ru-ru': 'Извлеките идентификатор записи из каждого имени файла с помощью форматировщика полей. Лучше всего работает со структурированными числовыми полями.',
-    'uk-ua': 'Витягніть ідентифікатор запису з кожної назви файлу за допомогою форматувальника полів. Найкраще працює зі структурованими числовими полями.',
-    'pt-br': 'Analise o identificador de registro de cada nome de arquivo usando um formatador de campo. Funciona melhor com campos numéricos estruturados.',
-    'hr-hr': 'Analizirajte identifikator zapisa iz svakog naziva datoteke pomoću formatatora polja. Najbolje radi s strukturiranim, numeričkim poljima.',
+    'en-us':
+      'Parse the record identifier from each filename using a field formatter. Works best with structured numeric fields.',
+    'de-ch':
+      'Analysieren Sie die Datensatzkennung aus jedem Dateinamen mit einem Feldformatierer. Funktioniert am besten mit strukturierten, numerischen Feldern.',
+    'es-es':
+      'Analice el identificador de registro de cada nombre de archivo utilizando un formateador de campo. Funciona mejor con campos numéricos estructurados.',
+    'fr-fr':
+      "Analysez l'identifiant d'enregistrement à partir de chaque nom de fichier à l'aide d'un formateur de champ. Fonctionne mieux avec des champs numériques structurés.",
+    'ru-ru':
+      'Извлеките идентификатор записи из каждого имени файла с помощью форматировщика полей. Лучше всего работает со структурированными числовыми полями.',
+    'uk-ua':
+      'Витягніть ідентифікатор запису з кожної назви файлу за допомогою форматувальника полів. Найкраще працює зі структурованими числовими полями.',
+    'pt-br':
+      'Analise o identificador de registro de cada nome de arquivo usando um formatador de campo. Funciona melhor com campos numéricos estruturados.',
+    'hr-hr':
+      'Analizirajte identifikator zapisa iz svakog naziva datoteke pomoću formatatora polja. Najbolje radi s strukturiranim, numeričkim poljima.',
     nb: 'Analyser postidentifikatoren fra hvert filnavn ved hjelp av en feltformaterer. Fungerer best med strukturerte, numeriske felt.',
   },
   matchByMappingFileDescription: {
-    'en-us': 'Use an explicit CSV mapping file that lists which record each file belongs to.',
-    'de-ch': 'Verwenden Sie eine explizite CSV-Zuordnungsdatei, die angibt, zu welchem Datensatz jede Datei gehört.',
-    'es-es': 'Utilice un archivo de mapeo CSV explícito que indique a qué registro pertenece cada archivo.',
-    'fr-fr': "Utilisez un fichier de mappage CSV explicite qui indique à quel enregistrement appartient chaque fichier.",
-    'ru-ru': 'Используйте явный CSV-файл сопоставления, который указывает, к какой записи принадлежит каждый файл.',
-    'uk-ua': 'Використовуйте явний CSV-файл зіставлення, який вказує, до якого запису належить кожен файл.',
-    'pt-br': 'Use um arquivo de mapeamento CSV explícito que liste a qual registro cada arquivo pertence.',
-    'hr-hr': 'Koristite eksplicitnu CSV datoteku mapiranja koja navodi kojem zapisu pripada svaka datoteka.',
+    'en-us':
+      'Use an explicit CSV mapping file that lists which record each file belongs to.',
+    'de-ch':
+      'Verwenden Sie eine explizite CSV-Zuordnungsdatei, die angibt, zu welchem Datensatz jede Datei gehört.',
+    'es-es':
+      'Utilice un archivo de mapeo CSV explícito que indique a qué registro pertenece cada archivo.',
+    'fr-fr':
+      'Utilisez un fichier de mappage CSV explicite qui indique à quel enregistrement appartient chaque fichier.',
+    'ru-ru':
+      'Используйте явный CSV-файл сопоставления, который указывает, к какой записи принадлежит каждый файл.',
+    'uk-ua':
+      'Використовуйте явний CSV-файл зіставлення, який вказує, до якого запису належить кожен файл.',
+    'pt-br':
+      'Use um arquivo de mapeamento CSV explícito que liste a qual registro cada arquivo pertence.',
+    'hr-hr':
+      'Koristite eksplicitnu CSV datoteku mapiranja koja navodi kojem zapisu pripada svaka datoteka.',
     nb: 'Bruk en eksplisitt CSV-tilordningsfil som viser hvilken post hver fil tilhører.',
   },
   matchValue: {
