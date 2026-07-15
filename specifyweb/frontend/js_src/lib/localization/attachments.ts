@@ -1080,15 +1080,4 @@ export const attachmentsText = createDictionary({
     'hr-hr': 'Vrijednost podudaranja',
     nb: 'Samsvarsverdi',
   },
-  csvFileName: {
-    'en-us': 'CSV File Name',
-    'de-ch': 'CSV-Dateiname',
-    'es-es': 'Nombre de archivo CSV',
-    'fr-fr': 'Nom du fichier CSV',
-    'ru-ru': 'Имя файла CSV',
-    'uk-ua': 'Назва файлу CSV',
-    'pt-br': 'Nome do arquivo CSV',
-    'hr-hr': 'Naziv CSV datoteke',
-    nb: 'CSV-filnavn',
-  },
 } as const);
