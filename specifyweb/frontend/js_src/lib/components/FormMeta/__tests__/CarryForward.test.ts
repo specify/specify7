@@ -44,6 +44,16 @@ test('tableValidForBulkClone returns false when formatter has alphanumeric part'
   jest.restoreAllMocks();
 });
 
+test('tableValidForBulkClone returns false when numeric part cannot auto-number', () => {
+  const catalogNumber =
+    tables.CollectionObject.strictGetLiteralField('catalogNumber');
+  jest.spyOn(catalogNumber, 'getUiFormatter').mockReturnValue({
+    parts: [{ type: 'numeric', canAutonumber: () => false } as any],
+  } as any);
+  expect(tableValidForBulkClone(tables.CollectionObject)).toBe(false);
+  jest.restoreAllMocks();
+});
+
 test('strictDependentFields', () =>
   expect(strictDependentFields()).toMatchSnapshot());
 
