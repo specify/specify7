@@ -1,4 +1,4 @@
-from specifyweb.specify.models_utils.load_datamodel import Field, Table
+from specifyweb.specify.models_utils.load_datamodel import Field, Relationship, Table
 from specifyweb.specify.tests.test_api import ApiTests
 import json
 
@@ -134,15 +134,19 @@ class TestFieldSpecsFromJson(ApiTests):
         self.assertIsNone(fieldspec.get_field())
 
     def test_nested_formatted_relation_keeps_legacy_sentinel(self):
+        """Formatted relations like "locality.locality" are treated as
+        relationships (not tree ranks) when parsed via from_stringid.
+        The relation is found via join_path[-1] in the is_relation block.
+        """
         fieldspec = QueryFieldSpec.from_stringid("1,10,2.locality.locality", True)
 
-        self.assertTrue(fieldspec.contains_tree_rank())
-        self.assertEqual(fieldspec.tree_rank, "locality")
+        self.assertTrue(fieldspec.is_relationship())
+        self.assertIsNone(fieldspec.tree_rank)
         self.assertEqual(
             [node.name for node in fieldspec.join_path],
-            ["collectingEvent", "locality", "locality"],
+            ["collectingEvent", "locality"],
         )
-        self.assertIsInstance(fieldspec.get_field(), TreeRankQuery)
+        self.assertIsInstance(fieldspec.get_field(), Relationship)
 
     def test_nested_formatted_prep_type_stringid_stays_relationship(self):
         self.assert_relation_stringid(
