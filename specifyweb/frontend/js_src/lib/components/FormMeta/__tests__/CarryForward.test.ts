@@ -11,6 +11,9 @@ requireContext();
 test('tableValidForBulkClone returns true for CollectionObject', () =>
   expect(tableValidForBulkClone(tables.CollectionObject)).toBe(true));
 
+test('tableValidForBulkClone returns false for non-CollectionObject table', () =>
+  expect(tableValidForBulkClone(tables.Locality)).toBe(false));
+
 test('strictDependentFields', () =>
   expect(strictDependentFields()).toMatchSnapshot());
 
