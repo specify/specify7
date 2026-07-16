@@ -34,6 +34,16 @@ test('tableValidForBulkClone returns false when formatter has alpha part', () =>
   jest.restoreAllMocks();
 });
 
+test('tableValidForBulkClone returns false when formatter has alphanumeric part', () => {
+  const catalogNumber =
+    tables.CollectionObject.strictGetLiteralField('catalogNumber');
+  jest.spyOn(catalogNumber, 'getUiFormatter').mockReturnValue({
+    parts: [{ type: 'alphanumeric', canAutonumber: () => false } as any],
+  } as any);
+  expect(tableValidForBulkClone(tables.CollectionObject)).toBe(false);
+  jest.restoreAllMocks();
+});
+
 test('strictDependentFields', () =>
   expect(strictDependentFields()).toMatchSnapshot());
 
