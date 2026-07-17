@@ -1348,7 +1348,7 @@ export const wbText = createDictionary({
     'en-us': 'Import file',
     'ru-ru': 'Импортировать файл',
     'es-es': 'Importar archivo',
-    'fr-fr': 'Importer le fichier',
+    'fr-fr': 'Importer un fichier',
     'uk-ua': 'Імпорт файлу',
     'de-ch': 'Importdatei',
     'pt-br': 'Arquivo de importação',
