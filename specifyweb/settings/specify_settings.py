@@ -65,7 +65,7 @@ APP_USER_NAME = 'MasterUser'
 APP_USER_PASSWORD = 'MasterPassword'
 
 # MASTER_NAME = os.environ.get('MASTER_NAME', 'root')
-# MASTER_PASSWORD = os.environ.get('MASTER_PASSWORD', 'password')
+# MASTER_PASSWORD = os.environ.get('MASTER_NAME', 'password')
 # MIGRATOR_NAME = os.environ.get('MIGRATOR_NAME', MASTER_NAME)
 # MIGRATOR_PASSWORD = os.environ.get('MIGRATOR_PASSWORD', MASTER_PASSWORD)
 # APP_USER_NAME = os.environ.get('APP_USER_NAME', MIGRATOR_NAME)
