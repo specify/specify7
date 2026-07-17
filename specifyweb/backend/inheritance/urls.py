@@ -1,5 +1,5 @@
 
-from django.urls import include, path
+from django.urls import path
 
 from specifyweb.backend.inheritance import views
 
