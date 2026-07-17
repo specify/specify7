@@ -133,13 +133,6 @@ def camel_to_spaced_title_case(camel_case: str) -> str:
     """
     return re.sub(r"(?<!^)(?=[A-Z])", " ", camel_case).title()
 
-class FieldSchemaConfig(NamedTuple):
-    name: str
-    column: str
-    java_type: str
-    description: str = ""
-    language: str = "en"
-
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
@@ -147,12 +140,12 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
     if not rows:
         return 0
 
-    fk_fields = ("itemname", "itemdesc", "containername", "containerdesc")
+    fk_fields = ("itemname_id", "itemdesc_id", "containername_id", "containerdesc_id")
     groups: dict[str, list[dict]] = defaultdict(list)
     for r in rows:
         present = [f for f in fk_fields if r.get(f) is not None]
         if len(present) != 1:
-            raise ValueError(f"Each row must set exactly one FK among {fk_fields}. Got: {present}")
+            raise ValueError(f"Each row must set exactly one FK among {fk_fields}. Got: {present} {rows}")
         groups[present[0]].append(r)
 
     total_created = 0
@@ -162,13 +155,13 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
         languages: set[str] = set()
 
         for r in group_rows:
-            fk_ids.add(r[fk_field].pk)
+            fk_ids.add(r[fk_field])
             languages.add(r["language"])
 
         existing_rows = list(
             Splocaleitemstr.objects.filter(
                 **{
-                    f"{fk_field}_id__in": fk_ids,
+                    f"{fk_field}__in": fk_ids,
                     "language__in": languages,
                 }
             )
@@ -180,14 +173,14 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
         )
 
         existing_by_key: dict[Tuple[str, int], list] = defaultdict(list)
-        fk_field_id = f"{fk_field}_id"
+        fk_field_id = f"{fk_field}"
         for existing_row in existing_rows:
             key = (existing_row.language, getattr(existing_row, fk_field_id))
             existing_by_key[key].append(existing_row)
 
         desired_by_key: dict[Tuple[str, int], dict] = {}
         for r in group_rows:
-            key = (r["language"], r[fk_field].pk)
+            key = (r["language"], r[fk_field])
             desired_by_key[key] = r
 
         ids_to_delete: set[int] = set()
@@ -210,17 +203,6 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
             total_created += len(to_create)
 
     return total_created
-
-class FieldDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    ishidden: NotRequired[bool]
-    isrequired: NotRequired[bool]
-    picklistname: NotRequired[str]
-class TableDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    items: NotRequired[dict[str, FieldDefaults]]
 
 def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
