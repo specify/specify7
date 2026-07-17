@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-13 16:03+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-17 15:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "workbench/fr/>\n"
 "Language: fr\n"
@@ -682,7 +682,7 @@ msgstr "La première ligne est l'en-tête :"
 #: components/Molecules/FilePicker.tsx:225
 #: components/Toolbar/WbsDialog.tsx:198
 msgid "importFile"
-msgstr "Importer le fichier"
+msgstr "Importer un fichier"
 
 #. Used in: Components > Wb Import > Helpers
 #: components/WbImport/helpers.ts:67
