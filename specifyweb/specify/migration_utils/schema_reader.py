@@ -9,6 +9,7 @@ from pathlib import Path
 
 
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.conf import settings
 from django.apps import apps as global_apps
 
@@ -216,7 +217,7 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         schematype=0,
     )
     container_names = set(
-        containers.values_list('name', flat=True)
+        containers.values_list(Lower('name'), flat=True)
     )
 
     existing_fields_by_table: dict[str, set[str]] = defaultdict(set)

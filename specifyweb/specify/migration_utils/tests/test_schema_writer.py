@@ -43,7 +43,11 @@ class SchemaWriterTests(TestCase):
         with patch("specifyweb.specify.migration_utils.schema_writer.datamodel") as mock_datamodel:
             mock_datamodel.get_table.return_value = mock_table
 
-            update_table_schema_config_with_defaults("TestTable", 1, apps=mock_apps)
+            update_table_schema_config_with_defaults(
+                table_name="TestTable",
+                discipline_id=1,
+                apps=mock_apps
+            )
 
         mock_bulk_create.assert_called_once()
 

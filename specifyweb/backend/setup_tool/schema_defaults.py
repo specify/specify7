@@ -1,6 +1,8 @@
 from typing import TypedDict, NotRequired
+from functools import lru_cache
 
 from specifyweb.specify.models_utils.models_by_table_id import model_names_by_table_id
+from specifyweb.backend.context.app_resource import DISCIPLINE_NAMES
 from specifyweb.celery_tasks import app
 from .utils import load_json_from_file
 from .task_tracking import queue_discipline_background_task, finish_discipline_background_task
@@ -31,36 +33,45 @@ class TableDefaults(TypedDict):
 
 type SchemaDefaults = dict[str, TableDefaults]
 
+@lru_cache(maxsize=1)
+def _global_schema_defaults() -> SchemaDefaults:
+    return load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'schema_localization_en.json')
 
-def read_schema_config_defaults(discipline_type: str | None = None) -> None | SchemaDefaults:
+
+@lru_cache(maxsize=len(DISCIPLINE_NAMES) // 3)
+def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDefaults:
     # Get default schema localization
-    defaults = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'schema_localization_en.json')
+    defaults = _global_schema_defaults()
+
+    if not discipline_type:
+        return defaults or dict()
 
     overrides = None
     # Read schema overrides file for the discipline, if it exists
-    if discipline_type:
-        schema_overrides_path = Path(__file__).parent.parent.parent.parent / 'config' / discipline_type / 'schema_overrides.json'
-        if schema_overrides_path.exists():
-            overrides = load_json_from_file(schema_overrides_path)
+    schema_overrides_path = Path(__file__).parent.parent.parent.parent / 'config' / discipline_type / 'schema_overrides.json'
+    if schema_overrides_path.exists():
+        overrides = load_json_from_file(schema_overrides_path)
+
+    if overrides is None:
+        return defaults
 
     # Apply overrides to defaults
-    if overrides is not None:
-        # Overrides contains a dict for each table with overrides
-        for table_name, table in overrides.items():
-            # Items contains a list of dicts (item).
-            for item in table.get('items', []):
-                # Each item is a dict with only one entry.
-                for field_name, override_dict in item.items():
-                    table_items = defaults.setdefault(table_name, {}).setdefault('items', {})
-                    default_dict = table_items.get(field_name) or {}
-                    merged_dict = {**default_dict, **override_dict}
-                    table_items[field_name] = merged_dict
-            # Replace other properties
-            for key, v in table.items():
-                if key == 'items':
-                    continue
-                defaults.setdefault(table_name, {})[key] = v
-    return defaults
+    # Overrides contains a dict for each table with overrides
+    for table_name, table in overrides.items():
+        # Items contains a list of dicts (item).
+        for item in table.get('items', []):
+            # Each item is a dict with only one entry.
+            for field_name, override_dict in item.items():
+                table_items = defaults.setdefault(table_name, {}).setdefault('items', {})
+                default_dict = table_items.get(field_name) or {}
+                merged_dict = {**default_dict, **override_dict}
+                table_items[field_name] = merged_dict
+        # Replace other properties
+        for key, v in table.items():
+            if key == 'items':
+                continue
+            defaults.setdefault(table_name, {})[key] = v
+    return defaults or dict()
 
 def apply_schema_defaults(discipline: Discipline):
     from specifyweb.specify.migration_utils.schema_writer import update_table_schema_config_with_defaults
@@ -79,7 +90,7 @@ def apply_schema_defaults(discipline: Discipline):
         update_table_schema_config_with_defaults(
             table_name=model_name,
             discipline_id=discipline.id,
-            defaults=table_defaults,
+            table_defaults=table_defaults,
         )
 
 def queue_apply_schema_defaults_background(discipline_id: int) -> str:

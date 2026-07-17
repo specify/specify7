@@ -14,9 +14,21 @@ def update_age_schema_config(apps):
     # revert_update_age_schema_config(apps)
 
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
-        update_table_field_schema_config_with_defaults('AbsoluteAge', discipline.id, 'version', apps)
-        update_table_field_schema_config_with_defaults('RelativeAge', discipline.id, 'version', apps)
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
+        update_table_field_schema_config_with_defaults(
+            table_name='AbsoluteAge',
+            discipline_id=discipline_id,
+            discipline_type=discipline_type,
+            field_name='version',
+            apps=apps
+        )
+        update_table_field_schema_config_with_defaults(
+            table_name='RelativeAge',
+            discipline_id=discipline_id,
+            discipline_type=discipline_type,
+            field_name='version',
+            apps=apps
+        )
 
 def revert_update_age_schema_config(apps):
     revert_table_field_schema_config('AbsoluteAge', 'version', apps)

@@ -73,6 +73,7 @@ class Command(BaseCommand):
             self.stdout.write("Run again with --apply to create missing records.")
             return
 
+        # FIXME
         # Apply changes
         update_schema.create_missing_schema_config_fields(
             discipline.id,

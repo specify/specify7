@@ -220,9 +220,9 @@ class SchemaTableBuilder:
         )
 
 class SchemaWriter:
-    def __init__(self, apps = global_apps, load_schema_defaults: bool = True, discipline_type: str | None = None, skip_missing_tables_and_fields: bool = True):
+    def __init__(self, apps = global_apps, schema_defaults: SchemaDefaults = dict(), skip_missing_tables_and_fields: bool = True):
         self.apps = apps
-        self._schema_defaults = read_schema_config_defaults(discipline_type) if load_schema_defaults else None
+        self._schema_defaults = schema_defaults
         self._tables: dict[str, SchemaTableBuilder] = {}
         self.skip_missing_tables_and_fields = skip_missing_tables_and_fields
 
@@ -231,9 +231,7 @@ class SchemaWriter:
             table.execute()
 
     def add_table(self, *, table_label: str | None = None, table_description: str | None = None, **attrs: Unpack[ContainerAttrs]) -> SchemaTableBuilder | None:
-        table_defaults = TableDefaults()
-        if self._schema_defaults is not None:
-            table_defaults = self._schema_defaults.get(attrs.get('name', '').lower())
+        table_defaults = self._schema_defaults.get(attrs.get('name', '').lower(), TableDefaults())
         try:
             table_builder = SchemaTableBuilder(
                 skip_missing_fields=self.skip_missing_tables_and_fields,
@@ -316,14 +314,15 @@ def get_or_create_splocalecontainer(Splocalecontainer, Splocaleitemstr, table_la
 def update_table_schema_config_with_defaults(
     table_name: str,
     discipline_id: int,
+    discipline_type: str | None = None,
     apps = global_apps,
-    defaults: TableDefaults | None = None
+    table_defaults: TableDefaults = TableDefaults()
 ):
-    table_defaults = defaults if defaults is not None else TableDefaults()
-    table_name_str = table_defaults.get('name',)
+    schema_defaults = read_schema_config_defaults(discipline_type)
+    table_name_str = table_defaults.get('name')
     table_desc_str = table_defaults.get('desc')
 
-    writer = SchemaWriter(apps, load_schema_defaults=False)
+    writer = SchemaWriter(apps, schema_defaults=schema_defaults)
 
     table_writer = writer.add_table(
         table_label=table_name_str,
@@ -382,10 +381,12 @@ def update_table_field_schema_config_with_defaults(
     table_name: str,
     discipline_id: int,
     field_name: str,
+    discipline_type: str | None = None,
     apps = global_apps,
-    defaults: FieldDefaults | None = None
+    defaults: FieldDefaults = FieldDefaults()
 ):
-    writer = SchemaWriter(apps)
+    schema_defaults = read_schema_config_defaults(discipline_type)
+    writer = SchemaWriter(apps, schema_defaults=schema_defaults)
 
     table_writer = writer.add_table(
         discipline_id=discipline_id,
@@ -399,19 +400,16 @@ def update_table_field_schema_config_with_defaults(
         logger.warning(f"Table does not exist in latest state of the datamodel, skipping Schema Config entry for: {table_name}")
         return
 
+    field_label = defaults.get('name')
+    field_description = defaults.get('desc')
+
     item_attrs: ContainerItemAttrs = {
         "name": field_name,
-        "version": 0
+        "version": 0,
+        "ishidden": defaults.get("ishidden"),
+        "isrequired": defaults.get('isrequired'),
+        'picklistname': defaults.get('picklistname')
     }
-
-    field_label = None
-    field_description = None
-    if defaults is not None:
-        field_label = defaults.get('name')
-        field_description = defaults.get('desc')
-        item_attrs["ishidden"] = defaults.get("ishidden")
-        item_attrs["isrequired"] = defaults.get("isrequired")
-        item_attrs["picklistname"] = defaults.get("picklistname")
 
     field = table_writer.add_field(
         **{k:v for k,v in item_attrs.items() if v is not None}
@@ -509,7 +507,11 @@ def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, st
     for table_name in missing_tables:
         if stdout is not None:
             stdout(f"Creating schema config table container for {table_name}...")
-        update_table_schema_config_with_defaults(table_name, discipline_id, apps=apps)
+        update_table_schema_config_with_defaults(
+            table_name=table_name,
+            discipline_id=discipline_id,
+            apps=apps
+        )
 
     for table_name, fields in missing_fields.items():
         if table_name in missing_table_set:
@@ -517,6 +519,11 @@ def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, st
         for field_name in fields:
             if stdout is not None:
                 stdout(f"Creating schema config field {table_name}.{field_name}...")
-            update_table_field_schema_config_with_defaults(table_name, discipline_id, field_name, apps=apps)
+            update_table_field_schema_config_with_defaults(
+                table_name=table_name,
+                discipline_id=discipline_id,
+                field_name=field_name,
+                apps=apps
+            )
 
     return missing_tables, missing_fields
