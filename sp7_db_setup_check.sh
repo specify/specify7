@@ -197,6 +197,11 @@ else
 fi
 
 # Create migrator user if it doesn't exist
+if [[ "$SAME_MASTER_AND_MIGRATOR" == true ]]; then
+  echo "Migrator user '$MIGRATOR_NAME' uses the same credentials as master."
+  echo "Skipping creation/grant steps for a separate migrator account."
+  echo "Relying on master privileges for runtime connections."
+else
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
 "SELECT COUNT(*) FROM mysql.user WHERE user = '$SQL_MIGRATOR_NAME' AND host = '$CLIENT_HOST';")
 
@@ -256,6 +261,7 @@ else
   echo "$GRANTS_OUTPUT"
   exit 1
 fi
+fi
 
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
@@ -294,13 +300,14 @@ else
 
 if [[ "$NEW_APP_USER_CREATED" -eq 1 ]]; then
   echo "Granting privileges to new user..."
-  echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO ${SQL_APP_USER_NAME}@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
-  if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_APP_USER_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
-    echo "Error: Failed to grant privileges to new user."
-    exit 1
-  fi
 else
-  echo "Skipping privilege grant for app user: user already exists. Verifying privileges on '${DB_NAME}'..."
+  echo "App user already exists. Refreshing privileges on '${DB_NAME}'..."
+fi
+
+echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO ${SQL_APP_USER_NAME}@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
+if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_APP_USER_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
+  echo "Error: Failed to grant privileges to app user."
+  exit 1
 fi
 
 APP_GRANTS_RAW="$(mysql -N -B -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
@@ -329,6 +336,7 @@ else
   echo "Required (any one GRANT must include all of): ${APP_REQUIRED_PRIVS[*]}"
   echo "Grants found:"
   echo "$APP_GRANTS_RAW"
+  exit 1
 fi
 fi
 
