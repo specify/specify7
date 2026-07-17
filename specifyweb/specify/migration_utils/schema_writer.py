@@ -500,7 +500,7 @@ def update_table_field_schema_config_params(
         setattr(sp_local_container_item, k, v)
     sp_local_container_item.save(update_fields=list(update_params.keys()))
 
-def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, stdout=None):
+def create_missing_schema_config_fields(discipline_id: int, discipline_type: str, apps=global_apps, stdout=None):
     missing_tables, missing_fields = find_missing_schema_config_fields(discipline_id, apps=apps)
     missing_table_set = set(missing_tables)
 
@@ -510,6 +510,7 @@ def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, st
         update_table_schema_config_with_defaults(
             table_name=table_name,
             discipline_id=discipline_id,
+            discipline_type=discipline_type,
             apps=apps
         )
 
@@ -522,6 +523,7 @@ def create_missing_schema_config_fields(discipline_id: int, apps=global_apps, st
             update_table_field_schema_config_with_defaults(
                 table_name=table_name,
                 discipline_id=discipline_id,
+                discipline_type=discipline_type,
                 field_name=field_name,
                 apps=apps
             )
