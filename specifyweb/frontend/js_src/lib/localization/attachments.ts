@@ -1114,4 +1114,15 @@ export const attachmentsText = createDictionary({
   csvEmptyFile: {
     'en-us': 'Empty CSV file',
   },
+  columnPlaceholder: {
+    'en-us': 'Column {columnNumber:number}',
+    'de-ch': 'Spalte {columnNumber:number}',
+    'es-es': 'Columna {columnNumber:number}',
+    'fr-fr': 'Colonne {columnNumber:number}',
+    'ru-ru': 'Столбец {columnNumber:number}',
+    'uk-ua': 'Стовпець {columnNumber:number}',
+    'pt-br': 'Coluna {columnNumber:number}',
+    'hr-hr': 'Stupac {columnNumber:number}',
+    nb: 'Kolonne {columnNumber:number}',
+  },
 } as const);

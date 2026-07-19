@@ -282,7 +282,10 @@ export function MappingFileSetup({
               </option>
               {headers.map((header, index) => (
                 <option key={index} value={index}>
-                  {header || `Column ${index + 1}`}
+                  {header ||
+                    attachmentsText.columnPlaceholder({
+                      columnNumber: index + 1,
+                    })}
                 </option>
               ))}
             </Select>
@@ -308,7 +311,10 @@ export function MappingFileSetup({
               </option>
               {headers.map((header, index) => (
                 <option key={index} value={index}>
-                  {header || `Column ${index + 1}`}
+                  {header ||
+                    attachmentsText.columnPlaceholder({
+                      columnNumber: index + 1,
+                    })}
                 </option>
               ))}
             </Select>
