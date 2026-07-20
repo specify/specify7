@@ -525,7 +525,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría ocasionar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción es irreversible.',
     'fr-fr':
-      "Avant de poursuivre, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specific. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
+      "Avant de poursuivre, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specify. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
     'pt-br':
       'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Essa ação pode causar atrasos ou indisponibilidade temporária de certos recursos para usuários específicos. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
     'ru-ru':
