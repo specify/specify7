@@ -225,10 +225,10 @@ else
   echo "Migrator user already exists. Refreshing privileges on '${DB_NAME}'..."
 fi
 
-echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
+echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
 
 if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" \
-  -e "GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
+  -e "GRANT ALL PRIVILEGES ON \`${SQL_DB_IDENTIFIER}\`.* TO '${SQL_MIGRATOR_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
   echo "Error: Failed to grant privileges to migrator user."
   exit 1
 fi
@@ -304,8 +304,8 @@ else
   echo "App user already exists. Refreshing privileges on '${DB_NAME}'..."
 fi
 
-echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO ${SQL_APP_USER_NAME}@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
-if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER_ESCAPED_FOR_LIKE}\`.* TO '${SQL_APP_USER_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
+echo "Executing: mysql -h \"$DB_HOST\" -P \"$DB_PORT\" -u \"$MASTER_USER_NAME\" --password=\"<hidden>\" -e \"GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER}\`.* TO ${SQL_APP_USER_NAME}@'${CLIENT_HOST}'; FLUSH PRIVILEGES;\""
+if ! mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -e "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE ON \`${SQL_DB_IDENTIFIER}\`.* TO '${SQL_APP_USER_NAME}'@'${CLIENT_HOST}'; FLUSH PRIVILEGES;"; then
   echo "Error: Failed to grant privileges to app user."
   exit 1
 fi
