@@ -51,3 +51,50 @@ class TestCreateReport(SQLAlchemySetup):
             '1.collectionobject.catalogNumber',
             report_data.get_decoded_data(),
         )
+
+
+class TestCreateLabel(SQLAlchemySetup):
+
+    @patch(
+        'specifyweb.backend.report_runner.views.models.session_context'
+    )
+    def test_create_label_from_new_query(self, context: Mock):
+        context.return_value = TestCreateLabel.test_session_context()
+
+        query_data = get_simple_query(self.specifyuser)
+        query_data['name'] = 'New Label Query'
+
+        query = post_resource(
+            self.collection,
+            self.agent,
+            'spquery',
+            query_data,
+        )
+
+        client = Client()
+        client.force_login(self.specifyuser)
+
+        response = client.post(
+            '/report_runner/create/',
+            {
+                'queryid': query.id,
+                'mimetype': 'jrxml/label',
+                'name': 'Collection Object Label',
+            },
+        )
+
+        self._assertStatusCodeEqual(response, 201)
+
+        label = Spreport.objects.get(name='Collection Object Label')
+
+        self.assertEqual(label.query_id, query.id)
+        self.assertEqual(label.query.name, 'New Label Query')
+        self.assertEqual(label.specifyuser_id, self.specifyuser.id)
+        self.assertEqual(label.appresource.mimetype, 'jrxml/label')
+
+        label_data = label.appresource.spappresourcedatas.get()
+
+        self.assertIn(
+            '1.collectionobject.catalogNumber',
+            label_data.get_decoded_data(),
+        )
