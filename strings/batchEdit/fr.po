@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-14 18:02+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-20 09:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/fr/>\n"
 "Language: fr\n"
@@ -229,11 +229,10 @@ msgstr "Verser le jeu de données."
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:135
-#, fuzzy
 msgid "warningBatchEditText"
 msgstr ""
 "Avant de poursuivre, veuillez noter que l'action suivante peut perturber "
 "d'autres utilisateurs. Cette action peut entraîner des retards ou "
 "l'indisponibilité temporaire de certaines fonctionnalités pour les "
-"utilisateurs de Specific. Veuillez tenir compte de l'impact sur leur "
+"utilisateurs de Specify. Veuillez tenir compte de l'impact sur leur "
 "expérience. Cette action est irréversible."
