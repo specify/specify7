@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-13 16:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-20 09:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/"
 "fr/>\n"
 "Language: fr\n"
@@ -259,7 +259,6 @@ msgstr "Compte indirect {collectionObjectTable:string}"
 #. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:320
 #: components/TreeView/Row.tsx:332
-#, fuzzy
 msgid "geologicTimePeriodLine"
 msgstr "{label:string} : {value:string} {suffix:string}"
 
@@ -268,32 +267,27 @@ msgstr "{label:string} : {value:string} {suffix:string}"
 #: components/TreeView/Row.tsx:329
 #: components/TreeView/Row.tsx:340
 #: components/TreeView/Row.tsx:341
-#, fuzzy
 msgid "megaAnnum"
 msgstr "Ma"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:449
 #: components/TreeView/index.tsx:450
-#, fuzzy
 msgid "biostratFilter"
 msgstr "Filtrer par biostratigraphie"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:457
-#, fuzzy
 msgid "biostratAll"
 msgstr "Tous les nœuds"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:458
-#, fuzzy
 msgid "biostratChrono"
 msgstr "Chronostratigraphie"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:459
-#, fuzzy
 msgid "biostratBio"
 msgstr "Biostratigraphie"
 
