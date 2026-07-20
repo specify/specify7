@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-14 18:01+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-20 09:01+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/wbPlan/"
 "fr/>\n"
 "Language: fr\n"
@@ -20,13 +20,11 @@ msgstr "Mappeur de données"
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:54
 #: components/WbToolkit/DevShowPlan.tsx:205
-#, fuzzy
 msgid "importExportMapping"
-msgstr "Cartographie d'import/export"
+msgstr "Mappage d'import/export"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:209
-#, fuzzy
 msgid "importExportMappingDescription"
 msgstr ""
 "Vous pouvez exporter le mappage de jeu de données actuel sous forme de "
@@ -35,13 +33,11 @@ msgstr ""
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
-#, fuzzy
 msgid "noUploadPlan"
 msgstr "Aucun mappage de jeu de données n'est défini."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:61
-#, fuzzy
 msgid "noUploadPlanDescription"
 msgstr ""
 "Aucun mappage n'a été défini pour cet ensemble de données. Veuillez choisir "
@@ -136,12 +132,11 @@ msgstr "Ignorer toujours"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:260
-#, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Si l'option « Toujours ignorer » est sélectionnée, la valeur de cette "
 "colonne ne sera pas utilisée à des fins de correspondance, mais uniquement "
-"pour le chargement."
+"versée en base."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:263
@@ -187,7 +182,6 @@ msgstr "La validation a détecté des correspondances manquantes :"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:116
-#, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
 "Il manque un ou plusieurs champs de données requis pour le chargement selon "
@@ -238,9 +232,8 @@ msgstr "Sélectionnez une table de base"
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:51
 #: components/WbPlanView/State.tsx:96
-#, fuzzy
 msgid "chooseExistingPlan"
-msgstr "Choisir une cartographie existante"
+msgstr "Choisir un mappage existant"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:166
@@ -249,7 +242,6 @@ msgstr "Afficher toutes les tables"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:113
-#, fuzzy
 msgid "baseTableDescription"
 msgstr ""
 "Une « table de base » sert de point de départ pour la correspondance entre "
@@ -259,7 +251,6 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
-#, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
 "Une « table de base » sert de point de départ pour la correspondance entre "
@@ -274,7 +265,6 @@ msgstr "Sélectionnez une table de base avec pièces jointes"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:499
-#, fuzzy
 msgid "dataSetUploaded"
 msgstr "Jeu de données téléchargé. Ce mappage ne peut pas être modifié."
 
@@ -1325,7 +1315,6 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
-#, fuzzy
 msgid "goToBaseTableDescription"
 msgstr ""
 "Choisir une autre table de base pour un ensemble de données définira cette "
@@ -1397,9 +1386,8 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:372
-#, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "Automap pour démarrer une nouvelle cartographie ?"
+msgstr "Automap pour démarrer un nouveau mappage ?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:373
@@ -1466,11 +1454,10 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:38
-#, fuzzy
 msgid "invalidTemplatePlan"
 msgstr ""
-"L'ensemble de données sélectionné ne possède aucune correspondance. Veuillez "
-"en sélectionner un autre."
+"L'ensemble de données sélectionné ne possède aucun mappage. Veuillez en "
+"sélectionner un autre."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:139
