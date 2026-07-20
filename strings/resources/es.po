@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-13 16:04+0000\n"
+"PO-Revision-Date: 2026-07-21 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "resources/es/>\n"
@@ -641,7 +641,7 @@ msgstr "Una preparación desechada no se puede eliminar."
 #: components/DataModel/businessRuleDefs.ts:926
 #, fuzzy
 msgid "deleteExchangeOutPrep"
-msgstr "Una preparación intercambiada no se puede eliminar"
+msgstr "Una preparación intercambiada no se puede eliminar."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:934
