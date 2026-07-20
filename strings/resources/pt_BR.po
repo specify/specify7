@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-13 16:03+0000\n"
+"PO-Revision-Date: 2026-07-21 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/resources/pt_BR/>\n"
@@ -672,7 +672,7 @@ msgstr "Uma preparação substituída não pode ser excluída."
 #: components/DataModel/businessRuleDefs.ts:934
 #, fuzzy
 msgid "deleteExchangeInPrep"
-msgstr "Um item trocado em preparação não pode ser excluído."
+msgstr "Uma troca realizada em preparação não pode ser excluída."
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:906
