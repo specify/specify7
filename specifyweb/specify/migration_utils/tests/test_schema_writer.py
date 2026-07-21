@@ -95,5 +95,5 @@ class SchemaWriterTests(ApiTests):
         field, field_label, field_desc = schema_reader.get_field("collectionobjectattribute", "text8")
         self.assertNotEqual(field_label, "Text8")
         self.assertEqual(field.ishidden, field_defaults.get("ishidden"))
-        self.assertEqual(field_label, schema_defaults.get("name"))
-        self.assertEqual(field_desc, schema_defaults.get("desc"))
+        self.assertEqual(field_label, field_defaults.get("name"))
+        self.assertEqual(field_desc, field_defaults.get("desc"))
