@@ -570,7 +570,7 @@ export const backEndText = createDictionary({
     'es-es':
       'ID de tabla inesperado "{tableId:string}" en la solicitud. Se esperaba "{expectedTableId:string}"',
     'fr-fr':
-      'ID de table inattendu "{tableId:string}" dans la demande. "{expectedTableId:string}" attendu',
+      'Id de table inattendu "{tableId:string}" dans la requête. "{expectedTableId:string}" attendu',
     'ru-ru':
       'В запросе обнаружен неожиданный идентификатор таблицы "{tableId:string}". Ожидался идентификатор "{expectedTableId:string}".',
     'uk-ua':
@@ -604,7 +604,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Parte de la fecha no válida "{datePart:string}". Se esperaba {validDateParts:string}',
     'fr-fr':
-      'Partie de date "{datePart:string}" non valide. Type de valeur attendue :  {validDateParts:string}',
+      'Partie de date "{datePart:string}" non valide. Type de valeur attendue : {validDateParts:string}',
     'ru-ru':
       'Недопустимая часть даты "{datePart:string}". Ожидалось одно из значений {validDateParts:string}.',
     'uk-ua':
@@ -655,7 +655,7 @@ export const backEndText = createDictionary({
     'es-es':
       'Se ha detectado un cambio de alcance en esta fila. Se recomienda eliminar esta fila del conjunto de datos.',
     'fr-fr':
-      "Un changement de périmètre a été détecté sur cette ligne. Il est recommandé de supprimer cette ligne de l'ensemble de données.",
+      "Un changement de périmètre a été détecté sur cette ligne. Il est recommandé de supprimer cette ligne de l'ensemble de données",
     'pt-br':
       'Foi detectada uma alteração de escopo nesta linha. Recomenda-se excluir esta linha do conjunto de dados.',
     'ru-ru':
