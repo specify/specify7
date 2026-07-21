@@ -113,5 +113,5 @@ class SchemaWriterTests(ApiTests):
         with self.assertRaises(TypeError):
             catalognumber["desc"] = "foo"
 
-        with self.assertRaises(TypeError):
+        with self.assertRaises(AttributeError):
             catalognumber.pop('name')
