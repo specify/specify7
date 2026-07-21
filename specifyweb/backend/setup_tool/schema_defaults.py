@@ -48,7 +48,7 @@ class ReadonlyDict[K, V](Mapping[K, V]):
     def as_dict(self):
         return deepcopy(dict(self._original_mapping))
 
-    def __getitem__(self, key):
+    def __getitem__(self, key) -> V:
         orginal_item = self._original_mapping[key]
         if isinstance(orginal_item, MutableMapping):
             return ReadonlyDict(orginal_item)

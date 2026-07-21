@@ -14,7 +14,6 @@ from specifyweb.backend.setup_tool.schema_defaults import read_schema_config_def
 class SchemaWriterTests(ApiTests):
     def setUp(self):
         super().setUp()
-        self._schema_defaults = read_schema_config_defaults()
         self.fish = Discipline.objects.create(
             geologictimeperiodtreedef=self.geologictimeperiodtreedef,
             geographytreedef=self.geographytreedef,
@@ -97,3 +96,22 @@ class SchemaWriterTests(ApiTests):
         self.assertEqual(field.ishidden, field_defaults.get("ishidden"))
         self.assertEqual(field_label, field_defaults.get("name"))
         self.assertEqual(field_desc, field_defaults.get("desc"))
+
+    def test_immutability_of_schema_defaults(self):
+        schema_defaults = read_schema_config_defaults()
+
+        with self.assertRaises(TypeError):
+            schema_defaults["newTable"] = {}
+
+        collection_object_defaults = schema_defaults['collectionobject']
+
+        with self.assertRaises(TypeError):
+            collection_object_defaults["name"] = "Something Else"
+
+        co_fields = collection_object_defaults["items"]
+        catalognumber = co_fields["catalognumber"]
+        with self.assertRaises(TypeError):
+            catalognumber["desc"] = "foo"
+
+        with self.assertRaises(TypeError):
+            catalognumber.pop('name')
