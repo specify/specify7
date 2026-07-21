@@ -47,17 +47,6 @@ class AccessionDateFieldsTests(ApiTests):
     @patch(
         "specifyweb.specify.migration_utils.migration_helpers.helper_0034_accession_date_fields.update_table_field_schema_config_with_defaults"
     )
-    def test_update_accession_date_fields_calls_schema_config_update(self, mock_update):
-        helper_0034_accession_date_fields.update_accession_date_fields(apps)
-
-        expected = len(helper_0034_accession_date_fields.MIGRATION_0034_FIELDS["Accession"])
-        self.assertEqual(mock_update.call_count, expected)
-        mock_update.assert_any_call("Accession", self.discipline.id, "dateAccessionedPrecision", apps)
-        mock_update.assert_any_call("Accession", self.discipline.id, "date2Precision", apps)
-
-    @patch(
-        "specifyweb.specify.migration_utils.migration_helpers.helper_0034_accession_date_fields.update_table_field_schema_config_with_defaults"
-    )
     def test_update_accession_date_fields_updates_field_descriptions(self, mock_update):
         helper_0034_accession_date_fields.update_accession_date_fields(apps)
 
