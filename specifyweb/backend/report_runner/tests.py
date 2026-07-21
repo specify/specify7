@@ -64,6 +64,7 @@ class TestRunReport(ApiTests):
             query_json,
         )
 
+        requests_post.assert_called_once()
         request_url = requests_post.call_args.args[0]
         request_data = requests_post.call_args.kwargs['data']
 
