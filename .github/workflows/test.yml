@@ -83,6 +83,9 @@ jobs:
       - name: Checkout Copy of Repo
         uses: actions/checkout@v4
         with:
+          # We're not making any writes to the repo, so there's no need to
+          # store the credentials in git config
+          persist-credentials: false
           # Ugh, don't like fetching the entire copy of the Specify 7 repo
           # here, but this was needed because the details of the most recent
           # tag was required from the build version Make target
@@ -91,7 +94,7 @@ jobs:
           # reasonable fetch depth here.
           # There might be some Git command to do this, will need to look into
           # that if we want to somewhat speed up the backend tests
-            fetch-depth: 0
+          fetch-depth: 0
         
 
       - name: Get Specify 6 from cache
