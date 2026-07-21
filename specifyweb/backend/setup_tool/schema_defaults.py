@@ -40,6 +40,15 @@ class TableDefaults(TypedDict):
 
 SchemaDefaults = dict[str, TableDefaults]
 
+def _copy_readonly_dict(immutable_dict: MappingProxyType) -> dict:
+    new_dict = {}
+    for k,v in immutable_dict.items():
+        if isinstance(v, MappingProxyType):
+            new_dict[k] = _copy_readonly_dict(v)
+        else:
+            new_dict[k] = v
+    return new_dict
+
 def _readonly_dict(mutable_dict: dict):
     new_dict = {}
     for k,v in mutable_dict.items():
@@ -84,7 +93,7 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDef
 
     # We create a copy of the _global_schema_defaults() dict to avoid mutating
     # the cached dictonary
-    new_defaults = {k:v for k,v in defaults.items()}
+    new_defaults = _copy_readonly_dict(defaults)
     # Apply overrides to defaults
     # Overrides contains a dict for each table with overrides
     for table_name, table in overrides.items():
@@ -93,7 +102,7 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDef
             # Each item is a dict with only one entry.
             for field_name, override_dict in item.items():
                 table_items = new_defaults.setdefault(table_name, {}).setdefault('items', {})
-                default_dict = table_items.get(field_name) or {}
+                default_dict = table_items.get(field_name, {})
                 merged_dict = {**default_dict, **override_dict}
                 table_items[field_name] = merged_dict
         # Replace other properties
