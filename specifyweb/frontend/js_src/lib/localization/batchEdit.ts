@@ -112,7 +112,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Following errors were found in the query',
     'de-ch': 'Bei der Abfrage wurden folgende Fehler gefunden.',
     'es-es': 'Se encontraron los siguientes errores en la consulta',
-    'fr-fr': 'Les erreurs suivantes ont été détectées dans la requête.',
+    'fr-fr': 'Les erreurs suivantes ont été détectées dans la requête',
     'pt-br': 'Os seguintes erros foram encontrados na consulta.',
     'ru-ru': 'В запросе были обнаружены следующие ошибки.',
     'uk-ua': 'У запиті виявлено такі помилки',
@@ -125,7 +125,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes',
     'fr-fr':
-      "La requête nécessite des niveaux hiérarchiques supplémentaires pour l'édition par lots.",
+      "La requête nécessite des niveaux hiérarchiques supplémentaires pour l'édition par lots",
     'pt-br': 'A consulta requer níveis adicionais para edição em lote.',
     'ru-ru':
       'Для пакетного редактирования запроса требуются дополнительные ранги.',
@@ -525,7 +525,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría ocasionar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción es irreversible.',
     'fr-fr':
-      "Avant de poursuivre, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specific. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
+      "Avant de poursuivre, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specify. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
     'pt-br':
       'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Essa ação pode causar atrasos ou indisponibilidade temporária de certos recursos para usuários específicos. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
     'ru-ru':

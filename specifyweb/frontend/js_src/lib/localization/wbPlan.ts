@@ -24,7 +24,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Import/Export Mapping',
     'de-ch': 'Import-/Export-Zuordnung',
     'es-es': 'Mapeo de importación/exportación',
-    'fr-fr': "Cartographie d'import/export",
+    'fr-fr': "Mappage d'import/export",
     'hr-hr': 'Mapiranje uvoza/izvoza',
     nb: 'Importer/eksporter kartlegging',
     'pt-br': 'Mapeamento de Importação/Exportação',
@@ -262,7 +262,7 @@ export const wbPlanText = createDictionary({
     'es-es':
       'Cuando se selecciona "Ignorar siempre", el valor de esta columna no se utilizará para fines de comparación, sino únicamente para la carga de archivos.',
     'fr-fr':
-      "Si l'option « Toujours ignorer » est sélectionnée, la valeur de cette colonne ne sera pas utilisée à des fins de correspondance, mais uniquement pour le chargement.",
+      "Si l'option « Toujours ignorer » est sélectionnée, la valeur de cette colonne ne sera pas utilisée à des fins de correspondance, mais uniquement versée en base.",
     'uk-ua':
       'Якщо встановлено значення «Завжди ігнорувати», значення в цьому стовпці не використовуватиметься для зіставлення, а лише для завантаження.',
     'de-ch':
@@ -481,7 +481,7 @@ export const wbPlanText = createDictionary({
     'en-us': 'Choose Existing Mapping',
     'ru-ru': 'Выберите существующее сопоставление',
     'es-es': 'Seleccionar un mapa existente',
-    'fr-fr': 'Choisir une cartographie existante',
+    'fr-fr': 'Choisir un mappage existant',
     'uk-ua': 'Виберіть існуюче відображення',
     'de-ch': 'Vorhandene Zuordnung auswählen',
     'pt-br': 'Selecionar mapeamento existente',
@@ -760,7 +760,7 @@ export const wbPlanText = createDictionary({
     'ru-ru': 'Чтобы начать создание новой карты с помощью функции Automap?',
     'es-es': '¿Automap inicia un nuevo mapeo?',
     'de-ch': 'Automap soll eine neue Kartierung starten?',
-    'fr-fr': 'Automap pour démarrer une nouvelle cartographie ?',
+    'fr-fr': 'Automap pour démarrer un nouveau mappage ?',
     'uk-ua': 'Автоматичне створення карти, щоб розпочати нове відображення?',
     'pt-br': 'Automapa para iniciar um novo mapeamento?',
     'hr-hr': 'Automatsko mapiranje za početak novog mapiranja?',
@@ -915,7 +915,7 @@ export const wbPlanText = createDictionary({
     'es-es':
       'El conjunto de datos seleccionado no tiene correspondencia. Seleccione otro.',
     'fr-fr':
-      "L'ensemble de données sélectionné ne possède aucune correspondance. Veuillez en sélectionner un autre.",
+      "L'ensemble de données sélectionné ne possède aucun mappage. Veuillez en sélectionner un autre.",
     'uk-ua': 'Вибраний набір даних не має зіставлення. Виберіть інший.',
     'de-ch':
       'Der ausgewählte Datensatz hat keine Zuordnung. Bitte wählen Sie einen anderen aus.',
