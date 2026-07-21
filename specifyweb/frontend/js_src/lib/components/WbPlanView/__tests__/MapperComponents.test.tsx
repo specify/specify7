@@ -20,3 +20,20 @@ test('shows delete unmapped columns for unsaved columns', () => {
     })
   ).toBeInTheDocument();
 });
+
+// [WorkBench] Hide delete unmapped columns after columns are saved
+test('hides delete unmapped columns for saved columns', () => {
+  render(
+    <MappingsControlPanel
+      columnsNotSaved={false}
+      showHiddenFields={false}
+      onClear={jest.fn()}
+    />
+  );
+
+  expect(
+    screen.queryByRole('button', {
+      name: commonText.deleteUnmapped(),
+    })
+  ).not.toBeInTheDocument();
+});
