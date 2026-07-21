@@ -359,7 +359,7 @@ def update_table_schema_config_with_defaults(
             )
     writer.execute()
 
-def revert_table_schema_config(table_name, apps=global_apps):
+def revert_table_schema_config(table_name: str, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
