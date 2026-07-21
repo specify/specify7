@@ -7,7 +7,7 @@ from django.apps import apps as global_apps
 
 from specifyweb.specify.models_utils.load_datamodel import FieldDoesNotExistError, TableDoesNotExistError, Table
 from specifyweb.specify.models import datamodel
-from specifyweb.specify.migration_utils.utils import batch_iterable, batch_query
+from specifyweb.specify.migration_utils.utils import batch_query
 from specifyweb.specify.migration_utils.schema_reader import (
     bulk_create_splocaleitemstr_idempotent,
     camel_to_spaced_title_case,
@@ -78,8 +78,12 @@ class SchemaFieldBuilder:
             "type": datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
             "weblinkname": None,
             # The order of this unpacking matters
-            # If the defaults were specified in attrs, make sure to
-            # prioritize them over the above defaults
+            # If some defaults were specified in the provided defaults, make
+            # sure to use those after the before "global" defaults, but
+            # prioritize any provided attrs after the field defaults
+            # In other words, the order of precedence goes:
+            # attrs -> field defaults -> global defaults
+            **self._field_defaults_to_fieldattrs(field_defaults),
             **attrs
         }
 
@@ -89,6 +93,10 @@ class SchemaFieldBuilder:
         if description is not None:
             self._description = description
         return self
+
+    def _field_defaults_to_fieldattrs(self, field_defaults: FieldDefaults) -> ContainerItemAttrs:
+        special_keys = {"name", "desc"}
+        return {k:v for k,v in field_defaults.items() if k not in special_keys}
 
     def _expand_localization_attrs(self, item_id: int):
         return (
@@ -135,7 +143,12 @@ class SchemaTableBuilder:
             "isuiformatter": None,
             "picklistname": None,
             # The order of this unpacking matters
-            # If the default values were specified in attrs, make sure to prioritize them over the defaults
+            # If some defaults were specified in the provided defaults, make
+            # sure to use those after the before "global" defaults, but
+            # prioritize any provided attrs after the table defaults
+            # In other words, the order of precedence goes:
+            # attrs -> table defaults -> global defaults
+            **self._table_defaults_to_containerattrs(self._table_defaults),
             **attrs
         }
 
@@ -173,6 +186,10 @@ class SchemaTableBuilder:
         # self.fields, we create the items that need to be created
         self._create_container_items(container.pk, self.fields.values())
         self._create_all_localization_strings(container.pk)
+
+    def _table_defaults_to_containerattrs(self, table_defaults: TableDefaults) -> ContainerAttrs:
+        special_default_keys = {"name", "desc", "items"}
+        return {k:v for k,v in table_defaults.items() if k not in special_default_keys}
 
     def _get_or_create_container(self):
         Splocalecontainer = self.apps.get_model("specify", "Splocalecontainer")

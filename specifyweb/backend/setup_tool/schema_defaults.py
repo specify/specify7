@@ -24,12 +24,18 @@ class FieldDefaults(TypedDict):
     desc: NotRequired[str]
     ishidden: NotRequired[bool]
     isrequired: NotRequired[bool]
-    picklistname: NotRequired[str]
+    picklistname: NotRequired[str | None]
+    weblinkname: NotRequired[str | None]
 
 class TableDefaults(TypedDict):
     name: NotRequired[str]
     desc: NotRequired[str]
     items: NotRequired[dict[str, FieldDefaults]]
+    ishidden: NotRequired[bool]
+    picklistname: NotRequired[str | None]
+    format: NotRequired[str | None]
+    isuiformatter: NotRequired[bool | None]
+    aggregator: NotRequired[str | None]
 
 SchemaDefaults = dict[str, TableDefaults]
 
