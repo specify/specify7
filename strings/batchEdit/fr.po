@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-20 09:01+0000\n"
+"PO-Revision-Date: 2026-07-21 10:01+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/fr/>\n"
@@ -61,14 +61,14 @@ msgstr "{queryName:string} {datePart:string}"
 #. Used in: Components > Batch Edit > Query Error
 #: components/BatchEdit/QueryError.tsx:24
 msgid "errorInQuery"
-msgstr "Les erreurs suivantes ont été détectées dans la requête."
+msgstr "Les erreurs suivantes ont été détectées dans la requête"
 
 #. Used in: Components > Batch Edit > Missing Ranks
 #: components/BatchEdit/MissingRanks.tsx:48
 msgid "missingRanksInQuery"
 msgstr ""
 "La requête nécessite des niveaux hiérarchiques supplémentaires pour "
-"l'édition par lots."
+"l'édition par lots"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:111
