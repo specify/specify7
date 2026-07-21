@@ -426,7 +426,8 @@ def update_table_field_schema_config_with_defaults(
         "version": 0,
         "ishidden": defaults.get("ishidden"),
         "isrequired": defaults.get('isrequired'),
-        'picklistname': defaults.get('picklistname')
+        'picklistname': defaults.get('picklistname'),
+        'weblinkname': defaults.get('weblinkname')
     }
 
     field = table_writer.add_field(
