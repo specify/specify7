@@ -1,3 +1,4 @@
+from types import MappingProxyType
 from typing import TypedDict, NotRequired
 from functools import lru_cache
 
@@ -41,7 +42,16 @@ SchemaDefaults = dict[str, TableDefaults]
 
 @lru_cache(maxsize=1)
 def _global_schema_defaults() -> SchemaDefaults:
-    return load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'schema_localization_en.json')
+    global_defaults = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'schema_localization_en.json')
+    # We'd like the cached value to be immutable, so callers can't change the
+    # internal cached dictonary
+    # Frozendict would be better here, but those aren't supported in
+    # Python 3.12 and would have to be installed from the third-party
+    # immutabledict library
+    # MappingProxyType is a built-in solution that provides the dict as
+    # readonly (because the underlying global_defaults dict object can never be
+    # changed by callers)
+    return MappingProxyType(global_defaults)
 
 
 @lru_cache(maxsize=len(DISCIPLINE_NAMES) // 3)
@@ -50,7 +60,7 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDef
     defaults = _global_schema_defaults()
 
     if not discipline_type:
-        return defaults or dict()
+        return defaults or MappingProxyType(dict())
 
     overrides = None
     # Read schema overrides file for the discipline, if it exists
@@ -61,6 +71,9 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDef
     if overrides is None:
         return defaults
 
+    # We create a copy of the _global_schema_defaults() dict to avoid mutating
+    # the cached dictonary
+    new_defaults = {k:v for k,v in defaults.items()}
     # Apply overrides to defaults
     # Overrides contains a dict for each table with overrides
     for table_name, table in overrides.items():
@@ -68,7 +81,7 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDef
         for item in table.get('items', []):
             # Each item is a dict with only one entry.
             for field_name, override_dict in item.items():
-                table_items = defaults.setdefault(table_name, {}).setdefault('items', {})
+                table_items = new_defaults.setdefault(table_name, {}).setdefault('items', {})
                 default_dict = table_items.get(field_name) or {}
                 merged_dict = {**default_dict, **override_dict}
                 table_items[field_name] = merged_dict
@@ -76,8 +89,8 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDef
         for key, v in table.items():
             if key == 'items':
                 continue
-            defaults.setdefault(table_name, {})[key] = v
-    return defaults or dict()
+            new_defaults.setdefault(table_name, {})[key] = v
+    return MappingProxyType(new_defaults or dict())
 
 def apply_schema_defaults(discipline: Discipline):
     from specifyweb.specify.migration_utils.schema_writer import update_table_schema_config_with_defaults
