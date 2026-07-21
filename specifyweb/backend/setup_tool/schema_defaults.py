@@ -104,7 +104,7 @@ def apply_schema_defaults(discipline: Discipline):
         logger.debug(f'Applying schema defaults for {model_name}')
 
         # Table information
-        table_defaults = defaults.get(model_name.lower())
+        table_defaults = defaults.get(model_name.lower(), TableDefaults())
 
         update_table_schema_config_with_defaults(
             table_name=model_name,
