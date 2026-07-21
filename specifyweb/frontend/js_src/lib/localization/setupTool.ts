@@ -496,7 +496,7 @@ export const setupToolText = createDictionary({
     'hr-hr':
       '"Je u punom imenu" uključuje razinu prilikom izrade izraza punog imena, koji se može upitati i koristiti u izvješćima.',
     'pt-br':
-      '"Está no nome completo" inclui o nível ao construir uma expressão de nome completo, que pode ser consultada e usada em relatórios.',
+      'A opção "Nome Completo" inclui o nível de detalhamento ao construir uma expressão de nome completo, que pode ser consultada e usada em relatórios.',
     'ru-ru':
       'Функция «Указание полного имени» включает уровень детализации при построении выражения для полного имени, которое можно запрашивать и использовать в отчетах.',
     'uk-ua':
@@ -831,7 +831,8 @@ export const setupToolText = createDictionary({
     'hr-hr':
       'Kliknite bilo koji blok da biste otvorili njegov obrazac za uređivanje.',
     'pt-br': 'Clique em qualquer bloco para abrir o formulário de edição.',
-    'ru-ru': 'Нажмите на любой блок, чтобы открыть форму его редактирования.',
+    'ru-ru':
+      'Щелкните по любому блоку, чтобы открыть форму его редактирования.',
     'uk-ua': 'Клацніть будь-який блок, щоб відкрити його форму редагування.',
     nb: 'Klikk på en hvilken som helst blokk for å åpne redigeringsskjemaet.',
   },

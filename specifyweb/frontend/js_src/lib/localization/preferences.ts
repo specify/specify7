@@ -877,6 +877,17 @@ export const preferencesText = createDictionary({
     'hr-hr': 'Prikaži autora u stablu',
     nb: 'Vis forfatter i treet',
   },
+  displayChronoPeriods: {
+    'en-us': 'Show start and end periods',
+    'de-ch': 'Start- und Endzeitraum anzeigen',
+    'es-es': 'Mostrar los períodos de inicio y fin',
+    'fr-fr': 'Afficher les périodes de début et de fin',
+    'hr-hr': 'Prikaži početno i završno razdoblje',
+    nb: 'Vis start- og sluttperioder',
+    'pt-br': 'Mostrar períodos de início e fim',
+    'ru-ru': 'Показать начальный и конечный периоды',
+    'uk-ua': 'Показати початковий та кінцевий періоди',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',

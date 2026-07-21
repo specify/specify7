@@ -67,7 +67,7 @@ export const specifyNetworkText = createDictionary({
     nb: 'Spesifiser nettverk utilgjengelig',
     'pt-br': 'Especifique a rede indisponível.',
     'ru-ru': 'Укажите, что сеть недоступна.',
-    'uk-ua': 'Вкажіть, що мережа недоступна',
+    'uk-ua': 'Specify Мережа недоступна',
   },
   brokerUnavailableDescription: {
     'en-us':
@@ -85,7 +85,8 @@ export const specifyNetworkText = createDictionary({
       'Não foi possível conectar-se à rede especificada. Tente novamente mais tarde.',
     'ru-ru':
       'Не удалось подключиться к указанной сети. Пожалуйста, попробуйте позже.',
-    'uk-ua': 'Не вдалося підключитися до мережі «Указати». Спробуйте пізніше.',
+    'uk-ua':
+      'Specify не вдалося підключитися до Specify Мережі. Спробуйте пізніше.',
   },
   dataQuality: {
     'en-us': 'Data Quality',
