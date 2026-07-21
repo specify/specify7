@@ -118,13 +118,13 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
             models.Splocaleitemstr,
             [
                 {
-                    "itemname": item,
+                    "itemname_id": item,
                     "language": "en",
                     "version": 0,
                     "text": "Updated Name",
                 },
                 {
-                    "itemdesc": item,
+                    "itemdesc_id": item,
                     "language": "en",
                     "version": 0,
                     "text": "Created Description",
