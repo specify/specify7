@@ -80,7 +80,12 @@ jobs:
 
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Shallow Copy of Repo
+        uses: actions/checkout@v4
+
+      # This is needed for the build version Make target later
+      - name: Fetch tags from Repo
+        run:  git fetch --tags origin
 
       - name: Get Specify 6 from cache
         id: cache-specify6
