@@ -345,12 +345,15 @@ def update_table_schema_config_with_defaults(
 
     writer = SchemaWriter(apps, schema_defaults=schema_defaults.as_dict())
 
+    container_attrs: ContainerAttrs = {
+        **_table_defaults_to_containerattrs(table_defaults),
+        "name": table_name.lower(),
+        "discipline_id": discipline_id
+    }
     table_writer = writer.add_table(
         table_label=table_name_str,
         table_description=table_desc_str,
-        **_table_defaults_to_containerattrs(table_defaults),
-        name=table_name.lower(),
-        discipline_id=discipline_id
+        **container_attrs
     )
 
     # BUG: The splocalecontainer related tables can still exist in the database, 
@@ -367,12 +370,13 @@ def update_table_schema_config_with_defaults(
         if table_defaults.get('items'):
             field_defaults = table_defaults['items'].get(field.name.lower(), dict())
 
-        field_label = field_defaults.pop("name", None)
-        field_desc = field_defaults.pop("desc", None)
-        field_writer = table_writer.add_field(
-            **field_defaults,
-            name=field.name
-        )
+        field_label = field_defaults.get("name", None)
+        field_desc = field_defaults.get("desc", None)
+        container_item_attrs: ContainerItemAttrs = {
+            **_field_defaults_to_fieldattrs(field_defaults),
+            "name": field.name
+        }
+        field_writer = table_writer.add_field(**container_item_attrs)
         if field_writer is not None:
             field_writer.localize(
                 label=field_label,
