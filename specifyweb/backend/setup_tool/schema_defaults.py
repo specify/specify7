@@ -31,7 +31,7 @@ class TableDefaults(TypedDict):
     desc: NotRequired[str]
     items: NotRequired[dict[str, FieldDefaults]]
 
-type SchemaDefaults = dict[str, TableDefaults]
+SchemaDefaults = dict[str, TableDefaults]
 
 @lru_cache(maxsize=1)
 def _global_schema_defaults() -> SchemaDefaults:
