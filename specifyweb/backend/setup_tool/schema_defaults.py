@@ -1,4 +1,3 @@
-from types import MappingProxyType
 from typing import TypedDict, NotRequired
 from collections.abc import Mapping, MutableMapping
 from copy import deepcopy
@@ -51,11 +50,8 @@ class ReadonlyDict[K, V](Mapping[K, V]):
 
     def __getitem__(self, key):
         orginal_item = self._original_mapping[key]
-        # MappingProxyType is a built-in solution to make a dict that provides the dict as
-        # readonly (because the underlying global_defaults dict object can never be
-        # changed by callers)
         if isinstance(orginal_item, MutableMapping):
-            return MappingProxyType(orginal_item)
+            return ReadonlyDict(orginal_item)
         elif isinstance(orginal_item, list):
             return tuple(orginal_item)
         return orginal_item
