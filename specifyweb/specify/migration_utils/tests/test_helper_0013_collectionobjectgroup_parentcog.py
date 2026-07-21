@@ -11,8 +11,9 @@ class UpdateCogSchemaConfigTests(ApiTests):
     def test_update_cog_schema_config(self):
         update_cog_schema_config(apps)
         schema_reader = SchemaReader(self.discipline.pk)
+        # FEATURE: update_cog_schema_config also removes any previous
+        # COG -> parentCog entry before creating the new defaults based on the
+        # datamodel
         schema_reader.get_field("CollectionObjectGroup", "parentCog")
         with self.assertRaises(MissingRecordError):
             schema_reader.get_field("CollectionObjectGroup", "parentCojo")
-        with self.assertRaises(MissingRecordError):
-            schema_reader.get_field("CollectionObjectGroup", "parentCog")
