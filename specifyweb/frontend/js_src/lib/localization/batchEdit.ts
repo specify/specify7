@@ -112,7 +112,7 @@ export const batchEditText = createDictionary({
     'en-us': 'Following errors were found in the query',
     'de-ch': 'Bei der Abfrage wurden folgende Fehler gefunden.',
     'es-es': 'Se encontraron los siguientes errores en la consulta',
-    'fr-fr': 'Les erreurs suivantes ont été détectées dans la requête.',
+    'fr-fr': 'Les erreurs suivantes ont été détectées dans la requête',
     'pt-br': 'Os seguintes erros foram encontrados na consulta.',
     'ru-ru': 'В запросе были обнаружены следующие ошибки.',
     'uk-ua': 'У запиті виявлено такі помилки',
@@ -125,7 +125,7 @@ export const batchEditText = createDictionary({
     'es-es':
       'La consulta requiere rangos adicionales para la edición por lotes',
     'fr-fr':
-      "La requête nécessite des niveaux hiérarchiques supplémentaires pour l'édition par lots.",
+      "La requête nécessite des niveaux hiérarchiques supplémentaires pour l'édition par lots",
     'pt-br': 'A consulta requer níveis adicionais para edição em lote.',
     'ru-ru':
       'Для пакетного редактирования запроса требуются дополнительные ранги.',
