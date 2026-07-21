@@ -1,7 +1,7 @@
 import re
 import json
 
-from typing import NamedTuple, Tuple, TypedDict, NotRequired
+from typing import Tuple
 import logging
 from collections import defaultdict
 from functools import lru_cache
@@ -15,6 +15,8 @@ from django.apps import apps as global_apps
 
 from specifyweb.specify.models import (
     datamodel,
+    Splocalecontainer,
+    Splocalecontaineritem
 )
 
 logger = logging.getLogger(__name__)
@@ -22,6 +24,98 @@ logger = logging.getLogger(__name__)
 HIDDEN_FIELDS = [
     "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
 ]
+
+class MultipleRecordsError(Exception):
+    ...
+
+class MissingRecordError(Exception):
+    ...
+
+def _ensure_one(queryset):
+    if len(queryset) > 1:
+        raise MultipleRecordsError(f"Expected one {queryset.model.__name__}. Got: {queryset}")
+    first_record = queryset.first()
+    if first_record is None:
+        raise MissingRecordError(f"Expected one {queryset.model.__name__}. None found")
+    return first_record
+
+class SchemaReader:
+    def __init__(self, default_discipline_id: int | None = None, apps = global_apps):
+        self.discipline_id = default_discipline_id
+        self.apps = apps
+
+    def get_table(self, table_name: str, discipline_id: int | None = None, language: str = "en") -> tuple[Splocalecontainer, str, str]:
+        Splocaleitemstr = self.apps.get_model("specify", "Splocaleitemstr")
+
+        table = self._get_only_table(table_name, discipline_id)
+
+        table_label = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                containername_id=table.pk,
+                language=language
+            )
+        )
+        table_desc = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                containerdesc_id=table.pk,
+                language=language
+            )
+        )
+        return table, table_label.text, table_desc.text
+
+    def get_field(self, table_name: str, field_name: str, discipline_id: int | None = None, language: str = "en") -> tuple[Splocalecontaineritem, str, str]:
+        Splocaleitemstr = self.apps.get_model("specify", "Splocaleitemstr")
+
+        field = self._get_only_field(table_name, field_name, discipline_id)
+        field_label = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                itemname_id=field.pk,
+                language=language
+            )
+        )
+        field_desc = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                itemdesc_id=field.pk,
+                language=language
+            )
+        )
+        return field, field_label.text, field_desc.text
+
+    def _get_only_field(self, table_name: str, field_name: str, discipline_id: int | None = None) -> Splocalecontaineritem:
+        final_discipline_id = self._coalesce_discipline_id(discipline_id)
+
+        if final_discipline_id is None:
+            raise ValueError("Trying to fetch a Splocalecontaineritem without specifying a Discipline")
+
+        Splocalecontaineritem = self.apps.get_model("specify", "Splocalecontaineritem")
+
+        field = _ensure_one(
+            Splocalecontaineritem.objects.filter(
+                container__name=table_name.lower(),
+                container__schematype=0,
+                container__discipline_id=final_discipline_id,
+                name=field_name
+            )
+        )
+        return field
+
+    def _get_only_table(self, table_name: str, discipline_id: int | None = None) -> Splocalecontainer:
+        Splocalecontainer = self.apps.get_model("specify", "Splocalecontainer")
+        final_discipline_id = self._coalesce_discipline_id(discipline_id)
+        if final_discipline_id is None:
+            raise ValueError("Trying to fetch a Splocalecontainer without specifying a Discipline")
+
+        tables = Splocalecontainer.objects.filter(
+            name=table_name.lower(),
+            discipline_id=final_discipline_id,
+            schematype=0
+        )
+        return _ensure_one(tables)
+
+    def _coalesce_discipline_id(self, discipline_id: int | None = None):
+        if discipline_id is not None:
+            return discipline_id
+        return self.discipline_id
 
 def _has_explicit_hidden_override(field_config: dict) -> bool:
     return any(key.lower() == "ishidden" for key in field_config.keys())
