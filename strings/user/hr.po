@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-13 16:04+0000\n"
+"PO-Revision-Date: 2026-07-22 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/user/"
 "hr/>\n"
@@ -135,7 +135,7 @@ msgid "unknownOicUser"
 msgstr ""
 "Trenutno nijedan Navedite korisnika nije povezan s vašim "
 "{providerName:string} računom. Ako imate Navedite korisničko ime i lozinku, "
-"možete ih unijeti u nastavku kako biste tog korisnika povezali s vašim "
+"možete ih unijeti u nastavku kako biste povezali tog korisnika s vašim "
 "{providerName:string} računom za buduće prijave."
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Toolbar > Master Key
