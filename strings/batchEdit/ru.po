@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-14 18:03+0000\n"
+"PO-Revision-Date: 2026-07-22 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "batchEdit/ru/>\n"
@@ -142,7 +142,7 @@ msgstr ""
 #: components/WbUtils/datasetVariants.tsx:128
 #, fuzzy
 msgid "committing"
-msgstr "Совершение"
+msgstr "Пожертвование"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:129
@@ -250,8 +250,8 @@ msgstr "Обеспечьте развитие отношений"
 #, fuzzy
 msgid "enableRelationshipsDescription"
 msgstr ""
-"Позволяет пакетно редактировать связи базовой таблицы. Откат отключен, если "
-"связи включены."
+"Позволяет пакетно редактировать связи в базовой таблице. Откат отключен, "
+"если связи включены."
 
 #. Used in: Components > Wb Actions > Wb Upload
 #: components/WbActions/WbUpload.tsx:132
