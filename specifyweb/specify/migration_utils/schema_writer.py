@@ -219,6 +219,7 @@ class SchemaTableBuilder:
             ]
         )
 
+# FEATURE: Add a SchemaReader helper
 class SchemaWriter:
     def __init__(self, apps = global_apps, schema_defaults: SchemaDefaults = dict(), skip_missing_tables_and_fields: bool = True):
         self.apps = apps
