@@ -252,6 +252,7 @@ class SchemaWriter:
         table_defaults = self._schema_defaults.get(attrs.get('name', '').lower(), TableDefaults())
         try:
             table_builder = SchemaTableBuilder(
+                apps=self.apps,
                 skip_missing_fields=self.skip_missing_tables_and_fields,
                 table_defaults=table_defaults,
                 **attrs
