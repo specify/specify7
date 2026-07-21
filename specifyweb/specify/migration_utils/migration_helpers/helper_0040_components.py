@@ -168,7 +168,7 @@ def reverse_hide_component_fields(apps, schema_editor=None):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    for discipline_id in Discipline.objects.all().values_list('pk'):
+    for discipline_id in Discipline.objects.all().values_list('pk', flat=True):
         for table, fields in MIGRATION_0040_HIDDEN_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
                 name=table.lower(),
