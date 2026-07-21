@@ -91,10 +91,10 @@ class SchemaReader:
 
         field = _ensure_one(
             Splocalecontaineritem.objects.filter(
-                container__name=table_name.lower(),
+                container__name__iexact=table_name,
                 container__schematype=0,
                 container__discipline_id=final_discipline_id,
-                name=field_name
+                name__iexact=field_name
             )
         )
         return field
@@ -106,7 +106,7 @@ class SchemaReader:
             raise ValueError("Trying to fetch a Splocalecontainer without specifying a Discipline")
 
         tables = Splocalecontainer.objects.filter(
-            name=table_name.lower(),
+            name__iexact=table_name,
             discipline_id=final_discipline_id,
             schematype=0
         )
