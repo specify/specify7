@@ -48,6 +48,7 @@ class ContainerItemAttrs(TypedDict):
     picklistname: NotRequired[str | None]
     type: NotRequired[str | None]
     weblinkname: NotRequired[str | None]
+    version: NotRequired[int | None]
     container_id: NotRequired[int | None]
 
 class SchemaWriterError(Exception):
@@ -55,6 +56,14 @@ class SchemaWriterError(Exception):
 
 class MissingRequiredAttribute(SchemaWriterError):
     ...
+
+def _field_defaults_to_fieldattrs(field_defaults: FieldDefaults) -> ContainerItemAttrs:
+    special_keys = {"name", "desc"}
+    return {k:v for k,v in field_defaults.items() if k not in special_keys}
+
+def _table_defaults_to_containerattrs(table_defaults: TableDefaults) -> ContainerAttrs:
+    special_default_keys = {"name", "desc", "items"}
+    return {k:v for k,v in table_defaults.items() if k not in special_default_keys}
 
 class SchemaFieldBuilder:
     def __init__(self, table: Table, field_defaults: FieldDefaults = FieldDefaults(), **attrs: Unpack[ContainerItemAttrs]):
@@ -77,13 +86,14 @@ class SchemaFieldBuilder:
             "picklistname": field_defaults.get('picklistname'),
             "type": datamodel_type_to_schematype(field.type) if field.is_relationship else field.type,
             "weblinkname": None,
+            "version": 0,
             # The order of this unpacking matters
             # If some defaults were specified in the provided defaults, make
             # sure to use those after the before "global" defaults, but
             # prioritize any provided attrs after the field defaults
             # In other words, the order of precedence goes:
             # attrs -> field defaults -> global defaults
-            **self._field_defaults_to_fieldattrs(field_defaults),
+            **_field_defaults_to_fieldattrs(field_defaults),
             **attrs
         }
 
@@ -93,10 +103,6 @@ class SchemaFieldBuilder:
         if description is not None:
             self._description = description
         return self
-
-    def _field_defaults_to_fieldattrs(self, field_defaults: FieldDefaults) -> ContainerItemAttrs:
-        special_keys = {"name", "desc"}
-        return {k:v for k,v in field_defaults.items() if k not in special_keys}
 
     def _expand_localization_attrs(self, item_id: int):
         return (
@@ -148,7 +154,7 @@ class SchemaTableBuilder:
             # prioritize any provided attrs after the table defaults
             # In other words, the order of precedence goes:
             # attrs -> table defaults -> global defaults
-            **self._table_defaults_to_containerattrs(self._table_defaults),
+            **_table_defaults_to_containerattrs(self._table_defaults),
             **attrs
         }
 
@@ -186,10 +192,6 @@ class SchemaTableBuilder:
         # self.fields, we create the items that need to be created
         self._create_container_items(container.pk, self.fields.values())
         self._create_all_localization_strings(container.pk)
-
-    def _table_defaults_to_containerattrs(self, table_defaults: TableDefaults) -> ContainerAttrs:
-        special_default_keys = {"name", "desc", "items"}
-        return {k:v for k,v in table_defaults.items() if k not in special_default_keys}
 
     def _get_or_create_container(self):
         Splocalecontainer = self.apps.get_model("specify", "Splocalecontainer")
@@ -341,11 +343,12 @@ def update_table_schema_config_with_defaults(
     table_name_str = table_defaults.get('name')
     table_desc_str = table_defaults.get('desc')
 
-    writer = SchemaWriter(apps, schema_defaults=schema_defaults)
+    writer = SchemaWriter(apps, schema_defaults=schema_defaults.as_dict())
 
     table_writer = writer.add_table(
         table_label=table_name_str,
         table_description=table_desc_str,
+        **_table_defaults_to_containerattrs(table_defaults),
         name=table_name.lower(),
         discipline_id=discipline_id
     )
@@ -423,12 +426,8 @@ def update_table_field_schema_config_with_defaults(
     field_description = defaults.get('desc')
 
     item_attrs: ContainerItemAttrs = {
-        "name": field_name,
-        "version": 0,
-        "ishidden": defaults.get("ishidden"),
-        "isrequired": defaults.get('isrequired'),
-        'picklistname': defaults.get('picklistname'),
-        'weblinkname': defaults.get('weblinkname')
+        **_field_defaults_to_fieldattrs(defaults),
+        "name": field_name
     }
 
     field = table_writer.add_field(
