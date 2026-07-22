@@ -167,7 +167,8 @@ class DataSetTests(ApiTests):
 
         self.assertEqual(dataset["columns"], columns)
         self.assertEqual(
-            [row[: len(columns)] for row in dataset["rows"]],
-            rows,
+            dataset["rows"],
+            [row + [""] for row in rows],
         )
         self.assertEqual(dataset["uploadplan"], uploadplan)
+        
