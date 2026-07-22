@@ -227,7 +227,7 @@ export const batchEditText = createDictionary({
     'uk-ua':
       'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів',
     'hr-hr':
-      'Vraćanjem skupa podataka unatrag ponovno će se ažurirati vrijednosti, izbrisati kreirani zapisi i kreirati novi zapisi',
+      'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
     nb: 'Tilbakeføring av datasettet vil gjenopprette tidligere verdier, slette opprettede poster og gjenopprette slettede poster',
   },
   commitSuccessfulDescription: {
@@ -274,7 +274,7 @@ export const batchEditText = createDictionary({
     'es-es': 'Comprometerse',
     'fr-fr': 'Téléverser',
     'pt-br': 'Comprometer-se',
-    'ru-ru': 'Совершение',
+    'ru-ru': 'Пожертвование',
     'uk-ua': 'Здійснення',
     'hr-hr': 'Počinjanje',
     nb: 'Lagrer datasettet',
@@ -499,7 +499,7 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Permite a edição em lote de relacionamentos da tabela base. O rollback é desativado quando os relacionamentos estão ativados.',
     'ru-ru':
-      'Позволяет пакетно редактировать связи базовой таблицы. Откат отключен, если связи включены.',
+      'Позволяет пакетно редактировать связи в базовой таблице. Откат отключен, если связи включены.',
     'uk-ua':
       "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
     'hr-hr':
