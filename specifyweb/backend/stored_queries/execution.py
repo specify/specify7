@@ -684,7 +684,14 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
 
         field_specs = fields_from_json(spquery["fields"])
 
-        query, __ = build_query(session, collection, user, tableid, field_specs)
+        query, __ = build_query(
+            session,
+            collection,
+            user,
+            tableid,
+            field_specs,
+            BuildQueryProps(recordsetid=spquery.get("recordsetid", None)),
+        )
         query = query.with_entities(model._id, literal(new_rs_id)).distinct()
         RSI = models.RecordSetItem
         ins = insert(RSI).from_select((RSI.recordId, RSI.RecordSetID), query)
