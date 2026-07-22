@@ -16,5 +16,14 @@
     "items": [
       {"collectionObjectAttribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
     ]
+  },
+  "paleocontext": {
+    "ishidden": false
+  },
+  "geologictimeperiod": {
+    "ishidden": false
+  },
+  "lithostrat": {
+    "ishidden": false
   }
 }

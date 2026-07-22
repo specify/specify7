@@ -255,6 +255,10 @@
       { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } },
       { "startperiod": { "ishidden": false, "name": "Start Period", "desc": "Start period in Ma." } },
       { "endperiod": { "ishidden": false, "name": "End Period", "desc": "End period in Ma." } }
-    ]
+    ],
+    "ishidden": false
+  },
+  "lithostrat": {
+    "ishidden": false
   }
 }

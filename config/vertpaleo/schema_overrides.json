@@ -36,11 +36,16 @@
   },
   "paleocontext": {
     "ishidden": false,
-    "desc": "Paleo Context",
     "items": [
       {"biostrat": {"ishidden": false}},
       {"text1": {"ishidden": false}},
       {"tectonicunit": {"ishidden": true}}
     ]
+  },
+  "geologictimeperiod": {
+    "ishidden": false
+  },
+  "lithostrat": {
+    "ishidden": false
   }
 }
