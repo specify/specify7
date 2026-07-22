@@ -464,7 +464,7 @@ export const routes: RA<EnhancedRoute> = [
       },
 	  {
 		path: 'logout',
-		title: userText.logout(),
+		title: userText.logOut(),
 		element: () => 
 		  import('../Logout').then(
 			({ Logout }) => Logout
