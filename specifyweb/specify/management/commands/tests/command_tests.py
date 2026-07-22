@@ -1,5 +1,5 @@
 from io import StringIO
-from unittest.mock import Mock, patch, sentinel
+from unittest.mock import Mock, call, patch, sentinel
 
 from specifyweb.specify.management.commands import run_key_migration_functions as rkm
 from specifyweb.specify.management.commands.tests.test_migration_base import MigrationCommandTestCase
@@ -64,3 +64,19 @@ class KeyMigrationCommandTests(MigrationCommandTestCase):
 
         command.funcs["known"].assert_not_called()
         self.assertIn("Unknown function: unknown", stderr.getvalue())
+
+    def test_non_verbose_run_emits_warning_progress_messages(self):
+        command = self._command()
+
+        with patch.object(rkm, "make_selectseries_false") as make_selectseries_false, patch.object(rkm.logger, "warning") as warning:
+            command.handle(functions=["fix_misc"], verbose=False)
+
+        make_selectseries_false.assert_called_once_with(rkm.apps)
+        warning.assert_has_calls(
+            [
+                call("Applying fix_misc..."),
+                call("Running make_selectseries_false..."),
+                call("Finished make_selectseries_false."),
+                call("Applied fix_misc."),
+            ]
+        )
