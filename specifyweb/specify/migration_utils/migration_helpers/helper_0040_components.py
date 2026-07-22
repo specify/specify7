@@ -65,13 +65,25 @@ def remove_0029_schema_config_fields(apps, schema_editor=None):
 
 def create_table_schema_config_with_defaults(apps, schema_editor=None):
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         for table, desc in MIGRATION_0040_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+            update_table_schema_config_with_defaults(
+                table_name=table,
+                discipline_id=discipline_id,
+                discipline_type=discipline_type,
+                apps=apps,
+                table_defaults={"desc": desc}
+            )
 
         for table, fields in MIGRATION_0040_FIELDS.items():
             for field in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+                update_table_field_schema_config_with_defaults(
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field,
+                    apps=apps
+                )
 
 def update_schema_config_field_desc_for_components(apps, schema_editor=None):
     Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')
@@ -133,10 +145,16 @@ def hide_component_fields(apps, schema_editor=None):
 def restore_0029_schema_config_fields(apps, schema_editor=None):
     Discipline = apps.get_model('specify', 'Discipline')
     FIELDS_TO_REMOVE = MIGRATION_0029_UPDATE_FIELDS
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         for table, fields in FIELDS_TO_REMOVE.items():
             for field_name, _, _ in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps)
+                update_table_field_schema_config_with_defaults(
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field_name,
+                    apps=apps
+                )
 
 def revert_table_schema_config_with_defaults(apps, schema_editor=None):
     for table, _ in MIGRATION_0040_TABLES:
@@ -150,11 +168,11 @@ def reverse_hide_component_fields(apps, schema_editor=None):
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
     Discipline = apps.get_model('specify', 'Discipline')
 
-    for discipline in Discipline.objects.all():
+    for discipline_id in Discipline.objects.all().values_list('pk', flat=True):
         for table, fields in MIGRATION_0040_HIDDEN_FIELDS.items():
             containers = Splocalecontainer.objects.filter(
                 name=table.lower(),
-                discipline_id=discipline.id,
+                discipline_id=discipline_id,
             )
             for container in containers:
                 for field_name in fields:

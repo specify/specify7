@@ -16,10 +16,17 @@ def update_loan_and_gift_agent_fields(apps):
     field_defaults = {
         "ishidden": True
     }
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         for table, fields in MIGRATION_0039_FIELDS.items():
             for field_name in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, field_name, apps, defaults=field_defaults)
+                update_table_field_schema_config_with_defaults(
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field_name,
+                    apps=apps,
+                    defaults=field_defaults
+                )
 
 def revert_loan_and_gift_agent_fields(apps):
     for table, fields in MIGRATION_0039_FIELDS.items():

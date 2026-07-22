@@ -1,86 +1,117 @@
-from django.test import TestCase
-from unittest.mock import patch, MagicMock
+from django.db.models import Q
 
+from specifyweb.specify.models import Discipline
+from specifyweb.specify.tests.test_api import ApiTests
+from specifyweb.specify.migration_utils.schema_reader import SchemaReader
 from specifyweb.specify.migration_utils.schema_writer import (
     update_table_schema_config_with_defaults,
+    update_table_field_schema_config_with_defaults,
     revert_table_field_schema_config,
 )
+from specifyweb.backend.setup_tool.schema_defaults import read_schema_config_defaults
 
 
-class SchemaWriterTests(TestCase):
+class SchemaWriterTests(ApiTests):
+    def setUp(self):
+        super().setUp()
+        self.fish = Discipline.objects.create(
+            geologictimeperiodtreedef=self.geologictimeperiodtreedef,
+            geographytreedef=self.geographytreedef,
+            division=self.division,
+            datatype=self.datatype,
+            type="fish",
+            name="Ichthyology"
+        )
 
-    @patch("specifyweb.specify.migration_utils.schema_writer.bulk_create_splocaleitemstr_idempotent")
-    def test_update_table_schema_config_with_defaults(self, mock_bulk_create):
-        mock_apps = MagicMock()
-        # -----------------------
-        # Mock models via apps.get_model
-        # -----------------------
-        mock_container = MagicMock()
-        mock_containeritem = MagicMock()
-        mock_itemstr = MagicMock()
+    def test_schema_localization_file_respected(self):
+        overridden_defaults = read_schema_config_defaults(self.discipline.type)
+        update_table_schema_config_with_defaults(
+            "Paleocontext",
+            self.discipline.pk
+        )
+        schema_reader = SchemaReader(self.discipline.pk)
+        table, table_label, table_desc = schema_reader.get_table("Paleocontext")
 
-        def get_model(app_label, model_name):
-            if model_name == "Splocalecontainer":
-                return mock_container
-            if model_name == "Splocalecontaineritem":
-                return mock_containeritem
-            if model_name == "Splocaleitemstr":
-                return mock_itemstr
+        schema_defaults = overridden_defaults["paleocontext"]
+        # Splocaleitemstr.text can not be NULL, so this would handle the edge
+        # case where both are not set
+        self.assertEqual(table_label, schema_defaults.get("name"))
+        self.assertEqual(table_desc, schema_defaults.get("desc"))
+        # BUG: Table -> IsHidden (and others) is not being respected as a
+        # default from the json
+        self.assertTrue(table.ishidden)
 
-        mock_apps.get_model.side_effect = get_model
+    def test_passed_in_defaults_override_file_defaults(self):
+        overridden_defaults = read_schema_config_defaults(self.discipline.type)
+        new_table_label = "PaleoFooText"
+        new_text1_hidden = False
+        new_text1_desc = "NotBioStrat"
+        new_text1_picklist = "BioStrats"
+        update_table_schema_config_with_defaults(
+            "Paleocontext",
+            self.discipline.pk,
+            table_defaults={
+                "name": new_table_label,
+                "items": {
+                    "text1": {
+                        "desc": new_text1_desc,
+                        "ishidden": new_text1_hidden,
+                        "picklistname": new_text1_picklist
+                    }
+                }
+            }
+        )
+        schema_reader = SchemaReader(self.discipline.pk)
+        table, table_label, table_desc = schema_reader.get_table("Paleocontext")
 
-        # -----------------------
-        # Query behavior
-        # -----------------------
-        mock_container.objects.filter.return_value.order_by.return_value.first.return_value = None
-        mock_containeritem.objects.filter.return_value.exists.return_value = False
+        table_schema_defaults = overridden_defaults["paleocontext"]
+        self.assertEqual(table_label, new_table_label)
+        # Splocaleitemstr.text can not be NULL, so this would handle the edge
+        # case where both are not set
+        self.assertEqual(table_desc, table_schema_defaults.get("desc"))
+        # BUG: Table -> IsHidden (and others) is not being respected as a
+        # default from the json
+        self.assertTrue(table.ishidden)
 
-        mock_table = MagicMock()
-        mock_table.name = "TestTable"
-        mock_table.system = False
-        mock_table._all_fields.return_value = []
+        field_defaults = table_schema_defaults.get("items", {}).get("text1", {})
+        field, field_label, field_desc = schema_reader.get_field("Paleocontext", "text1")
+        self.assertEqual(field_label, field_defaults.get("name"))
+        self.assertEqual(field_desc, new_text1_desc)
+        self.assertEqual(field.isrequired, field_defaults.get("isrequired"))
+        self.assertEqual(field.ishidden, new_text1_hidden)
+        self.assertEqual(field.picklistname, new_text1_picklist)
 
-        with patch("specifyweb.specify.migration_utils.schema_writer.datamodel") as mock_datamodel:
-            mock_datamodel.get_table.return_value = mock_table
+    def test_default_overrides_being_set(self):
+        update_table_schema_config_with_defaults(
+            table_name="collectionobjectattribute",
+            discipline_id=self.fish.pk,
+            discipline_type=self.fish.type
+        )
+        schema_defaults = read_schema_config_defaults(self.fish.type)
+        table_schema_defaults = schema_defaults["collectionobjectattribute"]
+        field_defaults = table_schema_defaults.get("items", {}).get("text8", {})
+        schema_reader = SchemaReader(self.fish.pk)
+        field, field_label, field_desc = schema_reader.get_field("collectionobjectattribute", "text8")
+        self.assertNotEqual(field_label, "Text8")
+        self.assertEqual(field.ishidden, field_defaults.get("ishidden"))
+        self.assertEqual(field_label, field_defaults.get("name"))
+        self.assertEqual(field_desc, field_defaults.get("desc"))
 
-            update_table_schema_config_with_defaults("TestTable", 1, apps=mock_apps)
+    def test_immutability_of_schema_defaults(self):
+        schema_defaults = read_schema_config_defaults()
 
-        mock_bulk_create.assert_called_once()
+        with self.assertRaises(TypeError):
+            schema_defaults["newTable"] = {}
 
-    def test_revert_table_field_schema_config(self):
-        mock_apps = MagicMock()
+        collection_object_defaults = schema_defaults['collectionobject']
 
-        mock_container = MagicMock()
-        mock_itemstr = MagicMock()
-        mock_containeritem = MagicMock()
+        with self.assertRaises(TypeError):
+            collection_object_defaults["name"] = "Something Else"
 
-        def get_model(app_label, model_name):
-            if model_name == "Splocalecontainer":
-                return mock_container
-            if model_name == "Splocaleitemstr":
-                return mock_itemstr
-            if model_name == "Splocalecontaineritem":
-                return mock_containeritem
+        co_fields = collection_object_defaults["items"]
+        catalognumber = co_fields["catalognumber"]
+        with self.assertRaises(TypeError):
+            catalognumber["desc"] = "foo"
 
-        mock_apps.get_model.side_effect = get_model
-
-        # --- queryset mocks
-        container_qs = MagicMock()
-        itemstr_qs = MagicMock()
-        containeritem_qs = MagicMock()
-
-        mock_container.objects.filter.return_value = container_qs
-        mock_itemstr.objects.filter.return_value = itemstr_qs
-        mock_containeritem.objects.filter.return_value = containeritem_qs
-
-        # --- execute ---
-        revert_table_field_schema_config("TestTable", "field", apps=mock_apps)
-
-        # --- assert filters were called ---
-        mock_container.objects.filter.assert_called_once()
-        mock_itemstr.objects.filter.assert_called_once()
-        mock_containeritem.objects.filter.assert_called_once()
-
-        # --- assert deletes ---
-        itemstr_qs.delete.assert_called_once()
-        containeritem_qs.delete.assert_called_once()
+        with self.assertRaises(AttributeError):
+            catalognumber.pop('name')

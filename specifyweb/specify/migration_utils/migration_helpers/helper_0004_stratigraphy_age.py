@@ -75,13 +75,25 @@ def create_agetype_picklist(apps):
 
 def create_strat_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         for table, desc in MIGRATION_0004_TABLES: # NOTE: lots of Nones, getting skips
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+            update_table_schema_config_with_defaults(
+                table_name=table,
+                discipline_id=discipline_id,
+                discipline_type=discipline_type,
+                apps=apps,
+                table_defaults={"desc": desc}
+            )
 
         for table, fields in MIGRATION_0004_FIELDS.items():
             for field in fields:
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+                update_table_field_schema_config_with_defaults(
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field,
+                    apps=apps
+                )
 
 def revert_strat_table_schema_config_with_defaults(apps):
     for table, _ in MIGRATION_0004_TABLES:

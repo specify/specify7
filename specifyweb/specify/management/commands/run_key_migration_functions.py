@@ -61,12 +61,12 @@ def fix_schema_config(stdout: WriteToStdOut | None = None):
     def apply_schema_overrides_for_all_disciplines(_apps):
         from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults_task
         Discipline = _apps.get_model('specify', 'Discipline')
-        for discipline in Discipline.objects.all():
+        for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
             if stdout is not None:
                 stdout(
-                    f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
+                    f"Applying schema defaults/overrides for discipline {discipline_id} ({discipline_type})..."
                 )
-            apply_schema_defaults_task.apply(args=[discipline.id])
+            apply_schema_defaults_task.apply(args=[discipline_id])
 
     # PERF: The vast majority of these can be collapsed to a single call to
     # update_table_schema_config_with_defaults
