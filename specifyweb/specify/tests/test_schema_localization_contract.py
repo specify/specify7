@@ -22,7 +22,7 @@ class SchemaLocalizationContractTests(TestCase):
     def _extract_model_tables(cls):
         source = cls.models_path.read_text(encoding='utf-8')
         module = ast.parse(source)
-        tables = set()
+        tables = {}
 
         for node in module.body:
             if not isinstance(node, ast.ClassDef):
@@ -35,7 +35,8 @@ class SchemaLocalizationContractTests(TestCase):
                             for target in stmt.targets:
                                 if isinstance(target, ast.Name) and target.id == 'db_table':
                                     if isinstance(stmt.value, ast.Constant) and isinstance(stmt.value.value, str):
-                                        tables.add(stmt.value.value.lower())
+                                        table = stmt.value.value.lower()
+                                        tables.setdefault(table, set()).add(node.name)
                     break
 
         return tables
@@ -70,7 +71,10 @@ class SchemaLocalizationContractTests(TestCase):
         if missing or unexpected_extra:
             self.fail(
                 'Missing schema localization entries for model-backed tables:\n'
-                + '\n'.join(missing)
+                + '\n'.join(
+                    f'{table}: {", ".join(sorted(self.model_tables[table]))}'
+                    for table in missing
+                )
                 + '\n\nUnexpected schema localization-only tables:\n'
                 + '\n'.join(unexpected_extra)
             )
