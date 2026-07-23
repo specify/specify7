@@ -66,7 +66,8 @@ class SchemaConfigTests(MigrationCommandTestCase):
                 )
             )
 
-            rkm.fix_schema_config(stdout)
+            rkm.apply_schema_config_defaults(stdout)
+            rkm.deduplicate_schema_config(stdout)
 
         self.assertEqual(fake_apps.model_request, ("specify", "Discipline"))
         self.assertEqual(

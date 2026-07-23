@@ -25,18 +25,16 @@ from specifyweb.backend.setup_tool.setup_tasks import (
     setup_database_background,
     get_active_setup_task,
     get_last_setup_error,
-    set_last_setup_error,
-    queue_fix_schema_config_background,
+    set_last_setup_error
 )
 from specifyweb.celery_tasks import MissingWorkerError, get_running_worker_task_names
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.backend.setup_tool.task_tracking import (
-    is_collection_ready_for_config_tasks,
     is_discipline_ready_for_config_tasks,
 )
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
-from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, fix_schema_config
+from specifyweb.specify.management.commands.run_key_migration_functions import fix_cots, check_collection_picklists
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 
 import logging
@@ -319,7 +317,7 @@ def create_discipline(data, run_apply_schema_defaults_async: bool = True):
     except Exception as e:
         raise SetupError(e)
 
-def create_collection(data, run_fix_schema_config_async: bool = True):
+def create_collection(data):
     from specifyweb.specify.models import Collection, Discipline
 
     # If collection_id is provided and exists, return success
@@ -361,11 +359,7 @@ def create_collection(data, run_fix_schema_config_async: bool = True):
 
         # Create picklists
         create_default_picklists(new_collection, discipline.type)
-        if run_fix_schema_config_async:
-            queue_fix_schema_config_background(collection_id=new_collection.id)
-        else:
-            fix_schema_config()
-        
+        check_collection_picklists()
         # Create Collection Object Type
         fix_cots()
 
@@ -504,7 +498,6 @@ def create_tree(name: str, data: dict) -> dict:
 CONFIG_TASKS = frozenset({
     "specifyweb.backend.trees.defaults.create_default_tree_task",
     "specifyweb.backend.setup_tool.setup_tasks.setup_database_task",
-    "specifyweb.backend.setup_tool.setup_tasks.fix_schema_config_task",
     "specifyweb.backend.setup_tool.schema_defaults.apply_schema_defaults_task",
 })
 
@@ -537,26 +530,8 @@ def get_config_resource_progress(running_task_names: Optional[list[str]] = None)
     active_task_names = set(running_task_names or [])
     return _get_config_resource_progress_from_active_names(active_task_names)
 
-def is_collection_busy_for_config_tasks(
-    collection_id: int,
-    discipline_id: Optional[int] = None,
-) -> bool:
-    if discipline_id is None:
-        collection = models.Collection.objects.filter(id=collection_id).only("discipline_id").first()
-        if collection is None:
-            return False
-        discipline_id = collection.discipline_id
-    return not is_collection_ready_for_config_tasks(collection_id, discipline_id)
-
 def is_discipline_busy_for_config_tasks(discipline_id: int) -> bool:
     return not is_discipline_ready_for_config_tasks(discipline_id)
-
-def filter_ready_collections_for_config_tasks(collections: list) -> list:
-    return [
-        collection
-        for collection in collections
-        if not is_collection_busy_for_config_tasks(collection.id, collection.discipline_id)
-    ]
 
 def filter_ready_disciplines_for_config_tasks(disciplines: list) -> list:
     return [
@@ -565,18 +540,15 @@ def filter_ready_disciplines_for_config_tasks(disciplines: list) -> list:
         if not is_discipline_busy_for_config_tasks(discipline.id)
     ]
 
-def get_config_progress(collection_id: Optional[int] = None) -> dict:
+def get_config_progress() -> dict:
     """Returns a dict of the status of config/setup related background tasks"""
     try:
         running_task_names = get_running_worker_task_names()
     except MissingWorkerError:
         running_task_names = []
 
-    busy = (
-        is_config_task_running(running_task_names)
-        if collection_id is None
-        else is_collection_busy_for_config_tasks(collection_id)
-    )
+    busy = is_config_task_running(running_task_names)
+    
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)
 

@@ -39,7 +39,6 @@ from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
-    filter_ready_collections_for_config_tasks,
     filter_ready_disciplines_for_config_tasks,
 )
    
@@ -302,7 +301,7 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
-        if get_config_progress(collection.id).get('busy'):
+        if get_config_progress().get('busy'):
             return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
@@ -324,7 +323,6 @@ def user(request):
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
     available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections = _filter_collections_not_ready_for_config_task(available_collections)
     data['available_collections'] = [
         obj_to_data(c)
         for c in available_collections
@@ -650,9 +648,7 @@ def remote_prefs(request):
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
-  
-def _filter_collections_not_ready_for_config_task(collections):
-    return filter_ready_collections_for_config_tasks(collections)
+
   
 def _filter_disciplines_not_ready_for_config_task(disciplines):
     return filter_ready_disciplines_for_config_tasks(disciplines)
@@ -665,7 +661,6 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 
     if filter_not_ready_collections:
         disciplines = _filter_disciplines_not_ready_for_config_task(disciplines)
-        collections = _filter_collections_not_ready_for_config_task(collections)
 
     discipline_map = {}
     for discipline in disciplines:
