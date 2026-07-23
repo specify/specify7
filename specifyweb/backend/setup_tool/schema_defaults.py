@@ -53,6 +53,19 @@ def _global_schema_defaults() -> SchemaDefaults:
 
 @lru_cache(maxsize=len(DISCIPLINE_NAMES) // 3)
 def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDefaults:
+    """
+    Reads the schema config defaults for a given discipline type (or the
+    'global' Schema Defaults if a None discipline type is provided).
+
+    The value is cached in a LRU cache so future calls will immeditately return
+    the previously computed value for the given discipline type.
+
+    WARNING:
+    If you plan on modifying the return value of this function in any way,
+    deepcopy the dictonary first!
+    Any modifications to the returned dictonary will be reflected in all future
+    calls.
+    """
     # Get default schema localization
     # We create a copy of the _global_schema_defaults() dict to avoid mutating
     # the cached dictonary
