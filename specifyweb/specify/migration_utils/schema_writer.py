@@ -343,7 +343,7 @@ def update_table_schema_config_with_defaults(
     table_name_str = table_defaults.get('name')
     table_desc_str = table_defaults.get('desc')
 
-    writer = SchemaWriter(apps, schema_defaults=schema_defaults.as_dict())
+    writer = SchemaWriter(apps, schema_defaults=schema_defaults)
 
     container_attrs: ContainerAttrs = {
         **_table_defaults_to_containerattrs(table_defaults),

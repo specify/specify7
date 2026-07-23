@@ -1,5 +1,4 @@
 from typing import TypedDict, NotRequired
-from collections.abc import Mapping, MutableMapping
 from copy import deepcopy
 from functools import lru_cache
 
@@ -39,49 +38,28 @@ class TableDefaults(TypedDict):
     isuiformatter: NotRequired[bool | None]
     aggregator: NotRequired[str | None]
 
-class ReadonlyDict[K, V](Mapping[K, V]):
-    def __init__(self, mapping: Mapping[K, V]):
-        if not isinstance(mapping, Mapping):
-            raise TypeError(f"Can not create readonly dict for {mapping}. mapping not Mapping compliant")
-        self._original_mapping = mapping
-
-    def as_dict(self):
-        return deepcopy(dict(self._original_mapping))
-
-    def __getitem__(self, key) -> V:
-        orginal_item = self._original_mapping[key]
-        if isinstance(orginal_item, MutableMapping):
-            return ReadonlyDict(orginal_item)
-        elif isinstance(orginal_item, list):
-            return tuple(orginal_item)
-        return orginal_item
-
-    def __iter__(self):
-        return iter(self._original_mapping)
-
-    def __len__(self):
-        return len(self._original_mapping)
-
 SchemaDefaults = dict[str, TableDefaults]
 
 @lru_cache(maxsize=1)
-def _global_schema_defaults() -> ReadonlyDict[str, TableDefaults]:
+def _global_schema_defaults() -> SchemaDefaults:
     global_defaults = load_json_from_file(Path(__file__).parent.parent.parent.parent / 'config' / 'common' / 'schema_localization_en.json')
     # We'd like the cached value to be immutable, so callers can't change the
     # internal cached dictonary
     # Frozendict would be better here, but those aren't supported in
     # Python 3.12 and would have to be installed from the third-party
     # immutabledict library
-    return ReadonlyDict(global_defaults)
+    return global_defaults
 
 
 @lru_cache(maxsize=len(DISCIPLINE_NAMES) // 3)
-def read_schema_config_defaults(discipline_type: str | None = None) -> ReadonlyDict[str, TableDefaults]:
+def read_schema_config_defaults(discipline_type: str | None = None) -> SchemaDefaults:
     # Get default schema localization
-    defaults = _global_schema_defaults()
+    # We create a copy of the _global_schema_defaults() dict to avoid mutating
+    # the cached dictonary
+    defaults = deepcopy(_global_schema_defaults())
 
     if not discipline_type:
-        return defaults or ReadonlyDict(dict())
+        return defaults or dict()
 
     overrides = None
     # Read schema overrides file for the discipline, if it exists
@@ -92,9 +70,6 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> ReadonlyD
     if overrides is None:
         return defaults
 
-    # We create a copy of the _global_schema_defaults() dict to avoid mutating
-    # the cached dictonary
-    new_defaults = defaults.as_dict()
     # Apply overrides to defaults
     # Overrides contains a dict for each table with overrides
     for table_name, table in overrides.items():
@@ -102,7 +77,7 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> ReadonlyD
         for item in table.get('items', []):
             # Each item is a dict with only one entry.
             for field_name, override_dict in item.items():
-                table_items = new_defaults.setdefault(table_name, {}).setdefault('items', {})
+                table_items = defaults.setdefault(table_name, {}).setdefault('items', {})
                 default_dict = table_items.get(field_name, {})
                 merged_dict = {**default_dict, **override_dict}
                 table_items[field_name] = merged_dict
@@ -110,10 +85,10 @@ def read_schema_config_defaults(discipline_type: str | None = None) -> ReadonlyD
         for key, v in table.items():
             if key == 'items':
                 continue
-            new_defaults.setdefault(table_name, {})[key] = v
+            defaults.setdefault(table_name, {})[key] = v
     # We'd like the cached value to be immutable, so callers can't change the
     # internal cached dictonary
-    return ReadonlyDict(new_defaults or dict())
+    return defaults or dict()
 
 def apply_schema_defaults(discipline: Discipline):
     from specifyweb.specify.migration_utils.schema_writer import update_table_schema_config_with_defaults

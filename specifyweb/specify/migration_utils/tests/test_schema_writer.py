@@ -1,14 +1,12 @@
-from django.db.models import Q
+from unittest import skip
 
 from specifyweb.specify.models import Discipline
 from specifyweb.specify.tests.test_api import ApiTests
 from specifyweb.specify.migration_utils.schema_reader import SchemaReader
 from specifyweb.specify.migration_utils.schema_writer import (
-    update_table_schema_config_with_defaults,
-    update_table_field_schema_config_with_defaults,
-    revert_table_field_schema_config,
+    update_table_schema_config_with_defaults
 )
-from specifyweb.backend.setup_tool.schema_defaults import read_schema_config_defaults
+from specifyweb.backend.setup_tool.schema_defaults import _global_schema_defaults, read_schema_config_defaults
 
 
 class SchemaWriterTests(ApiTests):
@@ -97,6 +95,37 @@ class SchemaWriterTests(ApiTests):
         self.assertEqual(field_label, field_defaults.get("name"))
         self.assertEqual(field_desc, field_defaults.get("desc"))
 
+    def test_reading_overrides_maintains_globals(self):
+        global_defaults = read_schema_config_defaults()
+        fish_defaults = read_schema_config_defaults(self.fish.type)
+
+        global_coa_text8 = global_defaults["collectionobjectattribute"]["items"]["text8"]["name"]
+        fish_coa_text8 = fish_defaults["collectionobjectattribute"]["items"]["text8"]["name"]
+
+        self.assertNotEqual(global_coa_text8, fish_coa_text8)
+
+        bird_defaults = read_schema_config_defaults("bird")
+
+        bird_coa_text8 = bird_defaults["collectionobjectattribute"]["items"]["text8"]["name"]
+
+        self.assertNotEqual(bird_coa_text8, global_coa_text8)
+        self.assertNotEqual(bird_coa_text8, fish_coa_text8)
+
+        new_fish_defaults = read_schema_config_defaults(self.fish.type)
+
+        new_fish_coa_text8 = new_fish_defaults["collectionobjectattribute"]["items"]["text8"]["name"]
+        self.assertEqual(new_fish_coa_text8, fish_coa_text8)
+
+        new_global_defaults = read_schema_config_defaults()
+
+        new_global_coa_text8 = new_global_defaults["collectionobjectattribute"]["items"]["text8"]["name"]
+        self.assertEqual(new_global_coa_text8, global_coa_text8)
+        self.assertNotEqual(new_global_coa_text8, new_fish_coa_text8)
+        self.assertNotEqual(new_global_coa_text8, new_fish_defaults["collectionobjectattribute"]["items"]["text8"]["name"])
+        self.assertNotEqual(new_global_coa_text8, bird_coa_text8)
+        self.assertNotEqual(new_global_coa_text8, bird_defaults["collectionobjectattribute"]["items"]["text8"]["name"])
+
+    @skip("Immutability was removed because it had a significant performance impact")
     def test_immutability_of_schema_defaults(self):
         schema_defaults = read_schema_config_defaults()
 
