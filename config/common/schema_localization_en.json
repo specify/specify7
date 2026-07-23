@@ -3576,7 +3576,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -3607,7 +3607,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -4043,7 +4043,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -4074,7 +4074,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -6883,7 +6883,7 @@
       "yesno2": {"name": "YesNo2", "desc": "YesNo2", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Boolean", "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -6908,7 +6908,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -6940,7 +6940,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,

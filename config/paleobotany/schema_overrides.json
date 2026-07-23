@@ -1,7 +1,6 @@
 {
   "collectionobjectattribute": {
     "ishidden": false,
-    "desc": "Collection Object Attribute",
     "items": [
       {"positionState": {"ishidden": false, "name": "Position State", "desc": "Position State"}},
       {"direction": {"ishidden": false, "name": "Direction", "desc": "Direction"}},
@@ -12,7 +11,6 @@
   },
   "collectionobject": {
     "ishidden": false,
-    "desc": "Collection Object",
     "items": [
       {"collectionObjectAttribute": {"ishidden": true, "name": "Col Obj Attribute", "desc": "Col Obj Attribute"}}
     ]
@@ -23,7 +21,28 @@
   "geologictimeperiod": {
     "ishidden": false
   },
+  "geologictimeperiodtreedef": {
+    "ishidden": false
+  },
+  "geologictimeperiodtreedefitem": {
+    "ishidden": false
+  },
   "lithostrat": {
+    "ishidden": false
+  },
+  "lithostrattreedef": {
+    "ishidden": false
+  },
+  "lithostrattreedefitem": {
+    "ishidden": false
+  },
+  "tectonicunit": {
+    "ishidden": false
+  },
+  "tectonicunittreedef": {
+    "ishidden": false
+  },
+  "tectonicunittreedefitem": {
     "ishidden": false
   }
 }
