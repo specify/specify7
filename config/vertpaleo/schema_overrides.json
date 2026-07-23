@@ -38,6 +38,9 @@
       {"tectonicunit": {"ishidden": true}}
     ]
   },
+  "geologictimeperiod": {
+    "ishidden": false
+  },
   "geologictimeperiodtreedef": {
     "ishidden": false
   },
