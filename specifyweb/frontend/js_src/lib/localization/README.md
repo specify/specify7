@@ -71,7 +71,7 @@
 
 13. At this point, you should reach out to translators to go to Weblate, review
     the localization. Please send them
-    [this Discourse guide](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956).
+    [this Discourse guide](https://speciforum.org/t/get-started-with-specify-7-localization/956).
 
     When they review or edit a localization string, they should uncheck the
     "Needs editing" checkbox for a given string. This allows Weblate to keep

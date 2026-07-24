@@ -84,7 +84,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             <StringToJsx
               components={{
                 link: (label) => (
-                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                  <Link.NewTab href="https://speciforum.org/t/get-started-with-specify-7-localization/956">
                     {label}
                   </Link.NewTab>
                 ),
@@ -119,7 +119,7 @@ export function LanguageSelection<LANGUAGES extends string>({
             <StringToJsx
               components={{
                 link: (label) => (
-                  <Link.NewTab href="https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956">
+                  <Link.NewTab href="https://speciforum.org/t/get-started-with-specify-7-localization/956">
                     {label}
                   </Link.NewTab>
                 ),
