@@ -40,6 +40,7 @@ from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
     filter_ready_disciplines_for_config_tasks,
+    is_collection_available
 )
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -301,7 +302,7 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
-        if get_config_progress().get('busy'):
+        if get_config_progress(collection.discipline_id).get('busy'):
             return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
@@ -322,7 +323,10 @@ def user(request):
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    available_collections = users_collections_for_sp7(request.specify_user.id)
+    available_collections = filter(
+        is_collection_available,
+        users_collections_for_sp7(request.specify_user.id)
+    )
     data['available_collections'] = [
         obj_to_data(c)
         for c in available_collections

@@ -31,6 +31,7 @@ from specifyweb.celery_tasks import MissingWorkerError, get_running_worker_task_
 from specifyweb.backend.setup_tool.tree_defaults import start_default_tree_from_configuration, update_tree_scoping
 from specifyweb.backend.setup_tool.task_tracking import (
     is_discipline_ready_for_config_tasks,
+    has_discipline_background_tasks
 )
 from specifyweb.specify.models import Institution, Discipline
 from specifyweb.backend.businessrules.uniqueness_rules import apply_default_uniqueness_rules
@@ -540,15 +541,21 @@ def filter_ready_disciplines_for_config_tasks(disciplines: list) -> list:
         if not is_discipline_busy_for_config_tasks(discipline.id)
     ]
 
-def get_config_progress() -> dict:
+def is_collection_available(collection) -> bool:
+    return is_discipline_ready_for_config_tasks(collection.discipline_id)
+
+def get_config_progress(discipline_id: int | None = None) -> dict:
     """Returns a dict of the status of config/setup related background tasks"""
     try:
         running_task_names = get_running_worker_task_names()
     except MissingWorkerError:
         running_task_names = []
 
-    busy = is_config_task_running(running_task_names)
-    
+    if discipline_id is None:
+        busy = is_config_task_running(running_task_names)
+    else:
+        busy = has_discipline_background_tasks(discipline_id)
+
     last_error = None
     completed_resources = get_config_resource_progress(running_task_names)
 

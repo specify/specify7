@@ -295,6 +295,7 @@ def choose_collection(request) -> http.HttpResponse:
     """
     from specifyweb.backend.context.views import set_collection_cookie, users_collections_for_sp7
     from specifyweb.specify.api.serializers import obj_to_data, toJson
+    from specifyweb.backend.setup_tool.api import is_collection_available
 
     if 'external_user' in request.session and request.user.is_authenticated:
         # This will be set if the user logged in with an external IdP
@@ -315,7 +316,12 @@ def choose_collection(request) -> http.HttpResponse:
         else settings.LOGIN_REDIRECT_URL
     )
 
-    available_collections = users_collections_for_sp7(request.specify_user.id)
+    available_collections = list(
+        filter(
+            is_collection_available,
+            users_collections_for_sp7(request.specify_user.id)
+        )
+    )
 
     if len(available_collections) == 1:
         set_collection_cookie(redirect_resp, available_collections[0].id)
