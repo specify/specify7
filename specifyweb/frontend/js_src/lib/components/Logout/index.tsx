@@ -7,16 +7,19 @@ import { softError } from '../Errors/assert';
 
 export function Logout() : JSX.Element {
   const loading = React.useContext(LoadingContext);
-  
-  loading(
-    ajax<string>('/accounts/logout/', {
-      method: 'POST',
-      headers: {  },
-    })
-	.then( 
-	  () => globalThis.location.assign(formatUrl("/accounts/login/", {next: "/specify/"})),
-	  (error) => softError(error)
-	)
+
+  const next = globalThis.location.search;
+  console.log(next)
+
+
+  React.useEffect(
+    () => {
+      loading(
+        ajax<string>('/accounts/logout/', { method: 'POST', headers: {  }, })
+          .catch( (error) => softError(error) )
+          .finally( () => globalThis.location.assign(formatUrl("/accounts/login/", {next: '/specify/'})) )
+    )},
+    []
   )
 
   return <LoadingScreen />
