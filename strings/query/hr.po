@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-24 16:03+0000\n"
+"PO-Revision-Date: 2026-07-26 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/query/"
 "hr/>\n"
@@ -384,7 +384,7 @@ msgstr "Lažno"
 #: components/QueryBuilder/FieldFilterSpec.tsx:543
 #, fuzzy
 msgid "trueOrNull"
-msgstr "Točno ili prazno"
+msgstr "True ili Prazno"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:550
