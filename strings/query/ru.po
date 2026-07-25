@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-24 16:03+0000\n"
+"PO-Revision-Date: 2026-07-26 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/query/"
 "ru/>\n"
@@ -348,7 +348,7 @@ msgstr "Равный"
 #: components/QueryBuilder/FieldFilterSpec.tsx:450
 #, fuzzy
 msgid "greaterThan"
-msgstr "Больше чем"
+msgstr "Больше, чем"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:458
@@ -440,7 +440,7 @@ msgstr "Начинается с"
 #: components/QueryBuilder/FieldFilterSpec.tsx:528
 #, fuzzy
 msgid "endsWith"
-msgstr "Заканчивается на"
+msgstr "Заканчивается"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:60
