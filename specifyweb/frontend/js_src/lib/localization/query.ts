@@ -584,7 +584,7 @@ export const queryText = createDictionary({
   },
   greaterThan: {
     'en-us': 'Greater than',
-    'ru-ru': 'Больше чем',
+    'ru-ru': 'Больше, чем',
     'es-es': 'Mayor que',
     'fr-fr': 'Supérieur à',
     'uk-ua': 'Більш чим',
@@ -656,7 +656,7 @@ export const queryText = createDictionary({
     'uk-ua': 'True або Empty',
     'de-ch': 'Wahr oder leer',
     'pt-br': 'Verdadeiro ou Vazio',
-    'hr-hr': 'Točno ili prazno',
+    'hr-hr': 'True ili Prazno',
     nb: 'Sant eller Tom',
   },
   falseOrNull: {
@@ -753,7 +753,7 @@ export const queryText = createDictionary({
     'es-es': 'Termina con',
     'fr-fr': 'Se termine par',
     'pt-br': 'Termina com',
-    'ru-ru': 'Заканчивается на',
+    'ru-ru': 'Заканчивается',
     'uk-ua': 'Закінчується на',
     'hr-hr': 'Završava s',
     nb: 'Slutter med',
