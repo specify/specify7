@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-24 16:04+0000\n"
+"PO-Revision-Date: 2026-07-27 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
 "specify-7/welcome/pt_BR/>\n"
@@ -113,7 +113,7 @@ msgstr "Data de compilação:"
 #: components/HomePage/AboutSpecify.tsx:103
 #, fuzzy
 msgid "specifySixVersion"
-msgstr "Especificar versão 6:"
+msgstr "Especifique a versão 6:"
 
 #. Used in: Components > Home Page > About Specify
 #: components/HomePage/AboutSpecify.tsx:106
