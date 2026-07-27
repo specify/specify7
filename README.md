@@ -25,6 +25,7 @@ To get started, [send us a message to learn more](mailto:membership@specifysoftw
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Installation](#installation)
   - [Specify Cloud (Recommended)](#specify-cloud-recommended)
   - [Self-hosted (Docker / Podman)](#self-hosted-docker--podman)
@@ -38,6 +39,15 @@ To get started, [send us a message to learn more](mailto:membership@specifysoftw
   - [Localizing Specify](#localizing-specify)
 
 ---
+
+# Documentation
+
+The **[Speciforum](https://discourse.specifysoftware.org)** is the official community forum and primary knowledge hub for the Specify Collections Consortium (SCC). It connects collections staff, member institutions, and informatics developers from around the world to collaborate and share their work. Members of the SCC can create an account and unlock tons of exclusive documentation, webinars, and begin asking questions of both the SCC staff and collections community.
+
+Through the Speciforum, you can access:
+* **[Comprehensive Documentation](https://speciforum.org/c/docs/39):** Step-by-step user guides, video and webinar training materials, software installation support, API documentation for developers, and system administration references.
+* **[Community Support](https://speciforum.org/c/get-help/78):** A dedicated space to ask questions, report issues, and troubleshoot workflows with the Specify support team and fellow users.
+* **[Community News & Announcements](https://speciforum.org/c/news/76):** Read here to stay up to date on new developments, software releases, and upcoming workshops and events.
 
 # Installation
 
