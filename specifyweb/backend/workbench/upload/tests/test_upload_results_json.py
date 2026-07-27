@@ -124,6 +124,28 @@ class UploadResultsTests(unittest.TestCase):
         self.assertEqual(failed_business_rule.payload, {})
         self.assertEqual(failed_business_rule.message, str(exception))
 
+    def testBusinessRulePayloadPreservesTopLevelNone(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+
+        payload = {
+            "localizationKey": "childFieldNotUnique",
+            "table": "Collectionobject",
+            "fieldName": None,
+            "parentField": "collection",
+        }
+
+        failed_business_rule = to_failed_business_rule(
+            Exception("Business rule failed", payload),
+            info,
+        )
+
+        self.assertIn("fieldName", failed_business_rule.payload)
+        self.assertIsNone(failed_business_rule.payload["fieldName"])
+
     @given(noMatch=infer)
     def testNoMatch(self, noMatch: NoMatch):
         j = json.dumps(noMatch.to_json())

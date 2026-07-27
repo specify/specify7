@@ -279,24 +279,27 @@ def _is_business_rule_scalar(value: Any) -> bool:
     return isinstance(value, (str, int, bool)) or value is None
 
 
-def _sanitize_business_rule_payload_value(value: Any) -> BusinessRulePayloadValue | None:
+_SANITIZE_FAILED = object()
+
+
+def _sanitize_business_rule_payload_value(value: Any) -> BusinessRulePayloadValue | object:
     if _is_business_rule_scalar(value):
         return value
 
     if isinstance(value, list):
         if all(_is_business_rule_scalar(item) for item in value):
             return value
-        return None
+        return _SANITIZE_FAILED
 
     if isinstance(value, dict):
         sanitized: dict[str, str | int | bool | None] = {}
         for key, item in value.items():
             if not isinstance(key, str) or not _is_business_rule_scalar(item):
-                return None
+                return _SANITIZE_FAILED
             sanitized[key] = item
         return sanitized
 
-    return None
+    return _SANITIZE_FAILED
 
 
 def _sanitize_business_rule_payload(payload: dict[Any, Any]) -> BusinessRulePayload:
@@ -305,7 +308,7 @@ def _sanitize_business_rule_payload(payload: dict[Any, Any]) -> BusinessRulePayl
         if not isinstance(key, str):
             continue
         sanitized_value = _sanitize_business_rule_payload_value(value)
-        if sanitized_value is not None:
+        if sanitized_value is not _SANITIZE_FAILED:
             sanitized[key] = sanitized_value
     return sanitized
 
