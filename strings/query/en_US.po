@@ -96,18 +96,18 @@ msgstr ""
 msgid "queryUnloadProtect"
 msgstr "The new or modified query definition has not been saved"
 
-#: components/QueryBuilder/Components.tsx:267
+#: components/QueryBuilder/Components.tsx:272
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 msgid "recordSetToQuery"
 msgstr "Creating a {recordSetTable:string} from Query"
 
-#: components/QueryBuilder/Components.tsx:272
+#: components/QueryBuilder/Components.tsx:277
 #: components/QueryBuilder/CreateRecordSet.tsx:134
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 msgid "recordSetToQueryDescription"
 msgstr "Generating {recordSetTable:string}..."
 
-#: components/QueryBuilder/Components.tsx:289
+#: components/QueryBuilder/Components.tsx:294
 #. Used in: Components > Query Builder > Components
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Created"
@@ -189,7 +189,7 @@ msgid "createKml"
 msgstr "Create KML"
 
 #: components/BatchIdentify/index.tsx:769
-#: components/QueryBuilder/Components.tsx:231
+#: components/QueryBuilder/Components.tsx:236
 #: components/QueryBuilder/CreateRecordSet.tsx:68
 #. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 msgid "createRecordSet"

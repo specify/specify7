@@ -247,7 +247,7 @@ msgstr "Créer"
 #: components/PickLists/index.tsx:251
 #: components/Preferences/index.tsx:157
 #: components/QueryBuilder/CheckReadAccess.tsx:42
-#: components/QueryBuilder/Components.tsx:288
+#: components/QueryBuilder/Components.tsx:293
 #: components/QueryBuilder/Edit.tsx:144
 #: components/QueryBuilder/Export.tsx:144
 #: components/QueryBuilder/Export.tsx:152
