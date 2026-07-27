@@ -68,13 +68,21 @@ class SchemaLocalizationContractTests(TestCase):
 
         unexpected_extra = [table for table in extra if table not in allowlisted_json_only_tables]
 
-        if missing or unexpected_extra:
-            self.fail(
+        message_parts = []
+        if missing:
+            message_parts.append(
                 'Missing schema localization entries for model-backed tables:\n'
                 + '\n'.join(
                     f'{table}: {", ".join(sorted(self.model_tables[table]))}'
                     for table in missing
                 )
-                + '\n\nUnexpected schema localization-only tables:\n'
+            )
+
+        if unexpected_extra:
+            message_parts.append(
+                'Unexpected schema localization-only tables:\n'
                 + '\n'.join(unexpected_extra)
             )
+
+        if message_parts:
+            self.fail('\n\n'.join(message_parts))
