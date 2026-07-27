@@ -282,7 +282,9 @@ msgstr "Ошибки обновления местоположения - {date:s
 #. 🟥The file name which is used when any Generic non-parsing errors are exported. The .txt file extension is appended to the end of this string. Used in: Components > Locality Update > Status
 #, fuzzy
 msgid "localityUpdateCrashFileName"
-msgstr "Обновление локальной среды {taskId: string} Отчет о сбое - {date: string}"
+msgstr ""
+"Обновление локальной инфраструктуры {taskId: string} Отчет о сбое - {date: "
+"string}"
 
 #: components/LocalityUpdate/utils.ts:53
 #. Used in: Components > Locality Update > Utils

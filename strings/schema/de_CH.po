@@ -103,7 +103,7 @@ msgstr "Datenbank"
 #. Used in: Components > Schema Config > Uniqueness Rule Scope
 #, fuzzy
 msgid "setScope"
-msgstr "Zielbereich festlegen"
+msgstr "Zielbereich einstellen"
 
 #: components/SchemaConfig/Field.tsx:48
 #: components/SchemaConfig/Table.tsx:56
@@ -379,4 +379,4 @@ msgstr "versteckt"
 #. Used in: Components > Formatters > Fields
 #, fuzzy
 msgid "customFieldFormat"
-msgstr "Benutzerdefiniertes Feldformat"
+msgstr "Format für benutzerdefinierte Felder"

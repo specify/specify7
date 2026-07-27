@@ -352,7 +352,7 @@ msgstr "{tableName:string} Regras de Unicidade"
 #. Used in: Components > Router > Overlay Routes ⬤ Components > Schema Config > Table
 #, fuzzy
 msgid "uniquenessRules"
-msgstr "Regras de Unicidade"
+msgstr "Regras de singularidade"
 
 #: components/SchemaConfig/TableUniquenessRules.tsx:178
 #: components/SchemaConfig/UniquenessRuleRow.tsx:247
