@@ -46,6 +46,27 @@ describe('resolveValidationMessage business-rule handling', () => {
     );
   });
 
+  test('resolves datasetAlreadyUploaded via localizationKey payload', () => {
+    const message = resolveValidationMessage('backend raw business-rule text', {
+      localizationKey: 'datasetAlreadyUploaded',
+    });
+
+    expect(message).toBe(backEndText.datasetAlreadyUploaded());
+  });
+
+  test('resolves non-uniqueness business-rule key with payload arguments', () => {
+    const message = resolveValidationMessage('backend raw business-rule text', {
+      localizationKey: 'resourceInPermissionRegistry',
+      resource: 'my-resource',
+    });
+
+    expect(message).toBe(
+      backEndText.resourceInPermissionRegistry({
+        resource: 'my-resource',
+      })
+    );
+  });
+
   test('parsing message takes precedence over business-rule message', () => {
     const message = resolveValidationMessage('failedParsingBoolean', {
       localizationKey: 'childFieldNotUnique',
