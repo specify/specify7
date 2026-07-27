@@ -53,7 +53,7 @@ export const localizationKinds = {
   userInterface: {
     getComponentSettings: (name: string): IR<unknown> => ({
       ...commonSettings(name),
-      effective_check_flags: 'icu-message-format, icu-flags:xml, icu-flags:strict-xml',
+      effective_check_flags: 'icu-flags:strict-xml, icu-message-format',
       repo: 'https://github.com/specify/specify7/',
       push: 'git@github.com:specify/specify7.git',
       repoweb: `https://github.com/specify/specify7/tree/${syncBranch}/specifyweb/frontend/js_src/lib/{{filename}}#L{{line}}`,
