@@ -85,4 +85,7 @@ class SchemaLocalizationContractTests(TestCase):
             )
 
         if message_parts:
-            self.fail('\n\n'.join(message_parts))
+            self.fail(
+                '\n\n'.join(message_parts)
+                + '\n\nAdd entries to the `schema_localization_en.json` file or update the `allowlisted_json_only_tables`.'
+            )
