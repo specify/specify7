@@ -260,17 +260,10 @@ def is_business_rule_exception_with_payload(exception: Exception) -> bool:
     if not payload_like_exception:
         return False
 
-    # Some wrapped code paths can preserve the same payload shape without
+    # Some wrapped code paths can preserve a business-rule payload without
     # preserving the original exception class identity.
-    has_business_rule_shape = any(
-        key in exception.args[1]
-        for key in (
-            "localizationKey",
-            "table",
-            "fieldName",
-            "parentField",
-            "conflicting",
-        )
+    has_business_rule_shape = isinstance(
+        exception.args[1].get("localizationKey"), str
     )
 
     return (

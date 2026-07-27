@@ -108,6 +108,22 @@ class UploadResultsTests(unittest.TestCase):
         # Ensure sanitized payload always serializes in upload results.
         json.dumps(failed_business_rule.to_json())
 
+    def testWrapperFallbackDoesNotMatchGenericTwoArgException(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+
+        exception = Exception(
+            "connection failed",
+            {"table": "Collectionobject", "reason": "timeout"},
+        )
+        failed_business_rule = to_failed_business_rule(exception, info)
+
+        self.assertEqual(failed_business_rule.payload, {})
+        self.assertEqual(failed_business_rule.message, str(exception))
+
     @given(noMatch=infer)
     def testNoMatch(self, noMatch: NoMatch):
         j = json.dumps(noMatch.to_json())
