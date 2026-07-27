@@ -34,15 +34,25 @@ describe('resolveValidationMessage business-rule handling', () => {
     expect(message).not.toContain('Conflicting record IDs:');
   });
 
-  test('falls back to generic message when business-rule payload has no table', () => {
+  test('falls back to backend key when business-rule payload has no table', () => {
     const payload = {
       localizationKey: 'fieldNotUnique',
       fieldName: 'catalognumber',
       conflicting: [4],
     };
 
-    expect(resolveValidationMessage('unknownKey', payload)).toBe(
-      `unknownKey ${JSON.stringify(payload)}`
+    expect(resolveValidationMessage('unknownKey', payload)).toBe('unknownKey');
+  });
+
+  test('does not stringify unknown business-rule payload internals', () => {
+    const payload = {
+      localizationKey: 'notRegisteredBusinessRule',
+      parentData: { collection: 'Collection object (1)' },
+      conflicting: [4],
+    };
+
+    expect(resolveValidationMessage('backend raw business-rule text', payload)).toBe(
+      'backend raw business-rule text'
     );
   });
 
