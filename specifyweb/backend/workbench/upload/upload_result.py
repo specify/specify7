@@ -1,4 +1,4 @@
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, cast
 
 from typing import Literal
 
@@ -308,8 +308,9 @@ def _sanitize_business_rule_payload(payload: dict[Any, Any]) -> BusinessRulePayl
         if not isinstance(key, str):
             continue
         sanitized_value = _sanitize_business_rule_payload_value(value)
-        if sanitized_value is not _SANITIZE_FAILED:
-            sanitized[key] = sanitized_value
+        if sanitized_value is _SANITIZE_FAILED:
+            continue
+        sanitized[key] = cast(BusinessRulePayloadValue, sanitized_value)
     return sanitized
 
 
