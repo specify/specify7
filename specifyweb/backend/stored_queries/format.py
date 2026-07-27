@@ -19,7 +19,6 @@ from sqlalchemy.exc import InvalidRequestError
 from sqlalchemy import types
 
 import specifyweb.backend.context.app_resource as app_resource
-from specifyweb.backend.context.remote_prefs import get_remote_prefs
 
 from specifyweb.specify.utils.agent_types import agent_types
 from specifyweb.specify.models import datamodel, Splocalecontainer
@@ -90,15 +89,28 @@ class ObjectFormatter:
             return None
 
         def getFormatterFromSchema() -> Element:
-
-            try:
-                formatter_name = Splocalecontainer.objects.get(
-                    name=specify_model.name.lower(),
-                    schematype=0,
-                    discipline=self.collection.discipline
-                ).format
-            except Splocalecontainer.DoesNotExist:
+            containers = Splocalecontainer.objects.filter(
+                name=specify_model.name.lower(),
+                schematype=0,
+                discipline=self.collection.discipline,
+            ).order_by('-timestampmodified', '-id')
+            container_count = containers.count()
+            if container_count == 0:
                 return None
+
+            formatter_name = (
+                containers.exclude(format__isnull=True)
+                .exclude(format='')
+                .values_list('format', flat=True)
+                .first()
+            )
+            if container_count > 1:
+                logger.warning(
+                    "Multiple Splocalecontainer rows found for %s in discipline %s using formatter %r",
+                    specify_model.name.lower(),
+                    self.collection.discipline_id,
+                    formatter_name,
+                )
 
             if formatter_name:
                 return lookup_name(formatter_name)
@@ -519,8 +531,11 @@ class ObjectFormatter:
 
 
 def get_date_format() -> str:
-    match = re.search(r'ui\.formatting\.scrdateformat=(.+)', get_remote_prefs())
-    date_format = match.group(1).strip() if match is not None else 'yyyy-MM-dd'
+    from specifyweb.backend.context.remote_prefs import get_remote_pref
+
+    source_date_format = get_remote_pref('ui.formatting.scrdateformat')
+    
+    date_format = source_date_format.strip() if source_date_format is not None else 'yyyy-MM-dd'
     mysql_date_format = LDLM_TO_MYSQL.get(date_format, "%Y-%m-%d")
     logger.debug("dateformat = %s = %s", date_format, mysql_date_format)
     return mysql_date_format

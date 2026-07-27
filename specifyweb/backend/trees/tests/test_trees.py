@@ -175,7 +175,12 @@ class TestTree:
 
 
 class GeographyTree(TestTree, TestTreeSetup):
-    pass
+
+    def _make_locality(self, geo):
+        return models.Locality.objects.create(
+            discipline=self.discipline,
+            geography=geo
+        )
 
 
 class SqlTreeSetup(SQLAlchemySetup, GeographyTree):
@@ -344,6 +349,8 @@ class TreeViewsTest(SqlTreeSetup):
                 self.earth.id,
                 "geographyid",
                 False,
+                False,
+                'all',
                 session,
             )
             expected = [
@@ -357,8 +364,13 @@ class TreeViewsTest(SqlTreeSetup):
                     None,
                     None,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     self.na.children.count(),
                     "NA Syn 0, NA Syn 1",
+                    "NULL",
                 ),
                 (
                     na_syn_0.id,
@@ -370,8 +382,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.na.id,
                     self.na.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     na_syn_0.children.count(),
                     None,
+                    "NULL",
                 ),
                 (
                     na_syn_1.id,
@@ -383,8 +400,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.na.id,
                     self.na.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     na_syn_1.children.count(),
                     None,
+                    "NULL",
                 ),
             ]
 
@@ -397,6 +419,8 @@ class TreeViewsTest(SqlTreeSetup):
                 self.na.id,
                 "name",
                 False,
+                False,
+                'all',
                 session,
             )
             expected = [
@@ -410,8 +434,13 @@ class TreeViewsTest(SqlTreeSetup):
                     None,
                     None,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     self.usa.children.count(),
                     "USA Syn 0, USA Syn 1, USA Syn 2",
+                    "NULL",
                 ),
                 (
                     usa_syn_0.id,
@@ -423,8 +452,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.usa.id,
                     self.usa.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
                 (
                     usa_syn_1.id,
@@ -436,8 +470,13 @@ class TreeViewsTest(SqlTreeSetup):
                     self.usa.id,
                     self.usa.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
                 (
                     usa_syn_2.id,
@@ -449,10 +488,98 @@ class TreeViewsTest(SqlTreeSetup):
                     self.usa.id,
                     self.usa.fullname,
                     "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
                     0,
                     None,
+                    "NULL",
                 ),
             ]
+            self.assertCountEqual(results, expected)
+
+    def test_taxon_rows_include_author_and_synonyms(self):
+        root = self.make_taxontree(
+            "Life",
+            "Taxonomy Root",
+            definition=self.taxontreedef,
+        )
+        animalia = self.make_taxontree(
+            "Animalia",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+            author="L.",
+        )
+        metazoa = self.make_taxontree(
+            "Metazoa",
+            "Kingdom",
+            definition=self.taxontreedef,
+            parent=root,
+            acceptedtaxon=animalia,
+            fullname="Metazoa",
+            author="Haeckel",
+        )
+        animalia.refresh_from_db()
+        metazoa.refresh_from_db()
+
+        @contextmanager
+        def _run_for_row():
+            with TreeViewsTest.test_session_context() as session:
+                set_group_concat_max_len(connection.cursor())
+                yield session
+
+        with _run_for_row() as session:
+            results = get_tree_rows(
+                self.taxontreedef.id,
+                "Taxon",
+                root.id,
+                "name",
+                True,
+                False,
+                'all',
+                session,
+            )
+            expected = [
+                (
+                    animalia.id,
+                    animalia.name,
+                    animalia.fullname,
+                    animalia.nodenumber,
+                    animalia.highestchildnodenumber,
+                    animalia.rankid,
+                    None,
+                    None,
+                    animalia.author,
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    0,
+                    metazoa.fullname,
+                    "NULL",
+                ),
+                (
+                    metazoa.id,
+                    metazoa.name,
+                    metazoa.fullname,
+                    metazoa.nodenumber,
+                    metazoa.highestchildnodenumber,
+                    metazoa.rankid,
+                    animalia.id,
+                    animalia.fullname,
+                    metazoa.author,
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    "NULL",
+                    0,
+                    None,
+                    "NULL",
+                ),
+            ]
+
             self.assertCountEqual(results, expected)
 
 

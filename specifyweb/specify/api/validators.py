@@ -93,7 +93,7 @@ def cleanData(model, data: dict[str, Any], parent_relationship: Relationship | N
     cleaned = {}
     for field_name in list(data.keys()):
         if field_name in ('resource_uri', 'recordset_info', '_tableName'):
-            # These fields are meta data, not part of the resource.
+            # These fields are metadata, not part of the resource.
             continue
 
         try:

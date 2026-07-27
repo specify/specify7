@@ -2,6 +2,7 @@ from django.db.models import ProtectedError
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
+import datetime
 
 
 class PermitTests(ApiTests):
@@ -31,3 +32,105 @@ class PermitTests(ApiTests):
 
         aa.delete()
         permit.delete()
+
+    def test_create_permit_with_fields(self):
+        # Fill in Permit#, Type, and Dates fields
+        # Fill in remaining fields
+        permit = models.Permit.objects.create( #creating a permit object
+            institution=self.institution,
+            permitnumber='P-FIELDS-001',
+            type='Collection',
+            startdate=datetime.datetime(2024, 1, 1),
+            enddate=datetime.datetime(2024, 12, 31),
+            issueddate=datetime.datetime(2024, 1, 15),
+            renewaldate=datetime.datetime(2025, 1, 15),
+            status='Active',
+            remarks='Annual collection permit',
+            permittext='Authorized for scientific collection',
+            yesno1=True,
+            text1='Filed under drawer 3',
+            number1=42.5,
+        )
+
+        # Save + verify all fields persisted
+        self.assertIsNotNone(permit.id)
+        fetched = models.Permit.objects.get(id=permit.id) # fetch the permit object
+        self.assertEqual(fetched.permitnumber, 'P-FIELDS-001') # check all the things in
+        self.assertEqual(fetched.type, 'Collection')
+        self.assertEqual(fetched.startdate, datetime.datetime(2024, 1, 1))
+        self.assertEqual(fetched.enddate, datetime.datetime(2024, 12, 31))
+        self.assertEqual(fetched.issueddate, datetime.datetime(2024, 1, 15))
+        self.assertEqual(fetched.renewaldate, datetime.datetime(2025, 1, 15))
+        self.assertEqual(fetched.status, 'Active')
+        self.assertEqual(fetched.remarks, 'Annual collection permit')
+        self.assertEqual(fetched.yesno1, True)
+        
+
+    def test_create_permit_with_agents(self):
+        # Create new Issued By agent
+        new_issuedby = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Issued",
+            lastname="ByAgent",
+            division=self.division,
+        )
+        # Create new Issued To agent
+        new_issuedto = models.Agent.objects.create(
+            agenttype=0,
+            firstname="Issued",
+            lastname="ToAgent",
+            division=self.division,
+        )
+        # Create permit with existing agent + new agents
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-AGENTS-001',
+            issuedby=self.agent,        # Issue By (existing agent)
+            issuedto=new_issuedto,      # Issue To (new agent)
+        )
+        # Verify save + agent relationships
+        self.assertIsNotNone(permit.id)
+        fetched = models.Permit.objects.get(id=permit.id)
+        self.assertEqual(fetched.issuedby, self.agent)
+        self.assertEqual(fetched.issuedby.firstname, 'Test')
+        self.assertEqual(fetched.issuedto, new_issuedto)
+        self.assertEqual(fetched.issuedto.firstname, 'Issued')
+
+    
+    def test_add_and_delete_attachment(self):
+        # Create a permit first
+        permit = models.Permit.objects.create(
+            institution=self.institution,
+            permitnumber='P-ATT-001',
+        )
+
+        # Create an attachment
+        attachment = models.Attachment.objects.create(
+            origfilename='permit_doc.pdf',
+            tableid=permit.specify_model.tableId,
+            title='Field Permit',
+        )
+        permit_attachment = models.Permitattachment.objects.create(
+            permit=permit,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        # Verify attachment is linked
+        self.assertEqual(permit.permitattachments.count(), 1)
+        self.assertEqual(
+            permit.permitattachments.first().attachment.origfilename,
+            'permit_doc.pdf'
+        )
+
+        # Delete the permit_attachment connector first
+        permit_attachment.delete()
+        # The Attachment is auto-deleted by a post_delete signal handler in 
+        # attachment_rules.py (attachment_jointable_deletion). When a Permitattachment join row is deleted,
+        # the signal fires and calls obj.attachment.delete(). The test passes as-is.
+
+
+        # Verifying it's gone
+        self.assertEqual(permit.permitattachments.count(), 0)
+        self.assertEqual(models.Attachment.objects.filter(id=attachment.id).count(), 0)
+

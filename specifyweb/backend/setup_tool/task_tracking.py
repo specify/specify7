@@ -1,7 +1,7 @@
 from typing import Optional
 import logging
 
-from specifyweb.backend.redis_cache.store import add_to_set, delete_key, remove_from_set, set_members
+from specifyweb.backend.cache.redis import add_to_set, delete_key, remove_from_set, set_members
 from specifyweb.celery_tasks import CELERY_TASK_STATE, app
 from specifyweb.backend.setup_tool.redis import (
     COLLECTION_TASKS_REDIS_KEY,
