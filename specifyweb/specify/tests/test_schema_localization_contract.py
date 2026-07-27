@@ -4,6 +4,27 @@ from pathlib import Path
 from unittest import TestCase
 
 
+# These tables are present in schema_localization_en.json but are not backed by
+# Django model classes in models.py, so they need an explicit exception here.
+ALLOWLISTED_JSON_ONLY_TABLES = {
+    'dnasequencingrunattachment',
+    'libraryrole',
+    'libraryrolepolicy',
+    'message',
+    'role',
+    'rolepolicy',
+    'spattachmentdataset',
+    'spdataset',
+    'spdatasetattachment',
+    'spmerging',
+    'spuserexternalid',
+    'uniquenessrule',
+    'uniquenessrulefield',
+    'userpolicy',
+    'userrole',
+}
+
+
 class SchemaLocalizationContractTests(TestCase):
     """Ensure schema localization entries cover the model-backed tables."""
 
@@ -48,25 +69,7 @@ class SchemaLocalizationContractTests(TestCase):
         missing = sorted(model_tables - json_keys)
         extra = sorted(json_keys - model_tables)
 
-        allowlisted_json_only_tables = {
-            'dnasequencingrunattachment',
-            'libraryrole',
-            'libraryrolepolicy',
-            'message',
-            'role',
-            'rolepolicy',
-            'spattachmentdataset',
-            'spdataset',
-            'spdatasetattachment',
-            'spmerging',
-            'spuserexternalid',
-            'uniquenessrule',
-            'uniquenessrulefield',
-            'userpolicy',
-            'userrole',
-        }
-
-        unexpected_extra = [table for table in extra if table not in allowlisted_json_only_tables]
+        unexpected_extra = [table for table in extra if table not in ALLOWLISTED_JSON_ONLY_TABLES]
 
         message_parts = []
         if missing:
