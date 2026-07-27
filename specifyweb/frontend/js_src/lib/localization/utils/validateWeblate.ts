@@ -39,7 +39,7 @@ const commonSettings = (name: string): IR<unknown> => ({
   language_regex: '^[^.]+$',
   license: 'GPL-2.0-only',
   license_url: 'https://spdx.org/licenses/GPL-2.0-only.html',
-  merge_style: 'rebase',
+  merge_style: 'merge',
   name,
   new_lang: 'url',
   push_branch: weblateBranch,
