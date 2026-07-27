@@ -69,6 +69,45 @@ class UploadResultsTests(unittest.TestCase):
             ),
         )
 
+    def testBusinessRuleExceptionPayloadSanitization(self):
+        info = ReportInfo(
+            tableName="Collectionobject",
+            columns=["catalogNumber"],
+            treeInfo=None,
+        )
+
+        payload = {
+            "localizationKey": "childFieldNotUnique",
+            "table": "Collectionobject",
+            "fieldName": "catalognumber",
+            "goodNested": {"a": "b", "n": 1, "ok": True, "null": None},
+            "badNested": {"bad": info},
+            "goodList": [1, 2, 3],
+            "badList": [1, info],
+        }
+
+        failed_business_rule = to_failed_business_rule(
+            Exception(
+                "Collectionobject must have unique catalognumber in collection",
+                payload,
+            ),
+            info,
+        )
+
+        self.assertEqual(
+            failed_business_rule.payload,
+            {
+                "localizationKey": "childFieldNotUnique",
+                "table": "Collectionobject",
+                "fieldName": "catalognumber",
+                "goodNested": {"a": "b", "n": 1, "ok": True, "null": None},
+                "goodList": [1, 2, 3],
+            },
+        )
+
+        # Ensure sanitized payload always serializes in upload results.
+        json.dumps(failed_business_rule.to_json())
+
     @given(noMatch=infer)
     def testNoMatch(self, noMatch: NoMatch):
         j = json.dumps(noMatch.to_json())
