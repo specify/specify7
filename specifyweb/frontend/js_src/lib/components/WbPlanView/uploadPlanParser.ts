@@ -13,7 +13,7 @@ import { formatToManyIndex, formatTreeRank } from './mappingHelpers';
 import { RANK_KEY_DELIMITER } from './uploadPlanBuilder';
 
 export type MatchBehaviors = 'ignoreAlways' | 'ignoreNever' | 'ignoreWhenBlank';
-export type DisambiguationBehaviors = 'ask' | 'pickFirst'
+export type DisambiguationBehaviors = 'ask' | 'pickFirst';
 
 export type ColumnOptions = {
   readonly matchBehavior: MatchBehaviors;

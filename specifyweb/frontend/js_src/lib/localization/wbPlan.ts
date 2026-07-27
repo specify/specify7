@@ -953,12 +953,14 @@ export const wbPlanText = createDictionary({
     'en-us': 'Ask',
   },
   askDescription: {
-    'en-us': 'You will be prompted to pick a record out of all the records matched to this field.',
+    'en-us':
+      'You will be prompted to pick a record out of all the records matched to this field.',
   },
   pickFirst: {
     'en-us': 'Pick first',
   },
   pickFirstDescription: {
-    'en-us': 'When multiple records are matched to this field, the first record will be picked automatically.',
-  }
+    'en-us':
+      'When multiple records are matched to this field, the first record will be picked automatically.',
+  },
 } as const);

@@ -35,7 +35,11 @@ import {
 } from './Mapper';
 import { getMappingLineData } from './navigator';
 import { navigatorSpecs } from './navigatorSpecs';
-import type { ColumnOptions, DisambiguationBehaviors, MatchBehaviors } from './uploadPlanParser';
+import type {
+  ColumnOptions,
+  DisambiguationBehaviors,
+  MatchBehaviors,
+} from './uploadPlanParser';
 
 export function MappingsControlPanel({
   showHiddenFields,
@@ -244,7 +248,9 @@ export function mappingOptionsMenu({
   readonly onChangeMatchBehaviour: (matchBehavior: MatchBehaviors) => void;
   readonly onToggleAllowNulls: (allowNull: boolean) => void;
   readonly onChangeDefaultValue: (defaultValue: string | null) => void;
-  readonly onChangeDisambiguationBehavior: (disambiguationBehavior: DisambiguationBehaviors) => void;
+  readonly onChangeDisambiguationBehavior: (
+    disambiguationBehavior: DisambiguationBehaviors
+  ) => void;
 }): IR<MapperComponentData> {
   return {
     matchBehavior: {
@@ -349,7 +355,9 @@ export function mappingOptionsMenu({
                     isReadOnly={isReadOnly}
                     name="disambiguation-behavior"
                     value={id}
-                    onChange={(): void => handleChangeDisambiguationBehavior(id)}
+                    onChange={(): void =>
+                      handleChangeDisambiguationBehavior(id)
+                    }
                   />
                   {` ${title}`}
                 </Label.Inline>
