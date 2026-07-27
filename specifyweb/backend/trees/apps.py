@@ -1,5 +1,5 @@
 from django.apps import AppConfig
-from specifyweb.backend.redis_cache.store import get_string
+from specifyweb.backend.cache.redis import get_string
 import logging
 logger = logging.getLogger(__name__)
 

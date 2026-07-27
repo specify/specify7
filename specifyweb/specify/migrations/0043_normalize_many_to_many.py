@@ -5,7 +5,7 @@ from django.conf import settings
 from django.db import migrations, models
 
 import specifyweb.specify.models
-from specifyweb.backend.redis_cache.store import delete_key, redis_type, add_to_set, set_members
+from specifyweb.backend.cache.redis import delete_key, redis_type, add_to_set, set_members
 
 """
 WARNING: Data loss may occur if the Redis container is stopped once this

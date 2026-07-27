@@ -471,6 +471,30 @@ describe('parseFormDefinition', () => {
 describe('getColumnDefinitions', () => {
   requireContext();
 
+  test('prefers linux definition over generic definition', () =>
+    expect(
+      getColumnDefinitions(
+        xml(
+          `<viewdef>
+            <columnDef>Generic</columnDef>
+            <columnDef os="lnx">Linux</columnDef>
+          </viewdef>`
+        )
+      )
+    ).toBe('Linux'));
+
+  test('uses generic definition if linux definition is not available', () =>
+    expect(
+      getColumnDefinitions(
+        xml(
+          `<viewdef>
+            <columnDef os="mac">Mac</columnDef>
+            <columnDef>Generic</columnDef>
+          </viewdef>`
+        )
+      )
+    ).toBe('Generic'));
+
   test('fall back to first definition available', () =>
     expect(
       getColumnDefinitions(
@@ -510,7 +534,7 @@ theories(getColumnDefinition, [
       ),
       undefined,
     ],
-    out: 'B',
+    out: 'A',
   },
 ]);
 
