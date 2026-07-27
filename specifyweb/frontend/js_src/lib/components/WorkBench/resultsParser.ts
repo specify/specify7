@@ -261,9 +261,19 @@ function withConflictingRecordIds(
   payload: IR<unknown>
 ): LocalizedString {
   const conflicting = payload.conflicting;
-  return Array.isArray(conflicting) && conflicting.length > 0
+  const conflictingIds = Array.isArray(conflicting)
+    ? conflicting
+        .filter(
+          (value): value is string | number =>
+            typeof value === 'string' || typeof value === 'number'
+        )
+        .map((value) => String(value))
+    : [];
+  return conflictingIds.length > 0
     ? localized(
-        `${message} (Conflicting record IDs: ${conflicting.join(', ')})`
+        `${message} (${backEndText.conflictingRecordIds({
+          ids: conflictingIds.join(', '),
+        })})`
       )
     : message;
 }
@@ -306,6 +316,7 @@ function resolveBackendBusinessRuleMessage(
   payload: IR<unknown>
 ): LocalizedString | undefined {
   const tableName = getStringPayload(payload, 'table');
+  if (tableName.length === 0) return undefined;
   if (payload.localizationKey === 'fieldNotUnique')
     return withConflictingRecordIds(
       backEndText.fieldNotUnique({
