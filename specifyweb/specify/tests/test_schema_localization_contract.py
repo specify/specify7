@@ -85,7 +85,13 @@ class SchemaLocalizationContractTests(TestCase):
             )
 
         if message_parts:
+            summary = (
+                f'Missing tables: {len(missing)}; '
+                f'Unexpected tables: {len(unexpected_extra)}'
+            )
             self.fail(
-                '\n\n'.join(message_parts)
-                + '\n\nAdd entries to the `schema_localization_en.json` file or update the `allowlisted_json_only_tables`.'
+                summary
+                + '\n\n'
+                + '\n\n'.join(message_parts)
+                + '\n\nAdd entries to the `schema_localization_en.json` file or update the `allowlisted_json_only_tables` allowlist.'
             )
