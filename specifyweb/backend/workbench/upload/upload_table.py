@@ -592,7 +592,7 @@ class BoundUploadTable(NamedTuple):
         except ContetRef as e:
             # Not sure if there is a better way for this. Consider moving this to binding.
             return UploadResult(
-                FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                to_failed_business_rule(e, info), to_one_results, {}
             )
 
         attrs = {
