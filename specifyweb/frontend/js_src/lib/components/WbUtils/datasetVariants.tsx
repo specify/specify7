@@ -56,7 +56,7 @@ const baseWbVariant = {
     },
   },
   documentationUrl:
-    'https://discourse.specifysoftware.org/t/the-specify-7-workbench/540',
+    'https://speciforum.org/t/the-specify-7-workbench/540',
 } as const;
 
 // Defines a shared interface to access dataset variants
@@ -130,7 +130,7 @@ export const datasetVariants = {
         doSuccessful: batchEditText.commitSuccessful(),
       },
     },
-    documentationUrl: 'https://discourse.specifysoftware.org/t/batch-edit/2248',
+    documentationUrl: 'https://speciforum.org/t/batch-edit/2248',
   },
   bulkAttachment: {
     fetchUrl: '/attachment_gw/dataset/',
@@ -146,7 +146,7 @@ export const datasetVariants = {
     // Actually, in retrorespect, this would be a nice feature
     metaRoute: f.never,
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374',
+      'https://speciforum.org/t/batch-attachment-uploader/1374',
   },
 } as const;
 

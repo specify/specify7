@@ -86,7 +86,7 @@ export const formsText = createDictionary({
   valuesOfMustBeUniqueToDatabase: {
     'en-us': 'Values of {values:string} must be unique to database',
     'ru-ru':
-      'Значения {values:string} должны быть уникальными для всей базы данных.',
+      'Значения {values:string} должны быть уникальными для базы данных.',
     'es-es':
       'Los valores de {values:string} deben ser únicos para la base de datos.',
     'fr-fr':
@@ -1025,7 +1025,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Показати кнопку «Перенести вперед»',
     'de-ch': 'Schaltfläche „Übertrag anzeigen“',
     'pt-br': 'Mostrar botão de transferência',
-    'hr-hr': 'Prikaži gumb za prenošenje naprijed',
+    'hr-hr': 'Prikaži gumb za prijenos naprijed',
     nb: 'Vis knappen for videreføring',
   },
   bulkCarryForwardEnabled: {
@@ -1213,7 +1213,7 @@ export const formsText = createDictionary({
     'es-es': 'Crear conjunto de registros en Carga masiva',
     'fr-fr': "Créer un ensemble d'enregistrements sur le report en masse",
     'pt-br': 'Criar conjunto de registros em Transferência em Massa',
-    'ru-ru': 'Создать набор записей в функции массового переноса.',
+    'ru-ru': 'Создание набора записей в рамках функции массового переноса.',
     'uk-ua': 'Створення набору записів для групового перенесення',
     'hr-hr': 'Stvori skup zapisa pri skupnom prijenosu naprijed',
     nb: 'Opprett postsett på masseoverføring',
@@ -1235,7 +1235,7 @@ export const formsText = createDictionary({
     'es-es': 'Mostrar botón Agregar',
     'fr-fr': 'Afficher le bouton Ajouter',
     'uk-ua': 'Показати кнопку «Додати»',
-    'de-ch': 'Schaltfläche „Hinzufügen“ anzeigen',
+    'de-ch': 'Schaltfläche "Hinzufügen" anzeigen',
     'pt-br': 'Mostrar botão Adicionar',
     'hr-hr': 'Prikaži gumb Dodaj',
     nb: 'Vis Legg til-knappen',
@@ -1418,7 +1418,7 @@ export const formsText = createDictionary({
   },
   usagesOfPickList: {
     'en-us': 'Usages of "{pickList:string}" pick list',
-    'ru-ru': 'Использование списка выбора "{pickList:string}"',
+    'ru-ru': 'Использование выпадающего списка "{pickList:string}"',
     'es-es': 'Usos de la lista desplegable "{pickList:string}"',
     'fr-fr': 'Utilisations de la liste de sélection « {pickList:string} »',
     'uk-ua': 'Використання списку вибору "{pickList:string}"',
@@ -1456,7 +1456,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
     'fr-fr': 'Sous-vue',
-    'pt-br': 'Subvisualização',
+    'pt-br': 'Subvista',
     'hr-hr': 'Podprikaz',
     nb: 'Delvisning',
   },
@@ -1593,7 +1593,7 @@ export const formsText = createDictionary({
     'pt-br': 'Adicionar COG Children',
     'ru-ru': 'Добавить детей COG',
     'uk-ua': 'Додати дочірні елементи COG',
-    'hr-hr': 'Dodajte COG djecu',
+    'hr-hr': 'Dodajte djecu COG-a',
     nb: 'Legg til COG-underordnede',
   },
 } as const);

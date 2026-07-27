@@ -48,7 +48,7 @@ const errorBody = (
           </Link.NewTab>
         ),
         discourseLink: (label): JSX.Element => (
-          <Link.NewTab href="https://discourse.specifysoftware.org/">
+          <Link.NewTab href="https://speciforum.org/">
             {label}
           </Link.NewTab>
         ),
