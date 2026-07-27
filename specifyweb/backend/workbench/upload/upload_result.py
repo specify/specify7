@@ -12,8 +12,7 @@ BusinessRulePayloadValue = (
     | int
     | bool
     | None
-    | list[str]
-    | list[int]
+    | list[str | int | bool | None]
     | dict[str, str | int | bool | None]
 )
 BusinessRulePayload = dict[str, BusinessRulePayloadValue]
@@ -252,18 +251,76 @@ class FailedBusinessRule(NamedTuple):
 
 def is_business_rule_exception_with_payload(exception: Exception) -> bool:
     exception_class = exception.__class__
-    return (
-        exception_class.__module__ == BUSINESS_RULE_EXCEPTION_MODULE
-        and exception_class.__name__ == BUSINESS_RULE_EXCEPTION_NAME
-        and len(exception.args) >= 2
+    payload_like_exception = (
+        len(exception.args) >= 2
         and isinstance(exception.args[0], str)
         and isinstance(exception.args[1], dict)
     )
 
+    if not payload_like_exception:
+        return False
+
+    # Some wrapped code paths can preserve the same payload shape without
+    # preserving the original exception class identity.
+    has_business_rule_shape = any(
+        key in exception.args[1]
+        for key in (
+            "localizationKey",
+            "table",
+            "fieldName",
+            "parentField",
+            "conflicting",
+        )
+    )
+
+    return (
+        (
+            exception_class.__module__ == BUSINESS_RULE_EXCEPTION_MODULE
+            and exception_class.__name__ == BUSINESS_RULE_EXCEPTION_NAME
+        )
+        or has_business_rule_shape
+    )
+
+
+def _is_business_rule_scalar(value: Any) -> bool:
+    return isinstance(value, (str, int, bool)) or value is None
+
+
+def _sanitize_business_rule_payload_value(value: Any) -> BusinessRulePayloadValue | None:
+    if _is_business_rule_scalar(value):
+        return value
+
+    if isinstance(value, list):
+        if all(_is_business_rule_scalar(item) for item in value):
+            return value
+        return None
+
+    if isinstance(value, dict):
+        sanitized: dict[str, str | int | bool | None] = {}
+        for key, item in value.items():
+            if not isinstance(key, str) or not _is_business_rule_scalar(item):
+                return None
+            sanitized[key] = item
+        return sanitized
+
+    return None
+
+
+def _sanitize_business_rule_payload(payload: dict[Any, Any]) -> BusinessRulePayload:
+    sanitized: BusinessRulePayload = {}
+    for key, value in payload.items():
+        if not isinstance(key, str):
+            continue
+        sanitized_value = _sanitize_business_rule_payload_value(value)
+        if sanitized_value is not None:
+            sanitized[key] = sanitized_value
+    return sanitized
+
 
 def to_failed_business_rule(exception: Exception, info: ReportInfo) -> FailedBusinessRule:
     if is_business_rule_exception_with_payload(exception):
-        return FailedBusinessRule(exception.args[0], exception.args[1], info)
+        payload = _sanitize_business_rule_payload(exception.args[1])
+        return FailedBusinessRule(exception.args[0], payload, info)
 
     return FailedBusinessRule(str(exception), {}, info)
 
