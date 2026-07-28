@@ -45,8 +45,43 @@ const parsers = [
   },
 ] as const;
 
+/**
+ * Any alphabetic character among the ones blackList discards is a direction
+ * indicator we do not understand — most often a non-English one.
+ */
+const unrecognizedDirection = /\p{Letter}/u;
+
 function parse(rawValue: string): Coord | undefined {
+  /*
+   * Refuse to parse rather than silently discarding an unrecognised direction
+   * letter.
+   *
+   * The blackList strips every character outside [\s\d"'\-.:ensw°], so a Spanish
+   * "96° 57' O" (Oeste = West) loses its O, no direction is found, and a POSITIVE
+   * longitude is returned — the wrong hemisphere, with nothing to indicate that
+   * anything was dropped.
+   *
+   * We deliberately do NOT map O to west. The letter is ambiguous across
+   * languages: Oeste/Ouest (es/pt/fr) mean west, while Ost/Oost (de/nl) mean
+   * east. Guessing would fix one set of collections and silently corrupt
+   * another. Returning undefined surfaces a validation message instead, which is
+   * how out-of-range values such as 19°49'60" are already handled.
+   */
   const value = trimLatLong(rawValue).trim();
+
+  /*
+   * Only reject when trimming destroyed the ONLY direction indicator. If a
+   * recognised n/s/e/w survives, the discarded letters were noise — a spelled-out
+   * "deg", or the masculine ordinal U+00BA (º) that Spanish and Portuguese
+   * transcribers type instead of the degree sign — and the coordinate still means
+   * what it says. Rejecting those too would break ~423 real localities across the
+   * CAS collections that parse correctly today, e.g. "42º20'N" and "4 deg. 11' S".
+   */
+  if (
+    !/[ensw]$/iu.test(value) &&
+    unrecognizedDirection.test(rawValue.match(blackList)?.join('') ?? '')
+  )
+    return undefined;
   return mappedFind(parsers, ({ regex, components, direction }) => {
     const match = regex.exec(value);
     if (match === null) return undefined;
@@ -74,7 +109,33 @@ function makeLatLong(
   if (components.some(Number.isNaN)) return undefined;
 
   const direction = toLowerCase(originalDirection ?? '');
-  const sign = (direction === 's' || direction === 'w' ? -1 : 1) * originalSign;
+
+  /*
+   * A leading minus and a direction letter each carry a sign. Multiplying them,
+   * as this used to, made them CANCEL: "-157.14015 W" — where the minus and the
+   * W both mean west — produced +157.14015, the opposite hemisphere.
+   *
+   * They are instead reconciled by agreement:
+   *   - no direction letter        -> the minus decides
+   *   - minus AND s/w              -> they agree; the value is negative
+   *   - minus AND n/e              -> they contradict; the value is ambiguous
+   *                                   and is rejected rather than guessed
+   *
+   * This keeps both pre-existing invalid cases invalid — '-124:34:23 N'
+   * contradicts, and '-90:05 S' agrees to -90.083 which still exceeds the 90
+   * degree latitude limit — while reading the 934 agreeing coordinates in the CAS
+   * collections (e.g. "-23°2'45.1\"S") the way they were plainly meant, instead
+   * of blocking them behind a validation error.
+   */
+  const directionSign =
+    direction === ''
+      ? undefined
+      : direction === 's' || direction === 'w'
+        ? -1
+        : 1;
+  if (originalSign < 0 && directionSign === 1) return undefined;
+
+  const sign = directionSign ?? originalSign;
 
   let result: Coord;
   if (direction === 's' || direction === 'n') result = new Lat();
