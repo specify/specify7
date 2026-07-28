@@ -48,9 +48,7 @@ const errorBody = (
           </Link.NewTab>
         ),
         discourseLink: (label): JSX.Element => (
-          <Link.NewTab href="https://discourse.specifysoftware.org/">
-            {label}
-          </Link.NewTab>
+          <Link.NewTab href="https://speciforum.org/">{label}</Link.NewTab>
         ),
       }}
       string={mainText.errorResolutionSecondDescription()}
