@@ -47,7 +47,7 @@ msgstr ""
 msgid "returnToHomepage"
 msgstr "Повернутися на домашню сторінку"
 
-#: components/Errors/ErrorDialog.tsx:62
+#: components/Errors/ErrorDialog.tsx:60
 #: components/Errors/FormatError.tsx:197
 #: components/Errors/FormatError.tsx:227
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Format Error
@@ -59,14 +59,14 @@ msgstr "Вибачте, щось пішло не так"
 msgid "clickToSeeDetails"
 msgstr "Натисніть, щоб переглянути деталі"
 
-#: components/Errors/ErrorDialog.tsx:187
+#: components/Errors/ErrorDialog.tsx:185
 #. Used in: Components > Errors > Error Dialog
 msgid "errorOccurredDescription"
 msgstr ""
 "Вибачте, здається, ви зіткнулися з помилкою в Specify 7, про яку ми могливо "
 "не знаємо."
 
-#: components/Errors/ErrorDialog.tsx:188
+#: components/Errors/ErrorDialog.tsx:186
 #. Used in: Components > Errors > Error Dialog
 msgid "criticalErrorOccurredDescription"
 msgstr ""
@@ -81,7 +81,7 @@ msgstr ""
 "даних Specify Cloud, завантажте повідомлення про помилку та надішліть його "
 "на <email />."
 
-#: components/Errors/ErrorDialog.tsx:56
+#: components/Errors/ErrorDialog.tsx:54
 #. 🟥Careful with the <xml> tags when localizing. Used in: Components > Errors > Error Dialog
 msgid "errorResolutionSecondDescription"
 msgstr ""
@@ -90,7 +90,7 @@ msgstr ""
 "<discourseLink>форумі</discourseLink>."
 
 #: components/Core/__tests__/Contexts.test.tsx:48
-#: components/Errors/ErrorDialog.tsx:196
+#: components/Errors/ErrorDialog.tsx:194
 #: components/LocalityUpdate/Status.tsx:382
 #: components/LocalityUpdate/Status.tsx:429
 #. Used in: Core > __tests__ > Contexts ⬤ Components > Errors > Error Dialog ⬤ Components > Locality Update > Status

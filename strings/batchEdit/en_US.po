@@ -5,8 +5,8 @@ msgstr "Content-Type: text/plain\n"
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2262
 #: components/Router/OverlayRoutes.tsx:263
-#: components/WbUtils/datasetVariants.tsx:89
-#: components/WbUtils/datasetVariants.tsx:105
+#: components/WbUtils/datasetVariants.tsx:88
+#: components/WbUtils/datasetVariants.tsx:104
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Batch Edit"
@@ -56,7 +56,7 @@ msgstr "Following errors were found in the query"
 msgid "missingRanksInQuery"
 msgstr "Query requires additional ranks for batch editing"
 
-#: components/WbUtils/datasetVariants.tsx:111
+#: components/WbUtils/datasetVariants.tsx:110
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "createUpdateDataSetInstructions"
 msgstr "Use the query builder to make a new batch edit dataset"
@@ -73,75 +73,75 @@ msgstr ""
 "Rollback in Batch Edit is an experimental feature. This preference will "
 "hide the button"
 
-#: components/WbUtils/datasetVariants.tsx:116
+#: components/WbUtils/datasetVariants.tsx:115
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commit"
 msgstr "Commit"
 
-#: components/WbUtils/datasetVariants.tsx:121
+#: components/WbUtils/datasetVariants.tsx:120
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommitDescription"
 msgstr ""
 "Commiting the Data Set will update, add, and delete the data from the "
 "spreadsheet to the  Specify database."
 
-#: components/WbUtils/datasetVariants.tsx:125
+#: components/WbUtils/datasetVariants.tsx:124
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startRevertDescription"
 msgstr ""
 "Rolling back the dataset will re-update the values, delete created records, "
 "and create new records"
 
-#: components/WbUtils/datasetVariants.tsx:126
+#: components/WbUtils/datasetVariants.tsx:125
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
 "Your changes have been applied to the database. See the number of records "
 "affected in each table below:"
 
-#: components/WbUtils/datasetVariants.tsx:127
+#: components/WbUtils/datasetVariants.tsx:126
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "dateSetRevertDescription"
 msgstr ""
 "This rolled-back Data Set is saved, however, it cannot be edited. Please "
 "re-run the query"
 
-#: components/WbUtils/datasetVariants.tsx:128
+#: components/WbUtils/datasetVariants.tsx:127
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "committing"
 msgstr "Committing"
 
-#: components/WbUtils/datasetVariants.tsx:129
+#: components/WbUtils/datasetVariants.tsx:128
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "beStatusCommit"
 msgstr "Data Set Commit Status"
 
-#: components/WbUtils/datasetVariants.tsx:117
+#: components/WbUtils/datasetVariants.tsx:116
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommit"
 msgstr "Begin Data Set Commit?"
 
-#: components/WbUtils/datasetVariants.tsx:118
+#: components/WbUtils/datasetVariants.tsx:117
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrors"
 msgstr "Commit Failed due to Error Cells"
 
-#: components/WbUtils/datasetVariants.tsx:120
+#: components/WbUtils/datasetVariants.tsx:119
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrorsDescription"
 msgstr "The Commit failed due to one or more cell value errors."
 
-#: components/WbUtils/datasetVariants.tsx:119
+#: components/WbUtils/datasetVariants.tsx:118
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelled"
 msgstr "Commit Cancelled"
 
-#: components/WbUtils/datasetVariants.tsx:122
+#: components/WbUtils/datasetVariants.tsx:121
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelledDescription"
 msgstr "Commit Cancelled Description"
 
-#: components/WbUtils/datasetVariants.tsx:130
+#: components/WbUtils/datasetVariants.tsx:129
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessful"
 msgstr "Commit Completed with No Errors"

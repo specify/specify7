@@ -52,46 +52,46 @@ msgstr "Institution"
 msgid "institutionDescription"
 msgstr "Saisir les informations relatives à l'établissement."
 
-#: components/SetupTool/setupResources.ts:164
+#: components/SetupTool/setupResources.ts:163
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionName"
 msgstr "Nom"
 
-#: components/SetupTool/setupResources.ts:165
+#: components/SetupTool/setupResources.ts:164
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionNameDescription"
 msgstr ""
 "Le nom complet et officiel de l'institution (par exemple, « Institut de "
 "biodiversité de l'Université du Kansas »)."
 
-#: components/SetupTool/setupResources.ts:171
+#: components/SetupTool/setupResources.ts:170
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionCode"
 msgstr "Code"
 
-#: components/SetupTool/setupResources.ts:172
+#: components/SetupTool/setupResources.ts:171
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionCodeDescription"
 msgstr ""
 "Un code court et unique ou un acronyme pour l'institution (par exemple, « "
 "MNHN »)."
 
-#: components/SetupTool/setupResources.ts:178
+#: components/SetupTool/setupResources.ts:177
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionAddress"
 msgstr "Adresse"
 
-#: components/SetupTool/setupResources.ts:180
+#: components/SetupTool/setupResources.ts:179
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionAddressDescription"
 msgstr "Adresse de l'établissement. Facultatif."
 
-#: components/SetupTool/setupResources.ts:228
+#: components/SetupTool/setupResources.ts:227
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionIsAccessionGlobal"
 msgstr "Définir les acquisitions au niveau global (partagées à toute la base)"
 
-#: components/SetupTool/setupResources.ts:229
+#: components/SetupTool/setupResources.ts:228
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "institutionIsAccessionGlobalDescription"
 msgstr ""
@@ -99,69 +99,69 @@ msgstr ""
 "divisions. La portée divisionnelle garantit que les acquisitions sont "
 "spécifiques à chaque division."
 
-#: components/SetupTool/setupResources.ts:185
+#: components/SetupTool/setupResources.ts:184
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "address"
 msgstr "Adresse"
 
-#: components/SetupTool/setupResources.ts:186
+#: components/SetupTool/setupResources.ts:185
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressDescription"
 msgstr "L'adresse de l'établissement."
 
-#: components/SetupTool/setupResources.ts:191
+#: components/SetupTool/setupResources.ts:190
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressCity"
 msgstr "Ville"
 
-#: components/SetupTool/setupResources.ts:192
+#: components/SetupTool/setupResources.ts:191
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressCityDescription"
 msgstr "La ville où se situe l'institution."
 
-#: components/SetupTool/setupResources.ts:198
+#: components/SetupTool/setupResources.ts:197
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressState"
 msgstr "Province/État"
 
-#: components/SetupTool/setupResources.ts:199
+#: components/SetupTool/setupResources.ts:198
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressStateDescription"
 msgstr "L'état ou la province."
 
-#: components/SetupTool/setupResources.ts:205
+#: components/SetupTool/setupResources.ts:204
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressCountry"
 msgstr "Pays"
 
-#: components/SetupTool/setupResources.ts:206
+#: components/SetupTool/setupResources.ts:205
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressCountryDescription"
 msgstr "Le pays."
 
-#: components/SetupTool/setupResources.ts:212
+#: components/SetupTool/setupResources.ts:211
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressPostalCode"
 msgstr "Code postal"
 
-#: components/SetupTool/setupResources.ts:213
+#: components/SetupTool/setupResources.ts:212
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressPostalCodeDescription"
 msgstr "Le code postal."
 
-#: components/SetupTool/setupResources.ts:219
+#: components/SetupTool/setupResources.ts:218
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressPhone1"
 msgstr "Téléphone"
 
-#: components/SetupTool/setupResources.ts:220
+#: components/SetupTool/setupResources.ts:219
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "addressPhone1Description"
 msgstr "Un numéro de téléphone de contact."
 
-#: components/SetupTool/setupResources.ts:240
-#: components/SetupTool/setupResources.ts:308
-#: components/SetupTool/setupResources.ts:345
+#: components/SetupTool/setupResources.ts:239
+#: components/SetupTool/setupResources.ts:307
+#: components/SetupTool/setupResources.ts:344
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "treeRanks"
 msgstr "Arborescence des rangs"
@@ -171,28 +171,28 @@ msgstr "Arborescence des rangs"
 msgid "rank"
 msgstr "Rang"
 
-#: components/SetupTool/setupResources.ts:267
-#: components/SetupTool/setupResources.ts:322
-#: components/SetupTool/setupResources.ts:391
+#: components/SetupTool/setupResources.ts:266
+#: components/SetupTool/setupResources.ts:321
+#: components/SetupTool/setupResources.ts:390
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "fullNameDirection"
 msgstr "Sens de lecture du nom complet"
 
-#: components/SetupTool/setupResources.ts:330
-#: components/SetupTool/setupResources.ts:400
+#: components/SetupTool/setupResources.ts:329
+#: components/SetupTool/setupResources.ts:399
 #: components/TreeView/Tree.tsx:301
 #. Used in: Components > Setup Tool > Setup Resources ⬤ Components > Tree View > Tree
 msgid "preloadTree"
 msgstr "Remplir l'arbre avec les enregistrements par défaut"
 
-#: components/SetupTool/setupResources.ts:331
-#: components/SetupTool/setupResources.ts:401
-#: components/SetupTool/setupResources.ts:408
+#: components/SetupTool/setupResources.ts:330
+#: components/SetupTool/setupResources.ts:400
+#: components/SetupTool/setupResources.ts:407
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "preloadTreeDescription"
 msgstr "Télécharger les enregistrements par défaut pour cet arbre."
 
-#: components/SetupTool/setupResources.ts:407
+#: components/SetupTool/setupResources.ts:406
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "treeToPreload"
 msgstr "Arbre à télécharger :"
@@ -249,117 +249,117 @@ msgstr ""
 "Le séparateur désigne le caractère qui sépare les niveaux lors de "
 "l'affichage du nom complet."
 
-#: components/SetupTool/setupResources.ts:236
+#: components/SetupTool/setupResources.ts:235
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "storageTree"
 msgstr "Arbre de stockage"
 
-#: components/SetupTool/setupResources.ts:304
+#: components/SetupTool/setupResources.ts:303
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "geographyTree"
 msgstr "Arbre géographique"
 
-#: components/SetupTool/setupResources.ts:340
+#: components/SetupTool/setupResources.ts:339
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "taxonTree"
 msgstr "Arbre taxinomique"
 
-#: components/SetupTool/setupResources.ts:277
+#: components/SetupTool/setupResources.ts:276
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "division"
 msgstr "Division"
 
-#: components/SetupTool/setupResources.ts:279
+#: components/SetupTool/setupResources.ts:278
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "divisionName"
 msgstr "Nom"
 
-#: components/SetupTool/setupResources.ts:280
+#: components/SetupTool/setupResources.ts:279
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "divisionAbbrev"
 msgstr "Abréviation"
 
-#: components/SetupTool/setupResources.ts:285
+#: components/SetupTool/setupResources.ts:284
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "discipline"
 msgstr "Discipline"
 
-#: components/SetupTool/setupResources.ts:296
+#: components/SetupTool/setupResources.ts:295
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "disciplineName"
 msgstr "Nom"
 
-#: components/SetupTool/setupResources.ts:289
+#: components/SetupTool/setupResources.ts:288
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "disciplineType"
 msgstr "Taper"
 
-#: components/SetupTool/setupResources.ts:420
+#: components/SetupTool/setupResources.ts:419
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "collectionName"
 msgstr "Nom de la collection"
 
-#: components/SetupTool/setupResources.ts:426
+#: components/SetupTool/setupResources.ts:425
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "collectionCode"
 msgstr "Code"
 
-#: components/SetupTool/setupResources.ts:432
+#: components/SetupTool/setupResources.ts:431
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "collectionCatalogNumFormatName"
 msgstr "Format du numéro de catalogue"
 
-#: components/SetupTool/setupResources.ts:442
+#: components/SetupTool/setupResources.ts:441
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUser"
 msgstr "Utilisateur Specify"
 
-#: components/SetupTool/setupResources.ts:460
+#: components/SetupTool/setupResources.ts:459
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserName"
 msgstr "Nom d'utilisateur"
 
-#: components/SetupTool/setupResources.ts:461
+#: components/SetupTool/setupResources.ts:460
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserNameDescription"
 msgstr "Nom d'utilisateur du compte administrateur principal."
 
-#: components/SetupTool/setupResources.ts:467
+#: components/SetupTool/setupResources.ts:466
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserPassword"
 msgstr "Mot de passe"
 
-#: components/SetupTool/setupResources.ts:468
+#: components/SetupTool/setupResources.ts:467
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserPasswordDescription"
 msgstr "Le mot de passe du compte."
 
-#: components/SetupTool/setupResources.ts:473
+#: components/SetupTool/setupResources.ts:472
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserConfirmPassword"
 msgstr "Confirmez le mot de passe"
 
-#: components/SetupTool/setupResources.ts:474
+#: components/SetupTool/setupResources.ts:473
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserConfirmPasswordDescription"
 msgstr "Doit correspondre au mot de passe saisi ci-dessus."
 
-#: components/SetupTool/setupResources.ts:446
+#: components/SetupTool/setupResources.ts:445
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserFirstName"
 msgstr "Prénom"
 
-#: components/SetupTool/setupResources.ts:447
+#: components/SetupTool/setupResources.ts:446
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserFirstNameDescription"
 msgstr "Prénom de l'agent associé au compte. Facultatif."
 
-#: components/SetupTool/setupResources.ts:453
+#: components/SetupTool/setupResources.ts:452
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserLastName"
 msgstr "Nom de famille"
 
-#: components/SetupTool/setupResources.ts:454
+#: components/SetupTool/setupResources.ts:453
 #. Used in: Components > Setup Tool > Setup Resources
 msgid "specifyUserLastNameDescription"
 msgstr "Le nom de famille de l'agent associé au compte."

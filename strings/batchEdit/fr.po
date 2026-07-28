@@ -15,8 +15,8 @@ msgstr ""
 #: components/Header/menuItemDefinitions.ts:115
 #: components/Preferences/UserDefinitions.tsx:2262
 #: components/Router/OverlayRoutes.tsx:263
-#: components/WbUtils/datasetVariants.tsx:89
-#: components/WbUtils/datasetVariants.tsx:105
+#: components/WbUtils/datasetVariants.tsx:88
+#: components/WbUtils/datasetVariants.tsx:104
 #. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 msgid "batchEdit"
 msgstr "Modification par lots"
@@ -70,7 +70,7 @@ msgstr ""
 "La requête nécessite des niveaux hiérarchiques supplémentaires pour "
 "l'édition par lots"
 
-#: components/WbUtils/datasetVariants.tsx:111
+#: components/WbUtils/datasetVariants.tsx:110
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "createUpdateDataSetInstructions"
 msgstr ""
@@ -89,26 +89,26 @@ msgstr ""
 "La fonction « Annuler » dans l’édition par lots est expérimentale. Cette "
 "préférence masquera le bouton."
 
-#: components/WbUtils/datasetVariants.tsx:116
+#: components/WbUtils/datasetVariants.tsx:115
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commit"
 msgstr "Verser en base"
 
-#: components/WbUtils/datasetVariants.tsx:121
+#: components/WbUtils/datasetVariants.tsx:120
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommitDescription"
 msgstr ""
 "L'enregistrement du jeu de données mettra à jour, ajoutera et supprimera "
 "les données de la feuille de calcul dans la base de données Specify."
 
-#: components/WbUtils/datasetVariants.tsx:125
+#: components/WbUtils/datasetVariants.tsx:124
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startRevertDescription"
 msgstr ""
 "La restauration des données permettra de mettre à jour les valeurs, de "
 "supprimer les enregistrements créés et d'en créer de nouveaux."
 
-#: components/WbUtils/datasetVariants.tsx:126
+#: components/WbUtils/datasetVariants.tsx:125
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessfulDescription"
 msgstr ""
@@ -116,49 +116,49 @@ msgstr ""
 "nombre d'enregistrements affectés dans chaque table, cliquez sur « "
 "Résultats » dans la barre d'outils au-dessus de la grille de données."
 
-#: components/WbUtils/datasetVariants.tsx:127
+#: components/WbUtils/datasetVariants.tsx:126
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "dateSetRevertDescription"
 msgstr ""
 "Ce jeu de données restauré est enregistré, mais ne peut pas être modifié. "
 "Veuillez exécuter à nouveau la requête."
 
-#: components/WbUtils/datasetVariants.tsx:128
+#: components/WbUtils/datasetVariants.tsx:127
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "committing"
 msgstr "Téléverser"
 
-#: components/WbUtils/datasetVariants.tsx:129
+#: components/WbUtils/datasetVariants.tsx:128
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "beStatusCommit"
 msgstr "État de versement du jeu de données"
 
-#: components/WbUtils/datasetVariants.tsx:117
+#: components/WbUtils/datasetVariants.tsx:116
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "startCommit"
 msgstr "Commencer à verser le jeu de données ?"
 
-#: components/WbUtils/datasetVariants.tsx:118
+#: components/WbUtils/datasetVariants.tsx:117
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrors"
 msgstr "Échec de la validation en raison de cellules en erreur"
 
-#: components/WbUtils/datasetVariants.tsx:120
+#: components/WbUtils/datasetVariants.tsx:119
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitErrorsDescription"
 msgstr "La validation a échoué en raison d'une ou plusieurs cellule(s) en erreur."
 
-#: components/WbUtils/datasetVariants.tsx:119
+#: components/WbUtils/datasetVariants.tsx:118
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelled"
 msgstr "Versement annulé"
 
-#: components/WbUtils/datasetVariants.tsx:122
+#: components/WbUtils/datasetVariants.tsx:121
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitCancelledDescription"
 msgstr "Description de l'annulation du versement"
 
-#: components/WbUtils/datasetVariants.tsx:130
+#: components/WbUtils/datasetVariants.tsx:129
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "commitSuccessful"
 msgstr "Versement terminé sans erreur"

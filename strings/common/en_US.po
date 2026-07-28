@@ -742,7 +742,7 @@ msgstr "(opens in a new tab)"
 msgid "openInNewTab"
 msgstr "Open in New Tab"
 
-#: components/Errors/ErrorDialog.tsx:164
+#: components/Errors/ErrorDialog.tsx:162
 #: components/Header/Logo.tsx:84
 #: components/Permissions/PermissionDenied.tsx:214
 #: components/RouterCommands/CacheBuster.tsx:34
@@ -909,7 +909,7 @@ msgstr "Export"
 msgid "import"
 msgstr "Import"
 
-#: components/Errors/ErrorDialog.tsx:177
+#: components/Errors/ErrorDialog.tsx:175
 #: components/Errors/Toasts.tsx:103
 #: components/Permissions/PermissionDenied.tsx:218
 #. Used in: Components > Errors > Error Dialog ⬤ Components > Errors > Toasts ⬤ Components > Permissions > Permission Denied
@@ -936,7 +936,7 @@ msgstr "Filter"
 msgid "results"
 msgstr "Results"
 
-#: components/Errors/ErrorDialog.tsx:144
+#: components/Errors/ErrorDialog.tsx:142
 #: components/LocalityUpdate/Status.tsx:468
 #: components/LocalityUpdate/Status.tsx:509
 #: components/Merging/Status.tsx:100
@@ -1045,8 +1045,8 @@ msgstr "None available"
 #: components/Toolbar/RecordSets.tsx:230
 #: components/WbActions/WbValidate.tsx:62
 #: components/WbUtils/datasetVariants.tsx:29
-#: components/WbUtils/datasetVariants.tsx:88
-#: components/WbUtils/datasetVariants.tsx:104
+#: components/WbUtils/datasetVariants.tsx:87
+#: components/WbUtils/datasetVariants.tsx:103
 #. 🟥Example usage: Record Sets (1,234). Used in: Components > App Resources > Filters ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Cells > Form Table ⬤ Components > Formatters > Types ⬤ Components > Forms > Delete Blocked ⬤ Components > Header > Express Search Task ⬤ Components > Toolbar > Query ⬤ Components > Toolbar > Record Sets ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Utils > Dataset Variants
 msgid "countLine"
 msgstr "{resource:string} ({count:number|formatted})"

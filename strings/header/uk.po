@@ -266,7 +266,7 @@ msgstr "Для розробників"
 msgid "forum"
 msgstr "Форум"
 
-#: components/Errors/ErrorDialog.tsx:152
+#: components/Errors/ErrorDialog.tsx:150
 #: components/Header/userToolDefinitions.ts:176
 #: components/Router/Routes.tsx:459
 #: components/RouterCommands/CacheBuster.tsx:39

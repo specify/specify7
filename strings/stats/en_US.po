@@ -108,7 +108,7 @@ msgstr "Select From Queries"
 msgid "selectFromAvailableDefault"
 msgstr "Select From Available Default Statistics"
 
-#: components/SetupTool/setupResources.ts:416
+#: components/SetupTool/setupResources.ts:415
 #: components/Statistics/StatsSpec.tsx:25
 #: components/Statistics/__tests__/layout.tests.ts:14
 #: components/Statistics/__tests__/layout.tests.ts:103

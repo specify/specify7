@@ -400,12 +400,12 @@ msgstr "New Column {index:number}"
 msgid "noHeader"
 msgstr "(no header)"
 
-#: components/WbUtils/datasetVariants.tsx:73
+#: components/WbUtils/datasetVariants.tsx:72
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "copyPlan"
 msgstr "Copy plan from existing Data Set"
 
-#: components/WbUtils/datasetVariants.tsx:74
+#: components/WbUtils/datasetVariants.tsx:73
 #. Used in: Components > Wb Utils > Dataset Variants
 msgid "noPlansToCopyFrom"
 msgstr "There are no plans available, please continue to create an upload plan."
