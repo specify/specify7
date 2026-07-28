@@ -130,8 +130,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
   expressSearchConfig: {
     mimeType: 'text/xml',
     name: 'ExpressSearchConfig',
-    documentationUrl:
-      'https://speciforum.org/t/simple-search-config/183',
+    documentationUrl: 'https://speciforum.org/t/simple-search-config/183',
     icon: icons.search,
     label: resourcesText.expressSearchConfig(),
   },
