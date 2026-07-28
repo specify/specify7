@@ -7,16 +7,23 @@ from unittest import TestCase
 # These tables are present in schema_localization_en.json but are not backed by
 # Django model classes in models.py, so they need an explicit exception here.
 ALLOWLISTED_JSON_ONLY_TABLES = {
+    'autonumsch_coll',
+    'autonumsch_div',
+    'autonumsch_dsp',
     'dnasequencingrunattachment',
     'libraryrole',
     'libraryrolepolicy',
     'message',
+    'project_colobj',
     'role',
     'rolepolicy',
+    'sp_schema_mapping',
     'spattachmentdataset',
     'spdataset',
     'spdatasetattachment',
+    'specifyuser_spprincipal',
     'spmerging',
+    'spprincipal_sppermission',
     'spuserexternalid',
     'uniquenessrule',
     'uniquenessrulefield',
