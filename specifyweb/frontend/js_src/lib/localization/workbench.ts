@@ -390,7 +390,7 @@ export const wbText = createDictionary({
     'es-es':
       'La reversión eliminará los nuevos registros de datos que este conjunto de datos agregó a la base de datos Specify. La reversión completa se cancelará si alguno de los datos cargados ha sido referenciado (reutilizado) por otros registros de datos desde que se cargaron.',
     'fr-fr':
-      "L'annulation supprimera les nouveaux enregistrements de données ajoutés par cet ensemble de données à la base de données Specify. L'annulation complète sera annulée si des données importées ont été référencées (réutilisées) par d'autres enregistrements de données depuis leur importation.",
+      "Le retour arrière supprimera les nouveaux enregistrements de données ajoutés par cet ensemble de données à la base de données Specify. Il sera annulé si des données importées ont été référencées (réutilisées) par d'autres enregistrements de données depuis leur importat.",
     'uk-ua':
       'Відкат видалить нові записи даних, які цей набір даних додав до бази даних Specify. Повний відкат буде скасовано, якщо будь-які завантажені дані були використані повторно (повторно використані) іншими записами даних з моменту їх завантаження.',
     'de-ch':
@@ -420,7 +420,7 @@ export const wbText = createDictionary({
     'es-es':
       'Al subir este archivo, se añadirán todos los registros nuevos de este conjunto de datos a su base de datos.',
     'fr-fr':
-      'Le chargement de ce fichier ajoutera tous les nouveaux enregistrements de cet ensemble de données à votre base de données.',
+      'Le chargement ajoutera tous les nouveaux enregistrements de cet ensemble de données à votre base de données.',
     'uk-ua':
       'Завантаження цього додасть усі нові записи з цього набору даних до вашої бази даних.',
     'de-ch':
@@ -1348,7 +1348,7 @@ export const wbText = createDictionary({
     'en-us': 'Import file',
     'ru-ru': 'Импортировать файл',
     'es-es': 'Importar archivo',
-    'fr-fr': 'Importer le fichier',
+    'fr-fr': 'Importer un fichier',
     'uk-ua': 'Імпорт файлу',
     'de-ch': 'Importdatei',
     'pt-br': 'Arquivo de importação',
@@ -1857,7 +1857,7 @@ export const wbText = createDictionary({
     'en-us': 'New records',
     'de-ch': 'Neue Rekorde',
     'es-es': 'Nuevos récords',
-    'fr-fr': 'Nouveaux records',
+    'fr-fr': 'Nouveaux enregistrements',
     'pt-br': 'Novos recordes',
     'ru-ru': 'Новые рекорды',
     'uk-ua': 'Нові рекорди',
@@ -1867,7 +1867,7 @@ export const wbText = createDictionary({
   recordsUpdated: {
     'en-us': 'Updated records',
     'es-es': 'Registros actualizados',
-    'fr-fr': 'Archives mises à jour',
+    'fr-fr': 'Enregistrements mis-à-jour',
     'de-ch': 'Aktualisierte Datensätze',
     'pt-br': 'Registros atualizados',
     'hr-hr': 'Ažurirani zapisi',
