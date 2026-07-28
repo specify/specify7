@@ -94,7 +94,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Використовуйте налаштування системи',
     'de-ch': 'Systemeinstellung verwenden',
     'pt-br': 'Usar as configurações do sistema',
-    'hr-hr': 'Koristi sistemske postavke',
+    'hr-hr': 'Koristi postavke sustava',
     nb: 'Bruk systeminnstillingen',
   },
   inheritOsSettings: {
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
   },
   synonymColor: {
     'en-us': 'Synonym color',
-    'ru-ru': 'Синоним цвета',
+    'ru-ru': 'цвет синонима',
     'es-es': 'color sinónimo',
     'fr-fr': 'Synonyme couleur',
     'uk-ua': 'Синонім кольору',
@@ -812,7 +812,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
-    'hr-hr': 'Označi odgovarajući podniz',
+    'hr-hr': 'Označi podudarni podniz',
     nb: 'Marker samsvarende delstreng',
   },
   languageDescription: {
@@ -1675,7 +1675,7 @@ export const preferencesText = createDictionary({
   },
   limitMaxFieldWidth: {
     'en-us': 'Limit max field width',
-    'ru-ru': 'Ограничить максимальную ширину поля',
+    'ru-ru': 'Ограничение максимальной ширины поля',
     'es-es': 'Limitar el ancho máximo del campo',
     'fr-fr': 'Limiter la largeur maximale du champ',
     'uk-ua': 'Обмеження максимальної ширини поля',
