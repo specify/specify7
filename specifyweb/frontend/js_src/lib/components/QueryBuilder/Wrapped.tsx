@@ -625,6 +625,7 @@ function Wrapped({
                       fields={state.fields}
                       getQueryFieldRecords={getQueryFieldRecords}
                       queryResource={queryResource}
+                      sourceRecordSetId={recordSet?.id}
                     />
                   ) : undefined
                 }
