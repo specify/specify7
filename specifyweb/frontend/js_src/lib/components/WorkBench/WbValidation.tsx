@@ -96,6 +96,18 @@ const uploadStatuses: RA<UploadStatus> = [
 const isUploadStatus = (value: string): value is UploadStatus =>
   (uploadStatuses as RA<string>).includes(value);
 
+const hasUploadInfo = (
+  value: unknown
+): value is {
+  readonly info: {
+    readonly treeInfo: {
+      readonly rank: string;
+      readonly name: string;
+    } | null;
+  };
+} =>
+  typeof value === 'object' && value !== null && 'info' in value;
+
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
   // eslint-disable-next-line functional/prefer-readonly-type
@@ -473,38 +485,17 @@ export class WbValidation {
     initialMappingPath: MappingPath | undefined = []
   ): void {
     const uploadResult = result.UploadResult;
-    const uploadStatusKey = Object.keys(uploadResult.record_result)[0];
+    const [uploadStatusKey, statusData] =
+      (Object.entries(uploadResult.record_result)[0] ?? []) as
+        | [string, unknown]
+        | [];
 
     if (typeof uploadStatusKey !== 'string' || !isUploadStatus(uploadStatusKey))
       return;
 
     const uploadStatus: UploadStatus = uploadStatusKey;
 
-    const recordResult = uploadResult.record_result;
-    const info =
-      'AttachmentFailure' in recordResult
-        ? recordResult.AttachmentFailure.info
-        : 'Deleted' in recordResult
-          ? recordResult.Deleted.info
-          : 'FailedBusinessRule' in recordResult
-            ? recordResult.FailedBusinessRule.info
-            : 'Matched' in recordResult
-              ? recordResult.Matched.info
-              : 'MatchedAndChanged' in recordResult
-                ? recordResult.MatchedAndChanged.info
-                : 'MatchedMultiple' in recordResult
-                  ? recordResult.MatchedMultiple.info
-                  : 'NoChange' in recordResult
-                    ? recordResult.NoChange.info
-                    : 'NoMatch' in recordResult
-                      ? recordResult.NoMatch.info
-                      : 'NullRecord' in recordResult
-                        ? recordResult.NullRecord.info
-                        : 'Updated' in recordResult
-                          ? recordResult.Updated.info
-                          : 'Uploaded' in recordResult
-                            ? recordResult.Uploaded.info
-                            : undefined;
+    const info = hasUploadInfo(statusData) ? statusData.info : undefined;
 
     const isTree = info?.treeInfo !== null && info !== undefined;
     const mappingPath = isTree
