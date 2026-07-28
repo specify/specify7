@@ -19,7 +19,7 @@ export function Logout() : JSX.Element {
           .catch( (error) => softError(error) )
           .finally( () => globalThis.location.assign(formatUrl("/accounts/login/", {next: '/specify/'})) )
     )},
-    []
+    [loading]
   )
 
   return <LoadingScreen />
