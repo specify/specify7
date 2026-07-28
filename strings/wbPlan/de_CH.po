@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-27 21:02+0000\n"
+"PO-Revision-Date: 2026-07-28 09:38+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/wbPlan/de_CH/>\n"
@@ -497,25 +497,34 @@ msgstr "Bitte wählen Sie eine gültige JSON-Datei aus."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:339
+#, fuzzy
 msgid "disambiguationBehavior"
-msgstr ""
+msgstr "Disambiguierungsverhalten:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:343
+#, fuzzy
 msgid "ask"
-msgstr ""
+msgstr "Fragen"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:344
+#, fuzzy
 msgid "askDescription"
 msgstr ""
+"Sie werden aufgefordert, einen Datensatz aus allen Datensätzen auszuwählen, "
+"die diesem Feld zugeordnet sind."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
+#, fuzzy
 msgid "pickFirst"
-msgstr ""
+msgstr "Wähle zuerst"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:348
+#, fuzzy
 msgid "pickFirstDescription"
 msgstr ""
+"Wenn mehrere Datensätze mit diesem Feld übereinstimmen, wird automatisch der "
+"erste Datensatz ausgewählt."
