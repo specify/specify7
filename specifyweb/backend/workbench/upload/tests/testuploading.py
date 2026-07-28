@@ -630,6 +630,64 @@ class OneToOneAttributeTests(UploadTestsBase):
 
 class UploadTests(UploadTestsBase):
 
+    def test_upload_taxon_to_non_default_tree(self) -> None:
+        taxon_model = get_table("Taxon")
+        taxon_tree_def_model = get_table("Taxontreedef")
+        non_default_tree = taxon_tree_def_model.objects.create(
+            name="Non-default Taxon Tree",
+            discipline=self.discipline,
+        )
+        self.make_taxon_ranks(non_default_tree)
+        taxon_model.objects.create(
+            name="Non-default Root",
+            definition=non_default_tree,
+            definitionitem=non_default_tree.treedefitems.get(
+                name="Taxonomy Root"
+            ),
+        )
+
+        plan_json = {
+            "baseTableName": "Taxon",
+            "uploadable": {
+                "treeRecord": {
+                    "ranks": {
+                        "Genus": {
+                            "treeNodeCols": {"name": "Genus"},
+                            "treeId": non_default_tree.id,
+                        },
+                        "Species": {
+                            "treeNodeCols": {"name": "Species"},
+                            "treeId": non_default_tree.id,
+                        },
+                    }
+                }
+            },
+        }
+        validate(plan_json, schema)
+
+        results = do_upload(
+            self.collection,
+            [{"Genus": "AlternateGenus", "Species": "alternateSpecies"}],
+            parse_plan(plan_json),
+            self.agent.id,
+        )
+
+        self.assertEqual(len(results), 1)
+        self.assertFalse(results[0].contains_failure())
+
+        uploaded_species = taxon_model.objects.get(
+            name="alternateSpecies",
+            definition=non_default_tree,
+        )
+        self.assertEqual(uploaded_species.parent.name, "AlternateGenus")
+        self.assertEqual(uploaded_species.parent.definition, non_default_tree)
+        self.assertFalse(
+            taxon_model.objects.filter(
+                name="alternateSpecies",
+                definition=self.taxontreedef,
+            ).exists()
+        )
+
     def test_determination_default_iscurrent(self) -> None:
         plan_json = {
             "baseTableName": "collectionobject",
