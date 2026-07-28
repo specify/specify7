@@ -62,39 +62,17 @@ type UploadResults = {
   readonly interestingRecords: Records;
 };
 
-type UploadStatus =
-  | 'AttachmentFailure'
-  | 'Deleted'
-  | 'FailedBusinessRule'
-  | 'Matched'
-  | 'MatchedAndChanged'
-  | 'MatchedMultiple'
-  | 'NoChange'
-  | 'NoMatch'
-  | 'NullRecord'
-  | 'ParseFailures'
-  | 'PropagatedFailure'
-  | 'Updated'
-  | 'Uploaded';
+type KeysOfUnion<T> = T extends unknown ? keyof T : never;
 
-const uploadStatuses: RA<UploadStatus> = [
-  'AttachmentFailure',
-  'Deleted',
-  'FailedBusinessRule',
-  'Matched',
-  'MatchedAndChanged',
-  'MatchedMultiple',
-  'NoChange',
-  'NoMatch',
-  'NullRecord',
-  'ParseFailures',
-  'PropagatedFailure',
-  'Updated',
-  'Uploaded',
-];
+type UploadStatus = Extract<
+  KeysOfUnion<UploadResult['UploadResult']['record_result']>,
+  string
+>;
 
-const isUploadStatus = (value: string): value is UploadStatus =>
-  (uploadStatuses as RA<string>).includes(value);
+const getRecordResultEntry = (
+  recordResult: UploadResult['UploadResult']['record_result']
+): readonly [UploadStatus, unknown] | undefined =>
+  Object.entries(recordResult)[0] as [UploadStatus, unknown] | undefined;
 
 const hasUploadInfo = (
   value: unknown
@@ -485,15 +463,10 @@ export class WbValidation {
     initialMappingPath: MappingPath | undefined = []
   ): void {
     const uploadResult = result.UploadResult;
-    const [uploadStatusKey, statusData] =
-      (Object.entries(uploadResult.record_result)[0] ?? []) as
-        | [string, unknown]
-        | [];
+    const recordResultEntry = getRecordResultEntry(uploadResult.record_result);
+    if (recordResultEntry === undefined) return;
 
-    if (typeof uploadStatusKey !== 'string' || !isUploadStatus(uploadStatusKey))
-      return;
-
-    const uploadStatus: UploadStatus = uploadStatusKey;
+    const [uploadStatus, statusData] = recordResultEntry;
 
     const info = hasUploadInfo(statusData) ? statusData.info : undefined;
 
