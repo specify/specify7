@@ -87,6 +87,7 @@
             "matchBehavior": "ignoreWhenBlank",
             "nullAllowed": true,
             "default": "qwerty",
+            "disambiguationBehavior": "ask",
             "column": "BMSM No."
           }
         },
@@ -286,6 +287,7 @@
                             "matchBehavior": "ignoreAlways",
                             "nullAllowed": true,
                             "default": null,
+                            "disambiguationBehavior": "ask",
                             "column": "Class"
                           }
                         }
