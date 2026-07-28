@@ -2,7 +2,7 @@ from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting
 from specifyweb.specify.models import Collectionobject, Collectionobjectgroupjoin, Component
 
 def parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user):
-    if tableid == 1029 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]: 
+    if tableid == 1029 and 'catalogNumber' in [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]:
         if not get_parent_cat_num_inheritance_setting(collection, user):
             return list(query)
 
@@ -14,16 +14,30 @@ def parent_inheritance_post_query_processing(query, tableid, field_specs, collec
             return list(query)
 
         results = list(query)
-        updated_results = []
 
-        # Map results, replacing null catalog numbers with the parent catalog number
+        # Collect IDs of rows needing catalog number lookup
+        ids_needing_lookup = [
+            result[0] for result in results
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == ''
+        ]
+
+        # Bulk prefetch: single query to get all component -> collectionobject catalog numbers
+        catnum_by_component_id = {}
+        if ids_needing_lookup:
+            catnum_by_component_id = dict(
+                Component.objects.filter(id__in=ids_needing_lookup)
+                .select_related('collectionobject')
+                .values_list('id', 'collectionobject__catalognumber')
+            )
+
+        updated_results = []
         for result in results:
             result = list(result)
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
-                component_id = result[0]  # Assuming the first column is the child's ID
-                component_obj = Component.objects.filter(id=component_id).first()
-                if component_obj and component_obj.collectionobject:
-                    result[catalog_number_field_index] = component_obj.collectionobject.catalognumber
+                component_id = result[0]
+                catnum = catnum_by_component_id.get(component_id)
+                if catnum:
+                    result[catalog_number_field_index] = catnum
             updated_results.append(tuple(result))
 
         return updated_results
@@ -44,18 +58,43 @@ def cog_inheritance_post_query_processing(query, tableid, field_specs, collectio
             return list(query)
 
         results = list(query)
-        updated_results = []
 
-        # Map results, replacing null catalog numbers with the collection object group primary collection catalog number
+        # Collect IDs of rows needing COG inheritance lookup
+        ids_needing_lookup = [
+            result[0] for result in results
+            if result[catalog_number_field_index] is None or result[catalog_number_field_index] == ''
+        ]
+
+        # Bulk prefetch step 1: get parentcog_id for each childco_id
+        cog_by_child = {}
+        if ids_needing_lookup:
+            cog_by_child = dict(
+                Collectionobjectgroupjoin.objects.filter(childco_id__in=ids_needing_lookup)
+                .values_list('childco_id', 'parentcog_id')
+            )
+
+        # Bulk prefetch step 2: get primary member's catalog number for each COG
+        catnum_by_cog = {}
+        cog_ids = set(cog_by_child.values())
+        if cog_ids:
+            catnum_by_cog = dict(
+                Collectionobjectgroupjoin.objects.filter(
+                    parentcog_id__in=cog_ids, isprimary=True
+                )
+                .select_related('childco')
+                .values_list('parentcog_id', 'childco__catalognumber')
+            )
+
+        updated_results = []
         for result in results:
             result = list(result)
             if result[catalog_number_field_index] is None or result[catalog_number_field_index] == '':
-                cojo = Collectionobjectgroupjoin.objects.filter(childco_id=result[0]).first()
-                if cojo:
-                    primary_cojo = Collectionobjectgroupjoin.objects.filter(
-                        parentcog=cojo.parentcog, isprimary=True).first()
-                    if primary_cojo:
-                        result[catalog_number_field_index] = primary_cojo.childco.catalognumber
+                child_id = result[0]
+                cog_id = cog_by_child.get(child_id)
+                if cog_id is not None:
+                    catnum = catnum_by_cog.get(cog_id)
+                    if catnum:
+                        result[catalog_number_field_index] = catnum
             updated_results.append(tuple(result))
 
         return updated_results
