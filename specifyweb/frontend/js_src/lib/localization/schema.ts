@@ -12,7 +12,7 @@ export const schemaText = createDictionary({
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
-    'es-es': 'Tabla',
+    'es-es': 'Mesa',
     'fr-fr': 'Tableau',
     'uk-ua': 'Таблиця',
     'de-ch': 'Tabelle',
@@ -45,7 +45,7 @@ export const schemaText = createDictionary({
   withoutTable: {
     'en-us': 'Without Table',
     'de-ch': 'Ohne Tisch',
-    'es-es': 'Sin tabla',
+    'es-es': 'Sin mesa',
     'fr-fr': 'Sans table',
     'ru-ru': 'Без стола',
     'uk-ua': 'Без столу',
@@ -67,7 +67,7 @@ export const schemaText = createDictionary({
   unsavedSchemaUnloadProtect: {
     'en-us': 'Schema changes have not been saved',
     'ru-ru': 'Изменения в схеме не были сохранены.',
-    'es-es': 'Los cambios en el esquema no se han guardado',
+    'es-es': 'Los cambios de esquema no se han guardado.',
     'fr-fr': "Les modifications de schéma n'ont pas été enregistrées.",
     'uk-ua': 'Зміни схеми не збережено',
     'de-ch': 'Schema Änderungen wurden nicht gespeichert',
@@ -78,7 +78,7 @@ export const schemaText = createDictionary({
   changeBaseTable: {
     'en-us': 'Change Base Table',
     'ru-ru': 'Изменить базовую таблицу',
-    'es-es': 'Cambiar la tabla base',
+    'es-es': 'Tabla base de cambios',
     'fr-fr': 'Modifier la table de base',
     'uk-ua': 'Змінити базову таблицю',
     'de-ch': 'Basis-Tabelle ändern',
@@ -132,7 +132,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Zielbereich festlegen',
+    'de-ch': 'Zielbereich einstellen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir le périmètre',
     'ru-ru': 'Установить область действия',
@@ -210,7 +210,7 @@ export const schemaText = createDictionary({
   oneToOne: {
     'en-us': 'One-to-one',
     'ru-ru': 'Один на один',
-    'es-es': 'Uno-a-uno',
+    'es-es': 'Cara a cara',
     'fr-fr': 'Un à un',
     'uk-ua': 'Один на один',
     'de-ch': 'Eins zu eins',
@@ -221,7 +221,7 @@ export const schemaText = createDictionary({
   oneToMany: {
     'en-us': 'One-to-many',
     'ru-ru': 'Один ко многим',
-    'es-es': 'Uno a muchos',
+    'es-es': 'De uno a muchos',
     'fr-fr': 'Un à plusieurs',
     'uk-ua': 'Один до багатьох',
     'de-ch': 'Eins zu vielen',
@@ -265,7 +265,7 @@ export const schemaText = createDictionary({
   readOnly: {
     'en-us': 'Read-only',
     'ru-ru': 'Только для чтения',
-    'es-es': 'Sólo lectura',
+    'es-es': 'Solo lectura',
     'fr-fr': 'Lecture seule',
     'uk-ua': 'Тільки для читання',
     'de-ch': 'Nur-Lesen',
@@ -522,7 +522,7 @@ export const schemaText = createDictionary({
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
     'uk-ua': 'Правила унікальності',
-    'pt-br': 'Regras de Unicidade',
+    'pt-br': 'Regras de singularidade',
     'hr-hr': 'Pravila jedinstvenosti',
     nb: 'Unikhetsregler',
   },
@@ -573,7 +573,7 @@ export const schemaText = createDictionary({
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
     'de-ch': 'In der Datenbank gefundene Duplikate',
-    'es-es': 'muchos a uno',
+    'es-es': 'Se encontraron duplicados en la base de datos.',
     'fr-fr': 'Des doublons ont été trouvés dans la base de données.',
     'ru-ru': 'В базе данных обнаружены дубликаты.',
     'uk-ua': 'У базі даних знайдено дублікати',
@@ -649,7 +649,7 @@ export const schemaText = createDictionary({
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
-    'de-ch': 'Benutzerdefiniertes Feldformat',
+    'de-ch': 'Format für benutzerdefinierte Felder',
     'es-es': 'Formato de campo personalizado',
     'fr-fr': 'Format de champ personnalisé',
     'ru-ru': 'Формат пользовательского поля',
