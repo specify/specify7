@@ -10,7 +10,7 @@ For non-security issues, our [support team](mailto:support@specifysoftware.org)
 is always available to help with troubleshooting and answer any questions. We
 also have a large online community of users who are willing to share their
 experiences and help each other out. You can visit the
-[Specify Community Forum](https://discourse.specifysoftware.org/) to ask any
+[Specify Community Forum](https://speciforum.org/) to ask any
 questions you may have about configuration or deployment.
 
 | Version | Supported          |
