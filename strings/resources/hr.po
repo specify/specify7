@@ -120,25 +120,25 @@ msgstr "Izvoz RSS feeda"
 msgid "exports"
 msgstr "Izvoz"
 
-#: components/AppResources/types.tsx:136
+#: components/AppResources/types.tsx:135
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "expressSearchConfig"
 msgstr "Konfiguracija brzog pretraživanja"
 
-#: components/AppResources/types.tsx:144
+#: components/AppResources/types.tsx:143
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "typeSearches"
 msgstr "Pretraživanja tipova"
 
-#: components/AppResources/types.tsx:152
+#: components/AppResources/types.tsx:151
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "webLinks"
 msgstr "Web poveznice"
 
-#: components/AppResources/types.tsx:160
+#: components/AppResources/types.tsx:159
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -155,7 +155,7 @@ msgstr ""
 "prikazuju u rezultatima upita, izvozima i obrascima. Upravlja automatskim "
 "numeriranjem i sastavom različitih dijelova koji definiraju polje."
 
-#: components/AppResources/types.tsx:168
+#: components/AppResources/types.tsx:167
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataObjectFormatters"
@@ -237,37 +237,37 @@ msgstr "Molimo označite jedan od formatera kao zadani"
 msgid "duplicateFormatters"
 msgstr "Imena formatera zapisa moraju biti jedinstvena"
 
-#: components/AppResources/types.tsx:176
+#: components/AppResources/types.tsx:175
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "dataEntryTables"
 msgstr "Tablice za unos podataka"
 
-#: components/AppResources/types.tsx:184
+#: components/AppResources/types.tsx:183
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "interactionsTables"
 msgstr "Tablice interakcija"
 
-#: components/AppResources/types.tsx:191
+#: components/AppResources/types.tsx:190
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherXmlResource"
 msgstr "Drugi XML resurs"
 
-#: components/AppResources/types.tsx:198
+#: components/AppResources/types.tsx:197
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherJsonResource"
 msgstr "Drugi JSON resurs"
 
-#: components/AppResources/types.tsx:205
+#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherPropertiesResource"
 msgstr "Drugi resursi za nekretnine"
 
-#: components/AppResources/types.tsx:212
+#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
 #, fuzzy
 msgid "otherAppResource"

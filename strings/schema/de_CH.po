@@ -30,7 +30,7 @@ msgid "tables"
 msgstr "Tabellen"
 
 #: components/Preferences/UserDefinitions.tsx:883
-#: components/WbPlanView/MapperComponents.tsx:486
+#: components/WbPlanView/MapperComponents.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Tabellennamen"
@@ -56,7 +56,7 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr "Schema Änderungen wurden nicht gespeichert"
 
 #: components/SchemaConfig/Components.tsx:38
-#: components/WbPlanView/MapperComponents.tsx:342
+#: components/WbPlanView/MapperComponents.tsx:384
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Basis-Tabelle ändern"

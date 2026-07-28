@@ -246,7 +246,7 @@ msgstr "API операцій"
 #: components/Preferences/index.tsx:71
 #: components/SetupTool/index.tsx:285
 #: components/Toolbar/WbsDialog.tsx:227
-#: components/WbPlanView/MapperComponents.tsx:83
+#: components/WbPlanView/MapperComponents.tsx:87
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Filters ⬤ Components > Attachments Bulk Import > View Attachment Files ⬤ Components > Header > Express Search Task ⬤ Components > Header > User Tool Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Preferences > Index ⬤ Components > Setup Tool > Index ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Plan View > Mapper Components
 msgid "documentation"
 msgstr "Документація"

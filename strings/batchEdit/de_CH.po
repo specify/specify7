@@ -22,8 +22,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Stapelbearbeitung"
 
-#: components/WbPlanView/MapperComponents.tsx:584
-#: components/WbPlanView/MapperComponents.tsx:594
+#: components/WbPlanView/MapperComponents.tsx:626
+#: components/WbPlanView/MapperComponents.tsx:636
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "batchEditPrefs"
@@ -192,13 +192,13 @@ msgstr "Commit erfolgreich abgeschlossen (keine Fehler)"
 msgid "batchEditRecordSetName"
 msgstr "BE-Commit von \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:552
+#: components/WbPlanView/MapperComponents.tsx:594
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatch"
 msgstr "Verwenden Sie für den Abgleich nur sichtbare Felder."
 
-#: components/WbPlanView/MapperComponents.tsx:553
+#: components/WbPlanView/MapperComponents.tsx:595
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatchDescription"
@@ -206,13 +206,13 @@ msgstr ""
 "Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht "
 "für den Abgleich verwendet. Der Standardwert ist {default:boolean}."
 
-#: components/WbPlanView/MapperComponents.tsx:558
+#: components/WbPlanView/MapperComponents.tsx:600
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheck"
 msgstr "Verwenden Sie für die Prüfung auf leere Datensätze nur sichtbare Felder."
 
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:601
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheckDescription"

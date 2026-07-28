@@ -11,8 +11,8 @@ msgstr "Content-Type: text/plain\n"
 msgid "batchEdit"
 msgstr "Batch Edit"
 
-#: components/WbPlanView/MapperComponents.tsx:584
-#: components/WbPlanView/MapperComponents.tsx:594
+#: components/WbPlanView/MapperComponents.tsx:626
+#: components/WbPlanView/MapperComponents.tsx:636
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Batch Edit Preferences"
@@ -151,24 +151,24 @@ msgstr "Commit Completed with No Errors"
 msgid "batchEditRecordSetName"
 msgstr "BE commit of \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:552
+#: components/WbPlanView/MapperComponents.tsx:594
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatch"
 msgstr "Use only visible fields for match"
 
-#: components/WbPlanView/MapperComponents.tsx:553
+#: components/WbPlanView/MapperComponents.tsx:595
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatchDescription"
 msgstr ""
 "If true, invisible database fields will not be used for matching. Default "
 "value is {default:boolean}"
 
-#: components/WbPlanView/MapperComponents.tsx:558
+#: components/WbPlanView/MapperComponents.tsx:600
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheck"
 msgstr "Use only visible fields for empty record check"
 
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:601
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheckDescription"
 msgstr ""

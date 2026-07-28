@@ -21,8 +21,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Modification par lots"
 
-#: components/WbPlanView/MapperComponents.tsx:584
-#: components/WbPlanView/MapperComponents.tsx:594
+#: components/WbPlanView/MapperComponents.tsx:626
+#: components/WbPlanView/MapperComponents.tsx:636
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Préférences de modification par lots"
@@ -168,12 +168,12 @@ msgstr "Versement terminé sans erreur"
 msgid "batchEditRecordSetName"
 msgstr "Commit BE de \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:552
+#: components/WbPlanView/MapperComponents.tsx:594
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatch"
 msgstr "Utilisez uniquement les champs visibles pour la correspondance"
 
-#: components/WbPlanView/MapperComponents.tsx:553
+#: components/WbPlanView/MapperComponents.tsx:595
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForMatchDescription"
 msgstr ""
@@ -181,14 +181,14 @@ msgstr ""
 "seront pas utilisés pour la correspondance. La valeur par défaut est "
 "{default:boolean}."
 
-#: components/WbPlanView/MapperComponents.tsx:558
+#: components/WbPlanView/MapperComponents.tsx:600
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheck"
 msgstr ""
 "Utiliser uniquement les champs visibles pour la vérification des "
 "enregistrements vides"
 
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:601
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deferForNullCheckDescription"
 msgstr ""

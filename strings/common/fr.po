@@ -98,9 +98,9 @@ msgstr "Non"
 #: components/WbActions/WbRollback.tsx:64
 #: components/WbActions/WbUpload.tsx:108
 #: components/WbActions/WbUpload.tsx:144
-#: components/WbPlanView/MapperComponents.tsx:340
-#: components/WbPlanView/MapperComponents.tsx:366
-#: components/WbPlanView/MapperComponents.tsx:393
+#: components/WbPlanView/MapperComponents.tsx:382
+#: components/WbPlanView/MapperComponents.tsx:408
+#: components/WbPlanView/MapperComponents.tsx:435
 #: components/WbPlanView/State.tsx:94
 #: components/WbToolkit/ChangeOwner.tsx:87
 #: components/WbToolkit/CoordinateConverter.tsx:228
@@ -292,9 +292,9 @@ msgstr "Créer"
 #: components/WbActions/index.tsx:232
 #: components/WbActions/index.tsx:285
 #: components/WbAttachmentViewer/index.tsx:151
-#: components/WbPlanView/MapperComponents.tsx:219
-#: components/WbPlanView/MapperComponents.tsx:462
-#: components/WbPlanView/MapperComponents.tsx:590
+#: components/WbPlanView/MapperComponents.tsx:223
+#: components/WbPlanView/MapperComponents.tsx:504
+#: components/WbPlanView/MapperComponents.tsx:632
 #: components/WbPlanView/State.tsx:34
 #: components/WbToolkit/ChangeOwner.tsx:77
 #: components/WbToolkit/DevShowPlan.tsx:138
@@ -349,8 +349,8 @@ msgstr ""
 #: components/Interactions/LoanReturn.tsx:203
 #: components/Interactions/PrepDialog.tsx:152
 #: components/Security/SetPassword.tsx:37
-#: components/WbPlanView/MapperComponents.tsx:463
-#: components/WbPlanView/MapperComponents.tsx:590
+#: components/WbPlanView/MapperComponents.tsx:505
+#: components/WbPlanView/MapperComponents.tsx:632
 #: components/WbToolkit/CoordinateConverter.tsx:229
 #: components/WorkBench/Disambiguation.tsx:48
 #. Used in: Components > Interactions > Loan Return ⬤ Components > Interactions > Prep Dialog ⬤ Components > Security > Set Password ⬤ Components > Wb Plan View > Mapper Components ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
@@ -370,7 +370,7 @@ msgstr "Appliquer à toutes les lignes"
 msgid "clearAll"
 msgstr "Tout effacer"
 
-#: components/WbPlanView/MapperComponents.tsx:71
+#: components/WbPlanView/MapperComponents.tsx:75
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "deleteUnmapped"
 msgstr "Supprimer les colonnes non mappées"

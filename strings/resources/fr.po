@@ -103,22 +103,22 @@ msgstr "Flux RSS d'export"
 msgid "exports"
 msgstr "Exports"
 
-#: components/AppResources/types.tsx:136
+#: components/AppResources/types.tsx:135
 #. Used in: Components > App Resources > Types
 msgid "expressSearchConfig"
 msgstr "Configuration de la recherche express"
 
-#: components/AppResources/types.tsx:144
+#: components/AppResources/types.tsx:143
 #. Used in: Components > App Resources > Types
 msgid "typeSearches"
 msgstr "Type de recherche"
 
-#: components/AppResources/types.tsx:152
+#: components/AppResources/types.tsx:151
 #. Used in: Components > App Resources > Types
 msgid "webLinks"
 msgstr "Liens Web"
 
-#: components/AppResources/types.tsx:160
+#: components/AppResources/types.tsx:159
 #: components/FieldFormatters/Element.tsx:16
 #: components/SchemaConfig/Format.tsx:108
 #. Used in: Components > App Resources > Types ⬤ Components > Field Formatters > Element ⬤ Components > Schema Config > Format
@@ -134,7 +134,7 @@ msgstr ""
 "et les formulaires. Il gère la numérotation automatique et la composition "
 "des différents éléments qui définissent le champ."
 
-#: components/AppResources/types.tsx:168
+#: components/AppResources/types.tsx:167
 #. Used in: Components > App Resources > Types
 msgid "dataObjectFormatters"
 msgstr "Formateurs d'enregistrements"
@@ -206,32 +206,32 @@ msgstr "Veuillez désigner l'un des formateurs comme formateur par défaut"
 msgid "duplicateFormatters"
 msgstr "Les noms des formateurs d'enregistrements doivent être uniques"
 
-#: components/AppResources/types.tsx:176
+#: components/AppResources/types.tsx:175
 #. Used in: Components > App Resources > Types
 msgid "dataEntryTables"
 msgstr "Tables de saisie des données"
 
-#: components/AppResources/types.tsx:184
+#: components/AppResources/types.tsx:183
 #. Used in: Components > App Resources > Types
 msgid "interactionsTables"
 msgstr "Tables d'interactions"
 
-#: components/AppResources/types.tsx:191
+#: components/AppResources/types.tsx:190
 #. Used in: Components > App Resources > Types
 msgid "otherXmlResource"
 msgstr "Autres ressources XML"
 
-#: components/AppResources/types.tsx:198
+#: components/AppResources/types.tsx:197
 #. Used in: Components > App Resources > Types
 msgid "otherJsonResource"
 msgstr "Autre ressource JSON"
 
-#: components/AppResources/types.tsx:205
+#: components/AppResources/types.tsx:204
 #. Used in: Components > App Resources > Types
 msgid "otherPropertiesResource"
 msgstr "Autre ressource textuelle"
 
-#: components/AppResources/types.tsx:212
+#: components/AppResources/types.tsx:211
 #. Used in: Components > App Resources > Types
 msgid "otherAppResource"
 msgstr "Autres ressources"

@@ -21,8 +21,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Masseredigering"
 
-#: components/WbPlanView/MapperComponents.tsx:584
-#: components/WbPlanView/MapperComponents.tsx:594
+#: components/WbPlanView/MapperComponents.tsx:626
+#: components/WbPlanView/MapperComponents.tsx:636
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "batchEditPrefs"
 msgstr "Innstillinger for masseredigering"
@@ -162,13 +162,13 @@ msgstr "Lagring fullført uten feil"
 msgid "batchEditRecordSetName"
 msgstr "BE-commit av \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:552
+#: components/WbPlanView/MapperComponents.tsx:594
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatch"
 msgstr "Bruk bare synlige felt for treff"
 
-#: components/WbPlanView/MapperComponents.tsx:553
+#: components/WbPlanView/MapperComponents.tsx:595
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatchDescription"
@@ -176,13 +176,13 @@ msgstr ""
 "Hvis dette er sant, vil ikke usynlige databasefelt brukes til samsvar. "
 "Standardverdien er {default:boolean}"
 
-#: components/WbPlanView/MapperComponents.tsx:558
+#: components/WbPlanView/MapperComponents.tsx:600
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheck"
 msgstr "Bruk bare synlige felt for tom postsjekk"
 
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:601
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheckDescription"

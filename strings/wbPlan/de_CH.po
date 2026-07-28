@@ -70,7 +70,7 @@ msgstr "Zuordnung ist erforderlich"
 msgid "mapped"
 msgstr "Kartiert"
 
-#: components/WbPlanView/MapperComponents.tsx:251
+#: components/WbPlanView/MapperComponents.tsx:259
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchBehavior"
 msgstr "Übereinstimmungsverhalten:"
@@ -104,24 +104,24 @@ msgstr "Versteckte Felder"
 
 #: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:46
-#: components/WbPlanView/MapperComponents.tsx:79
+#: components/WbPlanView/MapperComponents.tsx:83
 #. Used in: Components > Form Meta > Carry Forward ⬤ Components > Query Builder > Toolbar ⬤ Components > Wb Plan View > Mapper Components
 msgid "revealHiddenFormFields"
 msgstr "Versteckte Formularfelder anzeigen"
 
-#: components/WbPlanView/Mapper.tsx:661
-#: components/WbPlanView/Mapper.tsx:663
-#: components/WbPlanView/Mapper.tsx:671
+#: components/WbPlanView/Mapper.tsx:667
+#: components/WbPlanView/Mapper.tsx:669
+#: components/WbPlanView/Mapper.tsx:677
 #. Used in: Components > Wb Plan View > Mapper
 msgid "mappingOptions"
 msgstr "Zuordnungsoptionen"
 
-#: components/WbPlanView/MapperComponents.tsx:255
+#: components/WbPlanView/MapperComponents.tsx:263
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlank"
 msgstr "Bei leer ignorieren"
 
-#: components/WbPlanView/MapperComponents.tsx:256
+#: components/WbPlanView/MapperComponents.tsx:264
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreWhenBlankDescription"
 msgstr ""
@@ -129,12 +129,12 @@ msgstr ""
 "Spalte beim Abgleich nicht berücksichtigt. Leere Werte werden beim Abgleich "
 "ignoriert, auch wenn ein Standardwert angegeben ist"
 
-#: components/WbPlanView/MapperComponents.tsx:259
+#: components/WbPlanView/MapperComponents.tsx:267
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreAlways"
 msgstr "Immer ignorieren"
 
-#: components/WbPlanView/MapperComponents.tsx:260
+#: components/WbPlanView/MapperComponents.tsx:268
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "ignoreAlwaysDescription"
@@ -142,49 +142,49 @@ msgstr ""
 "Wenn die Option „Immer ignorieren“ ausgewählt ist, wird der Wert in dieser "
 "Spalte nicht für Abgleichzwecke, sondern nur für den Upload verwendet."
 
-#: components/WbPlanView/MapperComponents.tsx:263
+#: components/WbPlanView/MapperComponents.tsx:271
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNever"
 msgstr "Nie ignorieren"
 
-#: components/WbPlanView/MapperComponents.tsx:264
+#: components/WbPlanView/MapperComponents.tsx:272
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "ignoreNeverDescription"
 msgstr ""
 "Diese Spalte wird immer für den Abgleich berücksichtigt, unabhängig von "
 "ihrem Wert"
 
-#: components/WbPlanView/MapperComponents.tsx:292
+#: components/WbPlanView/MapperComponents.tsx:300
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "allowNullValues"
 msgstr "Nullwerte erlauben"
 
-#: components/WbPlanView/MapperComponents.tsx:309
+#: components/WbPlanView/MapperComponents.tsx:317
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "useDefaultValue"
 msgstr "Verwende den Standardwert"
 
-#: components/WbPlanView/MapperComponents.tsx:318
+#: components/WbPlanView/MapperComponents.tsx:326
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValue"
 msgstr "Standardwert"
 
-#: components/WbPlanView/MapperComponents.tsx:326
+#: components/WbPlanView/MapperComponents.tsx:334
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "defaultValueDescription"
 msgstr "Dieser Wert wird anstelle von leeren Zellen verwendet"
 
-#: components/WbPlanView/MapperComponents.tsx:66
+#: components/WbPlanView/MapperComponents.tsx:70
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "addNewColumn"
 msgstr "Neue Spalte hinzufügen"
 
-#: components/WbPlanView/MapperComponents.tsx:112
+#: components/WbPlanView/MapperComponents.tsx:116
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "validationFailed"
 msgstr "Die Validierung hat fehlende Zuordnungen gefunden:"
 
-#: components/WbPlanView/MapperComponents.tsx:116
+#: components/WbPlanView/MapperComponents.tsx:120
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "validationFailedDescription"
@@ -200,12 +200,12 @@ msgstr ""
 msgid "mappingIsRequired"
 msgstr "Kartierung erforderlich"
 
-#: components/WbPlanView/MapperComponents.tsx:105
+#: components/WbPlanView/MapperComponents.tsx:109
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "continueEditing"
 msgstr "Bearbeitung fortsetzen"
 
-#: components/WbPlanView/MapperComponents.tsx:108
+#: components/WbPlanView/MapperComponents.tsx:112
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "saveUnfinished"
 msgstr "Unvollendet speichern"
@@ -290,17 +290,17 @@ msgstr ""
 "oder einen neuen Datensatz erstellen"
 
 #: components/WbPlanView/Mapper.tsx:491
-#: components/WbPlanView/MapperComponents.tsx:350
+#: components/WbPlanView/MapperComponents.tsx:392
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 msgid "baseTable"
 msgstr "Basistabelle"
 
-#: components/WbPlanView/MapperComponents.tsx:346
+#: components/WbPlanView/MapperComponents.tsx:388
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "goToBaseTable"
 msgstr "Die Basistabelle für die Zuordnung von Datensatzspalten ändern?"
 
-#: components/WbPlanView/MapperComponents.tsx:347
+#: components/WbPlanView/MapperComponents.tsx:389
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "goToBaseTableDescription"
@@ -317,29 +317,29 @@ msgstr ""
 msgid "clearMapping"
 msgstr "Datenzuordnung zurücksetzen"
 
-#: components/WbPlanView/MapperComponents.tsx:368
+#: components/WbPlanView/MapperComponents.tsx:410
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapper"
 msgstr "AutoMapper erneut ausführen"
 
-#: components/WbPlanView/MapperComponents.tsx:377
+#: components/WbPlanView/MapperComponents.tsx:419
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "autoMapper"
 msgstr "AutoMapper"
 
-#: components/WbPlanView/MapperComponents.tsx:181
+#: components/WbPlanView/MapperComponents.tsx:185
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mappingEditor"
 msgstr "Karten-Explorer"
 
 #: components/QueryBuilder/Components.tsx:145
-#: components/WbPlanView/MapperComponents.tsx:419
+#: components/WbPlanView/MapperComponents.tsx:461
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "hideFieldMapper"
 msgstr "Field Mapper ausblenden"
 
 #: components/QueryBuilder/Components.tsx:146
-#: components/WbPlanView/MapperComponents.tsx:420
+#: components/WbPlanView/MapperComponents.tsx:462
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "showFieldMapper"
 msgstr "Field Mapper einblenden"
@@ -349,67 +349,67 @@ msgstr "Field Mapper einblenden"
 msgid "mappings"
 msgstr "Zuordnungen"
 
-#: components/WbPlanView/MapperComponents.tsx:395
-#: components/WbPlanView/MapperComponents.tsx:404
+#: components/WbPlanView/MapperComponents.tsx:437
+#: components/WbPlanView/MapperComponents.tsx:446
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappings"
 msgstr "Zuordnungen zurückstellen"
 
-#: components/WbPlanView/MapperComponents.tsx:220
+#: components/WbPlanView/MapperComponents.tsx:224
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSet"
 msgstr "Datenset leeren"
 
-#: components/WbPlanView/MapperComponents.tsx:224
+#: components/WbPlanView/MapperComponents.tsx:228
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetDescription"
 msgstr "Dieser Datensatz hat keine Spalten."
 
-#: components/WbPlanView/MapperComponents.tsx:227
+#: components/WbPlanView/MapperComponents.tsx:231
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "emptyDataSetSecondDescription"
 msgstr ""
 "Klicken Sie auf die Schaltfläche \"Neue Spalte hinzufügen\" unterhalb der "
 "Zuordnungszeilen, um neue Spalten hinzuzufügen."
 
-#: components/WbPlanView/MapperComponents.tsx:372
+#: components/WbPlanView/MapperComponents.tsx:414
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "reRunAutoMapperConfirmation"
 msgstr "Automap soll eine neue Kartierung starten?"
 
-#: components/WbPlanView/MapperComponents.tsx:373
+#: components/WbPlanView/MapperComponents.tsx:415
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "reRunAutoMapperConfirmationDescription"
 msgstr "Damit werden bestehende Zuordnungen von Datenfeldern gelöscht."
 
-#: components/WbPlanView/MapperComponents.tsx:399
+#: components/WbPlanView/MapperComponents.tsx:441
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappingsConfirmation"
 msgstr "Alle bestehenden Zuordnungen löschen?"
 
-#: components/WbPlanView/MapperComponents.tsx:400
+#: components/WbPlanView/MapperComponents.tsx:442
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "clearMappingsConfirmationDescription"
 msgstr "Damit werden bestehende Zuordnungen von Datenfeldern gelöscht."
 
-#: components/WbPlanView/MapperComponents.tsx:469
+#: components/WbPlanView/MapperComponents.tsx:511
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "changeMatchingLogic"
 msgstr "Abgleichslogik ändern"
 
-#: components/WbPlanView/MapperComponents.tsx:477
+#: components/WbPlanView/MapperComponents.tsx:519
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicDescription"
 msgstr "Benötigt Daten um vorhandene Datensätze vergleichen zu können"
 
-#: components/WbPlanView/MapperComponents.tsx:473
+#: components/WbPlanView/MapperComponents.tsx:515
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "matchingLogicUnavailable"
 msgstr "Die Vergleichslogik ist für aktuelle Mappings nicht verfügbar"
 
-#: components/WbPlanView/MapperComponents.tsx:455
-#: components/WbPlanView/MapperComponents.tsx:489
+#: components/WbPlanView/MapperComponents.tsx:497
+#: components/WbPlanView/MapperComponents.tsx:531
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "mustMatch"
 msgstr "Muss übereinstimmen"
@@ -419,7 +419,7 @@ msgstr "Muss übereinstimmen"
 msgid "unloadProtectMessage"
 msgstr "Dieses Mapping wurde nicht gespeichert."
 
-#: components/WbPlanView/MapperComponents.tsx:61
+#: components/WbPlanView/MapperComponents.tsx:65
 #. Used in: Components > Wb Plan View > Mapper Components
 msgid "newHeaderName"
 msgstr "Neue Spalte {index:number}"
@@ -456,3 +456,28 @@ msgstr "Die ausgewählte Datei ist kein gültiges JSON."
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 msgid "invalidJsonFileDescription"
 msgstr "Bitte wählen Sie eine gültige JSON-Datei aus."
+
+#: components/WbPlanView/MapperComponents.tsx:339
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "disambiguationBehavior"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:343
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "ask"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:344
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "askDescription"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:347
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "pickFirst"
+msgstr ""
+
+#: components/WbPlanView/MapperComponents.tsx:348
+#. Used in: Components > Wb Plan View > Mapper Components
+msgid "pickFirstDescription"
+msgstr ""

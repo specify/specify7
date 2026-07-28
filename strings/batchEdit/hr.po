@@ -24,8 +24,8 @@ msgstr ""
 msgid "batchEdit"
 msgstr "Skupno uređivanje"
 
-#: components/WbPlanView/MapperComponents.tsx:584
-#: components/WbPlanView/MapperComponents.tsx:594
+#: components/WbPlanView/MapperComponents.tsx:626
+#: components/WbPlanView/MapperComponents.tsx:636
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "batchEditPrefs"
@@ -189,13 +189,13 @@ msgstr "Potvrda završena bez grešaka"
 msgid "batchEditRecordSetName"
 msgstr "BE potvrda od \"{dataSet:string}\""
 
-#: components/WbPlanView/MapperComponents.tsx:552
+#: components/WbPlanView/MapperComponents.tsx:594
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatch"
 msgstr "Koristite samo vidljiva polja za podudaranje"
 
-#: components/WbPlanView/MapperComponents.tsx:553
+#: components/WbPlanView/MapperComponents.tsx:595
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForMatchDescription"
@@ -203,13 +203,13 @@ msgstr ""
 "Ako je vrijednost true, nevidljiva polja baze podataka neće se koristiti za "
 "podudaranje. Zadana vrijednost je {default:boolean}"
 
-#: components/WbPlanView/MapperComponents.tsx:558
+#: components/WbPlanView/MapperComponents.tsx:600
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheck"
 msgstr "Koristite samo vidljiva polja za provjeru praznih zapisa"
 
-#: components/WbPlanView/MapperComponents.tsx:559
+#: components/WbPlanView/MapperComponents.tsx:601
 #. Used in: Components > Wb Plan View > Mapper Components
 #, fuzzy
 msgid "deferForNullCheckDescription"

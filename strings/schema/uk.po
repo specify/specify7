@@ -30,7 +30,7 @@ msgid "tables"
 msgstr "Столи"
 
 #: components/Preferences/UserDefinitions.tsx:883
-#: components/WbPlanView/MapperComponents.tsx:486
+#: components/WbPlanView/MapperComponents.tsx:528
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Wb Plan View > Mapper Components
 msgid "tableName"
 msgstr "Назва таблиці"
@@ -56,7 +56,7 @@ msgid "unsavedSchemaUnloadProtect"
 msgstr "Зміни схеми не збережено"
 
 #: components/SchemaConfig/Components.tsx:38
-#: components/WbPlanView/MapperComponents.tsx:342
+#: components/WbPlanView/MapperComponents.tsx:384
 #. Used in: Components > Schema Config > Components ⬤ Components > Wb Plan View > Mapper Components
 msgid "changeBaseTable"
 msgstr "Змінити базову таблицю"
