@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-27 21:02+0000\n"
+"PO-Revision-Date: 2026-07-28 09:53+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/batchEdit/de_CH/>\n"
@@ -10,3 +10,262 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.8.dev0\n"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2268
+#, fuzzy
+msgid "numberOfRecords"
+msgstr "Anzahl der aus der Abfrage ausgewählten Datensätze"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:116
+#, fuzzy
+msgid "startCommit"
+msgstr "Datensatz-Commit starten?"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:626
+#: components/WbPlanView/MapperComponents.tsx:636
+#, fuzzy
+msgid "batchEditPrefs"
+msgstr "Stapelbearbeitungseinstellungen"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:594
+#, fuzzy
+msgid "deferForMatch"
+msgstr "Verwenden Sie für den Abgleich nur sichtbare Felder."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:115
+#, fuzzy
+msgid "commit"
+msgstr "Begehen"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:128
+#, fuzzy
+msgid "beStatusCommit"
+msgstr "Commit-Status des Datensatzes"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:129
+#, fuzzy
+msgid "commitSuccessful"
+msgstr "Commit erfolgreich abgeschlossen (keine Fehler)"
+
+#. Used in: Components > Work Bench > Record Set
+#: components/WorkBench/RecordSet.tsx:77
+#, fuzzy
+msgid "batchEditRecordSetName"
+msgstr "BE-Commit von \"{dataSet:string}\""
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2283
+#, fuzzy
+msgid "enableRelationships"
+msgstr "Beziehungen ermöglichen"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:110
+#, fuzzy
+msgid "createUpdateDataSetInstructions"
+msgstr ""
+"Verwenden Sie den Abfrage-Generator, um ein neues Batch-Bearbeitungs-Dataset "
+"zu erstellen."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:117
+#, fuzzy
+msgid "commitErrors"
+msgstr "Commit fehlgeschlagen aufgrund von Fehlerzellen"
+
+#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/index.tsx:215
+#, fuzzy
+msgid "batchEditDisabled"
+msgstr ""
+"Die Stapelbearbeitung ist für Systemtabellen und Bereichshierarchietabellen "
+"deaktiviert."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:119
+#, fuzzy
+msgid "commitErrorsDescription"
+msgstr ""
+"Der Commit ist aufgrund eines oder mehrerer Zellwertfehler fehlgeschlagen."
+
+#. Used in: Components > Batch Edit > Index
+#: components/BatchEdit/index.tsx:194
+#, fuzzy
+msgid "datasetName"
+msgstr "{queryName:string} {datePart:string}"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:118
+#, fuzzy
+msgid "commitCancelled"
+msgstr "Commit abgebrochen"
+
+#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:48
+#, fuzzy
+msgid "missingRanksInQuery"
+msgstr "Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:120
+#, fuzzy
+msgid "startCommitDescription"
+msgstr ""
+"Durch das Übertragen des Datensatzes werden die Daten aus der "
+"Tabellenkalkulation in die Specify-Datenbank aktualisiert, hinzugefügt und "
+"gelöscht."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:121
+#, fuzzy
+msgid "commitCancelledDescription"
+msgstr "Commit abgebrochen Beschreibung"
+
+#. Used in: Components > Work Bench > Data Set Meta
+#: components/WorkBench/DataSetMeta.tsx:388
+#, fuzzy
+msgid "cannotEditAfterRollback"
+msgstr ""
+"(Stapelbearbeitungsdatensätze können nach einem Rollback nicht mehr "
+"bearbeitet werden – schreibgeschützt)"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:600
+#, fuzzy
+msgid "deferForNullCheck"
+msgstr ""
+"Verwenden Sie für die Prüfung auf leere Datensätze nur sichtbare Felder."
+
+#. Used in: Components > Batch Edit > Index ⬤ Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
+#: components/BatchEdit/index.tsx:221
+#: components/Header/menuItemDefinitions.ts:115
+#: components/Preferences/UserDefinitions.tsx:2262
+#: components/Router/OverlayRoutes.tsx:263
+#: components/WbUtils/datasetVariants.tsx:88
+#: components/WbUtils/datasetVariants.tsx:104
+#, fuzzy
+msgid "batchEdit"
+msgstr "Stapelbearbeitung"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:126
+#, fuzzy
+msgid "dateSetRevertDescription"
+msgstr ""
+"Der zurückgesetzte Datensatz wurde gespeichert, kann aber nicht bearbeitet "
+"werden. Bitte führen Sie die Abfrage erneut aus."
+
+#. Used in: Components > Batch Edit > Query Error
+#: components/BatchEdit/QueryError.tsx:42
+#, fuzzy
+msgid "removeField"
+msgstr ""
+"Dieses Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie "
+"das Feld oder blenden Sie es aus."
+
+#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:73
+#, fuzzy
+msgid "addTreeRank"
+msgstr ""
+"Die folgenden Ränge werden der Abfrage hinzugefügt, um die Stapelbearbeitung "
+"zu ermöglichen."
+
+#. Used in: Components > Batch Edit > Missing Ranks
+#: components/BatchEdit/MissingRanks.tsx:89
+#, fuzzy
+msgid "pickTreesToFilter"
+msgstr ""
+"Die ausgewählten Ränge befinden sich in mehreren Bäumen. Wählen Sie die "
+"Bäume aus, die Sie stapelweise bearbeiten möchten."
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2291
+#, fuzzy
+msgid "showRollback"
+msgstr "Schaltfläche „Zurück“ anzeigen"
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:595
+#, fuzzy
+msgid "deferForMatchDescription"
+msgstr ""
+"Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht "
+"für den Abgleich verwendet. Der Standardwert ist {default:boolean}."
+
+#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/MapperComponents.tsx:601
+#, fuzzy
+msgid "deferForNullCheckDescription"
+msgstr ""
+"Wenn diese Option aktiviert ist, werden unsichtbare Datenbankfelder nicht "
+"zur Bestimmung herangezogen, ob ein Datensatz leer ist oder nicht. Der "
+"Standardwert ist {default: boolean}."
+
+#. Used in: Components > Batch Edit > Query Error
+#: components/BatchEdit/QueryError.tsx:24
+#, fuzzy
+msgid "errorInQuery"
+msgstr "Bei der Abfrage wurden folgende Fehler gefunden."
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2296
+#, fuzzy
+msgid "showRollbackDescription"
+msgstr ""
+"Die Funktion „Rollback“ in der Stapelbearbeitung ist experimentell. Diese "
+"Einstellung blendet die Schaltfläche aus."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:124
+#, fuzzy
+msgid "startRevertDescription"
+msgstr ""
+"Durch das Zurücksetzen des Datensatzes werden die Werte aktualisiert, "
+"erstellte Datensätze gelöscht und neue Datensätze erstellt."
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:125
+#, fuzzy
+msgid "commitSuccessfulDescription"
+msgstr ""
+"Ihre Änderungen wurden in der Datenbank übernommen. Die Anzahl der "
+"betroffenen Datensätze in den einzelnen Tabellen finden Sie unten:"
+
+#. Used in: Components > Wb Utils > Dataset Variants
+#: components/WbUtils/datasetVariants.tsx:127
+#, fuzzy
+msgid "committing"
+msgstr "Verpflichtung"
+
+#. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:2288
+#, fuzzy
+msgid "enableRelationshipsDescription"
+msgstr ""
+"Ermöglicht die Stapelbearbeitung von Beziehungen in der Basistabelle. Die "
+"Rücksetzung ist deaktiviert, wenn Beziehungen aktiviert sind."
+
+#. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:132
+#, fuzzy
+msgid "commitDataSet"
+msgstr "Datensatz übertragen"
+
+#. Used in: Components > Wb Actions > Wb Upload
+#: components/WbActions/WbUpload.tsx:135
+#, fuzzy
+msgid "warningBatchEditText"
+msgstr ""
+"Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere "
+"Nutzer beeinträchtigen kann. Dies kann zu Verzögerungen oder vorübergehender "
+"Nichtverfügbarkeit bestimmter Funktionen für bestimmte Nutzer führen. Bitte "
+"berücksichtigen Sie die Auswirkungen auf deren Nutzungserfahrung. Diese "
+"Aktion kann nicht rückgängig gemacht werden."
