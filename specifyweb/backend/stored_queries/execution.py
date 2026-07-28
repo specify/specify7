@@ -3,8 +3,9 @@ import json
 import logging
 import os
 import re
+import traceback
 
-from typing import Literal, NamedTuple
+from typing import Callable, Literal, NamedTuple
 import xml.dom.minidom
 from collections import namedtuple, defaultdict
 from functools import reduce
@@ -12,8 +13,7 @@ from functools import reduce
 from django.conf import settings
 from django.db import transaction
 from django.utils import timezone
-from specifyweb.backend.inheritance.api import cog_inheritance_post_query_processing, parent_inheritance_post_query_processing
-from specifyweb.backend.inheritance.utils import get_cat_num_inheritance_setting, get_parent_cat_num_inheritance_setting
+from specifyweb.backend.inheritance.api import DefaultQueryProcessors
 from specifyweb.backend.stored_queries.utils import log_sqlalchemy_query
 from specifyweb.specify.utils.field_change_info import FieldChangeInfo
 from sqlalchemy import sql, orm, func, text
@@ -28,6 +28,7 @@ from .format import ObjectFormatter, ObjectFormatterProps
 from .query_construct import QueryConstruct
 from .relative_date_utils import apply_absolute_date
 from .field_spec_maps import apply_specify_user_name
+from .web_portal_export import query_to_web_portal_zip as _query_to_web_portal_zip, WebportalQueryResultProcessors
 from specifyweb.backend.notifications.models import Message
 from specifyweb.backend.permissions.permissions import check_table_permissions
 from specifyweb.specify.models import Loan, Loanpreparation, Loanreturnpreparation, Taxontreedef
@@ -35,6 +36,7 @@ from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.stored_queries.group_concat import group_by_displayed_fields
 from specifyweb.backend.stored_queries.queryfield import fields_from_json, QUREYFIELD_SORT_T
 from specifyweb.backend.stored_queries.synonomy import synonymize_tree_query
+
 from specifyweb.specify.datamodel import datamodel, is_tree_table
 
 logger = logging.getLogger(__name__)
@@ -258,21 +260,98 @@ def do_export(spquery, collection, user, filename, exporttype, host):
     message_type = "query-export-to-csv-complete"
 
     with models.session_context() as session:
-        field_specs = fields_from_json(spquery['fields'])
-        if exporttype == 'csv':
-            query_to_csv(session, collection, user, tableid, field_specs, path,
-                         recordsetid=recordsetid, 
-                         captions=spquery['captions'], strip_id=True,
-                         distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
-        elif exporttype == 'kml':
-            query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
-                         recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
-            message_type = 'query-export-to-kml-complete'
+        try:
+            field_specs = fields_from_json(spquery['fields'])
+            if exporttype == 'csv':
+                query_to_csv(session, collection, user, tableid, field_specs, path,
+                             recordsetid=recordsetid, 
+                             captions=spquery['captions'], strip_id=True,
+                             distinct=spquery['selectdistinct'], delimiter=spquery['delimiter'], bom=spquery['bom'])
+                message_type = 'query-export-to-csv-complete'
+            elif exporttype == 'kml':
+                query_to_kml(session, collection, user, tableid, field_specs, path, spquery['captions'], host,
+                             recordsetid=recordsetid, strip_id=False, selected_rows=spquery.get('selectedrows', None))
+                message_type = 'query-export-to-kml-complete'
+            elif exporttype == 'webportal':
+                query_to_web_portal_zip(
+                    session,
+                    collection,
+                    user,
+                    tableid,
+                    field_specs,
+                    path,
+                    spquery['captions'],
+                    recordsetid=recordsetid,
+                    distinct=spquery['selectdistinct'],
+                )
+                message_type = 'query-export-to-webportal-complete'
+            else:
+                # This should never happen because the export type is controlled by the backend, but just in case.
+                raise ValueError(f"Unsupported export type: {exporttype}")
+        except Exception as e:
+            logger.exception(
+                "Export failed for %s: collection %s, file %s, type %s",
+                user, collection, filename, exporttype,
+            )
+            tb = traceback.format_exc()
+            error_details = {'error': str(e)}
+            if tb:
+                error_details['traceback'] = tb
+            message_type = f'query-export-to-{exporttype}-failed'
+            Message.objects.create(user=user, content=json.dumps({
+                'type': message_type,
+                'file': filename,
+                'error': error_details,
+            }))
+            raise
 
     Message.objects.create(user=user, content=json.dumps({
         'type': message_type,
         'file': filename,
     }))
+
+
+def query_to_web_portal_zip(
+    session,
+    collection,
+    user,
+    tableid,
+    field_specs,
+    path,
+    captions,
+    recordsetid=None,
+    distinct=False,
+):
+    query, _ = build_query(
+        session=session,
+        collection=collection,
+        user=user,
+        tableid=tableid,
+        field_specs=field_specs,
+        props=BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
+    )
+
+    processors = [
+        *DefaultQueryProcessors(
+            tableid=tableid,
+            field_specs=field_specs,
+            collection=collection,
+            user=user
+        ),
+        *WebportalQueryResultProcessors(query_fields=field_specs)
+    ]
+    logger.warning(processors)
+    return _query_to_web_portal_zip(
+        session=session,
+        collection=collection,
+        user=user,
+        tableid=tableid,
+        field_specs=field_specs,
+        path=path,
+        captions=captions,
+        query_rows=apply_special_post_query_processing(query=query, processors=processors),
+        set_group_concat_max_len_fn=set_group_concat_max_len
+    )
 
 # def stored_query_to_csv(query_id, collection, user, path):
 #     """Executes a query from the Spquery table with the given id and send
@@ -322,7 +401,7 @@ def query_to_csv(
     See build_query for details of the other accepted arguments.
     """
     set_group_concat_max_len(session.connection())
-    query, order_by_expers = build_query(
+    query, __ = build_query(
         session,
         collection,
         user,
@@ -330,8 +409,15 @@ def query_to_csv(
         field_specs,
         BuildQueryProps(recordsetid=recordsetid, replace_nulls=True, distinct=distinct),
     )
-    query = query.order_by(*order_by_expers)
-    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
+    query_rows = apply_special_post_query_processing(
+        query=query,
+        processors=DefaultQueryProcessors(
+            tableid=tableid,
+            field_specs=field_specs,
+            collection=collection,
+            user=user
+        )
+    )
 
     logger.debug("query_to_csv starting")
 
@@ -347,24 +433,14 @@ def query_to_csv(
                 header = ["id"] + header
             csv_writer.writerow(header)
 
-        if isinstance(query, list):
-            for row in query:
-                if row_filter is not None and not row_filter(row):
+        for row in query_rows:
+            if row_filter is not None and not row_filter(row):
                     continue
-                encoded = [
-                    re.sub("\r|\n", " ", str(f))
-                    for f in (row[1:] if strip_id or distinct else row)
-                ]
-                csv_writer.writerow(encoded)
-        else:
-            for row in query.yield_per(1):
-                if row_filter is not None and not row_filter(row):
-                    continue
-                encoded = [
-                    re.sub("\r|\n", " ", str(f))
-                    for f in (row[1:] if strip_id or distinct else row)
-                ]
-                csv_writer.writerow(encoded)
+            encoded = [
+                re.sub("\r|\n", " ", str(f))
+                for f in (row[1:] if strip_id or distinct else row)
+            ]
+            csv_writer.writerow(encoded)
 
     logger.debug("query_to_csv finished")
 
@@ -411,7 +487,15 @@ def query_to_kml(
         model = models.models_by_tableid[tableid]
         query = query.filter(model._id.in_(selected_rows))
 
-    query = apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=False)
+    query_rows = apply_special_post_query_processing(
+        query=query,
+        processors=DefaultQueryProcessors(
+            tableid=tableid,
+            field_specs=field_specs,
+            collection=collection,
+            user=user
+        )
+    )
 
     logger.debug("query_to_kml starting")
 
@@ -431,20 +515,12 @@ def query_to_kml(
 
     coord_cols = getCoordinateColumns(field_specs, table != None)
 
-    if isinstance(query, list):
-        for row in query:
-            if row_has_geocoords(coord_cols, row):
-                placemarkElement = createPlacemark(
-                    kmlDoc, row, coord_cols, table, captions, host
-                )
-                documentElement.appendChild(placemarkElement)
-    else:
-        for row in query.yield_per(1):
-            if row_has_geocoords(coord_cols, row):
-                placemarkElement = createPlacemark(
-                    kmlDoc, row, coord_cols, table, captions, host
-                )
-                documentElement.appendChild(placemarkElement)
+    for row in query_rows:
+        if row_has_geocoords(coord_cols, row):
+            placemarkElement = createPlacemark(
+                kmlDoc, row, coord_cols, table, captions, host
+            )
+            documentElement.appendChild(placemarkElement)
 
     with open(path, "wb") as kmlFile:
         # This should be controlled by a preference or argument, because it makes adding 
@@ -626,39 +702,6 @@ def run_ephemeral_query(collection, user, spquery):
         )
 
 
-# def augment_field_specs(field_specs: list[QueryField], formatauditobjs=False):
-#     print("augment_field_specs ######################################")
-#     new_field_specs = []
-#     for fs in field_specs:
-#         print(fs)
-#         print(fs.fieldspec.table.tableId)
-#         field = fs.fieldspec.join_path[-1]
-#         model = models.models_by_tableid[fs.fieldspec.table.tableId]
-#         if field.type == "java.util.Calendar":
-#             precision_field = field.name + "Precision"
-#             has_precision = hasattr(model, precision_field)
-#             if has_precision:
-#                 new_field_specs.append(
-#                     make_augmented_field_spec(fs, model, precision_field)
-#                 )
-#         elif formatauditobjs and model.name.lower().startswith("spauditlog"):
-#             if field.name.lower() in "newvalue, oldvalue":
-#                 log_model = models.models_by_tableid[530]
-#                 new_field_specs.append(
-#                     make_augmented_field_spec(fs, log_model, "TableNum")
-#                 )
-#                 new_field_specs.append(
-#                     make_augmented_field_spec(fs, model, "FieldName")
-#                 )
-#             elif field.name.lower() == "recordid":
-#                 new_field_specs.append(make_augmented_field_spec(fs, model, "TableNum"))
-#     print("################################ sceps_dleif_tnemgua")
-
-
-# def make_augmented_field_spec(field_spec, model, field_name):
-#     print("make_augmented_field_spec ######################################")
-
-
 def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
     "Create a record set from the records matched by a query."
     spquery = recordset_info["fromquery"]
@@ -684,7 +727,14 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
 
         field_specs = fields_from_json(spquery["fields"])
 
-        query, __ = build_query(session, collection, user, tableid, field_specs)
+        query, __ = build_query(
+            session,
+            collection,
+            user,
+            tableid,
+            field_specs,
+            BuildQueryProps(recordsetid=spquery.get("recordsetid", None)),
+        )
         query = query.with_entities(model._id, literal(new_rs_id)).distinct()
         RSI = models.RecordSetItem
         ins = insert(RSI).from_select((RSI.recordId, RSI.RecordSetID), query)
@@ -880,7 +930,19 @@ def execute(
 
 
         log_sqlalchemy_query(query) # Debugging
-        return {"results": apply_special_post_query_processing(query, tableid, field_specs, collection, user)}
+
+        results = list(
+            apply_special_post_query_processing(
+                query=query,
+                processors=DefaultQueryProcessors(
+                    tableid=tableid,
+                    field_specs=field_specs,
+                    collection=collection,
+                    user=user
+                )
+            )
+        )
+        return {"results": results}
 
 def build_query(
     session,
@@ -973,7 +1035,25 @@ def build_query(
     if props.recordsetid is not None:
         logger.debug("joining query to recordset: %s", props.recordsetid)
         recordset = session.query(models.RecordSet).get(props.recordsetid)
-        if not (recordset.dbTableId == tableid):
+        if recordset is None:
+            raise AssertionError(
+                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset not found.",
+                {
+                    "recordsetId": props.recordsetid,
+                    "localizationKey": "unexpectedRecordsetId",
+                },
+            )
+        if recordset.collectionMemberId != collection.id:
+            raise AssertionError(
+                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset is not in collection '{collection.id}'.",
+                {
+                    "recordsetId": props.recordsetid,
+                    "collectionId": collection.id,
+                    "expectedCollectionId": recordset.collectionMemberId,
+                    "localizationKey": "unexpectedRecordsetCollection",
+                },
+            )
+        if recordset.dbTableId != tableid:
             raise AssertionError(
                 f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
                 {
@@ -1054,45 +1134,6 @@ def build_query(
     logger.debug("query: %s", query.query)
     return query.query, order_by_exprs
 
-# def series_post_query_for_int_cat_nums(query, co_id_cat_num_pair_col_index=0):
-#     """Transform the query results by removing the co_id:catnum pair column
-#     and adding a co_id colum and formatted catnum range column.
-#     Sort the results by the first catnum in the range."""
-#     log_sqlalchemy_query(query)  # Debugging
-
-#     def group_consecutive_ranges(lst):
-#         def group_consecutives(acc, x):
-#             if not acc or int(acc[-1][-1][1]) + 1 != int(x[1]):
-#                 acc.append([x])
-#             else:
-#                 acc[-1].append(x)
-#             return acc
-
-#         grouped = reduce(group_consecutives, lst, [])
-#         return [
-#             (','.join([x[0] for x in group]), f"{group[0][1]} - {group[-1][1]}" if len(group) > 1 else f"{group[0][1]}")
-#             for group in grouped
-#         ]
-
-#     def process_row(row):
-#         co_id_cat_num_consecutive_pairs = group_consecutive_ranges(
-#             sorted(
-#                 (pair.split(':') for pair in row[co_id_cat_num_pair_col_index].split(',')),
-#                 key=lambda x: int(x[1])
-#             )
-#         )
-
-#         return [
-#             [co_id, cat_num_series] + list(
-#                 list(row[1:]) if co_id_cat_num_pair_col_index == 0
-#                 else list(row[:co_id_cat_num_pair_col_index]) + list(row[co_id_cat_num_pair_col_index + 1:])
-#             )
-#             for co_id, cat_num_series in co_id_cat_num_consecutive_pairs
-#         ]
-
-#     MAX_ROWS = 500
-#     return [item for sublist in map(process_row, list(query)) for item in sublist][:MAX_ROWS]
-
 def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair_col_index=0, is_count=False):
     """Transform the query results by removing the co_id:catnum pair column
     and adding a co_id colum and formatted catnum range column.
@@ -1144,6 +1185,7 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
             
             return (None, s, '')
 
+    # REFACTOR: Remove this if it really is and should be unused
     def parse_catalog_for_sorting(catalog): # pragma: no cover
         m = re.match(r'^([A-Za-z]*)(\d+)$', catalog)
         if m:
@@ -1213,17 +1255,15 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
     offset = offset if offset else 0
     return results[offset:offset + series_limit]
 
-def apply_special_post_query_processing(query, tableid, field_specs, collection, user, should_list_query=True):
-    parent_inheritance_pref = get_parent_cat_num_inheritance_setting(collection, user)
-    cog_inheritance_pref = get_cat_num_inheritance_setting(collection, user)
-
-    if parent_inheritance_pref:
-        query = parent_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
-
-    if cog_inheritance_pref: 
-        query = cog_inheritance_post_query_processing(query, tableid, field_specs, collection, user)
-    
-    if should_list_query:
-        return list(query)
-
-    return query
+# REFACTOR: We don't really need tableid, field_specs, collection, or user
+# here: those are only needed in the default processors.
+# Find some easy and readable way to delegate these parameters to the default
+# processors
+def apply_special_post_query_processing(query,
+                                        processors: list[Callable[[list], list]],
+                                        batch_size=7000):
+    for raw_row in query.yield_per(batch_size):
+        row = list(raw_row)
+        for processor in processors:
+            row = processor(row)
+        yield tuple(row)

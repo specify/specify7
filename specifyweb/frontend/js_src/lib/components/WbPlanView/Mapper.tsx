@@ -654,6 +654,12 @@ export function Mapper(props: {
                         line,
                         defaultValue,
                       }),
+                    onChangeDisambiguationBehavior: (disambiguationBehavior) =>
+                      dispatch({
+                        type: 'ChangeDisambiguationBehaviorAction',
+                        line,
+                        disambiguationBehavior,
+                      }),
                   }),
                   previewOption: {
                     optionName: 'mappingOptions',
