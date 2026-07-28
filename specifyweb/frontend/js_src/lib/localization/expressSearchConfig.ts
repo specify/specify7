@@ -380,7 +380,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us':
       'Taxa linked to geography records through collection object determinations and collecting event localities.',
     'de-ch':
-      'Taxa, die über die Bestimmung von Sammlungsobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
+      'Taxa, die über die Bestimmung von Sammelobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
     'es-es':
       'Taxones vinculados a registros geográficos mediante la determinación de objetos de colección y localidades de eventos de recolección.',
     'fr-fr':
