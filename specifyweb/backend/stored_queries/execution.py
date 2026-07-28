@@ -684,7 +684,14 @@ def recordset(collection, user, user_agent, recordset_info): # pragma: no cover
 
         field_specs = fields_from_json(spquery["fields"])
 
-        query, __ = build_query(session, collection, user, tableid, field_specs)
+        query, __ = build_query(
+            session,
+            collection,
+            user,
+            tableid,
+            field_specs,
+            BuildQueryProps(recordsetid=spquery.get("recordsetid", None)),
+        )
         query = query.with_entities(model._id, literal(new_rs_id)).distinct()
         RSI = models.RecordSetItem
         ins = insert(RSI).from_select((RSI.recordId, RSI.RecordSetID), query)
@@ -973,7 +980,25 @@ def build_query(
     if props.recordsetid is not None:
         logger.debug("joining query to recordset: %s", props.recordsetid)
         recordset = session.query(models.RecordSet).get(props.recordsetid)
-        if not (recordset.dbTableId == tableid):
+        if recordset is None:
+            raise AssertionError(
+                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset not found.",
+                {
+                    "recordsetId": props.recordsetid,
+                    "localizationKey": "unexpectedRecordsetId",
+                },
+            )
+        if recordset.collectionMemberId != collection.id:
+            raise AssertionError(
+                f"Unexpected recordset id '{props.recordsetid}' in request. Recordset is not in collection '{collection.id}'.",
+                {
+                    "recordsetId": props.recordsetid,
+                    "collectionId": collection.id,
+                    "expectedCollectionId": recordset.collectionMemberId,
+                    "localizationKey": "unexpectedRecordsetCollection",
+                },
+            )
+        if recordset.dbTableId != tableid:
             raise AssertionError(
                 f"Unexpected tableId '{tableid}' in request. Expected '{recordset.dbTableId}'",
                 {
