@@ -145,28 +145,24 @@ function getSchemaFieldLabels(
 export const businessRuleMessageResolvers: RR<string, BusinessRuleMessageResolver> = {
   fieldNotUnique: (payload): LocalizedString | undefined => {
     const tableName = getStringPayload(payload, 'table');
-    if (tableName.length === 0) return undefined;
+    const fieldName = getStringPayload(payload, 'fieldName');
+    if (tableName.length === 0 || fieldName.length === 0) return undefined;
     return withConflictingRecordIds(
       backEndText.fieldNotUnique({
         tableName: getSchemaTableLabel(tableName),
-        fieldName: getSchemaFieldLabels(
-          tableName,
-          getStringPayload(payload, 'fieldName')
-        ),
+        fieldName: getSchemaFieldLabels(tableName, fieldName),
       }),
       payload
     );
   },
   childFieldNotUnique: (payload): LocalizedString | undefined => {
     const tableName = getStringPayload(payload, 'table');
-    if (tableName.length === 0) return undefined;
+    const fieldName = getStringPayload(payload, 'fieldName');
+    if (tableName.length === 0 || fieldName.length === 0) return undefined;
     return withConflictingRecordIds(
       backEndText.childFieldNotUnique({
         tableName: getSchemaTableLabel(tableName),
-        fieldName: getSchemaFieldLabels(
-          tableName,
-          getStringPayload(payload, 'fieldName')
-        ),
+        fieldName: getSchemaFieldLabels(tableName, fieldName),
         parentField: getSchemaFieldLabels(
           tableName,
           getStringPayload(payload, 'parentField')
