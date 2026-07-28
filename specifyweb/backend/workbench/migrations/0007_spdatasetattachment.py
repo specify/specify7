@@ -20,13 +20,26 @@ MIGRATION_0007_FIELDS = {
 def apply_migration(apps, schema_editor):
     # Update Schema config
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all(): # New SpDataSetAttachment table
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'): # New SpDataSetAttachment table
+
         for table, desc in MIGRATION_0007_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
-    for discipline in Discipline.objects.all(): # New relationship Spdataset -> SpDataSetAttachment
+            update_table_schema_config_with_defaults(
+                table_name=table,
+                discipline_id=discipline_id,
+                discipline_type=discipline_type,
+                apps=apps,
+                table_defaults={"desc": desc}
+            )
+
         for table, fields in MIGRATION_0007_FIELDS.items():
-            for field in fields: 
-                update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+            for field in fields:
+                update_table_field_schema_config_with_defaults(
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field,
+                    apps=apps
+                )
 
 def revert_migration(apps, schema_editor):
     # Revert Schema config changes

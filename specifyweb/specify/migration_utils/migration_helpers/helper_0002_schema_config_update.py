@@ -112,6 +112,12 @@ def set_discipline_for_taxon_treedefs(apps):
 
 def create_geo_table_schema_config_with_defaults(apps):
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         for table, desc in MIGRATION_0002_TABLES:
-            update_table_schema_config_with_defaults(table, discipline.id, desc, apps)
+            update_table_schema_config_with_defaults(
+                table_name=table,
+                discipline_id=discipline_id,
+                discipline_type=discipline_type,
+                apps=apps,
+                table_defaults={"desc": desc}
+            )

@@ -17,18 +17,10 @@ from specifyweb.specify.migration_utils.default_cots import (
 )
 from specifyweb.backend.permissions.initialize import initialize
 from specifyweb.specify.migration_utils.deduplication import deduplicate_schema_config_orm
-from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_geo_table_schema_config_with_defaults, create_cogtype_type_picklist, create_default_discipline_for_tree_defs, set_discipline_for_taxon_treedefs
-from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_splocalecontaineritem, create_cotype_picklist
-from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import create_agetype_picklist, create_strat_table_schema_config_with_defaults
+from specifyweb.specify.migration_utils.migration_helpers.helper_0002_schema_config_update import create_cogtype_type_picklist, create_default_discipline_for_tree_defs, set_discipline_for_taxon_treedefs
+from specifyweb.specify.migration_utils.migration_helpers.helper_0003_cotype_picklist import create_cotype_picklist
+from specifyweb.specify.migration_utils.migration_helpers.helper_0004_stratigraphy_age import create_agetype_picklist
 from specifyweb.specify.migration_utils.migration_helpers.helper_0007_schema_config_update import create_cogtype_picklist
-from specifyweb.specify.migration_utils.migration_helpers.helper_0008_ageCitations_fix import update_relative_age_fields
-from specifyweb.specify.migration_utils.migration_helpers.helper_0012_add_cojo_to_schema_config import add_cojo_to_schema_config
-from specifyweb.specify.migration_utils.migration_helpers.helper_0013_collectionobjectgroup_parentcog import update_cog_schema_config
-from specifyweb.specify.migration_utils.migration_helpers.helper_0015_add_version_to_ages import update_age_schema_config
-from specifyweb.specify.migration_utils.migration_helpers.helper_0020_add_tectonicunit_to_pc_in_schema_config import add_tectonicunit_to_pc_in_schema_config
-from specifyweb.specify.migration_utils.migration_helpers.helper_0024_add_uniqueIdentifier_storage import update_storage_unique_id_fields
-from specifyweb.specify.migration_utils.migration_helpers.helper_0039_agent_fields_for_loan_and_gift import update_loan_and_gift_agent_fields
-from specifyweb.specify.migration_utils.migration_helpers.helper_0040_components import create_table_schema_config_with_defaults, remove_componentparent_item
 from specifyweb.specify.migration_utils.migration_helpers.helper_0042_discipline_type_picklist import create_discipline_type_picklist
 from specifyweb.specify.migration_utils.router import use_migration_connection
 from specifyweb.specify.migration_utils.migration_helpers.helper_0031_add_default_for_selectseries import make_selectseries_false
@@ -64,63 +56,33 @@ def fix_cots(stdout: WriteToStdOut | None = None):
     ]
     log_and_run(funcs, stdout)
 
-def fix_schema_config(stdout: WriteToStdOut | None = None):
+def apply_schema_config_defaults(stdout: WriteToStdOut | None = None):
     def apply_schema_overrides_for_all_disciplines(_apps):
         from specifyweb.backend.setup_tool.schema_defaults import apply_schema_defaults_task
         Discipline = _apps.get_model('specify', 'Discipline')
-        for discipline in Discipline.objects.all():
+        for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
             if stdout is not None:
                 stdout(
-                    f"Applying schema defaults/overrides for discipline {discipline.id} ({discipline.type})..."
+                    f"Applying schema defaults/overrides for discipline {discipline_id} ({discipline_type})..."
                 )
-            apply_schema_defaults_task.apply(args=[discipline.id])
+            apply_schema_defaults_task.apply(args=[discipline_id])
 
-    # PERF: The vast majority of these can be collapsed to a single call to
-    # update_table_schema_config_with_defaults
     funcs = [
-        # usc.update_all_table_schema_config_with_defaults,
-        create_geo_table_schema_config_with_defaults, # specify 0002
-        create_cotype_splocalecontaineritem, # specify 0003
-        create_strat_table_schema_config_with_defaults, # specify 0004 - getting skip warnings
+        apply_schema_overrides_for_all_disciplines
+    ]
+    log_and_run(funcs, stdout)
+
+def deduplicate_schema_config(stdout: WriteToStdOut | None = None):
+    funcs = [
+        deduplicate_schema_config_orm
+    ]
+    log_and_run(funcs, stdout)
+
+def check_collection_picklists(stdout: WriteToStdOut | None = None):
+    funcs = [
         create_agetype_picklist, # specify 0004
-        # BUG: This should really only be run in the context of the migration,
-        # and not on startup. See the below BUG comment above update_hidden_prop
-        # update_cog_type_fields, # specify 0007
-        create_cogtype_picklist, # specify 0007
-        # BUG: These also shouldn't be run with this suite. These are one way
-        # data migrations in the contect of migrations meant to resolve
-        # eariler migrations.
-        # The functions can be destructive as we can't really discern whether
-        # or not these functions should be applied
-        # update_cogtype_splocalecontaineritem, # specify 0007
-        # update_systemcogtypes_picklist, # specify 0007
-        # update_cogtype_type_splocalecontaineritem, # specify 0007
-        update_relative_age_fields, # specify 0008
-        add_cojo_to_schema_config, # specify 0012
-        update_cog_schema_config, # specify 0013
-        update_age_schema_config, # specify 0015
-        # schemaconfig_fixes, # specify 0017
-        # add_cot_catnum_to_schema, # specify 0018
-        add_tectonicunit_to_pc_in_schema_config, # specify 0020
-        # fix_hidden_geo_prop, # specify 0021
-        # update_schema_config_field_desc, # specify 0023
-        # BUG: We can't reliably run this function at startup, as there is no
-        # easy way to differentiate Schema Config tables/fields that should or
-        # should not be updated for already existing Disciplines.
-        # update_hidden_prop, # specify 0023
-        update_storage_unique_id_fields, # specify 0024
-        # update_co_children_fields, # specify 0027
-        # remove_collectionobject_parentco, # specify 0029
-        # add_quantities_gift, # specify 0032
-        # update_paleo_desc, # specify 0033
-        # update_accession_date_fields, # specify 0034
-        update_loan_and_gift_agent_fields, # specify 0039
-        remove_componentparent_item, # specify 0040
-        create_table_schema_config_with_defaults, # specify 0040
-        create_discipline_type_picklist, # specify 0042
-        # update_discipline_type_splocalecontaineritem, # specify 0042
-        apply_schema_overrides_for_all_disciplines,
-        deduplicate_schema_config_orm,
+        create_cogtype_picklist, # specify 0007,
+        create_discipline_type_picklist # specify 0042
     ]
     log_and_run(funcs, stdout)
 
@@ -222,7 +184,9 @@ ALL_FUNCTIONS: dict[str, Callable[[WriteToStdOut | None], None]] = {
     "fix_cots": fix_cots,
     "fix_permissions": fix_permissions,
     "fix_business_rules": fix_business_rules,
-    "fix_schema_config": fix_schema_config,
+    "check_collection_picklists": check_collection_picklists,
+    "apply_schema_defaults": apply_schema_config_defaults,
+    "deduplicate_schema_config": deduplicate_schema_config,
     "fix_app_resource_dirs": fix_app_resource_dirs,
     "fix_tectonic_ranks": fix_tectonic_ranks,
     "fix_misc": fix_misc,

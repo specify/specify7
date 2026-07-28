@@ -66,7 +66,8 @@ class SchemaConfigTests(MigrationCommandTestCase):
                 )
             )
 
-            rkm.fix_schema_config(stdout)
+            rkm.apply_schema_config_defaults(stdout)
+            rkm.deduplicate_schema_config(stdout)
 
         self.assertEqual(fake_apps.model_request, ("specify", "Discipline"))
         self.assertEqual(
@@ -118,13 +119,13 @@ class KeyMigrationSelectedHelperDatabaseTests(ApiTests):
             models.Splocaleitemstr,
             [
                 {
-                    "itemname": item,
+                    "itemname_id": item,
                     "language": "en",
                     "version": 0,
                     "text": "Updated Name",
                 },
                 {
-                    "itemdesc": item,
+                    "itemdesc_id": item,
                     "language": "en",
                     "version": 0,
                     "text": "Created Description",

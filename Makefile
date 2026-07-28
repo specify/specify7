@@ -53,6 +53,6 @@ MYPY_TARGETS = \
 	specifyweb/backend/context/user_resources.py
 
 typecheck:
-	$(MYPY) --follow-imports silent $(MYPY_TARGETS)
+	$(MYPY) --follow-imports=silent --show-traceback $(MYPY_TARGETS)
 
 .FORCE:

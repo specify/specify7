@@ -1324,7 +1324,7 @@
       "catalogeddateprecision": {"name": "Cataloged Date Precision", "desc": "Cataloged Date Precision", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "catalogeddateverbatim": {"name": "Cataloged Date Verbatim", "desc": "The verbatim date the specimen was collected.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "cataloger": {"name": "Cataloger", "desc": "In Specify, the person who recorded the specimen data in the catalog. Cataloger records are stored in the Agent table.", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
-      "catalognumber": {"name": "Catalog Number", "desc": "The number that identifies an individual specimen, a lot of specimens, or an observation as a part of a museum collection.", "format": "CatalogNumberString", "ishidden": false, "isuiformatter": true, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
+      "catalognumber": {"name": "Catalog Number", "desc": "The number that identifies an individual specimen, a lot of specimens, or an observation as a part of a museum collection.", "format": null, "ishidden": false, "isuiformatter": true, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "cojo": {"name": "Parent Group", "desc": "Connects a Collection Object to its Collection Object Group", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "OneToOne", "isrequired": false, "weblinkname": null},
       "collectingevent": {"name": "Collecting Information", "desc": "Collecting Event", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "collection": {"name": "Collection", "desc": "Collection", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
@@ -2438,7 +2438,7 @@
       "iscurrent": {"name": "Current", "desc": "Yes if the determination is considered the 'best' (maybe even one of the better).", "format": null, "ishidden": false, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": true, "weblinkname": null},
       "method": {"name": "Method", "desc": "Taxonomic tools and information on which a determination is based. These include professional expertise, published taxonomic keys, molecular DNA, or comparisons with previously cataloged specimens.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modified By Agent", "desc": "Link to lookup table for Method.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
-      "nameusage": {"name": "Name Usage", "desc": "Used to describe the context of the name entered into the taxon or Alternate name fields.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": "null", "type": null, "isrequired": false, "weblinkname": null},
+      "nameusage": {"name": "Name Usage", "desc": "Used to describe the context of the name entered into the taxon or Alternate name fields.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
       "number1": {"name": "Number1", "desc": "User definable.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Float", "isrequired": false, "weblinkname": null},
       "number2": {"name": "Number2", "desc": "User definable.", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": "java.lang.Float", "isrequired": false, "weblinkname": null},
       "number3": {"name": "Number3", "desc": "Number3", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null},
@@ -3576,7 +3576,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -3607,7 +3607,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -4043,7 +4043,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -4074,7 +4074,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": false, "picklistname": null, "type": null, "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -6883,7 +6883,7 @@
       "yesno2": {"name": "YesNo2", "desc": "YesNo2", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Boolean", "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -6908,7 +6908,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,
@@ -6940,7 +6940,7 @@
       "version": {"name": "Version", "desc": "Version", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.Integer", "isrequired": false, "weblinkname": null}
     },
     "format": null,
-    "ishidden": false,
+    "ishidden": true,
     "isuiformatter": null,
     "picklistname": null,
     "type": null,

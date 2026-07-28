@@ -17,10 +17,16 @@ def update_co_children_fields(apps):
     def update_discipline_fields(apps):
         Discipline = apps.get_model('specify', 'Discipline')
 
-        for discipline in Discipline.objects.all():
+        for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
             for table, fields in MIGRATION_0027_FIELDS.items(): 
                 for field in fields: 
-                    update_table_field_schema_config_with_defaults(table, discipline.id, field, apps)
+                    update_table_field_schema_config_with_defaults(
+                        table_name=table,
+                        discipline_id=discipline_id,
+                        discipline_type=discipline_type,
+                        field_name=field,
+                        apps=apps
+                    )
 
     def update_schema_config_field_desc(apps):
         Splocaleitemstr = apps.get_model('specify', 'Splocaleitemstr')

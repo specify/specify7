@@ -206,10 +206,10 @@ def update_version_required(apps):
     }
 
     # Update the schema config for each discipline with the version isHidden change
-    for discipline in Discipline.objects.all():
+    for discipline_id in Discipline.objects.all().values_list('pk', flat=True):
         for table, fields in MIGRATION_0035_FIELDS.items():
             for field in fields:    
-                update_table_field_schema_config_params(table, discipline.id, field, updated_config_params, apps)
+                update_table_field_schema_config_params(table, discipline_id, field, updated_config_params, apps)
 
 def revert_version_required(apps):
     Discipline = apps.get_model('specify', 'Discipline')
@@ -218,7 +218,7 @@ def revert_version_required(apps):
     }
 
     # Revert the schema config for each discipline with the version isHidden change
-    for discipline in Discipline.objects.all():
+    for discipline_id in Discipline.objects.all().values_list('pk', flat=True):
         for table, fields in MIGRATION_0035_FIELDS.items():
             for field in fields:    
-                update_table_field_schema_config_params(table, discipline.id, field, updated_config_params, apps)
+                update_table_field_schema_config_params(table, discipline_id, field, updated_config_params, apps)

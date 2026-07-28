@@ -10,11 +10,16 @@ MIGRATION_0020_FIELDS = {
 
 def add_tectonicunit_to_pc_in_schema_config(apps):
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         for table, fields in MIGRATION_0020_FIELDS.items():
             for field in fields:
                 update_table_field_schema_config_with_defaults(
-                    table, discipline.id, field, apps)
+                    table_name=table,
+                    discipline_id=discipline_id,
+                    discipline_type=discipline_type,
+                    field_name=field,
+                    apps=apps
+                )
 
 def remove_tectonicunit_from_pc_schema_config(apps):
     for table, fields in MIGRATION_0020_FIELDS.items():

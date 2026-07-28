@@ -1,7 +1,7 @@
 import re
 import json
 
-from typing import NamedTuple, Tuple, TypedDict, NotRequired
+from typing import Tuple
 import logging
 from collections import defaultdict
 from functools import lru_cache
@@ -9,11 +9,14 @@ from pathlib import Path
 
 
 from django.db.models import Q
+from django.db.models.functions import Lower
 from django.conf import settings
 from django.apps import apps as global_apps
 
 from specifyweb.specify.models import (
     datamodel,
+    Splocalecontainer,
+    Splocalecontaineritem
 )
 
 logger = logging.getLogger(__name__)
@@ -21,6 +24,98 @@ logger = logging.getLogger(__name__)
 HIDDEN_FIELDS = [
     "timestampcreated", "timestampmodified", "version", "createdbyagent", "modifiedbyagent"
 ]
+
+class MultipleRecordsError(Exception):
+    ...
+
+class MissingRecordError(Exception):
+    ...
+
+def _ensure_one(queryset):
+    if len(queryset) > 1:
+        raise MultipleRecordsError(f"Expected one {queryset.model.__name__}. Got: {queryset}")
+    first_record = queryset.first()
+    if first_record is None:
+        raise MissingRecordError(f"Expected one {queryset.model.__name__}. None found")
+    return first_record
+
+class SchemaReader:
+    def __init__(self, default_discipline_id: int | None = None, apps = global_apps):
+        self.discipline_id = default_discipline_id
+        self.apps = apps
+
+    def get_table(self, table_name: str, discipline_id: int | None = None, language: str = "en") -> tuple[Splocalecontainer, str, str]:
+        Splocaleitemstr = self.apps.get_model("specify", "Splocaleitemstr")
+
+        table = self._get_only_table(table_name, discipline_id)
+
+        table_label = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                containername_id=table.pk,
+                language=language
+            )
+        )
+        table_desc = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                containerdesc_id=table.pk,
+                language=language
+            )
+        )
+        return table, table_label.text, table_desc.text
+
+    def get_field(self, table_name: str, field_name: str, discipline_id: int | None = None, language: str = "en") -> tuple[Splocalecontaineritem, str, str]:
+        Splocaleitemstr = self.apps.get_model("specify", "Splocaleitemstr")
+
+        field = self._get_only_field(table_name, field_name, discipline_id)
+        field_label = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                itemname_id=field.pk,
+                language=language
+            )
+        )
+        field_desc = _ensure_one(
+            Splocaleitemstr.objects.filter(
+                itemdesc_id=field.pk,
+                language=language
+            )
+        )
+        return field, field_label.text, field_desc.text
+
+    def _get_only_field(self, table_name: str, field_name: str, discipline_id: int | None = None) -> Splocalecontaineritem:
+        final_discipline_id = self._coalesce_discipline_id(discipline_id)
+
+        if final_discipline_id is None:
+            raise ValueError("Trying to fetch a Splocalecontaineritem without specifying a Discipline")
+
+        Splocalecontaineritem = self.apps.get_model("specify", "Splocalecontaineritem")
+
+        field = _ensure_one(
+            Splocalecontaineritem.objects.filter(
+                container__name__iexact=table_name,
+                container__schematype=0,
+                container__discipline_id=final_discipline_id,
+                name__iexact=field_name
+            )
+        )
+        return field
+
+    def _get_only_table(self, table_name: str, discipline_id: int | None = None) -> Splocalecontainer:
+        Splocalecontainer = self.apps.get_model("specify", "Splocalecontainer")
+        final_discipline_id = self._coalesce_discipline_id(discipline_id)
+        if final_discipline_id is None:
+            raise ValueError("Trying to fetch a Splocalecontainer without specifying a Discipline")
+
+        tables = Splocalecontainer.objects.filter(
+            name__iexact=table_name,
+            discipline_id=final_discipline_id,
+            schematype=0
+        )
+        return _ensure_one(tables)
+
+    def _coalesce_discipline_id(self, discipline_id: int | None = None):
+        if discipline_id is not None:
+            return discipline_id
+        return self.discipline_id
 
 def _has_explicit_hidden_override(field_config: dict) -> bool:
     return any(key.lower() == "ishidden" for key in field_config.keys())
@@ -133,13 +228,6 @@ def camel_to_spaced_title_case(camel_case: str) -> str:
     """
     return re.sub(r"(?<!^)(?=[A-Z])", " ", camel_case).title()
 
-class FieldSchemaConfig(NamedTuple):
-    name: str
-    column: str
-    java_type: str
-    description: str = ""
-    language: str = "en"
-
 def uncapitilize(string: str) -> str: 
     return string.lower() if len(string) <= 1 else string[0].lower() + string[1:]
 
@@ -147,12 +235,12 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
     if not rows:
         return 0
 
-    fk_fields = ("itemname", "itemdesc", "containername", "containerdesc")
+    fk_fields = ("itemname_id", "itemdesc_id", "containername_id", "containerdesc_id")
     groups: dict[str, list[dict]] = defaultdict(list)
     for r in rows:
         present = [f for f in fk_fields if r.get(f) is not None]
         if len(present) != 1:
-            raise ValueError(f"Each row must set exactly one FK among {fk_fields}. Got: {present}")
+            raise ValueError(f"Each row must set exactly one FK among {fk_fields}. Got: {present} {rows}")
         groups[present[0]].append(r)
 
     total_created = 0
@@ -162,13 +250,13 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
         languages: set[str] = set()
 
         for r in group_rows:
-            fk_ids.add(r[fk_field].pk)
+            fk_ids.add(r[fk_field])
             languages.add(r["language"])
 
         existing_rows = list(
             Splocaleitemstr.objects.filter(
                 **{
-                    f"{fk_field}_id__in": fk_ids,
+                    f"{fk_field}__in": fk_ids,
                     "language__in": languages,
                 }
             )
@@ -180,14 +268,14 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
         )
 
         existing_by_key: dict[Tuple[str, int], list] = defaultdict(list)
-        fk_field_id = f"{fk_field}_id"
+        fk_field_id = f"{fk_field}"
         for existing_row in existing_rows:
             key = (existing_row.language, getattr(existing_row, fk_field_id))
             existing_by_key[key].append(existing_row)
 
         desired_by_key: dict[Tuple[str, int], dict] = {}
         for r in group_rows:
-            key = (r["language"], r[fk_field].pk)
+            key = (r["language"], r[fk_field])
             desired_by_key[key] = r
 
         ids_to_delete: set[int] = set()
@@ -211,17 +299,6 @@ def bulk_create_splocaleitemstr_idempotent(Splocaleitemstr, rows: list[dict]) ->
 
     return total_created
 
-class FieldDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    ishidden: NotRequired[bool]
-    isrequired: NotRequired[bool]
-    picklistname: NotRequired[str]
-class TableDefaults(TypedDict):
-    name: NotRequired[str]
-    desc: NotRequired[str]
-    items: NotRequired[dict[str, FieldDefaults]]
-
 def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
     Splocalecontainer = apps.get_model('specify', 'Splocalecontainer')
     Splocalecontaineritem = apps.get_model('specify', 'Splocalecontaineritem')
@@ -234,7 +311,7 @@ def find_missing_schema_config_fields(discipline_id: int, apps=global_apps):
         schematype=0,
     )
     container_names = set(
-        containers.values_list('name', flat=True)
+        containers.values_list(Lower('name'), flat=True)
     )
 
     existing_fields_by_table: dict[str, set[str]] = defaultdict(set)
