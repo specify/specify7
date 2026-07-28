@@ -417,14 +417,16 @@ export const reducer = generateReducer<MappingState, MappingActions>({
     return {
       ...state,
       lines: state.lines.map((line) =>
-        (isSameMappingPath(line.mappingPath, mappingPath) && mappingPathIsComplete(line.mappingPath)) ?
-        {
-          ...line,
-          columnOptions: {
-            ...line.columnOptions,
-            disambiguationBehavior: action.disambiguationBehavior,
-          },
-        } : line
+        isSameMappingPath(line.mappingPath, mappingPath) &&
+        mappingPathIsComplete(line.mappingPath)
+          ? {
+              ...line,
+              columnOptions: {
+                ...line.columnOptions,
+                disambiguationBehavior: action.disambiguationBehavior,
+              },
+            }
+          : line
       ),
       changesMade: true,
     };
@@ -456,7 +458,8 @@ export const reducer = generateReducer<MappingState, MappingActions>({
 });
 
 const isSameMappingPath = (pathA: MappingPath, pathB: MappingPath): boolean =>
-  mappingPathToString(pathA.slice(0, -1)) === mappingPathToString(pathB.slice(0, -1));
+  mappingPathToString(pathA.slice(0, -1)) ===
+  mappingPathToString(pathB.slice(0, -1));
 
 const getCurrentColumnOptions = (
   state: MappingState,
@@ -465,9 +468,10 @@ const getCurrentColumnOptions = (
   if (!mappingPathIsComplete(mappingPath)) return defaultColumnOptions;
 
   // Share disambiguationBehavior with lines mapped to the same record
-  const matchingLine = state.lines.find((line) =>
-    mappingPathIsComplete(line.mappingPath) &&
-    isSameMappingPath(line.mappingPath, mappingPath)
+  const matchingLine = state.lines.find(
+    (line) =>
+      mappingPathIsComplete(line.mappingPath) &&
+      isSameMappingPath(line.mappingPath, mappingPath)
   );
 
   return matchingLine === undefined
