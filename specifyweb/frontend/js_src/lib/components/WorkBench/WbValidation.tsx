@@ -480,47 +480,31 @@ export class WbValidation {
 
     const uploadStatus: UploadStatus = uploadStatusKey;
 
-    const statusData = 'AttachmentFailure' in uploadResult.record_result
-      ? uploadResult.record_result.AttachmentFailure
-      : 'Deleted' in uploadResult.record_result
-        ? uploadResult.record_result.Deleted
-        : 'FailedBusinessRule' in uploadResult.record_result
-          ? uploadResult.record_result.FailedBusinessRule
-          : 'Matched' in uploadResult.record_result
-            ? uploadResult.record_result.Matched
-            : 'MatchedAndChanged' in uploadResult.record_result
-              ? uploadResult.record_result.MatchedAndChanged
-              : 'MatchedMultiple' in uploadResult.record_result
-                ? uploadResult.record_result.MatchedMultiple
-                : 'NoChange' in uploadResult.record_result
-                  ? uploadResult.record_result.NoChange
-                  : 'NoMatch' in uploadResult.record_result
-                    ? uploadResult.record_result.NoMatch
-                    : 'NullRecord' in uploadResult.record_result
-                      ? uploadResult.record_result.NullRecord
-                      : 'ParseFailures' in uploadResult.record_result
-                        ? uploadResult.record_result.ParseFailures
-                        : 'PropagatedFailure' in uploadResult.record_result
-                          ? uploadResult.record_result.PropagatedFailure
-                          : 'Updated' in uploadResult.record_result
-                            ? uploadResult.record_result.Updated
-                            : 'Uploaded' in uploadResult.record_result
-                              ? uploadResult.record_result.Uploaded
-                              : undefined;
-
-    if (statusData === undefined) return;
-
+    const recordResult = uploadResult.record_result;
     const info =
-      'info' in statusData
-        ? (statusData.info as
-            | {
-                readonly treeInfo: {
-                  readonly rank: string;
-                  readonly name: string;
-                } | null;
-              }
-            | undefined)
-        : undefined;
+      'AttachmentFailure' in recordResult
+        ? recordResult.AttachmentFailure.info
+        : 'Deleted' in recordResult
+          ? recordResult.Deleted.info
+          : 'FailedBusinessRule' in recordResult
+            ? recordResult.FailedBusinessRule.info
+            : 'Matched' in recordResult
+              ? recordResult.Matched.info
+              : 'MatchedAndChanged' in recordResult
+                ? recordResult.MatchedAndChanged.info
+                : 'MatchedMultiple' in recordResult
+                  ? recordResult.MatchedMultiple.info
+                  : 'NoChange' in recordResult
+                    ? recordResult.NoChange.info
+                    : 'NoMatch' in recordResult
+                      ? recordResult.NoMatch.info
+                      : 'NullRecord' in recordResult
+                        ? recordResult.NullRecord.info
+                        : 'Updated' in recordResult
+                          ? recordResult.Updated.info
+                          : 'Uploaded' in recordResult
+                            ? recordResult.Uploaded.info
+                            : undefined;
 
     const isTree = info?.treeInfo !== null && info !== undefined;
     const mappingPath = isTree
