@@ -72,7 +72,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'jrxml/label',
     name: undefined,
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
+      'https://speciforum.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.ticket,
     label: reportsText.label(),
   },
@@ -80,7 +80,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'jrxml/report',
     name: undefined,
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
+      'https://speciforum.org/t/creating-reports-labels-in-specify-7-jaspersoft-studio/628',
     icon: icons.documentReport,
     label: reportsText.report(),
   },
@@ -88,7 +88,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'UserPreferences',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/specify-7-user-preferences-webinar/861',
+      'https://speciforum.org/t/specify-7-user-preferences-webinar/861',
     icon: icons.cog,
     label: preferencesText.userPreferences(),
     useTemplate: false,
@@ -98,7 +98,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'DefaultUserPreferences',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/setting-default-user-preferences/1447',
+      'https://speciforum.org/t/setting-default-user-preferences/1447',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
   },
@@ -115,7 +115,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'application/json',
     name: 'leaflet-layers',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/adding-custom-tile-servers-geomap/2593',
+      'https://speciforum.org/t/adding-custom-tile-servers-geomap/2593',
     icon: icons.locationMarker,
     label: resourcesText.leafletLayers(),
   },
@@ -123,7 +123,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'ExportFeed',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/dwca-data-exporting-in-specify-7/568',
+      'https://speciforum.org/t/dwca-data-exporting-in-specify-7/568',
     icon: icons.upload,
     label: resourcesText.rssExportFeed(),
   },
@@ -131,7 +131,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'ExpressSearchConfig',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/simple-search-config/183',
+      'https://speciforum.org/t/simple-search-config/183',
     icon: icons.search,
     label: resourcesText.expressSearchConfig(),
   },
@@ -139,7 +139,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'TypeSearches',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
+      'https://speciforum.org/t/adding-a-non-native-query-combo-box/859#h-1-type-search-definition-typesearch_defxml-8',
     icon: icons.documentSearch,
     label: resourcesText.typeSearches(),
   },
@@ -147,7 +147,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'WebLinks',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/editing-web-links-in-specify-7/1559',
+      'https://speciforum.org/t/editing-web-links-in-specify-7/1559',
     icon: icons.externalLink,
     label: resourcesText.webLinks(),
   },
@@ -163,7 +163,7 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     mimeType: 'text/xml',
     name: 'DataObjFormatters',
     documentationUrl:
-      'https://discourse.specifysoftware.org/t/editing-table-formats-and-aggregations-in-specify-7/1558',
+      'https://speciforum.org/t/editing-table-formats-and-aggregations-in-specify-7/1558',
     icon: icons.variable,
     label: resourcesText.dataObjectFormatters(),
   },

@@ -25,8 +25,14 @@ export const fetchRows = async (fetchUrl: string) =>
         number | null,
         string | null,
         string | null,
+        string | null,
+        string | null,
+        string | null,
+        string | null,
         number,
         string | null,
+        boolean | null,
+        number | null,
       ]
     >
   >(fetchUrl, {
@@ -44,8 +50,14 @@ export const fetchRows = async (fetchUrl: string) =>
           acceptedId = undefined,
           acceptedName = undefined,
           author = undefined,
+          startPeriod = undefined,
+          startUncertainty = undefined,
+          endPeriod = undefined,
+          endUncertainty = undefined,
           children,
           synonyms = undefined,
+          isBioStrat = undefined,
+          matchingDescendantCount = undefined,
         ],
         index,
         { length }
@@ -59,9 +71,15 @@ export const fetchRows = async (fetchUrl: string) =>
         acceptedId,
         acceptedName,
         author,
+        startPeriod,
+        startUncertainty,
+        endPeriod,
+        endUncertainty,
         children,
         isLastChild: index + 1 === length,
         synonyms,
+        isBioStrat: isBioStrat as boolean | null | undefined,
+        matchingDescendantCount: matchingDescendantCount as number | undefined,
       })
     )
   );
