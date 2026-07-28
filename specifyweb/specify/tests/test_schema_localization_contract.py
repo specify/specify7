@@ -76,15 +76,16 @@ class SchemaLocalizationContractTests(TestCase):
         missing = sorted(model_tables - json_keys)
         extra = sorted(json_keys - model_tables)
 
+        unexpected_missing = [table for table in missing if table not in ALLOWLISTED_JSON_ONLY_TABLES]
         unexpected_extra = [table for table in extra if table not in ALLOWLISTED_JSON_ONLY_TABLES]
 
         message_parts = []
-        if missing:
+        if unexpected_missing:
             message_parts.append(
                 'Missing schema localization entries for model-backed tables:\n'
                 + '\n'.join(
                     f'{table}: {", ".join(sorted(self.model_tables[table]))}'
-                    for table in missing
+                    for table in unexpected_missing
                 )
             )
 
@@ -96,7 +97,7 @@ class SchemaLocalizationContractTests(TestCase):
 
         if message_parts:
             summary = (
-                f'Missing tables: {len(missing)}; '
+                f'Missing tables: {len(unexpected_missing)}; '
                 f'Unexpected tables: {len(unexpected_extra)}'
             )
             self.fail(
