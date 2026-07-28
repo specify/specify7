@@ -34,6 +34,9 @@ msgstr "(Geordnet von neu zu alt)"
 
 #: components/Notifications/NotificationRenderers.tsx:67
 #: components/Notifications/NotificationRenderers.tsx:97
+#: components/Notifications/NotificationRenderers.tsx:133
+#: components/Notifications/NotificationRenderers.tsx:154
+#: components/Notifications/NotificationRenderers.tsx:207
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 msgid "exception"
 msgstr "Fehler"
@@ -44,8 +47,9 @@ msgstr "Fehler"
 #: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:83
 #: components/Notifications/NotificationRenderers.tsx:113
-#: components/Notifications/NotificationRenderers.tsx:129
-#: components/Notifications/NotificationRenderers.tsx:344
+#: components/Notifications/NotificationRenderers.tsx:171
+#: components/Notifications/NotificationRenderers.tsx:187
+#: components/Notifications/NotificationRenderers.tsx:423
 #: components/Toolbar/BackupDatabase.tsx:76
 #: components/Toolbar/BackupStatus.tsx:74
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
@@ -77,12 +81,32 @@ msgstr "Der DwCA-Export ist fehlgeschlagen."
 msgid "queryExportToCsvCompleted"
 msgstr "Der Abfrageexport nach CSV wurde abgeschlossen."
 
-#: components/Notifications/NotificationRenderers.tsx:121
+#: components/Notifications/NotificationRenderers.tsx:163
 #. Used in: Components > Notifications > Notification Renderers
 msgid "queryExportToKmlCompleted"
 msgstr "Der Abfrageexport nach KML wurde abgeschlossen."
 
-#: components/Notifications/NotificationRenderers.tsx:147
+#: components/Notifications/NotificationRenderers.tsx:179
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToWebPortalCompleted"
+msgstr "Der Abfrageexport zum Webportal wurde abgeschlossen."
+
+#: components/Notifications/NotificationRenderers.tsx:124
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToCsvFailed"
+msgstr "Der Abfrageexport nach CSV ist fehlgeschlagen."
+
+#: components/Notifications/NotificationRenderers.tsx:145
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToKmlFailed"
+msgstr "Der Abfrageexport nach KML ist fehlgeschlagen."
+
+#: components/Notifications/NotificationRenderers.tsx:198
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToWebPortalFailed"
+msgstr "Der Abfrageexport zum Webportal ist fehlgeschlagen."
+
+#: components/Notifications/NotificationRenderers.tsx:226
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr ""

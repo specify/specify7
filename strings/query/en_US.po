@@ -31,7 +31,7 @@ msgstr "Queries"
 msgid "queryBuilder"
 msgstr "Query Builder"
 
-#: components/QueryBuilder/Export.tsx:103
+#: components/QueryBuilder/Export.tsx:118
 #: components/QueryBuilder/index.tsx:130
 #: components/Router/OverlayRoutes.tsx:138
 #: components/Statistics/AddStatDialog.tsx:64
@@ -112,22 +112,22 @@ msgstr "Generating {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Created"
 
-#: components/QueryBuilder/Export.tsx:153
+#: components/QueryBuilder/Export.tsx:168
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Unable to export to KML"
 
-#: components/QueryBuilder/Export.tsx:156
+#: components/QueryBuilder/Export.tsx:171
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Please add latitude and longitude fields to the query."
 
-#: components/QueryBuilder/Export.tsx:145
+#: components/QueryBuilder/Export.tsx:160
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Export File Being Created"
 
-#: components/QueryBuilder/Export.tsx:148
+#: components/QueryBuilder/Export.tsx:163
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -178,15 +178,39 @@ msgstr "Series"
 msgid "searchSynonyms"
 msgstr "Search Synonyms"
 
-#: components/QueryBuilder/Export.tsx:175
+#: components/QueryBuilder/Export.tsx:201
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Create CSV"
 
-#: components/QueryBuilder/Export.tsx:193
+#: components/QueryBuilder/Export.tsx:219
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Create KML"
+
+#: components/QueryBuilder/Export.tsx:241
+#. Used in: Components > Query Builder > Export
+msgid "exportToWebPortal"
+msgstr "Export to Web Portal"
+
+#: components/QueryBuilder/Export.tsx:177
+#. Used in: Components > Query Builder > Export
+msgid "webPortalExportDuplicateRecordIds"
+msgstr "Query contains duplicate record IDs"
+
+#: components/QueryBuilder/Export.tsx:180
+#. Used in: Components > Query Builder > Export
+msgid "webPortalExportDuplicateRecordIdsDescription"
+msgstr ""
+"Please modify the query so that it returns unique records for each returned "
+"row."
+
+#: components/QueryBuilder/Export.tsx:182
+#. Used in: Components > Query Builder > Export
+msgid "webPortalExportDuplicateHint"
+msgstr ""
+"(Hint: You may need to add a condition for current determination or use an "
+"aggregator for preparations or collectors.)"
 
 #: components/BatchIdentify/index.tsx:769
 #: components/QueryBuilder/Components.tsx:236

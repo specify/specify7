@@ -42,7 +42,7 @@ msgstr "Запити"
 msgid "queryBuilder"
 msgstr "Конструктор запитів"
 
-#: components/QueryBuilder/Export.tsx:103
+#: components/QueryBuilder/Export.tsx:118
 #: components/QueryBuilder/index.tsx:130
 #: components/Router/OverlayRoutes.tsx:138
 #: components/Statistics/AddStatDialog.tsx:64
@@ -121,22 +121,22 @@ msgstr "Створення {recordSetTable:string}..."
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Створено"
 
-#: components/QueryBuilder/Export.tsx:153
+#: components/QueryBuilder/Export.tsx:168
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKml"
 msgstr "Не вдалося експортувати в KML"
 
-#: components/QueryBuilder/Export.tsx:156
+#: components/QueryBuilder/Export.tsx:171
 #. Used in: Components > Query Builder > Export
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Будь ласка, додайте поля широти та довготи до запиту."
 
-#: components/QueryBuilder/Export.tsx:145
+#: components/QueryBuilder/Export.tsx:160
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStarted"
 msgstr "Експортний файл створюється"
 
-#: components/QueryBuilder/Export.tsx:148
+#: components/QueryBuilder/Export.tsx:163
 #. Used in: Components > Query Builder > Export
 msgid "queryExportStartedDescription"
 msgstr ""
@@ -187,15 +187,35 @@ msgstr "Серія"
 msgid "searchSynonyms"
 msgstr "Пошук синонімів"
 
-#: components/QueryBuilder/Export.tsx:175
+#: components/QueryBuilder/Export.tsx:201
 #. Used in: Components > Query Builder > Export
 msgid "createCsv"
 msgstr "Створити CSV"
 
-#: components/QueryBuilder/Export.tsx:193
+#: components/QueryBuilder/Export.tsx:219
 #. Used in: Components > Query Builder > Export
 msgid "createKml"
 msgstr "Створіть KML"
+
+#: components/QueryBuilder/Export.tsx:241
+#. Used in: Components > Query Builder > Export
+msgid "exportToWebPortal"
+msgstr ""
+
+#: components/QueryBuilder/Export.tsx:177
+#. Used in: Components > Query Builder > Export
+msgid "webPortalExportDuplicateRecordIds"
+msgstr ""
+
+#: components/QueryBuilder/Export.tsx:180
+#. Used in: Components > Query Builder > Export
+msgid "webPortalExportDuplicateRecordIdsDescription"
+msgstr ""
+
+#: components/QueryBuilder/Export.tsx:182
+#. Used in: Components > Query Builder > Export
+msgid "webPortalExportDuplicateHint"
+msgstr ""
 
 #: components/BatchIdentify/index.tsx:769
 #: components/QueryBuilder/Components.tsx:236

@@ -33,6 +33,9 @@ msgstr "(Sortert fra nyeste til eldste.)"
 
 #: components/Notifications/NotificationRenderers.tsx:67
 #: components/Notifications/NotificationRenderers.tsx:97
+#: components/Notifications/NotificationRenderers.tsx:133
+#: components/Notifications/NotificationRenderers.tsx:154
+#: components/Notifications/NotificationRenderers.tsx:207
 #. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 msgid "exception"
 msgstr "Feil"
@@ -43,8 +46,9 @@ msgstr "Feil"
 #: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:83
 #: components/Notifications/NotificationRenderers.tsx:113
-#: components/Notifications/NotificationRenderers.tsx:129
-#: components/Notifications/NotificationRenderers.tsx:344
+#: components/Notifications/NotificationRenderers.tsx:171
+#: components/Notifications/NotificationRenderers.tsx:187
+#: components/Notifications/NotificationRenderers.tsx:423
 #: components/Toolbar/BackupDatabase.tsx:76
 #: components/Toolbar/BackupStatus.tsx:74
 #. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
@@ -76,12 +80,32 @@ msgstr "DwCA eksport mislyktes."
 msgid "queryExportToCsvCompleted"
 msgstr "Eksport av avansert søk til CSV fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:121
+#: components/Notifications/NotificationRenderers.tsx:163
 #. Used in: Components > Notifications > Notification Renderers
 msgid "queryExportToKmlCompleted"
 msgstr "Eksporten av avansertsøk til KML fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:147
+#: components/Notifications/NotificationRenderers.tsx:179
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToWebPortalCompleted"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:124
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToCsvFailed"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:145
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToKmlFailed"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:198
+#. Used in: Components > Notifications > Notification Renderers
+msgid "queryExportToWebPortalFailed"
+msgstr ""
+
+#: components/Notifications/NotificationRenderers.tsx:226
 #. Used in: Components > Notifications > Notification Renderers
 msgid "dataSetOwnershipTransferred"
 msgstr "<userName /> overførte eierskapet av <dataSetName /> datasettet til deg."

@@ -220,32 +220,32 @@ msgid "localityUpdateProgressing"
 msgstr "Імпорт набору даних місцевості"
 
 #: components/LocalityUpdate/utils.ts:34
-#: components/Notifications/NotificationRenderers.tsx:296
+#: components/Notifications/NotificationRenderers.tsx:375
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateParsed"
 msgstr "Проаналізовано набір даних оновлення місцевості"
 
 #: components/LocalityUpdate/Status.tsx:474
 #: components/LocalityUpdate/utils.ts:38
-#: components/Notifications/NotificationRenderers.tsx:264
+#: components/Notifications/NotificationRenderers.tsx:343
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateFailed"
 msgstr "Помилка оновлення місцевості"
 
 #: components/LocalityUpdate/utils.ts:39
-#: components/Notifications/NotificationRenderers.tsx:240
+#: components/Notifications/NotificationRenderers.tsx:319
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateParseFailure"
 msgstr "Помилка аналізу оновлення місцевості"
 
 #: components/LocalityUpdate/utils.ts:40
-#: components/Notifications/NotificationRenderers.tsx:285
+#: components/Notifications/NotificationRenderers.tsx:364
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateCancelled"
 msgstr "Оновлення місцевості скасовано"
 
 #: components/LocalityUpdate/utils.ts:41
-#: components/Notifications/NotificationRenderers.tsx:308
+#: components/Notifications/NotificationRenderers.tsx:387
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateSucceeded"
 msgstr "Місцезнаходження оновлено"
@@ -298,30 +298,30 @@ msgstr ""
 "Оновлено таку кількість записів {localityTabelLabel: string} і створено "
 "записи {geoCoordDetailTableLabel: string}:"
 
-#: components/Notifications/NotificationRenderers.tsx:228
+#: components/Notifications/NotificationRenderers.tsx:307
 #. Used in: Components > Notifications > Notification Renderers
 msgid "localityUpdateStarted"
 msgstr "Розпочато процес оновлення місцевості"
 
 #: components/LocalityUpdate/Status.tsx:343
-#: components/Notifications/NotificationRenderers.tsx:310
+#: components/Notifications/NotificationRenderers.tsx:389
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateResults"
 msgstr "Результати оновлення місцевості"
 
 #: components/LocalityUpdate/Status.tsx:404
-#: components/Notifications/NotificationRenderers.tsx:242
-#: components/Notifications/NotificationRenderers.tsx:266
+#: components/Notifications/NotificationRenderers.tsx:321
+#: components/Notifications/NotificationRenderers.tsx:345
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateFailureResults"
 msgstr "Результати помилки оновлення місцевості"
 
-#: components/Notifications/NotificationRenderers.tsx:230
-#: components/Notifications/NotificationRenderers.tsx:254
-#: components/Notifications/NotificationRenderers.tsx:276
-#: components/Notifications/NotificationRenderers.tsx:287
-#: components/Notifications/NotificationRenderers.tsx:298
-#: components/Notifications/NotificationRenderers.tsx:327
+#: components/Notifications/NotificationRenderers.tsx:309
+#: components/Notifications/NotificationRenderers.tsx:333
+#: components/Notifications/NotificationRenderers.tsx:355
+#: components/Notifications/NotificationRenderers.tsx:366
+#: components/Notifications/NotificationRenderers.tsx:377
+#: components/Notifications/NotificationRenderers.tsx:406
 #. Used in: Components > Notifications > Notification Renderers
 msgid "taskId"
 msgstr "ID завдання"

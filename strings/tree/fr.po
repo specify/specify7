@@ -454,22 +454,22 @@ msgstr ""
 "L'arbre sera créé en arrière-plan. Vous serez averti une fois la création "
 "terminée."
 
-#: components/Notifications/NotificationRenderers.tsx:368
+#: components/Notifications/NotificationRenderers.tsx:447
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskStarted"
 msgstr "Le processus de création d'arbre par défaut a démarré."
 
-#: components/Notifications/NotificationRenderers.tsx:376
+#: components/Notifications/NotificationRenderers.tsx:455
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskFailed"
 msgstr "La création de l'arborescence par défaut a échoué."
 
-#: components/Notifications/NotificationRenderers.tsx:384
+#: components/Notifications/NotificationRenderers.tsx:463
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskCancelled"
 msgstr "La création de l'arbre par défaut a été annulée."
 
-#: components/Notifications/NotificationRenderers.tsx:392
+#: components/Notifications/NotificationRenderers.tsx:471
 #. Used in: Components > Notifications > Notification Renderers
 msgid "defaultTreeTaskCompleted"
 msgstr "La création de l'arbre par défaut s'est terminée avec succès."

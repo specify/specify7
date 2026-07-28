@@ -52,12 +52,12 @@ msgstr "Не вдалося перевірити попередню резерв
 msgid "startFailed"
 msgstr "Не вдалося запустити резервне копіювання."
 
-#: components/Notifications/NotificationRenderers.tsx:337
+#: components/Notifications/NotificationRenderers.tsx:416
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupCompleted"
 msgstr "Резервне копіювання бази даних завершено."
 
-#: components/Notifications/NotificationRenderers.tsx:353
+#: components/Notifications/NotificationRenderers.tsx:432
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupFailed"
 msgstr "Не вдалося створити резервну копію бази даних."

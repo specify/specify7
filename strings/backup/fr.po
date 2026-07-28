@@ -51,12 +51,12 @@ msgstr "Impossible de vérifier la sauvegarde précédente."
 msgid "startFailed"
 msgstr "Échec du démarrage de la sauvegarde."
 
-#: components/Notifications/NotificationRenderers.tsx:337
+#: components/Notifications/NotificationRenderers.tsx:416
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupCompleted"
 msgstr "Sauvegarde de la base de données terminée."
 
-#: components/Notifications/NotificationRenderers.tsx:353
+#: components/Notifications/NotificationRenderers.tsx:432
 #. Used in: Components > Notifications > Notification Renderers
 msgid "databaseBackupFailed"
 msgstr "La sauvegarde de la base de données a échoué."

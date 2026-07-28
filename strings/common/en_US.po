@@ -249,8 +249,9 @@ msgstr "Create"
 #: components/QueryBuilder/CheckReadAccess.tsx:42
 #: components/QueryBuilder/Components.tsx:293
 #: components/QueryBuilder/Edit.tsx:144
-#: components/QueryBuilder/Export.tsx:144
-#: components/QueryBuilder/Export.tsx:152
+#: components/QueryBuilder/Export.tsx:159
+#: components/QueryBuilder/Export.tsx:167
+#: components/QueryBuilder/Export.tsx:176
 #: components/QueryBuilder/Import.tsx:154
 #: components/QueryBuilder/LoanReturn.tsx:156
 #: components/QueryBuilder/LoanReturn.tsx:222

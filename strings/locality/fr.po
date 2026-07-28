@@ -221,32 +221,32 @@ msgid "localityUpdateProgressing"
 msgstr "Importation du jeu de données de localité"
 
 #: components/LocalityUpdate/utils.ts:34
-#: components/Notifications/NotificationRenderers.tsx:296
+#: components/Notifications/NotificationRenderers.tsx:375
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateParsed"
 msgstr "Ensemble de données de mise à jour de la localité analysé"
 
 #: components/LocalityUpdate/Status.tsx:474
 #: components/LocalityUpdate/utils.ts:38
-#: components/Notifications/NotificationRenderers.tsx:264
+#: components/Notifications/NotificationRenderers.tsx:343
 #. Used in: Components > Locality Update > Status ⬤ Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateFailed"
 msgstr "Échec de la mise à jour des localités"
 
 #: components/LocalityUpdate/utils.ts:39
-#: components/Notifications/NotificationRenderers.tsx:240
+#: components/Notifications/NotificationRenderers.tsx:319
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateParseFailure"
 msgstr "Échec de l'analyse de la mise à jour de la localité"
 
 #: components/LocalityUpdate/utils.ts:40
-#: components/Notifications/NotificationRenderers.tsx:285
+#: components/Notifications/NotificationRenderers.tsx:364
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateCancelled"
 msgstr "Mise à jour des localités annulée"
 
 #: components/LocalityUpdate/utils.ts:41
-#: components/Notifications/NotificationRenderers.tsx:308
+#: components/Notifications/NotificationRenderers.tsx:387
 #. Used in: Components > Locality Update > Utils ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateSucceeded"
 msgstr "Mise à jour des localités réussie"
@@ -302,30 +302,30 @@ msgstr ""
 "Le nombre suivant d'enregistrements {localityTableLabel: string} a été mis "
 "à jour et d'enregistrements {geoCoordDetailTableLabel: string} a été créé :"
 
-#: components/Notifications/NotificationRenderers.tsx:228
+#: components/Notifications/NotificationRenderers.tsx:307
 #. Used in: Components > Notifications > Notification Renderers
 msgid "localityUpdateStarted"
 msgstr "Le processus de mise à jour des localités a commencé."
 
 #: components/LocalityUpdate/Status.tsx:343
-#: components/Notifications/NotificationRenderers.tsx:310
+#: components/Notifications/NotificationRenderers.tsx:389
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateResults"
 msgstr "Résultats de la mise à jour des localités"
 
 #: components/LocalityUpdate/Status.tsx:404
-#: components/Notifications/NotificationRenderers.tsx:242
-#: components/Notifications/NotificationRenderers.tsx:266
+#: components/Notifications/NotificationRenderers.tsx:321
+#: components/Notifications/NotificationRenderers.tsx:345
 #. Used in: Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers
 msgid "localityUpdateFailureResults"
 msgstr "Résultats de la mise à jour de la localité échouée"
 
-#: components/Notifications/NotificationRenderers.tsx:230
-#: components/Notifications/NotificationRenderers.tsx:254
-#: components/Notifications/NotificationRenderers.tsx:276
-#: components/Notifications/NotificationRenderers.tsx:287
-#: components/Notifications/NotificationRenderers.tsx:298
-#: components/Notifications/NotificationRenderers.tsx:327
+#: components/Notifications/NotificationRenderers.tsx:309
+#: components/Notifications/NotificationRenderers.tsx:333
+#: components/Notifications/NotificationRenderers.tsx:355
+#: components/Notifications/NotificationRenderers.tsx:366
+#: components/Notifications/NotificationRenderers.tsx:377
+#: components/Notifications/NotificationRenderers.tsx:406
 #. Used in: Components > Notifications > Notification Renderers
 msgid "taskId"
 msgstr "ID de tâche"
