@@ -12,19 +12,20 @@ The platform supports data from specimens, taxonomic and stratigraphic classific
 
 Specify prioritizes security with support for Single Sign-On (SSO), integrating seamlessly with institutional identity providers that utilize OpenID endpoints. The Security and Accounts tool empowers administrators to manage user access based on defined roles and policies. You can easily create, edit, and replicate roles across collections and databases, granting users tailored permissions that range from guest access to full collection management.
 
-Specify is developed with accessibility at its core, meeting and exceeding international standards. It largely complies with the WCAG 2.1 (AA) guidelines, ensuring compatibility with screen readers. You can read more in our [Accessibility & Compatibility Summary (WCAG 2.1 Level AA)](https://discourse.specifysoftware.org/t/accessibility-compatibility-summary-wcag-2-1-level-aa/2870). Users can customize their visual experience by adjusting color schemes, reducing motion, and resizing elements. Our design respects user preferences for date formats, language, themes, and animations, creating a more personalized experience for everyone.
+Specify is developed with accessibility at its core, meeting and exceeding international standards. It largely complies with the WCAG 2.1 (AA) guidelines, ensuring compatibility with screen readers. You can read more in our [Accessibility & Compatibility Summary (WCAG 2.1 Level AA)](https://speciforum.org/t/accessibility-compatibility-summary-wcag-2-1-level-aa/2870). Users can customize their visual experience by adjusting color schemes, reducing motion, and resizing elements. Our design respects user preferences for date formats, language, themes, and animations, creating a more personalized experience for everyone.
 
 Whether you choose to self-host on your own infrastructure or use our [Specify Cloud](https://www.specifysoftware.org/products/cloud/) service, your institution retains full ownership and control of your data at all times. Specify imposes no vendor lock-in as your database runs on standard MariaDB, can be backed up or migrated at any time, and remains entirely yours. If your institution has strict data sovereignty or on-premises hosting requirements, the [self-hosted Docker/Podman deployment](#self-hosted-docker--podman) puts you in complete control of your infrastructure, security policies, and data access.
 
 To get started, [send us a message to learn more](mailto:membership@specifysoftware.org)! We are happy to meet with you and your team to discuss how we can address your collections data management needs with Specify.
 
 > [!IMPORTANT]  
-> You can learn more about Specify, ask questions, share updates, and get involved with the community on the [Specify Community Forum](https://discourse.specifysoftware.org)!
+> You can learn more about Specify, ask questions, share updates, and get involved with the community on the [Specify Community Forum](https://speciforum.org)!
 
 ---
 
 ## Table of Contents
 
+- [Documentation](#documentation)
 - [Installation](#installation)
   - [Specify Cloud (Recommended)](#specify-cloud-recommended)
   - [Self-hosted (Docker / Podman)](#self-hosted-docker--podman)
@@ -39,11 +40,20 @@ To get started, [send us a message to learn more](mailto:membership@specifysoftw
 
 ---
 
+# Documentation
+
+The **[Speciforum](https://discourse.specifysoftware.org)** is the official community forum and primary knowledge hub for the Specify Collections Consortium (SCC). It connects collections staff, member institutions, and informatics developers from around the world to collaborate and share their work. Members of the SCC can create an account and unlock tons of exclusive documentation, webinars, and begin asking questions of both the SCC staff and collections community.
+
+Through the Speciforum, you can access:
+* **[Comprehensive Documentation](https://speciforum.org/c/docs/39):** Step-by-step user guides, video and webinar training materials, software installation support, API documentation for developers, and system administration references.
+* **[Community Support](https://speciforum.org/c/get-help/78):** A dedicated space to ask questions, report issues, and troubleshoot workflows with the Specify support team and fellow users.
+* **[Community News & Announcements](https://speciforum.org/c/news/76):** Read here to stay up to date on new developments, software releases, and upcoming workshops and events.
+
 # Installation
 
 We encourage all users to read our documentation on the Community Forum
 regarding installing and deploying Specify –
-[**Specify 7 Installation Instructions**](https://discourse.specifysoftware.org/t/specify-7-installation-instructions/755).
+[**Specify 7 Installation Instructions**](https://speciforum.org/t/specify-7-installation-instructions/755).
 
 If you are an existing Specify 6 user who is looking to evaluate Specify 7, you can
 contact [support@specifysoftware.org](mailto:support@specifysoftware.org)
@@ -64,7 +74,7 @@ We encourage SCC members to use our [Dockerized compositions](https://github.com
 
 ## Development Setup
 
-For contributing to Specify 7, the recommended approach is a [Docker/Podman-based development workflow](https://discourse.specifysoftware.org/t/guide-to-contributing-code-to-specify/3511). The included [Dockerfile](./Dockerfile) provides a multi-stage build with a dedicated `run-development` stage that includes testing dependencies and tools like mypy. If you are interested in contributing to Specify, please read our [guide to contributing code to Specify](https://discourse.specifysoftware.org/t/guide-to-contributing-code-to-specify/3511) for instructions!
+For contributing to Specify 7, the recommended approach is a [Docker/Podman-based development workflow](https://speciforum.org/t/guide-to-contributing-code-to-specify/3511). The included [Dockerfile](./Dockerfile) provides a multi-stage build with a dedicated `run-development` stage that includes testing dependencies and tools like mypy. If you are interested in contributing to Specify, please read our [guide to contributing code to Specify](https://speciforum.org/t/guide-to-contributing-code-to-specify/3511) for instructions!
 
 If you want to contribute to our code from an external institution, please reach out to a [member of our team](mailto:support@specifysoftware.org) for further guidance. We are always looking for new collaboration opportunities.
 
@@ -77,7 +87,7 @@ If you want to contribute to our code from an external institution, please reach
 - **Front-end:** TypeScript, React, JavaScript, Tailwind CSS
 - **Back-end:** Django and Python
 
-You can learn more about the architecture here: https://discourse.specifysoftware.org/t/specify-7-architecture-overview/
+You can learn more about the architecture here: https://speciforum.org/t/specify-7-architecture-overview/
 
 ---
 
@@ -101,19 +111,19 @@ The worker process is built on [Celery](https://docs.celeryproject.org/en/master
 
 ## Specify Asset Server
 
-The [Web Asset Server](https://discourse.specifysoftware.org/t/specify-web-asset-server-attachment-server/715) manages the storage and retrieval of binary file attachments such as specimen images, scanned documents, field notes, and other media files linked to collection records. It stores assets independently from the main application database, enabling efficient serving of large files without impacting database performance. The Asset Server supports configurable storage backends and collection-based organization of assets.
+The [Web Asset Server](https://speciforum.org/t/specify-web-asset-server-attachment-server/715) manages the storage and retrieval of binary file attachments such as specimen images, scanned documents, field notes, and other media files linked to collection records. It stores assets independently from the main application database, enabling efficient serving of large files without impacting database performance. The Asset Server supports configurable storage backends and collection-based organization of assets.
 
-* Learn about [Attachments in Specify](https://discourse.specifysoftware.org/t/attachments-in-specify/190)
-* See how [Specify works with the Web Asset Server](https://discourse.specifysoftware.org/t/how-does-specify-7-work-with-the-web-asset-server/2817)
-* Read the [technical docs for the Web Asset Server](https://discourse.specifysoftware.org/t/web-asset-server/657)
+* Learn about [Attachments in Specify](https://speciforum.org/t/attachments-in-specify/190)
+* See how [Specify works with the Web Asset Server](https://speciforum.org/t/how-does-specify-7-work-with-the-web-asset-server/2817)
+* Read the [technical docs for the Web Asset Server](https://speciforum.org/t/web-asset-server/657)
 
 ## Specify Report Runner
 
-The [Report Runner Service](https://github.com/specify/report-runner-service) generates formatted, printable reports from Specify data. It processes report templates against collection records to produce PDFs of invoices and labels. This service handles the rendering pipeline independently so that complex report generation does not block the main application. If you are interested in adding additional fonts for use in reports and labels, see [these instructions here](https://discourse.specifysoftware.org/t/specify-report-runner-fonts/1659).
+The [Report Runner Service](https://github.com/specify/report-runner-service) generates formatted, printable reports from Specify data. It processes report templates against collection records to produce PDFs of invoices and labels. This service handles the rendering pipeline independently so that complex report generation does not block the main application. If you are interested in adding additional fonts for use in reports and labels, see [these instructions here](https://speciforum.org/t/specify-report-runner-fonts/1659).
 
 ## Localizing Specify
 
-Specify 7 interface is available in several languages out of the box, including English, Ukrainian, Russian, German, and French. We are using [Weblate](https://hosted.weblate.org/projects/specify-7/) continuous localization platform, and if you are interested in amending our existing localization or would like us to add a new language to Specify, please see our [instructions on how you can contribute](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956).
+Specify 7 interface is available in several languages out of the box, including English, Ukrainian, Russian, German, and French. We are using [Weblate](https://hosted.weblate.org/projects/specify-7/) continuous localization platform, and if you are interested in amending our existing localization or would like us to add a new language to Specify, please see our [instructions on how you can contribute](https://speciforum.org/t/get-started-with-specify-7-localization/956).
 
 ---
 

@@ -115,7 +115,7 @@ RAVEN_CONFIG = None
 # Enabling this option allows administrators with access to the
 # backend Specify instance to log in as any user for support
 # purposes without knowing their password.
-# https://discourse.specifysoftware.org/t/allow-support-login-documentation/2838
+# https://speciforum.org/t/allow-support-login-documentation/2838
 ALLOW_SUPPORT_LOGIN = True
 # The amount of time in seconds each token is valid for
 SUPPORT_LOGIN_TTL = 180

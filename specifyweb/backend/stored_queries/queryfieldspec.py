@@ -284,6 +284,11 @@ class QueryFieldSpec(
                     relation = None
 
             if relation is not None:
+                # When extracted_fieldname matches the table name but no
+                # actual field exists on the target table (e.g.
+                # "locality.locality"), this is a legacy sentinel indicating a
+                # formatted tree rank, not a normal relation.  Fall through so
+                # the tree_rank logic below can handle it.
                 result = cls(
                     root_table=root_table,
                     root_sql_table=getattr(models, root_table.name),
@@ -316,7 +321,23 @@ class QueryFieldSpec(
         )
 
         tree_rank_name = None
-        if field is None and not relation_already_in_path:  # try finding tree
+        if (
+            field is None
+            and is_relation
+            and not is_tree_table(node)
+            and extracted_fieldname.lower() == table_name.lower() == node.name.lower()
+        ):
+            # Legacy relation stringids like "locality.locality" serialize the current related table as a formatted
+            # step, not as an actual field on that table.
+            # Preserve that sentinel so nested formatted relations keep the same row plan shape, without treating
+            # arbitrary unknown fields on non-tree tables as tree ranks.
+            tree_rank_name = extracted_fieldname
+            join_path.append(TreeRankQuery.create(tree_rank_name, node.name))
+        elif (
+            field is None
+            and is_tree_table(node)
+            and not relation_already_in_path
+        ):  # try finding tree only on tree tables
             tree_rank_name, field = find_tree_and_field(node, extracted_fieldname)
             if tree_rank_name:
                 tree_rank = TreeRankQuery.create(
