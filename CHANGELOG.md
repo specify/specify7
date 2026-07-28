@@ -96,7 +96,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * The 'Ends With" operator to the Query Builder ([#7076](https://github.com/specify/specify7/pull/7076))
 * Support for viewing `TIFF` image thumbnails ([#7121](https://github.com/specify/specify7/pull/7121))
 * A user preference for showing or hiding subview borders ([#7041](https://github.com/specify/specify7/pull/7041))
-* A new [database backup utility](https://discourse.specifysoftware.org/t/how-to-create-a-full-database-backup-in-specify/2798) ([#7300](https://github.com/spcify/specify7/pull/7300))
+* A new [database backup utility](https://speciforum.org/t/how-to-create-a-full-database-backup-in-specify/2798) ([#7300](https://github.com/spcify/specify7/pull/7300))
 * Support for time in timestamp fields (`TimestampCreated` and `TimestampModified`) ([#7317](https://github.com/specify/specify7/pull/7317))
 * Feat(datamodel): Add agent fields to Loan and Gift ([#7190](https://github.com/specify/specify7/pull/7190))
 * A “Linked Records” button to all data forms ([#6328](https://github.com/specify/specify7/pull/6328))
@@ -126,7 +126,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 * Fixes an issue preventing the Catalog Number field from displaying the format selector when accessing it via a related table ([#6994](https://github.com/specify/specify7/pull/6994))
 * Fixes an issue where new Taxon trees used `, ` as a separator instead of ` ` ([#7285](https://github.com/specify/specify7/pull/7285))
 * Fixes an issue that did not prompt the user to save when toggling `Distinct` or `Series` in the Query Builder ([#6605](https://github.com/specify/specify7/pull/6605))
-* Fixes an issue where a new record would not be created when [independent](https://discourse.specifysoftware.org/t/dependent-vs-independent-relationships/2635) relationship fields are cleared in Batch Edit ([#7087](https://github.com/specify/specify7/pull/7087))
+* Fixes an issue where a new record would not be created when [independent](https://speciforum.org/t/dependent-vs-independent-relationships/2635) relationship fields are cleared in Batch Edit ([#7087](https://github.com/specify/specify7/pull/7087))
 * Fixes an issue causing “Deselect All” to remove even required Carry Forward fields ([#7286](https://github.com/specify/specify7/pull/7286))
 * Fixes an issue with the position and appearance of the configure item and table list ([#7062](https://github.com/specify/specify7/pull/7062))
 * Fixes an issue where white space was not preserved when modifying `textBefore` and `textAfter` for tree ranks ([#7332](https://github.com/specify/specify7/pull/7332))
@@ -196,7 +196,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 ## [7.11.0](https://github.com/specify/specify7/compare/v7.10.2.3...v7.11.0) (8 July 2025)
 
 ### Added
-* Extends **[Batch Edit](https://discourse.specifysoftware.org/t/batch-edit/2248/)** to support relationships
+* Extends **[Batch Edit](https://speciforum.org/t/batch-edit/2248/)** to support relationships
   * Supports the following:
     * to-one and to-many relationships
     * matching existing records
@@ -296,9 +296,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
 ## Added
 
-- **[Batch Editing](https://discourse.specifysoftware.org/t/batch-edit/2248)** for simple fields ([#5417](https://github.com/specify/specify7/pull/5417) – _Requested by many, many members_)
-- [**Added a 'Download' button** to record set and query results attachments](https://discourse.specifysoftware.org/t/bulk-download-attachments-from-a-query-result-or-record-set/2456) ([#6052](https://github.com/specify/specify7/pull/6052) – _Requested by The University of Michigan, Naturhistorisches Museum Bern, Beaty Biodiversity Museum, Agriculture and Agri-Food Canada, Muséum d'Histoire Naturelle Geneva, and Queensland Herbarium_)
-- The [Form Meta menu](https://discourse.specifysoftware.org/t/form-meta-menu/844) is now accessible when using "View in Forms" ([#5416](https://github.com/specify/specify7/pull/5416))
+- **[Batch Editing](https://speciforum.org/t/batch-edit/2248)** for simple fields ([#5417](https://github.com/specify/specify7/pull/5417) – _Requested by many, many members_)
+- [**Added a 'Download' button** to record set and query results attachments](https://speciforum.org/t/bulk-download-attachments-from-a-query-result-or-record-set/2456) ([#6052](https://github.com/specify/specify7/pull/6052) – _Requested by The University of Michigan, Naturhistorisches Museum Bern, Beaty Biodiversity Museum, Agriculture and Agri-Food Canada, Muséum d'Histoire Naturelle Geneva, and Queensland Herbarium_)
+- The [Form Meta menu](https://speciforum.org/t/form-meta-menu/844) is now accessible when using "View in Forms" ([#5416](https://github.com/specify/specify7/pull/5416))
 - A default value can now be used for a query combo box ([#6037]([https://github.com/specify/specify7/pull/6037]) – _Requested by South African Institute for Aquatic Biodiversity and The Ohio State University Mollusk Division_)
 - Adds tooltip for required fields in bulk carry forward config ([#6202](https://github.com/specify/specify7/pull/6202))
 - Specify will use the default `TypeSearches` when a custom one is not defined for a table ([#6236](https://github.com/specify/specify7/pull/6236))
@@ -429,14 +429,14 @@ This release of Specify 7 now falls under the [GPL-3.0 license](https://github.c
 
 ### Added
 
-- Added a **[tree rank editor](https://discourse.specifysoftware.org/t/editing-tree-definitions-ranks-in-specify-7/1783)** to add, edit, and remove tree ranks ([#4257](https://github.com/specify/specify7/pull/4257) – _Requested by University of Kansas, The University of Michigan, Commonwealth Scientific and Industrial Research Organisation, Natural Resources Canada, College of Idaho, New Mexico State Herbarium, and many others_)
-- **[Extended record merging](https://discourse.specifysoftware.org/t/record-merging/1324#record-merging-1)** to several new tables ([#4606](https://github.com/specify/specify7/pull/4606) – _Requested by Calvert Marine Museum, Commonwealth Scientific and Industrial Research Organisation, Royal Botanic Garden Edinburgh, and many more_)
+- Added a **[tree rank editor](https://speciforum.org/t/editing-tree-definitions-ranks-in-specify-7/1783)** to add, edit, and remove tree ranks ([#4257](https://github.com/specify/specify7/pull/4257) – _Requested by University of Kansas, The University of Michigan, Commonwealth Scientific and Industrial Research Organisation, Natural Resources Canada, College of Idaho, New Mexico State Herbarium, and many others_)
+- **[Extended record merging](https://speciforum.org/t/record-merging/1324#record-merging-1)** to several new tables ([#4606](https://github.com/specify/specify7/pull/4606) – _Requested by Calvert Marine Museum, Commonwealth Scientific and Industrial Research Organisation, Royal Botanic Garden Edinburgh, and many more_)
   - Locality
   - Paleo Context
   - Collecting Event
-- Added a new tool to [**bulk update Locality and Geo Coord Details records**](https://discourse.specifysoftware.org/t/locality-update-tool/1784) that were georeferenced in external applications such as [CoGe](https://coge.geo-locate.org/About.htm) ([#4548](https://github.com/specify/specify7/pull/4548) – _Requested by Specify users in the DigIn TCN, formalized by Dean Pentcheff and Nelson Rios_)
-- Added a new tool to **[bulk move preparations](https://discourse.specifysoftware.org/t/trees-in-specify-7/534/7?u=specify)** from one storage location to another ([#4682](https://github.com/specify/specify7/pull/4682) – _Requested by University of Kansas_)
-- Added **[Deaccessions](https://discourse.specifysoftware.org/t/interactions-in-specify/961#deaccessions-16)** to the Interactions list ([#4806](https://github.com/specify/specify7/pull/4806))
+- Added a new tool to [**bulk update Locality and Geo Coord Details records**](https://speciforum.org/t/locality-update-tool/1784) that were georeferenced in external applications such as [CoGe](https://coge.geo-locate.org/About.htm) ([#4548](https://github.com/specify/specify7/pull/4548) – _Requested by Specify users in the DigIn TCN, formalized by Dean Pentcheff and Nelson Rios_)
+- Added a new tool to **[bulk move preparations](https://speciforum.org/t/trees-in-specify-7/534/7?u=specify)** from one storage location to another ([#4682](https://github.com/specify/specify7/pull/4682) – _Requested by University of Kansas_)
+- Added **[Deaccessions](https://speciforum.org/t/interactions-in-specify/961#deaccessions-16)** to the Interactions list ([#4806](https://github.com/specify/specify7/pull/4806))
 - The name of the accepted node will now show when hovering over a synonymized node ([#4704](https://github.com/specify/specify7/pull/4704) – _Requested by University of Kansas_)
 - Table aggregations can now be chosen explicitly in the Query Builder ([#4646](https://github.com/specify/specify7/pull/4646))
 - Calculated fields for the total number of preparations and total items in Exchange Outs, Disposals, Gifts, and Deaccessions have been added ([#4824](https://github.com/specify/specify7/pull/4824) – _Requested by Royal Botanic Garden Edinburgh, Pioneer Trails Regional Museum, The University of Michigan, and Museu de Ciències Naturals de Barcelona_)
@@ -485,13 +485,13 @@ Workbench functionalities remain unchanged but this release helps improve intern
 
 - **Added a visual editor for some app resources** ([#2796](https://github.com/specify/specify7/pull/2796))
   - The initial release supports
-    - [Form Definitions](https://discourse.specifysoftware.org/t/editing-forms-in-specify-7/1557)
-    - [Table Formats](https://discourse.specifysoftware.org/t/editing-table-formats-and-aggregations-in-specify-7/1558)
-    - [Table Aggregation](https://discourse.specifysoftware.org/t/editing-table-formats-and-aggregations-in-specify-7/1558)
+    - [Form Definitions](https://speciforum.org/t/editing-forms-in-specify-7/1557)
+    - [Table Formats](https://speciforum.org/t/editing-table-formats-and-aggregations-in-specify-7/1558)
+    - [Table Aggregation](https://speciforum.org/t/editing-table-formats-and-aggregations-in-specify-7/1558)
   - Visual editors for additional app resources will be added in the future.
   - Enforce uniqueness requirements for name ([#4164](https://github.com/specify/specify7/pull/4164))
   - Added query combo box for Specify Users in Export Feed ([#4345](https://github.com/specify/specify7/pull/4345))
-  - Added support for [conditional forms](https://discourse.specifysoftware.org/t/editing-forms-in-specify-7/1557#conditional-rendering-22)
+  - Added support for [conditional forms](https://speciforum.org/t/editing-forms-in-specify-7/1557#conditional-rendering-22)
   - Added a preview for web links, table formats, and table aggregations ([#4343](https://github.com/specify/specify7/pull/4343))
 - Added numerous improvements to distinct queries ([#4596](https://github.com/specify/specify7/pull/4596) – _Requested by University of Kansas, University of Michigan, Commonwealth Scientific and Industrial Research Organisation_)
   - Added links to records in distinct queries where all columns returned are the same
@@ -565,14 +565,14 @@ This release fixes an issue that could cause an error when viewing an Accession 
 - **Batch Attachment Upload** ([#3539](https://github.com/specify/specify7/pull/3539)) _– Requested by University of Michigan, Commonwealth Scientific and Industrial Research Organisation, and many others_
 
   - This tool enables users to import attachments in bulk by matching the filenames of the uploaded attachments with identifiers for existing records!
-  - [User Documentation](https://discourse.specifysoftware.org/t/batch-attachment-uploader/1374)
+  - [User Documentation](https://speciforum.org/t/batch-attachment-uploader/1374)
 
 - **Add configurable uniqueness rules** ([#2712](https://github.com/specify/specify7/issues/2712)) – _Requested by Commonwealth Scientific and Industrial Research Organisation, University of Michigan, New Mexico State Herbarium, New Brunswick Museum, Natural History Museum Geneva_
-  - The [Schema Config](https://discourse.specifysoftware.org/t/using-the-schema-config-in-specify-7/535) now allows configuration of Uniqueness Rules.
+  - The [Schema Config](https://speciforum.org/t/using-the-schema-config-in-specify-7/535) now allows configuration of Uniqueness Rules.
     - Each rule consists of two groups: 'fields' and 'scope'.
     - 'Fields' represent the values that must be unique within a specific scope.
     - For example, in the Collection Object, the `catalogNumber` field has a unique rule within the scope of the `Collection`. This ensures that each collection must have a unique catalog number.
-  - [User Documentation](https://discourse.specifysoftware.org/t/wip-configuring-uniqueness-rules/1487)
+  - [User Documentation](https://speciforum.org/t/wip-configuring-uniqueness-rules/1487)
 
 ### Changed
 
@@ -621,7 +621,7 @@ This release fixes an issue that could cause an error when viewing an Accession 
 ### Added
 
 - Added an "Attachment Gallery" for records with more than one attachment ([#3624](https://github.com/specify/specify7/pull/3624))
-- Added an all-new "[Tree Split Viewer](https://discourse.specifysoftware.org/t/trees-in-specify-7/534#split-tree-viewer-split_-11)", supporting both horizontal and vertical splits, syncing, and more ([#3969](https://github.com/specify/specify7/pull/3969) – _Requested by RBGE, UT Austin, and others_)
+- Added an all-new "[Tree Split Viewer](https://speciforum.org/t/trees-in-specify-7/534#split-tree-viewer-split_-11)", supporting both horizontal and vertical splits, syncing, and more ([#3969](https://github.com/specify/specify7/pull/3969) – _Requested by RBGE, UT Austin, and others_)
   - This helps with performing synonymy, moves and merging nodes in large trees
   - New icons for tree actions and customization have been added
 - Made full name updates on tree changes more efficient ([#3175](https://github.com/specify/specify7/pull/3175))
@@ -662,12 +662,12 @@ This release fixes an issue that could cause an error when viewing an Accession 
 
 ## [7.9.0](https://github.com/specify/specify7/compare/v7.8.13...v7.9.0) (25 September 2023)
 
-Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent Merging**, **Basic Query View**, and numerous behind the scenes improvements and bug fixes. [Learn more](https://discourse.specifysoftware.org/t/specify-7-9-release-announcement/1308).
+Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent Merging**, **Basic Query View**, and numerous behind the scenes improvements and bug fixes. [Learn more](https://speciforum.org/t/specify-7-9-release-announcement/1308).
 
 ### Added
 
-- [Statistics page](https://discourse.specifysoftware.org/t/statistics-panel-for-specify-7/828) ([#501](https://github.com/specify/specify7/issues/501), [#3760](https://github.com/specify/specify7/issues/3760), [#3662](https://github.com/specify/specify7/issues/3662), [#3687](https://github.com/specify/specify7/issues/3687), [#3722](https://github.com/specify/specify7/issues/3722), [#3670](https://github.com/specify/specify7/issues/3670) _– Requested by CSIRO, CSIC, NHMD, SDSU, The University of Michigan, TERN, KU, Muséum d'histoire naturelle Genève, Cleveland Museum, and many others_)
-- [Agent merging](https://discourse.specifysoftware.org/t/record-merging-in-specify-7/939/9) ([#3864](https://github.com/specify/specify7/pull/3864), [#3887](https://github.com/specify/specify7/issues/3887), [#3832](https://github.com/specify/specify7/pull/3832), [#3818](https://github.com/specify/specify7/pull/3818), [#3894](https://github.com/specify/specify7/pull/3894), [#3855](https://github.com/specify/specify7/pull/3855), [#3846](https://github.com/specify/specify7/pull/3846), [#3822](https://github.com/specify/specify7/issues/3822), [#3818](https://github.com/specify/specify7/pull/3818), [#3842](https://github.com/specify/specify7/pull/3842), [#3838](https://github.com/specify/specify7/pull/3838), [#3825](https://github.com/specify/specify7/pull/3825), [#3809](https://github.com/specify/specify7/pull/3809), [#3474](https://github.com/specify/specify7/pull/3474) _– Requested by RBGE, AAFC-AAC, CSIRO, CSIC, The University of Michigan, and many others_)
+- [Statistics page](https://speciforum.org/t/statistics-panel-for-specify-7/828) ([#501](https://github.com/specify/specify7/issues/501), [#3760](https://github.com/specify/specify7/issues/3760), [#3662](https://github.com/specify/specify7/issues/3662), [#3687](https://github.com/specify/specify7/issues/3687), [#3722](https://github.com/specify/specify7/issues/3722), [#3670](https://github.com/specify/specify7/issues/3670) _– Requested by CSIRO, CSIC, NHMD, SDSU, The University of Michigan, TERN, KU, Muséum d'histoire naturelle Genève, Cleveland Museum, and many others_)
+- [Agent merging](https://speciforum.org/t/record-merging-in-specify-7/939/9) ([#3864](https://github.com/specify/specify7/pull/3864), [#3887](https://github.com/specify/specify7/issues/3887), [#3832](https://github.com/specify/specify7/pull/3832), [#3818](https://github.com/specify/specify7/pull/3818), [#3894](https://github.com/specify/specify7/pull/3894), [#3855](https://github.com/specify/specify7/pull/3855), [#3846](https://github.com/specify/specify7/pull/3846), [#3822](https://github.com/specify/specify7/issues/3822), [#3818](https://github.com/specify/specify7/pull/3818), [#3842](https://github.com/specify/specify7/pull/3842), [#3838](https://github.com/specify/specify7/pull/3838), [#3825](https://github.com/specify/specify7/pull/3825), [#3809](https://github.com/specify/specify7/pull/3809), [#3474](https://github.com/specify/specify7/pull/3474) _– Requested by RBGE, AAFC-AAC, CSIRO, CSIC, The University of Michigan, and many others_)
 - Simple query interface ([#2479](https://github.com/specify/specify7/issues/2479) _– Requested by Muséum d'histoire naturelle Genève_)
 - The field mapper can now be hidden in query dialogs ([#3745](https://github.com/specify/specify7/issues/3745))
 - The Specify logo now reflects the custom color chosen in User Preferences ([#2210](https://github.com/specify/specify7/issues/2210))
@@ -770,7 +770,7 @@ Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent 
 
 - Records are now navigable using a paginator after creating new records in the same data entry session ([#511](https://github.com/specify/specify7/issues/511) – _Requested by many users_)
 - A new attachment picker has been added for choosing attachments stored on the asset server ([#2999](https://github.com/specify/specify7/issues/2999))
-- German (Switzerland) has been added to our localization platform, [Weblate](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956/5) ([#3455](https://github.com/specify/specify7/pull/3455) – _Requested by NMBE_)
+- German (Switzerland) has been added to our localization platform, [Weblate](https://speciforum.org/t/get-started-with-specify-7-localization/956/5) ([#3455](https://github.com/specify/specify7/pull/3455) – _Requested by NMBE_)
 
 ### Changed
 
@@ -939,7 +939,7 @@ Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent 
 
 - Top menu has been redesigned. It looks better, takes less space and offers
   more customization options - you can change menu position, or order of menu
-  items. [More details](https://discourse.specifysoftware.org/t/seeking-feedback-new-vertical-navigation-menu/970) ([#2820](https://github.com/specify/specify7/issues/2820))
+  items. [More details](https://speciforum.org/t/seeking-feedback-new-vertical-navigation-menu/970) ([#2820](https://github.com/specify/specify7/issues/2820))
 - Instead of using default browser tooltips, Specify now displays modern
   tooltips - they are easier to read thanks to larger font-size and are easier
   to trigger. Plus, they even work on touch screen devices and you can
@@ -1012,7 +1012,7 @@ Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent 
 - Spanish localization has been improved - thanks
   to [@gallegonovato](https://github.com/gallegonovato) ([commits](https://github.com/specify/specify7/commits?author=gallegonovato)).
   If you would like to contribute too,
-  please [see the instructions](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+  please [see the instructions](https://speciforum.org/t/get-started-with-specify-7-localization/956)
 - To be more security conscious, Specify 7 source code is now regularly scanned
   by GitHub's CodeQL tool, which is designed to find security
   vulnerabilities ([commit](https://github.com/specify/specify7/commit/9465b9e0972fcc7b03cfa1aadf50cc1a20749ee9))
@@ -1060,7 +1060,7 @@ Specify 7.9 is a major update, introducing the new **Statistics Page**, **Agent 
 - A new preference has been added allowing users to add children to synonymized
   parents as well as synonymizing nodes
   with children ([#751](https://github.com/specify/specify7/issues/751)
-  – [Instructions](https://discourse.specifysoftware.org/t/enable-creating-children-for-synonymized-nodes/987/4) –
+  – [Instructions](https://speciforum.org/t/enable-creating-children-for-synonymized-nodes/987/4) –
   _Requested by FWRI, CSIRO, AAFC, RBGE, Ville de Genève, and more_)
 - Added a Specify crash report visualizer. The tool is mostly for
   internal use, but can be helpful for system administrators. See
@@ -1125,7 +1125,7 @@ Specify's UI to support Spanish, French,
 Ukranian, and many more languages. If you are interested in helping support our
 localization effort, please see our
 guide
-on \* \*[Getting Started with Specify 7 Localization](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+on \* \*[Getting Started with Specify 7 Localization](https://speciforum.org/t/get-started-with-specify-7-localization/956)
 \*\*
 and contact us
 at [support@specifysoftware.org](mailto:support@specifysoftware.org) if you have
@@ -1169,7 +1169,7 @@ collections' assets in separate folders.
 _Requested By
 NHMD_)
 
-[More information](https://discourse.specifysoftware.org/t/get-started-with-specify-7-localization/956)
+[More information](https://speciforum.org/t/get-started-with-specify-7-localization/956)
 
 ## [7.8.1](https://github.com/specify/specify7/compare/v7.8.0...v7.8.1) (13 December 2022)
 
@@ -1190,7 +1190,7 @@ This update introduces a new Form “Meta Menu”, reimplements the App Resource
 Editor, introduces spatial search in the Query Builder, adds numerous usability
 improvements and fixes many bugs.
 
-[Full Release Notes](https://discourse.specifysoftware.org/t/specify-7-8-release-notes/)
+[Full Release Notes](https://speciforum.org/t/specify-7-8-release-notes/)
 
 [Full List of Improvements](https://github.com/specify/specify7/milestone/27?closed=1)
 
@@ -1487,13 +1487,13 @@ off the screen, rank information in autofill search box drop down lists
 and new action buttons to move, merge, and synonymize taxa. Technical
 documentation for the Specify Forms system and customization options is
 at:
-[_https://github.com/specify/specify7/wiki/Form-System_](https://discourse.specifysoftware.org/t/editing-forms-in-specify/1557)
+[_https://github.com/specify/specify7/wiki/Form-System_](https://speciforum.org/t/editing-forms-in-specify/1557)
 .
 
 _User Preferences_ are now accessible through the User Tools menu, click
 on user name to bring up the User Tools dialog. The Preferences page is
 documented here:
-[_https://discourse.specifysoftware.org/t/user-preferences-page/538_](https://discourse.specifysoftware.org/t/user-preferences-page/538)
+[_https://speciforum.org/t/user-preferences-page/538_](https://speciforum.org/t/user-preferences-page/538)
 .
 
 _The Query Builder_ has been wholly re-engineered by adding a field
