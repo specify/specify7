@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-27 21:02+0000\n"
+"PO-Revision-Date: 2026-07-28 09:38+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "wbPlan/hr/>\n"
@@ -551,25 +551,34 @@ msgstr "Odaberite valjani JSON file."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:339
+#, fuzzy
 msgid "disambiguationBehavior"
-msgstr ""
+msgstr "Ponašanje pri razdvajanju:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:343
+#, fuzzy
 msgid "ask"
-msgstr ""
+msgstr "Pitajte"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:344
+#, fuzzy
 msgid "askDescription"
 msgstr ""
+"Bit ćete upitani da odaberete zapis između svih zapisa koji odgovaraju ovom "
+"polju."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
+#, fuzzy
 msgid "pickFirst"
-msgstr ""
+msgstr "Prvo odaberi"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:348
+#, fuzzy
 msgid "pickFirstDescription"
 msgstr ""
+"Kada se više zapisa podudara s ovim poljem, prvi zapis će se automatski "
+"odabrati."
