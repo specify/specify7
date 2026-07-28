@@ -159,6 +159,12 @@ describe('Resource initialization preferences', () => {
       })
     );
 
+    await expect(
+      loan
+        .rgetCollection('loanPreparations')
+        .then((collection) => collection.models.length)
+    ).resolves.toBe(1);
+
     jest.spyOn(console, 'warn').mockImplementation();
     const cloned = await loan.clone(true);
 
