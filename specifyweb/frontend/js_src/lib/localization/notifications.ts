@@ -155,7 +155,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport zum Webportal wurde abgeschlossen.',
     'pt-br': 'A exportação da consulta para o portal web foi concluída.',
     'hr-hr': 'Izvoz upita na web portal je dovršen.',
-    nb: '',
+    nb: 'Spørreeksport til nettportalen fullført.',
   },
   queryExportToCsvFailed: {
     'en-us': 'Query export to CSV failed.',
@@ -166,7 +166,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach CSV ist fehlgeschlagen.',
     'pt-br': 'A exportação da consulta para CSV falhou.',
     'hr-hr': 'Izvoz upita u CSV nije uspio.',
-    nb: '',
+    nb: 'Eksport av spørring til CSV mislyktes.',
   },
   queryExportToKmlFailed: {
     'en-us': 'Query export to KML failed.',
@@ -177,7 +177,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach KML ist fehlgeschlagen.',
     'pt-br': 'A exportação da consulta para KML falhou.',
     'hr-hr': 'Izvoz upita u KML nije uspio.',
-    nb: '',
+    nb: 'Eksport av spørring til KML mislyktes.',
   },
   queryExportToWebPortalFailed: {
     'en-us': 'Query export to Web Portal failed.',
@@ -188,7 +188,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport zum Webportal ist fehlgeschlagen.',
     'pt-br': 'A exportação da consulta para o portal web falhou.',
     'hr-hr': 'Izvoz upita na web portal nije uspio.',
-    nb: '',
+    nb: 'Eksport av spørring til nettportalen mislyktes.',
   },
   dataSetOwnershipTransferred: {
     'en-us':
