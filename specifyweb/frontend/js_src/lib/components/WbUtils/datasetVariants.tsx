@@ -55,8 +55,7 @@ const baseWbVariant = {
       doSuccessful: wbText.uploadSuccessful(),
     },
   },
-  documentationUrl:
-    'https://speciforum.org/t/the-specify-7-workbench/540',
+  documentationUrl: 'https://speciforum.org/t/the-specify-7-workbench/540',
 } as const;
 
 // Defines a shared interface to access dataset variants
@@ -145,8 +144,7 @@ export const datasetVariants = {
     route: (id: number) => `/specify/attachments/import/${id}`,
     // Actually, in retrorespect, this would be a nice feature
     metaRoute: f.never,
-    documentationUrl:
-      'https://speciforum.org/t/batch-attachment-uploader/1374',
+    documentationUrl: 'https://speciforum.org/t/batch-attachment-uploader/1374',
   },
 } as const;
 
