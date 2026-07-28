@@ -32,11 +32,18 @@ logger = logging.getLogger(__name__)
 MigrationFunction = Callable[[Any, Any | None], None]
 WriteToStdOut = Callable[[str], None]
 
+
+def emit_progress(message: str, stdout: WriteToStdOut | None = None) -> None:
+    if stdout is not None:
+        stdout(message)
+    else:
+        logger.warning(message)
+
 def log_and_run(funcs: Iterable[MigrationFunction], stdout: WriteToStdOut | None = None) -> None:
     for func in funcs:
-        if stdout is not None:
-            stdout(f"Running {func.__name__}...")
+        emit_progress(f"Running {func.__name__}...", stdout)
         func(apps)
+        emit_progress(f"Finished {func.__name__}.", stdout)
 
 def fix_cots(stdout: WriteToStdOut | None = None):
     funcs = [
@@ -206,6 +213,11 @@ class Command(BaseCommand):
     def handle(self, *args, **options):
         functions = options.get("functions")
         verbose = options.get("verbose", False)
+        stdout = (
+            (lambda message: self.stdout.write(self.style.SUCCESS(message)))
+            if verbose
+            else None
+        )
 
         try:
             with (transaction.atomic(),
@@ -220,16 +232,16 @@ class Command(BaseCommand):
                                     self.style.ERROR(f"Unknown function: {function}")
                                 )
                                 return
-                            self.stdout.write(
-                                self.style.SUCCESS(f"Applying {function}...")
-                            )
-                            ALL_FUNCTIONS[function](self.stdout.write if verbose else None)
+                            emit_progress(f"Applying {function}...", stdout)
+                            ALL_FUNCTIONS[function](stdout)
+                            emit_progress(f"Applied {function}.", stdout)
                 else:
-                    self.stdout.write(self.style.SUCCESS("Running full pipeline..."))
+                    emit_progress("Running full pipeline...", stdout)
                     for func_name, func in ALL_FUNCTIONS.items():
-                        self.stdout.write(self.style.SUCCESS(f"Applying {func_name}..."))
-                        func(self.stdout.write if verbose else None)
-                        self.stdout.write(self.style.SUCCESS(f"Applied {func_name}"))
+                        emit_progress(f"Applying {func_name}...", stdout)
+                        func(stdout)
+                        emit_progress(f"Applied {func_name}.", stdout)
+                    emit_progress("Completed full pipeline.", stdout)
         except Exception:
             logger.exception("An error occurred while running key migrations")
             raise
