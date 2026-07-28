@@ -128,7 +128,11 @@ function makeLatLong(
    * of blocking them behind a validation error.
    */
   const directionSign =
-    direction === '' ? undefined : direction === 's' || direction === 'w' ? -1 : 1;
+    direction === ''
+      ? undefined
+      : direction === 's' || direction === 'w'
+        ? -1
+        : 1;
   if (originalSign < 0 && directionSign === 1) return undefined;
 
   const sign = directionSign ?? originalSign;

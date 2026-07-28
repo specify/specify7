@@ -97,9 +97,12 @@ describe('a leading minus and a direction letter are reconciled, not multiplied'
     ["-96° 57' W", -96.95],
     ['-23°2\'45.1"S', -23.045_861_111_1],
     ['-1 01 W', -1.016_666_666_7],
-  ])('parse(%s) agrees with itself and stays western/southern', (raw, expected) => {
-    expect(Coord.parse(raw)?.asFloat()).toBeCloseTo(expected, 6);
-  });
+  ])(
+    'parse(%s) agrees with itself and stays western/southern',
+    (raw, expected) => {
+      expect(Coord.parse(raw)?.asFloat()).toBeCloseTo(expected, 6);
+    }
+  );
 
   test('the specific corruption is gone: -157 W is no longer positive', () => {
     // Previously returned +157.14015 — the eastern hemisphere.
@@ -141,6 +144,9 @@ describe('regression guards — correct input must keep working', () => {
   });
 
   test('degree/minute/second forms without a direction still parse', () => {
-    expect(Coord.parse('-39:51:41')?.asFloat()).toBeCloseTo(-39.861_388_888_9, 6);
+    expect(Coord.parse('-39:51:41')?.asFloat()).toBeCloseTo(
+      -39.861_388_888_9,
+      6
+    );
   });
 });

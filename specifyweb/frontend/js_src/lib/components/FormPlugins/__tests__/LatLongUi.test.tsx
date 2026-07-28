@@ -59,7 +59,12 @@ describe('LatLongUi does not mutate the resource on render', () => {
   test('sliding to another record does not rewrite it, even after an edit', async () => {
     const first = makeLocality();
     const { rerender } = render(
-      <LatLongUi id={undefined} latLongType="Point" resource={first} step={undefined} />
+      <LatLongUi
+        id={undefined}
+        latLongType="Point"
+        resource={first}
+        step={undefined}
+      />
     );
     await waitFor(() => expect(first.get('long1text')).toBeDefined());
 
@@ -74,7 +79,12 @@ describe('LatLongUi does not mutate the resource on render', () => {
     const second = makeLocality();
     await act(async () => {
       rerender(
-        <LatLongUi id={undefined} latLongType="Point" resource={second} step={undefined} />
+        <LatLongUi
+          id={undefined}
+          latLongType="Point"
+          resource={second}
+          step={undefined}
+        />
       );
     });
     await waitFor(() => expect(second.get('long1text')).toBeDefined());
@@ -102,7 +112,12 @@ describe('LatLongUi does not mutate the resource on render', () => {
     expect(resource.needsSaved).toBe(false);
     await act(async () => {
       render(
-        <LatLongUi id={undefined} latLongType="Point" resource={resource} step={undefined} />
+        <LatLongUi
+          id={undefined}
+          latLongType="Point"
+          resource={resource}
+          step={undefined}
+        />
       );
     });
     await waitFor(() => expect(resource.get('lat1text')).toBeDefined());
