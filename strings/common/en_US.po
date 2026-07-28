@@ -369,7 +369,11 @@ msgid "clearAll"
 msgstr "Clear all"
 
 #: components/WbPlanView/MapperComponents.tsx:75
-#. Used in: Components > Wb Plan View > Mapper Components
+#: components/WbPlanView/__tests__/Mapper.test.tsx:72
+#: components/WbPlanView/__tests__/MapperComponents.test.tsx:20
+#: components/WbPlanView/__tests__/MapperComponents.test.tsx:37
+#: components/WbPlanView/__tests__/MapperComponents.test.tsx:56
+#. Used in: Components > Wb Plan View > Mapper Components ⬤ Wb Plan View > __tests__ > Mapper ⬤ Wb Plan View > __tests__ > Mapper Components
 msgid "deleteUnmapped"
 msgstr "Delete unmapped columns"
 
