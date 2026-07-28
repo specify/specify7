@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-28 20:05+0000\n"
+"PO-Revision-Date: 2026-07-29 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Spanish <https://hosted.weblate.org/projects/specify-7/"
 "preferences/es/>\n"
@@ -397,7 +397,7 @@ msgstr "Algoritmo de búsqueda (para relaciones con tablas de árbol)"
 #: components/Preferences/UserDefinitions.tsx:1196
 #, fuzzy
 msgid "startsWithInsensitive"
-msgstr "Comienza con (sin distinción de mayúsculas y minúsculas)"
+msgstr "Comienza con (sin distinción entre mayúsculas y minúsculas)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1129
@@ -988,7 +988,7 @@ msgstr "Hacer que los cuadros de diálogo de formulario tengan el fondo gris."
 #: components/Preferences/UserDefinitions.tsx:1481
 #, fuzzy
 msgid "autoScrollTree"
-msgstr "Árbol de desplazamiento automático al nodo enfocado"
+msgstr "Desplazamiento automático del árbol al nodo enfocado"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1497
