@@ -39,7 +39,7 @@ const commonSettings = (name: string): IR<unknown> => ({
   language_regex: '^[^.]+$',
   license: 'GPL-2.0-only',
   license_url: 'https://spdx.org/licenses/GPL-2.0-only.html',
-  merge_style: 'rebase',
+  merge_style: 'merge',
   name,
   new_lang: 'url',
   push_branch: weblateBranch,
@@ -53,7 +53,7 @@ export const localizationKinds = {
   userInterface: {
     getComponentSettings: (name: string): IR<unknown> => ({
       ...commonSettings(name),
-      check_flags: 'icu-message-format, icu-flags:xml, icu-flags:strict-xml',
+      effective_check_flags: 'icu-flags:strict-xml, icu-message-format',
       repo: 'https://github.com/specify/specify7/',
       push: 'git@github.com:specify/specify7.git',
       repoweb: `https://github.com/specify/specify7/tree/${syncBranch}/specifyweb/frontend/js_src/lib/{{filename}}#L{{line}}`,
@@ -95,6 +95,8 @@ const doFetch = async (url: string): Promise<IR<unknown>> =>
   fetch(url, {
     headers: { Authorization: getToken() },
   }).then(async (response) => response.json());
+
+
 const fetchComponents = async (
   url = componentsApiUrl
 ): Promise<RA<IR<unknown>>> =>
