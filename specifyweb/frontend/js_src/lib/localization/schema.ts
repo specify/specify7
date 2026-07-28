@@ -132,7 +132,7 @@ export const schemaText = createDictionary({
   },
   setScope: {
     'en-us': 'Set Scope',
-    'de-ch': 'Zielbereich festlegen',
+    'de-ch': 'Zielbereich einstellen',
     'es-es': 'Establecer alcance',
     'fr-fr': 'Définir le périmètre',
     'ru-ru': 'Установить область действия',
@@ -522,7 +522,7 @@ export const schemaText = createDictionary({
     'fr-fr': "Règles d'unicité",
     'ru-ru': 'Правила уникальности',
     'uk-ua': 'Правила унікальності',
-    'pt-br': 'Regras de Unicidade',
+    'pt-br': 'Regras de singularidade',
     'hr-hr': 'Pravila jedinstvenosti',
     nb: 'Unikhetsregler',
   },
@@ -649,7 +649,7 @@ export const schemaText = createDictionary({
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
-    'de-ch': 'Benutzerdefiniertes Feldformat',
+    'de-ch': 'Format für benutzerdefinierte Felder',
     'es-es': 'Formato de campo personalizado',
     'fr-fr': 'Format de champ personnalisé',
     'ru-ru': 'Формат пользовательского поля',
