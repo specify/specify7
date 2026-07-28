@@ -1,5 +1,3 @@
-
-
 def make_selectseries_false(apps):
     spquery = apps.get_model('specify', 'Spquery')
     if 'selectseries' in [field.name for field in spquery._meta.get_fields()]:

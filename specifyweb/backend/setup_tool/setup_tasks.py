@@ -9,15 +9,10 @@ from celery.result import AsyncResult
 from specifyweb.backend.setup_tool import api
 from specifyweb.backend.setup_tool.app_resource_defaults import create_app_resource_defaults
 from specifyweb.backend.setup_tool.tree_defaults import start_preload_default_tree
-from specifyweb.specify.management.commands.run_key_migration_functions import fix_schema_config
 from specifyweb.specify.models_utils.model_extras import PALEO_DISCIPLINES, GEOLOGY_DISCIPLINES
 from specifyweb.celery_tasks import is_worker_alive, MissingWorkerError
 from specifyweb.backend.cache.redis import set_string, get_string
 from specifyweb.backend.setup_tool.redis import ACTIVE_TASK_REDIS_KEY, ACTIVE_TASK_TTL, LAST_ERROR_REDIS_KEY
-from specifyweb.backend.setup_tool.task_tracking import (
-    queue_collection_background_task,
-    finish_collection_background_task,
-)
 
 from uuid import uuid4
 import logging
@@ -40,14 +35,6 @@ def setup_database_background(data: dict) -> str:
 
     set_string(ACTIVE_TASK_REDIS_KEY, task.id, time_to_live=ACTIVE_TASK_TTL)
     
-    return task.id
-
-def queue_fix_schema_config_background(collection_id: Optional[int] = None) -> str:
-    """Queue fix_schema_config to run asynchronously and return the task id"""
-    args = [collection_id] if collection_id is not None else []
-    task = fix_schema_config_task.apply_async(args=args)
-    if collection_id is not None:
-        queue_collection_background_task(collection_id, task.id)
     return task.id
 
 def get_active_setup_task() -> Tuple[Optional[AsyncResult], bool]:
@@ -163,8 +150,7 @@ def setup_database_task(self, data: dict):
 
             logger.info('Creating collection')
             collection_result = api.create_collection(
-                data['collection'],
-                run_fix_schema_config_async=False
+                data['collection']
             )
             collection_id = collection_result.get('collection_id')
             update_progress()
@@ -174,7 +160,6 @@ def setup_database_task(self, data: dict):
             specifyuser_id = specifyuser_result.get('user_id')
 
             logger.info('Finalizing database')
-            fix_schema_config()
             create_app_resource_defaults()
         
         # Pre-load trees
@@ -196,15 +181,6 @@ def setup_database_task(self, data: dict):
     except Exception as e:
         logger.exception(f'Error setting up database: {e}')
         raise
-
-@app.task(bind=True)
-def fix_schema_config_task(self, collection_id: Optional[int] = None):
-    """Run schema config migration fixups in a background worker"""
-    try:
-        fix_schema_config()
-    finally:
-        if collection_id is not None:
-            finish_collection_background_task(collection_id, self.request.id)
 
 def get_last_setup_error() -> Optional[str]:
     err = get_string(LAST_ERROR_REDIS_KEY)

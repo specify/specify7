@@ -65,6 +65,7 @@ def get_readonly_fields(table: Table):
         rel.name
         for rel in table.relationships
         if rel.relatedModelName.lower() in BATCH_EDIT_READONLY_TABLES
+        or "attachment" in rel.relatedModelName.lower()
     ]
     if table.name.lower() == "determination":
         relationships = ["preferredtaxon"]
