@@ -43,7 +43,7 @@ import {
 import { useMenuItem } from './MenuContext';
 
 const expressSearchDocumentationUrl =
-  'https://discourse.specifysoftware.org/t/simple-search/185';
+  'https://speciforum.org/t/simple-search/185';
 
 export function ExpressSearchOverlay(): JSX.Element {
   useMenuItem('search');
