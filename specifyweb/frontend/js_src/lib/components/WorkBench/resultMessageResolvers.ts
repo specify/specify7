@@ -158,15 +158,18 @@ export const businessRuleMessageResolvers: RR<string, BusinessRuleMessageResolve
   childFieldNotUnique: (payload): LocalizedString | undefined => {
     const tableName = getStringPayload(payload, 'table');
     const fieldName = getStringPayload(payload, 'fieldName');
-    if (tableName.length === 0 || fieldName.length === 0) return undefined;
+    const parentField = getStringPayload(payload, 'parentField');
+    if (
+      tableName.length === 0 ||
+      fieldName.length === 0 ||
+      parentField.length === 0
+    )
+      return undefined;
     return withConflictingRecordIds(
       backEndText.childFieldNotUnique({
         tableName: getSchemaTableLabel(tableName),
         fieldName: getSchemaFieldLabels(tableName, fieldName),
-        parentField: getSchemaFieldLabels(
-          tableName,
-          getStringPayload(payload, 'parentField')
-        ),
+        parentField: getSchemaFieldLabels(tableName, parentField),
       }),
       payload
     );
