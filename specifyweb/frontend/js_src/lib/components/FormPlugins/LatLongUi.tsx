@@ -105,10 +105,19 @@ function Coordinate({
     if (isLoading.current && value === undefined) return;
     else isLoading.current = false;
 
-    const trimmedValue = trimLatLong(value?.toString() ?? '');
+    const rawValue = value?.toString() ?? '';
+    const trimmedValue = trimLatLong(rawValue);
     const hasValue = trimmedValue.length > 0;
+    /*
+     * Parse the RAW value, not the trimmed one. parse() trims internally, but it
+     * also inspects what trimming would discard so that an unrecognised direction
+     * letter makes the value invalid instead of silently changing hemisphere.
+     * Handing it a pre-trimmed string throws that information away before the
+     * check can run — "96° 57' O" would already have become "96° 57'" and would
+     * parse happily as EAST.
+     */
     const parsed = hasValue
-      ? ((fieldType === 'Lat' ? Lat : Long).parse(trimmedValue) ?? undefined)
+      ? ((fieldType === 'Lat' ? Lat : Long).parse(rawValue) ?? undefined)
       : undefined;
 
     const isValid = !hasValue || parsed !== undefined;

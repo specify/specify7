@@ -147,6 +147,30 @@ describe('LatLongUi does not mutate the resource on render', () => {
     expect(Number(resource.get('latitude1'))).toBeCloseTo(17.55, 6);
   });
 
+  /*
+   * Caught only by end-to-end testing: the effect used to hand parse() the
+   * ALREADY-TRIMMED string, so the unrecognised-direction check never saw the
+   * `O` and the form displayed "96° 57' E" — the eastern hemisphere — in the
+   * read-only Parsed column, even with every other fix in place.
+   */
+  test('the Parsed column never renders an Oeste longitude as East', async () => {
+    const resource = makeLocality();
+    const { container } = render(
+      <LatLongUi
+        id={undefined}
+        latLongType="Point"
+        resource={resource}
+        step={undefined}
+      />
+    );
+
+    await waitFor(() => expect(container.textContent).toBeTruthy());
+
+    // Scoped so an unrelated label containing "E" cannot pass/fail this spuriously.
+    expect(container.textContent).not.toMatch(/\d+°[^,]*\bE\b/u);
+    expect(container.textContent).not.toContain('96° 57');
+  });
+
   test('merely rendering does not mark the record as needing saving', async () => {
     const resource = makeLocality();
     expect(resource.needsSaved).toBe(false);
