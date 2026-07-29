@@ -683,6 +683,12 @@ class UploadTests(UploadTestsBase):
         self.assertEqual(uploaded_species.parent.definition, non_default_tree)
         self.assertFalse(
             taxon_model.objects.filter(
+                name="AlternateGenus",
+                definition=self.taxontreedef,
+            ).exists()
+        )
+        self.assertFalse(
+            taxon_model.objects.filter(
                 name="alternateSpecies",
                 definition=self.taxontreedef,
             ).exists()
