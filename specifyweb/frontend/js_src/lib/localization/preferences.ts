@@ -94,7 +94,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Використовуйте налаштування системи',
     'de-ch': 'Systemeinstellung verwenden',
     'pt-br': 'Usar as configurações do sistema',
-    'hr-hr': 'Koristi sistemske postavke',
+    'hr-hr': 'Koristi postavke sustava',
     nb: 'Bruk systeminnstillingen',
   },
   inheritOsSettings: {
@@ -493,7 +493,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
-    'pt-br': 'Sempre solicitando a escolha da coleção',
+    'pt-br': 'Sempre solicitando a seleção da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
     nb: 'Alltid oppfordret til å velge samling',
   },
@@ -521,7 +521,7 @@ export const preferencesText = createDictionary({
   },
   synonymColor: {
     'en-us': 'Synonym color',
-    'ru-ru': 'Синоним цвета',
+    'ru-ru': 'цвет синонима',
     'es-es': 'color sinónimo',
     'fr-fr': 'Synonyme couleur',
     'uk-ua': 'Синонім кольору',
@@ -676,7 +676,7 @@ export const preferencesText = createDictionary({
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (регистр не учитывается)',
-    'es-es': 'Comienza con (sin distinción de mayúsculas y minúsculas)',
+    'es-es': 'Comienza con (sin distinción entre mayúsculas y minúsculas)',
     'fr-fr': 'Commence par (insensible à la casse)',
     'uk-ua': 'Починається з (без урахування регістру)',
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
@@ -812,7 +812,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
-    'hr-hr': 'Označi odgovarajući podniz',
+    'hr-hr': 'Označi podudarni podniz',
     nb: 'Marker samsvarende delstreng',
   },
   languageDescription: {
@@ -1675,7 +1675,7 @@ export const preferencesText = createDictionary({
   },
   limitMaxFieldWidth: {
     'en-us': 'Limit max field width',
-    'ru-ru': 'Ограничить максимальную ширину поля',
+    'ru-ru': 'Ограничение максимальной ширины поля',
     'es-es': 'Limitar el ancho máximo del campo',
     'fr-fr': 'Limiter la largeur maximale du champ',
     'uk-ua': 'Обмеження максимальної ширини поля',
@@ -1782,7 +1782,7 @@ export const preferencesText = createDictionary({
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru': 'Автоматическая прокрутка дерева к сфокусированному узлу',
-    'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
+    'es-es': 'Desplazamiento automático del árbol al nodo enfocado',
     'fr-fr': 'Arbre de défilement automatique vers le nœud ciblé',
     'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
