@@ -26,6 +26,7 @@ To get started, [send us a message to learn more](mailto:membership@specifysoftw
 ## Table of Contents
 
 - [Documentation](#documentation)
+  - [Demo Instance](#demo-instance)
 - [Installation](#installation)
   - [Specify Cloud (Recommended)](#specify-cloud-recommended)
   - [Self-hosted (Docker / Podman)](#self-hosted-docker--podman)
@@ -48,6 +49,10 @@ Through the Speciforum, you can access:
 * **[Comprehensive Documentation](https://speciforum.org/c/docs/39):** Step-by-step user guides, video and webinar training materials, software installation support, API documentation for developers, and system administration references.
 * **[Community Support](https://speciforum.org/c/get-help/78):** A dedicated space to ask questions, report issues, and troubleshoot workflows with the Specify support team and fellow users.
 * **[Community News & Announcements](https://speciforum.org/c/news/76):** Read here to stay up to date on new developments, software releases, and upcoming workshops and events.
+
+## Demo Instance
+
+For those looking to evaluate Specify, we have an online demonstration database available at https://sp7demofish.specifycloud.org/specify/. If you are interested in requesting an evaluation instance for your institution, you can [fill out the form here](https://specifysoftware.org/#evaluation) to request one!
 
 # Installation
 
