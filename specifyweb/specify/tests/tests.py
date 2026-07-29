@@ -6,8 +6,6 @@ from django.conf import settings
 from jsonschema import validate  # type: ignore
 from jsonschema.exceptions import ValidationError  # type: ignore
 
-from specifyweb.specify.tests.test_load_datamodel import DatamodelTests
-
 if settings.TEST_RUNNER == 'selenium_testsuite_runner.SeleniumTestSuiteRunner':
     pass
 
