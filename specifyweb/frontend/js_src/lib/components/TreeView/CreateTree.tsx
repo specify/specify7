@@ -499,7 +499,7 @@ export function PopulatedTreeList({
                     {treeText.utf8EncodingWarning({ encoding: encodingFormat })}
                   </div>
 
-                  <Link.NewTab href="https://discourse.specifysoftware.org/t/convert-a-specify-database-to-utf-8/3467">
+                  <Link.NewTab href="https://speciforum.org/t/convert-a-specify-database-to-utf-8/3467">
                     {treeText.resolveEncoding()}
                   </Link.NewTab>
                 </li>
