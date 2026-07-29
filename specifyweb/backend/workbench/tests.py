@@ -322,3 +322,19 @@ class ChangeOwnershipTests(ApiTests):
         self.dataset.refresh_from_db()
         self.assertEqual(self.dataset.specifyuser, self.specifyuser)
         self.assertFalse(Message.objects.filter(user=self.new_owner).exists())
+
+    def test_transfer_dataset_rejects_invalid_user(self) -> None:
+        invalid_user_id = (
+            Specifyuser.objects.order_by("-id").values_list("id", flat=True).first()
+            or 0
+        ) + 1
+
+        response = self.client.post(
+            f"/api/workbench/transfer/{self.dataset.id}/",
+            data={"specifyuserid": invalid_user_id},
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.dataset.refresh_from_db()
+        self.assertEqual(self.dataset.specifyuser, self.specifyuser)
+        self.assertFalse(Message.objects.exists())
