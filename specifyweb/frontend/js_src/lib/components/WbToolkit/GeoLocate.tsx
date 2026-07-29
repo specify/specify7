@@ -10,8 +10,8 @@ import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { formatCoordinate, getLocalityField } from '../Leaflet/helpers';
 import {
+  getLocalityCoordinate,
   getSelectedLocalityColumns,
 } from '../Leaflet/wbLocalityDataExtractor';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
@@ -255,32 +255,24 @@ function getGeoLocateData(
     readonly visualRow: number;
   }
 ): IR<string> {
-  return buildGeoLocateData(
-    hot.getDataAtRow(visualRow),
-    getVisualHeaders(hot, columns),
-    localityColumns
-  );
-}
+  const visualHeaders = getVisualHeaders(hot, columns);
 
-export function buildGeoLocateData(
-  row: RA<string>,
-  headers: RA<string>,
-  localityColumns: IR<string>
-): IR<string> {
-  const getValue = (fieldName: string): string =>
-    getLocalityField(row, headers, localityColumns, fieldName);
-
-  const latitude = getValue('locality.latitude1');
-  const longitude = getValue('locality.longitude1');
+  const localityData =
+    getLocalityCoordinate(
+      hot.getDataAtRow(visualRow),
+      visualHeaders,
+      localityColumns
+    ) || {};
 
   const rawData = {
-    country: getValue('locality.geography.$country.name') || undefined,
-    state: getValue('locality.geography.$state.name') || undefined,
-    county: getValue('locality.geography.$county.name') || undefined,
-    locality: getValue('locality.localityname') || undefined,
+    country: localityData['locality.geography.$country.name']?.value,
+    state: localityData['locality.geography.$state.name']?.value,
+    county: localityData['locality.geography.$county.name']?.value,
+    locality: localityData['locality.localityname']?.value,
     points:
-      latitude !== '' && longitude !== ''
-        ? `${formatCoordinate(latitude)}|${formatCoordinate(longitude)}`
+      typeof localityData['locality.latitude1'] === 'object' &&
+      typeof localityData['locality.longitude1'] === 'object'
+        ? `${localityData['locality.latitude1'].value}|${localityData['locality.longitude1'].value}`
         : undefined,
   };
 
