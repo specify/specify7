@@ -108,13 +108,8 @@ def deduplicate_discipline_resource_dirs(apps):
             earlier_exists=Exists(
                 SpAppResourceDir.objects.filter(
                     discipline_id=OuterRef('discipline_id'),
+                    pk__lt=OuterRef('pk'),
                     **common_filters
-                ).filter(
-                    Q(timestampcreated__lt=OuterRef('timestampcreated'))
-                    | Q(
-                        timestampcreated=OuterRef('timestampcreated'),
-                        id__lt=OuterRef('id'),
-                    )
                 )
             )
         ).filter(earlier_exists=True)
