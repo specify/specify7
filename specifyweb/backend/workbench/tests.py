@@ -2,8 +2,10 @@ import json
 
 from django.test import Client
 
-from specifyweb.specify.models import Collectionobject, Recordset
+from specifyweb.backend.notifications.models import Message
+from specifyweb.backend.permissions.models import UserPolicy
 from specifyweb.backend.workbench.models import Spdataset
+from specifyweb.specify.models import Agent, Collectionobject, Recordset, Specifyuser
 from specifyweb.specify.tests.test_api import ApiTests
 from .upload import upload as uploader
 from .upload.upload_result import UploadResult
@@ -237,4 +239,59 @@ class DataSetTests(ApiTests):
             [row + [""] for row in rows],
         )
         self.assertEqual(dataset["uploadplan"], uploadplan)
-        
+
+class ChangeOwnershipTests(ApiTests):
+    def setUp(self) -> None:
+        super().setUp()
+        self.new_owner = Specifyuser.objects.create(
+            isloggedin=False,
+            isloggedinreport=False,
+            name="newowner",
+            password="unused",
+        )
+        Agent.objects.create(
+            agenttype=0,
+            lastname="New Owner",
+            division=self.division,
+            specifyuser=self.new_owner,
+        )
+        self.dataset = Spdataset.objects.create(
+            name="Ownership transfer dataset",
+            importedfilename="records.csv",
+            columns=["Catalog Number", "Remarks"],
+            data=[["100", "First row"], ["200", "Second row"]],
+            collection=self.collection,
+            specifyuser=self.specifyuser,
+        )
+        self.client = Client()
+        self.client.force_login(self.specifyuser)
+
+    def test_transfer_dataset_ownership(self) -> None:
+        response = self.client.post(
+            f"/api/workbench/transfer/{self.dataset.id}/",
+            data={"specifyuserid": self.new_owner.id},
+        )
+
+        self.assertEqual(response.status_code, 204)
+
+        self.dataset.refresh_from_db()
+        self.assertEqual(self.dataset.specifyuser, self.new_owner)
+        self.assertEqual(
+            self.dataset.columns,
+            ["Catalog Number", "Remarks"],
+        )
+        self.assertEqual(
+            self.dataset.data,
+            [["100", "First row"], ["200", "Second row"]],
+        )
+
+        message = Message.objects.get(user=self.new_owner)
+        self.assertEqual(
+            json.loads(message.content),
+            {
+                "type": "dataset-ownership-transferred",
+                "previous-owner-name": self.specifyuser.name,
+                "dataset-name": self.dataset.name,
+                "dataset-id": str(self.dataset.id),
+            },
+        )
