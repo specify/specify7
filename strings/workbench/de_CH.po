@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-29 03:06+0000\n"
+"PO-Revision-Date: 2026-07-30 00:01+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -238,7 +238,7 @@ msgstr ""
 #: components/WbUtils/datasetVariants.tsx:123
 #, fuzzy
 msgid "beginRollback"
-msgstr "Datensatz-Rollback starten?"
+msgstr "Datensatz zurücksetzen?"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:50
