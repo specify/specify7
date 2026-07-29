@@ -5,12 +5,13 @@ import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { localityText } from '../../localization/locality';
 import { wbText } from '../../localization/workbench';
+import { Coord } from '../../utils/latLong';
 import { f } from '../../utils/functools';
 import type { IR, RA } from '../../utils/types';
 import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { formatCoordinate, getLocalityField } from '../Leaflet/helpers';
+import { getLocalityField } from '../Leaflet/helpers';
 import {
   getSelectedLocalityColumns,
 } from '../Leaflet/wbLocalityDataExtractor';
@@ -270,8 +271,21 @@ export function buildGeoLocateData(
   const getValue = (fieldName: string): string =>
     getLocalityField(row, headers, localityColumns, fieldName);
 
+  const parseCoordinate = (value: string): number | undefined => {
+    const trimmedValue = value.trim();
+    if (trimmedValue === '') return undefined;
+    if (trimmedValue === '0') return 0;
+
+    const parsedCoordinate = Coord.parse(trimmedValue)?.toDegs();
+    return parsedCoordinate === undefined
+      ? undefined
+      : parsedCoordinate.components[0] * parsedCoordinate.sign;
+  };
+
   const latitude = getValue('locality.latitude1');
   const longitude = getValue('locality.longitude1');
+  const parsedLatitude = parseCoordinate(latitude);
+  const parsedLongitude = parseCoordinate(longitude);
 
   const rawData = {
     country: getValue('locality.geography.$country.name') || undefined,
@@ -279,8 +293,8 @@ export function buildGeoLocateData(
     county: getValue('locality.geography.$county.name') || undefined,
     locality: getValue('locality.localityname') || undefined,
     points:
-      latitude !== '' && longitude !== ''
-        ? `${formatCoordinate(latitude)}|${formatCoordinate(longitude)}`
+      parsedLatitude !== undefined && parsedLongitude !== undefined
+        ? `${parsedLatitude}|${parsedLongitude}`
         : undefined,
   };
 
