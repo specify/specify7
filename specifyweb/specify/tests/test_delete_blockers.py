@@ -1,8 +1,11 @@
-from django.test import Client
 import json
+
+from django.test import Client, TestCase
+from django.db import router
 
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.delete_blockers.views import _collect_delete_blockers
 from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource
 
@@ -157,41 +160,41 @@ class TestDeleteBlockers(GeographyTree):
             discipline.save()
             return discipline
     
-        def test_discipline_blocked_when_has_collections(self):
-            blockers = self._get_blockers(self.discipline)
-            self._assertSame(
-                blockers,
-                [dict(table='Collection', field='discipline', ids=[self.collection.id])],
-            )
-    
-        def test_discipline_blocked_when_has_users(self):
-            discipline = self._create_discipline_with_owned_trees('User Blocked Discipline')
-            resource_dir = models.Spappresourcedir.objects.create(
-                discipline=discipline,
-                specifyuser=self.specifyuser,
-                ispersonal=False,
-            )
-    
-            blockers = self._get_blockers(discipline)
-            self._assertSame(
-                blockers,
-                [dict(table='Spappresourcedir', field='specifyuser', ids=[resource_dir.id])],
-            )
-    
-            with self.assertRaises(BusinessRuleException):
-                delete_resource(
-                    self.collection, self.agent, 'discipline', discipline.id, discipline.version
-                )
-    
-        def test_discipline_without_users_or_collections_can_be_deleted(self):
-            discipline = self._create_discipline_with_owned_trees('Deletable Discipline')
-            blockers = self._get_blockers(discipline)
-            self._assertSame(blockers, [])
-    
+    def test_discipline_blocked_when_has_collections(self):
+        blockers = self._get_blockers(self.discipline)
+        self._assertSame(
+            blockers,
+            [dict(table='Collection', field='discipline', ids=[self.collection.id])],
+        )
+
+    def test_discipline_blocked_when_has_users(self):
+        discipline = self._create_discipline_with_owned_trees('User Blocked Discipline')
+        resource_dir = models.Spappresourcedir.objects.create(
+            discipline=discipline,
+            specifyuser=self.specifyuser,
+            ispersonal=False,
+        )
+
+        blockers = self._get_blockers(discipline)
+        self._assertSame(
+            blockers,
+            [dict(table='Spappresourcedir', field='specifyuser', ids=[resource_dir.id])],
+        )
+
+        with self.assertRaises(BusinessRuleException):
             delete_resource(
                 self.collection, self.agent, 'discipline', discipline.id, discipline.version
             )
-            self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
+
+    def test_discipline_without_users_or_collections_can_be_deleted(self):
+        discipline = self._create_discipline_with_owned_trees('Deletable Discipline')
+        blockers = self._get_blockers(discipline)
+        self._assertSame(blockers, [])
+
+        delete_resource(
+            self.collection, self.agent, 'discipline', discipline.id, discipline.version
+        )
+        self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
 
 class TestDeleteBlockersCascade(TestCase):
 
