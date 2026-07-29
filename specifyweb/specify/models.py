@@ -16,6 +16,21 @@ def protect_with_blockers(collector, field, sub_objs, using):
     else:
         return models.PROTECT(collector, field, sub_objs, using)
 
+
+def delete_taxon_rank_parent_with_context(collector, field, sub_objs, using):
+    """
+    Use CASCADE while deleting an entire TaxonTreeDef, but preserve children
+    during single-rank deletions so rank reparenting logic can handle them.
+    """
+    deleting_models = getattr(collector, 'data', {})
+    is_tree_delete = any(
+        getattr(model, '__name__', '').lower() == 'taxontreedef'
+        for model in deleting_models.keys()
+    )
+    if is_tree_delete:
+        return models.CASCADE(collector, field, sub_objs, using)
+    return models.DO_NOTHING(collector, field, sub_objs, using)
+
 def custom_save(self, *args, **kwargs):
     try:
         # Custom save logic here, if necessary
@@ -7337,7 +7352,7 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.CASCADE)
+    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=delete_taxon_rank_parent_with_context)
     treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
