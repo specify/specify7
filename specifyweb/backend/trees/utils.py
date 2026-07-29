@@ -38,6 +38,8 @@ DISCIPLINE_TREE_MODELS = (
 
 def get_search_filters(collection: spmodels.Collection, tree: str):
     tree_name = tree.lower()
+    if tree_name not in SPECIFY_TREES:
+        raise ValueError(f"unexpected tree type: {tree}")
     if tree_name == 'storage':
         return Q(institution=collection.discipline.division.institution)
     discipline_query = Q(discipline=collection.discipline)
@@ -53,6 +55,8 @@ def get_search_filters(collection: spmodels.Collection, tree: str):
 
 def get_treedefs(collection: spmodels.Collection, tree_name: str) ->  list[tuple[int, int]]:
     # Get the appropriate TreeDef based on the Collection and tree_name
+    if tree_name.lower() not in SPECIFY_TREES:
+        raise ValueError(f"unexpected tree type: {tree_name}")
 
     # Mimic the old behavior of limiting the query to the first item for trees other than taxon.
     # Even though the queryconstruct can handle trees with multiple types.

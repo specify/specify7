@@ -274,9 +274,9 @@
     --custom-select-b1: theme('colors.white');
     --custom-select-b2: theme('colors.brand.100');
     --custom-select-accent: theme('colors.brand.100');
-    @apply dark:[--custom-select-accent:theme('colors.brand.500')]
+    @apply dark:[--custom-select-accent:theme('colors.brand.400')]
       dark:[--custom-select-b1:theme('colors.neutral.800')]
-      dark:[--custom-select-b2:theme('colors.brand.500')];
+      dark:[--custom-select-b2:theme('colors.brand.400')];
   }
 
   .custom-select-group-required-fields,

@@ -8,7 +8,6 @@ import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { raise } from '../Errors/Crash';
 import { ErrorBoundary } from '../Errors/ErrorBoundary';
-import { hasTablePermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import type { Dataset } from '../WbPlanView/Wrapped';
 import { resolveVariantFromDataset } from '../WbUtils/datasetVariants';
@@ -94,7 +93,7 @@ export function WbToolkit({
       className="flex flex-wrap gap-x-1 gap-y-2"
       role="toolbar"
     >
-      {variant.canTransfer() && hasTablePermission('SpecifyUser', 'read') ? (
+      {variant.canTransfer() ? (
         <ErrorBoundary dismissible>
           <WbChangeOwner
             dataset={dataset}

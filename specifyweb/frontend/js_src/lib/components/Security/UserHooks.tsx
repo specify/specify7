@@ -15,7 +15,6 @@ import {
   strictIdFromUrl,
 } from '../DataModel/resource';
 import { schema } from '../DataModel/schema';
-import { serializeResource } from '../DataModel/serializers';
 import { tables } from '../DataModel/tables';
 import type { Address, Collection, SpecifyUser } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -145,8 +144,7 @@ export function useUserAgents(
             ] as const);
         return (
           typeof userId === 'number'
-            ? hasTablePermission('Agent', 'read') &&
-              hasTablePermission('Division', 'read')
+            ? hasTablePermission('Agent', 'read')
               ? fetchCollection(
                   'Agent',
                   {
@@ -155,7 +153,7 @@ export function useUserAgents(
                   },
                   backendFilter('division').isIn(divisions.map(([id]) => id))
                 ).then(({ records }) => records)
-              : Promise.resolve([serializeResource(userInformation.agent)])
+              : Promise.resolve([])
             : Promise.resolve([])
         ).then((rawAgents) => {
           const agents = Object.fromEntries(

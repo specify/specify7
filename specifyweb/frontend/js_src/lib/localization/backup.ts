@@ -17,6 +17,8 @@ export const backupText = createDictionary({
     'pt-br': 'Cópia de segurança concluída com sucesso.',
     'ru-ru': 'Резервное копирование успешно завершено.',
     'uk-ua': 'Резервне копіювання успішно завершено.',
+    'hr-hr': 'Sigurnosna kopija uspješno dovršena.',
+    nb: 'Sikkerhetskopiering fullført.',
   },
   failed: {
     'en-us': 'Backup failed.',
@@ -26,6 +28,8 @@ export const backupText = createDictionary({
     'pt-br': 'O backup falhou.',
     'ru-ru': 'Резервное копирование не удалось.',
     'uk-ua': 'Не вдалося створити резервну копію.',
+    'hr-hr': 'Sigurnosno kopiranje nije uspjelo.',
+    nb: 'Sikkerhetskopiering mislyktes.',
   },
   previousFound: {
     'en-us': 'A previous backup was found:',
@@ -35,6 +39,8 @@ export const backupText = createDictionary({
     'pt-br': 'Foi encontrado um backup anterior:',
     'ru-ru': 'Была найдена предыдущая резервная копия:',
     'uk-ua': 'Знайдено попередню резервну копію:',
+    'hr-hr': 'Pronađena je prethodna sigurnosna kopija:',
+    nb: 'En tidligere sikkerhetskopi ble funnet:',
   },
   previousNone: {
     'en-us': 'No previous backup was found. Start a new one?',
@@ -47,6 +53,9 @@ export const backupText = createDictionary({
     'pt-br': 'Nenhum backup anterior foi encontrado. Deseja iniciar um novo?',
     'ru-ru': 'Предыдущая резервная копия не найдена. Создать новую?',
     'uk-ua': 'Попередньої резервної копії не знайдено. Розпочати нову?',
+    'hr-hr':
+      'Nije pronađena prethodna sigurnosna kopija. Želite li pokrenuti novu?',
+    nb: 'Ingen tidligere sikkerhetskopi ble funnet. Lag en ny?',
   },
   previousSizeMB: {
     'en-us': '({size:string} MB)',
@@ -56,6 +65,8 @@ export const backupText = createDictionary({
     'pt-br': '({size:string} MB)',
     'ru-ru': '({size:string} МБ)',
     'uk-ua': '({size:string} МБ)',
+    'hr-hr': '({size:string} MB)',
+    nb: '({size:string} MB)',
   },
   lastBackupOn: {
     'en-us': 'This backup was created on {date:string}',
@@ -65,6 +76,8 @@ export const backupText = createDictionary({
     'pt-br': 'Este backup foi criado em {date:string}',
     'ru-ru': 'Эта резервная копия была создана на {date:string}',
     'uk-ua': 'Цю резервну копію було створено {date:string}',
+    'hr-hr': 'Ova sigurnosna kopija je kreirana na {date:string}',
+    nb: 'Denne sikkerhetskopien ble opprettet den {date:string}',
   },
   checkPreviousFailed: {
     'en-us': 'Failed to check previous backup.',
@@ -75,6 +88,8 @@ export const backupText = createDictionary({
     'pt-br': 'Falha ao verificar o backup anterior.',
     'ru-ru': 'Не удалось проверить предыдущую резервную копию.',
     'uk-ua': 'Не вдалося перевірити попередню резервну копію.',
+    'hr-hr': 'Provjera prethodne sigurnosne kopije nije uspjela.',
+    nb: 'Kunne ikke sjekke forrige sikkerhetskopi.',
   },
   startFailed: {
     'en-us': 'Backup start failed.',
@@ -84,6 +99,8 @@ export const backupText = createDictionary({
     'pt-br': 'Falha ao iniciar o backup.',
     'ru-ru': 'Запуск резервного копирования не удался.',
     'uk-ua': 'Не вдалося запустити резервне копіювання.',
+    'hr-hr': 'Pokretanje sigurnosne kopije nije uspjelo.',
+    nb: 'Sikkerhetskopieringsstart mislyktes.',
   },
   databaseBackupCompleted: {
     'en-us': 'Database backup completed.',
@@ -93,6 +110,8 @@ export const backupText = createDictionary({
     'pt-br': 'Cópia de segurança do banco de dados concluída.',
     'ru-ru': 'Резервное копирование базы данных завершено.',
     'uk-ua': 'Резервне копіювання бази даних завершено.',
+    'hr-hr': 'Sigurnosna kopija baze podataka dovršena.',
+    nb: 'Sikkerhetskopiering av databasen fullført.',
   },
   databaseBackupFailed: {
     'en-us': 'Database backup failed.',
@@ -102,6 +121,8 @@ export const backupText = createDictionary({
     'pt-br': 'O backup do banco de dados falhou.',
     'ru-ru': 'Резервное копирование базы данных не удалось.',
     'uk-ua': 'Не вдалося створити резервну копію бази даних.',
+    'hr-hr': 'Sigurnosna kopija baze podataka nije uspjela.',
+    nb: 'Sikkerhetskopiering av databasen mislyktes.',
   },
   compressing: {
     'en-us': 'Compressing...',
@@ -111,5 +132,7 @@ export const backupText = createDictionary({
     'pt-br': 'Comprimindo...',
     'ru-ru': 'Сжатие...',
     'uk-ua': 'Стиснення...',
+    'hr-hr': 'Komprimiranje...',
+    nb: 'Komprimerer...',
   },
 } as const);
