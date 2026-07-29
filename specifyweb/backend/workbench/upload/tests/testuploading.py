@@ -712,6 +712,55 @@ class CogParentUploadTests(UploadTestsBase):
             childcog=child_cog
         )
         self.assertEqual(join.parentcog, self.parent_cog)
+
+    def test_upload_collection_object_with_parent_cog(self) -> None:
+        plan_json = {
+            "baseTableName": "Collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"catalognumber": "Catalog Number"},
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "cojo": [
+                            {
+                                "wbcols": {},
+                                "static": {
+                                    "isprimary": False,
+                                    "issubstrate": False,
+                                    "precedence": 0,
+                                },
+                                "toOne": {
+                                    "parentcog": {
+                                        "mustMatchTable": self._parent_cog_upload_table()
+                                    }
+                                },
+                                "toMany": {},
+                            }
+                        ]
+                    },
+                }
+            },
+        }
+        validate(plan_json, schema)
+        results = do_upload(
+            self.collection,
+            [{"Catalog Number": "900000002", "Parent COG": "Parent COG"}],
+            parse_plan(plan_json),
+            self.agent.id,
+        )
+
+        self.assertEqual(len(results), 1)
+        self.assertFalse(results[0].contains_failure())
+
+        collection_object = get_table("Collectionobject").objects.get(
+            catalognumber="900000002",
+            collection=self.collection,
+        )
+        join = get_table("Collectionobjectgroupjoin").objects.get(
+            childco=collection_object
+        )
+        self.assertEqual(join.parentcog, self.parent_cog)
 class UploadTests(UploadTestsBase):
 
     def test_determination_default_iscurrent(self) -> None:
