@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-07-29 03:07+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-07-31 00:02+0000\n"
+"Last-Translator: vanapro1 <law820314@gmail.com>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/common/"
 "ru/>\n"
 "Language: ru\n"
@@ -14,7 +14,6 @@ msgstr ""
 
 #. 🟥This is an example of how to provide comments. Comments are visible to translators. Used in: Components > Core > Splash Screen
 #: components/Core/SplashScreen.tsx:28
-#, fuzzy
 msgid "specifySeven"
 msgstr "Укажите 7"
 
@@ -24,7 +23,6 @@ msgstr "Укажите 7"
 #: components/TreeView/CreateTree.tsx:546
 #: components/WorkBench/DataSetMeta.tsx:292
 #: utils/parser/definitions.ts:122
-#, fuzzy
 msgid "no"
 msgstr "Нет"
 
@@ -110,7 +108,6 @@ msgstr "Нет"
 #: components/WbToolkit/CoordinateConverter.tsx:228
 #: components/WorkBench/DataSetMeta.tsx:163
 #: components/WorkBench/Disambiguation.tsx:40
-#, fuzzy
 msgid "cancel"
 msgstr "Отмена"
 
@@ -120,7 +117,6 @@ msgstr "Отмена"
 #: components/SchemaConfig/Languages.tsx:73
 #: components/SchemaConfig/Tables.tsx:45
 #: components/SetupTool/index.tsx:299
-#, fuzzy
 msgid "back"
 msgstr "Назад"
 
