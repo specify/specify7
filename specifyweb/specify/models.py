@@ -65,6 +65,8 @@ def delete_taxon_rank_parent_with_context(collector, field, sub_objs, using):
             {rank.id for rank in ranks_to_delete}
         )
 
+    return None
+
 def custom_save(self, *args, **kwargs):
     try:
         # Custom save logic here, if necessary
