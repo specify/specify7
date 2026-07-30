@@ -42,6 +42,8 @@ export const staticAttachmentImportPaths: IR<ReturnType<typeof createItem>> = {
   agentGUID: createItem('Agent', 'guid'),
   collectingTripName: createItem('CollectingTrip', 'collectingTripName'),
   deaccessionNumber: createItem('Deaccession', 'deaccessionNumber'),
+  fieldNotebookName: createItem('FieldNotebook', 'name'),
   fieldNotebookPageNumber: createItem('FieldNotebookPage', 'pageNumber'),
   fieldNotebookDescription: createItem('FieldNotebookPage', 'description'),
+  disposalNumber: createItem('Disposal', 'disposalNumber'),
 };
