@@ -247,7 +247,7 @@ class ChangeOwnershipTests(ApiTests):
             isloggedin=False,
             isloggedinreport=False,
             name="newowner",
-            password="unused",
+            password="unused", # noqa: S106 - non-secret test fixture
         )
         Agent.objects.create(
             agenttype=0,
