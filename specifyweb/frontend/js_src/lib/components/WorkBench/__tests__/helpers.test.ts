@@ -28,6 +28,21 @@ test('exports headings and rows as CSV', async () => {
   );
 });
 
+// [WorkBench] Use the selected delimiter when exporting a data set
+test('exports rows using the selected delimiter', async () => {
+  await downloadDataSet(
+    'Data Set',
+    [['100', 'First row']],
+    ['Catalog Number', 'Remarks'],
+    '\t' //delimeter is tab
+  );
+
+  expect(downloadFile).toHaveBeenCalledWith(
+    'Data Set.tsv', // so the extension should be .tsv
+    'Catalog Number\tRemarks\n100\tFirst row\n'
+  );
+});
+
 theories(getDelimitedFileName, [
   {
     name: 'uses csv for comma delimiters',
