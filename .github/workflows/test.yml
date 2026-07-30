@@ -78,7 +78,22 @@ jobs:
           - 6379
 
     steps:
-      - uses: actions/checkout@v4
+      - name: Checkout Copy of Repo
+        uses: actions/checkout@v4
+        with:
+          # We're not making any writes to the repo, so there's no need to
+          # store the credentials in git config
+          persist-credentials: false
+          # Ugh, don't like fetching the entire copy of the Specify 7 repo
+          # here, but this was needed because the details of the most recent
+          # tag was required from the build version Make target
+          # The backend tests can be run on a branch that can be some arbitrary
+          # distance from the most recent tag, so we can't realistically set a
+          # reasonable fetch depth here.
+          # There might be some Git command to do this, will need to look into
+          # that if we want to somewhat speed up the backend tests
+          fetch-depth: 0
+        
 
       - name: Install ubuntu dependencies
         run: |
