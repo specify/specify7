@@ -7979,6 +7979,7 @@ datamodel = Datamodel(tables=[
             # Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
             # Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
             Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
+            Field(name='matchingmode', column='MatchingMode', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')
