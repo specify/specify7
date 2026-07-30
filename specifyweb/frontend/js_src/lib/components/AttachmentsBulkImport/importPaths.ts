@@ -43,4 +43,5 @@ export const staticAttachmentImportPaths: IR<ReturnType<typeof createItem>> = {
   collectingTripName: createItem('CollectingTrip', 'collectingTripName'),
   deaccessionNumber: createItem('Deaccession', 'deaccessionNumber'),
   fieldNotebookPageNumber: createItem('FieldNotebookPage', 'pageNumber'),
+  fieldNotebookDescription: createItem('FieldNotebookPage', 'description'),
 };
