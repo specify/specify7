@@ -6,6 +6,9 @@ from uuid import uuid4
 
 from jsonschema import validate  # type: ignore
 
+from specifyweb.backend.businessrules.rules.cogtype_rules import (
+    SYSTEM_COGTYPES_PICKLIST,
+)
 from specifyweb.backend.workbench.upload import auditcodes
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.backend.trees.tests.test_trees import TestTree
@@ -627,7 +630,137 @@ class OneToOneAttributeTests(UploadTestsBase):
             "The collection object attributes are not shared.",
         )
 
+class CogParentUploadTests(UploadTestsBase):
+    def setUp(self) -> None:
+        super().setUp()
+        cog_type_picklist = get_table("Picklist").objects.create(
+            name=SYSTEM_COGTYPES_PICKLIST,
+            issystem=True,
+            type=0,
+            readonly=True,
+            collection=self.collection,
+        )
+        get_table("Picklistitem").objects.create(
+            title="Discrete",
+            value="Discrete",
+            picklist=cog_type_picklist,
+        )
+        self.cog_type = get_table("Collectionobjectgrouptype").objects.create(
+            name="Test COG Type",
+            type="Discrete",
+            collection=self.collection,
+        )
+        self.parent_cog = get_table("Collectionobjectgroup").objects.create(
+            name="Parent COG",
+            cogtype=self.cog_type,
+            collection=self.collection,
+        )
 
+    @staticmethod
+    def _parent_cog_upload_table() -> dict:
+        return {
+            "wbcols": {"name": "Parent COG"},
+            "static": {},
+            "toOne": {},
+            "toMany": {},
+        }
+
+    def test_upload_child_cog_with_parent_cog(self) -> None:
+        plan_json = {
+            "baseTableName": "Collectionobjectgroup",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"name": "Child COG"},
+                    "static": {"cogtype_id": self.cog_type.id},
+                    "toOne": {},
+                    "toMany": {
+                        "cojo": [
+                            {
+                                "wbcols": {},
+                                "static": {
+                                    "isprimary": False,
+                                    "issubstrate": False,
+                                    "precedence": 0,
+                                },
+                                "toOne": {
+                                    "parentcog": {
+                                        "mustMatchTable": self._parent_cog_upload_table()
+                                    }
+                                },
+                                "toMany": {},
+                            }
+                        ]
+                    },
+                }
+            },
+        }
+        validate(plan_json, schema)
+        results = do_upload(
+            self.collection,
+            [{"Child COG": "Child COG", "Parent COG": "Parent COG"}],
+            parse_plan(plan_json),
+            self.agent.id,
+        )
+
+        self.assertEqual(len(results), 1)
+        self.assertFalse(results[0].contains_failure())
+
+        child_cog = get_table("Collectionobjectgroup").objects.get(
+            name="Child COG"
+        )
+        join = get_table("Collectionobjectgroupjoin").objects.get(
+            childcog=child_cog
+        )
+        self.assertEqual(join.parentcog, self.parent_cog)
+
+    def test_upload_collection_object_with_parent_cog(self) -> None:
+        plan_json = {
+            "baseTableName": "Collectionobject",
+            "uploadable": {
+                "uploadTable": {
+                    "wbcols": {"catalognumber": "Catalog Number"},
+                    "static": {},
+                    "toOne": {},
+                    "toMany": {
+                        "cojo": [
+                            {
+                                "wbcols": {},
+                                "static": {
+                                    "isprimary": False,
+                                    "issubstrate": False,
+                                    "precedence": 0,
+                                },
+                                "toOne": {
+                                    "parentcog": {
+                                        "mustMatchTable": self._parent_cog_upload_table()
+                                    }
+                                },
+                                "toMany": {},
+                            }
+                        ]
+                    },
+                }
+            },
+        }
+        validate(plan_json, schema)
+        results = do_upload(
+            self.collection,
+            [{"Catalog Number": "900000002", "Parent COG": "Parent COG"}],
+            parse_plan(plan_json),
+            self.agent.id,
+        )
+
+        self.assertEqual(len(results), 1)
+        self.assertFalse(results[0].contains_failure())
+
+        collection_object = get_table("Collectionobject").objects.get(
+            catalognumber="900000002",
+            collection=self.collection,
+        )
+        join = get_table("Collectionobjectgroupjoin").objects.get(
+            childco=collection_object
+        )
+        self.assertEqual(join.parentcog, self.parent_cog)
 class UploadTests(UploadTestsBase):
 
     def test_upload_taxon_to_non_default_tree(self) -> None:
