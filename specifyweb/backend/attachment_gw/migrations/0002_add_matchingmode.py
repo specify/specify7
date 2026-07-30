@@ -1,7 +1,7 @@
 # Generated manually
 
 from django.db import migrations, models
-from specifyweb.specify.migration_utils.update_schema_config import (
+from specifyweb.specify.migration_utils.schema_writer import (
     update_table_field_schema_config_with_defaults,
     revert_table_field_schema_config,
 )
@@ -9,10 +9,13 @@ from specifyweb.specify.migration_utils.update_schema_config import (
 
 def apply_schema_config(apps, schema_editor):
     Discipline = apps.get_model('specify', 'Discipline')
-    for discipline in Discipline.objects.all():
+    for discipline_id, discipline_type in Discipline.objects.all().order_by('type').values_list('pk', 'type'):
         update_table_field_schema_config_with_defaults(
-            'Spattachmentdataset', discipline.id, 'matchingmode', apps,
-            defaults={'name': 'Matching Mode', 'desc': 'Determines which method to use when matching records', 'ishidden': True}
+            table_name='Spattachmentdataset',
+            discipline_id=discipline_id,
+            discipline_type=discipline_type,
+            field_name='matchingmode',
+            apps=apps,
         )
 
 
