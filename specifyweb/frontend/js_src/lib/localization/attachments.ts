@@ -685,6 +685,13 @@ export const attachmentsText = createDictionary({
       'Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka.',
     nb: 'Følgende filer er ikke valgt fordi de allerede finnes i dette datasettet.',
   },
+  missingFilesFound: {
+    'en-us': 'Files Missing From Mapping File',
+  },
+  missingFilesDescription: {
+    'en-us':
+      'The following files are listed in the mapping file, but have not been selected. Select or drag and drop them to begin the upload.',
+  },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
     'de-ch': 'Fehler beim Abrufen des Datensatzes',

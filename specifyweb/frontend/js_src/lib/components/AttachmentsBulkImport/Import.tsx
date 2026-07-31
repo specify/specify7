@@ -40,6 +40,7 @@ import { AttachmentUpload } from './Upload';
 import { useEagerDataSet } from './useEagerDataset';
 import {
   crossReferenceMappingFiles,
+  isMappingFilePlaceholder,
   matchSelectedFiles,
   prepareMappingFileSelection,
   reconstructDeletingAttachment,
@@ -281,11 +282,20 @@ function AttachmentsImport({
       rows: deduped,
     }));
     setDuplicatedFiles(duplicateFiles);
+    setMissingFiles([]);
   };
 
   const [isRenaming, openRenaming, closeRenaming] = useBooleanState(false);
 
   const [duplicatesFiles, setDuplicatedFiles] = React.useState<
+    RA<PartialUploadableFileSpec>
+  >([]);
+
+  /*
+   * Placeholder rows from the mapping file whose files have not been selected yet.
+   * Filled in after validation so the user is warned about missing files.
+   */
+  const [missingFiles, setMissingFiles] = React.useState<
     RA<PartialUploadableFileSpec>
   >([]);
 
@@ -495,18 +505,18 @@ function AttachmentsImport({
         <AttachmentsValidationDialog
           files={eagerDataSet.rows}
           uploadSpec={eagerDataSet.uploadplan}
-          onValidated={(validatedFiles) =>
-            validatedFiles === undefined
-              ? undefined
-              : commitChange(
-                  (oldState) => ({
-                    ...oldState,
-                    uploaderstatus: 'main',
-                    rows: validatedFiles,
-                  }),
-                  true
-                )
-          }
+          onValidated={(validatedFiles) => {
+            if (validatedFiles === undefined) return undefined;
+            setMissingFiles(validatedFiles.filter(isMappingFilePlaceholder));
+            return commitChange(
+              (oldState) => ({
+                ...oldState,
+                uploaderstatus: 'main',
+                rows: validatedFiles,
+              }),
+              true
+            );
+          }}
         />
       ) : null}
       {isRenaming && (
@@ -561,6 +571,23 @@ function AttachmentsImport({
               uploadSpec={eagerDataSet.uploadplan}
               onDisambiguation={undefined}
             />
+          </div>
+        </Dialog>
+      )}
+      {missingFiles.length > 0 && (
+        <Dialog
+          buttons={commonText.close()}
+          header={attachmentsText.missingFilesFound()}
+          icon="warning"
+          onClose={() => setMissingFiles([])}
+        >
+          <div className="flex min-w-fit flex-col gap-2 overflow-auto">
+            <p>{attachmentsText.missingFilesDescription()}</p>
+            <ul className="flex list-disc flex-col gap-1 pl-4">
+              {missingFiles.map(({ uploadFile }) => (
+                <li key={uploadFile.file.name}>{uploadFile.file.name}</li>
+              ))}
+            </ul>
           </div>
         </Dialog>
       )}
