@@ -101,6 +101,22 @@ export function DateInput({
             value.length > 0 ? parseDate(precision, value) : undefined;
           setMoment(moment);
         }}
+        onChange={({ target }): void => {
+          const input = target as HTMLInputElement;
+          if (isReadOnly || input === null) return;
+          /*
+           * For native date/month pickers, update the resource immediately
+           * on change rather than waiting for blur. This ensures the form's
+           * dirty-tracking detects the change and highlights the Save button.
+           * See https://github.com/specify/specify7/issues/6699
+           */
+          if (input.type === 'date' || input.type === 'month') {
+            const value = input.value.trim();
+            const moment =
+              value.length > 0 ? parseDate(precision, value) : undefined;
+            setMoment(moment);
+          }
+        }}
         onValueChange={setInputValue}
         {...(localPrecision === 'year'
           ? {
