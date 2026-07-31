@@ -720,17 +720,22 @@ class RowPlanCanonical(NamedTuple):
             ]  # Need to go off by 1, bc we added 1 to account for id fields
             # It could happen that the field we saw doesn't exist.
             # Plus, the default options get chosen in the cases of
-            table_name, field_name = _get_table_and_field(field)
+            table_name, _ = _get_table_and_field(field)
+            # Use date-part-aware field name for localization lookup so that
+            # different date components (Full Date, Day, Month, Year) are
+            # matched to their correct captions rather than consuming labels
+            # in insertion order.
+            date_part_field_name = _get_date_part_field_name(field)
             field_caption = query_field_caption_lookup.get(field, None)
             table_field_labels = batch_edit_meta_tables.get_table_field_labels(table_name)
             if (
                 table_field_labels is None
-                or not table_field_labels.has_field_label(field_name)
+                or not table_field_labels.has_field_label(date_part_field_name)
                 or field.fieldspec.contains_tree_rank()
             ):
                 localized_label = naive_field_format(field.fieldspec)
             else:
-                field_label = table_field_labels.use_field_label(field_name, field_caption)
+                field_label = table_field_labels.use_field_label(date_part_field_name, field_caption)
                 localized_label = (
                     field_label.caption if field_label is not None else naive_field_format(field.fieldspec)
                 )
@@ -857,7 +862,10 @@ def naive_field_format(fieldspec: QueryFieldSpec):
         return f"{prefix}{fieldspec.table.name} (formatted)"
     if field.is_relationship:
         return f"{prefix}{fieldspec.table.name} ({'formatted' if field.type.endswith('to-one') else 'aggregatd'})"
-    return f"{prefix}{fieldspec.table.name} {field.name}"
+    date_suffix = ""
+    if fieldspec.is_temporal() and fieldspec.date_part is not None and fieldspec.date_part != "Full Date":
+        date_suffix = f" ({fieldspec.date_part})"
+    return f"{prefix}{fieldspec.table.name} {field.name}{date_suffix}"
 
 
 # @transaction.atomic <--- we DONT do this because the query logic could take up possibly multiple minutes
@@ -895,6 +903,21 @@ def _get_table_and_field(field: QueryField):
     table_name = field.fieldspec.table.name
     field_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
     return (table_name, field_name)
+
+def _get_date_part_field_name(field: QueryField) -> str | None:
+    """Return a field name that includes the date part suffix for temporal fields.
+
+    This ensures that different date components (e.g., catalogedDate Full Date,
+    catalogedDate Day, catalogedDate Month, catalogedDate Year) are treated as
+    distinct fields in the localization lookup, preventing mislabeled headers.
+    """
+    base_name = None if field.fieldspec.get_field() is None else field.fieldspec.get_field().name
+    if base_name is None:
+        return None
+    date_part = field.fieldspec.date_part
+    if date_part is not None:
+        return f"{base_name}__{date_part}"
+    return base_name
 
 def rewrite_coordinate_fields(row, _mapped_rows: dict[tuple[tuple[str, ...], ...], Any], join_paths: tuple[tuple[str, ...], ...]) -> tuple: 
     """
@@ -982,7 +1005,8 @@ def run_batch_edit_query(props: BatchEditProps):
 
     localization_dump: dict[str, list[tuple[str, str, bool]]] = {}
     for field, caption in field_caption_pairs:
-        table_name, field_name = _get_table_and_field(field)
+        table_name, _ = _get_table_and_field(field)
+        field_name = _get_date_part_field_name(field)
         field_labels = localization_dump.get(table_name, [])
         new_field_label = (field_name, caption, False)
         field_labels.append(new_field_label)
