@@ -172,11 +172,18 @@ CLIENT_HOST="$(mariadb -N -B -h "$DB_HOST" -P "$DB_PORT" \
   -sse "SELECT SUBSTRING_INDEX(CURRENT_USER(),'@',-1);")" || CLIENT_HOST=""
 CLIENT_HOST="${CLIENT_HOST%% *}"
 
-MIGRATOR_USER_HOST="${MIGRATOR_USER_HOST:-${CLIENT_HOST:-}}"
-APP_USER_HOST="${APP_USER_HOST:-${CLIENT_HOST:-}}"
+if [[ "$SAME_MASTER_AND_MIGRATOR" == true ]]; then
+  MIGRATOR_USER_HOST="${CLIENT_HOST:-}"
+else
+  MIGRATOR_USER_HOST="${MIGRATOR_USER_HOST:-${CLIENT_HOST:-}}"
+fi
 
-if [[ -n "$CLIENT_HOST" ]]; then
-  echo "Client host as seen by MariaDB: '$CLIENT_HOST'"
+if [[ "$SAME_MASTER_AND_APP" == true ]]; then
+  APP_USER_HOST="${CLIENT_HOST:-}"
+elif [[ "$SAME_MIGRATOR_AND_APP" == true ]]; then
+  APP_USER_HOST="${MIGRATOR_USER_HOST:-}"
+else
+  APP_USER_HOST="${APP_USER_HOST:-${CLIENT_HOST:-}}"
 fi
 
 # Create database if it doesn't exist
@@ -264,6 +271,8 @@ else
 fi
 fi
 
+# BUG: this should probably be skipped if the app user is the same as the
+# master or migrator
 # Create app user if it doesn't exist
 USER_EXISTS=$(mysql -h "$DB_HOST" -P "$DB_PORT" -u "$MASTER_USER_NAME" --password="$MASTER_USER_PASSWORD" -sse \
 "SELECT COUNT(*) FROM mysql.user WHERE user = '$SQL_APP_USER_NAME' AND host = '$APP_USER_HOST';")
