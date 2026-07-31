@@ -377,7 +377,7 @@ export const wbText = createDictionary({
     'es-es': '¿Comenzar reversión del conjunto de datos?',
     'fr-fr': "Commencer la restauration de l'ensemble de données ?",
     'uk-ua': 'Почати відкат набору даних?',
-    'de-ch': 'Datensatz-Rollback starten?',
+    'de-ch': 'Datensatz zurücksetzen?',
     'pt-br': 'Iniciar reversão do conjunto de dados?',
     'hr-hr': 'Započeti vraćanje skupa podataka?',
     nb: 'Start tilbakestilling av datasett?',
@@ -1286,7 +1286,7 @@ export const wbText = createDictionary({
     'uk-ua': 'вкладка',
     'de-ch': 'Tab',
     'pt-br': 'Aba',
-    'hr-hr': 'Tab',
+    'hr-hr': 'Kartica',
     nb: 'Fane',
   },
   space: {

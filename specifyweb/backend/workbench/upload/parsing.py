@@ -5,7 +5,7 @@ from django.core.exceptions import ObjectDoesNotExist
 
 from specifyweb.specify.datamodel import datamodel
 from specifyweb.backend.workbench.upload.predicates import filter_match_key
-from .column_options import ExtendedColumnOptions
+from .column_options import DisambiguationBehavior, ExtendedColumnOptions
 from specifyweb.backend.workbench.upload.parse import parse_field, is_latlong, ParseSucess, ParseFailure
 
 Row = dict[str, str]
@@ -38,17 +38,20 @@ class ParseResult(NamedTuple):
     add_to_picklist: PicklistAddition | None
     column: str
     missing_required: str | None
+    disambiguation_behavior: DisambiguationBehavior
 
     @classmethod
-    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str, missing_required: str | None):
-        return cls(filter_on=filter_on, upload=ps.payload, add_to_picklist=add_to_picklist, column=column, missing_required=missing_required)
+    def from_parse_success(cls, ps: ParseSucess, filter_on: Filter, add_to_picklist: PicklistAddition | None, column: str,
+                           missing_required: str | None, disambiguation_behavior: DisambiguationBehavior):
+        return cls(filter_on=filter_on, upload=ps.payload, add_to_picklist=add_to_picklist, column=column,
+                   missing_required=missing_required, disambiguation_behavior=disambiguation_behavior)
 
     def match_key(self) -> str:
         return filter_match_key(self.filter_on)
 
 
-def filter_and_upload(f: Filter, column: str) -> ParseResult:
-    return ParseResult(f, f, None, column, None)
+def filter_and_upload(f: Filter, column: str, disambiguation_behavior: DisambiguationBehavior = 'ask') -> ParseResult:
+    return ParseResult(f, f, None, column, None, disambiguation_behavior)
 
 
 def parse_many(tablename: str, mapping: dict[str, ExtendedColumnOptions], row: Row) -> tuple[list[ParseResult], list[WorkBenchParseFailure]]:
@@ -76,7 +79,7 @@ def parse_value(tablename: str, fieldname: str, value_in: str, colopts: Extended
                 None
             )
             result = ParseResult({fieldname: None}, {fieldname: None},
-                                 None, colopts.column, missing_required)
+                                 None, colopts.column, missing_required, colopts.disambiguationBehavior)
         else:
             result = _parse(tablename, fieldname,
                             colopts, colopts.default)
@@ -105,7 +108,7 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
     field = table.get_field_strict(fieldname)
 
     if colopts.picklist:
-        result = parse_with_picklist(colopts.picklist, fieldname, value, colopts.column)
+        result = parse_with_picklist(colopts.picklist, fieldname, value, colopts.column, colopts.disambiguationBehavior,)
         if result is not None:
             if isinstance(result, ParseResult) and hasattr(field, 'length') and field.length is not None and len(result.upload[fieldname]) > field.length:
                 return WorkBenchParseFailure(
@@ -123,19 +126,19 @@ def _parse(tablename: str, fieldname: str, colopts: ExtendedColumnOptions, value
     if is_latlong(table, field) and isinstance(parsed, ParseSucess):
         coord_text_field = field.name.replace('itude', '') + 'text' if field.name else ''
         filter_on = {coord_text_field: parsed.payload[coord_text_field]}
-        return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None)
+        return ParseResult.from_parse_success(parsed, filter_on, None, colopts.column, None, colopts.disambiguationBehavior)
 
     if isinstance(parsed, ParseFailure):
         return WorkBenchParseFailure.from_parse_failure(parsed, colopts.column)
     else:
-        return ParseResult.from_parse_success(parsed, parsed.payload, None, colopts.column, None)
+        return ParseResult.from_parse_success(parsed, parsed.payload, None, colopts.column, None, colopts.disambiguationBehavior)
 
 
-def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> ParseResult | WorkBenchParseFailure | None:
+def parse_with_picklist(picklist, fieldname: str, value: str, column: str, disambiguation_behavior: DisambiguationBehavior) -> ParseResult | WorkBenchParseFailure | None:
     if picklist.type == 0:  # items from picklistitems table
         try:
             item = picklist.picklistitems.get(title=value)
-            return filter_and_upload({fieldname: item.value}, column)
+            return filter_and_upload({fieldname: item.value}, column, disambiguation_behavior)
         except ObjectDoesNotExist:
             if picklist.readonly:
                 return WorkBenchParseFailure(
@@ -144,11 +147,11 @@ def parse_with_picklist(picklist, fieldname: str, value: str, column: str) -> Pa
                     column
                 )
             else:
-                return filter_and_upload({fieldname: value}, column)._replace(
+                return filter_and_upload({fieldname: value}, column, disambiguation_behavior)._replace(
                     add_to_picklist=PicklistAddition(
                         picklist=picklist, column=column, value=value)
                 )
-            return filter_and_upload({fieldname: value})
+            return filter_and_upload({fieldname: value}, column, disambiguation_behavior)
 
     elif picklist.type == 1:  # items from rows in some table
         # we ignore this type of picklist because it is primarily used to choose many-to-one's on forms
