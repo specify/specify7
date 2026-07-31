@@ -3,6 +3,7 @@ import type { IR, RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { addMissingFields } from '../DataModel/addMissingFields';
 import type { SerializedResource } from '../DataModel/helperTypes';
+import type { JavaType } from '../DataModel/specifyField';
 import type { SpLocaleContainerItem } from '../DataModel/types';
 import type { Aggregator, Formatter } from '../Formatters/spec';
 import type {
@@ -10,7 +11,7 @@ import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from './index';
-import type { SchemaFormatter } from './schemaData';
+import type { SchemaFormatter, SimpleFieldFormatter } from './schemaData';
 
 let newStringId = 1;
 const defaultLanguage = 'en';
@@ -87,6 +88,29 @@ export const localizedRelationshipTypes: IR<string> = {
   'many-to-one': schemaText.manyToOne(),
   'many-to-many': schemaText.manyToMany(),
 };
+
+export const numericJavaTypes = new Set<JavaType>([
+  'java.lang.Byte',
+  'java.lang.Short',
+  'java.lang.Integer',
+  'java.lang.Float',
+  'java.lang.Double',
+  'java.lang.Long',
+  'java.math.BigDecimal',
+]);
+
+/**
+ * Filter out formatters that are incompatible with the field type.
+ * Numeric fields can only use formatters whose parts produce numeric output.
+ */
+export function filterCompatibleFormatters(
+  formatters: RA<SimpleFieldFormatter>,
+  fieldType: string | null
+): RA<SimpleFieldFormatter> {
+  if (fieldType === null || !numericJavaTypes.has(fieldType as JavaType))
+    return formatters;
+  return formatters.filter(({ isNumericOnly }) => isNumericOnly);
+}
 
 /**
  * Localize Java type name for presenting in the UI
