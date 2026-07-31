@@ -9,4 +9,4 @@ debugpy==1.6.5
 pytest==7.2.1
 pytest-django==4.12.0
 django-extensions==4.1
-# django-debug-toolbar==4.4.6
+coverage==7.15.2
