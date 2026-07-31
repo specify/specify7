@@ -95,26 +95,6 @@ jobs:
           fetch-depth: 0
         
 
-      - name: Get Specify 6 from cache
-        id: cache-specify6
-        uses: actions/cache@v3
-        with:
-          path: Specify6
-          key: specify6.8.02-cache
-
-      - name: Install Specify 6
-        if: steps.cache-specify6.outputs.cache-hit != 'true'
-        run: |
-          wget https://update.specifysoftware.org/6802/Specify_unix_64.sh
-          sh Specify_unix_64.sh -q -dir ./Specify6
-
-      - name:
-          Patch Specify datamodel (Sam, you made the Attachment.origFilename too
-          long)
-        run: sed -i 's/name="origFilename"
-          type="java.lang.String"/name="origFilename" type="text"/'
-          ./Specify6/config/specify_datamodel.xml
-
       - name: Install ubuntu dependencies
         run: |
           sudo apt update
@@ -136,7 +116,7 @@ jobs:
 
       - name: Create settings file
         run: |
-          echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}/Specify6'" >> specifyweb/settings/local_specify_settings.py
+          echo "THICK_CLIENT_LOCATION = '${{ github.workspace }}'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_HOST = '127.0.0.1'" >> specifyweb/settings/local_specify_settings.py
           echo "DATABASE_PORT = ${{ job.services.mariadb.ports[3306] }}" >> specifyweb/settings/local_specify_settings.py
           echo "MASTER_NAME = 'MasterUser'" >> specifyweb/settings/local_specify_settings.py

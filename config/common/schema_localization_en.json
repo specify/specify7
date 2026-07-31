@@ -5643,6 +5643,7 @@
       "createdbyagent": {"name": "Createdbyagent", "desc": "Createdbyagent", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "data": {"name": "Data", "desc": "Data", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "json", "isrequired": false, "weblinkname": null},
       "importedfilename": {"name": "Importedfilename", "desc": "Importedfilename", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
+      "matchingmode": {"name": "Matching Mode", "desc": "Determines which method to use when matching records", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "java.lang.String", "isrequired": false, "weblinkname": null},
       "modifiedbyagent": {"name": "Modifiedbyagent", "desc": "Modifiedbyagent", "format": null, "ishidden": true, "isuiformatter": null, "picklistname": null, "type": "ManyToOne", "isrequired": false, "weblinkname": null},
       "name": {"name": "Name", "desc": "Name", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "java.lang.String", "isrequired": true, "weblinkname": null},
       "remarks": {"name": "Remarks", "desc": "Remarks", "format": null, "ishidden": false, "isuiformatter": null, "picklistname": null, "type": "text", "isrequired": false, "weblinkname": null},
