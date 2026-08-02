@@ -497,6 +497,15 @@ export function QueryListDialog({
               {icons.star}
               {queryText.favorites()}
             </Button.LikeLink>
+            <Button.LikeLink
+              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
+                selectedFolderId === 'archive' ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+              }`}
+              onClick={(): void => setSelectedFolderId('archive')}
+            >
+              {icons.archive}
+              {queryText.archived()}
+            </Button.LikeLink>
             </div>
             {/* Add folder to root */}
             {isCreateFolderOpen && (
