@@ -235,7 +235,7 @@ function EditFolderDialog({
           </Submit.Save>
         </>
       }
-      header={commonText.edit()}
+      header={queryText.editFolder()}
       onClose={handleClose}
     >
       <form
