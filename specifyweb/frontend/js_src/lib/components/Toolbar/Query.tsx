@@ -422,7 +422,7 @@ export function QueryListDialog({
               }`}
               onClick={(): void => setSelectedFolderId(null)}
             >
-              {queryText.uncategorized()}
+              {queryText.all()}
             </Button.LikeLink>
             {folderTree.map((node) => (
               <FolderTreeItem

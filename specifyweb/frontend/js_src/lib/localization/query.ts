@@ -1305,8 +1305,8 @@ export const queryText = createDictionary({
   createFolder: {
     'en-us': 'Create Folder',
   },
-  uncategorized: {
-    'en-us': 'Uncategorized',
+  all: {
+    'en-us': 'All',
   },
   favorite: {
     'en-us': 'Favorite',
