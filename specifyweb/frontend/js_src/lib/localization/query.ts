@@ -1305,6 +1305,9 @@ export const queryText = createDictionary({
   folderName: {
     'en-us': 'Folder Name',
   },
+  parentFolder: {
+    'en-us': 'Parent Folder',
+  },
   createFolder: {
     'en-us': 'Create Folder',
   },

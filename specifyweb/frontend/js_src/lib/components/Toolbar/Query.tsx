@@ -14,7 +14,7 @@ import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
-import { Input, Select } from '../Atoms/Form';
+import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
@@ -252,14 +252,16 @@ function EditFolderDialog({
           );
         }}
       >
+        <Label.Block>
+          {queryText.folderName()}
         <Input.Text
           autoFocus
           required
           maxLength={256}
-          placeholder={queryText.folderName()}
           value={name}
           onValueChange={setName}
         />
+        </Label.Block>
       </form>
     </Dialog>
   );
@@ -381,14 +383,18 @@ function CreateFolderDialog({
           );
         }}
       >
+        <Label.Block>
+          {queryText.folderName()}
         <Input.Text
           autoFocus
           required
           maxLength={256}
-          placeholder={queryText.folderName()}
           value={name}
           onValueChange={setName}
         />
+        </Label.Block>
+        <Label.Block>
+          {queryText.parentFolder()}
         <Select
           value={selectedParentId ?? ''}
           onValueChange={(value): void =>
@@ -402,6 +408,7 @@ function CreateFolderDialog({
             </option>
           ))}
         </Select>
+        </Label.Block>
       </form>
     </Dialog>
   );
@@ -422,6 +429,29 @@ export function QueryListDialog({
   const [folderRefreshKey, setFolderRefreshKey] = React.useState(0);
   const [isCreateFolderOpen, handleOpenCreateFolder, handleCloseCreateFolder] =
     useBooleanState();
+
+  // Resizable folder panel
+  const [folderPanelWidth, setFolderPanelWidth] = React.useState(208);
+  const isResizing = React.useRef(false);
+
+  React.useEffect(() => {
+    const handleMouseMove = (e: MouseEvent): void => {
+      if (!isResizing.current) return;
+      const newWidth = Math.max(150, Math.min(400, e.clientX - 100));
+      setFolderPanelWidth(newWidth);
+    };
+    const handleMouseUp = (): void => {
+      isResizing.current = false;
+      document.body.style.cursor = '';
+      document.body.style.userSelect = '';
+    };
+    document.addEventListener('mousemove', handleMouseMove);
+    document.addEventListener('mouseup', handleMouseUp);
+    return () => {
+      document.removeEventListener('mousemove', handleMouseMove);
+      document.removeEventListener('mouseup', handleMouseUp);
+    };
+  }, []);
 
   // Debounce search
   React.useEffect(() => {
@@ -597,8 +627,21 @@ export function QueryListDialog({
         </div>
         <div className="flex gap-2 flex-1 overflow-hidden">
           {/* Folder tree sidebar */}
-          <div className="w-52 flex-shrink-0 flex flex-col border-r pr-2">
-            <div className="flex-1 overflow-y-auto">
+          <div
+            className="flex-shrink-0 flex flex-col border-r pr-2 relative"
+            style={{ width: folderPanelWidth }}
+          >
+            {/* Resize handle */}
+            <div
+              className="absolute right-0 top-0 bottom-0 w-1 cursor-col-resize hover:bg-brand-300 z-10"
+              onMouseDown={(e): void => {
+                e.preventDefault();
+                isResizing.current = true;
+                document.body.style.cursor = 'col-resize';
+                document.body.style.userSelect = 'none';
+              }}
+            />
+            <div className="flex-1 overflow-y-auto relative z-0">
             <div className="mb-1 flex items-center justify-between">
               <span className="text-sm font-bold">{queryText.folders()}</span>
               <Button.Small
