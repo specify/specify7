@@ -12,6 +12,7 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
+import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -92,23 +93,27 @@ const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
 // Folder tree node type
 type FolderNode = {
   readonly folder: SerializedResource<SpQueryFolder>;
-  readonly children: RA<FolderNode>;
+  children: FolderNode[];
 };
 
 function buildFolderTree(
   folders: RA<SerializedResource<SpQueryFolder>>
 ): RA<FolderNode> {
   const map = new Map<number, FolderNode>();
-  const roots: RA<FolderNode> = [];
+  const roots: FolderNode[] = [];
 
   for (const folder of folders) {
     map.set(folder.id, { folder, children: [] });
   }
   for (const folder of folders) {
     const node = map.get(folder.id)!;
-    const parentId = folder.parent;
-    if (parentId !== null && map.has(parentId)) {
-      map.get(parentId)!.children = [...map.get(parentId)!.children, node];
+    const parentUri = folder.parent as unknown as string | null;
+    const parentId =
+      parentUri !== null
+        ? Number(parentUri.split('/').filter(Boolean).pop())
+        : null;
+    if (parentId !== null && !Number.isNaN(parentId) && map.has(parentId)) {
+      map.get(parentId)!.children.push(node);
     } else {
       roots.push(node);
     }
@@ -121,11 +126,13 @@ function FolderTreeItem({
   depth,
   selectedFolderId,
   onSelect,
+  onEdit,
 }: {
   readonly node: FolderNode;
   readonly depth: number;
   readonly selectedFolderId: number | null;
   readonly onSelect: (id: number | null) => void;
+  readonly onEdit: (folder: SerializedResource<SpQueryFolder>) => void;
 }): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(true);
   const hasChildren = node.children.length > 0;
@@ -134,7 +141,7 @@ function FolderTreeItem({
   return (
     <div>
       <Button.LikeLink
-        className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left ${
+        className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left group ${
           isSelected ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
         }`}
         style={{ paddingLeft: `${depth * 1.25 + 0.25}rem` }}
@@ -154,7 +161,21 @@ function FolderTreeItem({
           <span className="w-5 flex-shrink-0" />
         )}
         {isOpen ? icons.folderOpen : icons.folder}
-        <span className="truncate">{node.folder.name}</span>
+        <span className="truncate flex-1">{node.folder.name}</span>
+        <span
+          className="flex-shrink-0 opacity-0 group-hover:opacity-100 ml-1"
+          onClick={(e): void => {
+            e.stopPropagation();
+            onEdit(node.folder);
+          }}
+        >
+          <Button.Icon
+            className="!text-orange-400"
+            icon="pencil"
+            title={commonText.edit()}
+            onClick={(): void => onEdit(node.folder)}
+          />
+        </span>
       </Button.LikeLink>
       {isOpen &&
         node.children.map((child) => (
@@ -164,9 +185,83 @@ function FolderTreeItem({
             node={child}
             selectedFolderId={selectedFolderId}
             onSelect={onSelect}
+            onEdit={onEdit}
           />
         ))}
     </div>
+  );
+}
+
+function EditFolderDialog({
+  folder,
+  onClose: handleClose,
+  onDeleted,
+}: {
+  readonly folder: SerializedResource<SpQueryFolder>;
+  readonly onClose: () => void;
+  readonly onDeleted: () => void;
+}): JSX.Element {
+  const [name, setName] = React.useState(folder.name);
+  const loading = React.useContext(LoadingContext);
+
+  const handleDelete = (): void => {
+    loading(
+      ajax(`/api/specify/spqueryfolder/${folder.id}/`, {
+        method: 'DELETE',
+        headers: { Accept: 'application/json' },
+      }).then(() => {
+        handleClose();
+        onDeleted();
+      })
+    );
+  };
+
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.Danger onClick={handleDelete}>
+            {commonText.delete()}
+          </Button.Danger>
+          <span className="flex-1" />
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Save
+            disabled={name.trim() === ''}
+            form="editFolderForm"
+          >
+            {commonText.save()}
+          </Submit.Save>
+        </>
+      }
+      header={commonText.edit()}
+      onClose={handleClose}
+    >
+      <form
+        className="flex flex-col gap-4"
+        id="editFolderForm"
+        onSubmit={(e): void => {
+          e.preventDefault();
+          loading(
+            saveResource('SpQueryFolder', folder.id, {
+              ...removeKey(folder, '_tableName'),
+              name: name.trim(),
+            } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
+              handleClose();
+              onDeleted();
+            })
+          );
+        }}
+      >
+        <Input.Text
+          autoFocus
+          required
+          maxLength={256}
+          placeholder={queryText.folderName()}
+          value={name}
+          onValueChange={setName}
+        />
+      </form>
+    </Dialog>
   );
 }
 
@@ -449,6 +544,10 @@ export function QueryListDialog({
     SerializedResource<SpQuery> | undefined
   >(undefined);
 
+  const [editingFolder, setEditingFolder] = React.useState<
+    SerializedResource<SpQueryFolder> | undefined
+  >(undefined);
+
   const handleMoveToFolder = async (
     folderId: number | null
   ): Promise<void> => {
@@ -508,6 +607,7 @@ export function QueryListDialog({
                 node={node}
                 selectedFolderId={typeof selectedFolderId === 'number' ? selectedFolderId : null}
                 onSelect={(id): void => setSelectedFolderId(id)}
+                onEdit={setEditingFolder}
               />
             ))}
             </div>
@@ -612,6 +712,13 @@ export function QueryListDialog({
             query={moveTarget}
             onClose={(): void => setMoveTarget(undefined)}
             onMove={handleMoveToFolder}
+          />
+        )}
+        {editingFolder !== undefined && (
+          <EditFolderDialog
+            folder={editingFolder}
+            onClose={(): void => setEditingFolder(undefined)}
+            onDeleted={handleRefresh}
           />
         )}
       </>
