@@ -236,7 +236,7 @@ msgstr "Objet actuel (sur {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Ce formulaire n'a pas été enregistré."
 
-#: components/AttachmentsBulkImport/utils.ts:471
+#: components/AttachmentsBulkImport/utils.ts:618
 #: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
@@ -484,7 +484,7 @@ msgstr "Ajouter à {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Retirer de {recordSetTable:string}"
 
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:620
 #: components/Molecules/AutoComplete.tsx:558
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
@@ -606,12 +606,12 @@ msgstr "Créer un nouvel enregistrement vierge"
 msgid "autoNumbering"
 msgstr "Numérotation automatique"
 
-#: components/FieldFormatters/Parts.tsx:205
+#: components/FieldFormatters/Parts.tsx:217
 #. Used in: Components > Field Formatters > Parts
 msgid "autoNumberByYear"
 msgstr "Auto-numéro par année"
 
-#: components/FieldFormatters/Parts.tsx:191
+#: components/FieldFormatters/Parts.tsx:203
 #. Used in: Components > Field Formatters > Parts
 msgid "autoNumber"
 msgstr "Auto-numéro"

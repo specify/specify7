@@ -74,7 +74,7 @@ msgstr "Envoi en cours…"
 
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:176
-#: components/AttachmentsBulkImport/utils.ts:463
+#: components/AttachmentsBulkImport/utils.ts:610
 #. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"
@@ -100,64 +100,65 @@ msgstr "Afficher le formulaire"
 msgid "multipleFilesSelected"
 msgstr "Plusieurs fichiers sélectionnés"
 
-#: components/AttachmentsBulkImport/Import.tsx:205
+#: components/AttachmentsBulkImport/Import.tsx:308
+#: components/AttachmentsBulkImport/Import.tsx:331
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "fileSize"
 msgstr "Taille du fichier"
 
 #: components/AttachmentsBulkImport/Rollback.tsx:149
-#: components/AttachmentsBulkImport/utils.ts:458
+#: components/AttachmentsBulkImport/utils.ts:605
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 msgid "deleted"
 msgstr "Supprimé"
 
-#: components/AttachmentsBulkImport/utils.ts:456
+#: components/AttachmentsBulkImport/utils.ts:603
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noFile"
 msgstr "Pas de fichier"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:170
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:197
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "pleaseReselectAllFiles"
 msgstr "Veuillez resélectionner tous les fichiers avant de les télécharger."
 
-#: components/AttachmentsBulkImport/utils.ts:455
+#: components/AttachmentsBulkImport/utils.ts:602
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "incorrectFormatter"
 msgstr "Incorrectement formaté"
 
-#: components/AttachmentsBulkImport/utils.ts:459
+#: components/AttachmentsBulkImport/utils.ts:606
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "alreadyUploaded"
 msgstr "Déjà téléchargé"
 
-#: components/AttachmentsBulkImport/utils.ts:460
+#: components/AttachmentsBulkImport/utils.ts:607
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "skipped"
 msgstr "Ommis"
 
-#: components/AttachmentsBulkImport/utils.ts:461
+#: components/AttachmentsBulkImport/utils.ts:608
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "cancelled"
 msgstr "Annulé"
 
-#: components/AttachmentsBulkImport/utils.ts:464
-#: components/AttachmentsBulkImport/utils.ts:467
+#: components/AttachmentsBulkImport/utils.ts:611
+#: components/AttachmentsBulkImport/utils.ts:614
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "frontEndInterruption"
 msgstr "{action:string} était en cours lorsque l'interruption s'est produite"
 
-#: components/AttachmentsBulkImport/utils.ts:462
+#: components/AttachmentsBulkImport/utils.ts:609
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "matchError"
 msgstr "Erreur de correspondance"
 
-#: components/AttachmentsBulkImport/utils.ts:470
+#: components/AttachmentsBulkImport/utils.ts:617
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorReadingFile"
 msgstr "Erreur de lecture du fichier"
 
-#: components/AttachmentsBulkImport/utils.ts:472
+#: components/AttachmentsBulkImport/utils.ts:619
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "unhandledFatalResourceError"
 msgstr "Erreur, ressource non gérée :"
@@ -167,41 +168,41 @@ msgstr "Erreur, ressource non gérée :"
 msgid "attachmentImportDatasetsCount"
 msgstr "Import d'un jeu de données de pièces jointes ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:240
+#: components/AttachmentsBulkImport/Datasets.tsx:245
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDataset"
 msgstr "Nouveau jeu de données de pièces jointes {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:269
+#: components/AttachmentsBulkImport/Datasets.tsx:274
 #. Used in: Components > Attachments Bulk Import > Datasets
 msgid "newAttachmentDatasetBase"
 msgstr "Nouveau jeu de données de pièces jointes"
 
-#: components/AttachmentsBulkImport/Import.tsx:393
+#: components/AttachmentsBulkImport/Import.tsx:537
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "uploadInterrupted"
 msgstr "Téléchargement interrompu"
 
-#: components/AttachmentsBulkImport/Import.tsx:399
+#: components/AttachmentsBulkImport/Import.tsx:543
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "uploadInterruptedDescription"
 msgstr ""
 "Le téléchargement était en cours lorsqu'une interruption s'est produite. "
 "Certains fichiers peuvent avoir été téléchargés."
 
-#: components/AttachmentsBulkImport/Import.tsx:404
+#: components/AttachmentsBulkImport/Import.tsx:548
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "rollbackInterrupted"
 msgstr "Retour en arrière interrompu"
 
-#: components/AttachmentsBulkImport/Import.tsx:410
+#: components/AttachmentsBulkImport/Import.tsx:554
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "rollbackInterruptedDescription"
 msgstr ""
 "Le retour en arrière était en cours lorsqu'une interruption s'est produite. "
 "Certains fichiers peuvent avoir été supprimés"
 
-#: components/AttachmentsBulkImport/Import.tsx:227
+#: components/AttachmentsBulkImport/Import.tsx:354
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "attachmentId"
 msgstr "ID de la pièce jointe"
@@ -246,7 +247,7 @@ msgstr ""
 "La restauration supprimera les pièces jointes de la base de données Specify "
 "et du serveur de médias."
 
-#: components/AttachmentsBulkImport/utils.ts:474
+#: components/AttachmentsBulkImport/utils.ts:621
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "noMatch"
 msgstr "Aucune correspondance"
@@ -294,27 +295,27 @@ msgstr ""
 "réinitialisation et d'affichage/masquage du formulaire dans le visualiseur "
 "de pièces jointes."
 
-#: components/AttachmentsBulkImport/utils.ts:475
+#: components/AttachmentsBulkImport/utils.ts:622
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "multipleMatches"
 msgstr "Plusieurs correspondances"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:82
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:94
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "multipleMatchesClick"
 msgstr "Plusieurs correspondances. Cliquez pour clarifier"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:160
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:185
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "totalFiles"
 msgstr "Total des fichiers"
 
-#: components/AttachmentsBulkImport/utils.ts:476
+#: components/AttachmentsBulkImport/utils.ts:623
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "correctlyFormatted"
 msgstr "Correctement formaté"
 
-#: components/AttachmentsBulkImport/utils.ts:477
+#: components/AttachmentsBulkImport/utils.ts:624
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "stoppedByUser"
 msgstr "Arrêté par l'utilisateur"
@@ -332,44 +333,55 @@ msgstr "Importer des pièces jointes"
 msgid "onFile"
 msgstr "Dans le fichier"
 
-#: components/AttachmentsBulkImport/Import.tsx:416
+#: components/AttachmentsBulkImport/Import.tsx:560
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "duplicateFilesFound"
 msgstr "Fichiers en double trouvés"
 
-#: components/AttachmentsBulkImport/Import.tsx:421
+#: components/AttachmentsBulkImport/Import.tsx:565
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "duplicateFilesDescription"
 msgstr ""
 "Les fichiers suivants ne sont pas sélectionnés car ils existent déjà dans "
 "cet ensemble de données."
 
-#: components/AttachmentsBulkImport/utils.ts:479
+#: components/AttachmentsBulkImport/Import.tsx:580
+#. Used in: Components > Attachments Bulk Import > Import
+msgid "missingFilesFound"
+msgstr ""
+
+#: components/AttachmentsBulkImport/Import.tsx:585
+#. Used in: Components > Attachments Bulk Import > Import
+msgid "missingFilesDescription"
+msgstr ""
+
+#: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorFetchingRecord"
 msgstr "Erreur lors de la récupération de l'enregistrement"
 
-#: components/AttachmentsBulkImport/utils.ts:480
+#: components/AttachmentsBulkImport/utils.ts:627
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "errorSavingRecord"
 msgstr "Erreur lors de la sauvegarde de l'enregistrement"
 
-#: components/AttachmentsBulkImport/utils.ts:478
+#: components/AttachmentsBulkImport/utils.ts:625
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "interruptionStopped"
 msgstr "Arrêté à cause d'une erreur de téléchargement du précédent fichier"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:231
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:264
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "chooseFilesToGetStarted"
 msgstr "Choisissez des fichiers ou faites-les glisser ici pour commencer."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:232
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:265
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "selectIdentifier"
 msgstr "Sélectionnez un identifiant pour faire correspondre le nom des fichiers."
 
-#: components/AttachmentsBulkImport/Import.tsx:224
+#: components/AttachmentsBulkImport/Import.tsx:327
+#: components/AttachmentsBulkImport/Import.tsx:350
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "progress"
 msgstr "En cours"
@@ -395,7 +407,7 @@ msgstr ""
 "de téléchargement. De plus, après la suppression, le retour en arrière ne "
 "sera plus possible pour un jeu de données téléchargé."
 
-#: components/AttachmentsBulkImport/utils.ts:481
+#: components/AttachmentsBulkImport/utils.ts:628
 #. Used in: Components > Attachments Bulk Import > Utils
 msgid "attachmentUploadError"
 msgstr ""
@@ -448,3 +460,109 @@ msgstr ""
 "publiques seront automatiquement visibles sur le portail web de "
 "spécification. Ce paramètre peut être modifié pour chaque pièce jointe "
 "individuellement et n'affecte pas les pièces jointes existantes."
+
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:67
+#. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+msgid "matchingMode"
+msgstr "Mode de correspondance"
+
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:89
+#. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+msgid "matchByFilename"
+msgstr "Correspondance par nom de fichier"
+
+#: components/AttachmentsBulkImport/Datasets.tsx:213
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:113
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
+msgid "matchByMappingFile"
+msgstr "Correspondance par fichier de mappage"
+
+#: components/AttachmentsBulkImport/utils.ts:629
+#. Used in: Components > Attachments Bulk Import > Utils
+msgid "fileMissing"
+msgstr "Fichier manquant"
+
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:65
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+msgid "awaitingFile"
+msgstr ""
+
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:205
+#. Used in: Components > Attachments Bulk Import > View Attachment Files
+msgid "mappingAwaitingFiles"
+msgstr ""
+
+#: components/AttachmentsBulkImport/utils.ts:630
+#. Used in: Components > Attachments Bulk Import > Utils
+msgid "notInMappingFile"
+msgstr "Pas dans le fichier de mappage"
+
+#: components/AttachmentsBulkImport/utils.ts:631
+#. Used in: Components > Attachments Bulk Import > Utils
+msgid "duplicateInMappingFile"
+msgstr "Doublon dans le fichier de mappage"
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:267
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:270
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "selectMatchValueColumn"
+msgstr "Colonne de valeur de correspondance"
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:296
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:299
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "selectFileNameColumn"
+msgstr "Colonne de nom de fichier"
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:232
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "mappingFileLoaded"
+msgstr "Fichier de mappage chargé ({count:number} lignes)"
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:237
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "mappingFileColumnsInfo"
+msgstr "Correspondance: {matchColumn:string} → Fichier: {fileColumn:string}"
+
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:71
+#. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+msgid "chooseMatchingMode"
+msgstr ""
+"Choisissez comment les pièces jointes doivent être associées aux "
+"enregistrements de la base de données."
+
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:92
+#. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+msgid "matchByFilenameDescription"
+msgstr ""
+"Analysez l'identifiant d'enregistrement à partir de chaque nom de fichier à "
+"l'aide d'un formateur de champ. Fonctionne mieux avec des champs numériques "
+"structurés."
+
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:116
+#. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+msgid "matchByMappingFileDescription"
+msgstr ""
+"Utilisez un fichier de mappage CSV explicite qui indique à quel "
+"enregistrement appartient chaque fichier."
+
+#: components/AttachmentsBulkImport/Import.tsx:307
+#. Used in: Components > Attachments Bulk Import > Import
+msgid "matchValue"
+msgstr "Valeur de correspondance"
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:188
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "csvParseError"
+msgstr ""
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "csvEmptyFile"
+msgstr ""
+
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:315
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
+msgid "columnPlaceholder"
+msgstr "Colonne {columnNumber:number}"

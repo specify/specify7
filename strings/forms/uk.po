@@ -233,7 +233,7 @@ msgstr "Поточний об'єкт (з {total:number|formatted})"
 msgid "unsavedFormUnloadProtect"
 msgstr "Цю форму не збережено."
 
-#: components/AttachmentsBulkImport/utils.ts:471
+#: components/AttachmentsBulkImport/utils.ts:618
 #: components/Forms/Save.tsx:305
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 msgid "saveConflict"
@@ -476,7 +476,7 @@ msgstr "Додати до {recordSetTable:string}"
 msgid "removeFromRecordSet"
 msgstr "Видалити з {recordSetTable:string}"
 
-#: components/AttachmentsBulkImport/utils.ts:473
+#: components/AttachmentsBulkImport/utils.ts:620
 #: components/Molecules/AutoComplete.tsx:558
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 msgid "nothingFound"
@@ -596,12 +596,12 @@ msgstr "Створити новий пустий запис"
 msgid "autoNumbering"
 msgstr "Автоматична нумерація"
 
-#: components/FieldFormatters/Parts.tsx:205
+#: components/FieldFormatters/Parts.tsx:217
 #. Used in: Components > Field Formatters > Parts
 msgid "autoNumberByYear"
 msgstr "Автонумерація за роком"
 
-#: components/FieldFormatters/Parts.tsx:191
+#: components/FieldFormatters/Parts.tsx:203
 #. Used in: Components > Field Formatters > Parts
 msgid "autoNumber"
 msgstr "Автонумерація"

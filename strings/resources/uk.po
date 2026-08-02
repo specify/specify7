@@ -641,7 +641,9 @@ msgid "nonConformingInline"
 msgstr "(невідповідний)"
 
 #: components/FieldFormatters/Parts.tsx:53
-#: components/FieldFormatters/Parts.tsx:157
+#: components/FieldFormatters/Parts.tsx:159
+#: components/FieldFormatters/Parts.tsx:160
+#: components/FieldFormatters/Parts.tsx:173
 #. Used in: Components > Field Formatters > Parts
 msgid "value"
 msgstr "Значення"
@@ -681,8 +683,8 @@ msgstr "Регулярний вираз"
 msgid "exampleField"
 msgstr "Приклад поле"
 
-#: components/FieldFormatters/Parts.tsx:248
-#: components/FieldFormatters/Parts.tsx:250
+#: components/FieldFormatters/Parts.tsx:221
+#: components/FieldFormatters/Parts.tsx:223
 #. Used in: Components > Field Formatters > Parts
 msgid "pattern"
 msgstr "Візерунок"

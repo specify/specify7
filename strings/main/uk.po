@@ -102,7 +102,7 @@ msgstr "Повідомлення про помилку"
 msgid "leavePageConfirmation"
 msgstr "Ви впевнені, що бажаєте покинути цю сторінку?"
 
-#: components/AttachmentsBulkImport/useEagerDataset.ts:109
+#: components/AttachmentsBulkImport/useEagerDataset.ts:116
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
 #: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89

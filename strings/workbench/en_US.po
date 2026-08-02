@@ -12,7 +12,7 @@ msgstr "WorkBench"
 #: components/AttachmentsBulkImport/Rollback.tsx:29
 #: components/AttachmentsBulkImport/Rollback.tsx:93
 #: components/AttachmentsBulkImport/Rollback.tsx:130
-#: components/AttachmentsBulkImport/utils.ts:468
+#: components/AttachmentsBulkImport/utils.ts:615
 #: components/WbUtils/datasetVariants.tsx:48
 #: components/WbUtils/datasetVariants.tsx:122
 #: components/WorkBench/Status.tsx:80
@@ -20,7 +20,7 @@ msgstr "WorkBench"
 msgid "rollback"
 msgstr "Rollback"
 
-#: components/AttachmentsBulkImport/Import.tsx:290
+#: components/AttachmentsBulkImport/Import.tsx:433
 #: components/WbActions/WbValidate.tsx:82
 #: components/WbPlanView/Mapper.tsx:466
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Wb Actions > Wb Validate ⬤ Components > Wb Plan View > Mapper
@@ -34,7 +34,7 @@ msgstr "Validation"
 
 #: components/AttachmentsBulkImport/Upload.tsx:217
 #: components/AttachmentsBulkImport/Upload.tsx:243
-#: components/AttachmentsBulkImport/utils.ts:465
+#: components/AttachmentsBulkImport/utils.ts:612
 #: components/Molecules/SyncAttachmentPicker.tsx:111
 #: components/WbUtils/datasetVariants.tsx:41
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Wb Utils > Dataset Variants
@@ -661,7 +661,7 @@ msgid "dataSetMeta"
 msgstr "Data Set Properties"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:152
-#: components/AttachmentsBulkImport/Datasets.tsx:284
+#: components/AttachmentsBulkImport/Datasets.tsx:289
 #: components/WbPlanView/Mapper.tsx:490
 #: components/WorkBench/DataSetMeta.tsx:219
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Wb Plan View > Mapper ⬤ Components > Work Bench > Data Set Meta

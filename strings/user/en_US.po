@@ -378,7 +378,8 @@ msgstr "This user"
 msgid "action"
 msgstr "Action"
 
-#: components/AttachmentsBulkImport/Import.tsx:209
+#: components/AttachmentsBulkImport/Import.tsx:312
+#: components/AttachmentsBulkImport/Import.tsx:335
 #: components/Permissions/FormatError.tsx:68
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148
