@@ -581,6 +581,14 @@ export function QueryListDialog({
             </div>
           </div>
         </div>
+        {moveTarget !== undefined && (
+          <MoveToFolderDialog
+            folders={folders?.records ?? []}
+            query={moveTarget}
+            onClose={(): void => setMoveTarget(undefined)}
+            onMove={handleMoveToFolder}
+          />
+        )}
       </>
     ),
     dialog: (children) => (
@@ -606,14 +614,6 @@ export function QueryListDialog({
         onClose={handleClose}
       >
         {children}
-        {moveTarget !== undefined && (
-          <MoveToFolderDialog
-            folders={folders?.records ?? []}
-            query={moveTarget}
-            onClose={(): void => setMoveTarget(undefined)}
-            onMove={handleMoveToFolder}
-          />
-        )}
       </Dialog>
     ),
   });
