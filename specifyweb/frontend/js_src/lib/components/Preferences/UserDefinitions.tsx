@@ -619,7 +619,7 @@ export const userPreferenceDefinitions = {
           mode: definePref<WelcomePageMode>({
             title: preferencesText.content(),
             description: (
-              <Link.NewTab href="https://discourse.specifysoftware.org/t/customizing-the-splash-screen/2604">
+              <Link.NewTab href="https://speciforum.org/t/customizing-the-splash-screen/2604">
                 {headerText.documentation()}
               </Link.NewTab>
             ),
@@ -1677,6 +1677,13 @@ export const userPreferenceDefinitions = {
             renderer: ColorPickerPreferenceItem,
             container: 'label',
           }),
+          displayChronoPeriods: definePref<boolean>({
+            title: preferencesText.displayChronoPeriods(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
           rankThreshold: definePref<number>({
             title: preferencesText.rankThreshold(),
             description: preferencesText.rankThresholdDescription(),
@@ -1878,6 +1885,13 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          wrapQueryResults: definePref<boolean>({
+            title: preferencesText.lineWrap(),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
         },
       },
     },
@@ -1955,7 +1969,7 @@ export const userPreferenceDefinitions = {
             description: wbText.dataCheckDescription(),
             requiresReload: false,
             visible: true,
-            defaultValue: false,
+            defaultValue: true,
             type: 'java.lang.Boolean',
           }),
         },

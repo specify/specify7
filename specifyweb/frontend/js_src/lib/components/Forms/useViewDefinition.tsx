@@ -52,15 +52,33 @@ export function useViewDefinition({
   const [viewDefinition] = useAsyncState<ViewDescription>(
     React.useCallback(async () => {
       if (table === undefined) return undefined;
-      else if (viewName === attachmentView)
+      else if (viewName === attachmentView) {
+        /*
+         * Try the specific attachment table form first (e.g.
+         * 'CollectionObjectAttachment'), then fall back to the generic
+         * 'ObjectAttachment' form. Whichever has a viewSetId (i.e. is
+         * user-defined) wins so the "Edit Form Definition" link can appear.
+         */
+        const [specificView, genericView] = await Promise.all([
+          fetchView(table.name),
+          fetchView(attachmentView),
+        ]);
+        const viewWithId =
+          specificView?.viewsetId == null
+            ? genericView?.viewsetId == null
+              ? undefined
+              : genericView
+            : specificView;
         return {
           ...webOnlyViews()[attachmentView],
           table,
-          name: attachmentView,
+          name: viewWithId?.name ?? attachmentView,
           formType,
           mode,
+          viewSetId: viewWithId?.viewsetId ?? undefined,
+          isAttachmentPlugin: true,
         };
-      else if (useGeneratedForm)
+      } else if (useGeneratedForm)
         return autoGenerateViewDefinition(table, formType, mode);
       const resolvedViewName = viewName ?? table.view;
       return fetchViewDefinition(resolvedViewName, table, formType, mode)
@@ -94,7 +112,7 @@ const fetchViewDefinition = async (
   fetchView(
     viewName === originalAttachmentsView ? 'ObjectAttachment' : viewName
   )
-    .then((viewDefinition) =>
+    .then(async (viewDefinition) =>
       typeof viewDefinition === 'object'
         ? parseViewDefinition(viewDefinition, formType, mode, table)
         : undefined
@@ -106,10 +124,7 @@ const fetchViewDefinition = async (
             new Error('View definition table does not match resource table')
           );
         return viewName === originalAttachmentsView
-          ? {
-              ...viewDefinition,
-              name: originalAttachmentsView,
-            }
+          ? { ...viewDefinition, name: originalAttachmentsView }
           : viewDefinition;
       } else
         return f.maybe(

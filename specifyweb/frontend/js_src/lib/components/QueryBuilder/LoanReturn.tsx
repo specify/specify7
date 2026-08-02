@@ -135,7 +135,7 @@ export function QueryLoanReturn({
             type: 'Dialog',
             loanReturnPreparation: new tables.LoanReturnPreparation.Resource({
               returneddate: getDateInputValue(new Date()),
-              receivedby: userInformation.agent.resource_uri,
+              receivedby: userInformation.currentCollectionAgent?.resource_uri,
             }),
             queryResource: resourceToJson(
               typeof getQueryFieldRecords === 'function'

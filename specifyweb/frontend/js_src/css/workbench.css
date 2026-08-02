@@ -1,26 +1,76 @@
-@import url('../node_modules/handsontable/dist/handsontable.full.css');
+@import 'handsontable/styles/handsontable.css';
+@import 'handsontable/styles/ht-theme-classic.css';
 
-/* Show table icons in column headers */
-.htCore thead th > .relative {
-  @apply flex items-center justify-center;
+.ht-theme-classic,
+.ht-theme-classic-dark,
+.ht-theme-classic-dark-auto {
+  --ht-font-family: var(
+    --form-font-family,
+    -apple-system,
+    BlinkMacSystemFont,
+    'Segoe UI',
+    sans-serif
+  );
+  --ht-font-size: 100%;
+  --ht-font-size-small: 85%;
+  --ht-line-height: 18px;
+  --ht-line-height-small: 16px;
+  --ht-font-weight: 400;
+  --ht-header-font-weight: 500;
+  --ht-letter-spacing: normal;
+  --ht-read-only-color: theme('colors.gray.600');
+  --ht-cell-read-only-background-color: theme('colors.gray.200');
+  --ht-comments-indicator-color: theme('colors.black');
 }
 
-.htCore .colHeader {
-  @apply !contents;
-}
-
-.handsontable .columnSorting {
+.handsontable .colHeader.columnSorting,
+.handsontable .wb-header-name {
   @apply leading-5;
 }
 
+.handsontable .colHeader.columnSorting {
+  @apply inline-flex items-center gap-1 overflow-hidden whitespace-nowrap;
+
+  position: relative;
+  min-width: 0;
+  flex-wrap: nowrap;
+  align-content: center;
+  justify-content: flex-start;
+}
+
 /* Sorting direction */
-.handsontable .columnSorting::before {
-  @apply !static order-2 !mt-1 !bg-center pr-1;
+.handsontable .colHeader.columnSorting::before {
+  @apply !absolute !top-1/2 !bg-center flex-none;
+
+  right: 0.375rem;
+  transform: translateY(-50%);
+  margin-inline-end: 0;
+}
+
+.handsontable .columnSorting.columnSorting.columnSorting.sortAction.ascending,
+.handsontable .columnSorting.columnSorting.columnSorting.sortAction.descending {
+  /* Override handsontable's large padding when sorting direction is present */
+  max-width: calc(100% + 1px) !important;
+}
+
+.handsontable th .colHeader.columnSorting > span {
+  /* Disable column dragging when click on header title... */
+  pointer-events: none;
+}
+
+.handsontable th .columnSorting {
+  /* ...and enable column sorting when clicking on header title */
+  pointer-events: auto;
 }
 
 /* Sorting priority index */
-.handsontable .columnSorting::after {
-  @apply !static order-2 !mt-2 -ml-2;
+.handsontable .colHeader.columnSorting::after {
+  @apply !absolute !top-1/2 flex-none;
+
+  right: 1.4rem;
+  transform: translateY(-50%);
+  content: none;
+  display: none;
 }
 
 /* Highlighted cells' headers */
@@ -51,8 +101,16 @@
   @apply text-black dark:text-white;
 }
 
+.handsontable .wb-unmapped-cell {
+  @apply !bg-gray-200 !text-gray-600 dark:!bg-neutral-700 dark:!text-neutral-300;
+}
+
 .handsontable .htDimmed {
-  @apply bg-gray-200 dark:bg-neutral-800;
+  @apply !bg-gray-200 !text-gray-600 dark:!bg-neutral-700 dark:!text-neutral-300;
+}
+
+.handsontable tbody td {
+  white-space: nowrap;
 }
 
 /* Cell navigation */
@@ -114,8 +172,38 @@
  */
 .handsontable {
   @apply text-inherit;
-  font-family: inherit;
+  font-family: var(--form-font-family, inherit);
   font-size: inherit;
+}
+
+.ht-root-wrapper {
+  font-family: var(--form-font-family, inherit);
+  font-size: inherit;
+}
+
+.dark .ht-theme-classic {
+  color-scheme: dark;
+  --ht-border-color: theme('colors.neutral.500');
+  --ht-foreground-color: theme('colors.neutral.100');
+  --ht-foreground-secondary-color: theme('colors.neutral.400');
+  --ht-background-color: theme('colors.neutral.800');
+  --ht-background-secondary-color: theme('colors.neutral.900');
+  --ht-placeholder-color: theme('colors.blue.500');
+  --ht-read-only-color: theme('colors.neutral.300');
+  --ht-cell-read-only-background-color: theme('colors.neutral.700');
+  --ht-disabled-color: theme('colors.neutral.500');
+  --ht-header-background-color: theme('colors.neutral.900');
+  --ht-header-foreground-color: theme('colors.white');
+  --ht-header-highlighted-background-color: theme('colors.neutral.800');
+  --ht-header-row-background-color: theme('colors.neutral.900');
+  --ht-header-row-highlighted-background-color: theme('colors.neutral.800');
+  --ht-cell-editor-background-color: theme('colors.neutral.600');
+  --ht-cell-editor-foreground-color: theme('colors.white');
+  --ht-menu-border-color: theme('colors.neutral.500');
+  --ht-menu-shadow-color: theme('colors.neutral.500');
+  --ht-scrollbar-track-color: theme('colors.neutral.900');
+  --ht-scrollbar-thumb-color: theme('colors.neutral.500');
+  --ht-comments-indicator-color: theme('colors.white');
 }
 
 /* Handsontable dark mode */
@@ -165,7 +253,7 @@
 }
 
 .htCommentCell:after {
-  @apply dark:!border-t-white;
+  @apply !border-t-black dark:!border-t-white;
 }
 
 .handsontableInput {

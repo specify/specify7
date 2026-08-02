@@ -1,4 +1,4 @@
-// Jest Snapshot v1, https://goo.gl/fbAQLP
+// Jest Snapshot v1, https://jestjs.io/docs/snapshot-testing
 
 exports[`AttachmentCell simple render 1`] = `
 <DocumentFragment>
@@ -44,9 +44,7 @@ exports[`AttachmentCell simple render 1`] = `
         </g>
         <g>
           <text
-            alignment-baseline="middle"
-            baseline-shift="-10%"
-            dominant-baseline="central"
+            dy=".35em"
             fill="#FFFFFF"
             font-family="Francois One,sans-serif"
             font-size="660px"

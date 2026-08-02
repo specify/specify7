@@ -1,5 +1,7 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
+import { useNavigate } from 'react-router-dom';
+import { commonText } from '../../localization/common';
 
 import { useErrorContext } from '../../hooks/useErrorContext';
 import { useLiveState } from '../../hooks/useLiveState';
@@ -100,6 +102,7 @@ export function AppResourceEditor({
     readonly footer: JSX.Element | undefined;
   }) => JSX.Element;
 }): JSX.Element | null {
+  const navigate = useNavigate();
   const appResource = React.useMemo(
     () => deserializeResource(resource as SerializedResource<SpAppResource>),
     [resource]
@@ -237,6 +240,11 @@ export function AppResourceEditor({
 
   const footer = (
     <>
+      <Button.Secondary
+        onClick={(): void => navigate('/specify/resources/', { replace: true })}
+      >
+        {commonText.close()}
+      </Button.Secondary>
       <span className="-ml-2 flex-1" />
       {formElement !== null &&
       hasToolPermission(
