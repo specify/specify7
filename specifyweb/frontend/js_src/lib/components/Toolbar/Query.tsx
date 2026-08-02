@@ -451,7 +451,8 @@ export function QueryListDialog({
           </div>
 
           {/* Query table */}
-          <div className="min-w-0 flex-1">
+          <div className="min-w-0 flex-1 flex flex-col">
+            <div className="flex-1 overflow-y-auto">
             <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
               <thead>
                 <tr>
@@ -502,11 +503,14 @@ export function QueryListDialog({
                 ))}
               </tbody>
             </table>
+            </div>
+            <div className="flex flex-shrink-0 items-center border-t pt-2">
             <span className="-ml-2 flex-1" />
             {data === undefined && loadingGif}
             {displayData !== undefined && displayData.records.length > 0
               ? paginator(displayData?.totalCount)
               : null}
+            </div>
           </div>
         </div>
       </>
