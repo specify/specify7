@@ -1305,6 +1305,9 @@ export const queryText = createDictionary({
   folderName: {
     'en-us': 'Folder Name',
   },
+  folderNameExists: {
+    'en-us': 'A folder with this name already exists.',
+  },
   editFolder: {
     'en-us': 'Edit Folder',
   },
