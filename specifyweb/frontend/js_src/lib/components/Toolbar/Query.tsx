@@ -502,8 +502,7 @@ export function QueryListDialog({
               </tbody>
             </table>
             </div>
-            <div className="flex flex-shrink-0 items-center border-t pt-2">
-            <span className="-ml-2 flex-1" />
+            <div className="flex flex-shrink-0 items-center justify-center border-t pt-2">
             {data === undefined && loadingGif}
             {displayData !== undefined && displayData.records.length > 0
               ? paginator(displayData?.totalCount)
