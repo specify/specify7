@@ -203,6 +203,9 @@ function EditFolderDialog({
   readonly onDeleted: () => void;
 }): JSX.Element {
   const [name, setName] = React.useState(folder.name);
+  const [scopeType, setScopeType] = React.useState(
+    folder.scopeType ?? ''
+  );
   const loading = React.useContext(LoadingContext);
 
   const handleDelete = (): void => {
@@ -244,6 +247,7 @@ function EditFolderDialog({
             saveResource('SpQueryFolder', folder.id, {
               ...removeKey(folder, '_tableName'),
               name: name.trim(),
+              scopeType: scopeType === '' ? null : scopeType,
             } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
               handleClose();
               onDeleted();
@@ -258,6 +262,25 @@ function EditFolderDialog({
           required
           maxLength={256}
           value={name}
+          onValueChange={setName}
+        />
+        </Label.Block>
+        <Label.Block>
+          {queryText.scope?.() ?? 'Scope'}
+        <Select
+          value={scopeType}
+          onValueChange={setScopeType}
+        >
+          <option value="">{queryText.personal?.() ?? 'Personal'}</option>
+          <option value="Collection">Collection</option>
+          <option value="Discipline">Discipline</option>
+          <option value="Database">Database</option>
+        </Select>
+        </Label.Block>
+      </form>
+    </Dialog>
+  );
+}
           onValueChange={setName}
         />
         </Label.Block>
@@ -466,7 +489,6 @@ export function QueryListDialog({
         fetchCollection('SpQueryFolder', {
           limit: 0,
           domainFilter: false,
-          specifyUser: userInformation.id,
           orderBy: 'ordinal',
         }),
       [folderRefreshKey]
