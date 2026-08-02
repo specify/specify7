@@ -662,7 +662,7 @@ export function QueryList({
               className={
                 query.isFavorite ? 'text-yellow-400' : 'text-gray-400'
               }
-              icon={icons.star}
+              icon="star"
               title={
                 query.isFavorite
                   ? queryText.unfavorite()
@@ -671,12 +671,12 @@ export function QueryList({
               onClick={(): void => onFavoriteToggle(query)}
             />
             <Button.Icon
-              icon={icons.switchHorizontal}
+              icon="switchHorizontal"
               title={queryText.moveToFolder()}
               onClick={(): void => onMoveClick(query)}
             />
             <Button.Icon
-              icon={icons.archive}
+              icon="archive"
               title={
                 query.isArchived
                   ? queryText.unarchiveQuery()
