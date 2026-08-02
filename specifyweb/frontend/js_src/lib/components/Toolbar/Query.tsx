@@ -170,6 +170,44 @@ function FolderTreeItem({
   );
 }
 
+function MoveToFolderDialog({
+  folders,
+  query,
+  onClose: handleClose,
+  onMove,
+}: {
+  readonly folders: RA<SerializedResource<SpQueryFolder>>;
+  readonly query: SerializedResource<SpQuery>;
+  readonly onClose: () => void;
+  readonly onMove: (folderId: number | null) => void;
+}): JSX.Element {
+  return (
+    <Dialog
+      buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
+      header={queryText.moveToFolder()}
+      onClose={handleClose}
+    >
+      <div className="flex flex-col gap-1">
+        <Button.LikeLink
+          className="w-full rounded px-2 py-1 text-left"
+          onClick={(): void => onMove(null)}
+        >
+          {queryText.all()}
+        </Button.LikeLink>
+        {folders.map((folder) => (
+          <Button.LikeLink
+            className="w-full rounded px-2 py-1 text-left"
+            key={folder.id}
+            onClick={(): void => onMove(folder.id)}
+          >
+            {folder.name}
+          </Button.LikeLink>
+        ))}
+      </div>
+    </Dialog>
+  );
+}
+
 function CreateFolderDialog({
   parentFolderId,
   onClose: handleClose,
@@ -379,6 +417,25 @@ export function QueryListDialog({
     handleRefresh();
   };
 
+  const [moveTarget, setMoveTarget] = React.useState<
+    SerializedResource<SpQuery> | undefined
+  >(undefined);
+
+  const handleMoveToFolder = async (
+    folderId: number | null
+  ): Promise<void> => {
+    if (moveTarget === undefined) return;
+    await saveResource('SpQuery', moveTarget.id, {
+      ...removeKey(moveTarget, '_tableName'),
+      spQueryFolder:
+        folderId !== null
+          ? `/api/specify/spqueryfolder/${folderId}/`
+          : null,
+    });
+    setMoveTarget(undefined);
+    handleRefresh();
+  };
+
   return children({
     totalCount: displayData?.totalCount ?? totalCount,
     records: displayData?.records,
@@ -408,11 +465,12 @@ export function QueryListDialog({
               </Button.Small>
             </div>
             <Button.LikeLink
-              className={`mb-1 w-full rounded px-1 py-0.5 text-left ${
+              className={`mb-1 w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
                 selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
               }`}
               onClick={(): void => setSelectedFolderId(null)}
             >
+              {icons.folder}
               {queryText.all()}
             </Button.LikeLink>
             {folderTree.map((node) => (
@@ -496,6 +554,7 @@ export function QueryListDialog({
                     query={query}
                     onArchiveToggle={handleToggleArchive}
                     onFavoriteToggle={handleToggleFavorite}
+                    onMoveClick={setMoveTarget}
                   />
                 ))}
               </tbody>
@@ -535,6 +594,14 @@ export function QueryListDialog({
         onClose={handleClose}
       >
         {children}
+        {moveTarget !== undefined && (
+          <MoveToFolderDialog
+            folders={folders?.records ?? []}
+            query={moveTarget}
+            onClose={(): void => setMoveTarget(undefined)}
+            onMove={handleMoveToFolder}
+          />
+        )}
       </Dialog>
     ),
   });
@@ -554,6 +621,7 @@ export function QueryList({
   readonly isReadOnly: boolean;
   readonly onFavoriteToggle: (query: SerializedResource<SpQuery>) => void;
   readonly onArchiveToggle: (query: SerializedResource<SpQuery>) => void;
+  readonly onMoveClick: (query: SerializedResource<SpQuery>) => void;
 }): JSX.Element {
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
@@ -601,6 +669,11 @@ export function QueryList({
                   : queryText.favorite()
               }
               onClick={(): void => onFavoriteToggle(query)}
+            />
+            <Button.Icon
+              icon={icons.switchHorizontal}
+              title={queryText.moveToFolder()}
+              onClick={(): void => onMoveClick(query)}
             />
             <Button.Icon
               icon={icons.archive}
