@@ -132,7 +132,7 @@ function FolderTreeItem({
   readonly depth: number;
   readonly selectedFolderId: number | null;
   readonly onSelect: (id: number | null) => void;
-  readonly onEdit: (folder: SerializedResource<SpQueryFolder>) => void;
+  readonly onEdit?: (folder: SerializedResource<SpQueryFolder>) => void;
 }): JSX.Element {
   const [isOpen, setIsOpen] = React.useState(true);
   const hasChildren = node.children.length > 0;
@@ -166,14 +166,14 @@ function FolderTreeItem({
           className="absolute right-0 top-0 bottom-0 invisible group-hover:visible bg-[color:var(--form-foreground)] flex items-center pr-1 pl-2"
           onClick={(e): void => {
             e.stopPropagation();
-            onEdit(node.folder);
+            onEdit?.(node.folder);
           }}
         >
           <Button.Icon
             className="!text-orange-400"
             icon="pencil"
             title={commonText.edit()}
-            onClick={(): void => onEdit(node.folder)}
+            onClick={(): void => onEdit?.(node.folder)}
           />
         </span>
       </Button.LikeLink>
@@ -268,11 +268,13 @@ function EditFolderDialog({
 }
 
 function MoveToFolderDialog({
+  folderTree,
   folders,
   query,
   onClose: handleClose,
   onMove,
 }: {
+  readonly folderTree: RA<FolderNode>;
   readonly folders: RA<SerializedResource<SpQueryFolder>>;
   readonly query: SerializedResource<SpQuery>;
   readonly onClose: () => void;
@@ -287,7 +289,6 @@ function MoveToFolderDialog({
     currentFolderId !== null && !Number.isNaN(currentFolderId)
       ? folders.find((f) => f.id === currentFolderId)?.name ?? null
       : null;
-  const otherFolders = folders.filter((f) => f.id !== currentFolderId);
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
@@ -315,15 +316,14 @@ function MoveToFolderDialog({
           {icons.folder}
           {queryText.all()}
         </Button.LikeLink>
-        {otherFolders.map((folder) => (
-          <Button.LikeLink
-            className="w-full rounded px-2 py-1 text-left flex items-center gap-1"
-            key={folder.id}
-            onClick={(): void => onMove(folder.id)}
-          >
-            {icons.folder}
-            {folder.name}
-          </Button.LikeLink>
+        {folderTree.map((node) => (
+          <FolderTreeItem
+            depth={0}
+            key={node.folder.id}
+            node={node}
+            selectedFolderId={null}
+            onSelect={(id): void => onMove(id)}
+          />
         ))}
       </div>
     </Dialog>
@@ -770,6 +770,7 @@ export function QueryListDialog({
         </div>
         {moveTarget !== undefined && (
           <MoveToFolderDialog
+            folderTree={folderTree}
             folders={folders?.records ?? []}
             query={moveTarget}
             onClose={(): void => setMoveTarget(undefined)}
