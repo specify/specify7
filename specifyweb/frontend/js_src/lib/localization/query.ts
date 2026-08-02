@@ -1287,6 +1287,9 @@ export const queryText = createDictionary({
   archived: {
     'en-us': 'Archive',
   },
+  favorites: {
+    'en-us': 'Favorites',
+  },
   archiveQuery: {
     'en-us': 'Archive Query',
   },

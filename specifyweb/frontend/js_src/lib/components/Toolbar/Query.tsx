@@ -279,7 +279,7 @@ export function QueryListDialog({
   const [searchQuery, setSearchQuery] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
   const [selectedFolderId, setSelectedFolderId] = React.useState<
-    number | 'archive' | null
+    number | 'favorites' | 'archive' | null
   >(null);
   const [folderRefreshKey, setFolderRefreshKey] = React.useState(0);
   const [isCreateFolderOpen, handleOpenCreateFolder, handleCloseCreateFolder] =
@@ -333,7 +333,10 @@ export function QueryListDialog({
   };
 
   // Folder filter: 'archive' means archived view, null means all, number means specific folder
-  if (selectedFolderId === 'archive') {
+  if (selectedFolderId === 'favorites') {
+    collectionFilters['isFavorite'] = true;
+    collectionFilters['isArchived'] = false;
+  } else if (selectedFolderId === 'archive') {
     collectionFilters['isArchived'] = true;
   } else {
     collectionFilters['isArchived'] = false;
@@ -483,16 +486,16 @@ export function QueryListDialog({
               />
             ))}
             </div>
-            {/* Fixed Archive item at bottom */}
+            {/* Fixed Favorites and Archive at bottom */}
             <div className="flex-shrink-0 border-t pt-1">
             <Button.LikeLink
               className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === 'archive' ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+                selectedFolderId === 'favorites' ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
               }`}
-              onClick={(): void => setSelectedFolderId('archive')}
+              onClick={(): void => setSelectedFolderId('favorites')}
             >
-              {icons.archive}
-              {queryText.archived()}
+              {icons.star}
+              {queryText.favorites()}
             </Button.LikeLink>
             </div>
             {/* Add folder to root */}
