@@ -360,6 +360,7 @@ function CreateFolderDialog({
         </>
       }
       header={queryText.createFolder()}
+      icon={icons.folder}
       onClose={handleClose}
     >
       <form
