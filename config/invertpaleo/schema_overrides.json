@@ -1,7 +1,6 @@
 {
   "collectionobject": {
     "ishidden": false,
-    "desc": "Collection Object",
     "items": [
       {"collectionobjectattribute": {"ishidden": true}},
       {"collectionobjectcitations": {"ishidden": false}}
@@ -9,7 +8,6 @@
   },
   "collectionobjectattribute": {
     "ishidden": false,
-    "desc": "Collection Object Attribute",
     "items": [
       {"direction": {"ishidden": false, "name": "Direction", "desc": "Direction"}},
       {"distanceUnits": {"ishidden": false, "name": "Distance Units", "desc": "Distance Units"}},
@@ -28,7 +26,6 @@
   },
   "collectingevent": {
     "ishidden": false,
-    "desc": "Collecting Event",
     "items": [
       {"endtime": {"ishidden": false}},
       {"starttime": {"ishidden": false}},
@@ -37,7 +34,6 @@
   },
   "localitydetail": {
     "ishidden": false,
-    "desc": "Locality Detail",
     "items": [
       {"paleolat": {"ishidden": false}},
       {"paleolng": {"ishidden": false}}
@@ -45,11 +41,37 @@
   },
   "paleocontext": {
     "ishidden": false,
-    "desc": "Paleo Context",
     "items": [
       {"biostrat": {"ishidden": false}},
       {"text1": {"ishidden": false}},
       {"tectonicunit": {"ishidden": true}}
     ]
+  },
+  "geologictimeperiod": {
+    "ishidden": false
+  },
+  "geologictimeperiodtreedef": {
+    "ishidden": false
+  },
+  "geologictimeperiodtreedefitem": {
+    "ishidden": false
+  },
+  "lithostrat": {
+    "ishidden": false
+  },
+  "lithostrattreedef": {
+    "ishidden": false
+  },
+  "lithostrattreedefitem": {
+    "ishidden": false
+  },
+  "tectonicunit": {
+    "ishidden": false
+  },
+  "tectonicunittreedef": {
+    "ishidden": false
+  },
+  "tectonicunittreedefitem": {
+    "ishidden": false
   }
 }
