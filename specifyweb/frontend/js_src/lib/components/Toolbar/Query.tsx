@@ -203,7 +203,6 @@ function EditFolderDialog({
   readonly onDeleted: () => void;
 }): JSX.Element {
   const [name, setName] = React.useState(folder.name);
-  const [error, setError] = React.useState<string | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
 
   const handleDelete = (): void => {
@@ -241,23 +240,17 @@ function EditFolderDialog({
         id="editFolderForm"
         onSubmit={(e): void => {
           e.preventDefault();
-          setError(undefined);
           loading(
             saveResource('SpQueryFolder', folder.id, {
               ...removeKey(folder, '_tableName'),
               name: name.trim(),
-            } as Partial<SerializedResource<SpQueryFolder>>)
-              .then(() => {
-                handleClose();
-                onDeleted();
-              })
-              .catch(() => setError(queryText.folderNameExists()))
+            } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
+              handleClose();
+              onDeleted();
+            })
           );
         }}
       >
-        {typeof error === 'string' && (
-          <div className="text-red-500">{error}</div>
-        )}
         <Label.Block>
           {queryText.folderName()}
         <Input.Text
@@ -351,7 +344,6 @@ function CreateFolderDialog({
   const [selectedParentId, setSelectedParentId] = React.useState<
     string | undefined
   >(parentFolderId !== null ? String(parentFolderId) : undefined);
-  const [error, setError] = React.useState<string | undefined>(undefined);
   const loading = React.useContext(LoadingContext);
 
   return (
@@ -376,7 +368,6 @@ function CreateFolderDialog({
         id="createFolderForm"
         onSubmit={(e): void => {
           e.preventDefault();
-          setError(undefined);
           loading(
             createResource('SpQueryFolder', {
               name: name.trim(),
@@ -385,18 +376,13 @@ function CreateFolderDialog({
                 selectedParentId !== undefined
                   ? `/api/specify/spqueryfolder/${selectedParentId}/`
                   : undefined,
-            } as Partial<SerializedResource<SpQueryFolder>>)
-              .then(() => {
-                handleClose();
-                onCreated();
-              })
-              .catch(() => setError(queryText.folderNameExists()))
+            } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
+              handleClose();
+              onCreated();
+            })
           );
         }}
       >
-        {typeof error === 'string' && (
-          <div className="text-red-500">{error}</div>
-        )}
         <Label.Block>
           {queryText.folderName()}
         <Input.Text
@@ -499,7 +485,13 @@ export function QueryListDialog({
     false
   );
 
-  const { paginator, limit, offset } = usePaginator('queryBuilder');
+  const { paginator, limit, offset, currentPage } = usePaginator('queryBuilder');
+  const [, setCurrentPage] = currentPage;
+
+  // Reset to page 0 when filters change
+  React.useEffect(() => {
+    setCurrentPage(0);
+  }, [selectedFolderId, debouncedSearch]);
 
   // Favorites-first sorting: prepend -isFavorite to user's sort choice
   const orderBy = `-isFavorite,${sortConfig.ascending ? '' : '-'}${
