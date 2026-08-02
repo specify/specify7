@@ -187,12 +187,12 @@ function CreateFolderDialog({
       buttons={
         <>
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
-          <Submit.Blue
+          <Submit.Save
             disabled={name.trim() === ''}
             form="createFolderForm"
           >
             {commonText.create()}
-          </Submit.Blue>
+          </Submit.Save>
         </>
       }
       header={queryText.createFolder()}
@@ -326,6 +326,13 @@ export function QueryListDialog({
     false
   );
 
+  // Keep previous data visible during loading to avoid flicker
+  const prevDataRef = React.useRef(data);
+  React.useEffect(() => {
+    if (data !== undefined) prevDataRef.current = data;
+  }, [data]);
+  const displayData = data ?? prevDataRef.current;
+
   React.useEffect(
     () =>
       resourceEvents.on('deleted', (resource) => {
@@ -375,8 +382,8 @@ export function QueryListDialog({
   };
 
   return children({
-    totalCount,
-    records: data?.records,
+    totalCount: displayData?.totalCount ?? totalCount,
+    records: displayData?.records,
     children: (
       <>
         <div className="flex items-center gap-2 border-b pb-2">
@@ -483,7 +490,7 @@ export function QueryListDialog({
                 </tr>
               </thead>
               <tbody>
-                {data?.records.map((query) => (
+                {displayData?.records.map((query) => (
                   <QueryList
                     getQuerySelectCallback={getQuerySelectCallback}
                     isReadOnly={isReadOnly}
@@ -497,8 +504,8 @@ export function QueryListDialog({
             </table>
             <span className="-ml-2 flex-1" />
             {data === undefined && loadingGif}
-            {data !== undefined && data.records.length > 0
-              ? paginator(data?.totalCount)
+            {displayData !== undefined && displayData.records.length > 0
+              ? paginator(displayData?.totalCount)
               : null}
           </div>
         </div>
