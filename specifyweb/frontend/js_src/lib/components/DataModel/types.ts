@@ -5364,6 +5364,7 @@ export type SpQuery = {
     readonly countOnly: boolean | null;
     readonly formatAuditRecIds: boolean | null;
     readonly isFavorite: boolean | null;
+    readonly isArchived: boolean | null;
     readonly name: string;
     readonly ordinal: number | null;
     readonly remarks: string | null;
@@ -5380,9 +5381,31 @@ export type SpQuery = {
     readonly createdByAgent: Agent | null;
     readonly modifiedByAgent: Agent | null;
     readonly specifyUser: SpecifyUser;
+    readonly spQueryFolder: SpQueryFolder | null;
   };
   readonly toManyDependent: { readonly fields: RA<SpQueryField> };
   readonly toManyIndependent: { readonly reports: RA<SpReport> };
+};
+export type SpQueryFolder = {
+  readonly tableName: 'SpQueryFolder';
+  readonly fields: {
+    readonly isArchived: boolean | null;
+    readonly name: string;
+    readonly ordinal: number | null;
+    readonly remarks: string | null;
+    readonly timestampCreated: string;
+    readonly timestampModified: string | null;
+    readonly version: number | null;
+  };
+  readonly toOneDependent: RR<never, never>;
+  readonly toOneIndependent: {
+    readonly createdByAgent: Agent | null;
+    readonly modifiedByAgent: Agent | null;
+    readonly parent: SpQueryFolder | null;
+    readonly specifyUser: SpecifyUser;
+  };
+  readonly toManyDependent: { readonly children: RA<SpQueryFolder> };
+  readonly toManyIndependent: { readonly spQuerys: RA<SpQuery> };
 };
 export type SpQueryField = {
   readonly tableName: 'SpQueryField';
