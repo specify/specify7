@@ -162,20 +162,22 @@ function FolderTreeItem({
         )}
         {isOpen ? icons.folderOpen : icons.folder}
         <span className="truncate flex-1">{node.folder.name}</span>
+        {typeof onEdit === 'function' && (
         <span
           className="absolute right-0 top-0 bottom-0 invisible group-hover:visible bg-[color:var(--form-foreground)] flex items-center pr-1 pl-2"
           onClick={(e): void => {
             e.stopPropagation();
-            onEdit?.(node.folder);
+            onEdit(node.folder);
           }}
         >
           <Button.Icon
             className="!text-orange-400"
             icon="pencil"
             title={commonText.edit()}
-            onClick={(): void => onEdit?.(node.folder)}
+            onClick={(): void => onEdit(node.folder)}
           />
         </span>
+        )}
       </Button.LikeLink>
       {isOpen &&
         node.children.map((child) => (
