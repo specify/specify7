@@ -12,7 +12,6 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
-import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
@@ -22,7 +21,7 @@ import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { createResource, resourceEvents, saveResource } from '../DataModel/resource';
+import { createResource, deleteResource, resourceEvents, saveResource } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, SpQueryFolder } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
@@ -208,10 +207,7 @@ function EditFolderDialog({
 
   const handleDelete = (): void => {
     loading(
-      ajax(`/api/specify/spqueryfolder/${folder.id}/`, {
-        method: 'DELETE',
-        headers: { Accept: 'application/json' },
-      }).then(() => {
+      deleteResource('SpQueryFolder', folder.id).then(() => {
         handleClose();
         onDeleted();
       })
@@ -235,6 +231,7 @@ function EditFolderDialog({
           </Submit.Save>
         </>
       }
+      icon={icons.folder}
       header={queryText.editFolder()}
       onClose={handleClose}
     >
@@ -618,7 +615,7 @@ export function QueryListDialog({
     records: displayData?.records,
     children: (
       <>
-        <div className="flex items-center gap-2 border-b pb-2">
+        <div className="flex items-center">
           <span className="flex-1" />
           <Input.Text
             className="w-48"
