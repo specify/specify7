@@ -102,7 +102,7 @@ export function createQuery(
   query.set('countOnly', false);
   query.set('formatAuditRecIds', false);
   query.set('specifyUser', userInformation.resource_uri);
-  query.set('isFavorite', true);
+  query.set('isFavorite', false);
   /*
    * Ordinal seems to always get set to 32767 by Specify 6
    * needs to be set for the query to be visible in Specify 6
