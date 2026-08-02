@@ -141,7 +141,7 @@ function FolderTreeItem({
   return (
     <div>
       <Button.LikeLink
-        className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left group ${
+        className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left group relative ${
           isSelected ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
         }`}
         style={{ paddingLeft: `${depth * 1.25 + 0.25}rem` }}
@@ -163,7 +163,7 @@ function FolderTreeItem({
         {isOpen ? icons.folderOpen : icons.folder}
         <span className="truncate flex-1">{node.folder.name}</span>
         <span
-          className="flex-shrink-0 opacity-0 group-hover:opacity-100 ml-1"
+          className="absolute right-1 top-1/2 -translate-y-1/2 invisible group-hover:visible"
           onClick={(e): void => {
             e.stopPropagation();
             onEdit(node.folder);
