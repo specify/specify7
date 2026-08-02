@@ -410,7 +410,7 @@ export function QueryListDialog({
             onValueChange={setSearchQuery}
           />
         </div>
-        <div className="flex gap-2">
+        <div className="flex gap-2 min-h-[50vh]">
           {/* Folder tree sidebar */}
           <div className="w-52 flex-shrink-0 overflow-y-auto border-r pr-2">
             <div className="mb-1 flex items-center justify-between">
