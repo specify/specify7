@@ -625,6 +625,7 @@ export function QueryList({
   isReadOnly,
   onFavoriteToggle,
   onArchiveToggle,
+  onMoveClick,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
