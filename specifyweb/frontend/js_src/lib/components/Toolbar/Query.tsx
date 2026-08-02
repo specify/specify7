@@ -142,7 +142,7 @@ function FolderTreeItem({
     <div>
       <Button.LikeLink
         className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left group relative ${
-          isSelected ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+          isSelected ? 'bg-brand-100 dark:bg-brand-400 dark:text-white font-bold dark:hover:text-white' : ''
         }`}
         style={{ paddingLeft: `${depth * 1.25 + 0.25}rem` }}
         onClick={(): void => onSelect(node.folder.id)}
@@ -163,7 +163,7 @@ function FolderTreeItem({
         {isOpen ? icons.folderOpen : icons.folder}
         <span className="truncate flex-1">{node.folder.name}</span>
         <span
-          className="absolute right-1 top-1/2 -translate-y-1/2 invisible group-hover:visible"
+          className="absolute right-0 top-0 bottom-0 invisible group-hover:visible bg-[color:var(--form-foreground)] flex items-center pr-1 pl-2"
           onClick={(e): void => {
             e.stopPropagation();
             onEdit(node.folder);
@@ -654,7 +654,7 @@ export function QueryListDialog({
             </div>
             <Button.LikeLink
               className={`mb-1 w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+                selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
               }`}
               onClick={(): void => setSelectedFolderId(null)}
             >
@@ -676,7 +676,7 @@ export function QueryListDialog({
             <div className="flex-shrink-0 border-t pt-1">
             <Button.LikeLink
               className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === 'favorites' ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+                selectedFolderId === 'favorites' ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
               }`}
               onClick={(): void => setSelectedFolderId('favorites')}
             >
@@ -685,7 +685,7 @@ export function QueryListDialog({
             </Button.LikeLink>
             <Button.LikeLink
               className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === 'archive' ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+                selectedFolderId === 'archive' ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
               }`}
               onClick={(): void => setSelectedFolderId('archive')}
             >
@@ -880,13 +880,11 @@ export function QueryList({
               onClick={(): void => onFavoriteToggle(query)}
             />
             <Button.Icon
-              className="!text-orange-400"
               icon="folder"
               title={queryText.moveToFolder()}
               onClick={(): void => onMoveClick(query)}
             />
             <Button.Icon
-              className="!text-orange-400"
               icon="archive"
               title={
                 query.isArchived
