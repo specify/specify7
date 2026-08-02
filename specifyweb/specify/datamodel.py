@@ -6735,7 +6735,7 @@ datamodel = Datamodel(tables=[
             Relationship(name='parent', type='many-to-one',required=False, relatedModelName='SpQueryFolder', column='ParentFolderID', otherSideName='children'),
             Relationship(name='children', type='one-to-many',required=False, relatedModelName='SpQueryFolder', otherSideName='parent', dependent=True),
             Relationship(name='spQuerys', type='one-to-many',required=False, relatedModelName='SpQuery', otherSideName='spQueryFolder'),
-            Relationship(name='specifyUser', type='many-to-one',required=True, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQueryFolders')
+            Relationship(name='specifyUser', type='many-to-one',required=False, relatedModelName='SpecifyUser', column='SpecifyUserID', otherSideName='spQueryFolders')
         ],
         fieldAliases=[
 

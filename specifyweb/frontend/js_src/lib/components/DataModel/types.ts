@@ -5393,16 +5393,19 @@ export type SpQueryFolder = {
     readonly name: string;
     readonly ordinal: number | null;
     readonly remarks: string | null;
+    readonly scopeType: string | null;
     readonly timestampCreated: string;
     readonly timestampModified: string | null;
     readonly version: number | null;
   };
   readonly toOneDependent: RR<never, never>;
   readonly toOneIndependent: {
+    readonly collection: Collection | null;
     readonly createdByAgent: Agent | null;
+    readonly discipline: Discipline | null;
     readonly modifiedByAgent: Agent | null;
     readonly parent: SpQueryFolder | null;
-    readonly specifyUser: SpecifyUser;
+    readonly specifyUser: SpecifyUser | null;
   };
   readonly toManyDependent: { readonly children: RA<SpQueryFolder> };
   readonly toManyIndependent: { readonly spQuerys: RA<SpQuery> };
