@@ -13,7 +13,7 @@ import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
-import { Form, Input } from '../Atoms/Form';
+import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
@@ -218,16 +218,14 @@ function CreateFolderDialog({
           );
         }}
       >
-        <Form>
-          <Input.Text
-            autoFocus
-            required
-            maxLength={256}
-            placeholder={queryText.folderName()}
-            value={name}
-            onValueChange={setName}
-          />
-        </Form>
+        <Input.Text
+          autoFocus
+          required
+          maxLength={256}
+          placeholder={queryText.folderName()}
+          value={name}
+          onValueChange={setName}
+        />
       </form>
     </Dialog>
   );
