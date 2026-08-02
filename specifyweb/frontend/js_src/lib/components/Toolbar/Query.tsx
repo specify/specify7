@@ -14,7 +14,7 @@ import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { ajax } from '../../utils/ajax';
 import { Button } from '../Atoms/Button';
-import { Input } from '../Atoms/Form';
+import { Input, Select } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
@@ -329,15 +329,20 @@ function MoveToFolderDialog({
 }
 
 function CreateFolderDialog({
+  folders,
   parentFolderId,
   onClose: handleClose,
   onCreated,
 }: {
+  readonly folders: RA<SerializedResource<SpQueryFolder>>;
   readonly parentFolderId: number | null;
   readonly onClose: () => void;
   readonly onCreated: () => void;
 }): JSX.Element {
   const [name, setName] = React.useState('');
+  const [selectedParentId, setSelectedParentId] = React.useState<
+    string | undefined
+  >(parentFolderId !== null ? String(parentFolderId) : undefined);
   const loading = React.useContext(LoadingContext);
 
   return (
@@ -366,8 +371,8 @@ function CreateFolderDialog({
               name: name.trim(),
               specifyUser: userInformation.resource_uri,
               parent:
-                parentFolderId !== null
-                  ? `/api/specify/spqueryfolder/${parentFolderId}/`
+                selectedParentId !== undefined
+                  ? `/api/specify/spqueryfolder/${selectedParentId}/`
                   : undefined,
             } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
               handleClose();
@@ -384,6 +389,19 @@ function CreateFolderDialog({
           value={name}
           onValueChange={setName}
         />
+        <Select
+          value={selectedParentId ?? ''}
+          onValueChange={(value): void =>
+            setSelectedParentId(value === '' ? undefined : value)
+          }
+        >
+          <option value="">{queryText.all()}</option>
+          {folders.map((folder) => (
+            <option key={folder.id} value={String(folder.id)}>
+              {folder.name}
+            </option>
+          ))}
+        </Select>
       </form>
     </Dialog>
   );
@@ -635,6 +653,7 @@ export function QueryListDialog({
             {/* Add folder to root */}
             {isCreateFolderOpen && (
               <CreateFolderDialog
+                folders={folders?.records ?? []}
                 parentFolderId={null}
                 onClose={handleCloseCreateFolder}
                 onCreated={handleRefresh}
