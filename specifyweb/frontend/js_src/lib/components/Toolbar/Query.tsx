@@ -181,6 +181,16 @@ function MoveToFolderDialog({
   readonly onClose: () => void;
   readonly onMove: (folderId: number | null) => void;
 }): JSX.Element {
+  const currentFolderUri = query.spQueryFolder as unknown as string | null;
+  const currentFolderId =
+    currentFolderUri !== null
+      ? Number.parseInt(currentFolderUri.split('/').filter(Boolean).pop() ?? '', 10)
+      : null;
+  const currentFolderName =
+    currentFolderId !== null && !Number.isNaN(currentFolderId)
+      ? folders.find((f) => f.id === currentFolderId)?.name ?? null
+      : null;
+  const otherFolders = folders.filter((f) => f.id !== currentFolderId);
   return (
     <Dialog
       buttons={<Button.DialogClose>{commonText.cancel()}</Button.DialogClose>}
@@ -188,13 +198,26 @@ function MoveToFolderDialog({
       onClose={handleClose}
     >
       <div className="flex flex-col gap-1">
+        {currentFolderName !== null ? (
+          <>
+            <div className="flex items-center gap-1 rounded px-2 py-1 font-bold">
+              {icons.folder}
+              {currentFolderName}
+              {' '}
+              <span className="font-normal text-gray-500">
+                ({queryText.currentFolder()})
+              </span>
+            </div>
+            <hr className="my-1" />
+          </>
+        ) : undefined}
         <Button.LikeLink
           className="w-full rounded px-2 py-1 text-left"
           onClick={(): void => onMove(null)}
         >
           {queryText.all()}
         </Button.LikeLink>
-        {folders.map((folder) => (
+        {otherFolders.map((folder) => (
           <Button.LikeLink
             className="w-full rounded px-2 py-1 text-left"
             key={folder.id}
@@ -687,7 +710,7 @@ export function QueryList({
             />
             <Button.Icon
               className="!text-orange-400"
-              icon="switchHorizontal"
+              icon="folder"
               title={queryText.moveToFolder()}
               onClick={(): void => onMoveClick(query)}
             />

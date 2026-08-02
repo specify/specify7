@@ -1317,4 +1317,7 @@ export const queryText = createDictionary({
   moveToFolder: {
     'en-us': 'Move to Folder',
   },
+  currentFolder: {
+    'en-us': 'Current Folder',
+  },
 } as const);
