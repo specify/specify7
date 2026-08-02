@@ -238,11 +238,10 @@ export function QueryListDialog({
   children = defaultChildren,
   filters,
 }: QueryListContextType): JSX.Element {
-  const [activeTab, setActiveTab] = React.useState<'all' | 'archive'>('all');
   const [searchQuery, setSearchQuery] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
   const [selectedFolderId, setSelectedFolderId] = React.useState<
-    number | null
+    number | 'archive' | null
   >(null);
   const [folderRefreshKey, setFolderRefreshKey] = React.useState(0);
   const [isCreateFolderOpen, handleOpenCreateFolder, handleCloseCreateFolder] =
@@ -295,12 +294,14 @@ export function QueryListDialog({
     orderBy,
   };
 
-  // Tab filter: archive tab shows only archived, all tab shows non-archived
-  collectionFilters['isArchived'] = activeTab === 'archive';
-
-  // Folder filter
-  if (selectedFolderId !== null) {
-    collectionFilters['spqueryfolder'] = selectedFolderId;
+  // Folder filter: 'archive' means archived view, null means all, number means specific folder
+  if (selectedFolderId === 'archive') {
+    collectionFilters['isArchived'] = true;
+  } else {
+    collectionFilters['isArchived'] = false;
+    if (selectedFolderId !== null) {
+      collectionFilters['spqueryfolder'] = selectedFolderId;
+    }
   }
 
   // Search filter
@@ -316,7 +317,6 @@ export function QueryListDialog({
         offset,
         orderBy,
         selectedFolderId,
-        activeTab,
         debouncedSearch,
         folderRefreshKey,
       ]
@@ -385,21 +385,6 @@ export function QueryListDialog({
     children: (
       <>
         <div className="flex items-center gap-2 border-b pb-2">
-          <Button.LikeLink
-            className={activeTab === 'all' ? 'font-bold' : ''}
-            onClick={(): void => setActiveTab('all')}
-          >
-            {queryText.allQueries()}
-          </Button.LikeLink>
-          <Button.LikeLink
-            className={activeTab === 'archive' ? 'font-bold' : ''}
-            onClick={(): void => setActiveTab('archive')}
-          >
-            <span className="flex items-center gap-1">
-              {icons.archive}
-              {queryText.archived()}
-            </span>
-          </Button.LikeLink>
           <span className="flex-1" />
           <Input.Text
             className="w-48"
@@ -410,7 +395,8 @@ export function QueryListDialog({
         </div>
         <div className="flex gap-2 min-h-[50vh]">
           {/* Folder tree sidebar */}
-          <div className="w-52 flex-shrink-0 overflow-y-auto border-r pr-2">
+          <div className="w-52 flex-shrink-0 flex flex-col border-r pr-2">
+            <div className="flex-1 overflow-y-auto">
             <div className="mb-1 flex items-center justify-between">
               <span className="text-sm font-bold">{queryText.folders()}</span>
               <Button.Small
@@ -434,10 +420,23 @@ export function QueryListDialog({
                 depth={0}
                 key={node.folder.id}
                 node={node}
-                selectedFolderId={selectedFolderId}
-                onSelect={setSelectedFolderId}
+                selectedFolderId={typeof selectedFolderId === 'number' ? selectedFolderId : null}
+                onSelect={(id): void => setSelectedFolderId(id)}
               />
             ))}
+            </div>
+            {/* Fixed Archive item at bottom */}
+            <div className="flex-shrink-0 border-t pt-1">
+            <Button.LikeLink
+              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
+                selectedFolderId === 'archive' ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+              }`}
+              onClick={(): void => setSelectedFolderId('archive')}
+            >
+              {icons.archive}
+              {queryText.archived()}
+            </Button.LikeLink>
+            </div>
             {/* Add folder to root */}
             {isCreateFolderOpen && (
               <CreateFolderDialog
@@ -502,7 +501,8 @@ export function QueryListDialog({
               </tbody>
             </table>
             </div>
-            <div className="flex flex-shrink-0 items-center justify-center border-t pt-2">
+            <div className="flex flex-shrink-0 items-center border-t pt-2">
+            <span className="-ml-2 flex-1" />
             {data === undefined && loadingGif}
             {displayData !== undefined && displayData.records.length > 0
               ? paginator(displayData?.totalCount)
