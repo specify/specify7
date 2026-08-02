@@ -212,17 +212,19 @@ function MoveToFolderDialog({
           </>
         ) : undefined}
         <Button.LikeLink
-          className="w-full rounded px-2 py-1 text-left"
+          className="w-full rounded px-2 py-1 text-left flex items-center gap-1"
           onClick={(): void => onMove(null)}
         >
+          {icons.folder}
           {queryText.all()}
         </Button.LikeLink>
         {otherFolders.map((folder) => (
           <Button.LikeLink
-            className="w-full rounded px-2 py-1 text-left"
+            className="w-full rounded px-2 py-1 text-left flex items-center gap-1"
             key={folder.id}
             onClick={(): void => onMove(folder.id)}
           >
+            {icons.folder}
             {folder.name}
           </Button.LikeLink>
         ))}
