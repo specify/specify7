@@ -661,8 +661,8 @@ export function QueryList({
             <Button.Icon
               className={
                 query.isFavorite
-                  ? 'text-yellow-400 hover:text-yellow-300'
-                  : 'text-gray-400 hover:text-yellow-300'
+                  ? '!text-yellow-400 hover:!text-yellow-300'
+                  : '!text-gray-400 hover:!text-yellow-300'
               }
               icon="star"
               title={
@@ -673,13 +673,13 @@ export function QueryList({
               onClick={(): void => onFavoriteToggle(query)}
             />
             <Button.Icon
-              className="text-orange-400"
+              className="!text-orange-400"
               icon="switchHorizontal"
               title={queryText.moveToFolder()}
               onClick={(): void => onMoveClick(query)}
             />
             <Button.Icon
-              className="text-orange-400"
+              className="!text-orange-400"
               icon="archive"
               title={
                 query.isArchived
