@@ -1277,4 +1277,41 @@ export const queryText = createDictionary({
     'hr-hr': 'Stavke su vraćene',
     nb: 'Varene har blitt returnert',
   },
+  // Enhanced Query Management
+  searchQueries: {
+    'en-us': 'Search Queries',
+  },
+  allQueries: {
+    'en-us': 'All Queries',
+  },
+  archived: {
+    'en-us': 'Archive',
+  },
+  archiveQuery: {
+    'en-us': 'Archive Query',
+  },
+  unarchiveQuery: {
+    'en-us': 'Restore Query',
+  },
+  folders: {
+    'en-us': 'Folders',
+  },
+  newFolder: {
+    'en-us': 'New Folder',
+  },
+  folderName: {
+    'en-us': 'Folder Name',
+  },
+  createFolder: {
+    'en-us': 'Create Folder',
+  },
+  uncategorized: {
+    'en-us': 'Uncategorized',
+  },
+  favorite: {
+    'en-us': 'Favorite',
+  },
+  unfavorite: {
+    'en-us': 'Unfavorite',
+  },
 } as const);

@@ -1,29 +1,33 @@
 /**
- * Display a list of queries
+ * Display a list of queries with folders, search, favorites, and archiving
  */
 
 import React from 'react';
 import { useOutletContext } from 'react-router';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
+import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
+import { Form, Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
-import { ReadOnlyContext } from '../Core/Contexts';
+import { Submit } from '../Atoms/Submit';
+import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { resourceEvents } from '../DataModel/resource';
+import { createResource, resourceEvents, saveResource } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
-import type { SpQuery } from '../DataModel/types';
+import type { SpQuery, SpQueryFolder } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -85,6 +89,150 @@ const defaultChildren: Exclude<QueryListContextType['children'], undefined> = ({
     dialog(children)
   );
 
+// Folder tree node type
+type FolderNode = {
+  readonly folder: SerializedResource<SpQueryFolder>;
+  readonly children: RA<FolderNode>;
+};
+
+function buildFolderTree(
+  folders: RA<SerializedResource<SpQueryFolder>>
+): RA<FolderNode> {
+  const map = new Map<number, FolderNode>();
+  const roots: RA<FolderNode> = [];
+
+  for (const folder of folders) {
+    map.set(folder.id, { folder, children: [] });
+  }
+  for (const folder of folders) {
+    const node = map.get(folder.id)!;
+    const parentId = folder.parent;
+    if (parentId !== null && map.has(parentId)) {
+      map.get(parentId)!.children = [...map.get(parentId)!.children, node];
+    } else {
+      roots.push(node);
+    }
+  }
+  return roots;
+}
+
+function FolderTreeItem({
+  node,
+  depth,
+  selectedFolderId,
+  onSelect,
+}: {
+  readonly node: FolderNode;
+  readonly depth: number;
+  readonly selectedFolderId: number | null;
+  readonly onSelect: (id: number | null) => void;
+}): JSX.Element {
+  const [isOpen, setIsOpen] = React.useState(true);
+  const hasChildren = node.children.length > 0;
+  const isSelected = selectedFolderId === node.folder.id;
+
+  return (
+    <div>
+      <Button.LikeLink
+        className={`flex w-full items-center gap-1 rounded px-1 py-0.5 text-left ${
+          isSelected ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+        }`}
+        style={{ paddingLeft: `${depth * 1.25 + 0.25}rem` }}
+        onClick={(): void => onSelect(node.folder.id)}
+      >
+        {hasChildren ? (
+          <span
+            className="flex-shrink-0 cursor-pointer"
+            onClick={(e): void => {
+              e.stopPropagation();
+              setIsOpen(!isOpen);
+            }}
+          >
+            {isOpen ? icons.chevronDown : icons.chevronRight}
+          </span>
+        ) : (
+          <span className="w-5 flex-shrink-0" />
+        )}
+        {isOpen ? icons.folderOpen : icons.folder}
+        <span className="truncate">{node.folder.name}</span>
+      </Button.LikeLink>
+      {isOpen &&
+        node.children.map((child) => (
+          <FolderTreeItem
+            depth={depth + 1}
+            key={child.folder.id}
+            node={child}
+            selectedFolderId={selectedFolderId}
+            onSelect={onSelect}
+          />
+        ))}
+    </div>
+  );
+}
+
+function CreateFolderDialog({
+  parentFolderId,
+  onClose: handleClose,
+  onCreated,
+}: {
+  readonly parentFolderId: number | null;
+  readonly onClose: () => void;
+  readonly onCreated: () => void;
+}): JSX.Element {
+  const [name, setName] = React.useState('');
+  const loading = React.useContext(LoadingContext);
+
+  return (
+    <Dialog
+      buttons={
+        <>
+          <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
+          <Submit.Blue
+            disabled={name.trim() === ''}
+            form="createFolderForm"
+          >
+            {commonText.create()}
+          </Submit.Blue>
+        </>
+      }
+      header={queryText.createFolder()}
+      onClose={handleClose}
+    >
+      <form
+        className="flex flex-col gap-4"
+        id="createFolderForm"
+        onSubmit={(e): void => {
+          e.preventDefault();
+          loading(
+            createResource('SpQueryFolder', {
+              name: name.trim(),
+              specifyUser: userInformation.resource_uri,
+              parent:
+                parentFolderId !== null
+                  ? `/api/specify/spqueryfolder/${parentFolderId}/`
+                  : undefined,
+            } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
+              handleClose();
+              onCreated();
+            })
+          );
+        }}
+      >
+        <Form>
+          <Input.Text
+            autoFocus
+            required
+            maxLength={256}
+            placeholder={queryText.folderName()}
+            value={name}
+            onValueChange={setName}
+          />
+        </Form>
+      </form>
+    </Dialog>
+  );
+}
+
 export function QueryListDialog({
   newQueryUrl,
   onClose: handleClose,
@@ -92,6 +240,42 @@ export function QueryListDialog({
   children = defaultChildren,
   filters,
 }: QueryListContextType): JSX.Element {
+  const [activeTab, setActiveTab] = React.useState<'all' | 'archive'>('all');
+  const [searchQuery, setSearchQuery] = React.useState('');
+  const [debouncedSearch, setDebouncedSearch] = React.useState('');
+  const [selectedFolderId, setSelectedFolderId] = React.useState<
+    number | null
+  >(null);
+  const [folderRefreshKey, setFolderRefreshKey] = React.useState(0);
+  const [isCreateFolderOpen, handleOpenCreateFolder, handleCloseCreateFolder] =
+    useBooleanState();
+
+  // Debounce search
+  React.useEffect(() => {
+    const timer = setTimeout(() => setDebouncedSearch(searchQuery), 300);
+    return () => clearTimeout(timer);
+  }, [searchQuery]);
+
+  // Fetch folders
+  const [folders] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('SpQueryFolder', {
+          limit: 0,
+          domainFilter: false,
+          specifyUser: userInformation.id,
+          orderBy: 'ordinal',
+        }),
+      [folderRefreshKey]
+    ),
+    false
+  );
+
+  const folderTree = React.useMemo(
+    () => (folders ? buildFolderTree(folders.records) : []),
+    [folders]
+  );
+
   const [sortConfig, handleSort] = useSortConfig(
     'listOfQueries',
     'name',
@@ -100,21 +284,44 @@ export function QueryListDialog({
 
   const { paginator, limit, offset } = usePaginator('queryBuilder');
 
-  const orderBy = `${sortConfig.ascending ? '' : '-'}${
+  // Favorites-first sorting: prepend -isFavorite to user's sort choice
+  const orderBy = `-isFavorite,${sortConfig.ascending ? '' : '-'}${
     sortConfig.sortField
-  }` as const;
+  }`;
+
+  const collectionFilters: Record<string, unknown> = {
+    limit,
+    domainFilter: false,
+    ...(filters ?? { specifyUser: userInformation.id }),
+    offset,
+    orderBy,
+  };
+
+  // Tab filter: archive tab shows only archived, all tab shows non-archived
+  collectionFilters['isArchived'] = activeTab === 'archive';
+
+  // Folder filter
+  if (selectedFolderId !== null) {
+    collectionFilters['spqueryfolder'] = selectedFolderId;
+  }
+
+  // Search filter
+  if (debouncedSearch.trim() !== '') {
+    collectionFilters['name__icontains'] = debouncedSearch.trim();
+  }
 
   const [data, setData] = useAsyncState(
     React.useCallback(
-      async () =>
-        fetchCollection('SpQuery', {
-          limit,
-          domainFilter: false,
-          ...(filters ?? { specifyUser: userInformation.id }),
-          offset,
-          orderBy,
-        }),
-      [limit, offset, orderBy]
+      async () => fetchCollection('SpQuery', collectionFilters),
+      [
+        limit,
+        offset,
+        orderBy,
+        selectedFolderId,
+        activeTab,
+        debouncedSearch,
+        folderRefreshKey,
+      ]
     ),
     false
   );
@@ -143,64 +350,158 @@ export function QueryListDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
+  const handleRefresh = (): void => setFolderRefreshKey((k) => k + 1);
+
+  const handleToggleFavorite = async (
+    query: SerializedResource<SpQuery>
+  ): Promise<void> => {
+    const newValue = !query.isFavorite;
+    await saveResource('SpQuery', query.id, {
+      ...removeKey(query, '_tableName'),
+      isFavorite: newValue,
+    });
+    handleRefresh();
+  };
+
+  const handleToggleArchive = async (
+    query: SerializedResource<SpQuery>
+  ): Promise<void> => {
+    const newValue = !query.isArchived;
+    await saveResource('SpQuery', query.id, {
+      ...removeKey(query, '_tableName'),
+      isArchived: newValue,
+    });
+    handleRefresh();
+  };
+
   return children({
     totalCount,
     records: data?.records,
     children: (
       <>
-        <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
-          <thead>
-            <tr>
-              <th
-                className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
-                scope="col"
+        <div className="flex items-center gap-2 border-b pb-2">
+          <Button.LikeLink
+            className={activeTab === 'all' ? 'font-bold' : ''}
+            onClick={(): void => setActiveTab('all')}
+          >
+            {queryText.allQueries()}
+          </Button.LikeLink>
+          <Button.LikeLink
+            className={activeTab === 'archive' ? 'font-bold' : ''}
+            onClick={(): void => setActiveTab('archive')}
+          >
+            <span className="flex items-center gap-1">
+              {icons.archive}
+              {queryText.archived()}
+            </span>
+          </Button.LikeLink>
+          <span className="flex-1" />
+          <Input.Text
+            className="w-48"
+            placeholder={queryText.searchQueries()}
+            value={searchQuery}
+            onValueChange={setSearchQuery}
+          />
+        </div>
+        <div className="flex gap-2">
+          {/* Folder tree sidebar */}
+          <div className="w-52 flex-shrink-0 overflow-y-auto border-r pr-2">
+            <div className="mb-1 flex items-center justify-between">
+              <span className="text-sm font-bold">{queryText.folders()}</span>
+              <Button.Small
+                aria-label={queryText.newFolder()}
+                title={queryText.newFolder()}
+                onClick={handleOpenCreateFolder}
               >
-                <Button.LikeLink onClick={(): void => handleSort('name')}>
-                  {getField(tables.SpQuery, 'name').label}
-                  <SortIndicator fieldName="name" sortConfig={sortConfig} />
-                </Button.LikeLink>
-              </th>
-              <th scope="col">
-                <Button.LikeLink
-                  onClick={(): void => handleSort('timestampCreated')}
-                >
-                  {getField(tables.SpQuery, 'timestampCreated').label}
-                  <SortIndicator
-                    fieldName="timestampCreated"
-                    sortConfig={sortConfig}
-                  />
-                </Button.LikeLink>
-              </th>
-              <th scope="col">
-                <Button.LikeLink
-                  onClick={(): void => handleSort('timestampModified')}
-                >
-                  {getField(tables.SpQuery, 'timestampModified').label}
-                  <SortIndicator
-                    fieldName="timestampModified"
-                    sortConfig={sortConfig}
-                  />
-                </Button.LikeLink>
-              </th>
-              <td />
-            </tr>
-          </thead>
-          <tbody>
-            {data?.records.map((query) => (
-              <QueryList
-                getQuerySelectCallback={getQuerySelectCallback}
-                isReadOnly={isReadOnly}
-                key={query.id}
-                query={query}
+                {icons.plus}
+              </Button.Small>
+            </div>
+            <Button.LikeLink
+              className={`mb-1 w-full rounded px-1 py-0.5 text-left ${
+                selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-700 font-bold' : ''
+              }`}
+              onClick={(): void => setSelectedFolderId(null)}
+            >
+              {queryText.uncategorized()}
+            </Button.LikeLink>
+            {folderTree.map((node) => (
+              <FolderTreeItem
+                depth={0}
+                key={node.folder.id}
+                node={node}
+                selectedFolderId={selectedFolderId}
+                onSelect={setSelectedFolderId}
               />
             ))}
-          </tbody>
-        </table>
-        <span className="-ml-2 flex-1" />
-        {data === undefined && loadingGif}
-        {data !== undefined && data.records.length > 0
-          ? paginator(data?.totalCount)
-          : null}
+            {/* Add folder to root */}
+            {isCreateFolderOpen && (
+              <CreateFolderDialog
+                parentFolderId={null}
+                onClose={handleCloseCreateFolder}
+                onCreated={handleRefresh}
+              />
+            )}
+          </div>
+
+          {/* Query table */}
+          <div className="min-w-0 flex-1">
+            <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
+              <thead>
+                <tr>
+                  <th
+                    className="pl-[calc(theme(spacing.table-icon)_+_theme(spacing.2))]"
+                    scope="col"
+                  >
+                    <Button.LikeLink onClick={(): void => handleSort('name')}>
+                      {getField(tables.SpQuery, 'name').label}
+                      <SortIndicator fieldName="name" sortConfig={sortConfig} />
+                    </Button.LikeLink>
+                  </th>
+                  <th scope="col">
+                    <Button.LikeLink
+                      onClick={(): void => handleSort('timestampCreated')}
+                    >
+                      {getField(tables.SpQuery, 'timestampCreated').label}
+                      <SortIndicator
+                        fieldName="timestampCreated"
+                        sortConfig={sortConfig}
+                      />
+                    </Button.LikeLink>
+                  </th>
+                  <th scope="col">
+                    <Button.LikeLink
+                      onClick={(): void => handleSort('timestampModified')}
+                    >
+                      {getField(tables.SpQuery, 'timestampModified').label}
+                      <SortIndicator
+                        fieldName="timestampModified"
+                        sortConfig={sortConfig}
+                      />
+                    </Button.LikeLink>
+                  </th>
+                  <td />
+                </tr>
+              </thead>
+              <tbody>
+                {data?.records.map((query) => (
+                  <QueryList
+                    getQuerySelectCallback={getQuerySelectCallback}
+                    isReadOnly={isReadOnly}
+                    key={query.id}
+                    query={query}
+                    onArchiveToggle={handleToggleArchive}
+                    onFavoriteToggle={handleToggleFavorite}
+                  />
+                ))}
+              </tbody>
+            </table>
+            <span className="-ml-2 flex-1" />
+            {data === undefined && loadingGif}
+            {data !== undefined && data.records.length > 0
+              ? paginator(data?.totalCount)
+              : null}
+          </div>
+        </div>
       </>
     ),
     dialog: (children) => (
@@ -235,12 +536,16 @@ export function QueryList({
   query,
   getQuerySelectCallback,
   isReadOnly,
+  onFavoriteToggle,
+  onArchiveToggle,
 }: {
   readonly query: SerializedResource<SpQuery>;
   readonly getQuerySelectCallback?: (
     query: SerializedResource<SpQuery>
   ) => string | (() => void);
   readonly isReadOnly: boolean;
+  readonly onFavoriteToggle: (query: SerializedResource<SpQuery>) => void;
+  readonly onArchiveToggle: (query: SerializedResource<SpQuery>) => void;
 }): JSX.Element {
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
@@ -255,10 +560,6 @@ export function QueryList({
       <td>
         {typeof callBack === 'string' ? (
           <Link.Default
-            /*
-             * BUG: consider applying these styles everywhere
-             * className="max-w-full overflow-auto"
-             */
             className="overflow-x-auto"
             href={callBack}
           >
@@ -278,8 +579,33 @@ export function QueryList({
           <DateElement date={query.timestampModified} />
         )}
       </td>
-      <td className="justify-end">
-        {!isReadOnly && <QueryEditButton query={query} />}
+      <td className="flex justify-end gap-1">
+        {!isReadOnly && (
+          <>
+            <Button.Icon
+              className={
+                query.isFavorite ? 'text-yellow-400' : 'text-gray-400'
+              }
+              icon={icons.star}
+              title={
+                query.isFavorite
+                  ? queryText.unfavorite()
+                  : queryText.favorite()
+              }
+              onClick={(): void => onFavoriteToggle(query)}
+            />
+            <Button.Icon
+              icon={icons.archive}
+              title={
+                query.isArchived
+                  ? queryText.unarchiveQuery()
+                  : queryText.archiveQuery()
+              }
+              onClick={(): void => onArchiveToggle(query)}
+            />
+            <QueryEditButton query={query} />
+          </>
+        )}
       </td>
     </tr>
   );
