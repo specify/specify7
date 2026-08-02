@@ -1308,6 +1308,9 @@ export const queryText = createDictionary({
   editFolder: {
     'en-us': 'Edit Folder',
   },
+  parentFolder: {
+    'en-us': 'Parent Folder',
+  },
   createFolder: {
     'en-us': 'Create Folder',
   },
