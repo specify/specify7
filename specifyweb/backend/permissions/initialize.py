@@ -236,7 +236,11 @@ _INTERACTION_TABLES = (
     "giftattachment", "loanattachment", "permitattachment"
 )
 
-LIBRARY_ROLES = {
+class DefaultRole(TypedDict):
+    description: str
+    policies: dict[str, tuple[str, ...]]
+
+LIBRARY_ROLES: dict[str, DefaultRole] = {
     "Assign Roles": {
         "description": "Gives ability to assign existing roles to existing users.",
         "policies": {
@@ -388,10 +392,6 @@ LIBRARY_ROLES = {
         }
     }
 }
-
-class DefaultRole(TypedDict):
-    description: str
-    policies: dict[str, tuple[str, ...]]
 
 def _create_role_and_policies(role_model, role_policy_model, role_name: str, role_filters: dict = dict()):
     resolved_role: DefaultRole = LIBRARY_ROLES[role_name]
