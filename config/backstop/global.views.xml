@@ -1235,10 +1235,6 @@
 					<cell type="label" label="Folder"/>
 					<cell type="field" id="2" name="spQueryFolder" uitype="querycbx" initialize="name=SpQueryFolder;title=Folder"/>
 				</row>
-				<row>
-					<cell type="label" labelfor="3"/>
-					<cell type="field" id="3" name="isArchived" uitype="checkbox"/>
-				</row>
 			</rows>
 		</viewdef>
 		<viewdef name="TaxonCitation" type="form" class="edu.ku.brc.specify.datamodel.TaxonCitation" gettable="edu.ku.brc.af.ui.forms.DataGetterForObj" settable="edu.ku.brc.af.ui.forms.DataSetterForObj">
