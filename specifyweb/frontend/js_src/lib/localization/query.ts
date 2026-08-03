@@ -1299,6 +1299,9 @@ export const queryText = createDictionary({
   folders: {
     'en-us': 'Folders',
   },
+  folder: {
+    'en-us': 'Folder',
+  },
   newFolder: {
     'en-us': 'New Folder',
   },
@@ -1322,6 +1325,12 @@ export const queryText = createDictionary({
   },
   all: {
     'en-us': 'All',
+  },
+  yourQueries: {
+    'en-us': 'Your Queries',
+  },
+  sharedQueries: {
+    'en-us': 'Shared Queries',
   },
   favorite: {
     'en-us': 'Favorite',
