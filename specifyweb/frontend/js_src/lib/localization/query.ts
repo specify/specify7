@@ -1335,6 +1335,9 @@ export const queryText = createDictionary({
   favorite: {
     'en-us': 'Favorite',
   },
+  unfavorite: {
+    'en-us': 'Unfavorite',
+  },
   moveToFolder: {
     'en-us': 'Move to Folder',
   },
