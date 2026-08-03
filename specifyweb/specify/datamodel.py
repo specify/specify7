@@ -6722,6 +6722,7 @@ datamodel = Datamodel(tables=[
             Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=256),
             Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Short'),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text', length=4096),
+            Field(name='scopeType', column='ScopeType', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='timestampCreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampModified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp'),
             Field(name='version', column='Version', indexed=False, unique=False, required=False, type='java.lang.Integer')
@@ -6731,6 +6732,8 @@ datamodel = Datamodel(tables=[
         ],
         relationships=[
             Relationship(name='createdByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='CreatedByAgentID'),
+            Relationship(name='collection', type='many-to-one',required=False, relatedModelName='Collection', column='CollectionID'),
+            Relationship(name='discipline', type='many-to-one',required=False, relatedModelName='Discipline', column='DisciplineID'),
             Relationship(name='modifiedByAgent', type='many-to-one',required=False, relatedModelName='Agent', column='ModifiedByAgentID'),
             Relationship(name='parent', type='many-to-one',required=False, relatedModelName='SpQueryFolder', column='ParentFolderID', otherSideName='children'),
             Relationship(name='children', type='one-to-many',required=False, relatedModelName='SpQueryFolder', otherSideName='parent', dependent=True),
