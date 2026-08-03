@@ -1305,14 +1305,17 @@ export const queryText = createDictionary({
   folderName: {
     'en-us': 'Folder Name',
   },
-  folderNameExists: {
-    'en-us': 'A folder with this name already exists.',
-  },
   editFolder: {
     'en-us': 'Edit Folder',
   },
   parentFolder: {
     'en-us': 'Parent Folder',
+  },
+  scope: {
+    'en-us': 'Scope',
+  },
+  personal: {
+    'en-us': 'Personal',
   },
   createFolder: {
     'en-us': 'Create Folder',

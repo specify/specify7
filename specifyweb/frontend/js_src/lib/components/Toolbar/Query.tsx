@@ -160,6 +160,11 @@ function FolderTreeItem({
           <span className="w-5 flex-shrink-0" />
         )}
         {isOpen ? icons.folderOpen : icons.folder}
+        {node.folder.scopeType !== null && (
+          <span className="text-brand-400" title={node.folder.scopeType ?? undefined}>
+            {icons.globe}
+          </span>
+        )}
         <span className="truncate flex-1">{node.folder.name}</span>
         {typeof onEdit === 'function' && (
         <span
@@ -266,23 +271,16 @@ function EditFolderDialog({
         />
         </Label.Block>
         <Label.Block>
-          {queryText.scope?.() ?? 'Scope'}
+          {queryText.scope()}
         <Select
           value={scopeType}
           onValueChange={setScopeType}
         >
-          <option value="">{queryText.personal?.() ?? 'Personal'}</option>
+          <option value="">{queryText.personal()}</option>
           <option value="Collection">Collection</option>
           <option value="Discipline">Discipline</option>
           <option value="Database">Database</option>
         </Select>
-        </Label.Block>
-      </form>
-    </Dialog>
-  );
-}
-          onValueChange={setName}
-        />
         </Label.Block>
       </form>
     </Dialog>
