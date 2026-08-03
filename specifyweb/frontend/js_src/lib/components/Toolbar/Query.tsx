@@ -14,7 +14,7 @@ import type { RA } from '../../utils/types';
 import { removeKey } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { Input, Label, Select } from '../Atoms/Form';
-import { icons } from '../Atoms/Icons';
+import { iconClassName, icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
@@ -159,12 +159,11 @@ function FolderTreeItem({
         ) : (
           <span className="w-5 flex-shrink-0" />
         )}
-        {isOpen ? icons.folderOpen : icons.folder}
-        {node.folder.scopeType != null && node.folder.scopeType !== '' && (
-          <span className="text-brand-400" title={node.folder.scopeType ?? undefined}>
-            {icons.globe}
-          </span>
-        )}
+        {node.folder.scopeType != null && node.folder.scopeType !== ''
+          ? icons.globe
+          : isOpen
+            ? icons.folderOpen
+            : icons.folder}
         <span className="truncate flex-1">{node.folder.name}</span>
         {typeof onEdit === 'function' && (
         <span
@@ -173,13 +172,13 @@ function FolderTreeItem({
             e.stopPropagation();
             onEdit(node.folder);
           }}
+          role="button"
+          aria-label={commonText.edit()}
+          tabIndex={0}
         >
-          <Button.Icon
-            className="!text-orange-400"
-            icon="pencil"
-            title={commonText.edit()}
-            onClick={(): void => onEdit(node.folder)}
-          />
+          <span className={`${iconClassName} !text-orange-400`} aria-hidden="true">
+            {icons.pencil}
+          </span>
         </span>
         )}
       </Button.LikeLink>
@@ -198,6 +197,17 @@ function FolderTreeItem({
   );
 }
 
+function parseResourceUri(
+  uri: string | null | undefined
+): number | null {
+  if (uri === null || uri === undefined) return null;
+  const id = Number.parseInt(
+    uri.split('/').filter(Boolean).pop() ?? '',
+    10
+  );
+  return Number.isNaN(id) ? null : id;
+}
+
 function EditFolderDialog({
   folder,
   onClose: handleClose,
@@ -211,6 +221,41 @@ function EditFolderDialog({
   const [scopeType, setScopeType] = React.useState(
     folder.scopeType ?? ''
   );
+  const [collectionId, setCollectionId] = React.useState<number | null>(
+    parseResourceUri(
+      (folder as Record<string, unknown>).collection as string | null
+    )
+  );
+  const [disciplineId, setDisciplineId] = React.useState<number | null>(
+    parseResourceUri(
+      (folder as Record<string, unknown>).discipline as string | null
+    )
+  );
+
+  const [collections] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('Collection', {
+          limit: 0,
+          domainFilter: false,
+        }).then(({ records }) => records),
+      []
+    ),
+    false
+  );
+
+  const [disciplines] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('Discipline', {
+          limit: 0,
+          domainFilter: false,
+        }).then(({ records }) => records),
+      []
+    ),
+    false
+  );
+
   const loading = React.useContext(LoadingContext);
 
   const handleDelete = (): void => {
@@ -248,12 +293,42 @@ function EditFolderDialog({
         id="editFolderForm"
         onSubmit={(e): void => {
           e.preventDefault();
+          const base = removeKey(folder, '_tableName') as Record<string, unknown>;
+          // Clear scope-related fields
+          const payload: Record<string, unknown> = {
+            ...base,
+            name: name.trim(),
+            scopeType: scopeType === '' ? null : scopeType,
+          };
+
+          if (scopeType === 'Collection') {
+            payload.collection = collectionId !== null
+              ? `/api/specify/collection/${collectionId}/`
+              : null;
+            payload.discipline = null;
+            payload.specifyUser = null;
+          } else if (scopeType === 'Discipline') {
+            payload.discipline = disciplineId !== null
+              ? `/api/specify/discipline/${disciplineId}/`
+              : null;
+            payload.collection = null;
+            payload.specifyUser = null;
+          } else if (scopeType === 'Database') {
+            payload.collection = null;
+            payload.discipline = null;
+            payload.specifyUser = null;
+          } else {
+            payload.collection = null;
+            payload.discipline = null;
+            payload.specifyUser = userInformation.resource_uri;
+          }
+
           loading(
-            saveResource('SpQueryFolder', folder.id, {
-              ...removeKey(folder, '_tableName'),
-              name: name.trim(),
-              scopeType: scopeType === '' ? null : scopeType,
-            } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
+            saveResource(
+              'SpQueryFolder',
+              folder.id,
+              payload as Partial<SerializedResource<SpQueryFolder>>
+            ).then(() => {
               handleClose();
               onDeleted();
             })
@@ -262,26 +337,59 @@ function EditFolderDialog({
       >
         <Label.Block>
           {queryText.folderName()}
-        <Input.Text
-          autoFocus
-          required
-          maxLength={256}
-          value={name}
-          onValueChange={setName}
-        />
+          <Input.Text
+            autoFocus
+            required
+            maxLength={256}
+            value={name}
+            onValueChange={setName}
+          />
         </Label.Block>
         <Label.Block>
           {queryText.scope()}
-        <Select
-          value={scopeType}
-          onValueChange={setScopeType}
-        >
-          <option value="">{queryText.personal()}</option>
-          <option value="Collection">Collection</option>
-          <option value="Discipline">Discipline</option>
-          <option value="Database">Database</option>
-        </Select>
+          <Select value={scopeType} onValueChange={setScopeType}>
+            <option value="">{queryText.personal()}</option>
+            <option value="Collection">Collection</option>
+            <option value="Discipline">Discipline</option>
+            <option value="Database">Database</option>
+          </Select>
         </Label.Block>
+        {scopeType === 'Collection' && Array.isArray(collections) && (
+          <Label.Block>
+            Collection
+            <Select
+              value={collectionId ?? ''}
+              onValueChange={(value): void =>
+                setCollectionId(value === '' ? null : Number(value))
+              }
+            >
+              <option value="">— Select —</option>
+              {collections.map((c) => (
+                <option key={c.id} value={String(c.id)}>
+                  {c.collectionName ?? `Collection ${c.id}`}
+                </option>
+              ))}
+            </Select>
+          </Label.Block>
+        )}
+        {scopeType === 'Discipline' && Array.isArray(disciplines) && (
+          <Label.Block>
+            Discipline
+            <Select
+              value={disciplineId ?? ''}
+              onValueChange={(value): void =>
+                setDisciplineId(value === '' ? null : Number(value))
+              }
+            >
+              <option value="">— Select —</option>
+              {disciplines.map((d) => (
+                <option key={d.id} value={String(d.id)}>
+                  {d.name ?? `Discipline ${d.id}`}
+                </option>
+              ))}
+            </Select>
+          </Label.Block>
+        )}
       </form>
     </Dialog>
   );
@@ -364,7 +472,35 @@ function CreateFolderDialog({
   const [name, setName] = React.useState('');
   const [selectedParentId, setSelectedParentId] = React.useState<
     string | undefined
-  >(parentFolderId !== null ? String(parentFolderId) : undefined);  const [scopeType, setScopeType] = React.useState('');  const loading = React.useContext(LoadingContext);
+  >(parentFolderId !== null ? String(parentFolderId) : undefined);
+  const [scopeType, setScopeType] = React.useState('');
+  const [collectionId, setCollectionId] = React.useState<number | null>(null);
+  const [disciplineId, setDisciplineId] = React.useState<number | null>(null);
+  const loading = React.useContext(LoadingContext);
+
+  const [collections] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('Collection', {
+          limit: 0,
+          domainFilter: false,
+        }).then(({ records }) => records),
+      []
+    ),
+    false
+  );
+
+  const [disciplines] = useAsyncState(
+    React.useCallback(
+      async () =>
+        fetchCollection('Discipline', {
+          limit: 0,
+          domainFilter: false,
+        }).then(({ records }) => records),
+      []
+    ),
+    false
+  );
 
   return (
     <Dialog
@@ -388,16 +524,38 @@ function CreateFolderDialog({
         id="createFolderForm"
         onSubmit={(e): void => {
           e.preventDefault();
+          const payload: Record<string, unknown> = {
+            name: name.trim(),
+          };
+
+          if (scopeType === 'Collection') {
+            payload.scopeType = 'Collection';
+            payload.collection = collectionId !== null
+              ? `/api/specify/collection/${collectionId}/`
+              : null;
+            payload.specifyUser = null;
+          } else if (scopeType === 'Discipline') {
+            payload.scopeType = 'Discipline';
+            payload.discipline = disciplineId !== null
+              ? `/api/specify/discipline/${disciplineId}/`
+              : null;
+            payload.specifyUser = null;
+          } else if (scopeType === 'Database') {
+            payload.scopeType = 'Database';
+            payload.specifyUser = null;
+          } else {
+            payload.specifyUser = userInformation.resource_uri;
+          }
+
+          if (selectedParentId !== undefined) {
+            payload.parent = `/api/specify/spqueryfolder/${selectedParentId}/`;
+          }
+
           loading(
-            createResource('SpQueryFolder', {
-              name: name.trim(),
-              specifyUser: scopeType === '' ? userInformation.resource_uri : null,
-              scopeType: scopeType === '' ? null : scopeType,
-              parent:
-                selectedParentId !== undefined
-                  ? `/api/specify/spqueryfolder/${selectedParentId}/`
-                  : undefined,
-            } as Partial<SerializedResource<SpQueryFolder>>).then(() => {
+            createResource(
+              'SpQueryFolder',
+              payload as Partial<SerializedResource<SpQueryFolder>>
+            ).then(() => {
               handleClose();
               onCreated();
             })
@@ -406,42 +564,75 @@ function CreateFolderDialog({
       >
         <Label.Block>
           {queryText.folderName()}
-        <Input.Text
-          autoFocus
-          required
-          maxLength={256}
-          value={name}
-          onValueChange={setName}
-        />
+          <Input.Text
+            autoFocus
+            required
+            maxLength={256}
+            value={name}
+            onValueChange={setName}
+          />
         </Label.Block>
         <Label.Block>
           {queryText.parentFolder()}
-        <Select
-          value={selectedParentId ?? ''}
-          onValueChange={(value): void =>
-            setSelectedParentId(value === '' ? undefined : value)
-          }
-        >
-          <option value="">{queryText.all()}</option>
-          {folders.map((folder) => (
-            <option key={folder.id} value={String(folder.id)}>
-              {folder.name}
-            </option>
-          ))}
-        </Select>
+          <Select
+            value={selectedParentId ?? ''}
+            onValueChange={(value): void =>
+              setSelectedParentId(value === '' ? undefined : value)
+            }
+          >
+            <option value="">{queryText.all()}</option>
+            {folders.map((folder) => (
+              <option key={folder.id} value={String(folder.id)}>
+                {folder.name}
+              </option>
+            ))}
+          </Select>
         </Label.Block>
         <Label.Block>
           {queryText.scope()}
-        <Select
-          value={scopeType}
-          onValueChange={setScopeType}
-        >
-          <option value="">{queryText.personal()}</option>
-          <option value="Collection">Collection</option>
-          <option value="Discipline">Discipline</option>
-          <option value="Database">Database</option>
-        </Select>
+          <Select value={scopeType} onValueChange={setScopeType}>
+            <option value="">{queryText.personal()}</option>
+            <option value="Collection">Collection</option>
+            <option value="Discipline">Discipline</option>
+            <option value="Database">Database</option>
+          </Select>
         </Label.Block>
+        {scopeType === 'Collection' && Array.isArray(collections) && (
+          <Label.Block>
+            Collection
+            <Select
+              value={collectionId ?? ''}
+              onValueChange={(value): void =>
+                setCollectionId(value === '' ? null : Number(value))
+              }
+            >
+              <option value="">— Select —</option>
+              {collections.map((c) => (
+                <option key={c.id} value={String(c.id)}>
+                  {c.collectionName ?? `Collection ${c.id}`}
+                </option>
+              ))}
+            </Select>
+          </Label.Block>
+        )}
+        {scopeType === 'Discipline' && Array.isArray(disciplines) && (
+          <Label.Block>
+            Discipline
+            <Select
+              value={disciplineId ?? ''}
+              onValueChange={(value): void =>
+                setDisciplineId(value === '' ? null : Number(value))
+              }
+            >
+              <option value="">— Select —</option>
+              {disciplines.map((d) => (
+                <option key={d.id} value={String(d.id)}>
+                  {d.name ?? `Discipline ${d.id}`}
+                </option>
+              ))}
+            </Select>
+          </Label.Block>
+        )}
       </form>
     </Dialog>
   );
@@ -457,7 +648,7 @@ export function QueryListDialog({
   const [searchQuery, setSearchQuery] = React.useState('');
   const [debouncedSearch, setDebouncedSearch] = React.useState('');
   const [selectedFolderId, setSelectedFolderId] = React.useState<
-    number | 'favorites' | 'archive' | null
+    number | 'favorites' | 'archive' | 'shared' | null
   >(null);
   const [folderRefreshKey, setFolderRefreshKey] = React.useState(0);
   const [isCreateFolderOpen, handleOpenCreateFolder, handleCloseCreateFolder] =
@@ -492,15 +683,28 @@ export function QueryListDialog({
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch folders
+  // Fetch folders - fetch all, then filter to user's + shared
   const [folders] = useAsyncState(
     React.useCallback(
-      async () =>
-        fetchCollection('SpQueryFolder', {
+      async () => {
+        const result = await fetchCollection('SpQueryFolder', {
           limit: 0,
           domainFilter: false,
-          orderBy: 'ordinal',
-        }),
+          orderBy: 'name',
+        });
+        // Filter to show only: personal folders (owned by user) OR shared folders
+        const currentUserId = userInformation.id;
+        const filteredRecords = result.records.filter(
+          (folder) =>
+            // Shared folders (any non-null scopeType)
+            (folder.scopeType !== null && folder.scopeType !== '') ||
+            // Personal folders owned by current user
+            parseResourceUri(
+              (folder as unknown as Record<string, string>).specifyUser
+            ) === currentUserId
+        );
+        return { ...result, records: filteredRecords };
+      },
       [folderRefreshKey]
     ),
     false
@@ -533,22 +737,34 @@ export function QueryListDialog({
   const collectionFilters: Record<string, unknown> = {
     limit,
     domainFilter: false,
-    ...(filters ?? { specifyUser: userInformation.id }),
+    // When viewing a specific folder or shared queries, show all queries
+    // (shared folders contain queries from multiple users).
+    // When viewing "Your Queries", show only the current user's queries.
+    ...(typeof selectedFolderId === 'number' || selectedFolderId === 'shared'
+      ? {}
+      : filters ?? { specifyUser: userInformation.id }),
     offset,
     orderBy,
   };
 
-  // Folder filter: 'archive' means archived view, null means all, number means specific folder
+  const advancedFilters: Record<string, string> = {};
+  if (selectedFolderId === 'shared') {
+    advancedFilters['spqueryfolder__scopetype__isnull'] = 'false';
+  }
+
+  // Folder filter
   if (selectedFolderId === 'favorites') {
     collectionFilters['isFavorite'] = true;
     collectionFilters['isArchived'] = false;
   } else if (selectedFolderId === 'archive') {
     collectionFilters['isArchived'] = true;
+  } else if (typeof selectedFolderId === 'number') {
+    collectionFilters['isArchived'] = false;
+    collectionFilters['spqueryfolder'] = selectedFolderId;
+  } else if (selectedFolderId === 'shared') {
+    collectionFilters['isArchived'] = false;
   } else {
     collectionFilters['isArchived'] = false;
-    if (selectedFolderId !== null) {
-      collectionFilters['spqueryfolder'] = selectedFolderId;
-    }
   }
 
   // Search filter
@@ -558,7 +774,7 @@ export function QueryListDialog({
 
   const [data, setData] = useAsyncState(
     React.useCallback(
-      async () => fetchCollection('SpQuery', collectionFilters),
+      async () => fetchCollection('SpQuery', collectionFilters, advancedFilters),
       [
         limit,
         offset,
@@ -680,6 +896,28 @@ export function QueryListDialog({
               }}
             />
             <div className="flex-1 overflow-y-auto relative z-0">
+            {/* Top section: Your Queries + Shared Queries */}
+            <div className="flex-shrink-0 border-b pb-1 mb-1">
+            <Button.LikeLink
+              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
+                selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
+              }`}
+              onClick={(): void => setSelectedFolderId(null)}
+            >
+              {icons.folder}
+              {queryText.yourQueries()}
+            </Button.LikeLink>
+            <Button.LikeLink
+              className={`w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
+                selectedFolderId === 'shared' ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
+              }`}
+              onClick={(): void => setSelectedFolderId('shared')}
+            >
+              {icons.globe}
+              {queryText.sharedQueries()}
+            </Button.LikeLink>
+            </div>
+            {/* Folder tree */}
             <div className="mb-1 flex items-center justify-between">
               <span className="text-sm font-bold">{queryText.folders()}</span>
               <Button.Small
@@ -690,15 +928,6 @@ export function QueryListDialog({
                 {icons.plus}
               </Button.Small>
             </div>
-            <Button.LikeLink
-              className={`mb-1 w-full rounded px-1 py-0.5 text-left flex items-center gap-1 ${
-                selectedFolderId === null ? 'bg-brand-100 dark:bg-brand-400 dark:text-white dark:hover:text-white font-bold' : ''
-              }`}
-              onClick={(): void => setSelectedFolderId(null)}
-            >
-              {icons.folder}
-              {queryText.all()}
-            </Button.LikeLink>
             {folderTree.map((node) => (
               <FolderTreeItem
                 depth={0}
@@ -871,6 +1100,12 @@ export function QueryList({
 }): JSX.Element {
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
+
+  const queryOwnerId = parseResourceUri(
+    (query as unknown as Record<string, string | null>).specifyUser
+  );
+  const isOwnQuery = queryOwnerId === userInformation.id;
+
   const text = (
     <>
       <TableIcon label name={getTableById(query.contextTableId).name} />
@@ -906,31 +1141,50 @@ export function QueryList({
           <>
             <Button.Icon
               className={
-                query.isFavorite
-                  ? '!text-yellow-400 hover:!text-yellow-300'
-                  : '!text-gray-400 hover:!text-yellow-300'
+                !isOwnQuery
+                  ? '!text-gray-300'
+                  : query.isFavorite
+                    ? '!text-yellow-500 hover:!text-yellow-400'
+                    : ' hover:!text-yellow-400'
               }
+              disabled={!isOwnQuery}
               icon="star"
               title={
                 query.isFavorite
                   ? queryText.unfavorite()
                   : queryText.favorite()
               }
-              onClick={(): void => onFavoriteToggle(query)}
+              onClick={
+                isOwnQuery
+                  ? (): void => onFavoriteToggle(query)
+                  : undefined
+              }
             />
             <Button.Icon
+              className={!isOwnQuery ? '!text-gray-300' : undefined}
+              disabled={!isOwnQuery}
               icon="folder"
               title={queryText.moveToFolder()}
-              onClick={(): void => onMoveClick(query)}
+              onClick={
+                isOwnQuery
+                  ? (): void => onMoveClick(query)
+                  : undefined
+              }
             />
             <Button.Icon
+              className={!isOwnQuery ? '!text-gray-300' : undefined}
+              disabled={!isOwnQuery}
               icon="archive"
               title={
                 query.isArchived
                   ? queryText.unarchiveQuery()
                   : queryText.archiveQuery()
               }
-              onClick={(): void => onArchiveToggle(query)}
+              onClick={
+                isOwnQuery
+                  ? (): void => onArchiveToggle(query)
+                  : undefined
+              }
             />
             <QueryEditButton query={query} />
           </>
