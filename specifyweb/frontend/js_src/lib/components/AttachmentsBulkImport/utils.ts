@@ -294,7 +294,7 @@ export function crossReferenceMappingFiles(
         byName.set(f.uploadFile.file.name, {
           ...existing,
           ...(existing.attachmentId === undefined &&
-            existing.status?.type !== 'success'
+          existing.status?.type !== 'success'
             ? {
                 status: {
                   type: 'cancelled' as const,

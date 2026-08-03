@@ -199,9 +199,7 @@ function AttachmentsImport({
     attachmentDataSetResource.uploadplan.staticPathKey
   );
   React.useEffect(() => {
-    if (
-      previousPathKeyRef.current !== eagerDataSet.uploadplan.staticPathKey
-    ) {
+    if (previousPathKeyRef.current !== eagerDataSet.uploadplan.staticPathKey) {
       previousPathKeyRef.current = eagerDataSet.uploadplan.staticPathKey;
       commitFileChange((files) =>
         files.map(({ uploadFile, ...rest }) => ({
@@ -353,7 +351,10 @@ function AttachmentsImport({
     if (process.env.NODE_ENV === 'development')
       headers = { ...headers, attachmentId: attachmentsText.attachmentId() };
     return headers;
-  }, [eagerDataSet.uploadplan.staticPathKey, eagerDataSet.uploadplan.matchingMode]);
+  }, [
+    eagerDataSet.uploadplan.staticPathKey,
+    eagerDataSet.uploadplan.matchingMode,
+  ]);
 
   const errorContextData = React.useMemo(
     () => ({
@@ -410,8 +411,7 @@ function AttachmentsImport({
                         matchingMode: oldState.uploadplan.matchingMode,
                         mappingFileColumns:
                           oldState.uploadplan.mappingFileColumns,
-                        mappingFileData:
-                          oldState.uploadplan.mappingFileData,
+                        mappingFileData: oldState.uploadplan.mappingFileData,
                       },
                     }));
                   }
