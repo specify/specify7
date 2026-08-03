@@ -927,6 +927,7 @@ def execute(
         if limit:
             query = query.limit(limit)
 
+        log_sqlalchemy_query(query)
 
 
         log_sqlalchemy_query(query) # Debugging
@@ -1139,7 +1140,7 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
     and adding a co_id colum and formatted catnum range column.
     Sort the results by the first catnum in the range."""
 
-    log_sqlalchemy_query(query)  # Debugging
+    log_sqlalchemy_query(query)
 
     def parse_catalog_for_comparing(s):
         def check_for_decimal(s):
@@ -1255,10 +1256,6 @@ def series_post_query(query, limit=40, offset=0, sort_type=0, co_id_cat_num_pair
     offset = offset if offset else 0
     return results[offset:offset + series_limit]
 
-# REFACTOR: We don't really need tableid, field_specs, collection, or user
-# here: those are only needed in the default processors.
-# Find some easy and readable way to delegate these parameters to the default
-# processors
 def apply_special_post_query_processing(query,
                                         processors: list[Callable[[list], list]],
                                         batch_size=7000):

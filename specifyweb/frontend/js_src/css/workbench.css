@@ -41,7 +41,7 @@
 /* Sorting direction */
 .handsontable .colHeader.columnSorting::before {
   @apply !absolute !top-1/2 !bg-center flex-none;
-  
+
   right: 0.375rem;
   transform: translateY(-50%);
   margin-inline-end: 0;

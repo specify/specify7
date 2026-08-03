@@ -609,6 +609,8 @@ datamodel = Datamodel(tables=[
             Index(name='AttchmentGuidIDX', column_names=['GUID'])
         ],
         relationships=[
+            Relationship(name='absoluteAgeAttachments', type='one-to-many',required=False, relatedModelName='AbsoluteAgeAttachment', otherSideName='attachment'),
+            Relationship(name='relativeAgeAttachments', type='one-to-many',required=False, relatedModelName='RelativeAgeAttachment', otherSideName='attachment'),
             Relationship(name='accessionAttachments', type='one-to-many',required=False, relatedModelName='AccessionAttachment', otherSideName='attachment'),
             Relationship(name='agentAttachments', type='one-to-many',required=False, relatedModelName='AgentAttachment', otherSideName='attachment'),
             Relationship(name='attachmentImageAttribute', type='many-to-one',required=False, relatedModelName='AttachmentImageAttribute', column='AttachmentImageAttributeID', otherSideName='attachments'),
@@ -7979,6 +7981,7 @@ datamodel = Datamodel(tables=[
             # Field(name='rowresults', column='RowResults', indexed=False, unique=False, required=False, type='java.lang.String', length=255), # longtext
             # Field(name='visualorder', column='VisualOrder', indexed=False, unique=False, required=False, type='json'), # longtext
             Field(name='importedfilename', column='ImportedFileName', indexed=False, unique=False, required=False, type='text'), # longtext
+            Field(name='matchingmode', column='MatchingMode', indexed=False, unique=False, required=False, type='java.lang.String', length=32),
             Field(name='remarks', column='Remarks', indexed=False, unique=False, required=False, type='text'), # longtext
             Field(name='timestampcreated', column='TimestampCreated', indexed=False, unique=False, required=True, type='java.sql.Timestamp'),
             Field(name='timestampmodified', column='TimestampModified', indexed=False, unique=False, required=False, type='java.sql.Timestamp')

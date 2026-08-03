@@ -685,6 +685,36 @@ export const attachmentsText = createDictionary({
       'Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka.',
     nb: 'Følgende filer er ikke valgt fordi de allerede finnes i dette datasettet.',
   },
+  missingFilesFound: {
+    'en-us': 'Files Missing From Mapping File',
+    'de-ch': 'Fehlende Dateien in der Zuordnungsdatei',
+    'es-es': 'Archivos faltantes en el archivo de mapeo',
+    'fr-fr': 'Fichiers manquants dans le fichier de mappage',
+    'hr-hr': 'Datoteke koje nedostaju u datoteci za mapiranje',
+    nb: 'Filer mangler fra kartleggingsfilen',
+    'pt-br': 'Arquivos ausentes no arquivo de mapeamento',
+    'ru-ru': 'Файлы отсутствуют в файле сопоставления.',
+    'uk-ua': 'Файли відсутні у файлі зіставлення',
+  },
+  missingFilesDescription: {
+    'en-us':
+      'The following files are listed in the mapping file, but have not been selected. Select or drag and drop them to begin the upload.',
+    'de-ch':
+      'Die folgenden Dateien sind in der Zuordnungsdatei aufgeführt, wurden aber nicht ausgewählt. Wählen Sie sie aus oder ziehen Sie sie per Drag & Drop, um den Upload zu starten.',
+    'es-es':
+      'Los siguientes archivos aparecen en el archivo de mapeo, pero no han sido seleccionados. Selecciónelos o arrástrelos y suéltelos para iniciar la carga.',
+    'fr-fr':
+      "Les fichiers suivants figurent dans le fichier de correspondance, mais n'ont pas été sélectionnés. Sélectionnez-les ou faites-les glisser pour lancer le chargement.",
+    'hr-hr':
+      'Sljedeće datoteke navedene su u datoteci za mapiranje, ali nisu odabrane. Odaberite ih ili povucite i ispustite da biste započeli prijenos.',
+    nb: 'Følgende filer er oppført i kartleggingsfilen, men er ikke valgt. Velg eller dra og slipp dem for å starte opplastingen.',
+    'pt-br':
+      'Os seguintes arquivos estão listados no arquivo de mapeamento, mas não foram selecionados. Selecione-os ou arraste e solte-os para iniciar o upload.',
+    'ru-ru':
+      'Следующие файлы перечислены в файле сопоставления, но не выбраны. Выберите или перетащите их, чтобы начать загрузку.',
+    'uk-ua':
+      'Наведені нижче файли перелічені у файлі зіставлення, але їх не було вибрано. Виберіть або перетягніть їх, щоб розпочати завантаження.',
+  },
   errorFetchingRecord: {
     'en-us': 'Error fetching record',
     'de-ch': 'Fehler beim Abrufen des Datensatzes',
@@ -919,5 +949,244 @@ export const attachmentsText = createDictionary({
     'hr-hr':
       'Ovo kontrolira hoće li se novi privitci dodani u ovu kolekciju prema zadanim postavkama označavati kao "Javni". Javni privitci automatski će biti vidljivi na Navedite web portalu. Ova se postavka može poništiti za svaki pojedinačni privitak i ne utječe na postojeće privitke.',
     nb: 'Dette kontrollerer om nye vedlegg som legges til i denne samlingen skal flagges som «Offentlige» som standard. Offentlige vedlegg vil automatisk være synlige på en Specify-nettportal. Denne innstillingen kan overstyres for hvert vedlegg og påvirker ikke eksisterende vedlegg.',
+  },
+  matchingMode: {
+    'en-us': 'Matching Mode',
+    'de-ch': 'Abgleichsmodus',
+    'es-es': 'Modo de coincidencia',
+    'fr-fr': 'Mode de correspondance',
+    'ru-ru': 'Режим сопоставления',
+    'uk-ua': 'Режим зіставлення',
+    'pt-br': 'Modo de correspondência',
+    'hr-hr': 'Način podudaranja',
+    nb: 'Samsvarsmodus',
+  },
+  matchByFilename: {
+    'en-us': 'Match by filename',
+    'de-ch': 'Nach Dateiname abgleichen',
+    'es-es': 'Coincidir por nombre de archivo',
+    'fr-fr': 'Correspondance par nom de fichier',
+    'ru-ru': 'Сопоставление по имени файла',
+    'uk-ua': 'Зіставлення за назвою файлу',
+    'pt-br': 'Corresponder por nome de arquivo',
+    'hr-hr': 'Podudaranje prema nazivu datoteke',
+    nb: 'Samsvar etter filnavn',
+  },
+  matchByMappingFile: {
+    'en-us': 'Match by mapping file',
+    'de-ch': 'Nach Zuordnungsdatei abgleichen',
+    'es-es': 'Coincidir por archivo de mapeo',
+    'fr-fr': 'Correspondance par fichier de mappage',
+    'ru-ru': 'Сопоставление по файлу маппинга',
+    'uk-ua': 'Зіставлення за файлом зіставлення',
+    'pt-br': 'Corresponder por arquivo de mapeamento',
+    'hr-hr': 'Podudaranje prema datoteci mapiranja',
+    nb: 'Samsvar etter tilordningsfil',
+  },
+  fileMissing: {
+    'en-us': 'File Missing',
+    'de-ch': 'Datei fehlt',
+    'es-es': 'Archivo faltante',
+    'fr-fr': 'Fichier manquant',
+    'ru-ru': 'Файл отсутствует',
+    'uk-ua': 'Файл відсутній',
+    'pt-br': 'Arquivo ausente',
+    'hr-hr': 'Datoteka nedostaje',
+    nb: 'Fil mangler',
+  },
+  awaitingFile: {
+    'en-us': 'Awaiting file',
+    'de-ch': 'Datei wird erwartet',
+    'es-es': 'Archivo pendiente',
+    'fr-fr': 'En attente de fichier',
+    'hr-hr': 'Datoteka na čekanju',
+    nb: 'Venter på fil',
+    'pt-br': 'Arquivo aguardando',
+    'ru-ru': 'Ожидание файла',
+    'uk-ua': 'Очікується файл',
+  },
+  mappingAwaitingFiles: {
+    'en-us': 'Please select your files, or drag and drop them, to begin.',
+    'de-ch':
+      'Bitte wählen Sie Ihre Dateien aus oder ziehen Sie sie per Drag & Drop hinein, um zu beginnen.',
+    'es-es': 'Seleccione sus archivos o arrástrelos y suéltelos para comenzar.',
+    'fr-fr':
+      'Veuillez sélectionner vos fichiers ou les glisser-déposer pour commencer.',
+    'hr-hr': 'Za početak odaberite datoteke ili ih povucite i ispustite.',
+    nb: 'Vennligst velg filene dine, eller dra og slipp dem, for å begynne.',
+    'pt-br': 'Selecione os seus arquivos ou arraste e solte-os para começar.',
+    'ru-ru': 'Для начала выберите файлы или перетащите их в окно браузера.',
+    'uk-ua': 'Будь ласка, виберіть файли або перетягніть їх, щоб розпочати.',
+  },
+  notInMappingFile: {
+    'en-us': 'Not in Mapping File',
+    'de-ch': 'Nicht in der Zuordnungsdatei',
+    'es-es': 'No está en el archivo de mapeo',
+    'fr-fr': 'Pas dans le fichier de mappage',
+    'ru-ru': 'Нет в файле маппинга',
+    'uk-ua': 'Немає у файлі зіставлення',
+    'pt-br': 'Não está no arquivo de mapeamento',
+    'hr-hr': 'Nije u datoteci mapiranja',
+    nb: 'Ikke i tilordningsfil',
+  },
+  duplicateInMappingFile: {
+    'en-us': 'Duplicate in Mapping File',
+    'de-ch': 'Duplikat in der Zuordnungsdatei',
+    'es-es': 'Duplicado en el archivo de mapeo',
+    'fr-fr': 'Doublon dans le fichier de mappage',
+    'ru-ru': 'Дубликат в файле маппинга',
+    'uk-ua': 'Дублікат у файлі зіставлення',
+    'pt-br': 'Duplicado no arquivo de mapeamento',
+    'hr-hr': 'Duplikat u datoteci mapiranja',
+    nb: 'Duplikat i tilordningsfil',
+  },
+  selectMatchValueColumn: {
+    'en-us': 'Match Value Column',
+    'de-ch': 'Spalte für Abgleichswert',
+    'es-es': 'Columna de valor de coincidencia',
+    'fr-fr': 'Colonne de valeur de correspondance',
+    'ru-ru': 'Колонка значения сопоставления',
+    'uk-ua': 'Стовпець значення зіставлення',
+    'pt-br': 'Coluna de valor de correspondência',
+    'hr-hr': 'Stupac vrijednosti podudaranja',
+    nb: 'Kolonne for samsvarsverdi',
+  },
+  selectFileNameColumn: {
+    'en-us': 'File Name Column',
+    'de-ch': 'Spalte für Dateinamen',
+    'es-es': 'Columna de nombre de archivo',
+    'fr-fr': 'Colonne de nom de fichier',
+    'ru-ru': 'Колонка имени файла',
+    'uk-ua': 'Стовпець назви файлу',
+    'pt-br': 'Coluna de nome do arquivo',
+    'hr-hr': 'Stupac naziva datoteke',
+    nb: 'Kolonne for filnavn',
+  },
+  mappingFileLoaded: {
+    'en-us': 'Mapping file loaded ({count:number} rows)',
+    'de-ch': 'Zuordnungsdatei geladen ({count:number} Zeilen)',
+    'es-es': 'Archivo de mapeo cargado ({count:number} filas)',
+    'fr-fr': 'Fichier de mappage chargé ({count:number} lignes)',
+    'ru-ru': 'Файл маппинга загружен ({count:number} строк)',
+    'uk-ua': 'Файл зіставлення завантажено ({count:number} рядків)',
+    'pt-br': 'Arquivo de mapeamento carregado ({count:number} linhas)',
+    'hr-hr': 'Datoteka mapiranja učitana ({count:number} redaka)',
+    nb: 'Tilordningsfil lastet ({count:number} rader)',
+  },
+  mappingFileColumnsInfo: {
+    'en-us': 'Match: {matchColumn:string} → File: {fileColumn:string}',
+    'de-ch': 'Abgleich: {matchColumn:string} → Datei: {fileColumn:string}',
+    'es-es':
+      'Coincidencia: {matchColumn:string} → Archivo: {fileColumn:string}',
+    'fr-fr':
+      'Correspondance: {matchColumn:string} → Fichier: {fileColumn:string}',
+    'ru-ru': 'Сопоставление: {matchColumn:string} → Файл: {fileColumn:string}',
+    'uk-ua': 'Зіставлення: {matchColumn:string} → Файл: {fileColumn:string}',
+    'pt-br':
+      'Correspondência: {matchColumn:string} → Arquivo: {fileColumn:string}',
+    'hr-hr':
+      'Podudaranje: {matchColumn:string} → Datoteka: {fileColumn:string}',
+    nb: 'Samsvar: {matchColumn:string} → Fil: {fileColumn:string}',
+  },
+  chooseMatchingMode: {
+    'en-us':
+      'Choose how attachment files should be matched to database records.',
+    'de-ch':
+      'Wählen Sie, wie Anhangsdateien mit Datenbankeinträgen abgeglichen werden sollen.',
+    'es-es':
+      'Elija cómo se deben emparejar los archivos adjuntos con los registros de la base de datos.',
+    'fr-fr':
+      'Choisissez comment les pièces jointes doivent être associées aux enregistrements de la base de données.',
+    'ru-ru':
+      'Выберите способ сопоставления файлов вложений с записями базы данных.',
+    'uk-ua':
+      'Виберіть спосіб зіставлення файлів вкладень із записами бази даних.',
+    'pt-br':
+      'Escolha como os arquivos anexos devem ser combinados com os registros do banco de dados.',
+    'hr-hr':
+      'Odaberite kako se datoteke privitaka trebaju podudarati s zapisima baze podataka.',
+    nb: 'Velg hvordan vedleggsfiler skal matches mot databaseposter.',
+  },
+  matchByFilenameDescription: {
+    'en-us':
+      'Parse the record identifier from each filename using a field formatter. Works best with structured numeric fields.',
+    'de-ch':
+      'Analysieren Sie die Datensatzkennung aus jedem Dateinamen mit einem Feldformatierer. Funktioniert am besten mit strukturierten, numerischen Feldern.',
+    'es-es':
+      'Analice el identificador de registro de cada nombre de archivo utilizando un formateador de campo. Funciona mejor con campos numéricos estructurados.',
+    'fr-fr':
+      "Analysez l'identifiant d'enregistrement à partir de chaque nom de fichier à l'aide d'un formateur de champ. Fonctionne mieux avec des champs numériques structurés.",
+    'ru-ru':
+      'Извлеките идентификатор записи из каждого имени файла с помощью форматировщика полей. Лучше всего работает со структурированными числовыми полями.',
+    'uk-ua':
+      'Витягніть ідентифікатор запису з кожної назви файлу за допомогою форматувальника полів. Найкраще працює зі структурованими числовими полями.',
+    'pt-br':
+      'Analise o identificador de registro de cada nome de arquivo usando um formatador de campo. Funciona melhor com campos numéricos estruturados.',
+    'hr-hr':
+      'Analizirajte identifikator zapisa iz svakog naziva datoteke pomoću formatatora polja. Najbolje radi s strukturiranim, numeričkim poljima.',
+    nb: 'Analyser postidentifikatoren fra hvert filnavn ved hjelp av en feltformaterer. Fungerer best med strukturerte, numeriske felt.',
+  },
+  matchByMappingFileDescription: {
+    'en-us':
+      'Use an explicit CSV mapping file that lists which record each file belongs to.',
+    'de-ch':
+      'Verwenden Sie eine explizite CSV-Zuordnungsdatei, die angibt, zu welchem Datensatz jede Datei gehört.',
+    'es-es':
+      'Utilice un archivo de mapeo CSV explícito que indique a qué registro pertenece cada archivo.',
+    'fr-fr':
+      'Utilisez un fichier de mappage CSV explicite qui indique à quel enregistrement appartient chaque fichier.',
+    'ru-ru':
+      'Используйте явный CSV-файл сопоставления, который указывает, к какой записи принадлежит каждый файл.',
+    'uk-ua':
+      'Використовуйте явний CSV-файл зіставлення, який вказує, до якого запису належить кожен файл.',
+    'pt-br':
+      'Use um arquivo de mapeamento CSV explícito que liste a qual registro cada arquivo pertence.',
+    'hr-hr':
+      'Koristite eksplicitnu CSV datoteku mapiranja koja navodi kojem zapisu pripada svaka datoteka.',
+    nb: 'Bruk en eksplisitt CSV-tilordningsfil som viser hvilken post hver fil tilhører.',
+  },
+  matchValue: {
+    'en-us': 'Match Value',
+    'de-ch': 'Abgleichswert',
+    'es-es': 'Valor de coincidencia',
+    'fr-fr': 'Valeur de correspondance',
+    'ru-ru': 'Значение сопоставления',
+    'uk-ua': 'Значення зіставлення',
+    'pt-br': 'Valor de correspondência',
+    'hr-hr': 'Vrijednost podudaranja',
+    nb: 'Samsvarsverdi',
+  },
+  csvParseError: {
+    'en-us': 'Failed to parse CSV file',
+    'de-ch': 'Fehler beim Parsen der CSV-Datei',
+    'es-es': 'Error al analizar el archivo CSV.',
+    'fr-fr': "Impossible d'analyser le fichier CSV",
+    'hr-hr': 'Nije uspjelo raščlaniti CSV datoteku',
+    nb: 'Kunne ikke analysere CSV-filen',
+    'pt-br': 'Falha ao analisar o arquivo CSV',
+    'ru-ru': 'Не удалось разобрать CSV-файл.',
+    'uk-ua': 'Не вдалося проаналізувати CSV-файл',
+  },
+  csvEmptyFile: {
+    'en-us': 'Empty CSV file',
+    'de-ch': 'Leere CSV-Datei',
+    'es-es': 'Archivo CSV vacío',
+    'fr-fr': 'Fichier CSV vide',
+    'hr-hr': 'Prazna CSV datoteka',
+    nb: 'Tom CSV-fil',
+    'pt-br': 'Arquivo CSV vazio',
+    'ru-ru': 'Пустой CSV-файл',
+    'uk-ua': 'Порожній CSV-файл',
+  },
+  columnPlaceholder: {
+    'en-us': 'Column {columnNumber:number}',
+    'de-ch': 'Spalte {columnNumber:number}',
+    'es-es': 'Columna {columnNumber:number}',
+    'fr-fr': 'Colonne {columnNumber:number}',
+    'ru-ru': 'Столбец {columnNumber:number}',
+    'uk-ua': 'Стовпець {columnNumber:number}',
+    'pt-br': 'Coluna {columnNumber:number}',
+    'hr-hr': 'Stupac {columnNumber:number}',
+    nb: 'Kolonne {columnNumber:number}',
   },
 } as const);
