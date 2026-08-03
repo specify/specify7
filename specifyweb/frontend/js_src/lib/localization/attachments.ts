@@ -22,7 +22,7 @@ export const attachmentsText = createDictionary({
   },
   scale: {
     'en-us': 'Scale',
-    'ru-ru': 'Масштаб',
+    'ru-ru': 'Шкала',
     'es-es': 'Escala',
     'fr-fr': 'Échelle',
     'uk-ua': 'масштаб',
@@ -33,7 +33,7 @@ export const attachmentsText = createDictionary({
   },
   attachmentServerUnavailable: {
     'en-us': 'Attachment server unavailable',
-    'ru-ru': 'Сервер прикрепленных файлов недоступен',
+    'ru-ru': 'Сервер вложений недоступен',
     'es-es': 'Servidor de adjuntos no disponible',
     'fr-fr': 'Serveur de pièces jointes indisponible',
     'uk-ua': 'Сервер прикріплень недоступний',
@@ -46,7 +46,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Setup your attachment server',
     'es-es': 'Configura tu servidor de adjuntos',
     'fr-fr': 'Configurez votre serveur de pièces jointes',
-    'ru-ru': 'Настройте сервер вложений',
+    'ru-ru': 'Настройте сервер вложений.',
     'uk-ua': 'Налаштуйте сервер прикріплень',
     'de-ch': 'Richten Sie Ihren Attachment-Server ein',
     'pt-br': 'Configure seu servidor de anexos.',
@@ -66,7 +66,7 @@ export const attachmentsText = createDictionary({
   },
   uploadingInline: {
     'en-us': 'Uploading…',
-    'ru-ru': 'Закачивание…',
+    'ru-ru': 'Загрузка…',
     'es-es': 'Subiendo…',
     'fr-fr': 'Envoi en cours…',
     'uk-ua': 'Завантаження…',
@@ -77,7 +77,7 @@ export const attachmentsText = createDictionary({
   },
   noAttachments: {
     'en-us': 'There are no attachments',
-    'ru-ru': 'В вашей коллекции нет вложений',
+    'ru-ru': 'Вложения отсутствуют.',
     'es-es': 'No hay adjuntos',
     'fr-fr': "Il n'y a pas de pièces jointes",
     'uk-ua': 'Прикріплень нема',
@@ -90,7 +90,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Unable to find related record',
     'es-es': 'No se puede encontrar el registro relacionado',
     'fr-fr': "Impossible de trouver l'enregistrement lié",
-    'ru-ru': 'Не удалось найти связанную запись',
+    'ru-ru': 'Не удалось найти связанную запись.',
     'uk-ua': 'Неможливо знайти відповідний запис',
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
@@ -522,7 +522,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Formular standardmäßig einklappen',
     'es-es': 'Contraer el formulario de forma predeterminada',
     'fr-fr': 'Réduire le formulaire par défaut',
-    'ru-ru': 'Сворачивать форму по умолчанию',
+    'ru-ru': 'Форма по умолчанию сворачивается.',
     'uk-ua': 'Згортати форму за замовчуванням',
     'pt-br': 'Recolher formulário por padrão',
     'hr-hr': 'Sažmi obrazac prema zadanim postavkama',
@@ -538,11 +538,11 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       "Indique si le formulaire de pièce jointe doit être réduit par défaut lors de l'affichage des pièces jointes existantes.",
     'ru-ru':
-      'Сворачивать или не сворачивать форму вложения по умолчанию при просмотре существующих вложений.',
+      'Определяет, следует ли по умолчанию сворачивать форму добавления вложений при просмотре существующих вложений. Если элементы управления вложениями скрыты, этот параметр не оказывает никакого эффекта.',
     'uk-ua':
       'Згортати чи не згортати форму вкладення за замовчуванням під час перегляду існуючих вкладень.',
     'pt-br':
-      'Se deve ou não recolher o formulário de anexos por padrão ao visualizar anexos existentes.',
+      'Define se o formulário de anexos deve ser recolhido por padrão ao visualizar anexos existentes. Se os controles de anexos estiverem ocultos, essa configuração não terá efeito.',
     'hr-hr':
       'Treba li se obrazac za prilog prema zadanim postavkama sažeti prilikom pregleda postojećih priloga. Ako su kontrole priloga skrivene, ova postavka nema učinka.',
     nb: 'Om vedleggsskjemaet skal skjules som standard når eksisterende vedlegg vises. Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt.',
@@ -552,7 +552,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Anhangssteuerungen anzeigen',
     'es-es': 'Mostrar controles de adjuntos',
     'fr-fr': 'Afficher les contrôles des pièces jointes',
-    'ru-ru': 'Показывать элементы управления вложениями',
+    'ru-ru': 'Показать элементы управления вложениями',
     'uk-ua': 'Показувати елементи керування вкладеннями',
     'pt-br': 'Mostrar controles de anexos',
     'hr-hr': 'Prikaži kontrole privitaka',
@@ -568,11 +568,11 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       "Afficher ou masquer les boutons d'agrandissement, de réduction, de réinitialisation et d'affichage/masquage du formulaire dans le visualiseur de pièces jointes.",
     'ru-ru':
-      'Показать или скрыть кнопки увеличения, уменьшения, сброса и скрытия/показа формы в просмотрщике вложений.',
+      'При просмотре вложения отображать или скрывать кнопки увеличения, уменьшения, сброса и скрытия/отображения формы.',
     'uk-ua':
       'Показати або приховати кнопки збільшення, зменшення, скидання та приховування/показу форми у переглядачі вкладень.',
     'pt-br':
-      'Mostrar ou ocultar os botões de zoom, zoom out, reset e ocultar/mostrar formulário no visualizador de anexos.',
+      'Mostrar ou ocultar os botões de zoom (aumentar e diminuir), redefinir e ocultar/exibir formulário ao visualizar um anexo.',
     'hr-hr':
       'Gumbi za zumiranje, smanjivanje, resetiranje i skrivanje/prikazivanje obrasca pri pregledu privitka prikazuju ili skrivaju privitak.',
     nb: 'Vis eller skjul knappene for å zoome inn, zoome ut, tilbakestille og skjul/vis skjema for vedlegg når du viser et vedlegg.',
@@ -968,7 +968,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Correspondance par nom de fichier',
     'ru-ru': 'Сопоставление по имени файла',
     'uk-ua': 'Зіставлення за назвою файлу',
-    'pt-br': 'Corresponder por nome de arquivo',
+    'pt-br': 'Correspondência por nome de arquivo',
     'hr-hr': 'Podudaranje prema nazivu datoteke',
     nb: 'Samsvar etter filnavn',
   },
@@ -977,9 +977,9 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Nach Zuordnungsdatei abgleichen',
     'es-es': 'Coincidir por archivo de mapeo',
     'fr-fr': 'Correspondance par fichier de mappage',
-    'ru-ru': 'Сопоставление по файлу маппинга',
+    'ru-ru': 'Сопоставление по файлу сопоставления',
     'uk-ua': 'Зіставлення за файлом зіставлення',
-    'pt-br': 'Corresponder por arquivo de mapeamento',
+    'pt-br': 'Correspondência por arquivo de mapeamento',
     'hr-hr': 'Podudaranje prema datoteci mapiranja',
     nb: 'Samsvar etter tilordningsfil',
   },
@@ -1023,7 +1023,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Nicht in der Zuordnungsdatei',
     'es-es': 'No está en el archivo de mapeo',
     'fr-fr': 'Pas dans le fichier de mappage',
-    'ru-ru': 'Нет в файле маппинга',
+    'ru-ru': 'Отсутствует в файле сопоставления.',
     'uk-ua': 'Немає у файлі зіставлення',
     'pt-br': 'Não está no arquivo de mapeamento',
     'hr-hr': 'Nije u datoteci mapiranja',
@@ -1034,9 +1034,9 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Duplikat in der Zuordnungsdatei',
     'es-es': 'Duplicado en el archivo de mapeo',
     'fr-fr': 'Doublon dans le fichier de mappage',
-    'ru-ru': 'Дубликат в файле маппинга',
+    'ru-ru': 'Дубликат в файле сопоставления.',
     'uk-ua': 'Дублікат у файлі зіставлення',
-    'pt-br': 'Duplicado no arquivo de mapeamento',
+    'pt-br': 'Arquivo de mapeamento duplicado',
     'hr-hr': 'Duplikat u datoteci mapiranja',
     nb: 'Duplikat i tilordningsfil',
   },
@@ -1045,9 +1045,9 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Spalte für Abgleichswert',
     'es-es': 'Columna de valor de coincidencia',
     'fr-fr': 'Colonne de valeur de correspondance',
-    'ru-ru': 'Колонка значения сопоставления',
+    'ru-ru': 'Столбец «Значение совпадения»',
     'uk-ua': 'Стовпець значення зіставлення',
-    'pt-br': 'Coluna de valor de correspondência',
+    'pt-br': 'Coluna de valor correspondente',
     'hr-hr': 'Stupac vrijednosti podudaranja',
     nb: 'Kolonne for samsvarsverdi',
   },
@@ -1056,9 +1056,9 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Spalte für Dateinamen',
     'es-es': 'Columna de nombre de archivo',
     'fr-fr': 'Colonne de nom de fichier',
-    'ru-ru': 'Колонка имени файла',
+    'ru-ru': 'Столбец «Имя файла»',
     'uk-ua': 'Стовпець назви файлу',
-    'pt-br': 'Coluna de nome do arquivo',
+    'pt-br': 'Coluna Nome do Arquivo',
     'hr-hr': 'Stupac naziva datoteke',
     nb: 'Kolonne for filnavn',
   },
@@ -1067,7 +1067,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Zuordnungsdatei geladen ({count:number} Zeilen)',
     'es-es': 'Archivo de mapeo cargado ({count:number} filas)',
     'fr-fr': 'Fichier de mappage chargé ({count:number} lignes)',
-    'ru-ru': 'Файл маппинга загружен ({count:number} строк)',
+    'ru-ru': 'Файл сопоставления загружен ({count:number} строк)',
     'uk-ua': 'Файл зіставлення завантажено ({count:number} рядків)',
     'pt-br': 'Arquivo de mapeamento carregado ({count:number} linhas)',
     'hr-hr': 'Datoteka mapiranja učitana ({count:number} redaka)',
@@ -1080,7 +1080,7 @@ export const attachmentsText = createDictionary({
       'Coincidencia: {matchColumn:string} → Archivo: {fileColumn:string}',
     'fr-fr':
       'Correspondance: {matchColumn:string} → Fichier: {fileColumn:string}',
-    'ru-ru': 'Сопоставление: {matchColumn:string} → Файл: {fileColumn:string}',
+    'ru-ru': 'Совпадение: {matchColumn:string} → Файл: {fileColumn:string}',
     'uk-ua': 'Зіставлення: {matchColumn:string} → Файл: {fileColumn:string}',
     'pt-br':
       'Correspondência: {matchColumn:string} → Arquivo: {fileColumn:string}',
@@ -1098,11 +1098,11 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Choisissez comment les pièces jointes doivent être associées aux enregistrements de la base de données.',
     'ru-ru':
-      'Выберите способ сопоставления файлов вложений с записями базы данных.',
+      'Выберите способ сопоставления файлов-вложений с записями в базе данных.',
     'uk-ua':
       'Виберіть спосіб зіставлення файлів вкладень із записами бази даних.',
     'pt-br':
-      'Escolha como os arquivos anexos devem ser combinados com os registros do banco de dados.',
+      'Escolha como os arquivos anexos devem ser associados aos registros do banco de dados.',
     'hr-hr':
       'Odaberite kako se datoteke privitaka trebaju podudarati s zapisima baze podataka.',
     nb: 'Velg hvordan vedleggsfiler skal matches mot databaseposter.',
@@ -1117,11 +1117,11 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       "Analysez l'identifiant d'enregistrement à partir de chaque nom de fichier à l'aide d'un formateur de champ. Fonctionne mieux avec des champs numériques structurés.",
     'ru-ru':
-      'Извлеките идентификатор записи из каждого имени файла с помощью форматировщика полей. Лучше всего работает со структурированными числовыми полями.',
+      'Анализ идентификатора записи из каждого имени файла с помощью форматировщика полей. Лучше всего работает со структурированными числовыми полями.',
     'uk-ua':
       'Витягніть ідентифікатор запису з кожної назви файлу за допомогою форматувальника полів. Найкраще працює зі структурованими числовими полями.',
     'pt-br':
-      'Analise o identificador de registro de cada nome de arquivo usando um formatador de campo. Funciona melhor com campos numéricos estruturados.',
+      'Analisa o identificador de registro de cada nome de arquivo usando um formatador de campo. Funciona melhor com campos numéricos estruturados.',
     'hr-hr':
       'Analizirajte identifikator zapisa iz svakog naziva datoteke pomoću formatatora polja. Najbolje radi s strukturiranim, numeričkim poljima.',
     nb: 'Analyser postidentifikatoren fra hvert filnavn ved hjelp av en feltformaterer. Fungerer best med strukturerte, numeriske felt.',
@@ -1136,11 +1136,11 @@ export const attachmentsText = createDictionary({
     'fr-fr':
       'Utilisez un fichier de mappage CSV explicite qui indique à quel enregistrement appartient chaque fichier.',
     'ru-ru':
-      'Используйте явный CSV-файл сопоставления, который указывает, к какой записи принадлежит каждый файл.',
+      'Используйте файл сопоставления CSV-файлов, в котором указано, к какой записи относится каждый файл.',
     'uk-ua':
       'Використовуйте явний CSV-файл зіставлення, який вказує, до якого запису належить кожен файл.',
     'pt-br':
-      'Use um arquivo de mapeamento CSV explícito que liste a qual registro cada arquivo pertence.',
+      'Utilize um arquivo de mapeamento CSV explícito que liste a qual registro cada arquivo pertence.',
     'hr-hr':
       'Koristite eksplicitnu CSV datoteku mapiranja koja navodi kojem zapisu pripada svaka datoteka.',
     nb: 'Bruk en eksplisitt CSV-tilordningsfil som viser hvilken post hver fil tilhører.',
@@ -1150,9 +1150,9 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Abgleichswert',
     'es-es': 'Valor de coincidencia',
     'fr-fr': 'Valeur de correspondance',
-    'ru-ru': 'Значение сопоставления',
+    'ru-ru': 'Соответствие',
     'uk-ua': 'Значення зіставлення',
-    'pt-br': 'Valor de correspondência',
+    'pt-br': 'Valor correspondente',
     'hr-hr': 'Vrijednost podudaranja',
     nb: 'Samsvarsverdi',
   },
