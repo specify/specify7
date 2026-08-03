@@ -59,11 +59,14 @@ const resolveAttachmentDatasetData = (
 
       const isPlaceholder =
         isMappingMode &&
-        isMappingFilePlaceholder({ uploadFile, status } as PartialUploadableFileSpec);
+        isMappingFilePlaceholder({
+          uploadFile,
+          status,
+        } as PartialUploadableFileSpec);
 
       const statusText = isPlaceholder
         ? attachmentsText.awaitingFile()
-        : f.maybe(status, resolveAttachmentStatus) ?? '';
+        : (f.maybe(status, resolveAttachmentStatus) ?? '');
 
       const baseData = {
         selectedFileName: [
