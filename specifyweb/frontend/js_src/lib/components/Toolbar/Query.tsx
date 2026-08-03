@@ -27,12 +27,20 @@ import type { SpQuery, SpQueryFolder } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { Dialog } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
 import { hasPermission, hasToolPermission } from '../Permissions/helpers';
 import { QueryEditButton } from '../QueryBuilder/Edit';
+import {
+  fetchCollections,
+  fetchDisciplines,
+  fetchVisibleQueryFolders,
+  getFolderScopePayload,
+  isSharedFolder,
+  parseResourceId,
+} from '../QueryBuilder/queryFolders';
 import { OverlayContext } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import { DialogListSkeleton } from '../SkeletonLoaders/DialogList';
@@ -106,12 +114,8 @@ function buildFolderTree(
   }
   for (const folder of folders) {
     const node = map.get(folder.id)!;
-    const parentUri = folder.parent as unknown as string | null;
-    const parentId =
-      parentUri !== null
-        ? Number(parentUri.split('/').filter(Boolean).pop())
-        : null;
-    if (parentId !== null && !Number.isNaN(parentId) && map.has(parentId)) {
+    const parentId = parseResourceId(folder.parent);
+    if (parentId !== null && map.has(parentId)) {
       map.get(parentId)!.children.push(node);
     } else {
       roots.push(node);
@@ -159,7 +163,7 @@ function FolderTreeItem({
         ) : (
           <span className="w-5 flex-shrink-0" />
         )}
-        {node.folder.scopeType != null && node.folder.scopeType !== ''
+        {isSharedFolder(node.folder)
           ? icons.globe
           : isOpen
             ? icons.folderOpen
@@ -197,17 +201,6 @@ function FolderTreeItem({
   );
 }
 
-function parseResourceUri(
-  uri: string | null | undefined
-): number | null {
-  if (uri === null || uri === undefined) return null;
-  const id = Number.parseInt(
-    uri.split('/').filter(Boolean).pop() ?? '',
-    10
-  );
-  return Number.isNaN(id) ? null : id;
-}
-
 function EditFolderDialog({
   folder,
   onClose: handleClose,
@@ -218,41 +211,20 @@ function EditFolderDialog({
   readonly onDeleted: () => void;
 }): JSX.Element {
   const [name, setName] = React.useState(folder.name);
-  const [scopeType, setScopeType] = React.useState(
-    folder.scopeType ?? ''
-  );
+  const [scopeType, setScopeType] = React.useState(folder.scopeType ?? '');
   const [collectionId, setCollectionId] = React.useState<number | null>(
-    parseResourceUri(
-      (folder as Record<string, unknown>).collection as string | null
-    )
+    parseResourceId(folder.collection)
   );
   const [disciplineId, setDisciplineId] = React.useState<number | null>(
-    parseResourceUri(
-      (folder as Record<string, unknown>).discipline as string | null
-    )
+    parseResourceId(folder.discipline)
   );
 
   const [collections] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('Collection', {
-          limit: 0,
-          domainFilter: false,
-        }).then(({ records }) => records),
-      []
-    ),
+    React.useCallback(() => fetchCollections(), []),
     false
   );
-
   const [disciplines] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('Discipline', {
-          limit: 0,
-          domainFilter: false,
-        }).then(({ records }) => records),
-      []
-    ),
+    React.useCallback(() => fetchDisciplines(), []),
     false
   );
 
@@ -293,35 +265,11 @@ function EditFolderDialog({
         id="editFolderForm"
         onSubmit={(e): void => {
           e.preventDefault();
-          const base = removeKey(folder, '_tableName') as Record<string, unknown>;
-          // Clear scope-related fields
           const payload: Record<string, unknown> = {
-            ...base,
+            ...(removeKey(folder, '_tableName') as Record<string, unknown>),
             name: name.trim(),
-            scopeType: scopeType === '' ? null : scopeType,
+            ...getFolderScopePayload(scopeType, collectionId, disciplineId),
           };
-
-          if (scopeType === 'Collection') {
-            payload.collection = collectionId !== null
-              ? `/api/specify/collection/${collectionId}/`
-              : null;
-            payload.discipline = null;
-            payload.specifyUser = null;
-          } else if (scopeType === 'Discipline') {
-            payload.discipline = disciplineId !== null
-              ? `/api/specify/discipline/${disciplineId}/`
-              : null;
-            payload.collection = null;
-            payload.specifyUser = null;
-          } else if (scopeType === 'Database') {
-            payload.collection = null;
-            payload.discipline = null;
-            payload.specifyUser = null;
-          } else {
-            payload.collection = null;
-            payload.discipline = null;
-            payload.specifyUser = userInformation.resource_uri;
-          }
 
           loading(
             saveResource(
@@ -408,13 +356,11 @@ function MoveToFolderDialog({
   readonly onClose: () => void;
   readonly onMove: (folderId: number | null) => void;
 }): JSX.Element {
-  const currentFolderUri = query.spQueryFolder as unknown as string | null;
-  const currentFolderId =
-    currentFolderUri !== null
-      ? Number.parseInt(currentFolderUri.split('/').filter(Boolean).pop() ?? '', 10)
-      : null;
+  const currentFolderId = parseResourceId(
+    query.spQueryFolder as unknown as string | null
+  );
   const currentFolderName =
-    currentFolderId !== null && !Number.isNaN(currentFolderId)
+    currentFolderId !== null
       ? folders.find((f) => f.id === currentFolderId)?.name ?? null
       : null;
   return (
@@ -479,26 +425,11 @@ function CreateFolderDialog({
   const loading = React.useContext(LoadingContext);
 
   const [collections] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('Collection', {
-          limit: 0,
-          domainFilter: false,
-        }).then(({ records }) => records),
-      []
-    ),
+    React.useCallback(() => fetchCollections(), []),
     false
   );
-
   const [disciplines] = useAsyncState(
-    React.useCallback(
-      async () =>
-        fetchCollection('Discipline', {
-          limit: 0,
-          domainFilter: false,
-        }).then(({ records }) => records),
-      []
-    ),
+    React.useCallback(() => fetchDisciplines(), []),
     false
   );
 
@@ -526,26 +457,8 @@ function CreateFolderDialog({
           e.preventDefault();
           const payload: Record<string, unknown> = {
             name: name.trim(),
+            ...getFolderScopePayload(scopeType, collectionId, disciplineId),
           };
-
-          if (scopeType === 'Collection') {
-            payload.scopeType = 'Collection';
-            payload.collection = collectionId !== null
-              ? `/api/specify/collection/${collectionId}/`
-              : null;
-            payload.specifyUser = null;
-          } else if (scopeType === 'Discipline') {
-            payload.scopeType = 'Discipline';
-            payload.discipline = disciplineId !== null
-              ? `/api/specify/discipline/${disciplineId}/`
-              : null;
-            payload.specifyUser = null;
-          } else if (scopeType === 'Database') {
-            payload.scopeType = 'Database';
-            payload.specifyUser = null;
-          } else {
-            payload.specifyUser = userInformation.resource_uri;
-          }
 
           if (selectedParentId !== undefined) {
             payload.parent = `/api/specify/spqueryfolder/${selectedParentId}/`;
@@ -683,35 +596,14 @@ export function QueryListDialog({
     return () => clearTimeout(timer);
   }, [searchQuery]);
 
-  // Fetch folders - fetch all, then filter to user's + shared
+  // Fetch folders visible to this user (own personal + shared)
   const [folders] = useAsyncState(
-    React.useCallback(
-      async () => {
-        const result = await fetchCollection('SpQueryFolder', {
-          limit: 0,
-          domainFilter: false,
-          orderBy: 'name',
-        });
-        // Filter to show only: personal folders (owned by user) OR shared folders
-        const currentUserId = userInformation.id;
-        const filteredRecords = result.records.filter(
-          (folder) =>
-            // Shared folders (any non-null scopeType)
-            (folder.scopeType !== null && folder.scopeType !== '') ||
-            // Personal folders owned by current user
-            parseResourceUri(
-              (folder as unknown as Record<string, string>).specifyUser
-            ) === currentUserId
-        );
-        return { ...result, records: filteredRecords };
-      },
-      [folderRefreshKey]
-    ),
+    React.useCallback(async () => fetchVisibleQueryFolders(), [folderRefreshKey]),
     false
   );
 
   const folderTree = React.useMemo(
-    () => (folders ? buildFolderTree(folders.records) : []),
+    () => buildFolderTree(folders ?? []),
     [folders]
   );
 
@@ -963,7 +855,7 @@ export function QueryListDialog({
             {/* Add folder to root */}
             {isCreateFolderOpen && (
               <CreateFolderDialog
-                folders={folders?.records ?? []}
+                folders={folders ?? []}
                 parentFolderId={null}
                 onClose={handleCloseCreateFolder}
                 onCreated={handleRefresh}
@@ -1038,7 +930,7 @@ export function QueryListDialog({
         {moveTarget !== undefined && (
           <MoveToFolderDialog
             folderTree={folderTree}
-            folders={folders?.records ?? []}
+            folders={folders ?? []}
             query={moveTarget}
             onClose={(): void => setMoveTarget(undefined)}
             onMove={handleMoveToFolder}
@@ -1101,9 +993,7 @@ export function QueryList({
   const callBack =
     getQuerySelectCallback?.(query) ?? `/specify/query/${query.id}/`;
 
-  const queryOwnerId = parseResourceUri(
-    (query as unknown as Record<string, string | null>).specifyUser
-  );
+  const queryOwnerId = parseResourceId(query.specifyUser);
   const isOwnQuery = queryOwnerId === userInformation.id;
 
   const text = (
