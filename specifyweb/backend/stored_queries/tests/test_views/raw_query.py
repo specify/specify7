@@ -4,6 +4,7 @@ get_simple_query = lambda specifyuser: {
     "contexttableid": 1,
     "selectdistinct": False,
     "smushed": False,
+    "searchsynonymy": False,
     "countonly": False,
     "formatauditrecids": False,
     "specifyuser": f"/api/specify/specifyuser/{specifyuser.id}/",

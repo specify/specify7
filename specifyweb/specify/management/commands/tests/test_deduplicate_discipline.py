@@ -57,7 +57,7 @@ class KeyMigrationAppResourceDirDatabaseTests(ApiTests):
             ).exists()
         )
 
-    def test_deduplicate_discipline_resource_dirs_equal_timestamps_are_preserved(self):
+    def test_older_discipline_dirs_are_preserved(self):
         timestamp = timezone.now()
 
         first = models.Spappresourcedir.objects.create(
@@ -73,11 +73,11 @@ class KeyMigrationAppResourceDirDatabaseTests(ApiTests):
 
         rkm.deduplicate_discipline_resource_dirs(django_apps)
 
-        self.assertTrue(
-            models.Spappresourcedir.objects.filter(id=first.id).exists()
+        self.assertExists(
+            models.Spappresourcedir.objects.filter(id=first.id)
         )
-        self.assertTrue(
-            models.Spappresourcedir.objects.filter(id=second.id).exists()
+        self.assertNotExists(
+            models.Spappresourcedir.objects.filter(id=second.id)
         )
 
     def test_deduplicate_discipline_resource_dirs_preserves_scoped_dirs(self):

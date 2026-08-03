@@ -104,12 +104,12 @@ def deduplicate_discipline_resource_dirs(apps):
             sppersistedviewsets__isnull=True,
             sppersistedappresources__isnull=True,
             **common_filters
-            ).annotate(
-                earlier_exists=Exists(
-                    SpAppResourceDir.objects.filter(
-                        discipline_id=OuterRef('discipline_id'),
-                        timestampcreated__lt=OuterRef('timestampcreated'),
-                        **common_filters
+        ).annotate(
+            earlier_exists=Exists(
+                SpAppResourceDir.objects.filter(
+                    discipline_id=OuterRef('discipline_id'),
+                    pk__lt=OuterRef('pk'),
+                    **common_filters
                 )
             )
         ).filter(earlier_exists=True)
