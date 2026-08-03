@@ -21,6 +21,7 @@ from . import (
     pcrperson_rules,
     preparation_rules,
     recordset_rules,
+    spquery_rules,
     tree_rules,
     user_rules,
     workbench_rules,
