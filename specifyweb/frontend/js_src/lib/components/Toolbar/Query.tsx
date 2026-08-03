@@ -160,7 +160,7 @@ function FolderTreeItem({
           <span className="w-5 flex-shrink-0" />
         )}
         {isOpen ? icons.folderOpen : icons.folder}
-        {node.folder.scopeType !== null && (
+        {node.folder.scopeType != null && node.folder.scopeType !== '' && (
           <span className="text-brand-400" title={node.folder.scopeType ?? undefined}>
             {icons.globe}
           </span>
@@ -364,8 +364,7 @@ function CreateFolderDialog({
   const [name, setName] = React.useState('');
   const [selectedParentId, setSelectedParentId] = React.useState<
     string | undefined
-  >(parentFolderId !== null ? String(parentFolderId) : undefined);
-  const loading = React.useContext(LoadingContext);
+  >(parentFolderId !== null ? String(parentFolderId) : undefined);  const [scopeType, setScopeType] = React.useState('');  const loading = React.useContext(LoadingContext);
 
   return (
     <Dialog
@@ -392,7 +391,8 @@ function CreateFolderDialog({
           loading(
             createResource('SpQueryFolder', {
               name: name.trim(),
-              specifyUser: userInformation.resource_uri,
+              specifyUser: scopeType === '' ? userInformation.resource_uri : null,
+              scopeType: scopeType === '' ? null : scopeType,
               parent:
                 selectedParentId !== undefined
                   ? `/api/specify/spqueryfolder/${selectedParentId}/`
@@ -428,6 +428,18 @@ function CreateFolderDialog({
               {folder.name}
             </option>
           ))}
+        </Select>
+        </Label.Block>
+        <Label.Block>
+          {queryText.scope()}
+        <Select
+          value={scopeType}
+          onValueChange={setScopeType}
+        >
+          <option value="">{queryText.personal()}</option>
+          <option value="Collection">Collection</option>
+          <option value="Discipline">Discipline</option>
+          <option value="Database">Database</option>
         </Select>
         </Label.Block>
       </form>
