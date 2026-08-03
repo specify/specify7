@@ -136,13 +136,25 @@ def assign_users_to_roles(apps=apps) -> None:
         role_name = _USERTYPES_TO_ROLE_NAMES.get(user_type, f"{user_type} - {collection_name}")
         role_description = ROLE_DESCRIPTIONS.get(user_type, "No description available.")
 
-        role, _ = Role.objects.get_or_create(
+        # BUG: Starting in v7.11.2 (e876cbe), duplicate roles could be created
+        # when calling run_key_migration_functions if the description for a
+        # default role had changed
+        # Once run_key_migration_functions was moved to container startup in
+        # v7.12.0 (8646b82), this had an even greater impact.
+        # This means after that if a user had modified the description of any
+        # default Role, there will already be a duplicate in their database...
+        role = Role.objects.filter(
             collection_id=collection_id,
-            name=role_name,
-            defaults={
-                "description": role_description
-            }
-        )
+            name=role_name
+        ).order_by("pk").first()
+
+        if role is None:
+            role = Role.objects.create(
+                collection_id=collection_id,
+                name=role_name,
+                description=role_description
+            )
+
         # BUG: What if the user was intentionally removed from this role?
         # This would incorrectly re-add them :(
         UserRole.objects.get_or_create(
