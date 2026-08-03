@@ -2,6 +2,7 @@ import sys
 import logging
 
 from collections import defaultdict
+from typing import TypedDict
 
 from django.db import transaction, connection
 from django.db.models.functions import Lower
@@ -388,8 +389,12 @@ LIBRARY_ROLES = {
     }
 }
 
+class DefaultRole(TypedDict):
+    description: str
+    policies: dict[str, tuple[str, ...]]
+
 def _create_role_and_policies(role_model, role_policy_model, role_name: str, role_filters: dict = dict()):
-    resolved_role = LIBRARY_ROLES[role_name]
+    resolved_role: DefaultRole = LIBRARY_ROLES[role_name]
     role, is_new = role_model.objects.get_or_create(
         name=role_name,
         **role_filters,
@@ -407,8 +412,7 @@ def _create_role_and_policies(role_model, role_policy_model, role_name: str, rol
                 resource=resource,
                 action=action
             )
-            for policy in resolved_role["policies"]
-            for resource, actions in policy.items()
+            for resource, actions in resolved_role["policies"].items()
             for action in actions
         ]
     )
