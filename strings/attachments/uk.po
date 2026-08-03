@@ -101,8 +101,8 @@ msgstr "Показати форму"
 msgid "multipleFilesSelected"
 msgstr "Вибрано декілька файлів"
 
-#: components/AttachmentsBulkImport/Import.tsx:308
-#: components/AttachmentsBulkImport/Import.tsx:331
+#: components/AttachmentsBulkImport/Import.tsx:306
+#: components/AttachmentsBulkImport/Import.tsx:329
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "fileSize"
 msgstr "Розмір файлу"
@@ -118,7 +118,7 @@ msgstr "Видалено"
 msgid "noFile"
 msgstr "Немає файлу"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:197
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "pleaseReselectAllFiles"
 msgstr "Перед завантаженням повторно виберіть усі файли."
@@ -199,7 +199,7 @@ msgstr "Відкат перервано"
 msgid "rollbackInterruptedDescription"
 msgstr "Тривав відкат, коли сталася перерва. Деякі файли могли бути видалені"
 
-#: components/AttachmentsBulkImport/Import.tsx:354
+#: components/AttachmentsBulkImport/Import.tsx:352
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "attachmentId"
 msgstr "ID вкладення"
@@ -292,12 +292,12 @@ msgstr ""
 msgid "multipleMatches"
 msgstr "Кілька збігів"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:94
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "multipleMatchesClick"
 msgstr "Кілька збігів. Натисніть, щоб усунути неоднозначність"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:185
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "totalFiles"
 msgstr "Всього файлів"
@@ -339,13 +339,15 @@ msgstr "Наступні файли не вибрано, оскільки вон
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesFound"
-msgstr ""
+msgstr "Файли відсутні у файлі зіставлення"
 
 #: components/AttachmentsBulkImport/Import.tsx:585
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
+"Наведені нижче файли перелічені у файлі зіставлення, але їх не було "
+"вибрано. Виберіть або перетягніть їх, щоб розпочати завантаження."
 
 #: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -362,18 +364,18 @@ msgstr "Помилка збереження запису"
 msgid "interruptionStopped"
 msgstr "Зупинено через помилку завантаження попереднього файлу"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:264
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "chooseFilesToGetStarted"
 msgstr "Щоб почати, виберіть файли або перетягніть їх сюди."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:265
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "selectIdentifier"
 msgstr "Виберіть ідентифікатор для відповідності імені файлу."
 
-#: components/AttachmentsBulkImport/Import.tsx:327
-#: components/AttachmentsBulkImport/Import.tsx:350
+#: components/AttachmentsBulkImport/Import.tsx:325
+#: components/AttachmentsBulkImport/Import.tsx:348
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "progress"
 msgstr "Прогрес"
@@ -450,18 +452,18 @@ msgstr ""
 "автоматично відображатимуться на веб-порталі Specify. Цей параметр можна "
 "змінити для кожного вкладення окремо, і він не впливає на існуючі вкладення."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:67
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchingMode"
 msgstr "Режим зіставлення"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:89
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilename"
 msgstr "Зіставлення за назвою файлу"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:213
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:113
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFile"
 msgstr "Зіставлення за файлом зіставлення"
@@ -471,17 +473,17 @@ msgstr "Зіставлення за файлом зіставлення"
 msgid "fileMissing"
 msgstr "Файл відсутній"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:65
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "awaitingFile"
-msgstr ""
+msgstr "Очікується файл"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:205
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "mappingAwaitingFiles"
-msgstr ""
+msgstr "Будь ласка, виберіть файли або перетягніть їх, щоб розпочати."
 
 #: components/AttachmentsBulkImport/utils.ts:630
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -515,26 +517,26 @@ msgstr "Файл зіставлення завантажено ({count:number} �
 msgid "mappingFileColumnsInfo"
 msgstr "Зіставлення: {matchColumn:string} → Файл: {fileColumn:string}"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:71
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "chooseMatchingMode"
 msgstr "Виберіть спосіб зіставлення файлів вкладень із записами бази даних."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:92
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilenameDescription"
 msgstr ""
 "Витягніть ідентифікатор запису з кожної назви файлу за допомогою "
 "форматувальника полів. Найкраще працює зі структурованими числовими полями."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:116
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFileDescription"
 msgstr ""
 "Використовуйте явний CSV-файл зіставлення, який вказує, до якого запису "
 "належить кожен файл."
 
-#: components/AttachmentsBulkImport/Import.tsx:307
+#: components/AttachmentsBulkImport/Import.tsx:305
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "matchValue"
 msgstr "Значення зіставлення"
@@ -543,13 +545,13 @@ msgstr "Значення зіставлення"
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvParseError"
-msgstr ""
+msgstr "Не вдалося проаналізувати CSV-файл"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvEmptyFile"
-msgstr ""
+msgstr "Порожній CSV-файл"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315

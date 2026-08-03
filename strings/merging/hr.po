@@ -131,7 +131,7 @@ msgstr "Spajanje nije uspjelo"
 #. Used in: Components > Merging > Status
 #, fuzzy
 msgid "mergeSucceeded"
-msgstr "Spajanje uspješno"
+msgstr "Spajanje je uspjelo"
 
 #: components/Merging/Status.tsx:23
 #. Used in: Components > Merging > Status

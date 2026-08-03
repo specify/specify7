@@ -392,8 +392,8 @@ msgstr "Cet utilisateur"
 msgid "action"
 msgstr "Action"
 
-#: components/AttachmentsBulkImport/Import.tsx:312
-#: components/AttachmentsBulkImport/Import.tsx:335
+#: components/AttachmentsBulkImport/Import.tsx:310
+#: components/AttachmentsBulkImport/Import.tsx:333
 #: components/Permissions/FormatError.tsx:68
 #: components/Security/PreviewComponents.tsx:92
 #: components/Security/PreviewComponents.tsx:148

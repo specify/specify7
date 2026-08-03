@@ -113,8 +113,8 @@ msgstr "Mostrar formulário"
 msgid "multipleFilesSelected"
 msgstr "Vários arquivos selecionados"
 
-#: components/AttachmentsBulkImport/Import.tsx:308
-#: components/AttachmentsBulkImport/Import.tsx:331
+#: components/AttachmentsBulkImport/Import.tsx:306
+#: components/AttachmentsBulkImport/Import.tsx:329
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "fileSize"
@@ -133,7 +133,7 @@ msgstr "Excluído"
 msgid "noFile"
 msgstr "Nenhum arquivo"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:197
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "pleaseReselectAllFiles"
@@ -234,7 +234,7 @@ msgstr ""
 "O processo de reversão estava em andamento quando ocorreu uma interrupção. "
 "Alguns arquivos podem ter sido excluídos."
 
-#: components/AttachmentsBulkImport/Import.tsx:354
+#: components/AttachmentsBulkImport/Import.tsx:352
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "attachmentId"
@@ -342,13 +342,13 @@ msgstr ""
 msgid "multipleMatches"
 msgstr "Vários confrontos"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:94
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr "Vários resultados. Clique para desambiguar."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:185
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "totalFiles"
@@ -399,13 +399,16 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesFound"
-msgstr ""
+msgstr "Arquivos ausentes no arquivo de mapeamento"
 
 #: components/AttachmentsBulkImport/Import.tsx:585
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
+"Os seguintes arquivos estão listados no arquivo de mapeamento, mas não "
+"foram selecionados. Selecione-os ou arraste e solte-os para iniciar o "
+"upload."
 
 #: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -425,20 +428,20 @@ msgstr "Erro ao salvar o registro"
 msgid "interruptionStopped"
 msgstr "Interrompido devido a erro ao carregar um arquivo anterior."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:264
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Selecione os arquivos ou arraste-os para cá para começar."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:265
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "selectIdentifier"
 msgstr "Selecione um identificador para comparar com o nome do arquivo."
 
-#: components/AttachmentsBulkImport/Import.tsx:327
-#: components/AttachmentsBulkImport/Import.tsx:350
+#: components/AttachmentsBulkImport/Import.tsx:325
+#: components/AttachmentsBulkImport/Import.tsx:348
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "progress"
@@ -528,18 +531,18 @@ msgstr ""
 "pode ser alterada individualmente para cada anexo e não afeta os anexos "
 "existentes."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:67
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchingMode"
 msgstr "Modo de correspondência"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:89
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilename"
 msgstr "Corresponder por nome de arquivo"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:213
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:113
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFile"
 msgstr "Corresponder por arquivo de mapeamento"
@@ -549,17 +552,17 @@ msgstr "Corresponder por arquivo de mapeamento"
 msgid "fileMissing"
 msgstr "Arquivo ausente"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:65
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "awaitingFile"
-msgstr ""
+msgstr "Arquivo aguardando"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:205
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "mappingAwaitingFiles"
-msgstr ""
+msgstr "Selecione os seus arquivos ou arraste e solte-os para começar."
 
 #: components/AttachmentsBulkImport/utils.ts:630
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -593,28 +596,28 @@ msgstr "Arquivo de mapeamento carregado ({count:number} linhas)"
 msgid "mappingFileColumnsInfo"
 msgstr "Correspondência: {matchColumn:string} → Arquivo: {fileColumn:string}"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:71
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "chooseMatchingMode"
 msgstr ""
 "Escolha como os arquivos anexos devem ser combinados com os registros do "
 "banco de dados."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:92
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilenameDescription"
 msgstr ""
 "Analise o identificador de registro de cada nome de arquivo usando um "
 "formatador de campo. Funciona melhor com campos numéricos estruturados."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:116
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFileDescription"
 msgstr ""
 "Use um arquivo de mapeamento CSV explícito que liste a qual registro cada "
 "arquivo pertence."
 
-#: components/AttachmentsBulkImport/Import.tsx:307
+#: components/AttachmentsBulkImport/Import.tsx:305
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "matchValue"
 msgstr "Valor de correspondência"
@@ -623,13 +626,13 @@ msgstr "Valor de correspondência"
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvParseError"
-msgstr ""
+msgstr "Falha ao analisar o arquivo CSV"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvEmptyFile"
-msgstr ""
+msgstr "Arquivo CSV vazio"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315

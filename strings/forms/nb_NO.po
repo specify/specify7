@@ -208,7 +208,7 @@ msgstr "Første plate"
 #. Used in: Components > Form Sliders > Slider ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "lastRecord"
-msgstr "Siste oppføring"
+msgstr "Siste post"
 
 #: components/FormSliders/Slider.tsx:40
 #: components/FormSliders/Slider.tsx:43
@@ -633,7 +633,7 @@ msgstr "Start av fremdriftsrekkevidde"
 #. Used in: Components > Forms > Bulk Carry Forward
 #, fuzzy
 msgid "bulkCarryForwardRangeEnd"
-msgstr "Enden av rekkevidden for videreføring"
+msgstr "End of Carry Forward Range"
 
 #: components/FormMeta/CarryForward.tsx:240
 #. Used in: Components > Form Meta > Carry Forward
@@ -645,7 +645,7 @@ msgstr "Opprett postsett på masseoverføring"
 #. Used in: Components > Form Meta > Clone
 #, fuzzy
 msgid "cloneButtonEnabled"
-msgstr "Vis klone-knappen"
+msgstr "Vis klone-knapp"
 
 #: components/FormMeta/Clone.tsx:57
 #. Used in: Components > Form Meta > Clone

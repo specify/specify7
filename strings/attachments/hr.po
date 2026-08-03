@@ -113,8 +113,8 @@ msgstr "Prikaži obrazac"
 msgid "multipleFilesSelected"
 msgstr "Odabrano je više datoteka"
 
-#: components/AttachmentsBulkImport/Import.tsx:308
-#: components/AttachmentsBulkImport/Import.tsx:331
+#: components/AttachmentsBulkImport/Import.tsx:306
+#: components/AttachmentsBulkImport/Import.tsx:329
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "fileSize"
@@ -133,7 +133,7 @@ msgstr "Izbrisano"
 msgid "noFile"
 msgstr "Nema datoteke"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:197
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "pleaseReselectAllFiles"
@@ -234,7 +234,7 @@ msgstr ""
 "Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda "
 "izbrisane."
 
-#: components/AttachmentsBulkImport/Import.tsx:354
+#: components/AttachmentsBulkImport/Import.tsx:352
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "attachmentId"
@@ -347,13 +347,13 @@ msgstr ""
 msgid "multipleMatches"
 msgstr "Višestruka podudaranja"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:94
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr "Višestruka podudaranja. Kliknite za razrješenje dvosmislenosti"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:185
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "totalFiles"
@@ -402,13 +402,15 @@ msgstr "Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka.
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesFound"
-msgstr ""
+msgstr "Datoteke koje nedostaju u datoteci za mapiranje"
 
 #: components/AttachmentsBulkImport/Import.tsx:585
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
+"Sljedeće datoteke navedene su u datoteci za mapiranje, ali nisu odabrane. "
+"Odaberite ih ili povucite i ispustite da biste započeli prijenos."
 
 #: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -428,20 +430,20 @@ msgstr "Pogreška pri spremanju zapisa"
 msgid "interruptionStopped"
 msgstr "Zaustavljeno zbog pogreške pri učitavanju prethodne datoteke"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:264
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Odaberite datoteke ili ih povucite ovdje da biste započeli."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:265
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "selectIdentifier"
 msgstr "Odaberite identifikator s kojim ćete pronaći ime datoteke."
 
-#: components/AttachmentsBulkImport/Import.tsx:327
-#: components/AttachmentsBulkImport/Import.tsx:350
+#: components/AttachmentsBulkImport/Import.tsx:325
+#: components/AttachmentsBulkImport/Import.tsx:348
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "progress"
@@ -530,18 +532,18 @@ msgstr ""
 "biti vidljivi na Navedite web portalu. Ova se postavka može poništiti za "
 "svaki pojedinačni privitak i ne utječe na postojeće privitke."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:67
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchingMode"
 msgstr "Način podudaranja"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:89
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilename"
 msgstr "Podudaranje prema nazivu datoteke"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:213
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:113
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFile"
 msgstr "Podudaranje prema datoteci mapiranja"
@@ -551,17 +553,17 @@ msgstr "Podudaranje prema datoteci mapiranja"
 msgid "fileMissing"
 msgstr "Datoteka nedostaje"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:65
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "awaitingFile"
-msgstr ""
+msgstr "Datoteka na čekanju"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:205
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "mappingAwaitingFiles"
-msgstr ""
+msgstr "Za početak odaberite datoteke ili ih povucite i ispustite."
 
 #: components/AttachmentsBulkImport/utils.ts:630
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -595,28 +597,28 @@ msgstr "Datoteka mapiranja učitana ({count:number} redaka)"
 msgid "mappingFileColumnsInfo"
 msgstr "Podudaranje: {matchColumn:string} → Datoteka: {fileColumn:string}"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:71
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "chooseMatchingMode"
 msgstr ""
 "Odaberite kako se datoteke privitaka trebaju podudarati s zapisima baze "
 "podataka."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:92
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilenameDescription"
 msgstr ""
 "Analizirajte identifikator zapisa iz svakog naziva datoteke pomoću "
 "formatatora polja. Najbolje radi s strukturiranim, numeričkim poljima."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:116
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFileDescription"
 msgstr ""
 "Koristite eksplicitnu CSV datoteku mapiranja koja navodi kojem zapisu "
 "pripada svaka datoteka."
 
-#: components/AttachmentsBulkImport/Import.tsx:307
+#: components/AttachmentsBulkImport/Import.tsx:305
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "matchValue"
 msgstr "Vrijednost podudaranja"
@@ -625,13 +627,13 @@ msgstr "Vrijednost podudaranja"
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvParseError"
-msgstr ""
+msgstr "Nije uspjelo raščlaniti CSV datoteku"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvEmptyFile"
-msgstr ""
+msgstr "Prazna CSV datoteka"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315

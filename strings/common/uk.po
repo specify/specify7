@@ -178,7 +178,7 @@ msgstr "Створити"
 #: components/AttachmentsBulkImport/Import.tsx:547
 #: components/AttachmentsBulkImport/Import.tsx:559
 #: components/AttachmentsBulkImport/Import.tsx:579
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:56
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:53
 #: components/AttachmentsBulkImport/Rollback.tsx:115
 #: components/AttachmentsBulkImport/Rollback.tsx:142
 #: components/AttachmentsBulkImport/Upload.tsx:241
@@ -683,7 +683,7 @@ msgstr "Новий"
 #: components/Atoms/DataEntry.tsx:150
 #: components/AttachmentsBulkImport/Datasets.tsx:227
 #: components/AttachmentsBulkImport/Datasets.tsx:230
-#: components/AttachmentsBulkImport/Import.tsx:389
+#: components/AttachmentsBulkImport/Import.tsx:390
 #: components/FormEditor/Create.tsx:160
 #: components/FormMeta/index.tsx:100
 #: components/FormMeta/index.tsx:102
@@ -716,7 +716,7 @@ msgstr "Редагувати"
 msgid "ignore"
 msgstr "Ігнорувати"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:63
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:58
 #: components/FormSliders/RecordSelectorFromIds.tsx:285
 #: components/Merging/index.tsx:400
 #: components/Toolbar/Language.tsx:108
@@ -926,8 +926,8 @@ msgstr "(нуль)"
 msgid "filePickerMessage"
 msgstr "Виберіть файл або перетягніть його сюди"
 
-#: components/AttachmentsBulkImport/Import.tsx:306
-#: components/AttachmentsBulkImport/Import.tsx:330
+#: components/AttachmentsBulkImport/Import.tsx:304
+#: components/AttachmentsBulkImport/Import.tsx:328
 #: components/Molecules/FilePicker.tsx:114
 #. Used in: Components > Attachments Bulk Import > Import ⬤ Components > Molecules > File Picker
 #, fuzzy
@@ -962,7 +962,8 @@ msgstr "Порядковий"
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:165
 #: components/WbToolkit/index.tsx:116
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index
+#: components/WbToolkit/__tests__/Export.test.tsx:86
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index ⬤ Wb Toolkit > __tests__ > Export
 #, fuzzy
 msgid "export"
 msgstr "Експорт"
@@ -1171,7 +1172,7 @@ msgid "colonHeader"
 msgstr "{header:string}:"
 
 #: components/AttachmentsBulkImport/ActionState.tsx:29
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:184
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:187
 #: components/AttachmentsBulkImport/utils.ts:639
 #: components/BatchIdentify/index.tsx:811
 #: components/BatchIdentify/index.tsx:919

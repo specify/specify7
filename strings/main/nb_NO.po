@@ -104,7 +104,7 @@ msgstr "Feilmelding"
 msgid "leavePageConfirmation"
 msgstr "Er du sikker på at du vil forlate denne siden?"
 
-#: components/AttachmentsBulkImport/useEagerDataset.ts:116
+#: components/AttachmentsBulkImport/useEagerDataset.ts:115
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
 #: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89

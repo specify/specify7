@@ -100,8 +100,8 @@ msgstr "Mostrar formulario"
 msgid "multipleFilesSelected"
 msgstr "Varios archivos seleccionados"
 
-#: components/AttachmentsBulkImport/Import.tsx:308
-#: components/AttachmentsBulkImport/Import.tsx:331
+#: components/AttachmentsBulkImport/Import.tsx:306
+#: components/AttachmentsBulkImport/Import.tsx:329
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "fileSize"
 msgstr "Tamaño del archivo"
@@ -117,7 +117,7 @@ msgstr "Eliminado"
 msgid "noFile"
 msgstr "Ningún archivo"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:197
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "pleaseReselectAllFiles"
 msgstr "Por favor, vuelva a seleccionar todos los archivos antes de cargarlos."
@@ -203,7 +203,7 @@ msgstr ""
 "La reversión estaba en curso cuando se produjo una interrupción. Es posible "
 "que se hayan eliminado algunos archivos."
 
-#: components/AttachmentsBulkImport/Import.tsx:354
+#: components/AttachmentsBulkImport/Import.tsx:352
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "attachmentId"
 msgstr "ID del archivo adjunto"
@@ -296,12 +296,12 @@ msgstr ""
 msgid "multipleMatches"
 msgstr "Múltiples coincidencias"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:94
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "multipleMatchesClick"
 msgstr "Múltiples coincidencias. Haga clic para eliminar la ambigüedad"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:185
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "totalFiles"
 msgstr "Archivos totales"
@@ -345,13 +345,16 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesFound"
-msgstr ""
+msgstr "Archivos faltantes en el archivo de mapeo"
 
 #: components/AttachmentsBulkImport/Import.tsx:585
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
+"Los siguientes archivos aparecen en el archivo de mapeo, pero no han sido "
+"seleccionados. Selecciónelos o arrástrelos y suéltelos para iniciar la "
+"carga."
 
 #: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -368,18 +371,18 @@ msgstr "Error al guardar el registro"
 msgid "interruptionStopped"
 msgstr "Se detuvo debido a un error al cargar un archivo anterior."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:264
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "chooseFilesToGetStarted"
 msgstr "Elija archivos o arrástrelos aquí para comenzar."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:265
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 msgid "selectIdentifier"
 msgstr "Seleccione un identificador para hacer coincidir el nombre de los archivos."
 
-#: components/AttachmentsBulkImport/Import.tsx:327
-#: components/AttachmentsBulkImport/Import.tsx:350
+#: components/AttachmentsBulkImport/Import.tsx:325
+#: components/AttachmentsBulkImport/Import.tsx:348
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "progress"
 msgstr "Progreso"
@@ -458,18 +461,18 @@ msgstr ""
 "puede modificar para cada archivo adjunto individualmente y no afecta a los "
 "archivos adjuntos existentes."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:67
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchingMode"
 msgstr "Modo de coincidencia"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:89
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilename"
 msgstr "Coincidir por nombre de archivo"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:213
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:113
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFile"
 msgstr "Coincidir por archivo de mapeo"
@@ -479,17 +482,17 @@ msgstr "Coincidir por archivo de mapeo"
 msgid "fileMissing"
 msgstr "Archivo faltante"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:65
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "awaitingFile"
-msgstr ""
+msgstr "Archivo pendiente"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:205
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "mappingAwaitingFiles"
-msgstr ""
+msgstr "Seleccione sus archivos o arrástrelos y suéltelos para comenzar."
 
 #: components/AttachmentsBulkImport/utils.ts:630
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -523,28 +526,28 @@ msgstr "Archivo de mapeo cargado ({count:number} filas)"
 msgid "mappingFileColumnsInfo"
 msgstr "Coincidencia: {matchColumn:string} → Archivo: {fileColumn:string}"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:71
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "chooseMatchingMode"
 msgstr ""
 "Elija cómo se deben emparejar los archivos adjuntos con los registros de la "
 "base de datos."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:92
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilenameDescription"
 msgstr ""
 "Analice el identificador de registro de cada nombre de archivo utilizando "
 "un formateador de campo. Funciona mejor con campos numéricos estructurados."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:116
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFileDescription"
 msgstr ""
 "Utilice un archivo de mapeo CSV explícito que indique a qué registro "
 "pertenece cada archivo."
 
-#: components/AttachmentsBulkImport/Import.tsx:307
+#: components/AttachmentsBulkImport/Import.tsx:305
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "matchValue"
 msgstr "Valor de coincidencia"
@@ -553,13 +556,13 @@ msgstr "Valor de coincidencia"
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvParseError"
-msgstr ""
+msgstr "Error al analizar el archivo CSV."
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvEmptyFile"
-msgstr ""
+msgstr "Archivo CSV vacío"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315

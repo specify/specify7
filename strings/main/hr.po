@@ -117,7 +117,7 @@ msgstr "Poruka o pogrešci"
 msgid "leavePageConfirmation"
 msgstr "Jeste li sigurni da želite napustiti ovu stranicu?"
 
-#: components/AttachmentsBulkImport/useEagerDataset.ts:116
+#: components/AttachmentsBulkImport/useEagerDataset.ts:115
 #: components/SchemaConfig/TableUniquenessRules.tsx:56
 #: components/SchemaConfig/TableUniquenessRules.tsx:205
 #: components/Security/Role.tsx:89

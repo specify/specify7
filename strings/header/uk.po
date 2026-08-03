@@ -238,7 +238,7 @@ msgstr "API операцій"
 #: components/AppResources/Create.tsx:97
 #: components/AppResources/Create.tsx:133
 #: components/AppResources/Filters.tsx:171
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:271
 #: components/Header/ExpressSearchTask.tsx:156
 #: components/Header/userToolDefinitions.ts:152
 #: components/Preferences/UserDefinitions.tsx:623

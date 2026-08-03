@@ -104,8 +104,8 @@ msgstr "Показать форму"
 msgid "multipleFilesSelected"
 msgstr "Выбрано несколько файлов"
 
-#: components/AttachmentsBulkImport/Import.tsx:308
-#: components/AttachmentsBulkImport/Import.tsx:331
+#: components/AttachmentsBulkImport/Import.tsx:306
+#: components/AttachmentsBulkImport/Import.tsx:329
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "fileSize"
@@ -124,7 +124,7 @@ msgstr "Удалено"
 msgid "noFile"
 msgstr "Нет файла"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:197
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "pleaseReselectAllFiles"
@@ -225,7 +225,7 @@ msgstr ""
 "В момент прерывания процесса отката выполнялся откат. Возможно, некоторые "
 "файлы были удалены."
 
-#: components/AttachmentsBulkImport/Import.tsx:354
+#: components/AttachmentsBulkImport/Import.tsx:352
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "attachmentId"
@@ -329,13 +329,13 @@ msgstr ""
 msgid "multipleMatches"
 msgstr "Несколько матчей"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:94
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr "Несколько совпадений. Нажмите, чтобы уточнить."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:185
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "totalFiles"
@@ -386,13 +386,15 @@ msgstr ""
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesFound"
-msgstr ""
+msgstr "Файлы отсутствуют в файле сопоставления."
 
 #: components/AttachmentsBulkImport/Import.tsx:585
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
+"Следующие файлы перечислены в файле сопоставления, но не выбраны. Выберите "
+"или перетащите их, чтобы начать загрузку."
 
 #: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -412,20 +414,20 @@ msgstr "Ошибка сохранения записи"
 msgid "interruptionStopped"
 msgstr "Загрузка предыдущего файла остановлена из-за ошибки."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:264
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Выберите файлы или перетащите их сюда, чтобы начать."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:265
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "selectIdentifier"
 msgstr "Выберите идентификатор, по которому будет сопоставляться имя файла."
 
-#: components/AttachmentsBulkImport/Import.tsx:327
-#: components/AttachmentsBulkImport/Import.tsx:350
+#: components/AttachmentsBulkImport/Import.tsx:325
+#: components/AttachmentsBulkImport/Import.tsx:348
 #. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "progress"
@@ -515,18 +517,18 @@ msgstr ""
 "параметр можно переопределить для каждого вложения отдельно, и он не влияет "
 "на существующие вложения."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:67
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchingMode"
 msgstr "Режим сопоставления"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:89
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilename"
 msgstr "Сопоставление по имени файла"
 
 #: components/AttachmentsBulkImport/Datasets.tsx:213
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:113
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFile"
 msgstr "Сопоставление по файлу маппинга"
@@ -536,17 +538,17 @@ msgstr "Сопоставление по файлу маппинга"
 msgid "fileMissing"
 msgstr "Файл отсутствует"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:65
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "awaitingFile"
-msgstr ""
+msgstr "Ожидание файла"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:205
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #, fuzzy
 msgid "mappingAwaitingFiles"
-msgstr ""
+msgstr "Для начала выберите файлы или перетащите их в окно браузера."
 
 #: components/AttachmentsBulkImport/utils.ts:630
 #. Used in: Components > Attachments Bulk Import > Utils
@@ -580,12 +582,12 @@ msgstr "Файл маппинга загружен ({count:number} строк)"
 msgid "mappingFileColumnsInfo"
 msgstr "Сопоставление: {matchColumn:string} → Файл: {fileColumn:string}"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:71
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "chooseMatchingMode"
 msgstr "Выберите способ сопоставления файлов вложений с записями базы данных."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:92
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByFilenameDescription"
 msgstr ""
@@ -593,14 +595,14 @@ msgstr ""
 "форматировщика полей. Лучше всего работает со структурированными числовыми "
 "полями."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:116
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 msgid "matchByMappingFileDescription"
 msgstr ""
 "Используйте явный CSV-файл сопоставления, который указывает, к какой записи "
 "принадлежит каждый файл."
 
-#: components/AttachmentsBulkImport/Import.tsx:307
+#: components/AttachmentsBulkImport/Import.tsx:305
 #. Used in: Components > Attachments Bulk Import > Import
 msgid "matchValue"
 msgstr "Значение сопоставления"
@@ -609,13 +611,13 @@ msgstr "Значение сопоставления"
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvParseError"
-msgstr ""
+msgstr "Не удалось разобрать CSV-файл."
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "csvEmptyFile"
-msgstr ""
+msgstr "Пустой CSV-файл"
 
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315
