@@ -395,15 +395,18 @@ LIBRARY_ROLES: dict[str, DefaultRole] = {
 
 def _create_role_and_policies(role_model, role_policy_model, role_name: str, role_filters: dict = dict()):
     resolved_role: DefaultRole = LIBRARY_ROLES[role_name]
-    role, is_new = role_model.objects.get_or_create(
+    role = role_model.objects.filter(
         name=role_name,
-        **role_filters,
-        defaults={
-            "description": resolved_role["description"]
-        }
-    )
-    if not is_new:
+        **role_filters
+    ).order_by('pk').first()
+    if role is not None:
         return role
+
+    role = role_model.objects.create(
+        name=role_name,
+        description=resolved_role["description"],
+        **role_filters
+    )
 
     role_policy_model.objects.bulk_create(
         [
@@ -416,6 +419,7 @@ def _create_role_and_policies(role_model, role_policy_model, role_name: str, rol
             for action in actions
         ]
     )
+    return role
 
 def create_missing_library_roles(apps = apps):
     LibraryRole = apps.get_model('permissions', 'LibraryRole')
