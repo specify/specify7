@@ -426,13 +426,18 @@ def create_missing_library_roles(apps = apps):
     LibraryRolePolicy = apps.get_model('permissions', 'LibraryRolePolicy')
     all_roles = set(LIBRARY_ROLES.keys())
 
-    existing_role_names = LibraryRole.objects.annotate(
-        name_lower=Lower("name")
-    ).filter(
-        name_lower__in=(role.lower() for role in all_roles)
-    ).values_list("name", flat=True)
+    existing_role_names = set(
+        LibraryRole.objects.annotate(
+            name_lower=Lower("name")
+        ).filter(
+            name_lower__in=(role.lower() for role in all_roles)
+        ).values_list("name_lower", flat=True)
+    )
 
-    missing_roles = all_roles - set(existing_role_names)
+    missing_roles = {
+        role for role in all_roles
+        if role.lower() not in existing_role_names
+    }
     for missing_role in missing_roles:
         _create_role_and_policies(
             LibraryRole,
