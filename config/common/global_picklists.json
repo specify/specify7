@@ -448,6 +448,85 @@
         { "title": "Fossil record", "value": "Fossil record" },
         { "title": "Radiometric (adjacent)", "value": "Radiometric (adjacent)" }
       ]
+    },
+    {
+      "name": "DisciplineType",
+      "formatter": null,
+      "issystem": true,
+      "readonly": true,
+      "sizelimit": -1,
+      "sorttype": 1,
+      "tablename": null,
+      "type": 0,
+      "version": 0,
+      "items": [
+        {
+          "ordinal": 1,
+          "title": "Ichthyology",
+          "value": "fish",
+          "version": 0
+        },
+        {
+          "ordinal": 2,
+          "title": "Herpetology",
+          "value": "herpetology",
+          "version": 0
+        },
+        {
+          "ordinal": 3,
+          "title": "Paleobotany",
+          "value": "paleobotany",
+          "version": 0
+        },
+        {
+          "ordinal": 4,
+          "title": "Invertebrate Paleontology",
+          "value": "invertpaleo",
+          "version": 0
+        },
+        {
+          "ordinal": 5,
+          "title": "Vertebrate Paleontology",
+          "value": "vertpaleo",
+          "version": 0
+        },
+        {
+          "ordinal": 6,
+          "title": "Ornithology",
+          "value": "bird",
+          "version": 0
+        },
+        {
+          "ordinal": 7,
+          "title": "Mammalogy",
+          "value": "mammal",
+          "version": 0
+        },
+        {
+          "ordinal": 8,
+          "title": "Entomology",
+          "value": "insect",
+          "version": 0
+        },
+        {
+          "ordinal": 9,
+          "title": "Botany",
+          "value": "botany",
+          "version": 0
+        },
+        {
+          "ordinal": 10,
+          "title": "Invertebrate Zoology",
+          "value": "invertebrate",
+          "version": 0
+        },
+        {
+          "ordinal": 11,
+          "title": "Geology",
+          "value": "geology",
+          "version": 0
+        }
+      ]
     }
   ]
 }
