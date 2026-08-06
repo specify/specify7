@@ -138,7 +138,7 @@ msgid "create"
 msgstr "Créer"
 
 #: components/AppResources/DialogEditor.tsx:54
-#: components/AppResources/Editor.tsx:246
+#: components/AppResources/Editor.tsx:251
 #: components/AppResources/EditorComponents.tsx:90
 #: components/AppResources/Filters.tsx:99
 #: components/Atoms/__tests__/Link.test.ts:6
