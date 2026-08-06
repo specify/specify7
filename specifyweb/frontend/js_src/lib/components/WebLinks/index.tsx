@@ -122,7 +122,7 @@ export function WebLinkField({
       }
     >
       {formType === 'form' && typeof field === 'object' ? (
-        <UiField field={field} id={id} name={name} resource={resource} />
+        <UiField field={field} id={id} name={name} resource={resource} isSeries={false}/>
       ) : undefined}
       {typeof definition === 'object' ? (
         <>
