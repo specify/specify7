@@ -3,6 +3,7 @@ import React from 'react';
 
 import { useResource } from '../../hooks/resource';
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { developmentText } from '../../localization/development';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { f } from '../../utils/functools';
@@ -18,7 +19,6 @@ import { LoadingScreen } from '../Molecules/Dialog';
 import { queryFromTree } from '../QueryBuilder/fromTree';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields } from '../QueryBuilder/helpers';
-import { useFetchQueryResults } from '../QueryBuilder/hooks';
 import type { QueryResultRow } from '../QueryBuilder/Results';
 import { useQueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
@@ -144,7 +144,12 @@ function Map({
     results: [results],
     canFetchMore,
     onFetchMore: handleFetchMore,
-  } = useFetchQueryResults(props);
+  } = usePaginatedCollection<QueryResultRow | undefined>({
+    fetchMore: props.fetchResults,
+    fetchSize: props.fetchSize,
+    totalCount: props.totalCount,
+    initialRecords: props.initialData,
+  });
 
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (

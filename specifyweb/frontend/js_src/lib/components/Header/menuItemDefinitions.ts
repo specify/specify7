@@ -14,7 +14,7 @@ import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import type { IR } from '../../utils/types';
+import { IR, localized } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import {
@@ -75,6 +75,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     enabled: () =>
       hasToolPermission('queryBuilder', 'read') ||
       hasPermission('/querybuilder/query', 'execute'),
+  },
+  dataViews: {
+    url: '/specify/overlay/dataviews/',
+    title: localized('Data Views'),
+    icon: icons.eye,
   },
   recordSets: {
     url: '/specify/overlay/record-sets/',
