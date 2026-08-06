@@ -240,11 +240,17 @@ export function AppResourceEditor({
 
   const footer = (
     <>
-      <Button.Secondary
-        onClick={(): void => navigate('/specify/resources/', { replace: true })}
-      >
+      {      
+      // handleClone is undefined when the editor is used in a dialog, so don't show the close button in that case
+        handleClone === undefined ? 
+          undefined 
+          : 
+            <Button.Secondary
+          onClick={(): void => navigate('/specify/resources/', { replace: true })}
+        >
         {commonText.close()}
-      </Button.Secondary>
+        </Button.Secondary>
+      }
       <span className="-ml-2 flex-1" />
       {formElement !== null &&
       hasToolPermission(
