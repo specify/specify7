@@ -36,6 +36,26 @@ def _config_dir() -> Path:
 def _is_remote_source(source: str | Path) -> bool:
     return urlparse(str(source)).scheme in ('http', 'https')
 
+
+def _is_allowed_remote_mapping_url(source: str) -> bool:
+    parsed = urlparse(source.strip())
+    if parsed.scheme != 'https' or parsed.netloc != 'files.specifysoftware.org':
+        return False
+
+    if parsed.path in KNOWN_REMOTE_DEFAULT_TREE_PATHS:
+        return True
+
+    if parsed.path.startswith('/treerows/'):
+        stem = Path(unquote(parsed.path)).stem.lower()
+        match = re.fullmatch(r'col\d+_(.+)', stem)
+        if match is not None:
+            stem = match.group(1)
+        stem = TREE_ROW_DISCIPLINE_ALIASES.get(stem, stem)
+        return bool(re.fullmatch(r'[a-z0-9_]+', stem))
+
+    return False
+
+
 def _resolve_in_config(relative_path: Path) -> Optional[Path]:
     config_dir = _config_dir()
     if relative_path.is_absolute():
@@ -106,7 +126,13 @@ def load_default_tree_json(source: str) -> Any:
         if not _is_remote_source(source):
             raise FileNotFoundError(local_path)
 
-    response = requests.get(source)
+    if not _is_remote_source(source):
+        raise ValueError('Default tree source is not allowed.')
+
+    if not _is_allowed_remote_mapping_url(source):
+        raise ValueError('Remote mapping URL is not allowed.')
+
+    response = requests.get(source, timeout=(5, 30))
     response.raise_for_status()
     return response.json()
 
