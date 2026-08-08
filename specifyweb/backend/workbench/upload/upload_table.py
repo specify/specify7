@@ -68,6 +68,7 @@ class UploadTable(NamedTuple):
     toMany: dict[str, list[Uploadable]]
 
     overrideScope: dict[Literal["collection"], int | None] | None = None
+    preserveIdentity: bool = False
 
     def apply_scoping(
         self,
@@ -93,6 +94,8 @@ class UploadTable(NamedTuple):
         result = dict(
             wbcols={k: v.to_json() for k, v in self.wbcols.items()}, static=self.static
         )
+        if self.preserveIdentity:
+            result["preserveIdentity"] = True
         result["toOne"] = {
             key: uploadable.to_json() for key, uploadable in self.toOne.items()
         }
@@ -128,6 +131,7 @@ class ScopedUploadTable(NamedTuple):
     static: dict[str, Any]
     toOne: dict[str, ScopedUploadable]
     toMany: dict[str, list["ScopedUploadable"]]  # type: ignore
+    preserveIdentity: bool
     scopingAttrs: dict[str, int]
     disambiguation: int | None
     to_one_fields: dict[str, list[str]]  # TODO: Consider making this a payload..
@@ -257,6 +261,7 @@ class ScopedUploadTable(NamedTuple):
             parsedFields=parsedFields,
             toOne=toOne,
             toMany=toMany,
+            preserveIdentity=self.preserveIdentity,
             uploadingAgentId=uploadingAgentId,
             auditor=auditor,
             cache=cache,
@@ -326,6 +331,7 @@ class BoundUploadTable(NamedTuple):
     parsedFields: list[ParseResult]
     toOne: dict[str, BoundUploadable]
     toMany: dict[str, list[BoundUploadable]]
+    preserveIdentity: bool
     scopingAttrs: dict[str, int]
     disambiguation: int | None
     uploadingAgentId: int | None
@@ -982,10 +988,20 @@ class BoundUpdateTable(BoundUploadTable):
             field_name: (
                 to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
                 if to_one_def.is_one_to_one()
-                else to_one_def.process_row()
+                else (
+                    to_one_def.save_row(force=True)
+                    if self._should_update_to_one_in_place(to_one_def)
+                    else to_one_def.process_row()
+                )
             )
             for field_name, to_one_def in Func.sort_by_key(self.toOne)
         }
+
+    def _should_update_to_one_in_place(self, to_one_def) -> bool:
+        return (
+            getattr(to_one_def, "preserveIdentity", False)
+            and isinstance(getattr(to_one_def, "current_id", None), int)
+        )
 
     def _do_upload(
         self, model, to_one_results: dict[str, UploadResult], info: ReportInfo
