@@ -40,15 +40,19 @@ def parent_inheritance_query_processor(tableid, field_specs, collection, user) -
 
 
 def cog_inheritance_query_processor(tableid, field_specs, collection, user) -> Callable[[list], list]:
-    first_field_names = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]
-    if tableid != 1 or 'catalogNumber' not in first_field_names:
+    first_field_names = [
+        fs.fieldspec.join_path[0].name.lower()
+        for fs in field_specs
+        if fs.fieldspec.join_path
+    ]
+    if tableid != 1 or 'catalognumber' not in first_field_names:
         return do_nothing
 
     if not get_cat_num_inheritance_setting(collection, user):
         return do_nothing
 
     # Get the catalogNumber field index
-    catalog_number_field_index = first_field_names.index('catalogNumber') + 1
+    catalog_number_field_index = first_field_names.index('catalognumber') + 1
 
     # op_num 1 is refering to the filter equal, the inheritance will only work if we have cat num equal, other operators will not function
     if field_specs[catalog_number_field_index - 1].op_num != 1:
