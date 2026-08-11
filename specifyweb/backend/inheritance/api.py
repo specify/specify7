@@ -41,7 +41,7 @@ def parent_inheritance_query_processor(tableid, field_specs, collection, user) -
 
 def cog_inheritance_query_processor(tableid, field_specs, collection, user) -> Callable[[list], list]:
     first_field_names = [fs.fieldspec.join_path[0].name for fs in field_specs if fs.fieldspec.join_path]
-    if tableid != 1 and 'catalogNumber' not in first_field_names:
+    if tableid != 1 or 'catalogNumber' not in first_field_names:
         return do_nothing
 
     if not get_cat_num_inheritance_setting(collection, user):
