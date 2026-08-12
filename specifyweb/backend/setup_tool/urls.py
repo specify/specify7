@@ -6,7 +6,7 @@ from . import views
 urlpatterns = [
     # check if the db is new at login
     path('setup_progress/', views.get_setup_progress),
-    path('config_progress/', views.get_config_progress),
+    path('config_progress/', views.get_setup_progress),
     path('setup_database/create/', views.setup_database_view),
 
     path('discipline_and_trees/create/', views.create_discipline_and_trees),
