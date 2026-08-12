@@ -717,8 +717,15 @@ def system_info(request):
     setup_complete = is_guided_setup_complete()
 
     spversion = Spversion.objects.first()
-    collection = request.specify_collection
-    discipline = collection.discipline if collection is not None else None
+    collection = None
+    discipline = None
+    if setup_complete:
+        try:
+            collection = request.specify_collection
+            discipline = collection.discipline if collection is not None else None
+        except Exception:
+            collection = None
+            discipline = None
     institution = Institution.objects.first()
 
     database_version = spversion.appversion if spversion is not None else None
