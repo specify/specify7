@@ -566,10 +566,7 @@ export function getMappingLineData({
             const isGeoPaleoDiscipline =
               disciplineType !== undefined &&
               geoPaleoDisciplines.includes(disciplineType);
-            if (
-              field.name === 'age' &&
-              !isGeoPaleoDiscipline
-            ) {
+            if (field.name === 'age' && !isGeoPaleoDiscipline) {
               return false;
             }
 
