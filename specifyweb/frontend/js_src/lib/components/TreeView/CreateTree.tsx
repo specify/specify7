@@ -99,11 +99,13 @@ export function CreateTree<
 
   const connectedCollection = getSystemInfo().collection ?? '';
   const discipline = getSystemInfo().discipline ?? '';
+  const canCreateTrees = discipline.trim().length > 0;
 
   // Start default tree creation
   const handleClick = async (
     resource: TaxonFileDefaultDefinition
   ): Promise<void> => {
+    if (!canCreateTrees) return;
     setIsTreeCreationStarted(true);
     return startTreeCreation(
       resource.file,
@@ -235,11 +237,13 @@ export function ImportTree<SCHEMA extends AnyTree>({
 
   const connectedCollection = getSystemInfo().collection ?? '';
   const connectedDiscipline = getSystemInfo().discipline ?? '';
+  const canCreateTrees = connectedDiscipline.trim().length > 0;
 
   const handleClick = async (
     resource: TaxonFileDefaultDefinition,
     createMissingRanks?: boolean
   ): Promise<void> => {
+    if (!canCreateTrees) return;
     setSelectedPopulatedTree(resource);
     // Check for missing ranks if no preference for createMissingRanks was provided.
     if (createMissingRanks === undefined) {
@@ -374,7 +378,7 @@ export function ImportTree<SCHEMA extends AnyTree>({
 async function startTreeCreation(
   url: string,
   mappingUrl: string,
-  collection: string,
+  collectionName: string,
   disciplineName: string,
   rowCount: number,
   treeName: string,
@@ -388,7 +392,7 @@ async function startTreeCreation(
     body: {
       url,
       mappingUrl,
-      collection,
+      collectionName,
       disciplineName,
       rowCount,
       treeName,
