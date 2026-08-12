@@ -302,7 +302,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es':
       'Objetos de la colección con determinaciones actuales, que muestran el nombre del taxón determinado, el nombre común del taxón y el determinante.',
     'fr-fr':
-      'Objets de la collection avec déterminations actuelles, indiquant le nom du taxon déterminé, le nom commun du taxon et le déterminant.',
+      'Objets avec déterminations actuelles, indiquant le nom du taxon déterminé, le nom commun du taxon et le déterminant.',
     'hr-hr':
       'Objekti zbirke s trenutnim određenjima, koji prikazuju određeni naziv taksona, uobičajeni naziv taksona i odrednicu.',
     nb: 'Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte taksonnavnet, taksonets vanlige navn og bestemmer.',
@@ -380,7 +380,7 @@ export const expressSearchConfigText = createDictionary({
     'en-us':
       'Taxa linked to geography records through collection object determinations and collecting event localities.',
     'de-ch':
-      'Taxa, die über die Bestimmung von Sammlungsobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
+      'Taxa, die über die Bestimmung von Sammelobjekten und Sammelorten mit geographischen Aufzeichnungen verknüpft sind.',
     'es-es':
       'Taxones vinculados a registros geográficos mediante la determinación de objetos de colección y localidades de eventos de recolección.',
     'fr-fr':
@@ -401,7 +401,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Coleccionistas de objetos',
     'fr-fr': 'Collecteurs',
     'hr-hr': 'Kolekcionari objekata kolekcija',
-    nb: 'Samleobjekter Samlere',
+    nb: 'Samleobjekter',
     'pt-br': 'Colecionadores de Objetos de Coleção',
     'ru-ru': 'Коллекционеры предметов',
     'uk-ua': "Колекціонери об'єктів колекцій",
@@ -648,7 +648,7 @@ export const expressSearchConfigText = createDictionary({
     'hr-hr': 'Događaj prikupljanja objekata kolekcije',
     nb: 'Samlingsobjekt Samlehendelse',
     'pt-br': 'Evento de coleta de objetos da coleção',
-    'ru-ru': 'Событие по сбору коллекционных предметов',
+    'ru-ru': 'Событие по сбору коллекционных объектов',
     'uk-ua': "Подія збору об'єктів колекції",
   },
   CEToCO_desc: {
@@ -690,7 +690,7 @@ export const expressSearchConfigText = createDictionary({
     'ru-ru':
       'Места сбора образцов и предметы, найденные в ходе этих мероприятий.',
     'uk-ua':
-      'Місцевості та предмети колекціонування, знайдені під час їхніх колекційних заходів.',
+      'Місцевості та предмети колекціонування, знайдені на їхніх заходах з колекціонування.',
   },
   AccessionToCo: {
     'en-us': 'Collection Object Accession',
@@ -803,7 +803,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Chronostratigraphie des objets',
     'hr-hr': 'Kronostratigrafija zbirke objekata',
     nb: 'Samlingsobjekt Kronostratigrafi',
-    'pt-br': 'Cronoestratigrafia de objetos de coleção',
+    'pt-br': 'Cronoestratigrafia de objetos da coleção',
     'ru-ru': 'Коллекция «Хроностратиграфия»',
     'uk-ua': "Хроностратиграфія колекційних об'єктів",
   },
@@ -951,7 +951,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Objets liés aux lieux de leurs localités de collecte',
     'hr-hr':
       'Predmeti zbirke povezani s geografskim područjima mjesta na kojima su se odvijali događaji zbirke.',
-    nb: 'Samlingsobjekter knyttet til de geografiske områdene der de samler hendelsene.',
+    nb: 'Samlingsobjekter knyttet til de geografiske områdene der de samler inn hendelsene.',
     'pt-br':
       'Objetos de coleção vinculados às áreas geográficas dos locais onde foram coletados.',
     'ru-ru':
@@ -1068,7 +1068,7 @@ export const expressSearchConfigText = createDictionary({
     'hr-hr': 'Litostratigrafija zbirke objekata',
     nb: 'Samlingsobjekt Litostratigrafi',
     'pt-br': 'Coleção de objetos Litoestratigrafia',
-    'ru-ru': 'Коллекция предметов: литостратиграфия',
+    'ru-ru': 'Коллекция «Литостратиграфия»',
     'uk-ua': "Літостратиграфія колекційних об'єктів",
   },
   LithoStratToCO_desc: {
@@ -1138,7 +1138,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Les permis et les agents auxquels ils ont été délivrés.',
     'hr-hr': 'Dozvole i agenti kojima su izdane.',
     nb: 'Tillatelser og agentene de ble utstedt til.',
-    'pt-br': 'As autorizações e os agentes a quem foram emitidas.',
+    'pt-br': 'Licenças e os agentes a quem foram emitidas.',
     'ru-ru': 'Разрешения и агенты, которым они были выданы.',
     'uk-ua': 'Дозволи та агенти, яким вони були видані.',
   },

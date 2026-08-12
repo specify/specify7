@@ -16,7 +16,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Пакетное редактирование',
     'uk-ua': 'Пакетне редагування',
     'hr-hr': 'Skupno uređivanje',
-    nb: 'Masseredigering',
+    nb: 'Grupperedigering',
   },
   batchEditPrefs: {
     'en-us': 'Batch Edit Preferences',
@@ -27,7 +27,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Настройки пакетного редактирования',
     'uk-ua': 'Налаштування пакетного редагування',
     'hr-hr': 'Postavke grupnog uređivanja',
-    nb: 'Innstillinger for masseredigering',
+    nb: 'Innstillinger for batchredigering',
   },
   numberOfRecords: {
     'en-us': 'Number of records selected from the query',
@@ -38,7 +38,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Количество записей, выбранных из запроса.',
     'uk-ua': 'Кількість записів, вибраних із запиту',
     'hr-hr': 'Broj zapisa odabranih iz upita',
-    nb: 'Antall treff valgt fra søket',
+    nb: 'Antall poster valgt fra spørringen',
   },
   removeField: {
     'en-us':
@@ -46,7 +46,7 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Dieses Feld wird für die Stapelbearbeitung nicht unterstützt. Entfernen Sie das Feld oder blenden Sie es aus.',
     'es-es':
-      'Campo no compatible con la edición por lotes. Elimínelo u ocúltelo.',
+      'Este campo no admite la edición por lotes. Elimine el campo o hágalo oculto.',
     'fr-fr':
       "Ce champ n'est pas compatible avec la modification par lots. Veuillez le supprimer ou le masquer.",
     'pt-br':
@@ -54,10 +54,10 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Поле не поддерживается для пакетного редактирования. Либо удалите поле, либо скройте его.',
     'uk-ua':
-      'Поле не підтримується для пакетного редагування. Видаліть поле або приховайте його.',
+      'Поле не підтримується для пакетного редагування. Видаліть поле або зробіть його прихованим.',
     'hr-hr':
       'Polje nije podržano za skupno uređivanje. Uklonite polje ili ga sakrijte.',
-    nb: 'Feltet støttes ikke ved masseredigering. Fjern feltet eller skjul det.',
+    nb: 'Feltet støttes ikke for batchredigering. Fjern feltet, eller gjør det skjult.',
   },
   addTreeRank: {
     'en-us':
@@ -65,7 +65,7 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Die folgenden Ränge werden der Abfrage hinzugefügt, um die Stapelbearbeitung zu ermöglichen.',
     'es-es':
-      'Los siguientes rangos se agregarán a la consulta para permitir la edición por lotes',
+      'Se añadirán los siguientes rangos a la consulta para permitir la edición por lotes.',
     'fr-fr':
       "Les rangs suivants seront ajoutés à la requête pour permettre l'édition par lots",
     'pt-br':
@@ -76,7 +76,7 @@ export const batchEditText = createDictionary({
       'Наступні ранги будуть додані до запиту, щоб увімкнути пакетне редагування',
     'hr-hr':
       'Sljedeći rangovi bit će dodani upitu kako bi se omogućilo skupno uređivanje',
-    nb: 'Følgende ranger vil bli lagt til i søket for å aktivere masseredigering',
+    nb: 'Følgende ranger vil bli lagt til spørringen for å muliggjøre batchredigering',
   },
   pickTreesToFilter: {
     'en-us':
@@ -84,7 +84,7 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Die ausgewählten Ränge befinden sich in mehreren Bäumen. Wählen Sie die Bäume aus, die Sie stapelweise bearbeiten möchten.',
     'es-es':
-      'Los rangos seleccionados se encuentran en varios árboles. Seleccione los árboles para editarlos por lotes.',
+      'El/los rango(s) seleccionado(s) se encuentran en varios árboles. Elija el/los árbol(es) para editar por lotes.',
     'fr-fr':
       'Le ou les rangs sélectionnés se trouvent dans plusieurs arbres. Sélectionnez le ou les arbres à modifier par lots',
     'pt-br':
@@ -92,10 +92,10 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Выбранный(е) ранг(и) встречается(ются) в нескольких деревьях. Выберите дерево(я) для пакетного редактирования.',
     'uk-ua':
-      'Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування',
+      'Вибрані ранги знаходяться в кількох деревах. Виберіть дерево(а) для пакетного редагування.',
     'hr-hr':
       'Odabrani rang(ovi) nalaze se u više stabala. Odaberite stablo(a) za skupno uređivanje',
-    nb: 'Den/de valgte rangeringen(e) finnes i flere trær. Velg tre(r) for massredigering med',
+    nb: 'Den/de valgte rangeringen(e) finnes i flere trær. Velg tre(r) for batchredigering med',
   },
   datasetName: {
     'en-us': '{queryName:string} {datePart:string}',
@@ -104,41 +104,41 @@ export const batchEditText = createDictionary({
     'fr-fr': '{queryName:string} {datePart:string}',
     'pt-br': '{queryName:string} {datePart:string}',
     'ru-ru': '{queryName:string} {datePart:string}',
-    'uk-ua': "{queryName:string} {datePart:string}'",
+    'uk-ua': '{queryName:string} {datePart:string}',
     'hr-hr': '{queryName:string} {datePart:string}',
     nb: '{queryName:string} {datePart:string}',
   },
   errorInQuery: {
     'en-us': 'Following errors were found in the query',
     'de-ch': 'Bei der Abfrage wurden folgende Fehler gefunden.',
-    'es-es': 'Se encontraron los siguientes errores en la consulta',
-    'fr-fr': 'Les erreurs suivantes ont été détectées dans la requête.',
+    'es-es': 'Se encontraron los siguientes errores en la consulta:',
+    'fr-fr': 'Les erreurs suivantes ont été détectées dans la requête',
     'pt-br': 'Os seguintes erros foram encontrados na consulta.',
     'ru-ru': 'В запросе были обнаружены следующие ошибки.',
     'uk-ua': 'У запиті виявлено такі помилки',
     'hr-hr': 'U upitu su pronađene sljedeće greške',
-    nb: 'Følgende feil ble funnet i søket',
+    nb: 'Følgende feil ble funnet i spørringen',
   },
   missingRanksInQuery: {
     'en-us': 'Query requires additional ranks for batch editing',
     'de-ch': 'Für die Stapelbearbeitung sind zusätzliche Ränge erforderlich.',
     'es-es':
-      'La consulta requiere rangos adicionales para la edición por lotes',
+      'La consulta requiere rangos adicionales para la edición por lotes.',
     'fr-fr':
-      "La requête nécessite des niveaux hiérarchiques supplémentaires pour l'édition par lots.",
+      "La requête nécessite des niveaux hiérarchiques supplémentaires pour l'édition par lots",
     'pt-br': 'A consulta requer níveis adicionais para edição em lote.',
     'ru-ru':
       'Для пакетного редактирования запроса требуются дополнительные ранги.',
     'uk-ua': 'Запит потребує додаткових рангів для пакетного редагування',
     'hr-hr': 'Upit zahtijeva dodatne rangove za skupno uređivanje',
-    nb: 'Søket krever flere ranger for massredigering',
+    nb: 'Spørringen krever flere ranger for batchredigering',
   },
   createUpdateDataSetInstructions: {
     'en-us': 'Use the query builder to make a new batch edit dataset',
     'de-ch':
       'Verwenden Sie den Abfrage-Generator, um ein neues Batch-Bearbeitungs-Dataset zu erstellen.',
     'es-es':
-      'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes',
+      'Utilice el generador de consultas para crear un nuevo conjunto de datos de edición por lotes.',
     'fr-fr':
       "Utilisez le générateur de requêtes pour créer un nouveau jeu de données d'édition par lots.",
     'pt-br':
@@ -149,18 +149,18 @@ export const batchEditText = createDictionary({
       'Використовуйте конструктор запитів для створення нового набору даних для пакетного редагування',
     'hr-hr':
       'Pomoću alata za izradu upita napravite novi skup podataka za grupno uređivanje',
-    nb: 'Bruk søkbyggeren til å opprette et nytt datasett for masseredigering',
+    nb: 'Bruk spørrebyggeren til å opprette et nytt datasett for batchredigering',
   },
   showRollback: {
     'en-us': 'Show rollback button',
     'de-ch': 'Schaltfläche „Zurück“ anzeigen',
-    'es-es': 'Mostrar botón para revertir',
+    'es-es': 'Mostrar botón de reversión',
     'fr-fr': 'Afficher le bouton de restauration',
     'pt-br': 'Mostrar botão de reversão',
     'ru-ru': 'Показать кнопку отката',
     'uk-ua': 'Показати кнопку відкату',
     'hr-hr': 'Prikaži gumb za vraćanje',
-    nb: 'Vis tilbakestillingsknapp',
+    nb: 'Vis tilbakerullingsknapp',
   },
   showRollbackDescription: {
     'en-us':
@@ -168,7 +168,7 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Die Funktion „Rollback“ in der Stapelbearbeitung ist experimentell. Diese Einstellung blendet die Schaltfläche aus.',
     'es-es':
-      'Revertir en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.',
+      'La función de reversión en la edición por lotes es una función experimental. Esta preferencia ocultará el botón.',
     'fr-fr':
       'La fonction « Annuler » dans l’édition par lots est expérimentale. Cette préférence masquera le bouton.',
     'pt-br':
@@ -179,7 +179,7 @@ export const batchEditText = createDictionary({
       'Відкат у пакетному редагуванні – це експериментальна функція. Цей параметр приховає кнопку',
     'hr-hr':
       'Vraćanje u skupnom uređivanju je eksperimentalna značajka. Ova će postavka sakriti gumb',
-    nb: 'Tilbakeføring i masseredigering er en eksperimentell funksjon. Denne innstillingen skjuler knappen.',
+    nb: 'Tilbakerulling i batchredigering er en eksperimentell funksjon. Denne innstillingen vil skjule knappen',
   },
   commit: {
     'en-us': 'Commit',
@@ -190,7 +190,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Совершить',
     'uk-ua': 'Здійснити',
     'hr-hr': 'Potvrdi',
-    nb: 'Lagre',
+    nb: 'Begå',
   },
   startCommitDescription: {
     'en-us':
@@ -206,10 +206,10 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'При сохранении набора данных будут обновляться, добавляться и удаляться данные из электронной таблицы в указанную базу данных.',
     'uk-ua':
-      'Запис набору даних призведе до оновлення, додавання та видалення даних з електронної таблиці до бази даних Specify.',
+      'Запис набору даних оновить, додасть та видалить дані з електронної таблиці до бази даних Specify.',
     'hr-hr':
       'Potvrdom skupa podataka ažurirat će se, dodavati i brisati podaci iz proračunske tablice u bazu podataka Specify.',
-    nb: 'Når datasettet bekreftes, blir dataene i regnearket oppdatert, lagt til og slettet i Specify-databasen.',
+    nb: 'Når datasettet er lagret, vil det oppdatere, legge til og slette dataene fra regnearket til Specify-databasen.',
   },
   startRevertDescription: {
     'en-us':
@@ -217,7 +217,7 @@ export const batchEditText = createDictionary({
     'de-ch':
       'Durch das Zurücksetzen des Datensatzes werden die Werte aktualisiert, erstellte Datensätze gelöscht und neue Datensätze erstellt.',
     'es-es':
-      'Al revertir el conjunto de datos se volverán a actualizar los valores, se eliminarán los registros creados y se crearán nuevos registros.',
+      'Revertir el conjunto de datos actualizará los valores, eliminará los registros creados y creará nuevos registros.',
     'fr-fr':
       "La restauration des données permettra de mettre à jour les valeurs, de supprimer les enregistrements créés et d'en créer de nouveaux.",
     'pt-br':
@@ -225,29 +225,29 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Откат набора данных приведет к повторному обновлению значений, удалению созданных записей и созданию новых записей.',
     'uk-ua':
-      'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів',
+      'Відкат набору даних призведе до повторного оновлення значень, видалення створених записів та створення нових записів.',
     'hr-hr':
-      'Vraćanjem skupa podataka unatrag ponovno će se ažurirati vrijednosti, izbrisati kreirani zapisi i kreirati novi zapisi',
-    nb: 'Tilbakeføring av datasettet vil gjenopprette tidligere verdier, slette opprettede poster og gjenopprette slettede poster',
+      'Vraćanje skupa podataka ponovno će ažurirati vrijednosti, izbrisati kreirane zapise i kreirati nove zapise',
+    nb: 'Tilbakestilling av datasettet vil oppdatere verdiene på nytt, slette opprettede poster og opprette nye poster',
   },
   commitSuccessfulDescription: {
     'en-us':
-      'Click on the "Results" button to see the number of records affected in each database table',
+      'Your changes have been applied to the database. See the number of records affected in each table below:',
     'de-ch':
-      'Klicken Sie auf die Schaltfläche „Ergebnisse“, um die Anzahl der betroffenen Datensätze in jeder Datenbanktabelle anzuzeigen.',
+      'Ihre Änderungen wurden in der Datenbank übernommen. Die Anzahl der betroffenen Datensätze in den einzelnen Tabellen finden Sie unten:',
     'es-es':
-      'Haga clic en el botón "Resultados" para ver el número de registros afectados en cada tabla de la base de datos',
+      'Los cambios se han aplicado a la base de datos. Consulte el número de registros afectados en cada tabla a continuación:',
     'fr-fr':
-      "Cliquez sur le bouton « Résultats » pour voir le nombre d'enregistrements affectés dans chaque table de base de données.",
+      "Vos modifications ont été appliquées à la base de données. Pour voir le nombre d'enregistrements affectés dans chaque table, cliquez sur « Résultats » dans la barre d'outils au-dessus de la grille de données.",
     'pt-br':
-      'Clique no botão "Resultados" para ver o número de registros afetados em cada tabela do banco de dados.',
+      'As suas alterações foram aplicadas à base de dados. Veja abaixo o número de registos afetados em cada tabela:',
     'ru-ru':
-      'Нажмите кнопку «Результаты», чтобы увидеть количество затронутых записей в каждой таблице базы данных.',
+      'Ваши изменения были применены к базе данных. Ниже вы можете увидеть количество затронутых записей в каждой таблице:',
     'uk-ua':
-      'Натисніть кнопку «Результати», щоб побачити кількість записів, на які вплинула зміна, у кожній таблиці бази даних',
+      'Ваші зміни застосовано до бази даних. Дивіться кількість записів, на які це вплинуло, у кожній таблиці нижче:',
     'hr-hr':
-      'Kliknite gumb "Rezultati" da biste vidjeli broj pogođenih zapisa u svakoj tablici baze podataka',
-    nb: 'Klikk på «Resultater»-knappen for å se antall treff som blir berørt i hver databasetabell',
+      'Vaše su promjene primijenjene u bazi podataka. Pogledajte broj pogođenih zapisa u svakoj tablici u nastavku:',
+    nb: 'Endringene dine er implementert i databasen. Se antall berørte poster i hver tabell nedenfor:',
   },
   dateSetRevertDescription: {
     'en-us':
@@ -263,10 +263,10 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Этот восстановленный набор данных сохранен, однако его нельзя редактировать. Пожалуйста, повторно выполните запрос.',
     'uk-ua':
-      'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит',
+      'Цей відкочений набір даних збережено, проте його не можна редагувати. Будь ласка, повторіть запит.',
     'hr-hr':
       'Ovaj vraćeni skup podataka je spremljen, međutim, ne može se uređivati. Ponovno pokrenite upit.',
-    nb: 'Dette tilbakerullede datasettet er lagret, men kan ikke redigeres. Kjør søket på nytt',
+    nb: 'Dette tilbakerullede datasettet er lagret, men det kan ikke redigeres. Kjør spørringen på nytt.',
   },
   committing: {
     'en-us': 'Committing',
@@ -274,10 +274,10 @@ export const batchEditText = createDictionary({
     'es-es': 'Comprometerse',
     'fr-fr': 'Téléverser',
     'pt-br': 'Comprometer-se',
-    'ru-ru': 'Совершение',
+    'ru-ru': 'Пожертвование',
     'uk-ua': 'Здійснення',
     'hr-hr': 'Počinjanje',
-    nb: 'Lagrer datasettet',
+    nb: 'Forpliktelse',
   },
   beStatusCommit: {
     'en-us': 'Data Set Commit Status',
@@ -288,7 +288,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Статус фиксации набора данных',
     'uk-ua': 'Стан фіксації набору даних',
     'hr-hr': 'Status potvrđivanja skupa podataka',
-    nb: 'Lagringsstatus for datasett',
+    nb: 'Status for iverksettelse av datasett',
   },
   startCommit: {
     'en-us': 'Begin Data Set Commit?',
@@ -299,7 +299,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Начало фиксации набора данных?',
     'uk-ua': 'Почати фіксацію набору даних?',
     'hr-hr': 'Započeti potvrđivanje skupa podataka?',
-    nb: 'Starte lagring av datasettet?',
+    nb: 'Starte datasett-iverksettelse?',
   },
   commitErrors: {
     'en-us': 'Commit Failed due to Error Cells',
@@ -310,7 +310,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Фиксация не удалась из-за ошибок в ячейках.',
     'uk-ua': 'Не вдалося виконати фіксацію через комірки з помилками',
     'hr-hr': 'Potvrda nije uspjela zbog ćelija s pogreškom',
-    nb: 'Lagring mislyktes på grunn av feil i celler',
+    nb: 'Utføring mislyktes på grunn av feilceller',
   },
   commitErrorsDescription: {
     'en-us': 'The Commit failed due to one or more cell value errors.',
@@ -325,10 +325,10 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Операция фиксации не удалась из-за одной или нескольких ошибок в значениях ячеек.',
     'uk-ua':
-      'Фіксацію не вдалося виконати через одну або декілька помилок у значенні клітинки.',
+      'Фіксацію не вдалося виконати через одну або кілька помилок у значенні клітинки.',
     'hr-hr':
       'Potvrda nije uspjela zbog jedne ili više pogrešaka u vrijednosti ćelije.',
-    nb: 'Lagringen mislyktes på grunn av én eller flere feil i celleverdier.',
+    nb: 'Iverksettelsen mislyktes på grunn av én eller flere celleverdifeil.',
   },
   commitCancelled: {
     'en-us': 'Commit Cancelled',
@@ -339,18 +339,18 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Подтверждение отменено',
     'uk-ua': 'Зміна фіксації',
     'hr-hr': 'Potvrda otkazana',
-    nb: 'Lagring avbrutt',
+    nb: 'Forpliktelse avbrutt',
   },
   commitCancelledDescription: {
     'en-us': 'Commit Cancelled Description',
     'de-ch': 'Commit abgebrochen Beschreibung',
-    'es-es': 'Compromiso Cancelado Descripción',
+    'es-es': 'Descripción de la cancelación del compromiso',
     'fr-fr': "Description de l'annulation du versement",
     'pt-br': 'Descrição do Compromisso Cancelado',
     'ru-ru': 'Подтверждение отменено Описание',
     'uk-ua': 'Опис скасованого підтвердження',
     'hr-hr': 'Opis otkazanog potvrđivanja',
-    nb: 'Forklaring på avbrutt lagring',
+    nb: 'Beskrivelse av forpliktelse avbrutt',
   },
   commitSuccessful: {
     'en-us': 'Commit Completed with No Errors',
@@ -361,7 +361,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Фиксация изменений завершена без ошибок.',
     'uk-ua': 'Коміт завершено без помилок',
     'hr-hr': 'Potvrda završena bez grešaka',
-    nb: 'Lagring fullført uten feil',
+    nb: 'Utføring fullført uten feil',
   },
   batchEditRecordSetName: {
     'en-us': 'BE commit of "{dataSet:string}"',
@@ -455,7 +455,7 @@ export const batchEditText = createDictionary({
       'Пакетне редагування вимкнено для системних таблиць та таблиць ієрархії області видимості',
     'hr-hr':
       'Skupno uređivanje onemogućeno je za sistemske tablice i tablice hijerarhije opsega',
-    nb: 'Masseredigering er deaktivert for systemtabeller og tabeller i skop- og hierarkitabeller',
+    nb: 'Grupperedigering er deaktivert for systemtabeller og omfangshierarktabeller',
   },
   cannotEditAfterRollback: {
     'en-us':
@@ -474,7 +474,7 @@ export const batchEditText = createDictionary({
       '(Набори даних пакетного редагування не можна редагувати після відкату – лише для читання)',
     'hr-hr':
       '(Skupni skupovi podataka za skupno uređivanje ne mogu se uređivati nakon vraćanja na prethodno stanje - samo za čitanje)',
-    nb: '(Datasett for masseredigering kan ikke redigeres etter tilbakeføring – skrivebeskyttet)',
+    nb: '(Datasett for batchredigering kan ikke redigeres etter tilbakestilling – skrivebeskyttet)',
   },
   enableRelationships: {
     'en-us': 'Enable relationships',
@@ -499,12 +499,12 @@ export const batchEditText = createDictionary({
     'pt-br':
       'Permite a edição em lote de relacionamentos da tabela base. O rollback é desativado quando os relacionamentos estão ativados.',
     'ru-ru':
-      'Позволяет пакетно редактировать связи базовой таблицы. Откат отключен, если связи включены.',
+      'Позволяет пакетно редактировать связи в базовой таблице. Откат отключен, если связи включены.',
     'uk-ua':
-      "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено",
+      "Дозволяє пакетне редагування зв'язків базової таблиці. Відкат вимкнено, якщо зв'язки ввімкнено.",
     'hr-hr':
       'Omogućuje skupno uređivanje odnosa osnovne tablice. Vraćanje unatrag je onemogućeno kada su odnosi omogućeni.',
-    nb: 'Tillater masseredigering av relasjoner i basistabellen. Tilbakeføring er deaktivert når relasjoner er aktivert',
+    nb: 'Tillater batchredigering av relasjoner i basistabellen. Tilbakerulling er deaktivert når relasjoner er aktivert',
   },
   commitDataSet: {
     'en-us': 'Commit Data Set',
@@ -519,21 +519,21 @@ export const batchEditText = createDictionary({
   },
   warningBatchEditText: {
     'en-us':
-      'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone',
+      'Before proceeding, please note that the following action may interrupt other users. This action may cause delays or temporary unavailability of certain features for Specify users. Please consider the impact on their experience. This action cannot be undone.',
     'de-ch':
       'Bevor Sie fortfahren, beachten Sie bitte, dass die folgende Aktion andere Nutzer beeinträchtigen kann. Dies kann zu Verzögerungen oder vorübergehender Nichtverfügbarkeit bestimmter Funktionen für bestimmte Nutzer führen. Bitte berücksichtigen Sie die Auswirkungen auf deren Nutzungserfahrung. Diese Aktion kann nicht rückgängig gemacht werden.',
     'es-es':
-      'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría causar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción no se puede deshacer.',
+      'Antes de continuar, tenga en cuenta que la siguiente acción podría interrumpir a otros usuarios. Esta acción podría ocasionar retrasos o la indisponibilidad temporal de ciertas funciones para los usuarios especificados. Considere el impacto en su experiencia. Esta acción es irreversible.',
     'fr-fr':
-      "Avant de continuer, veuillez noter que l'action suivante peut perturber d'autres utilisateurs si effectuée sur un grand jeu de données. Cette action peut entraîner des lenteurs ou l'indisponibilité temporaire de certaines fonctionnalités. Cette action est irréversible.",
+      "Avant de poursuivre, veuillez noter que l'action suivante peut perturber d'autres utilisateurs. Cette action peut entraîner des retards ou l'indisponibilité temporaire de certaines fonctionnalités pour les utilisateurs de Specify. Veuillez tenir compte de l'impact sur leur expérience. Cette action est irréversible.",
     'pt-br':
-      'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Esta ação pode causar atrasos ou indisponibilidade temporária de certos recursos para os usuários especificados. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
+      'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Essa ação pode causar atrasos ou indisponibilidade temporária de certos recursos para usuários específicos. Considere o impacto na experiência deles. Esta ação não pode ser desfeita.',
     'ru-ru':
       'Прежде чем продолжить, обратите внимание, что следующее действие может помешать другим пользователям. Это действие может вызвать задержки или временную недоступность некоторых функций для указанных пользователей. Пожалуйста, учтите влияние на их опыт использования сайта. Это действие необратимо.',
     'uk-ua':
-      'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для певних користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати',
+      'Перш ніж продовжити, зверніть увагу, що наступна дія може перешкодити іншим користувачам. Ця дія може спричинити затримки або тимчасову недоступність певних функцій для визначених користувачів. Будь ласка, врахуйте вплив на їхній досвід. Цю дію не можна скасувати.',
     'hr-hr':
       'Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete u obzir utjecaj na njihovo iskustvo. Ova se radnja ne može poništiti.',
-    nb: 'Før du fortsetter, vær oppmerksom på at denne handlingen kan påvirke andre brukere. Den kan føre til forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner i Specify. Vennligst vurder konsekvensene for brukeropplevelsen. Handlingen kan ikke angres.',
+    nb: 'Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan dette påvirker brukeropplevelsen deres. Denne handlingen kan ikke angres.',
   },
 } as const);
