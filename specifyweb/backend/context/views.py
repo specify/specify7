@@ -722,10 +722,10 @@ def system_info(request):
     if setup_complete:
         try:
             collection = request.specify_collection
-            discipline = collection.discipline if collection is not None else None
-        except Exception:
+        except Collection.DoesNotExist:
             collection = None
-            discipline = None
+        else:
+            discipline = collection.discipline if collection is not None else None
     institution = Institution.objects.first()
 
     database_version = spversion.appversion if spversion is not None else None
