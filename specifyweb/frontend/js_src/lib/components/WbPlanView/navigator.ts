@@ -138,7 +138,10 @@ function navigator({
     isTreeTable(table.name) && !valueIsTreeMeta(parentPartName);
 
   const disciplineType = getSystemInfo().discipline_type?.toLowerCase();
-  const isNonGeoDiscipline = !geoPaleoDisciplines.includes(disciplineType);
+  const isGeoPaleoDiscipline =
+    disciplineType !== undefined &&
+    geoPaleoDisciplines.includes(disciplineType);
+  const isNonGeoDiscipline = !isGeoPaleoDiscipline;
 
   if (
     isNonGeoDiscipline &&
@@ -560,9 +563,12 @@ export function getMappingLineData({
 
             const disciplineType =
               getSystemInfo().discipline_type?.toLowerCase();
+            const isGeoPaleoDiscipline =
+              disciplineType !== undefined &&
+              geoPaleoDisciplines.includes(disciplineType);
             if (
               field.name === 'age' &&
-              !geoPaleoDisciplines.includes(disciplineType)
+              !isGeoPaleoDiscipline
             ) {
               return false;
             }

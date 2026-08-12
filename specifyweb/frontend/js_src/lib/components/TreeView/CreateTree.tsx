@@ -97,8 +97,8 @@ export function CreateTree<
     SpecifyResource<AnySchema> | undefined
   >(undefined);
 
-  const connectedCollection = getSystemInfo().collection;
-  const discipline = getSystemInfo().discipline;
+  const connectedCollection = getSystemInfo().collection ?? '';
+  const discipline = getSystemInfo().discipline ?? '';
 
   // Start default tree creation
   const handleClick = async (
@@ -233,8 +233,8 @@ export function ImportTree<SCHEMA extends AnyTree>({
     TaxonFileDefaultDefinition | undefined
   >(undefined);
 
-  const connectedCollection = getSystemInfo().collection;
-  const connectedDiscipline = getSystemInfo().discipline;
+  const connectedCollection = getSystemInfo().collection ?? '';
+  const connectedDiscipline = getSystemInfo().discipline ?? '';
 
   const handleClick = async (
     resource: TaxonFileDefaultDefinition,
