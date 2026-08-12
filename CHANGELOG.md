@@ -4,6 +4,92 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.12.0.7](https://github.com/specify/specify7/compare/v7.12.0.6...v7.12.0.7) (28 July 2026)
+
+### Updated
+
+* The [International Chronostratigraphic Chart](https://stratigraphy.org/chart/) graphic, published by the International Commission on Stratigraphy, has been updated to version `2026/06` ([#8248](https://github.com/specify/specify7/pull/8248))
+   * The default data for the Chronostratigraphy tree (`GeologicTimePeriod`) has been updated to reflect these new values.
+
+### Fixed
+
+* Improves the initial database setup script ([#8156](https://github.com/specify/specify7/pull/8156))
+    * More reliable DB provisioning, privilege verification and clearer failure diagnostics.
+    * Fixed single-use-iterable bug affecting uniqueness rule creation.
+    * Improved legacy-permissions detection and safer role/user assignment during initialization.
+    * Startup validates DB alias and logs connection fallbacks.
+    * Migration initialization now respects override behavior; container startup can skip automatic migrations. 
+    * Credentials/config now come from environment variables with chained defaults.
+    * Setup scripts run in stricter shell mode for safer execution. 
+* Schema config and migration fixes ([#8154](https://github.com/specify/specify7/pull/8154))
+    * Fixes model capitalizations and case sensitivity issues across schema config table labels and descriptions
+    * Fixes Picklist Type filtering to use the correct type during database migrations
+    * Fixes an issue where `SpLocaleItemStr` records were not created when generating Schema Config records for tables
+    * Fixes incorrect Discipline to TectonicUnit tree definition pairing when resolving links
+    * Fixes handling of synonymized root nodes during tree reverse migrations
+    * Fixes handling of custom Tectonic Unit trees when reverting migrations
+    * Fixes a case where the business rules app was not ready but migrations attempted to run
+    * Fixes `MultipleObjectsReturned` errors by simplifying exception handling during schema repairs
+    * Fixes localized string deduplication to scope by language, preventing cross-language string conflicts
+    * Fixes catalog-number uniqueness shadowing in collection functions during migration
+    * Fixes the `DisciplineType` PickList being created when creating a new Collection
+    * Fixes `DisciplineType` picklist assignment for newly created Disciplines
+    * Fixes partially migrated disciplines that could not be repaired due to exclusion logic
+    * Fixes reuse prevention when pairing tree definitions with disciplines
+    * Fixes discipline tree definition links being set before skipping rank creation
+    * Fixes several schema migration reversibility issues (0021, 0023, 0027, 0033, 0040) to ensure safe rollbacks
+    * Fixes `reverse_hide_component_fields` defaulting incorrectly
+    * Fixes a typo in the `UserRole` description
+    * Fixes component catalog number cache typing for consistency
+    * Fixes an issue where `SP7_DEBUG` was not correctly set in all environments
+    * Fixes validation of `AUDIT_LIFESPAN_MONTHS` before executing purge SQL to prevent unsafe operations
+    * Fixes key escaping when fetching remote preferences to prevent injection vulnerabilities
+    * Fixes comparison of full uniqueness rule definitions before deletion to prevent data loss
+    * Fixes an issue where existing rows were not flipped back to `isDatabaseConstraint=True` where needed
+    * Fixes the `Migrator` user being used for all migration key operations
+    * Fixes the `is_sp6_user_permissions_migrated` check being re-introduced for proper legacy permission handling
+    * Fixes database connection handling to use the correct alias for migration connections
+    * Fixes `set_discipline_for_taxon_treedefs` being reduced to a single database query for improved performance
+    * Fixes `fix_taxon_treedef_discipline_links` being optimized to a single query for improved performance
+    * Fixes admin check ordering to evaluate common cases first for faster permission checks
+    * Fixes use of Django defaults in `get_or_create` for Role creation
+    * Fixes database connection used as a context manager for permission operations
+    * Fixes `fix_global_rules` helper function being simplified for better migration performance
+* Fixes missing data model relationships for attachments that could cause issues with record linking ([#8182](https://github.com/specify/specify7/pull/8182))
+* Regex field-formatter fixes ([#8152](https://github.com/specify/specify7/pull/8152))
+    * Fixes expression boundary markers being incorrectly inserted
+    * Fixes handling of outer parentheses in regex expressions
+    * Fixes regex trimming to intelligently handle ambiguous patterns
+    * Adds `ariaLabel` and `placeholder` attributes for improved accessibility
+* Schema config defaults hardening ([#8329](https://github.com/specify/specify7/pull/8329))
+    * Introduces `SchemaWriter` and `SchemaReader` utility classes for consistent and optimized schema config operations
+    * Introduces `ReadonlyDict` to prevent accidental mutation of schema default values, ensuring migration predictability
+    * Fixes `QueryValues` list flattening in migrations 0035 and 0040
+    * Fixes case-insensitive lookups in schema config helper functions
+    * Improves fallback logic to use `schema_localization_en.json` defaults when generating localized strings
+    * Ensures all passed-in default values are always respected during schema config creation
+    * Eliminates redundant database hits when creating Schema Config records sequentially
+* Database setup and permissions hardening ([#8313](https://github.com/specify/specify7/pull/8313))
+    * Reverts automatic migrator privilege grants when the user already exists to avoid permission conflicts
+    * Prevents access to collections belonging to disciplines that are still being created
+    * Fixes regular expressions used when checking database permissions
+    * Defaults `DATABASE_PORT` to 3306 for more reliable out-of-the-box configuration
+    * Removes unused environment variables and host configuration from default `.env`
+    * Fixes character escaping and host direction when creating database users
+* Batch edit fixes ([#8317](https://github.com/specify/specify7/pull/8317))
+    * Disables attachment relationships in batch edit mode to prevent invalid record linking
+* Tree management improvements ([#8312](https://github.com/specify/specify7/pull/8312), [#8243](https://github.com/specify/specify7/pull/8243))
+    * Allows deletion of unused tree ranks ([#8312](https://github.com/specify/specify7/pull/8312))
+    * Replaces child and synonym `LEFT JOIN`s with scalar subqueries for significantly faster tree queries ([#8243](https://github.com/specify/specify7/pull/8243))
+* Paleo discipline visibility fixes
+    * Unhides PaleoContext, Chronostrat, and Lithostrat trees by default in paleo disciplines (Geology, InvertPaleo, Paleobotany, VertPaleo)
+    * Fixes tree visibility and table descriptions across all disciplines for consistency
+    * Fixes incorrect picklist name for Determination → nameUsages
+    * Fixes null `catalogNumber` format specification
+* Migration test suite ([#8225](https://github.com/specify/specify7/pull/8225))
+    * Adds test coverage for `run_key_migration_functions` and discipline directory cleanup functions
+    * Removes reliance on mocking in several migration tests for more reliable validation
+
 ## [7.12.0.6](https://github.com/specify/specify7/compare/v7.12.0.5...v7.12.0.6) (21 May 2026)
 
 * Fix aggregated relation parsing for stored queries ([#8059](https://github.com/specify/specify7/pull/8059))
