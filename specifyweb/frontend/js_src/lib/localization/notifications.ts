@@ -18,6 +18,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Mitteilungen',
     'pt-br': 'Notificações',
     'hr-hr': 'Obavijesti',
+    nb: 'Varsler',
   },
   notificationsCount: {
     comment: 'Used for button label in the top menu',
@@ -29,6 +30,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Mitteilungen: {count:number|formatted}',
     'pt-br': 'Notificações: {count:number|formatted}',
     'hr-hr': 'Obavijesti: {count:number|formatted}',
+    nb: 'Varsler: {count:number|formatted}',
   },
   notificationsLoading: {
     comment: `
@@ -42,6 +44,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Mitteilungen: …',
     'pt-br': 'Notificações: …',
     'hr-hr': 'Obavijesti: …',
+    nb: 'Varsler: …',
   },
   mostRecentNotificationsTop: {
     'en-us': '(Ordered from most recent to the oldest.)',
@@ -52,6 +55,7 @@ export const notificationsText = createDictionary({
     'de-ch': '(Geordnet von neu zu alt)',
     'pt-br': '(Ordenado do mais recente para o mais antigo.)',
     'hr-hr': '(Poređano od najnovijeg do najstarijeg.)',
+    nb: '(Sortert fra nyeste til eldste.)',
   },
   exception: {
     comment: 'Used as a label for a button that downloads the error message',
@@ -63,6 +67,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Fehler',
     'pt-br': 'Erro',
     'hr-hr': 'Pogreška',
+    nb: 'Feil',
   },
   download: {
     'en-us': 'Download',
@@ -73,6 +78,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Herunterladen',
     'pt-br': 'Download',
     'hr-hr': 'Preuzmi',
+    nb: 'Last ned',
   },
   feedItemUpdated: {
     'en-us': 'RSS Export feed has been updated.',
@@ -83,6 +89,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der RSS-Export-Feed wurde aktualisiert.',
     'pt-br': 'O feed de exportação RSS foi atualizado.',
     'hr-hr': 'RSS feed za izvoz je ažuriran.',
+    nb: 'RSS eksportstrøm er oppdatert.',
   },
   updateFeedFailed: {
     'en-us': 'Export feed update failed.',
@@ -93,6 +100,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Die Aktualisierung des Export-Feeds ist fehlgeschlagen.',
     'pt-br': 'A atualização do feed de exportação falhou.',
     'hr-hr': 'Ažuriranje feeda izvoza nije uspjelo.',
+    nb: 'Oppdatering av eksportstrøm mislyktes.',
   },
   dwcaExportCompleted: {
     'en-us': 'DwCA export completed.',
@@ -103,6 +111,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der DwCA-Export wurde abgeschlossen.',
     'pt-br': 'Exportação do DwCA concluída.',
     'hr-hr': 'Izvoz DwCA-e je završen.',
+    nb: 'DwCA eksport fullført.',
   },
   dwcaExportFailed: {
     'en-us': 'DwCA export failed.',
@@ -113,6 +122,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der DwCA-Export ist fehlgeschlagen.',
     'pt-br': 'A exportação para DwCA falhou.',
     'hr-hr': 'Izvoz DwCA nije uspio.',
+    nb: 'DwCA eksport mislyktes.',
   },
   queryExportToCsvCompleted: {
     'en-us': 'Query export to CSV completed.',
@@ -123,6 +133,7 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach CSV wurde abgeschlossen.',
     'pt-br': 'Exportação da consulta para CSV concluída.',
     'hr-hr': 'Izvoz upita u CSV je završen.',
+    nb: 'Eksport av avansert søk til CSV fullført.',
   },
   queryExportToKmlCompleted: {
     'en-us': 'Query export to KML completed.',
@@ -133,6 +144,51 @@ export const notificationsText = createDictionary({
     'de-ch': 'Der Abfrageexport nach KML wurde abgeschlossen.',
     'pt-br': 'Exportação da consulta para KML concluída.',
     'hr-hr': 'Izvoz upita u KML je završen.',
+    nb: 'Eksporten av avansertsøk til KML fullført.',
+  },
+  queryExportToWebPortalCompleted: {
+    'en-us': 'Query export to Web Portal completed.',
+    'ru-ru': 'Экспорт запроса в веб-портал завершен.',
+    'es-es': 'La exportación de la consulta al Portal Web se completó.',
+    'fr-fr': 'Exportation de la requête vers le portail Web terminée.',
+    'uk-ua': 'Експорт запиту до веб-порталу завершено.',
+    'de-ch': 'Der Abfrageexport zum Webportal wurde abgeschlossen.',
+    'pt-br': 'A exportação da consulta para o portal web foi concluída.',
+    'hr-hr': 'Izvoz upita na web portal je dovršen.',
+    nb: 'Spørreeksport til nettportalen fullført.',
+  },
+  queryExportToCsvFailed: {
+    'en-us': 'Query export to CSV failed.',
+    'ru-ru': 'Не удалось экспортировать запрос в CSV.',
+    'es-es': 'Falló la exportación de la consulta a CSV.',
+    'fr-fr': "L'exportation de la requête au format CSV a échoué.",
+    'uk-ua': 'Помилка експорту запиту в CSV.',
+    'de-ch': 'Der Abfrageexport nach CSV ist fehlgeschlagen.',
+    'pt-br': 'A exportação da consulta para CSV falhou.',
+    'hr-hr': 'Izvoz upita u CSV nije uspio.',
+    nb: 'Eksport av spørring til CSV mislyktes.',
+  },
+  queryExportToKmlFailed: {
+    'en-us': 'Query export to KML failed.',
+    'ru-ru': 'Не удалось экспортировать запрос в KML.',
+    'es-es': 'Falló la exportación de la consulta a KML.',
+    'fr-fr': "L'exportation de la requête vers KML a échoué.",
+    'uk-ua': 'Помилка експорту запиту в KML.',
+    'de-ch': 'Der Abfrageexport nach KML ist fehlgeschlagen.',
+    'pt-br': 'A exportação da consulta para KML falhou.',
+    'hr-hr': 'Izvoz upita u KML nije uspio.',
+    nb: 'Eksport av spørring til KML mislyktes.',
+  },
+  queryExportToWebPortalFailed: {
+    'en-us': 'Query export to Web Portal failed.',
+    'ru-ru': 'Не удалось экспортировать запрос на веб-портал.',
+    'es-es': 'Falló la exportación de la consulta al Portal Web.',
+    'fr-fr': "L'exportation de la requête vers le portail Web a échoué.",
+    'uk-ua': 'Помилка експорту запиту до веб-порталу.',
+    'de-ch': 'Der Abfrageexport zum Webportal ist fehlgeschlagen.',
+    'pt-br': 'A exportação da consulta para o portal web falhou.',
+    'hr-hr': 'Izvoz upita na web portal nije uspio.',
+    nb: 'Eksport av spørring til nettportalen mislyktes.',
   },
   dataSetOwnershipTransferred: {
     'en-us':
@@ -151,5 +207,6 @@ export const notificationsText = createDictionary({
       '<userName /> transferiu a propriedade do conjunto de dados <dataSetName /> para você.',
     'hr-hr':
       '<userName /> vam je prenio vlasništvo nad skupom podataka <dataSetName />.',
+    nb: '<userName /> overførte eierskapet av <dataSetName /> datasettet til deg.',
   },
 } as const);

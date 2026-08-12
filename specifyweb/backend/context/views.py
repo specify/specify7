@@ -18,6 +18,7 @@ from django.utils.translation import get_language_info
 from django.utils.translation import gettext as _
 from django.utils import timezone
 from django.views.decorators.cache import cache_control, never_cache
+from django.utils.module_loading import import_string
 from django.views.decorators.csrf import ensure_csrf_cookie
 from django.views.i18n import LANGUAGE_QUERY_PARAMETER
 
@@ -34,13 +35,12 @@ from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
-from .remote_prefs import get_remote_prefs
 from .schema_localization import get_schema_languages, get_schema_localization
 from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
-    filter_ready_collections_for_config_tasks,
     filter_ready_disciplines_for_config_tasks,
+    is_collection_available
 )
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -305,7 +305,7 @@ def collection(request):
             return HttpResponseBadRequest('collection does not exist', content_type="text/plain")
         if collection.id not in [c.id for c in available_collections]:
             return HttpResponseBadRequest('access denied')
-        if get_config_progress(collection.id).get('busy'):
+        if get_config_progress(collection.discipline_id).get('busy'):
             return HttpResponseBadRequest('discipline creation is in progress')
         response = HttpResponse('ok')
         set_collection_cookie(response, collection.id)
@@ -326,8 +326,10 @@ def user(request):
     from specifyweb.specify.api.serializers import obj_to_data, toJson
     data = obj_to_data(request.specify_user)
     data['isauthenticated'] = request.user.is_authenticated
-    available_collections = users_collections_for_sp7(request.specify_user.id)
-    available_collections = _filter_collections_not_ready_for_config_task(available_collections)
+    available_collections = filter(
+        is_collection_available,
+        users_collections_for_sp7(request.specify_user.id)
+    )
     data['available_collections'] = [
         obj_to_data(c)
         for c in available_collections
@@ -649,14 +651,17 @@ def view_helper(request, limit):
 @cache_control(max_age=86400, private=True)
 def remote_prefs(request):
     "Return the 'remoteprefs' java properties file from the database."
-    return HttpResponse(get_remote_prefs(), content_type='text/x-java-properties')
+
+    get_all_remote_prefs_database = import_string(
+        'specifyweb.backend.context.remote_prefs.get_all_remote_prefs_database'
+    )
+
+    return HttpResponse(get_all_remote_prefs_database(), content_type='text/x-java-properties')
 
 @require_http_methods(['GET', 'HEAD'])
 def get_server_time(request):
     return JsonResponse({"server_time": timezone.now().isoformat()})
-  
-def _filter_collections_not_ready_for_config_task(collections):
-    return filter_ready_collections_for_config_tasks(collections)
+
   
 def _filter_disciplines_not_ready_for_config_task(disciplines):
     return filter_ready_disciplines_for_config_tasks(disciplines)
@@ -669,7 +674,6 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 
     if filter_not_ready_collections:
         disciplines = _filter_disciplines_not_ready_for_config_task(disciplines)
-        collections = _filter_collections_not_ready_for_config_task(collections)
 
     discipline_map = {}
     for discipline in disciplines:

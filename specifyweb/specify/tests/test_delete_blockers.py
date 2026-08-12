@@ -1,9 +1,11 @@
-from django.test import Client
 import json
 
-from specifyweb.backend.permissions.models import UserPolicy
+from django.test import Client, TestCase
+from django.db import router
+
 from specifyweb.backend.trees.tests.test_trees import GeographyTree
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
+from specifyweb.backend.delete_blockers.views import _collect_delete_blockers
 from specifyweb.specify import models
 from specifyweb.specify.api.crud import delete_resource
 
@@ -68,75 +70,96 @@ class TestDeleteBlockers(GeographyTree):
         for node in self._node_list:
             self._assertSame(self._get_blockers(node), [])
 
+    def test_many_to_many_join_blockers_are_normalized(self):
+        export_schema = models.Spexportschema.objects.create(
+            discipline=self.discipline
+        )
+        export_mapping = models.Spexportschemamapping.objects.create(
+            collectionmemberid=self.collection.id
+        )
+        export_schema.mappings.add(export_mapping)
+
+        delete_blockers = self._get_blockers(export_schema)
+
+        expected = [
+            dict(
+                table='SpExportSchemaMapping',
+                field='spExportSchemas',
+                ids=[export_mapping.id],
+            )
+        ]
+
+        self._assertSame(delete_blockers, expected)
+
     def _create_discipline_with_owned_trees(self, name='Disposable Discipline'):
-        placeholder_geo = models.Geographytreedef.objects.create(name=f'{name} placeholder geo')
-        placeholder_geo_time = models.Geologictimeperiodtreedef.objects.create(
-            name=f'{name} placeholder geotime'
-        )
-
-        discipline = models.Discipline.objects.create(
-            name=name,
-            type='paleobotany',
-            division=self.division,
-            datatype=self.datatype,
-            geographytreedef=placeholder_geo,
-            geologictimeperiodtreedef=placeholder_geo_time,
-        )
-
-        geography_tree = models.Geographytreedef.objects.create(
-            name=f'{name} geography',
-            discipline=discipline,
-        )
-        geography_rank = models.Geographytreedefitem.objects.create(
-            name='Planet',
-            rankid=0,
-            treedef=geography_tree,
-        )
-        models.Geography.objects.create(
-            name='Earth',
-            rankid=0,
-            definition=geography_tree,
-            definitionitem=geography_rank,
-        )
-
-        geotime_tree = models.Geologictimeperiodtreedef.objects.create(
-            name=f'{name} geotime',
-            discipline=discipline,
-        )
-        geotime_rank = models.Geologictimeperiodtreedefitem.objects.create(
-            name='Root',
-            rankid=0,
-            treedef=geotime_tree,
-        )
-        models.Geologictimeperiod.objects.create(
-            name='Root',
-            rankid=0,
-            definition=geotime_tree,
-            definitionitem=geotime_rank,
-        )
-
-        taxon_tree = models.Taxontreedef.objects.create(
-            name=f'{name} taxon',
-            discipline=discipline,
-        )
-        taxon_rank = models.Taxontreedefitem.objects.create(
-            name='Life',
-            rankid=0,
-            treedef=taxon_tree,
-        )
-        models.Taxon.objects.create(
-            name='Life',
-            rankid=0,
-            definition=taxon_tree,
-            definitionitem=taxon_rank,
-        )
-
-        discipline.geographytreedef = geography_tree
-        discipline.geologictimeperiodtreedef = geotime_tree
-        discipline.taxontreedef = taxon_tree
-        discipline.save()
-        return discipline
-
+            placeholder_geo = models.Geographytreedef.objects.create(name=f'{name} placeholder geo')
+            placeholder_geo_time = models.Geologictimeperiodtreedef.objects.create(
+                name=f'{name} placeholder geotime'
+            )
+    
+            discipline = models.Discipline.objects.create(
+                name=name,
+                type='paleobotany',
+                division=self.division,
+                datatype=self.datatype,
+                geographytreedef=placeholder_geo,
+                geologictimeperiodtreedef=placeholder_geo_time,
+            )
+    
+            geography_tree = models.Geographytreedef.objects.create(
+                name=f'{name} geography',
+                discipline=discipline,
+            )
+            geography_rank = models.Geographytreedefitem.objects.create(
+                name='Planet',
+                rankid=0,
+                treedef=geography_tree,
+            )
+            models.Geography.objects.create(
+                name='Earth',
+                rankid=0,
+                definition=geography_tree,
+                definitionitem=geography_rank,
+            )
+    
+            geotime_tree = models.Geologictimeperiodtreedef.objects.create(
+                name=f'{name} geotime',
+                discipline=discipline,
+            )
+            geotime_rank = models.Geologictimeperiodtreedefitem.objects.create(
+                name='Root',
+                rankid=0,
+                treedef=geotime_tree,
+            )
+            models.Geologictimeperiod.objects.create(
+                name='Root',
+                rankid=0,
+                definition=geotime_tree,
+                definitionitem=geotime_rank,
+            )
+    
+            taxon_tree = models.Taxontreedef.objects.create(
+                name=f'{name} taxon',
+                discipline=discipline,
+            )
+            taxon_rank = models.Taxontreedefitem.objects.create(
+                name='Life',
+                rankid=0,
+                treedef=taxon_tree,
+            )
+            models.Taxon.objects.create(
+                name='Life',
+                rankid=0,
+                definition=taxon_tree,
+                definitionitem=taxon_rank,
+            )
+    
+            discipline.geographytreedef = geography_tree
+            discipline.geologictimeperiodtreedef = geotime_tree
+            discipline.taxontreedef = taxon_tree
+            discipline.save()
+            return discipline
+    
     def test_discipline_blocked_when_has_collections(self):
         blockers = self._get_blockers(self.discipline)
         self._assertSame(
@@ -172,3 +195,65 @@ class TestDeleteBlockers(GeographyTree):
             self.collection, self.agent, 'discipline', discipline.id, discipline.version
         )
         self.assertFalse(models.Discipline.objects.filter(id=discipline.id).exists())
+
+class TestDeleteBlockersCascade(TestCase):
+
+    def _assertContains(self, blockers, expected):
+        normalized = [
+            {**obj, 'ids': sorted(obj['ids'])}
+            for obj in blockers
+        ]
+        self.assertIn({**expected, 'ids': sorted(expected['ids'])}, normalized)
+
+    def test_division_collects_normalized_cascaded_discipline_blockers(self):
+        institution = models.Institution.objects.create(
+            name='Test Institution',
+            isaccessionsglobal=True,
+            issecurityon=False,
+            isserverbased=False,
+            issharinglocalities=True,
+            issinglegeographytree=True,
+        )
+        division = models.Division.objects.create(
+            institution=institution,
+            name='Test Division',
+        )
+        geologictimeperiodtreedef = models.Geologictimeperiodtreedef.objects.create(
+            name='Test gtptd'
+        )
+        geographytreedef = models.Geographytreedef.objects.create(
+            name='Test gtd'
+        )
+        datatype = models.Datatype.objects.create(name='Test datatype')
+        discipline = models.Discipline.objects.create(
+            geologictimeperiodtreedef=geologictimeperiodtreedef,
+            geographytreedef=geographytreedef,
+            division=division,
+            datatype=datatype,
+            type='paleobotany',
+        )
+        export_schema = models.Spexportschema.objects.create(
+            discipline=discipline
+        )
+        export_mapping = models.Spexportschemamapping.objects.create(
+            collectionmemberid=1
+        )
+        export_schema.mappings.add(export_mapping)
+
+        using = router.db_for_write(division.__class__, instance=division)
+        delete_blockers = _collect_delete_blockers(division, using)
+
+        self._assertContains(
+            delete_blockers,
+            dict(
+                table='SpExportSchemaMapping',
+                field='spExportSchemas',
+                ids=[export_mapping.id],
+            ),
+        )
+        self.assertFalse(
+            any(
+                blocker['table'] == 'Spexportschema_exportmapping'
+                for blocker in delete_blockers
+            )
+        )

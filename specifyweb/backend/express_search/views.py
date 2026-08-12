@@ -18,7 +18,10 @@ from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.models import datamodel, Collection
 from specifyweb.specify.views import login_maybe_required
 from specifyweb.backend.stored_queries import models
-from specifyweb.backend.stored_queries.execution import filter_by_collection
+from specifyweb.backend.stored_queries.execution import DefaultQueryFormatterProps, filter_by_collection
+from specifyweb.backend.stored_queries.format import ObjectFormatter
+from specifyweb.backend.stored_queries.queryfield import QueryField
+from specifyweb.backend.stored_queries.query_construct import QueryConstruct
 from specifyweb.backend.stored_queries.queryfieldspec import QueryFieldSpec
 
 logger = logging.getLogger(__name__)
@@ -38,11 +41,28 @@ def build_primary_query(session, searchtable, terms, collection, user, as_scalar
     fields = [table.get_field(fn.text)
               for fn in searchtable.findall('.//searchfield/fieldName')]
 
-    q_fields = [id_field]
+    query = QueryConstruct(
+        collection=collection,
+        objectformatter=ObjectFormatter(collection, user, False, props=DefaultQueryFormatterProps()),
+        query=session.query(id_field),
+    )
+
     if not as_scalar:
-        q_fields.extend([
-            getattr(model, table.get_field(fn.text).name)
-            for fn in searchtable.findall('.//displayfield/fieldName')])
+        for fn in searchtable.findall('.//displayfield/fieldName'):
+            fieldspec = QueryFieldSpec.from_path((table.name, fn.text))
+            query, orm_field, _ = fieldspec.add_to_query(query, formatter=None, op_num=None, negate=False)
+            if orm_field is not None:
+                display_field = QueryField(
+                    fieldspec=fieldspec,
+                    op_num=0,
+                    value=None,
+                    negate=False,
+                    display=True,
+                    format_name=None,
+                    sort_type=0,
+                    strict=False,
+                )
+                query = query.add_columns(query.objectformatter.fieldformat(display_field, orm_field))
 
     filters = [fltr for fltr in [
                 t.create_filter(table, f) for f in fields for t in terms]
@@ -50,9 +70,9 @@ def build_primary_query(session, searchtable, terms, collection, user, as_scalar
 
     if len(filters) > 0:
         reduced = reduce(or_, filters)
-        query = session.query(*q_fields).filter(reduced)
+        query = query.filter(reduced)
         query = filter_by_collection(model, query, collection)
-        return query.as_scalar() if as_scalar else query.order_by(id_field)
+        return query.query.as_scalar() if as_scalar else query.query.order_by(id_field)
 
     logger.info("no filters for query. model: %s fields: %s terms: %s", table, fields, terms)
     return None
@@ -78,8 +98,13 @@ def run_primary_search(session, searchtable, terms, collection, user, limit, off
         'totalCount': total_count,
         'results': results,
         'displayOrder': int( searchtable.find('displayOrder').text ),
-        'fieldSpecs': [{'stringId': f.to_stringid(), 'isRelationship': False}
-                       for f in make_fieldspecs(searchtable)]
+        'fieldSpecs': [
+            {
+                'stringId': f.to_stringid(),
+                'isRelationship': f.is_relationship(),
+            }
+            for f in make_fieldspecs(searchtable)
+        ]
         }}
 
 class SearchForm(forms.Form):

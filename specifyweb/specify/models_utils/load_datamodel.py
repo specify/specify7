@@ -1,14 +1,11 @@
 from typing import Union, Optional, TypeVar, cast, Literal
 from collections.abc import Callable
 from collections.abc import Iterable
-from xml.etree import ElementTree
-import os
 import warnings
 import logging
 
 logger = logging.getLogger(__name__)
 
-from django.conf import settings  # type: ignore
 from django.utils.translation import gettext as _
 
 
@@ -149,19 +146,29 @@ class Table:
             raise ValueError("classname is required to compute the name")
         return self.classname.split(".")[-1]
 
+    def _all_fields(self, exclude_fields=False, exclude_relationships=False, exclude_id_field=False, exclude_virtual_fields=True) -> Iterable[Union["Field", "Relationship"]]:
+        if not exclude_fields:
+            yield from self.fields or []  # Handle None by using an empty list
+        if not exclude_relationships:
+            yield from self.relationships or []  # Handle None by using an empty list
+        if not exclude_virtual_fields:
+            yield from self.virtual_fields or []
+        if (not exclude_id_field) and self.idField is not None:
+            yield self.idField
+
     @property
     def django_name(self) -> str:
         return self.name.capitalize()
 
     @property
     def all_fields(self) -> list[Union["Field", "Relationship"]]:
-        def af() -> Iterable[Union["Field","Relationship"]]:
-            yield from self.fields or []  # Handle None by using an empty list
-            yield from self.relationships or []  # Handle None by using an empty list
-            if self.idField is not None:
-                yield self.idField
-
-        return list(af())
+        """
+        A list of all non-virtual fields (including the ID field) and
+        relationships for the table.
+        If you need more granularity over which fields to return, use
+        _all_fields or a filter object
+        """
+        return list(self._all_fields())
 
 
     def is_virtual_field(self, fieldname: str) -> bool:
@@ -397,106 +404,6 @@ class ManyToMany(Relationship):
 
         self.through_model = through_model
         self.through_field = through_field
-
-def make_table(tabledef: ElementTree.Element) -> Table:
-    iddef = tabledef.find("id")
-    assert iddef is not None
-    display = tabledef.find("display")
-    table = Table(
-        classname=tabledef.attrib["classname"],
-        table=tabledef.attrib["table"],
-        tableId=int(tabledef.attrib["tableid"]),
-        idColumn=iddef.attrib["column"],
-        idFieldName=iddef.attrib["name"],
-        idField=make_id_field(iddef),
-        view=display.attrib.get("view", None) if display is not None else None,
-        searchDialog=(
-            display.attrib.get("searchdlg", None) if display is not None else None
-        ),
-        fields=[make_field(fielddef) for fielddef in tabledef.findall("field")],
-        indexes=[make_index(indexdef) for indexdef in tabledef.findall("tableindex")],
-        relationships=[
-            make_relationship(reldef) for reldef in tabledef.findall("relationship")
-        ],
-        fieldAliases=[
-            make_field_alias(aliasdef) for aliasdef in tabledef.findall("fieldalias")
-        ],
-    )
-    return table
-
-
-def make_id_field(fielddef: ElementTree.Element) -> IdField:
-    return IdField(
-        name=fielddef.attrib["name"],
-        column=fielddef.attrib["column"],
-        type=fielddef.attrib["type"],
-        required=True,
-    )
-
-
-def make_field(fielddef: ElementTree.Element) -> Field:
-    field = Field(
-        name=fielddef.attrib["name"],
-        column=fielddef.attrib["column"],
-        indexed=(fielddef.attrib["indexed"] == "true"),
-        unique=(fielddef.attrib["unique"] == "true"),
-        required=(fielddef.attrib["required"] == "true"),
-        type=fielddef.attrib["type"],
-        length=int(fielddef.attrib["length"]) if "length" in fielddef.attrib else None,
-    )
-    return field
-
-
-def make_index(indexdef: ElementTree.Element) -> Index:
-    index = Index(
-        name=indexdef.attrib["indexName"],
-        column_names=indexdef.attrib["columnNames"].split(","),
-    )
-    return index
-
-
-def make_relationship(reldef: ElementTree.Element) -> Relationship:
-    rel = Relationship(
-        name=reldef.attrib["relationshipname"],
-        type=cast(RelationshipType, reldef.attrib["type"]),
-        required=(reldef.attrib["required"] == "true"),
-        relatedModelName=reldef.attrib["classname"].split(".")[-1],
-        column=(
-            reldef.attrib.get("columnname", None)
-            if "columnname" in reldef.attrib
-            else None
-        ),
-        otherSideName=(
-            reldef.attrib.get("othersidename", None)
-            if "othersidename" in reldef.attrib
-            else None
-        ),
-    )
-    return rel
-
-
-def make_field_alias(aliasdef: ElementTree.Element) -> dict[str, str]:
-    alias = dict(aliasdef.attrib)
-    return alias
-
-
-def load_datamodel() -> Datamodel | None:
-    try:
-        datamodeldef = ElementTree.parse(
-            os.path.join(settings.SPECIFY_CONFIG_DIR, "specify_datamodel.xml")
-        )
-    except FileNotFoundError:
-        return None
-    datamodel = Datamodel()
-    datamodel.tables = [
-        make_table(tabledef) for tabledef in datamodeldef.findall("table")
-    ]
-    add_collectingevents_to_locality(datamodel)
-
-    flag_dependent_fields(datamodel)
-    flag_system_tables(datamodel)
-
-    return datamodel
 
 
 def add_collectingevents_to_locality(datamodel: Datamodel) -> None:

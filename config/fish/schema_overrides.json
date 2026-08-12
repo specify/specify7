@@ -1,7 +1,6 @@
 {
   "collectionobjectattribute": {
     "ishidden": false,
-    "desc": "Collection Object Attribute",
     "items": [
       {"text8": {"ishidden": false, "name": "Color in Life", "desc": "Color in Life"}},
       {"text5": {"ishidden": false, "name": "TL", "desc": "TL"}},
@@ -15,7 +14,6 @@
   },
   "collectingeventattribute": {
     "ishidden": false,
-    "desc": "Collecting Event Attribute",
     "items": [
       {"text4": {"ishidden": false, "name": "Current", "desc": "Current"}},
       {"text8": {"ishidden": false, "name": "Vegetation", "desc": "Vegetation"}},
@@ -31,7 +29,6 @@
   },
   "collectionobject": {
     "ishidden": false,
-    "desc": "Collection Object",
     "items": [
       {"text1": {"ishidden": false, "name": "Other number", "desc": "Other number"}}
     ]

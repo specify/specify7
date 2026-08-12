@@ -22,9 +22,10 @@ import { Form, Input, Label, Select } from '../Atoms/Form';
 import { Submit } from '../Atoms/Submit';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
+import { toTable } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
-import { resourceOn } from '../DataModel/resource';
+import { getResourceApiUrl, resourceOn } from '../DataModel/resource';
 import { tables } from '../DataModel/tables';
 import type { Collection, SpecifyUser } from '../DataModel/types';
 import { Dialog } from '../Molecules/Dialog';
@@ -191,9 +192,11 @@ export function CollectionAccess({
       ({ resource, actions }) =>
         resource === collectionAccessResource && actions.includes('access')
     ) ?? false;
-  const collectionAddress = userAgents?.find(({ collections }) =>
+
+  const scopedAgent = userAgents?.find(({ collections }) =>
     collections.includes(collectionId)
-  )?.address;
+  );
+  const collectionAddress = scopedAgent?.address;
   const hasAgent = (collectionAddress?.get('agent')?.length ?? 0) > 0;
 
   React.useEffect(
@@ -287,6 +290,15 @@ export function CollectionAccess({
               isRequired={hasCollectionAccess || isSuperAdmin}
               resource={collectionAddress}
               typeSearch={undefined}
+              onSavingNewRecord={(resource) => {
+                const divisionId = scopedAgent?.divisionId;
+
+                if (divisionId !== undefined)
+                  toTable(resource, 'Agent')?.set(
+                    'division',
+                    getResourceApiUrl('Division', divisionId)
+                  );
+              }}
             />
           </ReadOnlyContext.Provider>
         ) : (

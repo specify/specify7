@@ -343,6 +343,7 @@ export function AutoComplete<T>({
   );
 
   const inputRef = React.useRef<HTMLInputElement | null>(null);
+  const shouldBlurAfterMouseSelection = React.useRef(false);
   const forwardChildRef: React.RefCallback<HTMLInputElement> =
     React.useCallback(
       (input): void => {
@@ -374,6 +375,15 @@ export function AutoComplete<T>({
     );
   }, [currentValue]);
 
+  const handleOptionMouseDown = React.useCallback(
+    (e: React.MouseEvent): void => {
+      e.preventDefault();
+      e.stopPropagation();
+      shouldBlurAfterMouseSelection.current = true;
+    },
+    []
+  );
+
   return (
     <Combobox
       as="div"
@@ -383,9 +393,15 @@ export function AutoComplete<T>({
       value={currentItem ?? null}
       // Triggers on enter or selects new item
       onChange={(value): void => {
+        const blurAfterSelection = shouldBlurAfterMouseSelection.current;
+        shouldBlurAfterMouseSelection.current = false;
         if (value === null) handleCleared?.();
         else if (typeof value === 'string') handleNewValue?.(value);
-        else handleChanged(value);
+        else {
+          handleChanged(value);
+          if (blurAfterSelection)
+            globalThis.setTimeout(() => inputRef.current?.blur(), 0);
+        }
       }}
     >
       <Combobox.Input
@@ -502,7 +518,10 @@ export function AutoComplete<T>({
             return (
               <Combobox.Option as={React.Fragment} key={index} value={item}>
                 {({ active, selected }): JSX.Element => (
-                  <li className={optionClassName(active, selected)}>
+                  <li
+                    className={optionClassName(active, selected)}
+                    onMouseDown={handleOptionMouseDown}
+                  >
                     {typeof item.icon === 'string' ? (
                       <div className="flex items-center">
                         {item.icon}
@@ -519,7 +538,13 @@ export function AutoComplete<T>({
           {showAdd && (
             <Combobox.Option as={React.Fragment} value={pendingValue}>
               {({ active, selected }): JSX.Element => (
-                <li className={optionClassName(active, selected)}>
+                <li
+                  className={optionClassName(active, selected)}
+                  onMouseDown={(e: React.MouseEvent): void => {
+                    e.stopPropagation();
+                    shouldBlurAfterMouseSelection.current = true;
+                  }}
+                >
                   <div className="flex items-center">
                     <span className={className.dataEntryAdd}>{icons.plus}</span>
                     {commonText.add()}
