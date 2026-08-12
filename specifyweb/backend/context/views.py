@@ -40,7 +40,8 @@ from .viewsets import get_views
 from specifyweb.backend.setup_tool.api import (
     get_config_progress,
     filter_ready_disciplines_for_config_tasks,
-    is_collection_available
+    is_collection_available,
+    is_guided_setup_complete,
 )
    
 def set_collection_cookie(response, collection_id): # pragma: no cover
@@ -713,27 +714,46 @@ def _build_system_data(*, filter_not_ready_collections: bool):
 @skip_collection_access_check
 def system_info(request):
     "Return various information about this Specify instance."
-    spversion = Spversion.objects.get()
+    setup_complete = is_guided_setup_complete()
+
+    spversion = Spversion.objects.first()
     collection = request.specify_collection
     discipline = collection.discipline if collection is not None else None
-    institution = Institution.objects.get()
+    institution = Institution.objects.first()
+
+    database_version = spversion.appversion if spversion is not None else None
+    schema_version = spversion.schemaversion if spversion is not None else None
+
+    institution_name = institution.name if institution is not None else None
+    institution_guid = institution.guid if institution is not None else None
+    geography_is_global = (
+        institution.issinglegeographytree if institution is not None else None
+    )
+
+    if not setup_complete:
+        database_version = None
+        schema_version = None
+        institution_name = None
+        institution_guid = None
+        geography_is_global = None
 
     info = dict(
         version=settings.VERSION,
         specify6_version=re.findall(r'SPECIFY_VERSION=(.*)', specify_jar.read('resources_en.properties').decode('utf-8'))[0],
-        database_version=spversion.appversion,
-        schema_version=spversion.schemaversion,
+        setup_complete=setup_complete,
+        database_version=database_version,
+        schema_version=schema_version,
         stats_url=settings.STATS_URL,
         stats_2_url=settings.STATS_2_URL,
         database=settings.DATABASE_NAME,
-        institution=institution.name,
-        institution_guid=institution.guid,
-        discipline=discipline and discipline.name,
-        collection=collection and collection.collectionname,
-        collection_guid=collection and collection.guid,
-        isa_number=collection and collection.isanumber,
-        discipline_type=discipline and discipline.type,
-        geography_is_global=institution.issinglegeographytree
+        institution=institution_name,
+        institution_guid=institution_guid,
+        discipline=discipline.name if setup_complete and discipline is not None else None,
+        collection=collection.collectionname if setup_complete and collection is not None else None,
+        collection_guid=collection.guid if setup_complete and collection is not None else None,
+        isa_number=collection.isanumber if setup_complete and collection is not None else None,
+        discipline_type=discipline.type if setup_complete and discipline is not None else None,
+        geography_is_global=geography_is_global,
         )
     return HttpResponse(json.dumps(info), content_type='application/json')
 
