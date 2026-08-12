@@ -30,7 +30,7 @@ export function VersionMismatch(): JSX.Element | null {
       <p>
         {mainText.versionMismatchDescription({
           specifySixVersion: getSystemInfo().specify6_version,
-          databaseVersion: getSystemInfo().database_version,
+          databaseVersion: getSystemInfo().database_version ?? '',
         })}
       </p>
       <p>{mainText.versionMismatchSecondDescription()}</p>
