@@ -447,7 +447,7 @@ export const formsText = createDictionary({
     'de-ch': 'Letzter Datensatz',
     'pt-br': 'Último registro',
     'hr-hr': 'Posljednji zapis',
-    nb: 'Siste oppføring',
+    nb: 'Siste post',
   },
   previousRecord: {
     'en-us': 'Previous Record',
@@ -1205,7 +1205,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Конец диапазона переноса',
     'uk-ua': 'Кінець діапазону перенесення вперед',
     'hr-hr': 'Kraj raspona prijenosa naprijed',
-    nb: 'Enden av rekkevidden for videreføring',
+    nb: 'End of Carry Forward Range',
   },
   createRecordSetOnBulkCarryForward: {
     'en-us': 'Create record set on Bulk Carry Forward',
@@ -1227,7 +1227,7 @@ export const formsText = createDictionary({
     'de-ch': 'Schaltfläche „Klonen anzeigen“',
     'pt-br': 'Mostrar botão Clonar',
     'hr-hr': 'Prikaži gumb Kloniraj',
-    nb: 'Vis klone-knappen',
+    nb: 'Vis klone-knapp',
   },
   addButtonEnabled: {
     'en-us': 'Show Add button',
