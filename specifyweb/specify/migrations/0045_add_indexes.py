@@ -5,7 +5,7 @@ from django.db import migrations, models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0045_alter_many_to_many_through_fields')
+        ('specify', '0044_alter_deletion_cascade')
     ]
 
     operations = [
