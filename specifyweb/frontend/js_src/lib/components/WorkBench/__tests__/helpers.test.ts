@@ -1,5 +1,47 @@
 import { theories } from '../../../tests/utils';
-import { getDelimitedFileName } from '../helpers';
+import { downloadFile } from '../../Molecules/FilePicker';
+import { downloadDataSet, getDelimitedFileName } from '../helpers';
+
+jest.mock('../../Molecules/FilePicker', () => ({
+  downloadFile: jest.fn().mockResolvedValue(undefined),
+}));
+
+afterEach(() => {
+  jest.clearAllMocks();
+});
+
+// [WorkBench] Export column headings and rows as comma-separated values
+test('exports headings and rows as CSV', async () => {
+  await downloadDataSet(
+    'Data Set',
+    [
+      ['100', 'First row'],
+      ['200', ''],
+    ],
+    ['Catalog Number', 'Remarks'],
+    ','
+  );
+
+  expect(downloadFile).toHaveBeenCalledWith(
+    'Data Set.csv',
+    'Catalog Number,Remarks\n100,First row\n200,\n'
+  );
+});
+
+// [WorkBench] Use the selected delimiter when exporting a data set
+test('exports rows using the selected delimiter', async () => {
+  await downloadDataSet(
+    'Data Set',
+    [['100', 'First row']],
+    ['Catalog Number', 'Remarks'],
+    '\t' //delimeter is tab
+  );
+
+  expect(downloadFile).toHaveBeenCalledWith(
+    'Data Set.tsv', // so the extension should be .tsv
+    'Catalog Number\tRemarks\n100\tFirst row\n'
+  );
+});
 
 theories(getDelimitedFileName, [
   {

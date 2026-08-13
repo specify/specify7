@@ -1,7 +1,7 @@
 from django.core.management.base import BaseCommand, CommandError
 from django.apps import apps
 
-from specifyweb.specify.migration_utils import update_schema_config as update_schema
+from specifyweb.specify.migration_utils.schema_writer import create_missing_schema_config_fields, find_missing_schema_config_fields
 
 
 class Command(BaseCommand):
@@ -48,7 +48,7 @@ class Command(BaseCommand):
             f"Discipline: {discipline.name} (ID={discipline.id})"
         )
 
-        missing_tables, missing_fields = update_schema.find_missing_schema_config_fields(discipline.id, apps=apps,)
+        missing_tables, missing_fields = find_missing_schema_config_fields(discipline.id, apps=apps,)
 
         if not missing_tables and not missing_fields:
             self.stdout.write("No missing schema config fields found.")
@@ -74,8 +74,9 @@ class Command(BaseCommand):
             return
 
         # Apply changes
-        update_schema.create_missing_schema_config_fields(
-            discipline.id,
+        create_missing_schema_config_fields(
+            discipline_id=discipline.id,
+            discipline_type=discipline.type,
             apps=apps,
             stdout=self.stdout.write if verbose else None,
         )
