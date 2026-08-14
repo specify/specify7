@@ -5,6 +5,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import { localized } from '../../utils/types';
 import { H3 } from '../Atoms';
+import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { useSchemaConfig } from './Store';
 import { TableList, tablesFilter } from './Tables';
@@ -17,10 +18,26 @@ export function SchemaConfigSidebar({
   const { language = '' } = useParams();
   const { modifiedTables } = useSchemaConfig();
   const [search, setSearch] = React.useState('');
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
 
-  return (
-    <aside className="order-2 lg:order-1 flex w-full flex-shrink-0 flex-col gap-2 overflow-hidden border-gray-300 p-2 dark:border-neutral-600 lg:w-64 lg:border-r">
-      <H3>{schemaText.tables()}</H3>
+  return isCollapsed ? (
+    <aside className="order-2 flex w-full flex-shrink-0 flex-col gap-2 overflow-hidden lg:order-1 lg:w-12 lg:border-r">
+      <Button.Icon
+        icon="chevronDoubleRight"
+        title={commonText.expand()}
+        onClick={(): void => setIsCollapsed(false)}
+      />
+    </aside>
+  ) : (
+    <aside className="order-2 lg:order-1 flex w-full flex-shrink-0 flex-col gap-2 overflow-hidden pr-2 lg:w-64 lg:border-r">
+      <div className="flex items-center gap-2">
+        <H3 className="flex-1">{schemaText.tables()}</H3>
+        <Button.Icon
+          icon="chevronDoubleLeft"
+          title={commonText.collapse()}
+          onClick={(): void => setIsCollapsed(true)}
+        />
+      </div>
       <Input.Text
         aria-label={commonText.search()}
         placeholder={commonText.search()}
