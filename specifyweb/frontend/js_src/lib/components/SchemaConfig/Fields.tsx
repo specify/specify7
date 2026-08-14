@@ -150,7 +150,7 @@ function SchemaConfigFieldsTable({
         <colgroup>
           <col />
           <col />
-          <col className="w-28" />
+          <col className="w-20" />
         </colgroup>
         <thead>
           <tr className="border-b">
@@ -254,13 +254,15 @@ function SortableTh({
       scope="col"
     >
       <button
-        className="inline-flex items-center gap-1"
+        className="flex w-full min-w-0 items-center gap-1"
         type="button"
         onClick={(): void => handleSort(field)}
       >
-        {label}
+        <span className="min-w-0 break-all">{label}</span>
         {isActive ? (
-          <span aria-hidden>{isDescending ? '↓' : '↑'}</span>
+          <span aria-hidden className="shrink-0">
+            {isDescending ? '↓' : '↑'}
+          </span>
         ) : undefined}
       </button>
     </th>
