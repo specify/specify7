@@ -194,7 +194,7 @@ function SchemaConfigFieldsTable({
                 key={item.id}
                 onClick={(): void => handleChange(itemIndex)}
               >
-                <td className="p-1 break-all">
+                <td className="p-1 [overflow-wrap:anywhere]">
                   <Button.LikeLink
                     aria-current={isCurrent ? 'true' : undefined}
                     className={item.isHidden ? 'italic' : undefined}
@@ -203,12 +203,14 @@ function SchemaConfigFieldsTable({
                       handleChange(itemIndex);
                     }}
                   >
-                    <span className="min-w-0 break-all">
+                    <span className="min-w-0 [overflow-wrap:anywhere]">
                       {localized(item.name)}
                     </span>
                   </Button.LikeLink>
                 </td>
-                <td className="p-1 break-all">{item.strings.name.text}</td>
+                <td className="p-1 [overflow-wrap:anywhere]">
+                  {item.strings.name.text}
+                </td>
                 <td className="p-1">
                   {item.isHidden ? (
                     <>
@@ -258,7 +260,7 @@ function SortableTh({
         type="button"
         onClick={(): void => handleSort(field)}
       >
-        <span className="min-w-0 break-all">{label}</span>
+        <span className="min-w-0 [overflow-wrap:anywhere]">{label}</span>
         {isActive ? (
           <span aria-hidden className="shrink-0">
             {isDescending ? '↓' : '↑'}
