@@ -194,7 +194,7 @@ function SchemaConfigFieldsTable({
                 key={item.id}
                 onClick={(): void => handleChange(itemIndex)}
               >
-                <td className="p-1 break-words">
+                <td className="p-1 break-all">
                   <Button.LikeLink
                     aria-current={isCurrent ? 'true' : undefined}
                     className={item.isHidden ? 'italic' : undefined}
@@ -203,12 +203,12 @@ function SchemaConfigFieldsTable({
                       handleChange(itemIndex);
                     }}
                   >
-                    <span className="min-w-0 break-words">
+                    <span className="min-w-0 break-all">
                       {localized(item.name)}
                     </span>
                   </Button.LikeLink>
                 </td>
-                <td className="p-1 break-words">{item.strings.name.text}</td>
+                <td className="p-1 break-all">{item.strings.name.text}</td>
                 <td className="p-1">
                   {item.isHidden ? (
                     <>
