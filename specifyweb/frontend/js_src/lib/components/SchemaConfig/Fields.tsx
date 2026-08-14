@@ -142,7 +142,12 @@ function SchemaConfigFieldsTable({
   return (
     <div className="flex flex-col gap-2">
       <H3>{title}</H3>
-      <table className="w-full border-collapse text-left">
+      <table className="w-full table-fixed border-collapse text-left">
+        <colgroup>
+          <col className="w-2/5" />
+          <col className="w-1/2" />
+          <col className="w-[10%]" />
+        </colgroup>
         <thead>
           <tr className="border-b">
             <SortableTh
