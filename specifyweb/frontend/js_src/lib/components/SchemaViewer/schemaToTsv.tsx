@@ -1,5 +1,4 @@
 import { formsText } from '../../localization/forms';
-import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { booleanFormatter } from '../../utils/parser/parse';
 import { getField } from '../DataModel/helpers';

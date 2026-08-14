@@ -1,6 +1,5 @@
 import React from 'react';
 
-import { reportsText } from '../../localization/report';
 import { schemaText } from '../../localization/schema';
 import { f } from '../../utils/functools';
 import { booleanFormatter } from '../../utils/parser/parse';
