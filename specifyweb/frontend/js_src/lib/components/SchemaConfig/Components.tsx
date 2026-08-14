@@ -104,7 +104,6 @@ export function PickList({
               </optgroup>
             ))
           )}
-          {}
         </>
       )}
     </Select>
