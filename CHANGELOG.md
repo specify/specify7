@@ -87,14 +87,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 -   **Automatic test coverage added** across the Query Builder operators, permits, WorkBench uploads/exports, attachments, and more. ([#8235](https://github.com/specify/specify7/pull/8235), [#8258](https://github.com/specify/specify7/pull/8258), [#8259](https://github.com/specify/specify7/pull/8259), [#8260](https://github.com/specify/specify7/pull/8260), [#8273](https://github.com/specify/specify7/pull/8273), [#8274](https://github.com/specify/specify7/pull/8274), [#8277](https://github.com/specify/specify7/pull/8277), [#8281](https://github.com/specify/specify7/pull/8281), [#8283](https://github.com/specify/specify7/pull/8283), [#8290](https://github.com/specify/specify7/pull/8290), [#8292](https://github.com/specify/specify7/pull/8292), [#8294](https://github.com/specify/specify7/pull/8294), [#8296](https://github.com/specify/specify7/pull/8296), [#8301](https://github.com/specify/specify7/pull/8301), [#8304](https://github.com/specify/specify7/pull/8304), [#8309](https://github.com/specify/specify7/pull/8309), [#8316](https://github.com/specify/specify7/pull/8316), [#8319](https://github.com/specify/specify7/pull/8319), [#8321](https://github.com/specify/specify7/pull/8321), [#8327](https://github.com/specify/specify7/pull/8327), [#8335](https://github.com/specify/specify7/pull/8335), [#8337](https://github.com/specify/specify7/pull/8337), [#8341](https://github.com/specify/specify7/pull/8341), [#8342](https://github.com/specify/specify7/pull/8342), [#8344](https://github.com/specify/specify7/pull/8344), [#8346](https://github.com/specify/specify7/pull/8346), [#8352](https://github.com/specify/specify7/pull/8352), [#8353](https://github.com/specify/specify7/pull/8353), [#8354](https://github.com/specify/specify7/pull/8354), [#8367](https://github.com/specify/specify7/pull/8367), [#8368](https://github.com/specify/specify7/pull/8368), [#8380](https://github.com/specify/specify7/pull/8380), [#8383](https://github.com/specify/specify7/pull/8383), [#8389](https://github.com/specify/specify7/pull/8389))
 - **Documented API schemas** for  `download_all` and `series_autonumber_range` ([#7815](https://github.com/specify/specify7/pull/7815))
 
-----------
-
-The full changelog is available on [GitHub](https://github.com/specify/specify7/blob/1b8a0f1d1813e646178ff78a86b1b40315d272a1/CHANGELOG.md)
-
-For source code go to the [GitHub Specify 7 repository](http://github.com/specify/specify7/)
-
-For more information about Specify 7, or about this release, see [Specify 7 | Specify Collections Consortium](https://www.specifysoftware.org/products/specify-7/), or email [support@specifysoftware.org](mailto:support@specifysoftware.org).
-
 ## [7.12.0.7](https://github.com/specify/specify7/compare/v7.12.0.6...v7.12.0.7) (28 July 2026)
 
 ### Updated
