@@ -286,11 +286,15 @@ function ImageTransformContent({
   readonly thumbnail: string | undefined;
 }): JSX.Element {
   const { resetTransform } = useControls();
+  const thumbnailFallbackAttempted = React.useRef(false);
   const handleError = React.useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
-      if (typeof thumbnail === 'string') {
+      if (
+        !thumbnailFallbackAttempted.current &&
+        typeof thumbnail === 'string'
+      ) {
+        thumbnailFallbackAttempted.current = true;
         const image = event.currentTarget;
-        image.onerror = null;
         image.src = thumbnail;
       }
     },
