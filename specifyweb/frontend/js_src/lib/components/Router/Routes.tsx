@@ -416,24 +416,12 @@ export const routes: RA<EnhancedRoute> = [
           ),
       },
       {
-        path: ':language',
-        children: [
-          {
-            index: true,
-            title: schemaText.tables(),
-            element: () =>
-              import('../SchemaConfig/Tables').then(
-                ({ SchemaConfigTables }) => SchemaConfigTables
-              ),
-          },
-          {
-            path: ':tableName',
-            element: () =>
-              import('../SchemaConfig').then(
-                ({ SchemaConfigMain }) => SchemaConfigMain
-              ),
-          },
-        ],
+        path: ':language/*',
+        element: () =>
+          import('../SchemaConfig/Layout').then(
+            ({ SchemaConfigLayout }) => SchemaConfigLayout
+          ),
+        isSingleResource: true,
       },
     ],
   },
