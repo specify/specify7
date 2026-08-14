@@ -29,7 +29,12 @@ import {
 } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
-import { fetchOriginalUrl, fetchThumbnail } from './attachments';
+import {
+  fetchOriginalUrl,
+  fetchThumbnail,
+  reportAttachmentServerFailure,
+  useAttachmentServerStatus,
+} from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
 import { Thumbnail } from './Preview';
 
@@ -48,6 +53,7 @@ export function AttachmentViewer({
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   const serialized = React.useMemo(
     () => serializeResource(attachment),
     [attachment]
@@ -136,7 +142,9 @@ export function AttachmentViewer({
   return (
     <>
       <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
-        {displayOriginal === 'full' && !isTiffImage ? (
+        {attachmentServerStatus === 'unavailable' ? (
+          <AttachmentServerUnavailable />
+        ) : displayOriginal === 'full' && !isTiffImage ? (
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
@@ -192,6 +200,7 @@ export function AttachmentViewer({
                 alt={title}
                 className="h-full w-full object-scale-down"
                 src={thumbnail?.src}
+                onError={reportAttachmentServerFailure}
               />
             </object>
           )
@@ -287,6 +296,7 @@ function ImageTransformContent({
 }): JSX.Element {
   const { resetTransform } = useControls();
   const thumbnailFallbackAttempted = React.useRef(false);
+  const [imageFailed, setImageFailed] = React.useState(false);
   const handleError = React.useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
       if (
@@ -296,6 +306,9 @@ function ImageTransformContent({
         thumbnailFallbackAttempted.current = true;
         const image = event.currentTarget;
         image.src = thumbnail;
+      } else {
+        setImageFailed(true);
+        reportAttachmentServerFailure();
       }
     },
     [thumbnail]
@@ -314,13 +327,17 @@ function ImageTransformContent({
         wrapperClass="flex h-full w-full items-center justify-center"
         wrapperStyle={{ height: '100%', width: '100%' }}
       >
-        <img
-          alt={alt}
-          className="h-full w-full max-h-full max-w-full object-contain"
-          src={src}
-          onError={handleError}
-          onLoad={handleLoad}
-        />
+        {imageFailed ? (
+          <AttachmentServerUnavailable />
+        ) : (
+          <img
+            alt={alt}
+            className="h-full w-full max-h-full max-w-full object-contain"
+            src={src}
+            onError={handleError}
+            onLoad={handleLoad}
+          />
+        )}
       </TransformComponent>
       {showControls ? (
         <div
@@ -334,6 +351,15 @@ function ImageTransformContent({
           />
         </div>
       ) : undefined}
+    </div>
+  );
+}
+
+function AttachmentServerUnavailable(): JSX.Element {
+  return (
+    <div className="flex flex-col items-center gap-2 p-4 text-center">
+      <strong>{attachmentsText.attachmentServerUnavailable()}</strong>
+      <span>{attachmentsText.attachmentServerUnavailableDescription()}</span>
     </div>
   );
 }

@@ -4,7 +4,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { Attachment } from '../DataModel/types';
 import type { AttachmentThumbnail } from './attachments';
-import { fetchThumbnail } from './attachments';
+import { fetchThumbnail, reportAttachmentServerFailure } from './attachments';
 
 export function AttachmentPreview({
   attachment,
@@ -56,6 +56,11 @@ export function Thumbnail({
         width: `${thumbnail.width}px`,
         height: `${thumbnail.height}px`,
       }}
+      onError={
+        thumbnail.src.startsWith('http')
+          ? reportAttachmentServerFailure
+          : undefined
+      }
     />
   );
 }
