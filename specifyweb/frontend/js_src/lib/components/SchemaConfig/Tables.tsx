@@ -97,10 +97,10 @@ export function TableList({
 
   React.useEffect(() => {
     if (hasScrolledRef.current || currentTableName === '') return;
-    hasScrolledRef.current = true;
     const list = listRef.current;
     const active = activeRef.current;
     if (list === null || active === null) return;
+    hasScrolledRef.current = true;
     const listRect = list.getBoundingClientRect();
     const activeRect = active.getBoundingClientRect();
     list.scrollTop +=
