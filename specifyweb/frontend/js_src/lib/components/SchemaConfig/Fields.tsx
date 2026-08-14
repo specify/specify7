@@ -6,9 +6,10 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { sortFunction, split } from '../../utils/utils';
+import { multiSortFunction, sortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { icons } from '../Atoms/Icons';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
@@ -33,7 +34,9 @@ export function SchemaConfigFields({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   const id = useId('schema-fields');
-  const [sortField, setSortField] = React.useState<SortField>('isHidden');
+  const [sortField, setSortField] = React.useState<SortField | undefined>(
+    undefined
+  );
   const [isDescending, setIsDescending] = React.useState(false);
 
   const handleSort = (field: SortField): void => {
@@ -44,13 +47,17 @@ export function SchemaConfigFields({
     }
   };
 
-  const sortedItems = React.useMemo(
-    () =>
-      Object.values(items ?? []).sort(
-        sortFunction(getSortValue(sortField), isDescending)
-      ),
-    [items, sortField, isDescending]
-  );
+  const sortedItems = React.useMemo(() => {
+    const itemList = Object.values(items ?? []);
+    return typeof sortField === 'undefined'
+      ? itemList.sort(
+          multiSortFunction<SchemaConfigItem>(
+            ({ isHidden }) => isHidden,
+            ({ name }) => name
+          )
+        )
+      : itemList.sort(sortFunction(getSortValue(sortField), isDescending));
+  }, [items, sortField, isDescending]);
 
   const [fields, relationships] = split(
     sortedItems,
@@ -114,7 +121,7 @@ function SchemaConfigFieldsTable({
   readonly rows: RA<SchemaConfigItem>;
   readonly items: RA<SchemaConfigItem> | undefined;
   readonly index: number;
-  readonly sortField: SortField;
+  readonly sortField: SortField | undefined;
   readonly isDescending: boolean;
   readonly onSort: (field: SortField) => void;
   readonly onChange: (index: number) => void;
@@ -142,7 +149,7 @@ function SchemaConfigFieldsTable({
             <SortableTh
               field="isHidden"
               isDescending={isDescending}
-              label={getField(tables.SpLocaleContainerItem, 'isHidden').label}
+              label={schemaText.visible()}
               onSort={handleSort}
               sortField={sortField}
             />
@@ -178,11 +185,14 @@ function SchemaConfigFieldsTable({
                 <td className="p-1">
                   {item.isHidden ? (
                     <>
-                      <span aria-hidden>✓</span>
+                      {icons.x}
                       <span className="sr-only">{schemaText.hidden()}</span>
                     </>
                   ) : (
-                    <span className="sr-only">{schemaText.visible()}</span>
+                    <>
+                      {icons.check}
+                      <span className="sr-only">{schemaText.visible()}</span>
+                    </>
                   )}
                 </td>
               </tr>
@@ -203,7 +213,7 @@ function SortableTh({
 }: {
   readonly field: SortField;
   readonly label: LocalizedString;
-  readonly sortField: SortField;
+  readonly sortField: SortField | undefined;
   readonly isDescending: boolean;
   readonly onSort: (field: SortField) => void;
 }): JSX.Element {
