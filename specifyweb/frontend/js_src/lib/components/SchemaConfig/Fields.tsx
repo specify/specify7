@@ -77,6 +77,12 @@ export function SchemaConfigFields({
     (item) => table.getField(item.name)!.isRelationship
   );
 
+  const itemIndexes = React.useMemo(
+    () =>
+      new Map((items ?? []).map((item, index) => [item.id, index] as const)),
+    [items]
+  );
+
   return (
     <SchemaConfigColumn
       className="flex-[2]"
@@ -90,7 +96,7 @@ export function SchemaConfigFields({
           <SchemaConfigFieldsTable
             index={index}
             isDescending={isDescending}
-            items={items}
+            itemIndexes={itemIndexes}
             onChange={handleChange}
             onSort={handleSort}
             rows={fields}
@@ -101,7 +107,7 @@ export function SchemaConfigFields({
             <SchemaConfigFieldsTable
               index={index}
               isDescending={isDescending}
-              items={items}
+              itemIndexes={itemIndexes}
               onChange={handleChange}
               onSort={handleSort}
               rows={relationships}
@@ -127,7 +133,7 @@ const getSortValue = (
 function SchemaConfigFieldsTable({
   title,
   rows,
-  items,
+  itemIndexes,
   index,
   sortField,
   isDescending,
@@ -136,7 +142,7 @@ function SchemaConfigFieldsTable({
 }: {
   readonly title: LocalizedString;
   readonly rows: RA<SchemaConfigItem>;
-  readonly items: RA<SchemaConfigItem> | undefined;
+  readonly itemIndexes: ReadonlyMap<number, number>;
   readonly index: number;
   readonly sortField: SortField | undefined;
   readonly isDescending: boolean;
@@ -179,8 +185,7 @@ function SchemaConfigFieldsTable({
         </thead>
         <tbody>
           {rows.map((item) => {
-            const itemIndex =
-              items?.findIndex(({ id }) => id === item.id) ?? -1;
+            const itemIndex = itemIndexes.get(item.id) ?? -1;
             const isCurrent = itemIndex === index;
             return (
               <tr
