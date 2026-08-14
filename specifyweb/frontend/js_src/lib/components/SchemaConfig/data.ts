@@ -75,7 +75,7 @@ export const fetchContainerItems = async (
         .filter(
           (item) =>
             // Ignore removed fields (i.e, Accession->deaccessions)
-            getTable(container.name)!.getField(item.name) !== undefined
+            getTable(container.name)?.getField(item.name) !== undefined
         )
         .map((item) => ({
           ...item,
