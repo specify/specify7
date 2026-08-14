@@ -6,11 +6,13 @@ import { schemaText } from '../../localization/schema';
 import { localized } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Input } from '../Atoms/Form';
+import { parseSchemaConfigTableName } from './helpers';
 import { useSchemaConfig } from './Store';
 import { TableList, tablesFilter } from './Tables';
 
 export function SchemaConfigSidebar(): JSX.Element {
-  const { language = '', tableName = '' } = useParams();
+  const { language = '', '*': rawTableName = '' } = useParams();
+  const tableName = parseSchemaConfigTableName(rawTableName);
   const { modifiedTables } = useSchemaConfig();
   const [search, setSearch] = React.useState('');
 

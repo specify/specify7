@@ -8,6 +8,7 @@ import { Container } from '../Atoms';
 import { LoadingContext, ReadOnlyContext } from '../Core/Contexts';
 import { hasToolPermission } from '../Permissions/helpers';
 import { SchemaConfigHeader } from './Components';
+import { parseSchemaConfigTableName } from './helpers';
 import { SchemaConfigMain } from './index';
 import { SchemaConfigRedirect } from './Redirect';
 import type { SchemaData } from './schemaData';
@@ -42,7 +43,8 @@ export function SchemaConfigLayout(): JSX.Element {
 
 function SchemaConfigLayoutContent(): JSX.Element {
   const { schemaData, isReadOnly, anyModified, saveAll } = useSchemaConfig();
-  const { language: rawLanguage = '', '*': tableName = '' } = useParams();
+  const { language: rawLanguage = '', '*': rawTableName = '' } = useParams();
+  const tableName = parseSchemaConfigTableName(rawTableName);
   const loading = React.useContext(LoadingContext);
 
   const unsetUnloadProtect = useUnloadProtect(

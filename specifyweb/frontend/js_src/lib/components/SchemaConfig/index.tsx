@@ -10,6 +10,7 @@ import type { SpLocaleItemStr } from '../DataModel/types';
 import { useTitle } from '../Molecules/AppTitle';
 import { SchemaConfigField } from './Field';
 import { SchemaConfigColumn, SchemaConfigFields } from './Fields';
+import { parseSchemaConfigTableName } from './helpers';
 import { useSchemaConfig, useSchemaConfigTable } from './Store';
 import { SchemaConfigTable } from './Table';
 
@@ -19,7 +20,8 @@ export type NewSpLocaleItemString = PartialBy<SpLocaleItemString, 'id'>;
 export type ItemType = 'formatted' | 'none' | 'pickList' | 'webLink';
 
 export function SchemaConfigMain(): JSX.Element {
-  const { '*': tableName = '' } = useParams();
+  const { '*': rawTableName = '' } = useParams();
+  const tableName = parseSchemaConfigTableName(rawTableName);
   const table = strictGetTable(tableName);
   useTitle(schemaText.schemaViewTitle({ tableName: table.name }));
 

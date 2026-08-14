@@ -101,3 +101,10 @@ export function javaTypeToHuman(
   else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
 }
+
+/**
+ * The Schema Config table route is a splat (`:language/*`), so the table name
+ * may include a trailing slash. Strip it before looking up the table.
+ */
+export const parseSchemaConfigTableName = (splat: string): string =>
+  splat.replace(/\/+$/u, '');
