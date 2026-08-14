@@ -6,7 +6,7 @@ import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
-import { multiSortFunction, sortFunction, split } from '../../utils/utils';
+import { multiSortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { icons } from '../Atoms/Icons';
@@ -49,14 +49,27 @@ export function SchemaConfigFields({
 
   const sortedItems = React.useMemo(() => {
     const itemList = Object.values(items ?? []);
-    return typeof sortField === 'undefined'
+    if (typeof sortField === 'undefined')
+      return itemList.sort(
+        multiSortFunction<SchemaConfigItem>(
+          ({ isHidden }) => isHidden,
+          ({ name }) => name
+        )
+      );
+    return isDescending
       ? itemList.sort(
           multiSortFunction<SchemaConfigItem>(
-            ({ isHidden }) => isHidden,
+            getSortValue(sortField),
+            true,
             ({ name }) => name
           )
         )
-      : itemList.sort(sortFunction(getSortValue(sortField), isDescending));
+      : itemList.sort(
+          multiSortFunction<SchemaConfigItem>(
+            getSortValue(sortField),
+            ({ name }) => name
+          )
+        );
   }, [items, sortField, isDescending]);
 
   const [fields, relationships] = split(
@@ -163,6 +176,8 @@ function SchemaConfigFieldsTable({
             return (
               <tr
                 className={`cursor-pointer border-b ${
+                  item.isHidden ? 'italic' : ''
+                } ${
                   isCurrent
                     ? 'bg-brand-100 dark:bg-brand-400'
                     : 'hover:bg-gray-100 dark:hover:bg-neutral-800'
