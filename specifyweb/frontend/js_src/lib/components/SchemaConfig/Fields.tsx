@@ -148,9 +148,9 @@ function SchemaConfigFieldsTable({
       <H3>{title}</H3>
       <table className="w-full table-fixed border-collapse text-left">
         <colgroup>
-          <col className="w-2/5" />
-          <col className="w-1/2" />
-          <col className="w-[10%]" />
+          <col />
+          <col />
+          <col className="w-28" />
         </colgroup>
         <thead>
           <tr className="border-b">
