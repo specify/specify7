@@ -1,3 +1,5 @@
+import React from 'react';
+
 import { commonText } from '../../localization/common';
 import { ajax } from '../../utils/ajax';
 import { Http } from '../../utils/ajax/definitions';
@@ -41,15 +43,77 @@ type AttachmentSettings = {
 };
 
 let settings: AttachmentSettings | undefined;
+export type AttachmentServerStatus = 'unknown' | 'available' | 'unavailable';
+
+let serverStatus: AttachmentServerStatus = 'unknown';
+const serverStatusListeners = new Set<() => void>();
+let healthCheckTimer: ReturnType<typeof setInterval> | undefined;
+
+const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
+  if (serverStatus === newStatus) return;
+  serverStatus = newStatus;
+  serverStatusListeners.forEach((listener) => listener());
+};
+
 export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
   '/context/attachment_settings.json',
   'application/json'
 ).then((data) => {
-  if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  if (Object.keys(data).length > 0) {
+    settings = data as AttachmentSettings;
+    setAttachmentServerStatus('available');
+  } else setAttachmentServerStatus('unavailable');
   return attachmentsAvailable();
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
+
+export const reportAttachmentServerFailure = (): void => {
+  if (settings !== undefined) setAttachmentServerStatus('unavailable');
+};
+
+const checkAttachmentServer = async (): Promise<void> => {
+  if (settings === undefined) return;
+  const { status } = await ajax(settings.read, {
+    cache: 'no-store',
+    errorMode: 'silent',
+    expectedErrors: Object.values(Http),
+    headers: { Accept: 'application/octet-stream' },
+  });
+  setAttachmentServerStatus(
+    status !== Http.MISDIRECTED && status < Http.SERVER_ERROR
+      ? 'available'
+      : 'unavailable'
+  );
+};
+
+const startAttachmentServerHealthPolling = (): (() => void) => {
+  if (healthCheckTimer !== undefined) return () => undefined;
+  healthCheckTimer = setInterval(() => {
+    checkAttachmentServer().catch(() =>
+      setAttachmentServerStatus('unavailable')
+    );
+  }, 30_000);
+  return () => {
+    if (serverStatusListeners.size === 0 && healthCheckTimer !== undefined) {
+      clearInterval(healthCheckTimer);
+      healthCheckTimer = undefined;
+    }
+  };
+};
+
+export const useAttachmentServerStatus = (): AttachmentServerStatus => {
+  const subscribe = React.useCallback((listener: () => void) => {
+    serverStatusListeners.add(listener);
+    const stopPolling = startAttachmentServerHealthPolling();
+    return () => {
+      serverStatusListeners.delete(listener);
+      stopPolling();
+    };
+  }, []);
+  const getSnapshot = React.useCallback(() => serverStatus, []);
+  return React.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
+};
 const uploadTimeoutMilliseconds = 30 * 60 * 1000;
 
 /*
