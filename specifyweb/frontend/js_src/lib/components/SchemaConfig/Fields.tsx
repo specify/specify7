@@ -78,7 +78,11 @@ export function SchemaConfigFields({
   );
 
   return (
-    <SchemaConfigColumn header={schemaText.fields()} id={id('fields-label')}>
+    <SchemaConfigColumn
+      className="flex-[2]"
+      header={schemaText.fields()}
+      id={id('fields-label')}
+    >
       {typeof items === 'undefined' ? (
         commonText.loading()
       ) : (
@@ -190,7 +194,7 @@ function SchemaConfigFieldsTable({
                 key={item.id}
                 onClick={(): void => handleChange(itemIndex)}
               >
-                <td className="p-1">
+                <td className="p-1 break-words">
                   <Button.LikeLink
                     aria-current={isCurrent ? 'true' : undefined}
                     className={item.isHidden ? 'italic' : undefined}
@@ -199,19 +203,21 @@ function SchemaConfigFieldsTable({
                       handleChange(itemIndex);
                     }}
                   >
-                    {localized(item.name)}
+                    <span className="min-w-0 break-words">
+                      {localized(item.name)}
+                    </span>
                   </Button.LikeLink>
                 </td>
-                <td className="p-1">{item.strings.name.text}</td>
+                <td className="p-1 break-words">{item.strings.name.text}</td>
                 <td className="p-1">
                   {item.isHidden ? (
                     <>
-                      {icons.x}
+                      <span className="text-red-500">{icons.x}</span>
                       <span className="sr-only">{schemaText.hidden()}</span>
                     </>
                   ) : (
                     <>
-                      {icons.check}
+                      <span className="text-green-500">{icons.check}</span>
                       <span className="sr-only">{schemaText.visible()}</span>
                     </>
                   )}
@@ -265,13 +271,19 @@ export function SchemaConfigColumn({
   children,
   header,
   id,
+  className: classNameOverride,
 }: {
   readonly children: React.ReactNode;
   readonly header: LocalizedString;
   readonly id?: string;
+  readonly className?: string;
 }): JSX.Element {
   return (
-    <section className="-m-1 flex flex-1 flex-col gap-4 p-1 sm:overflow-y-auto">
+    <section
+      className={`-m-1 flex flex-col gap-4 p-1 sm:overflow-y-auto ${
+        classNameOverride ?? 'flex-1'
+      }`}
+    >
       <H3 id={id}>{header}</H3>
       {children}
     </section>
