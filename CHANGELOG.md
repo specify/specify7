@@ -4,6 +4,97 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.12.1](https://github.com/specify/specify7/compare/v7.12.0.7...v7.12.1) (August 2026)
+
+### Added
+
+-   The Bulk Attachment Uploader supports a new **"match by mapping file"** option for attachment uploads ([#8311](https://github.com/specify/specify7/pull/8311) - *Requested by University of Michigan, University of Kansas, Queensland Herbarium, Muséum d'histoire naturelle Geneva, The University of Texas at Austin, and many others*)
+-   All-new **Batch Identify** tool, enabling users to create and assign a new Determination to a batch of Collection Objects at once ([#7769](https://github.com/specify/specify7/pull/7769) - *Requested by University of Kansas and many others* )
+-   New visual editor for configuring **Express Search** ([#7976](https://github.com/specify/specify7/pull/7976))
+-   The Query Builder now has dramatically **improved row density** and added **column resizing** ([#7908](https://github.com/specify/specify7/pull/7908))
+-   Query Builder can now search on **taxon synonyms** ([#5137](https://github.com/specify/specify7/pull/5137))
+-   **Catalog number ranges** are now supported when using the "In" filter in Query Builder ([#7814](https://github.com/specify/specify7/pull/7814))
+-   **Export to Web Portal** has been added to the Query Builder ([#7994](https://github.com/specify/specify7/pull/7994))
+-   **Attachments can now be added to an existing rows** in WorkBench data sets with attachments ([#7068](https://github.com/specify/specify7/pull/7068))
+-   Major **WorkBench** & **Batch Edit** user interface improvements ([#8165](https://github.com/specify/specify7/pull/8165))
+	- "Upload Plan" has been renamed "Mapping"
+	- Validation and Upload dialogs now show a breakdown of the record counts
+	- The "Import/Export Mapping" dialog now properly validates the JSON file defining the mapping. It disallows invalid JSON.
+	- Added a new button to "Choose Existing Mapping" when creating a new data set from scratch.
+	- Warns before clearing mappings to prevent accidental loss of progress.
+	- Added helper texts to various places to provide better guidance on WorkBench-specific terminology and features.
+	- Added a link to the documentation on the Speciforum.
+	- Fixed an issue with table icon appearance in Firefox.
+-   A new **biostratigraphy filter** has been added to the Chronostratigraphy tree ([#8257](https://github.com/specify/specify7/pull/8257))
+-   A **Close button** has been added to App Resources ([#8137](https://github.com/specify/specify7/pull/8137))
+-   WorkBench supports a **new "Pick first" disambiguation option** to arbitrarily choose a record to match to ([#8054](https://github.com/specify/specify7/pull/8054))
+-   **HEIC/HEIF thumbnail support** for attachments ([#8247](https://github.com/specify/specify7/pull/8247))
+-   New command-line tool to sync schema configuration ([#7689](https://github.com/specify/specify7/pull/7689))
+-   A notification will now be shown while a new collection is being created using System Config ([#7827](https://github.com/specify/specify7/pull/7827))
+-   Support for Norwegian Bokmål and Croatian in the interface ([#7958](https://github.com/specify/specify7/pull/7958), [#7819](https://github.com/specify/specify7/pull/7819))
+-   The "Show Interactions" button in Preparations now shows **all interactions** associated with the preparation, not just loans and gifts ([#6110](https://github.com/specify/specify7/pull/6110))
+-   The Chronostratigraphy tree is now **sorted by period instead of name**, and **displays date ranges** ([#8254](https://github.com/specify/specify7/pull/8254))
+
+
+### Changed
+-   Merging tree nodes has been made substantially faster across all trees ([#8031](https://github.com/specify/specify7/pull/8031))
+-   New disciplines can now be deleted once they have no users or collections attached ([#7812](https://github.com/specify/specify7/pull/7812))
+-   Added better schema field descriptions throughout the app ([#8075](https://github.com/specify/specify7/pull/8075))
+-   Attachment ordering now uses an explicit ordinal value ([#8017](https://github.com/specify/specify7/pull/8017) - *Reported by Natural History Museum of Denmark*)
+-   Data model list is now sorted alphabetically ([#8139](https://github.com/specify/specify7/pull/8139))
+-   Boolean form fields now correctly respect a `false` default value ([#7930](https://github.com/specify/specify7/pull/7930) - *Requested by Muséum d'histoire naturelle Geneva and California Academy of Sciences*)
+-   The WorkBench now preserves the mapped `createdByAgent` value ([#7931](https://github.com/specify/specify7/pull/7931) - *Requested by California Academy of Sciences, Commonwealth Scientific and Industrial Research Organisation, and others*)
+-   Updated the About dialog to add new members and update license mention to GLPv3 ([#8279](https://github.com/specify/specify7/pull/8279))
+
+### Fixed
+-   Fixed query field order not being preserved during Batch Edit ([#8023](https://github.com/specify/specify7/pull/8023) - *Reported by Cornell University Insect Collection, University of Michigan, University of Kansas, and many others*)
+-   Custom view definitions for Attachment are now respected ([#7811](https://github.com/specify/specify7/pull/7811) - *Reported by Natural History Museum of Denmark, University of Kansas, Queensland Herbarium, and Muséum d'histoire naturelle Geneva*)
+-   Fixed resolved loans incorrectly blocking preparation count updates ([#7829](https://github.com/specify/specify7/pull/7829) - *Reported by South African Institute for Aquatic Biodiversity, Florida Fish and Wildlife, and Virginia Institute of Marine Science*)
+-   Fixed an issue where WorkBench and Batch Edit checks transfer permissions for both types of data sets  ([#7834](https://github.com/specify/specify7/pull/7834) - *Reported by Royal Botanic Garden Edinburgh*)
+-   Fixed a crash that could occur when checking WorkBench attachment columns ([#7420](https://github.com/specify/specify7/pull/7420))
+-   Fixed the "Preparation count cannot be negative" warning appearing repeatedly ([#7595](https://github.com/specify/specify7/pull/7595))
+-   Removed duplicate "no preparation" warning ([#7902](https://github.com/specify/specify7/pull/7902))
+-   Fixed the error message shown when deleting tree ranks that still have associated nodes ([#5029](https://github.com/specify/specify7/pull/5029))
+-   Fixed an issue where setting an agent across collections in different divisions caused issues in Security & Accounts ([#7802](https://github.com/specify/specify7/pull/7802) - *Reported by Natural History Museum of Denmark*)
+-   Fixed the Chronostratigraphy tree name not appearing correctly in new disciplines ([#7824](https://github.com/specify/specify7/pull/7824))
+-   Fixed formatted fields to trim leading zeros while preserving decimal digits ([#7809](https://github.com/specify/specify7/pull/7809))
+-   Removed a non-functional "Add" button from `SpAppResource`'s collection preferences ([#7684](https://github.com/specify/specify7/pull/7684))
+-   Bad requests to Specify Network are now handled gracefully instead of erroring ([#7951](https://github.com/specify/specify7/pull/7951))
+-   Fixed an issue that caused invalid results to appear when using express search ([#7911](https://github.com/specify/specify7/pull/7911) - *Reported by Pioneer Trails Regional Museum and The Ohio State University Museum of Biological Diversity)
+-   Fixed autocomplete fields requiring a double click due to a blur/mousedown race condition ([#8011](https://github.com/specify/specify7/pull/8011))
+-   Removed the limit on the number of record sets shown in the search dialog ([#7916](https://github.com/specify/specify7/pull/7916))
+-   Fixed leading zeros being suppressed in Collection Object Catalog Numbers during data entry ([#8027](https://github.com/specify/specify7/pull/8027))
+-   Fixed Query Builder crashes on Projects relationship queries ([#8087](https://github.com/specify/specify7/pull/8087))
+-   Fixed miscellaneous console errors on the Collection Object form page ([#7907](https://github.com/specify/specify7/pull/7907))
+-   Fixed WorkBench export using the wrong file extension for the selected delimiter ([#8051](https://github.com/specify/specify7/pull/8051))
+-   Fixed `latitude2` not converting to `lat2text` in the WorkBench ([#8100](https://github.com/specify/specify7/pull/8100))
+-   Fixed deleting attachments via the API alone ([#8073](https://github.com/specify/specify7/pull/8073))
+-   Corrected "meta data" to "metadata" as one word ([#8135](https://github.com/specify/specify7/pull/8135))
+-   Fixed the WorkBench column header sort toggle ([#8123](https://github.com/specify/specify7/pull/8123))
+-   Fixed Query Builder CSV exports not respecting the applied sort order ([#8168](https://github.com/specify/specify7/pull/8168))
+-   Fixed Accession Collection Object subview searches with multiple catalog numbers returning only the last number ([#8226](https://github.com/specify/specify7/pull/8226))
+-   Fixed formatted Collection Object query results for nested relationship fields ([#7969](https://github.com/specify/specify7/pull/7969))
+-   Fixed tree expand/collapse state syncing with the URL cache ([#8263](https://github.com/specify/specify7/pull/8263))
+-   Fixed Record Sets created from queries so they can themselves be filtered by Record Set ([#8339](https://github.com/specify/specify7/pull/8339))
+-   Fixed sort order not being preserved in exported CSVs ([#8394](https://github.com/specify/specify7/pull/8394))
+-   Fixed duplicate roles being created when a role's description was edited ([#8391](https://github.com/specify/specify7/pull/8391))
+
+### Internal
+
+-   **Dependency upgrades:** flatted, lodash, fast-xml-parser, Django (4.2.27 → 4.2.30), react-router-dom, minimatch (transitive), Jest toolchain (28.1 → 30.3), underscore, handsontable, PyJWT,  ([#7890](https://github.com/specify/specify7/pull/7890), [#7892](https://github.com/specify/specify7/pull/7892), [#7899](https://github.com/specify/specify7/pull/7899), [#7886](https://github.com/specify/specify7/pull/7886), [#7895](https://github.com/specify/specify7/pull/7895), [#7917](https://github.com/specify/specify7/pull/7917), [#7914](https://github.com/specify/specify7/pull/7914), [#7947](https://github.com/specify/specify7/pull/7947), [#7944](https://github.com/specify/specify7/pull/7944), [#7920](https://github.com/specify/specify7/pull/7920), [#7888](https://github.com/specify/specify7/pull/7888), [#7997](https://github.com/specify/specify7/pull/7997), [#8332](https://github.com/specify/specify7/pull/8332))
+-   **CI/tooling:** enabled CodeQL on push/PR, added a code-coverage measurement action, added a Django end-of-life checker script, added missing test requirements ([#8092](https://github.com/specify/specify7/pull/8092), [#8278](https://github.com/specify/specify7/pull/8278), [#8068](https://github.com/specify/specify7/pull/8068), [#8280](https://github.com/specify/specify7/pull/8280), [#8377](https://github.com/specify/specify7/pull/8377), [#8229](https://github.com/specify/specify7/pull/8229))
+-   **Added indexes to Django models** and migration files; added a missing migration for `SpecifyUser.spprincipals` ([#7568](https://github.com/specify/specify7/pull/7568), [#8237](https://github.com/specify/specify7/pull/8237))
+-   **Automatic test coverage added** across the Query Builder operators, permits, WorkBench uploads/exports, attachments, and more. ([#8235](https://github.com/specify/specify7/pull/8235), [#8258](https://github.com/specify/specify7/pull/8258), [#8259](https://github.com/specify/specify7/pull/8259), [#8260](https://github.com/specify/specify7/pull/8260), [#8273](https://github.com/specify/specify7/pull/8273), [#8274](https://github.com/specify/specify7/pull/8274), [#8277](https://github.com/specify/specify7/pull/8277), [#8281](https://github.com/specify/specify7/pull/8281), [#8283](https://github.com/specify/specify7/pull/8283), [#8290](https://github.com/specify/specify7/pull/8290), [#8292](https://github.com/specify/specify7/pull/8292), [#8294](https://github.com/specify/specify7/pull/8294), [#8296](https://github.com/specify/specify7/pull/8296), [#8301](https://github.com/specify/specify7/pull/8301), [#8304](https://github.com/specify/specify7/pull/8304), [#8309](https://github.com/specify/specify7/pull/8309), [#8316](https://github.com/specify/specify7/pull/8316), [#8319](https://github.com/specify/specify7/pull/8319), [#8321](https://github.com/specify/specify7/pull/8321), [#8327](https://github.com/specify/specify7/pull/8327), [#8335](https://github.com/specify/specify7/pull/8335), [#8337](https://github.com/specify/specify7/pull/8337), [#8341](https://github.com/specify/specify7/pull/8341), [#8342](https://github.com/specify/specify7/pull/8342), [#8344](https://github.com/specify/specify7/pull/8344), [#8346](https://github.com/specify/specify7/pull/8346), [#8352](https://github.com/specify/specify7/pull/8352), [#8353](https://github.com/specify/specify7/pull/8353), [#8354](https://github.com/specify/specify7/pull/8354), [#8367](https://github.com/specify/specify7/pull/8367), [#8368](https://github.com/specify/specify7/pull/8368), [#8380](https://github.com/specify/specify7/pull/8380), [#8383](https://github.com/specify/specify7/pull/8383), [#8389](https://github.com/specify/specify7/pull/8389))
+- **Documented API schemas** for  `download_all` and `series_autonumber_range` ([#7815](https://github.com/specify/specify7/pull/7815))
+
+----------
+
+The full changelog is available on [GitHub](https://github.com/specify/specify7/blob/1b8a0f1d1813e646178ff78a86b1b40315d272a1/CHANGELOG.md)
+
+For source code go to the [GitHub Specify 7 repository](http://github.com/specify/specify7/)
+
+For more information about Specify 7, or about this release, see [Specify 7 | Specify Collections Consortium](https://www.specifysoftware.org/products/specify-7/), or email [support@specifysoftware.org](mailto:support@specifysoftware.org).
+
 ## [7.12.0.7](https://github.com/specify/specify7/compare/v7.12.0.6...v7.12.0.7) (28 July 2026)
 
 ### Updated
