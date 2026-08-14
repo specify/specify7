@@ -55,7 +55,7 @@ export const schemaViewerTableColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainer, 'name').label,
-      label: reportsText.labels(),
+      label: schemaText.caption(),
       isSystem: getField(tables.SpLocaleContainer, 'isSystem').label,
       isHidden: getField(tables.SpLocaleContainer, 'isHidden').label,
       tableId: schemaText.tableId(),

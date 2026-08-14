@@ -13,12 +13,12 @@ export const schemaToTsv = (): string =>
   [
     [
       schemaText.table(),
-      reportsText.labels(),
+      schemaText.caption(),
       getField(tables.SpLocaleContainer, 'isSystem').label,
       getField(tables.SpLocaleContainer, 'isHidden').label,
       schemaText.tableId(),
       getField(tables.SpLocaleContainerItem, 'name').label,
-      reportsText.labels(),
+      schemaText.caption(),
       schemaText.description(),
       getField(tables.SpLocaleContainerItem, 'isHidden').label,
       schemaText.readOnly(),

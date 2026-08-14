@@ -55,7 +55,7 @@ const fieldColumns = f.store(
   () =>
     ({
       name: getField(tables.SpLocaleContainerItem, 'name').label,
-      label: reportsText.labels(),
+      label: schemaText.caption(),
       description: schemaText.description(),
       isHidden: getField(tables.SpLocaleContainerItem, 'isHidden').label,
       isReadOnly: schemaText.readOnly(),
