@@ -60,8 +60,12 @@ function SchemaConfigLayoutContent(): JSX.Element {
   const canSave = !isReadOnly && anyModified;
   const handleSave = (): void => {
     if (!canSave) return;
-    unsetUnloadProtect();
-    loading(saveAll().then(() => handleSchemaSaved(rawLanguage, tableName)));
+    loading(
+      saveAll().then(() => {
+        unsetUnloadProtect();
+        return handleSchemaSaved(rawLanguage, tableName);
+      })
+    );
   };
 
   return (
