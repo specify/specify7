@@ -24,7 +24,7 @@ export function SchemaConfigSidebar({
     <aside className="order-2 flex w-full flex-shrink-0 flex-col gap-2 overflow-hidden lg:order-1 lg:w-12 lg:border-r">
       <Button.Icon
         icon="chevronDoubleRight"
-        title={commonText.expand()}
+        title={`${commonText.expand()} ${schemaText.tables()}`}
         onClick={(): void => setIsCollapsed(false)}
       />
     </aside>
@@ -34,7 +34,7 @@ export function SchemaConfigSidebar({
         <H3 className="flex-1">{schemaText.tables()}</H3>
         <Button.Icon
           icon="chevronDoubleLeft"
-          title={commonText.collapse()}
+          title={`${commonText.collapse()} ${schemaText.tables()}`}
           onClick={(): void => setIsCollapsed(true)}
         />
       </div>
