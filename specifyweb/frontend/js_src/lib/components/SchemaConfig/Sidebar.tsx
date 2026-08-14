@@ -21,7 +21,7 @@ export function SchemaConfigSidebar({
   const [isCollapsed, setIsCollapsed] = React.useState(false);
 
   return isCollapsed ? (
-    <aside className="order-2 flex w-full flex-shrink-0 flex-col gap-2 overflow-hidden lg:order-1 lg:w-12 lg:border-r">
+    <aside className="order-2 flex w-full flex-shrink-0 flex-col items-center gap-2 overflow-hidden lg:order-1 lg:w-9 lg:border-r">
       <Button.Icon
         icon="chevronDoubleRight"
         title={`${commonText.expand()} ${schemaText.tables()}`}
