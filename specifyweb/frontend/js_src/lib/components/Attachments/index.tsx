@@ -27,6 +27,7 @@ import { Dialog } from '../Molecules/Dialog';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { OrderPicker } from '../Preferences/Renderers';
 import { attachmentSettingsPromise } from './attachments';
+import { useAttachmentServerStatus } from './attachments';
 import { AttachmentGallery } from './Gallery';
 import { allTablesWithAttachments, tablesWithAttachments } from './utils';
 
@@ -65,6 +66,7 @@ function Attachments({
   readonly onClick?: (attachment: SerializedResource<Attachment>) => void;
 }): JSX.Element {
   useMenuItem('attachments');
+  const attachmentServerStatus = useAttachmentServerStatus();
 
   const isInDialog = React.useContext(DialogContext);
 
@@ -241,25 +243,38 @@ function Attachments({
           </>
         )}
       </header>
-      <AttachmentGallery
-        attachments={collection?.records ?? []}
-        isComplete={
-          typeof collection === 'object' &&
-          collection.totalCount === collection.records.length
-        }
-        key={`${order}_${JSON.stringify(filter)}`}
-        scale={scale}
-        onChange={(attachment, index): void =>
-          collection === undefined
-            ? undefined
-            : setCollection({
-                records: replaceItem(collection.records, index, attachment),
-                totalCount: collection.totalCount,
-              })
-        }
-        onClick={onClick}
-        onFetchMore={collection === undefined ? undefined : fetchMore}
-      />
+      {attachmentServerStatus === 'unavailable' ? (
+        <AttachmentServerUnavailable />
+      ) : (
+        <AttachmentGallery
+          attachments={collection?.records ?? []}
+          isComplete={
+            typeof collection === 'object' &&
+            collection.totalCount === collection.records.length
+          }
+          key={`${order}_${JSON.stringify(filter)}`}
+          scale={scale}
+          onChange={(attachment, index): void =>
+            collection === undefined
+              ? undefined
+              : setCollection({
+                  records: replaceItem(collection.records, index, attachment),
+                  totalCount: collection.totalCount,
+                })
+          }
+          onClick={onClick}
+          onFetchMore={collection === undefined ? undefined : fetchMore}
+        />
+      )}
     </Container.FullGray>
+  );
+}
+
+function AttachmentServerUnavailable(): JSX.Element {
+  return (
+    <div className="flex flex-col items-center gap-2 p-8 text-center">
+      <H2>{attachmentsText.attachmentServerUnavailable()}</H2>
+      <p>{attachmentsText.attachmentServerUnavailableDescription()}</p>
+    </div>
   );
 }
