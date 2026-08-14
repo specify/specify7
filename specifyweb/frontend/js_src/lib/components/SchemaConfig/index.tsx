@@ -36,11 +36,12 @@ export function SchemaConfigMain(): JSX.Element {
   } = useSchemaConfigTable(table.name);
 
   const [index, setIndex] = React.useState(0);
-  const item = items?.[index];
-
-  React.useEffect(() => {
+  const [previousTableName, setPreviousTableName] = React.useState(table.name);
+  if (previousTableName !== table.name) {
+    setPreviousTableName(table.name);
     setIndex(0);
-  }, [table.name]);
+  }
+  const item = items?.[index];
 
   return (
     <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row sm:overflow-hidden">
