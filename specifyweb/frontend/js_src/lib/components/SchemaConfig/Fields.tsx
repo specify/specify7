@@ -188,6 +188,7 @@ function SchemaConfigFieldsTable({
                 <td className="p-1">
                   <Button.LikeLink
                     aria-current={isCurrent ? 'true' : undefined}
+                    className={item.isHidden ? 'italic' : undefined}
                     onClick={(event): void => {
                       event.stopPropagation();
                       handleChange(itemIndex);
