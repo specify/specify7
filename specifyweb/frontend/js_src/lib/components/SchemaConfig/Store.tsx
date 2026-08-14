@@ -10,6 +10,7 @@ import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
 } from '../DataModel/types';
+import { softFail } from '../Errors/Crash';
 import { formatUrl } from '../Router/queryString';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { fetchContainerItems, fetchContainerString } from './data';
@@ -254,7 +255,7 @@ export function useSchemaConfigTable(tableName: string): {
 
   React.useEffect(() => {
     if (tableName === '') return;
-    void loadTable(tableName);
+    void loadTable(tableName).catch(softFail);
   }, [loadTable, tableName]);
 
   const container = React.useMemo(
