@@ -280,7 +280,7 @@ export function SchemaConfigColumn({
 }): JSX.Element {
   return (
     <section
-      className={`-m-1 flex flex-col gap-4 p-1 sm:overflow-y-auto ${
+      className={`-m-1 flex flex-col gap-4 p-1 sm:overflow-y-scroll ${
         classNameOverride ?? 'flex-1'
       }`}
     >
