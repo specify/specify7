@@ -86,7 +86,7 @@ export function SchemaConfigFields({
       {typeof items === 'undefined' ? (
         commonText.loading()
       ) : (
-        <div className="flex flex-col gap-6 overflow-y-auto">
+        <div className="flex flex-col gap-6 overflow-y-scroll">
           <SchemaConfigFieldsTable
             index={index}
             isDescending={isDescending}

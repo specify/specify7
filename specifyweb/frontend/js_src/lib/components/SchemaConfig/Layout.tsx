@@ -71,7 +71,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
         onSave={canSave ? handleSave : undefined}
         rawLanguage={rawLanguage}
       />
-      <div className="flex flex-1 flex-col gap-4 overflow-auto lg:flex-row lg:overflow-hidden">
+      <div className="flex flex-1 flex-col gap-4 overflow-y-scroll lg:flex-row lg:overflow-hidden">
         <SchemaConfigSidebar tableName={tableName} />
         <div className="order-1 lg:order-2 flex min-w-0 flex-1 flex-col min-h-full lg:min-h-0 lg:overflow-hidden">
           <Outlet />
