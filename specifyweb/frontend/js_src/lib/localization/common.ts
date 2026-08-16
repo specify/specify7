@@ -59,7 +59,7 @@ export const commonText = createDictionary({
   },
   skip: {
     'en-us': 'Skip',
-    'ru-ru': 'Пропускать',
+    'ru-ru': 'Пропустить',
     'es-es': 'Saltar',
     'fr-fr': 'Sauter',
     'uk-ua': 'Пропустити',
