@@ -9,6 +9,7 @@ import { localized } from '../../utils/types';
 import { multiSortFunction, split } from '../../utils/utils';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
+import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
 import { getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
@@ -202,7 +203,9 @@ function SchemaConfigFieldsTable({
                 <td className="p-1 [overflow-wrap:anywhere]">
                   <Button.LikeLink
                     aria-current={isCurrent ? 'true' : undefined}
-                    className={item.isHidden ? 'italic' : undefined}
+                    className={`${className.ariaHandled} ${
+                      item.isHidden ? 'italic' : ''
+                    }`}
                     onClick={(event): void => {
                       event.stopPropagation();
                       handleChange(itemIndex);
