@@ -151,7 +151,7 @@ function SchemaConfigFieldsTable({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   return (
-    <div className="flex flex-col gap-2">
+    <div className="flex flex-col gap-2 rounded border border-neutral-400 p-2">
       <H3>{title}</H3>
       <table className="w-full table-fixed border-collapse text-left">
         <colgroup>
