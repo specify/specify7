@@ -35,20 +35,32 @@ import { fieldFormat } from './fieldFormat';
 import type { Aggregator, Formatter } from './spec';
 import { formattersSpec } from './spec';
 
-export const fetchFormatters: Promise<{
+const loadFormatters = (
+  refresh = false
+): Promise<{
   readonly formatters: RA<Formatter>;
   readonly aggregators: RA<Aggregator>;
-}> = contextUnlockedPromise.then(async (entrypoint) =>
-  entrypoint === 'main'
-    ? Promise.all([
-        ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
-          headers: { Accept: 'text/xml' },
-        }).then(({ data }) => data),
-        fetchSchema,
-        fetchDomain,
-      ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
-    : foreverFetch()
-);
+}> =>
+  contextUnlockedPromise.then(async (entrypoint) =>
+    entrypoint === 'main'
+      ? Promise.all([
+          ajax<Element>(cacheableUrl(getAppResourceUrl('DataObjFormatters')), {
+            headers: { Accept: 'text/xml' },
+            cache: refresh ? 'no-cache' : undefined,
+          }).then(({ data }) => data),
+          fetchSchema,
+          fetchDomain,
+        ]).then(([definitions]) => xmlToSpec(definitions, formattersSpec()))
+      : foreverFetch()
+  );
+
+export let fetchFormatters = loadFormatters();
+
+// Re-fetch formatters and aggregators after the app resource is edited
+export const refreshFormatters = (): typeof fetchFormatters => {
+  fetchFormatters = loadFormatters(true);
+  return fetchFormatters;
+};
 
 export const naiveFormatter = (
   tableLabel: string,

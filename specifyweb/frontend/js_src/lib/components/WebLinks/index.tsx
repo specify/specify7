@@ -21,10 +21,21 @@ import { WebLinksContext } from './Editor';
 import type { WebLink } from './spec';
 import { webLinksSpec } from './spec';
 
-export const webLinks = Promise.all([
-  load<Element>(getAppResourceUrl('WebLinks'), 'text/xml'),
-  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
-]).then(([xml]) => xmlToSpec(xml, webLinksSpec()).webLinks);
+const loadWebLinks = (refresh = false): Promise<RA<WebLink>> =>
+  Promise.all([
+    load<Element>(getAppResourceUrl('WebLinks'), 'text/xml', refresh),
+    import('../DataModel/tables').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  ]).then(([xml]) => xmlToSpec(xml, webLinksSpec()).webLinks);
+
+export let webLinks = loadWebLinks();
+
+// Re-fetch web links after the app resource is edited
+export const refreshWebLinks = (): typeof webLinks => {
+  webLinks = loadWebLinks(true);
+  return webLinks;
+};
 
 export function WebLinkField({
   resource,

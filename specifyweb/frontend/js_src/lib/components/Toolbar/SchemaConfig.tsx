@@ -5,13 +5,14 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { OverlayLocation } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type {
   NewSpLocaleItemString,
   SpLocaleItemString,
 } from '../SchemaConfig';
 import type { SchemaData } from '../SchemaConfig/schemaData';
-import { fetchSchemaData } from '../SchemaConfig/schemaData';
+import { fetchSchemaData, refreshSchemaData } from '../SchemaConfig/schemaData';
 
 export type WithFetchedStrings = {
   readonly strings: {
@@ -22,6 +23,17 @@ export type WithFetchedStrings = {
 
 export function SchemaConfig(): JSX.Element | null {
   const [schemaData, setSchemaData] = useAsyncState(fetchSchemaData, true);
+
+  // Refresh schema data when an overlay closes. useLocation won't work here
+  // since the main route is rendered under the scoped background location
+  const overlayLocation = React.useContext(OverlayLocation);
+  const wasInOverlay = React.useRef(false);
+  React.useEffect(() => {
+    const isInOverlay = overlayLocation !== undefined;
+    if (wasInOverlay.current && !isInOverlay)
+      void refreshSchemaData().then(setSchemaData);
+    wasInOverlay.current = isInOverlay;
+  }, [overlayLocation, setSchemaData]);
 
   return schemaData === undefined ? null : (
     <SafeOutlet<SchemaData> {...schemaData} update={setSchemaData} />

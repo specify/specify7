@@ -23,24 +23,36 @@ import type { FieldFormatter, FieldFormatterPart } from './spec';
 import { fieldFormattersSpec, trimRegexString } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
-export const fetchContext = Promise.all([
-  load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml'),
-  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
-]).then(([formatters]) => {
-  uiFormatters = Object.fromEntries(
-    filterArray(
-      xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
-        (formatter, index) => {
-          const resolvedFormatter = resolveFieldFormatter(formatter, index);
-          return resolvedFormatter === undefined
-            ? undefined
-            : [formatter.name, resolvedFormatter];
-        }
+
+const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> =>
+  Promise.all([
+    load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml', refresh),
+    import('../DataModel/tables').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  ]).then(([formatters]) => {
+    uiFormatters = Object.fromEntries(
+      filterArray(
+        xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
+          (formatter, index) => {
+            const resolvedFormatter = resolveFieldFormatter(formatter, index);
+            return resolvedFormatter === undefined
+              ? undefined
+              : [formatter.name, resolvedFormatter];
+          }
+        )
       )
-    )
-  );
-  return uiFormatters;
-});
+    );
+    return uiFormatters;
+  });
+
+export let fetchContext = loadUiFormatters();
+
+// Re-fetch UI formatters after the app resource is edited
+export const refreshUiFormatters = (): typeof fetchContext => {
+  fetchContext = loadUiFormatters(true);
+  return fetchContext;
+};
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 
