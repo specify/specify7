@@ -93,7 +93,7 @@ export function SchemaConfigFields({
       {typeof items === 'undefined' ? (
         commonText.loading()
       ) : (
-        <div className="flex flex-col gap-6 overflow-y-auto [scrollbar-gutter:stable]">
+        <div className="flex flex-col gap-4 overflow-y-auto [scrollbar-gutter:stable]">
           <SchemaConfigFieldsTable
             index={index}
             isDescending={isDescending}
@@ -151,7 +151,7 @@ function SchemaConfigFieldsTable({
   readonly onChange: (index: number) => void;
 }): JSX.Element {
   return (
-    <div className="flex flex-col gap-2 rounded border border-neutral-400 p-2">
+    <div className="flex flex-col gap-1 rounded border border-neutral-400 p-1">
       <H3>{title}</H3>
       <table className="w-full table-fixed border-collapse text-left">
         <colgroup>
@@ -200,7 +200,7 @@ function SchemaConfigFieldsTable({
                 key={item.id}
                 onClick={(): void => handleChange(itemIndex)}
               >
-                <td className="p-1 [overflow-wrap:anywhere]">
+                <td className="px-1 py-0.5 [overflow-wrap:anywhere]">
                   <Button.LikeLink
                     aria-current={isCurrent ? 'true' : undefined}
                     className={`${className.ariaHandled} ${
@@ -216,10 +216,10 @@ function SchemaConfigFieldsTable({
                     </span>
                   </Button.LikeLink>
                 </td>
-                <td className="p-1 [overflow-wrap:anywhere]">
+                <td className="px-1 py-0.5 [overflow-wrap:anywhere]">
                   {item.strings.name.text}
                 </td>
-                <td className="p-1">
+                <td className="px-1 py-0.5">
                   {item.isHidden ? (
                     <>
                       <span className="text-red-500">{icons.x}</span>
@@ -260,7 +260,7 @@ function SortableTh({
       aria-sort={
         isActive ? (isDescending ? 'descending' : 'ascending') : undefined
       }
-      className="p-1 font-bold"
+      className="px-1 py-0.5 font-bold"
       scope="col"
     >
       <button
