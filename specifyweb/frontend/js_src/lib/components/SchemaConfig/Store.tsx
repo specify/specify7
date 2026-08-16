@@ -346,3 +346,7 @@ export const handleSchemaSaved = async (
           : `/specify/schema-config/${rawLanguage}/${tableName}/`
       )
     );
+
+export const exportsForTests = {
+  buildSaveRequests,
+};
