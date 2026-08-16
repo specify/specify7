@@ -33,15 +33,15 @@ export function SchemaConfigHeader({
           })`
         )}
       </H2>
-      <span className="-ml-2 flex-1" />
-      <Link.Success
+      <Link.Small
         download={`schema_localization_${rawLanguage}.json`}
         href={formatUrl('/context/schema_localization.json', {
           lang: rawLanguage,
         })}
       >
         {commonText.export()}
-      </Link.Success>
+      </Link.Small>
+      <span className="-ml-2 flex-1" />
       <Button.Small variant={className.saveButton} onClick={handleSave}>
         {commonText.save()}
       </Button.Small>
