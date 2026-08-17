@@ -205,7 +205,7 @@ function SchemaConfigFieldsTable({
         <colgroup>
           <col />
           <col />
-          <col className="w-20" />
+          <col className="w-24" />
         </colgroup>
         <thead>
           <tr className="border-b">
