@@ -131,6 +131,15 @@ export const useAttachmentServerStatus = (): AttachmentServerStatus => {
   const getSnapshot = React.useCallback(() => serverStatus, []);
   return React.useSyncExternalStore(subscribe, getSnapshot, getSnapshot);
 };
+
+/*
+ * This function is only used in automated tests.
+ */
+export const overrideAttachmentServerStatus = (
+  newStatus: AttachmentServerStatus
+): void => {
+  serverStatus = newStatus;
+};
 const uploadTimeoutMilliseconds = 30 * 60 * 1000;
 
 /*
