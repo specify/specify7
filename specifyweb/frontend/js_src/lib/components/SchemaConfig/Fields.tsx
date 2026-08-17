@@ -16,6 +16,7 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import { tables } from '../DataModel/tables';
 import type { SpLocaleContainerItem } from '../DataModel/types';
+import { TableIcon } from '../Molecules/TableIcon';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 
 type SchemaConfigItem = SerializedResource<SpLocaleContainerItem> &
@@ -150,6 +151,7 @@ export function SchemaConfigFields({
             onSort={handleSort}
             rows={fields}
             sortField={sortField}
+            table={table}
             title={schemaText.literalFields()}
           />
           {relationships.length > 0 && (
@@ -161,6 +163,7 @@ export function SchemaConfigFields({
               onSort={handleSort}
               rows={relationships}
               sortField={sortField}
+              table={table}
               title={schemaText.relationships()}
             />
           )}
@@ -180,6 +183,7 @@ const getSortValue = (
       : ({ isHidden }) => isHidden;
 
 function SchemaConfigFieldsTable({
+  table,
   title,
   rows,
   itemIndexes,
@@ -189,6 +193,7 @@ function SchemaConfigFieldsTable({
   onSort: handleSort,
   onChange: handleChange,
 }: {
+  readonly table: SpecifyTable;
   readonly title: LocalizedString;
   readonly rows: RA<SchemaConfigItem>;
   readonly itemIndexes: ReadonlyMap<number, number>;
@@ -237,6 +242,9 @@ function SchemaConfigFieldsTable({
           {rows.map((item) => {
             const itemIndex = itemIndexes.get(item.id) ?? -1;
             const isCurrent = itemIndex === index;
+            const field = table.getField(item.name);
+            const relatedTable =
+              field?.isRelationship === true ? field.relatedTable : undefined;
             return (
               <tr
                 className={`cursor-pointer border-b ${
@@ -250,20 +258,25 @@ function SchemaConfigFieldsTable({
                 onClick={(): void => handleChange(itemIndex)}
               >
                 <td className="px-1 py-0.5 [overflow-wrap:anywhere]">
-                  <Button.LikeLink
-                    aria-current={isCurrent ? 'true' : undefined}
-                    className={`${className.ariaHandled} ${
-                      item.isHidden ? 'italic' : ''
-                    }`}
-                    onClick={(event): void => {
-                      event.stopPropagation();
-                      handleChange(itemIndex);
-                    }}
-                  >
-                    <span className="min-w-0 [overflow-wrap:anywhere]">
-                      {localized(item.name)}
-                    </span>
-                  </Button.LikeLink>
+                  <span className="flex items-center gap-1">
+                    {relatedTable !== undefined && (
+                      <TableIcon label={false} name={relatedTable.name} />
+                    )}
+                    <Button.LikeLink
+                      aria-current={isCurrent ? 'true' : undefined}
+                      className={`${className.ariaHandled} ${
+                        item.isHidden ? 'italic' : ''
+                      }`}
+                      onClick={(event): void => {
+                        event.stopPropagation();
+                        handleChange(itemIndex);
+                      }}
+                    >
+                      <span className="min-w-0 [overflow-wrap:anywhere]">
+                        {localized(item.name)}
+                      </span>
+                    </Button.LikeLink>
+                  </span>
                 </td>
                 <td className="px-1 py-0.5 [overflow-wrap:anywhere]">
                   {item.strings.name.text}
