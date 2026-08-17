@@ -57,9 +57,20 @@ const loadFormatters = (
 export let fetchFormatters = loadFormatters();
 
 // Re-fetch formatters and aggregators after the app resource is edited
-export const refreshFormatters = (): typeof fetchFormatters => {
-  fetchFormatters = loadFormatters(true);
-  return fetchFormatters;
+export const refreshFormatters = async (): Promise<
+  Awaited<typeof fetchFormatters>
+> => {
+  const previous = fetchFormatters;
+  const refreshed = loadFormatters(true);
+  try {
+    const result = await refreshed;
+    fetchFormatters = refreshed;
+    return result;
+  } catch (error) {
+    // Keep the previous formatters on failure rather than a rejected promise
+    fetchFormatters = previous;
+    throw error;
+  }
 };
 
 export const naiveFormatter = (

@@ -42,6 +42,8 @@ export function SchemaConfigMain(): JSX.Element {
     setIndex(0);
   }
   const item = items?.[index];
+  const field =
+    typeof item === 'object' ? table.getField(item.name) : undefined;
 
   return (
     <div className="flex flex-1 flex-col gap-4 overflow-y-auto sm:flex-row sm:overflow-hidden">
@@ -60,9 +62,9 @@ export function SchemaConfigMain(): JSX.Element {
         table={table}
         onChange={setIndex}
       />
-      {typeof item === 'object' ? (
+      {typeof item === 'object' && field !== undefined ? (
         <SchemaConfigField
-          field={table.getField(item.name)!}
+          field={field}
           item={item}
           schemaData={schemaData}
           onChange={(field, value): void =>

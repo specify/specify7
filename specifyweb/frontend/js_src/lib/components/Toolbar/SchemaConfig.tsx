@@ -5,6 +5,7 @@
 import React from 'react';
 
 import { useAsyncState } from '../../hooks/useAsyncState';
+import { softFail } from '../Errors/Crash';
 import { OverlayLocation } from '../Router/Router';
 import { SafeOutlet } from '../Router/RouterUtils';
 import type {
@@ -33,9 +34,11 @@ export function SchemaConfig(): JSX.Element | null {
     const isInOverlay = overlayLocation !== undefined;
     if (wasInOverlay.current && !isInOverlay) {
       const sequence = ++refreshSequence.current;
-      void refreshSchemaData().then((data) => {
-        if (refreshSequence.current === sequence) setSchemaData(data);
-      });
+      void refreshSchemaData()
+        .then((data) => {
+          if (refreshSequence.current === sequence) setSchemaData(data);
+        })
+        .catch(softFail);
     }
     wasInOverlay.current = isInOverlay;
   }, [overlayLocation, setSchemaData]);

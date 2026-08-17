@@ -76,7 +76,7 @@ export function SchemaConfigFields({
 
   const [fields, relationships] = split(
     sortedItems,
-    (item) => table.getField(item.name)!.isRelationship
+    (item) => table.getField(item.name)?.isRelationship ?? false
   );
 
   const itemIndexes = React.useMemo(
@@ -152,7 +152,13 @@ export function SchemaConfigFields({
     }
 
     // Type to jump to a field, matching the select list behavior pre-table
-    if (key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+    if (
+      key !== ' ' &&
+      key.length === 1 &&
+      !event.ctrlKey &&
+      !event.metaKey &&
+      !event.altKey
+    ) {
       event.preventDefault();
       const candidate = `${searchBuffer.current}${key}`.toLowerCase();
       const match = findMatch(candidate, searchBuffer.current !== '');
