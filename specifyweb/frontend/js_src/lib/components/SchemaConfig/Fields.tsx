@@ -84,6 +84,48 @@ export function SchemaConfigFields({
     [items]
   );
 
+  // Navigate the fields list with the arrow keys!!! 
+  // Nice QoL and accessibility feature that matches the previous selectable list behavior pre-table.
+  const listRef = React.useRef<HTMLDivElement | null>(null);
+  // Follow the visual order instead of jumping between sections
+  const sortedItemIndexes = React.useMemo(
+    () =>
+      [...fields, ...relationships].map(
+        (item) => itemIndexes.get(item.id) ?? -1
+      ),
+    [fields, relationships, itemIndexes]
+  );
+  const currentPosition = sortedItemIndexes.indexOf(index);
+
+  React.useEffect(() => {
+    listRef.current
+      ?.querySelector('[aria-current="true"]')
+      ?.scrollIntoView({ block: 'nearest' });
+  }, [index]);
+
+  const handleSelect = (newIndex: number): void => {
+    handleChange(newIndex);
+    listRef.current?.focus();
+  };
+
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
+    const { key } = event;
+    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) return;
+    event.preventDefault();
+    if (sortedItemIndexes.length === 0) return;
+    const last = sortedItemIndexes.length - 1;
+    const current = currentPosition === -1 ? 0 : currentPosition;
+    const next =
+      key === 'ArrowDown'
+        ? Math.min(current + 1, last)
+        : key === 'ArrowUp'
+          ? Math.max(current - 1, 0)
+          : key === 'Home'
+            ? 0
+            : last;
+    if (next !== currentPosition) handleChange(sortedItemIndexes[next]);
+  };
+
   return (
     <SchemaConfigColumn
       className="flex-[2]"
@@ -93,12 +135,18 @@ export function SchemaConfigFields({
       {typeof items === 'undefined' ? (
         commonText.loading()
       ) : (
-        <div className="flex flex-col gap-4 overflow-y-auto [scrollbar-gutter:stable]">
+        // eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions
+        <div
+          className="flex flex-col gap-4 overflow-y-auto [scrollbar-gutter:stable]"
+          onKeyDown={handleKeyDown}
+          ref={listRef}
+          tabIndex={0}
+        >
           <SchemaConfigFieldsTable
             index={index}
             isDescending={isDescending}
             itemIndexes={itemIndexes}
-            onChange={handleChange}
+            onChange={handleSelect}
             onSort={handleSort}
             rows={fields}
             sortField={sortField}
@@ -109,7 +157,7 @@ export function SchemaConfigFields({
               index={index}
               isDescending={isDescending}
               itemIndexes={itemIndexes}
-              onChange={handleChange}
+              onChange={handleSelect}
               onSort={handleSort}
               rows={relationships}
               sortField={sortField}
