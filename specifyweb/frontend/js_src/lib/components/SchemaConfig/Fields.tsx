@@ -317,6 +317,7 @@ function SortableTh({
       <button
         aria-label={icon === undefined ? undefined : label}
         className="flex w-full min-w-0 items-center gap-1"
+        title={label}
         type="button"
         onClick={(): void => handleSort(field)}
       >
