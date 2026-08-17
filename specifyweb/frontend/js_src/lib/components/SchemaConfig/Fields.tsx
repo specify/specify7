@@ -88,15 +88,16 @@ export function SchemaConfigFields({
   // Navigate the fields list with the arrow keys!!!
   // Nice QoL and accessibility feature that matches the previous selectable list behavior pre-table.
   const listRef = React.useRef<HTMLDivElement | null>(null);
+  const searchBuffer = React.useRef('');
+  const searchTimeout = React.useRef<number | undefined>(undefined);
   // Follow the visual order instead of jumping between sections
-  const sortedItemIndexes = React.useMemo(
-    () =>
-      [...fields, ...relationships].map(
-        (item) => itemIndexes.get(item.id) ?? -1
-      ),
-    [fields, relationships, itemIndexes]
+  const displayItems = React.useMemo(
+    () => [...fields, ...relationships],
+    [fields, relationships]
   );
-  const currentPosition = sortedItemIndexes.indexOf(index);
+  const currentPosition = displayItems.findIndex(
+    (item) => itemIndexes.get(item.id) === index
+  );
 
   React.useEffect(() => {
     listRef.current
@@ -109,22 +110,59 @@ export function SchemaConfigFields({
     listRef.current?.focus();
   };
 
+  const selectItem = (item: SchemaConfigItem | undefined): void => {
+    if (item === undefined) return;
+    const itemIndex = itemIndexes.get(item.id);
+    if (itemIndex !== undefined) handleChange(itemIndex);
+  };
+
+  const findMatch = (
+    prefix: string,
+    fromTop: boolean
+  ): SchemaConfigItem | undefined => {
+    const start = fromTop || currentPosition === -1 ? 0 : currentPosition + 1;
+    let prefixMatch: SchemaConfigItem | undefined;
+    for (let offset = 0; offset < displayItems.length; offset += 1) {
+      const item = displayItems[(start + offset) % displayItems.length];
+      const name = item.name.toLowerCase();
+      if (name === prefix) return item;
+      if (prefixMatch === undefined && name.startsWith(prefix))
+        prefixMatch = item;
+    }
+    return prefixMatch;
+  };
+
   const handleKeyDown = (event: React.KeyboardEvent<HTMLDivElement>): void => {
     const { key } = event;
-    if (!['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) return;
-    event.preventDefault();
-    if (sortedItemIndexes.length === 0) return;
-    const last = sortedItemIndexes.length - 1;
-    const current = currentPosition === -1 ? 0 : currentPosition;
-    const next =
-      key === 'ArrowDown'
-        ? Math.min(current + 1, last)
-        : key === 'ArrowUp'
-          ? Math.max(current - 1, 0)
-          : key === 'Home'
-            ? 0
-            : last;
-    if (next !== currentPosition) handleChange(sortedItemIndexes[next]);
+
+    if (['ArrowDown', 'ArrowUp', 'Home', 'End'].includes(key)) {
+      event.preventDefault();
+      const last = displayItems.length - 1;
+      const current = currentPosition === -1 ? 0 : currentPosition;
+      const next =
+        key === 'ArrowDown'
+          ? Math.min(current + 1, last)
+          : key === 'ArrowUp'
+            ? Math.max(current - 1, 0)
+            : key === 'Home'
+              ? 0
+              : last;
+      if (next !== currentPosition) selectItem(displayItems[next]);
+      return;
+    }
+
+    // Type to jump to a field, matching the select list behavior pre-table
+    if (key.length === 1 && !event.ctrlKey && !event.metaKey && !event.altKey) {
+      event.preventDefault();
+      const candidate = `${searchBuffer.current}${key}`.toLowerCase();
+      const match = findMatch(candidate, searchBuffer.current !== '');
+      searchBuffer.current = match === undefined ? '' : candidate;
+      window.clearTimeout(searchTimeout.current);
+      searchTimeout.current = window.setTimeout(() => {
+        searchBuffer.current = '';
+      }, 1000); // Just resets after a second
+      selectItem(match);
+    }
   };
 
   return (
