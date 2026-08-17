@@ -7,6 +7,7 @@ import { useLocation } from 'react-router-dom';
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { useCachedState } from '../../hooks/useCachedState';
+import { attachmentsText } from '../../localization/attachments';
 import { commonText } from '../../localization/common';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
@@ -180,6 +181,11 @@ function HeaderItems({
           <MenuButton
             {...menuItem}
             disabled={isAttachmentsUnavailable}
+            disabledTitle={
+              isAttachmentsUnavailable
+                ? attachmentsText.attachmentServerUnavailable()
+                : undefined
+            }
             isActive={name === activeMenuItem}
             isCollapsed={isCollapsed}
             key={name}
@@ -198,6 +204,7 @@ export function MenuButton({
   isCollapsed,
   preventOverflow = false,
   disabled = false,
+  disabledTitle,
   onClick: handleClick,
   props: extraProps,
 }: {
@@ -207,6 +214,7 @@ export function MenuButton({
   readonly isActive?: boolean;
   readonly preventOverflow?: boolean;
   readonly disabled?: boolean;
+  readonly disabledTitle?: LocalizedString;
   readonly onClick: string | (() => void);
   readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
@@ -214,6 +222,7 @@ export function MenuButton({
   const [isSideBarLight] = userPreferences.use('general', 'ui', 'sidebarTheme');
   const isDarkMode = useDarkMode();
   const isSideBarDark = isDarkMode || isSideBarLight === 'dark';
+  const descriptionId = React.useId();
   const getClassName = (isActive: boolean): string => `
     p-[1.4vh]
     ${
@@ -234,7 +243,9 @@ export function MenuButton({
       position === 'left' ? 'right' : position === 'right' ? 'left' : undefined,
     'aria-current': isActive ? 'page' : undefined,
     'aria-disabled': disabled ? true : undefined,
-    title: isCollapsed ? title : undefined,
+    'aria-describedby':
+      disabled && typeof disabledTitle === 'string' ? descriptionId : undefined,
+    title: disabled ? disabledTitle : isCollapsed ? title : undefined,
   } as const;
 
   const children = (
@@ -249,6 +260,11 @@ export function MenuButton({
       ) : (
         <span className={isCollapsed ? 'sr-only' : ''}>{title}</span>
       )}
+      {disabled && typeof disabledTitle === 'string' ? (
+        <span className="sr-only" id={descriptionId}>
+          {disabledTitle}
+        </span>
+      ) : undefined}
     </>
   );
 
