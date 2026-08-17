@@ -28,10 +28,15 @@ export function SchemaConfig(): JSX.Element | null {
   // since the main route is rendered under the scoped background location
   const overlayLocation = React.useContext(OverlayLocation);
   const wasInOverlay = React.useRef(false);
+  const refreshSequence = React.useRef(0);
   React.useEffect(() => {
     const isInOverlay = overlayLocation !== undefined;
-    if (wasInOverlay.current && !isInOverlay)
-      void refreshSchemaData().then(setSchemaData);
+    if (wasInOverlay.current && !isInOverlay) {
+      const sequence = ++refreshSequence.current;
+      void refreshSchemaData().then((data) => {
+        if (refreshSequence.current === sequence) setSchemaData(data);
+      });
+    }
     wasInOverlay.current = isInOverlay;
   }, [overlayLocation, setSchemaData]);
 
