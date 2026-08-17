@@ -78,10 +78,6 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
-export const reportAttachmentServerFailure = (): void => {
-  if (settings !== undefined) setAttachmentServerStatus('unavailable');
-};
-
 const checkAttachmentServer = async (): Promise<void> => {
   if (settings === undefined) return;
   const { status } = await ajax(settings.read, {
@@ -95,6 +91,15 @@ const checkAttachmentServer = async (): Promise<void> => {
       ? 'available'
       : 'unavailable'
   );
+};
+
+/*
+ * A single caller error (e.g. a missing or corrupt attachment) doesn't mean
+ * the server is down, so confirm with a health check before marking it unavailable
+ */
+export const reportAttachmentServerFailure = (): void => {
+  if (settings === undefined) return;
+  checkAttachmentServer().catch(() => setAttachmentServerStatus('unavailable'));
 };
 
 const startAttachmentServerHealthPolling = (): (() => void) => {
