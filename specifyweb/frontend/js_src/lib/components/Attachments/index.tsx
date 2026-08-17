@@ -236,6 +236,12 @@ function Attachments({
               />
             </Label.Inline>
             <Button.BorderedGray
+              disabled={attachmentServerStatus === 'unavailable'}
+              title={
+                attachmentServerStatus === 'unavailable'
+                  ? attachmentsText.attachmentServerUnavailable()
+                  : undefined
+              }
               onClick={() => navigate('/specify/overlay/attachments/import/')}
             >
               {commonText.import()}

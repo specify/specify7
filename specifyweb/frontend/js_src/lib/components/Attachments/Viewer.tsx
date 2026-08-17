@@ -238,25 +238,29 @@ export function AttachmentViewer({
             <span className="flex-1" />
             {typeof originalUrl === 'string' && (
               <div className="flex flex-wrap gap-2">
-                <Component
-                  className="flex-1 whitespace-nowrap"
-                  download={new URL(originalUrl).searchParams.get(
-                    'downloadname'
-                  )}
-                  href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
-                  target="_blank"
-                  onClick={undefined}
-                >
-                  {notificationsText.download()}
-                </Component>
-                <Component
-                  className="flex-1 whitespace-nowrap"
-                  href={originalUrl}
-                  target="_blank"
-                  onClick={undefined}
-                >
-                  {commonText.openInNewTab()}
-                </Component>
+                {attachmentServerStatus !== 'unavailable' && (
+                  <>
+                    <Component
+                      className="flex-1 whitespace-nowrap"
+                      download={new URL(originalUrl).searchParams.get(
+                        'downloadname'
+                      )}
+                      href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+                      target="_blank"
+                      onClick={undefined}
+                    >
+                      {notificationsText.download()}
+                    </Component>
+                    <Component
+                      className="flex-1 whitespace-nowrap"
+                      href={originalUrl}
+                      target="_blank"
+                      onClick={undefined}
+                    >
+                      {commonText.openInNewTab()}
+                    </Component>
+                  </>
+                )}
                 {typeof table === 'object' &&
                 typeof handleViewRecord === 'function' ? (
                   <AttachmentRecordLink
