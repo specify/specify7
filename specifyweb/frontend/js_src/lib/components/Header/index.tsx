@@ -11,6 +11,7 @@ import { commonText } from '../../localization/common';
 import { listen } from '../../utils/events';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
+import { useAttachmentServerStatus } from '../Attachments/attachments';
 import { Button } from '../Atoms/Button';
 import { className } from '../Atoms/className';
 import { icons } from '../Atoms/Icons';
@@ -169,17 +170,23 @@ function HeaderItems({
   readonly isCollapsed: boolean;
   readonly activeMenuItem: MenuItemName | undefined;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   return (
     <>
-      {menuItems.map(({ url, name, ...menuItem }) => (
-        <MenuButton
-          {...menuItem}
-          isActive={name === activeMenuItem}
-          isCollapsed={isCollapsed}
-          key={name}
-          onClick={url}
-        />
-      ))}
+      {menuItems.map(({ url, name, ...menuItem }) => {
+        const isAttachmentsUnavailable =
+          name === 'attachments' && attachmentServerStatus === 'unavailable';
+        return (
+          <MenuButton
+            {...menuItem}
+            disabled={isAttachmentsUnavailable}
+            isActive={name === activeMenuItem}
+            isCollapsed={isCollapsed}
+            key={name}
+            onClick={url}
+          />
+        );
+      })}
     </>
   );
 }
@@ -190,6 +197,7 @@ export function MenuButton({
   isActive = false,
   isCollapsed,
   preventOverflow = false,
+  disabled = false,
   onClick: handleClick,
   props: extraProps,
 }: {
@@ -198,6 +206,7 @@ export function MenuButton({
   readonly isCollapsed: boolean;
   readonly isActive?: boolean;
   readonly preventOverflow?: boolean;
+  readonly disabled?: boolean;
   readonly onClick: string | (() => void);
   readonly props?: Omit<TagProps<'a'> & TagProps<'button'>, 'aria-label'>;
 }): JSX.Element | null {
@@ -224,6 +233,7 @@ export function MenuButton({
     [titlePosition]:
       position === 'left' ? 'right' : position === 'right' ? 'left' : undefined,
     'aria-current': isActive ? 'page' : undefined,
+    'aria-disabled': disabled ? true : undefined,
     title: isCollapsed ? title : undefined,
   } as const;
 
@@ -241,6 +251,16 @@ export function MenuButton({
       )}
     </>
   );
+
+  if (disabled)
+    return (
+      <span
+        {...props}
+        className={`${getClassName(false)} inline-flex items-center gap-2 cursor-not-allowed opacity-50`}
+      >
+        {children}
+      </span>
+    );
 
   return typeof handleClick === 'string' ? (
     <ActiveLink
