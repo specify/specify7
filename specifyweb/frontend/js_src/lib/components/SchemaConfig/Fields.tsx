@@ -84,7 +84,7 @@ export function SchemaConfigFields({
     [items]
   );
 
-  // Navigate the fields list with the arrow keys!!! 
+  // Navigate the fields list with the arrow keys!!!
   // Nice QoL and accessibility feature that matches the previous selectable list behavior pre-table.
   const listRef = React.useRef<HTMLDivElement | null>(null);
   // Follow the visual order instead of jumping between sections
@@ -318,7 +318,7 @@ function SortableTh({
       >
         <span className="min-w-0 [overflow-wrap:anywhere]">{label}</span>
         {isActive ? (
-          <span aria-hidden className="shrink-0">
+          <span aria-hidden className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">
             {isDescending ? icons.chevronDown : icons.chevronUp}
           </span>
         ) : undefined}
