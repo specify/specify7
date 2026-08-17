@@ -210,8 +210,9 @@ export function SchemaConfigStoreProvider({
   );
 
   const saveAll = React.useCallback(async (): Promise<void> => {
+    const snapshot = editorsRef.current;
     const outcomes = await Promise.all(
-      Object.entries(editorsRef.current)
+      Object.entries(snapshot)
         .filter(([, editor]) => isEditorModified(editor))
         .flatMap(([tableName, editor]) =>
           buildSaveRequests(editor).map((request) => ({
@@ -232,40 +233,52 @@ export function SchemaConfigStoreProvider({
         )
     );
 
-    const newEditors: Record<string, SchemaConfigEditorState> = {
-      ...editorsRef.current,
-    };
     const failedItems = new Map<string, Set<number>>();
     let hasFailure = false;
 
     for (const outcome of outcomes) {
-      if (outcome.status === 'fulfilled')
-        newEditors[outcome.tableName] = outcome.request.reconcile(
-          newEditors[outcome.tableName],
-          outcome.result
-        );
-      else {
-        hasFailure = true;
-        if (typeof outcome.request.itemIndex === 'number') {
-          const failed =
-            failedItems.get(outcome.tableName) ?? new Set<number>();
-          failed.add(outcome.request.itemIndex);
-          failedItems.set(outcome.tableName, failed);
-        }
+      if (outcome.status !== 'rejected') continue;
+      hasFailure = true;
+      if (typeof outcome.request.itemIndex === 'number') {
+        const failed = failedItems.get(outcome.tableName) ?? new Set<number>();
+        failed.add(outcome.request.itemIndex);
+        failedItems.set(outcome.tableName, failed);
       }
     }
 
-    // Keep only items whose writes all failed, so a retry re-saves them
-    for (const [tableName, editor] of Object.entries(newEditors)) {
-      const failed = failedItems.get(tableName);
-      if (failed === undefined) continue;
-      newEditors[tableName] = {
-        ...editor,
-        changedItems: editor.changedItems.filter((index) => failed.has(index)),
+    // Reconcile against the latest state so edits made while requests were
+    // in flight aren't overwritten
+    setEditors((current) => {
+      const newEditors: Record<string, SchemaConfigEditorState> = {
+        ...current,
       };
-    }
+      for (const outcome of outcomes) {
+        if (outcome.status !== 'fulfilled') continue;
+        const editor = newEditors[outcome.tableName];
+        if (editor !== undefined)
+          newEditors[outcome.tableName] = outcome.request.reconcile(
+            editor,
+            outcome.result
+          );
+      }
 
-    setEditors(newEditors);
+      // Drop only the changed items that were saved successfully this round
+      for (const [tableName, editor] of Object.entries(newEditors)) {
+        const failed = failedItems.get(tableName);
+        const saved = new Set(
+          (snapshot[tableName]?.changedItems ?? []).filter(
+            (index) => failed?.has(index) !== true
+          )
+        );
+        newEditors[tableName] = {
+          ...editor,
+          changedItems: editor.changedItems.filter(
+            (index) => !saved.has(index)
+          ),
+        };
+      }
+      return newEditors;
+    });
 
     if (hasFailure) throw new Error('Some schema changes could not be saved');
   }, []);
@@ -375,10 +388,10 @@ type SaveRequest = {
 const applySavedId = <T extends { readonly id?: number }>(
   resource: T,
   result: unknown
-): T => {
-  const id = (result as { readonly id?: number } | undefined)?.id;
-  return typeof id === 'number' ? { ...resource, id } : resource;
-};
+): T =>
+  typeof (result as { readonly id?: number } | undefined)?.id === 'number'
+    ? { ...resource, ...(result as Partial<T>) }
+    : resource;
 
 const applyItemStringId = (
   editor: SchemaConfigEditorState,
