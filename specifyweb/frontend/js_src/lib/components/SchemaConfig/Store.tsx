@@ -62,12 +62,42 @@ const SchemaConfigContext = React.createContext<SchemaConfigStore | undefined>(
 );
 SchemaConfigContext.displayName = 'SchemaConfigContext';
 
-export const isEditorModified = (editor: SchemaConfigEditorState): boolean =>
-  JSON.stringify(editor.initialContainer) !==
-    JSON.stringify(editor.container) ||
-  JSON.stringify(editor.initialName) !== JSON.stringify(editor.name) ||
-  JSON.stringify(editor.initialDesc) !== JSON.stringify(editor.desc) ||
-  editor.changedItems.length > 0;
+const getEditorChanges = (
+  editor: SchemaConfigEditorState
+): {
+  readonly nameChanged: boolean;
+  readonly descChanged: boolean;
+  readonly containerChanged: boolean;
+} => ({
+  nameChanged:
+    JSON.stringify(editor.initialName) !== JSON.stringify(editor.name),
+  descChanged:
+    JSON.stringify(editor.initialDesc) !== JSON.stringify(editor.desc),
+  containerChanged:
+    JSON.stringify(editor.initialContainer) !==
+    JSON.stringify(editor.container),
+});
+
+export const isEditorModified = (editor: SchemaConfigEditorState): boolean => {
+  const changes = getEditorChanges(editor);
+  return (
+    changes.nameChanged ||
+    changes.descChanged ||
+    changes.containerChanged ||
+    editor.changedItems.length > 0
+  );
+};
+
+const updateEditor = (
+  editors: IR<SchemaConfigEditorState>,
+  tableName: string,
+  update: (editor: SchemaConfigEditorState) => SchemaConfigEditorState
+): IR<SchemaConfigEditorState> => {
+  const editor = editors[tableName];
+  return editor === undefined
+    ? editors
+    : { ...editors, [tableName]: update(editor) };
+};
 
 export function SchemaConfigStoreProvider({
   schemaData,
@@ -128,34 +158,28 @@ export function SchemaConfigStoreProvider({
 
   const setContainer = React.useCallback(
     (tableName: string, container: SerializedResource<SpLocaleContainer>) =>
-      setEditors((editors) => {
-        const editor = editors[tableName];
-        return editor === undefined
-          ? editors
-          : { ...editors, [tableName]: { ...editor, container } };
-      }),
+      setEditors((editors) =>
+        updateEditor(editors, tableName, (editor) => ({
+          ...editor,
+          container,
+        }))
+      ),
     []
   );
 
   const setName = React.useCallback(
     (tableName: string, name: NewSpLocaleItemString | SpLocaleItemString) =>
-      setEditors((editors) => {
-        const editor = editors[tableName];
-        return editor === undefined
-          ? editors
-          : { ...editors, [tableName]: { ...editor, name } };
-      }),
+      setEditors((editors) =>
+        updateEditor(editors, tableName, (editor) => ({ ...editor, name }))
+      ),
     []
   );
 
   const setDesc = React.useCallback(
     (tableName: string, desc: NewSpLocaleItemString | SpLocaleItemString) =>
-      setEditors((editors) => {
-        const editor = editors[tableName];
-        return editor === undefined
-          ? editors
-          : { ...editors, [tableName]: { ...editor, desc } };
-      }),
+      setEditors((editors) =>
+        updateEditor(editors, tableName, (editor) => ({ ...editor, desc }))
+      ),
     []
   );
 
@@ -165,20 +189,15 @@ export function SchemaConfigStoreProvider({
       index: number,
       item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
     ) =>
-      setEditors((editors) => {
-        const editor = editors[tableName];
-        if (editor === undefined) return editors;
-        return {
-          ...editors,
-          [tableName]: {
-            ...editor,
-            items: replaceItem(editor.items, index, item),
-            changedItems: editor.changedItems.includes(index)
-              ? editor.changedItems
-              : [...editor.changedItems, index],
-          },
-        };
-      }),
+      setEditors((editors) =>
+        updateEditor(editors, tableName, (editor) => ({
+          ...editor,
+          items: replaceItem(editor.items, index, item),
+          changedItems: editor.changedItems.includes(index)
+            ? editor.changedItems
+            : [...editor.changedItems, index],
+        }))
+      ),
     []
   );
 
@@ -380,85 +399,88 @@ const applyItemStringId = (
 
 const buildSaveRequests = (
   editor: SchemaConfigEditorState
-): RA<SaveRequest> => [
-  ...(JSON.stringify(editor.initialName) !== JSON.stringify(editor.name)
-    ? [
-        {
-          promise: saveString(editor.name),
-          reconcile: (
-            editor: SchemaConfigEditorState,
-            result: unknown
-          ): SchemaConfigEditorState => {
-            const saved = applySavedId(editor.name, result);
-            return { ...editor, name: saved, initialName: saved };
-          },
-        },
-      ]
-    : []),
-  ...(JSON.stringify(editor.initialDesc) !== JSON.stringify(editor.desc)
-    ? [
-        {
-          promise: saveString(editor.desc),
-          reconcile: (
-            editor: SchemaConfigEditorState,
-            result: unknown
-          ): SchemaConfigEditorState => {
-            const saved = applySavedId(editor.desc, result);
-            return { ...editor, desc: saved, initialDesc: saved };
-          },
-        },
-      ]
-    : []),
-  ...(JSON.stringify(editor.initialContainer) !==
-  JSON.stringify(editor.container)
-    ? [
-        {
-          promise: saveResource(
-            'SpLocaleContainer',
-            editor.container.id,
-            editor.container
-          ),
-          reconcile: (
-            editor: SchemaConfigEditorState
-          ): SchemaConfigEditorState => ({
-            ...editor,
-            initialContainer: editor.container,
-          }),
-        },
-      ]
-    : []),
-  ...editor.items.flatMap(({ strings, ...item }, index) =>
-    editor.changedItems.includes(index)
+): RA<SaveRequest> => {
+  const { nameChanged, descChanged, containerChanged } =
+    getEditorChanges(editor);
+  return [
+    ...(nameChanged
       ? [
           {
-            itemIndex: index,
-            promise: saveResource('SpLocaleContainerItem', item.id, item),
-            reconcile: (
-              editor: SchemaConfigEditorState
-            ): SchemaConfigEditorState => editor,
-          },
-          {
-            itemIndex: index,
-            promise: saveString(strings.name),
+            promise: saveString(editor.name),
             reconcile: (
               editor: SchemaConfigEditorState,
               result: unknown
-            ): SchemaConfigEditorState =>
-              applyItemStringId(editor, index, 'name', result),
-          },
-          {
-            itemIndex: index,
-            promise: saveString(strings.desc),
-            reconcile: (
-              editor: SchemaConfigEditorState,
-              result: unknown
-            ): SchemaConfigEditorState =>
-              applyItemStringId(editor, index, 'desc', result),
+            ): SchemaConfigEditorState => {
+              const saved = applySavedId(editor.name, result);
+              return { ...editor, name: saved, initialName: saved };
+            },
           },
         ]
-      : []
-  ),
-];
+      : []),
+    ...(descChanged
+      ? [
+          {
+            promise: saveString(editor.desc),
+            reconcile: (
+              editor: SchemaConfigEditorState,
+              result: unknown
+            ): SchemaConfigEditorState => {
+              const saved = applySavedId(editor.desc, result);
+              return { ...editor, desc: saved, initialDesc: saved };
+            },
+          },
+        ]
+      : []),
+    ...(containerChanged
+      ? [
+          {
+            promise: saveResource(
+              'SpLocaleContainer',
+              editor.container.id,
+              editor.container
+            ),
+            reconcile: (
+              editor: SchemaConfigEditorState
+            ): SchemaConfigEditorState => ({
+              ...editor,
+              initialContainer: editor.container,
+            }),
+          },
+        ]
+      : []),
+    ...editor.items.flatMap(({ strings, ...item }, index) =>
+      editor.changedItems.includes(index)
+        ? [
+            {
+              itemIndex: index,
+              promise: saveResource('SpLocaleContainerItem', item.id, item),
+              reconcile: (
+                editor: SchemaConfigEditorState
+              ): SchemaConfigEditorState => editor,
+            },
+            {
+              itemIndex: index,
+              promise: saveString(strings.name),
+              reconcile: (
+                editor: SchemaConfigEditorState,
+                result: unknown
+              ): SchemaConfigEditorState =>
+                applyItemStringId(editor, index, 'name', result),
+            },
+            {
+              itemIndex: index,
+              promise: saveString(strings.desc),
+              reconcile: (
+                editor: SchemaConfigEditorState,
+                result: unknown
+              ): SchemaConfigEditorState =>
+                applyItemStringId(editor, index, 'desc', result),
+            },
+          ]
+        : []
+    ),
+  ];
+};
 
 const saveString = async (
   resource: NewSpLocaleItemString | SpLocaleItemString

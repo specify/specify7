@@ -103,14 +103,8 @@ export const fetchSchemaPickLists = async (): Promise<
     Object.fromEntries(
       filterArray(Object.values(pickLists))
         .map(serializeResource)
-        .map(({ id, name, isSystem }) => [
-          id,
-          {
-            name,
-            isSystem,
-          },
-          // Filter out front-end only pick lists
-        ])
-        .filter(([id]) => typeof id === 'number')
+        // Filter out front-end only pick lists
+        .filter(({ id }) => typeof id === 'number')
+        .map(({ id, name, isSystem }) => [id, { name, isSystem }])
     )
   );

@@ -271,7 +271,7 @@ function SortableTh({
         <span className="min-w-0 [overflow-wrap:anywhere]">{label}</span>
         {isActive ? (
           <span aria-hidden className="shrink-0">
-            {isDescending ? '↓' : '↑'}
+            {isDescending ? icons.chevronDown : icons.chevronUp}
           </span>
         ) : undefined}
       </button>
