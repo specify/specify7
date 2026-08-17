@@ -205,7 +205,7 @@ function SchemaConfigFieldsTable({
         <colgroup>
           <col />
           <col />
-          <col className="w-24" />
+          <col className="w-12" />
         </colgroup>
         <thead>
           <tr className="border-b">
@@ -225,6 +225,7 @@ function SchemaConfigFieldsTable({
             />
             <SortableTh
               field="isHidden"
+              icon={icons.eye}
               isDescending={isDescending}
               label={schemaText.visible()}
               onSort={handleSort}
@@ -295,12 +296,14 @@ function SortableTh({
   sortField,
   isDescending,
   onSort: handleSort,
+  icon,
 }: {
   readonly field: SortField;
   readonly label: LocalizedString;
   readonly sortField: SortField | undefined;
   readonly isDescending: boolean;
   readonly onSort: (field: SortField) => void;
+  readonly icon?: JSX.Element;
 }): JSX.Element {
   const isActive = sortField === field;
   return (
@@ -312,11 +315,21 @@ function SortableTh({
       scope="col"
     >
       <button
+        aria-label={icon === undefined ? undefined : label}
         className="flex w-full min-w-0 items-center gap-1"
         type="button"
         onClick={(): void => handleSort(field)}
       >
-        <span className="min-w-0 [overflow-wrap:anywhere]">{label}</span>
+        {icon === undefined ? (
+          <span className="min-w-0 [overflow-wrap:anywhere]">{label}</span>
+        ) : (
+          <span
+            aria-hidden
+            className="flex shrink-0 items-center [&>svg]:h-4 [&>svg]:w-4"
+          >
+            {icon}
+          </span>
+        )}
         {isActive ? (
           <span aria-hidden className="shrink-0 [&>svg]:h-4 [&>svg]:w-4">
             {isDescending ? icons.chevronDown : icons.chevronUp}
