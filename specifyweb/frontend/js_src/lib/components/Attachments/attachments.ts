@@ -51,7 +51,17 @@ let healthCheckTimer: ReturnType<typeof setInterval> | undefined;
 
 const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
   if (serverStatus === newStatus) return;
+  const previousStatus = serverStatus;
   serverStatus = newStatus;
+  // Only log actual connection loss/restoration, not the initial unknown state
+  if (previousStatus === 'available' && newStatus === 'unavailable')
+    console.error(
+      `[${new Date().toISOString()}] Attachment server connection lost`
+    );
+  else if (previousStatus === 'unavailable' && newStatus === 'available')
+    console.warn(
+      `[${new Date().toISOString()}] Attachment server connection restored`
+    );
   serverStatusListeners.forEach((listener) => listener());
 };
 
