@@ -3,7 +3,6 @@ import { useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { schemaText } from '../../localization/schema';
-import { localized } from '../../utils/types';
 import { H3 } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
@@ -48,9 +47,9 @@ export function SchemaConfigSidebar({
         badge={(table): React.ReactNode =>
           modifiedTables.includes(table.name) ? (
             <span
-              aria-label={localized(schemaText.unsavedSchemaUnloadProtect())}
+              aria-label={schemaText.unsavedChanges()}
               className="pl-1 font-bold text-orange-500"
-              title={localized(schemaText.unsavedSchemaUnloadProtect())}
+              title={schemaText.unsavedChanges()}
             >
               *
             </span>
