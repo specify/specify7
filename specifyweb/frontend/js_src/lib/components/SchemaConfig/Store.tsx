@@ -265,9 +265,12 @@ export function SchemaConfigStoreProvider({
       // Drop only the changed items that were saved successfully this round
       for (const [tableName, editor] of Object.entries(newEditors)) {
         const failed = failedItems.get(tableName);
+        const snapshotEditor = snapshot[tableName];
         const saved = new Set(
-          (snapshot[tableName]?.changedItems ?? []).filter(
-            (index) => failed?.has(index) !== true
+          (snapshotEditor?.changedItems ?? []).filter(
+            (index) =>
+              failed?.has(index) !== true &&
+              current[tableName]?.items[index] === snapshotEditor?.items[index]
           )
         );
         newEditors[tableName] = {
@@ -397,13 +400,17 @@ const applyItemStringId = (
   editor: SchemaConfigEditorState,
   index: number,
   key: 'name' | 'desc',
+  sent: NewSpLocaleItemString | SpLocaleItemString,
   result: unknown
 ): SchemaConfigEditorState => {
   const item = editor.items[index];
+  const current = key === 'name' ? item.strings.name : item.strings.desc;
+  const saved = applySavedId(sent, result);
+  const string = current === sent ? saved : current;
   const strings =
     key === 'name'
-      ? { ...item.strings, name: applySavedId(item.strings.name, result) }
-      : { ...item.strings, desc: applySavedId(item.strings.desc, result) };
+      ? { ...item.strings, name: string }
+      : { ...item.strings, desc: string };
   return {
     ...editor,
     items: replaceItem(editor.items, index, { ...item, strings }),
@@ -415,17 +422,26 @@ const buildSaveRequests = (
 ): RA<SaveRequest> => {
   const { nameChanged, descChanged, containerChanged } =
     getEditorChanges(editor);
+  // Capture the values sent with each request so reconciliation can compare
+  // the current state against what was actually saved
+  const sentName = editor.name;
+  const sentDesc = editor.desc;
+  const sentContainer = editor.container;
   return [
     ...(nameChanged
       ? [
           {
-            promise: saveString(editor.name),
+            promise: saveString(sentName),
             reconcile: (
-              editor: SchemaConfigEditorState,
+              current: SchemaConfigEditorState,
               result: unknown
             ): SchemaConfigEditorState => {
-              const saved = applySavedId(editor.name, result);
-              return { ...editor, name: saved, initialName: saved };
+              const saved = applySavedId(sentName, result);
+              return {
+                ...current,
+                name: current.name === sentName ? saved : current.name,
+                initialName: saved,
+              };
             },
           },
         ]
@@ -433,13 +449,17 @@ const buildSaveRequests = (
     ...(descChanged
       ? [
           {
-            promise: saveString(editor.desc),
+            promise: saveString(sentDesc),
             reconcile: (
-              editor: SchemaConfigEditorState,
+              current: SchemaConfigEditorState,
               result: unknown
             ): SchemaConfigEditorState => {
-              const saved = applySavedId(editor.desc, result);
-              return { ...editor, desc: saved, initialDesc: saved };
+              const saved = applySavedId(sentDesc, result);
+              return {
+                ...current,
+                desc: current.desc === sentDesc ? saved : current.desc,
+                initialDesc: saved,
+              };
             },
           },
         ]
@@ -449,14 +469,14 @@ const buildSaveRequests = (
           {
             promise: saveResource(
               'SpLocaleContainer',
-              editor.container.id,
-              editor.container
+              sentContainer.id,
+              sentContainer
             ),
             reconcile: (
-              editor: SchemaConfigEditorState
+              current: SchemaConfigEditorState
             ): SchemaConfigEditorState => ({
-              ...editor,
-              initialContainer: editor.container,
+              ...current,
+              initialContainer: sentContainer,
             }),
           },
         ]
@@ -468,26 +488,26 @@ const buildSaveRequests = (
               itemIndex: index,
               promise: saveResource('SpLocaleContainerItem', item.id, item),
               reconcile: (
-                editor: SchemaConfigEditorState
-              ): SchemaConfigEditorState => editor,
+                current: SchemaConfigEditorState
+              ): SchemaConfigEditorState => current,
             },
             {
               itemIndex: index,
               promise: saveString(strings.name),
               reconcile: (
-                editor: SchemaConfigEditorState,
+                current: SchemaConfigEditorState,
                 result: unknown
               ): SchemaConfigEditorState =>
-                applyItemStringId(editor, index, 'name', result),
+                applyItemStringId(current, index, 'name', strings.name, result),
             },
             {
               itemIndex: index,
               promise: saveString(strings.desc),
               reconcile: (
-                editor: SchemaConfigEditorState,
+                current: SchemaConfigEditorState,
                 result: unknown
               ): SchemaConfigEditorState =>
-                applyItemStringId(editor, index, 'desc', result),
+                applyItemStringId(current, index, 'desc', strings.desc, result),
             },
           ]
         : []

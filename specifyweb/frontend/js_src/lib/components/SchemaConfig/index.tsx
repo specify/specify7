@@ -94,9 +94,13 @@ export function SchemaConfigMain(): JSX.Element {
             })
           }
         />
-      ) : (
+      ) : items === undefined ? (
         <SchemaConfigColumn header={commonText.loading()}>
           {commonText.loading()}
+        </SchemaConfigColumn>
+      ) : (
+        <SchemaConfigColumn header={schemaText.field()}>
+          {commonText.noneAvailable()}
         </SchemaConfigColumn>
       )}
     </div>

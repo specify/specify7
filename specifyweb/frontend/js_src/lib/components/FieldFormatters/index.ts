@@ -49,9 +49,20 @@ const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> =>
 export let fetchContext = loadUiFormatters();
 
 // Re-fetch UI formatters after the app resource is edited
-export const refreshUiFormatters = (): typeof fetchContext => {
-  fetchContext = loadUiFormatters(true);
-  return fetchContext;
+export const refreshUiFormatters = async (): Promise<
+  Awaited<typeof fetchContext>
+> => {
+  const previous = fetchContext;
+  const refreshed = loadUiFormatters(true);
+  try {
+    const result = await refreshed;
+    fetchContext = refreshed;
+    return result;
+  } catch (error) {
+    // Keep the previous UI formatters on failure rather than a rejected promise
+    fetchContext = previous;
+    throw error;
+  }
 };
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');

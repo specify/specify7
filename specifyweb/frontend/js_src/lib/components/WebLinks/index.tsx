@@ -32,9 +32,17 @@ const loadWebLinks = (refresh = false): Promise<RA<WebLink>> =>
 export let webLinks = loadWebLinks();
 
 // Re-fetch web links after the app resource is edited
-export const refreshWebLinks = (): typeof webLinks => {
-  webLinks = loadWebLinks(true);
-  return webLinks;
+export const refreshWebLinks = async (): Promise<Awaited<typeof webLinks>> => {
+  const previous = webLinks;
+  const refreshed = loadWebLinks(true);
+  try {
+    const result = await refreshed;
+    webLinks = refreshed;
+    return result;
+  } catch (error) {
+    webLinks = previous;
+    throw error;
+  }
 };
 
 export function WebLinkField({
