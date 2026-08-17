@@ -190,15 +190,66 @@ export function SchemaConfigStoreProvider({
     [editors]
   );
 
-  const saveAll = React.useCallback(
-    async (): Promise<unknown> =>
-      Promise.all(
-        Object.values(editorsRef.current)
-          .filter(isEditorModified)
-          .flatMap(buildSaveRequests)
-      ),
-    []
-  );
+  const saveAll = React.useCallback(async (): Promise<void> => {
+    const outcomes = await Promise.all(
+      Object.entries(editorsRef.current)
+        .filter(([, editor]) => isEditorModified(editor))
+        .flatMap(([tableName, editor]) =>
+          buildSaveRequests(editor).map((request) => ({
+            tableName,
+            request,
+          }))
+        )
+        .map(({ tableName, request }) =>
+          request.promise.then(
+            (result) => ({
+              status: 'fulfilled' as const,
+              tableName,
+              request,
+              result,
+            }),
+            () => ({ status: 'rejected' as const, tableName, request })
+          )
+        )
+    );
+
+    const newEditors: Record<string, SchemaConfigEditorState> = {
+      ...editorsRef.current,
+    };
+    const failedItems = new Map<string, Set<number>>();
+    let hasFailure = false;
+
+    for (const outcome of outcomes) {
+      if (outcome.status === 'fulfilled')
+        newEditors[outcome.tableName] = outcome.request.reconcile(
+          newEditors[outcome.tableName],
+          outcome.result
+        );
+      else {
+        hasFailure = true;
+        if (typeof outcome.request.itemIndex === 'number') {
+          const failed =
+            failedItems.get(outcome.tableName) ?? new Set<number>();
+          failed.add(outcome.request.itemIndex);
+          failedItems.set(outcome.tableName, failed);
+        }
+      }
+    }
+
+    // Keep only items whose writes all failed, so a retry re-saves them
+    for (const [tableName, editor] of Object.entries(newEditors)) {
+      const failed = failedItems.get(tableName);
+      if (failed === undefined) continue;
+      newEditors[tableName] = {
+        ...editor,
+        changedItems: editor.changedItems.filter((index) => failed.has(index)),
+      };
+    }
+
+    setEditors(newEditors);
+
+    if (hasFailure) throw new Error('Some schema changes could not be saved');
+  }, []);
 
   return (
     <SchemaConfigContext.Provider
@@ -293,26 +344,120 @@ export function useSchemaConfigTable(tableName: string): {
   };
 }
 
+type SaveRequest = {
+  readonly promise: Promise<unknown>;
+  readonly itemIndex?: number;
+  readonly reconcile: (
+    editor: SchemaConfigEditorState,
+    result: unknown
+  ) => SchemaConfigEditorState;
+};
+
+const applySavedId = <T extends { readonly id?: number }>(
+  resource: T,
+  result: unknown
+): T => {
+  const id = (result as { readonly id?: number } | undefined)?.id;
+  return typeof id === 'number' ? { ...resource, id } : resource;
+};
+
+const applyItemStringId = (
+  editor: SchemaConfigEditorState,
+  index: number,
+  key: 'name' | 'desc',
+  result: unknown
+): SchemaConfigEditorState => {
+  const item = editor.items[index];
+  const strings =
+    key === 'name'
+      ? { ...item.strings, name: applySavedId(item.strings.name, result) }
+      : { ...item.strings, desc: applySavedId(item.strings.desc, result) };
+  return {
+    ...editor,
+    items: replaceItem(editor.items, index, { ...item, strings }),
+  };
+};
+
 const buildSaveRequests = (
   editor: SchemaConfigEditorState
-): RA<Promise<unknown>> => [
+): RA<SaveRequest> => [
   ...(JSON.stringify(editor.initialName) !== JSON.stringify(editor.name)
-    ? [saveString(editor.name)]
+    ? [
+        {
+          promise: saveString(editor.name),
+          reconcile: (
+            editor: SchemaConfigEditorState,
+            result: unknown
+          ): SchemaConfigEditorState => {
+            const saved = applySavedId(editor.name, result);
+            return { ...editor, name: saved, initialName: saved };
+          },
+        },
+      ]
     : []),
   ...(JSON.stringify(editor.initialDesc) !== JSON.stringify(editor.desc)
-    ? [saveString(editor.desc)]
+    ? [
+        {
+          promise: saveString(editor.desc),
+          reconcile: (
+            editor: SchemaConfigEditorState,
+            result: unknown
+          ): SchemaConfigEditorState => {
+            const saved = applySavedId(editor.desc, result);
+            return { ...editor, desc: saved, initialDesc: saved };
+          },
+        },
+      ]
     : []),
   ...(JSON.stringify(editor.initialContainer) !==
   JSON.stringify(editor.container)
-    ? [saveResource('SpLocaleContainer', editor.container.id, editor.container)]
+    ? [
+        {
+          promise: saveResource(
+            'SpLocaleContainer',
+            editor.container.id,
+            editor.container
+          ),
+          reconcile: (
+            editor: SchemaConfigEditorState
+          ): SchemaConfigEditorState => ({
+            ...editor,
+            initialContainer: editor.container,
+          }),
+        },
+      ]
     : []),
-  ...editor.items
-    .filter((_item, index) => editor.changedItems.includes(index))
-    .flatMap(({ strings, ...item }) => [
-      saveResource('SpLocaleContainerItem', item.id, item),
-      saveString(strings.name),
-      saveString(strings.desc),
-    ]),
+  ...editor.items.flatMap(({ strings, ...item }, index) =>
+    editor.changedItems.includes(index)
+      ? [
+          {
+            itemIndex: index,
+            promise: saveResource('SpLocaleContainerItem', item.id, item),
+            reconcile: (
+              editor: SchemaConfigEditorState
+            ): SchemaConfigEditorState => editor,
+          },
+          {
+            itemIndex: index,
+            promise: saveString(strings.name),
+            reconcile: (
+              editor: SchemaConfigEditorState,
+              result: unknown
+            ): SchemaConfigEditorState =>
+              applyItemStringId(editor, index, 'name', result),
+          },
+          {
+            itemIndex: index,
+            promise: saveString(strings.desc),
+            reconcile: (
+              editor: SchemaConfigEditorState,
+              result: unknown
+            ): SchemaConfigEditorState =>
+              applyItemStringId(editor, index, 'desc', result),
+          },
+        ]
+      : []
+  ),
 ];
 
 const saveString = async (
