@@ -102,19 +102,21 @@ export const reportAttachmentServerFailure = (): void => {
   checkAttachmentServer().catch(() => setAttachmentServerStatus('unavailable'));
 };
 
+const stopAttachmentServerHealthPolling = (): void => {
+  if (serverStatusListeners.size === 0 && healthCheckTimer !== undefined) {
+    clearInterval(healthCheckTimer);
+    healthCheckTimer = undefined;
+  }
+};
+
 const startAttachmentServerHealthPolling = (): (() => void) => {
-  if (healthCheckTimer !== undefined) return () => undefined;
-  healthCheckTimer = setInterval(() => {
-    checkAttachmentServer().catch(() =>
-      setAttachmentServerStatus('unavailable')
-    );
-  }, 30_000);
-  return () => {
-    if (serverStatusListeners.size === 0 && healthCheckTimer !== undefined) {
-      clearInterval(healthCheckTimer);
-      healthCheckTimer = undefined;
-    }
-  };
+  if (healthCheckTimer === undefined)
+    healthCheckTimer = setInterval(() => {
+      checkAttachmentServer().catch(() =>
+        setAttachmentServerStatus('unavailable')
+      );
+    }, 30_000);
+  return stopAttachmentServerHealthPolling;
 };
 
 export const useAttachmentServerStatus = (): AttachmentServerStatus => {
