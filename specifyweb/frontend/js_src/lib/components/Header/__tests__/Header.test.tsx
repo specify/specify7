@@ -73,6 +73,7 @@ describe('HeaderItems', () => {
 
   afterEach(() => {
     overrideAttachmentSettings(undefined);
+    overrideAttachmentServerStatus('unknown');
     jest.restoreAllMocks();
   });
 
