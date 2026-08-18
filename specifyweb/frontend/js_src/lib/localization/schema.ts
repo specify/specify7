@@ -658,17 +658,6 @@ export const schemaText = createDictionary({
     'hr-hr': 'Navedite 7 podatkovnih modela',
     nb: 'Spesifiser 7 datamodell',
   },
-  sortByHiddenFields: {
-    'en-us': 'Sort by hidden fields',
-    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
-    'es-es': 'Ordenar por campos ocultos',
-    'fr-fr': 'Trier par champs cachés',
-    'ru-ru': 'Сортировать по скрытым полям',
-    'uk-ua': 'Сортувати за прихованими полями',
-    'pt-br': 'Ordenar por campos ocultos',
-    'hr-hr': 'Sortiraj po skrivenim poljima',
-    nb: 'Sorter etter skjulte felt',
-  },
   hidden: {
     'en-us': 'hidden',
     'de-ch': 'versteckt',
