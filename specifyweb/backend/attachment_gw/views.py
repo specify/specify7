@@ -226,33 +226,38 @@ def init():
         logger.info('Asset server is not configured')
         return
 
-    r = requests.get(settings.WEB_ATTACHMENT_URL)
-    if r.status_code != 200:
-        logger.error('Failed fetching asset server configuration')
-        return
-
-    update_time_delta(r)
-
     try:
-        urls_xml = ElementTree.fromstring(r.text)
-    except:
-        logger.error('Failed parsing the response')
-        return
+        r = requests.get(settings.WEB_ATTACHMENT_URL, timeout=settings.WEB_ATTACHMENT_TIMEOUT)
+        if r.status_code != 200:
+            logger.error('Failed fetching asset server configuration')
+            return
 
-    server_urls = {url.attrib['type']: url.text
-                   for url in urls_xml.findall('url')}
+        update_time_delta(r)
 
-    try:
-        test_key()
-    except AttachmentError as error:
-        logger.error('%s', str(error))
+        try:
+            urls_xml = ElementTree.fromstring(r.text)
+        except:
+            logger.error('Failed parsing the response')
+            return
+
+        server_urls = {url.attrib['type']: url.text
+                       for url in urls_xml.findall('url')}
+
+        try:
+            test_key()
+        except (AttachmentError, requests.RequestException) as error:
+            logger.error('%s', str(error))
+            server_urls = None
+    except requests.RequestException as error:
+        logger.error('Failed to connect to asset server: %s', str(error))
         server_urls = None
 
 def test_key():
     random = str(uuid4())
     token = generate_token(get_timestamp(), random)
     r = requests.get(server_urls["testkey"],
-                     params={'random': random, 'token': token})
+                     params={'random': random, 'token': token},
+                     timeout=settings.WEB_ATTACHMENT_TIMEOUT)
 
     if r.status_code == 200:
         return
