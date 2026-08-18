@@ -1,14 +1,18 @@
+import { act, waitFor } from '@testing-library/react';
 import React from 'react';
 import * as Router from 'react-router-dom';
 
+import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
 import { commonText } from '../../../localization/common';
 import { attachmentsText } from '../../../localization/attachments';
+import { Http } from '../../../utils/ajax/definitions';
 import { SetMenuContext } from '../../Header/MenuContext';
 import {
   attachmentSettingsPromise,
   overrideAttachmentServerStatus,
+  overrideAttachmentSettings,
 } from '../attachments';
 import { AttachmentsView } from '..';
 
@@ -40,6 +44,19 @@ jest.mock('../../../hooks/useAsyncState', () => {
 
 requireContext();
 
+const mockReadUrl = '/mockAssetServer/fileget';
+
+const testSettings = {
+  collection: 'Test Collection',
+  delete: '/mockAssetServer/filedelete',
+  getmetadata: '/mockAssetServer/getmetadata',
+  read: mockReadUrl,
+  testkey: '/mockAssetServer/testkey',
+  // eslint-disable-next-line @typescript-eslint/naming-convention
+  token_required_for_get: false,
+  write: '/mockAssetServer/fileupload',
+};
+
 function TestAttachmentsView(): JSX.Element {
   return (
     <Router.MemoryRouter
@@ -56,42 +73,71 @@ function TestAttachmentsView(): JSX.Element {
 }
 
 describe('AttachmentsView', () => {
+  let consoleError: jest.SpiedFunction<typeof console.error>;
+  let consoleWarn: jest.SpiedFunction<typeof console.warn>;
+
   beforeEach(async () => {
     await attachmentSettingsPromise;
-  });
-
-  test('replaces the gallery with a single unavailable message and disables Import', async () => {
-    overrideAttachmentServerStatus('unavailable');
-
-    const { findByRole } = mount(<TestAttachmentsView />);
-
-    await findByRole('heading', {
-      name: attachmentsText.attachmentServerUnavailable(),
-    });
-
-    const importButton = await findByRole('button', {
-      name: commonText.import(),
-    });
-    expect(importButton).toBeDisabled();
-    expect(importButton).toHaveAttribute(
-      'title',
-      attachmentsText.attachmentServerUnavailable()
-    );
-  });
-
-  test('shows the gallery and an enabled Import button when available', async () => {
+    overrideAttachmentSettings(testSettings);
     overrideAttachmentServerStatus('available');
+    consoleError = jest
+      .spyOn(console, 'error')
+      .mockImplementation(() => undefined);
+    consoleWarn = jest
+      .spyOn(console, 'warn')
+      .mockImplementation(() => undefined);
+  });
 
-    const { findByRole, queryByRole } = mount(<TestAttachmentsView />);
+  afterEach(() => {
+    overrideAttachmentSettings(undefined);
+    consoleError.mockRestore();
+    consoleWarn.mockRestore();
+  });
 
-    const importButton = await findByRole('button', {
-      name: commonText.import(),
-    });
-    expect(importButton).toBeEnabled();
-    expect(
-      queryByRole('heading', {
+  describe('when the health check reports the server is unreachable', () => {
+    overrideAjax(mockReadUrl, '', { responseCode: Http.SERVER_ERROR });
+
+    test('replaces the gallery with a single unavailable message and disables Import', async () => {
+      const { findByRole, unmount } = mount(<TestAttachmentsView />);
+
+      await findByRole('heading', {
         name: attachmentsText.attachmentServerUnavailable(),
-      })
-    ).not.toBeInTheDocument();
+      });
+
+      const importButton = await findByRole('button', {
+        name: commonText.import(),
+      });
+      expect(importButton).toBeDisabled();
+      expect(importButton).toHaveAttribute(
+        'title',
+        attachmentsText.attachmentServerUnavailable()
+      );
+
+      unmount();
+    });
+  });
+
+  describe('when the health check reports the server is reachable', () => {
+    overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
+
+    test('shows the gallery and an enabled Import button when available', async () => {
+      const { findByRole, queryByRole, unmount } = mount(
+        <TestAttachmentsView />
+      );
+
+      const importButton = await findByRole('button', {
+        name: commonText.import(),
+      });
+      await waitFor(() => expect(importButton).toBeEnabled());
+      expect(
+        queryByRole('heading', {
+          name: attachmentsText.attachmentServerUnavailable(),
+        })
+      ).not.toBeInTheDocument();
+
+      await act(() => {
+        unmount();
+      });
+    });
   });
 });

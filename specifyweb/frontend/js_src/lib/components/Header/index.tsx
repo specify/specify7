@@ -162,7 +162,7 @@ export function Header({
   );
 }
 
-function HeaderItems({
+export function HeaderItems({
   menuItems,
   isCollapsed,
   activeMenuItem,

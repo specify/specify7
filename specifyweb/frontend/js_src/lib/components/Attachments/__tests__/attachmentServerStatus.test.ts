@@ -102,12 +102,19 @@ describe('connection loss/restoration logging', () => {
 });
 
 describe('useAttachmentServerStatus polling', () => {
+  overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
+
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
 
-  test('keeps the shared interval running until the last subscriber unmounts', () => {
+  test('keeps the shared interval running until the last subscriber unmounts', async () => {
     const first = renderHook(() => useAttachmentServerStatus());
     const second = renderHook(() => useAttachmentServerStatus());
+
+    // Let the immediate on-mount health check settle before tearing down
+    await act(async () => {
+      await Promise.resolve();
+    });
 
     expect(jest.getTimerCount()).toBe(1);
 
