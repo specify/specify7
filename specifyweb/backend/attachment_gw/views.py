@@ -270,7 +270,8 @@ def health(request):
 
     try:
         test_key()
-    except (AttachmentError, requests.RequestException):
+    except (AttachmentError, requests.RequestException) as error:
+        logger.error('Health check failed: %s', str(error))
         return HttpResponse(status=503)
 
     return HttpResponse(status=204)
