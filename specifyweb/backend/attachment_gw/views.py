@@ -236,7 +236,7 @@ def init():
 
         try:
             urls_xml = ElementTree.fromstring(r.text)
-        except:
+        except ElementTree.ParseError:
             logger.error('Failed parsing the response')
             return
 
