@@ -51,8 +51,9 @@ describe('reportAttachmentServerFailure', () => {
     overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
 
     test('a single caller error does not mark the server unavailable', async () => {
+      overrideAttachmentServerStatus('unknown');
       const { result, unmount } = renderHook(() => useAttachmentServerStatus());
-      expect(result.current).toBe('available');
+      expect(result.current).toBe('unknown');
 
       act(() => reportAttachmentServerFailure());
 
