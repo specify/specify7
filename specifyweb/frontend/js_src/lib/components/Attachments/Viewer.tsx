@@ -59,7 +59,13 @@ export function AttachmentViewer({
     [attachment]
   );
   const [originalUrl] = useAsyncState(
-    React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchOriginalUrl(serialized)
+          : undefined,
+      [attachmentServerStatus, serialized]
+    ),
     false
   );
 
@@ -110,7 +116,13 @@ export function AttachmentViewer({
   const type = mimeType?.split('/')[0];
 
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(serialized), [serialized]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchThumbnail(serialized)
+          : undefined,
+      [attachmentServerStatus, serialized]
+    ),
     false
   );
 

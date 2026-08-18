@@ -71,8 +71,13 @@ export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
 ).then((data) => {
   if (Object.keys(data).length > 0) {
     settings = data as AttachmentSettings;
-    setAttachmentServerStatus('available');
-  } else setAttachmentServerStatus('unavailable');
+    checkAttachmentServer().catch(() => {
+      setAttachmentServerStatus('unavailable');
+    });
+  } else {
+    settings = undefined;
+    setAttachmentServerStatus('unavailable');
+  }
   return attachmentsAvailable();
 });
 
@@ -80,11 +85,11 @@ export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
 const checkAttachmentServer = async (): Promise<void> => {
   if (settings === undefined) return;
-  const { status } = await ajax(settings.read, {
+  const { status } = await ajax('/attachment_gw/health/', {
     cache: 'no-store',
     errorMode: 'silent',
     expectedErrors: Object.values(Http),
-    headers: { Accept: 'application/octet-stream' },
+    headers: { Accept: 'text/plain' },
   });
   setAttachmentServerStatus(
     status !== Http.MISDIRECTED && status < Http.SERVER_ERROR

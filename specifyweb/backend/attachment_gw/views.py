@@ -261,6 +261,20 @@ def test_key():
     else:
         raise AttachmentError("Attachment key test failed.")
 
+@login_maybe_required
+@require_http_methods(['GET', 'HEAD'])
+@never_cache
+def health(request):
+    if server_urls is None:
+        return HttpResponse(status=503)
+
+    try:
+        test_key()
+    except (AttachmentError, requests.RequestException):
+        return HttpResponse(status=503)
+
+    return HttpResponse(status=204)
+
 @openapi(schema={
     "get": {
         "parameters": [
