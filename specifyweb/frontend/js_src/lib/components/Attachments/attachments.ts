@@ -110,12 +110,18 @@ const stopAttachmentServerHealthPolling = (): void => {
 };
 
 const startAttachmentServerHealthPolling = (): (() => void) => {
-  if (healthCheckTimer === undefined)
+  const poll = (): void => {
+    checkAttachmentServer().catch(() =>
+      setAttachmentServerStatus('unavailable')
+    );
+  };
+  if (healthCheckTimer === undefined) {
+    poll();
+
     healthCheckTimer = setInterval(() => {
-      checkAttachmentServer().catch(() =>
-        setAttachmentServerStatus('unavailable')
-      );
+      poll();
     }, 30_000);
+  }
   return stopAttachmentServerHealthPolling;
 };
 
