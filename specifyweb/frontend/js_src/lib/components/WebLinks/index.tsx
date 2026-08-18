@@ -31,16 +31,19 @@ const loadWebLinks = (refresh = false): Promise<RA<WebLink>> =>
 
 export let webLinks = loadWebLinks();
 
+let webLinksGeneration = 0;
+
 // Re-fetch web links after the app resource is edited
 export const refreshWebLinks = async (): Promise<Awaited<typeof webLinks>> => {
   const previous = webLinks;
+  const generation = ++webLinksGeneration;
   const refreshed = loadWebLinks(true);
   try {
     const result = await refreshed;
-    webLinks = refreshed;
+    if (generation === webLinksGeneration) webLinks = refreshed;
     return result;
   } catch (error) {
-    webLinks = previous;
+    if (generation === webLinksGeneration) webLinks = previous;
     throw error;
   }
 };

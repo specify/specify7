@@ -23,15 +23,17 @@ import type { FieldFormatter, FieldFormatterPart } from './spec';
 import { fieldFormattersSpec, trimRegexString } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
+let uiFormattersGeneration = 0;
 
-const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> =>
-  Promise.all([
+const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> => {
+  const generation = ++uiFormattersGeneration;
+  return Promise.all([
     load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml', refresh),
     import('../DataModel/tables').then(
       async ({ fetchContext }) => fetchContext
     ),
   ]).then(([formatters]) => {
-    uiFormatters = Object.fromEntries(
+    const result = Object.fromEntries(
       filterArray(
         xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
           (formatter, index) => {
@@ -43,8 +45,10 @@ const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> =>
         )
       )
     );
-    return uiFormatters;
+    if (generation === uiFormattersGeneration) uiFormatters = result;
+    return result;
   });
+};
 
 export let fetchContext = loadUiFormatters();
 
@@ -54,13 +58,14 @@ export const refreshUiFormatters = async (): Promise<
 > => {
   const previous = fetchContext;
   const refreshed = loadUiFormatters(true);
+  const generation = uiFormattersGeneration;
   try {
     const result = await refreshed;
-    fetchContext = refreshed;
+    if (generation === uiFormattersGeneration) fetchContext = refreshed;
     return result;
   } catch (error) {
     // Keep the previous UI formatters on failure rather than a rejected promise
-    fetchContext = previous;
+    if (generation === uiFormattersGeneration) fetchContext = previous;
     throw error;
   }
 };
