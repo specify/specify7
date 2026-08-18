@@ -293,7 +293,7 @@ export function AttachmentViewer({
   );
 }
 
-function ImageTransformContent({
+export function ImageTransformContent({
   alt,
   canToggleSidebar,
   isSidebarExpanded,
@@ -313,6 +313,12 @@ function ImageTransformContent({
   const { resetTransform } = useControls();
   const thumbnailFallbackAttempted = React.useRef(false);
   const [imageFailed, setImageFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    thumbnailFallbackAttempted.current = false;
+    setImageFailed(false);
+  }, [src]);
+
   const handleError = React.useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
       if (
