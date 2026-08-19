@@ -92,7 +92,7 @@ const checkAttachmentServer = async (): Promise<void> => {
     headers: { Accept: 'text/plain' },
   });
   setAttachmentServerStatus(
-    status !== Http.MISDIRECTED && status < Http.SERVER_ERROR
+    status === Http.NO_CONTENT
       ? 'available'
       : 'unavailable'
   );
