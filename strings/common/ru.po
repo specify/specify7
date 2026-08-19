@@ -366,7 +366,7 @@ msgstr ""
 #: components/WorkBench/Disambiguation.tsx:48
 #, fuzzy
 msgid "apply"
-msgstr "Применять"
+msgstr "Применить"
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Work Bench > Disambiguation
 #: components/WbToolkit/CoordinateConverter.tsx:277
