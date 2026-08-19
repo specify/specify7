@@ -176,7 +176,7 @@ export function HeaderItems({
     <>
       {menuItems.map(({ url, name, ...menuItem }) => {
         const isAttachmentsUnavailable =
-          name === 'attachments' && attachmentServerStatus === 'unavailable';
+          name === 'attachments' && attachmentServerStatus !== 'available';
         return (
           <MenuButton
             {...menuItem}
