@@ -316,7 +316,7 @@ msgstr "Создать"
 #: components/WorkBench/useDisambiguationDialog.tsx:104
 #, fuzzy
 msgid "close"
-msgstr "Закрывать"
+msgstr "Закрыть"
 
 #. Used in: Components > Header > Express Search Task ⬤ Components > Home Page > Index
 #: components/Header/ExpressSearchTask.tsx:76
