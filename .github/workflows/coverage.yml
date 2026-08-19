@@ -32,7 +32,7 @@ jobs:
       - name: Configure specify
         id: config-specify
         run: |
-          cat > .env <<-EOS
+          IFS= read -d "" -r env <<-EOS
           DATABASE_HOST=mariadb
           DATABASE_PORT=3306
           MYSQL_ROOT_PASSWORD=password
@@ -73,6 +73,8 @@ jobs:
 
           SP7_DEBUG=true
           EOS
+
+          echo "$env" > .env
 
           sed -i 's/#[ ]*\(.*requirements-testing.txt\)/\1/; s/\(COPY\) \(requirements-testing.txt\)/\1 --chown=specify:specify \2/' Dockerfile 
           sed -i 's/\(\(DATABASE_\|MASTER_\|MIGRATOR\|APP_USER_\)[^O].*\) = \(.*\)/\1 = os.environ.get("\1", "")/' specifyweb/settings/specify_settings.py
