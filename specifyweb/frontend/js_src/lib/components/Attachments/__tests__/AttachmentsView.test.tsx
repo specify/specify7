@@ -95,6 +95,7 @@ describe('AttachmentsView', () => {
   });
 
   describe('when the health check reports the server is unreachable', () => {
+    overrideAttachmentServerStatus('unavailable');
     overrideAjax(mockReadUrl, '', { responseCode: Http.SERVER_ERROR });
 
     test('replaces the gallery with a single unavailable message and disables Import', async () => {
@@ -118,6 +119,7 @@ describe('AttachmentsView', () => {
   });
 
   describe('when the health check reports the server is reachable', () => {
+    overrideAttachmentServerStatus('available');
     overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
 
     test('shows the gallery and an enabled Import button when available', async () => {
