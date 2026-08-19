@@ -14,6 +14,7 @@ import {
 requireContext();
 
 const mockReadUrl = '/mockAssetServer/fileget';
+const healthCheckUrl = '/attachment_gw/health/';
 
 const testSettings = {
   collection: 'Test Collection',
@@ -48,7 +49,7 @@ afterEach(() => {
 
 describe('reportAttachmentServerFailure', () => {
   describe('when a health check confirms the server is reachable', () => {
-    overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
+    overrideAjax(healthCheckUrl, '', { responseCode: Http.OK });
 
     test('a single caller error does not mark the server unavailable', async () => {
       overrideAttachmentServerStatus('unknown');
@@ -63,7 +64,7 @@ describe('reportAttachmentServerFailure', () => {
   });
 
   describe('when a health check confirms the server is unreachable', () => {
-    overrideAjax(mockReadUrl, '', { responseCode: Http.SERVER_ERROR });
+    overrideAjax(healthCheckUrl, '', { responseCode: Http.SERVER_ERROR });
 
     test('marks the server unavailable', async () => {
       const { result, unmount } = renderHook(() => useAttachmentServerStatus());
@@ -83,7 +84,7 @@ describe('reportAttachmentServerFailure', () => {
 });
 
 describe('connection loss/restoration logging', () => {
-  overrideAjax(mockReadUrl, '', { responseCode: Http.SERVER_ERROR });
+  overrideAjax(healthCheckUrl, '', { responseCode: Http.SERVER_ERROR });
 
   test('logs connection loss exactly once, and only once further failures are reported', async () => {
     const { result, unmount } = renderHook(() => useAttachmentServerStatus());
@@ -103,7 +104,7 @@ describe('connection loss/restoration logging', () => {
 });
 
 describe('useAttachmentServerStatus polling', () => {
-  overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
+  overrideAjax(healthCheckUrl, '', { responseCode: Http.OK });
 
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());
