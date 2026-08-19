@@ -1,45 +1,46 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-03 07:34+0000\n"
+"PO-Revision-Date: 2026-08-19 10:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokmål "
-"<https://hosted.weblate.org/projects/specify-7/notifications/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
+"7/notifications/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.8.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
-#: components/Notifications/Notifications.tsx:96
 #. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:96
 msgid "notifications"
 msgstr "Varsler"
 
-#: components/Notifications/Notifications.tsx:42
 #. 🟥Used for button label in the top menu. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:42
 msgid "notificationsCount"
 msgstr "Varsler: {count:number|formatted}"
 
-#: components/Notifications/Notifications.tsx:45
 #. 🟥Used for button label in the top menu when notification count is loading. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:45
 msgid "notificationsLoading"
 msgstr "Varsler: …"
 
-#: components/Notifications/Notifications.tsx:125
 #. Used in: Components > Notifications > Notifications
+#: components/Notifications/Notifications.tsx:125
 msgid "mostRecentNotificationsTop"
 msgstr "(Sortert fra nyeste til eldste.)"
 
+#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:67
 #: components/Notifications/NotificationRenderers.tsx:97
 #: components/Notifications/NotificationRenderers.tsx:133
 #: components/Notifications/NotificationRenderers.tsx:154
 #: components/Notifications/NotificationRenderers.tsx:207
-#. 🟥Used as a label for a button that downloads the error message. Used in: Components > Notifications > Notification Renderers
 msgid "exception"
 msgstr "Feil"
 
+#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 #: components/AppResources/EditorComponents.tsx:159
 #: components/Attachments/Cell.tsx:80
 #: components/Attachments/Viewer.tsx:241
@@ -51,65 +52,64 @@ msgstr "Feil"
 #: components/Notifications/NotificationRenderers.tsx:423
 #: components/Toolbar/BackupDatabase.tsx:76
 #: components/Toolbar/BackupStatus.tsx:74
-#. Used in: Components > App Resources > Editor Components ⬤ Components > Attachments > Cell ⬤ Components > Attachments > Viewer ⬤ Components > Locality Update > Status ⬤ Components > Notifications > Notification Renderers ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Backup Status
 msgid "download"
 msgstr "Last ned"
 
-#: components/Notifications/NotificationRenderers.tsx:43
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:43
 msgid "feedItemUpdated"
 msgstr "RSS eksportstrøm er oppdatert."
 
-#: components/Notifications/NotificationRenderers.tsx:61
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:61
 msgid "updateFeedFailed"
 msgstr "Oppdatering av eksportstrøm mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:75
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:75
 msgid "dwcaExportCompleted"
 msgstr "DwCA eksport fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:91
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:91
 msgid "dwcaExportFailed"
 msgstr "DwCA eksport mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:105
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:105
 msgid "queryExportToCsvCompleted"
 msgstr "Eksport av avansert søk til CSV fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:163
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:163
 msgid "queryExportToKmlCompleted"
 msgstr "Eksporten av avansertsøk til KML fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:179
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:179
 #, fuzzy
 msgid "queryExportToWebPortalCompleted"
 msgstr "Spørreeksport til nettportalen fullført."
 
-#: components/Notifications/NotificationRenderers.tsx:124
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:124
 #, fuzzy
 msgid "queryExportToCsvFailed"
 msgstr "Eksport av spørring til CSV mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:145
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:145
 #, fuzzy
 msgid "queryExportToKmlFailed"
 msgstr "Eksport av spørring til KML mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:198
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:198
 #, fuzzy
 msgid "queryExportToWebPortalFailed"
 msgstr "Eksport av spørring til nettportalen mislyktes."
 
-#: components/Notifications/NotificationRenderers.tsx:226
 #. Used in: Components > Notifications > Notification Renderers
+#: components/Notifications/NotificationRenderers.tsx:226
 msgid "dataSetOwnershipTransferred"
 msgstr "<userName /> overførte eierskapet av <dataSetName /> datasettet til deg."
