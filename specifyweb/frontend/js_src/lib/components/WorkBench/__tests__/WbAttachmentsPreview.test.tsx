@@ -7,8 +7,13 @@ import { clearIdStore } from '../../../hooks/useId';
 import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { mount } from '../../../tests/reactUtils';
+import { Http } from '../../../utils/ajax/definitions';
 import { f } from '../../../utils/functools';
 import * as Attachments from '../../Attachments/attachments';
+import {
+  attachmentSettingsPromise,
+  overrideAttachmentServerStatus,
+} from '../../Attachments/attachments';
 import { testAttachment } from '../../Attachments/__tests__/utils';
 import { LoadingContext } from '../../Core/Contexts';
 import type { Dataset } from '../../WbPlanView/Wrapped';
@@ -64,7 +69,13 @@ overrideAjax(
   secondDataSetAttachmentRequest
 );
 
-beforeEach(() => {
+// The attachment server status hook polls this endpoint on mount
+overrideAjax('/attachment_gw/health/', '', { responseCode: Http.OK });
+
+beforeEach(async () => {
+  await attachmentSettingsPromise;
+  // Prevent the background attachment server health check from racing with the test
+  overrideAttachmentServerStatus('available');
   jest.clearAllMocks();
   clearIdStore();
 });
