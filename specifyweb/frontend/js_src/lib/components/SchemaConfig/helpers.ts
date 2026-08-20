@@ -164,6 +164,20 @@ const applySavedId = <T extends { readonly id?: number }>(
     ? { ...resource, ...(result as Partial<T>) }
     : resource;
 
+const mergeSavedResource = <T extends object>(
+  sent: T,
+  current: T,
+  result: unknown
+): T => {
+  const saved = { ...sent, ...(result as Partial<T>) };
+  const currentChanges = Object.fromEntries(
+    Object.entries(current).filter(
+      ([key, value]) => value !== sent[key as keyof T]
+    )
+  ) as Partial<T>;
+  return { ...saved, ...currentChanges };
+};
+
 const applyItemStringId = (
   editor: SchemaConfigEditorState,
   index: number,
@@ -241,10 +255,20 @@ export const buildSaveRequests = (
               sentContainer
             ),
             reconcile: (
-              current: SchemaConfigEditorState
+              current: SchemaConfigEditorState,
+              result: unknown
             ): SchemaConfigEditorState => ({
               ...current,
-              initialContainer: sentContainer,
+              container: mergeSavedResource(
+                sentContainer,
+                current.container,
+                result
+              ),
+              initialContainer: mergeSavedResource(
+                sentContainer,
+                current.container,
+                result
+              ),
             }),
           },
         ]
@@ -256,8 +280,20 @@ export const buildSaveRequests = (
               itemIndex: index,
               promise: saveResource('SpLocaleContainerItem', item.id, item),
               reconcile: (
-                current: SchemaConfigEditorState
-              ): SchemaConfigEditorState => current,
+                current: SchemaConfigEditorState,
+                result: unknown
+              ): SchemaConfigEditorState => ({
+                ...current,
+                items: replaceItem(
+                  current.items,
+                  index,
+                  mergeSavedResource(
+                    { ...item, strings },
+                    current.items[index],
+                    result
+                  )
+                ),
+              }),
             },
             {
               itemIndex: index,
