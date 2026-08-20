@@ -101,6 +101,24 @@ export function javaTypeToHuman(
   if (type === null) return '';
   else if (type in localizedRelationshipTypes)
     return `${localizedRelationshipTypes[type]} (${relatedTableName})`;
+  else if (type === 'java.lang.String' || type === 'text')
+    return schemaText.text();
+  else if (
+    type === 'java.lang.Byte' ||
+    type === 'java.lang.Short' ||
+    type === 'java.lang.Integer' ||
+    type === 'java.lang.Long'
+  )
+    return schemaText.integer();
+  else if (type === 'java.lang.Float' || type === 'java.lang.Double')
+    return `${schemaText.number()} (${type.split('.').at(-1)!})`;
+  else if (type === 'java.math.BigDecimal') return schemaText.decimal();
+  else if (
+    type === 'java.sql.Timestamp' ||
+    type === 'java.util.Calendar' ||
+    type === 'java.util.Date'
+  )
+    return schemaText.date();
   else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
 }
