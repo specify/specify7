@@ -9,7 +9,7 @@ import {
   SchemaConfigStoreProvider,
   useSchemaConfig,
 } from '../Store';
-import type { SchemaConfigEditorState } from '../Store';
+import type { SchemaConfigEditorState } from '../types';
 
 jest.mock('../../DataModel/resource', () => ({
   saveResource: jest.fn(async () => ({})),

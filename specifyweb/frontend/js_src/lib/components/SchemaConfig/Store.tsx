@@ -5,7 +5,6 @@ import type { IR, RA } from '../../utils/types';
 import { defined } from '../../utils/types';
 import { replaceItem } from '../../utils/utils';
 import type { SerializedResource } from '../DataModel/helperTypes';
-import { createResource, saveResource } from '../DataModel/resource';
 import type {
   SpLocaleContainer,
   SpLocaleContainerItem,
@@ -14,90 +13,15 @@ import { softFail } from '../Errors/Crash';
 import { formatUrl } from '../Router/queryString';
 import type { WithFetchedStrings } from '../Toolbar/SchemaConfig';
 import { fetchContainerItems, fetchContainerString } from './data';
+import { buildSaveRequests, isEditorModified, updateEditor } from './helpers';
 import type { NewSpLocaleItemString, SpLocaleItemString } from './index';
 import type { SchemaData } from './schemaData';
-
-export type SchemaConfigEditorState = {
-  readonly container: SerializedResource<SpLocaleContainer>;
-  readonly name: NewSpLocaleItemString | SpLocaleItemString;
-  readonly desc: NewSpLocaleItemString | SpLocaleItemString;
-  readonly items: RA<
-    SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
-  >;
-  readonly changedItems: RA<number>;
-  readonly initialContainer: SerializedResource<SpLocaleContainer>;
-  readonly initialName: NewSpLocaleItemString | SpLocaleItemString;
-  readonly initialDesc: NewSpLocaleItemString | SpLocaleItemString;
-};
-
-export type SchemaConfigStore = {
-  readonly schemaData: SchemaData;
-  readonly isReadOnly: boolean;
-  readonly modifiedTables: RA<string>;
-  readonly anyModified: boolean;
-  readonly saveAll: () => Promise<unknown>;
-  readonly loadTable: (tableName: string) => Promise<void>;
-  readonly editors: IR<SchemaConfigEditorState>;
-  readonly setContainer: (
-    tableName: string,
-    container: SerializedResource<SpLocaleContainer>
-  ) => void;
-  readonly setName: (
-    tableName: string,
-    name: NewSpLocaleItemString | SpLocaleItemString
-  ) => void;
-  readonly setDesc: (
-    tableName: string,
-    desc: NewSpLocaleItemString | SpLocaleItemString
-  ) => void;
-  readonly setItem: (
-    tableName: string,
-    index: number,
-    item: SerializedResource<SpLocaleContainerItem> & WithFetchedStrings
-  ) => void;
-};
+import type { SchemaConfigEditorState, SchemaConfigStore } from './types';
 
 const SchemaConfigContext = React.createContext<SchemaConfigStore | undefined>(
   undefined
 );
 SchemaConfigContext.displayName = 'SchemaConfigContext';
-
-const getEditorChanges = (
-  editor: SchemaConfigEditorState
-): {
-  readonly nameChanged: boolean;
-  readonly descChanged: boolean;
-  readonly containerChanged: boolean;
-} => ({
-  nameChanged:
-    JSON.stringify(editor.initialName) !== JSON.stringify(editor.name),
-  descChanged:
-    JSON.stringify(editor.initialDesc) !== JSON.stringify(editor.desc),
-  containerChanged:
-    JSON.stringify(editor.initialContainer) !==
-    JSON.stringify(editor.container),
-});
-
-export const isEditorModified = (editor: SchemaConfigEditorState): boolean => {
-  const changes = getEditorChanges(editor);
-  return (
-    changes.nameChanged ||
-    changes.descChanged ||
-    changes.containerChanged ||
-    editor.changedItems.length > 0
-  );
-};
-
-const updateEditor = (
-  editors: IR<SchemaConfigEditorState>,
-  tableName: string,
-  update: (editor: SchemaConfigEditorState) => SchemaConfigEditorState
-): IR<SchemaConfigEditorState> => {
-  const editor = editors[tableName];
-  return editor === undefined
-    ? editors
-    : { ...editors, [tableName]: update(editor) };
-};
 
 export function SchemaConfigStoreProvider({
   schemaData,
@@ -378,151 +302,6 @@ export function useSchemaConfigTable(tableName: string): {
     ),
   };
 }
-
-type SaveRequest = {
-  readonly promise: Promise<unknown>;
-  readonly itemIndex?: number;
-  readonly reconcile: (
-    editor: SchemaConfigEditorState,
-    result: unknown
-  ) => SchemaConfigEditorState;
-};
-
-const applySavedId = <T extends { readonly id?: number }>(
-  resource: T,
-  result: unknown
-): T =>
-  typeof (result as { readonly id?: number } | undefined)?.id === 'number'
-    ? { ...resource, ...(result as Partial<T>) }
-    : resource;
-
-const applyItemStringId = (
-  editor: SchemaConfigEditorState,
-  index: number,
-  key: 'name' | 'desc',
-  sent: NewSpLocaleItemString | SpLocaleItemString,
-  result: unknown
-): SchemaConfigEditorState => {
-  const item = editor.items[index];
-  const current = key === 'name' ? item.strings.name : item.strings.desc;
-  const saved = applySavedId(sent, result);
-  const string = current === sent ? saved : current;
-  const strings =
-    key === 'name'
-      ? { ...item.strings, name: string }
-      : { ...item.strings, desc: string };
-  return {
-    ...editor,
-    items: replaceItem(editor.items, index, { ...item, strings }),
-  };
-};
-
-const buildSaveRequests = (
-  editor: SchemaConfigEditorState
-): RA<SaveRequest> => {
-  const { nameChanged, descChanged, containerChanged } =
-    getEditorChanges(editor);
-  // Capture the values sent with each request so reconciliation can compare
-  // the current state against what was actually saved
-  const sentName = editor.name;
-  const sentDesc = editor.desc;
-  const sentContainer = editor.container;
-  return [
-    ...(nameChanged
-      ? [
-          {
-            promise: saveString(sentName),
-            reconcile: (
-              current: SchemaConfigEditorState,
-              result: unknown
-            ): SchemaConfigEditorState => {
-              const saved = applySavedId(sentName, result);
-              return {
-                ...current,
-                name: current.name === sentName ? saved : current.name,
-                initialName: saved,
-              };
-            },
-          },
-        ]
-      : []),
-    ...(descChanged
-      ? [
-          {
-            promise: saveString(sentDesc),
-            reconcile: (
-              current: SchemaConfigEditorState,
-              result: unknown
-            ): SchemaConfigEditorState => {
-              const saved = applySavedId(sentDesc, result);
-              return {
-                ...current,
-                desc: current.desc === sentDesc ? saved : current.desc,
-                initialDesc: saved,
-              };
-            },
-          },
-        ]
-      : []),
-    ...(containerChanged
-      ? [
-          {
-            promise: saveResource(
-              'SpLocaleContainer',
-              sentContainer.id,
-              sentContainer
-            ),
-            reconcile: (
-              current: SchemaConfigEditorState
-            ): SchemaConfigEditorState => ({
-              ...current,
-              initialContainer: sentContainer,
-            }),
-          },
-        ]
-      : []),
-    ...editor.items.flatMap(({ strings, ...item }, index) =>
-      editor.changedItems.includes(index)
-        ? [
-            {
-              itemIndex: index,
-              promise: saveResource('SpLocaleContainerItem', item.id, item),
-              reconcile: (
-                current: SchemaConfigEditorState
-              ): SchemaConfigEditorState => current,
-            },
-            {
-              itemIndex: index,
-              promise: saveString(strings.name),
-              reconcile: (
-                current: SchemaConfigEditorState,
-                result: unknown
-              ): SchemaConfigEditorState =>
-                applyItemStringId(current, index, 'name', strings.name, result),
-            },
-            {
-              itemIndex: index,
-              promise: saveString(strings.desc),
-              reconcile: (
-                current: SchemaConfigEditorState,
-                result: unknown
-              ): SchemaConfigEditorState =>
-                applyItemStringId(current, index, 'desc', strings.desc, result),
-            },
-          ]
-        : []
-    ),
-  ];
-};
-
-const saveString = async (
-  resource: NewSpLocaleItemString | SpLocaleItemString
-): Promise<unknown> =>
-  'resource_uri' in resource &&
-  typeof resource.id === 'number' &&
-  resource.id >= 0
-    ? saveResource('SpLocaleItemStr', resource.id, resource)
-    : createResource('SpLocaleItemStr', resource);
 
 export const handleSchemaSaved = async (
   rawLanguage: string,
