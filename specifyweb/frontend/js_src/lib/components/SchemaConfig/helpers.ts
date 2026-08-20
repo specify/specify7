@@ -113,11 +113,7 @@ export function javaTypeToHuman(
   else if (type === 'java.lang.Float' || type === 'java.lang.Double')
     return `${schemaText.number()} (${type.split('.').at(-1)!})`;
   else if (type === 'java.math.BigDecimal') return schemaText.decimal();
-  else if (
-    type === 'java.sql.Timestamp' ||
-    type === 'java.util.Calendar' ||
-    type === 'java.util.Date'
-  )
+  else if (type === 'java.util.Calendar' || type === 'java.util.Date')
     return schemaText.date();
   else if (type.startsWith('java')) return type.split('.').at(-1)!;
   else return type;
