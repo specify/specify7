@@ -70,7 +70,9 @@ overrideAjax(
 );
 
 // The attachment server status hook polls this endpoint on mount
-overrideAjax('/attachment_gw/health/', '', { responseCode: Http.OK });
+overrideAjax('/attachment_gw/health/', '', {
+  responseCode: Http.NO_CONTENT,
+});
 
 beforeEach(async () => {
   await attachmentSettingsPromise;
@@ -86,6 +88,7 @@ afterEach(() => {
 
 // [WorkBench] Show the matching attachment for the selected row
 test('shows the selected row attachment', async () => {
+  overrideAttachmentServerStatus('available');
   jest
     .spyOn(Attachments, 'fetchThumbnail')
     .mockImplementation(async (attachment) => ({
@@ -146,6 +149,8 @@ test('shows the selected row attachment', async () => {
     usesattachments: true,
     attachments: null,
   };
+
+  overrideAttachmentServerStatus('available');
 
   const { findByRole, queryByRole } = mount(
     <LoadingContext.Provider value={f.void}>
