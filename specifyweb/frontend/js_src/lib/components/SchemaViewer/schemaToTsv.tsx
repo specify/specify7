@@ -24,7 +24,7 @@ export const schemaToTsv = (): string =>
       getField(tables.SpLocaleContainerItem, 'isRequired').label,
       formsText.relationship(),
       getField(tables.SpLocaleContainerItem, 'type').label,
-      schemaText.fieldLength(),
+      schemaText.characterLimit(),
       schemaText.databaseColumn(),
       schemaText.relatedTable(),
       schemaText.otherSideName(),

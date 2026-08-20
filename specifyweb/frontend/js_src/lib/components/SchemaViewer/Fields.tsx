@@ -60,7 +60,7 @@ const fieldColumns = f.store(
       isReadOnly: schemaText.readOnly(),
       isRequired: getField(tables.SpLocaleContainerItem, 'isRequired').label,
       type: getField(tables.SpLocaleContainerItem, 'type').label,
-      length: schemaText.fieldLength(),
+      length: schemaText.characterLimit(),
       databaseColumn: schemaText.databaseColumn(),
     }) as const
 );
