@@ -3,6 +3,7 @@ import hmac
 import json
 import logging
 import time
+from threading import Lock
 from tempfile import mkdtemp
 from os.path import splitext
 from uuid import uuid4
@@ -33,6 +34,10 @@ logger = logging.getLogger(__name__)
 
 server_urls = None
 server_time_delta = None
+initialization_lock = Lock()
+next_initialization_attempt = 0
+initialization_failures = 0
+MAX_INITIALIZATION_RETRY_DELAY = 60
 
 from .models import Spattachmentdataset
 
@@ -252,6 +257,35 @@ def init():
         logger.error('Failed to connect to asset server: %s', str(error))
         server_urls = None
 
+def retry_initialization():
+    """Attempt a bounded, backoff-limited asset server initialization."""
+    global initialization_failures, next_initialization_attempt
+
+    now = time.monotonic()
+    if now < next_initialization_attempt or not initialization_lock.acquire(blocking=False):
+        return False
+
+    try:
+        if server_urls is not None:
+            return True
+        if now < next_initialization_attempt:
+            return False
+
+        init()
+        if server_urls is not None:
+            initialization_failures = 0
+            next_initialization_attempt = 0
+            return True
+
+        initialization_failures += 1
+        next_initialization_attempt = now + min(
+            2 ** initialization_failures,
+            MAX_INITIALIZATION_RETRY_DELAY,
+        )
+        return False
+    finally:
+        initialization_lock.release()
+
 def test_key():
     random = str(uuid4())
     token = generate_token(get_timestamp(), random)
@@ -271,7 +305,10 @@ def test_key():
 @never_cache
 def health(request):
     if server_urls is None:
-        return HttpResponse(status=503)
+        if settings.WEB_ATTACHMENT_URL in (None, ''):
+            return HttpResponse(status=404)
+        if not retry_initialization():
+            return HttpResponse(status=503)
 
     try:
         test_key()

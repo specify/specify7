@@ -49,7 +49,7 @@ afterEach(() => {
 
 describe('reportAttachmentServerFailure', () => {
   describe('when a health check confirms the server is reachable', () => {
-    overrideAjax(healthCheckUrl, '', { responseCode: Http.OK });
+    overrideAjax(healthCheckUrl, '', { responseCode: Http.NO_CONTENT });
 
     test('a single caller error does not mark the server unavailable', async () => {
       overrideAttachmentServerStatus('unknown');
@@ -77,7 +77,7 @@ describe('reportAttachmentServerFailure', () => {
     });
   });
 
-  test('does nothing when no settings are configured', () => {
+  test('checks health when settings are temporarily unavailable', () => {
     overrideAttachmentSettings(undefined);
     expect(() => reportAttachmentServerFailure()).not.toThrow();
   });
@@ -104,7 +104,7 @@ describe('connection loss/restoration logging', () => {
 });
 
 describe('useAttachmentServerStatus polling', () => {
-  overrideAjax(healthCheckUrl, '', { responseCode: Http.OK });
+  overrideAjax(healthCheckUrl, '', { responseCode: Http.NO_CONTENT });
 
   beforeEach(() => jest.useFakeTimers());
   afterEach(() => jest.useRealTimers());

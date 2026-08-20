@@ -49,6 +49,8 @@ let serverStatus: AttachmentServerStatus = 'unknown';
 const serverStatusListeners = new Set<() => void>();
 let healthCheckTimer: ReturnType<typeof setInterval> | undefined;
 
+const attachmentSettingsPath = '/context/attachment_settings.json';
+
 const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
   if (serverStatus === newStatus) return;
   const previousStatus = serverStatus;
@@ -66,36 +68,49 @@ const setAttachmentServerStatus = (newStatus: AttachmentServerStatus): void => {
 };
 
 export const attachmentSettingsPromise = load<AttachmentSettings | IR<never>>(
-  '/context/attachment_settings.json',
+  attachmentSettingsPath,
   'application/json'
-).then((data) => {
+).then(async (data) => {
   if (Object.keys(data).length > 0) {
     settings = data as AttachmentSettings;
     checkAttachmentServer().catch(() => {
       setAttachmentServerStatus('unavailable');
     });
+    return true;
   } else {
     settings = undefined;
-    setAttachmentServerStatus('unavailable');
+    const status = await checkAttachmentServer().catch(() => Http.SERVER_ERROR);
+    return status !== Http.NOT_FOUND;
   }
-  return attachmentsAvailable();
 });
 
 export const attachmentsAvailable = (): boolean => typeof settings === 'object';
 
-const checkAttachmentServer = async (): Promise<void> => {
-  if (settings === undefined) return;
+const checkAttachmentServer = async (): Promise<number> => {
   const { status } = await ajax('/attachment_gw/health/', {
     cache: 'no-store',
     errorMode: 'silent',
     expectedErrors: Object.values(Http),
     headers: { Accept: 'text/plain' },
   });
+  if (status === Http.NO_CONTENT && settings === undefined) {
+    const { data } = await ajax<AttachmentSettings | IR<never>>(
+      attachmentSettingsPath,
+      {
+        cache: 'no-store',
+        errorMode: 'silent',
+        expectedErrors: Object.values(Http),
+        headers: { Accept: 'application/json' },
+      }
+    );
+    if (Object.keys(data).length > 0) settings = data as AttachmentSettings;
+  }
   setAttachmentServerStatus(
-    status === Http.NO_CONTENT
+    status === Http.NO_CONTENT && settings !== undefined
       ? 'available'
       : 'unavailable'
   );
+  return status;
 };
 
 /*
@@ -103,7 +118,6 @@ const checkAttachmentServer = async (): Promise<void> => {
  * the server is down, so confirm with a health check before marking it unavailable
  */
 export const reportAttachmentServerFailure = (): void => {
-  if (settings === undefined) return;
   checkAttachmentServer().catch(() => setAttachmentServerStatus('unavailable'));
 };
 

@@ -45,18 +45,23 @@ export function AttachmentsView({
   const navigate = useNavigate();
   const [isConfigured] = usePromise(attachmentSettingsPromise, true);
 
-  return isConfigured === undefined ? null : isConfigured ? (
+  if (isConfigured === undefined) return null;
+
+  if (isConfigured === false)
+    return (
+      <Dialog
+        buttons={commonText.close()}
+        header={attachmentsText.attachmentServerUnavailable()}
+        onClose={(): void => navigate('/specify/')}
+      >
+        {attachmentsText.attachmentServerUnavailableDescription()}
+      </Dialog>
+    );
+
+  return (
     <ProtectedTable action="read" tableName="Attachment">
       <Attachments onClick={onClick} />
     </ProtectedTable>
-  ) : (
-    <Dialog
-      buttons={commonText.close()}
-      header={attachmentsText.attachmentServerUnavailable()}
-      onClose={(): void => navigate('/specify/')}
-    >
-      {attachmentsText.attachmentServerUnavailableDescription()}
-    </Dialog>
   );
 }
 
