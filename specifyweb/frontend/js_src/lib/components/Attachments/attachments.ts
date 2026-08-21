@@ -265,6 +265,7 @@ export type AttachmentThumbnail = {
   readonly alt: string | undefined;
   readonly width: number;
   readonly height: number;
+  readonly isServerBacked?: boolean;
 };
 
 export async function fetchThumbnail(
@@ -300,6 +301,7 @@ export async function fetchThumbnail(
     alt: attachment.attachmentLocation ?? undefined,
     width: scale,
     height: scale,
+    isServerBacked: true,
   };
 }
 

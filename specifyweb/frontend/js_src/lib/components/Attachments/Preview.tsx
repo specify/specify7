@@ -68,7 +68,7 @@ export function Thumbnail({
         height: `${thumbnail.height}px`,
       }}
       onError={
-        thumbnail.src.startsWith('http')
+        thumbnail.isServerBacked === true
           ? reportAttachmentServerFailure
           : undefined
       }
