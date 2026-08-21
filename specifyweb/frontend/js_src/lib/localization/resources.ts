@@ -1008,7 +1008,7 @@ export const resourcesText = createDictionary({
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
     'de-ch': 'Zusammenbruch des bedingten Feldes',
-    'es-es': 'Colapso del campo condicional',
+    'es-es': 'Campo condicional de colapso',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
@@ -1223,7 +1223,7 @@ export const resourcesText = createDictionary({
     'es-es': 'La preparación se utiliza en un préstamo.',
     'fr-fr': 'Cette préparation est en cours de prêt.',
     'pt-br': 'O preparo é utilizado em um empréstimo.',
-    'ru-ru': 'Данный препарат используется в кредите.',
+    'ru-ru': 'Данный препарат используется при оформлении кредита.',
     'uk-ua': 'Препарат використовується у позиці.',
     'hr-hr': 'Priprema se koristi u zajmu.',
     nb: 'Preparatet brukes i et lån.',
