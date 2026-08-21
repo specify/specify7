@@ -248,6 +248,15 @@ def init():
         try:
             server_urls = {url.attrib['type']: url.text
                            for url in urls_xml.findall('url')}
+            required_url_types = (
+                'delete',
+                'getmetadata',
+                'read',
+                'testkey',
+                'write',
+            )
+            if any(not server_urls.get(url_type) for url_type in required_url_types):
+                raise AttachmentError('Incomplete asset server configuration.')
             test_key()
         except (AttachmentError, requests.RequestException, KeyError) as error:
             logger.error('Invalid asset server configuration: %s', str(error))
