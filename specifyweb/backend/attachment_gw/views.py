@@ -277,7 +277,7 @@ def retry_initialization():
             return True
 
         initialization_failures += 1
-        next_initialization_attempt = now + min(
+        next_initialization_attempt = time.monotonic() + min(
             2 ** initialization_failures,
             MAX_INITIALIZATION_RETRY_DELAY,
         )
