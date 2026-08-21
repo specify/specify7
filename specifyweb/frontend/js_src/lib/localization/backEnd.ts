@@ -215,7 +215,7 @@ export const backEndText = createDictionary({
     'fr-fr':
       'la valeur {value:string} ne correspond pas au formateur {formatter:string}',
     'ru-ru':
-      'Значение {value:string} не соответствует форматеру {formatter:string}',
+      'Значение {value:string} не соответствует форматтеру {formatter:string}',
     'uk-ua': 'значення {value:string} не відповідає формату {formatter:string}',
     'pt-br':
       'O valor {value:string} não corresponde ao formatador {formatter:string}',
@@ -542,7 +542,7 @@ export const backEndText = createDictionary({
     'fr-fr':
       'Impossible de créer un rapport : {mimeTypeField:string} n\'est pas l\'un des "jrxml/label" ou "jrxml/report"',
     'ru-ru':
-      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label", ни "jrxml/report".',
+      'Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "jrxml/label" или "jrxml/report"',
     'uk-ua':
       'Не вдається створити звіт: {mimeTypeField:string} має бути "jrxml/label" або "jrxml/report"',
     'de-ch':
