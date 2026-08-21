@@ -245,13 +245,12 @@ def init():
             logger.error('Failed parsing the response')
             return
 
-        server_urls = {url.attrib['type']: url.text
-                       for url in urls_xml.findall('url')}
-
         try:
+            server_urls = {url.attrib['type']: url.text
+                           for url in urls_xml.findall('url')}
             test_key()
-        except (AttachmentError, requests.RequestException) as error:
-            logger.error('%s', str(error))
+        except (AttachmentError, requests.RequestException, KeyError) as error:
+            logger.error('Invalid asset server configuration: %s', str(error))
             server_urls = None
     except requests.RequestException as error:
         logger.error('Failed to connect to asset server: %s', str(error))
