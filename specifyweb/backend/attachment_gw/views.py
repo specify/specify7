@@ -246,8 +246,8 @@ def init():
             return
 
         try:
-            server_urls = {url.attrib['type']: url.text
-                           for url in urls_xml.findall('url')}
+            urls = {url.attrib['type']: url.text
+                    for url in urls_xml.findall('url')}
             required_url_types = (
                 'delete',
                 'getmetadata',
@@ -255,9 +255,10 @@ def init():
                 'testkey',
                 'write',
             )
-            if any(not server_urls.get(url_type) for url_type in required_url_types):
+            if any(not urls.get(url_type) for url_type in required_url_types):
                 raise AttachmentError('Incomplete asset server configuration.')
-            test_key()
+            test_key(urls)
+            server_urls = urls
         except (AttachmentError, requests.RequestException, KeyError) as error:
             logger.error('Invalid asset server configuration: %s', str(error))
             server_urls = None
@@ -294,10 +295,10 @@ def retry_initialization():
     finally:
         initialization_lock.release()
 
-def test_key():
+def test_key(urls=None):
     random = str(uuid4())
     token = generate_token(get_timestamp(), random)
-    r = requests.get(server_urls["testkey"],
+    r = requests.get((urls or server_urls)["testkey"],
                      params={'random': random, 'token': token},
                      timeout=settings.WEB_ATTACHMENT_TIMEOUT)
 
