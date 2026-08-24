@@ -122,7 +122,7 @@ export const headerText = createDictionary({
     'uk-ua': 'Оновлення каналу експорту розпочато',
     'de-ch': 'Aktualisierung des Export-Feeds gestartet',
     'pt-br': 'Atualização do feed de exportação iniciada',
-    'hr-hr': 'Započeto je ažuriranje feeda za izvoz',
+    'hr-hr': 'Započeto je ažuriranje feeda izvoza',
     nb: 'Oppdatering av eksportfeed startet',
   },
   feedExportStartedDescription: {
