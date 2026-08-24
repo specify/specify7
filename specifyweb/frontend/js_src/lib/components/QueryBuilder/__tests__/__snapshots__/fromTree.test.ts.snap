@@ -205,8 +205,8 @@ exports[`queryFromTree 1`] = `
         "operstart": 1,
         "sorttype": 0,
         "startvalue": "8",
-        "stringid": "1,9-determinations,4.taxon.Species ID",
-        "tablelist": "1,9-determinations,4",
+        "stringid": "1,9-determinations,4-preferredTaxon.taxon.Species ID",
+        "tablelist": "1,9-determinations,4-preferredTaxon",
       },
       {
         "_tableName": "SpQueryField",
