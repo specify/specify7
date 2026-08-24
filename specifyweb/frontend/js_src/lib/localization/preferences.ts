@@ -895,6 +895,13 @@ export const preferencesText = createDictionary({
     'en-us':
       'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
   },
+  showSynonymCounts: {
+    'en-us': 'Show counts for synonymized nodes',
+  },
+  showSynonymCountsDescription: {
+    'en-us':
+      'Display an additional count of records that were determined as a node, or any of its descendants, and are now synonyms of another node.',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
