@@ -111,12 +111,23 @@ export function Tree<
     'rankThreshold'
   );
 
+  const [showSynonymCounts] = userPreferences.use(
+    'treeEditor',
+    'taxon',
+    'showSynonymCounts'
+  );
+  const includeSynonymCount = tableName === 'Taxon' && showSynonymCounts;
+
   const getStats = React.useCallback(
     async (nodeId: number | 'null', rankId: number): Promise<Stats> =>
       rankId >= statsThreshold
-        ? fetchStats(`${baseUrl}/${nodeId}/stats/`)
+        ? fetchStats(
+            `${baseUrl}/${nodeId}/stats/${
+              includeSynonymCount ? '?includeSynonymCount=true' : ''
+            }`
+          )
         : Promise.resolve({}),
-    [baseUrl, statsThreshold]
+    [baseUrl, statsThreshold, includeSynonymCount]
   );
 
   const treeDefinition = treeDefinitionItems[0].treeDef;
