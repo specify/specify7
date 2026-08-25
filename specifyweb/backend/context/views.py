@@ -11,6 +11,7 @@ from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout
 from django.db import connection, transaction
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
     HttpResponseForbidden, JsonResponse
 from django.urls import URLPattern
@@ -29,6 +30,7 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     CollectionAccessPT
 from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
     Specifyuser, Spprincipal, Spversion, Collectionobjecttype
+from specifyweb.specify import models
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
@@ -475,6 +477,133 @@ def schema_localization(request):
     """
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
+
+
+SCHEMA_IMPORT_FIELDS = {
+    models.Splocalecontainer: {'format', 'aggregator', 'ishidden'},
+    models.Splocalecontaineritem: {
+        'format', 'ishidden', 'isrequired', 'picklistname', 'weblinkname',
+    },
+}
+SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
+
+
+def _schema_import_values(data, fields):
+    if not isinstance(data, dict):
+        raise ValueError
+    values = {}
+    for key, value in data.items():
+        key = key.lower()
+        if key not in fields:
+            continue
+        if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
+            if type(value) is not bool:
+                raise ValueError
+        elif value is not None and not isinstance(value, str):
+            raise ValueError
+        values[key] = value
+    return values
+
+
+def _schema_import_string(operations, parent, parent_field, text, language, country):
+    if text is None:
+        return
+    if not isinstance(text, str):
+        raise ValueError
+    string = models.Splocaleitemstr.objects.filter(
+        **{parent_field: parent, 'language': language, 'country': country}
+    ).filter(Q(variant='') | Q(variant__isnull=True)).order_by('-id').first()
+    if string is None:
+        operations.append((
+            'POST', models.Splocaleitemstr, None,
+            {
+                'text': text,
+                'language': language,
+                'country': country,
+                parent_field: uri_for_model(parent, parent.id),
+            },
+        ))
+    elif string.text != text:
+        operations.append(('PUT', models.Splocaleitemstr, string, {'text': text}))
+
+
+def _schema_import_operations(collection, schema, language):
+    if not isinstance(schema, dict):
+        raise ValueError
+    language, _, country = language.lower().partition('-')
+    containers = {
+        container.name.lower(): container
+        for container in models.Splocalecontainer.objects.filter(
+            discipline_id=collection.discipline_id, schematype=0
+        )
+    }
+    operations = []
+    for table_name, table_data in schema.items():
+        container = containers.get(table_name.lower())
+        if container is None:
+            continue
+        if not isinstance(table_data, dict):
+            raise ValueError
+        values = _schema_import_values(
+            table_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontainer]
+        )
+        if values:
+            operations.append(('PUT', models.Splocalecontainer, container, values))
+        _schema_import_string(
+            operations, container, 'containername', table_data.get('name'), language, country or None
+        )
+        _schema_import_string(
+            operations, container, 'containerdesc', table_data.get('desc'), language, country or None
+        )
+        items = table_data.get('items', {})
+        if not isinstance(items, dict):
+            raise ValueError
+        current_items = {item.name.lower(): item for item in container.items.all()}
+        for item_name, item_data in items.items():
+            item = current_items.get(item_name.lower())
+            if item is None:
+                continue
+            values = _schema_import_values(
+                item_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontaineritem]
+            )
+            if values:
+                operations.append(('PUT', models.Splocalecontaineritem, item, values))
+            _schema_import_string(
+                operations, item, 'itemname', item_data.get('name'), language, country or None
+            )
+            _schema_import_string(
+                operations, item, 'itemdesc', item_data.get('desc'), language, country or None
+            )
+    return operations
+
+
+@login_maybe_required
+@require_http_methods(['POST'])
+def schema_localization_import(request):
+    try:
+        payload = json.loads(request.body)
+        schema = payload.get('schema', payload)
+        operations = _schema_import_operations(
+            request.specify_collection,
+            schema,
+            payload.get('language', request.LANGUAGE_CODE),
+        )
+    except (AttributeError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+        return HttpResponseBadRequest()
+
+    with transaction.atomic():
+        for method, model, resource, data in operations:
+            if method == 'PUT':
+                put_resource(
+                    request.specify_collection, request.specify_user_agent,
+                    model.__name__, resource.id, resource.version, data
+                )
+            else:
+                post_resource(
+                    request.specify_collection, request.specify_user_agent,
+                    model.__name__, data
+                )
+    return JsonResponse({'updated': len(operations)})
 
 view_parameters_schema = [
     {

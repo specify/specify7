@@ -30,6 +30,7 @@ urlpatterns = [
     re_path(r'^viewsets.json$', views.viewsets),
     re_path(r'^datamodel.json$', views.datamodel),
     re_path(r'^schema_localization.json$', views.schema_localization),
+    re_path(r'^schema_localization_import.json$', views.schema_localization_import),
     re_path(r'^app.resource$', views.app_resource),
     re_path(r'^available_related_searches.json$', views.available_related_searches),
     re_path(r'^remoteprefs.properties$', views.remote_prefs),
