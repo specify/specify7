@@ -1,6 +1,11 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import { DEFAULT_FETCH_LIMIT, fetchCollection } from '../DataModel/collection';
+import type { LocalizedString } from 'typesafe-i18n';
+import {
+  type CollectionFetchFilters,
+  DEFAULT_FETCH_LIMIT,
+  fetchCollection,
+} from '../DataModel/collection';
 import { AnySchema, SerializedResource } from '../DataModel/helperTypes';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { getTable } from '../DataModel/tables';
@@ -16,6 +21,10 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { RA } from '../../utils/types';
 import { Label } from '../Atoms/Form';
 import { OrderPicker, type OrderPickerOrder } from '../Preferences/Renderers';
+
+const tableRecordsText = dataViewsText.tableRecords as (values: {
+  readonly tableLabel: LocalizedString;
+}) => LocalizedString;
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -53,7 +62,7 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
         limit: DEFAULT_FETCH_LIMIT,
         domainFilter: isScoped,
         orderBy: order,
-      }),
+      } as CollectionFetchFilters<Tables[SCHEMA['tableName']]>),
     [isScoped, order, table]
   );
   const [collection] = useAsyncState(handleFetchingCollection, true);
@@ -138,7 +147,7 @@ function DataViewFromTable<SCHEMA extends AnySchema>({
       isInRecordSet={false}
       newResource={undefined}
       table={table}
-      title={dataViewsText.tableRecords({ tableLabel: table.label })}
+      title={tableRecordsText({ tableLabel: table.label })}
       totalCount={totalCount}
       onAdd={undefined}
       onClone={undefined}
