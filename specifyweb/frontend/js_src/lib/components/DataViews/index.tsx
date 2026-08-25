@@ -45,9 +45,14 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
     table.getLiteralField('timestampCreated') === undefined
       ? '-id'
       : '-timestampCreated';
+
   const [order, setOrder] = React.useState<OrderPickerOrder<SCHEMA, 'id'>>(
     defaultOrder as OrderPickerOrder<SCHEMA, 'id'>
   );
+
+  React.useEffect(() => {
+    setOrder(defaultOrder as OrderPickerOrder<SCHEMA, 'id'>);
+  }, [table.name, defaultOrder]);
 
   const handleFetchingCollection = React.useCallback(
     (offset: number = 0) =>
@@ -59,11 +64,12 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
       } as CollectionFetchFilters<Tables[SCHEMA['tableName']]>),
     [order, table]
   );
+
   const [collection] = useAsyncState(handleFetchingCollection, true);
 
   return collection === undefined ? null : (
     <DataViewFromTable
-      key={order}
+      key={table.name}
       table={table}
       initialRecords={collection.records}
       totalCount={collection.totalCount}
