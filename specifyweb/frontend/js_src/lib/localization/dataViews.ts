@@ -10,14 +10,20 @@ import { createDictionary } from './utils';
 
 export const dataViewsText = createDictionary({
   dataViewsTitle: {
-    'comment': "The name of the component",
-    "en-us": "Data Views"
+    comment: 'The name of the component',
+    'en-us': 'Data Views',
   },
   tableRecords: {
-    'comment': "Used as a dialog header within the Data Views component",
-    "en-us": "{tableLabel:string} Records"
+    comment: 'Used as a dialog header within the Data Views component',
+    'en-us': '{tableLabel:string} Records',
+  },
+  orderBy: {
+    'en-us': 'Order by',
+  },
+  useCurrentScope: {
+    'en-us': 'Use current scope',
   },
   configureDataViews: {
-    "en-us": "Configure Data Views tables"
-  }
+    'en-us': 'Configure Data Views tables',
+  },
 });

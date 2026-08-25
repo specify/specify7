@@ -8,11 +8,14 @@ import { ProtectedTable } from '../Permissions/PermissionDenied';
 import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { NotFoundView } from '../Router/NotFoundView';
 import { f } from '../../utils/functools';
+import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
 import { usePaginatedCollection } from '../../hooks/usePaginatedCollection';
 import { Tables } from '../DataModel/types';
 import { useAsyncState } from '../../hooks/useAsyncState';
 import { RA } from '../../utils/types';
+import { Label } from '../Atoms/Form';
+import { OrderPicker, type OrderPickerOrder } from '../Preferences/Renderers';
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -33,28 +36,64 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
 }: {
   readonly table: SpecifyTable<SCHEMA>;
 }): JSX.Element | null {
+  const defaultOrder =
+    table.getLiteralField('timestampCreated') === undefined
+      ? '-id'
+      : '-timestampcreated';
+  const [order, setOrder] = React.useState<OrderPickerOrder<SCHEMA, 'id'>>(
+    defaultOrder as OrderPickerOrder<SCHEMA, 'id'>
+  );
+  const [isScoped, setIsScoped] = React.useState(true);
+  const canBeScoped =
+    table.name === 'Attachment' || typeof table.getScope() === 'object';
   const handleFetchingCollection = React.useCallback(
     (offset: number = 0) =>
       fetchCollection(table.name, {
         offset,
         limit: DEFAULT_FETCH_LIMIT,
-        domainFilter: true,
-        orderBy:
-          table.getLiteralField('timestampCreated') === undefined
-            ? '-id'
-            : '-timestampcreated',
+        domainFilter: isScoped,
+        orderBy: order,
       }),
-    [table]
+    [isScoped, order, table]
   );
   const [collection] = useAsyncState(handleFetchingCollection, true);
 
   return collection === undefined ? null : (
     <DataViewFromTable
+      key={`${order}:${isScoped}`}
       table={table}
       initialRecords={collection.records}
       totalCount={collection.totalCount}
       onFetchRecords={(index) =>
         handleFetchingCollection(index).then(({ records }) => records)
+      }
+      headerButtons={
+        <>
+          <Label.Inline>
+            {dataViewsText.orderBy()}
+            <div>
+              <OrderPicker<SCHEMA, 'id'>
+                additionalFields={[{ name: 'id', label: commonText.id() }]}
+                includeHiddenFields
+                includeVirtualFields={false}
+                order={order}
+                table={table}
+                onChange={setOrder}
+              />
+            </div>
+          </Label.Inline>
+          {canBeScoped ? (
+            <Label.Inline>
+              <input
+                checked={isScoped}
+                className="h-4 w-4 accent-brand-400"
+                type="checkbox"
+                onChange={({ target }): void => setIsScoped(target.checked)}
+              />
+              {dataViewsText.useCurrentScope()}
+            </Label.Inline>
+          ) : undefined}
+        </>
       }
     />
   );
@@ -65,6 +104,7 @@ function DataViewFromTable<SCHEMA extends AnySchema>({
   totalCount: initialTotalCount,
   initialRecords,
   onFetchRecords: handleFetchRecords,
+  headerButtons,
 }: {
   readonly table: SpecifyTable<SCHEMA>;
   readonly totalCount: number;
@@ -72,6 +112,7 @@ function DataViewFromTable<SCHEMA extends AnySchema>({
   readonly onFetchRecords: (
     index: number
   ) => Promise<RA<SerializedResource<Tables[SCHEMA['tableName']]>>>;
+  readonly headerButtons: JSX.Element;
 }): JSX.Element | null {
   // FEATURE: Use useNavigator and keep current record/index in query
   // parameter of page
@@ -90,18 +131,7 @@ function DataViewFromTable<SCHEMA extends AnySchema>({
     <RecordSelectorFromIds
       canRemove={false}
       defaultIndex={0}
-      // FEATURE: Add support for sorting on one or more fields, and specifying
-      // whether records should be scoped or not
-      // headerButtons={
-      //   <>
-      //     <span className="-ml-2 " />
-      //     <OrderPicker
-      //       table={table}
-      //       order={'catalogNumber'}
-      //       onChange={(order) => order}
-      //     />
-      //   </>
-      // }
+      headerButtons={headerButtons}
       dialog={false}
       ids={collection.map(({ id }) => id)}
       isDependent={false}
