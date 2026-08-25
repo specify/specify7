@@ -20,6 +20,7 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { RA } from '../../utils/types';
 import { Label } from '../Atoms/Form';
 import { OrderPicker, type OrderPickerOrder } from '../Preferences/Renderers';
+import { attachmentsText } from '../../localization/attachments';
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -74,7 +75,7 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
       headerButtons={
         <>
           <Label.Inline>
-            {dataViewsText.dataViewOrderBy()}
+            {attachmentsText.orderBy()}
             <div>
               <OrderPicker<SCHEMA, 'id'>
                 additionalFields={[{ name: 'id', label: commonText.id() }]}

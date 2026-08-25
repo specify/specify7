@@ -17,9 +17,6 @@ export const dataViewsText = createDictionary({
     comment: 'Used as a dialog header within the Data Views component',
     'en-us': '{tableLabel:string} Records',
   },
-  dataViewOrderBy: {
-    'en-us': 'Order by',
-  },
   useCurrentScope: {
     'en-us': 'Use current scope',
   },
