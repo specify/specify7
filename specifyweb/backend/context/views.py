@@ -498,9 +498,9 @@ def _schema_import_values(data, fields):
             continue
         if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
             if type(value) is not bool:
-                raise ValueError
+                continue
         elif value is not None and not isinstance(value, str):
-            raise ValueError
+            continue
         values[key] = value
     return values
 
@@ -509,7 +509,7 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
     if text is None:
         return
     if not isinstance(text, str):
-        raise ValueError
+        return
     string = models.Splocaleitemstr.objects.filter(
         **{parent_field: parent, 'language': language, 'country': country}
     ).filter(Q(variant='') | Q(variant__isnull=True)).order_by('-id').first()
@@ -543,7 +543,7 @@ def _schema_import_operations(collection, schema, language):
         if container is None:
             continue
         if not isinstance(table_data, dict):
-            raise ValueError
+            continue
         values = _schema_import_values(
             table_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontainer]
         )
@@ -557,7 +557,7 @@ def _schema_import_operations(collection, schema, language):
         )
         items = table_data.get('items', {})
         if not isinstance(items, dict):
-            raise ValueError
+            continue
         current_items = {item.name.lower(): item for item in container.items.all()}
         for item_name, item_data in items.items():
             item = current_items.get(item_name.lower())
