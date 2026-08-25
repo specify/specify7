@@ -42,6 +42,6 @@ describe('formatTreeStats', () => {
       false
     ).title;
     expect(title).toContain('2');
-    expect(title.split('\n')).toHaveLength(3);
+    expect(title.split('\n')).toHaveLength(5);
   });
 });
