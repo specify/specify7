@@ -34,6 +34,7 @@ from specifyweb.specify import models
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
+from specifyweb.specify.api.crud import post_resource, put_resource
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
@@ -520,7 +521,7 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
                 'text': text,
                 'language': language,
                 'country': country,
-                parent_field: uri_for_model(parent, parent.id),
+                parent_field: uri_for_model(parent.__class__, parent.id),
             },
         ))
     elif string.text != text:
