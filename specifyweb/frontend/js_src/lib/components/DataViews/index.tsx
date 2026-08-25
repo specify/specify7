@@ -142,7 +142,7 @@ function DataViewFromTable<SCHEMA extends AnySchema>({
       defaultIndex={0}
       headerButtons={headerButtons}
       dialog={false}
-      ids={collection.map(({ id }) => id)}
+      ids={collection.map((record) => record?.id)}
       isDependent={false}
       isInRecordSet={false}
       newResource={undefined}

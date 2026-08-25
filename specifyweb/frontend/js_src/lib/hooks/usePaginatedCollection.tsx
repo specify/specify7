@@ -19,11 +19,11 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
     | undefined;
 }) {
   const [results, setResults] = useTriggerState<
-    RA<COLLECTION_TYPE> | undefined
+    RA<COLLECTION_TYPE | undefined> | undefined
   >(initialRecords);
   const resultsRef = React.useRef(results);
   const handleSetResults: GetOrSet<
-    RA<COLLECTION_TYPE> | undefined
+    RA<COLLECTION_TYPE | undefined> | undefined
   >[typeof SET] = React.useCallback(
     (results) => {
       const resolved =
