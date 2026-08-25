@@ -23,6 +23,7 @@ import {
   SchemaConfigStoreProvider,
   useSchemaConfig,
 } from './Store';
+import { dialogIcons } from '../Atoms/Icons';
 
 export function SchemaConfigLayout(): JSX.Element {
   const schemaData = useOutletContext<SchemaData>();
@@ -124,6 +125,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
               </Button.Info>
             </>
           }
+          icon={dialogIcons.question}
           header={schemaText.importSchema()}
           onClose={(): void => setImportFile(undefined)}
         >

@@ -64,7 +64,7 @@ export function SchemaConfigHeader({
             disabled={importDisabled}
             onClick={(): void => importInput.current?.click()}
           >
-            {schemaText.importSchema()}
+            {commonText.import()}
           </Button.Small>
         </>
       )}

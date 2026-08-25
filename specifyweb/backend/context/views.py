@@ -487,6 +487,9 @@ SCHEMA_IMPORT_FIELDS = {
     },
 }
 SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
+SCHEMA_IMPORT_TABLE_KEYS = {
+    'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[models.Splocalecontainer]
+}
 
 
 def _schema_import_values(data, fields):
@@ -499,9 +502,9 @@ def _schema_import_values(data, fields):
             continue
         if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
             if type(value) is not bool:
-                continue
+                raise ValueError
         elif value is not None and not isinstance(value, str):
-            continue
+            raise ValueError
         values[key] = value
     return values
 
@@ -510,7 +513,7 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
     if text is None:
         return
     if not isinstance(text, str):
-        return
+        raise ValueError
     string = models.Splocaleitemstr.objects.filter(
         **{parent_field: parent, 'language': language, 'country': country}
     ).filter(Q(variant='') | Q(variant__isnull=True)).order_by('-id').first()
@@ -529,7 +532,13 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
 
 
 def _schema_import_operations(collection, schema, language):
-    if not isinstance(schema, dict):
+    if not isinstance(schema, dict) or not schema:
+        raise ValueError
+    if not any(
+        isinstance(data, dict)
+        and {key.lower() for key in data}.intersection(SCHEMA_IMPORT_TABLE_KEYS)
+        for data in schema.values()
+    ):
         raise ValueError
     language, _, country = language.lower().partition('-')
     containers = {
@@ -558,7 +567,7 @@ def _schema_import_operations(collection, schema, language):
         )
         items = table_data.get('items', {})
         if not isinstance(items, dict):
-            continue
+            raise ValueError
         current_items = {item.name.lower(): item for item in container.items.all()}
         for item_name, item_data in items.items():
             item = current_items.get(item_name.lower())

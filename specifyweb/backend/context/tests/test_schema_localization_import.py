@@ -73,3 +73,14 @@ class SchemaLocalizationImportTests(ApiTests):
         self.assertEqual(response.status_code, 400)
         self.container.refresh_from_db()
         self.assertIsNone(self.container.format)
+
+    def test_rejects_non_schema_json(self):
+        response = self.client.post(
+            '/context/schema_localization_import.json',
+            data=json.dumps({'not': 'a schema'}),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 400)
+        self.container.refresh_from_db()
+        self.assertIsNone(self.container.format)
