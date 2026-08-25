@@ -22,7 +22,7 @@ export const commonText = createDictionary({
     'de-ch': 'Specify 7',
     'pt-br': 'Especifique 7',
     'hr-hr': 'Navedite 7',
-    nb: 'Spesifiser 7',
+    nb: 'Specify 7',
   },
   no: {
     'en-us': 'No',
@@ -33,7 +33,7 @@ export const commonText = createDictionary({
     'de-ch': 'Nein',
     'pt-br': 'Não',
     'hr-hr': 'Ne',
-    nb: 'Ingen',
+    nb: 'Nei',
   },
   cancel: {
     'en-us': 'Cancel',
@@ -44,7 +44,7 @@ export const commonText = createDictionary({
     'de-ch': 'Abbrechen',
     'pt-br': 'Cancelar',
     'hr-hr': 'Otkazati',
-    nb: 'Kansellere',
+    nb: 'Avbryt',
   },
   back: {
     'en-us': 'Back',
@@ -59,7 +59,7 @@ export const commonText = createDictionary({
   },
   skip: {
     'en-us': 'Skip',
-    'ru-ru': 'Пропускать',
+    'ru-ru': 'Пропустить',
     'es-es': 'Saltar',
     'fr-fr': 'Sauter',
     'uk-ua': 'Пропустити',
