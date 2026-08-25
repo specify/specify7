@@ -424,7 +424,11 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
               table={table}
               totalCount={totalCount}
               onFetchMore={
-                canFetchMore && !isFetching ? handleFetchMore : undefined
+                canFetchMore && !isFetching
+                  ? async (): Promise<void> => {
+                      await handleFetchMore();
+                    }
+                  : undefined
               }
             />
             {isDistinct ? null : (
