@@ -37,9 +37,11 @@ describe('formatTreeStats', () => {
   });
 
   test('synonym count is included in the tooltip', () => {
-    expect(
-      formatTreeStats({ directCount: 3, childCount: 5, synonymCount: 2 }, false)
-        .title
-    ).toContain('2');
+    const title = formatTreeStats(
+      { directCount: 3, childCount: 5, synonymCount: 2 },
+      false
+    ).title;
+    expect(title).toContain('2');
+    expect(title.split('\n')).toHaveLength(3);
   });
 });

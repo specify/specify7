@@ -237,7 +237,7 @@ export const formatTreeStats = (
             value: synonymCount.toString(),
           })
         : undefined,
-    ]).join('\n'),
+    ]).join('\n\n'),
     text:
       typeof synonymCount === 'number'
         ? isLeaf
