@@ -515,16 +515,42 @@ export const treeText = createDictionary({
     comment: "Used to show tree node's direct, indirect and synonymized usages",
     'en-us':
       '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   leafNodeStatsWithSynonyms: {
     comment: "Used to show leaf tree node's direct and synonymized usages",
     'en-us':
       '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   synonymizedCollectionObjectCount: {
-    comment:
-      'Count of records determined as this node or any of its descendants that have been synonymized into another node',
+    comment: `
+      Count of records determined as this node or any of its descendants that
+      have been synonymized into another node
+    `,
     'en-us': 'Synonymized {collectionObjectTable:string} Count',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   directCollectionObjectCount: {
     comment: 'Example: Direct Collection Object count',
