@@ -18,12 +18,17 @@ export function SchemaConfigHeader({
   languages,
   rawLanguage,
   onSave: handleSave,
+  onImport: handleImport,
+  importDisabled = false,
 }: {
   readonly languages: SchemaData['languages'];
   readonly rawLanguage: string;
   readonly onSave: (() => void) | undefined;
+  readonly onImport?: (file: File) => void;
+  readonly importDisabled?: boolean;
 }): JSX.Element {
   const [language] = rawLanguage.split('-');
+  const importInput = React.useRef<HTMLInputElement | null>(null);
   return (
     <header className="flex gap-2">
       <H2 className="flex items-center">
@@ -41,6 +46,28 @@ export function SchemaConfigHeader({
       >
         {commonText.export()}
       </Link.Small>
+      {handleImport !== undefined && (
+        <>
+          <input
+            ref={importInput}
+            accept=".json,application/json"
+            className="sr-only"
+            disabled={importDisabled}
+            type="file"
+            onChange={(event): void => {
+              const file = event.target.files?.[0];
+              event.target.value = '';
+              if (file !== undefined) handleImport(file);
+            }}
+          />
+          <Button.Small
+            disabled={importDisabled}
+            onClick={(): void => importInput.current?.click()}
+          >
+            {schemaText.importSchema()}
+          </Button.Small>
+        </>
+      )}
       <span className="-ml-2 flex-1" />
       <Button.Small variant={className.saveButton} onClick={handleSave}>
         {commonText.save()}

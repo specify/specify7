@@ -9,6 +9,21 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const schemaText = createDictionary({
+  importSchema: {
+    'en-us': 'Import Schema Configuration',
+  },
+  importSchemaBackupPrompt: {
+    'en-us': 'Download a backup of the current schema before importing?',
+  },
+  downloadSchemaBackup: {
+    'en-us': 'Download Current Schema',
+  },
+  importSchemaContinue: {
+    'en-us': 'Continue Import',
+  },
+  importSchemaError: {
+    'en-us': 'The schema could not be imported. The database was not changed.',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',
