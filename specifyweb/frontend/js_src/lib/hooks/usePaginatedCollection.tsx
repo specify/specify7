@@ -46,7 +46,8 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
   const canFetchMore =
     !Array.isArray(results) ||
     totalCount === undefined ||
-    results.length < totalCount;
+    results.length < totalCount ||
+    results.includes(undefined);
 
   const internalFetchMore = React.useCallback(
     async (index: number = 0): Promise<RA<COLLECTION_TYPE> | undefined> => {
@@ -113,8 +114,19 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
         !currentResults.includes(undefined);
       if (alreadyFetched) return undefined;
 
-      const naiveFetchIndex = index ?? currentResults.length;
-      if (currentResults[naiveFetchIndex] !== undefined) return undefined;
+      const missingResultIndex = currentResults.findIndex(
+        (result) => result === undefined
+      );
+      const naiveFetchIndex =
+        index ??
+        (missingResultIndex === -1
+          ? currentResults.length
+          : missingResultIndex);
+      if (
+        (totalCount !== undefined && naiveFetchIndex >= totalCount) ||
+        currentResults[naiveFetchIndex] !== undefined
+      )
+        return undefined;
 
       const firstFetchIndex = Math.max(0, naiveFetchIndex - fetchSize + 1);
       const lastFetchIndex = Math.min(
