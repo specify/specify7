@@ -7,6 +7,8 @@ jobs:
   setup-and-run:
     if: github.event_name == 'workflow_dispatch'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
 
     steps:
       - name: Install needed packages
@@ -16,8 +18,6 @@ jobs:
           sudo apt install docker-compose-v2 openssh-client
 
       - uses: actions/checkout@v4
-        permissions:
-          contents: read
         with: 
           persist-credentials: false
 
