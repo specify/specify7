@@ -78,7 +78,7 @@ export function DataViewTables(): JSX.Element {
     />
   ) : (
     <Dialog
-      header={schemaText.tables()}
+      header={dataViewsText.dataViewsTitle()}
       buttons={
         <>
           <span className="-ml-2 flex-1" />
