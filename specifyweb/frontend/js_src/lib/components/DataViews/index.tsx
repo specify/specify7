@@ -44,7 +44,7 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
   const defaultOrder =
     table.getLiteralField('timestampCreated') === undefined
       ? '-id'
-      : '-timestampcreated';
+      : '-timestampCreated';
   const [order, setOrder] = React.useState<OrderPickerOrder<SCHEMA, 'id'>>(
     defaultOrder as OrderPickerOrder<SCHEMA, 'id'>
   );
