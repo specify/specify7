@@ -109,23 +109,29 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
         !currentResults.includes(undefined);
       if (alreadyFetched) return undefined;
 
-      /*
-       * REFACTOR: make this smarter
-       *   when going to the last record, fetch 40 before the last
-       *   when somewhere in the middle, adjust the fetch region to get the
-       *   most unhatched records fetched
-       */
       const naiveFetchIndex = index ?? currentResults.length;
       if (currentResults[naiveFetchIndex] !== undefined) return undefined;
 
-      const fetchIndex =
-        /* If navigating backwards, fetch the previous 40 records */
-        typeof index === 'number' &&
-        typeof currentResults[index + 1] === 'object' &&
-        currentResults[index - 1] === undefined &&
-        index > fetchSize
-          ? naiveFetchIndex - fetchSize + 1
-          : naiveFetchIndex;
+      const firstFetchIndex = Math.max(0, naiveFetchIndex - fetchSize + 1);
+      const lastFetchIndex = Math.min(
+        naiveFetchIndex,
+        Math.max(0, (totalCount ?? currentResults.length) - fetchSize)
+      );
+      const fetchIndex = Array.from(
+        { length: lastFetchIndex - firstFetchIndex + 1 },
+        (_, offset) => firstFetchIndex + offset
+      ).reduce((bestIndex, candidateIndex) =>
+        Array.from(
+          { length: fetchSize },
+          (_, offset) => currentResults[candidateIndex + offset]
+        ).filter((result) => result === undefined).length >
+        Array.from(
+          { length: fetchSize },
+          (_, offset) => currentResults[bestIndex + offset]
+        ).filter((result) => result === undefined).length
+          ? candidateIndex
+          : bestIndex
+      );
 
       return internalFetchMore(fetchIndex);
     },
