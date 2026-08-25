@@ -18,6 +18,7 @@ jobs:
       - uses: actions/checkout@v4
         with: 
           persist-credentials: false
+          contents: read
 
       - name: Fetch coverage script
         id: clone-coverage
