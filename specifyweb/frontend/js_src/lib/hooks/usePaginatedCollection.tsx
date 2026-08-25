@@ -89,6 +89,10 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
           return newResults;
         })
         .catch((error) => {
+          fetchersRef.current = removeKey(
+            fetchersRef.current,
+            index.toString()
+          );
           raise(error);
           return undefined;
         });
