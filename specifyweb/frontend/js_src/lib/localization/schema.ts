@@ -75,6 +75,9 @@ export const schemaText = createDictionary({
     'hr-hr': 'Promjene sheme nisu spremljene',
     nb: 'Skjemaendringer er ikke lagret',
   },
+  unsavedChanges: {
+    'en-us': 'Unsaved changes',
+  },
   changeBaseTable: {
     'en-us': 'Change Base Table',
     'ru-ru': 'Изменить базовую таблицу',
@@ -107,6 +110,17 @@ export const schemaText = createDictionary({
     'pt-br': 'Campos',
     'hr-hr': 'Polja',
     nb: 'Felt',
+  },
+  literalFields: {
+    'en-us': 'Literal Fields',
+    'ru-ru': 'Буквенные поля',
+    'es-es': 'Campos literales',
+    'fr-fr': 'Champs littéraux',
+    'uk-ua': 'Буквальні поля',
+    'de-ch': 'Literale Felder',
+    'pt-br': 'Campos literais',
+    'hr-hr': 'Doslovna polja',
+    nb: 'Bokstavelige felt',
   },
   relationships: {
     'en-us': 'Relationships',
@@ -151,6 +165,9 @@ export const schemaText = createDictionary({
     'pt-br': 'Rubrica',
     'hr-hr': 'Naslov',
     nb: 'Tekst',
+  },
+  tableCaption: {
+    'en-us': 'Table Caption',
   },
   description: {
     'en-us': 'Description',
@@ -251,16 +268,23 @@ export const schemaText = createDictionary({
     'hr-hr': 'mnogo-na-mnogo',
     nb: 'mange-til-mange',
   },
-  fieldLength: {
-    'en-us': 'Length',
-    'es-es': 'Longitud',
-    'fr-fr': 'Longueur',
-    'uk-ua': 'Довжина',
-    'de-ch': 'Länge',
-    'ru-ru': 'Длина',
-    'pt-br': 'Comprimento',
-    'hr-hr': 'Duljina',
-    nb: 'Lengde',
+  characterLimit: {
+    'en-us': 'Character Limit',
+  },
+  text: {
+    'en-us': 'Text',
+  },
+  integer: {
+    'en-us': 'Integer',
+  },
+  number: {
+    'en-us': 'Number',
+  },
+  date: {
+    'en-us': 'Date',
+  },
+  decimal: {
+    'en-us': 'Decimal',
   },
   readOnly: {
     'en-us': 'Read-only',
@@ -625,17 +649,6 @@ export const schemaText = createDictionary({
     'hr-hr': 'Navedite 7 podatkovnih modela',
     nb: 'Spesifiser 7 datamodell',
   },
-  sortByHiddenFields: {
-    'en-us': 'Sort by hidden fields',
-    'de-ch': 'Nach ausgeblendeten Feldern sortieren',
-    'es-es': 'Ordenar por campos ocultos',
-    'fr-fr': 'Trier par champs cachés',
-    'ru-ru': 'Сортировать по скрытым полям',
-    'uk-ua': 'Сортувати за прихованими полями',
-    'pt-br': 'Ordenar por campos ocultos',
-    'hr-hr': 'Sortiraj po skrivenim poljima',
-    nb: 'Sorter etter skjulte felt',
-  },
   hidden: {
     'en-us': 'hidden',
     'de-ch': 'versteckt',
@@ -646,6 +659,17 @@ export const schemaText = createDictionary({
     'pt-br': 'escondido',
     'hr-hr': 'skriven',
     nb: 'skjult',
+  },
+  visible: {
+    'en-us': 'Visible',
+    'de-ch': 'Sichtbar',
+    'es-es': 'Visible',
+    'fr-fr': 'Visible',
+    'ru-ru': 'Видимый',
+    'uk-ua': 'Видимий',
+    'pt-br': 'Visível',
+    'hr-hr': 'Vidljivo',
+    nb: 'Synlig',
   },
   customFieldFormat: {
     'en-us': 'Custom Field Format',
