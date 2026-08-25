@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-03 07:35+0000\n"
+"PO-Revision-Date: 2026-08-25 19:59+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "workbench/hr/>\n"
@@ -11,7 +11,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
-"X-Generator: Weblate 2026.8.dev0\n"
+"X-Generator: Weblate 2026.9.dev0\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Wb Utils > Dataset Variants
 #: components/Header/menuItemDefinitions.ts:94
@@ -388,8 +388,7 @@ msgstr "Prijenos nije uspio zbog ćelija s pogreškom"
 #: components/WbUtils/datasetVariants.tsx:47
 #, fuzzy
 msgid "uploadErrorsDescription"
-msgstr ""
-"Prijenos nije uspio zbog jedne ili više pogrešaka u vrijednosti ćelije."
+msgstr "Prijenos nije uspio zbog jedne ili više pogrešaka u vrijednosti ćelije."
 
 #. Used in: Components > Wb Actions > Index
 #: components/WbActions/index.tsx:414
@@ -454,8 +453,7 @@ msgstr "Prijenos otkazan"
 #: components/WbUtils/datasetVariants.tsx:45
 #, fuzzy
 msgid "uploadCanceledDescription"
-msgstr ""
-"Prijenos je otkazan. U bazi podataka nisu napravljene nikakve promjene."
+msgstr "Prijenos je otkazan. U bazi podataka nisu napravljene nikakve promjene."
 
 #. Used in: Components > Wb Toolkit > Coordinate Converter
 #: components/WbToolkit/CoordinateConverter.tsx:232
@@ -915,8 +913,8 @@ msgstr "{operationName:string}..."
 #, fuzzy
 msgid "wbStatusOperationProgress"
 msgstr ""
-"{operationName:string} red {current:number|formatted}/{total:number|"
-"formatted}"
+"{operationName:string} red {current:number|formatted}/"
+"{total:number|formatted}"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:110
