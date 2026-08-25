@@ -170,7 +170,13 @@ function Map({
       tableName={tableName}
       totalCount={props.totalCount}
       onClose={handleClose}
-      onFetchMore={canFetchMore ? handleFetchMore : undefined}
+      onFetchMore={
+        canFetchMore
+          ? async (): Promise<void> => {
+              await handleFetchMore();
+            }
+          : undefined
+      }
     />
   );
 }
