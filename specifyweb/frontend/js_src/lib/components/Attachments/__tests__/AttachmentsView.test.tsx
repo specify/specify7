@@ -95,9 +95,10 @@ describe('AttachmentsView', () => {
   });
 
   describe('when the health check reports the server is unreachable', () => {
-    overrideAttachmentServerStatus('unavailable');
-    overrideAjax(mockReadUrl, '', { responseCode: Http.SERVER_ERROR });
-
+    beforeEach(() => {
+      overrideAttachmentServerStatus('unavailable');
+      overrideAjax(mockReadUrl, '', { responseCode: Http.SERVER_ERROR });
+    });
     test('replaces the gallery with a single unavailable message and disables Import', async () => {
       const { findByRole, unmount } = mount(<TestAttachmentsView />);
 
