@@ -5,6 +5,7 @@
 import { attachmentsText } from '../../localization/attachments';
 import { batchEditText } from '../../localization/batchEdit';
 import { commonText } from '../../localization/common';
+import { dataViewsText } from '../../localization/dataViews';
 import { headerText } from '../../localization/header';
 import { interactionsText } from '../../localization/interactions';
 import { queryText } from '../../localization/query';
@@ -78,7 +79,7 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
   },
   dataViews: {
     url: '/specify/overlay/dataviews/',
-    title: localized('Data Views'),
+    title: dataViewsText.dataViewsTitle(),
     icon: icons.eye,
   },
   recordSets: {
