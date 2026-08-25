@@ -172,11 +172,6 @@ def get_setup_progress(request):
     return http.JsonResponse(api.get_setup_progress())
 
 @require_GET
-def get_config_progress(request):
-    """Returns a dictionary of the status of config/setup background tasks"""
-    return http.JsonResponse(api.get_config_progress())
-
-@require_GET
 def get_running_worker_tasks(request):
     """Returns all currently running Celery task names"""
     try:

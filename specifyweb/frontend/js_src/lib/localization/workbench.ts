@@ -377,7 +377,7 @@ export const wbText = createDictionary({
     'es-es': '¿Comenzar reversión del conjunto de datos?',
     'fr-fr': "Commencer la restauration de l'ensemble de données ?",
     'uk-ua': 'Почати відкат набору даних?',
-    'de-ch': 'Datensatz-Rollback starten?',
+    'de-ch': 'Datensatz zurücksetzen?',
     'pt-br': 'Iniciar reversão do conjunto de dados?',
     'hr-hr': 'Započeti vraćanje skupa podataka?',
     nb: 'Start tilbakestilling av datasett?',
@@ -716,7 +716,7 @@ export const wbText = createDictionary({
     'uk-ua':
       'Перевірте набір даних і перегляньте підказки при наведенні курсора миші для кожної клітинки з помилкою, потім внесіть відповідні виправлення. Збережіть дані та повторіть спробу {type:string}.',
     'hr-hr':
-      'Provjerite valjanost skupa podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
+      'Validirajte skup podataka i pregledajte upute za prelazak mišem preko svake ćelije s pogreškom, a zatim izvršite odgovarajuće ispravke. Spremite i ponovno pokušajte {type:string}.',
     nb: 'Valider datasettet og se gjennom musepekertipsene for hver feilcelle, og gjør deretter de nødvendige rettelsene. Lagre og prøv {type:string} på nytt.',
   },
   dataSetRollback: {
@@ -1286,7 +1286,7 @@ export const wbText = createDictionary({
     'uk-ua': 'вкладка',
     'de-ch': 'Tab',
     'pt-br': 'Aba',
-    'hr-hr': 'Tab',
+    'hr-hr': 'Kartica',
     nb: 'Fane',
   },
   space: {

@@ -215,7 +215,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Слияние прошло успешно.',
     'uk-ua': 'Злиття виконано',
     'pt-br': 'Fusão bem-sucedida',
-    'hr-hr': 'Spajanje uspješno',
+    'hr-hr': 'Spajanje je uspjelo',
     nb: 'Sammenslåingen var vellykket',
   },
   merging: {

@@ -107,7 +107,7 @@ export const specifyNetworkText = createDictionary({
     'ru-ru': 'Сообщение от {provider:string}',
     'uk-ua': 'Повідомив {provider:string}',
     'pt-br': 'Relatado por {provider:string}',
-    'hr-hr': 'Prijavio/la {provider:string}',
+    'hr-hr': 'Prijavio {provider:string}',
     nb: 'Rapportert av {provider:string}',
   },
   collectionDate: {

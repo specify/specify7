@@ -226,7 +226,14 @@
       { "isaccepted": { "ishidden": false, "name": "Is Accepted", "desc": "If true, this is the accepted name. If false, it is a synonym." } },
       { "definitionitem": { "ishidden": false, "name": "Rank", "desc": "Rank within the tectonics tree." } },
       { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } }
-    ]
+    ],
+    "ishidden": false
+  },
+  "tectonicunittreedef": {
+    "ishidden": false
+  },
+  "tectonicunittreedefitem": {
+    "ishidden": false
   },
 
   "paleocontext": {
@@ -255,6 +262,22 @@
       { "remarks": { "ishidden": false, "name": "Remarks", "desc": "Miscellaneous remarks about the record." } },
       { "startperiod": { "ishidden": false, "name": "Start Period", "desc": "Start period in Ma." } },
       { "endperiod": { "ishidden": false, "name": "End Period", "desc": "End period in Ma." } }
-    ]
+    ],
+    "ishidden": false
+  },
+  "geologictimeperiodtreedef": {
+    "ishidden": false
+  },
+  "geologictimeperiodtreedefitem": {
+    "ishidden": false
+  },
+  "lithostrat": {
+    "ishidden": false
+  },
+  "lithostrattreedef": {
+    "ishidden": false
+  },
+  "lithostrattreedefitem": {
+    "ishidden": false
   }
 }

@@ -23,24 +23,52 @@ import type { FieldFormatter, FieldFormatterPart } from './spec';
 import { fieldFormattersSpec, trimRegexString } from './spec';
 
 let uiFormatters: IR<UiFormatter>;
-export const fetchContext = Promise.all([
-  load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml'),
-  import('../DataModel/tables').then(async ({ fetchContext }) => fetchContext),
-]).then(([formatters]) => {
-  uiFormatters = Object.fromEntries(
-    filterArray(
-      xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
-        (formatter, index) => {
-          const resolvedFormatter = resolveFieldFormatter(formatter, index);
-          return resolvedFormatter === undefined
-            ? undefined
-            : [formatter.name, resolvedFormatter];
-        }
+let uiFormattersGeneration = 0;
+
+const loadUiFormatters = (refresh = false): Promise<IR<UiFormatter>> => {
+  const generation = ++uiFormattersGeneration;
+  return Promise.all([
+    load<Element>(getAppResourceUrl('UIFormatters'), 'text/xml', refresh),
+    import('../DataModel/tables').then(
+      async ({ fetchContext }) => fetchContext
+    ),
+  ]).then(([formatters]) => {
+    const result = Object.fromEntries(
+      filterArray(
+        xmlToSpec(formatters, fieldFormattersSpec()).fieldFormatters.map(
+          (formatter, index) => {
+            const resolvedFormatter = resolveFieldFormatter(formatter, index);
+            return resolvedFormatter === undefined
+              ? undefined
+              : [formatter.name, resolvedFormatter];
+          }
+        )
       )
-    )
-  );
-  return uiFormatters;
-});
+    );
+    if (generation === uiFormattersGeneration) uiFormatters = result;
+    return result;
+  });
+};
+
+export let fetchContext = loadUiFormatters();
+
+// Re-fetch UI formatters after the app resource is edited
+export const refreshUiFormatters = async (): Promise<
+  Awaited<typeof fetchContext>
+> => {
+  const previous = fetchContext;
+  const refreshed = loadUiFormatters(true);
+  const generation = uiFormattersGeneration;
+  try {
+    const result = await refreshed;
+    if (generation === uiFormattersGeneration) fetchContext = refreshed;
+    return result;
+  } catch (error) {
+    // Keep the previous UI formatters on failure rather than a rejected promise
+    if (generation === uiFormattersGeneration) fetchContext = previous;
+    throw error;
+  }
+};
 export const getUiFormatters = (): typeof uiFormatters =>
   uiFormatters ?? error('Tried to access UI formatters before fetching them');
 

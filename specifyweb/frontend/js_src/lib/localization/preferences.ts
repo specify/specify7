@@ -418,7 +418,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Feldhintergrund erforderlich (Dunkles Thema)',
     'pt-br': 'Fundo de campo obrigatório (tema escuro)',
     'hr-hr': 'Pozadina obaveznog polja (tamna tema)',
-    nb: 'Bakgrunn for obligatorisk felt (mørkt tema)',
+    nb: 'Obligatorisk feltbakgrunn (mørkt tema)',
   },
   dialogs: {
     'en-us': 'Dialogs',
@@ -493,7 +493,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Toujours invité à choisir la collection',
     'uk-ua': 'Завжди підкажуть вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
-    'pt-br': 'Sempre solicitando a escolha da coleção',
+    'pt-br': 'Sempre solicitando a seleção da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
     nb: 'Alltid oppfordret til å velge samling',
   },
@@ -676,13 +676,13 @@ export const preferencesText = createDictionary({
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
     'ru-ru': 'Начинается с (регистр не учитывается)',
-    'es-es': 'Comienza con (sin distinción de mayúsculas y minúsculas)',
+    'es-es': 'Comienza con (sin distinción entre mayúsculas y minúsculas)',
     'fr-fr': 'Commence par (insensible à la casse)',
     'uk-ua': 'Починається з (без урахування регістру)',
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
     'pt-br': 'Começa com (sem distinção entre maiúsculas e minúsculas)',
     'hr-hr': 'Počinje s (ne razlikuje velika i mala slova)',
-    nb: 'Starter med (ikke skille mellom store og små bokstaver)',
+    nb: 'Starter med (ikke store og små bokstaver)',
   },
   startsWithDescription: {
     'en-us': 'Search for values that begin with a given query string.',
@@ -887,6 +887,45 @@ export const preferencesText = createDictionary({
     'pt-br': 'Mostrar períodos de início e fim',
     'ru-ru': 'Показать начальный и конечный периоды',
     'uk-ua': 'Показати початковий та кінцевий періоди',
+  },
+  queryButtonTaxonField: {
+    'en-us': 'Field used by Taxon Query button',
+    'de-ch': 'Vom Taxon-Abfrage-Button verwendetes Feld',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': 'Polje koje koristi gumb za upit taksona',
+    nb: '',
+    'pt-br': 'Campo usado pelo botão de consulta de táxon',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  queryButtonTaxonFieldDescription: {
+    'en-us':
+      'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
+    'de-ch':
+      'Wählen Sie aus, ob die Schaltfläche „Taxonbaum-Abfrage“ nach Taxon oder bevorzugtem Taxon filtert. Das bevorzugte Taxon entspricht den Baumzählungen; das Standard-Taxon folgt dem ursprünglich ermittelten Taxon.',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr':
+      'Odaberite hoće li gumb Upit za stablo taksona filtrirati prema taksonu ili preferiranom taksonu. Preferirani takson odgovara broju stabala; takson slijedi izvorno određeni takson.',
+    nb: '',
+    'pt-br':
+      'Escolha se o botão Consulta da árvore taxonômica filtra por Táxon ou Táxon Preferencial. Táxon Preferencial corresponde à contagem de árvores; Táxon segue o táxon de determinação original.',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  showSynonymCounts: {
+    'en-us': 'Show counts for synonymized nodes',
+    'de-ch': '',
+    'hr-hr': '',
+    'pt-br': '',
+  },
+  showSynonymCountsDescription: {
+    'en-us':
+      'Display an additional count of records that were determined as a node, or any of its descendants, and are now synonyms of another node.',
+    'de-ch': '',
+    'hr-hr': '',
+    'pt-br': '',
   },
   welcomePage: {
     'en-us': 'Home Page',
@@ -1782,7 +1821,7 @@ export const preferencesText = createDictionary({
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru': 'Автоматическая прокрутка дерева к сфокусированному узлу',
-    'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
+    'es-es': 'Desplazamiento automático del árbol al nodo enfocado',
     'fr-fr': 'Arbre de défilement automatique vers le nœud ciblé',
     'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
@@ -1896,7 +1935,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
+    'de-ch': 'Suche mit Berücksichtigung der Groß- und Kleinschreibung',
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
     'hr-hr': 'Pretraživanje koje razlikuje velika i mala slova',
@@ -2388,7 +2427,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Вторичный цвет кнопки',
     'uk-ua': 'Колір вторинної кнопки',
-    'de-ch': 'Sekundäre Tastenfarbe',
+    'de-ch': 'Farbe der Sekundärtaste',
     'pt-br': 'Cor do botão secundário',
     'hr-hr': 'Boja sekundarnog gumba',
     nb: 'Farge på sekundær knapp',
