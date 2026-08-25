@@ -53,11 +53,7 @@ const defaultFields: RR<
   ) => Promise<RA<SpecifyResource<SpQueryField>>>
 > = {
   Taxon: async (nodeId, rankName) => {
-    const queryField = userPreferences.get(
-      'treeEditor',
-      'taxon',
-      'queryField'
-    );
+    const queryField = userPreferences.get('treeEditor', 'taxon', 'queryField');
 
     return [
       makeField('catalogNumber', {
