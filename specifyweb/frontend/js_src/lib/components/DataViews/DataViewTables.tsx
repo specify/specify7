@@ -2,7 +2,6 @@ import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
-import { schemaText } from '../../localization/schema';
 import { GetSet, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -19,49 +18,12 @@ import { QueryTables } from '../Toolbar/QueryTablesWrapper';
 
 const defaultDataViewTablesConfig: RA<keyof Tables> = [
   'Accession',
-  'AddressOfRecord',
   'Agent',
-  'Appraisal',
-  'Author',
-  'Borrow',
-  'CollectingEvent',
-  'CollectingTrip',
-  'Collection',
   'CollectionObject',
-  'CollectionObjectGroup',
-  'ConservDescription',
-  'Container',
-  'DNASequence',
-  'Deaccession',
-  'Determination',
-  'Discipline',
-  'Disposal',
-  'Division',
-  'ExchangeIn',
-  'ExchangeOut',
-  'Exsiccata',
-  'FieldNotebook',
-  'Geography',
-  'GeologicTimePeriod',
+  'CollectingEvent',
   'Gift',
-  'InfoRequest',
-  'Institution',
-  'Journal',
-  'LithoStrat',
   'Loan',
   'Locality',
-  'MaterialSample',
-  'PaleoContext',
-  'Permit',
-  'Preparation',
-  'PrepType',
-  'ReferenceWork',
-  'RepositoryAgreement',
-  'Shipment',
-  'Storage',
-  'Taxon',
-  'TectonicUnit',
-  'TreatmentEvent',
 ];
 
 export function DataViewTables(): JSX.Element {
