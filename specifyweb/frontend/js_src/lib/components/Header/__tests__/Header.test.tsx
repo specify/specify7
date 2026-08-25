@@ -30,6 +30,9 @@ const testSettings = {
 };
 
 overrideAjax(mockReadUrl, '', { responseCode: Http.OK });
+overrideAjax('/attachment_gw/health/', '', {
+  responseCode: Http.NO_CONTENT,
+});
 
 function TestHeaderItems(): JSX.Element {
   return (
