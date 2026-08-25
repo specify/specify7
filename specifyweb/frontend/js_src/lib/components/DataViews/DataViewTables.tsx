@@ -1,23 +1,21 @@
 import React from 'react';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
+import { dataViewsText } from '../../localization/dataViews';
 import { schemaText } from '../../localization/schema';
 import { GetSet, RA } from '../../utils/types';
-import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
-import { Link } from '../Atoms/Link';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, strictGetTable } from '../DataModel/tables';
 import { Tables } from '../DataModel/types';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
 import { OverlayContext } from '../Router/Router';
 import { tablesFilter } from '../SchemaConfig/Tables';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
-import { dataViewsText } from '../../localization/dataViews';
+import { QueryTables } from '../Toolbar/QueryTablesWrapper';
 
 const defaultDataViewTablesConfig: RA<keyof Tables> = [
   'Accession',
@@ -96,17 +94,11 @@ export function DataViewTables(): JSX.Element {
       icon={icons.eye}
       onClose={handleClose}
     >
-      {/* REFACTOR: Generalize QueryTables component */}
-      <Ul className="flex flex-col gap-1">
-        {tables.map(({ name, label }, index) => (
-          <li className="contents" key={index}>
-            <Link.Default href={`/specify/dataviews/${name.toLowerCase()}`}>
-              <TableIcon label={false} name={name} />
-              {label}
-            </Link.Default>
-          </li>
-        ))}
-      </Ul>
+      <QueryTables
+        getHref={(name) => `/specify/dataviews/${name.toLowerCase()}`}
+        tables={tables}
+        onClick={undefined}
+      />
     </Dialog>
   );
 }

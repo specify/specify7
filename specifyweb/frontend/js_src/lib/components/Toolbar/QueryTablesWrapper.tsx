@@ -108,15 +108,23 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
 export function QueryTables({
   tables,
   onClick: handleClick,
+  getHref = (tableName): string =>
+    `/specify/query/new/${tableName.toLowerCase()}/`,
 }: {
   readonly tables: RA<SpecifyTable>;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+  readonly getHref?: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return (
     <Ul className="flex flex-col gap-1">
       {tables.map(({ name, label }, index) => (
         <li className="contents" key={index}>
-          <QueryTableItem label={label} name={name} onClick={handleClick} />
+          <QueryTableItem
+            getHref={getHref}
+            label={label}
+            name={name}
+            onClick={handleClick}
+          />
         </li>
       ))}
     </Ul>
@@ -178,13 +186,15 @@ function QueryTableItem({
   name,
   label,
   onClick: handleClick,
+  getHref,
 }: {
   readonly name: keyof Tables;
   readonly label: LocalizedString;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+  readonly getHref: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return handleClick === undefined ? (
-    <Link.Default href={`/specify/query/new/${name.toLowerCase()}/`}>
+    <Link.Default href={getHref(name)}>
       <TableIcon label={false} name={name} />
       {label}
     </Link.Default>
