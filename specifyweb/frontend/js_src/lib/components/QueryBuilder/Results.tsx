@@ -126,13 +126,6 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     totalCount: props.totalCount,
   });
 
-  // const {
-  //   results: [results, setResults],
-  //   onFetchMore: handleFetchMore,
-  //   totalCount: [totalCount, setTotalCount],
-  //   canFetchMore,
-  // } = useFetchQueryResults(props);
-
   const canMergeTable = canMerge(table);
 
   const visibleColumns = React.useMemo(
