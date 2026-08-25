@@ -145,7 +145,7 @@ msgstr ""
 
 #: components/PickLists/index.tsx:188
 #: components/QueryBuilder/Formatter.tsx:220
-#: components/SchemaConfig/Components.tsx:90
+#: components/SchemaConfig/Components.tsx:94
 #. 🟥Used when selected pick list value is not one of allowed values. Used in: Components > Pick Lists > Index ⬤ Components > Query Builder > Formatter ⬤ Components > Schema Config > Components
 msgid "invalidPicklistValue"
 msgstr "{value:string} (поточне, недійсне значення)"
@@ -511,7 +511,7 @@ msgstr "Місяці"
 msgid "years"
 msgstr "років"
 
-#: components/FieldFormatters/index.ts:376
+#: components/FieldFormatters/index.ts:404
 #. Used in: Components > Field Formatters > Index
 msgid "year"
 msgstr "рік"

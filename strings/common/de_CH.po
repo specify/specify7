@@ -114,9 +114,8 @@ msgstr "Abbrechen"
 #: components/BatchIdentify/index.tsx:859
 #: components/Formatters/List.tsx:115
 #: components/SchemaConfig/Languages.tsx:73
-#: components/SchemaConfig/Tables.tsx:45
 #: components/SetupTool/index.tsx:299
-#. Used in: Components > Batch Identify > Index ⬤ Components > Formatters > List ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Tables ⬤ Components > Setup Tool > Index
+#. Used in: Components > Batch Identify > Index ⬤ Components > Formatters > List ⬤ Components > Schema Config > Languages ⬤ Components > Setup Tool > Index
 msgid "back"
 msgstr "Zurück"
 
@@ -397,7 +396,7 @@ msgstr "Nicht zugeordnete Spalten löschen"
 #: components/QueryBuilder/FromMap.tsx:74
 #: components/QueryBuilder/Save.tsx:67
 #: components/Reports/Report.tsx:313
-#: components/SchemaConfig/Components.tsx:42
+#: components/SchemaConfig/Components.tsx:46
 #: components/SchemaConfig/TableUniquenessRules.tsx:141
 #: components/Security/MissingAgentsDialog.tsx:107
 #: components/Security/Role.tsx:213
@@ -541,9 +540,9 @@ msgstr "Tools"
 #: components/QueryBuilder/Results.tsx:352
 #: components/QueryBuilder/Results.tsx:353
 #: components/QueryComboBox/index.tsx:450
-#: components/SchemaConfig/Fields.tsx:62
-#: components/SchemaConfig/index.tsx:165
-#: components/SchemaConfig/index.tsx:166
+#: components/SchemaConfig/Fields.tsx:181
+#: components/SchemaConfig/index.tsx:98
+#: components/SchemaConfig/index.tsx:99
 #: components/SearchDialog/index.tsx:304
 #: components/Security/Collection.tsx:225
 #: components/Security/CollectionComponents.tsx:141
@@ -618,11 +617,13 @@ msgstr "Entfernen"
 #: components/Header/ExpressSearchTask.tsx:227
 #: components/Header/index.tsx:134
 #: components/HomePage/index.tsx:56
+#: components/SchemaConfig/Sidebar.tsx:41
+#: components/SchemaConfig/Sidebar.tsx:42
 #: components/SearchDialog/index.tsx:254
 #: components/SearchDialog/index.tsx:259
 #: components/SearchDialog/index.tsx:358
 #: components/WbUtils/index.tsx:60
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Formatters > Preview ⬤ Components > Header > Express Search Task ⬤ Components > Header > Index ⬤ Components > Home Page > Index ⬤ Components > Schema Config > Sidebar ⬤ Components > Search Dialog > Index ⬤ Components > Wb Utils > Index
 msgid "search"
 msgstr "Suche"
 
@@ -903,12 +904,12 @@ msgstr "Reihenfolge"
 
 #: components/Header/userToolDefinitions.ts:122
 #: components/QueryBuilder/Edit.tsx:79
-#: components/SchemaConfig/Tables.tsx:39
+#: components/SchemaConfig/Components.tsx:42
 #: components/Security/ImportExport.tsx:252
 #: components/WbToolkit/DevShowPlan.tsx:165
 #: components/WbToolkit/index.tsx:116
 #: components/WbToolkit/__tests__/Export.test.tsx:86
-#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Tables ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index ⬤ Wb Toolkit > __tests__ > Export
+#. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Components ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index ⬤ Wb Toolkit > __tests__ > Export
 msgid "export"
 msgstr "Export"
 
@@ -986,7 +987,8 @@ msgstr "Ausgewählt"
 #: components/Formatters/Definitions.tsx:243
 #: components/Header/index.tsx:154
 #: components/Molecules/AutoComplete.tsx:569
-#. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete
+#: components/SchemaConfig/Sidebar.tsx:26
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Formatters > Definitions ⬤ Components > Header > Index ⬤ Components > Molecules > Auto Complete ⬤ Components > Schema Config > Sidebar
 msgid "expand"
 msgstr "Aufklappen"
 
@@ -999,7 +1001,8 @@ msgstr "Alle aufklappen"
 #: components/FormCells/FormTable.tsx:380
 #: components/FormSliders/IntegratedRecordSelector.tsx:112
 #: components/Header/index.tsx:154
-#. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index
+#: components/SchemaConfig/Sidebar.tsx:36
+#. Used in: Components > Form Cells > Form Table ⬤ Components > Form Sliders > Integrated Record Selector ⬤ Components > Header > Index ⬤ Components > Schema Config > Sidebar
 msgid "collapse"
 msgstr "Zuklappen"
 
@@ -1030,10 +1033,10 @@ msgstr "Zurücksetzen"
 msgid "select"
 msgstr "Auswählen"
 
-#: components/FieldFormatters/index.ts:343
+#: components/FieldFormatters/index.ts:371
 #: components/PickLists/definitions.ts:54
 #: components/Preferences/Renderers.tsx:162
-#: components/SchemaConfig/Components.tsx:77
+#: components/SchemaConfig/Components.tsx:81
 #: components/SchemaConfig/Format.tsx:70
 #: components/Security/Collection.tsx:157
 #: components/Security/ImportExport.tsx:120
@@ -1045,8 +1048,9 @@ msgstr "Auswählen"
 msgid "none"
 msgstr "Keine"
 
-#: components/SchemaConfig/Components.tsx:73
-#. Used in: Components > Schema Config > Components
+#: components/SchemaConfig/Components.tsx:77
+#: components/SchemaConfig/index.tsx:103
+#. Used in: Components > Schema Config > Components ⬤ Components > Schema Config > Index
 msgid "noneAvailable"
 msgstr "Keine Verfügbar"
 
@@ -1121,8 +1125,8 @@ msgstr "{header:string}:"
 #: components/QueryComboBox/spec.ts:72
 #: components/SchemaConfig/Field.tsx:42
 #: components/SchemaConfig/Table.tsx:50
-#: components/SchemaViewer/Fields.tsx:30
-#: components/SchemaViewer/Fields.tsx:37
+#: components/SchemaViewer/Fields.tsx:29
+#: components/SchemaViewer/Fields.tsx:36
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
 #: components/Security/Role.tsx:116

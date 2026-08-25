@@ -84,7 +84,7 @@ msgstr ""
 "La ressource ne peut pas être supprimée car les ressources suivantes y font "
 "référence :"
 
-#: components/SchemaViewer/schemaToTsv.tsx:26
+#: components/SchemaViewer/schemaToTsv.tsx:25
 #: components/WbPlanView/CustomSelectElement.tsx:295
 #. Used in: Components > Schema Viewer > Schema To Tsv ⬤ Components > Wb Plan View > Custom Select Element
 msgid "relationship"
@@ -728,14 +728,14 @@ msgstr "Formulaire Meta"
 
 #: components/AppResources/Create.tsx:287
 #: components/AppResources/Editor.tsx:277
-#: components/Formatters/formatters.ts:58
+#: components/Formatters/formatters.ts:81
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 msgid "newResourceTitle"
 msgstr "Nouveau {tableName:string}"
 
-#: components/Formatters/formatters.ts:59
+#: components/Formatters/formatters.ts:82
 #: components/Forms/dataObjFormatters.ts:161
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 msgid "resourceFormatter"
@@ -756,7 +756,7 @@ msgstr "L'élément a été supprimé avec succès."
 msgid "dateRange"
 msgstr "(Plage : {from:string} - {to:string})"
 
-#: components/FieldFormatters/index.ts:323
+#: components/FieldFormatters/index.ts:351
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 msgid "catalogNumberNumericFormatter"
 msgstr "Numéro de catalogue numérique"

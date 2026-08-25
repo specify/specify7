@@ -318,7 +318,7 @@ msgstr "Titre"
 msgid "default"
 msgstr "Défaut"
 
-#: components/FieldFormatters/index.ts:382
+#: components/FieldFormatters/index.ts:410
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
@@ -651,32 +651,32 @@ msgstr "(non conforme)"
 msgid "value"
 msgstr "Valeur"
 
-#: components/FieldFormatters/index.ts:375
+#: components/FieldFormatters/index.ts:403
 #. Used in: Components > Field Formatters > Index
 msgid "constant"
 msgstr "Constante"
 
-#: components/FieldFormatters/index.ts:377
+#: components/FieldFormatters/index.ts:405
 #. Used in: Components > Field Formatters > Index
 msgid "alpha"
 msgstr "Alpha"
 
-#: components/FieldFormatters/index.ts:378
+#: components/FieldFormatters/index.ts:406
 #. Used in: Components > Field Formatters > Index
 msgid "numeric"
 msgstr "Numérique"
 
-#: components/FieldFormatters/index.ts:379
+#: components/FieldFormatters/index.ts:407
 #. Used in: Components > Field Formatters > Index
 msgid "alphanumeric"
 msgstr "Alphanumérique"
 
-#: components/FieldFormatters/index.ts:380
+#: components/FieldFormatters/index.ts:408
 #. Used in: Components > Field Formatters > Index
 msgid "anychar"
 msgstr "N'importe quel caractère"
 
-#: components/FieldFormatters/index.ts:381
+#: components/FieldFormatters/index.ts:409
 #. Used in: Components > Field Formatters > Index
 msgid "regex"
 msgstr "Expression régulière"

@@ -273,7 +273,7 @@ msgstr "Виберіть базову таблицю"
 msgid "chooseExistingPlan"
 msgstr "Виберіть існуюче відображення"
 
-#: components/SchemaConfig/Tables.tsx:166
+#: components/SchemaConfig/Tables.tsx:158
 #. Used in: Components > Schema Config > Tables
 #, fuzzy
 msgid "showAllTables"

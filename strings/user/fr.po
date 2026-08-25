@@ -191,7 +191,7 @@ msgstr ""
 "Vous ne disposez pas des privilèges suffisants pour effectuer cette action, "
 "ou votre session actuelle a été déconnectée."
 
-#: components/Formatters/formatters.ts:197
+#: components/Formatters/formatters.ts:220
 #: components/Forms/dataObjFormatters.ts:290
 #: components/QueryComboBox/index.tsx:203
 #: components/Statistics/Categories.tsx:76

@@ -223,7 +223,7 @@ msgstr "Select a Base Table"
 msgid "chooseExistingPlan"
 msgstr "Choose Existing Mapping"
 
-#: components/SchemaConfig/Tables.tsx:166
+#: components/SchemaConfig/Tables.tsx:158
 #. Used in: Components > Schema Config > Tables
 msgid "showAllTables"
 msgstr "Show All Tables"
