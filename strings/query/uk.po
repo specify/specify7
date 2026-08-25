@@ -12,7 +12,7 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.8.dev0\n"
 
-#: components/Preferences/UserDefinitions.tsx:2265
+#: components/Preferences/UserDefinitions.tsx:2282
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:88
 #: components/Reports/RecordSets.tsx:95
@@ -34,7 +34,7 @@ msgid "queries"
 msgstr "Запити"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1767
+#: components/Preferences/UserDefinitions.tsx:1784
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
@@ -157,7 +157,7 @@ msgstr ""
 "Запит: \"{queryName:string}\" на {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:213
+#: components/QueryBuilder/fromTree.ts:222
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} за допомогою \"{nodeFullName:string}\""

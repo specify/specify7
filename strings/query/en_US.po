@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:2265
+#: components/Preferences/UserDefinitions.tsx:2282
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:88
 #: components/Reports/RecordSets.tsx:95
@@ -23,7 +23,7 @@ msgid "queries"
 msgstr "Queries"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1767
+#: components/Preferences/UserDefinitions.tsx:1784
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
@@ -148,7 +148,7 @@ msgstr ""
 "Query: \"{queryName:string}\" on {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:213
+#: components/QueryBuilder/fromTree.ts:222
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
