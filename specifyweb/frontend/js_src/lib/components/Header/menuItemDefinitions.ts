@@ -15,7 +15,7 @@ import { treeText } from '../../localization/tree';
 import { wbText } from '../../localization/workbench';
 import { getCache } from '../../utils/cache';
 import { f } from '../../utils/functools';
-import { IR, localized } from '../../utils/types';
+import { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
 import {
