@@ -890,10 +890,26 @@ export const preferencesText = createDictionary({
   },
   queryButtonTaxonField: {
     'en-us': 'Field used by Taxon Query button',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   queryButtonTaxonFieldDescription: {
     'en-us':
       'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   welcomePage: {
     'en-us': 'Home Page',
