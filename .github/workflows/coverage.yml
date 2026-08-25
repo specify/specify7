@@ -32,7 +32,7 @@ jobs:
       - name: Configure specify
         id: config-specify
         run: |
-          (IFS= read -d "" -r env <<-EOS
+          { IFS= read -d "" -r env <<-EOS
           DATABASE_HOST=mariadb
           DATABASE_PORT=3306
           MYSQL_ROOT_PASSWORD=password
@@ -73,7 +73,7 @@ jobs:
 
           SP7_DEBUG=true
           EOS
-          ) || true
+          } || true
 
           echo "$env" > .env
 
