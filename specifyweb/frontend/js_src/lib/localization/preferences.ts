@@ -895,7 +895,7 @@ export const preferencesText = createDictionary({
     'fr-fr': '',
     'hr-hr': '',
     nb: '',
-    'pt-br': '',
+    'pt-br': 'Campo usado pelo botão de consulta de táxon',
     'ru-ru': '',
     'uk-ua': '',
   },
@@ -907,7 +907,8 @@ export const preferencesText = createDictionary({
     'fr-fr': '',
     'hr-hr': '',
     nb: '',
-    'pt-br': '',
+    'pt-br':
+      'Escolha se o botão Consulta da árvore taxonômica filtra por Táxon ou Táxon Preferencial. Táxon Preferencial corresponde à contagem de árvores; Táxon segue o táxon de determinação original.',
     'ru-ru': '',
     'uk-ua': '',
   },
