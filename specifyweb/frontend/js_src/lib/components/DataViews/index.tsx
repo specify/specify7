@@ -48,24 +48,22 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
   const [order, setOrder] = React.useState<OrderPickerOrder<SCHEMA, 'id'>>(
     defaultOrder as OrderPickerOrder<SCHEMA, 'id'>
   );
-  const [isScoped, setIsScoped] = React.useState(true);
-  const canBeScoped =
-    table.name === 'Attachment' || typeof table.getScope() === 'object';
+
   const handleFetchingCollection = React.useCallback(
     (offset: number = 0) =>
       fetchCollection(table.name, {
         offset,
         limit: DEFAULT_FETCH_LIMIT,
-        domainFilter: isScoped,
+        domainFilter: true,
         orderBy: order,
       } as CollectionFetchFilters<Tables[SCHEMA['tableName']]>),
-    [isScoped, order, table]
+    [order, table]
   );
   const [collection] = useAsyncState(handleFetchingCollection, true);
 
   return collection === undefined ? null : (
     <DataViewFromTable
-      key={`${order}:${isScoped}`}
+      key={order}
       table={table}
       initialRecords={collection.records}
       totalCount={collection.totalCount}
@@ -87,17 +85,6 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
               />
             </div>
           </Label.Inline>
-          {canBeScoped ? (
-            <Label.Inline>
-              <input
-                checked={isScoped}
-                className="h-4 w-4 accent-brand-400"
-                type="checkbox"
-                onChange={({ target }): void => setIsScoped(target.checked)}
-              />
-              {dataViewsText.useCurrentScope()}
-            </Label.Inline>
-          ) : undefined}
         </>
       }
     />
