@@ -16,9 +16,10 @@ jobs:
           sudo apt install docker-compose-v2 openssh-client
 
       - uses: actions/checkout@v4
+        permissions:
+          contents: read
         with: 
           persist-credentials: false
-          contents: read
 
       - name: Fetch coverage script
         id: clone-coverage
