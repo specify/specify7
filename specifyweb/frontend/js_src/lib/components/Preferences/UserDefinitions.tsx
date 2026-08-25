@@ -1615,6 +1615,14 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          showSynonymCounts: definePref<boolean>({
+            title: preferencesText.showSynonymCounts(),
+            description: preferencesText.showSynonymCountsDescription(),
+            requiresReload: true,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
           queryField: definePref<'preferredTaxon' | 'taxon'>({
             title: preferencesText.queryButtonTaxonField(),
             description: preferencesText.queryButtonTaxonFieldDescription(),

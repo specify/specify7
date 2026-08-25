@@ -912,6 +912,13 @@ export const preferencesText = createDictionary({
     'ru-ru': '',
     'uk-ua': '',
   },
+  showSynonymCounts: {
+    'en-us': 'Show counts for synonymized nodes',
+  },
+  showSynonymCountsDescription: {
+    'en-us':
+      'Display an additional count of records that were determined as a node, or any of its descendants, and are now synonyms of another node.',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
