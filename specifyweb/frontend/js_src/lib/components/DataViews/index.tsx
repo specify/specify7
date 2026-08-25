@@ -1,6 +1,5 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import type { LocalizedString } from 'typesafe-i18n';
 import {
   type CollectionFetchFilters,
   DEFAULT_FETCH_LIMIT,
@@ -21,10 +20,6 @@ import { useAsyncState } from '../../hooks/useAsyncState';
 import { RA } from '../../utils/types';
 import { Label } from '../Atoms/Form';
 import { OrderPicker, type OrderPickerOrder } from '../Preferences/Renderers';
-
-const tableRecordsText = dataViewsText.tableRecords as (values: {
-  readonly tableLabel: LocalizedString;
-}) => LocalizedString;
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -79,7 +74,7 @@ function DataViewFromTableWrapped<SCHEMA extends AnySchema>({
       headerButtons={
         <>
           <Label.Inline>
-            {dataViewsText.orderBy()}
+            {dataViewsText.dataViewOrderBy()}
             <div>
               <OrderPicker<SCHEMA, 'id'>
                 additionalFields={[{ name: 'id', label: commonText.id() }]}
@@ -147,7 +142,7 @@ function DataViewFromTable<SCHEMA extends AnySchema>({
       isInRecordSet={false}
       newResource={undefined}
       table={table}
-      title={tableRecordsText({ tableLabel: table.label })}
+      title={dataViewsText.tableRecords({ tableLabel: table.label })}
       totalCount={totalCount}
       onAdd={undefined}
       onClone={undefined}
