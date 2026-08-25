@@ -16,9 +16,9 @@ msgstr ""
 msgid "specifySeven"
 msgstr "Specify 7"
 
-#: components/Preferences/UserDefinitions.tsx:2073
+#: components/Preferences/UserDefinitions.tsx:2081
 #: components/SetupTool/SetupOverview.tsx:85
-#: components/TreeView/CreateTree.tsx:546
+#: components/TreeView/CreateTree.tsx:550
 #: components/WorkBench/DataSetMeta.tsx:292
 #: utils/parser/definitions.ts:122
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Components > Work Bench > Data Set Meta ⬤ Utils > Parser > Definitions
@@ -91,9 +91,9 @@ msgstr "No"
 #: components/TreeView/Actions.tsx:403
 #: components/TreeView/Actions.tsx:419
 #: components/TreeView/AddRank.tsx:54
-#: components/TreeView/CreateTree.tsx:152
-#: components/TreeView/CreateTree.tsx:339
-#: components/TreeView/CreateTree.tsx:629
+#: components/TreeView/CreateTree.tsx:154
+#: components/TreeView/CreateTree.tsx:343
+#: components/TreeView/CreateTree.tsx:633
 #: components/WbActions/WbRevert.tsx:39
 #: components/WbActions/WbRollback.tsx:64
 #: components/WbActions/WbUpload.tsx:108
@@ -182,7 +182,7 @@ msgstr "Create"
 #: components/BatchIdentify/index.tsx:780
 #: components/BatchIdentify/index.tsx:856
 #: components/BatchIdentify/index.tsx:1009
-#: components/Core/VersionMismatch.tsx:23
+#: components/Core/VersionMismatch.tsx:26
 #: components/ExportFeed/Dwca.tsx:94
 #: components/ExportFeed/Dwca.tsx:100
 #: components/ExportFeed/Dwca.tsx:128
@@ -288,8 +288,8 @@ msgstr "Create"
 #: components/Toolbar/QueryTablesWrapper.tsx:156
 #: components/Toolbar/TreeRepair.tsx:97
 #: components/TreeView/Actions.tsx:407
-#: components/TreeView/CreateTree.tsx:544
-#: components/TreeView/CreateTree.tsx:632
+#: components/TreeView/CreateTree.tsx:548
+#: components/TreeView/CreateTree.tsx:636
 #: components/WbActions/WbNoUploadPlan.tsx:49
 #: components/WbActions/index.tsx:232
 #: components/WbActions/index.tsx:285
@@ -427,7 +427,7 @@ msgstr "Save"
 #: components/Statistics/StatsPageEditing.tsx:48
 #: components/Statistics/index.tsx:636
 #: components/Toolbar/ListEdit.tsx:144
-#: components/WbPlanView/navigator.ts:351
+#: components/WbPlanView/navigator.ts:354
 #: components/WebLinks/Definition.tsx:116
 #: components/WebLinks/List.tsx:50
 #. Used in: Components > Atoms > Data Entry ⬤ Components > Export Feed > Editor ⬤ Components > Form Sliders > Record Selector From Ids ⬤ Components > Formatters > List ⬤ Components > Forms > Save ⬤ Components > Merging > Compare Sub View ⬤ Components > Molecules > Auto Complete ⬤ Components > Pick Lists > Index ⬤ Components > Query Builder > Wrapped ⬤ Components > Schema Config > Format ⬤ Components > Schema Config > Languages ⬤ Components > Schema Config > Table ⬤ Components > Schema Config > Uniqueness Rule Row ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Security > Collection Role ⬤ Components > Security > Policies ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Page Editing ⬤ Components > Statistics > Index ⬤ Components > Toolbar > List Edit ⬤ Components > Wb Plan View > Navigator ⬤ Components > Web Links > Definition ⬤ Components > Web Links > List
@@ -556,7 +556,7 @@ msgstr "Tools"
 #: components/Toolbar/BackupDatabase.tsx:89
 #: components/Toolbar/Language.tsx:224
 #: components/Toolbar/Language.tsx:258
-#: components/TreeView/Row.tsx:274
+#: components/TreeView/Row.tsx:276
 #: components/WorkBench/Disambiguation.tsx:124
 #. Used in: Components > Core > Context Loader ⬤ Components > Core > Contexts ⬤ Core > __tests__ > Contexts ⬤ Components > Form Cells > Form Table ⬤ Components > Form Commands > Show Transactions ⬤ Components > Form Fields > Combo Box ⬤ Components > Form Fields > Field ⬤ Components > Form Plugins > Collection Rel One To Many ⬤ Components > Form Plugins > Collection Rel One To One ⬤ Components > Formatters > Preview ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Delete Button ⬤ Components > Forms > Sub View ⬤ Components > Home Page > About Specify ⬤ Components > Interactions > Prep Return Row ⬤ Components > Leaflet > Index ⬤ Components > Merging > Usages ⬤ Components > Molecules > Auto Complete ⬤ Components > Molecules > Formatted Resource ⬤ Components > Molecules > Linked Records ⬤ Components > Molecules > Index ⬤ Components > Permissions > Format Error ⬤ Components > Preferences > Renderers ⬤ Components > Query Builder > Formatter ⬤ Components > Query Builder > Query Line Filter ⬤ Components > Query Builder > Results ⬤ Components > Query Combo Box > Index ⬤ Components > Schema Config > Fields ⬤ Components > Schema Config > Index ⬤ Components > Search Dialog > Index ⬤ Components > Security > Collection ⬤ Components > Security > Collection Components ⬤ Components > Security > Collection Role ⬤ Components > Security > Institution ⬤ Components > Security > Policies ⬤ Components > Security > Preview ⬤ Components > Security > Role Template ⬤ Components > Security > User Collections ⬤ Components > Security > User Components ⬤ Components > Skeleton Loaders > Skeleton ⬤ Components > Statistics > Categories ⬤ Components > Statistics > Stats Result ⬤ Components > Toolbar > Backup Database ⬤ Components > Toolbar > Language ⬤ Components > Tree View > Row ⬤ Components > Work Bench > Disambiguation
 msgid "loading"
@@ -711,7 +711,7 @@ msgid "update"
 msgstr "Update"
 
 #: components/FormPlugins/DatePrecisionPicker.tsx:46
-#: components/WbPlanView/navigator.ts:663
+#: components/WbPlanView/navigator.ts:666
 #. Used in: Components > Form Plugins > Date Precision Picker ⬤ Components > Wb Plan View > Navigator
 msgid "fullDate"
 msgstr "Full Date"
@@ -913,8 +913,8 @@ msgstr "Export"
 #: components/Security/ImportExport.tsx:86
 #: components/Security/ImportExport.tsx:90
 #: components/Toolbar/QueryTablesWrapper.tsx:151
-#: components/TreeView/CreateTree.tsx:313
-#: components/TreeView/CreateTree.tsx:341
+#: components/TreeView/CreateTree.tsx:317
+#: components/TreeView/CreateTree.tsx:345
 #: components/WbToolkit/DevShowPlan.tsx:158
 #. Used in: Components > Attachments > Index ⬤ Components > Locality Update > Status ⬤ Components > Locality Update > Index ⬤ Components > Query Builder > Import ⬤ Components > Security > Import Export ⬤ Components > Toolbar > Query Tables Wrapper ⬤ Components > Tree View > Create Tree ⬤ Components > Wb Toolkit > Dev Show Plan
 msgid "import"
@@ -929,7 +929,7 @@ msgstr "Dismiss"
 
 #: components/DataModel/specifyTable.ts:281
 #: components/ExportFeed/Editor.tsx:194
-#: components/WbPlanView/navigator.ts:542
+#: components/WbPlanView/navigator.ts:545
 #. Used in: Components > Data Model > Specify Table ⬤ Components > Export Feed > Editor ⬤ Components > Wb Plan View > Navigator
 msgid "id"
 msgstr "ID"
@@ -1120,8 +1120,9 @@ msgstr "{header:string}:"
 #: components/Security/Collection.tsx:131
 #: components/Security/Institution.tsx:73
 #: components/Security/Role.tsx:116
-#: components/TreeView/helpers.ts:213
-#: components/TreeView/helpers.ts:221
+#: components/TreeView/helpers.ts:218
+#: components/TreeView/helpers.ts:226
+#: components/TreeView/helpers.ts:233
 #: components/WorkBench/DataSetMeta.tsx:239
 #: components/WorkBench/DataSetMeta.tsx:246
 #: components/WorkBench/DataSetMeta.tsx:379

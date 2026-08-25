@@ -185,13 +185,13 @@ msgstr ""
 "\"{nodeName:string}\" will no longer be a synonym of "
 "\"{synonymName:string}\"."
 
-#: components/TreeView/Row.tsx:299
-#: components/TreeView/Row.tsx:366
+#: components/TreeView/Row.tsx:301
+#: components/TreeView/Row.tsx:368
 #. Used in: Components > Tree View > Row
 msgid "acceptedName"
 msgstr "Preferred: {name:string}"
 
-#: components/TreeView/Row.tsx:303
+#: components/TreeView/Row.tsx:305
 #. Used in: Components > Tree View > Row
 msgid "synonyms"
 msgstr "Synonyms: {names:string}"
@@ -208,51 +208,68 @@ msgstr "{treeName:string} Tree"
 msgid "searchTreePlaceholder"
 msgstr "Search Tree"
 
-#: components/TreeView/Row.tsx:278
+#: components/TreeView/Row.tsx:280
 #. Used in: Components > Tree View > Row
 msgid "opened"
 msgstr "Opened"
 
-#: components/TreeView/Row.tsx:279
+#: components/TreeView/Row.tsx:281
 #. Used in: Components > Tree View > Row
 msgid "closed"
 msgstr "Closed"
 
-#: components/TreeView/Row.tsx:276
+#: components/TreeView/Row.tsx:278
 #. Used in: Components > Tree View > Row
 msgid "leafNode"
 msgstr "Leaf Node"
 
-#: components/TreeView/helpers.ts:230
+#: components/TreeView/helpers.ts:255
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:229
+#: components/TreeView/helpers.ts:254
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
-#: components/TreeView/helpers.ts:214
+#: components/TreeView/helpers.ts:248
+#. 🟥Used to show tree node's direct, indirect and synonymized usages. Used in: Components > Tree View > Helpers
+msgid "nodeStatsWithSynonyms"
+msgstr ""
+"({directCount:number|formatted}, {childCount:number|formatted}, "
+"{synonymCount:number|formatted})"
+
+#: components/TreeView/helpers.ts:244
+#. 🟥Used to show leaf tree node's direct and synonymized usages. Used in: Components > Tree View > Helpers
+msgid "leafNodeStatsWithSynonyms"
+msgstr "({directCount:number|formatted}, {synonymCount:number|formatted})"
+
+#: components/TreeView/helpers.ts:234
+#. 🟥Count of records determined as this node or any of its descendants that have been synonymized into another node. Used in: Components > Tree View > Helpers
+msgid "synonymizedCollectionObjectCount"
+msgstr "Synonymized {collectionObjectTable:string} Count"
+
+#: components/TreeView/helpers.ts:219
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 msgid "directCollectionObjectCount"
 msgstr "Direct {collectionObjectTable:string} Count"
 
-#: components/TreeView/helpers.ts:222
+#: components/TreeView/helpers.ts:227
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 msgid "indirectCollectionObjectCount"
 msgstr "Indirect {collectionObjectTable:string} Count"
 
-#: components/TreeView/Row.tsx:320
-#: components/TreeView/Row.tsx:332
+#: components/TreeView/Row.tsx:322
+#: components/TreeView/Row.tsx:334
 #. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
 msgid "geologicTimePeriodLine"
 msgstr "{label:string}: {value:string} {suffix:string}"
 
-#: components/TreeView/Row.tsx:328
-#: components/TreeView/Row.tsx:329
-#: components/TreeView/Row.tsx:340
-#: components/TreeView/Row.tsx:341
+#: components/TreeView/Row.tsx:330
+#: components/TreeView/Row.tsx:331
+#: components/TreeView/Row.tsx:342
+#: components/TreeView/Row.tsx:343
 #. 🟥Abbreviation for millions of years (Mega annum). Used in: Components > Tree View > Row
 msgid "megaAnnum"
 msgstr "Ma"
@@ -278,7 +295,7 @@ msgstr "Chronostratigraphy"
 msgid "biostratBio"
 msgstr "Biostratigraphy"
 
-#: components/TreeView/Tree.tsx:246
+#: components/TreeView/Tree.tsx:257
 #. Used in: Components > Tree View > Tree
 msgid "editRanks"
 msgstr "Edit Ranks"
@@ -332,8 +349,8 @@ msgstr "Choose Parent Rank"
 msgid "moveItems"
 msgstr "Move Items"
 
-#: components/TreeView/CreateTree.tsx:142
-#: components/TreeView/CreateTree.tsx:155
+#: components/TreeView/CreateTree.tsx:144
+#: components/TreeView/CreateTree.tsx:157
 #. Used in: Components > Tree View > Create Tree
 msgid "addTree"
 msgstr "Add Tree"
@@ -419,22 +436,22 @@ msgstr "Rocks"
 msgid "meteorites"
 msgstr "Meteorites"
 
-#: components/TreeView/CreateTree.tsx:423
+#: components/TreeView/CreateTree.tsx:427
 #. Used in: Components > Tree View > Create Tree
 msgid "emptyTrees"
 msgstr "Empty Trees"
 
-#: components/TreeView/CreateTree.tsx:482
+#: components/TreeView/CreateTree.tsx:486
 #. Used in: Components > Tree View > Create Tree
 msgid "populatedTrees"
 msgstr "Populated Trees"
 
-#: components/TreeView/CreateTree.tsx:636
+#: components/TreeView/CreateTree.tsx:640
 #. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationStarted"
 msgstr "Default Tree Creation Started"
 
-#: components/TreeView/CreateTree.tsx:648
+#: components/TreeView/CreateTree.tsx:652
 #. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationStartedDescription"
 msgstr ""
@@ -461,42 +478,42 @@ msgstr "Default tree creation was cancelled."
 msgid "defaultTreeTaskCompleted"
 msgstr "Default tree creation completed successfully."
 
-#: components/TreeView/CreateTree.tsx:642
+#: components/TreeView/CreateTree.tsx:646
 #. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
 msgid "defaultTreeCreationProgress"
 msgstr "Creating tree record {current:number|formatted}/{total:number|formatted}"
 
-#: components/TreeView/Tree.tsx:283
+#: components/TreeView/Tree.tsx:294
 #. Used in: Components > Tree View > Tree
 msgid "defaultTreeCreationLoadingMessage"
 msgstr "Default tree creation is in progress, please wait..."
 
-#: components/TreeView/CreateTree.tsx:551
+#: components/TreeView/CreateTree.tsx:555
 #. Used in: Components > Tree View > Create Tree
 msgid "missingRanks"
 msgstr "Missing Ranks"
 
-#: components/TreeView/CreateTree.tsx:555
+#: components/TreeView/CreateTree.tsx:559
 #. Used in: Components > Tree View > Create Tree
 msgid "missingRanksDescription"
 msgstr ""
 "The populated tree you selected to download contains records in ranks that "
 "are missing from your tree."
 
-#: components/TreeView/CreateTree.tsx:563
+#: components/TreeView/CreateTree.tsx:567
 #. Used in: Components > Tree View > Create Tree
 msgid "createMissingRanks"
 msgstr "Should the missing ranks be created?"
 
 #: components/SetupTool/SetupForm.tsx:320
-#: components/TreeView/CreateTree.tsx:520
+#: components/TreeView/CreateTree.tsx:524
 #. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 msgid "source"
 msgstr "Source"
 
-#: components/TreeView/Tree.tsx:290
-#: components/TreeView/Tree.tsx:292
-#: components/TreeView/Tree.tsx:296
+#: components/TreeView/Tree.tsx:301
+#: components/TreeView/Tree.tsx:303
+#: components/TreeView/Tree.tsx:307
 #. Used in: Components > Tree View > Tree
 msgid "initializeEmptyTree"
 msgstr "Initialize an empty tree"
@@ -518,14 +535,14 @@ msgstr ""
 "If enabled, this allows users to add children to synonymized parents and to "
 "synonymize a node with children."
 
-#: components/TreeView/CreateTree.tsx:499
+#: components/TreeView/CreateTree.tsx:503
 #. Used in: Components > Tree View > Create Tree
 msgid "utf8EncodingWarning"
 msgstr ""
 "This tree data cannot be imported in your database because it contains "
 "UTF-8 characters and this database uses {encoding:string}"
 
-#: components/TreeView/CreateTree.tsx:503
+#: components/TreeView/CreateTree.tsx:507
 #. Used in: Components > Tree View > Create Tree
 msgid "resolveEncoding"
 msgstr "How to resolve:"

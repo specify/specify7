@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Preferences/UserDefinitions.tsx:2282
+#: components/Preferences/UserDefinitions.tsx:2290
 #: components/QueryBuilder/Header.tsx:97
 #: components/QueryBuilder/Toolbar.tsx:88
 #: components/Reports/RecordSets.tsx:95
@@ -23,7 +23,7 @@ msgid "queries"
 msgstr "Queries"
 
 #: components/Preferences/CollectionDefinitions.tsx:291
-#: components/Preferences/UserDefinitions.tsx:1784
+#: components/Preferences/UserDefinitions.tsx:1792
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
@@ -148,7 +148,7 @@ msgstr ""
 "Query: \"{queryName:string}\" on {recordSetTable:string}: "
 "\"{recordSetName:string}\""
 
-#: components/QueryBuilder/fromTree.ts:222
+#: components/QueryBuilder/fromTree.ts:218
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 msgid "treeQueryName"
 msgstr "{tableName:string} using \"{nodeFullName:string}\""
@@ -224,12 +224,12 @@ msgstr "Create {recordSetTable:string}"
 msgid "saveAs"
 msgstr "Save As"
 
-#: components/WbPlanView/navigator.ts:448
+#: components/WbPlanView/navigator.ts:451
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyRank"
 msgstr "(any rank)"
 
-#: components/WbPlanView/navigator.ts:400
+#: components/WbPlanView/navigator.ts:403
 #. Used in: Components > Wb Plan View > Navigator
 msgid "anyTree"
 msgstr "(any tree)"
@@ -282,12 +282,12 @@ msgstr "Negate"
 msgid "showButtonDescription"
 msgstr "Show in results"
 
-#: components/WbPlanView/navigator.ts:505
+#: components/WbPlanView/navigator.ts:508
 #. Used in: Components > Wb Plan View > Navigator
 msgid "aggregatedInline"
 msgstr "(aggregated)"
 
-#: components/WbPlanView/navigator.ts:506
+#: components/WbPlanView/navigator.ts:509
 #. Used in: Components > Wb Plan View > Navigator
 msgid "formattedInline"
 msgstr "(formatted)"
@@ -399,7 +399,7 @@ msgid "or"
 msgstr "or"
 
 #: components/SetupTool/SetupOverview.tsx:85
-#: components/TreeView/CreateTree.tsx:548
+#: components/TreeView/CreateTree.tsx:552
 #: utils/__tests__/fieldFormat.test.ts:92
 #: utils/parser/definitions.ts:121
 #. Used in: Components > Setup Tool > Setup Overview ⬤ Components > Tree View > Create Tree ⬤ Utils > __tests__ > Field Format ⬤ Utils > Parser > Definitions

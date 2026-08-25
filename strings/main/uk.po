@@ -115,24 +115,24 @@ msgstr "Незбережені зміни будуть втрачені, якщ�
 msgid "leave"
 msgstr "Покинути"
 
-#: components/Core/VersionMismatch.tsx:27
+#: components/Core/VersionMismatch.tsx:30
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatch"
 msgstr "Версія Specify не відповідає версії бази даних"
 
-#: components/Core/VersionMismatch.tsx:31
+#: components/Core/VersionMismatch.tsx:34
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchDescription"
 msgstr ""
 "Версія Specify {specifySixVersion:string} не відповідає версії бази даних "
 "{databaseVersion:string}."
 
-#: components/Core/VersionMismatch.tsx:36
+#: components/Core/VersionMismatch.tsx:39
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchSecondDescription"
 msgstr "Тому деякі функції Specify 7 можуть не працювати належним чином."
 
-#: components/Core/VersionMismatch.tsx:39
+#: components/Core/VersionMismatch.tsx:42
 #. Used in: Components > Core > Version Mismatch
 msgid "versionMismatchInstructions"
 msgstr "Інструкції щодо вирішення невідповідності версій"
