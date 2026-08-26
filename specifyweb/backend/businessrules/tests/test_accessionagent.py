@@ -134,3 +134,19 @@ class AccessionAgentTests(ApiTests):
         repository_agreement2.repositoryagreementagents.create(
             agent=self.agent,
             role="Collector")
+
+    def test_add_existing_agent_to_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-AGENT-001',
+            division=self.division,
+        )
+        accession_agent = accession.accessionagents.create(
+            agent=self.agent,
+            role='Collector'
+        )
+        fetched = models.Accessionagent.objects.get(
+            id=accession_agent.id
+        )
+        self.assertEqual(fetched.accession, accession)
+        self.assertEqual(fetched.agent, self.agent)
+        self.assertEqual(fetched.role, 'Collector')
