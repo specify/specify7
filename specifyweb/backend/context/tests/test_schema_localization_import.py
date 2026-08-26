@@ -26,12 +26,14 @@ class SchemaLocalizationImportTests(ApiTests):
                 'language': 'en',
                 'schema': {
                     'accession': {
-                        'format': 'Imported Format',
+                        'format': 'Accession',
                         'name': 'Imported Accession',
                         'items': {
                             'accessionnumber': {
                                 'isHidden': True,
                                 'name': 'Imported Number',
+                                'pickListName': 'Unavailable Picklist',
+                                'webLinkName': 'Unavailable Web Link',
                             },
                             'removedfield': {'isHidden': True},
                         },
@@ -45,8 +47,10 @@ class SchemaLocalizationImportTests(ApiTests):
         self.assertEqual(response.status_code, 200)
         self.container.refresh_from_db()
         self.item.refresh_from_db()
-        self.assertEqual(self.container.format, 'Imported Format')
+        self.assertEqual(self.container.format, 'Accession')
         self.assertTrue(self.item.ishidden)
+        self.assertIsNone(self.item.picklistname)
+        self.assertIsNone(self.item.weblinkname)
         self.assertEqual(
             models.Splocaleitemstr.objects.get(
                 containername=self.container, language='en'

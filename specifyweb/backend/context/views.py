@@ -6,6 +6,7 @@ import json
 import os
 import re
 from typing import List
+from xml.etree import ElementTree
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
@@ -490,9 +491,25 @@ SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
 SCHEMA_IMPORT_TABLE_KEYS = {
     'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[models.Splocalecontainer]
 }
+SCHEMA_IMPORT_REFERENCE_FIELDS = {'format', 'picklistname', 'weblinkname'}
 
 
-def _schema_import_values(data, fields):
+def _schema_import_resource_names(collection, user, resource, path):
+    result = get_app_resource(collection, user, resource)
+    if result is None:
+        return set()
+    try:
+        root = ElementTree.fromstring(result[0])
+    except ElementTree.ParseError:
+        return set()
+    return {
+        (element.get('name') or element.text or '').lower()
+        for element in root.findall(path)
+        if element.get('name') or element.text
+    }
+
+
+def _schema_import_values(data, fields, references):
     if not isinstance(data, dict):
         raise ValueError
     values = {}
@@ -505,6 +522,9 @@ def _schema_import_values(data, fields):
                 raise ValueError
         elif value is not None and not isinstance(value, str):
             raise ValueError
+        if key in SCHEMA_IMPORT_REFERENCE_FIELDS and value is not None \
+                and value.lower() not in references[key]:
+            continue
         values[key] = value
     return values
 
@@ -531,7 +551,7 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
         operations.append(('PUT', models.Splocaleitemstr, string, {'text': text}))
 
 
-def _schema_import_operations(collection, schema, language):
+def _schema_import_operations(collection, schema, language, references=None):
     if not isinstance(schema, dict) or not schema:
         raise ValueError
     if not any(
@@ -541,6 +561,7 @@ def _schema_import_operations(collection, schema, language):
     ):
         raise ValueError
     language, _, country = language.lower().partition('-')
+    references = references or {key: set() for key in SCHEMA_IMPORT_REFERENCE_FIELDS}
     containers = {
         container.name.lower(): container
         for container in models.Splocalecontainer.objects.filter(
@@ -555,7 +576,7 @@ def _schema_import_operations(collection, schema, language):
         if not isinstance(table_data, dict):
             continue
         values = _schema_import_values(
-            table_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontainer]
+            table_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontainer], references
         )
         if values:
             operations.append(('PUT', models.Splocalecontainer, container, values))
@@ -574,7 +595,7 @@ def _schema_import_operations(collection, schema, language):
             if item is None:
                 continue
             values = _schema_import_values(
-                item_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontaineritem]
+                item_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontaineritem], references
             )
             if values:
                 operations.append(('PUT', models.Splocalecontaineritem, item, values))
@@ -597,6 +618,21 @@ def schema_localization_import(request):
             request.specify_collection,
             schema,
             payload.get('language', request.LANGUAGE_CODE),
+            {
+                'format': _schema_import_resource_names(
+                    request.specify_collection, request.specify_user,
+                    'DataObjFormatters', './/format'
+                ),
+                'picklistname': {
+                    name.lower() for name in models.Picklist.objects.filter(
+                        collection=request.specify_collection
+                    ).values_list('name', flat=True)
+                },
+                'weblinkname': _schema_import_resource_names(
+                    request.specify_collection, request.specify_user,
+                    'WebLinks', './/weblinkdef/name'
+                ),
+            },
         )
     except (AttributeError, KeyError, TypeError, ValueError, json.JSONDecodeError):
         return HttpResponseBadRequest()
