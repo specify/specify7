@@ -53,3 +53,16 @@ class AccessionTests(ApiTests):
         self.assertEqual(
             models.Collectionobject.objects.filter(id__in=[co.id for co in self.collectionobjects]).count(),
             len(self.collectionobjects))
+
+    def test_create_accession_with_number_status_and_type(self):
+        accession = models.Accession.objects.create(
+            accessionnumber="A-8454-001",
+            status="Complete",
+            type="Gift",
+            division=self.division,
+        )
+        fetched = models.Accession.objects.get(id=accession.id)
+
+        self.assertEqual(fetched.accessionnumber, "A-8454-001")
+        self.assertEqual(fetched.status, "Complete")
+        self.assertEqual(fetched.type, "Gift")
