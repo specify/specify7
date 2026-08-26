@@ -35,7 +35,11 @@ import { makeQueryField } from '../QueryBuilder/fromTree';
 import type { QueryFieldWithPath } from '../Statistics/types';
 import type { AttachmentUploadSpec } from './Import';
 import { staticAttachmentImportPaths } from './importPaths';
-import type { AttachmentStatus, PartialUploadableFileSpec } from './types';
+import type {
+  AttachmentStatus,
+  MappingFileRow,
+  PartialUploadableFileSpec,
+} from './types';
 
 export type ResolvedAttachmentRecord =
   | State<
@@ -63,10 +67,16 @@ const resolveAttachmentMatch = (
 export function resolveAttachmentRecord(
   matchedId: RA<number> | undefined,
   disambiguated: number | undefined,
-  parsedName: string | undefined
+  parsedName: string | undefined,
+  isMappingMode: boolean = false
 ): ResolvedAttachmentRecord {
-  if (parsedName === undefined)
-    return { type: 'invalid', reason: 'incorrectFormatter' };
+  if (parsedName === undefined) {
+    // In mapping mode, undefined parsedName means not in mapping file
+    return {
+      type: 'invalid',
+      reason: isMappingMode ? 'notInMappingFile' : 'incorrectFormatter',
+    };
+  }
   if (matchedId === undefined)
     return { type: 'valid', reason: 'correctlyFormatted' };
   return resolveAttachmentMatch(matchedId, disambiguated);
@@ -157,6 +167,13 @@ type MatchSelectedFiles = {
   readonly resolvedFiles: RA<PartialUploadableFileSpec>;
   readonly duplicateFiles: RA<PartialUploadableFileSpec>;
 };
+
+export const isMappingFilePlaceholder = (
+  uploadable: PartialUploadableFileSpec
+): boolean =>
+  uploadable.status?.type === 'cancelled' &&
+  uploadable.status.reason === 'fileMissing';
+
 export const matchSelectedFiles = (
   previousUploadables: RA<PartialUploadableFileSpec>,
   filesToResolve: RA<PartialUploadableFileSpec>
@@ -221,6 +238,136 @@ export const matchSelectedFiles = (
       duplicateFiles: [],
     }
   );
+
+export const prepareMappingFileSelection = (
+  previousUploadables: RA<PartialUploadableFileSpec>,
+  filesToResolve: RA<PartialUploadableFileSpec>,
+  mappingData: RA<MappingFileRow>
+): MatchSelectedFiles => {
+  const previousRealFiles = previousUploadables.filter(
+    (uploadable) => !isMappingFilePlaceholder(uploadable)
+  );
+  const { resolvedFiles, duplicateFiles } = matchSelectedFiles(
+    previousRealFiles,
+    filesToResolve
+  );
+
+  return {
+    resolvedFiles: crossReferenceMappingFiles(resolvedFiles, mappingData),
+    duplicateFiles,
+  };
+};
+
+/**
+ * Cross-reference uploaded files against the mapping file CSV data.
+ * Builds the result from scratch: for each CSV row, picks the best
+ * available file (real upload > placeholder). Flags leftover files
+ * not in the mapping. Guarantees no duplicate filenames.
+ */
+export function crossReferenceMappingFiles(
+  uploadableFiles: RA<PartialUploadableFileSpec>,
+  mappingData: RA<MappingFileRow>
+): RA<PartialUploadableFileSpec> {
+  // Build a filename → best-row map (prefer real files over placeholders)
+  const byName = new Map<string, PartialUploadableFileSpec>();
+  for (const f of uploadableFiles) {
+    const existing = byName.get(f.uploadFile.file.name);
+    if (existing === undefined) {
+      byName.set(f.uploadFile.file.name, f);
+    } else {
+      // Keep the "better" entry: real file > placeholder,
+      // File instance > plain object (serialized from server),
+      // row with mappingMatchValue > row without
+      const existingIsPlaceholder =
+        existing.status?.type === 'cancelled' &&
+        existing.status.reason === 'fileMissing';
+      const newIsPlaceholder =
+        f.status?.type === 'cancelled' && f.status.reason === 'fileMissing';
+      if (
+        (existingIsPlaceholder && !newIsPlaceholder) ||
+        (!(existing.uploadFile.file instanceof File) &&
+          f.uploadFile.file instanceof File)
+      ) {
+        byName.set(f.uploadFile.file.name, f);
+      } else if (!existingIsPlaceholder && !newIsPlaceholder) {
+        // Keep the first entry but flag it unless already uploaded.
+        byName.set(f.uploadFile.file.name, {
+          ...existing,
+          ...(existing.attachmentId === undefined &&
+          existing.status?.type !== 'success'
+            ? {
+                status: {
+                  type: 'cancelled' as const,
+                  reason: 'duplicateInMappingFile' as const,
+                },
+              }
+            : {}),
+        });
+      }
+    }
+  }
+
+  const result: PartialUploadableFileSpec[] = [];
+  const matchedFileNames = new Set<string>();
+
+  // For each CSV row, emit the best available file or a placeholder
+  for (const row of mappingData) {
+    const existing = byName.get(row.fileName);
+
+    if (existing !== undefined) {
+      // Only emit once per filename even if CSV has duplicate rows
+      if (matchedFileNames.has(row.fileName)) continue;
+      matchedFileNames.add(row.fileName);
+      result.push({
+        ...existing,
+        uploadFile: {
+          ...existing.uploadFile,
+          // Always take the match value from the CSV – it is the source of truth
+          parsedName: row.matchValue,
+          mappingMatchValue: row.matchValue,
+          mappingFileName: row.fileName,
+        },
+      });
+    } else {
+      // File not yet uploaded — add placeholder (once per filename)
+      if (matchedFileNames.has(row.fileName)) continue;
+      matchedFileNames.add(row.fileName);
+      result.push({
+        uploadFile: {
+          file: { name: row.fileName, size: 0, type: '' },
+          parsedName: row.matchValue,
+          mappingMatchValue: row.matchValue,
+          mappingFileName: row.fileName,
+        },
+        status: {
+          type: 'cancelled' as const,
+          reason: 'fileMissing' as const,
+        },
+      });
+    }
+  }
+
+  // Flag any uploaded files not referenced by the CSV
+  for (const [name, file] of byName) {
+    if (!matchedFileNames.has(name)) {
+      const alreadyAttached =
+        file.attachmentId !== undefined || file.status?.type === 'success';
+      result.push({
+        ...file,
+        ...(alreadyAttached
+          ? {}
+          : {
+              status: {
+                type: 'cancelled' as const,
+                reason: 'notInMappingFile' as const,
+              },
+            }),
+      });
+    }
+  }
+
+  return result;
+}
 
 export function resolveFileNames(
   fileName: string,
@@ -479,6 +626,9 @@ export const keyLocalizationMapAttachment = {
   errorFetchingRecord: attachmentsText.errorFetchingRecord(),
   saveError: attachmentsText.errorSavingRecord(),
   attachmentUploadError: attachmentsText.attachmentUploadError(),
+  fileMissing: attachmentsText.fileMissing(),
+  notInMappingFile: attachmentsText.notInMappingFile(),
+  duplicateInMappingFile: attachmentsText.duplicateInMappingFile(),
 } as const;
 
 export function resolveAttachmentStatus(

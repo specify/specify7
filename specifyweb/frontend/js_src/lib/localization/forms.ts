@@ -447,7 +447,7 @@ export const formsText = createDictionary({
     'de-ch': 'Letzter Datensatz',
     'pt-br': 'Último registro',
     'hr-hr': 'Posljednji zapis',
-    nb: 'Siste oppføring',
+    nb: 'Siste post',
   },
   previousRecord: {
     'en-us': 'Previous Record',
@@ -1076,7 +1076,7 @@ export const formsText = createDictionary({
   bulkCarryForwardSettingsDescription: {
     'en-us': 'Configure fields to bulk carry forward',
     'de-ch': 'Felder für den Massenübertrag konfigurieren',
-    'es-es': 'Configure los campos para transferir masivamente.',
+    'es-es': 'Configure los campos para transferirlos masivamente.',
     'fr-fr': 'Configurer les champs pour un report en masse',
     'pt-br': 'Configure os campos para transferência em massa.',
     'ru-ru': 'Настройте поля для массового переноса.',
@@ -1205,7 +1205,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Конец диапазона переноса',
     'uk-ua': 'Кінець діапазону перенесення вперед',
     'hr-hr': 'Kraj raspona prijenosa naprijed',
-    nb: 'Enden av rekkevidden for videreføring',
+    nb: 'End of Carry Forward Range',
   },
   createRecordSetOnBulkCarryForward: {
     'en-us': 'Create record set on Bulk Carry Forward',
@@ -1213,7 +1213,7 @@ export const formsText = createDictionary({
     'es-es': 'Crear conjunto de registros en Carga masiva',
     'fr-fr': "Créer un ensemble d'enregistrements sur le report en masse",
     'pt-br': 'Criar conjunto de registros em Transferência em Massa',
-    'ru-ru': 'Создание набора записей в рамках функции массового переноса.',
+    'ru-ru': 'Создать набор записей в функции массового переноса.',
     'uk-ua': 'Створення набору записів для групового перенесення',
     'hr-hr': 'Stvori skup zapisa pri skupnom prijenosu naprijed',
     nb: 'Opprett postsett på masseoverføring',
@@ -1227,7 +1227,7 @@ export const formsText = createDictionary({
     'de-ch': 'Schaltfläche „Klonen anzeigen“',
     'pt-br': 'Mostrar botão Clonar',
     'hr-hr': 'Prikaži gumb Kloniraj',
-    nb: 'Vis klone-knappen',
+    nb: 'Vis klone-knapp',
   },
   addButtonEnabled: {
     'en-us': 'Show Add button',
@@ -1456,7 +1456,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Підвид',
     'de-ch': 'Unteransicht',
     'fr-fr': 'Sous-vue',
-    'pt-br': 'Subvista',
+    'pt-br': 'Subvisualização',
     'hr-hr': 'Podprikaz',
     nb: 'Delvisning',
   },
@@ -1593,7 +1593,7 @@ export const formsText = createDictionary({
     'pt-br': 'Adicionar COG Children',
     'ru-ru': 'Добавить детей COG',
     'uk-ua': 'Додати дочірні елементи COG',
-    'hr-hr': 'Dodajte djecu COG-a',
+    'hr-hr': 'Dodajte COG djecu',
     nb: 'Legg til COG-underordnede',
   },
 } as const);

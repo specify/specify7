@@ -4,6 +4,175 @@ All notable changes to this project will be documented in this file.
 
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/).
 
+## [7.12.1](https://github.com/specify/specify7/compare/v7.12.0.7...v7.12.1) (August 2026)
+
+### Added
+
+-   The Bulk Attachment Uploader supports a new **"match by mapping file"** option for attachment uploads ([#8311](https://github.com/specify/specify7/pull/8311) - *Requested by University of Michigan, University of Kansas, Queensland Herbarium, Muséum d'histoire naturelle Geneva, The University of Texas at Austin, and many others*)
+-   All-new **Batch Identify** tool, enabling users to create and assign a new Determination to a batch of Collection Objects at once ([#7769](https://github.com/specify/specify7/pull/7769) - *Requested by University of Kansas and many others* )
+-   New visual editor for configuring **Express Search** ([#7976](https://github.com/specify/specify7/pull/7976))
+-   The Query Builder now has dramatically **improved row density** and added **column resizing** ([#7908](https://github.com/specify/specify7/pull/7908))
+-   Query Builder can now search on **taxon synonyms** ([#5137](https://github.com/specify/specify7/pull/5137))
+-   **Catalog number ranges** are now supported when using the "In" filter in Query Builder ([#7814](https://github.com/specify/specify7/pull/7814))
+-   **Export to Web Portal** has been added to the Query Builder ([#7994](https://github.com/specify/specify7/pull/7994))
+-   **Attachments can now be added to an existing rows** in WorkBench data sets with attachments ([#7068](https://github.com/specify/specify7/pull/7068))
+-   Major **WorkBench** & **Batch Edit** user interface improvements ([#8165](https://github.com/specify/specify7/pull/8165))
+	- "Upload Plan" has been renamed "Mapping"
+	- Validation and Upload dialogs now show a breakdown of the record counts
+	- The "Import/Export Mapping" dialog now properly validates the JSON file defining the mapping. It disallows invalid JSON.
+	- Added a new button to "Choose Existing Mapping" when creating a new data set from scratch.
+	- Warns before clearing mappings to prevent accidental loss of progress.
+	- Added helper texts to various places to provide better guidance on WorkBench-specific terminology and features.
+	- Added a link to the documentation on the Speciforum.
+	- Fixed an issue with table icon appearance in Firefox.
+-   A new **biostratigraphy filter** has been added to the Chronostratigraphy tree ([#8257](https://github.com/specify/specify7/pull/8257))
+-   A **Close button** has been added to App Resources ([#8137](https://github.com/specify/specify7/pull/8137))
+-   WorkBench supports a **new "Pick first" disambiguation option** to arbitrarily choose a record to match to ([#8054](https://github.com/specify/specify7/pull/8054))
+-   **HEIC/HEIF thumbnail support** for attachments ([#8247](https://github.com/specify/specify7/pull/8247))
+-   New command-line tool to sync schema configuration ([#7689](https://github.com/specify/specify7/pull/7689))
+-   A notification will now be shown while a new collection is being created using System Config ([#7827](https://github.com/specify/specify7/pull/7827))
+-   Support for Norwegian Bokmål and Croatian in the interface ([#7958](https://github.com/specify/specify7/pull/7958), [#7819](https://github.com/specify/specify7/pull/7819))
+-   The "Show Interactions" button in Preparations now shows **all interactions** associated with the preparation, not just loans and gifts ([#6110](https://github.com/specify/specify7/pull/6110))
+-   The Chronostratigraphy tree is now **sorted by period instead of name**, and **displays date ranges** ([#8254](https://github.com/specify/specify7/pull/8254))
+
+
+### Changed
+-   Merging tree nodes has been made substantially faster across all trees ([#8031](https://github.com/specify/specify7/pull/8031))
+-   New disciplines can now be deleted once they have no users or collections attached ([#7812](https://github.com/specify/specify7/pull/7812))
+-   Added better schema field descriptions throughout the app ([#8075](https://github.com/specify/specify7/pull/8075))
+-   Attachment ordering now uses an explicit ordinal value ([#8017](https://github.com/specify/specify7/pull/8017) - *Reported by Natural History Museum of Denmark*)
+-   Data model list is now sorted alphabetically ([#8139](https://github.com/specify/specify7/pull/8139))
+-   Boolean form fields now correctly respect a `false` default value ([#7930](https://github.com/specify/specify7/pull/7930) - *Requested by Muséum d'histoire naturelle Geneva and California Academy of Sciences*)
+-   The WorkBench now preserves the mapped `createdByAgent` value ([#7931](https://github.com/specify/specify7/pull/7931) - *Requested by California Academy of Sciences, Commonwealth Scientific and Industrial Research Organisation, and others*)
+-   Updated the About dialog to add new members and update license mention to GLPv3 ([#8279](https://github.com/specify/specify7/pull/8279))
+
+### Fixed
+-   Fixed query field order not being preserved during Batch Edit ([#8023](https://github.com/specify/specify7/pull/8023) - *Reported by Cornell University Insect Collection, University of Michigan, University of Kansas, and many others*)
+-   Custom view definitions for Attachment are now respected ([#7811](https://github.com/specify/specify7/pull/7811) - *Reported by Natural History Museum of Denmark, University of Kansas, Queensland Herbarium, and Muséum d'histoire naturelle Geneva*)
+-   Fixed resolved loans incorrectly blocking preparation count updates ([#7829](https://github.com/specify/specify7/pull/7829) - *Reported by South African Institute for Aquatic Biodiversity, Florida Fish and Wildlife, and Virginia Institute of Marine Science*)
+-   Fixed an issue where WorkBench and Batch Edit checks transfer permissions for both types of data sets  ([#7834](https://github.com/specify/specify7/pull/7834) - *Reported by Royal Botanic Garden Edinburgh*)
+-   Fixed a crash that could occur when checking WorkBench attachment columns ([#7420](https://github.com/specify/specify7/pull/7420))
+-   Fixed the "Preparation count cannot be negative" warning appearing repeatedly ([#7595](https://github.com/specify/specify7/pull/7595))
+-   Removed duplicate "no preparation" warning ([#7902](https://github.com/specify/specify7/pull/7902))
+-   Fixed the error message shown when deleting tree ranks that still have associated nodes ([#5029](https://github.com/specify/specify7/pull/5029))
+-   Fixed an issue where setting an agent across collections in different divisions caused issues in Security & Accounts ([#7802](https://github.com/specify/specify7/pull/7802) - *Reported by Natural History Museum of Denmark*)
+-   Fixed the Chronostratigraphy tree name not appearing correctly in new disciplines ([#7824](https://github.com/specify/specify7/pull/7824))
+-   Fixed formatted fields to trim leading zeros while preserving decimal digits ([#7809](https://github.com/specify/specify7/pull/7809))
+-   Removed a non-functional "Add" button from `SpAppResource`'s collection preferences ([#7684](https://github.com/specify/specify7/pull/7684))
+-   Bad requests to Specify Network are now handled gracefully instead of erroring ([#7951](https://github.com/specify/specify7/pull/7951))
+-   Fixed an issue that caused invalid results to appear when using express search ([#7911](https://github.com/specify/specify7/pull/7911) - *Reported by Pioneer Trails Regional Museum and The Ohio State University Museum of Biological Diversity)
+-   Fixed autocomplete fields requiring a double click due to a blur/mousedown race condition ([#8011](https://github.com/specify/specify7/pull/8011))
+-   Removed the limit on the number of record sets shown in the search dialog ([#7916](https://github.com/specify/specify7/pull/7916))
+-   Fixed leading zeros being suppressed in Collection Object Catalog Numbers during data entry ([#8027](https://github.com/specify/specify7/pull/8027))
+-   Fixed Query Builder crashes on Projects relationship queries ([#8087](https://github.com/specify/specify7/pull/8087))
+-   Fixed miscellaneous console errors on the Collection Object form page ([#7907](https://github.com/specify/specify7/pull/7907))
+-   Fixed WorkBench export using the wrong file extension for the selected delimiter ([#8051](https://github.com/specify/specify7/pull/8051))
+-   Fixed `latitude2` not converting to `lat2text` in the WorkBench ([#8100](https://github.com/specify/specify7/pull/8100))
+-   Fixed deleting attachments via the API alone ([#8073](https://github.com/specify/specify7/pull/8073))
+-   Corrected "meta data" to "metadata" as one word ([#8135](https://github.com/specify/specify7/pull/8135))
+-   Fixed the WorkBench column header sort toggle ([#8123](https://github.com/specify/specify7/pull/8123))
+-   Fixed Query Builder CSV exports not respecting the applied sort order ([#8168](https://github.com/specify/specify7/pull/8168))
+-   Fixed Accession Collection Object subview searches with multiple catalog numbers returning only the last number ([#8226](https://github.com/specify/specify7/pull/8226))
+-   Fixed formatted Collection Object query results for nested relationship fields ([#7969](https://github.com/specify/specify7/pull/7969))
+-   Fixed tree expand/collapse state syncing with the URL cache ([#8263](https://github.com/specify/specify7/pull/8263))
+-   Fixed Record Sets created from queries so they can themselves be filtered by Record Set ([#8339](https://github.com/specify/specify7/pull/8339))
+-   Fixed sort order not being preserved in exported CSVs ([#8394](https://github.com/specify/specify7/pull/8394))
+-   Fixed duplicate roles being created when a role's description was edited ([#8391](https://github.com/specify/specify7/pull/8391))
+
+### Internal
+
+-   **Dependency upgrades:** flatted, lodash, fast-xml-parser, Django (4.2.27 → 4.2.30), react-router-dom, minimatch (transitive), Jest toolchain (28.1 → 30.3), underscore, handsontable, PyJWT,  ([#7890](https://github.com/specify/specify7/pull/7890), [#7892](https://github.com/specify/specify7/pull/7892), [#7899](https://github.com/specify/specify7/pull/7899), [#7886](https://github.com/specify/specify7/pull/7886), [#7895](https://github.com/specify/specify7/pull/7895), [#7917](https://github.com/specify/specify7/pull/7917), [#7914](https://github.com/specify/specify7/pull/7914), [#7947](https://github.com/specify/specify7/pull/7947), [#7944](https://github.com/specify/specify7/pull/7944), [#7920](https://github.com/specify/specify7/pull/7920), [#7888](https://github.com/specify/specify7/pull/7888), [#7997](https://github.com/specify/specify7/pull/7997), [#8332](https://github.com/specify/specify7/pull/8332))
+-   **CI/tooling:** enabled CodeQL on push/PR, added a code-coverage measurement action, added a Django end-of-life checker script, added missing test requirements ([#8092](https://github.com/specify/specify7/pull/8092), [#8278](https://github.com/specify/specify7/pull/8278), [#8068](https://github.com/specify/specify7/pull/8068), [#8280](https://github.com/specify/specify7/pull/8280), [#8377](https://github.com/specify/specify7/pull/8377), [#8229](https://github.com/specify/specify7/pull/8229))
+-   **Added indexes to Django models** and migration files; added a missing migration for `SpecifyUser.spprincipals` ([#7568](https://github.com/specify/specify7/pull/7568), [#8237](https://github.com/specify/specify7/pull/8237))
+-   **Automatic test coverage added** across the Query Builder operators, permits, WorkBench uploads/exports, attachments, and more. ([#8235](https://github.com/specify/specify7/pull/8235), [#8258](https://github.com/specify/specify7/pull/8258), [#8259](https://github.com/specify/specify7/pull/8259), [#8260](https://github.com/specify/specify7/pull/8260), [#8273](https://github.com/specify/specify7/pull/8273), [#8274](https://github.com/specify/specify7/pull/8274), [#8277](https://github.com/specify/specify7/pull/8277), [#8281](https://github.com/specify/specify7/pull/8281), [#8283](https://github.com/specify/specify7/pull/8283), [#8290](https://github.com/specify/specify7/pull/8290), [#8292](https://github.com/specify/specify7/pull/8292), [#8294](https://github.com/specify/specify7/pull/8294), [#8296](https://github.com/specify/specify7/pull/8296), [#8301](https://github.com/specify/specify7/pull/8301), [#8304](https://github.com/specify/specify7/pull/8304), [#8309](https://github.com/specify/specify7/pull/8309), [#8316](https://github.com/specify/specify7/pull/8316), [#8319](https://github.com/specify/specify7/pull/8319), [#8321](https://github.com/specify/specify7/pull/8321), [#8327](https://github.com/specify/specify7/pull/8327), [#8335](https://github.com/specify/specify7/pull/8335), [#8337](https://github.com/specify/specify7/pull/8337), [#8341](https://github.com/specify/specify7/pull/8341), [#8342](https://github.com/specify/specify7/pull/8342), [#8344](https://github.com/specify/specify7/pull/8344), [#8346](https://github.com/specify/specify7/pull/8346), [#8352](https://github.com/specify/specify7/pull/8352), [#8353](https://github.com/specify/specify7/pull/8353), [#8354](https://github.com/specify/specify7/pull/8354), [#8367](https://github.com/specify/specify7/pull/8367), [#8368](https://github.com/specify/specify7/pull/8368), [#8380](https://github.com/specify/specify7/pull/8380), [#8383](https://github.com/specify/specify7/pull/8383), [#8389](https://github.com/specify/specify7/pull/8389))
+- **Documented API schemas** for  `download_all` and `series_autonumber_range` ([#7815](https://github.com/specify/specify7/pull/7815))
+
+## [7.12.0.7](https://github.com/specify/specify7/compare/v7.12.0.6...v7.12.0.7) (28 July 2026)
+
+### Updated
+
+* The [International Chronostratigraphic Chart](https://stratigraphy.org/chart/) graphic, published by the International Commission on Stratigraphy, has been updated to version `2026/06` ([#8248](https://github.com/specify/specify7/pull/8248))
+   * The default data for the Chronostratigraphy tree (`GeologicTimePeriod`) has been updated to reflect these new values.
+
+### Fixed
+
+* Improves the initial database setup script ([#8156](https://github.com/specify/specify7/pull/8156))
+    * More reliable DB provisioning, privilege verification and clearer failure diagnostics.
+    * Fixed single-use-iterable bug affecting uniqueness rule creation.
+    * Improved legacy-permissions detection and safer role/user assignment during initialization.
+    * Startup validates DB alias and logs connection fallbacks.
+    * Migration initialization now respects override behavior; container startup can skip automatic migrations. 
+    * Credentials/config now come from environment variables with chained defaults.
+    * Setup scripts run in stricter shell mode for safer execution. 
+* Schema config and migration fixes ([#8154](https://github.com/specify/specify7/pull/8154))
+    * Fixes model capitalizations and case sensitivity issues across schema config table labels and descriptions
+    * Fixes Picklist Type filtering to use the correct type during database migrations
+    * Fixes an issue where `SpLocaleItemStr` records were not created when generating Schema Config records for tables
+    * Fixes incorrect Discipline to TectonicUnit tree definition pairing when resolving links
+    * Fixes handling of synonymized root nodes during tree reverse migrations
+    * Fixes handling of custom Tectonic Unit trees when reverting migrations
+    * Fixes a case where the business rules app was not ready but migrations attempted to run
+    * Fixes `MultipleObjectsReturned` errors by simplifying exception handling during schema repairs
+    * Fixes localized string deduplication to scope by language, preventing cross-language string conflicts
+    * Fixes catalog-number uniqueness shadowing in collection functions during migration
+    * Fixes the `DisciplineType` PickList being created when creating a new Collection
+    * Fixes `DisciplineType` picklist assignment for newly created Disciplines
+    * Fixes partially migrated disciplines that could not be repaired due to exclusion logic
+    * Fixes reuse prevention when pairing tree definitions with disciplines
+    * Fixes discipline tree definition links being set before skipping rank creation
+    * Fixes several schema migration reversibility issues (0021, 0023, 0027, 0033, 0040) to ensure safe rollbacks
+    * Fixes `reverse_hide_component_fields` defaulting incorrectly
+    * Fixes a typo in the `UserRole` description
+    * Fixes component catalog number cache typing for consistency
+    * Fixes an issue where `SP7_DEBUG` was not correctly set in all environments
+    * Fixes validation of `AUDIT_LIFESPAN_MONTHS` before executing purge SQL to prevent unsafe operations
+    * Fixes key escaping when fetching remote preferences to prevent injection vulnerabilities
+    * Fixes comparison of full uniqueness rule definitions before deletion to prevent data loss
+    * Fixes an issue where existing rows were not flipped back to `isDatabaseConstraint=True` where needed
+    * Fixes the `Migrator` user being used for all migration key operations
+    * Fixes the `is_sp6_user_permissions_migrated` check being re-introduced for proper legacy permission handling
+    * Fixes database connection handling to use the correct alias for migration connections
+    * Fixes `set_discipline_for_taxon_treedefs` being reduced to a single database query for improved performance
+    * Fixes `fix_taxon_treedef_discipline_links` being optimized to a single query for improved performance
+    * Fixes admin check ordering to evaluate common cases first for faster permission checks
+    * Fixes use of Django defaults in `get_or_create` for Role creation
+    * Fixes database connection used as a context manager for permission operations
+    * Fixes `fix_global_rules` helper function being simplified for better migration performance
+* Fixes missing data model relationships for attachments that could cause issues with record linking ([#8182](https://github.com/specify/specify7/pull/8182))
+* Regex field-formatter fixes ([#8152](https://github.com/specify/specify7/pull/8152))
+    * Fixes expression boundary markers being incorrectly inserted
+    * Fixes handling of outer parentheses in regex expressions
+    * Fixes regex trimming to intelligently handle ambiguous patterns
+    * Adds `ariaLabel` and `placeholder` attributes for improved accessibility
+* Schema config defaults hardening ([#8329](https://github.com/specify/specify7/pull/8329))
+    * Introduces `SchemaWriter` and `SchemaReader` utility classes for consistent and optimized schema config operations
+    * Introduces `ReadonlyDict` to prevent accidental mutation of schema default values, ensuring migration predictability
+    * Fixes `QueryValues` list flattening in migrations 0035 and 0040
+    * Fixes case-insensitive lookups in schema config helper functions
+    * Improves fallback logic to use `schema_localization_en.json` defaults when generating localized strings
+    * Ensures all passed-in default values are always respected during schema config creation
+    * Eliminates redundant database hits when creating Schema Config records sequentially
+* Database setup and permissions hardening ([#8313](https://github.com/specify/specify7/pull/8313))
+    * Reverts automatic migrator privilege grants when the user already exists to avoid permission conflicts
+    * Prevents access to collections belonging to disciplines that are still being created
+    * Fixes regular expressions used when checking database permissions
+    * Defaults `DATABASE_PORT` to 3306 for more reliable out-of-the-box configuration
+    * Removes unused environment variables and host configuration from default `.env`
+    * Fixes character escaping and host direction when creating database users
+* Batch edit fixes ([#8317](https://github.com/specify/specify7/pull/8317))
+    * Disables attachment relationships in batch edit mode to prevent invalid record linking
+* Tree management improvements ([#8312](https://github.com/specify/specify7/pull/8312), [#8243](https://github.com/specify/specify7/pull/8243))
+    * Allows deletion of unused tree ranks ([#8312](https://github.com/specify/specify7/pull/8312))
+    * Replaces child and synonym `LEFT JOIN`s with scalar subqueries for significantly faster tree queries ([#8243](https://github.com/specify/specify7/pull/8243))
+* Paleo discipline visibility fixes
+    * Unhides PaleoContext, Chronostrat, and Lithostrat trees by default in paleo disciplines (Geology, InvertPaleo, Paleobotany, VertPaleo)
+    * Fixes tree visibility and table descriptions across all disciplines for consistency
+    * Fixes incorrect picklist name for Determination → nameUsages
+    * Fixes null `catalogNumber` format specification
+* Migration test suite ([#8225](https://github.com/specify/specify7/pull/8225))
+    * Adds test coverage for `run_key_migration_functions` and discipline directory cleanup functions
+    * Removes reliance on mocking in several migration tests for more reliable validation
+
 ## [7.12.0.6](https://github.com/specify/specify7/compare/v7.12.0.5...v7.12.0.6) (21 May 2026)
 
 * Fix aggregated relation parsing for stored queries ([#8059](https://github.com/specify/specify7/pull/8059))
