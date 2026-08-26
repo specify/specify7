@@ -144,10 +144,16 @@ function SchemaConfigLayoutContent(): JSX.Element {
           onClose={(): void => setImportFile(undefined)}
         >
           <p>
+            {schemaText.importSchemaWarning({
+              schemaConfig: schemaText.schemaConfig(),
+            })}
+          </p>
+          <p>
             {schemaText.importSchemaBackupPrompt({
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
+          <p>{schemaText.importSchemaLimitations()}</p>
         </Dialog>
       )}
       {importError && (

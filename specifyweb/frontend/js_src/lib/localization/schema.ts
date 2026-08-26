@@ -12,10 +12,17 @@ export const schemaText = createDictionary({
   importSchema: {
     'en-us': 'Import {schemaConfig:string}',
   },
+  importSchemaWarning: {
+    'en-us':
+      'Importing a {schemaConfig:string} will overwrite the current data model. This action cannot be undone.',
+  },
   importSchemaBackupPrompt: {
     'en-us':
       'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
   },
+  importSchemaLimitations: {
+    'en-us': '.',
+  }
   downloadSchemaBackup: {
     'en-us': 'Export {schemaConfig:string}',
   },
