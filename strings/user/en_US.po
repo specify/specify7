@@ -63,7 +63,8 @@ msgstr "Repeat new password"
 
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
+#: components/Router/Routes.tsx:471
+#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 msgid "logOut"
 msgstr "Log Out"
 

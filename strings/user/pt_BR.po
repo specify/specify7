@@ -82,7 +82,8 @@ msgstr "Repita a nova senha"
 
 #: components/Core/Main.tsx:97
 #: components/Header/userToolDefinitions.ts:29
-#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions
+#: components/Router/Routes.tsx:471
+#. Used in: Components > Core > Main ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Routes
 #, fuzzy
 msgid "logOut"
 msgstr "Sair"

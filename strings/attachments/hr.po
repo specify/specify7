@@ -25,7 +25,7 @@ msgstr ""
 #: components/Preferences/CollectionDefinitions.tsx:47
 #: components/Preferences/UserDefinitions.tsx:1426
 #: components/Router/Routes.tsx:190
-#: components/Router/Routes.tsx:497
+#: components/Router/Routes.tsx:505
 #: components/Statistics/StatsSpec.tsx:508
 #: components/WbAttachmentViewer/index.tsx:132
 #: components/WbImportAttachments/index.tsx:131
