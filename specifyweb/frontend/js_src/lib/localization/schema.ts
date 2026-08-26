@@ -13,7 +13,8 @@ export const schemaText = createDictionary({
     'en-us': 'Import {schemaConfig:string}',
   },
   importSchemaBackupPrompt: {
-    'en-us': 'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
+    'en-us':
+      'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
   },
   downloadSchemaBackup: {
     'en-us': 'Export {schemaConfig:string}',
