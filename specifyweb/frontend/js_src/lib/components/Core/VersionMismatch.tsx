@@ -12,9 +12,12 @@ import { Dialog } from '../Molecules/Dialog';
  * For databases created in Specify 7 this check is currently unnessecary.
  */
 export function VersionMismatch(): JSX.Element | null {
+  const systemInfo = getSystemInfo();
   const [showVersionMismatch, setShowVersionMismatch] = React.useState(
-    getSystemInfo().specify6_version !== getSystemInfo().database_version &&
-      getSystemInfo().database_version !== '7'
+    systemInfo.setup_complete &&
+      systemInfo.database_version !== null &&
+      systemInfo.specify6_version !== systemInfo.database_version &&
+      systemInfo.database_version !== '7'
   );
   return showVersionMismatch ? (
     <Dialog
@@ -29,8 +32,8 @@ export function VersionMismatch(): JSX.Element | null {
     >
       <p>
         {mainText.versionMismatchDescription({
-          specifySixVersion: getSystemInfo().specify6_version,
-          databaseVersion: getSystemInfo().database_version,
+          specifySixVersion: systemInfo.specify6_version,
+          databaseVersion: systemInfo.database_version ?? '',
         })}
       </p>
       <p>{mainText.versionMismatchSecondDescription()}</p>

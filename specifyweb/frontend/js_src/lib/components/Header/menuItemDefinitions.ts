@@ -18,10 +18,6 @@ import { f } from '../../utils/functools';
 import { IR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
-import {
-  attachmentsAvailable,
-  attachmentSettingsPromise,
-} from '../Attachments/attachments';
 import type { MenuItem } from '../Core/Main';
 import { schema } from '../DataModel/schema';
 import { getDisciplineTrees } from '../InitialContext/treeRanks';
@@ -104,11 +100,11 @@ const rawMenuItems = ensure<IR<Omit<MenuItem, 'name'>>>()({
     url: '/specify/attachments/',
     title: attachmentsText.attachments(),
     icon: icons.photos,
-    async enabled(): Promise<boolean> {
-      if (!hasTablePermission('Attachment', 'read')) return false;
-      await attachmentSettingsPromise;
-      return attachmentsAvailable();
-    },
+    /*
+     * Asset server availability is checked at render time so the item can be
+     * disabled and re-enabled without a page reload. See useAttachmentServerStatus
+     */
+    enabled: () => hasTablePermission('Attachment', 'read'),
   },
   statistics: {
     url: '/specify/stats',
