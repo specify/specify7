@@ -21,7 +21,8 @@ export const schemaText = createDictionary({
       'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
   },
   importSchemaLimitations: {
-    'en-us': 'This import will not assign pick lists, field formats, or web links unless they already exist.',
+    'en-us':
+      'This import will not assign pick lists, field formats, or web links unless they already exist.',
   },
   downloadSchemaBackup: {
     'en-us': 'Export {schemaConfig:string}',
@@ -30,7 +31,8 @@ export const schemaText = createDictionary({
     'en-us': 'Continue Import',
   },
   importSchemaError: {
-    'en-us': 'The {schemaConfig:string} export provided is invalid and cannot be imported.',
+    'en-us':
+      'The {schemaConfig:string} export provided is invalid and cannot be imported.',
   },
   table: {
     'en-us': 'Table',
