@@ -1938,7 +1938,7 @@ export const userPreferenceDefinitions = {
           }),
         },
       },
-    }
+    },
   },
   recordMerging: {
     title: mergingText.recordMerging(),
