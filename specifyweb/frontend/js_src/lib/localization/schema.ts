@@ -10,19 +10,19 @@ import { createDictionary } from './utils';
 
 export const schemaText = createDictionary({
   importSchema: {
-    'en-us': 'Import Schema Configuration',
+    'en-us': 'Import {schemaConfig:string}',
   },
   importSchemaBackupPrompt: {
-    'en-us': 'Download a backup of the current schema before importing?',
+    'en-us': 'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
   },
   downloadSchemaBackup: {
-    'en-us': 'Download Current Schema',
+    'en-us': 'Export {schemaConfig:string}',
   },
   importSchemaContinue: {
     'en-us': 'Continue Import',
   },
   importSchemaError: {
-    'en-us': 'The schema could not be imported. The database was not changed.',
+    'en-us': 'The {schemaConfig:string} could not be imported. The database was not changed.',
   },
   table: {
     'en-us': 'Table',

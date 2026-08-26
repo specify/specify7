@@ -119,25 +119,34 @@ function SchemaConfigLayoutContent(): JSX.Element {
         <Dialog
           buttons={
             <>
+              <Link.Small
+                download={`schema_localization_${rawLanguage}.json`}
+                href={formatUrl('/context/schema_localization.json', {
+                  lang: rawLanguage,
+                })}
+              >
+                {schemaText.downloadSchemaBackup({
+                  schemaConfig: schemaText.schemaConfig(),
+                })}
+              </Link.Small>
+              <span className="-ml-2 flex-1" />
               <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
               <Button.Info onClick={confirmImport}>
                 {schemaText.importSchemaContinue()}
               </Button.Info>
             </>
           }
-          icon={dialogIcons.question}
-          header={schemaText.importSchema()}
+          icon={dialogIcons.warning}
+          header={schemaText.importSchema({
+            schemaConfig: schemaText.schemaConfig(),
+          })}
           onClose={(): void => setImportFile(undefined)}
         >
-          <p>{schemaText.importSchemaBackupPrompt()}</p>
-          <Link.Small
-            download={`schema_localization_${rawLanguage}.json`}
-            href={formatUrl('/context/schema_localization.json', {
-              lang: rawLanguage,
+          <p>
+            {schemaText.importSchemaBackupPrompt({
+              schemaConfig: schemaText.schemaConfig(),
             })}
-          >
-            {schemaText.downloadSchemaBackup()}
-          </Link.Small>
+          </p>
         </Dialog>
       )}
       {importError && (
@@ -145,10 +154,16 @@ function SchemaConfigLayoutContent(): JSX.Element {
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
-          header={schemaText.importSchema()}
+          header={schemaText.importSchema({
+            schemaConfig: schemaText.schemaConfig(),
+          })}
           onClose={(): void => setImportError(false)}
         >
-          <p className="text-red-600">{schemaText.importSchemaError()}</p>
+          <p className="text-red-600">
+            {schemaText.importSchemaError({
+              schemaConfig: schemaText.schemaConfig(),
+            })}
+          </p>
         </Dialog>
       )}
     </Container.Full>
