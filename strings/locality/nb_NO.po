@@ -76,7 +76,7 @@ msgstr "Polygoner"
 #: components/FormPlugins/GeoLocate.tsx:33
 #: components/Molecules/GeoLocate.tsx:70
 #: components/Molecules/GeoLocate.tsx:74
-#: components/WbToolkit/GeoLocate.tsx:60
+#: components/WbToolkit/GeoLocate.tsx:61
 #. Used in: Components > Form Plugins > Geo Locate ⬤ Components > Molecules > Geo Locate ⬤ Components > Wb Toolkit > Geo Locate
 msgid "geoLocate"
 msgstr "GEOLocate"

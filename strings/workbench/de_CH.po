@@ -513,7 +513,7 @@ msgstr "Der Upload ist nicht möglich, da einige Zellen Validierungsfehler aufwe
 
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbToolkit/CoordinateConverter.tsx:56
-#: components/WbToolkit/GeoLocate.tsx:54
+#: components/WbToolkit/GeoLocate.tsx:55
 #: components/WbUtils/index.tsx:77
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 #, fuzzy
@@ -527,7 +527,7 @@ msgid "unavailableWhileValidating"
 msgstr "Diese Aktion ist während der Datenprüfung nicht verfügbar."
 
 #: components/WbToolkit/CoordinateConverter.tsx:58
-#: components/WbToolkit/GeoLocate.tsx:56
+#: components/WbToolkit/GeoLocate.tsx:57
 #: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 #, fuzzy
@@ -535,7 +535,7 @@ msgid "unavailableWithoutLocality"
 msgstr "Dieses Tool erfordert die Zuordnung von Lokalisierungsspalten."
 
 #: components/WbToolkit/CoordinateConverter.tsx:54
-#: components/WbToolkit/GeoLocate.tsx:52
+#: components/WbToolkit/GeoLocate.tsx:53
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 #, fuzzy
 msgid "unavailableWhenUploaded"

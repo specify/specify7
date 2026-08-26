@@ -418,7 +418,7 @@ msgstr "Upload is unavailable while some cells have validation errors"
 
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbToolkit/CoordinateConverter.tsx:56
-#: components/WbToolkit/GeoLocate.tsx:54
+#: components/WbToolkit/GeoLocate.tsx:55
 #: components/WbUtils/index.tsx:77
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
@@ -430,14 +430,14 @@ msgid "unavailableWhileValidating"
 msgstr "This action is unavailable while Data Check is in progress"
 
 #: components/WbToolkit/CoordinateConverter.tsx:58
-#: components/WbToolkit/GeoLocate.tsx:56
+#: components/WbToolkit/GeoLocate.tsx:57
 #: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "This tool requires locality columns to be mapped"
 
 #: components/WbToolkit/CoordinateConverter.tsx:54
-#: components/WbToolkit/GeoLocate.tsx:52
+#: components/WbToolkit/GeoLocate.tsx:53
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 msgid "unavailableWhenUploaded"
 msgstr "This tool does not work with uploaded data sets"

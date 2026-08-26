@@ -307,7 +307,7 @@ msgstr "Criar"
 #: components/WbToolkit/ChangeOwner.tsx:77
 #: components/WbToolkit/DevShowPlan.tsx:138
 #: components/WbToolkit/DevShowPlan.tsx:168
-#: components/WbToolkit/GeoLocate.tsx:143
+#: components/WbToolkit/GeoLocate.tsx:144
 #: components/WorkBench/AdvancedSearch.tsx:107
 #: components/WorkBench/DataSetMeta.tsx:130
 #: components/WorkBench/DataSetMeta.tsx:189
@@ -485,7 +485,7 @@ msgstr "Excluir"
 #: components/Interactions/InteractionDialog.tsx:531
 #: components/Interactions/InteractionDialog.tsx:560
 #: components/SetupTool/index.tsx:304
-#: components/WbToolkit/GeoLocate.tsx:154
+#: components/WbToolkit/GeoLocate.tsx:155
 #: components/WbUtils/Navigation.tsx:115
 #: components/WbUtils/Navigation.tsx:119
 #. Used in: Components > Attachments > Dialog ⬤ Components > Batch Identify > Index ⬤ Components > Interactions > Interaction Dialog ⬤ Components > Setup Tool > Index ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Navigation
@@ -494,7 +494,7 @@ msgid "next"
 msgstr "Próximo"
 
 #: components/Attachments/Dialog.tsx:113
-#: components/WbToolkit/GeoLocate.tsx:148
+#: components/WbToolkit/GeoLocate.tsx:149
 #: components/WbUtils/Navigation.tsx:82
 #: components/WbUtils/Navigation.tsx:86
 #. Used in: Components > Attachments > Dialog ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Navigation
