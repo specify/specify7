@@ -614,10 +614,15 @@ def schema_localization_import(request):
     try:
         payload = json.loads(request.body)
         schema = payload.get('schema', payload)
+        language = payload.get('language', request.LANGUAGE_CODE)
+        if not isinstance(language, str) or not re.fullmatch(
+            r'[^-]{2}(?:-[^-]{2})?', language
+        ):
+            raise ValueError
         operations = _schema_import_operations(
             request.specify_collection,
             schema,
-            payload.get('language', request.LANGUAGE_CODE),
+            language,
             {
                 'format': _schema_import_resource_names(
                     request.specify_collection, request.specify_user,
