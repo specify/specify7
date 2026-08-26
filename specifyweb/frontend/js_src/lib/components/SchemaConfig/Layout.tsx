@@ -148,12 +148,12 @@ function SchemaConfigLayoutContent(): JSX.Element {
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
-          <p>
+          <p>{schemaText.importSchemaLimitations()}</p>          
+          <p className="italic">
             {schemaText.importSchemaBackupPrompt({
               schemaConfig: schemaText.schemaConfig(),
             })}
           </p>
-          <p>{schemaText.importSchemaLimitations()}</p>
         </Dialog>
       )}
       {importError && (

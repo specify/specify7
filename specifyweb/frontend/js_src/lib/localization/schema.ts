@@ -14,15 +14,15 @@ export const schemaText = createDictionary({
   },
   importSchemaWarning: {
     'en-us':
-      'Importing a {schemaConfig:string} will overwrite the current data model. This action cannot be undone.',
+      'Importing a {schemaConfig:string} will overwrite the current one. This action cannot be undone.',
   },
   importSchemaBackupPrompt: {
     'en-us':
       'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
   },
   importSchemaLimitations: {
-    'en-us': '.',
-  }
+    'en-us': 'This import will not assign pick lists, field formats, or web links unless they already exist.',
+  },
   downloadSchemaBackup: {
     'en-us': 'Export {schemaConfig:string}',
   },
