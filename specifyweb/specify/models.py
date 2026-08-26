@@ -16,6 +16,57 @@ def protect_with_blockers(collector, field, sub_objs, using):
     else:
         return models.PROTECT(collector, field, sub_objs, using)
 
+
+def _get_collector_model_instances(collector, model_name):
+    deleting_models = getattr(collector, 'data', {})
+    for model, objs in deleting_models.items():
+        if getattr(model, '__name__', '').lower() == model_name.lower():
+            return list(objs)
+    return []
+
+
+def _reparent_taxon_rank_children(ranks):
+    rank_list = list(ranks)
+    if not rank_list:
+        return
+
+    deleting_rank_ids = {rank.id for rank in rank_list}
+    for rank in rank_list:
+        Taxontreedefitem.objects.filter(parent_id=rank.id)\
+            .exclude(id__in=deleting_rank_ids)\
+            .update(parent_id=rank.parent_id)
+
+
+def delete_taxon_rank_parent_with_context(collector, field, sub_objs, using):
+    """
+    Use CASCADE while deleting an entire TaxonTreeDef.
+
+    For single-rank deletion, reparent child ranks before deleting so
+    ParentItemID remains valid.
+    """
+    deleting_models = getattr(collector, 'data', {})
+    is_tree_delete = any(
+        getattr(model, '__name__', '').lower() == 'taxontreedef'
+        for model in deleting_models.keys()
+    )
+    if is_tree_delete:
+        return models.CASCADE(collector, field, sub_objs, using)
+
+    processed_ids = getattr(collector, '_taxon_rank_delete_prepared_ids', set())
+    ranks_to_delete = [
+        rank
+        for rank in _get_collector_model_instances(collector, 'taxontreedefitem')
+        if rank.id not in processed_ids
+    ]
+    _reparent_taxon_rank_children(ranks_to_delete)
+
+    if ranks_to_delete:
+        collector._taxon_rank_delete_prepared_ids = processed_ids.union(
+            {rank.id for rank in ranks_to_delete}
+        )
+
+    return None
+
 def custom_save(self, *args, **kwargs):
     try:
         # Custom save logic here, if necessary
@@ -7337,8 +7388,7 @@ class Taxontreedefitem(model_extras.Taxontreedefitem):
     # Relationships: Many-to-One
     createdbyagent = models.ForeignKey('Agent', db_column='CreatedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
     modifiedbyagent = models.ForeignKey('Agent', db_column='ModifiedByAgentID', related_name='+', null=True, on_delete=protect_with_blockers)
-    #TODO: Chnaging parent on_delete to models.DO_NOTHING will break the no default tree deletion feature. Need to figure out how to handle that.
-    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=models.DO_NOTHING)
+    parent = models.ForeignKey('TaxonTreeDefItem', db_column='ParentItemID', related_name='children', null=True, on_delete=delete_taxon_rank_parent_with_context)
     treedef = models.ForeignKey('TaxonTreeDef', db_column='TaxonTreeDefID', related_name='treedefitems', null=False, on_delete=models.CASCADE)
 
     class Meta:
