@@ -14,7 +14,6 @@ from django.apps import apps
 
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS, SPECIFY_TREES
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
@@ -156,6 +155,8 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
 
 def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=None, parent_obj=None, clean_predelete=None) -> None:
+    from specifyweb.backend.trees.utils import SPECIFY_TREES
+
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -357,6 +358,8 @@ def prepare_discipline_for_delete(obj) -> None:
     """
     if not is_discipline(obj):
         return
+
+    from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS
 
     for tree_def_model in DISCIPLINE_TREE_MODELS:
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
