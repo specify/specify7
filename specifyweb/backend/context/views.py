@@ -30,12 +30,11 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
 from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
-    Specifyuser, Spprincipal, Spversion, Collectionobjecttype
-from specifyweb.specify import models
+    Specifyuser, Spprincipal, Spversion, Collectionobjecttype, Picklist, Splocalecontainer, \
+    Splocalecontaineritem, Splocaleitemstr
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
-from specifyweb.specify.api.crud import post_resource, put_resource
 from specifyweb.specify.utils.specify_jar import specify_jar
 from specifyweb.specify.views import login_maybe_required, openapi
 from .app_resource import get_app_resource, FORM_RESOURCE_EXCLUDED_LST
@@ -482,14 +481,14 @@ def schema_localization(request):
 
 
 SCHEMA_IMPORT_FIELDS = {
-    models.Splocalecontainer: {'format', 'aggregator', 'ishidden'},
-    models.Splocalecontaineritem: {
+    Splocalecontainer: {'format', 'aggregator', 'ishidden'},
+    Splocalecontaineritem: {
         'format', 'ishidden', 'isrequired', 'picklistname', 'weblinkname',
     },
 }
 SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
 SCHEMA_IMPORT_TABLE_KEYS = {
-    'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[models.Splocalecontainer]
+    'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[Splocalecontainer]
 }
 SCHEMA_IMPORT_REFERENCE_FIELDS = {'format', 'picklistname', 'weblinkname'}
 
@@ -534,12 +533,12 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
         return
     if not isinstance(text, str):
         raise ValueError
-    string = models.Splocaleitemstr.objects.filter(
+    string = Splocaleitemstr.objects.filter(
         **{parent_field: parent, 'language': language, 'country': country}
     ).filter(Q(variant='') | Q(variant__isnull=True)).order_by('-id').first()
     if string is None:
         operations.append((
-            'POST', models.Splocaleitemstr, None,
+            'POST', Splocaleitemstr, None,
             {
                 'text': text,
                 'language': language,
@@ -548,7 +547,7 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
             },
         ))
     elif string.text != text:
-        operations.append(('PUT', models.Splocaleitemstr, string, {'text': text}))
+        operations.append(('PUT', Splocaleitemstr, string, {'text': text}))
 
 
 def _schema_import_operations(collection, schema, language, references=None):
@@ -564,7 +563,7 @@ def _schema_import_operations(collection, schema, language, references=None):
     references = references or {key: set() for key in SCHEMA_IMPORT_REFERENCE_FIELDS}
     containers = {
         container.name.lower(): container
-        for container in models.Splocalecontainer.objects.filter(
+        for container in Splocalecontainer.objects.filter(
             discipline_id=collection.discipline_id, schematype=0
         )
     }
@@ -574,12 +573,12 @@ def _schema_import_operations(collection, schema, language, references=None):
         if container is None:
             continue
         if not isinstance(table_data, dict):
-            continue
+            raise ValueError
         values = _schema_import_values(
-            table_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontainer], references
+            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer], references
         )
         if values:
-            operations.append(('PUT', models.Splocalecontainer, container, values))
+            operations.append(('PUT', Splocalecontainer, container, values))
         _schema_import_string(
             operations, container, 'containername', table_data.get('name'), language, country or None
         )
@@ -595,10 +594,10 @@ def _schema_import_operations(collection, schema, language, references=None):
             if item is None:
                 continue
             values = _schema_import_values(
-                item_data, SCHEMA_IMPORT_FIELDS[models.Splocalecontaineritem], references
+                item_data, SCHEMA_IMPORT_FIELDS[Splocalecontaineritem], references
             )
             if values:
-                operations.append(('PUT', models.Splocalecontaineritem, item, values))
+                operations.append(('PUT', Splocalecontaineritem, item, values))
             _schema_import_string(
                 operations, item, 'itemname', item_data.get('name'), language, country or None
             )
@@ -616,7 +615,7 @@ def schema_localization_import(request):
         schema = payload.get('schema', payload)
         language = payload.get('language', request.LANGUAGE_CODE)
         if not isinstance(language, str) or not re.fullmatch(
-            r'[^-]{2}(?:-[^-]{2})?', language
+            r'[A-Za-z]{2}(?:-[A-Za-z]{2})?', language
         ):
             raise ValueError
         operations = _schema_import_operations(
@@ -629,7 +628,7 @@ def schema_localization_import(request):
                     'DataObjFormatters', './/format'
                 ),
                 'picklistname': {
-                    name.lower() for name in models.Picklist.objects.filter(
+                    name.lower() for name in Picklist.objects.filter(
                         collection=request.specify_collection
                     ).values_list('name', flat=True)
                 },
@@ -641,6 +640,8 @@ def schema_localization_import(request):
         )
     except (AttributeError, KeyError, TypeError, ValueError, json.JSONDecodeError):
         return HttpResponseBadRequest()
+
+    from specifyweb.specify.api.crud import post_resource, put_resource
 
     with transaction.atomic():
         for method, model, resource, data in operations:

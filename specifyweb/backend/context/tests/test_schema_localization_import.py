@@ -90,18 +90,32 @@ class SchemaLocalizationImportTests(ApiTests):
         self.assertIsNone(self.container.format)
 
     def test_rejects_invalid_language(self):
-        response = self.client.post(
-            '/context/schema_localization_import.json',
-            data=json.dumps({
-                'language': 'en-us-extra',
-                'schema': {'accession': {'name': 'Should Not Import'}},
-            }),
-            content_type='application/json',
-        )
+        for language in ('en-us-extra', '@@', 'en-$%'):
+            with self.subTest(language=language):
+                response = self.client.post(
+                    '/context/schema_localization_import.json',
+                    data=json.dumps({
+                        'language': language,
+                        'schema': {'accession': {'name': 'Should Not Import'}},
+                    }),
+                    content_type='application/json',
+                )
 
-        self.assertEqual(response.status_code, 400)
+                self.assertEqual(response.status_code, 400)
         self.assertFalse(
             models.Splocaleitemstr.objects.filter(
                 containername=self.container, text='Should Not Import'
             ).exists()
         )
+
+    def test_rejects_non_object_data_for_known_table(self):
+        response = self.client.post(
+            '/context/schema_localization_import.json',
+            data=json.dumps({
+                'language': 'en',
+                'schema': {'accession': 'invalid'},
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 400)
