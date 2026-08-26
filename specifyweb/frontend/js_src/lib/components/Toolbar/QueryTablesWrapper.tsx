@@ -4,7 +4,8 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { commonText } from '../../localization/common';
 import { queryText } from '../../localization/query';
-import type { GetSet, RA } from '../../utils/types';
+import { StringToJsx } from '../../localization/utils';
+import type { GetSet, IR, RA } from '../../utils/types';
 import { Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
@@ -108,11 +109,13 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
 export function QueryTables({
   tables,
   onClick: handleClick,
+  counts,
   getHref = (tableName): string =>
     `/specify/query/new/${tableName.toLowerCase()}/`,
 }: {
   readonly tables: RA<SpecifyTable>;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+  readonly counts?: IR<number | undefined>;
   readonly getHref?: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return (
@@ -120,7 +123,9 @@ export function QueryTables({
       {tables.map(({ name, label }, index) => (
         <li className="contents" key={index}>
           <QueryTableItem
+            count={counts?.[name]}
             getHref={getHref}
+            isCountLoading={counts !== undefined && !(name in counts)}
             label={label}
             name={name}
             onClick={handleClick}
@@ -185,23 +190,49 @@ export function QueryTablesWrapper({
 function QueryTableItem({
   name,
   label,
+  count,
+  isCountLoading,
   onClick: handleClick,
   getHref,
 }: {
   readonly name: keyof Tables;
   readonly label: LocalizedString;
+  readonly count: number | undefined;
+  readonly isCountLoading: boolean;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
   readonly getHref: (tableName: keyof Tables) => string;
 }): JSX.Element {
-  return handleClick === undefined ? (
-    <Link.Default href={getHref(name)}>
+  const content = (
+    <>
       <TableIcon label={false} name={name} />
-      {label}
-    </Link.Default>
+      {typeof count === 'number' ? (
+        <StringToJsx
+          components={{
+            // eslint-disable-next-line react/no-unstable-nested-components
+            wrap: (formattedCount) => (
+              <span className="text-neutral-500">{formattedCount}</span>
+            ),
+          }}
+          string={commonText.jsxCountLine({ resource: label, count })}
+        />
+      ) : isCountLoading ? (
+        <>
+          {label}
+          <span
+            aria-hidden
+            className="h-3 w-3 animate-spin rounded-full border-2 border-neutral-500 border-r-transparent"
+          />
+        </>
+      ) : (
+        label
+      )}
+    </>
+  );
+  return handleClick === undefined ? (
+    <Link.Default href={getHref(name)}>{content}</Link.Default>
   ) : (
     <Button.LikeLink onClick={(): void => handleClick(name)}>
-      <TableIcon label={false} name={name} />
-      {label}
+      {content}
     </Button.LikeLink>
   );
 }
