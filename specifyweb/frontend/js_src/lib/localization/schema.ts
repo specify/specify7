@@ -22,7 +22,7 @@ export const schemaText = createDictionary({
     'en-us': 'Continue Import',
   },
   importSchemaError: {
-    'en-us': 'The {schemaConfig:string} could not be imported. The database was not changed.',
+    'en-us': 'The {schemaConfig:string} export provided is invalid and cannot be imported.',
   },
   table: {
     'en-us': 'Table',

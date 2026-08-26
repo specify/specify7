@@ -93,6 +93,7 @@ function SchemaConfigLayoutContent(): JSX.Element {
             method: 'POST',
             headers: { Accept: 'application/json' },
             body: { schema, language: rawLanguage },
+            errorMode: 'silent',
           })
         )
         .then(() => handleSchemaSaved(rawLanguage, tableName))
@@ -154,12 +155,13 @@ function SchemaConfigLayoutContent(): JSX.Element {
           buttons={
             <Button.DialogClose>{commonText.close()}</Button.DialogClose>
           }
+          icon={dialogIcons.error}
           header={schemaText.importSchema({
             schemaConfig: schemaText.schemaConfig(),
           })}
           onClose={(): void => setImportError(false)}
         >
-          <p className="text-red-600">
+          <p>
             {schemaText.importSchemaError({
               schemaConfig: schemaText.schemaConfig(),
             })}
