@@ -184,15 +184,15 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
         collector = Collector(using=obj._state.db)
         collector.collect([obj])
         descendants = {
-            descendant.id: descendant
+            getattr(descendant, "id"): descendant
             for model, instances in collector.data.items()
             if model is obj.__class__
             for descendant in instances
-            if descendant.id != obj.id
+            if getattr(descendant, "id") != obj.id
         }
         for queryset in collector.fast_deletes:
             if queryset.model is obj.__class__:
-                descendants.update({descendant.id: descendant for descendant in queryset})
+                descendants.update({getattr(descendant, "id"): descendant for descendant in queryset})
         for descendant in descendants.values():
             deleter(descendant, obj)
     if deleter:
