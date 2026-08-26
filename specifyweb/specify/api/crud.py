@@ -8,12 +8,13 @@ import json
 from django.db import transaction
 from django.core.exceptions import FieldError, FieldDoesNotExist
 from django.db.models import Model, F, Q, Subquery
+from django.db.models.deletion import Collector
 from django.http import (HttpResponseServerError, Http404)
 from django.apps import apps
 
 from specifyweb.backend.permissions.permissions import check_field_permissions, check_table_permissions
 from specifyweb.backend.businessrules.exceptions import BusinessRuleException
-from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS
+from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS, SPECIFY_TREES
 from specifyweb.backend.workbench.upload.auditlog import auditlog
 from specifyweb.specify import models
 from specifyweb.specify.api.api_utils import objs_to_data_, CollectionPayload
@@ -172,6 +173,27 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     
     if hasattr(obj, 'pre_constraints_delete'):
         obj.pre_constraints_delete()
+    # Tree nodes are deleted through the database cascade when their parent is
+    # deleted. Audit those descendants explicitly because Django's collector
+    # does not invoke the API deleter for cascaded objects.
+    if (
+        deleter
+        and obj._meta.model_name in SPECIFY_TREES
+    ):
+        collector = Collector(using=obj._state.db)
+        collector.collect([obj])
+        descendants = {
+            descendant.id: descendant
+            for model, instances in collector.data.items()
+            if model is obj.__class__
+            for descendant in instances
+            if descendant.id != obj.id
+        }
+        for queryset in collector.fast_deletes:
+            if queryset.model is obj.__class__:
+                descendants.update({descendant.id: descendant for descendant in queryset})
+        for descendant in descendants.values():
+            deleter(descendant, obj)
     if deleter:
         deleter(obj, parent_obj)
 
