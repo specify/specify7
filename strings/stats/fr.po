@@ -180,7 +180,7 @@ msgstr "Télécharger au format TSV"
 msgid "shared"
 msgstr "Commun"
 
-#: components/Header/menuItemDefinitions.ts:109
+#: components/Header/menuItemDefinitions.ts:105
 #: components/Preferences/CollectionDefinitions.tsx:121
 #: components/Preferences/UserDefinitions.tsx:2217
 #: components/Router/Routes.tsx:473

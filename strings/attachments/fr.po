@@ -14,10 +14,10 @@ msgstr ""
 #: components/Attachments/RecordSetAttachment.tsx:161
 #: components/Attachments/RecordSetAttachment.tsx:164
 #: components/Attachments/RecordSetAttachment.tsx:168
-#: components/Attachments/index.tsx:161
+#: components/Attachments/index.tsx:168
 #: components/FormSliders/AttachmentsCollection.tsx:68
 #: components/FormSliders/AttachmentsCollection.tsx:91
-#: components/Header/menuItemDefinitions.ts:99
+#: components/Header/menuItemDefinitions.ts:95
 #: components/Molecules/SyncAttachmentPicker.tsx:118
 #: components/Molecules/SyncAttachmentPicker.tsx:127
 #: components/Preferences/CollectionDefinitions.tsx:47
@@ -38,27 +38,36 @@ msgstr ""
 msgid "attachments"
 msgstr "Pièces jointes"
 
-#: components/Attachments/index.tsx:224
+#: components/Attachments/index.tsx:231
 #. Used in: Components > Attachments > Index
 msgid "scale"
 msgstr "Échelle"
 
 #: components/Attachments/Plugin.tsx:42
 #: components/Attachments/Plugin.tsx:164
+#: components/Attachments/Viewer.tsx:383
 #: components/Attachments/index.tsx:54
+#: components/Attachments/index.tsx:247
+#: components/Attachments/index.tsx:287
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:105
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:114
+#: components/Attachments/__tests__/AttachmentsView.test.tsx:136
 #: components/AttachmentsBulkImport/Upload.tsx:257
 #: components/AttachmentsBulkImport/Upload.tsx:264
+#: components/Header/index.tsx:186
 #: components/WbImportAttachments/index.tsx:134
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Index ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Wb Import Attachments > Index
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Viewer ⬤ Components > Attachments > Index ⬤ Attachments > __tests__ > Attachments View ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Header > Index ⬤ Components > Wb Import Attachments > Index
 msgid "attachmentServerUnavailable"
 msgstr "Serveur de pièces jointes indisponible"
 
+#: components/Attachments/Viewer.tsx:384
 #: components/Attachments/index.tsx:57
-#. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:288
+#. Used in: Components > Attachments > Viewer ⬤ Components > Attachments > Index
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configurez votre serveur de pièces jointes"
 
-#: components/Attachments/index.tsx:210
+#: components/Attachments/index.tsx:217
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1413
 #. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
@@ -79,12 +88,12 @@ msgstr "Chargement en cours…"
 msgid "noAttachments"
 msgstr "Il n'y a pas de pièces jointes"
 
-#: components/Attachments/Cell.tsx:147
+#: components/Attachments/Cell.tsx:154
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecord"
 msgstr "Impossible de trouver l'enregistrement correspondant"
 
-#: components/Attachments/Cell.tsx:150
+#: components/Attachments/Cell.tsx:157
 #. Used in: Components > Attachments > Cell
 msgid "unableToFindRelatedRecordDescription"
 msgstr ""
@@ -92,7 +101,7 @@ msgstr ""
 "rapporte."
 
 #: components/Attachments/Dialog.tsx:101
-#: components/Attachments/Viewer.tsx:377
+#: components/Attachments/Viewer.tsx:429
 #. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "showForm"
 msgstr "Afficher le formulaire"
@@ -267,7 +276,7 @@ msgid "fetchNextAttachments"
 msgstr "Recherchez d'autres pièces jointes"
 
 #: components/Attachments/Dialog.tsx:101
-#: components/Attachments/Viewer.tsx:376
+#: components/Attachments/Viewer.tsx:428
 #. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 msgid "hideForm"
 msgstr "Masquer le formulaire"

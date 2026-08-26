@@ -170,7 +170,7 @@ msgstr "Download as TSV"
 msgid "shared"
 msgstr "Shared"
 
-#: components/Header/menuItemDefinitions.ts:109
+#: components/Header/menuItemDefinitions.ts:105
 #: components/Preferences/CollectionDefinitions.tsx:121
 #: components/Preferences/UserDefinitions.tsx:2217
 #: components/Router/Routes.tsx:473

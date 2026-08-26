@@ -12,7 +12,7 @@ msgstr ""
 "Content-Transfer-Encoding: 8bit\n"
 
 #: components/FormCommands/ShowTransactions.tsx:70
-#: components/Header/menuItemDefinitions.ts:61
+#: components/Header/menuItemDefinitions.ts:57
 #: components/Interactions/InteractionsDialog.tsx:58
 #: components/Preferences/UserDefinitions.tsx:694
 #: components/Router/OverlayRoutes.tsx:96

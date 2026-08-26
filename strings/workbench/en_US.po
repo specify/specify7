@@ -1,7 +1,7 @@
 msgid ""
 msgstr "Content-Type: text/plain\n"
 
-#: components/Header/menuItemDefinitions.ts:94
+#: components/Header/menuItemDefinitions.ts:90
 #: components/Preferences/UserDefinitions.tsx:1987
 #: components/Router/OverlayRoutes.tsx:160
 #: components/WbUtils/datasetVariants.tsx:30

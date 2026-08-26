@@ -2,7 +2,7 @@ msgid ""
 msgstr "Content-Type: text/plain\n"
 
 #: components/BatchEdit/index.tsx:221
-#: components/Header/menuItemDefinitions.ts:115
+#: components/Header/menuItemDefinitions.ts:111
 #: components/Preferences/UserDefinitions.tsx:2287
 #: components/Router/OverlayRoutes.tsx:263
 #: components/WbUtils/datasetVariants.tsx:88

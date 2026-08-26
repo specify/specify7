@@ -13,7 +13,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "query"
 msgstr "Query"
 
-#: components/Header/menuItemDefinitions.ts:73
+#: components/Header/menuItemDefinitions.ts:69
 #: components/Router/OverlayRoutes.tsx:123
 #: components/Toolbar/Query.tsx:78
 #: components/Toolbar/Query.tsx:219

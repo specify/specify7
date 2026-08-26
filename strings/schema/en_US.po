@@ -10,7 +10,7 @@ msgstr "Content-Type: text/plain\n"
 msgid "table"
 msgstr "Table"
 
-#: components/Attachments/index.tsx:195
+#: components/Attachments/index.tsx:202
 #: components/FormEditor/Table.tsx:49
 #: components/Router/Routes.tsx:427
 #: components/SchemaConfig/Sidebar.tsx:26

@@ -42,8 +42,8 @@ msgid "exception"
 msgstr "Fehler"
 
 #: components/AppResources/EditorComponents.tsx:159
-#: components/Attachments/Cell.tsx:80
-#: components/Attachments/Viewer.tsx:241
+#: components/Attachments/Cell.tsx:87
+#: components/Attachments/Viewer.tsx:264
 #: components/LocalityUpdate/Status.tsx:400
 #: components/Notifications/NotificationRenderers.tsx:83
 #: components/Notifications/NotificationRenderers.tsx:113

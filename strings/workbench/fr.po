@@ -11,7 +11,7 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.8.dev0\n"
 
-#: components/Header/menuItemDefinitions.ts:94
+#: components/Header/menuItemDefinitions.ts:90
 #: components/Preferences/UserDefinitions.tsx:1987
 #: components/Router/OverlayRoutes.tsx:160
 #: components/WbUtils/datasetVariants.tsx:30
