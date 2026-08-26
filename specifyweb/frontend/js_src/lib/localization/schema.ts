@@ -13,7 +13,8 @@ export const schemaText = createDictionary({
     'en-us': 'Import {schemaConfig:string}',
   },
   importSchemaBackupPrompt: {
-    'en-us': 'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
+    'en-us':
+      'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
   },
   downloadSchemaBackup: {
     'en-us': 'Export {schemaConfig:string}',
@@ -22,7 +23,8 @@ export const schemaText = createDictionary({
     'en-us': 'Continue Import',
   },
   importSchemaError: {
-    'en-us': 'The {schemaConfig:string} could not be imported. The database was not changed.',
+    'en-us':
+      'The {schemaConfig:string} could not be imported. The database was not changed.',
   },
   table: {
     'en-us': 'Table',
