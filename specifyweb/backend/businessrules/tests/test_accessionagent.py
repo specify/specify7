@@ -150,3 +150,36 @@ class AccessionAgentTests(ApiTests):
         self.assertEqual(fetched.accession, accession)
         self.assertEqual(fetched.agent, self.agent)
         self.assertEqual(fetched.role, 'Collector')
+
+    def test_create_new_agent_for_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-NEW-AGENT-001',
+            division=self.division
+        )
+
+        new_agent = models.Agent.objects.create(
+            agenttype=0, #means its a person
+            firstname='New',
+            lastname='Donor',
+            division=self.division
+        )
+
+        accession_agent = accession.accessionagents.create(
+            agent=new_agent,
+            role='Donor'
+        )
+
+        fetched_link = models.Accessionagent.objects.get(
+            id=accession_agent.id
+        )
+        fetched_agent = models.Agent.objects.get(
+            id=new_agent.id
+        )
+
+        self.assertEqual(fetched_agent.firstname, 'New')
+        self.assertEqual(fetched_agent.lastname, 'Donor')
+        self.assertEqual(fetched_agent.agenttype, 0)
+        self.assertEqual(fetched_link.accession, accession)
+        self.assertEqual(fetched_link.agent, fetched_agent)
+        self.assertEqual(fetched_link.role, 'Donor')
+    
