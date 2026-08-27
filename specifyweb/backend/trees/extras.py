@@ -322,6 +322,43 @@ def mutation_log(action, node, agent, parent, dirty_flds: list[FieldChangeInfo])
     from specifyweb.backend.workbench.upload.auditlog import auditlog
     auditlog.log_action(action, node, agent, node.parent, dirty_flds)
 
+def _update_determinations(node, target, agent):
+    from specifyweb.backend.workbench.upload.auditlog import auditlog
+    from specifyweb.specify.models import Determination
+
+    # Determinations use protected references to taxon nodes. This updates
+    # both references before retrying the node deletion.
+    determinations = Determination.objects.filter(
+        Q(taxon=node) | Q(preferredtaxon=node)
+    ).select_for_update()
+    taxon_ids = []
+    preferredtaxon_ids = []
+    for determination in determinations:
+        dirty = []
+        if determination.taxon_id == node.id:
+            taxon_ids.append(determination.id)
+            dirty.append(FieldChangeInfo(
+                field_name='taxon',
+                old_value=node.id,
+                new_value=target.id,
+            ))
+        if determination.preferredtaxon_id == node.id:
+            preferredtaxon_ids.append(determination.id)
+            dirty.append(FieldChangeInfo(
+                field_name='preferredtaxon',
+                old_value=node.id,
+                new_value=target.id,
+            ))
+        # QuerySet.update() bypasses the normal auditing, so we have to log
+        # while the old values are still available on the object.
+        auditlog.update(determination, agent, node.parent, dirty)
+
+    # Apply the updates in bulk *after* the audit entries have been created.
+    if taxon_ids:
+        Determination.objects.filter(id__in=taxon_ids).update(taxon=target)
+    if preferredtaxon_ids:
+        Determination.objects.filter(id__in=preferredtaxon_ids).update(preferredtaxon=target)
+
 def merge(node, into, agent):
     from specifyweb.specify import models
     logger.info('merging %s into %s', node, into)
@@ -386,7 +423,10 @@ def merge(node, into, agent):
                 related_model_name, field_name = match.groups()
                 related_model = getattr(models, related_model_name)
                 assert related_model != model or field_name != 'parent', 'children were added during merge'
-                related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
+                if related_model is models.Determination:
+                    _update_determinations(node, target, agent)
+                else:
+                    related_model.objects.filter(**{field_name: node}).update(**{field_name: target})
 
     assert False, "failed to move all referrences to merged tree node"
 
