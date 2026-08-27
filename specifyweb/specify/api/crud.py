@@ -155,8 +155,6 @@ def update_obj(collection, agent, name: str, id, version, data: dict[str, Any], 
 
 
 def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=None, parent_obj=None, clean_predelete=None) -> None:
-    from specifyweb.backend.trees.utils import SPECIFY_TREES
-
     # need to delete dependent -to-one records
     # e.g. delete CollectionObjectAttribute when CollectionObject is deleted
     # but have to delete the referring record first
@@ -177,9 +175,11 @@ def delete_obj(obj, deleter: Callable[[Any, Any], None] | None=None, version=Non
     # Tree nodes are deleted through the database cascade when their parent is
     # deleted. Audit those descendants explicitly because Django's collector
     # does not invoke the API deleter for cascaded objects.
+    model_fields = {field.name for field in obj._meta.get_fields()}
+    is_tree_model = 'parent' in model_fields and 'rankid' in model_fields
     if (
         deleter
-        and obj._meta.model_name in SPECIFY_TREES
+        and is_tree_model
     ):
         collector = Collector(using=obj._state.db)
         collector.collect([obj])
@@ -359,9 +359,13 @@ def prepare_discipline_for_delete(obj) -> None:
     if not is_discipline(obj):
         return
 
-    from specifyweb.backend.trees.utils import DISCIPLINE_TREE_MODELS
-
-    for tree_def_model in DISCIPLINE_TREE_MODELS:
+    for tree_def_model in (
+        models.Geographytreedef,
+        models.Geologictimeperiodtreedef,
+        models.Lithostrattreedef,
+        models.Taxontreedef,
+        models.Tectonicunittreedef,
+    ):
         tree_def_model.objects.filter(discipline_id=obj.id).update(discipline_id=None)
 
     delete_discipline_owned_setup_data(obj)
