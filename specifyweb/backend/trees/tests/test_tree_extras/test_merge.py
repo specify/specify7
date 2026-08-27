@@ -33,13 +33,14 @@ class TestMerge(GeographyTree):
 
         merge(source, target, self.agent)
 
-        audit_log = Spauditlog.objects.get(
+        audit_logs = Spauditlog.objects.filter(
             tablenum=Determination.specify_model.tableId,
             recordid=determination.id,
             action=1,
         )
+        self.assertEqual(audit_logs.count(), 2)
         self.assertCountEqual(
-            audit_log.fields.values_list("fieldname", flat=True),
+            audit_logs.values_list("fields__fieldname", flat=True),
             ["taxon", "preferredtaxon"],
         )
         determination.refresh_from_db()
@@ -95,6 +96,12 @@ class TestMerge(GeographyTree):
         locality_3 = self._make_locality(self.springmo)
 
         locality_4 = self._make_locality(self.springill)
+        locality_ids = [
+            locality_1.id,
+            locality_2.id,
+            locality_3.id,
+            locality_4.id,
+        ]
         merge(self.springmo, self.springill, self.agent)
 
 
@@ -105,6 +112,14 @@ class TestMerge(GeographyTree):
                 ).count(), 
                 4
             )
+        self.assertEqual(
+            Spauditlog.objects.filter(
+                tablenum=Locality.specify_model.tableId,
+                recordid__in=locality_ids,
+                action=1,
+            ).count(),
+            4,
+        )
         
     def test_complicated_merge(self):
 
