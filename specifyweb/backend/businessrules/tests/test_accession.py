@@ -66,3 +66,27 @@ class AccessionTests(ApiTests):
         self.assertEqual(fetched.accessionnumber, "A-8454-001")
         self.assertEqual(fetched.status, "Complete")
         self.assertEqual(fetched.type, "Gift")
+
+    def test_add_existing_permit_to_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-PERMIT-001',
+            division=self.division,
+        )
+
+        permit = models.Permit.objects.create( # since ApiTests doesn't have an existing permit, we create it
+            permitnumber='P-EXISTING-001',
+            institution=self.institution,
+        )
+
+        authorization = accession.accessionauthorizations.create(
+            permit=permit,
+            remarks='Existing permit authorizations',
+        )
+
+        fetched = models.Accessionauthorization.objects.get(
+            id=authorization.id
+        )
+
+        self.assertEqual(fetched.accession, accession)
+        self.assertEqual(fetched.permit, permit)
+        self.assertEqual(fetched.remarks, 'Existing permit authorizations')
