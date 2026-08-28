@@ -197,9 +197,8 @@ msgstr "Arrière plan des champs"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1010
-#, fuzzy
 msgid "fieldBackground"
-msgstr "Contexte du terrain"
+msgstr "Arrière plan de champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1018
@@ -446,9 +445,8 @@ msgstr "Afficher l'icône dans l'en-tête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:299
-#, fuzzy
 msgid "scaleInterface"
-msgstr "Interface d'échelle"
+msgstr "Adaptation de l'interface"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:300
@@ -959,56 +957,47 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1488
-#, fuzzy
 msgid "searchCaseSensitive"
 msgstr "Recherche sensible à la casse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1521
-#, fuzzy
 msgid "searchField"
 msgstr "Champ de recherche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:710
-#, fuzzy
 msgid "createInteractions"
 msgstr "Créer une interaction"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:714
 #: components/Preferences/UserDefinitions.tsx:725
-#, fuzzy
 msgid "tableIdentifier"
 msgstr "Identifiant {tableName:string}"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:735
-#, fuzzy
 msgid "useSpaceAsDelimiter"
 msgstr "Utiliser l'espace comme délimiteur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:756
-#, fuzzy
 msgid "useCommaAsDelimiter"
 msgstr "Utiliser la virgule comme délimiteur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:777
-#, fuzzy
 msgid "useNewLineAsDelimiter"
 msgstr "Utiliser une nouvelle ligne comme délimiteur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:798
-#, fuzzy
 msgid "useCustomDelimiters"
 msgstr "Utiliser des délimiteurs personnalisés"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:799
-#, fuzzy
 msgid "useCustomDelimitersDescription"
 msgstr ""
 "Une liste de délimiteurs à utiliser, en plus de ceux définis ci-dessus. "
@@ -1018,13 +1007,11 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:743
 #: components/Preferences/UserDefinitions.tsx:764
 #: components/Preferences/UserDefinitions.tsx:785
-#, fuzzy
 msgid "detectAutomaticallyDescription"
 msgstr "Détecter automatiquement en fonction du format du numéro de catalogue."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:269
-#, fuzzy
 msgid "uniqueness"
 msgstr "Unicité"
 
@@ -1032,7 +1019,6 @@ msgstr "Unicité"
 #: components/Preferences/UserDefinitions.tsx:747
 #: components/Preferences/UserDefinitions.tsx:768
 #: components/Preferences/UserDefinitions.tsx:789
-#, fuzzy
 msgid "use"
 msgstr "Utiliser"
 
@@ -1040,50 +1026,42 @@ msgstr "Utiliser"
 #: components/Preferences/UserDefinitions.tsx:751
 #: components/Preferences/UserDefinitions.tsx:772
 #: components/Preferences/UserDefinitions.tsx:793
-#, fuzzy
 msgid "dontUse"
-msgstr "Zoom avec la molette de défilement"
+msgstr "Ne pas utiliser"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:652
 #: components/Preferences/UserDefinitions.tsx:664
-#, fuzzy
 msgid "position"
 msgstr "Position"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:658
-#, fuzzy
 msgid "top"
 msgstr "Haut"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:660
-#, fuzzy
 msgid "bottom"
 msgstr "Bas"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:657
-#, fuzzy
 msgid "left"
 msgstr "Gauche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:659
-#, fuzzy
 msgid "right"
 msgstr "Droite"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:595
-#, fuzzy
 msgid "showUnsavedIndicator"
 msgstr "Afficher l'indicateur de modifications non enregistrées"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:596
-#, fuzzy
 msgid "showUnsavedIndicatorDescription"
 msgstr ""
 "Afficher un \"*\" dans le titre de l'onglet lorsqu'il y a des modifications "
@@ -1091,7 +1069,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1932
-#, fuzzy
 msgid "autoPopulateDescription"
 msgstr ""
 "Remplir automatiquement l'enregistrement fusionné avec les valeurs des "
@@ -1099,13 +1076,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1945
-#, fuzzy
 msgid "autoCreateVariants"
 msgstr "Créer automatiquement des enregistrements {agentVariantTable:string}"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1949
-#, fuzzy
 msgid "autoCreateVariantsDescription"
 msgstr ""
 "Lors de la fusion d'agents, créez automatiquement des enregistrements "
@@ -1116,37 +1091,31 @@ msgstr ""
 #: components/Header/userToolDefinitions.ts:62
 #: components/Preferences/index.tsx:102
 #: components/Router/Routes.tsx:389
-#, fuzzy
 msgid "collectionPreferences"
-msgstr "Personnalisation"
+msgstr "Paramètres de la collection"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:573
-#, fuzzy
 msgid "rememberDialogSizes"
 msgstr "Mémoriser les tailles des fenêtres de dialogue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:566
-#, fuzzy
 msgid "rememberDialogPositions"
 msgstr "Mémoriser les positions des fenêtres de dialogue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1432
-#, fuzzy
 msgid "autoPlayMedia"
 msgstr "Lire automatiquement les médias"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:316
-#, fuzzy
 msgid "useCustomTooltips"
 msgstr "Utiliser des info-bulles modernes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1209
-#, fuzzy
 msgid "alwaysUseQueryBuilder"
 msgstr ""
 "Utilisez toujours la recherche du générateur de requêtes dans le formulaire "
@@ -1154,55 +1123,46 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2168
-#, fuzzy
 msgid "localizeResourceNames"
 msgstr "Localisez les noms de ressources de l'application reconnues"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2206
-#, fuzzy
 msgid "splitLongXml"
 msgstr "Diviser les longues lignes de XML en plusieurs lignes"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:108
-#, fuzzy
 msgid "url"
 msgstr "URL"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:102
-#, fuzzy
 msgid "pickAttachment"
 msgstr "Choisissez une pièce jointe"
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:130
-#, fuzzy
 msgid "attachmentFailed"
 msgstr "La pièce jointe n'a pas pu être chargée."
 
 #. Used in: Components > Molecules > Sync Attachment Picker
 #: components/Molecules/SyncAttachmentPicker.tsx:75
-#, fuzzy
 msgid "pickImage"
 msgstr "Choisissez une image"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:675
-#, fuzzy
 msgid "customLogo"
 msgstr "URL de l'image étendue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:683
-#, fuzzy
 msgid "customLogoCollapsed"
 msgstr "URL de l'image réduite"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:680
-#, fuzzy
 msgid "customLogoDescription"
 msgstr ""
 "Une URL vers une image qui serait affichée à côté du logo Specify dans le "
@@ -1210,81 +1170,69 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1907
-#, fuzzy
 msgid "showLineNumber"
 msgstr "Afficher le numéro de ligne du résultat de la requête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:388
 #: components/Preferences/UserDefinitions.tsx:449
-#, fuzzy
 msgid "saveButtonColor"
 msgstr "Couleur du bouton Enregistrer"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:428
 #: components/Preferences/UserDefinitions.tsx:489
-#, fuzzy
 msgid "secondaryButtonColor"
 msgstr "Couleur du bouton secondaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:436
 #: components/Preferences/UserDefinitions.tsx:497
-#, fuzzy
 msgid "secondaryLightButtonColor"
-msgstr "Couleur du bouton d'éclairage secondaire"
+msgstr "Couleur du bouton clair secondaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:396
 #: components/Preferences/UserDefinitions.tsx:457
-#, fuzzy
 msgid "dangerButtonColor"
 msgstr "Couleur du bouton de danger"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:412
 #: components/Preferences/UserDefinitions.tsx:473
-#, fuzzy
 msgid "infoButtonColor"
 msgstr "Couleur du bouton d'information"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:404
 #: components/Preferences/UserDefinitions.tsx:465
-#, fuzzy
 msgid "warningButtonColor"
 msgstr "Couleur du bouton d'avertissement"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:420
 #: components/Preferences/UserDefinitions.tsx:481
-#, fuzzy
 msgid "successButtonColor"
 msgstr "Couleur du bouton de réussite"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:899
-#, fuzzy
 msgid "openAsReadOnly"
 msgstr "Ouvrir tous les enregistrements en mode lecture seule"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:297
 #: components/Preferences/UserDefinitions.tsx:1880
-#, fuzzy
 msgid "displayBasicView"
 msgstr "Afficher la vue de base"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1887
-#, fuzzy
 msgid "showComparisonOperatorsForString"
 msgstr "Afficher les opérateurs de comparaison pour les champs textuels"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1888
-#, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
 "Permet d'appliquer les filtres suivants aux champs de texte : Supérieur à, "
@@ -1293,54 +1241,45 @@ msgstr ""
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
-#, fuzzy
 msgid "basicView"
 msgstr "Vue de base"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
-#, fuzzy
 msgid "detailedView"
 msgstr "Vue détaillée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1439
-#, fuzzy
 msgid "attachmentPreviewMode"
 msgstr "Mode aperçu des pièces jointes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1446
-#, fuzzy
 msgid "fullResolution"
 msgstr "Résolution maximale"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1450
-#, fuzzy
 msgid "thumbnail"
 msgstr "Vignette"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:613
-#, fuzzy
 msgid "addSearchBarHomePage"
 msgstr "Ajouter une barre de recherche sur la page d'accueil"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:206
-#, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
 "Seuls les enregistrements {collectionObjectTableName: string} sans "
-"{catalogNumberFieldName: string} hériteront d'un "
-"{collectionObjectTableName: string} principal dans un "
-"{collectionObjectGroupTableName: string}."
+"{catalogNumberFieldName: string} hériteront d'un {collectionObjectTableName: "
+"string} principal dans un {collectionObjectGroupTableName: string}."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:196
-#, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
 "Activer l'héritage de {catalogNumberFieldName: string} pour les éléments "
@@ -1348,15 +1287,13 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:236
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
-"Activer l'héritage {catalogNumberFieldName: string} pour les "
-"enregistrements {componentTableName: string}"
+"Activer l'héritage {catalogNumberFieldName: string} pour les enregistrements "
+"{componentTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:273
-#, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
 "Imposer l'unicité du champ {catalogNumberFieldName: string} entre "
@@ -1364,13 +1301,11 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:37
-#, fuzzy
 msgid "scopeEntireTablePicklists"
 msgstr "Perimètre des picklists de type \"table entière\""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:38
-#, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
 "Si cette option est activée, les picklists de type « table entière » "
@@ -1378,7 +1313,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:244
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
 "Seuls les enregistrements {componentTableName: string} sans "
