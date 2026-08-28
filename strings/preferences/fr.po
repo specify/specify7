@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:51+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -410,8 +410,8 @@ msgstr "Contient (sensible à la casse)"
 #, fuzzy
 msgid "containsDescription"
 msgstr ""
-"Recherche les valeurs contenant une chaîne de requête donnée (insensible à "
-"la casse)."
+"Rechercher les valeurs contenant une chaîne de requête donnée (sans tenir "
+"compte de la casse)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1145
