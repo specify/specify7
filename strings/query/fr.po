@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -72,40 +72,34 @@ msgstr "Valeur initiale"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:353
-#, fuzzy
 msgid "endValue"
 msgstr "Valeur finale"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Save
 #: components/QueryBuilder/Components.tsx:111
 #: components/QueryBuilder/Save.tsx:73
-#, fuzzy
 msgid "saveQuery"
 msgstr "Enregistrer la requête"
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:73
-#, fuzzy
 msgid "saveClonedQuery"
 msgstr "Enregistrer la requête sous..."
 
 #. Used in: Components > Query Builder > Save
 #: components/QueryBuilder/Save.tsx:76
-#, fuzzy
 msgid "saveClonedQueryDescription"
 msgstr ""
-"La requête sera enregistrée sous un nouveau nom, la requête actuelle "
-"restant inchangée."
+"La requête sera enregistrée sous un nouveau nom, la requête actuelle restant "
+"inchangée."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:172
-#, fuzzy
 msgid "queryDeleteIncomplete"
 msgstr "La définition de la requête contient des champs incomplets"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:173
-#, fuzzy
 msgid "queryDeleteIncompleteDescription"
 msgstr ""
 "La définition de la requête contient des champs incomplets. Voulez-vous les "
@@ -113,50 +107,42 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:188
-#, fuzzy
 msgid "queryUnloadProtect"
 msgstr "La requête nouvelle ou modifiée n'a pas été enregistrée"
 
 #. 🟥Example: Creating a Record Set from Query. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:272
-#, fuzzy
 msgid "recordSetToQuery"
 msgstr "Création d'un {recordSetTable:string} à partir d'une requête"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/QueryBuilder/Components.tsx:277
 #: components/QueryBuilder/CreateRecordSet.tsx:134
-#, fuzzy
 msgid "recordSetToQueryDescription"
 msgstr "Génération de {recordSetTable:string}..."
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:294
-#, fuzzy
 msgid "recordSetCreated"
 msgstr "{recordSetTable:string} Créé"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:168
-#, fuzzy
 msgid "missingCoordinatesForKml"
 msgstr "Impossible d'exporter au format KML"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:171
-#, fuzzy
 msgid "missingCoordinatesForKmlDescription"
 msgstr "Veuillez ajouter les champs de latitude et de longitude à la requête."
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:160
-#, fuzzy
 msgid "queryExportStarted"
 msgstr "Création du fichier d'exportation en cours"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:163
-#, fuzzy
 msgid "queryExportStartedDescription"
 msgstr ""
 "Une notification s'affichera lorsque le fichier d'exportation sera terminé "
@@ -166,73 +152,61 @@ msgstr ""
 #: components/PickLists/index.tsx:188
 #: components/QueryBuilder/Formatter.tsx:220
 #: components/SchemaConfig/Components.tsx:94
-#, fuzzy
 msgid "invalidPicklistValue"
 msgstr "{value:string} (valeur actuelle, invalide)"
 
 #. 🟥Used in query builder header when querying on record set. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:91
-#, fuzzy
 msgid "queryRecordSetTitle"
 msgstr ""
-"Requête : \"{queryName:string}\" sur {recordSetTable:string} : "
-"\"{recordSetName:string}\""
+"Requête : \"{queryName:string}\" sur {recordSetTable:string} : \""
+"{recordSetName:string}\""
 
 #. 🟥Used in query builder header when querying on tree node usages. Used in: Components > Query Builder > From Tree
 #: components/QueryBuilder/fromTree.ts:218
-#, fuzzy
 msgid "treeQueryName"
 msgstr "{tableName:string} utilisant \"{nodeFullName:string}\""
 
 #. Used in: Components > Query Builder > Wrapped
 #: components/QueryBuilder/Wrapped.tsx:489
-#, fuzzy
 msgid "newButtonDescription"
 msgstr "Ajouter un nouveau champ"
 
 #. 🟥Verb. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:85
-#, fuzzy
 msgid "countOnly"
 msgstr "Compter"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:72
-#, fuzzy
 msgid "distinct"
 msgstr "Distinct (uniquement les valeurs uniques présentes en base)"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:58
-#, fuzzy
 msgid "series"
 msgstr ""
-"Série (regroupe les résultats dont les valeurs recherchées sont "
-"identifiques)"
+"Série (regroupe les résultats dont les valeurs recherchées sont identifiques)"
 
 #. Used in: Components > Query Builder > Toolbar
 #: components/QueryBuilder/Toolbar.tsx:81
-#, fuzzy
 msgid "searchSynonyms"
 msgstr "Rechercher les synonymes"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:201
-#, fuzzy
 msgid "createCsv"
 msgstr "Créer un fichier CSV"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:219
-#, fuzzy
 msgid "createKml"
 msgstr "Créer un fichier KML"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:241
-#, fuzzy
 msgid "exportToWebPortal"
-msgstr ""
+msgstr "Exporter vers le portail web"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:177
