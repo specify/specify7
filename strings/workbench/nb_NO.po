@@ -116,11 +116,10 @@ msgstr "Live-validering: På"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1994
-#, fuzzy
 msgid "dataCheckDescription"
 msgstr ""
 "Live-validering er ikke en fullstendig erstatning for vanlig validering. "
-"Sørg for å utføre regelmessig validering før opplasting."
+"Sørg for å utføre vanlig validering før opplasting."
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:38
