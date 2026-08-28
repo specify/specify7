@@ -697,26 +697,22 @@ msgstr ""
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:34
 #: components/Preferences/UserDefinitions.tsx:2074
-#, fuzzy
 msgid "filterPickLists"
-msgstr "Filtrer les éléments de la liste de sélection"
+msgstr "Filtrer les éléments des listes à choix"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1842
 #: components/Preferences/UserDefinitions.tsx:2094
-#, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Délimiteur de fichier d'exportation"
+msgstr "Délimiteur du fichier exporté"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1870
-#, fuzzy
 msgid "exportCsvUtf8Bom"
 msgstr "Ajouter UTF-8 BOM aux exportations de fichiers CSV"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1872
-#, fuzzy
 msgid "exportCsvUtf8BomDescription"
 msgstr ""
 "Permet aux exportations de fichiers CSV de s'afficher correctement dans "
@@ -724,51 +720,43 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2085
-#, fuzzy
 msgid "caseSensitive"
-msgstr "Sensible aux majuscules et minuscules"
+msgstr "Sensible à la casse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2089
-#, fuzzy
 msgid "caseInsensitive"
 msgstr "Insensible à la casse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1810
-#, fuzzy
 msgid "showNoReadTables"
 msgstr "Afficher les tableaux sans accès \"Lecture\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2151
-#, fuzzy
 msgid "showNoAccessTables"
 msgstr "Afficher les tableaux sans accès \"Créer\""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:843
-#, fuzzy
 msgid "textAreaAutoGrow"
 msgstr "Les zones de texte s'agrandissent automatiquement"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1968
-#, fuzzy
 msgid "clearQueryFilters"
 msgstr "Réinitialiser les filtres de requête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1969
-#, fuzzy
 msgid "clearQueryFiltersDescription"
 msgstr ""
-"Efface tous les filtres de requête lors de l'exécution d'un rapport à "
-"partir d'un formulaire."
+"Efface tous les filtres de requête lors de l'exécution d'un rapport à partir "
+"d'un formulaire."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1976
-#, fuzzy
 msgid "queryParamtersFromForm"
 msgstr ""
 "Afficher les filtres de requête lors de l'exécution d'un rapport à partir "
@@ -776,13 +764,12 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1157
-#, fuzzy
 msgid "autoGrowAutoComplete"
-msgstr "Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée"
+msgstr ""
+"Sens de déplacement lorsque la touche [X27X]Tabulation[X35X] est enfoncée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:858
-#, fuzzy
 msgid "tableNameInTitle"
 msgstr "Inclure le nom de la table dans le titre de la page du navigateur"
 
@@ -790,7 +777,7 @@ msgstr "Inclure le nom de la table dans le titre de la page du navigateur"
 #: components/Preferences/UserDefinitions.tsx:865
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Concentrez-vous sur le premier champ"
+msgstr "Concentrez vous sur le premier champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2241
