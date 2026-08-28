@@ -26,7 +26,7 @@ msgstr "Personnalisation"
 #: components/AppResources/types.tsx:93
 #: components/Header/userToolDefinitions.ts:57
 msgid "userPreferences"
-msgstr "Préférences de l'utilisateur"
+msgstr "Préférences utilisateur"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:103
@@ -50,13 +50,11 @@ msgstr "Image personnalisée"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:173
 #: components/Preferences/UserDefinitions.tsx:927
-#, fuzzy
 msgid "ui"
 msgstr "Interface utilisateur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:184
-#, fuzzy
 msgid "theme"
 msgstr "Thème"
 
@@ -65,7 +63,6 @@ msgstr "Thème"
 #: components/Preferences/UserDefinitions.tsx:226
 #: components/Preferences/UserDefinitions.tsx:248
 #: components/Preferences/UserDefinitions.tsx:269
-#, fuzzy
 msgid "useSystemSetting"
 msgstr "Utiliser les paramètres du système"
 
@@ -74,33 +71,28 @@ msgstr "Utiliser les paramètres du système"
 #: components/Preferences/UserDefinitions.tsx:227
 #: components/Preferences/UserDefinitions.tsx:249
 #: components/Preferences/UserDefinitions.tsx:270
-#, fuzzy
 msgid "inheritOsSettings"
 msgstr "Copie la valeur des paramètres de votre système d'exploitation"
 
 #. 🟥Light mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:196
 #: components/Preferences/UserDefinitions.tsx:213
-#, fuzzy
 msgid "light"
-msgstr "Lumière"
+msgstr "Clair"
 
 #. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:200
 #: components/Preferences/UserDefinitions.tsx:210
-#, fuzzy
 msgid "dark"
 msgstr "Sombre"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:218
-#, fuzzy
 msgid "reduceMotion"
 msgstr "Réduire les mouvements"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:219
-#, fuzzy
 msgid "reduceMotionDescription"
 msgstr "Désactivez les animations et les transitions non essentielles."
 
@@ -112,9 +104,8 @@ msgstr "Désactivez les animations et les transitions non essentielles."
 #: components/Preferences/UserDefinitions.tsx:1745
 #: components/Preferences/UserDefinitions.tsx:1777
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#, fuzzy
 msgid "rankThreshold"
-msgstr "Afficher le nombre d'objets ci-dessous"
+msgstr "Afficher le nombre d'objets en dessous"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1581
@@ -123,7 +114,6 @@ msgstr "Afficher le nombre d'objets ci-dessous"
 #: components/Preferences/UserDefinitions.tsx:1714
 #: components/Preferences/UserDefinitions.tsx:1746
 #: components/Preferences/UserDefinitions.tsx:1778
-#, fuzzy
 msgid "rankThresholdDescription"
 msgstr ""
 "Afficher le nombre d'objets de collection pour tous les rangs, y compris et "
@@ -131,28 +121,24 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:240
-#, fuzzy
 msgid "reduceTransparency"
 msgstr "Réduire la transparence"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:241
-#, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
-"S'il faut désactiver les arrière-plans translucides pour les composants de "
-"l'interface utilisateur chaque fois que possible (par exemple, les en-têtes "
-"de tableau dans l'arborescence)."
+"Désactiver les arrière-plans translucides pour les composants de l'interface "
+"utilisateur chaque fois que possible (par exemple, les en-têtes de tableau "
+"dans l'arborescence)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:262
-#, fuzzy
 msgid "contrast"
 msgstr "Contraste"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:274
-#, fuzzy
 msgid "increase"
 msgstr "Augmenter"
 
@@ -160,7 +146,6 @@ msgstr "Augmenter"
 #: components/Preferences/UserDefinitions.tsx:231
 #: components/Preferences/UserDefinitions.tsx:253
 #: components/Preferences/UserDefinitions.tsx:278
-#, fuzzy
 msgid "reduce"
 msgstr "Réduire"
 
@@ -168,28 +153,24 @@ msgstr "Réduire"
 #: components/Preferences/UserDefinitions.tsx:235
 #: components/Preferences/UserDefinitions.tsx:257
 #: components/Preferences/UserDefinitions.tsx:282
-#, fuzzy
 msgid "noPreference"
 msgstr "Pas de préférence"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:287
 #: components/Preferences/UserDefinitions.tsx:930
-#, fuzzy
 msgid "fontSize"
 msgstr "Taille de police"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:307
 #: components/Preferences/UserDefinitions.tsx:942
-#, fuzzy
 msgid "fontFamily"
 msgstr "Famille de polices"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:308
 #: components/Preferences/UserDefinitions.tsx:943
-#, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
 "Vous pouvez spécifier n'importe quelle police installée sur votre "
@@ -201,63 +182,53 @@ msgstr ""
 #: components/Preferences/Renderers.tsx:201
 #: components/Preferences/Renderers.tsx:203
 #: components/Preferences/Renderers.tsx:225
-#, fuzzy
 msgid "defaultFont"
 msgstr "(police par défaut)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:951
-#, fuzzy
 msgid "maxFormWidth"
 msgstr "Largeur maximale du formulaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1007
-#, fuzzy
 msgid "fieldBackgrounds"
-msgstr "Milieux de terrain"
+msgstr "Arrière plan des champs"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1010
-#, fuzzy
 msgid "fieldBackground"
-msgstr "Contexte du terrain"
+msgstr "Arrière plan des champs"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1018
-#, fuzzy
 msgid "disabledFieldBackground"
-msgstr "Fond de champ désactivé"
+msgstr "Désactive l'arrière plan des champs"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1026
-#, fuzzy
 msgid "invalidFieldBackground"
-msgstr "Fond de champ invalide"
+msgstr "Arrière plan des champs invalides"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1034
-#, fuzzy
 msgid "requiredFieldBackground"
-msgstr "Contexte du champ obligatoire"
+msgstr "Nécessite un arrière plan de champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1042
-#, fuzzy
 msgid "darkFieldBackground"
-msgstr "Fond de champ (thème sombre)"
+msgstr "Arrière plan des champs (thème sombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1050
-#, fuzzy
 msgid "darkDisabledFieldBackground"
-msgstr "Fond de champ désactivé (thème sombre)"
+msgstr "Arrière plan des champs désactivés (thème sombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1058
-#, fuzzy
 msgid "darkInvalidFieldBackground"
-msgstr "Largeur de colonne de grille de sous-vue flexible"
+msgstr "Arrière plan des champs invalides (thème sombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1066
