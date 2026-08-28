@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-08-28 17:51+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/tree/"
 "fr/>\n"
 "Language: fr\n"
@@ -248,7 +248,6 @@ msgstr "({directCount:number|formatted})"
 
 #. 🟥Used to show tree node's direct, indirect and synonymized usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:248
-#, fuzzy
 msgid "nodeStatsWithSynonyms"
 msgstr ""
 "({directCount:number|formatted}, {childCount:number|formatted}, "
@@ -256,13 +255,11 @@ msgstr ""
 
 #. 🟥Used to show leaf tree node's direct and synonymized usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:244
-#, fuzzy
 msgid "leafNodeStatsWithSynonyms"
 msgstr "({directCount:number|formatted}, {synonymCount:number|formatted})"
 
 #. 🟥Count of records determined as this node or any of its descendants that have been synonymized into another node. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:234
-#, fuzzy
 msgid "synonymizedCollectionObjectCount"
 msgstr "Compte synonymisé {collectionObjectTable:string}"
 
