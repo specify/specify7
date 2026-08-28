@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:51+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -446,8 +446,9 @@ msgstr "Afficher l'icône dans l'en-tête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:299
+#, fuzzy
 msgid "scaleInterface"
-msgstr ""
+msgstr "Interface d'échelle"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:300
@@ -691,8 +692,11 @@ msgstr "Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2049
+#, fuzzy
 msgid "enterMoveDirectionDescription"
 msgstr ""
+"Vous pouvez vous déplacer dans la direction opposée en appuyant sur <key>"
+"Shift</key>+<key>Entrée</key>."
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:34
@@ -777,7 +781,7 @@ msgstr "Inclure le nom de la table dans le titre de la page du navigateur"
 #: components/Preferences/UserDefinitions.tsx:865
 #, fuzzy
 msgid "focusFirstField"
-msgstr "Concentrez vous sur le premier champ"
+msgstr "Priorité au champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2241
@@ -798,7 +802,7 @@ msgstr "Animer les transitions"
 #: components/Preferences/UserDefinitions.tsx:2262
 #, fuzzy
 msgid "panInertia"
-msgstr "Pan inertia"
+msgstr "Inertie de Pan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2269
