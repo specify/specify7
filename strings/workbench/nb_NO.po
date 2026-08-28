@@ -162,9 +162,8 @@ msgstr "Søkeresultater"
 
 #. Used in: Components > Wb Utils > Navigation
 #: components/WbUtils/Navigation.tsx:100
-#, fuzzy
 msgid "clickToToggle"
-msgstr "Klikk for å slå av/på synligheten"
+msgstr "Klikk for å slå av/på synlighet"
 
 #. Used in: Components > Work Bench > Advanced Search
 #: components/WorkBench/AdvancedSearch.tsx:111
