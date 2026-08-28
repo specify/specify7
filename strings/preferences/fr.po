@@ -781,19 +781,16 @@ msgstr "Concentrez vous sur le premier champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2241
-#, fuzzy
 msgid "doubleClickZoom"
 msgstr "Double-cliquez pour zoomer"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2248
-#, fuzzy
 msgid "closePopupOnClick"
 msgstr "Fermer la pop-up lors d'un clic extérieur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2255
-#, fuzzy
 msgid "animateTransitions"
 msgstr "Animer les transitions"
 
@@ -801,7 +798,7 @@ msgstr "Animer les transitions"
 #: components/Preferences/UserDefinitions.tsx:2262
 #, fuzzy
 msgid "panInertia"
-msgstr "Inertie du bac"
+msgstr "Pan inertia"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2269
