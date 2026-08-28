@@ -232,13 +232,11 @@ msgstr "Arrière plan des champs invalides (thème sombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1066
-#, fuzzy
 msgid "darkRequiredFieldBackground"
-msgstr "Fond de champ obligatoire (thème sombre)"
+msgstr "Arrière plan des champs obligatoires (thème sombre"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:519
-#, fuzzy
 msgid "dialogs"
 msgstr "Boîtes de dialogue"
 
@@ -251,45 +249,38 @@ msgstr "Boîtes de dialogue"
 #: components/Preferences/UserDefinitions.tsx:1897
 #: components/Preferences/UserDefinitions.tsx:2165
 #: components/Preferences/UserDefinitions.tsx:2220
-#, fuzzy
 msgid "appearance"
 msgstr "Apparence"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:385
-#, fuzzy
 msgid "buttonsLight"
-msgstr "Boutons (mode lumière)"
+msgstr "Boutons (thème clair)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:446
-#, fuzzy
 msgid "buttonsDark"
-msgstr "Boutons (mode sombre)"
+msgstr "Boutons (thèmesombre)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:530
-#, fuzzy
 msgid "translucentDialog"
-msgstr "Dialogues translucides"
+msgstr "Boites de dialogue translucides"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:531
-#, fuzzy
 msgid "translucentDialogDescription"
-msgstr "Si les boîtes de dialogue ont un fond translucide."
+msgstr "Défini si les boîtes de dialogue ont un fond translucide."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1404
-#, fuzzy
 msgid "alwaysPrompt"
 msgstr "Toujours invité à choisir la collection"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1475
-#, fuzzy
 msgid "treeEditor"
-msgstr "Éditeur d'arborescence"
+msgstr "Éditeur d'arbres"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1564
@@ -298,9 +289,8 @@ msgstr "Éditeur d'arborescence"
 #: components/Preferences/UserDefinitions.tsx:1690
 #: components/Preferences/UserDefinitions.tsx:1729
 #: components/Preferences/UserDefinitions.tsx:1761
-#, fuzzy
 msgid "treeAccentColor"
-msgstr "Couleur d'accent d'arbre"
+msgstr "Couleur d'accentuation de l'arbre"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1572
@@ -309,19 +299,16 @@ msgstr "Couleur d'accent d'arbre"
 #: components/Preferences/UserDefinitions.tsx:1698
 #: components/Preferences/UserDefinitions.tsx:1737
 #: components/Preferences/UserDefinitions.tsx:1769
-#, fuzzy
 msgid "synonymColor"
-msgstr "Synonyme couleur"
+msgstr "Couleur des synonymes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2127
-#, fuzzy
 msgid "showNewDataSetWarning"
-msgstr "Afficher un nouvel avertissement sur l'ensemble de données"
+msgstr "Afficher un avertissement à la création d'un ensemble de données"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2128
-#, fuzzy
 msgid "showNewDataSetWarningDescription"
 msgstr ""
 "Afficher un message d'information lors de la création d'un nouvel ensemble "
@@ -329,44 +316,39 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:646
-#, fuzzy
 msgid "header"
-msgstr "le menu de navigation"
+msgstr "Menu de navigation"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:507
-#, fuzzy
 msgid "application"
 msgstr "Application"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:510
-#, fuzzy
 msgid "allowDismissingErrors"
 msgstr "Autoriser le rejet des messages d'erreur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:522
 #: components/Preferences/UserDefinitions.tsx:850
-#, fuzzy
 msgid "updatePageTitle"
 msgstr "Mettre à jour le titre de la page"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:523
-#, fuzzy
 msgid "updatePageTitleDescription"
 msgstr ""
-"S'il faut mettre à jour le titre de la page pour qu'il corresponde à "
-"l'en-tête de la boîte de dialogue."
+"Mettre à jour le titre de la page pour qu'il corresponde à l'en-tête de la "
+"boîte de dialogue."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:851
 #, fuzzy
 msgid "updatePageTitleFormDescription"
 msgstr ""
-"S'il faut mettre à jour le titre de la page pour qu'il corresponde à "
-"l'enregistrement actuel."
+"Mettre à jour le titre de la page pour qu'il corresponde à l'enregistrement "
+"actuel."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1166
