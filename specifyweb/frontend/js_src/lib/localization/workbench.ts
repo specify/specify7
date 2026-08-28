@@ -95,7 +95,7 @@ export const wbText = createDictionary({
     'de-ch': 'Validierung',
     'pt-br': 'Validação',
     'hr-hr': 'Validacija',
-    nb: 'Validerer',
+    nb: 'Validering',
   },
   disambiguate: {
     'en-us': 'Disambiguate',
@@ -180,7 +180,7 @@ export const wbText = createDictionary({
       'A validação em tempo real não substitui completamente a validação regular. Certifique-se de realizar a validação regular antes de fazer o upload.',
     'hr-hr':
       'Validacija uživo nije potpuna zamjena za redovnu validaciju. Obavezno izvršite redovnu validaciju prije prijenosa.',
-    nb: 'Live-validering er ikke en fullstendig erstatning for vanlig validering. Sørg for å utføre regelmessig validering før opplasting.',
+    nb: 'Live-validering er ikke en fullstendig erstatning for vanlig validering. Sørg for å utføre vanlig validering før opplasting.',
   },
   changeOwner: {
     'en-us': 'Change Owner',
@@ -257,7 +257,7 @@ export const wbText = createDictionary({
     'de-ch': 'Klicken Sie hier, um die Sichtbarkeit umzuschalten.',
     'pt-br': 'Clique para alternar a visibilidade.',
     'hr-hr': 'Kliknite za promjenu vidljivosti',
-    nb: 'Klikk for å slå av/på synligheten',
+    nb: 'Klikk for å slå av/på synlighet',
   },
   configureSearchReplace: {
     'en-us': 'Configure Search & Replace',
@@ -301,7 +301,7 @@ export const wbText = createDictionary({
     'de-ch': 'Fehlerzellen',
     'pt-br': 'Células com erro',
     'hr-hr': 'Ćelije s pogreškama',
-    nb: 'Feilceller',
+    nb: 'Celler med feil i',
   },
   dataEditor: {
     'en-us': 'Data Editor',
