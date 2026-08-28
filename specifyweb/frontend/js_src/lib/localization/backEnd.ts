@@ -325,7 +325,7 @@ export const backEndText = createDictionary({
     'en-us': 'Conflicting record IDs: {ids:string}',
     'de-ch': 'Konfliktierende Datensatz-IDs: {ids:string}',
     'es-es': 'Identificadores de registro conflictivos: {ids:string}',
-    'fr-fr': "Identifiants d'enregistrement conflictuels : {ids:string}",
+    'fr-fr': "Identifiants d'enregistrement en conflit : {ids:string}",
     'hr-hr': 'Konfliktni ID-ovi zapisa: {ids:string}',
     nb: 'Konfliktende post-ID-er: {ids:string}',
     'pt-br': 'IDs de registro conflitantes: {ids:string}',
