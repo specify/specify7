@@ -318,13 +318,13 @@ msgstr "Spremanje..."
 msgid "wbUnloadProtect"
 msgstr "Promjene ovog skupa podataka nisu spremljene."
 
-#: components/WorkBench/WbValidation.tsx:334
+#: components/WorkBench/WbValidation.tsx:355
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Nema odgovarajućeg zapisa za tablicu s obaveznim podudaranjem."
 
-#: components/WorkBench/WbValidation.tsx:363
+#: components/WorkBench/WbValidation.tsx:384
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"

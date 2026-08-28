@@ -280,14 +280,14 @@ msgstr ""
 "Les modifications apportées à cet ensemble de données n'ont pas été "
 "enregistrées."
 
-#: components/WorkBench/WbValidation.tsx:334
+#: components/WorkBench/WbValidation.tsx:355
 #. Used in: Components > Work Bench > Wb Validation
 msgid "noMatchErrorMessage"
 msgstr ""
 "Aucun enregistrement correspondant pour la table à correspondance "
 "obligatoire."
 
-#: components/WorkBench/WbValidation.tsx:363
+#: components/WorkBench/WbValidation.tsx:384
 #. Used in: Components > Work Bench > Wb Validation
 msgid "matchedMultipleErrorMessage"
 msgstr ""

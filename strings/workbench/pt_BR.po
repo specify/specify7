@@ -319,7 +319,7 @@ msgstr "Salvando..."
 msgid "wbUnloadProtect"
 msgstr "As alterações feitas neste conjunto de dados não foram salvas."
 
-#: components/WorkBench/WbValidation.tsx:334
+#: components/WorkBench/WbValidation.tsx:355
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
@@ -327,7 +327,7 @@ msgstr ""
 "Não foi encontrado nenhum registro correspondente na tabela de "
 "correspondência obrigatória."
 
-#: components/WorkBench/WbValidation.tsx:363
+#: components/WorkBench/WbValidation.tsx:384
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"

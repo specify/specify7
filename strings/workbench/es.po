@@ -318,13 +318,13 @@ msgstr "Guardando..."
 msgid "wbUnloadProtect"
 msgstr "Los cambios realizados en este conjunto de datos no se han guardado."
 
-#: components/WorkBench/WbValidation.tsx:334
+#: components/WorkBench/WbValidation.tsx:355
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "No hay registro que coincida en tabla de coincidencia obligada."
 
-#: components/WorkBench/WbValidation.tsx:363
+#: components/WorkBench/WbValidation.tsx:384
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"

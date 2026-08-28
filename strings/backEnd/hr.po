@@ -13,20 +13,21 @@ msgstr ""
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
-#: components/WorkBench/resultsParser.ts:213
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:21
+#: components/WorkBench/__tests__/resultsParser.test.ts:91
+#. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
 msgid "failedParsingBoolean"
 msgstr "vrijednost \"{value:string}\" se ne može razlučiti na True ili False"
 
-#: components/WorkBench/resultsParser.ts:215
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:23
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "failedParsingDecimal"
 msgstr "vrijednost \"{value:string}\" nije valjana decimalna vrijednost"
 
-#: components/WorkBench/resultsParser.ts:217
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:25
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "failedParsingFloat"
 msgstr "vrijednost \"{value:string}\" nije valjana vrijednost s pomičnim zarezom"
@@ -34,92 +35,92 @@ msgstr "vrijednost \"{value:string}\" nije valjana vrijednost s pomičnim zarezo
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:262
 #: components/WorkBench/hooks.ts:271
-#: components/WorkBench/resultsParser.ts:268
-#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:274
+#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} nije dopuštena vrijednost u ovom polju s popisa za odabir.\n"
 "Kliknite na strelicu za odabir između dostupnih opcija."
 
-#: components/WorkBench/resultsParser.ts:219
-#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:27
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "failedParsingAgentType"
 msgstr ""
 "loše {agentTypeField:string}: \"{badType:string}\". Očekivano jedno od "
 "{validTypes:string}"
 
-#: components/WorkBench/resultsParser.ts:272
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:278
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "pickListValueTooLong"
 msgstr ""
 "vrijednost iz {pickListTable:string} {pickList:string} dulja od maksimuma "
 "od {maxLength:number|formatted} za polje"
 
-#: components/WorkBench/resultsParser.ts:227
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:35
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "valueTooLong"
 msgstr "vrijednost ne smije imati duljinu veću od {maxLength:number|formatted}"
 
-#: components/WorkBench/resultsParser.ts:231
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:39
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidYear"
 msgstr "Vrijednost datuma mora sadržavati četiri znamenke godine: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:235
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:43
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "badDateFormat"
 msgstr "loša vrijednost datuma: {value:string}. očekivano: {format:string}"
 
-#: components/WorkBench/resultsParser.ts:240
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:48
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "coordinateBadFormat"
 msgstr "loša vrijednost geografske širine ili dužine: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:244
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:52
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "Zemljopisna širina mora biti između -90 i 90. Stvarno: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:248
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:56
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "longitudeOutOfRange"
 msgstr "Geografska dužina mora biti između -180 i 180. Stvarna: {value:string}"
 
-#: components/WorkBench/resultsParser.ts:252
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:60
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "formatMismatch"
 msgstr "vrijednost {value:string} ne odgovara formateru {formatter:string}"
 
-#: components/WorkBench/resultsParser.ts:278
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:284
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidPartialRecord"
 msgstr "Ovo polje mora biti prazno ako je {column:string} prazno"
 
-#: components/WorkBench/resultsParser.ts:282
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:288
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "polje je obavezno za mapiranje plana prijenosa"
 
-#: components/WorkBench/resultsParser.ts:284
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:289
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidTreeStructure"
 msgstr "U stablu postoji više vrijednosti rezerviranog mjesta \"Preneseno\"!"
 
-#: components/WorkBench/resultsParser.ts:294
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:299
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -133,39 +134,51 @@ msgid "showTraceback"
 msgstr "Prikaži povratno praćenje"
 
 #: components/Errors/JsonError.tsx:189
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:151
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} mora imati jedinstveni {fieldName:string}"
 
 #: components/Errors/JsonError.tsx:194
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:169
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} mora imati jedinstveni {fieldName:string} u "
 "{parentField:string}"
 
+#: components/WorkBench/resultMessageResolvers.ts:89
+#: components/WorkBench/__tests__/resultsParser.test.ts:18
+#. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+msgid "conflictingRecordIds"
+msgstr ""
+
 #: components/Errors/JsonError.tsx:154
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:181
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Nije moguće izbrisati stavku definicije stabla na korijenskoj razini"
 
 #: components/Errors/JsonError.tsx:156
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:182
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeParentInvalidRank"
 msgstr "Roditelj čvora stabla ima veći rang od samog sebe"
 
 #: components/Errors/JsonError.tsx:158
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:184
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
 msgstr "Rang čvora stabla je veći od ranga nekih njegovih potomaka"
 
 #: components/Errors/JsonError.tsx:160
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:186
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
@@ -173,7 +186,8 @@ msgstr ""
 "\"{parentName:string}\""
 
 #: components/Errors/JsonError.tsx:166
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:192
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
@@ -181,13 +195,15 @@ msgstr ""
 "\"{intoName:string}\""
 
 #: components/Errors/JsonError.tsx:171
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:197
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
 msgstr "Sinonimizirajući čvor \"{nodeName:string}\" koji ima djecu"
 
 #: components/Errors/JsonError.tsx:150
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:178
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
@@ -195,7 +211,8 @@ msgstr ""
 "gdje rang čvora nije veći od njegovog roditelja"
 
 #: components/Errors/JsonError.tsx:175
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:201
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidNodeType"
 msgstr ""
@@ -203,13 +220,15 @@ msgstr ""
 "Očekivana \"{nodeModel:string}\""
 
 #: components/Errors/JsonError.tsx:181
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:207
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "operationAcrossTrees"
 msgstr "{operation:string} preko drveća"
 
 #: components/Errors/JsonError.tsx:185
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:211
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
@@ -217,19 +236,23 @@ msgstr ""
 "{taxonId:number}"
 
 #: components/Errors/JsonError.tsx:200
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:215
+#: components/WorkBench/__tests__/resultsParser.test.ts:74
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
 msgid "resourceInPermissionRegistry"
 msgstr "Resurs {resource:string} već je u registru dozvola"
 
 #: components/Errors/JsonError.tsx:204
-#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:219
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} nije {specifyUserTable:string}"
 
 #: components/Errors/JsonError.tsx:210
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:225
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "unexpectedCollectionType"
 msgstr ""
@@ -237,7 +260,8 @@ msgstr ""
 "\"{collectionName:string}\""
 
 #: components/Errors/JsonError.tsx:215
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:230
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidReportMimetype"
 msgstr ""
@@ -245,13 +269,15 @@ msgstr ""
 "\"jrxml/label\" ili \"jrxml/report\""
 
 #: components/Errors/JsonError.tsx:219
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:234
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Polje {field:string} nije odnos"
 
 #: components/Errors/JsonError.tsx:221
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:238
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "unexpectedTableId"
 msgstr ""
@@ -259,13 +285,15 @@ msgstr ""
 "\"{expectedTableId:string}\""
 
 #: components/Errors/JsonError.tsx:226
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:243
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "Nije pronađena kolekcija u upitu za tablicu {table:string}"
 
 #: components/Errors/JsonError.tsx:228
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:247
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidDatePart"
 msgstr ""
@@ -273,7 +301,8 @@ msgstr ""
 "{validDateParts:string}"
 
 #: components/Errors/JsonError.tsx:233
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:252
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidUploadStatus"
 msgstr ""
@@ -281,52 +310,54 @@ msgstr ""
 "{expectedUploadStatus:string}"
 
 #: components/Errors/JsonError.tsx:239
-#. Used in: Components > Errors > Json Error
+#: components/WorkBench/resultMessageResolvers.ts:258
+#: components/WorkBench/__tests__/resultsParser.test.ts:64
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
 msgid "datasetAlreadyUploaded"
 msgstr "Skup podataka je već prenesen"
 
-#: components/WorkBench/resultsParser.ts:285
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:290
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "scopeChangeDetected"
 msgstr ""
 "U ovom retku otkrivena je promjena opsega. Preporučuje se brisanje ovog "
 "retka iz skupa podataka."
 
-#: components/WorkBench/resultsParser.ts:287
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:292
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Više definicija stabla u retku"
 
-#: components/WorkBench/resultsParser.ts:288
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:293
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidCotype"
 msgstr "Nevažeća vrsta za odabrani rang(ove) stabla"
 
-#: components/WorkBench/resultsParser.ts:290
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:295
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidComponentType"
 msgstr "Nevažeći {componentType: string} za odabrani rang stabla"
 
-#: components/WorkBench/resultsParser.ts:310
-#: components/WorkBench/resultsParser.ts:316
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:316
+#: components/WorkBench/resultMessageResolvers.ts:327
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "attachmentNotFound"
 msgstr "Jedan ili više privitaka ne postoje. Moguće su izbrisani."
 
-#: components/WorkBench/resultsParser.ts:312
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:318
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "tableDoesNotSupportAttachments"
 msgstr "Odredišna tablica priloga ne podržava priloge."
 
-#: components/WorkBench/resultsParser.ts:314
-#. Used in: Components > Work Bench > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:320
+#. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "attachmentAlreadyLinked"
 msgstr "Jedan ili više privitaka već su povezani s prenesenim zapisom."
