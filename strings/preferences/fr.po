@@ -807,107 +807,90 @@ msgstr "Pan inertia"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2269
 msgid "mouseDrags"
-msgstr "Mettre en surbrillance la sous-chaîne correspondante"
+msgstr "Glisser-déposer"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2276
-#, fuzzy
 msgid "scrollWheelZoom"
 msgstr "Zoom avec la molette de défilement"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:911
-#, fuzzy
 msgid "flexibleColumnWidth"
 msgstr "Largeur de colonne flexible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:918
-#, fuzzy
 msgid "flexibleSubGridColumnWidth"
 msgstr "Largeur de colonne flexible de la grille de sous-vue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:552
-#, fuzzy
 msgid "closeOnEsc"
-msgstr "Icône et nom de la table"
+msgstr "Fermer quand <key>ESC</key> est sélectionné"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:559
-#, fuzzy
 msgid "closeOnOutsideClick"
 msgstr "Fermer sur clic extérieur"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:977
-#, fuzzy
 msgid "specifyNetworkBadge"
 msgstr "Badge réseau Specify"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:984
-#, fuzzy
 msgid "useAccessibleFullDatePicker"
 msgstr "Utiliser un sélecteur de date complet accessible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:991
-#, fuzzy
 msgid "useAccessibleMonthPicker"
 msgstr "Utiliser le sélecteur de mois accessible"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:998
-#, fuzzy
 msgid "rightAlignNumberFields"
 msgstr "Justifier à droite les champs numériques"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:376
-#, fuzzy
 msgid "roundedCorners"
 msgstr "Coins arrondis"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:963
-#, fuzzy
 msgid "showSubviewBorders"
 msgstr "Afficher les bordures autour des sous-vues"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:970
-#, fuzzy
 msgid "limitMaxFieldWidth"
 msgstr "Limiter la largeur maximale du champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1900
-#, fuzzy
 msgid "condenseQueryResults"
 msgstr "Condenser les résultats de la requête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:538
-#, fuzzy
 msgid "blurContentBehindDialog"
 msgstr "Flou le contenu derrière la boîte de dialogue"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1414
-#, fuzzy
 msgid "collectionSortOrderDescription"
 msgstr "Ceci détermine l'ordre visuel des collections."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1221
-#, fuzzy
 msgid "recordSetRecordToOpen"
 msgstr "Enregistrement à ouvrir par défaut"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:585
-#, fuzzy
 msgid "altClickToSupressNewTab"
 msgstr ""
 "<key>{altKeyName:string}</key>+<key>Cliquez sur</key> pour supprimer le "
@@ -915,78 +898,64 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:586
-#, fuzzy
 msgid "altClickToSupressNewTabDescription"
 msgstr "Utiliser le sélecteur de mois accessible."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:892
-#, fuzzy
 msgid "makeFormDialogsModal"
 msgstr "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1481
-#, fuzzy
 msgid "autoScrollTree"
-msgstr "Arbre de défilement automatique vers le nœud ciblé"
+msgstr "Défilement automatique dans l'arbre vers le nœud ciblé"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1497
-#, fuzzy
 msgid "sortByField"
 msgstr "Trier par champ"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1914
 #: components/Preferences/UserDefinitions.tsx:2180
-#, fuzzy
 msgid "lineWrap"
 msgstr "Retour à la ligne"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2187
-#, fuzzy
 msgid "indentSize"
 msgstr "Taille du retrait"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2199
-#, fuzzy
 msgid "indentWithTab"
 msgstr "Indenter avec <key>Tabulation</key>"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:872
-#, fuzzy
 msgid "formHeaderFormat"
 msgstr "Format d'en-tête de formulaire"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:879
-#, fuzzy
 msgid "iconAndTableName"
 msgstr "Icône et nom de la table"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:887
-#, fuzzy
 msgid "tableIcon"
-msgstr "Icône de tableau"
+msgstr "Icône des tables"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1243
-#, fuzzy
 msgid "maxHeight"
 msgstr "hauteur maximum"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1113
-#, fuzzy
 msgid "autoComplete"
 msgstr ""
-"Détermine les légendes des champs, les notes d'utilisation et les légendes "
-"des tableaux"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1488
