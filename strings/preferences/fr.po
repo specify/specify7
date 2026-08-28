@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -407,38 +407,33 @@ msgstr "Contient (sensible à la casse)"
 #: components/Preferences/UserDefinitions.tsx:1140
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#, fuzzy
 msgid "containsDescription"
 msgstr ""
-"Rechercher les valeurs contenant une chaîne de requête donnée (sans tenir "
-"compte de la casse)."
+"Recherche les valeurs contenant une chaîne de requête donnée (insensible à "
+"la casse)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1145
-#, fuzzy
 msgid "containsCaseSensitiveDescription"
 msgstr ""
-"Recherchez les valeurs contenant une chaîne de requête donnée (sensible à "
-"la casse)."
+"Recherchez les valeurs contenant une chaîne de requête donnée (sensible à la "
+"casse)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#, fuzzy
 msgid "containsSecondDescription"
 msgstr ""
-"Peut utiliser _ pour correspondre à n'importe quel caractère ou % pour "
-"correspondre à n'importe quel nombre de caractères."
+"Possibilité d'utiliser \"_\" pour correspondre à n'importe quel caractère ou "
+"\"%\" pour correspondre à n'importe quel nombre de caractères."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1150
-#, fuzzy
 msgid "highlightMatch"
-msgstr "Mettre en surbrillance la sous-chaîne correspondante"
+msgstr "Mettre en surbrillance la sous-chaîne trouvée"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:830
-#, fuzzy
 msgid "languageDescription"
 msgstr ""
 "Détermine les légendes des champs, les notes d'utilisation et les légendes "
@@ -446,19 +441,16 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:545
-#, fuzzy
 msgid "showDialogIcon"
 msgstr "Afficher l'icône dans l'en-tête"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:299
-#, fuzzy
 msgid "scaleInterface"
-msgstr "Interface de balance"
+msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:300
-#, fuzzy
 msgid "scaleInterfaceDescription"
 msgstr "Adapter l'interface à la taille de la police."
 
