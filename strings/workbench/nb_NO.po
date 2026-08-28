@@ -65,7 +65,6 @@ msgstr "Ruller tilbake"
 #. Used in: Components > Attachments Bulk Import > Upload ⬤ Components > Wb Utils > Dataset Variants
 #: components/AttachmentsBulkImport/Upload.tsx:109
 #: components/WbUtils/datasetVariants.tsx:53
-#, fuzzy
 msgid "uploading"
 msgstr "Opplasting"
 
@@ -73,9 +72,8 @@ msgstr "Opplasting"
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:41
 #: components/AttachmentsBulkImport/ValidationDialog.tsx:45
 #: components/WorkBench/Status.tsx:84
-#, fuzzy
 msgid "validating"
-msgstr "Validerer"
+msgstr "Validering"
 
 #. Used in: Components > Work Bench > Wb Spreadsheet
 #: components/WorkBench/WbSpreadsheet.tsx:169
