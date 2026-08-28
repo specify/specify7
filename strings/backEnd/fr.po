@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-08-28 16:51+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/backEnd/"
 "fr/>\n"
 "Language: fr\n"
@@ -140,9 +140,8 @@ msgstr ""
 #. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #: components/WorkBench/resultMessageResolvers.ts:89
 #: components/WorkBench/__tests__/resultsParser.test.ts:18
-#, fuzzy
 msgid "conflictingRecordIds"
-msgstr "Identifiants d'enregistrement conflictuels : {ids:string}"
+msgstr "Identifiants d'enregistrement en conflit : {ids:string}"
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:154
