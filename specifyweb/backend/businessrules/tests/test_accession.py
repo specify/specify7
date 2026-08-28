@@ -90,3 +90,51 @@ class AccessionTests(ApiTests):
         self.assertEqual(fetched.accession, accession)
         self.assertEqual(fetched.permit, permit)
         self.assertEqual(fetched.remarks, 'Existing permit authorizations')
+
+    def test_add_multiple_agents_and_authorizations(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-MULTIPLE-001',
+            division=self.division,
+        )
+        agent_1 = models.Agent.objects.create(
+            agenttype=0,
+            firstname='First',
+            lastname='Agent',
+            division=self.division,
+        )
+        agent_2 = models.Agent.objects.create(
+            agenttype=0,
+            firstname='Second',
+            lastname='Agent',
+            division=self.division,
+        )
+        permit_1 = models.Permit.objects.create(
+            permitnumber='P-MULTIPLE-001',
+            institution=self.institution,
+        )
+        permit_2 = models.Permit.objects.create(
+            permitnumber='P-MULTIPLE-002',
+            institution=self.institution,
+        )
+        accession.accessionagents.create(
+            agent=agent_1,
+            role='Collector',
+        )
+        accession.accessionagents.create(
+            agent=agent_2,
+            role='Donor',
+        )
+        accession.accessionauthorizations.create(
+            permit=permit_1,
+        )
+        accession.accessionauthorizations.create(
+            permit=permit_2,
+        )
+        self.assertEqual(accession.accessionagents.count(), 2)
+        self.assertEqual(accession.accessionauthorizations.count(), 2)
+
+        agent_ids = set(accession.accessionagents.values_list('agent_id', flat=True))
+        permit_ids = set(accession.accessionauthorizations.values_list('permit_id', flat=True))
+
+        self.assertEqual(agent_ids, {agent_1.id, agent_2.id})
+        self.assertEqual(permit_ids, {permit_1.id, permit_2.id})
