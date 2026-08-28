@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 10:46+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-08-28 16:51+0000\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/schema/"
 "fr/>\n"
 "Language: fr\n"
@@ -59,7 +59,6 @@ msgstr "Les modifications de schéma n'ont pas été enregistrées."
 #. Used in: Components > Schema Config > Sidebar
 #: components/SchemaConfig/Sidebar.tsx:50
 #: components/SchemaConfig/Sidebar.tsx:52
-#, fuzzy
 msgid "unsavedChanges"
 msgstr "Modifications non enregistrées"
 
@@ -129,9 +128,8 @@ msgstr "Légende"
 
 #. Used in: Components > Schema Viewer > Schema To Tsv
 #: components/SchemaViewer/schemaToTsv.tsx:15
-#, fuzzy
 msgid "tableCaption"
-msgstr "Légende du tableau"
+msgstr "Légende de la table"
 
 #. Used in: Components > Export Feed > Editor ⬤ Components > Schema Config > Field ⬤ Components > Schema Config > Table ⬤ Components > Schema Viewer > Fields ⬤ Components > Schema Viewer > Relationships ⬤ Components > Schema Viewer > Schema To Tsv ⬤ Components > Security > Role ⬤ Components > Web Links > Element
 #: components/ExportFeed/Editor.tsx:62
@@ -192,37 +190,31 @@ msgstr "plusieurs à plusieurs"
 #: components/SchemaConfig/Field.tsx:68
 #: components/SchemaViewer/Fields.tsx:63
 #: components/SchemaViewer/schemaToTsv.tsx:27
-#, fuzzy
 msgid "characterLimit"
 msgstr "Limite de caractères"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:105
-#, fuzzy
 msgid "text"
 msgstr "Texte"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:112
-#, fuzzy
 msgid "integer"
 msgstr "Entier"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:114
-#, fuzzy
 msgid "number"
 msgstr "Nombre"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:117
-#, fuzzy
 msgid "date"
 msgstr "Date"
 
 #. Used in: Components > Schema Config > Helpers
 #: components/SchemaConfig/helpers.ts:115
-#, fuzzy
 msgid "decimal"
 msgstr "Décimal"
 
