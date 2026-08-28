@@ -136,17 +136,19 @@ export function usePaginatedCollection<COLLECTION_TYPE>({
       const fetchIndex = Array.from(
         { length: lastFetchIndex - firstFetchIndex + 1 },
         (_, offset) => firstFetchIndex + offset
-      ).reduce((bestIndex, candidateIndex) =>
-        Array.from(
-          { length: fetchSize },
-          (_, offset) => currentResults[candidateIndex + offset]
-        ).filter((result) => result === undefined).length >
-        Array.from(
-          { length: fetchSize },
-          (_, offset) => currentResults[bestIndex + offset]
-        ).filter((result) => result === undefined).length
-          ? candidateIndex
-          : bestIndex
+      ).reduce(
+        (bestIndex, candidateIndex) =>
+          Array.from(
+            { length: fetchSize },
+            (_, offset) => currentResults[candidateIndex + offset]
+          ).filter((result) => result === undefined).length >
+          Array.from(
+            { length: fetchSize },
+            (_, offset) => currentResults[bestIndex + offset]
+          ).filter((result) => result === undefined).length
+            ? candidateIndex
+            : bestIndex,
+        firstFetchIndex
       );
 
       return internalFetchMore(fetchIndex);

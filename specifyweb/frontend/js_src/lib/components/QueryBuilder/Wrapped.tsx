@@ -53,6 +53,8 @@ import { unParseQueryFields } from './helpers';
 import { getInitialState, reducer } from './reducer';
 import type { QueryResultRow } from './Results';
 import { QueryResultsWrapper } from './ResultsWrapper';
+import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
+import { queryIdField } from './Results';
 import { QueryToolbar } from './Toolbar';
 
 const fetchTreeRanks = async (): Promise<true> => treeRanksPromise.then(f.true);
@@ -109,6 +111,14 @@ function Wrapped({
   const [selectedRows, setSelectedRows] = React.useState<ReadonlySet<number>>(
     new Set()
   );
+  const [isSplit, setIsSplit] = React.useState(false);
+  const [isHorizontal, setIsHorizontal] = React.useState(true);
+  const [splitterKey, setSplitterKey] = React.useState(0);
+  const selectedIds = React.useMemo(
+    () => Array.from(selectedRows),
+    [selectedRows]
+  );
+  const [selectedIndex, setSelectedIndex] = React.useState(0);
 
   const buildInitialState = React.useCallback(
     () =>
@@ -297,6 +307,24 @@ function Wrapped({
   );
   const resultsShown = state.queryRunCount !== 0;
 
+  const toggleSplit = (): void => {
+    const nextIsSplit = !isSplit;
+    setIsSplit(nextIsSplit);
+    if (nextIsSplit && selectedRows.size === 0) {
+      const firstId = resultsRef.current?.find(
+        (result) => result !== undefined
+      )?.[queryIdField];
+      if (typeof firstId === 'number') {
+        setSelectedRows(new Set([firstId]));
+        setSelectedIndex(0);
+      }
+    }
+  };
+  const toggleOrientation = (): void => {
+    setIsHorizontal(!isHorizontal);
+    setSplitterKey((key) => key + 1);
+  };
+
   const [isBasic] = useQueryViewPref(query.id);
 
   const resultsRef = React.useRef<RA<QueryResultRow | undefined> | undefined>(
@@ -310,6 +338,36 @@ function Wrapped({
         (field) => field.mappingPath[0] === 'catalogNumber' && field.isDisplay
       ),
     [state, table.name]
+  );
+
+  const recordPreview = (
+    <div className="flex h-full min-h-0 min-w-0 flex-1 items-center justify-center overflow-auto bg-[color:var(--form-background)]">
+      {selectedIds.length === 0 ? (
+        <p className="m-auto text-neutral-500">{commonText.select()}</p>
+      ) : (
+        <RecordSelectorFromIds
+          canRemove={false}
+          defaultIndex={selectedIndex}
+          dialog={false}
+          ids={selectedIds}
+          isDependent={false}
+          isInRecordSet={false}
+          newResource={undefined}
+          table={table}
+          title={localized(query.name)}
+          totalCount={selectedIds.length}
+          onAdd={undefined}
+          onClone={undefined}
+          onClose={(): void => {
+            setSelectedRows(new Set());
+            setSelectedIndex(0);
+          }}
+          onDelete={undefined}
+          onSaved={(): void => runQuery('regular')}
+          onSlide={(index): void => setSelectedIndex(index)}
+        />
+      )}
+    </div>
   );
 
   React.useEffect(() => {
@@ -374,6 +432,10 @@ function Wrapped({
               dispatch({ type: 'SavedQueryAction' });
             }}
             onTriedToSave={handleTriedToSave}
+            isSplit={isSplit}
+            isHorizontal={isHorizontal}
+            onToggleSplit={toggleSplit}
+            onToggleOrientation={toggleOrientation}
           />
           <CheckReadAccess query={query} />
           <Form
@@ -666,7 +728,13 @@ function Wrapped({
                     type: 'RunQueryAction',
                   })
                 }
-                onSelected={handleSelected}
+                splitPane={isSplit ? recordPreview : undefined}
+                splitHorizontal={isHorizontal}
+                splitterKey={splitterKey}
+                onSelected={(ids): void => {
+                  setSelectedIndex(Math.max(0, ids.length - 1));
+                  handleSelected?.(ids);
+                }}
                 onSortChange={(fields): void => {
                   dispatch({
                     type: 'ChangeFieldsAction',

@@ -10,8 +10,8 @@ import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { serializeResource } from '../DataModel/serializers';
 import { SpecifyTable } from '../DataModel/specifyTable';
+import type { Tables } from '../DataModel/types';
 import { getTableById, strictGetTable } from '../DataModel/tables';
-import { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { userPreferences } from '../Preferences/userPreferences';
@@ -23,22 +23,62 @@ import {
 } from '../Statistics/hooks';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
 import { QueryTables } from '../Toolbar/QueryTablesWrapper';
-
-const defaultDataViewTablesConfig: RA<keyof Tables> = [
-  'Accession',
-  'Agent',
-  'CollectionObject',
-  'CollectingEvent',
-  'Gift',
-  'Loan',
-  'Locality',
-];
+import { defaultDataViewTablesConfig } from './config';
+import { DataViewQueryEditorContent } from './QueryEditor';
+import {
+  saveUserDataViewQueries,
+  serializeDataViewQueries,
+  useDataViewQueries,
+} from './queries';
 
 export function DataViewTables(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   const [tables, setTables] = useDataViewTables();
   const [isEditing, handleEditing] = useBooleanState();
+  const [queries, reloadQueries] = useDataViewQueries();
+  const [queryData, setQueryData] = React.useState<string | undefined>();
+  const [queryTable, setQueryTable] = React.useState<keyof Tables | undefined>();
   const counts = useTableRecordCounts(tables);
+  const handleOpenQueryEditor = (tableName: keyof Tables): void => {
+    if (queries === undefined) return;
+    setQueryData(serializeDataViewQueries(queries));
+    setQueryTable(tableName);
+  };
+  const handleCloseQueryEditor = (): void => {
+    setQueryTable(undefined);
+    setQueryData(undefined);
+  };
+  if (queryTable !== undefined && queryData !== undefined)
+    return (
+      <Dialog
+        buttons={
+          <>
+            <Button.Secondary onClick={handleCloseQueryEditor}>
+              {commonText.cancel()}
+            </Button.Secondary>
+            <Button.Success
+              onClick={(): void => {
+                saveUserDataViewQueries(queryData)
+                  .then(reloadQueries)
+                  .then(handleCloseQueryEditor)
+                  .catch(raise);
+              }}
+            >
+              {commonText.save()}
+            </Button.Success>
+          </>
+        }
+        header={dataViewsText.configureQuery()}
+        onClose={handleCloseQueryEditor}
+      >
+        <DataViewQueryEditorContent
+          data={queryData}
+          key={queryTable}
+          tableName={queryTable}
+          onChange={setQueryData}
+        />
+      </Dialog>
+    );
   return isEditing ? (
     <TablesListEdit
       defaultTables={defaultDataViewTablesConfig}
@@ -61,7 +101,11 @@ export function DataViewTables(): JSX.Element {
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+      headerButtons={
+        <div className="flex gap-2">
+          <DataEntry.Edit onClick={handleEditing} />
+        </div>
+      }
       icon={icons.eye}
       onClose={handleClose}
     >
@@ -70,6 +114,7 @@ export function DataViewTables(): JSX.Element {
         getHref={(name) => `/specify/dataviews/${name.toLowerCase()}`}
         tables={tables}
         onClick={undefined}
+        onEdit={handleOpenQueryEditor}
       />
     </Dialog>
   );

@@ -88,6 +88,10 @@ export type QueryResultsProps = {
   readonly extraButtons: JSX.Element | undefined;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+  readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
+  readonly refreshToken?: number;
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
@@ -110,6 +114,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     extraButtons,
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
+    onResults: handleResults,
+    scrollRef,
+    restoreScrollTopRef,
+    refreshToken,
     resultsRef,
     displayedFields,
   } = props;
@@ -125,6 +133,37 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     fetchSize: props.fetchSize,
     totalCount: props.totalCount,
   });
+  const currentResultsRef = React.useRef(results);
+  currentResultsRef.current = results;
+  const previousRefreshToken = React.useRef(refreshToken);
+
+  React.useEffect(() => {
+    if (
+      refreshToken === undefined ||
+      refreshToken === previousRefreshToken.current
+    )
+      return;
+    previousRefreshToken.current = refreshToken;
+    const currentResults = currentResultsRef.current;
+    if (!Array.isArray(currentResults) || fetchResults === undefined) return;
+
+    const offsets = Array.from(
+      { length: Math.ceil(currentResults.length / props.fetchSize) },
+      (_, index) => index * props.fetchSize
+    );
+    Promise.all(offsets.map((offset) => fetchResults(offset)))
+      .then((pages) => {
+        const refreshedResults = currentResults.slice();
+        pages.forEach((page, pageIndex) => {
+          const offset = offsets[pageIndex];
+          refreshedResults.splice(offset, page.length, ...page);
+          if (page.length < props.fetchSize)
+            refreshedResults.length = offset + page.length;
+        });
+        setResults(refreshedResults);
+      })
+      .catch(() => undefined);
+  }, [fetchResults, props.fetchSize, refreshToken, setResults]);
 
   const canMergeTable = canMerge(table);
 
@@ -138,6 +177,25 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     [fieldSpecs]
   );
   if (resultsRef !== undefined) resultsRef.current = results;
+
+  React.useEffect(() => {
+    if (results !== undefined) handleResults?.(results);
+  }, [handleResults, results]);
+
+  React.useEffect(() => {
+    const scrollTop = restoreScrollTopRef?.current;
+    if (
+      scrollTop === undefined ||
+      results === undefined ||
+      restoreScrollTopRef === undefined
+    )
+      return;
+    restoreScrollTopRef.current = undefined;
+    requestAnimationFrame(() => {
+      if (scrollRef?.current !== null && scrollRef?.current !== undefined)
+        scrollRef.current.scrollTop = scrollTop;
+    });
+  }, [results, restoreScrollTopRef, scrollRef]);
 
   const [pickListsLoaded = false] = useAsyncState(
     React.useCallback(
@@ -452,7 +510,10 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
           ${tableClassName}
           ${showResults ? 'border-b border-gray-500' : ''}
         `}
-        ref={scrollerRef}
+        ref={(element): void => {
+          scrollerRef.current = element;
+          if (scrollRef !== undefined) scrollRef.current = element;
+        }}
         role="table"
         style={{
           gridTemplateColumns: [
@@ -549,6 +610,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
                 setSelectedRows(new Set(newSelectedRows));
                 handleSelected?.(uniqueSelectedRows);
 
+                lastSelectedRow.current = rowIndex;
+              }}
+              onRowSelected={(rowIndex): void => {
+                const id = loadedResults[rowIndex][queryIdField] as number;
+                setSelectedRows(new Set([id]));
+                handleSelected?.([id]);
                 lastSelectedRow.current = rowIndex;
               }}
             />

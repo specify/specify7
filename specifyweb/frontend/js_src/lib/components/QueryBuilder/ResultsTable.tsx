@@ -35,6 +35,7 @@ export function QueryResultsTable({
   wrapQueryResults,
   selectedRows,
   onSelected: handleSelected,
+  onRowSelected: handleRowSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -47,6 +48,7 @@ export function QueryResultsTable({
     isSelected: boolean,
     isShiftClick: boolean
   ) => void;
+  readonly onRowSelected: (index: number) => void;
 }): JSX.Element {
   const recordFormatter = React.useMemo(
     () => getAuditRecordFormatter(fieldSpecs),
@@ -74,6 +76,7 @@ export function QueryResultsTable({
           onSelected={(isSelected, isShiftClick): void =>
             handleSelected(index, isSelected, isShiftClick)
           }
+          onRowSelected={(): void => handleRowSelected(index)}
         />
       ))}
     </>
@@ -91,6 +94,7 @@ function Row({
   showCellEllipsis,
   wrapQueryResults,
   onSelected: handleSelected,
+  onRowSelected: handleRowSelected,
 }: {
   readonly table: SpecifyTable;
   readonly fieldSpecs: RA<QueryFieldSpec>;
@@ -104,6 +108,7 @@ function Row({
   readonly showCellEllipsis: boolean;
   readonly wrapQueryResults: boolean;
   readonly onSelected?: (isSelected: boolean, isShiftClick: boolean) => void;
+  readonly onRowSelected?: () => void;
 }): JSX.Element {
   // REFACTOR: replace this with getResourceViewUrl()
   const [resource] = useLiveState<
@@ -151,14 +156,14 @@ function Row({
       `}
       role="row"
       onClick={
-        typeof handleSelected === 'function'
-          ? ({ target, shiftKey }): void =>
+        typeof handleRowSelected === 'function'
+          ? ({ target }): void =>
               /*
                * Ignore clicks on the "View" links and formatted audit log cell
                * links
                */
               (target as Element).closest('a') === null
-                ? handleSelected?.(!isSelected, shiftKey)
+                ? handleRowSelected?.()
                 : undefined
           : undefined
       }
@@ -181,12 +186,18 @@ function Row({
             className={`${getCellClassName(condenseQueryResults)} sticky`}
             role="cell"
           >
-            <Input.Checkbox
-              aria-label={commonText.select()}
-              checked={isSelected}
-              /* Ignore click event, as click would be handled by onClick on row */
-              onChange={f.undefined}
-            />
+            <div
+              onClick={(event): void => {
+                event.stopPropagation();
+                handleSelected?.(!isSelected, event.shiftKey);
+              }}
+            >
+              <Input.Checkbox
+                aria-label={commonText.select()}
+                checked={isSelected}
+                onChange={f.undefined}
+              />
+            </div>
           </div>
           <div
             className={`${getCellClassName(condenseQueryResults)} sticky`}

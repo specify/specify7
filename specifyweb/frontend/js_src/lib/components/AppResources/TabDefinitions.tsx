@@ -25,6 +25,7 @@ import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/Expres
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
 import { fieldFormattersSpec } from '../FieldFormatters/spec';
 import { DataObjectFormatter } from '../Formatters';
+import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 import { formattersSpec } from '../Formatters/spec';
 import { FormEditor } from '../FormEditor';
 import { viewSetsSpec } from '../FormEditor/spec';
@@ -157,6 +158,10 @@ export const visualAppResourceEditors = f.store<
   },
   defaultUserPreferences: {
     visual: UserPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  dataViewQueries: {
+    visual: DataViewQueryEditor,
     json: AppResourceTextEditor,
   },
   collectionPreferences: {

@@ -9,6 +9,15 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const queryText = createDictionary({
+  splitView: {
+    'en-us': 'Split results and record view',
+  },
+  horizontal: {
+    'en-us': 'Show results beside the record',
+  },
+  vertical: {
+    'en-us': 'Show results above the record',
+  },
   query: {
     'en-us': 'Query',
     'ru-ru': 'Запрос',

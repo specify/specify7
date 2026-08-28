@@ -45,6 +45,10 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
+  isSplit,
+  isHorizontal,
+  onToggleSplit,
+  onToggleOrientation,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
@@ -60,6 +64,10 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
+  readonly isSplit: boolean;
+  readonly isHorizontal: boolean;
+  readonly onToggleSplit: () => void;
+  readonly onToggleOrientation: () => void;
 }): JSX.Element {
   // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
@@ -129,6 +137,19 @@ export function QueryHeader({
             : preferencesText.basicView()}
         </Button.Small>
         <ToggleMappingViewButton fields={state.fields} />
+        <Button.Icon
+          aria-pressed={isSplit}
+          icon="template"
+          title={queryText.splitView()}
+          onClick={onToggleSplit}
+        />
+        <Button.Icon
+          aria-pressed={!isHorizontal}
+          disabled={!isSplit}
+          icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
+          title={isHorizontal ? queryText.vertical() : queryText.horizontal()}
+          onClick={onToggleOrientation}
+        />
         {hasToolPermission(
           'queryBuilder',
           queryResource.isNew() ? 'create' : 'update'

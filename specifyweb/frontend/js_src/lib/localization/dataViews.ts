@@ -20,4 +20,20 @@ export const dataViewsText = createDictionary({
   configureDataViews: {
     'en-us': 'Configure Data Views tables',
   },
+  dataViewQueries: {
+    comment: 'The name of the Data View query app resource type',
+    'en-us': 'Data View queries',
+  },
+  configureQuery: {
+    'en-us': 'Configure query',
+  },
+  table: {
+    'en-us': 'Table',
+  },
+  horizontal: {
+    'en-us': 'Show results beside the record',
+  },
+  vertical: {
+    'en-us': 'Show results above the record',
+  },
 } as const);

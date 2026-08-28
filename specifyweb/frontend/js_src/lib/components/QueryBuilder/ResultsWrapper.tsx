@@ -1,4 +1,5 @@
 import React from 'react';
+import Splitter from 'm-react-splitters';
 
 import { ajax } from '../../utils/ajax';
 import type { GetSet, RA } from '../../utils/types';
@@ -32,21 +33,34 @@ export function QueryResultsWrapper({
   createRecordSet,
   extraButtons,
   onSelected: handleSelected,
+  onResults: handleResults,
   onReRun: handleReRun,
+  refreshToken,
+  splitPane,
+  splitHorizontal,
+  splitterKey,
   ...props
 }: ResultsProps & {
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+  readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
+  readonly refreshToken?: number;
+  readonly splitPane?: JSX.Element;
+  readonly splitHorizontal?: boolean;
+  readonly splitterKey?: number;
   readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
-  return newProps === undefined ? (
-    props.queryRunCount === 0 ? null : (
+  if (newProps === undefined)
+    return props.queryRunCount === 0 ? null : (
       <div className="flex-1 snap-start">{loadingGif}</div>
-    )
-  ) : (
+    );
+
+  const queryResults = (
     <div className="flex flex-1 snap-start overflow-hidden">
       <ErrorBoundary dismissible>
         <QueryResults
@@ -55,10 +69,37 @@ export function QueryResultsWrapper({
           extraButtons={extraButtons}
           onReRun={handleReRun}
           onSelected={handleSelected}
+          refreshToken={refreshToken}
         />
       </ErrorBoundary>
     </div>
   );
+
+  return splitPane === undefined ? queryResults : (
+    <Splitter
+      className="h-full max-h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden"
+      key={splitterKey}
+      position={splitHorizontal ? 'vertical' : 'horizontal'}
+      primaryPaneHeight="50%"
+      primaryPaneMaxHeight="80%"
+      primaryPaneMaxWidth="80%"
+      primaryPaneMinHeight={1}
+      primaryPaneMinWidth={1}
+      primaryPaneWidth="50%"
+    >
+      <div className="flex h-full min-h-0 min-w-0 overflow-auto">
+        {splitHorizontal ? queryResults : splitPane}
+      </div>
+      <div
+        className={`flex h-full min-h-0 min-w-0 overflow-auto ${
+          splitHorizontal ? 'border-l' : 'border-t'
+        } border-gray-400`}
+      >
+        {splitHorizontal ? splitPane : queryResults}
+      </div>
+    </Splitter>
+  );
+
 }
 
 type ResultsProps = {
@@ -77,6 +118,9 @@ type ResultsProps = {
     newFields: RA<QueryField>
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+  readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
@@ -121,7 +165,10 @@ export function useQueryResultsWrapper({
   recordSetId,
   forceCollection,
   onSortChange: handleSortChange,
+  onResults: handleResults,
   selectedRows: [selectedRows, setSelectedRows],
+  scrollRef,
+  restoreScrollTopRef,
   resultsRef,
 }: ResultsProps): PartialProps | undefined {
   /*
@@ -207,6 +254,9 @@ export function useQueryResultsWrapper({
           displayedFields: queryFields,
           fieldSpecs,
           initialData,
+          onResults: handleResults,
+          scrollRef,
+          restoreScrollTopRef,
           sortConfig: queryFields
             .filter(({ isDisplay }) => isDisplay)
             .map((field) => field.sortType),

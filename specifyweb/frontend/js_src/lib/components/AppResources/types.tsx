@@ -3,6 +3,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 import { preferencesText } from '../../localization/preferences';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
+import { dataViewsText } from '../../localization/dataViews';
 import type { IR, RA, RR } from '../../utils/types';
 import { ensure } from '../../utils/types';
 import { icons } from '../Atoms/Icons';
@@ -101,6 +102,14 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
       'https://speciforum.org/t/setting-default-user-preferences/1447',
     icon: icons.cog,
     label: preferencesText.defaultUserPreferences(),
+  },
+  dataViewQueries: {
+    mimeType: 'application/json',
+    name: 'DataViewQueries',
+    documentationUrl: undefined,
+    icon: icons.eye,
+    label: dataViewsText.dataViewQueries(),
+    scope: ['discipline', 'user'],
   },
   // TODO: There should be useTemplate: false below? (like it is for userPreferences)
   collectionPreferences: {
