@@ -50,19 +50,16 @@ msgstr "Générateur de requêtes"
 #: components/Statistics/AddStatDialog.tsx:140
 #: components/Statistics/AddStatDialog.tsx:149
 #: components/Toolbar/QueryTablesWrapper.tsx:163
-#, fuzzy
 msgid "newQueryName"
 msgstr "Nouvelle requête"
 
 #. 🟥Used in a Query Combo Box's hover-over message to show which fields are being searched on. Used in: Components > Query Combo Box > Spec
 #: components/QueryComboBox/spec.ts:73
-#, fuzzy
 msgid "searchFields"
-msgstr "Champs de recherche"
+msgstr "Champs recherchés"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:427
-#, fuzzy
 msgid "any"
 msgstr "N'importe lequel"
 
