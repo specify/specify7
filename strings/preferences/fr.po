@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -345,37 +345,32 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:851
-#, fuzzy
 msgid "updatePageTitleFormDescription"
 msgstr ""
-"Faut-il mettre à jour le titre de la page pour qu'il corresponde à "
-"l'enregistrement actuel ?"
+"Mettre à jour le titre de la page pour qu'il corresponde à l'enregistrement "
+"actuel."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1166
-#, fuzzy
 msgid "queryComboBox"
-msgstr "Zone de liste déroulante de requête"
+msgstr "Champs de recherche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1121
 #: components/Preferences/UserDefinitions.tsx:1169
 #: components/Preferences/UserDefinitions.tsx:1539
-#, fuzzy
 msgid "searchAlgorithm"
 msgstr "Algorithme de recherche"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1189
-#, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr "Algorithme de recherche (pour les relations avec les tables arborescentes)"
+msgstr "Algorithme de recherche (pour les relations avec les arbres)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1128
 #: components/Preferences/UserDefinitions.tsx:1176
 #: components/Preferences/UserDefinitions.tsx:1196
-#, fuzzy
 msgid "startsWithInsensitive"
 msgstr "Commence par (insensible à la casse)"
 
@@ -383,33 +378,28 @@ msgstr "Commence par (insensible à la casse)"
 #: components/Preferences/UserDefinitions.tsx:1129
 #: components/Preferences/UserDefinitions.tsx:1177
 #: components/Preferences/UserDefinitions.tsx:1197
-#, fuzzy
 msgid "startsWithDescription"
-msgstr "Rechercher des valeurs commençant par une chaîne de requête donnée."
+msgstr "Recherche des valeurs commençant par une chaîne de requête donnée."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1133
-#, fuzzy
 msgid "startsWithCaseSensitive"
 msgstr "Commence par (sensible à la casse)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1135
-#, fuzzy
 msgid "startsWithCaseSensitiveDescription"
-msgstr "Recherchez les valeurs qui commencent par une chaîne de requête donnée."
+msgstr "Recherche les valeurs qui commencent par une chaîne de requête donnée."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1139
 #: components/Preferences/UserDefinitions.tsx:1181
 #: components/Preferences/UserDefinitions.tsx:1201
-#, fuzzy
 msgid "containsInsensitive"
 msgstr "Contient (insensible à la casse)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1144
-#, fuzzy
 msgid "containsCaseSensitive"
 msgstr "Contient (sensible à la casse)"
 
@@ -420,7 +410,7 @@ msgstr "Contient (sensible à la casse)"
 #, fuzzy
 msgid "containsDescription"
 msgstr ""
-"Recherchez les valeurs contenant une chaîne de requête donnée (insensible à "
+"Recherche les valeurs contenant une chaîne de requête donnée (insensible à "
 "la casse)."
 
 #. Used in: Components > Preferences > User Definitions
