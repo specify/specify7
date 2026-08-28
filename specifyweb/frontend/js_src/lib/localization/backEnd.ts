@@ -323,6 +323,14 @@ export const backEndText = createDictionary({
   },
   conflictingRecordIds: {
     'en-us': 'Conflicting record IDs: {ids:string}',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   deletingTreeRoot: {
     'en-us': 'Can not delete root level tree definition item',
