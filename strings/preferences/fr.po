@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:51+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -800,7 +800,7 @@ msgstr "Animer les transitions"
 #: components/Preferences/UserDefinitions.tsx:2262
 #, fuzzy
 msgid "panInertia"
-msgstr "Pan inertia"
+msgstr "Inertie de Pan"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2269
@@ -952,8 +952,9 @@ msgstr "hauteur maximum"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1113
+#, fuzzy
 msgid "autoComplete"
-msgstr ""
+msgstr "Saisie semi-automatique"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1488
