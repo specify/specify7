@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-28 16:51+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/"
 "preferences/fr/>\n"
 "Language: fr\n"
@@ -45,7 +45,7 @@ msgstr "Préférences utilisateur par défaut"
 #: components/Preferences/UserDefinitions.tsx:2305
 #, fuzzy
 msgid "general"
-msgstr "Image personnalisée"
+msgstr "Général"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:173
@@ -197,8 +197,9 @@ msgstr "Arrière plan des champs"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1010
+#, fuzzy
 msgid "fieldBackground"
-msgstr "Arrière plan des champs"
+msgstr "Contexte du terrain"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1018
@@ -347,8 +348,8 @@ msgstr ""
 #, fuzzy
 msgid "updatePageTitleFormDescription"
 msgstr ""
-"Mettre à jour le titre de la page pour qu'il corresponde à l'enregistrement "
-"actuel."
+"Faut-il mettre à jour le titre de la page pour qu'il corresponde à "
+"l'enregistrement actuel ?"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1166
