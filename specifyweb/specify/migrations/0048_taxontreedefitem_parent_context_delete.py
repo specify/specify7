@@ -7,7 +7,7 @@ import specifyweb.specify.models
 class Migration(migrations.Migration):
 
     dependencies = [
-        ('specify', '0046_alter_specifyuser_spprincipals'),
+        ('specify', '0047_alter_many_to_many_through_fields'),
     ]
 
     operations = [

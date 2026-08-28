@@ -919,6 +919,11 @@ export const preferencesText = createDictionary({
     'de-ch': '',
     'hr-hr': '',
     'pt-br': '',
+    'es-es': '',
+    'fr-fr': '',
+    nb: '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   showSynonymCountsDescription: {
     'en-us':
@@ -926,6 +931,11 @@ export const preferencesText = createDictionary({
     'de-ch': '',
     'hr-hr': '',
     'pt-br': '',
+    'es-es': '',
+    'fr-fr': '',
+    nb: '',
+    'ru-ru': '',
+    'uk-ua': '',
   },
   welcomePage: {
     'en-us': 'Home Page',
