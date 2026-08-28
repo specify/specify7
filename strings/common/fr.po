@@ -95,7 +95,7 @@ msgstr "Non"
 #: components/TreeView/CreateTree.tsx:343
 #: components/TreeView/CreateTree.tsx:633
 #: components/WbActions/WbRevert.tsx:39
-#: components/WbActions/WbRollback.tsx:64
+#: components/WbActions/WbRollback.tsx:65
 #: components/WbActions/WbUpload.tsx:108
 #: components/WbActions/WbUpload.tsx:144
 #: components/WbPlanView/MapperComponents.tsx:382
