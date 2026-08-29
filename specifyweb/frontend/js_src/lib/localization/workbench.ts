@@ -233,7 +233,7 @@ export const wbText = createDictionary({
     'fr-fr': 'Valeur de remplacement',
     'uk-ua': 'Вартість заміщення',
     'de-ch': 'Wiederbeschaffungswert',
-    'pt-br': 'Valor de substituição',
+    'pt-br': 'Valor de reposição',
     'hr-hr': 'Zamjenska vrijednost',
     nb: 'Erstatningsverdi',
   },
@@ -1495,7 +1495,7 @@ export const wbText = createDictionary({
     'de-ch': '(kein Dateiname)',
     'pt-br': '(sem nome de arquivo)',
     'hr-hr': '(bez naziva datoteke)',
-    nb: '(ingen filnavn)',
+    nb: '(uten filnavn)',
   },
   changeDataSetOwner: {
     'en-us': 'Change Data Set Owner',
@@ -1828,7 +1828,7 @@ export const wbText = createDictionary({
     'ru-ru': 'Возможные затронутые записи',
     'uk-ua': 'Потенційно постраждалі записи',
     'hr-hr': 'Potencijalno pogođeni zapisi',
-    nb: 'Potensielle berørte poster',
+    nb: 'Potensielle poster som er berørt',
   },
   wbAffectedDescription: {
     'en-us': 'Number of new records affected in each table:',
