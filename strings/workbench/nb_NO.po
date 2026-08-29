@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 14:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-08-29 23:51+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/workbench/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -812,7 +812,7 @@ msgstr "Importer filnavn"
 #: components/WorkBench/DataSetMeta.tsx:343
 #, fuzzy
 msgid "noFileName"
-msgstr "(ingen filnavn)"
+msgstr "(uten filnavn)"
 
 #. Used in: Components > Wb Toolkit > Change Owner
 #: components/WbToolkit/ChangeOwner.tsx:93
@@ -985,7 +985,7 @@ msgstr "Berørte poster"
 #: components/WorkBench/Results.tsx:55
 #, fuzzy
 msgid "potentialAffectedResults"
-msgstr "Potensielle berørte poster"
+msgstr "Potensielle poster som er berørt"
 
 #. Used in: Components > Work Bench > Results
 #: components/WorkBench/Results.tsx:59
