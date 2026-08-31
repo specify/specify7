@@ -5363,6 +5363,7 @@ export type SpQuery = {
     readonly contextTableId: number;
     readonly countOnly: boolean | null;
     readonly formatAuditRecIds: boolean | null;
+    readonly isDataView: boolean | null;
     readonly isFavorite: boolean | null;
     readonly name: string;
     readonly ordinal: number | null;
