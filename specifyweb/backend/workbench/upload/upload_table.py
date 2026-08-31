@@ -39,6 +39,7 @@ from .upload_result import (
     PicklistAddition,
     ParseFailures,
     PropagatedFailure,
+    to_failed_business_rule,
 )
 from .uploadable import (
     NULL_RECORD,
@@ -68,6 +69,7 @@ class UploadTable(NamedTuple):
     toMany: dict[str, list[Uploadable]]
 
     overrideScope: dict[Literal["collection"], int | None] | None = None
+    preserveIdentity: bool = False
 
     def apply_scoping(
         self,
@@ -90,9 +92,11 @@ class UploadTable(NamedTuple):
         )
 
     def _to_json(self) -> dict:
-        result = dict(
+        result: dict[str, Any] = dict(
             wbcols={k: v.to_json() for k, v in self.wbcols.items()}, static=self.static
         )
+        if self.preserveIdentity:
+            result["preserveIdentity"] = True
         result["toOne"] = {
             key: uploadable.to_json() for key, uploadable in self.toOne.items()
         }
@@ -128,6 +132,7 @@ class ScopedUploadTable(NamedTuple):
     static: dict[str, Any]
     toOne: dict[str, ScopedUploadable]
     toMany: dict[str, list["ScopedUploadable"]]  # type: ignore
+    preserveIdentity: bool
     scopingAttrs: dict[str, int]
     disambiguation: int | None
     to_one_fields: dict[str, list[str]]  # TODO: Consider making this a payload..
@@ -257,6 +262,7 @@ class ScopedUploadTable(NamedTuple):
             parsedFields=parsedFields,
             toOne=toOne,
             toMany=toMany,
+            preserveIdentity=self.preserveIdentity,
             uploadingAgentId=uploadingAgentId,
             auditor=auditor,
             cache=cache,
@@ -326,6 +332,7 @@ class BoundUploadTable(NamedTuple):
     parsedFields: list[ParseResult]
     toOne: dict[str, BoundUploadable]
     toMany: dict[str, list[BoundUploadable]]
+    preserveIdentity: bool
     scopingAttrs: dict[str, int]
     disambiguation: int | None
     uploadingAgentId: int | None
@@ -591,7 +598,7 @@ class BoundUploadTable(NamedTuple):
         except ContetRef as e:
             # Not sure if there is a better way for this. Consider moving this to binding.
             return UploadResult(
-                FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                to_failed_business_rule(e, info), to_one_results, {}
             )
 
         attrs = {
@@ -769,7 +776,7 @@ class BoundUploadTable(NamedTuple):
                 picklist_additions = self._do_picklist_additions()
             except (BusinessRuleException, IntegrityError) as e:
                 return UploadResult(
-                    FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                    to_failed_business_rule(e, info), to_one_results, {}
                 )
 
         record = Uploaded(uploaded.id, info, picklist_additions)
@@ -874,7 +881,7 @@ class BoundUploadTable(NamedTuple):
                 reference_record.delete()
                 result = Deleted(self.current_id, info)
             except (BusinessRuleException, IntegrityError) as e:
-                result = FailedBusinessRule(str(e), {}, info)
+                result = to_failed_business_rule(e, info)
 
         to_one_deleted: dict[str, UploadResult] = {
             key: value.delete_row()
@@ -982,10 +989,20 @@ class BoundUpdateTable(BoundUploadTable):
             field_name: (
                 to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
                 if to_one_def.is_one_to_one()
-                else to_one_def.process_row()
+                else (
+                    to_one_def.save_row(force=True)
+                    if self._should_update_to_one_in_place(to_one_def)
+                    else to_one_def.process_row()
+                )
             )
             for field_name, to_one_def in Func.sort_by_key(self.toOne)
         }
+
+    def _should_update_to_one_in_place(self, to_one_def) -> bool:
+        return (
+            getattr(to_one_def, "preserveIdentity", False)
+            and isinstance(getattr(to_one_def, "current_id", None), int)
+        )
 
     def _do_upload(
         self, model, to_one_results: dict[str, UploadResult], info: ReportInfo
@@ -1075,7 +1092,7 @@ class BoundUpdateTable(BoundUploadTable):
                     picklist_additions = self._do_picklist_additions()
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), to_one_results, {}
+                        to_failed_business_rule(e, info), to_one_results, {}
                     )
 
         record: Updated | NoChange = (
