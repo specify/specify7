@@ -17,8 +17,8 @@ msgid "recordMerging"
 msgstr "Fusion d'enregistrements"
 
 #: components/FormMeta/MergeRecord.tsx:56
-#: components/Merging/index.tsx:90
-#: components/Merging/index.tsx:94
+#: components/Merging/index.tsx:93
+#: components/Merging/index.tsx:97
 #: components/Merging/index.tsx:408
 #: components/Merging/index.tsx:421
 #: components/Router/OverlayRoutes.tsx:240
