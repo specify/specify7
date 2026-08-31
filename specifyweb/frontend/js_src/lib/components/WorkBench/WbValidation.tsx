@@ -83,8 +83,7 @@ const hasUploadInfo = (
       readonly name: string;
     } | null;
   };
-} =>
-  typeof value === 'object' && value !== null && 'info' in value;
+} => typeof value === 'object' && value !== null && 'info' in value;
 
 /* eslint-disable functional/no-this-expression */
 export class WbValidation {
@@ -403,20 +402,20 @@ export class WbValidation {
       'MatchedAndChanged' in recordResult ||
       'Deleted' in recordResult
     ) {
-      const [statusKey, statusData, metaKey] = 'Uploaded' in recordResult
-        ? (['Uploaded', recordResult.Uploaded, 'isNew'] as const)
-        : 'Updated' in recordResult
-          ? (['Updated', recordResult.Updated, 'isUpdated'] as const)
-          : 'MatchedAndChanged' in recordResult
-            ? (['MatchedAndChanged', recordResult.MatchedAndChanged, 'isMatchedAndChanged'] as const)
-            : (['Deleted', recordResult.Deleted, 'isDeleted'] as const);
+      const [statusKey, statusData, metaKey] =
+        'Uploaded' in recordResult
+          ? (['Uploaded', recordResult.Uploaded, 'isNew'] as const)
+          : 'Updated' in recordResult
+            ? (['Updated', recordResult.Updated, 'isUpdated'] as const)
+            : 'MatchedAndChanged' in recordResult
+              ? ([
+                  'MatchedAndChanged',
+                  recordResult.MatchedAndChanged,
+                  'isMatchedAndChanged',
+                ] as const)
+              : (['Deleted', recordResult.Deleted, 'isDeleted'] as const);
 
-      setMetaCallback(
-        metaKey,
-        true,
-        statusData.info.columns,
-        undefined
-      );
+      setMetaCallback(metaKey, true, statusData.info.columns, undefined);
 
       const tableName = statusData.info.tableName.toLowerCase() as Lowercase<
         keyof Tables
@@ -429,19 +428,18 @@ export class WbValidation {
 
       const writable = this.uploadResults.interestingRecords;
       writable[physicalRow] ??= [];
-      this.resolveValidationColumns(
-        statusData.info.columns,
-        undefined
-      ).forEach((physicalCol) => {
-        writable[physicalRow]![physicalCol] ??= [];
-        writable[physicalRow]![physicalCol].push([
-          tableName,
-          statusData.id,
-          statusData.info?.treeInfo
-            ? `${statusData.info.treeInfo!.name} (${statusData.info.treeInfo!.rank})`
-            : '',
-        ]);
-      });
+      this.resolveValidationColumns(statusData.info.columns, undefined).forEach(
+        (physicalCol) => {
+          writable[physicalRow]![physicalCol] ??= [];
+          writable[physicalRow]![physicalCol].push([
+            tableName,
+            statusData.id,
+            statusData.info?.treeInfo
+              ? `${statusData.info.treeInfo!.name} (${statusData.info.treeInfo!.rank})`
+              : '',
+          ]);
+        }
+      );
     } else
       raise(
         new Error(
