@@ -195,8 +195,8 @@ msgstr ""
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
-"Synonymisierung von \"{nodeName:string}\" zu synonymisiertem Knoten \""
-"{intoName:string}\""
+"Synonymisierung von \"{nodeName:string}\" zu synonymisiertem Knoten "
+"\"{intoName:string}\""
 
 #: components/Errors/JsonError.tsx:171
 #: components/WorkBench/resultMessageResolvers.ts:204
@@ -286,8 +286,8 @@ msgstr "Feld {field:string} ist keine Beziehung"
 #, fuzzy
 msgid "unexpectedTableId"
 msgstr ""
-"Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet wurde „"
-"{expectedTableId:string}“."
+"Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet wurde "
+"„{expectedTableId:string}“."
 
 #: components/Errors/JsonError.tsx:226
 #: components/WorkBench/resultMessageResolvers.ts:250
