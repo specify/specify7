@@ -47,6 +47,7 @@ from .upload_result import (
     FailedBusinessRule,
     ReportInfo,
     TreeInfo,
+    to_failed_business_rule,
 )
 from .uploadable import (
     Row,
@@ -954,7 +955,7 @@ class BoundTreeRecord(NamedTuple):
                         obj = self._do_insert(model, **new_attrs)
                 except (BusinessRuleException, IntegrityError) as e:
                     return UploadResult(
-                        FailedBusinessRule(str(e), {}, info), parent_result, {}
+                        to_failed_business_rule(e, info), parent_result, {}
                     )
 
             result = UploadResult(Uploaded(obj.id, info, []), parent_result, {})

@@ -321,6 +321,17 @@ export const backEndText = createDictionary({
       '{tableName:string} mora imati jedinstveni {fieldName:string} u {parentField:string}',
     nb: '{tableName:string} må ha unik {fieldName:string} i {parentField:string}',
   },
+  conflictingRecordIds: {
+    'en-us': 'Conflicting record IDs: {ids:string}',
+    'de-ch': 'Konfliktierende Datensatz-IDs: {ids:string}',
+    'es-es': 'Identificadores de registro conflictivos: {ids:string}',
+    'fr-fr': "Identifiants d'enregistrement en conflit : {ids:string}",
+    'hr-hr': 'Konfliktni ID-ovi zapisa: {ids:string}',
+    nb: 'Konfliktende post-ID-er: {ids:string}',
+    'pt-br': 'IDs de registro conflitantes: {ids:string}',
+    'ru-ru': 'Конфликтующие идентификаторы записей: {ids:string}',
+    'uk-ua': 'Конфліктуючі ідентифікатори записів: {ids:string}',
+  },
   deletingTreeRoot: {
     'en-us': 'Can not delete root level tree definition item',
     'es-es':
