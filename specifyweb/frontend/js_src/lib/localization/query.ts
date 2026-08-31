@@ -449,7 +449,7 @@ export const queryText = createDictionary({
     'es-es':
       '(Sugerencia: Es posible que deba agregar una condición para la determinación actual o utilizar un agregador para preparaciones o recolectores).',
     'fr-fr':
-      '(Conseil : vous devrez peut-être ajouter une condition pour la détermination du courant ou utiliser un agrégateur pour les préparations ou les collecteurs.)',
+      '(Conseil : vous devrez peut-être ajouter une condition pour la détermination actuelle ou utiliser un agrégateur pour les préparations ou les collecteurs.)',
     nb: '(Hint: Du må kanskje legge til en betingelse for strømbestemmelse eller bruke en aggregator for preparater eller samlere.)',
     'uk-ua':
       '(Підказка: Можливо, вам знадобиться додати умову для визначення струму або використати агрегатор для препаратів чи колекціонерів.)',
@@ -503,7 +503,7 @@ export const queryText = createDictionary({
     'en-us': 'Move Up',
     'ru-ru': 'Поднимитесь выше',
     'es-es': 'Subir',
-    'fr-fr': 'Monter en gamme',
+    'fr-fr': 'Monter',
     'uk-ua': 'Перемістити вгору',
     'de-ch': 'Aufsteigen',
     'pt-br': 'Subir de nível',
@@ -616,11 +616,11 @@ export const queryText = createDictionary({
     'en-us':
       'Use "%" to match any number of characters.\n\nUse "_" to match a single character',
     'ru-ru':
-      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
+      'Используйте символ "%" для сопоставления любого количества символов.\n\n\n\n\n\nИспользуйте символ "_" для сопоставления одного символа.',
     'es-es':
-      'Usa "%" para que coincida con cualquier número de caracteres.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUsa "_" para que coincida con un solo carácter.',
+      'Usa "%" para que coincida con cualquier número de caracteres.\n\n\n\n\n\nUsa "_" para que coincida con un solo carácter.',
     'fr-fr':
-      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
+      'Utilisez « % » pour correspondre à un nombre quelconque de caractères.\n\n\n\n\n\nUtilisez « _ » pour correspondre à un seul caractère.',
     'uk-ua':
       'Використовуйте "%" для пошуку будь-якої кількості символів. Використовуйте "_" для пошуку одного символу.',
     'de-ch':
@@ -657,7 +657,7 @@ export const queryText = createDictionary({
     'en-us': 'Less than',
     'ru-ru': 'Меньше, чем',
     'es-es': 'Menos que',
-    'fr-fr': 'Moins que',
+    'fr-fr': 'Inférieur à',
     'uk-ua': 'Менше ніж',
     'de-ch': 'Weniger als',
     'pt-br': 'Menor que',
@@ -701,7 +701,7 @@ export const queryText = createDictionary({
     'en-us': 'False',
     'ru-ru': 'ЛОЖЬ',
     'es-es': 'FALSO',
-    'fr-fr': 'FAUX',
+    'fr-fr': 'Faux',
     'uk-ua': 'Хибно',
     'de-ch': 'FALSCH',
     'pt-br': 'Falso',
@@ -877,7 +877,7 @@ export const queryText = createDictionary({
     'en-us': 'Export query for DwCA definition',
     'ru-ru': 'Экспорт запроса для определения DwCA',
     'es-es': 'Exportar consulta para la definición de DwCA',
-    'fr-fr': "Requête d'exportation pour la définition DwCA",
+    'fr-fr': 'Exporter la requête pour créer une archive DwC',
     'uk-ua': 'Експорт запиту для визначення DwCA',
     'de-ch': 'Exportabfrage für DwCA-Definition',
     'pt-br': 'Exportar consulta para definição de DwCA',
@@ -899,7 +899,7 @@ export const queryText = createDictionary({
     'en-us': 'Define label based on query',
     'ru-ru': 'Определите метку на основе запроса.',
     'es-es': 'Definir etiqueta en función de la consulta',
-    'fr-fr': "Définir l'étiquette en fonction de la requête",
+    'fr-fr': 'Créer une étiquette à partir de la requête',
     'uk-ua': 'Визначити мітку на основі запиту',
     'de-ch': 'Definiere Label basierend auf der Abfrage',
     'pt-br': 'Defina o rótulo com base na consulta.',
