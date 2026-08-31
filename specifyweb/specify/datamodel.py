@@ -6681,7 +6681,6 @@ datamodel = Datamodel(tables=[
             Field(name='contextTableId', column='ContextTableId', indexed=False, unique=False, required=True, type='java.lang.Short'),
             Field(name='countOnly', column='CountOnly', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='formatAuditRecIds', column='FormatAuditRecIds', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
-            Field(name='isDataView', column='IsDataView', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='isFavorite', column='IsFavorite', indexed=False, unique=False, required=False, type='java.lang.Boolean'),
             Field(name='name', column='Name', indexed=True, unique=False, required=True, type='java.lang.String', length=256),
             Field(name='ordinal', column='Ordinal', indexed=False, unique=False, required=False, type='java.lang.Short'),
