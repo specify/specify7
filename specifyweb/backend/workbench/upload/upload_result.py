@@ -1,10 +1,21 @@
-from typing import Any, NamedTuple
+from typing import Any, NamedTuple, cast
 
 from typing import Literal
 
 from .parsing import WorkBenchParseFailure
 
 Failure = Literal["Failure"]
+BUSINESS_RULE_EXCEPTION_MODULE = "specifyweb.backend.businessrules.exceptions"
+BUSINESS_RULE_EXCEPTION_NAME = "BusinessRuleException"
+BusinessRulePayloadValue = (
+    str
+    | int
+    | bool
+    | None
+    | list[str | int | bool | None]
+    | dict[str, str | int | bool | None]
+)
+BusinessRulePayload = dict[str, BusinessRulePayloadValue]
 
 
 class TreeInfo(NamedTuple):
@@ -215,7 +226,7 @@ class Deleted(NamedTuple):
 
 class FailedBusinessRule(NamedTuple):
     message: str
-    payload: dict[str, str | int | list[str] | list[int]]
+    payload: BusinessRulePayload
     info: ReportInfo
 
     def get_id(self) -> Failure:
@@ -236,6 +247,79 @@ class FailedBusinessRule(NamedTuple):
             payload=r["payload"],
             info=json_to_ReportInfo(r["info"]),
         )
+
+
+def is_business_rule_exception_with_payload(exception: Exception) -> bool:
+    exception_class = exception.__class__
+    payload_like_exception = (
+        len(exception.args) >= 2
+        and isinstance(exception.args[0], str)
+        and isinstance(exception.args[1], dict)
+    )
+
+    if not payload_like_exception:
+        return False
+
+    # Some wrapped code paths can preserve a business-rule payload without
+    # preserving the original exception class identity.
+    has_business_rule_shape = isinstance(
+        exception.args[1].get("localizationKey"), str
+    )
+
+    return (
+        (
+            exception_class.__module__ == BUSINESS_RULE_EXCEPTION_MODULE
+            and exception_class.__name__ == BUSINESS_RULE_EXCEPTION_NAME
+        )
+        or has_business_rule_shape
+    )
+
+
+def _is_business_rule_scalar(value: Any) -> bool:
+    return isinstance(value, (str, int, bool)) or value is None
+
+
+_SANITIZE_FAILED = object()
+
+
+def _sanitize_business_rule_payload_value(value: Any) -> BusinessRulePayloadValue | object:
+    if _is_business_rule_scalar(value):
+        return value
+
+    if isinstance(value, list):
+        if all(_is_business_rule_scalar(item) for item in value):
+            return value
+        return _SANITIZE_FAILED
+
+    if isinstance(value, dict):
+        sanitized: dict[str, str | int | bool | None] = {}
+        for key, item in value.items():
+            if not isinstance(key, str) or not _is_business_rule_scalar(item):
+                return _SANITIZE_FAILED
+            sanitized[key] = item
+        return sanitized
+
+    return _SANITIZE_FAILED
+
+
+def _sanitize_business_rule_payload(payload: dict[Any, Any]) -> BusinessRulePayload:
+    sanitized: BusinessRulePayload = {}
+    for key, value in payload.items():
+        if not isinstance(key, str):
+            continue
+        sanitized_value = _sanitize_business_rule_payload_value(value)
+        if sanitized_value is _SANITIZE_FAILED:
+            continue
+        sanitized[key] = cast(BusinessRulePayloadValue, sanitized_value)
+    return sanitized
+
+
+def to_failed_business_rule(exception: Exception, info: ReportInfo) -> FailedBusinessRule:
+    if is_business_rule_exception_with_payload(exception):
+        payload = _sanitize_business_rule_payload(exception.args[1])
+        return FailedBusinessRule(exception.args[0], payload, info)
+
+    return FailedBusinessRule(str(exception), {}, info)
 
 
 class NoMatch(NamedTuple):
