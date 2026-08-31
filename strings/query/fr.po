@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-31 13:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -591,61 +591,51 @@ msgstr "Gamme"
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
 #: components/QueryBuilder/FieldFilterTool.tsx:145
-#, fuzzy
 msgid "strict"
 msgstr "Strict"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:138
 #: components/QueryBuilder/FieldFilterTool.tsx:146
-#, fuzzy
 msgid "nonStrict"
 msgstr "Non strict"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:187
-#, fuzzy
 msgid "primaryCatalogNumberInheritance"
 msgstr "{collectionObjectTableName: chaîne}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:227
-#, fuzzy
 msgid "parentCatalogNumberInheritance"
 msgstr "{componentTableName: chaîne}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:263
-#, fuzzy
 msgid "uniqueCatalogNumberAcrossComponentAndCoTitle"
 msgstr "{componentTableName: chaîne} et {collectionObjectTableName: chaîne}"
 
 #. 🟥Used to indicate a text field will be formatted with a specific format. If a format can be identified/named in more than one way, names can be displayed in a comma-separated format Example: Format As: Ichthyology Example: Format As: Rock, Mineral. Used in: Components > Query Builder > Formatter
 #: components/QueryBuilder/Formatter.tsx:127
-#, fuzzy
 msgid "formatInputAs"
-msgstr "Format : {commaSeparatedFormats:string}"
+msgstr "Formater comme : {commaSeparatedFormats:string}"
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:241
-#, fuzzy
 msgid "unsavedChangesInQuery"
 msgstr "La requête contient des modifications non enregistrées."
 
 #. Used in: Components > Batch Edit > Index
 #: components/BatchEdit/index.tsx:244
-#, fuzzy
 msgid "unsavedChangesInQueryDescription"
 msgstr "Veuillez enregistrer la requête avant d'exécuter l'édition par lots."
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:173
-#, fuzzy
 msgid "noPreparationsToReturn"
 msgstr "Il n'y a aucun élément non résolu à retourner"
 
 #. Used in: Components > Query Builder > Loan Return
 #: components/QueryBuilder/LoanReturn.tsx:226
-#, fuzzy
 msgid "itemsReturned"
 msgstr "Les articles ont été retournés"
