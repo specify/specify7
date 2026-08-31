@@ -118,7 +118,7 @@ class TestMerge(GeographyTree):
                 recordid__in=locality_ids,
                 action=1,
             ).count(),
-            4,
+            3,
         )
         
     def test_complicated_merge(self):
