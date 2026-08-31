@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-31 11:51+0000\n"
+"PO-Revision-Date: 2026-08-31 13:52+0000\n"
 "Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
@@ -449,7 +449,7 @@ msgstr "Exporter la requête pour créer une archive DwC"
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:100
 msgid "exportQueryAsReport"
-msgstr "Définir un rapport basé sur une requête"
+msgstr "Créer un rapport à partir de la requête"
 
 #. Used in: Components > Query Builder > Edit
 #: components/QueryBuilder/Edit.tsx:103
@@ -458,37 +458,31 @@ msgstr "Créer une étiquette à partir de la requête"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:46
-#, fuzzy
 msgid "treeMerge"
 msgstr "Fusion d'arbres"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:47
-#, fuzzy
 msgid "treeMove"
 msgstr "Déplacement d'arbre"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:48
-#, fuzzy
 msgid "treeSynonymize"
-msgstr "Synonymiser l'arbre"
+msgstr "Synonymiser"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:49
-#, fuzzy
 msgid "treeDesynonymize"
-msgstr "Désynonymisation d'arbre"
+msgstr "Désynonymisation"
 
 #. 🟥Audit Log Action Type. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:50
-#, fuzzy
 msgid "treeBulkMove"
-msgstr "Déménagement en masse d'arbres"
+msgstr "Déménagement en masse au sein de l'arbre"
 
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:118
-#, fuzzy
 msgid "tooLongErrorMessage"
 msgstr ""
 "La valeur du champ est trop longue. La longueur maximale autorisée est "
@@ -496,43 +490,36 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:216
-#, fuzzy
 msgid "future"
 msgstr "à l'avenir"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:215
-#, fuzzy
 msgid "past"
 msgstr "dans le passé"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:189
-#, fuzzy
 msgid "days"
 msgstr "Jours"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:190
-#, fuzzy
 msgid "weeks"
 msgstr "Semaines"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:191
-#, fuzzy
 msgid "months"
 msgstr "Mois"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:192
-#, fuzzy
 msgid "years"
 msgstr "Années"
 
 #. Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:404
-#, fuzzy
 msgid "year"
 msgstr "Année"
 
@@ -544,7 +531,6 @@ msgstr "Année"
 #: components/QueryBuilder/RelativeDate.tsx:197
 #: components/QueryBuilder/RelativeDate.tsx:203
 #: components/QueryBuilder/RelativeDate.tsx:220
-#, fuzzy
 msgid "relativeDate"
 msgstr ""
 "<count>{size:number}</count> <length>{type:string}</length> <direction>"
@@ -552,14 +538,12 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Import
 #: components/QueryBuilder/Import.tsx:159
-#, fuzzy
 msgid "importHiddenFields"
 msgstr ""
 "Les champs suivants sont masqués dans la requête que vous avez importée :"
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:46
-#, fuzzy
 msgid "importNoReadPermission"
 msgstr ""
 "La requête que vous avez importée contient des tables auxquelles vous n'avez "
@@ -567,32 +551,27 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Check Read Access
 #: components/QueryBuilder/CheckReadAccess.tsx:43
-#, fuzzy
 msgid "noReadPermission"
 msgstr "Autorisation de lecture refusée"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:60
-#, fuzzy
 msgid "switchToRelative"
 msgstr "Passer au relatif"
 
 #. Used in: Components > Query Builder > Relative Date
 #: components/QueryBuilder/RelativeDate.tsx:61
-#, fuzzy
 msgid "switchToAbsolute"
 msgstr "Passez à l'absolu"
 
 #. Used in: Components > Query Builder > Header
 #: components/QueryBuilder/Header.tsx:105
-#, fuzzy
 msgid "scrollToEditor"
 msgstr "Défilez vers l'éditeur"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Query Builder > Results Table
 #: components/LocalityUpdate/Status.tsx:312
 #: components/QueryBuilder/ResultsTable.tsx:205
-#, fuzzy
 msgid "viewRecords"
 msgstr "Consulter les enregistrements"
 
@@ -600,7 +579,6 @@ msgstr "Consulter les enregistrements"
 #: components/QueryBuilder/Formatter.tsx:184
 #: components/QueryBuilder/Formatter.tsx:194
 #: components/QueryBuilder/Formatter.tsx:202
-#, fuzzy
 msgid "chooseFormatter"
 msgstr "Choisir le formateur"
 
@@ -608,7 +586,7 @@ msgstr "Choisir le formateur"
 #: components/QueryBuilder/FieldFilterSpec.tsx:565
 #, fuzzy
 msgid "range"
-msgstr "Gamme"
+msgstr "Portée"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
