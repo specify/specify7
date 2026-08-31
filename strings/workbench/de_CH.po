@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 10:46+0000\n"
+"PO-Revision-Date: 2026-08-31 09:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/workbench/de_CH/>\n"
@@ -911,8 +911,8 @@ msgstr "{operationName:string}..."
 #, fuzzy
 msgid "wbStatusOperationProgress"
 msgstr ""
-"{operationName:string} Zeile {current:number|formatted}/{total:number|"
-"formatted}"
+"{operationName:string} Zeile {current:number|formatted}/"
+"{total:number|formatted}"
 
 #. Used in: Components > Work Bench > Status
 #: components/WorkBench/Status.tsx:110
