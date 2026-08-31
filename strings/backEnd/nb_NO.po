@@ -1,12 +1,362 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:52+0000\n"
+"PO-Revision-Date: 2026-08-31 09:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Norwegian Bokml <https://hosted.weblate.org/projects/"
-"specify-7/backEnd/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
+"7/backEnd/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:55
+#, fuzzy
+msgid "latitudeOutOfRange"
+msgstr "breddegrad må være mellom -90 og 90. Faktisk: {value:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:219
+#: components/WorkBench/resultMessageResolvers.ts:241
+#, fuzzy
+msgid "fieldNotRelationship"
+msgstr "Feltet {field:string} er ikke en relasjon"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:210
+#: components/WorkBench/resultMessageResolvers.ts:232
+#, fuzzy
+msgid "unexpectedCollectionType"
+msgstr ""
+"Uventet samlingstype «{unexpectedTypeName:string}». Forventet «"
+"{collectionName:string}»."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:26
+#, fuzzy
+msgid "failedParsingDecimal"
+msgstr "Verdien «{value:string}» er ikke en gyldig desimalverdi"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:51
+#, fuzzy
+msgid "coordinateBadFormat"
+msgstr "Ugyldig verdi for breddegrad eller lengdegrad: {value:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:46
+#, fuzzy
+msgid "badDateFormat"
+msgstr "ugyldig datoverdi: {value:string}. forventet: {format:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:291
+#, fuzzy
+msgid "invalidPartialRecord"
+msgstr "Dette feltet må være tomt hvis {column:string} er tomt"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:194
+#: components/WorkBench/resultMessageResolvers.ts:175
+#, fuzzy
+msgid "childFieldNotUnique"
+msgstr "{tableName:string} må ha unik {fieldName:string} i {parentField:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:228
+#: components/WorkBench/resultMessageResolvers.ts:254
+#, fuzzy
+msgid "invalidDatePart"
+msgstr ""
+"Ugyldig datodel «{datePart:string}». Forventet én av {validDateParts:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:233
+#: components/WorkBench/resultMessageResolvers.ts:259
+#, fuzzy
+msgid "invalidUploadStatus"
+msgstr ""
+"Ugyldig status «{uploadStatus:string}» for {operation:string}. Forventet "
+"{expectedUploadStatus:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:181
+#: components/WorkBench/resultMessageResolvers.ts:214
+#, fuzzy
+msgid "operationAcrossTrees"
+msgstr "{operation:string} over trær"
+
+#. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:24
+#: components/WorkBench/__tests__/resultsParser.test.ts:91
+#, fuzzy
+msgid "failedParsingBoolean"
+msgstr "Verdien «{value:string}» kan ikke løses til Sann eller Usann"
+
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:30
+#, fuzzy
+msgid "failedParsingAgentType"
+msgstr ""
+"dårlig {agentTypeField:string}: \"{badType:string}\". Forventet en av "
+"{validTypes:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:285
+#, fuzzy
+msgid "pickListValueTooLong"
+msgstr ""
+"verdi fra {pickListTable:string} {pickList:string} lengre enn "
+"maksimumsverdien på {maxLength:number|formatted} for feltet"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:38
+#, fuzzy
+msgid "valueTooLong"
+msgstr ""
+"Verdien må ikke ha en lengde som er større enn {maxLength:number|formatted}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:42
+#, fuzzy
+msgid "invalidYear"
+msgstr "datoverdien må inneholde fire sifre i året: {value:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:160
+#: components/WorkBench/resultMessageResolvers.ts:193
+#, fuzzy
+msgid "nodeOperationToSynonymizedParent"
+msgstr ""
+"{operation:string}-noden «{nodeName:string}» til den synonymiserte "
+"overordnede noden «{parentName:string}»"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:171
+#: components/WorkBench/resultMessageResolvers.ts:204
+#, fuzzy
+msgid "nodeSynonimizeWithChildren"
+msgstr "Synonymiserende node «{nodeName:string}» som har underordnede"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:150
+#: components/WorkBench/resultMessageResolvers.ts:184
+#, fuzzy
+msgid "badTreeStructureInvalidRanks"
+msgstr ""
+"Dårlig trestruktur: Fant {badRanks:number|formatted} tilfeller der noderang "
+"ikke er høyere enn den overordnede"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:298
+#, fuzzy
+msgid "scopeChangeDetected"
+msgstr ""
+"En endring i omfanget er oppdaget i denne raden. Det anbefales å slette "
+"denne raden fra datasettet."
+
+#. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:70
+#, fuzzy
+msgid "showTraceback"
+msgstr "Vis tilbakesporing"
+
+#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/CellMeta.ts:159
+#: components/WorkBench/hooks.ts:262
+#: components/WorkBench/hooks.ts:271
+#: components/WorkBench/resultMessageResolvers.ts:281
+#, fuzzy
+msgid "failedParsingPickList"
+msgstr ""
+"{value:string} er ikke en lovlig verdi i dette valglistefeltet.\n"
+"Klikk på pilen for å velge blant tilgjengelige alternativer."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:324
+#: components/WorkBench/resultMessageResolvers.ts:336
+#, fuzzy
+msgid "attachmentNotFound"
+msgstr "Ett eller flere vedlegg finnes ikke. De kan ha blitt slettet."
+
+#. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:92
+#: components/WorkBench/__tests__/resultsParser.test.ts:18
+#, fuzzy
+msgid "conflictingRecordIds"
+msgstr "Konfliktende post-ID-er: {ids:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:154
+#: components/WorkBench/resultMessageResolvers.ts:187
+#, fuzzy
+msgid "deletingTreeRoot"
+msgstr "Kan ikke slette definisjonselementet på rotnivåtreet"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:301
+#, fuzzy
+msgid "invalidCotype"
+msgstr "Ugyldig type for valgte trerangering(er)"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:59
+#, fuzzy
+msgid "longitudeOutOfRange"
+msgstr "Lengdegrad må være mellom -180 og 180. Faktisk: {value:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:189
+#: components/WorkBench/resultMessageResolvers.ts:157
+#, fuzzy
+msgid "fieldNotUnique"
+msgstr "{tableName:string} må ha en unik {fieldName:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:166
+#: components/WorkBench/resultMessageResolvers.ts:199
+#, fuzzy
+msgid "nodeSynonymizeToSynonymized"
+msgstr ""
+"Synonymisering av «{nodeName:string}» til den synonymiserte noden «"
+"{intoName:string}»"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:175
+#: components/WorkBench/resultMessageResolvers.ts:208
+#, fuzzy
+msgid "invalidNodeType"
+msgstr ""
+"Uventet nodetype «{node:string}» under {operation:string}. Forventet «"
+"{nodeModel:string}»"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:185
+#: components/WorkBench/resultMessageResolvers.ts:218
+#, fuzzy
+msgid "limitReachedDeterminingAccepted"
+msgstr ""
+"Finner ikke godkjent takson for synonymisert takson med ID-en "
+"{taxonId:number}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/Errors/JsonError.tsx:200
+#: components/WorkBench/resultMessageResolvers.ts:222
+#: components/WorkBench/__tests__/resultsParser.test.ts:74
+#, fuzzy
+msgid "resourceInPermissionRegistry"
+msgstr "Ressurs {resource:string} finnes allerede i tillatelsesregisteret"
+
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:204
+#: components/WorkBench/resultMessageResolvers.ts:226
+#, fuzzy
+msgid "actorIsNotSpecifyUser"
+msgstr "{agentTable:string} {actor:string} er ikke en {specifyUserTable:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:215
+#: components/WorkBench/resultMessageResolvers.ts:237
+#, fuzzy
+msgid "invalidReportMimetype"
+msgstr ""
+"Kan ikke opprette rapport: {mimeTypeField:string} er ikke en av «jrxml/label"
+"» eller «jrxml/report»"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:226
+#: components/WorkBench/resultMessageResolvers.ts:250
+#, fuzzy
+msgid "noCollectionInQuery"
+msgstr "Ingen samling funnet i spørringen for tabell {table:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/Errors/JsonError.tsx:239
+#: components/WorkBench/resultMessageResolvers.ts:265
+#: components/WorkBench/__tests__/resultsParser.test.ts:64
+#, fuzzy
+msgid "datasetAlreadyUploaded"
+msgstr "Datasettet er allerede lastet opp"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:300
+#, fuzzy
+msgid "multipleTreeDefsInRow"
+msgstr "Flere tredefinisjoner på rad"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:303
+#, fuzzy
+msgid "invalidComponentType"
+msgstr "Ugyldig {componentType: string} for valgte trerangering(er)"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:328
+#, fuzzy
+msgid "attachmentAlreadyLinked"
+msgstr "Ett eller flere vedlegg er allerede knyttet til en opplastet oppføring."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:28
+#, fuzzy
+msgid "failedParsingFloat"
+msgstr "Verdien «{value:string}» er ikke en gyldig flyttallverdi"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:156
+#: components/WorkBench/resultMessageResolvers.ts:189
+#, fuzzy
+msgid "nodeParentInvalidRank"
+msgstr "Trenodens overordnede har en høyere rang enn seg selv"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:295
+#, fuzzy
+msgid "fieldRequiredByUploadPlan"
+msgstr "feltet er obligatorisk for opplasting av plankartlegging"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:63
+#, fuzzy
+msgid "formatMismatch"
+msgstr ""
+"Verdien {value:string} samsvarer ikke med formateringsprogrammet "
+"{formatter:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:297
+#, fuzzy
+msgid "invalidTreeStructure"
+msgstr "Det finnes flere plassholderverdier for «Opplastede» i treet!"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:307
+#, fuzzy
+msgid "missingRequiredTreeParent"
+msgstr ""
+"Manglende eller ikke-kartlagt obligatorisk rangverdi for foreldretre for «"
+"{names:string}»."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:158
+#: components/WorkBench/resultMessageResolvers.ts:191
+#, fuzzy
+msgid "nodeChildrenInvalidRank"
+msgstr "Trenodens rangering er høyere enn noen av dens barn"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:221
+#: components/WorkBench/resultMessageResolvers.ts:245
+#, fuzzy
+msgid "unexpectedTableId"
+msgstr ""
+"Uventet tabell-ID «{tableId:string}» i forespørselen. Forventet «"
+"{expectedTableId:string}»"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:326
+#, fuzzy
+msgid "tableDoesNotSupportAttachments"
+msgstr "Vedleggets måltabell støtter ikke vedlegg."
