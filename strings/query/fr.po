@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-31 09:16+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -38,7 +38,6 @@ msgstr "Requêtes"
 #: components/SearchDialog/index.tsx:243
 #: components/SearchDialog/index.tsx:387
 #: components/Security/registry.ts:210
-#, fuzzy
 msgid "queryBuilder"
 msgstr "Générateur de requêtes"
 
@@ -66,7 +65,6 @@ msgstr "N'importe lequel"
 #. Used in: Components > Query Builder > Field Filter Spec
 #: components/QueryBuilder/FieldFilterSpec.tsx:342
 #: components/QueryBuilder/FieldFilterSpec.tsx:392
-#, fuzzy
 msgid "startValue"
 msgstr "Valeur initiale"
 
@@ -206,19 +204,16 @@ msgstr "Créer un fichier KML"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:241
-#, fuzzy
 msgid "exportToWebPortal"
 msgstr "Exporter vers le portail Web"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:177
-#, fuzzy
 msgid "webPortalExportDuplicateRecordIds"
-msgstr "La requête contient des identifiants d'enregistrement en double."
+msgstr "La requête contient des identifiants d'enregistrement en double"
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:180
-#, fuzzy
 msgid "webPortalExportDuplicateRecordIdsDescription"
 msgstr ""
 "Veuillez modifier la requête afin qu'elle renvoie des enregistrements "
