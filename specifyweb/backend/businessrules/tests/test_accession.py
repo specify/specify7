@@ -165,3 +165,28 @@ class AccessionTests(ApiTests):
         self.assertEqual(fetched.attachment, attachment)
         self.assertEqual(fetched.attachment.origfilename, 'accession_document.pdf')
         self.assertEqual(fetched.ordinal, 0)
+
+    def test_delete_attachment_from_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-DELETE-ATTACHMENT-001',
+            division=self.division,
+        )
+        attachment = models.Attachment.objects.create(
+            origfilename='delete_me.pdf',
+            tableid=accession.specify_model.tableId,
+            title='Delete Me',
+            mimetype='application/pdf',
+        )
+        accession_attachment = models.Accessionattachment.objects.create(
+            accession=accession,
+            attachment=attachment,
+            ordinal=0,
+        )
+        attachment_id = attachment.id
+
+        accession_attachment.delete()
+
+        self.assertEqual(accession.accessionattachments.count(), 0)
+        self.assertFalse(
+            models.Attachment.objects.filter(id=attachment_id).exists()
+        )
