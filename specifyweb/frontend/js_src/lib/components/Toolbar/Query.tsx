@@ -111,6 +111,8 @@ export function QueryListDialog({
           limit,
           domainFilter: false,
           ...(filters ?? { specifyUser: userInformation.id }),
+          // Data View queries are managed from the Data Views dialog, not here
+          isDataView: false,
           offset,
           orderBy,
         }),

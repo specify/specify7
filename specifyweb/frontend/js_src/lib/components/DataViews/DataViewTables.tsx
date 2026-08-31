@@ -8,12 +8,14 @@ import type { GetSet, IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
+import { fetchCollection } from '../DataModel/collection';
 import { serializeResource } from '../DataModel/serializers';
 import { SpecifyTable } from '../DataModel/specifyTable';
 import { getTableById, strictGetTable } from '../DataModel/tables';
 import { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
+import { hasToolPermission } from '../Permissions/helpers';
 import { userPreferences } from '../Preferences/userPreferences';
 import { OverlayContext } from '../Router/Router';
 import { tablesFilter } from '../SchemaConfig/Tables';
@@ -23,6 +25,8 @@ import {
 } from '../Statistics/hooks';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
 import { QueryTables } from '../Toolbar/QueryTablesWrapper';
+import { createDefaultDataViewQuery } from './defaultQueries';
+import { DataViewQueryEditor } from './QueryEditor';
 
 const defaultDataViewTablesConfig: RA<keyof Tables> = [
   'Accession',
@@ -39,6 +43,10 @@ export function DataViewTables(): JSX.Element {
   const [tables, setTables] = useDataViewTables();
   const [isEditing, handleEditing] = useBooleanState();
   const counts = useTableRecordCounts(tables);
+  const [queryIds, refreshQueryId] = useDataViewQueryIds(tables);
+  const [editingQueryTable, setEditingQueryTable] = React.useState<
+    SpecifyTable | undefined
+  >(undefined);
   return isEditing ? (
     <TablesListEdit
       defaultTables={defaultDataViewTablesConfig}
@@ -48,30 +56,58 @@ export function DataViewTables(): JSX.Element {
       onClose={handleClose}
     />
   ) : (
-    <Dialog
-      header={dataViewsText.dataViewsTitle()}
-      buttons={
-        <>
-          <span className="-ml-2 flex-1" />
-          <Button.Secondary onClick={handleClose}>
-            {commonText.close()}
-          </Button.Secondary>
-        </>
-      }
-      className={{
-        container: dialogClassNames.narrowContainer,
-      }}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
-      icon={icons.eye}
-      onClose={handleClose}
-    >
-      <QueryTables
-        counts={counts}
-        getHref={(name) => `/specify/dataviews/${name.toLowerCase()}`}
-        tables={tables}
-        onClick={undefined}
-      />
-    </Dialog>
+    <>
+      <Dialog
+        header={dataViewsText.dataViewsTitle()}
+        buttons={
+          <>
+            <span className="-ml-2 flex-1" />
+            <Button.Secondary onClick={handleClose}>
+              {commonText.close()}
+            </Button.Secondary>
+          </>
+        }
+        className={{
+          container: dialogClassNames.narrowContainer,
+        }}
+        headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+        icon={icons.eye}
+        onClose={handleClose}
+      >
+        <QueryTables
+          counts={counts}
+          disabledTitle={dataViewsText.noDataViewQuery()}
+          getHref={(name) => `/specify/dataviews/${name.toLowerCase()}`}
+          isDisabled={(table): boolean =>
+            typeof queryIds[table.name] !== 'number'
+          }
+          tables={tables}
+          onClick={undefined}
+          renderAction={(table): JSX.Element => {
+            const hasQuery = typeof queryIds[table.name] === 'number';
+            return (
+              <Button.Icon
+                icon={hasQuery ? 'pencil' : 'plus'}
+                title={
+                  hasQuery
+                    ? dataViewsText.editDataViewQuery()
+                    : dataViewsText.createDataViewQuery()
+                }
+                onClick={(): void => setEditingQueryTable(table)}
+              />
+            );
+          }}
+        />
+      </Dialog>
+      {editingQueryTable !== undefined && (
+        <DataViewQueryEditor
+          queryId={queryIds[editingQueryTable.name] ?? undefined}
+          table={editingQueryTable}
+          onClose={(): void => setEditingQueryTable(undefined)}
+          onSaved={(): void => refreshQueryId(editingQueryTable)}
+        />
+      )}
+    </>
   );
 }
 
@@ -116,6 +152,57 @@ function useTableRecordCounts(
   }, [tables]);
 
   return counts;
+}
+
+/**
+ * Looks up each table's saved "Data View" query (Spquery.isDataView=true),
+ * if one exists. Absent key = still loading; undefined value = none found.
+ */
+function useDataViewQueryIds(
+  tables: RA<SpecifyTable>
+): readonly [IR<number | undefined>, (table: SpecifyTable) => void] {
+  const [queryIds, setQueryIds] = React.useState<IR<number | undefined>>({});
+  const seededTables = React.useRef<Set<string>>(new Set());
+
+  const fetchQueryId = React.useCallback(async (table: SpecifyTable) => {
+    const { records } = await fetchCollection('SpQuery', {
+      contextTableId: table.tableId,
+      isDataView: true,
+      domainFilter: false,
+      limit: 1,
+    });
+    let queryId: number | undefined = records[0]?.id;
+    if (
+      queryId === undefined &&
+      !seededTables.current.has(table.name) &&
+      hasToolPermission('queryBuilder', 'create')
+    ) {
+      seededTables.current.add(table.name);
+      queryId = await createDefaultDataViewQuery(table.name).catch(
+        (): undefined => undefined
+      );
+    }
+    setQueryIds((previousIds) => ({
+      ...previousIds,
+      [table.name]: queryId,
+    }));
+  }, []);
+
+  React.useEffect(() => {
+    let destructorCalled = false;
+    tables.forEach((table) => {
+      fetchQueryId(table)
+        .then(() => undefined)
+        .catch((error) => {
+          if (!destructorCalled) raise(error);
+        });
+    });
+    return (): void => {
+      destructorCalled = true;
+    };
+  }, [tables, fetchQueryId]);
+
+  return [queryIds, fetchQueryId] as const;
 }
 
 function useDataViewTables(): GetSet<RA<SpecifyTable>> {

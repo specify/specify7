@@ -564,7 +564,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   );
 }
 
-function TableHeaderCell({
+export function TableHeaderCell({
   columnIndex,
   fieldSpec,
   sortConfig,

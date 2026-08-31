@@ -1,17 +1,15 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
 import { attachmentsText } from '../../localization/attachments';
-import { dataViewsText } from '../../localization/dataViews';
 import { preferencesText } from '../../localization/preferences';
 import { queryText } from '../../localization/query';
 import { specifyNetworkText } from '../../localization/specifyNetwork';
 import { statsText } from '../../localization/stats';
 import { treeText } from '../../localization/tree';
 import { f } from '../../utils/functools';
-import type { IR, RA } from '../../utils/types';
-import { ensure, localized } from '../../utils/types';
+import type { RA } from '../../utils/types';
+import { ensure } from '../../utils/types';
 import { camelToHuman } from '../../utils/utils';
-import type { DataViewTableConfig } from '../DataViews/fields';
 import { genericTables } from '../DataModel/tables';
 import type { Tables } from '../DataModel/types';
 import type { QueryView } from '../QueryBuilder/Header';
@@ -303,24 +301,6 @@ export const collectionPreferenceDefinitions = {
               basicView: [],
               detailedView: [],
             },
-            renderer: f.never,
-            container: 'div',
-          }),
-        },
-      },
-    },
-  },
-  dataViews: {
-    title: dataViewsText.dataViewsTitle(),
-    subCategories: {
-      general: {
-        title: preferencesText.general(),
-        items: {
-          tableConfigs: definePref<IR<DataViewTableConfig>>({
-            title: localized('_dataViewTableConfigs'),
-            requiresReload: false,
-            visible: false,
-            defaultValue: {},
             renderer: f.never,
             container: 'div',
           }),

@@ -83,6 +83,7 @@ function Wrapped({
   forceCollection,
   isEmbedded = false,
   autoRun = false,
+  hideRunButton = false,
   // If present, this callback is called when query results are selected
   onSelected: handleSelected,
   onChange: handleChange,
@@ -92,6 +93,8 @@ function Wrapped({
   readonly forceCollection: number | undefined;
   readonly isEmbedded?: boolean;
   readonly autoRun?: boolean;
+  /** When true, hides the toolbar's "Query" run button (used by the Data Views query editor) */
+  readonly hideRunButton?: boolean;
   readonly onSelected?: (selected: RA<number>) => void;
   readonly onChange?: (props: {
     readonly fields: RA<SerializedResource<SpQueryField>>;
@@ -585,6 +588,7 @@ function Wrapped({
                 showHiddenFields={showHiddenFields}
                 showSeries={showSeries}
                 tableName={table.name}
+                hideRunButton={hideRunButton}
                 onRunCountOnly={(): void => runQuery('count')}
                 onSubmitClick={(): void =>
                   form?.checkValidity() === false
