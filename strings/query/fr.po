@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-31 13:52+0000\n"
-"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -586,7 +586,7 @@ msgstr "Choisir le formateur"
 #: components/QueryBuilder/FieldFilterSpec.tsx:565
 #, fuzzy
 msgid "range"
-msgstr "Portée"
+msgstr "Gamme"
 
 #. Used in: Components > Query Builder > Field Filter Tool
 #: components/QueryBuilder/FieldFilterTool.tsx:137
