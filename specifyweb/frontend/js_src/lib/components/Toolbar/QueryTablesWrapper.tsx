@@ -109,20 +109,16 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
 export function QueryTables({
   tables,
   onClick: handleClick,
+  onEdit: handleEdit,
   counts,
   getHref = (tableName): string =>
     `/specify/query/new/${tableName.toLowerCase()}/`,
-  renderAction,
-  isDisabled,
-  disabledTitle,
 }: {
   readonly tables: RA<SpecifyTable>;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+  readonly onEdit?: (table: SpecifyTable) => void;
   readonly counts?: IR<number | undefined>;
   readonly getHref?: (tableName: keyof Tables) => string;
-  readonly renderAction?: (table: SpecifyTable) => JSX.Element | undefined;
-  readonly isDisabled?: (table: SpecifyTable) => boolean;
-  readonly disabledTitle?: LocalizedString;
 }): JSX.Element {
   return (
     <Ul className="flex flex-col gap-1">
@@ -131,16 +127,12 @@ export function QueryTables({
         return (
           <li
             className={
-              renderAction === undefined
-                ? 'contents'
-                : 'flex items-center gap-1'
+              handleEdit === undefined ? 'contents' : 'flex items-center gap-1'
             }
             key={index}
           >
             <QueryTableItem
               count={counts?.[name]}
-              disabled={isDisabled?.(table) ?? false}
-              disabledTitle={disabledTitle}
               getHref={getHref}
               isCountLoading={counts !== undefined && !(name in counts)}
               label={label}
@@ -148,7 +140,13 @@ export function QueryTables({
               onClick={handleClick}
             />
             <span className="-ml-2 flex-1" />
-            {renderAction?.(table)}
+            {handleEdit === undefined ? undefined : (
+              <Button.Icon
+                icon="pencil"
+                title={commonText.edit()}
+                onClick={(): void => handleEdit(table)}
+              />
+            )}
           </li>
         );
       })}
@@ -214,8 +212,6 @@ function QueryTableItem({
   isCountLoading,
   onClick: handleClick,
   getHref,
-  disabled,
-  disabledTitle,
 }: {
   readonly name: keyof Tables;
   readonly label: LocalizedString;
@@ -223,8 +219,6 @@ function QueryTableItem({
   readonly isCountLoading: boolean;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
   readonly getHref: (tableName: keyof Tables) => string;
-  readonly disabled: boolean;
-  readonly disabledTitle?: LocalizedString;
 }): JSX.Element {
   const content = (
     <>
@@ -252,14 +246,7 @@ function QueryTableItem({
       )}
     </>
   );
-  return disabled ? (
-    <span
-      className="flex items-center gap-2 text-gray-400 dark:text-neutral-600"
-      title={disabledTitle}
-    >
-      {content}
-    </span>
-  ) : handleClick === undefined ? (
+  return handleClick === undefined ? (
     <Link.Default href={getHref(name)}>{content}</Link.Default>
   ) : (
     <Button.LikeLink onClick={(): void => handleClick(name)}>
