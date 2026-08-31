@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:52+0000\n"
+"PO-Revision-Date: 2026-08-31 09:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Croatian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/hr/>\n"
@@ -208,8 +208,8 @@ msgstr "Rang čvora stabla je veći od ranga nekih njegovih potomaka"
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
-"Čvor {operation:string} \"{nodeName:string}\" u sinonimizirani nadređeni "
-"\"{parentName:string}\""
+"Čvor {operation:string} \"{nodeName:string}\" u sinonimizirani nadređeni \""
+"{parentName:string}\""
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:166
@@ -218,8 +218,8 @@ msgstr ""
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
-"Sinonimiziranje \"{nodeName:string}\" za sinonimizirani čvor "
-"\"{intoName:string}\""
+"Sinonimiziranje \"{nodeName:string}\" za sinonimizirani čvor \""
+"{intoName:string}\""
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:171
@@ -291,8 +291,8 @@ msgstr "{agentTable:string} {actor:string} nije {specifyUserTable:string}"
 #, fuzzy
 msgid "unexpectedCollectionType"
 msgstr ""
-"Neočekivana vrsta kolekcije \"{unexpectedTypeName:string}\". Očekivana "
-"\"{collectionName:string}\""
+"Neočekivana vrsta kolekcije \"{unexpectedTypeName:string}\". Očekivana \""
+"{collectionName:string}\""
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:215
@@ -319,8 +319,8 @@ msgstr "Polje {field:string} nije odnos"
 #, fuzzy
 msgid "unexpectedTableId"
 msgstr ""
-"Neočekivani ID tablice \"{tableId:string}\" u zahtjevu. Očekivani "
-"\"{expectedTableId:string}\""
+"Neočekivani ID tablice \"{tableId:string}\" u zahtjevu. Očekivani \""
+"{expectedTableId:string}\""
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:226
