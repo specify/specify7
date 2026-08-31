@@ -138,3 +138,30 @@ class AccessionTests(ApiTests):
 
         self.assertEqual(agent_ids, {agent_1.id, agent_2.id})
         self.assertEqual(permit_ids, {permit_1.id, permit_2.id})
+
+    def test_add_attachment_to_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-ATTACHMENT-001',
+            division=self.division,
+        )
+        attachment = models.Attachment.objects.create(
+            origfilename='accession_document.pdf',
+            tableid=accession.specify_model.tableId,
+            title='Accession Document',
+            mimetype='application/pdf',
+        )
+
+        accession_attachment = models.Accessionattachment.objects.create(
+            accession=accession,
+            attachment=attachment,
+            ordinal=0,
+        )
+        fetched = models.Accessionattachment.objects.get(
+            id=accession_attachment.id
+        )
+
+        self.assertEqual(accession.accessionattachments.count(), 1)
+        self.assertEqual(fetched.accession, accession)
+        self.assertEqual(fetched.attachment, attachment)
+        self.assertEqual(fetched.attachment.origfilename, 'accession_document.pdf')
+        self.assertEqual(fetched.ordinal, 0)
