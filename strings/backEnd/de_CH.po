@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:52+0000\n"
+"PO-Revision-Date: 2026-08-31 09:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/backEnd/de_CH/>\n"
@@ -221,8 +221,8 @@ msgstr ""
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
-"Synonymisierung von \"{nodeName:string}\" zu synonymisiertem Knoten "
-"\"{intoName:string}\""
+"Synonymisierung von \"{nodeName:string}\" zu synonymisiertem Knoten \""
+"{intoName:string}\""
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:171
@@ -324,8 +324,8 @@ msgstr "Feld {field:string} ist keine Beziehung"
 #, fuzzy
 msgid "unexpectedTableId"
 msgstr ""
-"Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet wurde "
-"„{expectedTableId:string}“."
+"Unerwartete Tabellen-ID „{tableId:string}“ in der Anfrage. Erwartet wurde „"
+"{expectedTableId:string}“."
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:226
