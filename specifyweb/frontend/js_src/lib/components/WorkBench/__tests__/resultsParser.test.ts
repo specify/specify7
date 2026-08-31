@@ -51,9 +51,9 @@ describe('resolveValidationMessage business-rule handling', () => {
       conflicting: [4],
     };
 
-    expect(resolveValidationMessage('backend raw business-rule text', payload)).toBe(
-      'backend raw business-rule text'
-    );
+    expect(
+      resolveValidationMessage('backend raw business-rule text', payload)
+    ).toBe('backend raw business-rule text');
   });
 
   test('resolves datasetAlreadyUploaded via localizationKey payload', () => {
