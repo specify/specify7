@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-08-31 11:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Maxime GRIVEAU <maxime.griveau@mnhn.fr>\n"
 "Language-Team: French <https://hosted.weblate.org/projects/specify-7/query/"
 "fr/>\n"
 "Language: fr\n"
@@ -221,36 +221,30 @@ msgstr ""
 
 #. Used in: Components > Query Builder > Export
 #: components/QueryBuilder/Export.tsx:182
-#, fuzzy
 msgid "webPortalExportDuplicateHint"
 msgstr ""
 "(Conseil : vous devrez peut-être ajouter une condition pour la détermination "
-"du courant ou utiliser un agrégateur pour les préparations ou les "
-"collecteurs.)"
+"actuelle ou utiliser un agrégateur pour les préparations ou les collecteurs.)"
 
 #. Used in: Components > Batch Identify > Index ⬤ Components > Query Builder > Components ⬤ Components > Query Builder > Create Record Set
 #: components/BatchIdentify/index.tsx:769
 #: components/QueryBuilder/Components.tsx:236
 #: components/QueryBuilder/CreateRecordSet.tsx:68
-#, fuzzy
 msgid "createRecordSet"
 msgstr "Créer {recordSetTable:string}"
 
 #. Used in: Components > Query Builder > Components
 #: components/QueryBuilder/Components.tsx:122
-#, fuzzy
 msgid "saveAs"
 msgstr "Enregistrer sous"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:451
-#, fuzzy
 msgid "anyRank"
 msgstr "(tous grades)"
 
 #. Used in: Components > Wb Plan View > Navigator
 #: components/WbPlanView/navigator.ts:403
-#, fuzzy
 msgid "anyTree"
 msgstr "(n'importe quel arbre)"
 
@@ -260,9 +254,8 @@ msgstr "(n'importe quel arbre)"
 #: components/QueryBuilder/QueryLineTools.tsx:103
 #: components/QueryBuilder/QueryLineTools.tsx:105
 #: components/Toolbar/ListEdit.tsx:111
-#, fuzzy
 msgid "moveUp"
-msgstr "Monter en gamme"
+msgstr "Monter"
 
 #. 🟥As in move it down. Used in: Components > Formatters > Fields ⬤ Components > Query Builder > Query Line Tools ⬤ Components > Toolbar > List Edit
 #: components/Formatters/Fields.tsx:230
@@ -270,28 +263,24 @@ msgstr "Monter en gamme"
 #: components/QueryBuilder/QueryLineTools.tsx:111
 #: components/QueryBuilder/QueryLineTools.tsx:113
 #: components/Toolbar/ListEdit.tsx:117
-#, fuzzy
 msgid "moveDown"
 msgstr "Descendre"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:76
 #: components/QueryBuilder/QueryLineTools.tsx:86
-#, fuzzy
 msgid "sort"
 msgstr "Trier"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:73
 #: components/QueryBuilder/QueryLineTools.tsx:83
-#, fuzzy
 msgid "ascendingSort"
 msgstr "Tri croissant"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:75
 #: components/QueryBuilder/QueryLineTools.tsx:85
-#, fuzzy
 msgid "descendingSort"
 msgstr "Tri décroissant"
 
@@ -300,7 +289,7 @@ msgstr "Tri décroissant"
 #: components/QueryBuilder/FieldFilterTool.tsx:117
 #, fuzzy
 msgid "negate"
-msgstr "Nier"
+msgstr "Sauf"
 
 #. Used in: Components > Query Builder > Query Line Tools
 #: components/QueryBuilder/QueryLineTools.tsx:50
