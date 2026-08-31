@@ -1,16 +1,17 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:52+0000\n"
+"PO-Revision-Date: 2026-08-31 09:15+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
-"Language-Team: Portuguese (Brazil) "
-"<https://hosted.weblate.org/projects/specify-7/attachments/pt_BR/>\n"
+"Language-Team: Portuguese (Brazil) <https://hosted.weblate.org/projects/"
+"specify-7/attachments/pt_BR/>\n"
 "Language: pt_BR\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 #: components/Attachments/RecordSetAttachment.tsx:161
 #: components/Attachments/RecordSetAttachment.tsx:164
 #: components/Attachments/RecordSetAttachment.tsx:168
@@ -34,17 +35,17 @@ msgstr ""
 #: components/WorkBench/WbAttachmentsPreview.tsx:546
 #: components/WorkBench/WbView.tsx:261
 #: components/WorkBench/hotProps.tsx:75
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Attachments > Index ⬤ Components > Form Sliders > Attachments Collection ⬤ Components > Header > Menu Item Definitions ⬤ Components > Molecules > Sync Attachment Picker ⬤ Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions ⬤ Components > Router > Routes ⬤ Components > Statistics > Stats Spec ⬤ Components > Wb Attachment Viewer > Index ⬤ Components > Wb Import Attachments > Index ⬤ Components > Wb Toolkit > Index ⬤ Components > Work Bench > Wb Attachments Preview ⬤ Components > Work Bench > Wb View ⬤ Components > Work Bench > Hot Props
 #, fuzzy
 msgid "attachments"
 msgstr "Anexos"
 
-#: components/Attachments/index.tsx:231
 #. Used in: Components > Attachments > Index
+#: components/Attachments/index.tsx:231
 #, fuzzy
 msgid "scale"
 msgstr "Escala"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Viewer ⬤ Components > Attachments > Index ⬤ Attachments > __tests__ > Attachments View ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Header > Index ⬤ Components > Wb Import Attachments > Index
 #: components/Attachments/Plugin.tsx:42
 #: components/Attachments/Plugin.tsx:164
 #: components/Attachments/Viewer.tsx:383
@@ -58,426 +59,425 @@ msgstr "Escala"
 #: components/AttachmentsBulkImport/Upload.tsx:264
 #: components/Header/index.tsx:186
 #: components/WbImportAttachments/index.tsx:134
-#. Used in: Components > Attachments > Plugin ⬤ Components > Attachments > Viewer ⬤ Components > Attachments > Index ⬤ Attachments > __tests__ > Attachments View ⬤ Components > Attachments Bulk Import > Upload ⬤ Components > Header > Index ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "attachmentServerUnavailable"
 msgstr "Servidor de anexos indisponível"
 
+#. Used in: Components > Attachments > Viewer ⬤ Components > Attachments > Index
 #: components/Attachments/Viewer.tsx:384
 #: components/Attachments/index.tsx:57
 #: components/Attachments/index.tsx:288
-#. Used in: Components > Attachments > Viewer ⬤ Components > Attachments > Index
 #, fuzzy
 msgid "attachmentServerUnavailableDescription"
 msgstr "Configure seu servidor de anexos."
 
+#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/Attachments/index.tsx:217
 #: components/FormMeta/SubViewMeta.tsx:42
 #: components/Preferences/UserDefinitions.tsx:1413
-#. Used in: Components > Attachments > Index ⬤ Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #, fuzzy
 msgid "orderBy"
 msgstr "Ordem por"
 
+#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index ⬤ Components > Work Bench > Wb Attachments Preview
 #: components/Attachments/Plugin.tsx:168
 #: components/WbImportAttachments/index.tsx:140
 #: components/WorkBench/WbAttachmentsPreview.tsx:178
-#. Used in: Components > Attachments > Plugin ⬤ Components > Wb Import Attachments > Index ⬤ Components > Work Bench > Wb Attachments Preview
 #, fuzzy
 msgid "uploadingInline"
 msgstr "Carregando…"
 
+#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #: components/Attachments/Gallery.tsx:137
 #: components/Attachments/RecordSetAttachment.tsx:176
 #: components/AttachmentsBulkImport/utils.ts:610
-#. Used in: Components > Attachments > Gallery ⬤ Components > Attachments > Record Set Attachment ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "noAttachments"
 msgstr "Não há anexos."
 
-#: components/Attachments/Cell.tsx:154
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:154
 #, fuzzy
 msgid "unableToFindRelatedRecord"
 msgstr "Não foi possível encontrar o registro relacionado."
 
-#: components/Attachments/Cell.tsx:157
 #. Used in: Components > Attachments > Cell
+#: components/Attachments/Cell.tsx:157
 #, fuzzy
 msgid "unableToFindRelatedRecordDescription"
 msgstr ""
 "Não foi possível encontrar nenhum registro ao qual este anexo esteja "
 "relacionado."
 
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:429
-#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "showForm"
 msgstr "Mostrar formulário"
 
-#: components/Molecules/FilePicker.tsx:51
 #. Used in: Components > Molecules > File Picker
+#: components/Molecules/FilePicker.tsx:51
 #, fuzzy
 msgid "multipleFilesSelected"
 msgstr "Vários arquivos selecionados"
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:306
 #: components/AttachmentsBulkImport/Import.tsx:329
-#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "fileSize"
 msgstr "Tamanho do arquivo"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/Rollback.tsx:149
 #: components/AttachmentsBulkImport/utils.ts:605
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "deleted"
 msgstr "Excluído"
 
-#: components/AttachmentsBulkImport/utils.ts:603
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:603
 #, fuzzy
 msgid "noFile"
 msgstr "Nenhum arquivo"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:200
 #, fuzzy
 msgid "pleaseReselectAllFiles"
-msgstr "Por favor, selecione todos os arquivos novamente antes de fazer o upload."
+msgstr ""
+"Por favor, selecione todos os arquivos novamente antes de fazer o upload."
 
-#: components/AttachmentsBulkImport/utils.ts:602
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:602
 #, fuzzy
 msgid "incorrectFormatter"
 msgstr "Formatação incorreta"
 
-#: components/AttachmentsBulkImport/utils.ts:606
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:606
 #, fuzzy
 msgid "alreadyUploaded"
 msgstr "Já foi carregado"
 
-#: components/AttachmentsBulkImport/utils.ts:607
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:607
 #, fuzzy
 msgid "skipped"
 msgstr "Ignorado"
 
-#: components/AttachmentsBulkImport/utils.ts:608
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:608
 #, fuzzy
 msgid "cancelled"
 msgstr "Cancelado"
 
+#. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:611
 #: components/AttachmentsBulkImport/utils.ts:614
-#. Used in: Components > Attachments Bulk Import > Utils
 #, fuzzy
 msgid "frontEndInterruption"
 msgstr "{action:string} estava em andamento quando ocorreu a interrupção."
 
-#: components/AttachmentsBulkImport/utils.ts:609
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:609
 #, fuzzy
 msgid "matchError"
 msgstr "Erro de correspondência"
 
-#: components/AttachmentsBulkImport/utils.ts:617
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:617
 #, fuzzy
 msgid "errorReadingFile"
 msgstr "Erro ao ler o arquivo"
 
-#: components/AttachmentsBulkImport/utils.ts:619
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:619
 #, fuzzy
 msgid "unhandledFatalResourceError"
 msgstr "Erro fatal de recurso não tratado:"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:141
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:141
 #, fuzzy
 msgid "attachmentImportDatasetsCount"
 msgstr "Conjuntos de dados de importação de anexos ({count:number})"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:245
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:245
 #, fuzzy
 msgid "newAttachmentDataset"
 msgstr "Novo conjunto de dados de anexos {date: string}"
 
-#: components/AttachmentsBulkImport/Datasets.tsx:274
 #. Used in: Components > Attachments Bulk Import > Datasets
+#: components/AttachmentsBulkImport/Datasets.tsx:274
 #, fuzzy
 msgid "newAttachmentDatasetBase"
 msgstr "Novo conjunto de dados de anexos"
 
-#: components/AttachmentsBulkImport/Import.tsx:537
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:537
 #, fuzzy
 msgid "uploadInterrupted"
 msgstr "Upload interrompido"
 
-#: components/AttachmentsBulkImport/Import.tsx:543
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:543
 #, fuzzy
 msgid "uploadInterruptedDescription"
 msgstr ""
 "O carregamento estava em andamento quando ocorreu uma interrupção. Alguns "
 "arquivos podem ter sido carregados."
 
-#: components/AttachmentsBulkImport/Import.tsx:548
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:548
 #, fuzzy
 msgid "rollbackInterrupted"
 msgstr "Reversão interrompida"
 
-#: components/AttachmentsBulkImport/Import.tsx:554
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:554
 #, fuzzy
 msgid "rollbackInterruptedDescription"
 msgstr ""
 "O processo de reversão estava em andamento quando ocorreu uma interrupção. "
 "Alguns arquivos podem ter sido excluídos."
 
-#: components/AttachmentsBulkImport/Import.tsx:352
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:352
 #, fuzzy
 msgid "attachmentId"
 msgstr "ID do anexo"
 
+#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:34
 #: components/AttachmentsBulkImport/SelectUploadPath.tsx:41
-#. Used in: Components > Attachments Bulk Import > Select Upload Path
 #, fuzzy
 msgid "choosePath"
 msgstr "Escolha o caminho"
 
-#: components/AttachmentsBulkImport/Upload.tsx:247
 #. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:247
 #, fuzzy
 msgid "beginAttachmentUpload"
 msgstr "Iniciar o envio do anexo?"
 
-#: components/AttachmentsBulkImport/Upload.tsx:250
 #. Used in: Components > Attachments Bulk Import > Upload
+#: components/AttachmentsBulkImport/Upload.tsx:250
 #, fuzzy
 msgid "beginUploadDescription"
 msgstr ""
 "O envio dos anexos os criará no servidor de ativos e no banco de dados "
 "especificado."
 
-#: components/AttachmentsBulkImport/ActionState.tsx:59
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:59
 #, fuzzy
 msgid "interrupted"
 msgstr "Interrompido"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:55
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:55
 #, fuzzy
 msgid "tryNow"
 msgstr "Experimente agora"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:62
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:62
 #, fuzzy
 msgid "interruptedTime"
 msgstr "Interrompido. Tentando novamente em {remainingTime:string}"
 
-#: components/AttachmentsBulkImport/Rollback.tsx:137
 #. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:137
 #, fuzzy
 msgid "rollbackDescription"
 msgstr ""
 "A reversão excluirá os anexos do banco de dados especificado e do servidor "
 "de ativos."
 
-#: components/AttachmentsBulkImport/utils.ts:621
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:621
 #, fuzzy
 msgid "noMatch"
 msgstr "Nenhuma correspondência"
 
-#: components/Attachments/RecordSetAttachment.tsx:179
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:179
 #, fuzzy
 msgid "attachmentHaltLimit"
 msgstr "Nenhum anexo foi encontrado nos primeiros registros {halt:number}."
 
-#: components/Attachments/RecordSetAttachment.tsx:187
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:187
 #, fuzzy
 msgid "fetchNextAttachments"
 msgstr "Procure mais anexos"
 
+#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #: components/Attachments/Dialog.tsx:101
 #: components/Attachments/Viewer.tsx:428
-#. Used in: Components > Attachments > Dialog ⬤ Components > Attachments > Viewer
 #, fuzzy
 msgid "hideForm"
 msgstr "Ocultar formulário"
 
-#: components/Preferences/UserDefinitions.tsx:1463
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1463
 #, fuzzy
 msgid "collapseFormByDefault"
 msgstr "Recolher formulário por padrão"
 
-#: components/Preferences/UserDefinitions.tsx:1464
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1464
 #, fuzzy
 msgid "collapseFormByDefaultDescription"
 msgstr ""
-"Define se o formulário de anexos deve ser recolhido por padrão ao "
-"visualizar anexos existentes. Se os controles de anexos estiverem ocultos, "
-"essa configuração não terá efeito."
+"Define se o formulário de anexos deve ser recolhido por padrão ao visualizar "
+"anexos existentes. Se os controles de anexos estiverem ocultos, essa "
+"configuração não terá efeito."
 
-#: components/Preferences/UserDefinitions.tsx:1455
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1455
 #, fuzzy
 msgid "showControls"
 msgstr "Mostrar controles de anexos"
 
-#: components/Preferences/UserDefinitions.tsx:1456
 #. Used in: Components > Preferences > User Definitions
+#: components/Preferences/UserDefinitions.tsx:1456
 #, fuzzy
 msgid "showControlsDescription"
 msgstr ""
 "Mostrar ou ocultar os botões de zoom (aumentar e diminuir), redefinir e "
 "ocultar/exibir formulário ao visualizar um anexo."
 
-#: components/AttachmentsBulkImport/utils.ts:622
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:622
 #, fuzzy
 msgid "multipleMatches"
 msgstr "Vários confrontos"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:97
 #, fuzzy
 msgid "multipleMatchesClick"
 msgstr "Vários resultados. Clique para desambiguar."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:188
 #, fuzzy
 msgid "totalFiles"
 msgstr "Total de arquivos"
 
-#: components/AttachmentsBulkImport/utils.ts:623
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:623
 #, fuzzy
 msgid "correctlyFormatted"
 msgstr "Formatação correta"
 
-#: components/AttachmentsBulkImport/utils.ts:624
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:624
 #, fuzzy
 msgid "stoppedByUser"
 msgstr "Interrompido pelo usuário"
 
+#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #: components/Router/OverlayRoutes.tsx:246
 #: components/Router/Routes.tsx:221
 #: components/Toolbar/WbsDialog.tsx:195
 #: components/WbImportAttachments/index.tsx:162
-#. Used in: Components > Router > Overlay Routes ⬤ Components > Router > Routes ⬤ Components > Toolbar > Wbs Dialog ⬤ Components > Wb Import Attachments > Index
 #, fuzzy
 msgid "importAttachments"
 msgstr "Importar anexos"
 
-#: components/AttachmentsBulkImport/ActionState.tsx:30
 #. Used in: Components > Attachments Bulk Import > Action State
+#: components/AttachmentsBulkImport/ActionState.tsx:30
 #, fuzzy
 msgid "onFile"
 msgstr "Em arquivo"
 
-#: components/AttachmentsBulkImport/Import.tsx:560
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:560
 #, fuzzy
 msgid "duplicateFilesFound"
 msgstr "Arquivos duplicados encontrados"
 
-#: components/AttachmentsBulkImport/Import.tsx:565
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:565
 #, fuzzy
 msgid "duplicateFilesDescription"
 msgstr ""
 "Os seguintes arquivos não foram selecionados porque já existem neste "
 "conjunto de dados."
 
-#: components/AttachmentsBulkImport/Import.tsx:580
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:580
 #, fuzzy
 msgid "missingFilesFound"
 msgstr "Arquivos ausentes no arquivo de mapeamento"
 
-#: components/AttachmentsBulkImport/Import.tsx:585
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:585
 #, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
-"Os seguintes arquivos estão listados no arquivo de mapeamento, mas não "
-"foram selecionados. Selecione-os ou arraste e solte-os para iniciar o "
-"upload."
+"Os seguintes arquivos estão listados no arquivo de mapeamento, mas não foram "
+"selecionados. Selecione-os ou arraste e solte-os para iniciar o upload."
 
-#: components/AttachmentsBulkImport/utils.ts:626
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:626
 #, fuzzy
 msgid "errorFetchingRecord"
 msgstr "Erro ao buscar registro"
 
-#: components/AttachmentsBulkImport/utils.ts:627
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:627
 #, fuzzy
 msgid "errorSavingRecord"
 msgstr "Erro ao salvar o registro"
 
-#: components/AttachmentsBulkImport/utils.ts:625
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:625
 #, fuzzy
 msgid "interruptionStopped"
 msgstr "Interrompido devido a erro ao carregar um arquivo anterior."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
 #, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Selecione os arquivos ou arraste-os para cá para começar."
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
 #, fuzzy
 msgid "selectIdentifier"
 msgstr "Selecione um identificador para comparar com o nome do arquivo."
 
+#. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:325
 #: components/AttachmentsBulkImport/Import.tsx:348
-#. Used in: Components > Attachments Bulk Import > Import
 #, fuzzy
 msgid "progress"
 msgstr "Progresso"
 
-#: components/AttachmentsBulkImport/Rollback.tsx:143
 #. Used in: Components > Attachments Bulk Import > Rollback
+#: components/AttachmentsBulkImport/Rollback.tsx:143
 #, fuzzy
 msgid "rollbackResults"
 msgstr "Resultados da reversão"
 
+#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Rollback.tsx:146
 #: components/AttachmentsBulkImport/Upload.tsx:274
-#. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #, fuzzy
 msgid "resultValue"
 msgstr ""
 "{success: number} dos {total: number} anexos no conjunto de dados foram "
 "{action: string}."
 
-#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
 #. Used in: Components > Attachments Bulk Import > Rename Data Set
+#: components/AttachmentsBulkImport/RenameDataSet.tsx:32
 #, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
@@ -485,57 +485,57 @@ msgstr ""
 "caminho de upload. Além disso, após a exclusão, a opção de reversão "
 "(rollback) não estará mais disponível para o conjunto de dados carregado."
 
-#: components/AttachmentsBulkImport/utils.ts:628
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:628
 #, fuzzy
 msgid "attachmentUploadError"
 msgstr ""
 "Erro ao enviar o anexo. O servidor de anexos pode estar indisponível ou "
 "ocorreu um erro ao ler o arquivo."
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
 msgid "downloadAll"
 msgstr "Baixar tudo"
 
+#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #, fuzzy
 msgid "downloadAllDescription"
 msgstr "Baixar todos os anexos encontrados"
 
-#: components/Attachments/RecordSetAttachment.tsx:224
 #. Used in: Components > Attachments > Record Set Attachment
+#: components/Attachments/RecordSetAttachment.tsx:224
 #, fuzzy
 msgid "createRecordSetToDownloadAll"
 msgstr ""
 "Nem todos os anexos foram carregados. Crie um conjunto de registros com os "
 "resultados da consulta para baixar todos os anexos."
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:60
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:60
 #, fuzzy
 msgid "deleteAttachmentWarning"
 msgstr "Tem certeza de que deseja excluir este anexo?"
 
-#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
+#: components/FormSliders/AttachmentWarningDeletion.tsx:57
 #, fuzzy
 msgid "attachmentDelition"
 msgstr "Exclusão de anexos"
 
-#: components/Preferences/CollectionDefinitions.tsx:50
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:50
 #, fuzzy
 msgid "publicDefault"
 msgstr "Tornar os anexos públicos por padrão"
 
-#: components/Preferences/CollectionDefinitions.tsx:51
 #. Used in: Components > Preferences > Collection Definitions
+#: components/Preferences/CollectionDefinitions.tsx:51
 #, fuzzy
 msgid "publicDefaultDescription"
 msgstr ""
@@ -545,126 +545,126 @@ msgstr ""
 "pode ser alterada individualmente para cada anexo e não afeta os anexos "
 "existentes."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
 #, fuzzy
 msgid "matchingMode"
 msgstr "Modo de correspondência"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
 #, fuzzy
 msgid "matchByFilename"
 msgstr "Correspondência por nome de arquivo"
 
+#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/Datasets.tsx:213
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
-#. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 #, fuzzy
 msgid "matchByMappingFile"
 msgstr "Correspondência por arquivo de mapeamento"
 
-#: components/AttachmentsBulkImport/utils.ts:629
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:629
 #, fuzzy
 msgid "fileMissing"
 msgstr "Arquivo ausente"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
 #, fuzzy
 msgid "awaitingFile"
 msgstr "Arquivo aguardando"
 
-#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
+#: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
 #, fuzzy
 msgid "mappingAwaitingFiles"
 msgstr "Selecione os seus arquivos ou arraste e solte-os para começar."
 
-#: components/AttachmentsBulkImport/utils.ts:630
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:630
 #, fuzzy
 msgid "notInMappingFile"
 msgstr "Não está no arquivo de mapeamento"
 
-#: components/AttachmentsBulkImport/utils.ts:631
 #. Used in: Components > Attachments Bulk Import > Utils
+#: components/AttachmentsBulkImport/utils.ts:631
 #, fuzzy
 msgid "duplicateInMappingFile"
 msgstr "Arquivo de mapeamento duplicado"
 
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:267
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:270
-#. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "selectMatchValueColumn"
 msgstr "Coluna de valor correspondente"
 
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:296
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:299
-#. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "selectFileNameColumn"
 msgstr "Coluna Nome do Arquivo"
 
-#: components/AttachmentsBulkImport/MappingFileSetup.tsx:232
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:232
 #, fuzzy
 msgid "mappingFileLoaded"
 msgstr "Arquivo de mapeamento carregado ({count:number} linhas)"
 
-#: components/AttachmentsBulkImport/MappingFileSetup.tsx:237
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:237
 #, fuzzy
 msgid "mappingFileColumnsInfo"
 msgstr "Correspondência: {matchColumn:string} → Arquivo: {fileColumn:string}"
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
 #, fuzzy
 msgid "chooseMatchingMode"
 msgstr ""
 "Escolha como os arquivos anexos devem ser associados aos registros do banco "
 "de dados."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
 #, fuzzy
 msgid "matchByFilenameDescription"
 msgstr ""
 "Analisa o identificador de registro de cada nome de arquivo usando um "
 "formatador de campo. Funciona melhor com campos numéricos estruturados."
 
-#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
+#: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
 #, fuzzy
 msgid "matchByMappingFileDescription"
 msgstr ""
 "Utilize um arquivo de mapeamento CSV explícito que liste a qual registro "
 "cada arquivo pertence."
 
-#: components/AttachmentsBulkImport/Import.tsx:305
 #. Used in: Components > Attachments Bulk Import > Import
+#: components/AttachmentsBulkImport/Import.tsx:305
 #, fuzzy
 msgid "matchValue"
 msgstr "Valor correspondente"
 
-#: components/AttachmentsBulkImport/MappingFileSetup.tsx:188
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:188
 #, fuzzy
 msgid "csvParseError"
 msgstr "Falha ao analisar o arquivo CSV"
 
-#: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
+#: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
 #, fuzzy
 msgid "csvEmptyFile"
 msgstr "Arquivo CSV vazio"
 
+#. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315
-#. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #, fuzzy
 msgid "columnPlaceholder"
 msgstr "Coluna {columnNumber:number}"
