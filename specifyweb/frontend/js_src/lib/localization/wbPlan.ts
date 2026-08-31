@@ -567,9 +567,9 @@ export const wbPlanText = createDictionary({
     'ru-ru':
       'Вы просматриваете сопоставления для загруженного набора данных.\n\nЧтобы отредактировать сопоставления, откатите загруженные данные или создайте новый набор данных.',
     'es-es':
-      'Estás viendo las asignaciones de un conjunto de datos cargado.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPara editar las asignaciones, revertir los datos cargados o crear un nuevo conjunto de datos, puedes editar las asignaciones, restaurar los datos originales o crear un nuevo conjunto de datos.',
+      'Estás viendo las asignaciones de un conjunto de datos cargado.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPara editar las asignaciones, revertir los datos cargados o crear un nuevo conjunto de datos, puedes editar las asignaciones, restaurar los datos originales o crear un nuevo conjunto de datos.',
     'fr-fr':
-      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
+      "Vous visualisez les correspondances d'un jeu de données importé.\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\n\nPour modifier les correspondances, annulez l'importation des données ou créez un nouveau jeu de données.",
     'uk-ua':
       'Ви переглядаєте зіставлення для завантаженого набору даних.\n\nЩоб редагувати зіставлення, відкотіть завантажені дані або створіть новий набір даних.',
     'de-ch':
