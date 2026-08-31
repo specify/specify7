@@ -511,6 +511,47 @@ export const treeText = createDictionary({
     'hr-hr': '({directCount:number|formatted})',
     nb: '({directCount:number|formatted})',
   },
+  nodeStatsWithSynonyms: {
+    comment: "Used to show tree node's direct, indirect and synonymized usages",
+    'en-us':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  leafNodeStatsWithSynonyms: {
+    comment: "Used to show leaf tree node's direct and synonymized usages",
+    'en-us':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  synonymizedCollectionObjectCount: {
+    comment: `
+      Count of records determined as this node or any of its descendants that
+      have been synonymized into another node
+    `,
+    'en-us': 'Synonymized {collectionObjectTable:string} Count',
+    'de-ch': '',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': '',
+    nb: '',
+    'pt-br': '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
   directCollectionObjectCount: {
     comment: 'Example: Direct Collection Object count',
     'en-us': 'Direct {collectionObjectTable:string} Count',

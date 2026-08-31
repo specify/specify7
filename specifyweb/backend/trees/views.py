@@ -268,8 +268,13 @@ def tree_stats(request, treedef, tree, parentid):
     "Returns tree stats (collection object count) for tree nodes parented by <parentid>."
 
     using_cte = (tree in ['geography', 'taxon', 'storage'])
+    include_synonym_count = (
+        tree == 'taxon'
+        and request.GET.get('includeSynonymCount', 'false') == 'true'
+    )
     results = get_tree_stats(
-        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte)
+        treedef, tree, parentid, request.specify_collection, sqlmodels.session_context, using_cte,
+        include_synonym_count)
 
     return HttpResponse(toJson(results), content_type="application/json")
 

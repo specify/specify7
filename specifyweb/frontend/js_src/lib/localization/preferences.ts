@@ -888,6 +888,55 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать начальный и конечный периоды',
     'uk-ua': 'Показати початковий та кінцевий періоди',
   },
+  queryButtonTaxonField: {
+    'en-us': 'Field used by Taxon Query button',
+    'de-ch': 'Vom Taxon-Abfrage-Button verwendetes Feld',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr': 'Polje koje koristi gumb za upit taksona',
+    nb: '',
+    'pt-br': 'Campo usado pelo botão de consulta de táxon',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  queryButtonTaxonFieldDescription: {
+    'en-us':
+      'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
+    'de-ch':
+      'Wählen Sie aus, ob die Schaltfläche „Taxonbaum-Abfrage“ nach Taxon oder bevorzugtem Taxon filtert. Das bevorzugte Taxon entspricht den Baumzählungen; das Standard-Taxon folgt dem ursprünglich ermittelten Taxon.',
+    'es-es': '',
+    'fr-fr': '',
+    'hr-hr':
+      'Odaberite hoće li gumb Upit za stablo taksona filtrirati prema taksonu ili preferiranom taksonu. Preferirani takson odgovara broju stabala; takson slijedi izvorno određeni takson.',
+    nb: '',
+    'pt-br':
+      'Escolha se o botão Consulta da árvore taxonômica filtra por Táxon ou Táxon Preferencial. Táxon Preferencial corresponde à contagem de árvores; Táxon segue o táxon de determinação original.',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  showSynonymCounts: {
+    'en-us': 'Show counts for synonymized nodes',
+    'de-ch': '',
+    'hr-hr': '',
+    'pt-br': '',
+    'es-es': '',
+    'fr-fr': '',
+    nb: '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
+  showSynonymCountsDescription: {
+    'en-us':
+      'Display an additional count of records that were determined as a node, or any of its descendants, and are now synonyms of another node.',
+    'de-ch': '',
+    'hr-hr': '',
+    'pt-br': '',
+    'es-es': '',
+    'fr-fr': '',
+    nb: '',
+    'ru-ru': '',
+    'uk-ua': '',
+  },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',

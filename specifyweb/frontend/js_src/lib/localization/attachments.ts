@@ -60,7 +60,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати за',
     'de-ch': 'Sortiere nach',
-    'pt-br': 'Ordenar por',
+    'pt-br': 'Ordem por',
     'hr-hr': 'Poredaj po',
     nb: 'Bestill etter',
   },
@@ -207,7 +207,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Skipped',
     'de-ch': 'Übersprungen',
     'es-es': 'Saltado',
-    'fr-fr': 'Omission',
+    'fr-fr': 'Omis',
     'ru-ru': 'Пропущено',
     'uk-ua': 'Пропущено',
     'pt-br': 'Ignorado',
@@ -276,8 +276,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Anhänge-Importdatensätze ({count:number})',
     'es-es':
       'Conjuntos de datos de importación de archivos adjuntos ({count:number})',
-    'fr-fr':
-      'Importer des ensembles de données de pièces jointes ({count:number})',
+    'fr-fr': 'Importer un jeu de données de pièces jointes ({count:number})',
     'ru-ru': 'Наборы данных для импорта вложений ({count:number})',
     'uk-ua': 'Набори даних імпорту вкладень ({count:number})',
     'pt-br': 'Conjuntos de dados de importação de anexos ({count:number})',
@@ -407,7 +406,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'Al cargar los archivos adjuntos, estos se guardarán en el servidor de activos y en la base de datos de Specify.',
     'fr-fr':
-      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specification.',
+      'Le chargement des pièces jointes les ajoutera au serveur de ressources et à la base de données Specify.',
     'ru-ru':
       'Загрузка вложений создаст их на сервере активов и в базе данных Specify.',
     'uk-ua':
@@ -459,7 +458,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'La reversión eliminará los archivos adjuntos de la base de datos Specify y del servidor de activos.',
     'fr-fr':
-      "La restauration supprimera les pièces jointes de la base de données Specification et du serveur d'actifs.",
+      'La restauration supprimera les pièces jointes de la base de données Specify et du serveur de pièces jointes.',
     'ru-ru':
       'Функция отката удалит вложения из базы данных Specify и сервера активов.',
     'uk-ua': 'Відкат видалить вкладення з бази даних Specify та Asset Server',
@@ -582,7 +581,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Multiple matches',
     'de-ch': 'Mehrere Übereinstimmungen',
     'es-es': 'Múltiples coincidencias',
-    'fr-fr': 'Plusieurs matchs',
+    'fr-fr': 'Plusieurs correspondances',
     'ru-ru': 'Несколько матчей',
     'uk-ua': 'Кілька збігів',
     'pt-br': 'Vários confrontos',
@@ -638,7 +637,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'Import Attachments',
     'de-ch': 'Anhänge importieren',
     'es-es': 'Importar archivos adjuntos',
-    'fr-fr': 'Pièces jointes importées',
+    'fr-fr': 'Importer des pièces jointes',
     'ru-ru': 'Импорт вложений',
     'uk-ua': 'Імпорт вкладень',
     'pt-br': 'Importar anexos',
@@ -651,7 +650,7 @@ export const attachmentsText = createDictionary({
     'es-es': 'Fichado',
     'ru-ru': 'В архиве',
     'uk-ua': 'У файлі',
-    'fr-fr': 'En dossier',
+    'fr-fr': 'Sur le fichier',
     'pt-br': 'Em arquivo',
     'hr-hr': 'U datoteci',
     nb: 'På fil',
@@ -888,7 +887,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'No se han cargado todos los archivos adjuntos. Cree un conjunto de registros con los resultados de la consulta para descargar todos los archivos adjuntos.',
     'fr-fr':
-      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un enregistrement des résultats de la requête pour télécharger toutes les pièces jointes.",
+      "Toutes les pièces jointes n'ont pas été chargées. Veuillez créer un ensemble d'enregistrements des résultats de la requête pour télécharger toutes les pièces jointes.",
     'pt-br':
       'Nem todos os anexos foram carregados. Crie um conjunto de registros com os resultados da consulta para baixar todos os anexos.',
     'ru-ru':
@@ -940,7 +939,7 @@ export const attachmentsText = createDictionary({
     'es-es':
       'Esto controla si los nuevos archivos adjuntos añadidos a esta colección se marcan como "Públicos" por defecto. Los archivos adjuntos públicos serán visibles automáticamente en un portal web específico. Esta configuración se puede modificar para cada archivo adjunto individualmente y no afecta a los archivos adjuntos existentes.',
     'fr-fr':
-      "Ce paramètre détermine si les nouvelles pièces jointes ajoutées à cette collection sont marquées comme « publiques » par défaut. Les pièces jointes publiques seront automatiquement visibles sur le portail web de spécification. Ce paramètre peut être modifié pour chaque pièce jointe individuellement et n'affecte pas les pièces jointes existantes.",
+      "Ce paramètre détermine si les nouvelles pièces jointes ajoutées à cette collection sont marquées comme « publiques » par défaut. Les pièces jointes publiques seront automatiquement visibles sur le portail web de Specify. Ce paramètre peut être modifié pour chaque pièce jointe individuellement et n'affecte pas les pièces jointes existantes.",
     'pt-br':
       'Esta opção controla se os novos anexos adicionados a esta coleção serão sinalizados como "Públicos" por padrão. Anexos públicos serão automaticamente visíveis em um Portal Web especificado. Essa configuração pode ser alterada individualmente para cada anexo e não afeta os anexos existentes.',
     'ru-ru':
@@ -1056,7 +1055,7 @@ export const attachmentsText = createDictionary({
     'en-us': 'File Name Column',
     'de-ch': 'Spalte für Dateinamen',
     'es-es': 'Columna del nombre del archivo',
-    'fr-fr': 'Colonne Nom du fichier',
+    'fr-fr': 'Colonne du Nom du fichier',
     'ru-ru': 'Столбец «Имя файла»',
     'uk-ua': 'Стовпець імені файлу',
     'pt-br': 'Coluna Nome do Arquivo',
