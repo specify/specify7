@@ -317,13 +317,13 @@ msgstr "Speichern..."
 msgid "wbUnloadProtect"
 msgstr "Änderungen an diesem Datensatz wurden nicht gespeichert."
 
-#: components/WorkBench/WbValidation.tsx:355
+#: components/WorkBench/WbValidation.tsx:354
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Kein passender Datensatz für die Tabelle „muss übereinstimmen“."
 
-#: components/WorkBench/WbValidation.tsx:384
+#: components/WorkBench/WbValidation.tsx:383
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"

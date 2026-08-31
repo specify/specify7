@@ -316,13 +316,13 @@ msgstr "Збереження..."
 msgid "wbUnloadProtect"
 msgstr "Зміни до цього набору даних не збережено."
 
-#: components/WorkBench/WbValidation.tsx:355
+#: components/WorkBench/WbValidation.tsx:354
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Немає відповідного запису для таблиці обов'язкових збігів."
 
-#: components/WorkBench/WbValidation.tsx:384
+#: components/WorkBench/WbValidation.tsx:383
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"

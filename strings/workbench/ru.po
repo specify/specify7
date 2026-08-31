@@ -319,7 +319,7 @@ msgstr "Сохранение..."
 msgid "wbUnloadProtect"
 msgstr "Изменения в этом наборе данных не были сохранены."
 
-#: components/WorkBench/WbValidation.tsx:355
+#: components/WorkBench/WbValidation.tsx:354
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
@@ -327,7 +327,7 @@ msgstr ""
 "Для таблицы, которая должна соответствовать условию, не найдено ни одной "
 "записи."
 
-#: components/WorkBench/WbValidation.tsx:384
+#: components/WorkBench/WbValidation.tsx:383
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"

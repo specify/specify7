@@ -12,19 +12,19 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
-#: components/WorkBench/resultMessageResolvers.ts:21
+#: components/WorkBench/resultMessageResolvers.ts:24
 #: components/WorkBench/__tests__/resultsParser.test.ts:91
 #. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
 msgid "failedParsingBoolean"
 msgstr "Der Wert \"{value:string}\" kann nicht in True oder False aufgelöst werden."
 
-#: components/WorkBench/resultMessageResolvers.ts:23
+#: components/WorkBench/resultMessageResolvers.ts:26
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "failedParsingDecimal"
 msgstr "\"{value:string}\" ist kein gültiger Dezimalwert"
 
-#: components/WorkBench/resultMessageResolvers.ts:25
+#: components/WorkBench/resultMessageResolvers.ts:28
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "failedParsingFloat"
 msgstr "\"{value:string}\" ist kein gültiger Gleitkommawert"
@@ -32,7 +32,7 @@ msgstr "\"{value:string}\" ist kein gültiger Gleitkommawert"
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:262
 #: components/WorkBench/hooks.ts:271
-#: components/WorkBench/resultMessageResolvers.ts:274
+#: components/WorkBench/resultMessageResolvers.ts:281
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "failedParsingPickList"
@@ -40,7 +40,7 @@ msgstr ""
 "{value:string} ist in diesem Auswahllistenfeld kein gültiger Wert.\n"
 "Klicken Sie auf den Pfeil, um eine der verfügbaren Optionen auszuwählen."
 
-#: components/WorkBench/resultMessageResolvers.ts:27
+#: components/WorkBench/resultMessageResolvers.ts:30
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "failedParsingAgentType"
@@ -48,7 +48,7 @@ msgstr ""
 "Fehlerhaft {agentTypeField:string}: \"{badType:string}\". Erwartet wurde "
 "einer der Werte {validTypes:string}."
 
-#: components/WorkBench/resultMessageResolvers.ts:278
+#: components/WorkBench/resultMessageResolvers.ts:285
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "pickListValueTooLong"
@@ -56,37 +56,37 @@ msgstr ""
 "Wert von {pickListTable:string} {pickList:string} länger als das Maximum "
 "von {maxLength:number|formatted} für Feld"
 
-#: components/WorkBench/resultMessageResolvers.ts:35
+#: components/WorkBench/resultMessageResolvers.ts:38
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "valueTooLong"
 msgstr "Der Wert darf nicht länger als {maxLength:number|formatted} sein."
 
-#: components/WorkBench/resultMessageResolvers.ts:39
+#: components/WorkBench/resultMessageResolvers.ts:42
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidYear"
 msgstr "Der Datumswert muss die vierstellige Jahreszahl enthalten: {value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:43
+#: components/WorkBench/resultMessageResolvers.ts:46
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "badDateFormat"
 msgstr "Ungültiger Datumswert: {value:string}. Erwartet: {format:string}."
 
-#: components/WorkBench/resultMessageResolvers.ts:48
+#: components/WorkBench/resultMessageResolvers.ts:51
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "coordinateBadFormat"
 msgstr "Ungültiger Breiten- oder Längengradwert: {value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:52
+#: components/WorkBench/resultMessageResolvers.ts:55
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "latitudeOutOfRange"
 msgstr "Der Breitengrad muss zwischen -90 und 90 liegen. Tatsächlich: {value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:56
+#: components/WorkBench/resultMessageResolvers.ts:59
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "longitudeOutOfRange"
@@ -94,7 +94,7 @@ msgstr ""
 "Der Längengrad muss zwischen -180 und 180 liegen. Tatsächlich: "
 "{value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:60
+#: components/WorkBench/resultMessageResolvers.ts:63
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "formatMismatch"
@@ -102,25 +102,25 @@ msgstr ""
 "Der Wert {value:string} stimmt nicht mit dem Formatierer {formatter:string} "
 "überein."
 
-#: components/WorkBench/resultMessageResolvers.ts:284
+#: components/WorkBench/resultMessageResolvers.ts:291
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidPartialRecord"
 msgstr "Dieses Feld muss leer sein, wenn {column:string} leer ist."
 
-#: components/WorkBench/resultMessageResolvers.ts:288
+#: components/WorkBench/resultMessageResolvers.ts:295
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "fieldRequiredByUploadPlan"
 msgstr "Das Feld ist für die Upload-Planzuordnung erforderlich."
 
-#: components/WorkBench/resultMessageResolvers.ts:289
+#: components/WorkBench/resultMessageResolvers.ts:297
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidTreeStructure"
 msgstr "Im Baum gibt es mehrere Platzhalterwerte für „Hochgeladen“!"
 
-#: components/WorkBench/resultMessageResolvers.ts:299
+#: components/WorkBench/resultMessageResolvers.ts:307
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "missingRequiredTreeParent"
@@ -135,14 +135,14 @@ msgid "showTraceback"
 msgstr "Traceback anzeigen"
 
 #: components/Errors/JsonError.tsx:189
-#: components/WorkBench/resultMessageResolvers.ts:151
+#: components/WorkBench/resultMessageResolvers.ts:157
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "fieldNotUnique"
 msgstr "{tableName:string} muss ein eindeutiges {fieldName:string} haben."
 
 #: components/Errors/JsonError.tsx:194
-#: components/WorkBench/resultMessageResolvers.ts:169
+#: components/WorkBench/resultMessageResolvers.ts:175
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "childFieldNotUnique"
@@ -150,7 +150,7 @@ msgstr ""
 "{tableName:string} muss ein eindeutiges {fieldName:string} in "
 "{parentField:string} enthalten."
 
-#: components/WorkBench/resultMessageResolvers.ts:89
+#: components/WorkBench/resultMessageResolvers.ts:92
 #: components/WorkBench/__tests__/resultsParser.test.ts:18
 #. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
@@ -158,14 +158,14 @@ msgid "conflictingRecordIds"
 msgstr "Konfliktierende Datensatz-IDs: {ids:string}"
 
 #: components/Errors/JsonError.tsx:154
-#: components/WorkBench/resultMessageResolvers.ts:181
+#: components/WorkBench/resultMessageResolvers.ts:187
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "deletingTreeRoot"
 msgstr "Definitionselement der Wurzelstruktur kann nicht gelöscht werden"
 
 #: components/Errors/JsonError.tsx:156
-#: components/WorkBench/resultMessageResolvers.ts:182
+#: components/WorkBench/resultMessageResolvers.ts:189
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeParentInvalidRank"
@@ -174,14 +174,14 @@ msgstr ""
 "selbst."
 
 #: components/Errors/JsonError.tsx:158
-#: components/WorkBench/resultMessageResolvers.ts:184
+#: components/WorkBench/resultMessageResolvers.ts:191
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeChildrenInvalidRank"
 msgstr "Der Rang des Baumknotens ist höher als der einiger seiner Kinder."
 
 #: components/Errors/JsonError.tsx:160
-#: components/WorkBench/resultMessageResolvers.ts:186
+#: components/WorkBench/resultMessageResolvers.ts:193
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeOperationToSynonymizedParent"
@@ -190,7 +190,7 @@ msgstr ""
 "Elternknoten \"{parentName:string}\""
 
 #: components/Errors/JsonError.tsx:166
-#: components/WorkBench/resultMessageResolvers.ts:192
+#: components/WorkBench/resultMessageResolvers.ts:199
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeSynonymizeToSynonymized"
@@ -199,14 +199,14 @@ msgstr ""
 "\"{intoName:string}\""
 
 #: components/Errors/JsonError.tsx:171
-#: components/WorkBench/resultMessageResolvers.ts:197
+#: components/WorkBench/resultMessageResolvers.ts:204
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "nodeSynonimizeWithChildren"
 msgstr "Synonymisierender Knoten \"{nodeName:string}\", der Kinder hat"
 
 #: components/Errors/JsonError.tsx:150
-#: components/WorkBench/resultMessageResolvers.ts:178
+#: components/WorkBench/resultMessageResolvers.ts:184
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "badTreeStructureInvalidRanks"
@@ -216,7 +216,7 @@ msgstr ""
 "Elternknotens."
 
 #: components/Errors/JsonError.tsx:175
-#: components/WorkBench/resultMessageResolvers.ts:201
+#: components/WorkBench/resultMessageResolvers.ts:208
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidNodeType"
@@ -225,14 +225,14 @@ msgstr ""
 "wurde „{nodeModel:string}“."
 
 #: components/Errors/JsonError.tsx:181
-#: components/WorkBench/resultMessageResolvers.ts:207
+#: components/WorkBench/resultMessageResolvers.ts:214
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "operationAcrossTrees"
 msgstr "{operation:string} über Bäume"
 
 #: components/Errors/JsonError.tsx:185
-#: components/WorkBench/resultMessageResolvers.ts:211
+#: components/WorkBench/resultMessageResolvers.ts:218
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "limitReachedDeterminingAccepted"
@@ -241,7 +241,7 @@ msgstr ""
 "akzeptiertes Taxon gefunden werden."
 
 #: components/Errors/JsonError.tsx:200
-#: components/WorkBench/resultMessageResolvers.ts:215
+#: components/WorkBench/resultMessageResolvers.ts:222
 #: components/WorkBench/__tests__/resultsParser.test.ts:74
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
@@ -249,14 +249,14 @@ msgid "resourceInPermissionRegistry"
 msgstr "Ressource {resource:string} ist bereits im Berechtigungsregister vorhanden"
 
 #: components/Errors/JsonError.tsx:204
-#: components/WorkBench/resultMessageResolvers.ts:219
+#: components/WorkBench/resultMessageResolvers.ts:226
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} ist kein {specifyUserTable:string}"
 
 #: components/Errors/JsonError.tsx:210
-#: components/WorkBench/resultMessageResolvers.ts:225
+#: components/WorkBench/resultMessageResolvers.ts:232
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "unexpectedCollectionType"
@@ -265,7 +265,7 @@ msgstr ""
 "\"{collectionName:string}\"."
 
 #: components/Errors/JsonError.tsx:215
-#: components/WorkBench/resultMessageResolvers.ts:230
+#: components/WorkBench/resultMessageResolvers.ts:237
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidReportMimetype"
@@ -274,14 +274,14 @@ msgstr ""
 "\"jrxml/label\" noch \"jrxml/report\""
 
 #: components/Errors/JsonError.tsx:219
-#: components/WorkBench/resultMessageResolvers.ts:234
+#: components/WorkBench/resultMessageResolvers.ts:241
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "fieldNotRelationship"
 msgstr "Feld {field:string} ist keine Beziehung"
 
 #: components/Errors/JsonError.tsx:221
-#: components/WorkBench/resultMessageResolvers.ts:238
+#: components/WorkBench/resultMessageResolvers.ts:245
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "unexpectedTableId"
@@ -290,14 +290,14 @@ msgstr ""
 "„{expectedTableId:string}“."
 
 #: components/Errors/JsonError.tsx:226
-#: components/WorkBench/resultMessageResolvers.ts:243
+#: components/WorkBench/resultMessageResolvers.ts:250
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "noCollectionInQuery"
 msgstr "In der Abfrage für die Tabelle {table:string} wurde keine Sammlung gefunden."
 
 #: components/Errors/JsonError.tsx:228
-#: components/WorkBench/resultMessageResolvers.ts:247
+#: components/WorkBench/resultMessageResolvers.ts:254
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidDatePart"
@@ -306,7 +306,7 @@ msgstr ""
 "{validDateParts:string}."
 
 #: components/Errors/JsonError.tsx:233
-#: components/WorkBench/resultMessageResolvers.ts:252
+#: components/WorkBench/resultMessageResolvers.ts:259
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidUploadStatus"
@@ -315,14 +315,14 @@ msgstr ""
 "wurde {expectedUploadStatus:string}."
 
 #: components/Errors/JsonError.tsx:239
-#: components/WorkBench/resultMessageResolvers.ts:258
+#: components/WorkBench/resultMessageResolvers.ts:265
 #: components/WorkBench/__tests__/resultsParser.test.ts:64
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #, fuzzy
 msgid "datasetAlreadyUploaded"
 msgstr "Datensatz bereits hochgeladen"
 
-#: components/WorkBench/resultMessageResolvers.ts:290
+#: components/WorkBench/resultMessageResolvers.ts:298
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "scopeChangeDetected"
@@ -330,38 +330,38 @@ msgstr ""
 "In dieser Zeile wurde eine Änderung des Gültigkeitsbereichs festgestellt. "
 "Es wird empfohlen, diese Zeile aus dem Datensatz zu löschen."
 
-#: components/WorkBench/resultMessageResolvers.ts:292
+#: components/WorkBench/resultMessageResolvers.ts:300
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "multipleTreeDefsInRow"
 msgstr "Mehrere Baumdefinitionen in einer Zeile"
 
-#: components/WorkBench/resultMessageResolvers.ts:293
+#: components/WorkBench/resultMessageResolvers.ts:301
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidCotype"
 msgstr "Ungültiger Typ für die ausgewählten Baumränge"
 
-#: components/WorkBench/resultMessageResolvers.ts:295
+#: components/WorkBench/resultMessageResolvers.ts:303
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "invalidComponentType"
 msgstr "Ungültiger {componentType: string} für die ausgewählten Baumränge"
 
-#: components/WorkBench/resultMessageResolvers.ts:316
-#: components/WorkBench/resultMessageResolvers.ts:327
+#: components/WorkBench/resultMessageResolvers.ts:324
+#: components/WorkBench/resultMessageResolvers.ts:336
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "attachmentNotFound"
 msgstr "Mindestens ein Anhang fehlt. Er wurde möglicherweise gelöscht."
 
-#: components/WorkBench/resultMessageResolvers.ts:318
+#: components/WorkBench/resultMessageResolvers.ts:326
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "tableDoesNotSupportAttachments"
 msgstr "Die Zieltabelle des Anhangs unterstützt keine Anhänge."
 
-#: components/WorkBench/resultMessageResolvers.ts:320
+#: components/WorkBench/resultMessageResolvers.ts:328
 #. Used in: Components > Work Bench > Result Message Resolvers
 #, fuzzy
 msgid "attachmentAlreadyLinked"

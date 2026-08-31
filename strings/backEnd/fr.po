@@ -11,18 +11,18 @@ msgstr ""
 "Plural-Forms: nplurals=2; plural=n > 1;\n"
 "X-Generator: Weblate 2026.9.dev0\n"
 
-#: components/WorkBench/resultMessageResolvers.ts:21
+#: components/WorkBench/resultMessageResolvers.ts:24
 #: components/WorkBench/__tests__/resultsParser.test.ts:91
 #. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 msgid "failedParsingBoolean"
 msgstr "Valeur \"{value:string}\" non résolvable en Vrai ou Faux"
 
-#: components/WorkBench/resultMessageResolvers.ts:23
+#: components/WorkBench/resultMessageResolvers.ts:26
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "failedParsingDecimal"
 msgstr "valeur \"{value:string}\" n'est pas une valeur décimale valide"
 
-#: components/WorkBench/resultMessageResolvers.ts:25
+#: components/WorkBench/resultMessageResolvers.ts:28
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "failedParsingFloat"
 msgstr "valeur \"{value:string}\" n'est pas une valeur à virgule flottante valide"
@@ -30,88 +30,88 @@ msgstr "valeur \"{value:string}\" n'est pas une valeur à virgule flottante vali
 #: components/WorkBench/CellMeta.ts:159
 #: components/WorkBench/hooks.ts:262
 #: components/WorkBench/hooks.ts:271
-#: components/WorkBench/resultMessageResolvers.ts:274
+#: components/WorkBench/resultMessageResolvers.ts:281
 #. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Result Message Resolvers
 msgid "failedParsingPickList"
 msgstr ""
 "{value:string} n'est pas une valeur acceptée dans cette liste à choix.\n"
 "Cliquez sur la flèche pour choisir parmi les options disponibles."
 
-#: components/WorkBench/resultMessageResolvers.ts:27
+#: components/WorkBench/resultMessageResolvers.ts:30
 #. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Result Message Resolvers
 msgid "failedParsingAgentType"
 msgstr ""
 "{agentTypeField:string} non valide: \"{badType:string}\". L'un des "
 "{validTypes:string} est attendu"
 
-#: components/WorkBench/resultMessageResolvers.ts:278
+#: components/WorkBench/resultMessageResolvers.ts:285
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "pickListValueTooLong"
 msgstr ""
 "valeur de {pickListTable:string} {pickList:string} plus longue que le "
 "maximum de {maxLength:number|formatted} pour le champ"
 
-#: components/WorkBench/resultMessageResolvers.ts:35
+#: components/WorkBench/resultMessageResolvers.ts:38
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "valueTooLong"
 msgstr ""
 "la valeur ne doit pas avoir une longueur supérieure à "
 "{maxLength:number|formatted}"
 
-#: components/WorkBench/resultMessageResolvers.ts:39
+#: components/WorkBench/resultMessageResolvers.ts:42
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "invalidYear"
 msgstr ""
 "la valeur de la date doit contenir quatre chiffres pour l'année "
 "{value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:43
+#: components/WorkBench/resultMessageResolvers.ts:46
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "badDateFormat"
 msgstr "valeur de date invalide: {value:string}. {format:string} est attendu"
 
-#: components/WorkBench/resultMessageResolvers.ts:48
+#: components/WorkBench/resultMessageResolvers.ts:51
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "coordinateBadFormat"
 msgstr "mauvaise valeur pour la latitude ou la longitude : {value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:52
+#: components/WorkBench/resultMessageResolvers.ts:55
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "latitudeOutOfRange"
 msgstr ""
 "la latitude doit être comprise entre -90 et 90. Actuellement : "
 "{value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:56
+#: components/WorkBench/resultMessageResolvers.ts:59
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "longitudeOutOfRange"
 msgstr ""
 "la longitude doit être comprise entre -180 et 180. Actuellement : "
 "{value:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:60
+#: components/WorkBench/resultMessageResolvers.ts:63
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "formatMismatch"
 msgstr "la valeur {value:string} ne correspond pas au formateur {formatter:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:284
+#: components/WorkBench/resultMessageResolvers.ts:291
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "invalidPartialRecord"
 msgstr "ce champ doit être vide si {column:string} est vide"
 
-#: components/WorkBench/resultMessageResolvers.ts:288
+#: components/WorkBench/resultMessageResolvers.ts:295
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "fieldRequiredByUploadPlan"
 msgstr "Ce champ est obligatoire pour le plan de téléchargement choisi"
 
-#: components/WorkBench/resultMessageResolvers.ts:289
+#: components/WorkBench/resultMessageResolvers.ts:297
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "invalidTreeStructure"
 msgstr ""
 "Il y a plusieurs valeurs de remplacement « téléchargées» dans "
 "l'arborescence !"
 
-#: components/WorkBench/resultMessageResolvers.ts:299
+#: components/WorkBench/resultMessageResolvers.ts:307
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "missingRequiredTreeParent"
 msgstr ""
@@ -124,45 +124,45 @@ msgid "showTraceback"
 msgstr "Afficher le traçage"
 
 #: components/Errors/JsonError.tsx:189
-#: components/WorkBench/resultMessageResolvers.ts:151
+#: components/WorkBench/resultMessageResolvers.ts:157
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "fieldNotUnique"
 msgstr "{tableName:string} doit avoir une valeur unique {fieldName:string}"
 
 #: components/Errors/JsonError.tsx:194
-#: components/WorkBench/resultMessageResolvers.ts:169
+#: components/WorkBench/resultMessageResolvers.ts:175
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "childFieldNotUnique"
 msgstr ""
 "{tableName:string} doit avoir un {fieldName:string} unique dans "
 "{parentField:string}"
 
-#: components/WorkBench/resultMessageResolvers.ts:89
+#: components/WorkBench/resultMessageResolvers.ts:92
 #: components/WorkBench/__tests__/resultsParser.test.ts:18
 #. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 msgid "conflictingRecordIds"
 msgstr "Identifiants d'enregistrement en conflit : {ids:string}"
 
 #: components/Errors/JsonError.tsx:154
-#: components/WorkBench/resultMessageResolvers.ts:181
+#: components/WorkBench/resultMessageResolvers.ts:187
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "deletingTreeRoot"
 msgstr "Impossible de supprimer l'élément racine de l'arbre."
 
 #: components/Errors/JsonError.tsx:156
-#: components/WorkBench/resultMessageResolvers.ts:182
+#: components/WorkBench/resultMessageResolvers.ts:189
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "nodeParentInvalidRank"
 msgstr "Le parent du nœud d'arbre a un rang supérieur à lui-même"
 
 #: components/Errors/JsonError.tsx:158
-#: components/WorkBench/resultMessageResolvers.ts:184
+#: components/WorkBench/resultMessageResolvers.ts:191
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "nodeChildrenInvalidRank"
 msgstr "Le rang du nœud d'arbre est supérieur à celui de certains de ses enfants"
 
 #: components/Errors/JsonError.tsx:160
-#: components/WorkBench/resultMessageResolvers.ts:186
+#: components/WorkBench/resultMessageResolvers.ts:193
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "nodeOperationToSynonymizedParent"
 msgstr ""
@@ -170,7 +170,7 @@ msgstr ""
 "\"{parentName:string}\""
 
 #: components/Errors/JsonError.tsx:166
-#: components/WorkBench/resultMessageResolvers.ts:192
+#: components/WorkBench/resultMessageResolvers.ts:199
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "nodeSynonymizeToSynonymized"
 msgstr ""
@@ -178,13 +178,13 @@ msgstr ""
 "\"{intoName:string}\""
 
 #: components/Errors/JsonError.tsx:171
-#: components/WorkBench/resultMessageResolvers.ts:197
+#: components/WorkBench/resultMessageResolvers.ts:204
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "nodeSynonimizeWithChildren"
 msgstr "Synonymisation de \"{nodeName:string}\" qui a des enfants"
 
 #: components/Errors/JsonError.tsx:150
-#: components/WorkBench/resultMessageResolvers.ts:178
+#: components/WorkBench/resultMessageResolvers.ts:184
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "badTreeStructureInvalidRanks"
 msgstr ""
@@ -192,7 +192,7 @@ msgstr ""
 "où le rang du nœud n'est pas supérieur à celui de son parent"
 
 #: components/Errors/JsonError.tsx:175
-#: components/WorkBench/resultMessageResolvers.ts:201
+#: components/WorkBench/resultMessageResolvers.ts:208
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "invalidNodeType"
 msgstr ""
@@ -200,13 +200,13 @@ msgstr ""
 "\"{nodeModel:string}\" attendu"
 
 #: components/Errors/JsonError.tsx:181
-#: components/WorkBench/resultMessageResolvers.ts:207
+#: components/WorkBench/resultMessageResolvers.ts:214
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "operationAcrossTrees"
 msgstr "{operation:string} à travers les arbres"
 
 #: components/Errors/JsonError.tsx:185
-#: components/WorkBench/resultMessageResolvers.ts:211
+#: components/WorkBench/resultMessageResolvers.ts:218
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "limitReachedDeterminingAccepted"
 msgstr ""
@@ -214,20 +214,20 @@ msgstr ""
 "{taxonId:number}"
 
 #: components/Errors/JsonError.tsx:200
-#: components/WorkBench/resultMessageResolvers.ts:215
+#: components/WorkBench/resultMessageResolvers.ts:222
 #: components/WorkBench/__tests__/resultsParser.test.ts:74
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 msgid "resourceInPermissionRegistry"
 msgstr "Ressource {resource:string} déjà dans le registre des autorisations"
 
 #: components/Errors/JsonError.tsx:204
-#: components/WorkBench/resultMessageResolvers.ts:219
+#: components/WorkBench/resultMessageResolvers.ts:226
 #. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "actorIsNotSpecifyUser"
 msgstr "{agentTable:string} {actor:string} n'est pas un {specifyUserTable:string}"
 
 #: components/Errors/JsonError.tsx:210
-#: components/WorkBench/resultMessageResolvers.ts:225
+#: components/WorkBench/resultMessageResolvers.ts:232
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "unexpectedCollectionType"
 msgstr ""
@@ -235,7 +235,7 @@ msgstr ""
 "\"{collectionName:string}\" attendu"
 
 #: components/Errors/JsonError.tsx:215
-#: components/WorkBench/resultMessageResolvers.ts:230
+#: components/WorkBench/resultMessageResolvers.ts:237
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "invalidReportMimetype"
 msgstr ""
@@ -243,13 +243,13 @@ msgstr ""
 "\"jrxml/label\" ou \"jrxml/report\""
 
 #: components/Errors/JsonError.tsx:219
-#: components/WorkBench/resultMessageResolvers.ts:234
+#: components/WorkBench/resultMessageResolvers.ts:241
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "fieldNotRelationship"
 msgstr "Le champ {field:string} n'est pas une relation"
 
 #: components/Errors/JsonError.tsx:221
-#: components/WorkBench/resultMessageResolvers.ts:238
+#: components/WorkBench/resultMessageResolvers.ts:245
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "unexpectedTableId"
 msgstr ""
@@ -257,13 +257,13 @@ msgstr ""
 "\"{expectedTableId:string}\" attendu"
 
 #: components/Errors/JsonError.tsx:226
-#: components/WorkBench/resultMessageResolvers.ts:243
+#: components/WorkBench/resultMessageResolvers.ts:250
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "noCollectionInQuery"
 msgstr "Aucune collection trouvée dans la requête pour la table {table:string}"
 
 #: components/Errors/JsonError.tsx:228
-#: components/WorkBench/resultMessageResolvers.ts:247
+#: components/WorkBench/resultMessageResolvers.ts:254
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "invalidDatePart"
 msgstr ""
@@ -271,7 +271,7 @@ msgstr ""
 "{validDateParts:string}"
 
 #: components/Errors/JsonError.tsx:233
-#: components/WorkBench/resultMessageResolvers.ts:252
+#: components/WorkBench/resultMessageResolvers.ts:259
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 msgid "invalidUploadStatus"
 msgstr ""
@@ -279,50 +279,50 @@ msgstr ""
 "Attendu {expectedUploadStatus:string}"
 
 #: components/Errors/JsonError.tsx:239
-#: components/WorkBench/resultMessageResolvers.ts:258
+#: components/WorkBench/resultMessageResolvers.ts:265
 #: components/WorkBench/__tests__/resultsParser.test.ts:64
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 msgid "datasetAlreadyUploaded"
 msgstr "Ensemble de données déjà téléchargé"
 
-#: components/WorkBench/resultMessageResolvers.ts:290
+#: components/WorkBench/resultMessageResolvers.ts:298
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "scopeChangeDetected"
 msgstr ""
 "Un changement de périmètre a été détecté sur cette ligne. Il est recommandé "
 "de supprimer cette ligne de l'ensemble de données"
 
-#: components/WorkBench/resultMessageResolvers.ts:292
+#: components/WorkBench/resultMessageResolvers.ts:300
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "multipleTreeDefsInRow"
 msgstr "Plusieurs définitions d'arbres dans la ligne"
 
-#: components/WorkBench/resultMessageResolvers.ts:293
+#: components/WorkBench/resultMessageResolvers.ts:301
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "invalidCotype"
 msgstr "Type invalide pour le(s) rang(s) d'arbre sélectionné(s)"
 
-#: components/WorkBench/resultMessageResolvers.ts:295
+#: components/WorkBench/resultMessageResolvers.ts:303
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "invalidComponentType"
 msgstr "{componentType: string} invalide pour le(s) rang(s) d'arbre sélectionné(s)"
 
-#: components/WorkBench/resultMessageResolvers.ts:316
-#: components/WorkBench/resultMessageResolvers.ts:327
+#: components/WorkBench/resultMessageResolvers.ts:324
+#: components/WorkBench/resultMessageResolvers.ts:336
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "attachmentNotFound"
 msgstr ""
 "Une ou plusieurs pièces jointes sont manquantes. Elles ont peut-être été "
 "supprimées ?"
 
-#: components/WorkBench/resultMessageResolvers.ts:318
+#: components/WorkBench/resultMessageResolvers.ts:326
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "tableDoesNotSupportAttachments"
 msgstr ""
 "La table de destination de la pièce jointe ne prend pas en charge les "
 "pièces jointes."
 
-#: components/WorkBench/resultMessageResolvers.ts:320
+#: components/WorkBench/resultMessageResolvers.ts:328
 #. Used in: Components > Work Bench > Result Message Resolvers
 msgid "attachmentAlreadyLinked"
 msgstr ""

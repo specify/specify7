@@ -311,13 +311,13 @@ msgstr "Lagrer..."
 msgid "wbUnloadProtect"
 msgstr "Endringer i dette datasettet er ikke lagret."
 
-#: components/WorkBench/WbValidation.tsx:355
+#: components/WorkBench/WbValidation.tsx:354
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "noMatchErrorMessage"
 msgstr "Ingen samsvarende oppføring for tabellen som må samsvare."
 
-#: components/WorkBench/WbValidation.tsx:384
+#: components/WorkBench/WbValidation.tsx:383
 #. Used in: Components > Work Bench > Wb Validation
 #, fuzzy
 msgid "matchedMultipleErrorMessage"
