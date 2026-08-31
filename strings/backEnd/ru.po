@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-08-28 11:52+0000\n"
+"PO-Revision-Date: 2026-08-31 09:36+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Russian <https://hosted.weblate.org/projects/specify-7/"
 "backEnd/ru/>\n"
@@ -11,3 +11,364 @@ msgstr ""
 "Plural-Forms: nplurals=3; plural=(n%10==1 && n%100!=11 ? 0 : n%10>=2 && "
 "n%10<=4 && (n%100<10 || n%100>=20) ? 1 : 2);\n"
 "X-Generator: Weblate 2026.9.dev0\n"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:28
+#, fuzzy
+msgid "failedParsingFloat"
+msgstr ""
+"Значение \"{value:string}\" не является допустимым значением с плавающей "
+"запятой."
+
+#. 🟥Example: bad agent type: "ab". Expected one of "Person", "Group" or "Organization". Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:30
+#, fuzzy
+msgid "failedParsingAgentType"
+msgstr ""
+"Плохо {agentTypeField:string}: \"{badType:string}\". Ожидался один из "
+"{validTypes:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:55
+#, fuzzy
+msgid "latitudeOutOfRange"
+msgstr ""
+"Широта должна быть в диапазоне от -90 до 90. Фактическое значение: "
+"{value:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:295
+#, fuzzy
+msgid "fieldRequiredByUploadPlan"
+msgstr "Это поле обязательно для сопоставления плана загрузки."
+
+#. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:24
+#: components/WorkBench/__tests__/resultsParser.test.ts:91
+#, fuzzy
+msgid "failedParsingBoolean"
+msgstr ""
+"Значение \"{value:string}\" не может быть преобразовано в True или False."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:26
+#, fuzzy
+msgid "failedParsingDecimal"
+msgstr ""
+"Значение \"{value:string}\" не является допустимым десятичным значением."
+
+#. Used in: Components > Work Bench > Cell Meta ⬤ Components > Work Bench > Hooks ⬤ Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/CellMeta.ts:159
+#: components/WorkBench/hooks.ts:262
+#: components/WorkBench/hooks.ts:271
+#: components/WorkBench/resultMessageResolvers.ts:281
+#, fuzzy
+msgid "failedParsingPickList"
+msgstr ""
+"{value:string} не является допустимым значением в этом поле выбора.\n"
+"Нажмите на стрелку, чтобы выбрать один из доступных вариантов."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:285
+#, fuzzy
+msgid "pickListValueTooLong"
+msgstr ""
+"значение из {pickListTable:string} {pickList:string} больше максимального "
+"значения {maxLength:number|formatted} для поля"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:38
+#, fuzzy
+msgid "valueTooLong"
+msgstr ""
+"Значение не должно иметь длину, превышающую {maxLength:number|formatted}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:42
+#, fuzzy
+msgid "invalidYear"
+msgstr "Дата должна содержать четырехзначный год: {value:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:59
+#, fuzzy
+msgid "longitudeOutOfRange"
+msgstr ""
+"Долгота должна быть в диапазоне от -180 до 180. Фактическое значение: "
+"{value:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:291
+#, fuzzy
+msgid "invalidPartialRecord"
+msgstr "Это поле должно быть пустым, если {column:string} пустое."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:307
+#, fuzzy
+msgid "missingRequiredTreeParent"
+msgstr ""
+"Отсутствует или не отображено требуемое значение ранга родительского дерева "
+"для \"{names:string}\"."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:297
+#, fuzzy
+msgid "invalidTreeStructure"
+msgstr "В дереве содержится несколько значений-заполнителей \"Uploaded\"!"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:160
+#: components/WorkBench/resultMessageResolvers.ts:193
+#, fuzzy
+msgid "nodeOperationToSynonymizedParent"
+msgstr ""
+"{operation:string} узел \"{nodeName:string}\" к синонимизированному "
+"родительскому \"{parentName:string}\""
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:303
+#, fuzzy
+msgid "invalidComponentType"
+msgstr ""
+"Недопустимый {componentType: string} для выбранного(ых) ранга(ов) дерева."
+
+#. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/WorkBench/resultMessageResolvers.ts:92
+#: components/WorkBench/__tests__/resultsParser.test.ts:18
+#, fuzzy
+msgid "conflictingRecordIds"
+msgstr "Конфликтующие идентификаторы записей: {ids:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:181
+#: components/WorkBench/resultMessageResolvers.ts:214
+#, fuzzy
+msgid "operationAcrossTrees"
+msgstr "{operation:string} через деревья"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:233
+#: components/WorkBench/resultMessageResolvers.ts:259
+#, fuzzy
+msgid "invalidUploadStatus"
+msgstr ""
+"Недопустимый статус \"{uploadStatus:string}\" для {operation:string}. "
+"Ожидался {expectedUploadStatus:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:150
+#: components/WorkBench/resultMessageResolvers.ts:184
+#, fuzzy
+msgid "badTreeStructureInvalidRanks"
+msgstr ""
+"Неправильная структура дерева: обнаружено {badRanks:number|formatted} "
+"случаев, когда ранг узла не превышает ранг его родителя."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:210
+#: components/WorkBench/resultMessageResolvers.ts:232
+#, fuzzy
+msgid "unexpectedCollectionType"
+msgstr ""
+"Неожиданный тип коллекции \"{unexpectedTypeName:string}\". Ожидаемый тип \""
+"{collectionName:string}\"."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:215
+#: components/WorkBench/resultMessageResolvers.ts:237
+#, fuzzy
+msgid "invalidReportMimetype"
+msgstr ""
+"Невозможно создать отчет: {mimeTypeField:string} не является ни одним из "
+"\"jrxml/label\" или \"jrxml/report\""
+
+#. 🟥Agent "Abc" is not a Specify User. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:204
+#: components/WorkBench/resultMessageResolvers.ts:226
+#, fuzzy
+msgid "actorIsNotSpecifyUser"
+msgstr ""
+"{agentTable:string} {actor:string} не является {specifyUserTable:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:228
+#: components/WorkBench/resultMessageResolvers.ts:254
+#, fuzzy
+msgid "invalidDatePart"
+msgstr ""
+"Недопустимая часть даты \"{datePart:string}\". Ожидалось одно из значений "
+"{validDateParts:string}."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:175
+#: components/WorkBench/resultMessageResolvers.ts:208
+#, fuzzy
+msgid "invalidNodeType"
+msgstr ""
+"Неожиданный тип узла \"{node:string}\" во время {operation:string}. Ожидался "
+"\"{nodeModel:string}\"."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:185
+#: components/WorkBench/resultMessageResolvers.ts:218
+#, fuzzy
+msgid "limitReachedDeterminingAccepted"
+msgstr ""
+"Не удалось найти принятый таксон для синонимизированного таксона с "
+"идентификатором {taxonId:number}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:221
+#: components/WorkBench/resultMessageResolvers.ts:245
+#, fuzzy
+msgid "unexpectedTableId"
+msgstr ""
+"В запросе обнаружен неожиданный идентификатор таблицы \"{tableId:string}\". "
+"Ожидался идентификатор \"{expectedTableId:string}\"."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:226
+#: components/WorkBench/resultMessageResolvers.ts:250
+#, fuzzy
+msgid "noCollectionInQuery"
+msgstr "В запросе к таблице {table:string} коллекция не найдена."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:298
+#, fuzzy
+msgid "scopeChangeDetected"
+msgstr ""
+"В этой строке обнаружено изменение области видимости. Рекомендуется удалить "
+"эту строку из набора данных."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:324
+#: components/WorkBench/resultMessageResolvers.ts:336
+#, fuzzy
+msgid "attachmentNotFound"
+msgstr "Одно или несколько вложений отсутствуют. Возможно, они были удалены."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:326
+#, fuzzy
+msgid "tableDoesNotSupportAttachments"
+msgstr "Таблица назначения вложений не поддерживает вложения."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:46
+#, fuzzy
+msgid "badDateFormat"
+msgstr "Неверное значение даты: {value:string}. Ожидалось: {format:string}"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:51
+#, fuzzy
+msgid "coordinateBadFormat"
+msgstr "Неверное значение широты или долготы: {value:string}"
+
+#. Used in: Components > Errors > Json Error
+#: components/Errors/JsonError.tsx:70
+#, fuzzy
+msgid "showTraceback"
+msgstr "Показать обратную ссылку"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/Errors/JsonError.tsx:239
+#: components/WorkBench/resultMessageResolvers.ts:265
+#: components/WorkBench/__tests__/resultsParser.test.ts:64
+#, fuzzy
+msgid "datasetAlreadyUploaded"
+msgstr "Набор данных уже загружен."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:301
+#, fuzzy
+msgid "invalidCotype"
+msgstr "Недопустимый тип для выбранного(ых) ранга(ов) дерева."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:328
+#, fuzzy
+msgid "attachmentAlreadyLinked"
+msgstr "К загруженной записи уже привязано одно или несколько вложений."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:156
+#: components/WorkBench/resultMessageResolvers.ts:189
+#, fuzzy
+msgid "nodeParentInvalidRank"
+msgstr "Родительский узел дерева имеет ранг выше, чем сам родительский узел."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:166
+#: components/WorkBench/resultMessageResolvers.ts:199
+#, fuzzy
+msgid "nodeSynonymizeToSynonymized"
+msgstr ""
+"Синонимизация \"{nodeName:string}\" в синонимизированный узел \""
+"{intoName:string}\""
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:171
+#: components/WorkBench/resultMessageResolvers.ts:204
+#, fuzzy
+msgid "nodeSynonimizeWithChildren"
+msgstr "Синонимизирующий узел \"{nodeName:string}\", имеющий дочерние узлы"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
+#: components/Errors/JsonError.tsx:200
+#: components/WorkBench/resultMessageResolvers.ts:222
+#: components/WorkBench/__tests__/resultsParser.test.ts:74
+#, fuzzy
+msgid "resourceInPermissionRegistry"
+msgstr "Ресурс {resource:string} уже зарегистрирован в реестре разрешений."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:189
+#: components/WorkBench/resultMessageResolvers.ts:157
+#, fuzzy
+msgid "fieldNotUnique"
+msgstr "{tableName:string} должен иметь уникальный {fieldName:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:219
+#: components/WorkBench/resultMessageResolvers.ts:241
+#, fuzzy
+msgid "fieldNotRelationship"
+msgstr "Поле {field:string} не является отношением"
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:300
+#, fuzzy
+msgid "multipleTreeDefsInRow"
+msgstr "Несколько определений деревьев подряд"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:194
+#: components/WorkBench/resultMessageResolvers.ts:175
+#, fuzzy
+msgid "childFieldNotUnique"
+msgstr ""
+"{tableName:string} должен иметь уникальный {fieldName:string} в "
+"{parentField:string}"
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:154
+#: components/WorkBench/resultMessageResolvers.ts:187
+#, fuzzy
+msgid "deletingTreeRoot"
+msgstr "Невозможно удалить элемент определения дерева корневого уровня."
+
+#. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
+#: components/Errors/JsonError.tsx:158
+#: components/WorkBench/resultMessageResolvers.ts:191
+#, fuzzy
+msgid "nodeChildrenInvalidRank"
+msgstr "Ранг узла дерева выше, чем у некоторых его дочерних узлов."
+
+#. Used in: Components > Work Bench > Result Message Resolvers
+#: components/WorkBench/resultMessageResolvers.ts:63
+#, fuzzy
+msgid "formatMismatch"
+msgstr "Значение {value:string} не соответствует форматтеру {formatter:string}"
