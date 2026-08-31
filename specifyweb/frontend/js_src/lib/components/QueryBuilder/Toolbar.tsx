@@ -16,7 +16,6 @@ export function QueryToolbar({
   isSeries,
   showSeries,
   searchSynonymy,
-  hideRunButton = false,
   onToggleHidden: handleToggleHidden,
   onToggleDistinct: handleToggleDistinct,
   onToggleSeries: handleToggleSeries,
@@ -30,8 +29,6 @@ export function QueryToolbar({
   readonly isSeries: boolean;
   readonly showSeries: boolean;
   readonly searchSynonymy: boolean;
-  /** When true, hides the "Query" run button (used by the Data Views query editor) */
-  readonly hideRunButton?: boolean;
   readonly onToggleHidden: (value: boolean) => void;
   readonly onToggleDistinct: () => void;
   readonly onToggleSeries: () => void;
@@ -87,11 +84,9 @@ export function QueryToolbar({
           <Button.Small onClick={handleRunCountOnly}>
             {queryText.countOnly()}
           </Button.Small>
-          {!hideRunButton && (
-            <Submit.Small onClick={handleSubmitClick}>
-              {queryText.query()}
-            </Submit.Small>
-          )}
+          <Submit.Small onClick={handleSubmitClick}>
+            {queryText.query()}
+          </Submit.Small>
         </>
       )}
     </div>
