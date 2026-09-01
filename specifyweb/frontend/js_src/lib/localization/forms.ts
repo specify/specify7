@@ -1108,7 +1108,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Настройка полей для массового переноса ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для масового перенесення ({tableName:string})',
     'hr-hr': 'Konfigurirajte polja za skupni prijenos ({tableName:string})',
-    nb: 'Konfigurer felt for masseoverføring fremover ({tableName:string})',
+    nb: 'Konfigurer felt for masseoverføring ({tableName:string})',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
