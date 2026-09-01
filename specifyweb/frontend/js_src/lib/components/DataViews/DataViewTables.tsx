@@ -34,6 +34,7 @@ export function DataViewTables(): JSX.Element {
   const [isEditing, handleEditing] = useBooleanState();
   const [queries, reloadQueries] = useDataViewQueries();
   const [queryData, setQueryData] = React.useState<string | undefined>();
+  const [isSavingQuery, setIsSavingQuery] = React.useState(false);
   const [queryTable, setQueryTable] = React.useState<
     keyof Tables | undefined
   >();
@@ -56,11 +57,15 @@ export function DataViewTables(): JSX.Element {
               {commonText.cancel()}
             </Button.Secondary>
             <Button.Success
+              disabled={isSavingQuery}
               onClick={(): void => {
+                if (isSavingQuery) return;
+                setIsSavingQuery(true);
                 saveUserDataViewQueries(queryData)
                   .then(reloadQueries)
                   .then(handleCloseQueryEditor)
-                  .catch(raise);
+                  .catch(raise)
+                  .finally(() => setIsSavingQuery(false));
               }}
             >
               {commonText.save()}
