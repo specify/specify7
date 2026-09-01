@@ -134,9 +134,16 @@ class AccessionTests(ApiTests):
         self.assertEqual(accession.accessionauthorizations.count(), 2)
 
         agent_ids = set(accession.accessionagents.values_list('agent_id', flat=True))
+        agent_roles = dict(
+            accession.accessionagents.values_list('agent_id', 'role')
+        )
         permit_ids = set(accession.accessionauthorizations.values_list('permit_id', flat=True))
 
         self.assertEqual(agent_ids, {agent_1.id, agent_2.id})
+        self.assertEqual(agent_roles, {
+            agent_1.id: 'Collector',
+            agent_2.id: 'Donor',
+        })
         self.assertEqual(permit_ids, {permit_1.id, permit_2.id})
 
     def test_add_attachment_to_accession(self):
