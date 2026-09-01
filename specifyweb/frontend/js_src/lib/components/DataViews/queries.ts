@@ -48,6 +48,17 @@ function isDataViewQueriesFile(value: unknown): value is DataViewQueriesFile {
   );
 }
 
+function isDataViewQueryDefinition(
+  value: unknown
+): value is DataViewQueryDefinition {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    !Array.isArray(value) &&
+    Array.isArray((value as { readonly fields?: unknown }).fields)
+  );
+}
+
 export function parseDataViewQueries(data: unknown): DataViewQueriesFile {
   if (data === null || data === undefined) return emptyDataViewQueries;
   try {
@@ -121,7 +132,10 @@ export function getDataViewQueryDefinition(
   file: DataViewQueriesFile,
   tableName: keyof Tables
 ): DataViewQueryDefinition {
-  return file.queries[tableName] ?? defaultDataViewQuery(tableName);
+  const definition: unknown = file.queries[tableName];
+  return isDataViewQueryDefinition(definition)
+    ? definition
+    : defaultDataViewQuery(tableName);
 }
 
 export function makeDataViewQuery(
