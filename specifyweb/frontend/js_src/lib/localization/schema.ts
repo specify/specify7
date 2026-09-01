@@ -178,7 +178,7 @@ export const schemaText = createDictionary({
     'en-us': 'Table Caption',
     'de-ch': 'Tabellenüberschrift',
     'es-es': 'Título de la tabla',
-    'fr-fr': 'Légende du tableau',
+    'fr-fr': 'Légende de la table',
     'hr-hr': 'Natpis tablice',
     nb: 'Tabelltekst',
     'pt-br': 'Legenda da tabela',
