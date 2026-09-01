@@ -40,3 +40,31 @@ test('fetches and returns a record count for each Data Views table', async () =>
   expect(querySpecToResource).toHaveBeenCalledTimes(2);
   expect(throttledPromise).toHaveBeenCalledTimes(2);
 });
+
+test('clears stale record counts when Data Views tables change', async () => {
+  (queryCountPromiseGenerator as jest.Mock).mockImplementation(
+    ({ tableName }: { readonly tableName: string }) =>
+      async () => ({
+        status: Http.OK,
+        data: { count: tableName === 'Agent' ? 3 : 7 },
+      })
+  );
+  const agentTable = { name: 'Agent' } as never;
+  const loanTable = { name: 'Loan' } as never;
+
+  const { result, rerender } = renderHook(
+    ({ tables }) => useTableRecordCounts(tables),
+    { initialProps: { tables: [agentTable] } }
+  );
+
+  await waitFor(() => expect(result.current).toEqual({ Agent: 3 }));
+  rerender({ tables: [loanTable] });
+
+  expect(result.current).toEqual({});
+
+  await waitFor(() => expect(result.current).toEqual({ Loan: 7 }));
+  rerender({ tables: [agentTable] });
+
+  expect(result.current).toEqual({});
+  await waitFor(() => expect(result.current).toEqual({ Agent: 3 }));
+});

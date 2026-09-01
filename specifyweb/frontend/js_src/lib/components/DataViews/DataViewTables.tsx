@@ -135,6 +135,8 @@ export function useTableRecordCounts(
 
   React.useEffect(() => {
     let destructorCalled = false;
+    const tableNames = new Set(tables.map(({ name }) => name));
+    setCounts({});
     tables.forEach((table) => {
       const query = serializeResource(
         querySpecToResource(table.name, {
@@ -151,7 +153,7 @@ export function useTableRecordCounts(
         JSON.stringify(query)
       )
         .then((count) => {
-          if (destructorCalled) return;
+          if (destructorCalled || !tableNames.has(table.name)) return;
           setCounts((previousCounts) => ({
             ...previousCounts,
             [table.name]: count,
