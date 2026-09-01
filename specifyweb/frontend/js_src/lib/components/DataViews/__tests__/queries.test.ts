@@ -5,6 +5,7 @@ import { requireContext } from '../../../tests/helpers';
 import {
   defaultDataViewQuery,
   getDataViewQueryDefinition,
+  getStoredDataViewQueryDefinition,
   makeDataViewQuery,
   parseDataViewQueries,
   serializeDataViewQueries,
@@ -54,13 +55,19 @@ test('Data View query definitions round trip as JSON', () => {
 });
 
 test('missing table definitions use generated defaults', () => {
-  const definition = getDataViewQueryDefinition(
-    parseDataViewQueries(undefined),
-    'Agent'
-  );
+  const file = parseDataViewQueries(undefined);
+  const definition = getDataViewQueryDefinition(file, 'Agent');
+
+  expect(getStoredDataViewQueryDefinition(file, 'Agent')).toBeUndefined();
   expect(definition.fields.length).toBeGreaterThan(0);
   expect(definition.selectDistinct).toBe(false);
   expect(defaultDataViewQuery('Agent')).toEqual(definition);
+});
+
+test('empty Data View query definitions create an empty query', () => {
+  const query = makeDataViewQuery('Agent', { fields: [] });
+
+  expect(serializeResource(query).fields).toEqual([]);
 });
 
 test('malformed table definitions use generated defaults', () => {
@@ -85,6 +92,7 @@ test('stored table definitions override defaults in runtime queries', () => {
     queries: { Agent: definition },
   };
   const storedDefinition = getDataViewQueryDefinition(file, 'Agent');
+  expect(getStoredDataViewQueryDefinition(file, 'Agent')).toBe(definition);
   const query = makeDataViewQuery('Agent', storedDefinition);
 
   expect(storedDefinition).toBe(definition);

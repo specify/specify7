@@ -132,10 +132,18 @@ export function getDataViewQueryDefinition(
   file: DataViewQueriesFile,
   tableName: keyof Tables
 ): DataViewQueryDefinition {
+  return (
+    getStoredDataViewQueryDefinition(file, tableName) ??
+    defaultDataViewQuery(tableName)
+  );
+}
+
+export function getStoredDataViewQueryDefinition(
+  file: DataViewQueriesFile,
+  tableName: keyof Tables
+): DataViewQueryDefinition | undefined {
   const definition: unknown = file.queries[tableName];
-  return isDataViewQueryDefinition(definition)
-    ? definition
-    : defaultDataViewQuery(tableName);
+  return isDataViewQueryDefinition(definition) ? definition : undefined;
 }
 
 export function makeDataViewQuery(

@@ -9,7 +9,7 @@ import type { SpQueryField, Tables } from '../DataModel/types';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { defaultDataViewTablesConfig, useDataViewTables } from './config';
 import {
-  getDataViewQueryDefinition,
+  getStoredDataViewQueryDefinition,
   makeDataViewQuery,
   parseDataViewQueries,
   serializeDataViewQueries,
@@ -72,8 +72,13 @@ export function DataViewQueryEditorContent({
 
   const query = React.useMemo(
     () =>
-      makeDataViewQuery(tableName, getDataViewQueryDefinition(file, tableName)),
-    [file, tableName]
+      makeDataViewQuery(
+        tableName,
+        getStoredDataViewQueryDefinition(fileRef.current, tableName) ?? {
+          fields: [],
+        }
+      ),
+    [tableName]
   );
 
   const handleQueryChange = React.useCallback(
@@ -129,6 +134,7 @@ export function DataViewQueryEditorContent({
           autoRun={false}
           forceCollection={undefined}
           isEmbedded
+          key={tableName}
           query={query}
           onChange={handleQueryChange}
         />
