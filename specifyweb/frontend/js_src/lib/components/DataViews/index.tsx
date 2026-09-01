@@ -3,7 +3,9 @@ import { useParams } from 'react-router-dom';
 
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
+import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
+import { H2 } from '../Atoms';
 import type { Tables } from '../DataModel/types';
 import { getTable } from '../DataModel/tables';
 import { ProtectedTable } from '../Permissions/PermissionDenied';
@@ -17,12 +19,18 @@ import {
   useSplitViewOrientation,
 } from '../QueryBuilder/SplitView';
 import { NotFoundView } from '../Router/NotFoundView';
+import { Dialog } from '../Molecules/Dialog';
+import { raise } from '../Errors/Crash';
 import {
   getDataViewQueryDefinition,
   makeDataViewQuery,
+  saveUserDataViewQueries,
+  serializeDataViewQueries,
   useDataViewQueries,
 } from './queries';
 import type { DataViewQueriesFile } from './queries';
+import { DataViewQueryEditorContent } from './QueryEditor';
+import { TableIcon } from '../Molecules/TableIcon';
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -54,12 +62,13 @@ function DataViewFromTable({
 }: {
   readonly tableName: keyof Tables;
 }): JSX.Element | null {
-  const [queries] = useDataViewQueries();
+  const [queries, reloadQueries] = useDataViewQueries();
   return queries === undefined ? null : (
     <LoadedDataViewFromTable
       key={tableName}
       tableName={tableName}
       queries={queries}
+      reloadQueries={reloadQueries}
     />
   );
 }
@@ -67,9 +76,11 @@ function DataViewFromTable({
 function LoadedDataViewFromTable({
   tableName,
   queries,
+  reloadQueries,
 }: {
   readonly tableName: keyof Tables;
   readonly queries: DataViewQueriesFile;
+  readonly reloadQueries: () => void;
 }): JSX.Element | null {
   const table = getTable(tableName);
   const [selectedIds, setSelectedIds] = React.useState<ReadonlyArray<number>>(
@@ -84,6 +95,8 @@ function LoadedDataViewFromTable({
   const { isHorizontal, toggleOrientation } = useSplitViewOrientation();
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [queryRunCount, setQueryRunCount] = React.useState(1);
+  const [queryData, setQueryData] = React.useState<string | undefined>();
+  const [isSavingQuery, setIsSavingQuery] = React.useState(false);
   const [runtimeFields, setRuntimeFields] = React.useState<
     ReturnType<typeof unParseQueryFields> | undefined
   >(undefined);
@@ -130,6 +143,9 @@ function LoadedDataViewFromTable({
       restoreScrollTopRef.current = resultsScrollRef.current.scrollTop;
     setRefreshToken((token) => token + 1);
   }, []);
+  const handleCloseQueryEditor = (): void => setQueryData(undefined);
+  const handleOpenQueryEditor = (): void =>
+    setQueryData(serializeDataViewQueries(queries));
   if (table === undefined) return null;
 
   const definition = React.useMemo(
@@ -148,6 +164,41 @@ function LoadedDataViewFromTable({
     () => parseQueryFields(runtimeFields ?? definition.fields),
     [definition.fields, runtimeFields]
   );
+
+  if (queryData !== undefined)
+    return (
+      <Dialog
+        buttons={
+          <>
+            <Button.Secondary onClick={handleCloseQueryEditor}>
+              {commonText.cancel()}
+            </Button.Secondary>
+            <Button.Success
+              disabled={isSavingQuery}
+              onClick={(): void => {
+                if (isSavingQuery) return;
+                setIsSavingQuery(true);
+                saveUserDataViewQueries(queryData)
+                  .then(reloadQueries)
+                  .then(handleCloseQueryEditor)
+                  .catch(raise)
+                  .finally(() => setIsSavingQuery(false));
+              }}
+            >
+              {commonText.save()}
+            </Button.Success>
+          </>
+        }
+        header={dataViewsText.configureQuery()}
+        onClose={handleCloseQueryEditor}
+      >
+        <DataViewQueryEditorContent
+          data={queryData}
+          tableName={tableName}
+          onChange={setQueryData}
+        />
+      </Dialog>
+    );
 
   const results = (
     <QueryResultsWrapper
@@ -221,16 +272,20 @@ function LoadedDataViewFromTable({
 
   return (
     <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-2">
-      <DataEntry.Header className="shrink-0">
-        <DataEntry.Title>
-          {dataViewsText.tableRecords({ tableLabel: table.label })}
-        </DataEntry.Title>
-        <span className="flex-1" />
+      <header className="flex shrink-0 flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible">
+        <div className="flex items-center justify-center gap-2">
+          <TableIcon label name={table.name} />
+          <H2 className="overflow-x-auto">
+            {dataViewsText.tableRecords({ tableLabel: table.label })}
+          </H2>
+          <DataEntry.Edit onClick={handleOpenQueryEditor} />
+        </div>
         <SplitViewOrientationButton
           isHorizontal={isHorizontal}
           onToggle={toggleOrientation}
         />
-      </DataEntry.Header>
+        <span className="-ml-2 flex-1" />
+      </header>
       <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden">
         <SplitView
           isHorizontal={isHorizontal}
