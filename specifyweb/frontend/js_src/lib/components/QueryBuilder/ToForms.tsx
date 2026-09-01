@@ -116,6 +116,6 @@ function useSelectedResults(
               >)
           : Array.from(selectedRows)
         : [],
-    [results, isOpen, selectedRows]
+    [results, isOpen, selectedRows, totalCount]
   );
 }
