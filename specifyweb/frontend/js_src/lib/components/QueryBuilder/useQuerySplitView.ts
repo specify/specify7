@@ -2,6 +2,7 @@ import React from 'react';
 
 import type { RA } from '../../utils/types';
 import { queryIdField, type QueryResultRow } from './Results';
+import { useSplitViewOrientation } from './SplitView';
 
 export function useQuerySplitView(
   resultsRef: React.MutableRefObject<RA<QueryResultRow | undefined> | undefined>
@@ -14,7 +15,6 @@ export function useQuerySplitView(
   readonly setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   readonly isSplit: boolean;
   readonly isHorizontal: boolean;
-  readonly splitterKey: number;
   readonly toggleSplit: () => void;
   readonly toggleOrientation: () => void;
 } {
@@ -23,8 +23,7 @@ export function useQuerySplitView(
   );
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const [isSplit, setIsSplit] = React.useState(false);
-  const [isHorizontal, setIsHorizontal] = React.useState(true);
-  const [splitterKey, setSplitterKey] = React.useState(0);
+  const { isHorizontal, toggleOrientation } = useSplitViewOrientation();
 
   const toggleSplit = (): void => {
     const nextIsSplit = !isSplit;
@@ -39,11 +38,6 @@ export function useQuerySplitView(
       }
     }
   };
-  const toggleOrientation = (): void => {
-    setIsHorizontal(!isHorizontal);
-    setSplitterKey((key) => key + 1);
-  };
-
   return {
     selectedRows,
     setSelectedRows,
@@ -51,7 +45,6 @@ export function useQuerySplitView(
     setSelectedIndex,
     isSplit,
     isHorizontal,
-    splitterKey,
     toggleSplit,
     toggleOrientation,
   };

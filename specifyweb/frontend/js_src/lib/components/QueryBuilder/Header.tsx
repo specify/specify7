@@ -27,6 +27,7 @@ import { QueryEditButton } from './Edit';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
 import { treeText } from '../../localization/tree';
+import { SplitViewOrientationButton } from './SplitView';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -132,18 +133,16 @@ export function QueryHeader({
         </ErrorBoundary>
       ) : undefined}
       <Button.Icon
-          aria-pressed={isSplit}
-          icon="template"
-          title={treeText.splitView()}
-          onClick={onToggleSplit}
-        />
-        <Button.Icon
-          aria-pressed={!isHorizontal}
-          disabled={!isSplit}
-          icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
-          title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
-          onClick={onToggleOrientation}
-        />
+        aria-pressed={isSplit}
+        icon="template"
+        title={treeText.splitView()}
+        onClick={onToggleSplit}
+      />
+      <SplitViewOrientationButton
+        disabled={!isSplit}
+        isHorizontal={isHorizontal}
+        onToggle={onToggleOrientation}
+      />
       <span className="-ml-2 flex-1" />
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsBasic(!isBasic)}>

@@ -281,7 +281,6 @@ function Wrapped({
     setSelectedIndex,
     isSplit,
     isHorizontal,
-    splitterKey,
     toggleSplit,
     toggleOrientation,
   } = useQuerySplitView(resultsRef);
@@ -616,7 +615,6 @@ function Wrapped({
               selectedRows={selectedRows}
               setSelectedIndex={setSelectedIndex}
               setSelectedRows={setSelectedRows}
-              splitterKey={splitterKey}
               state={state}
               table={table}
               onReRun={(): void => dispatch({ type: 'RunQueryAction' })}

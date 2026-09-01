@@ -34,7 +34,6 @@ export function QueryBuilderResults({
   resultsRef,
   isSplit,
   isHorizontal,
-  splitterKey,
   onReRun: handleReRun,
   onRunQuery: handleRunQuery,
   onSelected: handleSelected,
@@ -62,7 +61,6 @@ export function QueryBuilderResults({
   >;
   readonly isSplit: boolean;
   readonly isHorizontal: boolean;
-  readonly splitterKey: number;
   readonly onReRun: () => void;
   readonly onRunQuery: (fields?: RA<QueryField>) => void;
   readonly onSelected: (ids: RA<number>) => void;
@@ -148,7 +146,6 @@ export function QueryBuilderResults({
       recordSetId={recordSet?.id}
       resultsRef={resultsRef}
       selectedRows={[selectedRows, setSelectedRows]}
-      splitterKey={splitterKey}
       splitHorizontal={isHorizontal}
       splitPane={isSplit ? recordPreview : undefined}
       table={table}

@@ -1,10 +1,8 @@
 import React from 'react';
 import { useParams } from 'react-router-dom';
-import Splitter from 'm-react-splitters';
 
 import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
-import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import type { Tables } from '../DataModel/types';
 import { getTable } from '../DataModel/tables';
@@ -13,6 +11,11 @@ import { RecordSelectorFromIds } from '../FormSliders/RecordSelectorFromIds';
 import { QueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import { parseQueryFields, unParseQueryFields } from '../QueryBuilder/helpers';
 import { queryIdField } from '../QueryBuilder/Results';
+import {
+  SplitView,
+  SplitViewOrientationButton,
+  useSplitViewOrientation,
+} from '../QueryBuilder/SplitView';
 import { NotFoundView } from '../Router/NotFoundView';
 import {
   getDataViewQueryDefinition,
@@ -20,7 +23,6 @@ import {
   useDataViewQueries,
 } from './queries';
 import type { DataViewQueriesFile } from './queries';
-import { treeText } from '../../localization/tree';
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -77,15 +79,14 @@ function LoadedDataViewFromTable({
   selectedIdsRef.current = selectedIds;
   const resultOrderRef = React.useRef<ReadonlyArray<number>>([]);
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const [isHorizontal, setIsHorizontal] = React.useState(true);
-  const [splitterKey, setSplitterKey] = React.useState(0);
+  const resultsScrollRef = React.useRef<HTMLDivElement | null>(null);
+  const restoreScrollTopRef = React.useRef<number | undefined>(undefined);
+  const { isHorizontal, toggleOrientation } = useSplitViewOrientation();
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [queryRunCount, setQueryRunCount] = React.useState(1);
   const [runtimeFields, setRuntimeFields] = React.useState<
     ReturnType<typeof unParseQueryFields> | undefined
   >(undefined);
-  const resultsScrollRef = React.useRef<HTMLDivElement | null>(null);
-  const restoreScrollTopRef = React.useRef<number | undefined>(undefined);
   const selectedRows = React.useMemo(
     () => [new Set(selectedIds), (): void => undefined] as const,
     [selectedIds]
@@ -218,18 +219,6 @@ function LoadedDataViewFromTable({
     </div>
   );
 
-  const changeOrientation = (horizontal: boolean): void => {
-    if (horizontal === isHorizontal) return;
-    setIsHorizontal(horizontal);
-    setSplitterKey((key) => key + 1);
-  };
-
-  // In side-by-side mode the results are the primary (left) pane. In
-  // stacked mode the record is the primary (top) pane, so it remains the
-  // first thing users see after selecting a row.
-  const primaryPane = isHorizontal ? results : form;
-  const secondaryPane = isHorizontal ? form : results;
-
   return (
     <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-2">
       <DataEntry.Header className="shrink-0">
@@ -237,42 +226,19 @@ function LoadedDataViewFromTable({
           {dataViewsText.tableRecords({ tableLabel: table.label })}
         </DataEntry.Title>
         <span className="flex-1" />
-        <Button.Icon
-          aria-pressed={isHorizontal}
-          icon="switchVertical"
-          title={treeText.horizontal()}
-          onClick={() => changeOrientation(true)}
-        />
-        <Button.Icon
-          aria-pressed={!isHorizontal}
-          icon="switchHorizontal"
-          title={treeText.vertical()}
-          onClick={() => changeOrientation(false)}
+        <SplitViewOrientationButton
+          isHorizontal={isHorizontal}
+          onToggle={toggleOrientation}
         />
       </DataEntry.Header>
       <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden">
-        <Splitter
-          className="h-full max-h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden"
-          key={splitterKey}
-          position={isHorizontal ? 'vertical' : 'horizontal'}
-          primaryPaneHeight="50%"
-          primaryPaneMaxHeight="80%"
-          primaryPaneMaxWidth="80%"
-          primaryPaneMinHeight={1}
-          primaryPaneMinWidth={1}
-          primaryPaneWidth="50%"
-        >
-          <div className="flex h-full min-h-0 min-w-0 overflow-auto">
-            {primaryPane}
-          </div>
-          <div
-            className={`flex h-full min-h-0 min-w-0 overflow-auto ${
-              isHorizontal ? 'border-l' : 'border-t'
-            } border-gray-400`}
-          >
-            {secondaryPane}
-          </div>
-        </Splitter>
+        <SplitView
+          isHorizontal={isHorizontal}
+          primaryPane={results}
+          primaryPaneKey="query-results"
+          secondaryPane={form}
+          secondaryPaneKey="record-preview"
+        />
       </div>
     </div>
   );

@@ -228,8 +228,15 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const [showCellEllipsis, setShowCellEllipsis] = React.useState(false);
 
   const lastSelectedRow = React.useRef<number | undefined>(undefined);
-  // Unselect all rows when query is reRun
-  React.useEffect(() => setSelectedRows(new Set()), [fieldSpecs]);
+  // Unselect all rows when the query fields change, but do not clear the
+  // parent-owned selection when this component is remounted while changing
+  // split-view orientation.
+  const previousFieldSpecs = React.useRef(fieldSpecs);
+  React.useEffect(() => {
+    if (previousFieldSpecs.current === fieldSpecs) return;
+    previousFieldSpecs.current = fieldSpecs;
+    setSelectedRows(new Set());
+  }, [fieldSpecs, setSelectedRows]);
 
   const showResults =
     Array.isArray(results) &&

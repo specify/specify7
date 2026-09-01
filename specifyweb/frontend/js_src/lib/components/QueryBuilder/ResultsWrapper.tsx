@@ -1,5 +1,4 @@
 import React from 'react';
-import Splitter from 'm-react-splitters';
 
 import { ajax } from '../../utils/ajax';
 import type { GetSet, RA } from '../../utils/types';
@@ -25,6 +24,7 @@ import {
 } from './helpers';
 import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
+import { SplitView } from './SplitView';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -38,7 +38,6 @@ export function QueryResultsWrapper({
   refreshToken,
   splitPane,
   splitHorizontal,
-  splitterKey,
   ...props
 }: ResultsProps & {
   readonly createRecordSet: JSX.Element | undefined;
@@ -50,7 +49,6 @@ export function QueryResultsWrapper({
   readonly refreshToken?: number;
   readonly splitPane?: JSX.Element;
   readonly splitHorizontal?: boolean;
-  readonly splitterKey?: number;
   readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
@@ -78,28 +76,13 @@ export function QueryResultsWrapper({
   return splitPane === undefined ? (
     queryResults
   ) : (
-    <Splitter
-      className="h-full max-h-full min-h-0 min-w-0 w-full flex-1 overflow-hidden"
-      key={splitterKey}
-      position={splitHorizontal ? 'vertical' : 'horizontal'}
-      primaryPaneHeight="50%"
-      primaryPaneMaxHeight="80%"
-      primaryPaneMaxWidth="80%"
-      primaryPaneMinHeight={1}
-      primaryPaneMinWidth={1}
-      primaryPaneWidth="50%"
-    >
-      <div className="flex h-full min-h-0 min-w-0 overflow-auto">
-        {splitHorizontal ? queryResults : splitPane}
-      </div>
-      <div
-        className={`flex h-full min-h-0 min-w-0 overflow-auto ${
-          splitHorizontal ? 'border-l' : 'border-t'
-        } border-gray-400`}
-      >
-        {splitHorizontal ? splitPane : queryResults}
-      </div>
-    </Splitter>
+    <SplitView
+      isHorizontal={splitHorizontal ?? true}
+      primaryPane={queryResults}
+      primaryPaneKey="query-results"
+      secondaryPane={splitPane}
+      secondaryPaneKey="split-pane"
+    />
   );
 }
 
