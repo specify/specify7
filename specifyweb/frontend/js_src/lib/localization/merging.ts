@@ -38,7 +38,7 @@ export const mergingText = createDictionary({
     'es-es': 'Registro fusionado',
     'fr-fr': 'Enregistrement fusionné',
     'uk-ua': 'Об’єднаний запис',
-    'pt-br': 'Registro consolidado',
+    'pt-br': 'Registro mesclado',
     'hr-hr': 'Spojeni zapis',
     nb: 'Sammenslått post',
   },
@@ -215,7 +215,7 @@ export const mergingText = createDictionary({
     'ru-ru': 'Слияние прошло успешно.',
     'uk-ua': 'Злиття виконано',
     'pt-br': 'Fusão bem-sucedida',
-    'hr-hr': 'Spajanje je uspjelo',
+    'hr-hr': 'Spajanje uspješno',
     nb: 'Sammenslåingen var vellykket',
   },
   merging: {

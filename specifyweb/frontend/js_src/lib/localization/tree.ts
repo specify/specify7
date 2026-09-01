@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
     'pt-br': 'Não é possível mover este nó da árvore para cá.',
     'hr-hr': 'Ovaj čvor stabla ne može se premjestiti ovdje',
-    nb: 'Kan ikke flytte denne trenoden hit',
+    nb: 'Kan ikke flytte denne treknuten hit',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",
@@ -1020,7 +1020,7 @@ export const treeText = createDictionary({
     'pt-br': 'O processo padrão de criação da árvore foi iniciado.',
     'ru-ru': 'Начался процесс создания дерева по умолчанию.',
     'uk-ua': 'Процес створення дерева за замовчуванням розпочато.',
-    nb: 'Standardprosessen for oppretting av treet har startet.',
+    nb: 'Standardprosessen for oppretting av tre har startet.',
   },
   defaultTreeTaskFailed: {
     'en-us': 'Default tree creation failed.',
