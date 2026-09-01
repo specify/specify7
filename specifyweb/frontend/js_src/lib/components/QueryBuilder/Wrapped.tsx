@@ -153,6 +153,7 @@ function Wrapped({
   React.useEffect(checkForChanges, [state.fields]);
 
   React.useEffect(() => {
+    if (state === pendingState) return;
     handleChange?.({
       fields: unParseQueryFields(state.baseTableName, state.fields),
       isDistinct: query.selectDistinct,

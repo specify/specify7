@@ -88,6 +88,12 @@ export function DataViewQueryEditorContent({
       readonly searchSynonymy: boolean | null;
       readonly isSeries: boolean | null;
     }): void => {
+      if (
+        changes.fields.length === 0 &&
+        getStoredDataViewQueryDefinition(fileRef.current, tableName) ===
+          undefined
+      )
+        return;
       const nextFile: DataViewQueriesFile = {
         ...file,
         queries: {
