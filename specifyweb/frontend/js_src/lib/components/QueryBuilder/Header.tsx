@@ -131,14 +131,7 @@ export function QueryHeader({
           />
         </ErrorBoundary>
       ) : undefined}
-      <div className="flex flex-wrap justify-center gap-2">
-        <Button.Small onClick={() => setIsBasic(!isBasic)}>
-          {isBasic
-            ? preferencesText.detailedView()
-            : preferencesText.basicView()}
-        </Button.Small>
-        <ToggleMappingViewButton fields={state.fields} />
-        <Button.Icon
+      <Button.Icon
           aria-pressed={isSplit}
           icon="template"
           title={treeText.splitView()}
@@ -151,6 +144,14 @@ export function QueryHeader({
           title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
           onClick={onToggleOrientation}
         />
+      <span className="-ml-2 flex-1" />
+      <div className="flex flex-wrap justify-center gap-2">
+        <Button.Small onClick={() => setIsBasic(!isBasic)}>
+          {isBasic
+            ? preferencesText.detailedView()
+            : preferencesText.basicView()}
+        </Button.Small>
+        <ToggleMappingViewButton fields={state.fields} />
         {hasToolPermission(
           'queryBuilder',
           queryResource.isNew() ? 'create' : 'update'
