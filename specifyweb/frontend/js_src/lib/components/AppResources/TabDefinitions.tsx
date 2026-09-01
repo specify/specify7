@@ -39,6 +39,7 @@ import { WebLinkEditor } from '../WebLinks/Editor';
 import { webLinksSpec } from '../WebLinks/spec';
 import { useCodeMirrorExtensions } from './EditorComponents';
 import type { appResourceSubTypes } from './types';
+import { DataViewQueryEditor } from '../DataViews/QueryEditor';
 
 export type AppResourceEditorType = 'generic' | 'json' | 'visual' | 'xml';
 
@@ -157,6 +158,10 @@ export const visualAppResourceEditors = f.store<
   },
   defaultUserPreferences: {
     visual: UserPreferencesEditor,
+    json: AppResourceTextEditor,
+  },
+  dataViewQueries: {
+    visual: DataViewQueryEditor,
     json: AppResourceTextEditor,
   },
   collectionPreferences: {

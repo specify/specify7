@@ -20,22 +20,11 @@ export const dataViewsText = createDictionary({
   configureDataViews: {
     'en-us': 'Configure Data Views tables',
   },
-  selectRecordToView: {
-    'en-us': 'Select a record to view it here',
+  dataViewQueries: {
+    comment: 'The name of the Data View query app resource type',
+    'en-us': 'Data View queries',
   },
-  dataViewQueryEditorTitle: {
-    'en-us': '{tableLabel:string} Data View Query',
-  },
-  dataViewQueryName: {
-    'en-us': '{tableLabel:string} Data View',
-  },
-  createDataViewQuery: {
-    'en-us': 'Create Data View query',
-  },
-  editDataViewQuery: {
-    'en-us': 'Edit Data View query',
-  },
-  noDataViewQuery: {
-    'en-us': 'This table does not have a Data View query configured yet',
+  configureQuery: {
+    'en-us': 'Configure query',
   },
 } as const);

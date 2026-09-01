@@ -116,21 +116,15 @@ export function QueryTables({
 }: {
   readonly tables: RA<SpecifyTable>;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
-  readonly onEdit?: (table: SpecifyTable) => void;
+  readonly onEdit?: (tableName: keyof Tables) => void;
   readonly counts?: IR<number | undefined>;
   readonly getHref?: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return (
     <Ul className="flex flex-col gap-1">
-      {tables.map((table, index) => {
-        const { name, label } = table;
-        return (
-          <li
-            className={
-              handleEdit === undefined ? 'contents' : 'flex items-center gap-1'
-            }
-            key={index}
-          >
+      {tables.map(({ name, label }, index) => (
+        <li className="flex items-center gap-2" key={index}>
+          <div className="min-w-0 flex-1">
             <QueryTableItem
               count={counts?.[name]}
               getHref={getHref}
@@ -139,17 +133,16 @@ export function QueryTables({
               name={name}
               onClick={handleClick}
             />
-            <span className="-ml-2 flex-1" />
-            {handleEdit === undefined ? undefined : (
-              <Button.Icon
-                icon="pencil"
-                title={commonText.edit()}
-                onClick={(): void => handleEdit(table)}
-              />
-            )}
-          </li>
-        );
-      })}
+          </div>
+          {handleEdit === undefined ? undefined : (
+            <Button.Icon
+              icon="pencil"
+              title={commonText.edit()}
+              onClick={(): void => handleEdit(name)}
+            />
+          )}
+        </li>
+      ))}
     </Ul>
   );
 }
