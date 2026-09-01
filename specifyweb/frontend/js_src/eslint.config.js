@@ -11,7 +11,6 @@ import functional from 'eslint-plugin-functional';
 import globals from 'globals';
 import jestDom from 'eslint-plugin-jest-dom';
 import jest from 'eslint-plugin-jest';
-import markdown from 'eslint-plugin-markdown';
 import parser from '@typescript-eslint/parser';
 import promise from 'eslint-plugin-promise';
 import react from 'eslint-plugin-react';
@@ -19,7 +18,6 @@ import reactHooks from 'eslint-plugin-react-hooks';
 import regexp from 'eslint-plugin-regexp';
 import restrictedGlobals from 'confusing-browser-globals';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
-import sonarjs from 'eslint-plugin-sonarjs';
 import testingLibrary from 'eslint-plugin-testing-library';
 import tsdoc from 'eslint-plugin-tsdoc';
 import typescriptEslint from '@typescript-eslint/eslint-plugin/dist/configs/eslint-recommended.js';
@@ -103,7 +101,7 @@ const base_config = [
   'eslint:recommended',
   ...typescriptEslint.overrides,
   ...compat.config(unicornRecommended),
-  ...compat.config(arrayFunc.configs.all),
+  //...compat.config(arrayFunc.configs.all),
   ...compat.config(eslintComments),
   ...compat.config(regexp.configs.recommended),
   ...compat.config(functional.configs['external-typescript-recommended']),
@@ -114,7 +112,6 @@ const base_config = [
   ...compat.config(functional.configs['currying']),
   ...compat.config(functional.configs['stylistic']),
   ...compat.config(promise.configs.recommended),
-  ...compat.config(sonarjs.configs.recommended),
   {
     languageOptions: {
       parser,
@@ -807,7 +804,6 @@ _    * While overusing non-null assertions can be harmful, there are
       'regexp/no-misleading-capturing-group': ERROR,
     },
   },
-  ...compat.config(markdown.configs.recommended),
   {
     /*
      * Customize the configuration ESLint uses for ```js
