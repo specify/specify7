@@ -216,9 +216,13 @@ export function QueryListDialog({
         buttons={
           <>
             <Input.Text
-              aria-label={commonText.search()}
+              aria-label={commonText.searchFor({
+                resource: queryText.queries(),
+              })}
               className="min-w-0 max-w-sm flex-1"
-              placeholder={commonText.search()}
+              placeholder={commonText.searchFor({
+                resource: queryText.queries(),
+              })}
               value={search}
               onValueChange={(value): void => {
                 setSearch(value);
