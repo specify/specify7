@@ -24,7 +24,7 @@ import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -233,6 +233,10 @@ export function QueryListDialog({
             )}
           </>
         }
+        className={{
+          container: `${dialogClassNames.narrowContainer}
+            h-[min(40rem)] w-[min(45rem)]`,
+        }}
         header={
           totalCount === undefined
             ? queryText.queries()
