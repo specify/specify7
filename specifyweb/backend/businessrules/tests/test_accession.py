@@ -72,6 +72,7 @@ class AccessionTests(ApiTests):
         self.assertEqual(fetched.accessionnumber, "A-8454-001")
         self.assertEqual(fetched.status, "Complete")
         self.assertEqual(fetched.type, "Gift")
+        self.assertEqual(fetched.division, self.division)
 
     def test_add_existing_permit_to_accession(self):
         accession = models.Accession.objects.create(
