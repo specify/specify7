@@ -45,3 +45,22 @@ class GiftTests(ApiTests):
         self.assertEqual(fetched.giftnumber, 'GIFT-8492-001')
         self.assertEqual(fetched.giftdate, gift_date)
         self.assertEqual(fetched.discipline, self.discipline)
+
+    def test_add_existing_agent_to_gift(self):
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-AGENT-001',
+            discipline=self.discipline,
+        )
+
+        gift_agent = gift.giftagents.create(
+            agent=self.agent,
+            role='Recipient',
+            discipline=self.discipline,
+        )
+
+        fetched = models.Giftagent.objects.get(id=gift_agent.id)
+
+        self.assertEqual(fetched.gift, gift)
+        self.assertEqual(fetched.agent, self.agent)
+        self.assertEqual(fetched.role, 'Recipient')
+        self.assertEqual(fetched.discipline, self.discipline)
