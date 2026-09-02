@@ -1,4 +1,926 @@
 {
   "version": 1,
-  "queries": {}
+  "queries": {
+    "Accession": {
+      "fields": [
+        {
+          "tableList": "7",
+          "stringId": "7.accession.accessionNumber",
+          "fieldName": "accessionNumber",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "7",
+          "stringId": "7.accession.dateAccessioned",
+          "fieldName": "dateAccessioned",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "7",
+          "stringId": "7.accession.dateReceived",
+          "fieldName": "dateReceived",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "7",
+          "stringId": "7.accession.status",
+          "fieldName": "status",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "7",
+          "stringId": "7.accession.type",
+          "fieldName": "type",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "7,1-collectionObjects",
+          "stringId": "7,1-collectionObjects.collectionobject.collectionObjects",
+          "fieldName": "collectionObjects",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 5,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Agent": {
+      "fields": [
+        {
+          "tableList": "5",
+          "stringId": "5.agent.lastName",
+          "fieldName": "lastName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "5",
+          "stringId": "5.agent.firstName",
+          "fieldName": "firstName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "5",
+          "stringId": "5.agent.middleInitial",
+          "fieldName": "middleInitial",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "5",
+          "stringId": "5.agent.email",
+          "fieldName": "email",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "5",
+          "stringId": "5.agent.title",
+          "fieldName": "title",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Borrow": {
+      "fields": [
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.invoiceNumber",
+          "fieldName": "invoiceNumber",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.borrowDate",
+          "fieldName": "borrowDate",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.currentDueDate",
+          "fieldName": "currentDueDate",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.dateClosed",
+          "fieldName": "dateClosed",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.receivedDate",
+          "fieldName": "receivedDate",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.isClosed",
+          "fieldName": "isClosed",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 5,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "CollectingEvent": {
+      "fields": [
+        {
+          "tableList": "10",
+          "stringId": "10.collectingevent.stationFieldNumber",
+          "fieldName": "stationFieldNumber",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10",
+          "stringId": "10.collectingevent.method",
+          "fieldName": "method",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10",
+          "stringId": "10.collectingevent.startDate",
+          "fieldName": "startDate",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10,2",
+          "stringId": "10,2.locality.localityName",
+          "fieldName": "localityName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10,2",
+          "stringId": "10,2.locality.latitude1",
+          "fieldName": "latitude1",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10,2",
+          "stringId": "10,2.locality.longitude1",
+          "fieldName": "longitude1",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 5,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10,2",
+          "stringId": "10,2.locality.datum",
+          "fieldName": "datum",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 6,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "10,2,3",
+          "stringId": "10,2,3.geography.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 7,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "CollectingTrip": {
+      "fields": [],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Collection": {
+      "fields": [
+        {
+          "tableList": "23",
+          "stringId": "23.collection.collectionName",
+          "fieldName": "collectionName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "23",
+          "stringId": "23.collection.code",
+          "fieldName": "code",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "23",
+          "stringId": "23.collection.collectionType",
+          "fieldName": "collectionType",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "23,26",
+          "stringId": "23,26.discipline.name",
+          "fieldName": "name",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "23,26,96",
+          "stringId": "23,26,96.division.name",
+          "fieldName": "name",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "CollectionObject": {
+      "fields": [
+        {
+          "tableList": "1",
+          "stringId": "1.collectionobject.catalogNumber",
+          "fieldName": "catalogNumber",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,5-cataloger",
+          "stringId": "1,5-cataloger.agent.cataloger",
+          "fieldName": "cataloger",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1",
+          "stringId": "1.collectionobject.catalogedDate",
+          "fieldName": "catalogedDate",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,9-determinations,4-preferredTaxon",
+          "stringId": "1,9-determinations,4-preferredTaxon.taxon.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,9-determinations",
+          "stringId": "1,9-determinations.determination.isCurrent",
+          "fieldName": "isCurrent",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": false,
+          "operStart": 6,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,10",
+          "stringId": "1,10.collectingevent.collectingEvent",
+          "fieldName": "collectingEvent",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 5,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,63-preparations",
+          "stringId": "1,63-preparations.preparation.preparations",
+          "fieldName": "preparations",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 6,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,10,30-collectors",
+          "stringId": "1,10,30-collectors.collector.collectors",
+          "fieldName": "collectors",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 7,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "1,9-determinations",
+          "stringId": "1,9-determinations.determination.determinations",
+          "fieldName": "determinations",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 8,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Appraisal": {
+      "fields": [
+        {
+          "tableList": "67",
+          "stringId": "67.appraisal.appraisalNumber",
+          "fieldName": "appraisalNumber",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "67",
+          "stringId": "67.appraisal.appraisalDate",
+          "fieldName": "appraisalDate",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "67",
+          "stringId": "67.appraisal.appraisalValue",
+          "fieldName": "appraisalValue",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "67,1-collectionObjects",
+          "stringId": "67,1-collectionObjects.collectionobject.collectionObjects",
+          "fieldName": "collectionObjects",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Deaccession": {
+      "fields": [
+        {
+          "tableList": "163",
+          "stringId": "163.deaccession.deaccessionNumber",
+          "fieldName": "deaccessionNumber",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "163",
+          "stringId": "163.deaccession.status",
+          "fieldName": "status",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "163,34-disposals",
+          "stringId": "163,34-disposals.disposal.disposals",
+          "fieldName": "disposals",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "163,40-exchangeOuts",
+          "stringId": "163,40-exchangeOuts.exchangeout.exchangeOuts",
+          "fieldName": "exchangeOuts",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "163,131-gifts",
+          "stringId": "163,131-gifts.gift.gifts",
+          "fieldName": "gifts",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Discipline": {
+      "fields": [
+        {
+          "tableList": "26",
+          "stringId": "26.discipline.name",
+          "fieldName": "name",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "26",
+          "stringId": "26.discipline.type",
+          "fieldName": "type",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "26,96",
+          "stringId": "26,96.division.name",
+          "fieldName": "name",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Gift": {
+      "fields": [],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Loan": {
+      "fields": [],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Locality": {
+      "fields": [
+        {
+          "tableList": "2",
+          "stringId": "2.locality.localityName",
+          "fieldName": "localityName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "2",
+          "stringId": "2.locality.latitude1",
+          "fieldName": "latitude1",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "2",
+          "stringId": "2.locality.longitude1",
+          "fieldName": "longitude1",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "2",
+          "stringId": "2.locality.datum",
+          "fieldName": "datum",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "2,3",
+          "stringId": "2,3.geography.geography",
+          "fieldName": "geography",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "PrepType": {
+      "fields": [
+        {
+          "tableList": "65",
+          "stringId": "65.preptype.name",
+          "fieldName": "name",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "65",
+          "stringId": "65.preptype.isLoanable",
+          "fieldName": "isLoanable",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Taxon": {
+      "fields": [
+        {
+          "tableList": "4",
+          "stringId": "4.taxon.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "4",
+          "stringId": "4.taxon.author",
+          "fieldName": "author",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "4",
+          "stringId": "4.taxon.isAccepted",
+          "fieldName": "isAccepted",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "4,77-definitionItem",
+          "stringId": "4,77-definitionItem.taxontreedefitem.definitionItem",
+          "fieldName": "definitionItem",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 3,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "4,4-children",
+          "stringId": "4,4-children.taxon.children",
+          "fieldName": "children",
+          "isRelFld": true,
+          "sortType": 0,
+          "position": 4,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    }
+  }
 }
