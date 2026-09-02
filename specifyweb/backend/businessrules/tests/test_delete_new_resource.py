@@ -32,9 +32,15 @@ class TestDeleteObjects(ApiTests):
         )
 
     def test_delete_taxontreedefitem(self):
+        root = models.Taxontreedefitem.objects.create(
+            name='Root taxon',
+            rankid=0,
+            treedef=self.taxontreedef,
+        )
         item = models.Taxontreedefitem.objects.create(
             name='Test taxon',
-            rankid=0,
+            rankid=1,
+            parent=root,
             treedef=self.taxontreedef,
         )
         item_id = item.id
@@ -47,9 +53,15 @@ class TestDeleteObjects(ApiTests):
         )
 
     def test_delete_geologictimeperiodtreedefitem(self):
+        root = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Root geologic time period',
+            rankid=0,
+            treedef=self.geologictimeperiodtreedef,
+        )
         item = models.Geologictimeperiodtreedefitem.objects.create(
             name='Test geologic time period',
-            rankid=0,
+            rankid=1,
+            parent=root,
             treedef=self.geologictimeperiodtreedef,
         )
         item_id = item.id
@@ -63,9 +75,15 @@ class TestDeleteObjects(ApiTests):
 
     def test_delete_lithostrattreedefitem(self):
         treedef = models.Lithostrattreedef.objects.create(name='Test lithostrat')
+        root = models.Lithostrattreedefitem.objects.create(
+            name='Root lithostrat item',
+            rankid=0,
+            treedef=treedef,
+        )
         item = models.Lithostrattreedefitem.objects.create(
             name='Test lithostrat item',
-            rankid=0,
+            rankid=1,
+            parent=root,
             treedef=treedef,
         )
         item_id = item.id
@@ -79,8 +97,15 @@ class TestDeleteObjects(ApiTests):
 
     def test_delete_tectonicunittreedefitem(self):
         treedef = models.Tectonicunittreedef.objects.create(name='Test tectonic unit')
+        root = models.Tectonicunittreedefitem.objects.create(
+            name='Root tectonic unit item',
+            rankid=0,
+            treedef=treedef,
+        )
         item = models.Tectonicunittreedefitem.objects.create(
             name='Test tectonic unit item',
+            rankid=1,
+            parent=root,
             treedef=treedef,
         )
         item_id = item.id
@@ -119,12 +144,29 @@ class TestDeleteObjects(ApiTests):
         )
 
     def test_delete_geography(self):
-        definitionitem = self.geographytreedef.treedefitems.first()
-        geography = models.Geography.objects.create(
-            name='Test geography',
+        geography_root_definitionitem = models.Geographytreedefitem.objects.create(
+            name='Root geography',
+            rankid=0,
+            treedef=self.geographytreedef,
+        )
+        geography_root = models.Geography.objects.create(
+            name='Root geography',
             rankid=0,
             definition=self.geographytreedef,
+            definitionitem=geography_root_definitionitem,
+        )
+        definitionitem = models.Geographytreedefitem.objects.create(
+            name='Test geography level',
+            rankid=1,
+            parent=geography_root_definitionitem,
+            treedef=self.geographytreedef,
+        )
+        geography = models.Geography.objects.create(
+            name='Test geography',
+            rankid=1,
+            definition=self.geographytreedef,
             definitionitem=definitionitem,
+            parent=geography_root,
         )
         geography_id = geography.id
 
@@ -151,6 +193,18 @@ class TestDeleteObjects(ApiTests):
         )
 
     def test_delete_collectionobjectgroup(self):
+        cog_type_picklist = models.Picklist.objects.create(
+            name='SystemCOGTypes',
+            issystem=True,
+            type=0,
+            readonly=True,
+            collection=self.collection,
+        )
+        models.Picklistitem.objects.create(
+            title='Discrete',
+            value='Discrete',
+            picklist=cog_type_picklist,
+        )
         cogtype = models.Collectionobjectgrouptype.objects.create(
             name='Test group type',
             type='Discrete',
