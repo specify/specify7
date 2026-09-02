@@ -1,5 +1,6 @@
 import type { LocalizedString } from 'typesafe-i18n';
 
+import { dwcaText } from '../../localization/dwca';
 import { preferencesText } from '../../localization/preferences';
 import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
@@ -126,6 +127,14 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
       'https://speciforum.org/t/dwca-data-exporting-in-specify-7/568',
     icon: icons.upload,
     label: resourcesText.rssExportFeed(),
+  },
+  dwcaDefinition: {
+    mimeType: 'application/vnd.specify.dwca+xml',
+    name: undefined,
+    documentationUrl: undefined,
+    icon: icons.upload,
+    label: dwcaText.dwcaDefinition(),
+    useTemplate: false,
   },
   expressSearchConfig: {
     mimeType: 'text/xml',

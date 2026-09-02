@@ -20,6 +20,7 @@ import type {
   SpViewSetObj,
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
+import { DwcaDefinitionEditor } from '../ExportFeed/DwcaDefinition';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
@@ -167,6 +168,10 @@ export const visualAppResourceEditors = f.store<
   rssExportFeed: {
     visual: RssExportFeedEditor,
     xml: generateXmlEditor(exportFeedSpec),
+  },
+  dwcaDefinition: {
+    visual: DwcaDefinitionEditor,
+    xml: generateXmlEditor(undefined),
   },
   expressSearchConfig: {
     visual: ExpressSearchConfigResourceEditor,

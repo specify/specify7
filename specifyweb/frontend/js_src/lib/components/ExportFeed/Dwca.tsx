@@ -63,7 +63,7 @@ export function MakeDwcaOverlay(): JSX.Element | null {
 
 export const dwcaAppResourceFilter: AppResourceFilters = {
   viewSets: false,
-  appResources: ['otherXmlResource', 'otherAppResources'],
+  appResources: ['dwcaDefinition', 'otherXmlResource', 'otherAppResources'],
 };
 
 export function PickAppResource({
