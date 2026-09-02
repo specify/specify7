@@ -219,9 +219,8 @@ msgstr "Forrige post"
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:87
 #: components/FormSliders/Slider.tsx:90
-#, fuzzy
 msgid "nextRecord"
-msgstr "Neste opptak"
+msgstr "Neste post"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:57
