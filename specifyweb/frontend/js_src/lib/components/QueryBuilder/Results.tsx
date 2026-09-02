@@ -136,6 +136,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const currentResultsRef = React.useRef(results);
   currentResultsRef.current = results;
   const previousRefreshToken = React.useRef(refreshToken);
+  const refreshGenerationRef = React.useRef(0);
 
   React.useEffect(() => {
     if (
@@ -147,12 +148,14 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     const currentResults = currentResultsRef.current;
     if (!Array.isArray(currentResults) || fetchResults === undefined) return;
 
+    const generation = ++refreshGenerationRef.current;
     const offsets = Array.from(
       { length: Math.ceil(currentResults.length / props.fetchSize) },
       (_, index) => index * props.fetchSize
     );
     Promise.all(offsets.map((offset) => fetchResults(offset)))
       .then((pages) => {
+        if (generation !== refreshGenerationRef.current) return;
         const refreshedResults = currentResults.slice();
         // Stop applying pages once a short page is hit, so a later full page
         // can't re-extend the array past the earliest known end of data
