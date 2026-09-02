@@ -220,8 +220,9 @@ class TestDeletePreviousVersionObjects(ApiTests):
 
         models.Taxontreedefitem.objects.create(
             name='Test taxon',
-            rankid=0,
-            treedef=self.taxontreedef,
+            rankid=1,
+            parent=item.parent,
+            treedef=item.treedef,
         )
 
     def test_delete_geologictimeperiodtreedefitem_created_in_previous_version(self):
@@ -237,8 +238,9 @@ class TestDeletePreviousVersionObjects(ApiTests):
 
         models.Geologictimeperiodtreedefitem.objects.create(
             name='Test geologic time period',
-            rankid=0,
-            treedef=self.geologictimeperiodtreedef,
+            rankid=1,
+            parent=item.parent,
+            treedef=item.treedef,
         )
 
     def test_delete_lithostrattreedefitem_created_in_previous_version(self):
@@ -252,12 +254,11 @@ class TestDeletePreviousVersionObjects(ApiTests):
             0,
         )
 
-        treedef = models.Lithostrattreedef.objects.create(
-            name='Test lithostrat',
-        )
+        treedef = item.treedef
         models.Lithostrattreedefitem.objects.create(
             name='Test lithostrat item',
-            rankid=0,
+            rankid=1,
+            parent=item.parent,
             treedef=treedef,
         )
 
@@ -272,11 +273,11 @@ class TestDeletePreviousVersionObjects(ApiTests):
             0,
         )
 
-        treedef = models.Tectonicunittreedef.objects.create(
-            name='Test tectonic unit',
-        )
+        treedef = item.treedef
         models.Tectonicunittreedefitem.objects.create(
             name='Test tectonic unit item',
+            rankid=1,
+            parent=item.parent,
             treedef=treedef,
         )
 
@@ -293,6 +294,7 @@ class TestDeletePreviousVersionObjects(ApiTests):
 
         models.Agent.objects.create(
             agenttype=0,
+            division=self.division,
         )
 
     def test_delete_collectingevent_created_in_previous_version(self):
@@ -321,13 +323,14 @@ class TestDeletePreviousVersionObjects(ApiTests):
             0,
         )
 
-        definitionitem = self.geographytreedef.treedefitems.first()
+        definitionitem = geography.definitionitem
 
         models.Geography.objects.create(
             name='Test geography',
-            rankid=0,
-            definition=self.geographytreedef,
+            rankid=geography.rankid,
+            definition=geography.definition,
             definitionitem=definitionitem,
+            parent=geography.parent,
         )
 
     def test_delete_locality_created_in_previous_version(self):
