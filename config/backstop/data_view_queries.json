@@ -908,6 +908,85 @@
       "selectDistinct": false,
       "searchSynonymy": false,
       "smushed": false
+    },
+    "Storage": {
+      "fields": [
+        {
+          "tableList": "58",
+          "stringId": "58.storage.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "58,58-children",
+          "stringId": "58,58-children.storage.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
+    },
+    "Geography": {
+      "fields": [
+        {
+          "tableList": "3",
+          "stringId": "3.geography.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 0,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "3,45-definitionItem",
+          "stringId": "3,45-definitionItem.geographytreedefitem.name",
+          "fieldName": "name",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "3,3-children",
+          "stringId": "3,3-children.geography.fullName",
+          "fieldName": "fullName",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 2,
+          "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
+      "selectDistinct": false,
+      "searchSynonymy": false,
+      "smushed": false
     }
   }
 }
