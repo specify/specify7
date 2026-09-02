@@ -5,6 +5,7 @@ Specify Application resources are hierarchical in nature and may be stored in ei
 database or the filesystem with database resources taking precedence over the filesystem.
 """
 import errno
+import json
 import logging
 import os
 from xml.etree import ElementTree
@@ -62,6 +63,11 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
     logger.info('looking for app resource %r for user %s in %s',
                 resource_name, user and user.name, collection and collection.collectionname)
 
+    # Data View queries are keyed by table, so a more-specific resource can
+    # override individual tables while inheriting the remaining definitions.
+    if resource_name == 'DataViewQueries':
+        return get_data_view_queries_resource(collection, user)
+
     # Handling for DataObjFormatters to support fallback to defaults
     if resource_name == 'DataObjFormatters':
         custom_formatter = None
@@ -118,6 +124,39 @@ def get_app_resource(collection, user, resource_name, additional_default=False):
 
     # resource was not found
     return None
+
+
+def get_data_view_queries_resource(collection, user):
+    """Return DataViewQueries merged across the app-resource hierarchy."""
+    resources = []
+    for level in DIR_LEVELS:
+        resource = get_app_resource_from_db(collection, user, level, 'DataViewQueries')
+        if resource is None:
+            resource = load_resource_at_level(collection, user, level, 'DataViewQueries')
+        if resource is not None:
+            resources.append(resource)
+
+    if not resources:
+        return None
+
+    queries = {}
+    for resource, _mimetype, _id in reversed(resources):
+        try:
+            data = json.loads(resource)
+        except (TypeError, json.JSONDecodeError):
+            continue
+        if (
+            not isinstance(data, dict)
+            or data.get('version') != 1
+            or not isinstance(data.get('queries'), dict)
+        ):
+            continue
+        queries.update(data['queries'])
+
+    # Return the most-specific resource's metadata while exposing the merged
+    # JSON payload to the client.
+    _resource, mimetype, resource_id = resources[0]
+    return json.dumps({'version': 1, 'queries': queries}), mimetype, resource_id
 
 def get_usertype(user):
     return user and user.usertype and user.usertype.replace(' ', '').lower()
