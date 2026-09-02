@@ -26,6 +26,7 @@ import typescriptRecommended from '@typescript-eslint/eslint-plugin/dist/configs
 import typescriptRecommendedTyped from '@typescript-eslint/eslint-plugin/dist/configs/recommended-requiring-type-checking.js';
 import typescriptStrict from '@typescript-eslint/eslint-plugin/dist/configs/strict.js';
 import unicornRecommended from 'eslint-plugin-unicorn/configs/recommended.js';
+import js from '@eslint/js';
 
 
 const OFF = 'off';
@@ -98,7 +99,7 @@ const testRules = {
 };
 
 const base_config = [
-  'eslint:recommended',
+  js.configs.recommended,
   ...typescriptEslint.overrides,
   ...compat.config(unicornRecommended),
   //...compat.config(arrayFunc.configs.all),
