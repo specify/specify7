@@ -607,7 +607,7 @@ class TreeUpdateTests(UploadTestsBase):
         tree_id = self.taxontreedef.pk
         tree_name = self.taxontreedef.name
         final = [tree_name, rank_name]
-        if include_id == True:
+        if include_id:
             final.append(str(tree_id))
         return RANK_KEY_DELIMITER.join(final)
 

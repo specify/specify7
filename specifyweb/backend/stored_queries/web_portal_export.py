@@ -451,7 +451,7 @@ def _trim_big_decimal_fields(query_fields: "list[QueryField]") -> Callable[[list
 
 
 def WebportalQueryResultProcessors(query_fields: "list[QueryField]") -> list[Callable[[list], list]]:
-    visible_field_specs = filter(lambda qfield: qfield.display, query_fields)
+    visible_field_specs = list(filter(lambda qfield: qfield.display, query_fields))
     return [
         _trim_big_decimal_fields(query_fields=visible_field_specs)
     ]
