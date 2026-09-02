@@ -119,12 +119,22 @@ export function DataViewQueryEditorContent({
         <div className="flex w-64 min-w-0 flex-col overflow-hidden">
           <p className="font-bold">{schemaText.tables()}</p>
           <TableList
+            badge={(table): React.ReactNode =>
+              getStoredDataViewQueryDefinition(file, table.name) ===
+              undefined ? undefined : (
+                <span
+                  aria-hidden
+                  className="h-2 w-2 shrink-0 rounded-full bg-brand-400"
+                />
+              )
+            }
             cacheKey="appResources"
             currentTableName={tableName}
-            getAction={(table): (() => void) => (): void => {
-              setTableName(table.name);
-              setRememberedTable(table.name);
-            }}
+            getAction={(table): (() => void) =>
+              (): void => {
+                setTableName(table.name);
+                setRememberedTable(table.name);
+              }}
           />
         </div>
       ) : undefined}
