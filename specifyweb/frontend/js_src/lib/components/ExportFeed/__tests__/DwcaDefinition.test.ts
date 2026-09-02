@@ -9,9 +9,11 @@ import {
   ensureIdentifierTerm,
   defaultRowTypes,
   getExtensionDefinitionForRowType,
+  getTemplateMapping,
   parseDefinition,
   serializeDefinition,
 } from '../DwcaDefinition';
+import { defaultTemplates } from '../data/defaultTemplates';
 
 const occurrenceId = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
@@ -237,9 +239,36 @@ describe('DwCA query field term mapping', () => {
     expect(mapping.terms).toEqual([occurrenceId, undefined]);
   });
 
+  test('limits templates to the matching mapping', () => {
+    const coreTemplate = defaultTemplates[0];
+    const extensionTemplate = defaultTemplates[1];
+    expect(
+      getTemplateMapping(coreTemplate, {
+        extension: false,
+        rowType: 'http://rs.tdwg.org/dwc/terms/Occurrence',
+      })?.extension
+    ).toBe(false);
+    expect(
+      getTemplateMapping(extensionTemplate, {
+        extension: true,
+        rowType: 'http://rs.tdwg.org/ac/terms/Multimedia',
+      })?.extension
+    ).toBe(true);
+    expect(
+      getTemplateMapping(extensionTemplate, {
+        extension: true,
+        rowType: 'http://rs.gbif.org/terms/1.0/MeasurementOrFacts',
+      })
+    ).toBe(undefined);
+  });
+
   test('automatically maps the expanded core default field patterns', () => {
     const fields = [
       ['1.collectionobject.guid', occurrenceId],
+      [
+        '1.collectionobject.text1',
+        'http://rs.tdwg.org/dwc/terms/collectionCode',
+      ],
       [
         '1,23,26,96,94.institution.altName',
         'http://rs.tdwg.org/dwc/terms/institutionID',
@@ -274,12 +303,40 @@ describe('DwCA query field term mapping', () => {
         'http://rs.tdwg.org/dwc/terms/scientificNameAuthorship',
       ],
       [
+        '1,9-determinations,4.taxon.fullName',
+        'http://rs.tdwg.org/dwc/terms/scientificName',
+      ],
+      [
+        '1,9-determinations,4,77-definitionItem.taxontreedefitem.name',
+        'http://rs.tdwg.org/dwc/terms/taxonRank',
+      ],
+      [
         '1,9-determinations,5-determiner.agent.determiner',
         'http://rs.tdwg.org/dwc/terms/identifiedBy',
       ],
       [
         '1,9-determinations.determination.typeStatusName',
         'http://rs.tdwg.org/dwc/terms/typeStatus',
+      ],
+      [
+        '1,10.collectingevent.stationFieldNumber',
+        'http://rs.tdwg.org/dwc/terms/eventID',
+      ],
+      [
+        '1,10.collectingevent.method',
+        'http://rs.tdwg.org/dwc/terms/samplingProtocol',
+      ],
+      [
+        '1,10.collectingevent.startDateVerbatim',
+        'http://rs.tdwg.org/dwc/terms/verbatimEventDate',
+      ],
+      [
+        '1,10.collectingevent.verbatimLocality',
+        'http://rs.tdwg.org/dwc/terms/verbatimLocality',
+      ],
+      [
+        '1,10,92,4-hostTaxon.taxon.hostTaxon',
+        'http://rs.tdwg.org/dwc/terms/associatedTaxa',
       ],
       [
         '1,10.collectingevent.startDateNumericDay',
@@ -301,6 +358,14 @@ describe('DwCA query field term mapping', () => {
         '1,10,92.collectingeventattribute.number12',
         'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters',
       ],
+      [
+        '1,93.collectionobjectattribute.text10',
+        'http://rs.tdwg.org/dwc/terms/sex',
+      ],
+      [
+        '1,93.collectionobjectattribute.text12',
+        'http://rs.tdwg.org/dwc/terms/lifeStage',
+      ],
       ['1,10,2.locality.localityName', 'http://rs.tdwg.org/dwc/terms/locality'],
       [
         '1,10,2.locality.latLongMethod',
@@ -321,6 +386,14 @@ describe('DwCA query field term mapping', () => {
       [
         '1,10,2,3.geography.geography',
         'http://rs.tdwg.org/dwc/terms/higherGeography',
+      ],
+      [
+        '1,63-preparations.preparation.preparations',
+        'http://rs.tdwg.org/dwc/terms/preparations',
+      ],
+      [
+        '1,10,92.collectingeventattribute.text17',
+        'http://rs.tdwg.org/dwc/terms/habitat',
       ],
       ['1,10,2.locality.elevationMethod', undefined],
     ] as const;

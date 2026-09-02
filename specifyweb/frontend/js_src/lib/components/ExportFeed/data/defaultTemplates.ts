@@ -1,9 +1,10 @@
-import { dwcaText } from '../../../localization/dwca';
-
 export type DwcaTemplate = {
   readonly name: string;
-  readonly title: string;
   readonly definition: string;
+  readonly targets: readonly {
+    readonly extension: boolean;
+    readonly rowType: string;
+  }[];
 };
 
 /** Shared starting points supplied with Specify. These remain XML so the
@@ -11,8 +12,13 @@ export type DwcaTemplate = {
  */
 export const defaultTemplates: readonly DwcaTemplate[] = [
   {
-    name: 'Specify occurrence export',
-    title: dwcaText.dwcaSpecifyOccurrenceExport(),
+    name: 'Specify → Darwin Core Occurrence',
+    targets: [
+      {
+        extension: false,
+        rowType: 'http://rs.tdwg.org/dwc/terms/Occurrence',
+      },
+    ],
     definition: `<?xml version="1.0" encoding="UTF-8"?>
 <archive>
   <core rowType="http://rs.tdwg.org/dwc/terms/Occurrence">
@@ -65,13 +71,23 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
         <field stringId="1,10,2.locality.remarks" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/locationRemarks"/>
         <field stringId="1,10,2.locality.minElevation" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/minimumElevationInMeters"/>
         <field stringId="1,10,2.locality.maxElevation" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/maximumElevationInMeters"/>
-        <field stringId="1,93.collectionobjectattribute.text10" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/sex"/>
-        <field stringId="1,93.collectionobjectattribute.text12" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/lifeStage"/>
         <field stringId="1,63-preparations.preparation.preparations" oper="8" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/dwc/terms/preparations"/>
         <field stringId="1,10,92.collectingeventattribute.text17" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/habitat"/>
       </query>
     </queries>
   </core>
+</archive>`,
+  },
+  {
+    name: 'Specify → Audiovisual Core',
+    targets: [
+      {
+        extension: true,
+        rowType: 'http://rs.tdwg.org/ac/terms/Multimedia',
+      },
+    ],
+    definition: `<?xml version="1.0" encoding="UTF-8"?>
+<archive>
   <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
     <queries>
       <query name="AudiovisualCore.csv" contextTableId="1">

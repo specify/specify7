@@ -192,6 +192,25 @@ function TermInfoDialog({
   );
 }
 
+export function getTemplateMapping(
+  template: DwcaTemplate,
+  mapping: Pick<Mapping, 'extension' | 'rowType'>
+): Mapping | undefined {
+  if (
+    !template.targets.some(
+      (target) =>
+        target.extension === mapping.extension &&
+        target.rowType === mapping.rowType
+    )
+  )
+    return undefined;
+  return parseDefinition(template.definition).find(
+    (candidate) =>
+      candidate.extension === mapping.extension &&
+      candidate.rowType === mapping.rowType
+  );
+}
+
 const getFields = (
   query: SpecifyResource<SpQuery>
 ): RA<SerializedResource<SpQueryField>> => {
@@ -474,8 +493,9 @@ function ExtensionDialog({
   return (
     <Dialog
       className={{ container: dialogClassNames.normalContainer }}
+      icon={icons.plus}
       header={localized(
-        `${commonText.add()} ${dwcaText.dwcaDefinition()}`
+        `${commonText.add()} ${dwcaText.dwcaExtension()}`
       )}
       buttons={
         <div className="flex gap-2">
@@ -553,9 +573,9 @@ function ExtensionDialog({
               )}
               {defaultTemplates
                 .filter((template) =>
-                  parseDefinition(template.definition).some(
-                    (mapping) =>
-                      mapping.extension && mapping.rowType === extension.rowType
+                  template.targets.some(
+                    ({ extension: isExtension, rowType }) =>
+                      isExtension && rowType === extension.rowType
                   )
                 )
                 .map((template) => (
@@ -563,7 +583,7 @@ function ExtensionDialog({
                     key={`template:${template.name}`}
                     value={`template:${template.name}`}
                   >
-                    {template.title}
+                    {template.name}
                   </option>
                 ))}
               {queries.map((query) => (
@@ -957,6 +977,12 @@ function QueryMapping({
       extensionDefinition,
     });
   };
+  const availableTemplates = defaultTemplates.filter((template) =>
+    template.targets.some(
+      ({ extension, rowType }) =>
+        extension === mapping.extension && rowType === mapping.rowType
+    )
+  );
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap gap-3">
@@ -1014,9 +1040,35 @@ function QueryMapping({
             </Select>
           )}
         </Label.Block>
+        {onTemplate !== undefined && (
+          <Label.Block>
+            {dwcaText.dwcaStartFromTemplate()}
+            <Select
+              disabled={availableTemplates.length === 0}
+              value={localized('')}
+              onValueChange={(name): void => {
+                const template = defaultTemplates.find(
+                  (candidate) => candidate.name === name
+                );
+                if (template !== undefined) onTemplate(template);
+              }}
+            >
+              <option value="">
+                {availableTemplates.length === 0
+                  ? dwcaText.dwcaNoTemplatesAvailable()
+                  : dwcaText.dwcaChooseATemplate()}
+              </option>
+              {availableTemplates.map((template) => (
+                <option key={template.name} value={template.name}>
+                  {template.name}
+                </option>
+              ))}
+            </Select>
+          </Label.Block>
+        )}
         {queries !== undefined && (
           <Label.Block>
-            {dwcaText.dwcaSeedFromSaved({ query: queryText.query() })}
+            {dwcaText.dwcaSeedFromSaved({ query: queryText.query().toLowerCase() })}
             <Select
               value={localized('')}
               onValueChange={(value): void => {
@@ -1032,32 +1084,11 @@ function QueryMapping({
               }}
             >
               <option value="">
-                {dwcaText.dwcaSelect({ item: queryText.query() })}
+                {dwcaText.dwcaSelect({ item: queryText.query().toLowerCase() })}
               </option>
               {collectionObjectQueries.map((query) => (
                 <option key={query.id} value={query.id}>
                   {query.name}
-                </option>
-              ))}
-            </Select>
-          </Label.Block>
-        )}
-        {!mapping.extension && onTemplate !== undefined && (
-          <Label.Block>
-            {dwcaText.dwcaStartFromTemplate()}
-            <Select
-              value={localized('')}
-              onValueChange={(name): void => {
-                const template = defaultTemplates.find(
-                  (candidate) => candidate.name === name
-                );
-                if (template !== undefined) onTemplate(template);
-              }}
-            >
-              <option value="">{dwcaText.dwcaChooseATemplate()}</option>
-              {defaultTemplates.map((template) => (
-                <option key={template.name} value={template.name}>
-                  {template.title}
                 </option>
               ))}
             </Select>
@@ -1337,18 +1368,14 @@ function DwcaDefinitionEditorLoaded({
             : undefined
         }
         onTemplate={
-          active.extension
-            ? undefined
-            : (template): void => {
-                const core = parseDefinition(template.definition).find(
-                  (mapping) => !mapping.extension
-                );
-                if (core === undefined) return;
-                update([
-                  ...mappings.slice(0, tab),
-                  core,
-                  ...mappings.slice(tab + 1),
-                ]);
+          (template): void => {
+            const replacement = getTemplateMapping(template, active);
+            if (replacement === undefined) return;
+            update([
+              ...mappings.slice(0, tab),
+              replacement,
+              ...mappings.slice(tab + 1),
+            ]);
           }
         }
       />

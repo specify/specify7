@@ -62,13 +62,16 @@ export const dwcaText = createDictionary({
       'No {default:string} or saved {query:string} is available for this {extension:string}.',
   },
   dwcaSeedFromSaved: {
-    'en-us': 'Seed from saved {query:string}',
+    'en-us': 'Seed from {query:string}',
   },
   dwcaStartFromTemplate: {
     'en-us': 'Start from template',
   },
   dwcaChooseATemplate: {
     'en-us': 'Choose a template',
+  },
+  dwcaNoTemplatesAvailable: {
+    'en-us': 'No templates available',
   },
   dwcaAddField: {
     'en-us': 'Add a {query:string} field to begin mapping.',
@@ -85,8 +88,5 @@ export const dwcaText = createDictionary({
   },
   dwcaCore: {
     'en-us': 'Core',
-  },
-  dwcaSpecifyOccurrenceExport: {
-    'en-us': 'Specify occurrence export (core + audiovisual)',
   },
 } as const);

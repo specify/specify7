@@ -68,6 +68,10 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'taxontreedef.rankname',
     'taxontreedefitem.name',
   ],
+  'http://rs.tdwg.org/dwc/terms/eventID': [
+    'collectingevent.guid',
+    'collectingevent.stationfieldnumber',
+  ],
   'http://rs.tdwg.org/dwc/terms/recordNumber': ['fieldnumber'],
   'http://rs.tdwg.org/dwc/terms/identifiedBy': ['agent.determiner'],
   'http://rs.tdwg.org/dwc/terms/typeStatus': ['determination.typestatusname'],
@@ -75,10 +79,6 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/waterBody': ['geocoorddetail.waterbody'],
   'http://rs.tdwg.org/dwc/terms/catalogNumber': ['.catalognumber'],
   'http://rs.tdwg.org/dwc/terms/recordedBy': ['.collectors'],
-  'http://rs.tdwg.org/dwc/terms/eventID': [
-    'collectingevent.guid',
-    'collectingevent.stationfieldnumber',
-  ],
   'http://rs.tdwg.org/dwc/terms/stateProvince': [
     'stateprovince.name',
     'geography.state',
@@ -99,7 +99,10 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/georeferenceSources': [
     'locality.latlongmethod',
   ],
-  'http://rs.tdwg.org/dwc/terms/collectionCode': ['collection.code'],
+  'http://rs.tdwg.org/dwc/terms/collectionCode': [
+    'collection.code',
+    'collectionobject.text1',
+  ],
   'http://rs.tdwg.org/dwc/terms/eventRemarks': ['collectingevent.remarks'],
   'http://rs.tdwg.org/dwc/terms/institutionCode': ['institution.code'],
   'http://rs.tdwg.org/dwc/terms/fieldNumber': ['fieldnumber'],
@@ -119,6 +122,11 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/associatedTaxa': [
     'hosttaxon.taxon.hosttaxon',
+  ],
+  'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text10'],
+  'http://rs.tdwg.org/dwc/terms/lifeStage': ['collectionobjectattribute.text12'],
+  'http://rs.tdwg.org/dwc/terms/habitat': [
+    'collectingeventattribute.text17',
   ],
   'http://rs.tdwg.org/dwc/terms/preparations': [
     'preparations.preparation.preparations',
