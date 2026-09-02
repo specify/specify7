@@ -159,10 +159,10 @@ function Row({
         typeof handleRowSelected === 'function'
           ? ({ target }): void =>
               /*
-               * Ignore clicks on the "View" links and formatted audit log cell
-               * links
+               * Ignore clicks on the "View" links, formatted audit log cell
+               * links, and record-list controls (e.g., the split records button)
                */
-              (target as Element).closest('a') === null
+              (target as Element).closest('a, button') === null
                 ? handleRowSelected?.()
                 : undefined
           : undefined
