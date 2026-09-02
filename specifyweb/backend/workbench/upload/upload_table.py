@@ -978,7 +978,13 @@ class BoundUpdateTable(BoundUploadTable):
         return super()._handle_row(skip_match=True, allow_null=allow_null)
 
     def _process_to_ones(self) -> dict[str, UploadResult]:
-        reference_record = self._get_reference(should_cache=False)
+        needs_reference_record = any(
+            not uploadable.is_one_to_one()
+            and hasattr(uploadable, "process_with_exising")
+            for uploadable in self.toOne.values()
+        )
+        reference_record = (self._get_reference(should_cache=False)
+                            if needs_reference_record else None)
         return {
             field_name: (
                 to_one_def.save_row(force=(not self.auditor.props.allow_delete_dependents))
