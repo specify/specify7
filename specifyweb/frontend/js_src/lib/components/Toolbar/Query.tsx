@@ -11,11 +11,12 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import { getField } from '../DataModel/helpers';
+import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { resourceEvents } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
@@ -23,7 +24,7 @@ import type { SpQuery } from '../DataModel/types';
 import { userInformation } from '../InitialContext/userInformation';
 import { loadingGif } from '../Molecules';
 import { DateElement } from '../Molecules/DateElement';
-import { Dialog } from '../Molecules/Dialog';
+import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import { usePaginator } from '../Molecules/Paginator';
 import { SortIndicator, useSortConfig } from '../Molecules/Sorting';
 import { TableIcon } from '../Molecules/TableIcon';
@@ -98,11 +99,15 @@ export function QueryListDialog({
     false
   );
 
-  const { paginator, limit, offset } = usePaginator('queryBuilder');
+  const { paginator, limit, offset, currentPage } =
+    usePaginator('queryBuilder');
 
   const orderBy = `${sortConfig.ascending ? '' : '-'}${
     sortConfig.sortField
   }` as const;
+
+  const [search, setSearch] = React.useState('');
+  const searchFilter = search.trim();
 
   const [data, setData] = useAsyncState(
     React.useCallback(
@@ -113,8 +118,11 @@ export function QueryListDialog({
           ...(filters ?? { specifyUser: userInformation.id }),
           offset,
           orderBy,
-        }),
-      [limit, offset, orderBy]
+        },
+        searchFilter === ''
+          ? undefined
+          : backendFilter('name').caseInsensitiveContains(searchFilter)),
+      [filters, limit, offset, orderBy, searchFilter]
     ),
     false
   );
@@ -207,6 +215,21 @@ export function QueryListDialog({
       <Dialog
         buttons={
           <>
+            <Input.Text
+              aria-label={commonText.searchFor({
+                resource: queryText.queries(),
+              })}
+              className="min-w-0 max-w-sm flex-1"
+              placeholder={commonText.searchFor({
+                resource: queryText.queries(),
+              })}
+              value={search}
+              onValueChange={(value): void => {
+                setSearch(value);
+                currentPage[1](0);
+              }}
+            />
+            <span className="flex-1" />
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             {(hasToolPermission('queryBuilder', 'create') ||
               hasPermission('/querybuilder/query', 'execute')) && (
@@ -214,6 +237,10 @@ export function QueryListDialog({
             )}
           </>
         }
+        className={{
+          container: `${dialogClassNames.narrowContainer}
+            h-[min(40rem)] w-[min(45rem)]`,
+        }}
         header={
           totalCount === undefined
             ? queryText.queries()

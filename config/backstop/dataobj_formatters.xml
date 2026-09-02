@@ -522,7 +522,7 @@
 		<aggregator name="Author" title="Author" class="edu.ku.brc.specify.datamodel.Author" default="true" separator="; " ending="" format="Author" orderfieldname="orderNumber"/>
 		<aggregator name="BorrowAttachment" title="BorrowAttachment" class="edu.ku.brc.specify.datamodel.BorrowAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="CollectingEventAttachment" title="CollectingEventAttachment" class="edu.ku.brc.specify.datamodel.CollectingEventAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
-		<aggregator name="CollectionObject" title="CollectionObject" class="edu.ku.brc.specify.datamodel.CollectionObject" default="true" separator="; " ending="" format="CollectionObject"/>
+		<aggregator name="CollectionObject" title="CollectionObject" class="edu.ku.brc.specify.datamodel.CollectionObject" default="true" separator=" | " ending="" format="CollectionObject"/>
 		<aggregator name="CollectionObjectAttachment" title="CollectionObjectAttachment" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="Collector" title="Collector" class="edu.ku.brc.specify.datamodel.Collector" default="true" separator="; " ending="" format="Collector" orderfieldname="orderNumber"/>
 		<aggregator name="ConservDescriptionAttachment" title="ConservDescriptionAttachment" class="edu.ku.brc.specify.datamodel.ConservDescriptionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
@@ -550,5 +550,11 @@
 		<aggregator name="TaxonAttachment" title="TaxonAttachment" class="edu.ku.brc.specify.datamodel.TaxonAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="CollectionObjectGroupJoin" title="Collection Object Group Join" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" default="true" separator="; " ending="" format=""/>
 		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Collection" title="Collection" class="edu.ku.brc.specify.datamodel.Collection" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="Discipline" title="Discipline" class="edu.ku.brc.specify.datamodel.Discipline" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="Division" title="Division" class="edu.ku.brc.specify.datamodel.Division" default="true" separator=" |  " ending="" format=""/>
+		<aggregator name="Taxon" title="Taxon" class="edu.ku.brc.specify.datamodel.Taxon" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Geography" title="Geography" class="edu.ku.brc.specify.datamodel.Geography" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
 	</aggregators>
 </formatters>

@@ -4,45 +4,99 @@ import { commonText } from '../../localization/common';
 import { dataViewsText } from '../../localization/dataViews';
 import { Http } from '../../utils/ajax/definitions';
 import { throttledPromise } from '../../utils/ajax/throttledPromise';
-import type { GetSet, IR, RA } from '../../utils/types';
+import type { IR, RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
 import { DataEntry } from '../Atoms/DataEntry';
 import { icons } from '../Atoms/Icons';
 import { serializeResource } from '../DataModel/serializers';
 import { SpecifyTable } from '../DataModel/specifyTable';
-import { getTableById, strictGetTable } from '../DataModel/tables';
-import { Tables } from '../DataModel/types';
+import type { Tables } from '../DataModel/types';
 import { raise } from '../Errors/Crash';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
-import { userPreferences } from '../Preferences/userPreferences';
 import { OverlayContext } from '../Router/Router';
-import { tablesFilter } from '../SchemaConfig/Tables';
 import {
   queryCountPromiseGenerator,
   querySpecToResource,
 } from '../Statistics/hooks';
 import { TablesListEdit } from '../Toolbar/QueryTablesEdit';
 import { QueryTables } from '../Toolbar/QueryTablesWrapper';
-
-const defaultDataViewTablesConfig: RA<keyof Tables> = [
-  'Accession',
-  'Agent',
-  'CollectionObject',
-  'CollectingEvent',
-  'Gift',
-  'Loan',
-  'Locality',
-];
+import { defaultDataViewTablesConfig, useDataViewTables } from './config';
+import { DataViewQueryEditorContent } from './QueryEditor';
+import {
+  getDataViewQueryDefinition,
+  saveUserDataViewQueries,
+  serializeDataViewQueries,
+  useDataViewQueries,
+} from './queries';
 
 export function DataViewTables(): JSX.Element {
   const handleClose = React.useContext(OverlayContext);
   const [tables, setTables] = useDataViewTables();
   const [isEditing, handleEditing] = useBooleanState();
+  const [queries, reloadQueries] = useDataViewQueries();
+  const [queryData, setQueryData] = React.useState<string | undefined>();
+  const [isSavingQuery, setIsSavingQuery] = React.useState(false);
+  const [queryTable, setQueryTable] = React.useState<
+    keyof Tables | undefined
+  >();
   const counts = useTableRecordCounts(tables);
+  const handleOpenQueryEditor = (tableName: keyof Tables): void => {
+    if (queries === undefined) return;
+    setQueryData(
+      serializeDataViewQueries({
+        version: 1,
+        queries: { [tableName]: getDataViewQueryDefinition(queries, tableName) },
+      })
+    );
+    setQueryTable(tableName);
+  };
+  const handleCloseQueryEditor = (): void => {
+    setQueryTable(undefined);
+    setQueryData(undefined);
+  };
+  if (queryTable !== undefined && queryData !== undefined)
+    return (
+      <Dialog
+        buttons={
+          <>
+            <Button.Secondary onClick={handleCloseQueryEditor}>
+              {commonText.cancel()}
+            </Button.Secondary>
+            <Button.Success
+              disabled={isSavingQuery}
+              onClick={(): void => {
+                if (isSavingQuery) return;
+                setIsSavingQuery(true);
+                saveUserDataViewQueries(queryData, queryTable)
+                  .then(reloadQueries)
+                  .then(handleCloseQueryEditor)
+                  .catch(raise)
+                  .finally(() => setIsSavingQuery(false));
+              }}
+            >
+              {commonText.save()}
+            </Button.Success>
+          </>
+        }
+        header={dataViewsText.configureQuery()}
+        onClose={handleCloseQueryEditor}
+      >
+        <DataViewQueryEditorContent
+          data={queryData}
+          key={queryTable}
+          tableName={queryTable}
+          onChange={setQueryData}
+        />
+      </Dialog>
+    );
   return isEditing ? (
     <TablesListEdit
       defaultTables={defaultDataViewTablesConfig}
-      header={dataViewsText.configureDataViews()}
+      header={
+        dataViewsText.configureDataViews({
+          dataViews: dataViewsText.dataViewsTitle(),
+        })
+      }
       tables={tables}
       onChange={setTables}
       onClose={handleClose}
@@ -61,7 +115,11 @@ export function DataViewTables(): JSX.Element {
       className={{
         container: dialogClassNames.narrowContainer,
       }}
-      headerButtons={<DataEntry.Edit onClick={handleEditing} />}
+      headerButtons={
+        <div className="flex gap-2">
+          <DataEntry.Edit onClick={handleEditing} />
+        </div>
+      }
       icon={icons.eye}
       onClose={handleClose}
     >
@@ -70,6 +128,7 @@ export function DataViewTables(): JSX.Element {
         getHref={(name) => `/specify/dataviews/${name.toLowerCase()}`}
         tables={tables}
         onClick={undefined}
+        onEdit={handleOpenQueryEditor}
       />
     </Dialog>
   );
@@ -79,13 +138,15 @@ export function DataViewTables(): JSX.Element {
  * Fetches the number of records in each table in the background, using the
  * same count-only query builder logic that is used in the Statistics page.
  */
-function useTableRecordCounts(
+export function useTableRecordCounts(
   tables: RA<SpecifyTable>
 ): IR<number | undefined> {
   const [counts, setCounts] = React.useState<IR<number | undefined>>({});
 
   React.useEffect(() => {
     let destructorCalled = false;
+    const tableNames = new Set(tables.map(({ name }) => name));
+    setCounts({});
     tables.forEach((table) => {
       const query = serializeResource(
         querySpecToResource(table.name, {
@@ -102,7 +163,7 @@ function useTableRecordCounts(
         JSON.stringify(query)
       )
         .then((count) => {
-          if (destructorCalled) return;
+          if (destructorCalled || !tableNames.has(table.name)) return;
           setCounts((previousCounts) => ({
             ...previousCounts,
             [table.name]: count,
@@ -116,30 +177,4 @@ function useTableRecordCounts(
   }, [tables]);
 
   return counts;
-}
-
-function useDataViewTables(): GetSet<RA<SpecifyTable>> {
-  const [tables, setTables] = userPreferences.use(
-    'dataViews',
-    'general',
-    'shownTables'
-  );
-  const allowedTables = React.useMemo(() => {
-    const visibleTables =
-      tables.length === 0
-        ? defaultDataViewTablesConfig.map(strictGetTable)
-        : tables.map(getTableById);
-
-    return visibleTables.filter((table) =>
-      tablesFilter(true, false, true, table)
-    );
-  }, [tables]);
-
-  const handleChange = React.useCallback(
-    (models: RA<SpecifyTable>) =>
-      setTables(models.map((model) => model.tableId)),
-    [setTables]
-  );
-
-  return [allowedTables, handleChange];
 }
