@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
     'pt-br': 'Não é possível mover este nó da árvore para cá.',
     'hr-hr': 'Ovaj čvor stabla ne može se premjestiti ovdje',
-    nb: 'Kan ikke flytte denne trenoden hit',
+    nb: 'Kan ikke flytte denne treknuten hit',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",
@@ -515,27 +515,41 @@ export const treeText = createDictionary({
     comment: "Used to show tree node's direct, indirect and synonymized usages",
     'en-us':
       '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'es-es':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'fr-fr':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'hr-hr':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    nb: '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'pt-br':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'ru-ru':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
+    'uk-ua':
+      '({directCount:number|formatted}, {childCount:number|formatted}, {synonymCount:number|formatted})',
   },
   leafNodeStatsWithSynonyms: {
     comment: "Used to show leaf tree node's direct and synonymized usages",
     'en-us':
       '({directCount:number|formatted}, {synonymCount:number|formatted})',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'es-es':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'fr-fr':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'hr-hr':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    nb: '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'pt-br':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'ru-ru':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
+    'uk-ua':
+      '({directCount:number|formatted}, {synonymCount:number|formatted})',
   },
   synonymizedCollectionObjectCount: {
     comment: `
@@ -543,14 +557,14 @@ export const treeText = createDictionary({
       have been synonymized into another node
     `,
     'en-us': 'Synonymized {collectionObjectTable:string} Count',
-    'de-ch': '',
-    'es-es': '',
-    'fr-fr': '',
-    'hr-hr': '',
-    nb: '',
-    'pt-br': '',
-    'ru-ru': '',
-    'uk-ua': '',
+    'de-ch': 'Synonymisiert {collectionObjectTable:string} Zählung',
+    'es-es': 'Conteo de sinónimos {collectionObjectTable:string}',
+    'fr-fr': 'Compte synonymisé {collectionObjectTable:string}',
+    'hr-hr': 'Sinonimizirani {collectionObjectTable:string} broj',
+    nb: 'Synonymisert {collectionObjectTable:string} Antall',
+    'pt-br': 'Contagem {collectionObjectTable:string} Sinônimos',
+    'ru-ru': 'Синонимизированное количество {collectionObjectTable:string}',
+    'uk-ua': 'Синонімізована кількість {collectionObjectTable:string}',
   },
   directCollectionObjectCount: {
     comment: 'Example: Direct Collection Object count',
@@ -1006,7 +1020,7 @@ export const treeText = createDictionary({
     'pt-br': 'O processo padrão de criação da árvore foi iniciado.',
     'ru-ru': 'Начался процесс создания дерева по умолчанию.',
     'uk-ua': 'Процес створення дерева за замовчуванням розпочато.',
-    nb: 'Standardprosessen for oppretting av treet har startet.',
+    nb: 'Standardprosessen for oppretting av tre har startet.',
   },
   defaultTreeTaskFailed: {
     'en-us': 'Default tree creation failed.',
