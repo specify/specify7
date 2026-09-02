@@ -102,6 +102,8 @@ const base_config = [
   ...typescriptEslint.overrides,
   ...compat.config(unicornRecommended),
   //...compat.config(arrayFunc.configs.all),
+  ...compat.config(react.configs.recommended),
+  ...compat.config(reactHooks.configs.recommended),
   ...compat.config(eslintComments),
   ...compat.config(regexp.configs.recommended),
   ...compat.config(functional.configs['external-typescript-recommended']),
@@ -128,7 +130,7 @@ const base_config = [
       arrayFunc,
       react,
       'react-hooks': reactHooks,
-	  sonarjs,
+      sonarjs,
       /**
        * An awesome rule, but have to temporarily disable it until
        * https://github.com/BrainMaestro/eslint-plugin-optimize-regex/issues/66
@@ -852,7 +854,6 @@ if (abbreviationsConfig === undefined)
 export default [
   ...base_config,
 
-  ...compat.config(functional.configs['external-recommended']),
   ...compat.config(accessibility.configs.strict),
   ...compat.config(testingLibrary.configs.react),
   {
