@@ -102,6 +102,8 @@ type ResultsProps = {
     newFields: RA<QueryField>
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly containerClassName?: string;
+  readonly tableClassName?: string;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
   readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
   readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
@@ -148,6 +150,8 @@ export function useQueryResultsWrapper({
   fields,
   recordSetId,
   forceCollection,
+  containerClassName,
+  tableClassName,
   onSortChange: handleSortChange,
   onResults: handleResults,
   selectedRows: [selectedRows, setSelectedRows],
@@ -229,6 +233,8 @@ export function useQueryResultsWrapper({
       .then((initialData) =>
         setProps({
           queryResource,
+          containerClassName,
+          tableClassName,
           fetchSize,
           table,
           fetchResults: isCountOnly

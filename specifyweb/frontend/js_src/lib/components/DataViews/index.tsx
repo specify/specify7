@@ -251,6 +251,8 @@ function LoadedDataViewFromTable({
       queryResource={query}
       recordSetId={undefined}
       forceCollection={undefined}
+      containerClassName="!rounded-none"
+      tableClassName="rounded-none"
       fields={fields}
       selectedRows={selectedRows}
       table={table}

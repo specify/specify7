@@ -86,6 +86,7 @@ export type QueryResultsProps = {
   readonly onReRun: () => void;
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
+  readonly containerClassName?: string;
   readonly tableClassName?: string;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
   readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
@@ -112,6 +113,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onReRun: handleReRun,
     createRecordSet,
     extraButtons,
+    containerClassName = '',
     tableClassName = '',
     selectedRows: [selectedRows, setSelectedRows],
     onResults: handleResults,
@@ -420,7 +422,9 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
   const metaColumns = (showLineNumber ? 1 : 0) + 2;
 
   return (
-    <Container.Base className="w-full !bg-[color:var(--form-background)]">
+    <Container.Base
+      className={`w-full !bg-[color:var(--form-background)] ${containerClassName}`}
+    >
       <div className="flex items-center items-stretch gap-2">
         <H3>
           {commonText.colonLine({
