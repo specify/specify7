@@ -9,6 +9,7 @@ test('defaultAppResourceFilters', () => {
         "dataObjectFormatters",
         "defaultUserPreferences",
         "expressSearchConfig",
+        "dwcaDefinition",
         "interactionsTables",
         "label",
         "leafletLayers",
