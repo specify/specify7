@@ -2,12 +2,11 @@ import React from 'react';
 
 import { dataViewsText } from '../../localization/dataViews';
 import type { RA } from '../../utils/types';
-import { Label, Select } from '../Atoms/Form';
 import type { AppResourceTabProps } from '../AppResources/TabDefinitions';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpQueryField, Tables } from '../DataModel/types';
 import { QueryBuilder } from '../QueryBuilder/Wrapped';
-import { defaultDataViewTablesConfig, useDataViewTables } from './config';
+import { defaultDataViewTablesConfig } from './config';
 import {
   getStoredDataViewQueryDefinition,
   makeDataViewQuery,
@@ -17,6 +16,7 @@ import {
   type DataViewQueriesFile,
 } from './queries';
 import { schemaText } from '../../localization/schema';
+import { TableList } from '../SchemaConfig/Tables';
 
 export function DataViewQueryEditor({
   data,
@@ -42,23 +42,13 @@ export function DataViewQueryEditorContent({
   const initialFile = React.useMemo(() => parseDataViewQueries(data), [data]);
   const [file, setFile] = React.useState<DataViewQueriesFile>(initialFile);
   const fileRef = React.useRef(file);
-  const [tables] = useDataViewTables();
-  const tableNames = React.useMemo<RA<keyof Tables>>(
-    () => tables.map(({ name }) => name),
-    [tables]
-  );
   const [tableName, setTableName] = React.useState<keyof Tables>(
-    lockedTableName ?? tableNames[0] ?? defaultDataViewTablesConfig[0]
+    lockedTableName ?? defaultDataViewTablesConfig[0]
   );
 
   React.useEffect(() => {
     if (lockedTableName !== undefined) setTableName(lockedTableName);
   }, [lockedTableName]);
-
-  React.useEffect(() => {
-    if (lockedTableName === undefined && !tableNames.includes(tableName))
-      setTableName(tableNames[0] ?? defaultDataViewTablesConfig[0]);
-  }, [lockedTableName, tableName, tableNames]);
 
   React.useEffect(() => {
     if (
@@ -119,23 +109,21 @@ export function DataViewQueryEditorContent({
   );
 
   return (
-    <div className="flex flex-1 flex-col gap-4 overflow-hidden">
+    <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
       {lockedTableName === undefined ? (
-        <Label.Inline>
-          {schemaText.table()}
-          <Select
-            value={tableName}
-            onValueChange={(value): void => setTableName(value as keyof Tables)}
-          >
-            {tableNames.map((name) => (
-              <option key={name} value={name}>
-                {name}
-              </option>
-            ))}
-          </Select>
-        </Label.Inline>
+        <div className="flex w-64 min-w-0 flex-col overflow-hidden">
+          <p className="font-bold">{schemaText.tables()}</p>
+          <TableList
+            cacheKey="appResources"
+            currentTableName={tableName}
+            getAction={(table): (() => void) =>
+              (): void =>
+                setTableName(table.name)
+              }
+          />
+        </div>
       ) : undefined}
-      <div className="flex min-h-0 flex-1 flex-col overflow-auto">
+      <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto">
         <QueryBuilder
           autoRun={false}
           forceCollection={undefined}

@@ -572,11 +572,7 @@ function Wrapped({
                 showSeries={showSeries}
                 tableName={table.name}
                 onRunCountOnly={(): void => runQuery('count')}
-                onSubmitClick={(): void =>
-                  form?.checkValidity() === false
-                    ? runQuery('regular')
-                    : undefined
-                }
+                onSubmitClick={(): void => runQuery('regular')}
                 onToggleDistinct={(): void => {
                   setQuery({
                     ...query,
