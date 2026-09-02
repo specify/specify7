@@ -182,4 +182,3 @@ class AccessionAgentTests(ApiTests):
         self.assertEqual(fetched_link.accession, accession)
         self.assertEqual(fetched_link.agent, fetched_agent)
         self.assertEqual(fetched_link.role, 'Donor')
-    
