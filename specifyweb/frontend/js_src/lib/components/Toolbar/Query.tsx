@@ -16,7 +16,7 @@ import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
 import { fetchCollection } from '../DataModel/collection';
-import { getField } from '../DataModel/helpers';
+import { backendFilter, getField } from '../DataModel/helpers';
 import type { SerializedResource } from '../DataModel/helperTypes';
 import { resourceEvents } from '../DataModel/resource';
 import { getTableById, tables } from '../DataModel/tables';
@@ -99,11 +99,15 @@ export function QueryListDialog({
     false
   );
 
-  const { paginator, limit, offset } = usePaginator('queryBuilder');
+  const { paginator, limit, offset, currentPage } =
+    usePaginator('queryBuilder');
 
   const orderBy = `${sortConfig.ascending ? '' : '-'}${
     sortConfig.sortField
   }` as const;
+
+  const [search, setSearch] = React.useState('');
+  const searchFilter = search.trim();
 
   const [data, setData] = useAsyncState(
     React.useCallback(
@@ -114,8 +118,11 @@ export function QueryListDialog({
           ...(filters ?? { specifyUser: userInformation.id }),
           offset,
           orderBy,
-        }),
-      [limit, offset, orderBy]
+        },
+        searchFilter === ''
+          ? undefined
+          : backendFilter('name').caseInsensitiveContains(searchFilter)),
+      [filters, limit, offset, orderBy, searchFilter]
     ),
     false
   );
@@ -144,28 +151,11 @@ export function QueryListDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
-  const [search, setSearch] = React.useState('');
-  const filteredRecords = React.useMemo(
-    () =>
-      data?.records.filter(
-        (query) =>
-          search.trim() === '' ||
-          query.name.toLowerCase().includes(search.toLowerCase())
-      ),
-    [data?.records, search]
-  );
-
   return children({
     totalCount,
-    records: filteredRecords,
+    records: data?.records,
     children: (
       <>
-        <Input.Text
-          aria-label={commonText.search()}
-          placeholder={commonText.search()}
-          value={search}
-          onValueChange={setSearch}
-        />
         <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
             <tr>
@@ -204,7 +194,7 @@ export function QueryListDialog({
             </tr>
           </thead>
           <tbody>
-            {filteredRecords?.map((query) => (
+            {data?.records.map((query) => (
               <QueryList
                 getQuerySelectCallback={getQuerySelectCallback}
                 isReadOnly={isReadOnly}
@@ -225,6 +215,17 @@ export function QueryListDialog({
       <Dialog
         buttons={
           <>
+            <Input.Text
+              aria-label={commonText.search()}
+              className="min-w-0 max-w-sm flex-1"
+              placeholder={commonText.search()}
+              value={search}
+              onValueChange={(value): void => {
+                setSearch(value);
+                currentPage[1](0);
+              }}
+            />
+            <span className="flex-1" />
             <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
             {(hasToolPermission('queryBuilder', 'create') ||
               hasPermission('/querybuilder/query', 'execute')) && (
