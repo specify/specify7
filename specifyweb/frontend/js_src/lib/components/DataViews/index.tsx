@@ -266,13 +266,13 @@ function LoadedDataViewFromTable({
           onSaved={handleRefresh}
           onSlide={(index): void => setSelectedIndex(index)}
         />
-      )}
+      )}  
     </div>
   );
 
   return (
-    <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden p-2">
-      <header className="flex shrink-0 flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible">
+    <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 flex-col overflow-hidden">
+      <header className="flex shrink-0 flex-col items-center justify-between gap-2 overflow-x-auto whitespace-nowrap sm:flex-row sm:overflow-x-visible p-4">
         <div className="flex items-center justify-center gap-2">
           <TableIcon label name={table.name} />
           <H2 className="overflow-x-auto">
