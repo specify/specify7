@@ -7,7 +7,10 @@ import { userPreferences } from '../Preferences/userPreferences';
 export const IsQueryBasicContext = React.createContext(false);
 IsQueryBasicContext.displayName = 'IsQueryBasicContext';
 
-export function useQueryViewPref(queryId: number): GetSet<boolean> {
+export function useQueryViewPref(
+  queryId: number,
+  defaultBasicView = false
+): GetSet<boolean> {
   const [isDefaultBasicViewPref] = userPreferences.use(
     'queryBuilder',
     'behavior',
@@ -22,7 +25,7 @@ export function useQueryViewPref(queryId: number): GetSet<boolean> {
     ? true
     : viewCollectionPref.detailedView.includes(queryId)
       ? false
-      : isDefaultBasicViewPref;
+      : defaultBasicView || isDefaultBasicViewPref;
 
   return [
     isBasic,

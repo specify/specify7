@@ -45,6 +45,7 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
+  defaultBasicView = false,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
@@ -53,6 +54,7 @@ export function QueryHeader({
   readonly form: HTMLFormElement | null;
   readonly state: MainState;
   readonly isEmbedded: boolean;
+  readonly defaultBasicView?: boolean;
   readonly getQueryFieldRecords:
     | (() => RA<SerializedResource<SpQueryField>>)
     | undefined;
@@ -75,7 +77,7 @@ export function QueryHeader({
     [query]
   );
 
-  const [isBasic, setIsBasic] = useQueryViewPref(query.id);
+  const [isBasic, setIsBasic] = useQueryViewPref(query.id, defaultBasicView);
 
   return (
     <header

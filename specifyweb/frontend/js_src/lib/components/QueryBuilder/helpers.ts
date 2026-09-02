@@ -40,6 +40,10 @@ export type QueryField = {
    * query lines move
    */
   readonly id: number;
+  /** Index of the corresponding SpQueryField in the serialized query. */
+  readonly sourceIndex?: number;
+  /** Stable identity of the corresponding serialized SpQueryField. */
+  readonly sourceStringId?: string;
   readonly mappingPath: MappingPath;
   readonly sortType: SortTypes;
   readonly isDisplay: boolean;
@@ -103,6 +107,8 @@ export function parseQueryFields(
           mappingPathToString(mappingPath),
           {
             id: index,
+            sourceIndex: index,
+            sourceStringId: field.stringId,
             mappingPath,
             sortType: sortTypes[field.sortType],
             filter: {
