@@ -15,8 +15,7 @@ import {
   serializeStableDataViewQueries,
   type DataViewQueriesFile,
 } from './queries';
-import { schemaText } from '../../localization/schema';
-import { TableList } from '../SchemaConfig/Tables';
+import { CollapsibleTableList } from '../SchemaConfig/Tables';
 import { useCachedState } from '../../hooks/useCachedState';
 
 export function DataViewQueryEditor({
@@ -116,27 +115,24 @@ export function DataViewQueryEditorContent({
   return (
     <div className="flex min-h-0 flex-1 gap-4 overflow-hidden">
       {lockedTableName === undefined ? (
-        <div className="flex w-64 min-w-0 flex-col overflow-hidden">
-          <p className="font-bold">{schemaText.tables()}</p>
-          <TableList
-            badge={(table): React.ReactNode =>
-              getStoredDataViewQueryDefinition(file, table.name) ===
-              undefined ? undefined : (
-                <span
-                  aria-hidden
-                  className="h-2 w-2 shrink-0 rounded-full bg-brand-400"
-                />
-              )
-            }
-            cacheKey="appResources"
-            currentTableName={tableName}
-            getAction={(table): (() => void) =>
-              (): void => {
-                setTableName(table.name);
-                setRememberedTable(table.name);
-              }}
-          />
-        </div>
+        <CollapsibleTableList
+          badge={(table): React.ReactNode =>
+            getStoredDataViewQueryDefinition(file, table.name) ===
+            undefined ? undefined : (
+              <span
+                aria-hidden
+                className="h-2 w-2 shrink-0 rounded-full bg-brand-400"
+              />
+            )
+          }
+          cacheKey="appResources"
+          currentTableName={tableName}
+          getAction={(table): (() => void) =>
+            (): void => {
+              setTableName(table.name);
+              setRememberedTable(table.name);
+            }}
+        />
       ) : undefined}
       <div className="flex min-h-0 min-w-0 flex-1 flex-col overflow-auto">
         <QueryBuilder
