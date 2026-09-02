@@ -11,6 +11,7 @@ import { queryText } from '../../localization/query';
 import { f } from '../../utils/functools';
 import type { RA } from '../../utils/types';
 import { Button } from '../Atoms/Button';
+import { Input } from '../Atoms/Form';
 import { icons } from '../Atoms/Icons';
 import { Link } from '../Atoms/Link';
 import { ReadOnlyContext } from '../Core/Contexts';
@@ -143,11 +144,28 @@ export function QueryListDialog({
 
   const isReadOnly = React.useContext(ReadOnlyContext);
 
+  const [search, setSearch] = React.useState('');
+  const filteredRecords = React.useMemo(
+    () =>
+      data?.records.filter(
+        (query) =>
+          search.trim() === '' ||
+          query.name.toLowerCase().includes(search.toLowerCase())
+      ),
+    [data?.records, search]
+  );
+
   return children({
     totalCount,
-    records: data?.records,
+    records: filteredRecords,
     children: (
       <>
+        <Input.Text
+          aria-label={commonText.search()}
+          placeholder={commonText.search()}
+          value={search}
+          onValueChange={setSearch}
+        />
         <table className="grid-table grid-cols-[repeat(3,auto)_min-content] gap-2">
           <thead>
             <tr>
@@ -186,7 +204,7 @@ export function QueryListDialog({
             </tr>
           </thead>
           <tbody>
-            {data?.records.map((query) => (
+            {filteredRecords?.map((query) => (
               <QueryList
                 getQuerySelectCallback={getQuerySelectCallback}
                 isReadOnly={isReadOnly}
