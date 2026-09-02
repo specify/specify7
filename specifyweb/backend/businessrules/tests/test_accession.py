@@ -48,7 +48,13 @@ class AccessionTests(ApiTests):
 
         accession.collectionobjects.clear()
 
+        accession_id = accession.id
+
         accession.delete()
+
+        self.assertFalse(
+            models.Accession.objects.filter(id=accession_id).exists()
+        )
 
         self.assertEqual(
             models.Collectionobject.objects.filter(id__in=[co.id for co in self.collectionobjects]).count(),
