@@ -4,6 +4,177 @@ from specifyweb.specify.tests.test_api import ApiTests
 
 class TestDeletePreviousVersionObjects(ApiTests):
 
+    def setUp(self):
+        super().setUp()
+
+        self.attachments = [
+            models.Attachment.objects.create(
+                origfilename='test.txt',
+                tableid=1,
+            )
+        ]
+        taxon_root = models.Taxontreedefitem.objects.create(
+            name='Root taxon',
+            rankid=0,
+            treedef=self.taxontreedef,
+        )
+        self.taxontreedefitems = [
+            models.Taxontreedefitem.objects.create(
+                name='Test taxon',
+                rankid=1,
+                parent=taxon_root,
+                treedef=self.taxontreedef,
+            )
+        ]
+
+        geologic_root = models.Geologictimeperiodtreedefitem.objects.create(
+            name='Root geologic time period',
+            rankid=0,
+            treedef=self.geologictimeperiodtreedef,
+        )
+        self.geologictimeperiodtreedefitems = [
+            models.Geologictimeperiodtreedefitem.objects.create(
+                name='Test geologic time period',
+                rankid=1,
+                parent=geologic_root,
+                treedef=self.geologictimeperiodtreedef,
+            )
+        ]
+
+        lithostrat_treedef = models.Lithostrattreedef.objects.create(
+            name='Test lithostrat',
+        )
+        lithostrat_root = models.Lithostrattreedefitem.objects.create(
+            name='Root lithostrat item',
+            rankid=0,
+            treedef=lithostrat_treedef,
+        )
+        self.lithostrattreedefitems = [
+            models.Lithostrattreedefitem.objects.create(
+                name='Test lithostrat item',
+                rankid=1,
+                parent=lithostrat_root,
+                treedef=lithostrat_treedef,
+            )
+        ]
+
+        tectonic_treedef = models.Tectonicunittreedef.objects.create(
+            name='Test tectonic unit',
+        )
+        tectonic_root = models.Tectonicunittreedefitem.objects.create(
+            name='Root tectonic unit item',
+            rankid=0,
+            treedef=tectonic_treedef,
+        )
+        self.tectonicunittreedefitems = [
+            models.Tectonicunittreedefitem.objects.create(
+                name='Test tectonic unit item',
+                rankid=1,
+                parent=tectonic_root,
+                treedef=tectonic_treedef,
+            )
+        ]
+
+        self.agents = [
+            models.Agent.objects.create(
+                agenttype=0,
+                division=self.division,
+            )
+        ]
+        self.collectingevents = [self.collectingevent]
+
+        geography_root_definitionitem = models.Geographytreedefitem.objects.create(
+            name='Root geography',
+            rankid=0,
+            treedef=self.geographytreedef,
+        )
+        geography_root = models.Geography.objects.create(
+            name='Root geography',
+            rankid=0,
+            definition=self.geographytreedef,
+            definitionitem=geography_root_definitionitem,
+        )
+        definitionitem = models.Geographytreedefitem.objects.create(
+            name='Test geography level',
+            rankid=1,
+            parent=geography_root_definitionitem,
+            treedef=self.geographytreedef,
+        )
+        self.geographies = [
+            models.Geography.objects.create(
+                name='Test geography',
+                rankid=1,
+                definition=self.geographytreedef,
+                definitionitem=definitionitem,
+                parent=geography_root,
+            )
+        ]
+        self.localities = [
+            models.Locality.objects.create(
+                localityname='Test locality',
+                srclatlongunit=0,
+                discipline=self.discipline,
+            )
+        ]
+
+        cog_type_picklist = models.Picklist.objects.create(
+            name='SystemCOGTypes',
+            issystem=True,
+            type=0,
+            readonly=True,
+            collection=self.collection,
+        )
+        models.Picklistitem.objects.create(
+            title='Discrete',
+            value='Discrete',
+            picklist=cog_type_picklist,
+        )
+        cogtype = models.Collectionobjectgrouptype.objects.create(
+            name='Test group type',
+            type='Discrete',
+            collection=self.collection,
+        )
+        self.collectionobjectgroups = [
+            models.Collectionobjectgroup.objects.create(
+                collection=self.collection,
+                cogtype=cogtype,
+            )
+        ]
+        self.accessions = [
+            models.Accession.objects.create(
+                accessionnumber='Test accession',
+                division=self.division,
+            )
+        ]
+        self.loans = [
+            models.Loan.objects.create(
+                loannumber='Test loan',
+                discipline=self.discipline,
+            )
+        ]
+        self.gifts = [
+            models.Gift.objects.create(
+                giftnumber='Test gift',
+                discipline=self.discipline,
+            )
+        ]
+        self.borrows = [
+            models.Borrow.objects.create(
+                collectionmemberid=1,
+                invoicenumber='Test invoice',
+            )
+        ]
+        self.disposals = [
+            models.Disposal.objects.create(
+                disposalnumber='Test disposal',
+            )
+        ]
+        self.deaccessions = [
+            models.Deaccession.objects.create(
+                deaccessionnumber='Test deaccession',
+            )
+        ]
+
     def test_delete_collectionobject_created_in_previous_version(self):
         collectionobject = self.collectionobjects[0]
         object_id = collectionobject.id
