@@ -1,4 +1,3 @@
-from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
 
