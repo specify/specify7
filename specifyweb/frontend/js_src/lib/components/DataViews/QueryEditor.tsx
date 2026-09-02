@@ -68,11 +68,11 @@ export function DataViewQueryEditorContent({
     () =>
       makeDataViewQuery(
         tableName,
-        getStoredDataViewQueryDefinition(fileRef.current, tableName) ?? {
+        getStoredDataViewQueryDefinition(file, tableName) ?? {
           fields: [],
         }
       ),
-    [tableName]
+    [file, tableName]
   );
 
   const handleQueryChange = React.useCallback(
