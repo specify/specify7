@@ -68,11 +68,14 @@ export function DataViewQueryEditorContent({
     () =>
       makeDataViewQuery(
         tableName,
-        getStoredDataViewQueryDefinition(file, tableName) ?? {
+        getStoredDataViewQueryDefinition(fileRef.current, tableName) ?? {
           fields: [],
         }
       ),
-    [file, tableName]
+    // The Query Builder owns its live field state. Replacing its query
+    // resource for every field change resets that state and the field list's
+    // scroll position. Rebuild only when changing tables.
+    [tableName]
   );
 
   const handleQueryChange = React.useCallback(
@@ -88,10 +91,11 @@ export function DataViewQueryEditorContent({
           undefined
       )
         return;
+      const currentFile = fileRef.current;
       const nextFile: DataViewQueriesFile = {
-        ...file,
+        ...currentFile,
         queries: {
-          ...file.queries,
+          ...currentFile.queries,
           [tableName]: {
             fields: changes.fields,
             selectDistinct: changes.isDistinct ?? false,
@@ -109,7 +113,7 @@ export function DataViewQueryEditorContent({
       setFile(nextFile);
       handleChange(serializeDataViewQueries(nextFile));
     },
-    [file, handleChange, tableName]
+    [handleChange, tableName]
   );
 
   return (
