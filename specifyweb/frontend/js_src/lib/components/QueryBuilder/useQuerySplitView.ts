@@ -3,6 +3,7 @@ import React from 'react';
 import type { RA } from '../../utils/types';
 import { queryIdField, type QueryResultRow } from './Results';
 import { useSplitViewOrientation } from './SplitView';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function useQuerySplitView(
   resultsRef: React.MutableRefObject<RA<QueryResultRow | undefined> | undefined>
@@ -22,8 +23,20 @@ export function useQuerySplitView(
     new Set()
   );
   const [selectedIndex, setSelectedIndex] = React.useState(0);
-  const [isSplit, setIsSplit] = React.useState(false);
-  const { isHorizontal, toggleOrientation } = useSplitViewOrientation();
+  const [splitViewByDefault] = userPreferences.use(
+    'queryBuilder',
+    'general',
+    'splitViewByDefault'
+  );
+  const [splitViewOrientation] = userPreferences.use(
+    'queryBuilder',
+    'general',
+    'splitViewOrientation'
+  );
+  const [isSplit, setIsSplit] = React.useState(splitViewByDefault);
+  const { isHorizontal, toggleOrientation } = useSplitViewOrientation(
+    splitViewOrientation === 'horizontal'
+  );
 
   const toggleSplit = (): void => {
     const nextIsSplit = !isSplit;

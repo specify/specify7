@@ -26,8 +26,7 @@ import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
-import { treeText } from '../../localization/tree';
-import { SplitViewOrientationButton } from './SplitView';
+import { SplitViewOrientationButton, SplitViewToggleButton } from './SplitView';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -132,12 +131,7 @@ export function QueryHeader({
           />
         </ErrorBoundary>
       ) : undefined}
-      <Button.Icon
-        aria-pressed={isSplit}
-        icon="template"
-        title={treeText.splitView()}
-        onClick={onToggleSplit}
-      />
+      <SplitViewToggleButton isSplit={isSplit} onToggle={onToggleSplit} />
       <SplitViewOrientationButton
         disabled={!isSplit}
         isHorizontal={isHorizontal}

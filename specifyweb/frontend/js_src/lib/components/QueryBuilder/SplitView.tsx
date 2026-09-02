@@ -4,11 +4,11 @@ import Splitter from 'm-react-splitters';
 import { Button } from '../Atoms/Button';
 import { treeText } from '../../localization/tree';
 
-export function useSplitViewOrientation(): {
+export function useSplitViewOrientation(defaultHorizontal = true): {
   readonly isHorizontal: boolean;
   readonly toggleOrientation: () => void;
 } {
-  const [isHorizontal, setIsHorizontal] = React.useState(true);
+  const [isHorizontal, setIsHorizontal] = React.useState(defaultHorizontal);
   return {
     isHorizontal,
     toggleOrientation: (): void => setIsHorizontal((horizontal) => !horizontal),
@@ -30,6 +30,23 @@ export function SplitViewOrientationButton({
       disabled={disabled}
       icon={isHorizontal ? 'switchVertical' : 'switchHorizontal'}
       title={isHorizontal ? treeText.vertical() : treeText.horizontal()}
+      onClick={handleToggle}
+    />
+  );
+}
+
+export function SplitViewToggleButton({
+  isSplit,
+  onToggle: handleToggle,
+}: {
+  readonly isSplit: boolean;
+  readonly onToggle: () => void;
+}): JSX.Element {
+  return (
+    <Button.Icon
+      aria-pressed={isSplit}
+      icon="template"
+      title={treeText.splitView()}
       onClick={handleToggle}
     />
   );

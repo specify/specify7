@@ -16,6 +16,7 @@ import { queryIdField } from '../QueryBuilder/Results';
 import {
   SplitView,
   SplitViewOrientationButton,
+  SplitViewToggleButton,
   useSplitViewOrientation,
 } from '../QueryBuilder/SplitView';
 import { NotFoundView } from '../Router/NotFoundView';
@@ -31,6 +32,7 @@ import {
 import type { DataViewQueriesFile } from './queries';
 import { DataViewQueryEditorContent } from './QueryEditor';
 import { TableIcon } from '../Molecules/TableIcon';
+import { userPreferences } from '../Preferences/userPreferences';
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -92,7 +94,20 @@ function LoadedDataViewFromTable({
   const [selectedIndex, setSelectedIndex] = React.useState(0);
   const resultsScrollRef = React.useRef<HTMLDivElement | null>(null);
   const restoreScrollTopRef = React.useRef<number | undefined>(undefined);
-  const { isHorizontal, toggleOrientation } = useSplitViewOrientation();
+  const [splitViewByDefault] = userPreferences.use(
+    'dataViews',
+    'general',
+    'splitViewByDefault'
+  );
+  const [splitViewOrientation] = userPreferences.use(
+    'dataViews',
+    'general',
+    'splitViewOrientation'
+  );
+  const [isSplit, setIsSplit] = React.useState(splitViewByDefault);
+  const { isHorizontal, toggleOrientation } = useSplitViewOrientation(
+    splitViewOrientation === 'horizontal'
+  );
   const [refreshToken, setRefreshToken] = React.useState(0);
   const [queryRunCount, setQueryRunCount] = React.useState(1);
   const [queryData, setQueryData] = React.useState<string | undefined>();
@@ -266,7 +281,7 @@ function LoadedDataViewFromTable({
           onSaved={handleRefresh}
           onSlide={(index): void => setSelectedIndex(index)}
         />
-      )}  
+      )}
     </div>
   );
 
@@ -280,20 +295,29 @@ function LoadedDataViewFromTable({
           </H2>
           <DataEntry.Edit onClick={handleOpenQueryEditor} />
         </div>
+        <SplitViewToggleButton
+          isSplit={isSplit}
+          onToggle={(): void => setIsSplit((split) => !split)}
+        />
         <SplitViewOrientationButton
+          disabled={!isSplit}
           isHorizontal={isHorizontal}
           onToggle={toggleOrientation}
         />
         <span className="-ml-2 flex-1" />
       </header>
       <div className="flex h-full max-h-full min-h-0 min-w-0 flex-1 overflow-hidden">
-        <SplitView
-          isHorizontal={isHorizontal}
-          primaryPane={results}
-          primaryPaneKey="query-results"
-          secondaryPane={form}
-          secondaryPaneKey="record-preview"
-        />
+        {isSplit ? (
+          <SplitView
+            isHorizontal={isHorizontal}
+            primaryPane={results}
+            primaryPaneKey="query-results"
+            secondaryPane={form}
+            secondaryPaneKey="record-preview"
+          />
+        ) : (
+          results
+        )}
       </div>
     </div>
   );
