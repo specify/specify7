@@ -7,6 +7,8 @@ import {
   getMappingTerm,
   getSerializedMappingTerm,
   ensureIdentifierTerm,
+  defaultRowTypes,
+  getExtensionDefinitionForRowType,
   parseDefinition,
   serializeDefinition,
 } from '../DwcaDefinition';
@@ -206,6 +208,35 @@ describe('DwCA query field term mapping', () => {
     expect(updated.terms[0]).toBe(occurrenceId);
   });
 
+  test('provides all built-in row types as defaults', () => {
+    expect(defaultRowTypes).toContain('http://rs.tdwg.org/ac/terms/Multimedia');
+    expect(defaultRowTypes).toContain(
+      'http://rs.tdwg.org/dwc/terms/MeasurementOrFact'
+    );
+  });
+
+  test('resolves extension definitions from their row types', () => {
+    expect(
+      getExtensionDefinitionForRowType('http://rs.tdwg.org/ac/terms/Multimedia')
+    ).toMatchObject({
+      name: 'Multimedia',
+      title: 'Audiovisual Media Description',
+    });
+    expect(getExtensionDefinitionForRowType('https://example.org/row-type')).toBe(
+      undefined
+    );
+  });
+
+  test('does not automatically map core patterns unavailable to an extension', () => {
+    const xml = `<archive><extension rowType="http://rs.tdwg.org/ac/terms/Multimedia"><queries><query name="Multimedia.csv" contextTableId="1">
+      <field stringId="1.collectionobject.catalogNumber" />
+    </query></queries></extension></archive>`;
+    const [mapping] = parseDefinition(xml);
+    if (mapping === undefined) throw new Error('Extension mapping was not parsed');
+
+    expect(mapping.terms).toEqual([occurrenceId, undefined]);
+  });
+
   test('automatically maps the expanded core default field patterns', () => {
     const fields = [
       ['1.collectionobject.guid', occurrenceId],
@@ -291,7 +322,7 @@ describe('DwCA query field term mapping', () => {
         '1,10,2,3.geography.geography',
         'http://rs.tdwg.org/dwc/terms/higherGeography',
       ],
-      ['1,10,2.locality.elevationMethod', 'http://rs.tdwg.org/dwc/iri/habitat'],
+      ['1,10,2.locality.elevationMethod', undefined],
     ] as const;
     const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">${fields
       .map(([stringId]) => `<field stringId="${stringId}" />`)

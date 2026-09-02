@@ -116,6 +116,20 @@ const defaultQueryFiles: Readonly<Record<string, keyof typeof defaultQueries>> =
     MeasurementOrFacts: 'MeasurementOrFacts',
   };
 
+export const defaultRowTypes = Array.from(
+  new Set(gbifExtensions.map(({ rowType }) => rowType))
+);
+
+export const getExtensionDefinitionForRowType = (
+  rowType: string
+): ExtensionDefinition | undefined =>
+  gbifExtensions.find((extension) => extension.rowType === rowType);
+
+const getRowTypeOptionLabel = (rowType: string): string =>
+  rowType === darwinCore.rowType
+    ? darwinCore.title
+    : (getExtensionDefinitionForRowType(rowType)?.title ?? rowType);
+
 function TermInfoDialog({
   term,
   extension,
@@ -234,6 +248,23 @@ function fieldShapesEqual(
   }
 }
 
+function availableTermNames(
+  extension: boolean,
+  extensionDefinition: ExtensionDefinition | undefined
+): ReadonlySet<string> {
+  return new Set(
+    (extension
+      ? [
+          darwinCore.fields.find(({ name }) => name === occurrenceIdTerm),
+          ...(extensionDefinition?.fields ?? []),
+        ]
+      : darwinCore.fields
+    )
+      .map((term) => term?.name)
+      .filter((name): name is string => name !== undefined)
+  );
+}
+
 function updateMappingFields(
   mapping: Mapping,
   newFields: RA<SerializedResource<SpQueryField>>
@@ -252,9 +283,13 @@ function updateMappingFields(
       mapping.terms[index],
     ])
   );
+  const availableTerms = availableTermNames(
+    mapping.extension,
+    mapping.extensionDefinition
+  );
   const fields = [...newFields];
   if (!mapping.extension) {
-    const automaticTerms = autoMapCoreFields(fields);
+    const automaticTerms = autoMapCoreFields(fields, availableTerms);
     const occurrenceIndex = fields.findIndex(
       (field, index) =>
         (oldStringIds.get(field.stringId.toLowerCase()) ??
@@ -266,13 +301,7 @@ function updateMappingFields(
       fields.unshift(occurrence);
     }
   }
-  const autoMapped = autoMapCoreFields(fields);
-  const availableTerms = new Set(
-    (mapping.extension
-      ? [...darwinCore.fields, ...(mapping.extensionDefinition?.fields ?? [])]
-      : darwinCore.fields
-    ).map(({ name }) => name)
-  );
+  const autoMapped = autoMapCoreFields(fields, availableTerms);
   const usedTerms = new Set<string>();
   const terms = fields.map((field, index) => {
     const key = fieldTermKey(field);
@@ -303,13 +332,15 @@ function updateMappingFields(
 }
 
 function autoMapCoreFields(
-  fields: RA<SerializedResource<SpQueryField>>
+  fields: RA<SerializedResource<SpQueryField>>,
+  availableTerms: ReadonlySet<string>
 ): RA<string | undefined> {
   const usedTerms = new Set<string>();
   const terms = fields.map((field) => {
     const stringId = field.stringId.toLowerCase();
     const match = Object.entries(coreTermPatterns).find(
       ([term, patterns]) =>
+        availableTerms.has(term) &&
         !usedTerms.has(term) &&
         patterns.some((pattern) => stringId.includes(pattern))
     )?.[0];
@@ -617,7 +648,10 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         (field) => field.getAttribute('term') ?? undefined
       );
       const serializedFields = fields.map(serializeResource);
-      const automaticTerms = autoMapCoreFields(serializedFields);
+      const automaticTerms = autoMapCoreFields(
+        serializedFields,
+        availableTermNames(extension, extensionDefinition)
+      );
       return ensureIdentifierTerm({
         extension,
         extensionDefinition,
@@ -895,15 +929,34 @@ function QueryMapping({
       (query) => query.contextTableId === tables.CollectionObject.tableId
     ) ?? [];
   const rowTypeDefaults = mapping.extension
-    ? mapping.extensionDefinition === undefined
-      ? []
-      : [mapping.extensionDefinition.rowType]
+    ? defaultRowTypes
     : [darwinCore.rowType];
   const isCustomRowType =
     mapping.rowType !== '' && !rowTypeDefaults.includes(mapping.rowType);
   const [isEditingRowType, setIsEditingRowType] = React.useState(false);
   const isIdentifierField = (field: QueryField): boolean =>
     (field.sourceIndex ?? field.id) === 0;
+  const handleRowTypeChange = (rowType: string): void => {
+    const extensionDefinition = mapping.extension
+      ? getExtensionDefinitionForRowType(rowType)
+      : mapping.extensionDefinition;
+    const previousDefaultFileName =
+      mapping.extensionDefinition === undefined
+        ? ''
+        : `${mapping.extensionDefinition.name}.csv`;
+    const fileName =
+      mapping.extension &&
+      extensionDefinition !== undefined &&
+      (mapping.fileName === '' || mapping.fileName === previousDefaultFileName)
+        ? `${extensionDefinition.name}.csv`
+        : mapping.fileName;
+    handleChange({
+      ...mapping,
+      rowType,
+      fileName,
+      extensionDefinition,
+    });
+  };
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap gap-3">
@@ -929,7 +982,7 @@ function QueryMapping({
                 if (mapping.rowType === '') setIsEditingRowType(false);
               }}
               onValueChange={(rowType): void =>
-                handleChange({ ...mapping, rowType })
+                handleRowTypeChange(rowType)
               }
             />
           ) : (
@@ -943,7 +996,7 @@ function QueryMapping({
                   handleChange({ ...mapping, rowType: '' });
                 } else {
                   setIsEditingRowType(false);
-                  handleChange({ ...mapping, rowType });
+                  handleRowTypeChange(rowType);
                 }
               }}
             >
@@ -952,7 +1005,7 @@ function QueryMapping({
               </option>
               {rowTypeDefaults.map((rowType) => (
                 <option key={rowType} value={rowType}>
-                  {rowType}
+                  {getRowTypeOptionLabel(rowType)}
                 </option>
               ))}
               <option value={customRowTypeOption}>
