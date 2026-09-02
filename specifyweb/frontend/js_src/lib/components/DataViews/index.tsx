@@ -160,7 +160,12 @@ function LoadedDataViewFromTable({
   }, []);
   const handleCloseQueryEditor = (): void => setQueryData(undefined);
   const handleOpenQueryEditor = (): void =>
-    setQueryData(serializeDataViewQueries(queries));
+    setQueryData(
+      serializeDataViewQueries({
+        version: 1,
+        queries: { [tableName]: getDataViewQueryDefinition(queries, tableName) },
+      })
+    );
   if (table === undefined) return null;
 
   const definition = React.useMemo(
@@ -193,7 +198,7 @@ function LoadedDataViewFromTable({
               onClick={(): void => {
                 if (isSavingQuery) return;
                 setIsSavingQuery(true);
-                saveUserDataViewQueries(queryData)
+                saveUserDataViewQueries(queryData, tableName)
                   .then(reloadQueries)
                   .then(handleCloseQueryEditor)
                   .catch(raise)

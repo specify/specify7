@@ -23,6 +23,7 @@ import { QueryTables } from '../Toolbar/QueryTablesWrapper';
 import { defaultDataViewTablesConfig, useDataViewTables } from './config';
 import { DataViewQueryEditorContent } from './QueryEditor';
 import {
+  getDataViewQueryDefinition,
   saveUserDataViewQueries,
   serializeDataViewQueries,
   useDataViewQueries,
@@ -41,7 +42,12 @@ export function DataViewTables(): JSX.Element {
   const counts = useTableRecordCounts(tables);
   const handleOpenQueryEditor = (tableName: keyof Tables): void => {
     if (queries === undefined) return;
-    setQueryData(serializeDataViewQueries(queries));
+    setQueryData(
+      serializeDataViewQueries({
+        version: 1,
+        queries: { [tableName]: getDataViewQueryDefinition(queries, tableName) },
+      })
+    );
     setQueryTable(tableName);
   };
   const handleCloseQueryEditor = (): void => {
@@ -61,7 +67,7 @@ export function DataViewTables(): JSX.Element {
               onClick={(): void => {
                 if (isSavingQuery) return;
                 setIsSavingQuery(true);
-                saveUserDataViewQueries(queryData)
+                saveUserDataViewQueries(queryData, queryTable)
                   .then(reloadQueries)
                   .then(handleCloseQueryEditor)
                   .catch(raise)

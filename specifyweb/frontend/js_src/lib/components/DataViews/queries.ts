@@ -188,7 +188,10 @@ export function useDataViewQueries(): [
   return [data, (): void => setReload((value) => value + 1)];
 }
 
-export async function saveUserDataViewQueries(data: string): Promise<void> {
+export async function saveUserDataViewQueries(
+  data: string,
+  tableName: keyof Tables
+): Promise<void> {
   const resources = await ajax<
     RA<{
       readonly id: number;
@@ -200,11 +203,28 @@ export async function saveUserDataViewQueries(data: string): Promise<void> {
     ({ name, mimetype }) =>
       name === dataViewQueriesResourceName && mimetype === 'application/json'
   );
+  const existingData =
+    resource === undefined
+      ? undefined
+      : await ajax<{ readonly data?: string }>(
+          `/context/user_resource/${resource.id}/`,
+          { headers: { Accept: 'application/json' } }
+        ).then(({ data: resourceData }) => resourceData.data);
+  const incoming = parseDataViewQueries(data);
+  const current = parseDataViewQueries(existingData);
+  const editedQuery = incoming.queries[tableName];
+  const mergedData = serializeDataViewQueries({
+    version: 1,
+    queries: {
+      ...current.queries,
+      ...(editedQuery === undefined ? {} : { [tableName]: editedQuery }),
+    },
+  });
   const payload = keysToLowerCase({
     name: dataViewQueriesResourceName,
     mimetype: 'application/json',
     metadata: '',
-    data,
+    data: mergedData,
   });
   await ping(
     resource === undefined
