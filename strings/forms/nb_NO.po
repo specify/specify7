@@ -239,9 +239,8 @@ msgstr "Dette skjemaet er ikke lagret."
 #. 🟥Meaning a conflict occurred when saving. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Forms > Save
 #: components/AttachmentsBulkImport/utils.ts:618
 #: components/Forms/Save.tsx:305
-#, fuzzy
 msgid "saveConflict"
-msgstr "Lagre konflikt"
+msgstr "Lagre-konflikt"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:308
