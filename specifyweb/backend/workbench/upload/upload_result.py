@@ -340,6 +340,8 @@ class UploadResult(NamedTuple):
             )
         )
 
+    # BUG:? Shouldn't NoChange also be considered a "success"?
+    # It's not a failure at least
     def contains_success(
         self, success=[Uploaded, Matched, MatchedAndChanged, Updated, Deleted]
     ) -> bool:
