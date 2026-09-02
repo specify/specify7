@@ -82,9 +82,10 @@ def cog_inheritance_query_processor(tableid, field_specs, collection, user) -> C
 
 
 def DefaultQueryProcessors(tableid, field_specs, collection, user) -> list[Callable[[list], list]]:
+    visible_field_specs = filter(lambda qfield: qfield.display, field_specs)
     kwargs = {
         "tableid": tableid,
-        "field_specs": field_specs,
+        "field_specs": visible_field_specs,
         "collection": collection,
         "user": user
     }
