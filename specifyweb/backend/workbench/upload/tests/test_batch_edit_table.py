@@ -1,4 +1,5 @@
 from typing import Literal
+from functools import partial
 from specifyweb.specify.utils.func import Func
 from specifyweb.specify.tests.test_api import get_table
 from specifyweb.backend.stored_queries.batch_edit import run_batch_edit_query  # type: ignore
@@ -26,6 +27,7 @@ from specifyweb.backend.workbench.upload.upload_result import (
     Matched,
     UploadResult,
 )
+from specifyweb.backend.workbench.upload.treerecord import RANK_KEY_DELIMITER
 from specifyweb.backend.workbench.upload.upload_table import UploadTable
 from specifyweb.backend.workbench.views import regularize_rows
 from ..upload_plan_schema import parse_column_options, parse_plan, schema
@@ -401,6 +403,262 @@ class OneToOneUpdateTests(UploadTestsBase):
             .exists()
         )
 
+
+class TreeUpdateTests(UploadTestsBase):
+    def setUp(self):
+        super().setUp()
+        self._make_taxon_records()
+
+
+    def _make_taxon_records(self):
+        Taxon = get_table("Taxon")
+
+        treedef_items = self.taxontreedef.treedefitems.order_by("rankid").all()
+        get_rank = partial(TreeUpdateTests.get_treedefitem_at_rankid, treedef_items)
+        root = Taxon.objects.create(
+            name="Life",
+            fullname="Life",
+            parent=None,
+            version=1,
+            definition=self.taxontreedef,
+            definitionitem=get_rank(0)
+        )
+        kingdom = Taxon.objects.create(
+            name="Animalia",
+            fullname="Animalia",
+            parent=root,
+            version=1,
+            definition=self.taxontreedef,
+            definitionitem=get_rank(10)
+        )
+        phylum = Taxon.objects.create(
+            name="Chordata",
+            fullname="Chordata",
+            parent=kingdom,
+            version=1,
+            definition=self.taxontreedef,
+            definitionitem=get_rank(30)
+        )
+        clazz = Taxon.objects.create(
+            name="Myxini",
+            fullname="Myxini",
+            parent=phylum,
+            version=1,
+            definition=self.taxontreedef,
+            definitionitem=get_rank(60)
+        )
+        order = Taxon.objects.create(
+            name="Myxiniformes",
+            fullname="Myxiniformes",
+            parent=clazz,
+            version=1,
+            definition=self.taxontreedef,
+            definitionitem=get_rank(100)
+        )
+        family = Taxon.objects.create(
+            name="Myxinidae",
+            fullname="Myxinidae",
+            parent=order,
+            version=1,
+            definition=self.taxontreedef,
+            definitionitem=get_rank(140)
+        )
+        self.family_node = family
+        self._genus_rank = get_rank(180)
+        self._species_rank = get_rank(220)
+
+    def _create_genus(self, genus_name: str):
+        Taxon = get_table("Taxon")
+        genus, created = Taxon.objects.get_or_create(
+            name=genus_name,
+            fullname=genus_name,
+            parent=self.family_node,
+            definition=self.taxontreedef,
+            definitionitem=self._genus_rank,
+            defaults={
+                "version": 1
+            }
+        )
+        return genus
+
+    def _create_genus_and_species(self, genus_name: str, species_name: str):
+        Taxon = get_table("Taxon")
+        genus = self._create_genus(genus_name)
+        species, created = Taxon.objects.get_or_create(
+            name=species_name,
+            fullname=f"{genus_name} {species_name}",
+            parent=genus,
+            definition=self.taxontreedef,
+            definitionitem=self._species_rank,
+            defaults={
+                "version": 1
+            }
+        )
+        return genus, species
+
+    @staticmethod
+    def get_treedefitem_at_rankid(treedefitems: list, rankid: int):
+        for treedefitem in treedefitems:
+            if treedefitem.rankid == rankid:
+                return treedefitem
+
+        raise ValueError(f"Unable to find treedefitem with rank {rankid} in {treedefitems}")
+
+    def _upload_collection_objects(self, datas: list[dict]):
+        Collectionobject = get_table("Collectionobject")
+        result = []
+        for data in datas:
+            co = Collectionobject.objects.create(
+                catalognumber=data["catalogNumber"],
+                version=1,
+                collection=self.collection,
+            )
+            uploaded_row = {"collectionobject": co}
+            determinations_and_taxa = self._upload_determinations_and_taxa(co.pk, data)
+            uploaded_row.update(determinations_and_taxa)
+            result.append(uploaded_row)
+        return result
+
+
+    def _upload_determinations_and_taxa(self, co_id: int, data: dict):
+        Determination = get_table("Determination")
+
+        has_genus = "genus" in data
+        has_species = "species" in data
+        genus, species = None, None
+
+        if has_genus and has_species:
+            genus_name, species_name = data["genus"], data["species"]
+            genus, species = self._create_genus_and_species(genus_name, species_name)
+        elif has_genus and not has_species:
+            genus = self._create_genus(data["genus"])
+        elif not has_genus and has_species:
+            raise ValueError("Unssuported test case: Species applied without Genus in test data")
+
+        resolved_node = species if species is not None else genus if genus is not None else self.family_node
+
+        determination = Determination.objects.create(
+            collectionobject_id=co_id,
+            iscurrent=True,
+            version=1,
+            taxon=resolved_node,
+            preferredtaxon=resolved_node,
+        )
+
+        return {"determination": determination, "taxon": resolved_node, "genus": genus, "species": species}
+
+    def _records_to_batchedit_pack(self, uploaded: list[dict]):
+        return [self._record_to_batchedit_pack(record) for record in uploaded]
+
+    def _record_to_batchedit_pack(self, record: dict):
+        pack = {
+            "self": {
+                "id": record["collectionobject"].pk,
+                "ordernumber": None,
+                "version": record["collectionobject"].version
+            },
+            "to_many": {
+                "determinations": [
+                    {
+                        "self": {
+                            "id": record["determination"].pk,
+                            "ordernumber": None,
+                            "version": record["determination"].version
+                        },
+                        "to_one": {
+                            "taxon": self._record_to_taxon_pack(record)
+                        }
+                    }
+                ]
+            }
+        }
+        return pack
+
+    def _record_to_taxon_pack(self, record: dict):
+        actual_record = {
+            "self": {
+                "id": record["taxon"].pk,
+                "ordernumber": None,
+                "version": record["taxon"].version
+            }
+        }
+        if record.get("genus", None) is not None:
+            taxon_to_one = actual_record.setdefault("to_one", {})
+            taxon_to_one[self._rank_to_formatted("Genus", include_id=True)] = {
+                "self": {
+                    "id": record["genus"].pk,
+                    "ordernumber": None,
+                    "version": record["genus"].version
+                }
+            }
+
+        if record.get("species", None) is not None:
+            taxon_to_one = actual_record.setdefault("to_one", {})
+            taxon_to_one[self._rank_to_formatted("Species", include_id=True)] = {
+                "self": {
+                    "id": record["species"].pk,
+                    "ordernumber": None,
+                    "version": record["species"].version
+                }
+            }
+        return actual_record
+
+    def _rank_to_formatted(self, rank_name: str, include_id: bool = False):
+        tree_id = self.taxontreedef.pk
+        tree_name = self.taxontreedef.name
+        final = [tree_name, rank_name]
+        if include_id == True:
+            final.append(str(tree_id))
+        return RANK_KEY_DELIMITER.join(final)
+
+    def _uploaded_to_data_set(self, data_to_upload: list[dict], columns: list[str]):
+        data = []
+        for row in data_to_upload:
+            final_row = {}
+            for col in columns:
+                value = row.get(col, "")
+                final_row[col] = value
+            data.append(final_row)
+        return data
+
+    # See https://github.com/specify/specify7/issues/8469
+    def test_batch_edit_tree_not_unlinked(self):
+        tree_id = self.taxontreedef.pk
+        upload_plan_json = {"baseTableName":"Collectionobject","uploadable":{"uploadTable":{"wbcols":{"catalognumber":"catalogNumber"},"static":{},"toOne":{},"toMany":{"determinations":[{"wbcols":{},"static":{},"toOne":{"taxon":{"treeRecord":{"ranks":{self._rank_to_formatted("Genus"):{"treeNodeCols":{"name":"genus"},"treeId":tree_id},self._rank_to_formatted("Species"):{"treeNodeCols":{"name":"species"},"treeId":tree_id},self._rank_to_formatted("Subgenus"):{"treeNodeCols":{"name":"subgenus"},"treeId":tree_id},self._rank_to_formatted("Subspecies"):{"treeNodeCols":{"name":"subspecies"},"treeId":tree_id}}}}},"toMany":{}}]}}}}
+        upload_plan = parse_plan(upload_plan_json)
+        data_to_upload = [
+            {"catalogNumber": "1".zfill(9)},
+            {"catalogNumber": "2".zfill(9), "genus": "Myxine"},
+            {"catalogNumber": "3".zfill(9), "genus": "Myxine", "species": "capensis"},
+            {"catalogNumber": "4".zfill(9), "genus": "Eptatretus", "species": "sheni"},
+        ]
+        uploaded_data = self._upload_collection_objects(data_to_upload)
+        batch_edit_pack = self._records_to_batchedit_pack(uploaded_data)
+
+        data = self._uploaded_to_data_set(data_to_upload, ["catalogNumber", "genus", "species", "subgenus", "subspecies"])
+
+        results = do_upload(
+            collection=self.collection,
+            rows=data,
+            upload_plan=upload_plan,
+            uploading_agent_id=self.agent.id,
+            batch_edit_packs=batch_edit_pack
+        )
+        # Ensure the CollectionObject determined to Family is still determined to Family
+        collection_object = get_table("Collectionobject").objects.get(
+            catalognumber="1".zfill(9),
+            collection=self.collection
+        )
+        determination = collection_object.determinations.get()
+        self.assertEqual(determination.taxon_id, self.family_node.pk)
+        self.assertEqual(determination.preferredtaxon_id, self.family_node.pk)
+
+        for result in results:
+            assert isinstance(result.record_result, NoChange), "CO was changed by BatchEdit!"
+            det_result = result.toMany["determinations"][0]
+            assert isinstance(det_result.record_result, NoChange), "Determination was changed by BatchEdit"
+            tax_result = det_result.toOne["taxon"]
+            assert isinstance(tax_result.record_result, Matched), "Taxon was not matched by BatchEdit"
 
 # I can see why this might be a bad idea, but want to playaround with making unittests completely end-to-end at least for some type
 # So we start from query and end with batch-edit results as the core focus of all these tests.
