@@ -7,7 +7,6 @@ const base = {
     '@prettier/plugin-xml',
     'prettier-plugin-package',
     'prettier-plugin-sh',
-    'prettier-plugin-tailwindcss',
   ],
 };
 
@@ -23,12 +22,4 @@ export default {
    * for now to reduce merge conflicts with other pull requests.
    */
   trailingComma: 'es5',
-  plugins: base.plugins?.filter(
-    (plugin) =>
-      /*
-       * The plugin doesn't handle well multi-line classname strings with ${} in
-       * them - it turns them into one very long line, which is not readable.
-       */
-      plugin !== 'prettier-plugin-tailwindcss'
-  ),
 };

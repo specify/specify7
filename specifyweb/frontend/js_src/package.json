@@ -69,6 +69,7 @@
     "xlsx": "~0.18.5"
   },
   "devDependencies": {
+    "eslint-plugin-sonarjs": "^0.17.0",
     "@babel/plugin-transform-modules-commonjs": "^7.18.6",
     "@babel/preset-env": "^7.29.7",
     "@babel/preset-react": "^7.18.6",
