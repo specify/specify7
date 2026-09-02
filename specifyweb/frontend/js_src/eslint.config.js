@@ -128,6 +128,7 @@ const base_config = [
       arrayFunc,
       react,
       'react-hooks': reactHooks,
+	  sonarjs,
       /**
        * An awesome rule, but have to temporarily disable it until
        * https://github.com/BrainMaestro/eslint-plugin-optimize-regex/issues/66
