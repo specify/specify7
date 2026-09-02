@@ -17,6 +17,7 @@ import {
 } from './queries';
 import { schemaText } from '../../localization/schema';
 import { TableList } from '../SchemaConfig/Tables';
+import { useCachedState } from '../../hooks/useCachedState';
 
 export function DataViewQueryEditor({
   data,
@@ -42,8 +43,12 @@ export function DataViewQueryEditorContent({
   const initialFile = React.useMemo(() => parseDataViewQueries(data), [data]);
   const [file, setFile] = React.useState<DataViewQueriesFile>(initialFile);
   const fileRef = React.useRef(file);
+  const [rememberedTable, setRememberedTable] = useCachedState(
+    'appResources',
+    'dataViewQueriesTable'
+  );
   const [tableName, setTableName] = React.useState<keyof Tables>(
-    lockedTableName ?? defaultDataViewTablesConfig[0]
+    lockedTableName ?? rememberedTable ?? defaultDataViewTablesConfig[0]
   );
 
   React.useEffect(() => {
@@ -116,10 +121,10 @@ export function DataViewQueryEditorContent({
           <TableList
             cacheKey="appResources"
             currentTableName={tableName}
-            getAction={(table): (() => void) =>
-              (): void =>
-                setTableName(table.name)
-              }
+            getAction={(table): (() => void) => (): void => {
+              setTableName(table.name);
+              setRememberedTable(table.name);
+            }}
           />
         </div>
       ) : undefined}
