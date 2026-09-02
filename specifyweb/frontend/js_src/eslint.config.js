@@ -13,8 +13,6 @@ import jest from 'eslint-plugin-jest';
 import js from '@eslint/js';
 import parser from '@typescript-eslint/parser';
 import promise from 'eslint-plugin-promise';
-import react from 'eslint-plugin-react';
-import reactHooks from 'eslint-plugin-react-hooks';
 import regexp from 'eslint-plugin-regexp';
 import restrictedGlobals from 'confusing-browser-globals';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
