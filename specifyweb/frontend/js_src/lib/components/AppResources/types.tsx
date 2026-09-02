@@ -109,7 +109,8 @@ export const appResourceSubTypes = ensure<IR<AppResourceSubType>>()({
     documentationUrl: undefined,
     icon: icons.eye,
     label: dataViewsText.dataViewQueries(),
-    scope: ['discipline', 'user'],
+    useTemplate: true,
+    scope: ['collection', 'discipline', 'user'],
   },
   // TODO: There should be useTemplate: false below? (like it is for userPreferences)
   collectionPreferences: {
