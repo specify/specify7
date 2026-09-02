@@ -1,4 +1,5 @@
 from django.db import IntegrityError
+from django.utils import timezone
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
@@ -29,3 +30,18 @@ class GiftTests(ApiTests):
             models.Gift.objects.create(
                 giftnumber='12',
                 discipline=None)
+
+    def test_create_gift_with_number_and_date(self):
+        gift_date = timezone.now()
+
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-8492-001',
+            giftdate=gift_date,
+            discipline=self.discipline,
+        )
+
+        fetched = models.Gift.objects.get(id=gift.id)
+
+        self.assertEqual(fetched.giftnumber, 'GIFT-8492-001')
+        self.assertEqual(fetched.giftdate, gift_date)
+        self.assertEqual(fetched.discipline, self.discipline)
