@@ -1797,15 +1797,21 @@ export const userPreferenceDefinitions = {
         title: preferencesText.general(),
         items: {
           splitViewByDefault: definePref<boolean>({
-            title: dataViewsText.splitViewByDefault(),
-            description: dataViewsText.splitViewDescription(),
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
           splitViewOrientation: definePref<'horizontal' | 'vertical'>({
-            title: dataViewsText.splitViewOrientation(),
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: 'horizontal',
@@ -1948,15 +1954,21 @@ export const userPreferenceDefinitions = {
         title: preferencesText.general(),
         items: {
           splitViewByDefault: definePref<boolean>({
-            title: dataViewsText.splitViewByDefault(),
-            description: dataViewsText.splitViewDescription(),
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
           splitViewOrientation: definePref<'horizontal' | 'vertical'>({
-            title: dataViewsText.splitViewOrientation(),
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
             requiresReload: false,
             visible: true,
             defaultValue: 'horizontal',

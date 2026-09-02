@@ -92,7 +92,11 @@ export function DataViewTables(): JSX.Element {
   return isEditing ? (
     <TablesListEdit
       defaultTables={defaultDataViewTablesConfig}
-      header={dataViewsText.configureDataViews()}
+      header={
+        dataViewsText.configureDataViews({
+          dataViews: dataViewsText.dataViewsTitle(),
+        })
+      }
       tables={tables}
       onChange={setTables}
       onClose={handleClose}
