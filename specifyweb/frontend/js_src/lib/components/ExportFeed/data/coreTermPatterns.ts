@@ -8,6 +8,9 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.startdatenumericmonth',
   ],
   'http://rs.tdwg.org/dwc/terms/year': ['collectingevent.startdatenumericyear'],
+  'http://rs.tdwg.org/dwc/terms/verbatimEventDate': [
+    'collectingevent.startdateverbatim',
+  ],
   'http://rs.tdwg.org/dwc/terms/eventDate': [
     'collectingevent.startdate',
     'collectingevent.enddate',
@@ -27,7 +30,10 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://purl.org/dc/terms/accessRights': ['institution.termsofuse'],
   'http://purl.org/dc/terms/modified': ['.timestampmodified'],
   'http://rs.tdwg.org/dwc/terms/otherCatalogNumbers': ['.altcatalognumber'],
-  'http://rs.tdwg.org/dwc/terms/scientificName': ['preferredtaxon.fullname'],
+  'http://rs.tdwg.org/dwc/terms/scientificName': [
+    'preferredtaxon.fullname',
+    'taxon.fullname',
+  ],
   'http://rs.tdwg.org/dwc/terms/scientificNameAuthorship': [
     'taxon.species author',
   ],
@@ -58,7 +64,10 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     '.subspecies.name',
     'taxon.subspecies',
   ],
-  'http://rs.tdwg.org/dwc/terms/taxonRank': ['taxontreedef.rankname'],
+  'http://rs.tdwg.org/dwc/terms/taxonRank': [
+    'taxontreedef.rankname',
+    'taxontreedefitem.name',
+  ],
   'http://rs.tdwg.org/dwc/terms/recordNumber': ['fieldnumber'],
   'http://rs.tdwg.org/dwc/terms/identifiedBy': ['agent.determiner'],
   'http://rs.tdwg.org/dwc/terms/typeStatus': ['determination.typestatusname'],
@@ -66,7 +75,10 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/waterBody': ['geocoorddetail.waterbody'],
   'http://rs.tdwg.org/dwc/terms/catalogNumber': ['.catalognumber'],
   'http://rs.tdwg.org/dwc/terms/recordedBy': ['.collectors'],
-  'http://rs.tdwg.org/dwc/terms/eventID': ['collectingevent.guid'],
+  'http://rs.tdwg.org/dwc/terms/eventID': [
+    'collectingevent.guid',
+    'collectingevent.stationfieldnumber',
+  ],
   'http://rs.tdwg.org/dwc/terms/stateProvince': [
     'stateprovince.name',
     'geography.state',
@@ -101,6 +113,16 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/georeferencedBy': ['georefdetby'],
   'http://rs.tdwg.org/dwc/terms/higherGeography': ['geography.geography'],
+  'http://rs.tdwg.org/dwc/terms/samplingProtocol': ['collectingevent.method'],
+  'http://rs.tdwg.org/dwc/terms/verbatimLocality': [
+    'collectingevent.verbatimlocality',
+  ],
+  'http://rs.tdwg.org/dwc/terms/associatedTaxa': [
+    'hosttaxon.taxon.hosttaxon',
+  ],
+  'http://rs.tdwg.org/dwc/terms/preparations': [
+    'preparations.preparation.preparations',
+  ],
   'http://rs.tdwg.org/dwc/iri/habitat': ['locality.elevationmethod'],
   'http://rs.tdwg.org/dwc/terms/occurrenceRemarks': ['.remarks'],
   'http://rs.tdwg.org/dwc/terms/maximumElevationInMeters': ['locality.maxElevation'],
