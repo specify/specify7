@@ -13,6 +13,8 @@ import jest from 'eslint-plugin-jest';
 import js from '@eslint/js';
 import parser from '@typescript-eslint/parser';
 import promise from 'eslint-plugin-promise';
+import react from 'eslint-plugin-react';
+import reactHooks from 'eslint-plugin-react-hooks';
 import regexp from 'eslint-plugin-regexp';
 import restrictedGlobals from 'confusing-browser-globals';
 import simpleImportSort from 'eslint-plugin-simple-import-sort';
@@ -124,6 +126,8 @@ const base_config = [
       'write-good-comments': comments,
       functional,
       arrayFunc,
+      react,
+      'react-hooks': reactHooks,
       /**
        * An awesome rule, but have to temporarily disable it until
        * https://github.com/BrainMaestro/eslint-plugin-optimize-regex/issues/66
@@ -847,7 +851,7 @@ if (abbreviationsConfig === undefined)
 export default [
   ...base_config,
 
-  functional.configs['external-recommended'],
+  ...compat.config(functional.configs['external-recommended']),
   ...compat.config(accessibility.configs.strict),
   ...compat.config(testingLibrary.configs.react),
   {
