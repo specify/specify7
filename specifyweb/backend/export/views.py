@@ -14,7 +14,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, Http404
 from django.views.decorators.cache import never_cache
 from django.views.decorators.http import require_POST
 
-from .dwca import make_dwca, prettify
+from .dwca import DwCAException, make_dwca, prettify, validate_definition
 from .extract_query import extract_query as extract
 from .feed import FEED_DIR, get_feed_resource, update_feed
 from specifyweb.backend.context.app_resource import get_app_resource
@@ -118,7 +118,14 @@ def export(request):
 
     eml_resource = request.POST.get('metadata', None)
 
-    definition, _, __ = get_app_resource(collection, user, dwca_resource)
+    resolved_definition = get_app_resource(collection, user, dwca_resource)
+    if resolved_definition is None:
+        return HttpResponseBadRequest('DwCA definition resource was not found')
+    definition, _, __ = resolved_definition
+    try:
+        validate_definition(definition)
+    except DwCAException as error:
+        return HttpResponseBadRequest(str(error))
 
     if eml_resource is not None:
         eml, _, __ = get_app_resource(collection, user, eml_resource)
