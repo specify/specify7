@@ -60,7 +60,7 @@ export const attachmentsText = createDictionary({
     'fr-fr': 'Trier par',
     'uk-ua': 'Сортувати за',
     'de-ch': 'Sortiere nach',
-    'pt-br': 'Ordenar por',
+    'pt-br': 'Ordem por',
     'hr-hr': 'Poredaj po',
     nb: 'Bestill etter',
   },

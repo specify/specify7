@@ -14,7 +14,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Настройки',
     'es-es': 'Preferencias',
     'fr-fr': 'Préférences',
-    'uk-ua': 'Уподобання',
+    'uk-ua': 'Налаштування',
     'de-ch': 'Einstellungen',
     'pt-br': 'Preferências',
     'hr-hr': 'Postavke',
@@ -25,7 +25,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Настройка',
     'es-es': 'Personalización',
     'fr-fr': 'Personnalisation',
-    'uk-ua': 'Спеціальнізація',
+    'uk-ua': 'Налаштування',
     'de-ch': 'Anpassung',
     'pt-br': 'Personalização',
     'hr-hr': 'Prilagođavanje',
@@ -35,7 +35,7 @@ export const preferencesText = createDictionary({
     'en-us': 'User Preferences',
     'ru-ru': 'Пользовательские настройки',
     'es-es': 'Preferencias del usuario',
-    'fr-fr': "Préférences de l'utilisateur",
+    'fr-fr': 'Préférences utilisateur',
     'uk-ua': 'Налаштування користувача',
     'de-ch': 'Benutzereinstellungen',
     'pt-br': 'Preferências do usuário',
@@ -47,7 +47,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Настройки пользователя по умолчанию',
     'es-es': 'Preferencias de usuario predeterminadas',
     'fr-fr': 'Préférences utilisateur par défaut',
-    'uk-ua': 'Параметри користувача за умовчанням',
+    'uk-ua': 'Налаштування користувача за замовчуванням',
     'de-ch': 'Standardbenutzereinstellungen',
     'pt-br': 'Preferências padrão do usuário',
     'hr-hr': 'Zadane korisničke postavke',
@@ -57,8 +57,8 @@ export const preferencesText = createDictionary({
     'en-us': 'General',
     'ru-ru': 'Общий',
     'es-es': 'General',
-    'fr-fr': 'Image personnalisée',
-    'uk-ua': 'Спеціальне зображення',
+    'fr-fr': 'Général',
+    'uk-ua': 'Загальне',
     'de-ch': 'Allgemein',
     'pt-br': 'Em geral',
     'hr-hr': 'General',
@@ -89,9 +89,9 @@ export const preferencesText = createDictionary({
   useSystemSetting: {
     'en-us': 'Use system setting',
     'ru-ru': 'Использовать системные настройки',
-    'es-es': 'Utilizar la configuración del sistema',
+    'es-es': 'Utilice la configuración del sistema',
     'fr-fr': 'Utiliser les paramètres du système',
-    'uk-ua': 'Використовуйте налаштування системи',
+    'uk-ua': 'Використати системні налаштування',
     'de-ch': 'Systemeinstellung verwenden',
     'pt-br': 'Usar as configurações do sistema',
     'hr-hr': 'Koristi postavke sustava',
@@ -100,9 +100,9 @@ export const preferencesText = createDictionary({
   inheritOsSettings: {
     'en-us': 'Copies value from your Operating System settings',
     'ru-ru': 'Копирует значение из настроек вашей операционной системы.',
-    'es-es': 'Copia el valor de la configuración de su sistema operativo',
+    'es-es': 'Copia el valor de la configuración de su sistema operativo.',
     'fr-fr': "Copie la valeur des paramètres de votre système d'exploitation",
-    'uk-ua': 'Копіює значення з налаштувань вашої операційної системи',
+    'uk-ua': 'Копіює значення з налаштувань операційної системи',
     'de-ch': 'Übernimmt den Wert aus Ihren Betriebssystemeinstellungen',
     'pt-br': 'Copia o valor das configurações do seu sistema operacional.',
     'hr-hr': 'Kopira vrijednost iz postavki vašeg operativnog sustava',
@@ -112,9 +112,9 @@ export const preferencesText = createDictionary({
     comment: 'Light mode',
     'en-us': 'Light',
     'ru-ru': 'Свет',
-    'es-es': 'Claro',
-    'fr-fr': 'Lumière',
-    'uk-ua': 'світло',
+    'es-es': 'Luz',
+    'fr-fr': 'Clair',
+    'uk-ua': 'Світло',
     'de-ch': 'Hell',
     'pt-br': 'Luz',
     'hr-hr': 'Svjetlo',
@@ -146,9 +146,9 @@ export const preferencesText = createDictionary({
   reduceMotionDescription: {
     'en-us': 'Disable non-essential animations and transitions.',
     'ru-ru': 'Отключите несущественные анимации и переходы.',
-    'es-es': 'Desactivar animaciones y transiciones no esenciales.',
+    'es-es': 'Desactive las animaciones y transiciones no esenciales.',
     'fr-fr': 'Désactivez les animations et les transitions non essentielles.',
-    'uk-ua': "Вимкніть необов'язкову анімацію та переходи.",
+    'uk-ua': 'Вимкніть несуттєві анімації та переходи.',
     'de-ch': 'Nicht erforderliche Animationen und Übergänge deaktivieren.',
     'pt-br': 'Desative animações e transições não essenciais.',
     'hr-hr': 'Onemogućite nebitne animacije i prijelaze.',
@@ -158,7 +158,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show object count below',
     'de-ch': 'Objektanzahl unten anzeigen',
     'es-es': 'Mostrar recuento de objetos a continuación',
-    'fr-fr': "Afficher le nombre d'objets ci-dessous",
+    'fr-fr': "Afficher le nombre d'objets en dessous",
     'pt-br': 'Mostrar a contagem de objetos abaixo',
     'ru-ru': 'Ниже показано количество объектов.',
     'uk-ua': "Показати кількість об'єктів нижче",
@@ -169,13 +169,13 @@ export const preferencesText = createDictionary({
     'en-us':
       'Show the count of linked Collection Objects for all ranks below this one.',
     'ru-ru':
-      'Показывать количество объектов коллекции для всех рангов, включая и ниже этого.',
+      'Отобразить количество связанных объектов коллекции для всех рангов ниже этого.',
     'es-es':
-      'Mostrar la cantidad de objetos de colección para todos los rangos, incluidos y por debajo de este.',
+      'Muestra el número de objetos de colección vinculados para todos los rangos inferiores a este.',
     'fr-fr':
       "Afficher le nombre d'objets de collection pour tous les rangs, y compris et en dessous de celui-ci.",
     'uk-ua':
-      "Показати кількість об'єктів колекції для всіх рангів, включаючи та нижче цього.",
+      "Показати кількість пов'язаних об'єктів колекції для всіх рангів нижче цього.",
     'de-ch':
       'Anzahl der Sammlungsobjekte für alle Ränge einschließlich und unterhalb dieses Rangs anzeigen.',
     'pt-br':
@@ -201,18 +201,18 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Следует ли по возможности отключать полупрозрачный фон для компонентов пользовательского интерфейса (например, заголовки таблиц в древовидном представлении).',
     'es-es':
-      'Si se deben deshabilitar los fondos translúcidos para los componentes de la interfaz de usuario siempre que sea posible (por ejemplo, encabezados de tabla en la vista de árbol).',
+      'Si se deben deshabilitar los fondos translúcidos para los componentes de la interfaz de usuario siempre que sea posible (por ejemplo, los encabezados de tabla en la vista de árbol).',
     'fr-fr':
-      "S'il faut désactiver les arrière-plans translucides pour les composants de l'interface utilisateur chaque fois que possible (par exemple, les en-têtes de tableau dans l'arborescence).",
+      "Désactiver les arrière-plans translucides pour les composants de l'interface utilisateur chaque fois que possible (par exemple, les en-têtes de tableau dans l'arborescence).",
     'uk-ua':
-      'Чи вимикати напівпрозорий фон для компонентів інтерфейсу користувача, коли це можливо (наприклад, заголовки таблиць у перегляді дерева).',
+      'Чи слід вимикати напівпрозорі фони для компонентів інтерфейсу користувача, коли це можливо (наприклад, заголовки таблиць у деревоподібному поданні).',
     'de-ch':
       'Durchsichtige Hintergründe für Benutzeroberflächenkomponenten wann immer möglich deaktivieren (z. B. Tabellenüberschriften in der Baumansicht).',
     'pt-br':
       'Desativar ou não os fundos translúcidos para componentes da interface do usuário sempre que possível (por exemplo, cabeçalhos de tabela em uma visualização em árvore).',
     'hr-hr':
       'Treba li onemogućiti prozirne pozadine za komponente korisničkog sučelja kad god je to moguće (npr. zaglavlja tablica u prikazu stabla).',
-    nb: 'Om gjennomskinnelige bakgrunner for brukergrensesnittkomponenter skal deaktiveres når det er mulig (f.eks. tabelloverskrifter i trevisning).',
+    nb: 'Om gjennomskinnelige bakgrunner skal deaktiveres for brukergrensesnittkomponenter når det er mulig (f.eks. tabelloverskrifter i trevisning).',
   },
   contrast: {
     'en-us': 'Contrast',
@@ -230,7 +230,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Увеличивать',
     'es-es': 'Aumentar',
     'fr-fr': 'Augmenter',
-    'uk-ua': 'Збільшити',
+    'uk-ua': 'Збільшення',
     'de-ch': 'Erhöhen',
     'pt-br': 'Aumentar',
     'hr-hr': 'Povećati',
@@ -252,7 +252,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Без предпочтений',
     'es-es': 'Sin preferencia',
     'fr-fr': 'Pas de préférence',
-    'uk-ua': 'Без переваг',
+    'uk-ua': 'Без уподобань',
     'de-ch': 'Keine Präferenz',
     'pt-br': 'Sem preferência',
     'hr-hr': 'Bez preferencija',
@@ -272,7 +272,7 @@ export const preferencesText = createDictionary({
   fontFamily: {
     'en-us': 'Font family',
     'ru-ru': 'Семейство шрифтов',
-    'es-es': 'Familia de fuentes',
+    'es-es': 'Familia tipográfica',
     'fr-fr': 'Famille de polices',
     'uk-ua': 'Сімейство шрифтів',
     'de-ch': 'Schrift-Familie',
@@ -286,11 +286,11 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Вы можете указать любой шрифт, имеющийся на вашем компьютере, даже если его нет в списке. Поддерживается также список шрифтов, разделенных запятыми, при этом будет использоваться каждый последующий шрифт, если предыдущий недоступен.',
     'es-es':
-      'Puede especificar cualquier fuente de su ordenador, incluso si no está en la lista. También se admite una lista de fuentes separadas por comas, donde se usará cada fuente subsiguiente si la anterior no está disponible.',
+      'Puedes especificar cualquier fuente que tengas instalada, aunque no aparezca en la lista. También se admiten listas de fuentes separadas por comas; si la anterior no está disponible, se utilizará la siguiente fuente.',
     'fr-fr':
       "Vous pouvez spécifier n'importe quelle police installée sur votre ordinateur, même si elle ne figure pas dans la liste. Les listes de polices séparées par des virgules sont également prises en charge ; si la police précédente est indisponible, la suivante sera utilisée.",
     'uk-ua':
-      "Ви можете вказати будь-який шрифт, який є на вашому комп'ютері, навіть якщо його немає в списку. Також підтримується розділений комами список шрифтів, у якому використовуватиметься другий шрифт, якщо перший недоступний тощо.",
+      'Ви можете вказати будь-який шрифт, який є на вашому комп’ютері, навіть якщо його немає у списку. Також підтримується список шрифтів, розділених комами, де кожен наступний шрифт буде використано, якщо попередній недоступний.',
     'de-ch':
       'Sie können jede Schriftart angeben, die sich auf Ihrem Computer befindet, auch wenn diese nicht in der Liste enthalten ist. Eine durch Kommas getrennte Liste von Schriftarten wird ebenfalls unterstützt, wobei die zweite Schriftart verwendet wird, wenn die erste nicht verfügbar ist usw.',
     'pt-br':
@@ -304,7 +304,7 @@ export const preferencesText = createDictionary({
     'ru-ru': '(шрифт по умолчанию)',
     'es-es': '(fuente predeterminada)',
     'fr-fr': '(police par défaut)',
-    'uk-ua': '(типовий шрифт)',
+    'uk-ua': '(шрифт за замовчуванням)',
     'de-ch': '(Standardschriftart)',
     'pt-br': '(fonte padrão)',
     'hr-hr': '(zadani font)',
@@ -324,8 +324,8 @@ export const preferencesText = createDictionary({
   fieldBackgrounds: {
     'en-us': 'Field backgrounds',
     'ru-ru': 'Полевые исследования',
-    'es-es': 'Fondos de campo',
-    'fr-fr': 'Milieux de terrain',
+    'es-es': 'Antecedentes de campo',
+    'fr-fr': 'Arrière plan des champs',
     'uk-ua': 'Польові фони',
     'de-ch': 'Feldhintergründe',
     'pt-br': 'Histórico de campo',
@@ -335,8 +335,8 @@ export const preferencesText = createDictionary({
   fieldBackground: {
     'en-us': 'Field background',
     'ru-ru': 'Полевой фон',
-    'es-es': 'Fondo de campo',
-    'fr-fr': 'Contexte du terrain',
+    'es-es': 'Antecedentes de campo',
+    'fr-fr': 'Arrière plan de champ',
     'uk-ua': 'Поле фону',
     'de-ch': 'Feldhintergrund',
     'pt-br': 'Histórico de campo',
@@ -346,9 +346,9 @@ export const preferencesText = createDictionary({
   disabledFieldBackground: {
     'en-us': 'Disabled field background',
     'ru-ru': 'Фоновое поле инвалидности',
-    'es-es': 'Fondo de campo deshabilitado',
-    'fr-fr': 'Fond de champ désactivé',
-    'uk-ua': 'Вимкнений фон поля',
+    'es-es': 'Fondo de campo para discapacitados',
+    'fr-fr': "Désactive l'arrière plan des champs",
+    'uk-ua': 'Фон поля для людей з інвалідністю',
     'de-ch': 'Deaktivierter Feldhintergrund',
     'pt-br': 'fundo de campo desativado',
     'hr-hr': 'Pozadina polja za osobe s invaliditetom',
@@ -358,7 +358,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Invalid field background',
     'ru-ru': 'Недопустимое поле фона',
     'es-es': 'Fondo de campo no válido',
-    'fr-fr': 'Fond de champ invalide',
+    'fr-fr': 'Arrière plan des champs invalides',
     'uk-ua': 'Недійсний фон поля',
     'de-ch': 'Ungültiger Feldhintergrund',
     'pt-br': 'Fundo de campo inválido',
@@ -369,8 +369,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Required field background',
     'ru-ru': 'Требуемый опыт работы в данной области',
     'es-es': 'Antecedentes de campo requeridos',
-    'fr-fr': 'Contexte du champ obligatoire',
-    'uk-ua': "Обов'язковий фон поля",
+    'fr-fr': 'Nécessite un arrière plan de champ',
+    'uk-ua': "Обов'язкове поле фону",
     'de-ch': 'Feldhintergrund erforderlich',
     'pt-br': 'Campo obrigatório de fundo',
     'hr-hr': 'Pozadina obaveznog polja',
@@ -380,7 +380,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Field background (dark theme)',
     'ru-ru': 'Фоновое изображение поля (темная тема)',
     'es-es': 'Fondo de campo (tema oscuro)',
-    'fr-fr': 'Fond de champ (thème sombre)',
+    'fr-fr': 'Arrière plan des champs (thème sombre)',
     'uk-ua': 'Фон поля (темна тема)',
     'de-ch': 'Feldhintergrund (Dunkles Thema)',
     'pt-br': 'Fundo de campo (tema escuro)',
@@ -391,8 +391,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Disabled field background (dark theme)',
     'ru-ru': 'Фоновое изображение поля отключено (темная тема).',
     'es-es': 'Fondo de campo deshabilitado (tema oscuro)',
-    'fr-fr': 'Fond de champ désactivé (thème sombre)',
-    'uk-ua': 'Вимкнений фон поля (темна тема)',
+    'fr-fr': 'Arrière plan des champs désactivés (thème sombre)',
+    'uk-ua': 'Фон поля з вимкненими параметрами (темна тема)',
     'de-ch': 'Deaktivierter Feldhintergrund (Dunkles Thema)',
     'pt-br': 'Fundo de campo desativado (tema escuro)',
     'hr-hr': 'Pozadina onemogućenog polja (tamna tema)',
@@ -402,8 +402,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Invalid field background (dark theme)',
     'ru-ru': 'Неверный фон поля (темная тема)',
     'es-es': 'Fondo de campo no válido (tema oscuro)',
-    'fr-fr': 'Largeur de colonne de grille de sous-vue flexible',
-    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
+    'fr-fr': 'Arrière plan des champs invalides (thème sombre)',
+    'uk-ua': 'Недійсний фон поля (темна тема)',
     'de-ch': 'Ungültiger Feldhintergrund (Dunkles Thema)',
     'pt-br': 'Fundo de campo inválido (tema escuro)',
     'hr-hr': 'Nevažeća pozadina polja (tamna tema)',
@@ -413,12 +413,12 @@ export const preferencesText = createDictionary({
     'en-us': 'Required field background (dark theme)',
     'ru-ru': 'Фоновое изображение обязательного поля (темная тема).',
     'es-es': 'Campo de fondo obligatorio (tema oscuro)',
-    'fr-fr': 'Fond de champ obligatoire (thème sombre)',
-    'uk-ua': 'Обов’язковий фон поля (темна тема)',
+    'fr-fr': 'Arrière plan des champs obligatoires (thème sombre',
+    'uk-ua': "Обов'язковий фон поля (темна тема)",
     'de-ch': 'Feldhintergrund erforderlich (Dunkles Thema)',
     'pt-br': 'Fundo de campo obrigatório (tema escuro)',
     'hr-hr': 'Pozadina obaveznog polja (tamna tema)',
-    nb: 'Obligatorisk feltbakgrunn (mørkt tema)',
+    nb: 'Bakgrunn for obligatorisk felt (mørkt tema)',
   },
   dialogs: {
     'en-us': 'Dialogs',
@@ -446,9 +446,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Buttons (light mode)',
     'de-ch': 'Buttons (Helles Thema)',
     'es-es': 'Botones (modo luz)',
-    'fr-fr': 'Boutons (mode lumière)',
+    'fr-fr': 'Boutons (thème clair)',
     'ru-ru': 'Кнопки (световой режим)',
-    'uk-ua': 'Кнопки (світлий режим)',
+    'uk-ua': 'Кнопки (режим освітлення)',
     'pt-br': 'Botões (modo claro)',
     'hr-hr': 'Tipke (svjetlosni način rada)',
     nb: 'Knapper (lysmodus)',
@@ -457,7 +457,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Buttons (dark mode)',
     'de-ch': 'Buttons (Dunkles Thema)',
     'es-es': 'Botones (modo oscuro)',
-    'fr-fr': 'Boutons (mode sombre)',
+    'fr-fr': 'Boutons (thèmesombre)',
     'ru-ru': 'Кнопки (темный режим)',
     'uk-ua': 'Кнопки (темний режим)',
     'pt-br': 'Botões (modo escuro)',
@@ -468,7 +468,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Translucent dialogs',
     'ru-ru': 'Полупрозрачные диалоги',
     'es-es': 'Diálogos translúcidos',
-    'fr-fr': 'Dialogues translucides',
+    'fr-fr': 'Boites de dialogue translucides',
     'uk-ua': 'Напівпрозорі діалоги',
     'de-ch': 'Durchscheinende Dialoge',
     'pt-br': 'Diálogos translúcidos',
@@ -479,8 +479,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Whether dialogs have translucent background.',
     'ru-ru': 'Есть ли у диалогов полупрозрачный фон.',
     'es-es': 'Si los diálogos tienen fondo translúcido.',
-    'fr-fr': 'Si les boîtes de dialogue ont un fond translucide.',
-    'uk-ua': 'Чи мають діалоги прозорий фон.',
+    'fr-fr': 'Défini si les boîtes de dialogue ont un fond translucide.',
+    'uk-ua': 'Чи мають діалогові вікна напівпрозорий фон.',
     'de-ch': 'Dialogfenster mit durchscheinenden Hintergrund.',
     'pt-br': 'Se os diálogos têm fundo translúcido.',
     'hr-hr': 'Imaju li dijalozi prozirnu pozadinu.',
@@ -491,7 +491,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Всегда оперативно выбирайте коллекцию.',
     'es-es': 'Siempre solicitando elegir la colección',
     'fr-fr': 'Toujours invité à choisir la collection',
-    'uk-ua': 'Завжди підкажуть вибрати колекцію',
+    'uk-ua': 'Завжди пропонувати вибрати колекцію',
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
     'pt-br': 'Sempre solicitando a seleção da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
@@ -501,8 +501,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Tree Editor',
     'ru-ru': 'Редактор дерева',
     'es-es': 'Editor de árboles',
-    'fr-fr': "Éditeur d'arborescence",
-    'uk-ua': 'Редактор дерева',
+    'fr-fr': "Éditeur d'arbres",
+    'uk-ua': 'Редактор дерев',
     'de-ch': 'Baumeditor',
     'pt-br': 'Editor de Árvores',
     'hr-hr': 'Uređivač stabla',
@@ -512,8 +512,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Tree accent color',
     'ru-ru': 'Цвет акцента дерева',
     'es-es': 'Color de acento del árbol',
-    'fr-fr': "Couleur d'accent d'arbre",
-    'uk-ua': 'Колір акценту дерева',
+    'fr-fr': "Couleur d'accentuation de l'arbre",
+    'uk-ua': 'Акцентний колір дерева',
     'de-ch': 'Baumakzentfarbe',
     'pt-br': 'cor de destaque da árvore',
     'hr-hr': 'Boja naglaska na drvetu',
@@ -521,9 +521,9 @@ export const preferencesText = createDictionary({
   },
   synonymColor: {
     'en-us': 'Synonym color',
-    'ru-ru': 'цвет синонима',
+    'ru-ru': 'Синоним цвета',
     'es-es': 'color sinónimo',
-    'fr-fr': 'Synonyme couleur',
+    'fr-fr': 'Couleur des synonymes',
     'uk-ua': 'Синонім кольору',
     'de-ch': 'Synonymfarbe',
     'pt-br': 'Cor (sinônimo)',
@@ -534,7 +534,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Show new Data Set warning',
     'ru-ru': 'Показать новое предупреждение о наборе данных',
     'es-es': 'Mostrar nueva advertencia de conjunto de datos',
-    'fr-fr': "Afficher un nouvel avertissement sur l'ensemble de données",
+    'fr-fr': "Afficher un avertissement à la création d'un ensemble de données",
     'uk-ua': 'Показати попередження про новий набір даних',
     'de-ch': 'Warnung für neuen Datensatz anzeigen',
     'pt-br': 'Exibir aviso de novo conjunto de dados',
@@ -562,8 +562,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Navigation Menu',
     'ru-ru': 'Навигационное меню',
     'es-es': 'Menú de navegación',
-    'fr-fr': 'le menu de navigation',
-    'uk-ua': 'Навігаційне меню',
+    'fr-fr': 'Menu de navigation',
+    'uk-ua': 'Меню навігації',
     'de-ch': 'Navigationsmenü',
     'pt-br': 'Menu de navegação',
     'hr-hr': 'Navigacijski izbornik',
@@ -574,7 +574,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Приложение',
     'es-es': 'Solicitud',
     'fr-fr': 'Application',
-    'uk-ua': 'застосування',
+    'uk-ua': 'Застосування',
     'de-ch': 'Anwendung',
     'pt-br': 'Aplicativo',
     'hr-hr': 'Primjena',
@@ -585,7 +585,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Разрешить закрытие сообщений об ошибках',
     'es-es': 'Permitir descartar mensajes de error',
     'fr-fr': "Autoriser le rejet des messages d'erreur",
-    'uk-ua': 'Дозволити закривати повідомлення про помилки',
+    'uk-ua': 'Дозволити відхилення повідомлень про помилки',
     'de-ch': 'Erlaube das Verwerfen von Fehlermeldungen',
     'pt-br': 'Permitir descartar mensagens de erro',
     'hr-hr': 'Dopusti odbacivanje poruka o pogreškama',
@@ -596,7 +596,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Обновить заголовок страницы',
     'es-es': 'Actualizar el título de la página',
     'fr-fr': 'Mettre à jour le titre de la page',
-    'uk-ua': 'Оновити назву сторінки',
+    'uk-ua': 'Оновити заголовок сторінки',
     'de-ch': 'Seitentitel aktualisieren',
     'pt-br': 'Atualizar título da página',
     'hr-hr': 'Ažuriraj naslov stranice',
@@ -610,9 +610,9 @@ export const preferencesText = createDictionary({
     'es-es':
       'Si se debe actualizar el título de la página para que coincida con el encabezado del cuadro de diálogo.',
     'fr-fr':
-      "S'il faut mettre à jour le titre de la page pour qu'il corresponde à l'en-tête de la boîte de dialogue.",
+      "Mettre à jour le titre de la page pour qu'il corresponde à l'en-tête de la boîte de dialogue.",
     'uk-ua':
-      'Чи оновлювати назву сторінки відповідно до заголовка діалогового вікна.',
+      'Чи слід оновлювати заголовок сторінки відповідно до заголовка діалогового вікна.',
     'de-ch':
       'Titel der Seite so aktualisieren, dass er mit der Kopfzeile des Dialogs übereinstimmt.',
     'pt-br':
@@ -628,8 +628,9 @@ export const preferencesText = createDictionary({
     'es-es':
       'Si se debe actualizar el título de la página para que coincida con el registro actual.',
     'fr-fr':
-      "S'il faut mettre à jour le titre de la page pour qu'il corresponde à l'enregistrement actuel.",
-    'uk-ua': 'Чи оновлювати назву сторінки відповідно до поточного запису.',
+      "Mettre à jour le titre de la page pour qu'il corresponde à l'enregistrement actuel.",
+    'uk-ua':
+      'Чи слід оновлювати заголовок сторінки відповідно до поточного запису.',
     'de-ch':
       'Titel der Seite aktualisieren, damit er mit dem aktuellen Datensatz übereinstimmt.',
     'pt-br':
@@ -642,9 +643,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Query Combo Box',
     'ru-ru': 'Выпадающий список запросов',
     'es-es': 'Cuadro combinado de consulta',
-    'uk-ua': 'Поле зі списком запитів',
+    'uk-ua': 'Поле зі списком запиту',
     'de-ch': 'Abfrage-Kombinationsfeld',
-    'fr-fr': 'Zone de liste déroulante de requête',
+    'fr-fr': 'Champs de recherche',
     'pt-br': 'Caixa de combinação de consulta',
     'hr-hr': 'Kombinirani okvir upita',
     nb: 'Søkekombinasjonsboks',
@@ -665,9 +666,9 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Алгоритм поиска (для установления связей с помощью древовидных таблиц)',
     'es-es': 'Algoritmo de búsqueda (para relaciones con tablas de árbol)',
-    'fr-fr':
-      'Algorithme de recherche (pour les relations avec les tables arborescentes)',
-    'uk-ua': 'Алгоритм пошуку (для зв’язків із деревоподібними таблицями)',
+    'fr-fr': 'Algorithme de recherche (pour les relations avec les arbres)',
+    'uk-ua':
+      "Алгоритм пошуку (для зв'язків з таблицями деревоподібних структур)",
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
     'pt-br': 'Algoritmo de busca (para relacionamentos com tabelas em árvore)',
     'hr-hr': 'Algoritam pretraživanja (za odnose s tablicama stabla)',
@@ -682,7 +683,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung wird nicht beachtet)',
     'pt-br': 'Começa com (sem distinção entre maiúsculas e minúsculas)',
     'hr-hr': 'Počinje s (ne razlikuje velika i mala slova)',
-    nb: 'Starter med (ikke store og små bokstaver)',
+    nb: 'Starter med (ikke skille mellom store og små bokstaver)',
   },
   startsWithDescription: {
     'en-us': 'Search for values that begin with a given query string.',
@@ -690,8 +691,8 @@ export const preferencesText = createDictionary({
     'es-es':
       'Buscar valores que comiencen con una cadena de consulta determinada.',
     'fr-fr':
-      'Rechercher des valeurs commençant par une chaîne de requête donnée.',
-    'uk-ua': 'Пошук значень, які починаються з заданого рядка запиту.',
+      'Recherche des valeurs commençant par une chaîne de requête donnée.',
+    'uk-ua': 'Пошук значень, що починаються із заданого рядка запиту.',
     'de-ch':
       'Suche nach Werten, die mit einer bestimmten Suchanfrage beginnen.',
     'pt-br':
@@ -704,7 +705,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Начинается с (регистр имеет значение)',
     'es-es': 'Comienza con (distingue mayúsculas y minúsculas)',
     'fr-fr': 'Commence par (sensible à la casse)',
-    'uk-ua': 'Починається з (з урахуванням регістру)',
+    'uk-ua': 'Починається з (враховується регістр)',
     'de-ch': 'Beginnt mit (Groß-/Kleinschreibung beachten)',
     'pt-br': 'Começa com (diferencia maiúsculas de minúsculas)',
     'hr-hr': 'Počinje s (razlikuje velika i mala slova)',
@@ -716,8 +717,8 @@ export const preferencesText = createDictionary({
     'es-es':
       'Buscar valores que comiencen con una cadena de consulta determinada.',
     'fr-fr':
-      'Recherchez les valeurs qui commencent par une chaîne de requête donnée.',
-    'uk-ua': 'Пошук значень, які починаються з заданого рядка запиту.',
+      'Recherche les valeurs qui commencent par une chaîne de requête donnée.',
+    'uk-ua': 'Пошук значень, що починаються із заданого рядка запиту.',
     'de-ch':
       'Suche nach Werten, die mit einer bestimmten Suchanfrage beginnen.',
     'pt-br':
@@ -730,7 +731,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Содержит (регистр нечувствителен)',
     'es-es': 'Contiene (sin distinción de mayúsculas y minúsculas)',
     'fr-fr': 'Contient (insensible à la casse)',
-    'uk-ua': 'Містить (незалежно від регістру)',
+    'uk-ua': 'Містить (без урахування регістру)',
     'de-ch': 'Enthält (Groß-/Kleinschreibung wird nicht beachtet)',
     'pt-br': 'Contém (sem distinção entre maiúsculas e minúsculas)',
     'hr-hr': 'Sadrži (ne razlikuje velika i mala slova)',
@@ -741,7 +742,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Содержит (с учетом регистра)',
     'es-es': 'Contiene (sensible a mayúsculas y minúsculas)',
     'fr-fr': 'Contient (sensible à la casse)',
-    'uk-ua': 'Містить (з урахуванням регістру)',
+    'uk-ua': 'Містить (враховує регістр)',
     'de-ch': 'Enthält (Groß-/Kleinschreibung beachten)',
     'pt-br': 'Contém (diferencia maiúsculas de minúsculas)',
     'hr-hr': 'Sadrži (osjetljivo na velika i mala slova)',
@@ -755,11 +756,11 @@ export const preferencesText = createDictionary({
     'es-es':
       'Buscar valores que contengan una cadena de consulta determinada (sin distinción entre mayúsculas y minúsculas).',
     'uk-ua':
-      'Пошук значень, які містять заданий рядок запиту (незалежно від регістру).',
+      'Пошук значень, що містять заданий рядок запиту (без урахування регістру).',
     'de-ch':
       'Suche nach Werten, die eine bestimmte Suchanfrage enthalten (Groß-/Kleinschreibung wird nicht beachtet).',
     'fr-fr':
-      'Recherchez les valeurs contenant une chaîne de requête donnée (insensible à la casse).',
+      'Recherche les valeurs contenant une chaîne de requête donnée (insensible à la casse).',
     'pt-br':
       'Pesquise valores que contenham uma determinada string de consulta (sem distinção entre maiúsculas e minúsculas).',
     'hr-hr':
@@ -776,7 +777,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       'Recherchez les valeurs contenant une chaîne de requête donnée (sensible à la casse).',
     'uk-ua':
-      'Пошук значень, які містять заданий рядок запиту (з урахуванням регістру).',
+      'Пошук значень, що містять заданий рядок запиту (з урахуванням регістру).',
     'de-ch':
       'Suche nach Werten, die eine bestimmte Suchanfrage enthalten (Groß-/Kleinschreibung beachten).',
     'pt-br':
@@ -793,9 +794,9 @@ export const preferencesText = createDictionary({
     'es-es':
       'Se puede usar _ para que coincida con cualquier carácter individual o % para que coincida con cualquier número de caracteres.',
     'fr-fr':
-      "Peut utiliser _ pour correspondre à n'importe quel caractère ou % pour correspondre à n'importe quel nombre de caractères.",
+      'Possibilité d\'utiliser "_" pour correspondre à n\'importe quel caractère ou "%" pour correspondre à n\'importe quel nombre de caractères.',
     'uk-ua':
-      'Можна використовувати _ для відповідності будь-якому одному символу або % для відповідності будь-якій кількості символів.',
+      'Можна використовувати _ для збігу з будь-яким окремим символом або % для збігу з будь-якою кількістю символів.',
     'de-ch':
       'Mit _ kann man ein einzelnes Zeichen finden, mit % eine beliebige Anzahl von Zeichen.',
     'pt-br':
@@ -808,7 +809,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Highlight matched substring',
     'ru-ru': 'Выделить найденную подстроку',
     'es-es': 'Resaltar la subcadena coincidente',
-    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
+    'fr-fr': 'Mettre en surbrillance la sous-chaîne trouvée',
     'uk-ua': 'Виділіть збіг підрядка',
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
@@ -824,7 +825,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Détermine les légendes des champs, les notes d'utilisation et les légendes des tableaux.",
     'uk-ua':
-      'Визначає підписи полів, примітки щодо використання та підписи таблиць.',
+      'Визначає підписи до полів, примітки щодо використання та підписи до таблиць.',
     'de-ch':
       'Legt Feldbezeichnungen, Nutzungshinweise und Tabellenbezeichnungen fest.',
     'pt-br':
@@ -837,7 +838,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать значок в заголовке',
     'es-es': 'Mostrar icono en el encabezado',
     'fr-fr': "Afficher l'icône dans l'en-tête",
-    'uk-ua': 'Показати значок у заголовку',
+    'uk-ua': 'Показувати значок у заголовку',
     'de-ch': 'Symbol in der Kopfzeile anzeigen',
     'pt-br': 'Exibir ícone no cabeçalho',
     'hr-hr': 'Prikaži ikonu u zaglavlju',
@@ -847,8 +848,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Scale Interface',
     'ru-ru': 'Масштабирование интерфейса',
     'es-es': 'Interfaz de escala',
-    'fr-fr': 'Interface de balance',
-    'uk-ua': 'Інтерфейс масштабу',
+    'fr-fr': "Adaptation de l'interface",
+    'uk-ua': 'Інтерфейс масштабування',
     'de-ch': 'Skalenschnittstelle',
     'pt-br': 'Interface de escala',
     'hr-hr': 'Sučelje skale',
@@ -860,7 +861,7 @@ export const preferencesText = createDictionary({
     'es-es':
       'Ajusta el tamaño de la interfaz para que coincida con el tamaño de la fuente.',
     'fr-fr': "Adapter l'interface à la taille de la police.",
-    'uk-ua': 'Масштабуйте інтерфейс відповідно до розміру шрифту.',
+    'uk-ua': 'Масштабувати інтерфейс відповідно до розміру шрифту.',
     'de-ch': 'Skalieren Sie die Benutzeroberfläche an die Schriftgröße an.',
     'pt-br': 'Ajuste a interface para corresponder ao tamanho da fonte.',
     'hr-hr': 'Prilagodite sučelje veličini fonta.',
@@ -891,48 +892,69 @@ export const preferencesText = createDictionary({
   queryButtonTaxonField: {
     'en-us': 'Field used by Taxon Query button',
     'de-ch': 'Vom Taxon-Abfrage-Button verwendetes Feld',
-    'es-es': '',
-    'fr-fr': '',
+    'es-es': 'Campo utilizado por el botón de consulta de taxones',
+    'fr-fr': 'Champ utilisé pour la recherche taxinomique',
     'hr-hr': 'Polje koje koristi gumb za upit taksona',
-    nb: '',
+    nb: 'Felt brukt av knappen Taxon Query',
     'pt-br': 'Campo usado pelo botão de consulta de táxon',
-    'ru-ru': '',
-    'uk-ua': '',
+    'ru-ru': 'Поле, используемое кнопкой «Запрос таксона».',
+    'uk-ua': 'Поле, яке використовується кнопкою запиту таксона',
   },
   queryButtonTaxonFieldDescription: {
     'en-us':
       'Choose whether the Taxon tree Query button filters by Taxon or Preferred Taxon. Preferred Taxon matches the tree counts; Taxon follows the original determination taxon.',
     'de-ch':
       'Wählen Sie aus, ob die Schaltfläche „Taxonbaum-Abfrage“ nach Taxon oder bevorzugtem Taxon filtert. Das bevorzugte Taxon entspricht den Baumzählungen; das Standard-Taxon folgt dem ursprünglich ermittelten Taxon.',
-    'es-es': '',
-    'fr-fr': '',
+    'es-es':
+      'Elija si el botón de consulta del árbol de taxones filtra por taxón o por taxón preferido. El taxón preferido coincide con el recuento del árbol; el taxón sigue el taxón de determinación original.',
+    'fr-fr':
+      "Choisissez si le bouton « Requête sur l'arbre taxonomique » doit filtrer par « Taxon » ou par « Taxon préféré ». L'option « Taxon préféré » correspondra au compteur de l'arbre ; l'option « Taxon » suit le taxon de la détermination d'origine.",
     'hr-hr':
       'Odaberite hoće li gumb Upit za stablo taksona filtrirati prema taksonu ili preferiranom taksonu. Preferirani takson odgovara broju stabala; takson slijedi izvorno određeni takson.',
-    nb: '',
+    nb: 'Velg om knappen for taksontrespørring filtrerer etter takson eller foretrukket takson. Foretrukket takson samsvarer med tretellingene; taksonen følger den opprinnelige bestemmelsestaxonen.',
     'pt-br':
       'Escolha se o botão Consulta da árvore taxonômica filtra por Táxon ou Táxon Preferencial. Táxon Preferencial corresponde à contagem de árvores; Táxon segue o táxon de determinação original.',
-    'ru-ru': '',
-    'uk-ua': '',
+    'ru-ru':
+      'Выберите, будет ли кнопка «Запрос по таксономическому дереву» фильтровать данные по таксону или по предпочтительному таксону. Предпочтительный таксон соответствует количеству таксонов в дереве; таксон соответствует таксону, определенному изначально.',
+    'uk-ua':
+      'Виберіть, чи кнопка «Запит дерева таксонів» фільтрує за таксоном чи бажаним таксоном. Бажаний таксон відповідає кількості дерев; таксон відповідає початково визначеному таксону.',
   },
   showSynonymCounts: {
     'en-us': 'Show counts for synonymized nodes',
-    'de-ch': '',
-    'hr-hr': '',
-    'pt-br': '',
+    'de-ch': 'Anzahl der synonymisierten Knoten anzeigen',
+    'hr-hr': 'Prikaži broj sinonimiziranih čvorova',
+    'pt-br': 'Exibir contagens para nós sinonimizados',
+    'es-es': 'Mostrar recuentos de nodos sinonimizados',
+    'fr-fr': 'Afficher le nombre de nœuds associés à des synonymes',
+    nb: 'Vis antall for synonymiserte noder',
+    'ru-ru': 'Показать количество синонимизированных узлов',
+    'uk-ua': 'Показати кількість синонімізованих вузлів',
   },
   showSynonymCountsDescription: {
     'en-us':
       'Display an additional count of records that were determined as a node, or any of its descendants, and are now synonyms of another node.',
-    'de-ch': '',
-    'hr-hr': '',
-    'pt-br': '',
+    'de-ch':
+      'Zeigen Sie zusätzlich die Anzahl der Datensätze an, die als Knoten oder einer seiner Nachfolger bestimmt wurden und nun Synonyme eines anderen Knotens sind.',
+    'hr-hr':
+      'Prikaži dodatni broj zapisa koji su određeni kao čvor ili bilo koji od njegovih potomaka, a sada su sinonimi drugog čvora.',
+    'pt-br':
+      'Exibir uma contagem adicional de registros que foram determinados como um nó, ou qualquer um de seus descendentes, e que agora são sinônimos de outro nó.',
+    'es-es':
+      'Muestra un recuento adicional de registros que fueron determinados como un nodo, o cualquiera de sus descendientes, y que ahora son sinónimos de otro nodo.',
+    'fr-fr':
+      "Afficher le nombre d'enregistrements supplémentaires qui ont été identifiés comme nœud, ou l'un de ses descendants, et qui sont désormais des synonymes d'un autre nœud.",
+    nb: 'Vis et ekstra antall poster som ble bestemt som en node, eller noen av dens etterkommere, og som nå er synonymer for en annen node.',
+    'ru-ru':
+      'Отобразить дополнительное количество записей, которые были определены как узел или любой из его потомков и теперь являются синонимами другого узла.',
+    'uk-ua':
+      'Відобразити додаткову кількість записів, які були визначені як вузол або будь-який з його нащадків, а тепер є синонімами іншого вузла.',
   },
   welcomePage: {
     'en-us': 'Home Page',
     'ru-ru': 'Главная страница',
     'es-es': 'Página principal',
     'fr-fr': "Page d'accueil",
-    'uk-ua': 'Домашня сторінка',
+    'uk-ua': 'Головна сторінка',
     'de-ch': 'Startseite',
     'pt-br': 'Página inicial',
     'hr-hr': 'Početna stranica',
@@ -954,7 +976,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите заставку',
     'es-es': 'Especificar Splash',
     'fr-fr': 'Specify Splash',
-    'uk-ua': 'Вкажіть логотип',
+    'uk-ua': 'Вкажіть сплеск',
     'de-ch': 'Splash angeben',
     'pt-br': 'Especificar Splash',
     'hr-hr': 'Navedite prskanje',
@@ -962,10 +984,10 @@ export const preferencesText = createDictionary({
   },
   critterless: {
     'en-us': 'Specify Splash (No Critters)',
-    'ru-ru': 'Без существ',
-    'es-es': 'Sin criaturas',
-    'fr-fr': 'Sans créatures',
-    'uk-ua': 'Без створінь',
+    'ru-ru': 'Укажите «Всплеск» (без насекомых).',
+    'es-es': 'Especificar Splash (Sin criaturas)',
+    'fr-fr': 'Specify Splash (sans animaux)',
+    'uk-ua': 'Вкажіть сплеск (без істот)',
     'de-ch': 'Kritterlos',
     'pt-br': 'Sem criaturas',
     'hr-hr': 'Navedite prskanje (bez stvorenja)',
@@ -976,7 +998,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Пользовательское изображение',
     'es-es': 'Imagen personalizada',
     'fr-fr': 'Image personnalisée',
-    'uk-ua': 'Спеціальне зображення',
+    'uk-ua': 'Власне зображення',
     'de-ch': 'Benutzerdefiniertes Bild',
     'pt-br': 'Imagem personalizada',
     'hr-hr': 'Prilagođena slika',
@@ -997,8 +1019,8 @@ export const preferencesText = createDictionary({
     'en-us': 'A URL to a page that would be embedded on the home page:',
     'ru-ru': 'URL-адрес страницы, которая будет встроена на главную страницу:',
     'es-es': 'Una URL a una página que se insertaría en la página de inicio:',
-    'fr-fr': "Une URL vers une page qui serait intégrée à la page d'accueil :",
-    'uk-ua': 'URL-адреса сторінки, яка буде вбудована на домашній сторінці:',
+    'fr-fr': "Une URL vers une page qui serait intégrée à la page d'accueil :",
+    'uk-ua': 'URL-адреса сторінки, яка буде вбудована на головній сторінці:',
     'de-ch':
       'Eine URL zu einer Seite, die auf der Startseite eingebettet werden soll:',
     'pt-br': 'Um URL para uma página que seria incorporada na página inicial:',
@@ -1059,13 +1081,13 @@ export const preferencesText = createDictionary({
     'es-es': 'Permite consultar datos de cualquier campo en cualquier tabla.',
     'fr-fr':
       "Permet d'interroger les données de n'importe quel champ de n'importe quelle table.",
-    'uk-ua': 'Дозволяє запитувати дані з будь-якого поля будь-якої таблиці.',
+    'uk-ua': 'Дозволяє запитувати дані з будь-якого поля в будь-якій таблиці.',
     'de-ch':
       'Ermöglicht das Abfragen von Daten aus beliebigen Feldern in beliebigen Tabellen.',
     'pt-br': 'Permite consultar dados de qualquer campo em qualquer tabela.',
     'hr-hr':
       'Omogućuje upite podataka iz bilo kojeg polja u bilo kojoj tablici.',
-    nb: 'Tillater spørring av data fra ethvert felt i enhver tabell.',
+    nb: 'Tillater spørring av data fra et hvilket som helst felt i en hvilken som helst tabell.',
   },
   noRestrictionsModeWarning: {
     'en-us':
@@ -1075,11 +1097,11 @@ export const preferencesText = createDictionary({
     'es-es':
       'ADVERTENCIA: habilitar esta opción puede provocar la pérdida de datos o la corrupción de la base de datos. Asegúrese de saber lo que está haciendo.',
     'uk-ua':
-      'ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або пошкодження бази даних. Переконайтеся, що ви знаєте, що робите.',
+      'ПОПЕРЕДЖЕННЯ: увімкнення цієї функції може призвести до втрати даних або пошкодження бази даних. Будь ласка, переконайтеся, що ви знаєте, що робите.',
     'de-ch':
       'WARNUNG: Die Aktivierung dieser Funktion kann zu Datenverlust oder Beschädigung der Datenbank führen. Bitte stellen Sie sicher, dass Sie wissen, was Sie tun.',
     'fr-fr':
-      "AVERTISSEMENT : l'activation de cette option peut entraîner une perte de données ou une corruption de la base de données. Veuillez vous assurer que vous savez ce que vous faites.",
+      "AVERTISSEMENT : l'activation de cette option peut entraîner une perte de données ou une corruption de la base de données. Veuillez vous assurer que vous savez ce que vous faites.",
     'pt-br':
       'AVISO: habilitar esta opção pode levar à perda de dados ou corrupção do banco de dados. Certifique-se de saber o que está fazendo.',
     'hr-hr':
@@ -1091,7 +1113,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'У вас нет разрешения на изменение этой опции.',
     'es-es': 'No tienes permiso para cambiar esta opción.',
     'fr-fr': "Vous n'êtes pas autorisé à modifier cette option",
-    'uk-ua': 'Ви не маєте дозволу змінювати цей параметр',
+    'uk-ua': 'У вас немає дозволу змінювати цей параметр',
     'de-ch': 'Sie haben keine Berechtigung, diese Option zu ändern.',
     'pt-br': 'Você não tem permissão para alterar esta opção.',
     'hr-hr': 'Nemate dopuštenje za promjenu ove opcije',
@@ -1102,9 +1124,9 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Залипающая полоса прокрутки',
     'es-es': 'Barra de desplazamiento fija',
     'fr-fr': 'Barre de défilement collante',
-    'uk-ua': 'Липка смуга прокрутки',
+    'uk-ua': 'Залипаюча смуга прокручування',
     'de-ch': 'Sticky Scroll Bar',
-    'pt-br': 'barra de rolagem fixa',
+    'pt-br': 'Barra de rolagem fixa',
     'hr-hr': 'Ljepljiva traka za pomicanje',
     nb: 'Klebrig rullefelt',
   },
@@ -1124,7 +1146,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Фон',
     'es-es': 'Fondo',
     'fr-fr': 'Arrière-plan',
-    'uk-ua': 'Фон',
+    'uk-ua': 'Передісторія',
     'de-ch': 'Hintergrund',
     'pt-br': 'Fundo',
     'hr-hr': 'Pozadina',
@@ -1167,7 +1189,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Accent color 1',
     'ru-ru': 'Дополнительный цвет 1',
     'es-es': 'Color de acento 1',
-    'fr-fr': "Couleur d'accent 1",
+    'fr-fr': "Couleur d'accentuation 1",
     'uk-ua': 'Акцентний колір 1',
     'de-ch': 'Akzentfarbe 1',
     'pt-br': 'Cor de destaque 1',
@@ -1178,7 +1200,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Accent color 2',
     'ru-ru': 'Акцентный цвет 2',
     'es-es': 'Color de acento 2',
-    'fr-fr': "Couleur d'accent 2",
+    'fr-fr': "Couleur d'accentuation 2",
     'uk-ua': 'Акцентний колір 2',
     'de-ch': 'Akzentfarbe 2',
     'pt-br': 'Cor de destaque 2',
@@ -1189,7 +1211,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Accent color 3',
     'ru-ru': 'Акцентный цвет 3',
     'es-es': 'Color de acento 3',
-    'fr-fr': "Couleur d'accent 3",
+    'fr-fr': "Couleur d'accentuation 3",
     'uk-ua': 'Акцентний колір 3',
     'de-ch': 'Akzentfarbe 3',
     'pt-br': 'Cor de destaque 3',
@@ -1200,7 +1222,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Accent color 4',
     'ru-ru': 'Дополнительный цвет 4',
     'es-es': 'Color de acento 4',
-    'fr-fr': "Couleur d'accent 4",
+    'fr-fr': "Couleur d'accentuation 4",
     'uk-ua': 'Акцентний колір 4',
     'de-ch': 'Akzentfarbe 4',
     'pt-br': 'Cor de destaque 4',
@@ -1223,7 +1245,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Количество пустых строк в конце',
     'es-es': 'Número de filas en blanco al final',
     'fr-fr': 'Nombre de lignes vides à la fin',
-    'uk-ua': 'Кількість порожніх рядків у кінці',
+    'uk-ua': 'Кількість порожніх рядків в кінці',
     'de-ch': 'Anzahl der leeren Zeilen am Ende',
     'pt-br': 'Número de linhas em branco no final',
     'hr-hr': 'Broj praznih redaka na kraju',
@@ -1235,7 +1257,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Navegue hacia el otro lado al llegar a la columna del borde.',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la colonne de bord',
-    'uk-ua': 'Перейдіть на іншу сторону, коли досягнете краю колонки',
+    'uk-ua': 'Перейти на інший бік, коли дістатися до крайньої колони',
     'de-ch':
       'Wechseln Sie zur anderen Seite, sobald Sie die Randspalte erreicht haben.',
     'pt-br': 'Navegue até o outro lado ao chegar à coluna da borda.',
@@ -1248,7 +1270,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Navegue hacia el otro lado al llegar a la fila del borde.',
     'fr-fr':
       'Naviguez de l’autre côté lorsque vous atteignez la rangée de bord',
-    'uk-ua': 'Перейдіть на іншу сторону, коли досягнете крайнього ряду',
+    'uk-ua': 'Перейти на інший бік, досягнувши крайнього ряду',
     'de-ch':
       'Wechseln Sie zur anderen Seite, sobald Sie die Randreihe erreicht haben.',
     'pt-br': 'Navegue até o outro lado ao chegar à fileira da borda.',
@@ -1260,7 +1282,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Нажатие клавиши Enter начинает редактирование ячейки',
     'es-es': 'La tecla Enter inicia la edición de la celda.',
     'fr-fr': 'La touche Entrée commence à modifier la cellule',
-    'uk-ua': 'Клавіша Enter починає редагування клітинки',
+    'uk-ua': 'Клавіша Enter починає редагування комірки',
     'de-ch': 'Die Eingabetaste startet die Bearbeitung der Zelle.',
     'pt-br': 'A tecla Enter inicia a edição da célula.',
     'hr-hr': 'Tipka Enter započinje uređivanje ćelije',
@@ -1288,7 +1310,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       'Vous pouvez vous déplacer dans la direction opposée en appuyant sur <key>Shift</key>+<key>Tab</key>.',
     'uk-ua':
-      'Ви можете рухатися в протилежному напрямку, натискаючи <key>Shift</key>+<key>Tab</key>.',
+      'Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Tab</key>.',
     'de-ch':
       'Sie können in die entgegengesetzte Richtung wechseln, indem Sie <key>Shift</key>+<key>Tab</key> drücken.',
     'pt-br':
@@ -1312,8 +1334,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Row',
     'ru-ru': 'Ряд',
     'es-es': 'Fila',
-    'fr-fr': 'Rangée',
-    'uk-ua': 'рядок',
+    'fr-fr': 'Ligne',
+    'uk-ua': 'Рядок',
     'de-ch': 'Reihe',
     'pt-br': 'Linha',
     'hr-hr': 'Red',
@@ -1323,7 +1345,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Direction of movement when <key>Enter</key> key is pressed',
     'ru-ru': 'Направление движения при нажатии клавиши <key>Enter</key>',
     'es-es': 'Dirección del movimiento al pulsar la tecla <key>Enter</key>',
-    'uk-ua': 'Напрямок руху, коли натиснуто клавішу <key>Enter</key>',
+    'uk-ua': 'Напрямок руху при натисканні клавіші <key>Enter</key>',
     'de-ch': 'Bewegungsrichtung beim Drücken der Taste <key>Enter</key>.',
     'fr-fr':
       'Direction du mouvement lorsque la touche <key>Entrer</key> est enfoncée',
@@ -1339,7 +1361,8 @@ export const preferencesText = createDictionary({
       'Вы можете переместиться в противоположном направлении, нажав <key>Shift</key>+<key>Enter</key>.',
     'es-es':
       'Puedes moverte en la dirección opuesta pulsando <key>Shift</key>+<key>Enter</key>.',
-    'fr-fr': 'Synonyme couleur.',
+    'fr-fr':
+      'Vous pouvez vous déplacer dans la direction opposée en appuyant sur <key>Shift</key>+<key>Entrée</key>.',
     'uk-ua':
       'Ви можете рухатися у протилежному напрямку, натискаючи <key>Shift</key>+<key>Enter</key>.',
     'de-ch':
@@ -1354,8 +1377,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Filter pick list items',
     'ru-ru': 'Фильтрация элементов выпадающего списка',
     'es-es': 'Filtrar elementos de la lista desplegable',
-    'fr-fr': 'Filtrer les éléments de la liste de sélection',
-    'uk-ua': 'Фільтр вибору елементів списку',
+    'fr-fr': 'Filtrer les éléments des listes à choix',
+    'uk-ua': 'Фільтрувати елементи списку вибору',
     'de-ch': 'Filter-Auswahllistenelemente',
     'pt-br': 'Filtrar itens da lista de seleção',
     'hr-hr': 'Filtriranje stavki s popisa za odabir',
@@ -1365,8 +1388,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Export file delimiter',
     'ru-ru': 'Разделитель экспортируемых файлов',
     'es-es': 'Delimitador de archivos de exportación',
-    'fr-fr': "Délimiteur de fichier d'exportation",
-    'uk-ua': 'Роздільник файлу експорту',
+    'fr-fr': 'Délimiteur du fichier exporté',
+    'uk-ua': 'Роздільник експортованого файлу',
     'de-ch': 'Exportdatei-Trennzeichen',
     'pt-br': 'Delimitador de arquivo de exportação',
     'hr-hr': 'Razdjelnik izvozne datoteke',
@@ -1374,10 +1397,10 @@ export const preferencesText = createDictionary({
   },
   exportCsvUtf8Bom: {
     'en-us': 'Add UTF-8 BOM to CSV file exports',
-    'ru-ru': 'Добавить UTF-8 BOM в экспорт CSV-файла',
+    'ru-ru': 'Добавить метку порядка байтов UTF-8 в экспортируемые CSV-файлы.',
     'es-es': 'Agregar BOM UTF-8 a las exportaciones de archivos CSV',
     'fr-fr': 'Ajouter UTF-8 BOM aux exportations de fichiers CSV',
-    'uk-ua': 'Додайте специфікацію UTF-8 до експорту файлу CSVу',
+    'uk-ua': 'Додати UTF-8 BOP до експорту CSV-файлів',
     'de-ch': 'UTF-8 BOM zum CSV-Dateiexport hinzufügen',
     'pt-br': 'Adicionar BOM UTF-8 às exportações de arquivos CSV',
     'hr-hr': 'Dodajte UTF-8 BOM u izvoze CSV datoteka',
@@ -1386,12 +1409,14 @@ export const preferencesText = createDictionary({
   exportCsvUtf8BomDescription: {
     'en-us':
       'Adds a BOM (Byte Order Mark) to exported CSV files to ensure that the file is correctly recognized and displayed by various programs (Excel, OpenRefine, etc.), preventing issues with special characters and formatting.',
-    'ru-ru': 'Корректное отображение экспортированных CSV-файлов в Excel.',
+    'ru-ru':
+      'Добавляет метку порядка байтов (BOM) к экспортируемым CSV-файлам, чтобы гарантировать правильное распознавание и отображение файла различными программами (Excel, OpenRefine и т. д.), предотвращая проблемы со специальными символами и форматированием.',
     'es-es':
       'Agrega una marca de orden de bytes (BOM, por sus siglas en inglés) a los archivos CSV exportados para garantizar que el archivo sea reconocido y visualizado correctamente por varios programas (Excel, OpenRefine, etc.), evitando problemas con caracteres especiales y formato.',
     'fr-fr':
       "Permet aux exportations de fichiers CSV de s'afficher correctement dans Excel.",
-    'uk-ua': 'Змушує експорт файлів CSV правильно відображатися в Excel.',
+    'uk-ua':
+      'Додає BOM (марку порядку байтів) до експортованих CSV-файлів, щоб забезпечити правильне розпізнавання та відображення файлу різними програмами (Excel, OpenRefine тощо), запобігаючи проблемам зі спеціальними символами та форматуванням.',
     'de-ch':
       'Sorgt dafür, dass CSV-Dateiexporte in Excel korrekt angezeigt werden.',
     'pt-br':
@@ -1404,7 +1429,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Case-sensitive',
     'ru-ru': 'С учетом регистра',
     'es-es': 'Distingue mayúsculas y minúsculas',
-    'fr-fr': 'Sensible aux majuscules et minuscules',
+    'fr-fr': 'Sensible à la casse',
     'uk-ua': 'Чутливий до регістру',
     'de-ch': 'Groß-/Kleinschreibung beachten',
     'pt-br': 'Maiúsculas e minúsculas',
@@ -1416,7 +1441,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'регистронечувствительный',
     'es-es': 'No distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Insensible à la casse',
-    'uk-ua': 'Регістр не враховується',
+    'uk-ua': 'Без урахування регістру',
     'de-ch': 'Groß-/Kleinschreibung wird nicht beachtet',
     'pt-br': 'Sem distinção entre maiúsculas e minúsculas',
     'hr-hr': 'Neosjetljivo na velika i mala slova',
@@ -1427,18 +1452,18 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать таблицы без доступа на чтение.',
     'es-es': 'Mostrar tablas sin acceso de "Lectura"',
     'fr-fr': 'Afficher les tableaux sans accès "Lecture"',
-    'uk-ua': 'Показувати таблиці без доступу «Читання»',
+    'uk-ua': 'Показати таблиці без доступу "Читання"',
     'de-ch': 'Tabellen ohne Lesezugriff anzeigen',
     'pt-br': 'Exibir tabelas sem acesso de "Leitura"',
     'hr-hr': 'Prikaži tablice bez pristupa "Čitanje"',
-    nb: 'Vis tabeller uten lesetilgang',
+    nb: 'Vis tabeller uten «Lese»-tilgang',
   },
   showNoAccessTables: {
     'en-us': 'Show tables without "Create" access',
     'ru-ru': 'Показать таблицы без доступа "Создать".',
     'es-es': 'Mostrar tablas sin acceso "Crear"',
     'fr-fr': 'Afficher les tableaux sans accès "Créer"',
-    'uk-ua': 'Показувати таблиці без доступу «Створити»',
+    'uk-ua': 'Показати таблиці без доступу "Створити"',
     'de-ch': 'Tabellen ohne "Erstellen"-Zugriff anzeigen',
     'pt-br': 'Exibir tabelas sem permissão de "Criar"',
     'hr-hr': 'Prikaži tablice bez pristupa "Izradi"',
@@ -1490,7 +1515,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Afficher les filtres de requête lors de l'exécution d'un rapport à partir d'un formulaire",
     'ru-ru': 'Отображать фильтры запроса при создании отчета из формы',
-    'uk-ua': 'Показувати фільтри запитів під час запуску звіту з форми',
+    'uk-ua': 'Відображення фільтрів запитів під час запуску звіту з форми',
     'pt-br':
       'Exibir filtros de consulta ao executar um relatório a partir de um formulário.',
     'hr-hr': 'Prikaz filtera upita prilikom pokretanja izvješća iz obrasca',
@@ -1519,7 +1544,7 @@ export const preferencesText = createDictionary({
       'Incluir el nombre de la tabla en el título de la página del navegador.',
     'fr-fr':
       'Inclure le nom de la table dans le titre de la page du navigateur',
-    'uk-ua': 'Включіть назву таблиці в заголовок сторінки браузера',
+    'uk-ua': 'Додати назву таблиці до заголовка сторінки браузера',
     'de-ch': 'Fügen Sie den Tabellennamen in den Seitentitel des Browsers ein.',
     'pt-br': 'Inclua o nome da tabela no título da página do navegador.',
     'hr-hr': 'Uključite naziv tablice u naslov stranice preglednika',
@@ -1529,9 +1554,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Focus first field',
     'de-ch': 'Fokus zuerst Feld',
     'es-es': 'Primer campo de concentración',
-    'fr-fr': 'Concentrez-vous sur le premier champ',
+    'fr-fr': 'Priorité au champ',
     'ru-ru': 'Сосредоточьтесь на первом поле',
-    'uk-ua': 'Перейти до першого поля',
+    'uk-ua': 'Фокус на першому полі',
     'pt-br': 'Foque primeiro no campo',
     'hr-hr': 'Fokusiraj prvo polje',
     nb: 'Fokuser først på feltet',
@@ -1552,7 +1577,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закрыть всплывающее окно при внешнем клике',
     'es-es': 'Cerrar ventana emergente al hacer clic fuera',
     'fr-fr': "Fermer la pop-up lors d'un clic extérieur",
-    'uk-ua': 'Закрити спливаюче вікно при зовнішньому клацанні',
+    'uk-ua': 'Закрити спливаюче вікно при зовнішньому кліку',
     'de-ch': 'Pop-up bei Klick von außen schließen',
     'pt-br': 'Fechar janela pop-up ao clicar fora dela',
     'hr-hr': 'Zatvori skočni prozor vanjskim klikom',
@@ -1573,8 +1598,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Pan inertia',
     'ru-ru': 'пан инерция',
     'es-es': 'Inercia del pan',
-    'fr-fr': 'Inertie du bac',
-    'uk-ua': 'Інерція панорами',
+    'fr-fr': 'Inertie de Pan',
+    'uk-ua': 'Інерція панорамування',
     'de-ch': 'Pan-Trägheit',
     'pt-br': 'Inércia de Pan',
     'hr-hr': 'Inercija paniranja',
@@ -1584,9 +1609,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Mouse drags',
     'ru-ru': 'Перетаскивание мышью',
     'es-es': 'Arrastre del ratón',
-    'uk-ua': 'Виділіть відповідний підрядок',
+    'uk-ua': 'Перетягування мишею',
     'de-ch': 'Maus zieht',
-    'fr-fr': 'Mettre en surbrillance la sous-chaîne correspondante',
+    'fr-fr': 'Glisser-déposer',
     'pt-br': 'Arrastar o mouse',
     'hr-hr': 'Povlačenje miša',
     nb: 'Musedrag',
@@ -1596,7 +1621,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'масштабирование с помощью колесика мыши',
     'es-es': 'Zoom con la rueda del ratón',
     'fr-fr': 'Zoom avec la molette de défilement',
-    'uk-ua': 'Масштаб колеса прокрутки',
+    'uk-ua': 'Масштабування колесом прокручування',
     'de-ch': 'Zoomen mit dem Mausrad',
     'pt-br': 'zoom com a roda de rolagem',
     'hr-hr': 'Zumiranje kotačićem za pomicanje',
@@ -1607,7 +1632,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина колонки',
     'es-es': 'Ancho de columna flexible',
     'fr-fr': 'Largeur de colonne flexible',
-    'uk-ua': 'Гнучка ширина колонки',
+    'uk-ua': 'Гнучка ширина стовпця',
     'de-ch': 'Flexible Spaltenbreite',
     'pt-br': 'Largura da coluna flexível',
     'hr-hr': 'Fleksibilna širina stupca',
@@ -1618,7 +1643,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Гибкая ширина столбца сетки подпредставлений',
     'es-es': 'Ancho de columna de cuadrícula de subvista flexible',
     'fr-fr': 'Largeur de colonne flexible de la grille de sous-vue',
-    'uk-ua': 'Гнучка ширина стовпця сітки вкладеного перегляду',
+    'uk-ua': 'Гнучка ширина стовпця сітки підвиду',
     'de-ch': 'Flexible Spaltenbreite des Unteransichtsrasters',
     'pt-br': 'Largura flexível da coluna da grade da subvisualização',
     'hr-hr': 'Fleksibilna širina stupca mreže podprikaza',
@@ -1628,8 +1653,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Close on <key>ESC</key> key press',
     'ru-ru': 'Закрыть при нажатии клавиши <key>ESC</key>',
     'es-es': 'Cerrar al pulsar la tecla <key>ESC</key>',
-    'fr-fr': 'Icône et nom de la table',
-    'uk-ua': 'Закриття натисканням клавіші <key>ESC</key>',
+    'fr-fr': 'Fermer quand <key>ESC</key> est sélectionné',
+    'uk-ua': 'Закрити натисканням клавіші <key>ESC</key>',
     'de-ch': 'Schließen durch Drücken der Taste <key>ESC</key>.',
     'pt-br': 'Fechar ao pressionar a tecla <key>ESC</key>',
     'hr-hr': 'Zatvori pritiskom tipke <key>ESC</key>',
@@ -1640,7 +1665,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закрыть при внешнем щелчке',
     'es-es': 'Cerrar haciendo clic en el exterior',
     'fr-fr': 'Fermer sur clic extérieur',
-    'uk-ua': 'Закрийте зовнішнім клацанням',
+    'uk-ua': 'Закривається зовнішнім клацанням',
     'de-ch': 'Bei Klick von außen schließen',
     'pt-br': 'Fechar ao clicar externamente',
     'hr-hr': 'Zatvori vanjskim klikom',
@@ -1651,7 +1676,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Укажите сетевой значок',
     'es-es': 'Especificar insignia de red',
     'fr-fr': 'Badge réseau Specify',
-    'uk-ua': 'Укажіть значок мережі',
+    'uk-ua': 'Вкажіть значок мережі',
     'de-ch': 'Netzwerkabzeichen angeben',
     'pt-br': 'Especificar o ícone de rede',
     'hr-hr': 'Navedite mrežnu značku',
@@ -1662,7 +1687,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Используйте удобный полнофункциональный инструмент выбора даты.',
     'es-es': 'Utilice el selector de fecha completo accesible',
     'fr-fr': 'Utiliser un sélecteur de date complet accessible',
-    'uk-ua': 'Використовуйте доступний повний засіб вибору дати',
+    'uk-ua': 'Використовуйте доступний повний вибір дати',
     'de-ch': 'Verwenden Sie die barrierefreie Datumsauswahl.',
     'pt-br': 'Use o seletor de datas completo e acessível.',
     'hr-hr': 'Koristite pristupačan alat za odabir cijelog datuma',
@@ -1673,7 +1698,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Используйте удобный инструмент выбора месяца.',
     'es-es': 'Utilice el selector de mes accesible',
     'fr-fr': 'Utiliser le sélecteur de mois accessible',
-    'uk-ua': 'Використовуйте доступний засіб вибору місяця',
+    'uk-ua': 'Використовуйте спеціальний засіб вибору місяця',
     'de-ch': 'Nutzen Sie die barrierefreie Monatsauswahl.',
     'pt-br': 'Use o seletor de mês acessível',
     'hr-hr': 'Koristite pristupačan alat za odabir mjeseca',
@@ -1684,7 +1709,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Выравнивание числовых полей по правому краю',
     'es-es': 'Alinear a la derecha los campos numéricos',
     'fr-fr': 'Justifier à droite les champs numériques',
-    'uk-ua': 'Вирівнювання по правому краю числових полів',
+    'uk-ua': 'Вирівнювання числових полів по правому краю',
     'de-ch': 'Numerische Felder rechtsbündig ausrichten',
     'pt-br': 'Justificar campos numéricos à direita',
     'hr-hr': 'Desno poravnanje numeričkih polja',
@@ -1695,7 +1720,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Закругленные углы',
     'es-es': 'esquinas redondeadas',
     'fr-fr': 'Coins arrondis',
-    'uk-ua': 'Заокруглені кути',
+    'uk-ua': 'Закруглені кути',
     'de-ch': 'Abgerundete Ecken',
     'pt-br': 'Cantos arredondados',
     'hr-hr': 'Zaobljeni kutovi',
@@ -1728,10 +1753,10 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Сжать результаты запроса',
     'es-es': 'Condensar los resultados de la consulta',
     'fr-fr': 'Condenser les résultats de la requête',
-    'uk-ua': 'Згорнути результати запиту',
+    'uk-ua': 'Стиснути результати запиту',
     'de-ch': 'Suchergebnisse zusammenfassen',
     'pt-br': 'Condensar resultados da consulta',
-    'hr-hr': 'Sažeti rezultati upita',
+    'hr-hr': 'Sažetak rezultata upita',
     nb: 'Kondenser spørreresultatene',
   },
   blurContentBehindDialog: {
@@ -1739,7 +1764,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Размыть содержимое за диалоговым окном',
     'es-es': 'Difuminar el contenido detrás del diálogo',
     'fr-fr': 'Flou le contenu derrière la boîte de dialogue',
-    'uk-ua': 'Розмити вміст за діалоговим вікном',
+    'uk-ua': 'Розмиття вмісту за діалоговим вікном',
     'de-ch': 'Inhalte hinter dem Dialog verwischen',
     'pt-br': 'Desfocar o conteúdo atrás da caixa de diálogo',
     'hr-hr': 'Zamuti sadržaj iza dijaloga',
@@ -1761,7 +1786,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запись, которая будет открыта по умолчанию',
     'es-es': 'Registro que se abrirá por defecto',
     'fr-fr': 'Enregistrement à ouvrir par défaut',
-    'uk-ua': 'Запис відкривається за умовчанням',
+    'uk-ua': 'Запис для відкриття за замовчуванням',
     'de-ch': 'Standardmäßig zu öffnender Datensatz',
     'pt-br': 'Gravar para abrir por padrão',
     'hr-hr': 'Snimanje za otvaranje prema zadanim postavkama',
@@ -1777,7 +1802,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       '<key>{altKeyName:string}</key>+<key>Cliquez sur</key> pour supprimer le nouvel onglet',
     'uk-ua':
-      '<key>{altKeyName:string}</key>+<key>Натисніть </key>, щоб закрити нову вкладку',
+      '<key>{altKeyName:string}</key>+<key>Натисніть</key>, щоб приховати нову вкладку',
     'de-ch':
       '<key>{altKeyName:string}</key>+<key>Klicken Sie auf </key>, um einen neuen Tab zu unterdrücken',
     'pt-br':
@@ -1811,7 +1836,7 @@ export const preferencesText = createDictionary({
       'Hacer que los cuadros de diálogo de formulario tengan el fondo gris.',
     'fr-fr':
       "Rendre les boîtes de dialogue de formulaire grisées sur l'arrière-plan",
-    'uk-ua': 'Зробіть діалогові вікна форми сірими фоном',
+    'uk-ua': 'Зробити діалогові вікна форми сірим фоном',
     'de-ch': 'Formulardialoge sollen einen grauen Hintergrund haben',
     'pt-br':
       'Faça com que os diálogos de formulário deixem o fundo escurecido.',
@@ -1821,9 +1846,9 @@ export const preferencesText = createDictionary({
   autoScrollTree: {
     'en-us': 'Auto scroll tree to focused node',
     'ru-ru': 'Автоматическая прокрутка дерева к сфокусированному узлу',
-    'es-es': 'Desplazamiento automático del árbol al nodo enfocado',
-    'fr-fr': 'Arbre de défilement automatique vers le nœud ciblé',
-    'uk-ua': 'Автоматичне прокручування дерева до виділеного вузла',
+    'es-es': 'Árbol de desplazamiento automático al nodo enfocado',
+    'fr-fr': "Défilement automatique dans l'arbre vers le nœud ciblé",
+    'uk-ua': 'Автоматичне прокручування дерева до фокусованого вузла',
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
     'pt-br': 'A árvore de rolagem automática leva ao nó em foco.',
     'hr-hr': 'Automatsko pomicanje stabla do fokusiranog čvora',
@@ -1845,7 +1870,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'перенос строки',
     'es-es': 'Envoltura de línea',
     'fr-fr': 'Retour à la ligne',
-    'uk-ua': 'Обтікання лініями',
+    'uk-ua': 'Перенесення рядка',
     'de-ch': 'Linienumwicklung',
     'pt-br': 'Enrolamento de linha',
     'hr-hr': 'Prelom retka',
@@ -1867,7 +1892,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Отступ с помощью <key>Tab</key>',
     'es-es': 'Sangría con <key>Tab</key>',
     'fr-fr': 'Indenter avec <key>Tabulation</key>',
-    'uk-ua': 'Відступ із <key>Tab</key>',
+    'uk-ua': 'Відступ за допомогою <key>Tab</key>',
     'de-ch': 'Einrücken mit <key>Tab</key>',
     'pt-br': 'Recuar com <key>Tab</key>',
     'hr-hr': 'Uvlačenje s <key>Tab</key>',
@@ -1889,7 +1914,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Значок и название таблицы',
     'es-es': 'Icono y nombre de la tabla',
     'fr-fr': 'Icône et nom de la table',
-    'uk-ua': 'Значок і назва таблиці',
+    'uk-ua': 'Піктограма та назва таблиці',
     'de-ch': 'Symbol- und Tabellenname',
     'pt-br': 'Ícone e nome da tabela',
     'hr-hr': 'Ikona i naziv tablice',
@@ -1899,7 +1924,7 @@ export const preferencesText = createDictionary({
     'en-us': 'Table icon',
     'ru-ru': 'значок таблицы',
     'es-es': 'Icono de mesa',
-    'fr-fr': 'Icône de tableau',
+    'fr-fr': 'Icône des tables',
     'uk-ua': 'Значок таблиці',
     'de-ch': 'Tischsymbol',
     'pt-br': 'Ícone de tabela',
@@ -1921,10 +1946,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Auto complete',
     'ru-ru': 'Автозаполнение',
     'es-es': 'Autocompletar',
-    'fr-fr':
-      "Détermine les légendes des champs, les notes d'utilisation et les légendes des tableaux",
-    'uk-ua':
-      'Визначає підписи полів, примітки щодо використання та підписи таблиць',
+    'fr-fr': 'Saisie semi-automatique',
+    'uk-ua': 'Автоматичне завершення',
     'de-ch': 'Automatische Vervollständigung',
     'pt-br': 'Preenchimento automático',
     'hr-hr': 'Automatsko dovršavanje',
@@ -1935,7 +1958,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Búsqueda que distingue entre mayúsculas y minúsculas',
     'fr-fr': 'Recherche sensible à la casse',
     'uk-ua': 'Пошук з урахуванням регістру',
-    'de-ch': 'Suche mit Berücksichtigung der Groß- und Kleinschreibung',
+    'de-ch': 'Suche mit Berücksichtigung der Groß-/Kleinschreibung',
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
     'hr-hr': 'Pretraživanje koje razlikuje velika i mala slova',
@@ -1965,8 +1988,8 @@ export const preferencesText = createDictionary({
   },
   tableIdentifier: {
     'en-us': '{tableName:string} identifier',
-    'ru-ru': 'Идентификатор {tableName:string}',
-    'es-es': 'Identificador de {tableName:string}',
+    'ru-ru': '{tableName:string} идентификатор',
+    'es-es': '{tableName:string} identificador',
     'fr-fr': 'Identifiant {tableName:string}',
     'uk-ua': 'Ідентифікатор {tableName:string}',
     'de-ch': '{tableName:string}-Identifikator',
@@ -2001,7 +2024,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Используйте новую строку в качестве разделителя.',
     'es-es': 'Utilice una nueva línea como delimitador.',
     'fr-fr': 'Utiliser une nouvelle ligne comme délimiteur',
-    'uk-ua': 'Використовуйте новий рядок як роздільник',
+    'uk-ua': 'Використовувати новий рядок як роздільник',
     'de-ch': 'Verwenden Sie einen Zeilenumbruch als Trennzeichen.',
     'pt-br': 'Usar nova linha como delimitador',
     'hr-hr': 'Koristite novi redak kao razdjelnik',
@@ -2012,7 +2035,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Используйте пользовательские разделители',
     'es-es': 'Utilice delimitadores personalizados',
     'fr-fr': 'Utiliser des délimiteurs personnalisés',
-    'uk-ua': 'Використовуйте спеціальні роздільники',
+    'uk-ua': 'Використовуйте власні роздільники',
     'de-ch': 'Benutzerdefinierte Trennzeichen verwenden',
     'pt-br': 'Use delimitadores personalizados',
     'hr-hr': 'Koristite prilagođene razdjelnike',
@@ -2028,7 +2051,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       'Une liste de délimiteurs à utiliser, en plus de ceux définis ci-dessus. Mettez un délimiteur par ligne.',
     'uk-ua':
-      'Список розділювачів для використання на додаток до визначених вище. Поставте один роздільник на рядок.',
+      'Список роздільників, які слід використовувати, на додаток до тих, що визначені вище. Розміщуйте по одному роздільнику на рядок.',
     'de-ch':
       'Eine Liste weiterer Trennzeichen, die zusätzlich zu den oben definierten verwendet werden können. Jedes Trennzeichen gehört in eine eigene Zeile.',
     'pt-br':
@@ -2043,7 +2066,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Detecta automáticamente según el formato del número de catálogo.',
     'fr-fr':
       'Détecter automatiquement en fonction du format du numéro de catalogue.',
-    'uk-ua': 'Визначати автоматично на основі формату номера каталогу.',
+    'uk-ua': 'Автоматичне визначення на основі формату каталожного номера.',
     'de-ch': 'Automatische Erkennung anhand des Katalognummernformats.',
     'pt-br': 'Detecção automática com base no formato do número de catálogo.',
     'hr-hr': 'Automatsko otkrivanje na temelju formata kataloškog broja.',
@@ -2066,7 +2089,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Использовать',
     'es-es': 'Usar',
     'fr-fr': 'Utiliser',
-    'uk-ua': 'використання',
+    'uk-ua': 'Використання',
     'de-ch': 'Verwenden',
     'pt-br': 'Usar',
     'hr-hr': 'Koristiti',
@@ -2076,8 +2099,8 @@ export const preferencesText = createDictionary({
     'en-us': 'Don’t use',
     'ru-ru': 'Не использовать',
     'es-es': 'No usar',
-    'fr-fr': 'Zoom avec la molette de défilement',
-    'uk-ua': 'Масштаб колеса прокрутки',
+    'fr-fr': 'Ne pas utiliser',
+    'uk-ua': 'Не використовуйте',
     'de-ch': 'Nicht verwenden',
     'pt-br': 'Não use',
     'hr-hr': 'Ne koristite',
@@ -2099,7 +2122,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Arriba',
     'fr-fr': 'Haut',
     'ru-ru': 'Вершина',
-    'uk-ua': 'Топ',
+    'uk-ua': 'Верх',
     'de-ch': 'Spitze',
     'pt-br': 'Principal',
     'hr-hr': 'Vrh',
@@ -2132,7 +2155,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Bien',
     'fr-fr': 'Droite',
     'ru-ru': 'Верно',
-    'uk-ua': 'правильно',
+    'uk-ua': 'Праворуч',
     'de-ch': 'Rechts',
     'pt-br': 'Certo',
     'hr-hr': 'Pravo',
@@ -2159,7 +2182,7 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Отображать звездочку "*" в заголовке вкладки, если в текущей вкладке есть несохраненные изменения.',
     'uk-ua':
-      'Показувати «*» у заголовку вкладки, якщо в поточній вкладці є незбережені зміни.',
+      'Показувати символ «*» у назві вкладки, якщо на поточній вкладці є незбережені зміни.',
     'de-ch':
       'Zeigen Sie ein "*" im Tab-Titel an, wenn im aktuellen Tab ungespeicherte Änderungen vorhanden sind.',
     'pt-br':
@@ -2180,7 +2203,7 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Remplir automatiquement l'enregistrement fusionné avec les valeurs des doublons lors de l'ouverture de la boîte de dialogue de fusion.",
     'uk-ua':
-      'Автоматичне заповнення об’єднаного запису значеннями з дублікатів під час відкриття діалогового вікна об’єднання.',
+      "Автоматично заповнювати об'єднаний запис значеннями з дублікатів під час відкриття діалогового вікна об'єднання.",
     'pt-br':
       'Preencha automaticamente o registro mesclado com os valores dos duplicados ao abrir a caixa de diálogo de mesclagem.',
     'hr-hr':
@@ -2212,20 +2235,20 @@ export const preferencesText = createDictionary({
     'fr-fr':
       "Lors de la fusion d'agents, créez automatiquement des enregistrements {agentVariantTable:string} en fonction des variations du prénom/nom.",
     'uk-ua':
-      'Під час об’єднання агентів автоматично створювати записи {agentVariantTable:string} на основі варіацій імені/прізвища.',
+      "Під час об'єднання агентів автоматично створювати записи {agentVariantTable:string} на основі варіантів імені/прізвища.",
     'pt-br':
       'Ao mesclar agentes, crie automaticamente registros {agentVariantTable:string} com base nas variações de nome/sobrenome.',
     'hr-hr':
       'Prilikom spajanja agenata, automatski kreirajte {agentVariantTable:string} zapise na temelju varijacija imena/prezimena.',
-    nb: 'Når du slår sammen agenter, opprettes {agentVariantTable:string}-oppføringer automatisk basert på variasjonene av fornavn/etternavn.',
+    nb: 'Når du slår sammen agenter, opprettes automatisk {agentVariantTable:string}-oppføringer basert på variasjonene av fornavn/etternavn.',
   },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
     'de-ch': 'Sammlungspräferenzen',
     'es-es': 'Preferencias de colección',
-    'fr-fr': 'Personnalisation',
+    'fr-fr': 'Paramètres de la collection',
     'ru-ru': 'Настройки коллекции',
-    'uk-ua': 'Налаштування',
+    'uk-ua': 'Налаштування колекції',
     'pt-br': 'Preferências de Coleção',
     'hr-hr': 'Postavke kolekcije',
     nb: 'Samlingsinnstillinger',
@@ -2246,7 +2269,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Запомнить положение диалоговых окон',
     'es-es': 'Recuerde las posiciones de las ventanas de diálogo.',
     'fr-fr': 'Mémoriser les positions des fenêtres de dialogue',
-    'uk-ua': "Запам'ятовуйте положення діалогового вікна",
+    'uk-ua': "Запам'ятайте положення діалогових вікон",
     'de-ch': 'Dialogfensterpositionen merken',
     'pt-br': 'Lembre-se das posições das janelas de diálogo.',
     'hr-hr': 'Zapamti položaje dijaloških prozora',
@@ -2257,7 +2280,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Автоматическое воспроизведение медиафайлов',
     'es-es': 'Reproducir contenido multimedia automáticamente',
     'fr-fr': 'Lire automatiquement les médias',
-    'uk-ua': 'Автоматичне відтворення медіа',
+    'uk-ua': 'Автоматичне відтворення медіафайлів',
     'de-ch': 'Medien automatisch abspielen',
     'pt-br': 'Reproduzir mídia automaticamente',
     'hr-hr': 'Automatska reprodukcija medija',
@@ -2284,7 +2307,7 @@ export const preferencesText = createDictionary({
       'Utilisez toujours la recherche du générateur de requêtes dans le formulaire de recherche',
     'ru-ru':
       'Всегда используйте поиск с помощью построителя запросов внутри формы поиска.',
-    'uk-ua': 'Завжди використовуйте пошук конструктора запитів у формі пошуку',
+    'uk-ua': 'Завжди використовуйте пошук побудовника запитів у формі пошуку',
     'pt-br':
       'Sempre utilize o construtor de consultas dentro do formulário de pesquisa.',
     'hr-hr':
@@ -2298,7 +2321,7 @@ export const preferencesText = createDictionary({
       'Localizar los nombres de los recursos de la aplicación reconocidos',
     'fr-fr': "Localisez les noms de ressources de l'application reconnues",
     'ru-ru': 'Локализуйте названия распознанных ресурсов приложения.',
-    'uk-ua': 'Локалізувати назви розпізнаних ресурсів програми',
+    'uk-ua': 'Локалізуйте назви розпізнаних ресурсів програми',
     'pt-br': 'Localize os nomes dos recursos de aplicativos reconhecidos.',
     'hr-hr': 'Lokalizirajte nazive prepoznatih resursa aplikacije',
     nb: 'Lokaliser navnene på gjenkjente appressurser',
@@ -2319,7 +2342,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'URL',
     'es-es': 'URL',
     'fr-fr': 'URL',
-    'uk-ua': 'URL',
+    'uk-ua': 'URL-адреса',
     'ru-ru': 'URL',
     'pt-br': 'URL',
     'hr-hr': 'URL',
@@ -2364,7 +2387,7 @@ export const preferencesText = createDictionary({
     'es-es': 'URL de la imagen ampliada',
     'fr-fr': "URL de l'image étendue",
     'ru-ru': 'Расширенная ссылка на изображение',
-    'uk-ua': 'Розширена URL-адреса зображення',
+    'uk-ua': 'URL-адреса розгорнутого зображення',
     'pt-br': 'URL da imagem expandida',
     'hr-hr': 'URL proširene slike',
     nb: 'Utvidet bilde-URL',
@@ -2392,7 +2415,7 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'URL-адрес изображения, которое будет отображаться рядом с логотипом «Указать» в навигационном меню.',
     'uk-ua':
-      'URL-адреса зображення, яке відображатиметься поруч із «Вказати логотип» у меню навігації.',
+      'URL-адреса зображення, яке відображатиметься поруч із логотипом «Вказати» в меню навігації.',
     'pt-br':
       'Um URL para uma imagem que será exibida ao lado do logotipo "Especificar" no menu de navegação.',
     'hr-hr':
@@ -2416,7 +2439,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Guardar color del botón',
     'fr-fr': 'Couleur du bouton Enregistrer',
     'ru-ru': 'Сохранить цвет кнопки',
-    'uk-ua': 'Зберегти колір кнопки',
+    'uk-ua': 'Колір кнопки «Зберегти»',
     'pt-br': 'Cor do botão Salvar',
     'hr-hr': 'Boja gumba za spremanje',
     nb: 'Lagre knappfarge',
@@ -2426,8 +2449,8 @@ export const preferencesText = createDictionary({
     'es-es': 'Color del botón secundario',
     'fr-fr': 'Couleur du bouton secondaire',
     'ru-ru': 'Вторичный цвет кнопки',
-    'uk-ua': 'Колір вторинної кнопки',
-    'de-ch': 'Farbe der Sekundärtaste',
+    'uk-ua': 'Колір додаткової кнопки',
+    'de-ch': 'Sekundäre Tastenfarbe',
     'pt-br': 'Cor do botão secundário',
     'hr-hr': 'Boja sekundarnog gumba',
     nb: 'Farge på sekundær knapp',
@@ -2436,9 +2459,9 @@ export const preferencesText = createDictionary({
     'en-us': 'Secondary light button color',
     'de-ch': 'Farbe des sekundären Lichtknopfes',
     'es-es': 'Color del botón de luz secundaria',
-    'fr-fr': "Couleur du bouton d'éclairage secondaire",
+    'fr-fr': 'Couleur du bouton clair secondaire',
     'ru-ru': 'Цвет кнопки вторичного освещения',
-    'uk-ua': 'Колір вторинної світлової кнопки',
+    'uk-ua': 'Колір кнопки додаткового світла',
     'pt-br': 'Cor do botão de luz secundário',
     'hr-hr': 'Boja tipke sekundarnog svjetla',
     nb: 'Farge på sekundær lysknapp',
@@ -2449,7 +2472,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Color del botón de peligro',
     'fr-fr': 'Couleur du bouton de danger',
     'ru-ru': 'Цвет кнопки «Опасность»',
-    'uk-ua': 'Колір кнопки небезпеки',
+    'uk-ua': 'Колір кнопки «Небезпека»',
     'pt-br': 'Cor do botão de perigo',
     'hr-hr': 'Boja gumba za opasnost',
     nb: 'Farge på fareknappen',
@@ -2460,7 +2483,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Color del botón de información',
     'fr-fr': "Couleur du bouton d'information",
     'ru-ru': 'Цвет кнопки информации',
-    'uk-ua': 'Колір інформаційної кнопки',
+    'uk-ua': 'Колір кнопки «Інформація»',
     'pt-br': 'Cor do botão de informações',
     'hr-hr': 'Boja gumba s informacijama',
     nb: 'Farge på infoknappen',
@@ -2504,7 +2527,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Mostrar vista básica',
     'fr-fr': 'Afficher la vue de base',
     'ru-ru': 'Отображение базового вида',
-    'uk-ua': 'Відобразити базовий вигляд',
+    'uk-ua': 'Відображення базового вигляду',
     'pt-br': 'Exibir visualização básica',
     'hr-hr': 'Prikaži osnovni prikaz',
     nb: 'Vis grunnleggende visning',
@@ -2545,7 +2568,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Vista básica',
     'fr-fr': 'Vue de base',
     'ru-ru': 'Базовый вид',
-    'uk-ua': 'Основний вигляд',
+    'uk-ua': 'Базовий вигляд',
     'pt-br': 'Visão básica',
     'hr-hr': 'Osnovni prikaz',
     nb: 'Grunnleggende visning',
@@ -2567,7 +2590,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Modo de vista previa del archivo adjunto',
     'fr-fr': 'Mode aperçu des pièces jointes',
     'ru-ru': 'режим предварительного просмотра вложений',
-    'uk-ua': 'Режим попереднього перегляду вкладених файлів',
+    'uk-ua': 'Режим попереднього перегляду вкладень',
     'pt-br': 'Modo de pré-visualização de anexos',
     'hr-hr': 'Način pregleda privitka',
     nb: 'Forhåndsvisningsmodus for vedlegg',
@@ -2600,7 +2623,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Agregar barra de búsqueda en la página de inicio',
     'fr-fr': "Ajouter une barre de recherche sur la page d'accueil",
     'ru-ru': 'Добавить строку поиска на главную страницу',
-    'uk-ua': 'Додайте рядок пошуку на головну сторінку',
+    'uk-ua': 'Додати рядок пошуку на головну сторінку',
     'pt-br': 'Adicionar barra de pesquisa na página inicial',
     'hr-hr': 'Dodajte traku za pretraživanje na početnu stranicu',
     nb: 'Legg til søkefelt på hjemmesiden',
@@ -2638,7 +2661,7 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Включить наследование {catalogNumberFieldName: string} для соседних элементов {collectionObjectGroupTableName: string}',
     'uk-ua':
-      'Увімкнути успадкування основного {catalogNumberFieldName: string} його порожнім братам і сестрам',
+      'Увімкнути успадкування {catalogNumberFieldName: string} для братів і сестер {collectionObjectGroupTableName: string}',
     'hr-hr':
       'Omogući nasljeđivanje {catalogNumberFieldName: string} za {collectionObjectGroupTableName: string} objekte iste klase',
     nb: 'Aktiver arv av {catalogNumberFieldName: string} for søsken i {collectionObjectGroupTableName: string}',
@@ -2657,7 +2680,7 @@ export const preferencesText = createDictionary({
     'ru-ru':
       'Включить наследование {catalogNumberFieldName: string} для записей {componentTableName: string}',
     'uk-ua':
-      'Увімкніть успадкування {catalogNumberFieldName: string} для записів {componentTableName: string}',
+      'Увімкнути успадкування {catalogNumberFieldName: string} для записів {componentTableName: string}',
     'hr-hr':
       'Omogući nasljeđivanje {catalogNumberFieldName: string} za zapise {componentTableName: string}',
     nb: 'Aktiver arv av {catalogNumberFieldName: string} for poster etter {componentTableName: string}',

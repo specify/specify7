@@ -436,7 +436,7 @@ export const formsText = createDictionary({
     'de-ch': 'Erster Rekord',
     'pt-br': 'Primeiro registro',
     'hr-hr': 'Prvi zapis',
-    nb: 'Første plate',
+    nb: 'Første post',
   },
   lastRecord: {
     'en-us': 'Last Record',
@@ -469,7 +469,7 @@ export const formsText = createDictionary({
     'de-ch': 'Nächster Datensatz',
     'pt-br': 'Próximo registro',
     'hr-hr': 'Sljedeći zapis',
-    nb: 'Neste opptak',
+    nb: 'Neste post',
   },
   currentRecord: {
     'en-us': 'Current object (out of {total:number|formatted})',
@@ -503,7 +503,7 @@ export const formsText = createDictionary({
     'de-ch': 'Konflikt speichern',
     'pt-br': 'Salvar conflito',
     'hr-hr': 'Spremi sukob',
-    nb: 'Lagre konflikt',
+    nb: 'Lagre-konflikt',
   },
   saveConflictDescription: {
     'en-us':
@@ -533,7 +533,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Зберегти заблоковано',
     'pt-br': 'Salvar bloqueado',
     'hr-hr': 'Spremi blokirano',
-    nb: 'Lagre blokkert',
+    nb: 'Lagring blokkert',
   },
   saveBlockedDescription: {
     'en-us': 'Form cannot be saved because of the following error:',
@@ -1108,7 +1108,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Настройка полей для массового переноса ({tableName:string})',
     'uk-ua': 'Налаштуйте поля для масового перенесення ({tableName:string})',
     'hr-hr': 'Konfigurirajte polja za skupni prijenos ({tableName:string})',
-    nb: 'Konfigurer felt for masseoverføring fremover ({tableName:string})',
+    nb: 'Konfigurer felt for masseoverføring ({tableName:string})',
   },
   carryForwardUniqueField: {
     'en-us': 'This field must be unique. It can not be carried over',
