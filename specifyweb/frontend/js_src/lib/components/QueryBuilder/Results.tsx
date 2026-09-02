@@ -154,12 +154,17 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     Promise.all(offsets.map((offset) => fetchResults(offset)))
       .then((pages) => {
         const refreshedResults = currentResults.slice();
-        pages.forEach((page, pageIndex) => {
+        // Stop applying pages once a short page is hit, so a later full page
+        // can't re-extend the array past the earliest known end of data
+        for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
+          const page = pages[pageIndex];
           const offset = offsets[pageIndex];
           refreshedResults.splice(offset, page.length, ...page);
-          if (page.length < props.fetchSize)
+          if (page.length < props.fetchSize) {
             refreshedResults.length = offset + page.length;
-        });
+            break;
+          }
+        }
         setResults(refreshedResults);
       })
       .catch(() => undefined);
