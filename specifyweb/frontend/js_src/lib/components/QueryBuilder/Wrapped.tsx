@@ -90,6 +90,7 @@ function Wrapped({
   onChange: handleChange,
   renderFieldPrefix,
   canRemoveField,
+  isFieldReadOnly,
 }: {
   readonly query: SpecifyResource<SpQuery>;
   readonly recordSet?: SpecifyResource<RecordSet>;
@@ -106,6 +107,7 @@ function Wrapped({
   }) => void;
   readonly renderFieldPrefix?: (field: QueryField, line: number) => JSX.Element;
   readonly canRemoveField?: (field: QueryField, line: number) => boolean;
+  readonly isFieldReadOnly?: (field: QueryField, line: number) => boolean;
 }): JSX.Element {
   const [query, setQuery] = useResource(queryResource);
   useErrorContext('query', query);
@@ -530,6 +532,7 @@ function Wrapped({
                 }
                 renderFieldPrefix={renderFieldPrefix}
                 canRemoveField={canRemoveField}
+                isFieldReadOnly={isFieldReadOnly}
                 onClose={(): void =>
                   dispatch({
                     type: 'ChangeOpenedElementAction',

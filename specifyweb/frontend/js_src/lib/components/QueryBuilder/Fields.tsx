@@ -26,6 +26,7 @@ export function QueryFields({
   onMappingChange: handleMappingChange,
   onRemoveField: handleRemoveField,
   canRemoveField,
+  isFieldReadOnly,
   onOpen: handleOpen,
   onClose: handleClose,
   onLineFocus: handleLineFocus,
@@ -62,6 +63,9 @@ export function QueryFields({
     | undefined;
   readonly onRemoveField: ((line: number) => void) | undefined;
   readonly canRemoveField?:
+    | ((field: QueryField, line: number) => boolean)
+    | undefined;
+  readonly isFieldReadOnly?:
     | ((field: QueryField, line: number) => boolean)
     | undefined;
   readonly onOpen: ((line: number, index: number) => void) | undefined;
@@ -213,7 +217,11 @@ export function QueryFields({
                 openedElement?.line === line ? openedElement?.index : undefined
               }
               showHiddenFields={showHiddenFields}
-              onChange={handleChangeField?.bind(undefined, line)}
+              onChange={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleChangeField?.bind(undefined, line)
+              }
               onClose={handleClose}
               onLineFocus={(target): void =>
                 (target === 'previous' && line === 0) ||
@@ -227,21 +235,34 @@ export function QueryFields({
                           : line + 1
                     )
               }
-              onMappingChange={handleMappingChange?.bind(undefined, line)}
+              onMappingChange={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleMappingChange?.bind(undefined, line)
+              }
               onMoveDown={
-                line + 1 === length || handleLineMove === undefined
+                isFieldReadOnly?.(field, line) ||
+                line + 1 === length ||
+                handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'down')
               }
               onMoveUp={
-                line === 0 || handleLineMove === undefined
+                isFieldReadOnly?.(field, line) ||
+                line === 0 ||
+                handleLineMove === undefined
                   ? undefined
                   : (): void => handleLineMove?.(line, 'up')
               }
-              onOpen={handleOpen?.bind(undefined, line)}
+              onOpen={
+                isFieldReadOnly?.(field, line)
+                  ? undefined
+                  : handleOpen?.bind(undefined, line)
+              }
               onOpenMap={handleOpenMap?.bind(undefined, line)}
               onRemove={
                 handleRemoveField !== undefined &&
+                isFieldReadOnly?.(field, line) !== true &&
                 (canRemoveField?.(field, line) ?? true)
                   ? handleRemoveField.bind(undefined, line)
                   : undefined

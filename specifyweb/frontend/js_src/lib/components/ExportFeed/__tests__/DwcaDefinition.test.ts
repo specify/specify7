@@ -191,6 +191,21 @@ describe('DwCA query field term mapping', () => {
     expect(updated.terms[0]).toBe(occurrenceId);
   });
 
+  test('normalizes the core identifier to the displayed collection object GUID', () => {
+    const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">
+      <field stringId="guid" isDisplay="false" />
+    </query></queries></core></archive>`;
+    const [mapping] = parseDefinition(xml);
+    if (mapping === undefined) throw new Error('Core mapping was not parsed');
+
+    const updated = ensureIdentifierTerm(mapping);
+    expect(updated.fields[0]).toMatchObject({
+      stringId: '1.collectionobject.guid',
+      isDisplay: true,
+    });
+    expect(updated.terms[0]).toBe(occurrenceId);
+  });
+
   test('automatically maps the expanded core default field patterns', () => {
     const fields = [
       ['1.collectionobject.guid', occurrenceId],

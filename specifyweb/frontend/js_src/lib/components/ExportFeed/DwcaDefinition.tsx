@@ -291,12 +291,15 @@ function updateMappingFields(
     }
     return candidateTerm;
   });
-  return {
+  const updatedMapping = {
     ...mapping,
     query: mapping.query.set('fields', fields),
     fields,
     terms,
   };
+  return mapping.extension
+    ? updatedMapping
+    : ensureIdentifierTerm(updatedMapping);
 }
 
 function autoMapCoreFields(
@@ -370,16 +373,21 @@ const isCollectionObjectGuid = (
 
 export function ensureIdentifierTerm(mapping: Mapping): Mapping {
   const identifierIndex = mapping.fields.findIndex(isCollectionObjectGuid);
+  const identifierStringId = `${tables.CollectionObject.tableId}.collectionobject.guid`;
   const fields =
     identifierIndex >= 0
       ? [
-          mapping.fields[identifierIndex]!,
+          {
+            ...mapping.fields[identifierIndex]!,
+            stringId: identifierStringId,
+            isDisplay: true,
+          },
           ...mapping.fields.filter((_, index) => index !== identifierIndex),
         ]
       : [
           serializeResource(
             new tables.SpQueryField.Resource({
-              stringId: `${tables.CollectionObject.tableId}.collectionobject.guid`,
+              stringId: identifierStringId,
               isRelFld: false,
               operStart: 8,
               startValue: '',
@@ -722,7 +730,7 @@ function TermPicker({
   const [isEditing, setIsEditing] = React.useState(false);
   const [showInfo, setShowInfo] = React.useState(false);
   const mappingFieldIndex = field.sourceIndex ?? fieldIndex;
-  const isCoreIdentifier = !mapping.extension && mappingFieldIndex === 0;
+  const isIdentifier = mappingFieldIndex === 0;
   const terms = mapping.extension
     ? [
         darwinCore.fields.find(({ name }) => name === occurrenceIdTerm)!,
@@ -782,10 +790,10 @@ function TermPicker({
         <div className="flex items-center gap-1">
           <Select
             aria-label={dwcaText.dwcaVocabulary()}
-            disabled={!field.isDisplay || isCoreIdentifier}
+            disabled={!field.isDisplay || isIdentifier}
             value={value}
             onValueChange={(term): void => {
-              if (isCoreIdentifier) return;
+              if (isIdentifier) return;
               if (term === customTermOption) {
                 setIsEditing(true);
                 handleChange({
@@ -894,6 +902,8 @@ function QueryMapping({
   const isCustomRowType =
     mapping.rowType !== '' && !rowTypeDefaults.includes(mapping.rowType);
   const [isEditingRowType, setIsEditingRowType] = React.useState(false);
+  const isIdentifierField = (field: QueryField): boolean =>
+    (field.sourceIndex ?? field.id) === 0;
   return (
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-auto">
       <div className="flex flex-wrap gap-3">
@@ -1040,10 +1050,8 @@ function QueryMapping({
           }
           handleChange(updateMappingFields(mapping, newFields));
         }}
-        canRemoveField={(field): boolean =>
-          mapping.extension ||
-          mapping.terms[field.sourceIndex ?? field.id] !== occurrenceIdTerm
-        }
+        canRemoveField={(field): boolean => !isIdentifierField(field)}
+        isFieldReadOnly={isIdentifierField}
       />
       {fields.length === 0 && (
         <p>{dwcaText.dwcaAddField({ query: queryText.query() })}</p>
