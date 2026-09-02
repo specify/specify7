@@ -892,25 +892,12 @@
           "isStrict": false
         },
         {
-          "tableList": "4,77-definitionItem",
-          "stringId": "4,77-definitionItem.taxontreedefitem.definitionItem",
-          "fieldName": "definitionItem",
-          "isRelFld": true,
-          "sortType": 0,
-          "position": 3,
-          "isDisplay": true,
-          "operStart": 8,
-          "startValue": "",
-          "isNot": false,
-          "isStrict": false
-        },
-        {
           "tableList": "4,4-children",
           "stringId": "4,4-children.taxon.children",
           "fieldName": "children",
           "isRelFld": true,
           "sortType": 0,
-          "position": 4,
+          "position": 3,
           "isDisplay": true,
           "operStart": 8,
           "startValue": "",
