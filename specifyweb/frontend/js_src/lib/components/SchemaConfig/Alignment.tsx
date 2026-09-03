@@ -6,7 +6,7 @@ import { localized } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
 import gbifCores from '../ExportFeed/data/gbifCores.json';
-import { coreTermPatterns } from '../ExportFeed/data/coreTermPatterns';
+import { coreTermPatterns } from '../DwcaDefinition/data/coreTermPatterns';
 import gbifExtensions from '../ExportFeed/data/gbifExtensions.json';
 
 type Vocabulary = (typeof gbifCores)[number] | (typeof gbifExtensions)[number];

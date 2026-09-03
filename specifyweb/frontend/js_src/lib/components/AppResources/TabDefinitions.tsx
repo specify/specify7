@@ -20,7 +20,7 @@ import type {
   SpViewSetObj,
 } from '../DataModel/types';
 import { RssExportFeedEditor } from '../ExportFeed';
-import { DwcaDefinitionEditor } from '../ExportFeed/DwcaDefinition';
+import { DwcaDefinitionEditor } from '../DwcaDefinition/DwcaDefinition';
 import { exportFeedSpec } from '../ExportFeed/spec';
 import { ExpressSearchConfigResourceEditor } from '../ExpressSearchConfig/ExpressSearchConfigEditor';
 import { FieldFormattersEditor } from '../FieldFormatters/Editor';
