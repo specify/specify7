@@ -174,8 +174,8 @@ msgstr "Taksongeografi"
 #, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taksa knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter "
-"og innsamling av hendelseslokaliteter."
+"Taksa knyttet til geografiske dataposter gjennom bestemmelse av "
+"samlingsobjekter og lokaliteter for innsamlingshendelser."
 
 #. Used in: 
 #, fuzzy
