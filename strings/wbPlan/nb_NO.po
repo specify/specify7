@@ -141,7 +141,7 @@ msgstr "Ignorer alltid"
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen ikke bli "
-"brukt til samsvarsformål, kun til opplasting."
+"brukt til matching, kun til opplasting."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:271
