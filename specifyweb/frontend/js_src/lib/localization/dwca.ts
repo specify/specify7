@@ -82,6 +82,9 @@ export const dwcaText = createDictionary({
   dwcaRequiredTerm: {
     'en-us': '{title:string} ({name:string})',
   },
+  dwcaTermWithQualifier: {
+    'en-us': '{title:string} ({qualifier:string})',
+  },
   dwcaMapRequiredTerms: {
     'en-us':
       'Map all required extension terms before saving: {terms:string}',

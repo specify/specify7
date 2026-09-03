@@ -9,6 +9,7 @@ import {
   ensureIdentifierTerm,
   defaultRowTypes,
   getExtensionDefinitionForRowType,
+  getTermDisplayLabel,
   getTemplateMapping,
   parseDefinition,
   serializeDefinition,
@@ -301,6 +302,24 @@ describe('DwCA query field term mapping', () => {
     expect(
       getExtensionDefinitionForRowType('https://example.org/row-type')
     ).toBe(undefined);
+  });
+
+  test('disambiguates duplicate term titles in the term picker', () => {
+    const terms = [
+      {
+        name: 'http://rs.tdwg.org/ac/terms/commenterLiteral',
+        title: 'Commenter',
+      },
+      {
+        name: 'http://rs.tdwg.org/ac/terms/commenter',
+        title: 'Commenter',
+      },
+    ] as const;
+
+    expect(getTermDisplayLabel(terms[0], terms)).toBe(
+      'Commenter (commenterLiteral)'
+    );
+    expect(getTermDisplayLabel(terms[1], terms)).toBe('Commenter (commenter)');
   });
 
   test('does not automatically map core patterns unavailable to an extension', () => {

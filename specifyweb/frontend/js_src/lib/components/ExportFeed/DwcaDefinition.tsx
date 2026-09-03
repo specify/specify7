@@ -137,6 +137,39 @@ const groupLabel = (group: string | undefined): string => {
   return label === '' ? '' : label[0].toUpperCase() + label.slice(1);
 };
 
+function getTermNameParts(name: string): RA<string> {
+  return name.split(/[\/#]/).filter((part) => part !== '');
+}
+
+export function getTermDisplayLabel(
+  term: Pick<TermDefinition, 'name' | 'title'>,
+  terms: ReadonlyArray<Pick<TermDefinition, 'name' | 'title'>>
+): string {
+  const title = term.title ?? term.name;
+  const duplicateTitles = terms.filter(
+    (candidate) => (candidate.title ?? candidate.name) === title
+  );
+  if (duplicateTitles.length < 2) return title;
+
+  const parts = getTermNameParts(term.name);
+  const qualifier = Array.from({ length: parts.length }, (_, index) =>
+    parts.slice(-(index + 1)).join('/')
+  ).find((candidate) =>
+    duplicateTitles.every(
+      (candidateTerm) =>
+        candidateTerm.name === term.name ||
+        getTermNameParts(candidateTerm.name)
+          .slice(candidate.split('/').length * -1)
+          .join('/') !== candidate
+    )
+  );
+
+  return dwcaText.dwcaTermWithQualifier({
+    title,
+    qualifier: qualifier ?? term.name,
+  });
+}
+
 export const defaultRowTypes = Array.from(
   new Set(gbifExtensions.map(({ rowType }) => rowType))
 );
@@ -887,7 +920,7 @@ function TermPicker({
                         termIndex !== mappingFieldIndex && term === name
                     )}
                   >
-                    {title}
+                    {getTermDisplayLabel({ name, title }, options)}
                   </option>
                 ))}
               </optgroup>
