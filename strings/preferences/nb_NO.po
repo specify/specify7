@@ -1,39 +1,35 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-02 11:53+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-03 08:55+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/preferences/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Preferences/index.tsx:103
 #: components/Router/Routes.tsx:381
-#, fuzzy
 msgid "preferences"
 msgstr "Innstillinger"
 
 #. Used in: Components > Header > User Tool Definitions
 #: components/Header/userToolDefinitions.ts:55
-#, fuzzy
 msgid "customization"
 msgstr "Tilpasning"
 
 #. Used in: Components > App Resources > Types ⬤ Components > Header > User Tool Definitions
 #: components/AppResources/types.tsx:93
 #: components/Header/userToolDefinitions.ts:57
-#, fuzzy
 msgid "userPreferences"
 msgstr "Brukerpreferanser"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:103
-#, fuzzy
 msgid "defaultUserPreferences"
 msgstr "Standard brukerinnstillinger"
 
@@ -47,20 +43,17 @@ msgstr "Standard brukerinnstillinger"
 #: components/Preferences/UserDefinitions.tsx:1795
 #: components/Preferences/UserDefinitions.tsx:1990
 #: components/Preferences/UserDefinitions.tsx:2305
-#, fuzzy
 msgid "general"
-msgstr "General"
+msgstr "Generelt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:173
 #: components/Preferences/UserDefinitions.tsx:927
-#, fuzzy
 msgid "ui"
 msgstr "Brukergrensesnitt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:184
-#, fuzzy
 msgid "theme"
 msgstr "Tema"
 
@@ -69,7 +62,6 @@ msgstr "Tema"
 #: components/Preferences/UserDefinitions.tsx:226
 #: components/Preferences/UserDefinitions.tsx:248
 #: components/Preferences/UserDefinitions.tsx:269
-#, fuzzy
 msgid "useSystemSetting"
 msgstr "Bruk systeminnstillingen"
 
@@ -78,33 +70,28 @@ msgstr "Bruk systeminnstillingen"
 #: components/Preferences/UserDefinitions.tsx:227
 #: components/Preferences/UserDefinitions.tsx:249
 #: components/Preferences/UserDefinitions.tsx:270
-#, fuzzy
 msgid "inheritOsSettings"
 msgstr "Kopierer verdi fra operativsysteminnstillingene dine"
 
 #. 🟥Light mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:196
 #: components/Preferences/UserDefinitions.tsx:213
-#, fuzzy
 msgid "light"
 msgstr "Lys"
 
 #. 🟥Dark mode. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:200
 #: components/Preferences/UserDefinitions.tsx:210
-#, fuzzy
 msgid "dark"
 msgstr "Mørk"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:218
-#, fuzzy
 msgid "reduceMotion"
 msgstr "Reduser bevegelse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:219
-#, fuzzy
 msgid "reduceMotionDescription"
 msgstr "Deaktiver unødvendige animasjoner og overganger."
 
@@ -116,7 +103,6 @@ msgstr "Deaktiver unødvendige animasjoner og overganger."
 #: components/Preferences/UserDefinitions.tsx:1745
 #: components/Preferences/UserDefinitions.tsx:1777
 #: components/Preferences/__tests__/ThresholdRank.test.tsx:37
-#, fuzzy
 msgid "rankThreshold"
 msgstr "Vis antall objekter nedenfor"
 
@@ -127,149 +113,127 @@ msgstr "Vis antall objekter nedenfor"
 #: components/Preferences/UserDefinitions.tsx:1714
 #: components/Preferences/UserDefinitions.tsx:1746
 #: components/Preferences/UserDefinitions.tsx:1778
-#, fuzzy
 msgid "rankThresholdDescription"
-msgstr "Vis antallet lenkede samlingsobjekter for alle ranger under denne."
+msgstr "Vis antallet lenkede samlingsobjekter for alle nivåer under dette."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:240
-#, fuzzy
 msgid "reduceTransparency"
-msgstr "Reduser gjennomsiktigheten"
+msgstr "Reduser gjennomsiktighet"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:241
-#, fuzzy
 msgid "reduceTransparencyDescription"
 msgstr ""
 "Om gjennomskinnelige bakgrunner skal deaktiveres for "
 "brukergrensesnittkomponenter når det er mulig (f.eks. tabelloverskrifter i "
-"trevisning)."
+"tre-visning)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:262
-#, fuzzy
 msgid "contrast"
 msgstr "Kontrast"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:274
-#, fuzzy
 msgid "increase"
-msgstr "Øke"
+msgstr "Øk"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:231
 #: components/Preferences/UserDefinitions.tsx:253
 #: components/Preferences/UserDefinitions.tsx:278
-#, fuzzy
 msgid "reduce"
-msgstr "Redusere"
+msgstr "Reduser"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:235
 #: components/Preferences/UserDefinitions.tsx:257
 #: components/Preferences/UserDefinitions.tsx:282
-#, fuzzy
 msgid "noPreference"
 msgstr "Ingen preferanse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:287
 #: components/Preferences/UserDefinitions.tsx:930
-#, fuzzy
 msgid "fontSize"
 msgstr "Skriftstørrelse"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:307
 #: components/Preferences/UserDefinitions.tsx:942
-#, fuzzy
 msgid "fontFamily"
-msgstr "Skriftfamilie"
+msgstr "Skriftfont-familie"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:308
 #: components/Preferences/UserDefinitions.tsx:943
-#, fuzzy
 msgid "fontFamilyDescription"
 msgstr ""
-"Du kan angi hvilken som helst skrifttype som finnes på datamaskinen din, "
-"selv om den ikke er i listen. En kommaseparert liste over skrifter støttes "
-"også, der hver påfølgende skrifttype vil bli brukt hvis den forrige ikke er "
-"tilgjengelig."
+"Du kan angi hvilken som helst skrift-font som finnes på datamaskinen din, "
+"selv om den ikke er i listen. En kommaseparert liste over skrift-fonter "
+"støttes også, der hver påfølgende skrift-font vil bli brukt hvis den forrige "
+"ikke er tilgjengelig."
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:201
 #: components/Preferences/Renderers.tsx:203
 #: components/Preferences/Renderers.tsx:225
-#, fuzzy
 msgid "defaultFont"
-msgstr "(standardfont)"
+msgstr "(standard skrift-font)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:951
-#, fuzzy
 msgid "maxFormWidth"
 msgstr "Maksimal skjemabredde"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1007
-#, fuzzy
 msgid "fieldBackgrounds"
 msgstr "Feltbakgrunner"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1010
-#, fuzzy
 msgid "fieldBackground"
 msgstr "Feltbakgrunn"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1018
-#, fuzzy
 msgid "disabledFieldBackground"
 msgstr "Bakgrunn for deaktivert felt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1026
-#, fuzzy
 msgid "invalidFieldBackground"
 msgstr "Ugyldig feltbakgrunn"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1034
-#, fuzzy
 msgid "requiredFieldBackground"
 msgstr "Bakgrunn for obligatoriske felt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1042
-#, fuzzy
 msgid "darkFieldBackground"
 msgstr "Feltbakgrunn (mørkt tema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1050
-#, fuzzy
 msgid "darkDisabledFieldBackground"
 msgstr "Bakgrunn for deaktivert felt (mørkt tema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1058
-#, fuzzy
 msgid "darkInvalidFieldBackground"
 msgstr "Ugyldig feltbakgrunn (mørkt tema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1066
-#, fuzzy
 msgid "darkRequiredFieldBackground"
 msgstr "Bakgrunn for obligatorisk felt (mørkt tema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:519
-#, fuzzy
 msgid "dialogs"
 msgstr "Dialoger"
 
@@ -282,45 +246,38 @@ msgstr "Dialoger"
 #: components/Preferences/UserDefinitions.tsx:1897
 #: components/Preferences/UserDefinitions.tsx:2165
 #: components/Preferences/UserDefinitions.tsx:2220
-#, fuzzy
 msgid "appearance"
 msgstr "Utseende"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:385
-#, fuzzy
 msgid "buttonsLight"
-msgstr "Knapper (lysmodus)"
+msgstr "Knapper (lys modus)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:446
-#, fuzzy
 msgid "buttonsDark"
 msgstr "Knapper (mørk modus)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:530
-#, fuzzy
 msgid "translucentDialog"
 msgstr "Gjennomsiktige dialoger"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:531
-#, fuzzy
 msgid "translucentDialogDescription"
 msgstr "Om dialoger har gjennomsiktig bakgrunn."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1404
-#, fuzzy
 msgid "alwaysPrompt"
-msgstr "Alltid oppfordret til å velge samling"
+msgstr "Alltid oppfordre til å velge samling"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1475
-#, fuzzy
 msgid "treeEditor"
-msgstr "Treredigerer"
+msgstr "Tre-editor"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1564
@@ -329,9 +286,8 @@ msgstr "Treredigerer"
 #: components/Preferences/UserDefinitions.tsx:1690
 #: components/Preferences/UserDefinitions.tsx:1729
 #: components/Preferences/UserDefinitions.tsx:1761
-#, fuzzy
 msgid "treeAccentColor"
-msgstr "Aksentfarge for treet"
+msgstr "Aksentfarge for trær"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1572
@@ -340,50 +296,42 @@ msgstr "Aksentfarge for treet"
 #: components/Preferences/UserDefinitions.tsx:1698
 #: components/Preferences/UserDefinitions.tsx:1737
 #: components/Preferences/UserDefinitions.tsx:1769
-#, fuzzy
 msgid "synonymColor"
 msgstr "Synonymfarge"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2127
-#, fuzzy
 msgid "showNewDataSetWarning"
 msgstr "Vis advarsel om nytt datasett"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2128
-#, fuzzy
 msgid "showNewDataSetWarningDescription"
 msgstr "Vis en informasjonsmelding når du oppretter et nytt datasett."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:646
-#, fuzzy
 msgid "header"
 msgstr "Navigasjonsmeny"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:507
-#, fuzzy
 msgid "application"
-msgstr "Søknad"
+msgstr "Applikasjon"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:510
-#, fuzzy
 msgid "allowDismissingErrors"
 msgstr "Tillat avvisning av feilmeldinger"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:522
 #: components/Preferences/UserDefinitions.tsx:850
-#, fuzzy
 msgid "updatePageTitle"
 msgstr "Oppdater sidetittel"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:523
-#, fuzzy
 msgid "updatePageTitleDescription"
 msgstr ""
 "Om sidetittelen skal oppdateres slik at den samsvarer med overskriften i "
@@ -391,15 +339,13 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:851
-#, fuzzy
 msgid "updatePageTitleFormDescription"
 msgstr ""
 "Om sidetittelen skal oppdateres slik at den samsvarer med gjeldende "
-"oppføring."
+"databasepost."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1166
-#, fuzzy
 msgid "queryComboBox"
 msgstr "Søkekombinasjonsboks"
 
@@ -407,21 +353,18 @@ msgstr "Søkekombinasjonsboks"
 #: components/Preferences/UserDefinitions.tsx:1121
 #: components/Preferences/UserDefinitions.tsx:1169
 #: components/Preferences/UserDefinitions.tsx:1539
-#, fuzzy
 msgid "searchAlgorithm"
 msgstr "Søkealgoritme"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1189
-#, fuzzy
 msgid "treeSearchAlgorithm"
-msgstr "Søkealgoritme (for relasjoner med tretabeller)"
+msgstr "Søkealgoritme (for relasjoner med tre-tabeller)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1128
 #: components/Preferences/UserDefinitions.tsx:1176
 #: components/Preferences/UserDefinitions.tsx:1196
-#, fuzzy
 msgid "startsWithInsensitive"
 msgstr "Starter med (ikke skille mellom store og små bokstaver)"
 
@@ -429,33 +372,28 @@ msgstr "Starter med (ikke skille mellom store og små bokstaver)"
 #: components/Preferences/UserDefinitions.tsx:1129
 #: components/Preferences/UserDefinitions.tsx:1177
 #: components/Preferences/UserDefinitions.tsx:1197
-#, fuzzy
 msgid "startsWithDescription"
-msgstr "Søk etter verdier som begynner med en gitt spørrestreng."
+msgstr "Søk etter verdier som begynner med en gitt søkestreng."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1133
-#, fuzzy
 msgid "startsWithCaseSensitive"
 msgstr "Starter med (skiller mellom store og små bokstaver)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1135
-#, fuzzy
 msgid "startsWithCaseSensitiveDescription"
-msgstr "Søk etter verdier som begynner med en gitt spørrestreng."
+msgstr "Søk etter verdier som begynner med en gitt søkestreng."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1139
 #: components/Preferences/UserDefinitions.tsx:1181
 #: components/Preferences/UserDefinitions.tsx:1201
-#, fuzzy
 msgid "containsInsensitive"
 msgstr "Inneholder (ikke skille mellom store og små bokstaver)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1144
-#, fuzzy
 msgid "containsCaseSensitive"
 msgstr "Inneholder (skiller mellom store og små bokstaver)"
 
@@ -463,24 +401,21 @@ msgstr "Inneholder (skiller mellom store og små bokstaver)"
 #: components/Preferences/UserDefinitions.tsx:1140
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#, fuzzy
 msgid "containsDescription"
 msgstr ""
-"Søk etter verdier som inneholder en gitt spørrestreng (ikke skille mellom "
+"Søk etter verdier som inneholder en gitt søkestreng (ikke skille mellom "
 "store og små bokstaver)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1145
-#, fuzzy
 msgid "containsCaseSensitiveDescription"
 msgstr ""
-"Søk etter verdier som inneholder en gitt spørrestreng (små- og store-/"
-"småskala-følsom)."
+"Søk etter verdier som inneholder en gitt søkestreng (skiller mellom små og "
+"store bokstaver)."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1183
 #: components/Preferences/UserDefinitions.tsx:1203
-#, fuzzy
 msgid "containsSecondDescription"
 msgstr ""
 "Kan bruke _ til å matche et hvilket som helst enkelttegn eller % for å "
@@ -488,70 +423,59 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1150
-#, fuzzy
 msgid "highlightMatch"
-msgstr "Marker samsvarende delstreng"
+msgstr "Marker matchede delstreng"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:830
-#, fuzzy
 msgid "languageDescription"
-msgstr "Bestemmer felttekster, bruksnotater og tabelltekster."
+msgstr "Bestemmer felttekster, notater om bruk og tabelltekster."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:545
-#, fuzzy
 msgid "showDialogIcon"
 msgstr "Vis ikon i overskriften"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:299
-#, fuzzy
 msgid "scaleInterface"
 msgstr "Skalagrensesnitt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:300
-#, fuzzy
 msgid "scaleInterfaceDescription"
 msgstr "Skaler grensesnittet slik at det samsvarer med skriftstørrelsen."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1612
-#, fuzzy
 msgid "displayAuthor"
 msgstr "Vis forfatter i treet"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1706
-#, fuzzy
 msgid "displayChronoPeriods"
 msgstr "Vis start- og sluttperioder"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1627
-#, fuzzy
 msgid "queryButtonTaxonField"
-msgstr "Felt brukt av knappen Taxon Query"
+msgstr "Felt brukt av knappen Taxon-søk"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1628
-#, fuzzy
 msgid "queryButtonTaxonFieldDescription"
 msgstr ""
-"Velg om knappen for taksontrespørring filtrerer etter takson eller "
-"foretrukket takson. Foretrukket takson samsvarer med tretellingene; taksonen "
-"følger den opprinnelige bestemmelsestaxonen."
+"Velg om knappen for taksontre-søk filtrerer etter Takson eller Foretrukket "
+"takson. Foretrukket takson matcher tre-antall; Takson følger det "
+"opprinnelige bestemmelses-taksonet."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1619
-#, fuzzy
 msgid "showSynonymCounts"
 msgstr "Vis antall for synonymiserte noder"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1620
-#, fuzzy
 msgid "showSynonymCountsDescription"
 msgstr ""
 "Vis et ekstra antall poster som ble bestemt som en node, eller noen av dens "
@@ -559,7 +483,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:607
-#, fuzzy
 msgid "welcomePage"
 msgstr "Hjemmeside"
 
@@ -567,39 +490,33 @@ msgstr "Hjemmeside"
 #: components/Errors/JsonError.tsx:65
 #: components/Preferences/Renderers.tsx:245
 #: components/Preferences/UserDefinitions.tsx:620
-#, fuzzy
 msgid "content"
 msgstr "Innhold"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:252
-#, fuzzy
 msgid "defaultImage"
-msgstr "Spesifiser Splash"
+msgstr "Specify Splash"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:256
-#, fuzzy
 msgid "critterless"
-msgstr "Spesifiser Splash (ingen kryp)"
+msgstr "Specify Splash (ingen critters)"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:264
-#, fuzzy
 msgid "customImage"
 msgstr "Tilpasset bilde"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:270
-#, fuzzy
 msgid "embeddedWebpage"
 msgstr "Innebygd nettside"
 
 #. Used in: Components > Preferences > Renderers
 #: components/Preferences/Renderers.tsx:271
-#, fuzzy
 msgid "embeddedWebpageDescription"
-msgstr "En URL til en side som ville bli innebygd på hjemmesiden:"
+msgstr "En URL til en side som ville være innebygd på hjemmesiden:"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:582
@@ -611,27 +528,23 @@ msgstr "En URL til en side som ville bli innebygd på hjemmesiden:"
 #: components/Preferences/UserDefinitions.tsx:1965
 #: components/Preferences/UserDefinitions.tsx:2177
 #: components/Preferences/UserDefinitions.tsx:2238
-#, fuzzy
 msgid "behavior"
 msgstr "Oppførsel"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:192
 #: components/Preferences/CollectionDefinitions.tsx:232
-#, fuzzy
 msgid "inheritance"
 msgstr "Arv"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1798
 #: components/Preferences/UserDefinitions.tsx:2135
-#, fuzzy
 msgid "noRestrictionsMode"
-msgstr "Ingen begrensningsmodus"
+msgstr "Ingen begrensning-modus"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2138
-#, fuzzy
 msgid "noRestrictionsModeWbDescription"
 msgstr ""
 "Tillater opplasting av data til et hvilket som helst felt i en hvilken som "
@@ -639,15 +552,13 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1801
-#, fuzzy
 msgid "noRestrictionsModeQueryDescription"
 msgstr ""
-"Tillater spørring av data fra et hvilket som helst felt i en hvilken som "
-"helst tabell."
+"Tillater søking av data fra et hvilket som helst felt i en hvilken som helst "
+"tabell."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2141
-#, fuzzy
 msgid "noRestrictionsModeWarning"
 msgstr ""
 "ADVARSEL: Aktivering av dette kan føre til datatap eller ødeleggelse av "
@@ -655,99 +566,83 @@ msgstr ""
 
 #. Used in: Components > Preferences > Index
 #: components/Preferences/index.tsx:306
-#, fuzzy
 msgid "adminsOnlyPreference"
 msgstr "Du har ikke tillatelse til å endre dette alternativet"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1830
-#, fuzzy
 msgid "stickyScrolling"
-msgstr "Klebrig rullefelt"
+msgstr "Sticky rullefelt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1079
-#, fuzzy
 msgid "foreground"
 msgstr "Forgrunn"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:328
 #: components/Preferences/UserDefinitions.tsx:1087
-#, fuzzy
 msgid "background"
 msgstr "Bakgrunn"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:205
-#, fuzzy
 msgid "sidebarTheme"
 msgstr "Sidefelt-tema"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1095
-#, fuzzy
 msgid "darkForeground"
 msgstr "Forgrunn (mørkt tema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:336
 #: components/Preferences/UserDefinitions.tsx:1103
-#, fuzzy
 msgid "darkBackground"
 msgstr "Bakgrunn (mørkt tema)"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:344
-#, fuzzy
 msgid "accentColor1"
 msgstr "Aksentfarge 1"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:352
-#, fuzzy
 msgid "accentColor2"
 msgstr "Aksentfarge 2"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:360
-#, fuzzy
 msgid "accentColor3"
 msgstr "Aksentfarge 3"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:368
-#, fuzzy
 msgid "accentColor4"
 msgstr "Aksentfarge 4"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2003
-#, fuzzy
 msgid "spreadsheet"
 msgstr "Regneark"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2006
-#, fuzzy
 msgid "minSpareRows"
 msgstr "Antall blanke rader på slutten"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2017
-#, fuzzy
 msgid "autoWrapCols"
 msgstr "Naviger til den andre siden når du når kantkolonnen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2024
-#, fuzzy
 msgid "autoWrapRows"
 msgstr "Naviger til den andre siden når du når kantraden"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2065
-#, fuzzy
 msgid "enterBeginsEditing"
 msgstr "Enter-tasten begynner å redigere cellen"
 
@@ -768,28 +663,24 @@ msgstr ""
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2039
 #: components/Preferences/UserDefinitions.tsx:2056
-#, fuzzy
 msgid "column"
-msgstr "Søyle"
+msgstr "Kolonne"
 
 #. Used in: Components > Locality Update > Status ⬤ Components > Preferences > User Definitions
 #: components/LocalityUpdate/Status.tsx:380
 #: components/LocalityUpdate/Status.tsx:423
 #: components/Preferences/UserDefinitions.tsx:2043
 #: components/Preferences/UserDefinitions.tsx:2060
-#, fuzzy
 msgid "row"
 msgstr "Rad"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2048
-#, fuzzy
 msgid "enterMoveDirection"
 msgstr "Bevegelsesretning når <key>Enter</key>-tasten trykkes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2049
-#, fuzzy
 msgid "enterMoveDirectionDescription"
 msgstr ""
 "Du kan bevege deg i motsatt retning ved å trykke <key>Shift</key>+<key>"
@@ -798,26 +689,22 @@ msgstr ""
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:34
 #: components/Preferences/UserDefinitions.tsx:2074
-#, fuzzy
 msgid "filterPickLists"
-msgstr "Filtrer valglisteelementer"
+msgstr "Filtrer plukkliste-elementer"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1842
 #: components/Preferences/UserDefinitions.tsx:2094
-#, fuzzy
 msgid "exportFileDelimiter"
-msgstr "Eksporter filskilletegn"
+msgstr "Eksporter fil-skilletegn"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1870
-#, fuzzy
 msgid "exportCsvUtf8Bom"
 msgstr "Legg til UTF-8 BOM i CSV-fileksporter"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1872
-#, fuzzy
 msgid "exportCsvUtf8BomDescription"
 msgstr ""
 "Legger til en BOM (Byte Order Mark) i eksporterte CSV-filer for å sikre at "
@@ -826,55 +713,46 @@ msgstr ""
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2085
-#, fuzzy
 msgid "caseSensitive"
-msgstr "Store/små bokstaver"
+msgstr "Skiller mellom store og små bokstaver"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2089
-#, fuzzy
 msgid "caseInsensitive"
-msgstr "Uavhengig av store og små bokstaver"
+msgstr "Skiller ikke mellom små og store bokstaver"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1810
-#, fuzzy
 msgid "showNoReadTables"
 msgstr "Vis tabeller uten «Lese»-tilgang"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2151
-#, fuzzy
 msgid "showNoAccessTables"
 msgstr "Vis tabeller uten «Opprett»-tilgang"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:843
-#, fuzzy
 msgid "textAreaAutoGrow"
 msgstr "Tekstbokser vokser automatisk"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1968
-#, fuzzy
 msgid "clearQueryFilters"
 msgstr "Tilbakestill søkefiltre"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1969
-#, fuzzy
 msgid "clearQueryFiltersDescription"
-msgstr "Fjerner alle spørringsfiltre når du kjører en rapport fra et skjema."
+msgstr "Fjerner alle søkefiltre når du kjører en Rapport fra et Skjema."
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1976
-#, fuzzy
 msgid "queryParamtersFromForm"
-msgstr "Vis spørringsfiltre når du kjører en rapport fra et skjema"
+msgstr "Vis søkefiltre når du kjører en Rapport fra et Skjema"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1157
-#, fuzzy
 msgid "autoGrowAutoComplete"
 msgstr "Tillat at autofullføring utvides så bredt som nødvendig"
 
