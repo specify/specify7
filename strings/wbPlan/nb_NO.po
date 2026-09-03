@@ -226,7 +226,7 @@ msgstr "Fjern mapping"
 #: components/WbPlanView/Mapper.tsx:554
 #, fuzzy
 msgid "mapButtonDescription"
-msgstr "Tilordne valgt felt til valgt overskrift"
+msgstr "Map valgt felt til valgt overskrift"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
