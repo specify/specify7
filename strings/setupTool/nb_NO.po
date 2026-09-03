@@ -128,17 +128,15 @@ msgstr "Fylke/Region"
 #: components/SetupTool/setupResources.ts:198
 #, fuzzy
 msgid "addressStateDescription"
-msgstr "Staten eller provinsen."
+msgstr "Fylket eller regionen."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:204
-#, fuzzy
 msgid "addressCountry"
 msgstr "Land"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:205
-#, fuzzy
 msgid "addressCountryDescription"
 msgstr "Landet."
 
