@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 09:03+0000\n"
+"PO-Revision-Date: 2026-09-03 10:51+0000\n"
 "Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb_NO/>\n"
@@ -259,21 +259,18 @@ msgstr "Lagringstre"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:303
-#, fuzzy
 msgid "geographyTree"
 msgstr "Geografitre"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:339
-#, fuzzy
 msgid "taxonTree"
 msgstr "Taksontre"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:276
-#, fuzzy
 msgid "division"
-msgstr "Inndeling"
+msgstr "Divisjon"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:278
