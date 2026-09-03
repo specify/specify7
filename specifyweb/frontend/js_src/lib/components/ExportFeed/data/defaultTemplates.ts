@@ -108,4 +108,35 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
   </extension>
 </archive>`,
   },
+  {
+    name: 'Specify → EOL References Extension',
+    targets: [
+      {
+        extension: true,
+        rowType: 'http://eol.org/schema/reference/Reference',
+      },
+    ],
+    definition: `<?xml version="1.0" encoding="UTF-8"?>
+<archive>
+	<extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
+		<queries>
+			<query name="EOLrefcore.csv" contextTableId="1">
+				<id term="http://rs.tdwg.org/dwc/terms/occurrenceID" isNot="false" isRelFld="false" stringId="1.collectionobject.guid" oper="8" value=""/>
+				<field term="http://eol.org/schema/reference/publicationType" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.referenceWorkType" value=""/>
+				<field term="http://purl.org/ontology/bibo/authorList" isNot="false" isRelFld="true" oper="8" stringId="1,29-collectionObjectCitations,69,17-authors.author.authors" value=""/>
+				<field term="http://purl.org/dc/terms/title" isNot="true" isRelFld="false" oper="12" stringId="1,29-collectionObjectCitations,69.referencework.title" value=""/>
+				<field term="http://purl.org/ontology/bibo/doi" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.text2" value=""/>
+				<field term="http://purl.org/dc/terms/identifier" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.guid" value=""/>
+				<field term="http://purl.org/dc/terms/created" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.workDate" value=""/>
+				<field term="http://eol.org/schema/reference/primaryTitle" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69,51.journal.journalName" value=""/>
+				<field term="http://purl.org/ontology/bibo/volume" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.volume" value=""/>
+				<field term="http://purl.org/ontology/bibo/pages" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.pages" value=""/>
+				<field term="http://purl.org/dc/terms/publisher" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.publisher" value=""/>
+				<field term="http://schemas.talis.com/2005/address/schema#localityName" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.placeOfPublication" value=""/>
+				<field term="http://purl.org/ontology/bibo/uri" isNot="false" isRelFld="false" oper="8" stringId="1,29-collectionObjectCitations,69.referencework.url" value=""/>
+			</query>
+		</queries>
+	</extension>
+</archive>`,
+  },
 ];
