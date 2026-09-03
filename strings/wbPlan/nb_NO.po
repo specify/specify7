@@ -271,31 +271,28 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:105
-#, fuzzy
 msgid "selectBaseTableWithAttachments"
 msgstr "Velg en basistabell med vedlegg"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:499
-#, fuzzy
 msgid "dataSetUploaded"
-msgstr "Datasettet er lastet opp. Denne kartleggingen kan ikke endres."
+msgstr "Datasettet er lastet opp. Denne mappingen kan ikke endres."
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:497
-#, fuzzy
 msgid "dataSetUploadedDescription"
 msgstr ""
-"Du ser på kartleggingene for et opplastet datasett.\n"
-"For å redigere kartleggingene, tilbakestill de opplastede dataene eller "
-"opprett et nytt datasett."
+"Du ser på mappingene for et opplastet datasett.\n"
+"For å redigere mappingene, tilbakestill de opplastede dataene eller opprett "
+"et nytt datasett."
 
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/Mapper.tsx:491
 #: components/WbPlanView/MapperComponents.tsx:392
 #, fuzzy
 msgid "baseTable"
-msgstr "Basisbord"
+msgstr "Basistabell"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:388
