@@ -147,26 +147,23 @@ msgstr ""
 "vises, sammen med taksonets populærnavn og navn på bestemmer."
 
 #. Used in: 
-#, fuzzy
 msgid "CollObToLocality"
-msgstr "Samle inn arrangementslokalitet"
+msgstr "Lokalitet for innsamlingshendelse"
 
 #. Used in: 
-#, fuzzy
 msgid "CollObToLocality_desc"
 msgstr ""
-"Samle inn hendelser og deres steder, inkludert hendelsesdatoer og "
-"geografiske koordinater."
+"Innsamlingshendelser og deres lokaliteter, inkludert datoer og geografiske "
+"koordinater."
 
 #. Used in: 
-#, fuzzy
 msgid "CollObject"
-msgstr "Samlingsobjekt Takson"
+msgstr "Takson for samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
 msgid "CollObject_desc"
-msgstr "Samlingsobjekter med sine bestemte taksonnavn."
+msgstr "Samlingsobjekter med taksonnavn fra bestemmer."
 
 #. Used in: 
 #, fuzzy
