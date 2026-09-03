@@ -1205,8 +1205,15 @@ function QueryMapping({
               value={mapping.rowType}
               onValueChange={(rowType): void => {
                 if (rowType === customRowTypeOption) {
-                  setIsEditingRowType(true);
-                  handleChange({ ...mapping, rowType: '' });
+                  if (!mapping.extension && hasMappingsToReset) {
+                    setPendingCoreRowType(customRowTypeOption);
+                  } else if (!mapping.extension) {
+                    onCoreChange('');
+                    setIsEditingRowType(true);
+                  } else {
+                    setIsEditingRowType(true);
+                    handleChange({ ...mapping, rowType: '' });
+                  }
                 } else if (
                   !mapping.extension &&
                   rowType !== mapping.rowType &&
@@ -1342,7 +1349,9 @@ function QueryMapping({
             <>
               <Button.Warning
                 onClick={(): void => {
-                  onCoreChange(pendingCoreRowType);
+                  const isCustom = pendingCoreRowType === customRowTypeOption;
+                  onCoreChange(isCustom ? '' : pendingCoreRowType);
+                  setIsEditingRowType(isCustom);
                   setPendingCoreRowType(undefined);
                 }}
               >
