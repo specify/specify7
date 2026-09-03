@@ -10,7 +10,10 @@ import {
   getSerializedMappingTerm,
   ensureIdentifierTerm,
   defaultRowTypes,
+  defaultCoreRowTypes,
+  getCoreDefinitionForRowType,
   getExtensionDefinitionForRowType,
+  isExtensionApplicableToCore,
   getTermDisplayLabel,
   getTemplateMapping,
   parseDefinition,
@@ -321,6 +324,35 @@ describe('DwCA query field term mapping', () => {
     );
   });
 
+  test('provides GBIF Event and Taxon as selectable cores', () => {
+    expect(defaultCoreRowTypes).toEqual(
+      expect.arrayContaining([
+        'http://rs.tdwg.org/dwc/terms/Event',
+        'http://rs.tdwg.org/dwc/terms/Taxon',
+      ])
+    );
+    const event = getCoreDefinitionForRowType(
+      'http://rs.tdwg.org/dwc/terms/Event'
+    );
+    expect(
+      event?.fields.some(
+        (field) => field.name === 'http://rs.tdwg.org/dwc/terms/eventID'
+      )
+    ).toBe(true);
+  });
+
+  test('uses the identifier term for the selected core', () => {
+    const [mapping] = parseDefinition(
+      `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Event"><queries><query name="Event.csv" contextTableId="1"><field stringId="collectingevent.guid" /></query></queries></core></archive>`
+    );
+    if (mapping === undefined) throw new Error('Event mapping was not parsed');
+
+    expect(mapping.terms[0]).toBe('http://rs.tdwg.org/dwc/terms/eventID');
+    expect(serializeDefinition([mapping])).toContain(
+      'term="http://rs.tdwg.org/dwc/terms/eventID"'
+    );
+  });
+
   test('resolves extension definitions from their row types', () => {
     expect(
       getExtensionDefinitionForRowType('http://rs.tdwg.org/ac/terms/Multimedia')
@@ -331,6 +363,33 @@ describe('DwCA query field term mapping', () => {
     expect(
       getExtensionDefinitionForRowType('https://example.org/row-type')
     ).toBe(undefined);
+  });
+
+  test('filters extensions by their applicable core', () => {
+    const event = getExtensionDefinitionForRowType(
+      'http://rs.tdwg.org/eco/terms/Event'
+    );
+    const measurement = getExtensionDefinitionForRowType(
+      'http://rs.tdwg.org/dwc/terms/MeasurementOrFact'
+    );
+    if (event === undefined || measurement === undefined)
+      throw new Error('Expected GBIF extension definitions were not found');
+
+    expect(
+      isExtensionApplicableToCore(event, 'http://rs.tdwg.org/dwc/terms/Event')
+    ).toBe(true);
+    expect(
+      isExtensionApplicableToCore(
+        event,
+        'http://rs.tdwg.org/dwc/terms/Occurrence'
+      )
+    ).toBe(false);
+    expect(
+      isExtensionApplicableToCore(
+        measurement,
+        'http://rs.tdwg.org/dwc/terms/Taxon'
+      )
+    ).toBe(true);
   });
 
   test('disambiguates duplicate term titles in the term picker', () => {

@@ -66,10 +66,19 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/decimalLatitude': ['locality.latitude1'],
   'http://rs.tdwg.org/dwc/terms/decimalLongitude': ['locality.longitude1'],
-  'http://rs.tdwg.org/dwc/terms/individualCount': ['collectionobject.countamt'],
+  'http://rs.tdwg.org/dwc/terms/individualCount': [
+    'collectionobject.countamt',
+    'collectionobjectattribute.countamt',
+  ],
   'http://rs.tdwg.org/dwc/terms/organismQuantity': [
     'collectionobject.countamt',
+    'collectionobjectattribute.countamt',
   ],
+  'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text10'],
+  'http://rs.tdwg.org/dwc/terms/lifeStage': [
+    'collectionobjectattribute.text12',
+  ],
+  'http://rs.tdwg.org/dwc/terms/habitat': ['collectingeventattribute.text17'],
   'http://rs.tdwg.org/dwc/terms/kingdom': ['taxon.kingdom'],
   'http://rs.tdwg.org/dwc/terms/phylum': ['taxon.phylum'],
   'http://rs.tdwg.org/dwc/terms/class': ['taxon.class'],
@@ -106,9 +115,11 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/county': ['geography.county'],
   'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters': [
     'localitydetail.enddepth',
+    'collectingeventattribute.number12',
   ],
   'http://rs.tdwg.org/dwc/terms/minimumDepthInMeters': [
     'localitydetail.startdepth',
+    'collectingeventattribute.number13',
   ],
   'http://rs.tdwg.org/dwc/terms/locality': ['locality.localityname'],
   'http://rs.tdwg.org/dwc/terms/island': ['localitydetail.island'],
@@ -119,6 +130,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/collectionCode': [
     'collection.code',
+    'collectionobject.text1',
   ],
   'http://rs.tdwg.org/dwc/terms/eventRemarks': ['collectingevent.remarks'],
   'http://rs.tdwg.org/dwc/terms/institutionCode': ['institution.code'],
@@ -150,7 +162,9 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/preparations': [
     'preparations.preparation.preparations',
   ],
-  'http://rs.tdwg.org/dwc/terms/occurrenceRemarks': ['collectionobject.remarks'],
+  'http://rs.tdwg.org/dwc/terms/occurrenceRemarks': [
+    'collectionobject.remarks',
+  ],
   'http://rs.tdwg.org/dwc/terms/maximumElevationInMeters': [
     'locality.maxelevation',
   ],

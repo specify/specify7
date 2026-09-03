@@ -36,14 +36,17 @@ import { parseQueryFields } from '../QueryBuilder/helpers';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import darwinCore from './data/darwinCoreOccurrence.json';
+import gbifCores from './data/gbifCores.json';
 import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
 import { coreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
 import gbifExtensions from './data/gbifExtensions.json';
 
 type ExtensionDefinition = (typeof gbifExtensions)[number];
+type CoreDefinition = typeof darwinCore | (typeof gbifCores)[number];
+type Definition = CoreDefinition | ExtensionDefinition;
 type Mapping = {
   readonly extension: boolean;
-  readonly extensionDefinition: ExtensionDefinition | undefined;
+  readonly extensionDefinition: Definition | undefined;
   readonly rowType: string;
   readonly fileName: string;
   readonly query: SpecifyResource<SpQuery>;
@@ -65,6 +68,26 @@ const customTermOption = '__custom__';
 const customRowTypeOption = '__custom_row_type__';
 const customExtensionOption = '__custom_extension__';
 const dwcaTabParameter = 'dwcaTab';
+const coreDefinitions: readonly CoreDefinition[] = [
+  darwinCore,
+  ...gbifCores.filter(
+    ({ rowType }) => rowType !== 'http://rs.tdwg.org/dwc/terms/Occurrence'
+  ),
+];
+const coreIdentifierTerms: Readonly<Record<string, string>> = {
+  'http://rs.tdwg.org/dwc/terms/Event': 'http://rs.tdwg.org/dwc/terms/eventID',
+  'http://rs.tdwg.org/dwc/terms/Taxon': 'http://rs.tdwg.org/dwc/terms/taxonID',
+};
+const coreIdentifierPatterns: Readonly<Record<string, string>> = {
+  'http://rs.tdwg.org/dwc/terms/Event': 'collectingevent.guid',
+  'http://rs.tdwg.org/dwc/terms/Taxon': 'taxon.guid',
+};
+
+const getCoreIdentifierTerm = (rowType: string): string =>
+  coreIdentifierTerms[rowType] ?? occurrenceIdTerm;
+
+const getCoreIdentifierPattern = (rowType: string): string =>
+  coreIdentifierPatterns[rowType] ?? 'collectionobject.guid';
 
 type MappingTabMapping = Pick<Mapping, 'extension' | 'rowType'> &
   Partial<Pick<Mapping, 'extensionDefinition'>>;
@@ -79,9 +102,7 @@ function slugifyTabValue(value: string): string {
   );
 }
 
-export function getMappingTabValue(
-  mapping: MappingTabMapping
-): string {
+export function getMappingTabValue(mapping: MappingTabMapping): string {
   if (!mapping.extension) return 'core';
   return slugifyTabValue(
     mapping.extensionDefinition?.name ??
@@ -123,6 +144,7 @@ function getMappingTabIndex(
 export function getMappingTerm(
   mapping: {
     readonly extension: boolean;
+    readonly rowType?: string;
     readonly fields: ReadonlyArray<{ readonly stringId: string }>;
     readonly terms: RA<string | undefined>;
   },
@@ -131,7 +153,7 @@ export function getMappingTerm(
 ): string | undefined {
   const fieldIndex = getMappingFieldIndex(mapping, field);
   return !mapping.extension && fieldIndex === 0
-    ? occurrenceIdTerm
+    ? getCoreIdentifierTerm(mapping.rowType ?? darwinCore.rowType)
     : mapping.terms[fieldIndex];
 }
 
@@ -230,15 +252,37 @@ export const defaultRowTypes = Array.from(
   new Set(gbifExtensions.map(({ rowType }) => rowType))
 );
 
+export const defaultCoreRowTypes = Array.from(
+  new Set(coreDefinitions.map(({ rowType }) => rowType))
+);
+
 export const getExtensionDefinitionForRowType = (
   rowType: string
 ): ExtensionDefinition | undefined =>
   gbifExtensions.find((extension) => extension.rowType === rowType);
 
+export const getCoreDefinitionForRowType = (
+  rowType: string
+): CoreDefinition | undefined =>
+  coreDefinitions.find((core) => core.rowType === rowType);
+
+export function isExtensionApplicableToCore(
+  extension: Pick<ExtensionDefinition, 'subject'>,
+  coreRowType: string
+): boolean {
+  const subject = extension.subject.trim();
+  if (subject === '') return true;
+  const core = getCoreDefinitionForRowType(coreRowType);
+  if (core === undefined) return true;
+  return subject.split(/\s+/).includes(`dwc:${core.name}`);
+}
+
 const getRowTypeOptionLabel = (rowType: string): string =>
   rowType === darwinCore.rowType
     ? darwinCore.title
-    : (getExtensionDefinitionForRowType(rowType)?.title ?? rowType);
+    : (getCoreDefinitionForRowType(rowType)?.title ??
+      getExtensionDefinitionForRowType(rowType)?.title ??
+      rowType);
 
 function TermInfoDialog({
   term,
@@ -384,15 +428,15 @@ function fieldShapesEqual(
 
 function availableTermNames(
   extension: boolean,
-  extensionDefinition: ExtensionDefinition | undefined
+  definition: Definition | undefined
 ): ReadonlySet<string> {
   return new Set(
     (extension
       ? [
           darwinCore.fields.find(({ name }) => name === occurrenceIdTerm),
-          ...(extensionDefinition?.fields ?? []),
+          ...(definition?.fields ?? []),
         ]
-      : darwinCore.fields
+      : (definition ?? darwinCore).fields
     )
       .map((term) => term?.name)
       .filter((name): name is string => name !== undefined)
@@ -443,8 +487,7 @@ export function updateMappingFields(
     const pathTerms = oldMetadata.get(key);
     const pathTerm = pathTerms?.[0];
     if (pathTerms !== undefined) oldMetadata.set(key, pathTerms.slice(1));
-    const candidateTerm =
-      oldTerm ?? pathTerm ?? autoMapped[index];
+    const candidateTerm = oldTerm ?? pathTerm ?? autoMapped[index];
     if (candidateTerm === undefined) return undefined;
     // Pick-list terms may only be mapped once. Custom terms are intentionally
     // left untouched, even when they are not present in the catalogs.
@@ -484,22 +527,19 @@ function autoMapCoreFields(
   return terms;
 }
 
-function newMapping(
-  extension: boolean,
-  extensionDefinition?: ExtensionDefinition
-): Mapping {
+function newMapping(extension: boolean, definition?: Definition): Mapping {
   const query = createQuery(
-    extensionDefinition?.name ?? (extension ? 'extension' : 'core'),
+    definition?.name ?? (extension ? 'extension' : 'core'),
     tables.CollectionObject
   );
   return ensureIdentifierTerm({
     extension,
-    extensionDefinition,
+    extensionDefinition: definition,
     rowType: extension
-      ? (extensionDefinition?.rowType ?? '')
-      : darwinCore.rowType,
-    fileName: extensionDefinition
-      ? `${extensionDefinition.name}.csv`
+      ? (definition?.rowType ?? '')
+      : (definition?.rowType ?? darwinCore.rowType),
+    fileName: definition
+      ? `${definition.name}.csv`
       : extension
         ? ''
         : 'core.csv',
@@ -529,16 +569,30 @@ function mappingFromQuery(
   );
 }
 
-const isCollectionObjectGuid = (
+const isCoreIdentifierField = (
+  mapping: Pick<Mapping, 'extension' | 'rowType'>,
   field: SerializedResource<SpQueryField>
 ): boolean => {
   const stringId = field.stringId.toLowerCase();
-  return stringId === 'guid' || stringId.endsWith('.collectionobject.guid');
+  const pattern = (
+    mapping.extension
+      ? 'collectionobject.guid'
+      : getCoreIdentifierPattern(mapping.rowType)
+  ).toLowerCase();
+  return stringId === pattern || stringId.endsWith(`.${pattern}`);
 };
 
 export function ensureIdentifierTerm(mapping: Mapping): Mapping {
-  const identifierIndex = mapping.fields.findIndex(isCollectionObjectGuid);
-  const identifierStringId = `${tables.CollectionObject.tableId}.collectionobject.guid`;
+  const identifierIndex = mapping.fields.findIndex((field) =>
+    isCoreIdentifierField(mapping, field)
+  );
+  const identifierStringId =
+    mapping.extension || mapping.rowType === darwinCore.rowType
+      ? `${tables.CollectionObject.tableId}.collectionobject.guid`
+      : getCoreIdentifierPattern(mapping.rowType);
+  const identifierTerm = mapping.extension
+    ? occurrenceIdTerm
+    : getCoreIdentifierTerm(mapping.rowType);
   const fields =
     identifierIndex >= 0
       ? [
@@ -570,10 +624,10 @@ export function ensureIdentifierTerm(mapping: Mapping): Mapping {
     position,
   }));
   const terms = [
-    occurrenceIdTerm,
+    identifierTerm,
     ...mapping.terms
       .filter((_, index) => index !== identifierIndex)
-      .map((term) => (term === occurrenceIdTerm ? undefined : term)),
+      .map((term) => (term === identifierTerm ? undefined : term)),
   ];
   return {
     ...mapping,
@@ -615,9 +669,7 @@ function ExtensionDialog({
     <Dialog
       className={{ container: dialogClassNames.normalContainer }}
       icon={icons.plus}
-      header={localized(
-        `${commonText.add()} ${dwcaText.dwcaExtension()}`
-      )}
+      header={localized(`${commonText.add()} ${dwcaText.dwcaExtension()}`)}
       buttons={
         <div className="flex gap-2">
           <Button.DialogClose>{commonText.cancel()}</Button.DialogClose>
@@ -767,11 +819,10 @@ export function parseDefinition(data: string | null): RA<Mapping> {
         table
       );
       query.set('fields', fields);
+      const rowType = stanza.getAttribute('rowType') ?? '';
       const extensionDefinition = extension
-        ? gbifExtensions.find(
-            ({ rowType }) => rowType === stanza.getAttribute('rowType')
-          )
-        : undefined;
+        ? getExtensionDefinitionForRowType(rowType)
+        : getCoreDefinitionForRowType(rowType);
       const explicitTerms = fieldNodes.map(
         (field) => field.getAttribute('term') ?? undefined
       );
@@ -783,7 +834,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
       return ensureIdentifierTerm({
         extension,
         extensionDefinition,
-        rowType: stanza.getAttribute('rowType') ?? '',
+        rowType,
         fileName: extensionDefinition
           ? `${extensionDefinition.name}.csv`
           : extension
@@ -851,7 +902,12 @@ export function serializeDefinition(mappings: RA<Mapping>): string {
     let idIndex = -1;
     mapping.fields.forEach((field, index) => {
       const term = getSerializedMappingTerm(mapping, field, index);
-      const isId = field.isDisplay === true && term === occurrenceIdTerm;
+      const isId =
+        field.isDisplay === true &&
+        term ===
+          (mapping.extension
+            ? occurrenceIdTerm
+            : getCoreIdentifierTerm(mapping.rowType));
       const node = document.createElement(isId ? 'id' : 'field');
       node.setAttribute('stringId', field.stringId);
       node.setAttribute('oper', String(field.operStart));
@@ -903,7 +959,7 @@ function TermPicker({
           ({ name }) => name !== occurrenceIdTerm
         ),
       ]
-    : darwinCore.fields;
+    : (mapping.extensionDefinition?.fields ?? darwinCore.fields);
   const value = getMappingTerm(mapping, field) ?? '';
   const options: RA<TermDefinition> = terms.map(
     ({ name, title, description, vocabulary, iri, group, required }) => ({
@@ -920,8 +976,7 @@ function TermPicker({
   const isCustomTerm = value !== '' && selectedTerm === undefined;
   const groupedOptions = new Map<string, RA<TermDefinition>>();
   options.forEach((option) => {
-    const label =
-      groupLabel(option.group) || dwcaText.dwcaUnspecifiedGroup();
+    const label = groupLabel(option.group) || dwcaText.dwcaUnspecifiedGroup();
     groupedOptions.set(label, [...(groupedOptions.get(label) ?? []), option]);
   });
   return (
@@ -1039,7 +1094,7 @@ function QueryMapping({
     ) ?? [];
   const rowTypeDefaults = mapping.extension
     ? defaultRowTypes
-    : [darwinCore.rowType];
+    : defaultCoreRowTypes;
   const isCustomRowType =
     mapping.rowType !== '' && !rowTypeDefaults.includes(mapping.rowType);
   const [isEditingRowType, setIsEditingRowType] = React.useState(false);
@@ -1048,7 +1103,7 @@ function QueryMapping({
   const handleRowTypeChange = (rowType: string): void => {
     const extensionDefinition = mapping.extension
       ? getExtensionDefinitionForRowType(rowType)
-      : mapping.extensionDefinition;
+      : getCoreDefinitionForRowType(rowType);
     const previousDefaultFileName =
       mapping.extensionDefinition === undefined
         ? ''
@@ -1059,12 +1114,13 @@ function QueryMapping({
       (mapping.fileName === '' || mapping.fileName === previousDefaultFileName)
         ? `${extensionDefinition.name}.csv`
         : mapping.fileName;
-    handleChange({
+    const next = {
       ...mapping,
       rowType,
       fileName,
       extensionDefinition,
-    });
+    };
+    handleChange(updateMappingFields(next, mapping.fields));
   };
   const availableTemplates = defaultTemplates.filter((template) =>
     template.targets.some(
@@ -1096,9 +1152,7 @@ function QueryMapping({
               onBlur={(): void => {
                 if (mapping.rowType === '') setIsEditingRowType(false);
               }}
-              onValueChange={(rowType): void =>
-                handleRowTypeChange(rowType)
-              }
+              onValueChange={(rowType): void => handleRowTypeChange(rowType)}
             />
           ) : (
             <Select
@@ -1157,7 +1211,9 @@ function QueryMapping({
         )}
         {queries !== undefined && (
           <Label.Block>
-            {dwcaText.dwcaSeedFromSaved({ query: queryText.query().toLowerCase() })}
+            {dwcaText.dwcaSeedFromSaved({
+              query: queryText.query().toLowerCase(),
+            })}
             <Select
               value={localized('')}
               onValueChange={(value): void => {
@@ -1254,12 +1310,13 @@ function DwcaDefinitionEditorLoaded({
     const parsed = parseDefinition(data);
     return parsed.some(({ extension }) => !extension)
       ? parsed
-      : [newMapping(false), ...parsed];
+      : [newMapping(false, darwinCore), ...parsed];
   });
   const [tabValue, setTabValue] = useSearchParameter(dwcaTabParameter);
-  const tabValues = React.useMemo(() => getMappingTabValues(mappings), [
-    mappings,
-  ]);
+  const tabValues = React.useMemo(
+    () => getMappingTabValues(mappings),
+    [mappings]
+  );
   const tabIndex = getMappingTabIndex(mappings, tabValues, tabValue);
   const tab = Math.max(0, tabIndex);
   const [showExtensionPicker, setShowExtensionPicker] = React.useState(false);
@@ -1287,7 +1344,10 @@ function DwcaDefinitionEditorLoaded({
   const missingRequiredTerms = React.useMemo(
     () =>
       mappings.flatMap((mapping) => {
-        const missingIdentifier = mapping.terms.includes(occurrenceIdTerm)
+        const identifierTerm = mapping.extension
+          ? occurrenceIdTerm
+          : getCoreIdentifierTerm(mapping.rowType);
+        const missingIdentifier = mapping.terms.includes(identifierTerm)
           ? []
           : [dwcaText.dwcaOccurrenceId()];
         if (!mapping.extension) return missingIdentifier;
@@ -1332,24 +1392,29 @@ function DwcaDefinitionEditorLoaded({
   React.useEffect(() => {
     if (tabValue === undefined) return;
     if (tabIndex === -1) setTabValue(undefined);
-    else if (tabValues[tabIndex] !== tabValue)
-      setTabValue(tabValues[tabIndex]);
+    else if (tabValues[tabIndex] !== tabValue) setTabValue(tabValues[tabIndex]);
   }, [setTabValue, tabIndex, tabValues, tabValue]);
   const update = (next: RA<Mapping>): void => {
     setMappings(next);
     if (tabValue !== undefined) {
       const nextActive = next[tab] ?? next[0];
-      const nextTabValue = getMappingTabValues(next)[
-        nextActive === undefined ? -1 : next.indexOf(nextActive)
-      ];
+      const nextTabValue =
+        getMappingTabValues(next)[
+          nextActive === undefined ? -1 : next.indexOf(nextActive)
+        ];
       if (nextTabValue !== tabValue) setTabValue(nextTabValue);
     }
     handleChange(serializeDefinition(next));
   };
   const availableExtensions = gbifExtensions.filter(
-    ({ rowType }) =>
+    (extension) =>
+      isExtensionApplicableToCore(
+        extension,
+        mappings.find(({ extension: isExtension }) => !isExtension)?.rowType ??
+          darwinCore.rowType
+      ) &&
       !mappings.some(
-        (mapping) => mapping.extensionDefinition?.rowType === rowType
+        (mapping) => mapping.extensionDefinition?.rowType === extension.rowType
       )
   );
   const active = (mappings[tab] ?? mappings[0])!;
@@ -1412,8 +1477,9 @@ function DwcaDefinitionEditorLoaded({
           >
             {localized(
               mapping.extension
-              ? (mapping.extensionDefinition?.title ?? dwcaText.dwcaExtension())
-              : dwcaText.dwcaCore()
+                ? (mapping.extensionDefinition?.title ??
+                    dwcaText.dwcaExtension())
+                : dwcaText.dwcaCore()
             )}
           </Button.Small>
         ))}
@@ -1446,21 +1512,18 @@ function DwcaDefinitionEditorLoaded({
         onChange={(next): void => update(replaceItem(mappings, tab, next))}
         onRemove={
           active.extension
-            ? (): void =>
-                update(mappings.filter((_, index) => index !== tab))
+            ? (): void => update(mappings.filter((_, index) => index !== tab))
             : undefined
         }
-        onTemplate={
-          (template): void => {
-            const replacement = getTemplateMapping(template, active);
-            if (replacement === undefined) return;
-            update([
-              ...mappings.slice(0, tab),
-              replacement,
-              ...mappings.slice(tab + 1),
-            ]);
-          }
-        }
+        onTemplate={(template): void => {
+          const replacement = getTemplateMapping(template, active);
+          if (replacement === undefined) return;
+          update([
+            ...mappings.slice(0, tab),
+            replacement,
+            ...mappings.slice(tab + 1),
+          ]);
+        }}
       />
     </div>
   );
