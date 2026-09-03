@@ -143,8 +143,8 @@ msgstr "Takson for samlingsobjekt"
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte "
-"taksonnavnet, taksonets vanlige navn og bestemmer."
+"Samlingsobjekter med gjeldende bestemmelser, taksonnavn for bestemmelsen "
+"vises, sammen med taksonets populærnavn og navn på bestemmer."
 
 #. Used in: 
 #, fuzzy
