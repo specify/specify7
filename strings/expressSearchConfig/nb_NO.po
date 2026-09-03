@@ -262,25 +262,22 @@ msgid "LocalityAlias_desc"
 msgstr "Lokaliteter med tilhørende aliaser for lokalitetsnavn."
 
 #. Used in: 
-#, fuzzy
 msgid "CEToCO"
-msgstr "Samlingsobjekt Samlehendelse"
+msgstr "Samlingsobjekt Innsamlingshendelse"
 
 #. Used in: 
-#, fuzzy
 msgid "CEToCO_desc"
-msgstr "Samlehendelser knyttet til samlingsobjekter."
+msgstr "Innsamlingshendelser knyttet til samlingsobjekter."
 
 #. Used in: 
-#, fuzzy
 msgid "LocToCO"
-msgstr "Samlingsobjektets lokalitet"
+msgstr "Lokalitet for samlingsobjektet"
 
 #. Used in: 
 #, fuzzy
 msgid "LocToCO_desc"
 msgstr ""
-"Lokaliteter og samlingsobjektene som ble funnet på samlearrangementene deres."
+"Lokaliteter og samlingsobjektene som ble funnet ved innsamlingshendelser."
 
 #. Used in: 
 #, fuzzy
