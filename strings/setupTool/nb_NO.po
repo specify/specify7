@@ -142,25 +142,21 @@ msgstr "Landet."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:211
-#, fuzzy
 msgid "addressPostalCode"
 msgstr "Postnummer"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:212
-#, fuzzy
 msgid "addressPostalCodeDescription"
 msgstr "Postnummeret."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:218
-#, fuzzy
 msgid "addressPhone1"
 msgstr "Telefon"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:219
-#, fuzzy
 msgid "addressPhone1Description"
 msgstr "Et kontakttelefonnummer."
 
@@ -174,7 +170,6 @@ msgstr "Trerangeringer"
 
 #. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:398
-#, fuzzy
 msgid "rank"
 msgstr "Rang"
 
@@ -182,7 +177,6 @@ msgstr "Rang"
 #: components/SetupTool/setupResources.ts:266
 #: components/SetupTool/setupResources.ts:321
 #: components/SetupTool/setupResources.ts:390
-#, fuzzy
 msgid "fullNameDirection"
 msgstr "Fullt navn Retning"
 
@@ -204,19 +198,16 @@ msgstr "Last ned standardoppføringer for dette treet."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:406
-#, fuzzy
 msgid "treeToPreload"
 msgstr "Tre å laste ned:"
 
 #. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:302
-#, fuzzy
 msgid "selectATree"
 msgstr "Velg et tre"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:117
-#, fuzzy
 msgid "include"
 msgstr "Inkludere"
 
@@ -230,7 +221,7 @@ msgstr "Inkluder plasserer nivået i tredefinisjonen."
 #: components/SetupTool/setupResources.ts:126
 #, fuzzy
 msgid "enforced"
-msgstr "Håndhevet"
+msgstr "Obligatorisk"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
