@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -169,11 +169,10 @@ msgid "GeoToTaxon"
 msgstr "Taksongeografi"
 
 #. Used in: 
-#, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taksa knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter "
-"og innsamling av hendelseslokaliteter."
+"Taksoner knyttet til geografiske poster gjennom bestemmelse av "
+"samlingsobjekter og innsamling av hendelseslokaliteter."
 
 #. Used in: 
 #, fuzzy
@@ -188,12 +187,10 @@ msgstr ""
 "innsamlingshendelser."
 
 #. Used in: 
-#, fuzzy
 msgid "AcceptedTaxon"
-msgstr "Takson Foretrukket takson"
+msgstr "Takson Foretrukket taksonnavn"
 
 #. Used in: 
-#, fuzzy
 msgid "AcceptedTaxon_desc"
 msgstr ""
 "Taksoner med foretrukne, aksepterte taksonnavn, unntatt poster som mangler "
@@ -205,11 +202,10 @@ msgid "SynonymCollObjs"
 msgstr "Samlingsobjekt Foretrukket takson"
 
 #. Used in: 
-#, fuzzy
 msgid "SynonymCollObjs_desc"
 msgstr ""
 "Samlingsobjekter med bestemmelser som har både et originalt takson og et "
-"foretrukket takson."
+"foretrukket taksonnavn."
 
 #. Used in: 
 #, fuzzy
