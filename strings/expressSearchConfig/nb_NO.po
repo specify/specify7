@@ -233,39 +233,33 @@ msgid "AgentFromAgentVariant"
 msgstr "Agent Agent Variant"
 
 #. Used in: 
-#, fuzzy
 msgid "AgentFromAgentVariant_desc"
-msgstr "Agentvarianter paret med sine overordnede agentposter."
+msgstr "Varianter av agenter koblet til overordnede agentposter."
 
 #. Used in: 
-#, fuzzy
 msgid "Agent"
 msgstr "Agent"
 
 #. Used in: 
-#, fuzzy
 msgid "Agent_desc"
 msgstr "Individuelle agenter."
 
 #. Used in: 
-#, fuzzy
 msgid "AgentVariant"
-msgstr "Agentvariant"
+msgstr "Variant av agent"
 
 #. Used in: 
-#, fuzzy
 msgid "AgentVariant_desc"
-msgstr "Agentvariantoppføringer."
+msgstr "Liste over varianter av agenter."
 
 #. Used in: 
-#, fuzzy
 msgid "LocalityAlias"
-msgstr "Lokalitet Lokalitet Alias"
+msgstr "Lokalitet Lokalitet alias"
 
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias_desc"
-msgstr "Lokalitetsoppføringer med tilhørende lokalitetsnavnaliaser."
+msgstr "Lokaliteter med tilhørende aliaser for lokalitetsnavn."
 
 #. Used in: 
 #, fuzzy
