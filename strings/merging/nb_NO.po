@@ -61,14 +61,12 @@ msgstr "Kontroller for undervindu"
 
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
-#, fuzzy
 msgid "mergeFields"
 msgstr "Slå sammen {field:string}"
 
 #. Used in: Components > Merging > Index ⬤ Components > Preferences > User Definitions
 #: components/Merging/index.tsx:273
 #: components/Preferences/UserDefinitions.tsx:1931
-#, fuzzy
 msgid "autoPopulate"
 msgstr "Automatisk utfylling"
 
