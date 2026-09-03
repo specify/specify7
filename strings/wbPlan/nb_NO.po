@@ -178,24 +178,22 @@ msgstr "Denne verdien ville blitt brukt i stedet for tomme celler"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:70
-#, fuzzy
 msgid "addNewColumn"
 msgstr "Legg til ny kolonne"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:116
-#, fuzzy
 msgid "validationFailed"
-msgstr "Validering fant manglende tilordninger:"
+msgstr "Validering fant manglende mappinger:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:120
 #, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Denne datatilordningen mangler ett eller flere datafelt som kreves for "
-"opplasting av din Spesifiser-konfigurasjon. Legg til de manglende "
-"tilordningene som vises, eller lagre denne tilordningen som uferdig."
+"Denne data mapping mangler ett eller flere datafelt som kreves for "
+"opplasting av din Specify-konfigurasjon. Legg til de manglende mappinger som "
+"vises, eller lagre denne mappingen som uferdig."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
