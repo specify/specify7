@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 11:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -285,10 +285,9 @@ msgid "AccessionToCo"
 msgstr "Tilgang til samlingsobjekt"
 
 #. Used in: 
-#, fuzzy
 msgid "AccessionToCo_desc"
 msgstr ""
-"Tilganger og deres samlingsobjekter, filtrert til gjeldende bestemmelser."
+"Aksesjoner og deres samlingsobjekter, filtrert til gjeldende bestemmelser."
 
 #. Used in: 
 #, fuzzy
