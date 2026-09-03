@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 08:53+0000\n"
+"PO-Revision-Date: 2026-09-03 09:03+0000\n"
 "Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb_NO/>\n"
@@ -18,7 +18,6 @@ msgstr "Veiledet oppsett"
 
 #. Used in: Components > Setup Tool > Index
 #: components/SetupTool/index.tsx:309
-#, fuzzy
 msgid "setupProgress"
 msgstr "Status:"
 
@@ -87,9 +86,8 @@ msgstr "Adressen til institusjonen. Valgfritt."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:227
-#, fuzzy
 msgid "institutionIsAccessionGlobal"
-msgstr "Definer tiltredelse globalt"
+msgstr "Definer Aksesjon globalt"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:228
@@ -164,7 +162,6 @@ msgstr "Et kontakttelefonnummer."
 #: components/SetupTool/setupResources.ts:239
 #: components/SetupTool/setupResources.ts:307
 #: components/SetupTool/setupResources.ts:344
-#, fuzzy
 msgid "treeRanks"
 msgstr "Trerangeringer"
 
@@ -340,55 +337,46 @@ msgstr "Passord"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:467
-#, fuzzy
 msgid "specifyUserPasswordDescription"
 msgstr "Passordet for kontoen."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:472
-#, fuzzy
 msgid "specifyUserConfirmPassword"
 msgstr "Bekreft passord"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:473
-#, fuzzy
 msgid "specifyUserConfirmPasswordDescription"
 msgstr "Må samsvare med passordet som er oppgitt ovenfor."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:445
-#, fuzzy
 msgid "specifyUserFirstName"
 msgstr "Fornavn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:446
-#, fuzzy
 msgid "specifyUserFirstNameDescription"
 msgstr "Fornavnet til agenten som er knyttet til kontoen. Valgfritt."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:452
-#, fuzzy
 msgid "specifyUserLastName"
 msgstr "Etternavn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:453
-#, fuzzy
 msgid "specifyUserLastNameDescription"
 msgstr "Etternavnet til agenten som er knyttet til kontoen."
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:597
-#, fuzzy
 msgid "addNewGeographyTree"
 msgstr "Legg til nytt geografisk tre"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:615
-#, fuzzy
 msgid "addNewTaxonTree"
 msgstr "Legg til nytt taksontre"
 
@@ -396,49 +384,41 @@ msgstr "Legg til nytt taksontre"
 #: components/SystemConfigurationTool/Hierarchy.tsx:189
 #: components/SystemConfigurationTool/Hierarchy.tsx:714
 #: components/SystemConfigurationTool/Hierarchy.tsx:719
-#, fuzzy
 msgid "hierarchyStructureTitle"
 msgstr "Se det institusjonelle hierarkiet"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:193
-#, fuzzy
 msgid "hierarchyStructureHint"
 msgstr "Klikk på en hvilken som helst blokk for å åpne redigeringsskjemaet."
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:197
-#, fuzzy
 msgid "hierarchySwitchToHorizontal"
 msgstr "Bytt til horisontal"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:198
-#, fuzzy
 msgid "hierarchySwitchToVertical"
 msgstr "Bytt til vertikal"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:430
-#, fuzzy
 msgid "hierarchyAddNew"
 msgstr "Legge til"
 
 #. Used in: Components > System Configuration Tool > Hierarchy
 #: components/SystemConfigurationTool/Hierarchy.tsx:204
-#, fuzzy
 msgid "hierarchyDiagram"
 msgstr "Institusjonelt hierarki"
 
 #. Used in: Components > Setup Tool > Setup Form
 #: components/SetupTool/SetupForm.tsx:182
-#, fuzzy
 msgid "emptyTaxonTree"
 msgstr "Et tomt taksontre vil bli opprettet"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:477
-#, fuzzy
 msgid "collectionCreationStarted"
 msgstr ""
 "Den nyopprettede samlingen blir satt opp. Det kan ta litt tid før samlingen "
