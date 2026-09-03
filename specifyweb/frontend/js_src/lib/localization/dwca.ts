@@ -9,6 +9,13 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const dwcaText = createDictionary({
+  dwcaChangeCoreConfirmation: {
+    'en-us': 'Change the Darwin Core type and reset mappings?',
+  },
+  dwcaChangeCoreConfirmationDescription: {
+    'en-us':
+      'Changing the core changes the query base table and will erase the current core and extension mappings.',
+  },
   dwcaDefinition: {
     'en-us': 'Darwin Core definition',
   },
@@ -86,8 +93,7 @@ export const dwcaText = createDictionary({
     'en-us': '{title:string} ({qualifier:string})',
   },
   dwcaMapRequiredTerms: {
-    'en-us':
-      'Map all required extension terms before saving: {terms:string}',
+    'en-us': 'Map all required extension terms before saving: {terms:string}',
   },
   dwcaCore: {
     'en-us': 'Core',

@@ -1,5 +1,6 @@
 export type DwcaTemplate = {
   readonly name: string;
+  readonly coreRowTypes?: readonly string[];
   readonly definition: string;
   readonly targets: readonly {
     readonly extension: boolean;
@@ -13,6 +14,7 @@ export type DwcaTemplate = {
 export const defaultTemplates: readonly DwcaTemplate[] = [
   {
     name: 'Specify → Darwin Core Occurrence',
+    coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
     targets: [
       {
         extension: false,
@@ -80,6 +82,7 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
   },
   {
     name: 'Specify → Audiovisual Core',
+    coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
     targets: [
       {
         extension: true,
@@ -110,6 +113,7 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
   },
   {
     name: 'Specify → EOL References Extension',
+    coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
     targets: [
       {
         extension: true,
@@ -141,6 +145,7 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
   },
   {
     name: 'Specify → Identification History Extension',
+    coreRowTypes: ['http://rs.tdwg.org/dwc/terms/Occurrence'],
     targets: [
       {
         extension: true,

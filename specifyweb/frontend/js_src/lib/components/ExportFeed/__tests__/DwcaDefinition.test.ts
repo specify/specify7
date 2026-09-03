@@ -11,9 +11,11 @@ import {
   ensureIdentifierTerm,
   defaultRowTypes,
   defaultCoreRowTypes,
+  getBaseTableForCore,
   getCoreDefinitionForRowType,
   getExtensionDefinitionForRowType,
   isExtensionApplicableToCore,
+  isTemplateApplicableToCore,
   getTermDisplayLabel,
   getTemplateMapping,
   parseDefinition,
@@ -347,10 +349,53 @@ describe('DwCA query field term mapping', () => {
     );
     if (mapping === undefined) throw new Error('Event mapping was not parsed');
 
+    expect(mapping.baseTable.name).toBe('CollectingEvent');
+    expect(mapping.query.get('contextTableId')).toBe(mapping.baseTable.tableId);
     expect(mapping.terms[0]).toBe('http://rs.tdwg.org/dwc/terms/eventID');
     expect(serializeDefinition([mapping])).toContain(
       'term="http://rs.tdwg.org/dwc/terms/eventID"'
     );
+  });
+
+  test('uses the selected core table for extension mappings', () => {
+    const [mapping, extension] = parseDefinition(
+      `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Event"><queries><query name="Event.csv" contextTableId="1" /></queries></core><extension rowType="http://rs.tdwg.org/dwc/terms/MeasurementOrFact"><queries><query name="Measurement.csv" contextTableId="1" /></queries></extension></archive>`
+    );
+    if (mapping === undefined || extension === undefined)
+      throw new Error('Event mappings were not parsed');
+
+    expect(mapping.baseTable.name).toBe('CollectingEvent');
+    expect(extension.baseTable.name).toBe('CollectingEvent');
+    expect(serializeDefinition([mapping, extension])).toContain(
+      `contextTableId="${extension.baseTable.tableId}"`
+    );
+  });
+
+  test('resolves core base tables', () => {
+    expect(
+      getBaseTableForCore('http://rs.tdwg.org/dwc/terms/Occurrence').name
+    ).toBe('CollectionObject');
+    expect(getBaseTableForCore('http://rs.tdwg.org/dwc/terms/Event').name).toBe(
+      'CollectingEvent'
+    );
+    expect(getBaseTableForCore('http://rs.tdwg.org/dwc/terms/Taxon').name).toBe(
+      'Taxon'
+    );
+  });
+
+  test('filters default templates by core', () => {
+    expect(
+      isTemplateApplicableToCore(
+        defaultTemplates[0]!,
+        'http://rs.tdwg.org/dwc/terms/Occurrence'
+      )
+    ).toBe(true);
+    expect(
+      isTemplateApplicableToCore(
+        defaultTemplates[0]!,
+        'http://rs.tdwg.org/dwc/terms/Event'
+      )
+    ).toBe(false);
   });
 
   test('resolves extension definitions from their row types', () => {
