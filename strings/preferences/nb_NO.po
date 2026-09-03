@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 08:55+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/preferences/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -1291,16 +1291,15 @@ msgstr "Omfang «Hele tabellen»-valglister"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:38
-#, fuzzy
 msgid "scopeEntireTablePicklistsDescription"
 msgstr ""
-"Hvis aktivert, vil valglister av typen «Hele tabellen» bare vise elementer "
+"Hvis aktivert, vil plukklister av typen «Hele tabellen» bare vise elementer "
 "som er i bruk i gjeldende samling."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:244
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPrefDescription"
 msgstr ""
-"Bare {componentTableName: string}-poster uten en {catalogNumberFieldName: "
-"string} vil arve en fra den overordnede {collectionObjectTableName: string}."
+"Bare {componentTableName: string}-databaseposter uten en "
+"{catalogNumberFieldName: string} vil arve en fra den overordnede "
+"{collectionObjectTableName: string}."
