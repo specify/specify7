@@ -1,12 +1,13 @@
 {
   "name": "Occurrence",
   "title": "Darwin Core Occurrence",
+  "source": "https://github.com/tdwg/dwc/",
   "identifier": "http://rs.tdwg.org/dwc/terms/Occurrence",
   "url": "http://rs.gbif.org/core/dwc_occurrence_2025-07-10.xml",
   "rowType": "http://rs.tdwg.org/dwc/terms/Occurrence",
   "namespace": "http://rs.tdwg.org/dwc/terms/",
-  "issued": "2026-02-12",
-  "description": "Support for Darwin Core Occurrence-based records.",
+  "updated": "2026-09-03",
+  "description": "Terms for Darwin Core Occurrence-based records.",
   "fields": [
     {
       "name": "http://purl.org/dc/elements/1.1/type",
@@ -1789,6 +1790,591 @@
       "vocabulary": "http://rs.tdwg.org/dwc/terms/",
       "iri": "http://rs.tdwg.org/dwc/terms/taxonRemarks",
       "group": "https://dwc.tdwg.org/terms/#taxon"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/agentID",
+      "title": "Agent ID",
+      "required": false,
+      "description": "An identifier for a dcterms:Agent.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/agentID",
+      "group": "https://dwc.tdwg.org/terms/#agent"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/agentType",
+      "title": "Agent Type",
+      "required": false,
+      "description": "A category that best matches the nature of a dcterms:Agent.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/agentType",
+      "group": "https://dwc.tdwg.org/terms/#agent"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/agentRoleOrder",
+      "title": "Agent Role Order",
+      "required": false,
+      "description": "A numerical position of an AgentRole in a set of AgentRoles.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/agentRoleOrder",
+      "group": "https://dwc.tdwg.org/terms/#record-level"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/agentRemarks",
+      "title": "Agent Remarks",
+      "required": false,
+      "description": "Comments or notes about a dcterms:Agent.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/agentRemarks",
+      "group": "https://dwc.tdwg.org/terms/#agent"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionID",
+      "title": "Assertion ID",
+      "required": false,
+      "description": "An identifier for a dwc:Assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionID",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionType",
+      "title": "Assertion Type",
+      "required": false,
+      "description": "A category that best matches the nature of a dwc:Assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionType",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/verbatimAssertionType",
+      "title": "Verbatim Assertion Type",
+      "required": false,
+      "description": "A string representing the type of dwc:Assertion as it appeared in an original record.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/verbatimAssertionType",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionValue",
+      "title": "Assertion Value",
+      "required": false,
+      "description": "An asserted value.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionValue",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionUnit",
+      "title": "Assertion Unit",
+      "required": false,
+      "description": "A unit associated with the value in dwc:assertionValue.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionUnit",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionError",
+      "title": "Assertion Error",
+      "required": false,
+      "description": "A description of the potential error associated with a dwc:assertionValue.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionError",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionBy",
+      "title": "Assertion By",
+      "required": false,
+      "description": "A name for a dcterms:Agent responsible for making a dwc:Assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionBy",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionMadeDate",
+      "title": "Assertion Made Date",
+      "required": false,
+      "description": "A date on which a dwc:Assertion was created.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionMadeDate",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionEffectiveDate",
+      "title": "Assertion Effective Date",
+      "required": false,
+      "description": "A date on which a state or measurement of a dwc:Assertion was deemed to first be in effect.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionEffectiveDate",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionProtocols",
+      "title": "Assertion Protocols",
+      "required": false,
+      "description": "Names of, references to, or descriptions of dwc:Protocols used in making a dwc:Assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionProtocols",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionReferences",
+      "title": "Assertion References",
+      "required": false,
+      "description": "A list (concatenated and separated) of dcterms:BibliographicResources associated with a dwc:Assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionReferences",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assertionRemarks",
+      "title": "Assertion Remarks",
+      "required": false,
+      "description": "Comments or notes about a dwc:Assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assertionRemarks",
+      "group": "https://dwc.tdwg.org/terms/#assertion"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/referenceID",
+      "title": "Reference ID",
+      "required": false,
+      "description": "An identifier for a dcterms:BibliographicResource.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/referenceID",
+      "group": "https://dwc.tdwg.org/terms/#bibliographicresource"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/referenceType",
+      "title": "Reference Type",
+      "required": false,
+      "description": "A category that best matches the nature of a dcterms:BibliographicResource.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/referenceType",
+      "group": "https://dwc.tdwg.org/terms/#bibliographicresource"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/referenceRemarks",
+      "title": "Reference Remarks",
+      "required": false,
+      "description": "Comments or notes about a dcterms:BibliographicResource.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/referenceRemarks",
+      "group": "https://dwc.tdwg.org/terms/#bibliographicresource"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/eventCategory",
+      "title": "Event Category",
+      "required": false,
+      "description": "A broad category that best matches the nature of a dwc:Event.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/eventCategory",
+      "group": "https://dwc.tdwg.org/terms/#event"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/sampledSubstrateCategory",
+      "title": "Sampled Substrate Category",
+      "required": false,
+      "description": "A category or type of substrate sampled during a dwc:Event.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/sampledSubstrateCategory",
+      "group": "https://dwc.tdwg.org/terms/#event"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/sampledSubstrateLayer",
+      "title": "Sampled Substrate Layer",
+      "required": false,
+      "description": "A list (concatenated and separated) of substrate layers sampled during a dwc:Event.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/sampledSubstrateLayer",
+      "group": "https://dwc.tdwg.org/terms/#event"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/siteNumber",
+      "title": "Site Number",
+      "required": false,
+      "description": "An identifier for a named site.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/siteNumber",
+      "group": "https://dwc.tdwg.org/terms/#location"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/preferredSpatialRepresentation",
+      "title": "Preferred Spatial Representation",
+      "required": false,
+      "description": "An indication of which spatial representation best represents the dcterms:Location.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/preferredSpatialRepresentation",
+      "group": "https://dwc.tdwg.org/terms/#location"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/identificationType",
+      "title": "Identification Type",
+      "required": false,
+      "description": "A category that best matches the nature of a dwc:Identification.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/identificationType",
+      "group": "https://dwc.tdwg.org/terms/#identification"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/isAcceptedIdentification",
+      "title": "Is Accepted Identification",
+      "required": false,
+      "description": "An indicator that a dwc:Identification of a dwc:Organism is a currently an accepted or preferred one.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/isAcceptedIdentification",
+      "group": "https://dwc.tdwg.org/terms/#identification"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/taxonFormula",
+      "title": "Taxon Formula",
+      "required": false,
+      "description": "A string representing the pattern to use to construct a dwc:Identification from dwc:Taxon names and identification qualifiers.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/taxonFormula",
+      "group": "https://dwc.tdwg.org/terms/#identification"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/materialEntityCategory",
+      "title": "Material Entity Category",
+      "required": false,
+      "description": "A high-level, mutually exclusive classification describing the fundamental substance and origin of a dwc:MaterialEntity.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/materialEntityCategory",
+      "group": "https://dwc.tdwg.org/terms/#materialentity"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/typeOfType",
+      "title": "Type Of Type",
+      "required": false,
+      "description": "A category of nomenclatural type of a dwc:MaterialEntity.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/typeOfType",
+      "group": "https://dwc.tdwg.org/terms/#materialentity"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/objectQuantity",
+      "title": "Object Quantity",
+      "required": false,
+      "description": "A number or enumeration value for the quantity of differentiable dwc:MaterialEntities comprising this dwc:MaterialEntity.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/objectQuantity",
+      "group": "https://dwc.tdwg.org/terms/#materialentity"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/objectQuantityType",
+      "title": "Object Quantity Type",
+      "required": false,
+      "description": "The type of quantification system used for the quantity of dwc:MaterialEntities.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/objectQuantityType",
+      "group": "https://dwc.tdwg.org/terms/#materialentity"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/organismInteractionID",
+      "title": "Organism Interaction ID",
+      "required": false,
+      "description": "An identifier for a dwc:OrganismInteraction.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/organismInteractionID",
+      "group": "https://dwc.tdwg.org/terms/#organisminteraction"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/organismInteractionDescription",
+      "title": "Organism Interaction Description",
+      "required": false,
+      "description": "A verbatim description of a dwc:OrganismInteraction.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/organismInteractionDescription",
+      "group": "https://dwc.tdwg.org/terms/#organisminteraction"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/organismInteractionType",
+      "title": "Organism Interaction Type",
+      "required": false,
+      "description": "A category that best matches the nature of a dwc:OrganismInteraction.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/organismInteractionType",
+      "group": "https://dwc.tdwg.org/terms/#organisminteraction"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementID",
+      "title": "Measurement ID",
+      "required": false,
+      "description": "An identifier for the dwc:MeasurementOrFact (information pertaining to measurements, facts, characteristics, or assertions). May be a global unique identifier or an identifier specific to the data set.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementID",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/parentMeasurementID",
+      "title": "Parent Measurement ID",
+      "required": false,
+      "description": "An identifier for a broader dwc:MeasurementOrFact that groups this and potentially other dwc:MeasurementOrFacts.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/parentMeasurementID",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementType",
+      "title": "Measurement Type",
+      "required": false,
+      "description": "The nature of the measurement, fact, characteristic, or assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementType",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/verbatimMeasurementType",
+      "title": "Verbatim Measurement Type",
+      "required": false,
+      "description": "A string representing the type of measurement or fact as it appeared in the original record.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/verbatimMeasurementType",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementValue",
+      "title": "Measurement Value",
+      "required": false,
+      "description": "The value of the measurement, fact, characteristic, or assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementValue",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementAccuracy",
+      "title": "Measurement Accuracy",
+      "required": false,
+      "description": "The description of the potential error associated with the dwc:measurementValue.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementAccuracy",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementUnit",
+      "title": "Measurement Unit",
+      "required": false,
+      "description": "The units associated with the dwc:measurementValue.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementUnit",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementDeterminedBy",
+      "title": "Measurement Determined By",
+      "required": false,
+      "description": "A list (concatenated and separated) of names of people, groups, or organizations who determined the value of the dwc:MeasurementOrFact.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementDeterminedBy",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementDeterminedDate",
+      "title": "Measurement Determined Date",
+      "required": false,
+      "description": "The date on which the dwc:MeasurementOrFact was made.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementDeterminedDate",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementMethod",
+      "title": "Measurement Method",
+      "required": false,
+      "description": "A description of or reference to (publication, URI) the method or protocol used to determine the measurement, fact, characteristic, or assertion.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementMethod",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/measurementRemarks",
+      "title": "Measurement Remarks",
+      "required": false,
+      "description": "Comments or notes accompanying the dwc:MeasurementOrFact.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/measurementRemarks",
+      "group": "https://dwc.tdwg.org/terms/#measurementorfact"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/molecularProtocolID",
+      "title": "Molecular Protocol ID",
+      "required": false,
+      "description": "An identifier for a dwc:MolecularProtocol.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/molecularProtocolID",
+      "group": "https://dwc.tdwg.org/terms/#molecularprotocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/assayType",
+      "title": "Assay Type",
+      "required": false,
+      "description": "A type of method used in a study to detect taxon/taxa of interest in a dwc:MaterialEntity.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/assayType",
+      "group": "https://dwc.tdwg.org/terms/#molecularprotocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/readCount",
+      "title": "Read Count",
+      "required": false,
+      "description": "The number of reads obtained for a processed dwc:NucleotideSequence during a dwc:NucleotideAnalysis.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/readCount",
+      "group": "https://dwc.tdwg.org/terms/#nucleotideanalysis"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/processedTotalReadCount",
+      "title": "Processed Total Read Count",
+      "required": false,
+      "description": "The total number of reads obtained for a processed dwc:NucleotideSequence during a dwc:NucleotideAnalysis.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/processedTotalReadCount",
+      "group": "https://dwc.tdwg.org/terms/#nucleotideanalysis"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/sequence",
+      "title": "Sequence",
+      "required": false,
+      "description": "A string representing nucleotide base pairs.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/sequence",
+      "group": "https://dwc.tdwg.org/terms/#nucleotidesequence"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/nucleotideSequenceRemarks",
+      "title": "Nucleotide Sequence Remarks",
+      "required": false,
+      "description": "Comments or notes about a dwc:NucleotideSequence.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/nucleotideSequenceRemarks",
+      "group": "https://dwc.tdwg.org/terms/#nucleotidesequence"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/protocolID",
+      "title": "Protocol ID",
+      "required": false,
+      "description": "An identifier for a dwc:Protocol.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/protocolID",
+      "group": "https://dwc.tdwg.org/terms/#protocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/protocolType",
+      "title": "Protocol Type",
+      "required": false,
+      "description": "A category that best matches the nature of a dwc:Protocol.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/protocolType",
+      "group": "https://dwc.tdwg.org/terms/#protocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/protocolDescription",
+      "title": "Protocol Description",
+      "required": false,
+      "description": "A detailed description of a dwc:Protocol.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/protocolDescription",
+      "group": "https://dwc.tdwg.org/terms/#protocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/protocolReferences",
+      "title": "Protocol References",
+      "required": false,
+      "description": "A list (concatenated and separated) of dcterms:BibliographicResources used in a dwc:Protocol.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/protocolReferences",
+      "group": "https://dwc.tdwg.org/terms/#protocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/protocolRemarks",
+      "title": "Protocol Remarks",
+      "required": false,
+      "description": "Comments or notes about a dwc:Protocol.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/protocolRemarks",
+      "group": "https://dwc.tdwg.org/terms/#protocol"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/resourceRelationshipID",
+      "title": "Resource Relationship ID",
+      "required": false,
+      "description": "An identifier for a dwc:ResourceRelationship.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/resourceRelationshipID",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/resourceID",
+      "title": "Resource ID",
+      "required": false,
+      "description": "An identifier for the resource that is the subject of the relationship.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/resourceID",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/relationshipOfResourceID",
+      "title": "Relationship Of Resource ID",
+      "required": false,
+      "description": "An identifier for the relationship type (predicate) that connects the subject identified by dwc:resourceID to its object identified by dwc:relatedResourceID.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/relationshipOfResourceID",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/relatedResourceID",
+      "title": "Related Resource ID",
+      "required": false,
+      "description": "An identifier for the related resource (the object) of a dwc:ResourceRelationship.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/relatedResourceID",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/relationshipOfResource",
+      "title": "Relationship Of Resource",
+      "required": false,
+      "description": "The relationship of the subject (identified by dwc:resourceID) to the object (identified by dwc:relatedResourceID).",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/relationshipOfResource",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/relationshipAccordingTo",
+      "title": "Relationship According To",
+      "required": false,
+      "description": "The source (person, organization, publication, reference) establishing the relationship between the two resources.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/relationshipAccordingTo",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/relationshipEstablishedDate",
+      "title": "Relationship Established Date",
+      "required": false,
+      "description": "The date-time on which the relationship between the two resources was established.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/relationshipEstablishedDate",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://rs.tdwg.org/dwc/terms/relationshipRemarks",
+      "title": "Relationship Remarks",
+      "required": false,
+      "description": "Comments or notes about the relationship between the two resources.",
+      "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+      "iri": "http://rs.tdwg.org/dwc/terms/relationshipRemarks",
+      "group": "https://dwc.tdwg.org/terms/#resourcerelationship"
+    },
+    {
+      "name": "http://purl.org/dc/terms/language",
+      "title": "Language",
+      "required": false,
+      "description": "A language of the resource.",
+      "vocabulary": "http://purl.org/dc/terms/",
+      "iri": "http://purl.org/dc/terms/language",
+      "group": "https://dwc.tdwg.org/terms/#terms"
     }
   ]
 }
