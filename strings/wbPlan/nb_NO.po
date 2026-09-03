@@ -343,7 +343,7 @@ msgstr "Skjul felt mapper"
 #: components/WbPlanView/MapperComponents.tsx:462
 #, fuzzy
 msgid "showFieldMapper"
-msgstr "Vis feltkartlegger"
+msgstr "Vis felt mapper"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:572
