@@ -47,7 +47,7 @@ type CatalogDefinition = {
 const registryUrl = 'https://rs.gbif.org/extensions.json';
 const outputDirectory = resolve(
   process.cwd(),
-  'lib/components/ExportFeed/data'
+  'lib/components/DwcaDefinition/data'
 );
 
 const parser = new XMLParser({

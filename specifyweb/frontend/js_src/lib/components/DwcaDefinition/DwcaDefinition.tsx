@@ -35,10 +35,10 @@ import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { parseQueryFields } from '../QueryBuilder/helpers';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
-import gbifCores from '../ExportFeed/data/gbifCores.json';
+import gbifCores from './data/gbifCores.json';
 import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
 import { coreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
-import gbifExtensions from '../ExportFeed/data/gbifExtensions.json';
+import gbifExtensions from './data/gbifExtensions.json';
 
 type ExtensionDefinition = (typeof gbifExtensions)[number];
 type CoreDefinition = (typeof gbifCores)[number];

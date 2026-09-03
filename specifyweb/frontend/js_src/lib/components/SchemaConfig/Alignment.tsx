@@ -5,9 +5,9 @@ import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import gbifCores from '../ExportFeed/data/gbifCores.json';
+import gbifCores from '../DwcaDefinition/data/gbifCores.json';
 import { coreTermPatterns } from '../DwcaDefinition/data/coreTermPatterns';
-import gbifExtensions from '../ExportFeed/data/gbifExtensions.json';
+import gbifExtensions from '../DwcaDefinition/data/gbifExtensions.json';
 
 type Vocabulary = (typeof gbifCores)[number] | (typeof gbifExtensions)[number];
 type VocabularyField = Vocabulary['fields'][number];
