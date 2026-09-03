@@ -872,7 +872,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Intercambios entrantes y material de los agentes recibido de.',
     'fr-fr': 'Échanges entrants et agents donneurs',
     'hr-hr': 'Dolazne razmjene i materijal agenata je primljen od.',
-    nb: 'Innkommende utvekslinger og agentmaterialet ble mottatt fra.',
+    nb: 'Innkommende byttemateriale og agentene det ble mottatt fra.',
     'pt-br': 'Trocas recebidas e material dos agentes.',
     'ru-ru': 'Входящие обмены и материалы, полученные от агентов.',
     'uk-ua': 'Вхідні обміни та матеріали агентів, від яких було отримано.',
@@ -883,7 +883,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Agente de intercambio',
     'fr-fr': "Agents responsables de l'échange sortant",
     'hr-hr': 'Agent za razmjenu',
-    nb: 'Bytte ut agent',
+    nb: 'Utgående gaver til agent',
     'pt-br': 'Agente de troca',
     'ru-ru': 'Агент по обмену',
     'uk-ua': 'Агент з обміну',
@@ -895,7 +895,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Intercambios salientes y el material de los agentes fue enviado.',
     'fr-fr': 'Échanges sortants et agents auxquels le matériel a été envoyé.',
     'hr-hr': 'Odlazne razmjene i agenti kojima je materijal poslan.',
-    nb: 'Utgående utvekslinger og agentenes materiale ble sendt til.',
+    nb: 'Utgående byttemateriale og agentene materialet ble sendt til.',
     'pt-br': 'As trocas de saída e o material dos agentes foram enviados para.',
     'ru-ru': 'Исходящая переписка, и материалы, отправленные агентам.',
     'uk-ua': 'Вихідні обміни та агенти, яким було надіслано матеріали.',
@@ -906,7 +906,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Geografía de eventos de recolección',
     'fr-fr': 'Événements de collecte et lieux',
     'hr-hr': 'Prikupljanje podataka o geografiji događaja',
-    nb: 'Samle inn hendelsesgeografi',
+    nb: 'Geografi for innsamlingshendelse',
     'pt-br': 'Coletando Geografia de Eventos',
     'ru-ru': 'География событий коллекционирования',
     'uk-ua': 'Збір географії подій',
@@ -922,7 +922,7 @@ export const expressSearchConfigText = createDictionary({
       'Événéments de collecte avec les lieux géographiques associés aux localités',
     'hr-hr':
       'Prikupljanje događaja s geografskim područjem svake lokacije događaja.',
-    nb: 'Samler hendelser med det geografiske området til hvert arrangementssted.',
+    nb: 'Innsamlingshendelse med geografisk avgrensning for hver hendelse.',
     'pt-br':
       'Coletar eventos com a área geográfica de cada localidade onde ocorreram.',
     'ru-ru':
@@ -936,7 +936,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Geografía de objetos de colección',
     'fr-fr': 'Objets et lieux',
     'hr-hr': 'Geografija objekata zbirke',
-    nb: 'Geografi for samlingsobjekt',
+    nb: 'Geografisk avgrensning for samlingsobjekt',
     'pt-br': 'Coleção de Geografia de Objetos',
     'ru-ru': 'География объектов коллекции',
     'uk-ua': "Географія об'єктів колекції",
@@ -951,7 +951,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Objets liés aux lieux de leurs localités de collecte',
     'hr-hr':
       'Predmeti zbirke povezani s geografskim područjima mjesta na kojima su se odvijali događaji zbirke.',
-    nb: 'Samlingsobjekter knyttet til de geografiske områdene der de samler hendelsene.',
+    nb: 'Samlingsobjekter knyttet til geografisk avgrensete innsamlingshendelser.',
     'pt-br':
       'Objetos de coleção vinculados às áreas geográficas dos locais onde foram coletados.',
     'ru-ru':
@@ -965,7 +965,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Objeto de colección Regalo',
     'fr-fr': 'Objets reçus en dons',
     'hr-hr': 'Poklon predmeta za kolekciju',
-    nb: 'Samlingsobjekt Gave',
+    nb: 'Samlingsobjekt som gave',
     'pt-br': 'Objeto de Coleção Presente',
     'ru-ru': 'Коллекционный предмет, подарок',
     'uk-ua': 'Подарунок з колекційних предметів',
@@ -978,7 +978,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Dons objets et préparations associées',
     'hr-hr':
       'Pokloni s predmetima za sakupljanje priloženim uz pripreme poklona.',
-    nb: 'Gaver med samleobjektene knyttet til gaveforberedelser.',
+    nb: 'Gaver med samleobjektene knyttet til preparerte gaver.',
     'pt-br':
       'Presentes com objetos de coleção anexados às embalagens de presentes.',
     'ru-ru':
@@ -992,7 +992,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Regalo del agente',
     'fr-fr': 'Donateurs',
     'hr-hr': 'Poklon agenta',
-    nb: 'Agentgave',
+    nb: 'Gave til agent',
     'pt-br': 'Presente do Agente',
     'ru-ru': 'Агентский подарок',
     'uk-ua': 'Подарунок агенту',
@@ -1014,7 +1014,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Préstamo de objetos de colección',
     'fr-fr': 'Objets et prêts',
     'hr-hr': 'Zajam predmeta za kolekciju',
-    nb: 'Samling Objektlån',
+    nb: 'Utlån av samlingsobjekt',
     'pt-br': 'Empréstimo de Objetos de Coleção',
     'ru-ru': 'Объект сбора займа',
     'uk-ua': 'Позика на предмет колекції',
@@ -1027,7 +1027,7 @@ export const expressSearchConfigText = createDictionary({
       'Préstamos con los objetos de la colección en preparación de préstamos.',
     'fr-fr': 'Prêts associés aux objets et à leurs préparations',
     'hr-hr': 'Krediti s predmetima naplate na pripremi kredita.',
-    nb: 'Lån med samlingsobjektene på låneforberedelser.',
+    nb: 'Utlån med samlingsobjektene per preparat.',
     'pt-br':
       'Empréstimos com objetos de cobrança em preparativos de empréstimo.',
     'ru-ru':
