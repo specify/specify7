@@ -276,7 +276,7 @@ export const resourcesText = createDictionary({
       'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consultas. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
     'hr-hr':
       '„Format tablice“ kontrolira kako se podaci iz određene tablice prikazuju u rezultatima upita, izvozima i kombiniranim okvirima upita. Određuje polja za prikaz i njihov redoslijed. Uvjetno oblikovanje može se konfigurirati na temelju vrijednosti u zapisu.',
-    nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksporter og kombinasjonsbokser for spørringer. Det bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
+    nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksportfiler og kombinasjonsbokser for spørringer. Det bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
   },
   aggregator: {
     'en-us': 'Table Aggregation',
@@ -306,7 +306,7 @@ export const resourcesText = createDictionary({
       'A “Agregação de Tabelas” controla como vários registros de tabelas são consolidados em uma única string de texto. O formato da tabela, o separador, o sufixo, o campo de classificação e o limite de visualização do registro são personalizáveis. Essa configuração pode ser exibida nos resultados da consulta e nos formatos de tabela.',
     'hr-hr':
       '„Agregacija tablica“ kontrolira kako se više zapisa tablice konsolidira u jedan tekstualni niz. Format tablice, razdjelnik, sufiks, polje za sortiranje i ograničenje pregleda zapisa mogu se prilagoditi. Može se prikazati u rezultatima upita i formatima tablica.',
-    nb: '«Tabellaggregering» styrer hvordan flere tabellposter konsolideres sammen til én tekststreng. Tabellformatet, skilletegnet, suffikset, sorteringsfeltet og forhåndsvisningsgrensen for poster kan tilpasses. Det kan vises i spørreresultater og tabellformater.',
+    nb: '«Tabellaggregering» styrer hvordan flere tabellposter konsolideres til én tekststreng. Tabellformatet, skilletegnet, suffikset, sorteringsfeltet og forhåndsvisningsgrensen for poster kan tilpasses. Dette resultatet kan vises i spørreresultater og tabellformater.',
   },
   formattedResource: {
     'en-us': 'Formatted Resource',

@@ -190,7 +190,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Definir Adesão Globalmente',
     'ru-ru': 'Определение доступа на глобальном уровне',
     'uk-ua': 'Визначте приєднання глобально',
-    nb: 'Definer tiltredelse globalt',
+    nb: 'Definer Aksesjon globalt',
   },
   institutionIsAccessionGlobalDescription: {
     'en-us':
