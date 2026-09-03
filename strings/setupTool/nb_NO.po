@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 08:53+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -280,73 +280,61 @@ msgstr "Inndeling"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:278
-#, fuzzy
 msgid "divisionName"
 msgstr "Navn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:279
-#, fuzzy
 msgid "divisionAbbrev"
 msgstr "Forkortelse"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:284
-#, fuzzy
 msgid "discipline"
 msgstr "Disiplin"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:295
-#, fuzzy
 msgid "disciplineName"
 msgstr "Navn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:288
-#, fuzzy
 msgid "disciplineType"
 msgstr "Type"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:419
-#, fuzzy
 msgid "collectionName"
 msgstr "Samlingsnavn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:425
-#, fuzzy
 msgid "collectionCode"
 msgstr "Kode"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:431
-#, fuzzy
 msgid "collectionCatalogNumFormatName"
 msgstr "Katalognummerformat"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:441
-#, fuzzy
 msgid "specifyUser"
-msgstr "Spesifiser bruker"
+msgstr "Spesify bruker"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:459
-#, fuzzy
 msgid "specifyUserName"
 msgstr "Brukernavn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:460
-#, fuzzy
 msgid "specifyUserNameDescription"
 msgstr "Brukernavnet for den primære administratorkontoen."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:466
-#, fuzzy
 msgid "specifyUserPassword"
 msgstr "Passord"
 
