@@ -157,19 +157,16 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:300
-#, fuzzy
 msgid "allowNullValues"
 msgstr "Tillat nullverdier"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:317
-#, fuzzy
 msgid "useDefaultValue"
 msgstr "Bruk standardverdi"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:326
-#, fuzzy
 msgid "defaultValue"
 msgstr "Standardverdi"
 
