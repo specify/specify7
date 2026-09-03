@@ -12,6 +12,7 @@ import {
   getTemplateMapping,
   parseDefinition,
   serializeDefinition,
+  updateMappingTerm,
 } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
 
@@ -85,6 +86,45 @@ describe('DwCA query field term mapping', () => {
         0
       )
     ).toBe(custom);
+  });
+
+  test('does not fall back to another term when the matching field is unmapped', () => {
+    const mapping = {
+      extension: true,
+      fields: [
+        { stringId: '1.collectionobject.guid' },
+        { stringId: '1.collectionobject.catalogNumber' },
+      ],
+      terms: [occurrenceId, undefined],
+    } as const;
+
+    expect(
+      getMappingTerm(mapping, {
+        id: 0,
+        sourceIndex: 1,
+        sourceStringId: '1.collectionobject.catalogNumber',
+      })
+    ).toBe(undefined);
+  });
+
+  test('updates a term by field identity after fields move', () => {
+    const [mapping] = parseDefinition(`<archive><extension rowType="custom"><queries><query name="custom.csv" contextTableId="1">
+      <field stringId="1.collectionobject.guid" term="${occurrenceId}" />
+      <field stringId="1.collectionobject.catalogNumber" />
+    </query></queries></extension></archive>`);
+    if (mapping === undefined) throw new Error('Mapping was not parsed');
+
+    const moved = {
+      ...mapping,
+      fields: [mapping.fields[1]!, mapping.fields[0]!],
+      terms: [undefined, occurrenceId],
+    };
+    expect(
+      updateMappingTerm(moved, {
+        sourceIndex: 0,
+        sourceStringId: '1.collectionobject.guid',
+      }, kingdom).terms
+    ).toEqual([undefined, kingdom]);
   });
 
   test('loads relationship fields with their XML terms into the mapper model', () => {
@@ -224,9 +264,9 @@ describe('DwCA query field term mapping', () => {
       name: 'Multimedia',
       title: 'Audiovisual Media Description',
     });
-    expect(getExtensionDefinitionForRowType('https://example.org/row-type')).toBe(
-      undefined
-    );
+    expect(
+      getExtensionDefinitionForRowType('https://example.org/row-type')
+    ).toBe(undefined);
   });
 
   test('does not automatically map core patterns unavailable to an extension', () => {
@@ -234,7 +274,8 @@ describe('DwCA query field term mapping', () => {
       <field stringId="1.collectionobject.catalogNumber" />
     </query></queries></extension></archive>`;
     const [mapping] = parseDefinition(xml);
-    if (mapping === undefined) throw new Error('Extension mapping was not parsed');
+    if (mapping === undefined)
+      throw new Error('Extension mapping was not parsed');
 
     expect(mapping.terms).toEqual([occurrenceId, undefined]);
   });
@@ -331,6 +372,10 @@ describe('DwCA query field term mapping', () => {
         'http://rs.tdwg.org/dwc/terms/verbatimEventDate',
       ],
       [
+        '1,10.collectingevent.endTime',
+        'http://rs.tdwg.org/dwc/terms/eventTime',
+      ],
+      [
         '1,10.collectingevent.verbatimLocality',
         'http://rs.tdwg.org/dwc/terms/verbatimLocality',
       ],
@@ -388,6 +433,38 @@ describe('DwCA query field term mapping', () => {
         'http://rs.tdwg.org/dwc/terms/higherGeography',
       ],
       [
+        '1,10,2.locality.maxElevation',
+        'http://rs.tdwg.org/dwc/terms/maximumElevationInMeters',
+      ],
+      [
+        '1,10,2.locality.minElevation',
+        'http://rs.tdwg.org/dwc/terms/minimumElevationInMeters',
+      ],
+      [
+        '1,10,2.locality.verbatimElevation',
+        'http://rs.tdwg.org/dwc/terms/verbatimElevation',
+      ],
+      [
+        '1,10,2.locality.verbatimLatitude',
+        'http://rs.tdwg.org/dwc/terms/verbatimLatitude',
+      ],
+      [
+        '1,10,2.locality.verbatimLongitude',
+        'http://rs.tdwg.org/dwc/terms/verbatimLongitude',
+      ],
+      [
+        '1,10,2,123.geoCoordDetails.geocoorddetail.protocol',
+        'http://rs.tdwg.org/dwc/terms/georeferenceProtocol',
+      ],
+      [
+        '1,10,2,123.geoCoordDetails.geocoorddetail.geoRefVerificationStatus',
+        'http://rs.tdwg.org/dwc/terms/georeferenceVerificationStatus',
+      ],
+      [
+        '1,10,2.localitydetail.waterBody',
+        'http://rs.tdwg.org/dwc/terms/waterBody',
+      ],
+      [
         '1,63-preparations.preparation.preparations',
         'http://rs.tdwg.org/dwc/terms/preparations',
       ],
@@ -404,5 +481,41 @@ describe('DwCA query field term mapping', () => {
     if (mapping === undefined) throw new Error('Core mapping was not parsed');
 
     expect(mapping.terms).toEqual(fields.map(([, term]) => term));
+  });
+
+  test('automatically maps newly supported default schema fields', () => {
+    const fields = [
+      [
+        '1,23.collection.collectionName',
+        'http://rs.tdwg.org/dwc/terms/datasetName',
+      ],
+      [
+        '1,9-determinations,4.taxon.author',
+        'http://rs.tdwg.org/dwc/terms/scientificNameAuthorship',
+      ],
+      [
+        '1,9-determinations.determination.determiner',
+        'http://rs.tdwg.org/dwc/terms/identifiedBy',
+      ],
+      [
+        '1,10.collectingevent.endDateVerbatim',
+        'http://rs.tdwg.org/dwc/terms/verbatimEventDate',
+      ],
+      [
+        '1,10.collectingevent.verbatimDate',
+        'http://rs.tdwg.org/dwc/terms/verbatimEventDate',
+      ],
+      [
+        '1,10,2,3.geography.fullName',
+        'http://rs.tdwg.org/dwc/terms/higherGeography',
+      ],
+    ] as const;
+
+    fields.forEach(([stringId, term]) => {
+      const [mapping] = parseDefinition(
+        `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1"><field stringId="${stringId}" /></query></queries></core></archive>`
+      );
+      expect(mapping?.terms).toContain(term);
+    });
   });
 });
