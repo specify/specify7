@@ -31,7 +31,7 @@ export const headerText = createDictionary({
     'fr-fr': 'Principal',
     'pt-br': 'Principal',
     'hr-hr': 'Glavni',
-    nb: 'Hoved',
+    nb: 'Hovedmeny',
   },
   currentCollection: {
     comment: 'Example: Current Collection',
@@ -142,7 +142,7 @@ export const headerText = createDictionary({
       'Atualização iniciada. Você receberá uma notificação para cada item do feed atualizado.',
     'hr-hr':
       'Ažuriranje je započelo. Primit ćete obavijest za svaku ažuriranu stavku feeda.',
-    nb: 'Oppdatering startet. Du vil motta et varsel for hvert feedelement som oppdateres.',
+    nb: 'Oppdatering startet. Du vil motta et varsel for hvert feed-element som oppdateres.',
   },
   dwcaExportStarted: {
     'en-us': 'DwCA export started',
@@ -237,7 +237,7 @@ export const headerText = createDictionary({
     'de-ch': 'Baum reparieren',
     'pt-br': 'Árvore de reparo',
     'hr-hr': 'Popravak stabla',
-    nb: 'Reparer treet',
+    nb: 'Reparer tre',
   },
   treeRepairComplete: {
     'en-us': 'Tree repair is complete.',
@@ -259,7 +259,7 @@ export const headerText = createDictionary({
     'uk-ua': 'Виберіте',
     'pt-br': 'Escolher',
     'hr-hr': 'Odaberite',
-    nb: 'Velge',
+    nb: 'Velg',
   },
   chooseDwca: {
     'en-us': 'Choose DwCA',
@@ -347,7 +347,7 @@ export const headerText = createDictionary({
     'de-ch': 'Menü-Einträge',
     'pt-br': 'Itens do menu',
     'hr-hr': 'Stavke izbornika',
-    nb: 'Menyelementer',
+    nb: 'Meny-elementer',
   },
   userTools: {
     'en-us': 'User Tools',
@@ -380,7 +380,7 @@ export const headerText = createDictionary({
     'de-ch': 'Hilf beim übersetzen von Specify 7',
     'pt-br': 'Ajuda Localizar Especificar 7',
     'hr-hr': 'Pomoć pri lokalizaciji Navedite 7',
-    nb: 'Hjelp Lokaliser Spesifiser 7',
+    nb: 'Hjelp til å lokalt tilpasse Specify 7',
   },
   helpLocalizeSpecifyDescription: {
     'en-us':
@@ -399,7 +399,7 @@ export const headerText = createDictionary({
       'Agradecemos muito o seu apoio na localização da Interface de Usuário do Specify 7. Se estiver interessado, por favor, <link>consulte as instruções</link>.',
     'hr-hr':
       'Bili bismo vam vrlo zahvalni na podršci u lokalizaciji korisničkog sučelja Specify 7. Ako ste zainteresirani, molimo <link>pogledajte upute</link>.',
-    nb: 'Vi vil sette stor pris på din støtte med å lokalisere Specifice 7-brukergrensesnittet. Hvis du er interessert, kan du <link>se instruksjonene </link>.',
+    nb: 'Vi vil sette stor pris på din støtte med å lokalt tilpasse Specify 7-brukergrensesnittet. Hvis du er interessert, <link>se instruksjonene </link>.',
   },
   incompleteInline: {
     'en-us': '(incomplete)',
@@ -421,7 +421,7 @@ export const headerText = createDictionary({
     'de-ch': 'Unvollständige Übersetzung',
     'pt-br': 'Localização incompleta',
     'hr-hr': 'Nepotpuna lokalizacija',
-    nb: 'Ufullstendig lokalisering',
+    nb: 'Ufullstendig lokal tilpasning',
   },
   incompleteLocalizationDescription: {
     'en-us':
@@ -440,7 +440,7 @@ export const headerText = createDictionary({
       'A tradução para este idioma ainda não está completa. Alguns elementos podem estar sem localização ou com localização incorreta. Se você estiver interessado em nos ajudar a concluir a localização, siga as instruções.',
     'hr-hr':
       'Prijevod na ovaj jezik još nije dovršen. Nekim elementima možda nedostaje lokalizacija ili je lokalizacija netočna. Ako ste zainteresirani da nam pomognete dovršiti lokalizaciju, molimo <link>slijedite upute.</link>',
-    nb: 'Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan mangle lokalisering, eller ha feil lokalisering. Hvis du er interessert i å hjelpe oss med å fullføre lokaliseringen, kan du <link> følge instruksjonene.</link>',
+    nb: 'Oversettelsen til dette språket er ikke fullført ennå. Noen elementer kan mangle lokal tilpasning, eller ha feil lokal tilpasning. Hvis du er interessert i å hjelpe oss med å fullføre lokal tilpasning, kan du <link> følge instruksjonene.</link>',
   },
   tableApi: {
     'en-us': 'Tables API',

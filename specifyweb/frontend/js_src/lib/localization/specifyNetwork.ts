@@ -16,7 +16,7 @@ export const specifyNetworkText = createDictionary({
     'de-ch': 'Specify Network',
     'pt-br': 'Especificar rede',
     'hr-hr': 'Navedite mrežu',
-    nb: 'Spesifiser nettverk',
+    nb: 'Specify nettverk',
   },
   occurrenceOrGuidRequired: {
     'en-us': 'Species Name or GUID must be provided to display this page',
@@ -64,7 +64,7 @@ export const specifyNetworkText = createDictionary({
     'es-es': 'Especificar red no disponible',
     'fr-fr': 'Specify Network indisponible',
     'hr-hr': 'Navedite mrežu koja nije dostupna',
-    nb: 'Spesifiser nettverk utilgjengelig',
+    nb: 'Specify nettverk utilgjengelig',
     'pt-br': 'Especifique a rede indisponível.',
     'ru-ru': 'Укажите, что сеть недоступна.',
     'uk-ua': 'Specify Мережа недоступна',
@@ -80,7 +80,7 @@ export const specifyNetworkText = createDictionary({
       'Impossible de se connecter Specify network. Veuillez réessayer plus tard.',
     'hr-hr':
       'Navedite nije se moglo povezati s Navedite mrežom. Pokušajte ponovno kasnije.',
-    nb: 'Spesifiser kunne ikke koble til Spesifiser nettverk. Prøv igjen senere.',
+    nb: 'Specify kunne ikke koble til Specify nettverk. Prøv igjen senere.',
     'pt-br':
       'Não foi possível conectar-se à rede especificada. Tente novamente mais tarde.',
     'ru-ru':
@@ -119,7 +119,7 @@ export const specifyNetworkText = createDictionary({
     'uk-ua': 'Дата збору',
     'pt-br': 'Data de coleta',
     'hr-hr': 'Datum prikupljanja',
-    nb: 'Hente dato',
+    nb: 'Innsamlet dato',
   },
   mapDescription: {
     'en-us':
@@ -138,7 +138,7 @@ export const specifyNetworkText = createDictionary({
       'Este mapa mostra a ocorrência deste táxon a partir dos agregadores iDigBio e GBIF.',
     'hr-hr':
       'Ova karta prikazuje pojave ovog taksona iz agregatora iDigBio i GBIF.',
-    nb: 'Dette kartet viser forekomster av dette taksonet fra iDigBio- og GBIF-aggregatorene.',
+    nb: 'Dette kartet viser forekomster av dette taksonet fra iDigBio- og GBIF.',
   },
   iDigBioDescription: {
     'en-us':
@@ -157,7 +157,7 @@ export const specifyNetworkText = createDictionary({
       'As ocorrências registradas no iDigBio são mostradas como pontos verdes redondos, exceto aquelas da coleção atual registradas no iDigBio, que são pontos vermelhos redondos. Ao ampliar os pontos vermelhos, um marcador azul em forma de lágrima aparece; clicar no marcador executa uma consulta de localidade no Specify, que mostra todas as espécies no banco de dados atual do Specify coletadas naquele local.',
     'hr-hr':
       'Pojavljivanja zabilježena u iDigBio prikazana su kao okrugle zelene točke, osim onih iz trenutne zbirke zabilježene u iDigBio koje su okrugle crvene točke. Zumiranjem crvenih točaka prikazuje se plava pribadača u obliku suze, a klikom na pribadaču izvršava se upit o lokaciji u Specify koji prikazuje sve vrste u trenutnoj Specify bazi podataka prikupljene s te lokacije.',
-    nb: 'Forekomster registrert i iDigBio vises som runde grønne punkter, bortsett fra de fra den gjeldende samlingen registrert i iDigBio som er runde røde punkter. Hvis du zoomer inn på de røde punktene, vises en blå dråpeformet nål. Ved å klikke på nålen utføres en lokalitetsspørring i Specifice som viser alle artene i den gjeldende Specifice-databasen samlet inn fra den lokasjonen.',
+    nb: 'Forekomster registrert i iDigBio vises som runde grønne punkter, bortsett fra de fra den gjeldende samlingen registrert i iDigBio som er runde røde punkter. Hvis du zoomer inn på de røde punktene, vises en blå dråpeformet nål. Ved å klikke på nålen utføres en lokalitetsspørring i Specify som viser alle artene i den gjeldende Specify-databasen samlet inn fra den lokaliteten.',
   },
   gbifDescription: {
     'en-us':
@@ -176,7 +176,7 @@ export const specifyNetworkText = createDictionary({
       'Nos dados do GBIF, pontos individuais e agrupamentos de pontos são representados por hexágonos de cores diferentes, variando do amarelo ao laranja e ao vermelho. Hexágonos em vermelho escuro correspondem às distribuições mais densas de espécimes coletados daquela espécie.',
     'hr-hr':
       'Za GBIF podatke, pojedinačne točke i skupine točaka prikazane su kao šesterokuti različitih boja, od žute preko narančaste do crvene. Tamnocrveni šesterokuti odgovaraju najgušćoj rasprostranjenosti prikupljenih primjeraka te vrste.',
-    nb: 'For GBIF-data vises individuelle punkter og klynger av punkter som sekskanter i forskjellige farger, fra gul til oransje til rød. Mørkerøde sekskanter tilsvarer den tetteste fordeling av innsamlede eksemplarer av den arten.',
+    nb: 'For GBIF-data vises individuelle punkter og klynger av punkter som sekskanter i forskjellige farger, fra gul til oransje til rød. Mørkerøde sekskanter tilsvarer den tetteste forekomsten av innsamlede eksemplarer av den arten.',
   },
   connectToGbif: {
     'en-us': 'Connect to GBIF',

@@ -235,7 +235,7 @@ export const resourcesText = createDictionary({
       '«Формат поля» контролює, як дані для певного поля таблиці відображаються в результатах запиту, експорті та формах. Він керує автонумерацією та композицією різних частин, що визначають поле.',
     'hr-hr':
       '„Format polja“ kontrolira kako se podaci za određeno polje tablice prikazuju u rezultatima upita, izvozima i obrascima. Upravlja automatskim numeriranjem i sastavom različitih dijelova koji definiraju polje.',
-    nb: '«Feltformat» styrer hvordan data for et bestemt tabellfelt vises i spørreresultater, eksporter og skjemaer. Den administrerer autonummerering og sammensetningen av ulike deler som definerer feltet.',
+    nb: '«Feltformat» styrer hvordan data for et bestemt tabellfelt vises i spørreresultater, eksporterte filer og skjemaer. Det administrerer autonummerering og sammensetningen av ulike deler som definerer feltet.',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
@@ -246,7 +246,7 @@ export const resourcesText = createDictionary({
     'fr-fr': "Formateurs d'enregistrements",
     'pt-br': 'Formatadores de registro',
     'hr-hr': 'Formateri zapisa',
-    nb: 'Record Formaters',
+    nb: 'Postformaterere',
   },
   formatter: {
     'en-us': 'Table Format',
