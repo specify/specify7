@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/merging/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -57,7 +57,7 @@ msgstr "{count:number|formatted} dataposter"
 #: components/Merging/CompareSubView.tsx:425
 #, fuzzy
 msgid "subViewControls"
-msgstr "Kontroller for undervindu"
+msgstr "Undervisningskontroller"
 
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
@@ -164,4 +164,4 @@ msgstr "Noe gikk galt under sammenslåingsprosessen."
 #: components/Molecules/LinkedRecords.tsx:129
 #, fuzzy
 msgid "linkedRecords"
-msgstr "Sammenkoblete poster"
+msgstr "Tilknyttede poster"
