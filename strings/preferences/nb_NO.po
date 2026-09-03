@@ -1159,7 +1159,7 @@ msgstr "Vis linjenummeret i søkeresultatet"
 #: components/Preferences/UserDefinitions.tsx:388
 #: components/Preferences/UserDefinitions.tsx:449
 msgid "saveButtonColor"
-msgstr "Lagringsknapp-farge"
+msgstr "Farge på lagringsknappen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:428
@@ -1189,39 +1189,33 @@ msgstr "Farge på infoknappen"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:404
 #: components/Preferences/UserDefinitions.tsx:465
-#, fuzzy
 msgid "warningButtonColor"
 msgstr "Farge på varselknappen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:420
 #: components/Preferences/UserDefinitions.tsx:481
-#, fuzzy
 msgid "successButtonColor"
 msgstr "Farge på suksessknappen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:899
-#, fuzzy
 msgid "openAsReadOnly"
-msgstr "Åpne alle poster i skrivebeskyttet modus"
+msgstr "Åpne alle databaseposter i skrivebeskyttet modus"
 
 #. Used in: Components > Preferences > Collection Definitions ⬤ Components > Preferences > User Definitions
 #: components/Preferences/CollectionDefinitions.tsx:297
 #: components/Preferences/UserDefinitions.tsx:1880
-#, fuzzy
 msgid "displayBasicView"
-msgstr "Vis grunnleggende visning"
+msgstr "Vis basis-visning"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1887
-#, fuzzy
 msgid "showComparisonOperatorsForString"
-msgstr "Vis sammenligningsoperatorer for tekstbaserte felt"
+msgstr "Vis sammenlignings-operatorer for tekstbaserte felt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1888
-#, fuzzy
 msgid "showComparisonOperatorsDescription"
 msgstr ""
 "Tillater at følgende filtre brukes på tekstfelt: Større enn, Mindre enn, "
@@ -1230,70 +1224,60 @@ msgstr ""
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:129
 #: components/Reports/Parameters.tsx:98
-#, fuzzy
 msgid "basicView"
-msgstr "Grunnleggende visning"
+msgstr "Basis-visning"
 
 #. Used in: Components > Query Builder > Header ⬤ Components > Reports > Parameters
 #: components/QueryBuilder/Header.tsx:128
 #: components/Reports/Parameters.tsx:97
-#, fuzzy
 msgid "detailedView"
 msgstr "Detaljert visning"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1439
-#, fuzzy
 msgid "attachmentPreviewMode"
 msgstr "Forhåndsvisningsmodus for vedlegg"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1446
-#, fuzzy
 msgid "fullResolution"
 msgstr "Full oppløsning"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1450
-#, fuzzy
 msgid "thumbnail"
-msgstr "Miniatyrbilde"
+msgstr "Thumbnail"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:613
-#, fuzzy
 msgid "addSearchBarHomePage"
 msgstr "Legg til søkefelt på hjemmesiden"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:206
-#, fuzzy
 msgid "inheritanceCatNumberPrefDescription"
 msgstr ""
-"Bare {collectionObjectTableName: string}-poster uten en "
+"Bare {collectionObjectTableName: string}-databaseposter uten en "
 "{catalogNumberFieldName: string} vil arve en fra den primære "
 "{collectionObjectTableName: string} i en {collectionObjectGroupTableName: "
 "string}."
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:196
-#, fuzzy
 msgid "inheritanceCatNumberPref"
 msgstr ""
-"Aktiver arv av {catalogNumberFieldName: string} for søsken i "
+"Aktiver arv av {catalogNumberFieldName: string} for søsken-noder i "
 "{collectionObjectGroupTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:236
-#, fuzzy
 msgid "inheritanceCatNumberParentCOPref"
 msgstr ""
-"Aktiver arv av {catalogNumberFieldName: string} for poster etter "
+"Aktiver arv av {catalogNumberFieldName: string} for databaseposter etter "
 "{componentTableName: string}"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:273
-#, fuzzy
 msgid "uniqueCatNumberAcrossCompAndCo"
 msgstr ""
 "Håndhev unikhet for feltet {catalogNumberFieldName: string} på tvers av "
@@ -1303,7 +1287,7 @@ msgstr ""
 #: components/Preferences/CollectionDefinitions.tsx:37
 #, fuzzy
 msgid "scopeEntireTablePicklists"
-msgstr "Omfang «Hele tabellen»-valglister"
+msgstr "Scope «Hele tabellen»-plukklister"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:38
