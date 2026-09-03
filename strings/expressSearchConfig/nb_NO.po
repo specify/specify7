@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -137,14 +137,14 @@ msgstr "Ingen beskrivelse tilgjengelig."
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer"
-msgstr "Takson for samlingsobjekt"
+msgstr "TaksonsamlingObjekt"
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Samlingsobjekter med gjeldende bestemmelser, taksonnavn for bestemmelsen "
-"vises, sammen med taksonets populærnavn og navn på bestemmer."
+"Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte "
+"taksonnavnet, taksonets vanlige navn og bestemmer."
 
 #. Used in: 
 msgid "CollObToLocality"
@@ -163,7 +163,7 @@ msgstr "Takson for samlingsobjekt"
 #. Used in: 
 #, fuzzy
 msgid "CollObject_desc"
-msgstr "Samlingsobjekter med taksonnavn fra bestemmer."
+msgstr "Samlingsobjekter med sine bestemte taksonnavn."
 
 #. Used in: 
 #, fuzzy
@@ -174,8 +174,8 @@ msgstr "Taksongeografi"
 #, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taksa knyttet til geografiske dataposter gjennom bestemmelse av "
-"samlingsobjekter og lokaliteter for innsamlingshendelser."
+"Taksa knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter "
+"og innsamling av hendelseslokaliteter."
 
 #. Used in: 
 #, fuzzy
