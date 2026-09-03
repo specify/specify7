@@ -8,12 +8,13 @@
     "namespace": "http://rs.tdwg.org/ac/terms/",
     "issued": "2026-08-17",
     "description": "The Audiovisual Core is a set of vocabularies designed to represent metadata for biodiversity multimedia resources and collections. These vocabularies aim to represent information that will help to determine whether a particular resource or collection will be fit for some particular biodiversity science application before acquiring the media. Among others, the vocabularies address such concerns as the management of the media and collections, descriptions of their content, their taxonomic, geographic, and temporal coverage, and the appropriate ways to retrieve, attribute and reproduce them.",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
         "title": "Identifier",
         "required": true,
-        "description": "An unambiguous reference to the resource within a given context. ",
+        "description": "An unambiguous reference to the resource within a given context.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/identifier",
         "group": "Management Vocabulary"
@@ -31,7 +32,7 @@
         "name": "http://purl.org/dc/terms/type",
         "title": "Type",
         "required": false,
-        "description": "The nature or genre of the resource. ",
+        "description": "The nature or genre of the resource.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/type",
         "group": "Management Vocabulary"
@@ -67,7 +68,7 @@
         "name": "http://purl.org/dc/terms/modified",
         "title": "Modified",
         "required": false,
-        "description": "Date on which the resource was changed. ",
+        "description": "Date on which the resource was changed.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/modified",
         "group": "Management Vocabulary"
@@ -112,7 +113,7 @@
         "name": "http://ns.adobe.com/xap/1.0/Rating",
         "title": "Rating",
         "required": false,
-        "description": "A user-assigned rating for this file. The value shall be -1 or in the range [0..5], where -1 indicates \"rejected\" and 0 indicates \"unrated\".  If xmp:Rating is not present, a value of 0 should be assumed.",
+        "description": "A user-assigned rating for this file. The value shall be -1 or in the range [0..5], where -1 indicates &quot;rejected&quot; and 0 indicates &quot;unrated&quot;.  If xmp:Rating is not present, a value of 0 should be assumed.",
         "vocabulary": "http://ns.adobe.com/xap/1.0/",
         "iri": "http://ns.adobe.com/xap/1.0/Rating",
         "group": "Management Vocabulary"
@@ -121,7 +122,7 @@
         "name": "http://rs.tdwg.org/ac/terms/commenterLiteral",
         "title": "Commenter",
         "required": false,
-        "description": "The name of a person who created a comment, or the literal \"anonymous\" (= anonymously commented).",
+        "description": "The name of a person who created a comment, or the literal &quot;anonymous&quot; (= anonymously commented).",
         "vocabulary": "http://rs.tdwg.org/ac/terms/",
         "iri": "http://rs.tdwg.org/ac/terms/commenterLiteral",
         "group": "Management Vocabulary"
@@ -175,7 +176,7 @@
         "name": "http://purl.org/dc/terms/available",
         "title": "Date Available",
         "required": false,
-        "description": "Date (often a range) that the resource became or will become available. ",
+        "description": "Date (often a range) that the resource became or will become available.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/available",
         "group": "Management Vocabulary"
@@ -283,7 +284,7 @@
         "name": "http://purl.org/dc/elements/1.1/source",
         "title": "Published Source",
         "required": false,
-        "description": "A related resource from which the described resource is derived. ",
+        "description": "A related resource from which the described resource is derived.",
         "vocabulary": "http://purl.org/dc/elements/1.1/",
         "iri": "http://purl.org/dc/elements/1.1/source",
         "group": "Attribution Vocabulary"
@@ -292,7 +293,7 @@
         "name": "http://purl.org/dc/terms/source",
         "title": "Published Source",
         "required": false,
-        "description": "A related resource from which the described resource is derived. ",
+        "description": "A related resource from which the described resource is derived.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/source",
         "group": "Attribution Vocabulary"
@@ -310,7 +311,7 @@
         "name": "http://purl.org/dc/terms/creator",
         "title": "Creator",
         "required": false,
-        "description": "An entity primarily responsible for making the resource. ",
+        "description": "An entity primarily responsible for making the resource.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/creator",
         "group": "Agents Vocabulary"
@@ -373,7 +374,7 @@
         "name": "http://purl.org/dc/terms/description",
         "title": "Description",
         "required": false,
-        "description": "An account of the resource. ",
+        "description": "An account of the resource.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/description",
         "group": "Content Coverage Vocabulary"
@@ -400,7 +401,7 @@
         "name": "http://purl.org/dc/terms/language",
         "title": "Language",
         "required": false,
-        "description": "A language of the resource. ",
+        "description": "A language of the resource.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/language",
         "group": "Content Coverage Vocabulary"
@@ -418,7 +419,7 @@
         "name": "http://iptc.org/std/Iptc4xmpExt/2008-02-29/CVterm",
         "title": "Subject Category (IRI)",
         "required": false,
-        "description": "A term to describe the content of the image by a value from a Controlled Vocabulary. ",
+        "description": "A term to describe the content of the image by a value from a Controlled Vocabulary.",
         "vocabulary": "http://iptc.org/std/Iptc4xmpExt/2008-02-29/",
         "iri": "http://iptc.org/std/Iptc4xmpExt/2008-02-29/CVterm",
         "group": "Content Coverage Vocabulary"
@@ -904,7 +905,7 @@
         "name": "http://purl.org/dc/terms/temporal",
         "title": "Temporal Coverage",
         "required": false,
-        "description": "Temporal characteristics of the resource. ",
+        "description": "Temporal characteristics of the resource.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/temporal",
         "group": "Temporal Coverage Vocabulary"
@@ -949,7 +950,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
         "title": "Identification Qualifier",
         "required": false,
-        "description": "A brief phrase or a standard term (\"cf.\", \"aff.\") to express the determiner's doubts about the Identification.",
+        "description": "A brief phrase or a standard term (&quot;cf.&quot;, &quot;aff.&quot;) to express the determiner&#x27;s doubts about the Identification.",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
         "group": "Taxonomic Coverage Vocabulary"
@@ -967,7 +968,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "title": "Name According To",
         "required": false,
-        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin \"sensu\" or \"sec.\" (from secundum, meaning \"according to\"). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
+        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin &quot;sensu&quot; or &quot;sec.&quot; (from secundum, meaning &quot;according to&quot;). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "group": "Taxonomic Coverage Vocabulary"
@@ -1084,7 +1085,7 @@
         "name": "http://iptc.org/std/Iptc4xmpExt/2008-02-29/LocationCreated",
         "title": "Location Created",
         "required": false,
-        "description": "The location the content of the item was created ",
+        "description": "The location the content of the item was created",
         "vocabulary": "http://iptc.org/std/Iptc4xmpExt/2008-02-29/",
         "iri": "http://iptc.org/std/Iptc4xmpExt/2008-02-29/LocationCreated",
         "group": "Resource Creation Vocabulary"
@@ -1111,7 +1112,7 @@
         "name": "http://rs.tdwg.org/ac/terms/resourceCreationTechnique",
         "title": "Resource Creation Technique",
         "required": false,
-        "description": "Information about technical aspects of the creation and digitization process of the resource. This includes modification steps (\"retouching\") after the initial resource capture.",
+        "description": "Information about technical aspects of the creation and digitization process of the resource. This includes modification steps (&quot;retouching&quot;) after the initial resource capture.",
         "vocabulary": "http://rs.tdwg.org/ac/terms/",
         "iri": "http://rs.tdwg.org/ac/terms/resourceCreationTechnique",
         "group": "Resource Creation Vocabulary"
@@ -1210,7 +1211,7 @@
         "name": "http://purl.org/dc/terms/format",
         "title": "Format (IRI)",
         "required": false,
-        "description": "The file format, physical medium, or dimensions of the resource. ",
+        "description": "The file format, physical medium, or dimensions of the resource.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/format",
         "group": "Service Access Point Vocabulary"
@@ -1433,6 +1434,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2026-05-05",
     "description": "An extension for specimens and types, including type specimens, type species and type genera and simple specimens unrelated to types.",
+    "subject": "dwc:Taxon",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/typeStatus",
@@ -1600,7 +1602,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
         "title": "verbatimLongitude",
         "required": false,
-        "description": "The geographic longitude ",
+        "description": "The geographic longitude",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
         "group": ""
@@ -1609,7 +1611,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/verbatimLatitude",
         "title": "verbatimLatitude",
         "required": false,
-        "description": "The geographic latitude ",
+        "description": "The geographic latitude",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/verbatimLatitude",
         "group": ""
@@ -1634,6 +1636,7 @@
     "namespace": "http://rs.tdwg.org/dwc/terms/",
     "issued": "2026-02-12",
     "description": "Extended support for multiple identifications (determinations) of species Darwin Core Occurrences. All identifications including the most current one should be listed, while the current one should also be repeated in the Darwin Core Occurrence Core.",
+    "subject": "dwc:Occurrence",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/identificationID",
@@ -1657,7 +1660,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
         "title": "Identification Qualifier",
         "required": false,
-        "description": "A brief phrase or a standard term (\"cf.\", \"aff.\") to express the determiner's doubts about the dwc:Identification.",
+        "description": "A brief phrase or a standard term (&quot;cf.&quot;, &quot;aff.&quot;) to express the determiner&#x27;s doubts about the dwc:Identification.",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
         "group": "Identification"
@@ -1837,7 +1840,7 @@
         "name": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "title": "Name According To",
         "required": false,
-        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin \"sensu\" or \"sec.\" (from secundum, meaning \"according to\"). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
+        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin &quot;sensu&quot; or &quot;sec.&quot; (from secundum, meaning &quot;according to&quot;). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
         "vocabulary": "http://rs.tdwg.org/dwc/terms/",
         "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
         "group": "Taxon"
@@ -2096,6 +2099,7 @@
     "namespace": "http://rs.tdwg.org/dwc/terms/",
     "issued": "2026-02-12",
     "description": "Extended support for multiple measurements or facts associated with a Darwin Core Occurrence, Event, or Taxon Core.",
+    "subject": "dwc:Occurrence dwc:Event dwc:Taxon",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/measurementID",
@@ -2207,6 +2211,7 @@
     "namespace": "http://rs.tdwg.org/dwc/terms/",
     "issued": "2026-02-12",
     "description": "Extended support for relationships between resources in a Darwin Core Occurrence, Event, or Taxon Core to resources in an extension or external to the data set. The identifiers for subject (resourceID) and object (relatedResourceID) may exist in the dataset or be accessible via an externally resolvable identifiers.",
+    "subject": "dwc:Occurrence dwc:Event dwc:Taxon",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/resourceRelationshipID",
@@ -2291,6 +2296,7 @@
     "namespace": "http://rs.tdwg.org/eco/terms/",
     "issued": "2026-02-12",
     "description": "Extended support for Darwin Core Events related to ecological inventories.",
+    "subject": "dwc:Event",
     "fields": [
       {
         "name": "http://rs.tdwg.org/eco/terms/siteCount",
@@ -2816,12 +2822,13 @@
     "namespace": "http://rs.gbif.org/terms/1.0/",
     "issued": "2024-07-11",
     "description": "An extension to Occurrence and Event cores to capture information relating to DNA. This extension is based on the MIxS extension for Darwin Core (underway), with additions from GGBN and MIQE standards and recommendations. This definition supports the outcomes documented in Publishing DNA-derived data through biodiversity data platforms (https://doi.org/10.35035/doc-vf1a-nr22).  This extension is subject to change, and recommended for early adopters who understand that data remapping may be required as things evolve.",
+    "subject": "",
     "fields": [
       {
         "name": "https://w3id.org/mixs/0001107",
-        "title": "0001107",
+        "title": "samp_name",
         "required": false,
-        "description": "Sample Name is a name that you choose for the sample. It can have any format, but we suggest that you make it concise, unique and consistent within your lab, and as informative as possible. Every Sample Name from a single Submitter must be unique. ",
+        "description": "Sample Name is a name that you choose for the sample. It can have any format, but we suggest that you make it concise, unique and consistent within your lab, and as informative as possible. Every Sample Name from a single Submitter must be unique.",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0001107",
         "group": ""
@@ -2837,7 +2844,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000092",
-        "title": "0000092",
+        "title": "project_name",
         "required": false,
         "description": "Name of the project within which the sequencing was organized",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2846,7 +2853,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000008",
-        "title": "0000008",
+        "title": "experimental_factor",
         "required": false,
         "description": "Experimental factors are essentially the variable aspects of an experiment design which can be used to describe an experiment, or set of experiments, in an increasingly detailed manner. This field accepts ontology terms from Experimental Factor Ontology (EFO) and/or Ontology for Biomedical Investigations (OBI). For a browser of EFO (v 2.95) terms, please see http://purl.bioontology.org/ontology/EFO; for a browser of OBI (v 2018-02-12) terms please see http://purl.bioontology.org/ontology/OBI",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2855,7 +2862,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0001320",
-        "title": "0001320",
+        "title": "samp_taxon_id",
         "required": false,
         "description": "NCBI taxon id of the sample. Maybe be a single taxon or mixed taxa sample. Use \"synthetic metagenome\" for mock community/positive controls, or \"blank sample\" for negative controls",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2864,7 +2871,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0001321",
-        "title": "0001321",
+        "title": "neg_cont_type",
         "required": false,
         "description": "The substance or equipment used as a negative control in an investigation",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2873,7 +2880,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0001322",
-        "title": "0001322",
+        "title": "pos_cont_type",
         "required": false,
         "description": "The substance, mixture, product, or apparatus used to verify that a process which is part of an investigation delivers a true positive",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2882,7 +2889,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000012",
-        "title": "0000012",
+        "title": "env_broad_scale",
         "required": false,
         "description": "In this field, report which major environmental system your sample or specimen came from. The systems identified should have a coarse spatial grain, to provide the general environmental context of where the sampling was done (e.g. were you in the desert or a rainforest?). We recommend using subclasses of ENVO’s biome class: http://purl.obolibrary.org/obo/ENVO_00000428. Format (one term): termLabel [termID], Format (multiple terms): termLabel [termID]|termLabel [termID]|termLabel [termID]. Example: Annotating a water sample from the photic zone in middle of the Atlantic Ocean, consider: oceanic epipelagic zone biome [ENVO:01000033]. Example: Annotating a sample from the Amazon rainforest consider: tropical moist broadleaf forest biome [ENVO:01000228]. If needed, request new terms on the ENVO tracker, identified here: http://www.obofoundry.org/ontology/envo.html",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2891,7 +2898,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000013",
-        "title": "0000013",
+        "title": "env_local_scale",
         "required": false,
         "description": "In this field, report the entity or entities which are in your sample or specimen’s local vicinity and which you believe have significant causal influences on your sample or specimen. Please use terms that are present in ENVO and which are of smaller spatial grain than your entry for env_broad_scale. Format (one term): termLabel [termID]; Format (multiple terms): termLabel [termID]|termLabel [termID]|termLabel [termID]. Example: Annotating a pooled sample taken from various vegetation layers in a forest consider: canopy [ENVO:00000047]|herb and fern layer [ENVO:01000337]|litter layer [ENVO:01000338]|understory [01000335]|shrub layer [ENVO:01000336]. If needed, request new terms on the ENVO tracker, identified here: http://www.obofoundry.org/ontology/envo.html",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2900,7 +2907,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000014",
-        "title": "0000014",
+        "title": "env_medium",
         "required": false,
         "description": "In this field, report which environmental material or materials (pipe separated) immediately surrounded your sample or specimen prior to sampling, using one or more subclasses of ENVO’s environmental material class: http://purl.obolibrary.org/obo/ENVO_00010483. Format (one term): termLabel [termID]; Format (multiple terms): termLabel [termID]|termLabel [termID]|termLabel [termID]. Example: Annotating a fish swimming in the upper 100 m of the Atlantic Ocean, consider: ocean water [ENVO:00002151]. Example: Annotating a duck on a pond consider: pond water [ENVO:00002228]|air ENVO_00002005. If needed, request new terms on the ENVO tracker, identified here: http://www.obofoundry.org/ontology/envo.html",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2909,7 +2916,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000020",
-        "title": "0000020",
+        "title": "subspecf_gen_lin",
         "required": false,
         "description": "This should provide further information about the genetic distinctness of the sequenced organism by recording additional information e.g. serovar, serotype, biotype, ecotype, or any relevant genetic typing schemes like Group I plasmid. It can also contain alternative taxonomic information. It should contain both the lineage name, and the lineage rank, i.e. biovar:abc123",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2918,7 +2925,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000021",
-        "title": "0000021",
+        "title": "ploidy",
         "required": false,
         "description": "The ploidy level of the genome (e.g. allopolyploid, haploid, diploid, triploid, tetraploid). It has implications for the downstream study of duplicated gene and regions of the genomes (and perhaps for difficulties in assembly). For terms, please select terms listed under class ploidy (PATO:001374) of Phenotypic Quality Ontology (PATO), and for a browser of PATO (v 2018-03-27) please refer to http://purl.bioontology.org/ontology/PATO",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2927,7 +2934,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000022",
-        "title": "0000022",
+        "title": "num_replicons",
         "required": false,
         "description": "Reports the number of replicons in a nuclear genome of eukaryotes, in the genome of a bacterium or archaea or the number of segments in a segmented virus. Always applied to the haploid chromosome count of a eukaryote",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2936,7 +2943,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000023",
-        "title": "0000023",
+        "title": "extrachrom_elements",
         "required": false,
         "description": "Do plasmids exist of significant phenotypic consequence (e.g. ones that determine virulence or antibiotic resistance). Megaplasmids? Other plasmids (borrelia has 15+ plasmids)",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2945,7 +2952,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000024",
-        "title": "0000024",
+        "title": "estimated_size",
         "required": false,
         "description": "The estimated size of the genome prior to sequencing. Of particular importance in the sequencing of (eukaryotic) genome which could remain in draft form for a long or unspecified period.",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2954,7 +2961,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000025",
-        "title": "0000025",
+        "title": "ref_biomaterial",
         "required": false,
         "description": "Primary publication if isolated before genome publication; otherwise, primary genome report",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2963,7 +2970,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000026",
-        "title": "0000026",
+        "title": "source_mat_id",
         "required": false,
         "description": "A unique identifier assigned to a material sample (as defined by http://rs.tdwg.org/dwc/terms/materialSampleID, and as opposed to a particular digital record of a material sample) used for extracting nucleic acids, and subsequent sequencing. The identifier can refer either to the original material collected or to any derived sub-samples. The INSDC qualifiers /specimen_voucher, /bio_material, or /culture_collection may or may not share the same value as the source_mat_id field. For instance, the /specimen_voucher qualifier and source_mat_id may both contain ´UAM:Herps:14´ , referring to both the specimen voucher and sampled tissue with the same identifier. However, the /culture_collection qualifier may refer to a value from an initial culture (e.g. ATCC:11775) while source_mat_id would refer to an identifier from some derived culture from which the nucleic acids were extracted (e.g. xatc123 or ark:/2154/R2).",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2972,7 +2979,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000027",
-        "title": "0000027",
+        "title": "pathogenicity",
         "required": false,
         "description": "To what is the entity pathogenic",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2981,7 +2988,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000028",
-        "title": "0000028",
+        "title": "biotic_relationship",
         "required": false,
         "description": "Description of relationship(s) between the subject organism and other organism(s) it is associated with. E.g., parasite on species X; mutualist with species Y. The target organism is the subject of the relationship, and the other organism(s) is the object",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2990,7 +2997,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000029",
-        "title": "0000029",
+        "title": "specific_host",
         "required": false,
         "description": "If there is a host involved, please provide its taxid (or environmental if not actually isolated from the dead or alive host - i.e. a pathogen could be isolated from a swipe of a bench etc) and report whether it is a laboratory or natural host)",
         "vocabulary": "https://w3id.org/mixs/",
@@ -2999,7 +3006,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000030",
-        "title": "0000030",
+        "title": "host_spec_range",
         "required": false,
         "description": "The NCBI taxonomy identifier of the specific host if it is known",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3008,7 +3015,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000031",
-        "title": "0000031",
+        "title": "host_disease_stat",
         "required": false,
         "description": "List of diseases with which the host has been diagnosed; can include multiple diagnoses. The value of the field depends on host; for humans the terms should be chosen from the DO (Human Disease Ontology) at https://www.disease-ontology.org, non-human host diseases are free text",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3017,7 +3024,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000032",
-        "title": "0000032",
+        "title": "trophic_level",
         "required": false,
         "description": "Trophic levels are the feeding position in a food chain. Microbes can be a range of producers (e.g. chemolithotroph)",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3026,7 +3033,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000033",
-        "title": "0000033",
+        "title": "propagation",
         "required": false,
         "description": "This field is specific to different taxa. For phages: lytic/lysogenic, for plasmids: incompatibility group, for eukaryotes: sexual/asexual (Note: there is the strong opinion to name phage propagation obligately lytic or temperate, therefore we also give this choice",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3035,7 +3042,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000034",
-        "title": "0000034",
+        "title": "encoded_traits",
         "required": false,
         "description": "Should include key traits like antibiotic resistance or xenobiotic degradation phenotypes for plasmids, converting genes for phage",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3044,7 +3051,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000015",
-        "title": "0000015",
+        "title": "rel_to_oxygen",
         "required": false,
         "description": "Is this organism an aerobe, anaerobe? Please note that aerobic and anaerobic are valid descriptors for microbial environments",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3053,7 +3060,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000003",
-        "title": "0000003",
+        "title": "isol_growth_condt",
         "required": false,
         "description": "Publication reference in the form of pubmed ID (pmid), digital object identifier (doi) or url for isolation and growth condition specifications of the organism/material",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3062,7 +3069,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000002",
-        "title": "0000002",
+        "title": "samp_collec_device",
         "required": false,
         "description": "The device used to collect an environmental sample. This field accepts terms listed under environmental sampling device (http://purl.obolibrary.org/obo/ENVO). This field also accepts terms listed under specimen collection device (http://purl.obolibrary.org/obo/GENEPIO_0002094).",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3071,7 +3078,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0001225",
-        "title": "0001225",
+        "title": "samp_collec_method",
         "required": false,
         "description": "The method employed for collecting the sample",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3080,7 +3087,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000016",
-        "title": "0000016",
+        "title": "samp_mat_process",
         "required": false,
         "description": "Any processing applied to the sample during or after retrieving the sample from environment. This field accepts OBI, for a browser of OBI (v 2018-02-12) terms please see http://purl.bioontology.org/ontology/OBI",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3089,7 +3096,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000017",
-        "title": "0000017",
+        "title": "size_frac",
         "required": false,
         "description": "Filtering pore size used in sample preparation",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3098,7 +3105,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000001",
-        "title": "0000001",
+        "title": "samp_size",
         "required": false,
         "description": "Amount or size of sample (volume, mass or area) that was collected",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3107,7 +3114,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000111",
-        "title": "0000111",
+        "title": "samp_vol_we_dna_ext",
         "required": false,
         "description": "Volume (ml) or mass (g) of total collected sample processed for DNA extraction. Note: total sample collected should be entered under the term Sample Size (MIXS:0000001).",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3116,7 +3123,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000035",
-        "title": "0000035",
+        "title": "source_uvig",
         "required": false,
         "description": "Type of dataset from which the UViG was obtained",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3125,7 +3132,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000036",
-        "title": "0000036",
+        "title": "virus_enrich_appr",
         "required": false,
         "description": "List of approaches used to enrich the sample for viruses, if any",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3134,7 +3141,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000037",
-        "title": "0000037",
+        "title": "nucl_acid_ext",
         "required": false,
         "description": "A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the material separation to recover the nucleic acid fraction from a sample",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3143,7 +3150,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000038",
-        "title": "0000038",
+        "title": "nucl_acid_amp",
         "required": false,
         "description": "A link to a literature reference, electronic resource or a standard operating procedure (SOP), that describes the enzymatic amplification (PCR, TMA, NASBA) of specific nucleic acids",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3152,7 +3159,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000039",
-        "title": "0000039",
+        "title": "lib_size",
         "required": false,
         "description": "Total number of clones in the library prepared for the project",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3161,7 +3168,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000040",
-        "title": "0000040",
+        "title": "lib_reads_seqd",
         "required": false,
         "description": "Total number of clones sequenced from the library",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3170,7 +3177,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000041",
-        "title": "0000041",
+        "title": "lib_layout",
         "required": false,
         "description": "Specify whether to expect single, paired, or other configuration of reads",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3179,7 +3186,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000042",
-        "title": "0000042",
+        "title": "lib_vector",
         "required": false,
         "description": "Cloning vector type(s) used in construction of libraries",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3188,7 +3195,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000043",
-        "title": "0000043",
+        "title": "lib_screen",
         "required": false,
         "description": "Specific enrichment or screening methods applied before and/or after creating libraries",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3197,7 +3204,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000044",
-        "title": "0000044",
+        "title": "target_gene",
         "required": false,
         "description": "Targeted gene or locus name for marker gene studies",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3206,7 +3213,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000045",
-        "title": "0000045",
+        "title": "target_subfragment",
         "required": false,
         "description": "Name of subfragment of a gene or locus. Important to e.g. identify special regions on marker genes like V6 on 16S rRNA",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3215,7 +3222,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000046",
-        "title": "0000046",
+        "title": "pcr_primers",
         "required": false,
         "description": "PCR primers that were used to amplify the sequence of the targeted gene, locus or subfragment. This field should contain all the primers used for a single PCR reaction if multiple forward or reverse primers are present in a single PCR reaction. The primer sequence should be reported in uppercase letters",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3224,7 +3231,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000047",
-        "title": "0000047",
+        "title": "mid",
         "required": false,
         "description": "Molecular barcodes, called Multiplex Identifiers (MIDs), that are used to specifically tag unique samples in a sequencing run. Sequence should be reported in uppercase letters",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3233,7 +3240,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000048",
-        "title": "0000048",
+        "title": "adapters",
         "required": false,
         "description": "Adapters provide priming sequences for both amplification and sequencing of the sample-library fragments. Both adapters should be reported; in uppercase letters",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3242,7 +3249,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000049",
-        "title": "0000049",
+        "title": "pcr_cond",
         "required": false,
         "description": "Description of reaction conditions and components of PCR in the form of ´initial denaturation:94degC_1.5min; annealing=...´",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3251,7 +3258,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000050",
-        "title": "0000050",
+        "title": "seq_meth",
         "required": false,
         "description": "Sequencing method used; e.g. Sanger, ABI-solid",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3260,7 +3267,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000051",
-        "title": "0000051",
+        "title": "seq_quality_check",
         "required": false,
         "description": "Indicate if the sequence has been called by automatic systems (none) or undergone a manual editing procedure (e.g. by inspecting the raw data or chromatograms). Applied only for sequences that are not submitted to SRA,ENA or DRA",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3269,7 +3276,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000052",
-        "title": "0000052",
+        "title": "chimera_check",
         "required": false,
         "description": "A chimeric sequence, or chimera for short, is a sequence comprised of two or more phylogenetically distinct parent sequences. Chimeras are usually PCR artifacts thought to occur when a prematurely terminated amplicon reanneals to a foreign DNA strand and is copied to completion in the following PCR cycles. The point at which the chimeric sequence changes from one parent to the next is called the breakpoint or conversion point",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3278,7 +3285,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000053",
-        "title": "0000053",
+        "title": "tax_ident",
         "required": false,
         "description": "The phylogenetic marker(s) used to assign an organism name to the SAG or MAG",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3287,16 +3294,16 @@
       },
       {
         "name": "https://w3id.org/mixs/0000056",
-        "title": "0000056",
+        "title": "assembly_qual",
         "required": false,
-        "description": "The assembly quality category is based on sets of criteria outlined for each assembly quality category. For MISAG/MIMAG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities with a consensus error rate equivalent to Q50 or better. High Quality Draft:Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S and 5S rRNA genes and at least 18 tRNAs. Medium Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Low Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Assembly statistics include, but are not limited to total assembly size, number of contigs, contig N50/L50, and maximum contig length. For MIUVIG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities, with extensive manual review and editing to annotate putative gene functions and transcriptional units. High-quality draft genome: One or multiple fragments, totaling ≥ 90% of the expected genome or replicon sequence or predicted complete. Genome fragment(s): One or multiple fragments, totalling < 90% of the expected genome or replicon sequence, or for which no genome size could be estimated",
+        "description": "The assembly quality category is based on sets of criteria outlined for each assembly quality category. For MISAG/MIMAG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities with a consensus error rate equivalent to Q50 or better. High Quality Draft:Multiple fragments where gaps span repetitive regions. Presence of the 23S, 16S and 5S rRNA genes and at least 18 tRNAs. Medium Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Low Quality Draft:Many fragments with little to no review of assembly other than reporting of standard assembly statistics. Assembly statistics include, but are not limited to total assembly size, number of contigs, contig N50/L50, and maximum contig length. For MIUVIG; Finished: Single, validated, contiguous sequence per replicon without gaps or ambiguities, with extensive manual review and editing to annotate putative gene functions and transcriptional units. High-quality draft genome: One or multiple fragments, totaling ≥ 90% of the expected genome or replicon sequence or predicted complete. Genome fragment(s): One or multiple fragments, totalling &lt; 90% of the expected genome or replicon sequence, or for which no genome size could be estimated",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0000056",
         "group": "sequencing"
       },
       {
         "name": "https://w3id.org/mixs/0000057",
-        "title": "0000057",
+        "title": "assembly_name",
         "required": false,
         "description": "Name/version of the assembly provided by the submitter that is used in the genome browsers and in the community",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3305,7 +3312,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000058",
-        "title": "0000058",
+        "title": "assembly_software",
         "required": false,
         "description": "Tool(s) used for assembly, including version number and parameters",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3314,7 +3321,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000059",
-        "title": "0000059",
+        "title": "annot",
         "required": false,
         "description": "Tool used for annotation, or for cases where annotation was provided by a community jamboree or model organism database rather than by a specific submitter",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3323,7 +3330,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000060",
-        "title": "0000060",
+        "title": "number_contig",
         "required": false,
         "description": "Total number of contigs in the cleaned/submitted assembly that makes up a given genome, SAG, MAG, or UViG",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3332,7 +3339,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000061",
-        "title": "0000061",
+        "title": "feat_pred",
         "required": false,
         "description": "Method used to predict UViGs features such as ORFs, integration site, etc.",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3341,7 +3348,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000062",
-        "title": "0000062",
+        "title": "ref_db",
         "required": false,
         "description": "List of database(s) used for ORF annotation, along with version number and reference to website or publication",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3350,7 +3357,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000063",
-        "title": "0000063",
+        "title": "sim_search_meth",
         "required": false,
         "description": "Tool used to compare ORFs with database, along with version and cutoffs used",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3359,7 +3366,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000064",
-        "title": "0000064",
+        "title": "tax_class",
         "required": false,
         "description": "Method used for taxonomic classification, along with reference database used, classification rank, and thresholds used to classify new genomes",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3368,7 +3375,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000065",
-        "title": "0000065",
+        "title": "_16s_recover",
         "required": false,
         "description": "Can a 16S gene be recovered from the submitted SAG or MAG?",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3377,7 +3384,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000066",
-        "title": "0000066",
+        "title": "_16s_recover_software",
         "required": false,
         "description": "Tools used for 16S rRNA gene extraction",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3386,7 +3393,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000067",
-        "title": "0000067",
+        "title": "trnas",
         "required": false,
         "description": "The total number of tRNAs identified from the SAG or MAG",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3395,7 +3402,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000068",
-        "title": "0000068",
+        "title": "trna_ext_software",
         "required": false,
         "description": "Tools used for tRNA identification",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3404,16 +3411,16 @@
       },
       {
         "name": "https://w3id.org/mixs/0000069",
-        "title": "0000069",
+        "title": "compl_score",
         "required": false,
-        "description": "Completeness score is typically based on either the fraction of markers found as compared to a database or the percent of a genome found as compared to a closely related reference genome. High Quality Draft: >90%, Medium Quality Draft: >50%, and Low Quality Draft: < 50% should have the indicated completeness scores",
+        "description": "Completeness score is typically based on either the fraction of markers found as compared to a database or the percent of a genome found as compared to a closely related reference genome. High Quality Draft: &gt;90%, Medium Quality Draft: &gt;50%, and Low Quality Draft: &lt; 50% should have the indicated completeness scores",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0000069",
         "group": "sequencing"
       },
       {
         "name": "https://w3id.org/mixs/0000070",
-        "title": "0000070",
+        "title": "compl_software",
         "required": false,
         "description": "Tools used for completion estimate, i.e. checkm, anvi´o, busco",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3422,7 +3429,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000071",
-        "title": "0000071",
+        "title": "compl_appr",
         "required": false,
         "description": "The approach used to determine the completeness of a given SAG or MAG, which would typically make use of a set of conserved marker genes or a closely related reference genome. For UViG completeness, include reference genome or group used, and contig feature suggesting a complete genome",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3431,16 +3438,16 @@
       },
       {
         "name": "https://w3id.org/mixs/0000072",
-        "title": "0000072",
+        "title": "contam_score",
         "required": false,
-        "description": "The contamination score is based on the fraction of single-copy genes that are observed more than once in a query genome. The following scores are acceptable for; High Quality Draft: < 5%, Medium Quality Draft: < 10%, Low Quality Draft: < 10%. Contamination must be below 5% for a SAG or MAG to be deposited into any of the public databases",
+        "description": "The contamination score is based on the fraction of single-copy genes that are observed more than once in a query genome. The following scores are acceptable for; High Quality Draft: &lt; 5%, Medium Quality Draft: &lt; 10%, Low Quality Draft: &lt; 10%. Contamination must be below 5% for a SAG or MAG to be deposited into any of the public databases",
         "vocabulary": "https://w3id.org/mixs/",
         "iri": "https://w3id.org/mixs/0000072",
         "group": "sequencing"
       },
       {
         "name": "https://w3id.org/mixs/0000005",
-        "title": "0000005",
+        "title": "contam_screen_input",
         "required": false,
         "description": "The type of sequence data used as input",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3449,7 +3456,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000073",
-        "title": "0000073",
+        "title": "contam_screen_param",
         "required": false,
         "description": "Specific parameters used in the decontamination sofware, such as reference database, coverage, and kmers. Combinations of these parameters may also be used, i.e. kmer and coverage, or reference database and kmer",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3458,7 +3465,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000074",
-        "title": "0000074",
+        "title": "decontam_software",
         "required": false,
         "description": "Tool(s) used in contamination screening",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3467,7 +3474,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000075",
-        "title": "0000075",
+        "title": "sort_tech",
         "required": false,
         "description": "Method used to sort/isolate cells or particles of interest",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3476,7 +3483,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000076",
-        "title": "0000076",
+        "title": "single_cell_lysis_appr",
         "required": false,
         "description": "Method used to free DNA from interior of the cell(s) or particle(s)",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3485,7 +3492,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000054",
-        "title": "0000054",
+        "title": "single_cell_lysis_prot",
         "required": false,
         "description": "Name of the kit or standard protocol used for cell(s) or particle(s) lysis",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3494,7 +3501,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000055",
-        "title": "0000055",
+        "title": "wga_amp_appr",
         "required": false,
         "description": "Method used to amplify genomic DNA in preparation for sequencing",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3503,7 +3510,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000006",
-        "title": "0000006",
+        "title": "wga_amp_kit",
         "required": false,
         "description": "Kit used to amplify genomic DNA in preparation for sequencing",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3512,7 +3519,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000077",
-        "title": "0000077",
+        "title": "bin_param",
         "required": false,
         "description": "The parameters that have been applied during the extraction of genomes from metagenomic datasets",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3521,7 +3528,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000078",
-        "title": "0000078",
+        "title": "bin_software",
         "required": false,
         "description": "Tool(s) used for the extraction of genomes from metagenomic datasets",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3530,7 +3537,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000079",
-        "title": "0000079",
+        "title": "reassembly_bin",
         "required": false,
         "description": "Has an assembly been performed on a genome bin extracted from a metagenomic assembly?",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3539,7 +3546,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000080",
-        "title": "0000080",
+        "title": "mag_cov_software",
         "required": false,
         "description": "Tool(s) used to determine the genome coverage if coverage is used as a binning parameter in the extraction of genomes from metagenomic datasets",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3548,7 +3555,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000081",
-        "title": "0000081",
+        "title": "vir_ident_software",
         "required": false,
         "description": "Tool(s) used for the identification of UViG as a viral genome, software or protocol name including version number, parameters, and cutoffs used",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3557,7 +3564,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000082",
-        "title": "0000082",
+        "title": "pred_genome_type",
         "required": false,
         "description": "Type of genome predicted for the UViG",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3566,7 +3573,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000083",
-        "title": "0000083",
+        "title": "pred_genome_struc",
         "required": false,
         "description": "Expected structure of the viral genome",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3575,7 +3582,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000084",
-        "title": "0000084",
+        "title": "detec_type",
         "required": false,
         "description": "Type of UViG detection",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3584,7 +3591,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000085",
-        "title": "0000085",
+        "title": "otu_class_appr",
         "required": false,
         "description": "Cutoffs and approach used when clustering new UViGs in \"species-level\" OTUs. Note that results from standard 95% ANI / 85% AF clustering should be provided alongside OTUS defined from another set of thresholds, even if the latter are the ones primarily used during the analysis",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3593,7 +3600,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000086",
-        "title": "0000086",
+        "title": "otu_seq_comp_appr",
         "required": false,
         "description": "Tool and thresholds used to compare sequences when computing \"species-level\" OTUs",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3602,7 +3609,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000087",
-        "title": "0000087",
+        "title": "otu_db",
         "required": false,
         "description": "Reference database (i.e. sequences not generated as part of the current study) used to cluster new genomes in \"species-level\" OTUs, if any",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3611,7 +3618,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000088",
-        "title": "0000088",
+        "title": "host_pred_appr",
         "required": false,
         "description": "Tool or approach used for host prediction",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3620,7 +3627,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000089",
-        "title": "0000089",
+        "title": "host_pred_est_acc",
         "required": false,
         "description": "For each tool or approach used for host prediction, estimated false discovery rates should be included, either computed de novo or from the literature",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3629,7 +3636,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000091",
-        "title": "0000091",
+        "title": "url",
         "required": false,
         "description": "",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3638,7 +3645,7 @@
       },
       {
         "name": "https://w3id.org/mixs/0000090",
-        "title": "0000090",
+        "title": "sop",
         "required": false,
         "description": "Standard operating procedures used in assembly and/or annotation of genomes, metagenomes or environmental sequences",
         "vocabulary": "https://w3id.org/mixs/",
@@ -3692,7 +3699,7 @@
       },
       {
         "name": "http://rs.gbif.org/terms/dna_sequence",
-        "title": "dna_sequence",
+        "title": "DNA_sequence",
         "required": false,
         "description": "The DNA sequence",
         "vocabulary": "http://rs.gbif.org/terms/",
@@ -3935,6 +3942,7 @@
     "namespace": "http://rs.tdwg.org/chrono/terms/",
     "issued": "2024-03-11",
     "description": "Extension to Occurrence Core to capture chronometric age information to be used only in cases where the collecting event is not contemporaneous with the time when the dwc:Organism was alive in its context. Collection event information can be reported in dwc:eventDate. See also the normative term list document at https://chrono.tdwg.org/list/ and the human-friendly Quick Reference Guide at https://chrono.tdwg.org/terms/.",
+    "subject": "dwc:Occurrence",
     "fields": [
       {
         "name": "http://rs.tdwg.org/chrono/terms/chronometricAgeID",
@@ -4108,7 +4116,8 @@
     "rowType": "http://rs.iobis.org/obis/terms/ExtendedMeasurementOrFact",
     "namespace": "http://rs.iobis.org/obis/terms/",
     "issued": "2023-08-28",
-    "description": "Support for generic measurements or facts, extended version linking to occurrences.     This extension (eMoF) was developed to be used in combination with the Event Core, but is also compatible with other cores. When used with Event Core it allows to create an additional link between the eMoF and the occurrence extension. The eMoF can store measurements or facts related to a biological occurrence, environmental measurements or facts and sampling method attributes. This extension also provides the option to provide identifiers to reference a vocabulary for the measurementType, measurementValue and measurementUnit fields.",
+    "description": "Support for generic measurements or facts, extended version linking to occurrences.\n    This extension (eMoF) was developed to be used in combination with the Event Core, but is also compatible with other cores. When used with Event Core it allows to create an additional link between the eMoF and the occurrence extension. The eMoF can store measurements or facts related to a biological occurrence, environmental measurements or facts and sampling method attributes. This extension also provides the option to provide identifiers to reference a vocabulary for the measurementType, measurementValue and measurementUnit fields.",
+    "subject": "",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/measurementID",
@@ -4238,6 +4247,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2022-08-08",
     "description": "Support for all kinds of permits as an extension for Material Sample core sample data in Darwin Core. Intended to be a one to many relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/permitType",
@@ -4295,6 +4305,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2022-02-02",
     "description": "Geographic distribution of a taxon.  Replaces version issued 2020-07-15 with establishmentMeans, degreeOfEstablishment and pathway properties and vocabularies.",
+    "subject": "dwc:Taxon",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/locationID",
@@ -4451,6 +4462,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2019-01-29",
     "description": "A basic species profile with characteristics in addition to textural description which are covered by the description extension.",
+    "subject": "dwc:Taxon",
     "fields": [
       {
         "name": "http://rs.gbif.org/terms/1.0/isMarine",
@@ -4598,6 +4610,7 @@
     "namespace": "http://zooarchnet.org/dwc/terms/",
     "issued": "2018-11-13",
     "description": "This extension has been DEPRECATED! Please use the newer ChronometricAge extension instead: https://rs.gbif.org/extension/zooarchnet/ChronometricAge_2020-10-06.xml",
+    "subject": "dwc:Occurrence",
     "fields": [
       {
         "name": "http://zooarchnet.org/dwc/terms/chronometricAgeID",
@@ -4736,6 +4749,7 @@
     "namespace": "http://zooarchnet.org/dwc/terms/",
     "issued": "2018-03-29",
     "description": "This extension has been DEPRECATED! Please use the newer ChronometricAge extension instead: http://rs.gbif.org/extension/gbif/1.0/ChronometricAge.xml",
+    "subject": "dwc:Occurrence",
     "fields": [
       {
         "name": "http://zooarchnet.org/dwc/terms/chronometricDateID",
@@ -4874,6 +4888,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0/",
     "issued": "2016-05-10",
     "description": "Support for vegetation plot survey (relevé) measurements ancillary to those reported using Event core with Occurrence extension. Note all coverage measurements are in percentage.",
+    "subject": "dwc:Event",
     "fields": [
       {
         "name": "http://rs.gbif.org/terms/1.0/project",
@@ -5066,6 +5081,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for DNA Amplifications as an extension for Material Sample core sample data in Darwin Core. Intended to be a one to many relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/amplificationDate",
@@ -5384,6 +5400,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for DNA Cloning as an extension for Material Sample core sample data in Darwin Core. Intended to be a one to many relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/cloningDate",
@@ -5540,6 +5557,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for gel image properties as an extension to an Material Sample core. Intended to be a one to many relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
@@ -5660,6 +5678,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for loan properties (e.g. specimens, tissues, DNA, RNA) as an extension to a Material Sample core. Intended to be a one to one relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/blockedUntil",
@@ -5744,6 +5763,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for material sample properties (e.g. tissues, DNA, RNA) as an extension to a Material Sample core. Intended to be a one to one relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/materialSampleType",
@@ -5954,6 +5974,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for preparation properties as an extension to an Material Sample core. Intended to be a one to many relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/preparationType",
@@ -6020,6 +6041,7 @@
     "namespace": "http://data.ggbn.org/schemas/ggbn/terms/",
     "issued": "2016-01-13",
     "description": "Support for all kinds of preservations as an extension for Material Sample core sample data in Darwin Core. Intended to be a one to many relation to the Material Sample core.",
+    "subject": "",
     "fields": [
       {
         "name": "http://data.ggbn.org/schemas/ggbn/terms/preservationType",
@@ -6068,6 +6090,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2015-02-13",
     "description": "DwC Taxon extension to exchange simple text/paragraph based taxon descriptions. Not suitable for structured descriptions and keys, but useful for creating species pages.",
+    "subject": "dwc:Taxon checklist",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/description",
@@ -6179,6 +6202,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2015-02-13",
     "description": "",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
@@ -6236,6 +6260,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2015-02-13",
     "description": "This extension has been DEPRECATED! Please use the newer Multimedia extension instead: http://rs.gbif.org/extension/gbif/1.0/multimedia.xml",
+    "subject": "dwc:Taxon dwc:Occurrence",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
@@ -6284,7 +6309,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#latitude",
-        "title": "wgs84_pos#latitude",
+        "title": "latitude",
         "required": false,
         "description": "The WGS84 latitude in decimal degrees of the location the image was taken. A decimal number ranging from -90 through 90. Decimal fractions of a degree should be expressed to the precision available. Latitudes north of the equator MAY be specified by a plus sign (+), or by the absence of a minus sign (-).  Latitudes south of the Equator MUST be designated by a minus sign (-) preceding the digits designating degrees.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -6293,7 +6318,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#longitude",
-        "title": "wgs84_pos#longitude",
+        "title": "longitude",
         "required": false,
         "description": "The WGS84 longitude in decimal degrees of the location the image was taken. A decimal number ranging from -180 through 180. Decimal fractions of a degree should be expressed to the precision available. Longitudes east of the prime meridian shall be specified by a plus sign (+), or by the absence of a minus sign (-). Longitudes west of the prime meridian MUST be designated by a minus sign (-) preceding the digits designating degrees.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -6392,6 +6417,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2015-02-13",
     "description": "Simple extension for exchanging metadata about multimedia resources, in particular links to image, video and audio files.",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/type",
@@ -6539,6 +6565,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2015-02-13",
     "description": "Bibliography, i.e. list of literature references. For example a taxon or occurrence/specimen.",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
@@ -6668,6 +6695,7 @@
     "namespace": "http://rs.gbif.org/terms/1.0",
     "issued": "2015-02-13",
     "description": "Extension to core taxa that lists vernacular names for a scientific taxon",
+    "subject": "dwc:Taxon",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/vernacularName",
@@ -6806,6 +6834,7 @@
     "namespace": "http://rs.nordgen.org/dwc/germplasm/0.1/terms/",
     "issued": "2015-02-13",
     "description": "WARNING! THIS DRAFT GERMPLASM EXTENSION HAS BEEN DEPRECATED. SEE: http://rs.gbif.org/extension/germplasm/ FOR THE CURRENT GERMPLASM EXTENSIONS.",
+    "subject": "dwc:Occurrence",
     "fields": [
       {
         "name": "http://rs.nordgen.org/dwc/germplasm/0.1/terms/GermplasmID",
@@ -7268,10 +7297,11 @@
     "namespace": "http://purl.org/germplasm/germplasmTerm#",
     "issued": "2014-05-20",
     "description": "The Germplasm Vocabulary provides a set of terms (supplementing the Darwin Core terms) for describing genebank accessions. These terms are maintained by the thematic community of plant genetic resources for food and agriculture (PGRFA). Most of these terms are imported from the Multi-Crop Passport Descriptor List (MCPD) maintained by Bioversity International and the Food and Agriculture Organization of the United Nations (FAO). Some terms were also developed by the European Cooperative Programme for Plant Genetic Resources (ECPGR).",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/germplasm/germplasmTerm#germplasmID",
-        "title": "germplasmTerm#germplasmID",
+        "title": "germplasmID",
         "required": false,
         "description": "A persistent identifier for a germplasm accession maintained as part of an ex situ genebank collection. Best practice is to use a globally unique and persistent identifier (PID).",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7280,7 +7310,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#germplasmIdentifier",
-        "title": "germplasmTerm#germplasmIdentifier",
+        "title": "germplasmIdentifier",
         "required": false,
         "description": "Accession name. Either a registered or other formal designation given to the accession.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7289,7 +7319,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#biologicalStatus",
-        "title": "germplasmTerm#biologicalStatus",
+        "title": "biologicalStatus",
         "required": false,
         "description": "The biological status for a germplasm accession describes the cultivation status and distinguish wild and primitive cultivars from modern cultivars and breeding lines (material under development).",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7298,7 +7328,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmType#storageCondition",
-        "title": "germplasmType#storageCondition",
+        "title": "storageCondition",
         "required": false,
         "description": "Type of germplasm storage conditions.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7307,7 +7337,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#collectingInstituteID",
-        "title": "germplasmTerm#collectingInstituteID",
+        "title": "collectingInstituteID",
         "required": false,
         "description": "Collecting institute ID.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7316,7 +7346,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
-        "title": "wgs84_pos#lat",
+        "title": "latitude",
         "required": false,
         "description": "Latitude of the collecting site for the source germplasm material.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7325,7 +7355,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#lon",
-        "title": "wgs84_pos#lon",
+        "title": "longitude",
         "required": false,
         "description": "Longitude of the collecting site for the source germplasm material.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7334,7 +7364,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-        "title": "wgs84_pos#alt",
+        "title": "altitude",
         "required": false,
         "description": "Altitude of the collecting site for the source germplasm material.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7352,7 +7382,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingID",
-        "title": "germplasmTerm#breedingID",
+        "title": "breedingID",
         "required": false,
         "description": "Persistent identifier for the source germplasm developed by a plant breeder.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7361,7 +7391,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingIdentifier",
-        "title": "germplasmTerm#breedingIdentifier",
+        "title": "breedingIdentifier",
         "required": false,
         "description": "The germplasm name or accession number used by the plant breeder.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7370,7 +7400,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingYear",
-        "title": "germplasmTerm#breedingYear",
+        "title": "breedingYear",
         "required": false,
         "description": "The year a germplasm accession was developed by a plant breeder. Could be the year the cultivar was released.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7379,7 +7409,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingCountry",
-        "title": "germplasmTerm#breedingCountry",
+        "title": "breedingCountry",
         "required": false,
         "description": "Name of the country in which the breeding event took place.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7388,7 +7418,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingCountryCode",
-        "title": "germplasmTerm#breedingCountryCode",
+        "title": "breedingCountryCode",
         "required": false,
         "description": "Code for the country in which the breeding event took place.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7397,7 +7427,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingInstituteID",
-        "title": "germplasmTerm#breedingInstituteID",
+        "title": "breedingInstituteID",
         "required": false,
         "description": "Breeding institute code.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7406,7 +7436,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingInstitute",
-        "title": "germplasmTerm#breedingInstitute",
+        "title": "breedingInstitute",
         "required": false,
         "description": "Breeder institute name. If the FAO WIEWS institute code is available, this term is not to be reported.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7415,7 +7445,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingPerson",
-        "title": "germplasmTerm#breedingPerson",
+        "title": "breedingPerson",
         "required": false,
         "description": "Name of the plant breeder.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7424,7 +7454,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#ancestralData",
-        "title": "germplasmTerm#ancestralData",
+        "title": "ancestralData",
         "required": false,
         "description": "Ancestral data, ANCEST. Information about either pedigree or other description of ancestral information.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7433,7 +7463,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#purdyPedigree",
-        "title": "germplasmTerm#purdyPedigree",
+        "title": "purdyPedigree",
         "required": false,
         "description": "Ancestral information following the purdy pedigree format.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7442,7 +7472,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#breedingRemarks",
-        "title": "germplasmTerm#breedingRemarks",
+        "title": "breedingRemarks",
         "required": false,
         "description": "Remarks to the breeding event.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7451,7 +7481,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#acquisitionID",
-        "title": "germplasmTerm#acquisitionID",
+        "title": "acquisitionID",
         "required": false,
         "description": "An identifier for the event when germplasm material was acquired and included in the genebank collection.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7460,7 +7490,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#donorsID",
-        "title": "germplasmTerm#donorsID",
+        "title": "donorsID",
         "required": false,
         "description": "An identifier for the source germplasm material that was included in your genebank collection.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7469,7 +7499,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#donorsIdentifier",
-        "title": "germplasmTerm#donorsIdentifier",
+        "title": "donorsIdentifier",
         "required": false,
         "description": "An identifier for the source accession donated to your genebank collection. Could be an unique and stable local identifier specific to the dataset.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7478,7 +7508,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#donorInstituteID",
-        "title": "germplasmTerm#donorInstituteID",
+        "title": "donorInstituteID",
         "required": false,
         "description": "Donor institute code.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7487,7 +7517,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#donorInstitute",
-        "title": "germplasmTerm#donorInstitute",
+        "title": "donorInstitute",
         "required": false,
         "description": "Donor institute name. If the FAO WIEWS institute code is available, this term is not to be reported.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7496,7 +7526,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#acquisitionDate",
-        "title": "germplasmTerm#acquisitionDate",
+        "title": "acquisitionDate",
         "required": false,
         "description": "Acquisition date, date when the germplasm material (accession) entered the genebank collection.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7505,7 +7535,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#acquisitionSource",
-        "title": "germplasmTerm#acquisitionSource",
+        "title": "acquisitionSource",
         "required": false,
         "description": "Collecting/acquisition source.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7514,7 +7544,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#acquisitionRemarks",
-        "title": "germplasmTerm#acquisitionRemarks",
+        "title": "acquisitionRemarks",
         "required": false,
         "description": "Remarks to the acquisition event.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7523,7 +7553,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#safetyDuplicationID",
-        "title": "germplasmTerm#safetyDuplicationID",
+        "title": "safetyDuplicationID",
         "required": false,
         "description": "A persistent identifier for the genebank accession in the safe duplication storage.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7532,7 +7562,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#safetyDuplicationDate",
-        "title": "germplasmTerm#safetyDuplicationDate",
+        "title": "safetyDuplicationDate",
         "required": false,
         "description": "Date of safety duplication.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7541,7 +7571,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#safetyDuplicationInstituteID",
-        "title": "germplasmTerm#safetyDuplicationInstituteID",
+        "title": "safetyDuplicationInstituteID",
         "required": false,
         "description": "Location of safety duplicates. Persistent identifier for the institute where a safety duplicate of the accession is maintained.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7550,7 +7580,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#safetyDuplicationInstitute",
-        "title": "germplasmTerm#safetyDuplicationInstitute",
+        "title": "safetyDuplicationInstitute",
         "required": false,
         "description": "Location or institute for storage of safety duplicates.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7559,7 +7589,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#safetyDuplicationRemarks",
-        "title": "germplasmTerm#safetyDuplicationRemarks",
+        "title": "safetyDuplicationRemarks",
         "required": false,
         "description": "Remarks to the safety duplication event.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7568,7 +7598,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#treatyOrRegulationID",
-        "title": "germplasmTerm#treatyOrRegulationID",
+        "title": "treatyOrRegulationID",
         "required": false,
         "description": "An identifier for the germplasm regulation or treaty.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7577,7 +7607,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#treatyOrRegulationName",
-        "title": "germplasmTerm#treatyOrRegulationName",
+        "title": "treatyOrRegulationName",
         "required": false,
         "description": "Regulation or treaty name.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7586,7 +7616,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#treatyOrRegulationGoverningBody",
-        "title": "germplasmTerm#treatyOrRegulationGoverningBody",
+        "title": "treatyOrRegulationGoverningBody",
         "required": false,
         "description": "Governing body for the regulation or treaty.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7595,7 +7625,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#mlsStatus",
-        "title": "germplasmTerm#mlsStatus",
+        "title": "mlsStatus",
         "required": false,
         "description": "The status of a germplasm accession with regards to the Multilateral System (MLS) of the International TReaty on Plant Genetic Resources for Food and Agriculture.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7613,6 +7643,7 @@
     "namespace": "http://purl.org/germplasm/germplasmTerm#",
     "issued": "2014-05-15",
     "description": "Trait measurements or the so-called Characterization and Evaluation (C and E) data for plant genetic resources for food and agriculture (PGRFA). The germplasm vocabulary term g.germplasmID is a persistent identifier for the germplasm material (genebank accession, specimen, cultivar, etc that was the subject of the measurement experiment. NB! please report stable and resolvable persistent identifiers for g.germplasmID term when linking the trait measurement score to a germplasm occurrence described in an external Darwin Core archive. When linking to trait measurement descriptors and measurement trials described extenally to the Darwin Core archive, please include stable and resolvable persistent identifiers for g.measurementTraitID and g.measurementTrialID - resolving to information on each entity.",
+    "subject": "",
     "fields": [
       {
         "name": "http://rs.tdwg.org/dwc/terms/measurementID",
@@ -7697,7 +7728,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#germplasmID",
-        "title": "germplasmTerm#germplasmID",
+        "title": "germplasmID",
         "required": false,
         "description": "A persistent identifier for a germplasm accession maintained as part of an ex situ genebank collection. Best practice is to use a globally unique and persistent identifier (PID).",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7706,7 +7737,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#germplasmIdentifier",
-        "title": "germplasmTerm#germplasmIdentifier",
+        "title": "germplasmIdentifier",
         "required": false,
         "description": "Accession name. Either a registered or other formal designation given to the accession.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7715,7 +7746,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitID",
-        "title": "germplasmTerm#measurementTraitID",
+        "title": "measurementTraitID",
         "required": false,
         "description": "Persistent identifier for a trait descriptor used to identify the description of the measurement method.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7724,7 +7755,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitIdentifier",
-        "title": "germplasmTerm#measurementTraitIdentifier",
+        "title": "measurementTraitIdentifier",
         "required": false,
         "description": "Local identifier for a trait descriptor used to identify the description of the measurement method. This could be the persistent URL to an external ontology where the trait term is declared.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7733,7 +7764,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitName",
-        "title": "germplasmTerm#measurementTraitName",
+        "title": "measurementTraitName",
         "required": false,
         "description": "English name used to identify the trait measurement method.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7742,7 +7773,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrialID",
-        "title": "germplasmTerm#measurementTrialID",
+        "title": "measurementTrialID",
         "required": false,
         "description": "Persistent identifier used to identify a trait measurement trial.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7751,7 +7782,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrialIdentifier",
-        "title": "germplasmTerm#measurementTrialIdentifier",
+        "title": "measurementTrialIdentifier",
         "required": false,
         "description": "Unique number in the dataset for the measurement trial.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7760,7 +7791,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementByInstituteID",
-        "title": "germplasmTerm#measurementByInstituteID",
+        "title": "measurementByInstituteID",
         "required": false,
         "description": "Trait observation determined by institute code, INSTCODE. FAO WIEWS institute code for the institute performing the observation/measurement.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7769,7 +7800,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementGrowthStage",
-        "title": "germplasmTerm#measurementGrowthStage",
+        "title": "measurementGrowthStage",
         "required": false,
         "description": "The growth stage of the plant when the trait observation or measurement was made.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7787,10 +7818,11 @@
     "namespace": "http://purl.org/germplasm/germplasmTerm#",
     "issued": "2014-05-08",
     "description": "Trait descriptors describing methods and protocols followed when making trait measurements or the so-called Characterization and Evaluation (C and E) data for plant genetic resources for food and agriculture (PGRFA).",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitID",
-        "title": "germplasmTerm#measurementTraitID",
+        "title": "measurementTraitID",
         "required": false,
         "description": "Persistent identifier for a trait descriptor used to identify the description of the measurement method. This could be the persistent URL to an external ontology where the trait term is declared.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7799,7 +7831,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitIdentifier",
-        "title": "germplasmTerm#measurementTraitIdentifier",
+        "title": "measurementTraitIdentifier",
         "required": false,
         "description": "Local identifier for a trait descriptor used to identify the description of the measurement method. This could be the persistent URL to an external ontology where the trait term is declared.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7808,7 +7840,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitName",
-        "title": "germplasmTerm#measurementTraitName",
+        "title": "measurementTraitName",
         "required": false,
         "description": "English name used to identify the trait measurement method.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7817,7 +7849,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitCategory",
-        "title": "germplasmTerm#measurementTraitCategory",
+        "title": "measurementTraitCategory",
         "required": false,
         "description": "Classification type for the trait descriptor.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7826,7 +7858,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitScale",
-        "title": "germplasmTerm#measurementTraitScale",
+        "title": "measurementTraitScale",
         "required": false,
         "description": "Measurement scale used to score the measurement values.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7835,7 +7867,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitSource",
-        "title": "germplasmTerm#measurementTraitSource",
+        "title": "measurementTraitSource",
         "required": false,
         "description": "Reference to a standard Germplasm Descriptor. For example the UPOV descriptor or the Bioversity Crop Descriptor identifier.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7844,7 +7876,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTraitRemarks",
-        "title": "germplasmTerm#measurementTraitRemarks",
+        "title": "measurementTraitRemarks",
         "required": false,
         "description": "Remarks related to the trait measurement method.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7880,10 +7912,11 @@
     "namespace": "http://purl.org/germplasm/germplasmTerm#",
     "issued": "2014-05-08",
     "description": "Measurement trial (field or greenhouse) to collect trait measurements or so-called Characterization and Evaluation (C and E) data for plant genetic resources for food and agriculture (PGRFA).",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrailID",
-        "title": "germplasmTerm#measurementTrailID",
+        "title": "measurementTrailID",
         "required": false,
         "description": "Persistent identifier used to identify a trait measurement trial.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7892,7 +7925,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrailIdentifier",
-        "title": "germplasmTerm#measurementTrailIdentifier",
+        "title": "measurementTrailIdentifier",
         "required": false,
         "description": "Unique number in the dataset for the measurement trial.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7901,7 +7934,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrailYear",
-        "title": "germplasmTerm#measurementTrailYear",
+        "title": "measurementTrailYear",
         "required": false,
         "description": "The year of the trait measurement trial.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7910,7 +7943,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrailReport",
-        "title": "germplasmTerm#measurementTrailReport",
+        "title": "measurementTrailReport",
         "required": false,
         "description": "A reference to a report of the trial field season, could be supplied as the URL to the report online or as the file name or bibliographic citation string.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7919,7 +7952,7 @@
       },
       {
         "name": "http://purl.org/germplasm/germplasmTerm#measurementTrailRemarks",
-        "title": "germplasmTerm#measurementTrailRemarks",
+        "title": "measurementTrailRemarks",
         "required": false,
         "description": "Information relevant for the interpretation of the scores in the trial season such as weather conditions or experimental design.",
         "vocabulary": "http://purl.org/germplasm/germplasmTerm#",
@@ -7937,7 +7970,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#location",
-        "title": "wgs84_pos#location",
+        "title": "location",
         "required": false,
         "description": "Location for the measurement trial.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7946,7 +7979,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#lon",
-        "title": "wgs84_pos#lon",
+        "title": "longitude",
         "required": false,
         "description": "Longitude for the trial location.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7955,7 +7988,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
-        "title": "wgs84_pos#lat",
+        "title": "latitude",
         "required": false,
         "description": "Latitude for the trial location.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7964,7 +7997,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-        "title": "wgs84_pos#alt",
+        "title": "altitude",
         "required": false,
         "description": "Altitude for the trial location.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -7982,6 +8015,7 @@
     "namespace": "http://www.eol.org/schema/transfer#",
     "issued": "2010-01-01",
     "description": "This extension draws from Audubon Core, Dublin Core and others to gather information about text and multimedia. It was designed to contain all the metadata that is required to be indexed by the Encyclopedia of Life (EOL), but this extension is hopefully general enough to be useful to all text and media providers and consumers. The original extension was offline; this is a copy recovered from the Internet Archive.  The issue date is estimated.",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
@@ -8149,7 +8183,7 @@
         "name": "http://purl.org/dc/terms/rights",
         "title": "rights",
         "required": false,
-        "description": "Statement of rights associated with the resource. Creative Commons licenses require the resource to be attributed \"in the manner specified by the author or licensor\", and this is where that should be specified.",
+        "description": "Statement of rights associated with the resource. Creative Commons licenses require the resource to be attributed &quot;in the manner specified by the author or licensor&quot;, and this is where that should be specified.",
         "vocabulary": "http://purl.org/dc/terms/",
         "iri": "http://purl.org/dc/terms/rights",
         "group": ""
@@ -8228,7 +8262,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#lat",
-        "title": "wgs84_pos#lat",
+        "title": "lat",
         "required": false,
         "description": "Latitude of the location where the resource was created. Expressed on decimal WGS84 format as defined by the W3C Basic Geo Vocabulary.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -8237,7 +8271,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#long",
-        "title": "wgs84_pos#long",
+        "title": "long",
         "required": false,
         "description": "Longitude of the location where the resource was created. Expressed on decimal WGS84 format as defined by the W3C Basic Geo Vocabulary.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -8246,7 +8280,7 @@
       },
       {
         "name": "http://www.w3.org/2003/01/geo/wgs84_pos#alt",
-        "title": "wgs84_pos#alt",
+        "title": "alt",
         "required": false,
         "description": "Altitude of the location where the resource was created. Expressed on decimal WGS84 format as defined by the W3C Basic Geo Vocabulary.",
         "vocabulary": "http://www.w3.org/2003/01/geo/wgs84_pos#",
@@ -8273,6 +8307,7 @@
     "namespace": "http://www.eol.org/schema/transfer#",
     "issued": "2010-01-01",
     "description": "This extension draws from BIBO (http://bibliontology.com/), Dublin Core and others to gather information about citations and bibliographic references. The original extension was offline; this is a copy recovered from the Internet Archive.  The issue date is estimated.",
+    "subject": "",
     "fields": [
       {
         "name": "http://purl.org/dc/terms/identifier",
@@ -8429,7 +8464,7 @@
       },
       {
         "name": "http://schemas.talis.com/2005/address/schema#localityName",
-        "title": "schema#localityName",
+        "title": "localityName",
         "required": false,
         "description": "Used to name the locality of a publisher, an author, etc.",
         "vocabulary": "http://schemas.talis.com/2005/address/schema#",

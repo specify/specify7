@@ -1,0 +1,3164 @@
+[
+  {
+    "name": "Event",
+    "title": "Darwin Core Event",
+    "identifier": "http://rs.tdwg.org/dwc/terms/Event",
+    "url": "http://rs.gbif.org/core/dwc_event_2025-07-10.xml",
+    "rowType": "http://rs.tdwg.org/dwc/terms/Event",
+    "namespace": "http://rs.tdwg.org/dwc/terms/",
+    "issued": "2026-02-12",
+    "description": "Support for Darwin Core Event-based records.",
+    "subject": "",
+    "fields": [
+      {
+        "name": "http://purl.org/dc/elements/1.1/type",
+        "title": "Type",
+        "required": false,
+        "description": "The nature or genre of the resource.",
+        "vocabulary": "http://purl.org/dc/elements/1.1/",
+        "iri": "http://purl.org/dc/elements/1.1/type",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/modified",
+        "title": "Date Modified",
+        "required": false,
+        "description": "Date on which the resource was changed.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/modified",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/elements/1.1/language",
+        "title": "Language",
+        "required": false,
+        "description": "A language of the resource.",
+        "vocabulary": "http://purl.org/dc/elements/1.1/",
+        "iri": "http://purl.org/dc/elements/1.1/language",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/license",
+        "title": "License",
+        "required": false,
+        "description": "A legal document giving official permission to do something with the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/license",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/rightsHolder",
+        "title": "Rights Holder",
+        "required": false,
+        "description": "A person or organization owning or managing rights over the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/rightsHolder",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/accessRights",
+        "title": "Access Rights",
+        "required": false,
+        "description": "Information about who can access the resource or an indication of its security status.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/accessRights",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/bibliographicCitation",
+        "title": "Bibliographic Citation",
+        "required": false,
+        "description": "A bibliographic reference for the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/bibliographicCitation",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/references",
+        "title": "References",
+        "required": false,
+        "description": "A related resource that is referenced, cited, or otherwise pointed to by the described resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/references",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/institutionID",
+        "title": "Institution ID",
+        "required": false,
+        "description": "An identifier for the institution having custody of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/institutionID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/datasetID",
+        "title": "Dataset ID",
+        "required": false,
+        "description": "An identifier for the set of data. May be a global unique identifier or an identifier specific to a collection or institution.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/datasetID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/institutionCode",
+        "title": "Institution Code",
+        "required": false,
+        "description": "The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/institutionCode",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/datasetName",
+        "title": "Dataset Name",
+        "required": false,
+        "description": "The name identifying the data set from which the record was derived.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/datasetName",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/ownerInstitutionCode",
+        "title": "Owner Institution Code",
+        "required": false,
+        "description": "The name (or acronym) in use by the institution having ownership of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/ownerInstitutionCode",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/informationWithheld",
+        "title": "Information Withheld",
+        "required": false,
+        "description": "Additional information that exists, but that has not been shared in the given record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/informationWithheld",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/dataGeneralizations",
+        "title": "Data Generalizations",
+        "required": false,
+        "description": "Actions taken to make the shared data less specific or complete than in its original form. Suggests that alternative data of higher quality may be available on request.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/dataGeneralizations",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/dynamicProperties",
+        "title": "Dynamic Properties",
+        "required": false,
+        "description": "A list of additional measurements, facts, characteristics, or assertions about the record. Meant to provide a mechanism for structured content.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/dynamicProperties",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventID",
+        "title": "Event ID",
+        "required": false,
+        "description": "An identifier for the set of information associated with a dwc:Event (something that occurs at a place and time). May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventID",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/parentEventID",
+        "title": "Parent Event ID",
+        "required": false,
+        "description": "An identifier for the broader dwc:Event that groups this and potentially other dwc:Events.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/parentEventID",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventType",
+        "title": "Event Type",
+        "required": false,
+        "description": "The nature of the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventType",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/fieldNumber",
+        "title": "Field Number",
+        "required": false,
+        "description": "An identifier given to the dwc:Event in the field. Often serves as a link between field notes and the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/fieldNumber",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventDate",
+        "title": "Event Date",
+        "required": false,
+        "description": "The date-time or interval during which a dwc:Event occurred. For occurrences, this is the date-time when the dwc:Event was recorded. Not suitable for a time in a geological context.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventDate",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventTime",
+        "title": "Event Time",
+        "required": false,
+        "description": "The time or interval during which a dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventTime",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/startDayOfYear",
+        "title": "Start Day Of Year",
+        "required": false,
+        "description": "The earliest integer day of the year on which the dwc:Event occurred (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366).",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/startDayOfYear",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/endDayOfYear",
+        "title": "End Day Of Year",
+        "required": false,
+        "description": "The latest integer day of the year on which the dwc:Event occurred (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366).",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/endDayOfYear",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/year",
+        "title": "Year",
+        "required": false,
+        "description": "The four-digit year in which the dwc:Event occurred, according to the Common Era Calendar.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/year",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/month",
+        "title": "Month",
+        "required": false,
+        "description": "The integer month in which the dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/month",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/day",
+        "title": "Day",
+        "required": false,
+        "description": "The integer day of the month on which the dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/day",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimEventDate",
+        "title": "Verbatim EventDate",
+        "required": false,
+        "description": "The verbatim original representation of the date and time information for a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimEventDate",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/habitat",
+        "title": "Habitat",
+        "required": false,
+        "description": "A category or description of the habitat in which the dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/habitat",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/samplingProtocol",
+        "title": "Sampling Protocol",
+        "required": false,
+        "description": "The names of, references to, or descriptions of the methods or protocols used during a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/samplingProtocol",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/sampleSizeValue",
+        "title": "Sample Size Value",
+        "required": false,
+        "description": "A numeric value for a measurement of the size (time duration, length, area, or volume) of a sample in a sampling dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/sampleSizeValue",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/sampleSizeUnit",
+        "title": "Sample Size Unit",
+        "required": false,
+        "description": "The unit of measurement of the size (time duration, length, area, or volume) of a sample in a sampling dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/sampleSizeUnit",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/samplingEffort",
+        "title": "Sampling Effort",
+        "required": false,
+        "description": "The amount of effort expended during a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/samplingEffort",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/fieldNotes",
+        "title": "Field Notes",
+        "required": false,
+        "description": "One of a) an indicator of the existence of, b) a reference to (publication, URI), or c) the text of notes taken in the field about the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/fieldNotes",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventRemarks",
+        "title": "Event Remarks",
+        "required": false,
+        "description": "Comments or notes about the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventRemarks",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locationID",
+        "title": "Location ID",
+        "required": false,
+        "description": "An identifier for the set of dcterms:Location information. May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locationID",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/higherGeographyID",
+        "title": "Higher Geography ID",
+        "required": false,
+        "description": "An identifier for the geographic region within which the dcterms:Location occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/higherGeographyID",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/higherGeography",
+        "title": "Higher Geography",
+        "required": false,
+        "description": "A list (concatenated and separated) of geographic names less specific than the information captured in the dwc:locality term.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/higherGeography",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/continent",
+        "title": "Continent",
+        "required": false,
+        "description": "The name of the continent in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/continent",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/waterBody",
+        "title": "Water Body",
+        "required": false,
+        "description": "The name of the water body in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/waterBody",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/islandGroup",
+        "title": "Island Group",
+        "required": false,
+        "description": "The name of the island group in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/islandGroup",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/island",
+        "title": "Island",
+        "required": false,
+        "description": "The name of the island on or near which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/island",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/country",
+        "title": "Country",
+        "required": false,
+        "description": "The name of the country or major administrative unit in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/country",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/countryCode",
+        "title": "Country Code",
+        "required": false,
+        "description": "The standard code for the country in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/countryCode",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/stateProvince",
+        "title": "First Order Division",
+        "required": false,
+        "description": "The name of the next smaller administrative region than country (state, province, canton, department, region, etc.) in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/stateProvince",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/county",
+        "title": "Second Order Division",
+        "required": false,
+        "description": "The full, unabbreviated name of the next smaller administrative region than stateProvince (county, shire, department, etc.) in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/county",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/municipality",
+        "title": "Third Order Division",
+        "required": false,
+        "description": "The full, unabbreviated name of the next smaller administrative region than county (city, municipality, etc.) in which the dcterms:Location occurs. Do not use this term for a nearby named place that does not contain the actual dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/municipality",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locality",
+        "title": "Locality",
+        "required": false,
+        "description": "The specific description of the place.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locality",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLocality",
+        "title": "Verbatim Locality",
+        "required": false,
+        "description": "The original textual description of the place.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLocality",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/minimumElevationInMeters",
+        "title": "Minimum Elevation In Meters",
+        "required": false,
+        "description": "The lower limit of the range of elevation (altitude, usually above sea level), in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/minimumElevationInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/maximumElevationInMeters",
+        "title": "Maximum Elevation In Meters",
+        "required": false,
+        "description": "The upper limit of the range of elevation (altitude, usually above sea level), in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/maximumElevationInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimElevation",
+        "title": "Verbatim Elevation",
+        "required": false,
+        "description": "The original description of the elevation (altitude, usually above sea level) of the Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimElevation",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verticalDatum",
+        "title": "Vertical Datum",
+        "required": false,
+        "description": "The vertical datum used as the reference upon which the values in the elevation terms are based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verticalDatum",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/minimumDepthInMeters",
+        "title": "Minimum Depth In Meters",
+        "required": false,
+        "description": "The lesser depth of a range of depth below the local surface, in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/minimumDepthInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/maximumDepthInMeters",
+        "title": "Maximum Depth In Meters",
+        "required": false,
+        "description": "The greater depth of a range of depth below the local surface, in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/maximumDepthInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimDepth",
+        "title": "Verbatim Depth",
+        "required": false,
+        "description": "The original description of the depth below the local surface.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimDepth",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/minimumDistanceAboveSurfaceInMeters",
+        "title": "Minimum Distance Above Surface In Meters",
+        "required": false,
+        "description": "The lesser distance in a range of distance from a reference surface in the vertical direction, in meters. Use positive values for locations above the surface, negative values for locations below. If depth measures are given, the reference surface is the location given by the depth, otherwise the reference surface is the location given by the elevation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/minimumDistanceAboveSurfaceInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/maximumDistanceAboveSurfaceInMeters",
+        "title": "Maximum Distance Above Surface In Meters",
+        "required": false,
+        "description": "The greater distance in a range of distance from a reference surface in the vertical direction, in meters. Use positive values for locations above the surface, negative values for locations below. If depth measures are given, the reference surface is the location given by the depth, otherwise the reference surface is the location given by the elevation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/maximumDistanceAboveSurfaceInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locationAccordingTo",
+        "title": "Location According To",
+        "required": false,
+        "description": "Information about the source of this dcterms:Location information. Could be a publication (gazetteer), institution, or team of individuals.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locationAccordingTo",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locationRemarks",
+        "title": "Location Remarks",
+        "required": false,
+        "description": "Comments or notes about the dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locationRemarks",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/decimalLatitude",
+        "title": "Decimal Latitude",
+        "required": false,
+        "description": "The geographic latitude (in decimal degrees, using the spatial reference system given in dwc:geodeticDatum) of the geographic center of a dcterms:Location. Positive values are north of the Equator, negative values are south of it. Legal values lie between -90 and 90, inclusive.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/decimalLatitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/decimalLongitude",
+        "title": "Decimal Longitude",
+        "required": false,
+        "description": "The geographic longitude (in decimal degrees, using the spatial reference system given in dwc:geodeticDatum) of the geographic center of a dcterms:Location. Positive values are east of the Greenwich Meridian, negative values are west of it. Legal values lie between -180 and 180, inclusive.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/decimalLongitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/geodeticDatum",
+        "title": "Geodetic Datum",
+        "required": false,
+        "description": "The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geographic coordinates given in dwc:decimalLatitude and dwc:decimalLongitude are based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/geodeticDatum",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters",
+        "title": "Coordinate Uncertainty In Meters",
+        "required": false,
+        "description": "The horizontal distance (in meters) from the given dwc:decimalLatitude and dwc:decimalLongitude describing the smallest circle containing the whole of the dcterms:Location. Leave the value empty if the uncertainty is unknown, cannot be estimated, or is not applicable (because there are no coordinates). Zero is not a valid value for this term.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/coordinatePrecision",
+        "title": "Coordinate Precision",
+        "required": false,
+        "description": "A decimal representation of the precision of the coordinates given in the dwc:decimalLatitude and dwc:decimalLongitude.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/coordinatePrecision",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/pointRadiusSpatialFit",
+        "title": "Point Radius Spatial Fit",
+        "required": false,
+        "description": "The ratio of the area of the point-radius (dwc:decimalLatitude, dwc:decimalLongitude, dwc:coordinateUncertaintyInMeters) to the area of the true (original, or most specific) spatial representation of the dcterms:Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given point-radius does not completely contain the original representation. The dwc:pointRadiusSpatialFit is undefined (and should be left empty) if the original representation is any geometry without area (e.g., a point or polyline) and without uncertainty and the given georeference is not that same geometry (without uncertainty). If both the original and the given georeference are the same point, the dwc:pointRadiusSpatialFit is 1.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/pointRadiusSpatialFit",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimCoordinates",
+        "title": "Verbatim Coordinates",
+        "required": false,
+        "description": "The verbatim original spatial coordinates of the dcterms:Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in dwc:verbatimSRS and the coordinate system should be stored in dwc:verbatimCoordinateSystem.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimCoordinates",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLatitude",
+        "title": "Verbatim Latitude",
+        "required": false,
+        "description": "The verbatim original latitude of the dcterms:Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in dwc:verbatimSRS and the coordinate system should be stored in dwc:verbatimCoordinateSystem.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLatitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
+        "title": "Verbatim Longitude",
+        "required": false,
+        "description": "The verbatim original longitude of the dcterms:Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in dwc:verbatimSRS and the coordinate system should be stored in dwc:verbatimCoordinateSystem.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem",
+        "title": "Verbatim Coordinate System",
+        "required": false,
+        "description": "The coordinate format for the dwc:verbatimLatitude and dwc:verbatimLongitude or the dwc:verbatimCoordinates of the dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimSRS",
+        "title": "Verbatim SRS",
+        "required": false,
+        "description": "The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which coordinates given in dwc:verbatimLatitude and dwc:verbatimLongitude, or dwc:verbatimCoordinates are based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimSRS",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/footprintWKT",
+        "title": "Footprint WKT",
+        "required": false,
+        "description": "A Well-Known Text (WKT) representation of the shape (footprint, geometry) that defines the dcterms:Location. A dcterms:Location may have both a point-radius representation (see dwc:decimalLatitude) and a footprint representation, and they may differ from each other.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/footprintWKT",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/footprintSRS",
+        "title": "Footprint SRS",
+        "required": false,
+        "description": "The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geometry given in dwc:footprintWKT is based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/footprintSRS",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/footprintSpatialFit",
+        "title": "Footprint Spatial Fit",
+        "required": false,
+        "description": "The ratio of the area of the dwc:footprintWKT to the area of the true (original, or most specific) spatial representation of the dcterms:Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given dwc:footprintWKT does not completely contain the original representation. The dwc:footprintSpatialFit is undefined (and should be left empty) if the original representation is any geometry without area (e.g., a point or polyline) and without uncertainty and the given georeference is not that same geometry (without uncertainty). If both the original and the given georeference are the same point, the dwc:footprintSpatialFit is 1.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/footprintSpatialFit",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferencedBy",
+        "title": "Georeferenced By",
+        "required": false,
+        "description": "A list (concatenated and separated) of names of people, groups, or organizations who determined the georeference (spatial representation) for the dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferencedBy",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferencedDate",
+        "title": "Georeferenced Date",
+        "required": false,
+        "description": "The date on which the dcterms:Location was georeferenced.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferencedDate",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceProtocol",
+        "title": "Georeference Protocol",
+        "required": false,
+        "description": "A description or reference to the methods used to determine the spatial footprint, coordinates, and uncertainties.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceProtocol",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceSources",
+        "title": "Georeference Sources",
+        "required": false,
+        "description": "A list (concatenated and separated) of maps, gazetteers, or other resources used to georeference the dcterms:Location, described specifically enough to allow anyone in the future to use the same resources.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceSources",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceRemarks",
+        "title": "Georeference Remarks",
+        "required": false,
+        "description": "Comments or notes about the spatial description determination, explaining assumptions made in addition or opposition to the those formalized in the method referred to in dwc:georeferenceProtocol.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceRemarks",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/geologicalContextID",
+        "title": "Geological Context ID",
+        "required": false,
+        "description": "An identifier for the set of information associated with a dwc:GeologicalContext (the location within a geological context, such as stratigraphy). May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/geologicalContextID",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestEonOrLowestEonothem",
+        "title": "Earliest Eon Or Lowest Eonothem",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic eon or lowest chrono-stratigraphic eonothem or the informal name (&quot;Precambrian&quot;) attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestEonOrLowestEonothem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestEonOrHighestEonothem",
+        "title": "Latest Eon Or Highest Eonothem",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic eon or highest chrono-stratigraphic eonothem or the informal name (&quot;Precambrian&quot;) attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestEonOrHighestEonothem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestEraOrLowestErathem",
+        "title": "Earliest Era Or Lowest Erathem",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic era or lowest chronostratigraphic erathem attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestEraOrLowestErathem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestEraOrHighestErathem",
+        "title": "Latest Era Or Highest Erathem",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic era or highest chronostratigraphic erathem attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestEraOrHighestErathem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestPeriodOrLowestSystem",
+        "title": "Earliest Period Or Lowest System",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic period or lowest chronostratigraphic system attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestPeriodOrLowestSystem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestPeriodOrHighestSystem",
+        "title": "Latest Period Or Highest System",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic period or highest chronostratigraphic system attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestPeriodOrHighestSystem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestEpochOrLowestSeries",
+        "title": "Earliest Epoch Or Lowest Series",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic epoch or lowest chronostratigraphic series attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestEpochOrLowestSeries",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries",
+        "title": "Latest Epoch Or Highest Series",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic epoch or highest chronostratigraphic series attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestAgeOrLowestStage",
+        "title": "Earliest Age Or Lowest Stage",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic age or lowest chronostratigraphic stage attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestAgeOrLowestStage",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestAgeOrHighestStage",
+        "title": "Latest Age Or Highest Stage",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic age or highest chronostratigraphic stage attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestAgeOrHighestStage",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/lowestBiostratigraphicZone",
+        "title": "Lowest Biostratigraphic Zone",
+        "required": false,
+        "description": "The full name of the lowest possible geological biostratigraphic zone of the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/lowestBiostratigraphicZone",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/highestBiostratigraphicZone",
+        "title": "Highest Biostratigraphic Zone",
+        "required": false,
+        "description": "The full name of the highest possible geological biostratigraphic zone of the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/highestBiostratigraphicZone",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/lithostratigraphicTerms",
+        "title": "Lithostratigraphic Terms",
+        "required": false,
+        "description": "The combination of all lithostratigraphic names for the rock from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/lithostratigraphicTerms",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/group",
+        "title": "Group",
+        "required": false,
+        "description": "The full name of the lithostratigraphic group from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/group",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/formation",
+        "title": "Formation",
+        "required": false,
+        "description": "The full name of the lithostratigraphic formation from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/formation",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/member",
+        "title": "Member",
+        "required": false,
+        "description": "The full name of the lithostratigraphic member from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/member",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/bed",
+        "title": "Bed",
+        "required": false,
+        "description": "The full name of the lithostratigraphic bed from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/bed",
+        "group": "GeologicalContext"
+      }
+    ]
+  },
+  {
+    "name": "Occurrence",
+    "title": "Darwin Core Occurrence",
+    "identifier": "http://rs.tdwg.org/dwc/terms/Occurrence",
+    "url": "http://rs.gbif.org/core/dwc_occurrence_2025-07-10.xml",
+    "rowType": "http://rs.tdwg.org/dwc/terms/Occurrence",
+    "namespace": "http://rs.tdwg.org/dwc/terms/",
+    "issued": "2026-02-12",
+    "description": "Support for Darwin Core Occurrence-based records.",
+    "subject": "dwc:Event dwc:Taxon",
+    "fields": [
+      {
+        "name": "http://purl.org/dc/elements/1.1/type",
+        "title": "Type",
+        "required": false,
+        "description": "The nature or genre of the resource.",
+        "vocabulary": "http://purl.org/dc/elements/1.1/",
+        "iri": "http://purl.org/dc/elements/1.1/type",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/modified",
+        "title": "Date Modified",
+        "required": false,
+        "description": "Date on which the resource was changed.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/modified",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/elements/1.1/language",
+        "title": "Language",
+        "required": false,
+        "description": "A language of the resource.",
+        "vocabulary": "http://purl.org/dc/elements/1.1/",
+        "iri": "http://purl.org/dc/elements/1.1/language",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/license",
+        "title": "License",
+        "required": false,
+        "description": "A legal document giving official permission to do something with the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/license",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/rightsHolder",
+        "title": "Rights Holder",
+        "required": false,
+        "description": "A person or organization owning or managing rights over the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/rightsHolder",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/accessRights",
+        "title": "Access Rights",
+        "required": false,
+        "description": "Information about who can access the resource or an indication of its security status.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/accessRights",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/bibliographicCitation",
+        "title": "Bibliographic Citation",
+        "required": false,
+        "description": "A bibliographic reference for the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/bibliographicCitation",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/references",
+        "title": "References",
+        "required": false,
+        "description": "A related resource that is referenced, cited, or otherwise pointed to by the described resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/references",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/feedbackURL",
+        "title": "Feedback URL",
+        "required": false,
+        "description": "A uniform resource locator (URL) that points to a webpage on which a form may be submitted to gather feedback about the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/feedbackURL",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/institutionID",
+        "title": "Institution ID",
+        "required": false,
+        "description": "An identifier for the institution having custody of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/institutionID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/collectionID",
+        "title": "Collection ID",
+        "required": false,
+        "description": "An identifier for the collection or dataset from which the record was derived.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/collectionID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/datasetID",
+        "title": "Dataset ID",
+        "required": false,
+        "description": "An identifier for the set of data. May be a global unique identifier or an identifier specific to a collection or institution.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/datasetID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/institutionCode",
+        "title": "Institution Code",
+        "required": false,
+        "description": "The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/institutionCode",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/collectionCode",
+        "title": "Collection Code",
+        "required": false,
+        "description": "The name, acronym, coden, or initialism identifying the collection or data set from which the record was derived.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/collectionCode",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/datasetName",
+        "title": "Dataset Name",
+        "required": false,
+        "description": "The name identifying the data set from which the record was derived.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/datasetName",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/ownerInstitutionCode",
+        "title": "Owner Institution Code",
+        "required": false,
+        "description": "The name (or acronym) in use by the institution having ownership of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/ownerInstitutionCode",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/basisOfRecord",
+        "title": "Basis Of Record",
+        "required": true,
+        "description": "The specific nature of the data record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/basisOfRecord",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/informationWithheld",
+        "title": "Information Withheld",
+        "required": false,
+        "description": "Additional information that exists, but that has not been shared in the given record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/informationWithheld",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/dataGeneralizations",
+        "title": "Data Generalizations",
+        "required": false,
+        "description": "Actions taken to make the shared data less specific or complete than in its original form. Suggests that alternative data of higher quality may be available on request.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/dataGeneralizations",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/dynamicProperties",
+        "title": "Dynamic Properties",
+        "required": false,
+        "description": "A list of additional measurements, facts, characteristics, or assertions about the record. Meant to provide a mechanism for structured content.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/dynamicProperties",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/occurrenceID",
+        "title": "Occurrence ID",
+        "required": false,
+        "description": "An identifier for the dwc:Occurrence (as opposed to a particular digital record of the dwc:Occurrence). In the absence of a persistent global unique identifier, construct one from a combination of identifiers in the record that will most closely make the dwc:occurrenceID globally unique.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/occurrenceID",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/catalogNumber",
+        "title": "Catalog Number",
+        "required": false,
+        "description": "An identifier (preferably unique) for the record within the data set or collection.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/catalogNumber",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/recordNumber",
+        "title": "Record Number",
+        "required": false,
+        "description": "An identifier given to the dwc:Occurrence at the time it was recorded. Often serves as a link between field notes and a dwc:Occurrence record, such as a specimen collector&#x27;s number.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/recordNumber",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/recordedBy",
+        "title": "Recorded By",
+        "required": false,
+        "description": "A list (concatenated and separated) of names of people, groups, or organizations responsible for recording the original dwc:Occurrence. The primary collector or observer, especially one who applies a personal identifier (dwc:recordNumber), should be listed first.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/recordedBy",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/recordedByID",
+        "title": "Recorded By ID",
+        "required": false,
+        "description": "A list (concatenated and separated) of the globally unique identifier for the person, people, groups, or organizations responsible for recording the original dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/recordedByID",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/individualCount",
+        "title": "Individual Count",
+        "required": false,
+        "description": "The number of individuals present at the time of the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/individualCount",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/organismQuantity",
+        "title": "Organism Quantity",
+        "required": false,
+        "description": "A number or enumeration value for the quantity of dwc:Organisms.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/organismQuantity",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/organismQuantityType",
+        "title": "Organism Quantity Type",
+        "required": false,
+        "description": "The type of quantification system used for the quantity of dwc:Organisms.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/organismQuantityType",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/sex",
+        "title": "Sex",
+        "required": false,
+        "description": "The sex of the biological individual(s) represented in the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/sex",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/lifeStage",
+        "title": "Life Stage",
+        "required": false,
+        "description": "The age class or life stage of the dwc:Organism(s) at the time the dwc:Occurrence was recorded.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/lifeStage",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/reproductiveCondition",
+        "title": "Reproductive Condition",
+        "required": false,
+        "description": "The reproductive condition of the biological individual(s) represented in the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/reproductiveCondition",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/caste",
+        "title": "Caste",
+        "required": false,
+        "description": "Categorisation of individuals for eusocial species (including some mammals and arthropods).",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/caste",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/behavior",
+        "title": "Behavior",
+        "required": false,
+        "description": "The behavior shown by the subject at the time the dwc:Occurrence was recorded.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/behavior",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/vitality",
+        "title": "Vitality",
+        "required": false,
+        "description": "An indication of whether a dwc:Organism was alive or dead at the time of collection or observation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/vitality",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/establishmentMeans",
+        "title": "Establishment Means",
+        "required": false,
+        "description": "Statement about whether a dwc:Organism has been introduced to a given place and time through the direct or indirect activity of modern humans.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/establishmentMeans",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/degreeOfEstablishment",
+        "title": "Degree of Establishment",
+        "required": false,
+        "description": "The degree to which a dwc:Organism survives, reproduces, and expands its range at the given place and time.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/degreeOfEstablishment",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/pathway",
+        "title": "Pathway",
+        "required": false,
+        "description": "The process by which a dwc:Organism came to be in a given place at a given time.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/pathway",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceVerificationStatus",
+        "title": "Georeference Verification Status",
+        "required": false,
+        "description": "A categorical description of the extent to which the georeference has been verified to represent the best possible spatial description for the dcterms:Location of the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceVerificationStatus",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/occurrenceStatus",
+        "title": "Occurrence Status",
+        "required": false,
+        "description": "A statement about the presence or absence of a dwc:Taxon at a dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/occurrenceStatus",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/associatedMedia",
+        "title": "Associated Media",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers (publication, global unique identifier, URI) of media associated with the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/associatedMedia",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/associatedOccurrences",
+        "title": "Associated Occurrences",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers of other dwc:Occurrence records and their associations to this dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/associatedOccurrences",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/associatedReferences",
+        "title": "Associated References",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers (publication, bibliographic reference, global unique identifier, URI) of literature associated with the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/associatedReferences",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/associatedTaxa",
+        "title": "Associated Taxa",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers or names of dwc:Taxon records and the associations of this dwc:Occurrence to each of them.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/associatedTaxa",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/otherCatalogNumbers",
+        "title": "Other Catalog Numbers",
+        "required": false,
+        "description": "A list (concatenated and separated) of previous or alternate fully qualified catalog numbers or other human-used identifiers for the same dwc:Occurrence, whether in the current or any other data set or collection.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/otherCatalogNumbers",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/occurrenceRemarks",
+        "title": "Occurrence Remarks",
+        "required": false,
+        "description": "Comments or notes about the dwc:Occurrence.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/occurrenceRemarks",
+        "group": "Occurrence"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/organismID",
+        "title": "Organism ID",
+        "required": false,
+        "description": "An identifier for the dwc:Organism instance (as opposed to a particular digital record of the dwc:Organism). May be a globally unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/organismID",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/organismName",
+        "title": "Organism Name",
+        "required": false,
+        "description": "A textual name or label assigned to a dwc:Organism instance.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/organismName",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/organismScope",
+        "title": "Organism Scope",
+        "required": false,
+        "description": "A description of the kind of dwc:Organism instance. Can be used to indicate whether the dwc:Organism instance represents a discrete organism or if it represents a particular type of aggregation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/organismScope",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/associatedOrganisms",
+        "title": "Associated Organisms",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers of other dwc:Organisms and the associations of this dwc:Organism to each of them.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/associatedOrganisms",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/previousIdentifications",
+        "title": "Previous Identifications",
+        "required": false,
+        "description": "A list (concatenated and separated) of previous assignments of names to the dwc:Organism.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/previousIdentifications",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/organismRemarks",
+        "title": "Organism Remarks",
+        "required": false,
+        "description": "Comments or notes about the dwc:Organism instance.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/organismRemarks",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/causeOfDeath",
+        "title": "Cause Of Death",
+        "required": false,
+        "description": "An indication of the known or suspected cause of death of a dwc:Organism.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/causeOfDeath",
+        "group": "Organism"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/materialEntityID",
+        "title": "Material Entity ID",
+        "required": false,
+        "description": "An identifier for a particular instance of a dwc:MaterialEntity.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/materialEntityID",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/digitalSpecimenID",
+        "title": "Digital Specimen Identifier",
+        "required": false,
+        "description": "An identifier for a particular instance of a Digital Specimen.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/digitalSpecimenID",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/materialEntityType",
+        "title": "Material Entity Type",
+        "required": false,
+        "description": "A category that best matches the nature of a dwc:MaterialEntity.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/materialEntityType",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/discipline",
+        "title": "Discipline",
+        "required": false,
+        "description": "The primary branch or branches of knowledge represented by the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/discipline",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/preparations",
+        "title": "Preparations",
+        "required": false,
+        "description": "A list (concatenated and separated) of preparations and preservation methods for a dwc:MaterialEntity.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/preparations",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/disposition",
+        "title": "Disposition",
+        "required": false,
+        "description": "The current state of a dwc:MaterialEntity with respect to a collection.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/disposition",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLabel",
+        "title": "Verbatim Label",
+        "required": false,
+        "description": "The content of this term should include no embellishments, prefixes, headers or other additions made to the text. Abbreviations must not be expanded and supposed misspellings must not be corrected. Lines or breakpoints between blocks of text that could be verified by seeing the original labels or images of them may be used. Examples of material entities include preserved specimens, fossil specimens, and material samples. Best practice is to use UTF-8 for all characters. Best practice is to add comment “verbatimLabel derived from human transcription” in dwc:occurrenceRemarks.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLabel",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/associatedSequences",
+        "title": "Associated Sequences",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers (publication, global unique identifier, URI) of genetic sequence information associated with the dwc:MaterialEntity.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/associatedSequences",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/materialEntityRemarks",
+        "title": "Material Entity Remarks",
+        "required": false,
+        "description": "Comments or notes about the dwc:MaterialEntity instance.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/materialEntityRemarks",
+        "group": "MaterialEntity"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/materialSampleID",
+        "title": "Material Sample ID",
+        "required": false,
+        "description": "An identifier for the dwc:MaterialSample (as opposed to a particular digital record of the dwc:MaterialSample). In the absence of a persistent global unique identifier, construct one from a combination of identifiers in the record that will most closely make the dwc:materialSampleID globally unique.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/materialSampleID",
+        "group": "MaterialSample"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventID",
+        "title": "Event ID",
+        "required": false,
+        "description": "An identifier for the set of information associated with a dwc:Event (something that occurs at a place and time). May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventID",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/parentEventID",
+        "title": "Parent Event ID",
+        "required": false,
+        "description": "An identifier for the broader dwc:Event that groups this and potentially other dwc:Events.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/parentEventID",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventType",
+        "title": "Event Type",
+        "required": false,
+        "description": "The nature of the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventType",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/projectTitle",
+        "title": "Project Title",
+        "required": false,
+        "description": "A list (concatenated and separated) of titles or names for projects that contributed to a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/projectTitle",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/projectID",
+        "title": "Project ID",
+        "required": false,
+        "description": "A list (concatenated and separated) of identifiers for projects that contributed to a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/projectID",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/ac/terms/fundingAttribution",
+        "title": "Funding Attribution",
+        "required": false,
+        "description": "Text description of organizations or individuals who funded the creation of the resource.",
+        "vocabulary": "http://rs.tdwg.org/ac/terms/",
+        "iri": "http://rs.tdwg.org/ac/terms/fundingAttribution",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/fundingAttributionID",
+        "title": "Funding Attribution ID",
+        "required": false,
+        "description": "A list (concatenated and separated) of the globally unique identifiers for the funding organizations or agencies that supported the project.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/fundingAttributionID",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/fieldNumber",
+        "title": "Field Number",
+        "required": false,
+        "description": "An identifier given to the dwc:Event in the field. Often serves as a link between field notes and the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/fieldNumber",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventDate",
+        "title": "Event Date",
+        "required": false,
+        "description": "The date-time or interval during which a dwc:Event occurred. For occurrences, this is the date-time when the dwc:Event was recorded. Not suitable for a time in a geological context.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventDate",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventTime",
+        "title": "Event Time",
+        "required": false,
+        "description": "The time or interval during which a dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventTime",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/startDayOfYear",
+        "title": "Start Day Of Year",
+        "required": false,
+        "description": "The earliest integer day of the year on which the dwc:Event occurred (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366).",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/startDayOfYear",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/endDayOfYear",
+        "title": "End Day Of Year",
+        "required": false,
+        "description": "The latest integer day of the year on which the dwc:Event occurred (1 for January 1, 365 for December 31, except in a leap year, in which case it is 366).",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/endDayOfYear",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/year",
+        "title": "Year",
+        "required": false,
+        "description": "The four-digit year in which the dwc:Event occurred, according to the Common Era Calendar.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/year",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/month",
+        "title": "Month",
+        "required": false,
+        "description": "The integer month in which the dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/month",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/day",
+        "title": "Day",
+        "required": false,
+        "description": "The integer day of the month on which the dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/day",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimEventDate",
+        "title": "Verbatim EventDate",
+        "required": false,
+        "description": "The verbatim original representation of the date and time information for a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimEventDate",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/habitat",
+        "title": "Habitat",
+        "required": false,
+        "description": "A category or description of the habitat in which the dwc:Event occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/habitat",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/samplingProtocol",
+        "title": "Sampling Protocol",
+        "required": false,
+        "description": "The names of, references to, or descriptions of the methods or protocols used during a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/samplingProtocol",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/sampleSizeValue",
+        "title": "Sample Size Value",
+        "required": false,
+        "description": "A numeric value for a measurement of the size (time duration, length, area, or volume) of a sample in a sampling dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/sampleSizeValue",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/sampleSizeUnit",
+        "title": "Sample Size Unit",
+        "required": false,
+        "description": "The unit of measurement of the size (time duration, length, area, or volume) of a sample in a sampling dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/sampleSizeUnit",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/samplingEffort",
+        "title": "Sampling Effort",
+        "required": false,
+        "description": "The amount of effort expended during a dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/samplingEffort",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/fieldNotes",
+        "title": "Field Notes",
+        "required": false,
+        "description": "One of a) an indicator of the existence of, b) a reference to (publication, URI), or c) the text of notes taken in the field about the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/fieldNotes",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/eventRemarks",
+        "title": "Event Remarks",
+        "required": false,
+        "description": "Comments or notes about the dwc:Event.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/eventRemarks",
+        "group": "Event"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locationID",
+        "title": "Location ID",
+        "required": false,
+        "description": "An identifier for the set of dcterms:Location information. May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locationID",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/higherGeographyID",
+        "title": "Higher Geography ID",
+        "required": false,
+        "description": "An identifier for the geographic region within which the dcterms:Location occurred.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/higherGeographyID",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/higherGeography",
+        "title": "Higher Geography",
+        "required": false,
+        "description": "A list (concatenated and separated) of geographic names less specific than the information captured in the dwc:locality term.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/higherGeography",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/continent",
+        "title": "Continent",
+        "required": false,
+        "description": "The name of the continent in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/continent",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/waterBody",
+        "title": "Water Body",
+        "required": false,
+        "description": "The name of the water body in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/waterBody",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/islandGroup",
+        "title": "Island Group",
+        "required": false,
+        "description": "The name of the island group in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/islandGroup",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/island",
+        "title": "Island",
+        "required": false,
+        "description": "The name of the island on or near which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/island",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/country",
+        "title": "Country",
+        "required": false,
+        "description": "The name of the country or major administrative unit in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/country",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/countryCode",
+        "title": "Country Code",
+        "required": false,
+        "description": "The standard code for the country in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/countryCode",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/stateProvince",
+        "title": "First Order Division",
+        "required": false,
+        "description": "The name of the next smaller administrative region than country (state, province, canton, department, region, etc.) in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/stateProvince",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/county",
+        "title": "Second Order Division",
+        "required": false,
+        "description": "The full, unabbreviated name of the next smaller administrative region than stateProvince (county, shire, department, etc.) in which the dcterms:Location occurs.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/county",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/municipality",
+        "title": "Third Order Division",
+        "required": false,
+        "description": "The full, unabbreviated name of the next smaller administrative region than county (city, municipality, etc.) in which the dcterms:Location occurs. Do not use this term for a nearby named place that does not contain the actual dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/municipality",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locality",
+        "title": "Locality",
+        "required": false,
+        "description": "The specific description of the place.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locality",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLocality",
+        "title": "Verbatim Locality",
+        "required": false,
+        "description": "The original textual description of the place.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLocality",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/minimumElevationInMeters",
+        "title": "Minimum Elevation In Meters",
+        "required": false,
+        "description": "The lower limit of the range of elevation (altitude, usually above sea level), in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/minimumElevationInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/maximumElevationInMeters",
+        "title": "Maximum Elevation In Meters",
+        "required": false,
+        "description": "The upper limit of the range of elevation (altitude, usually above sea level), in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/maximumElevationInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimElevation",
+        "title": "Verbatim Elevation",
+        "required": false,
+        "description": "The original description of the elevation (altitude, usually above sea level) of the Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimElevation",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verticalDatum",
+        "title": "Vertical Datum",
+        "required": false,
+        "description": "The vertical datum used as the reference upon which the values in the elevation terms are based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verticalDatum",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/minimumDepthInMeters",
+        "title": "Minimum Depth In Meters",
+        "required": false,
+        "description": "The lesser depth of a range of depth below the local surface, in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/minimumDepthInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/maximumDepthInMeters",
+        "title": "Maximum Depth In Meters",
+        "required": false,
+        "description": "The greater depth of a range of depth below the local surface, in meters.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/maximumDepthInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimDepth",
+        "title": "Verbatim Depth",
+        "required": false,
+        "description": "The original description of the depth below the local surface.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimDepth",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/minimumDistanceAboveSurfaceInMeters",
+        "title": "Minimum Distance Above Surface In Meters",
+        "required": false,
+        "description": "The lesser distance in a range of distance from a reference surface in the vertical direction, in meters. Use positive values for locations above the surface, negative values for locations below. If depth measures are given, the reference surface is the location given by the depth, otherwise the reference surface is the location given by the elevation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/minimumDistanceAboveSurfaceInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/maximumDistanceAboveSurfaceInMeters",
+        "title": "Maximum Distance Above Surface In Meters",
+        "required": false,
+        "description": "The greater distance in a range of distance from a reference surface in the vertical direction, in meters. Use positive values for locations above the surface, negative values for locations below. If depth measures are given, the reference surface is the location given by the depth, otherwise the reference surface is the location given by the elevation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/maximumDistanceAboveSurfaceInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locationAccordingTo",
+        "title": "Location According To",
+        "required": false,
+        "description": "Information about the source of this dcterms:Location information. Could be a publication (gazetteer), institution, or team of individuals.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locationAccordingTo",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/locationRemarks",
+        "title": "Location Remarks",
+        "required": false,
+        "description": "Comments or notes about the dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/locationRemarks",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/decimalLatitude",
+        "title": "Decimal Latitude",
+        "required": false,
+        "description": "The geographic latitude (in decimal degrees, using the spatial reference system given in dwc:geodeticDatum) of the geographic center of a dcterms:Location. Positive values are north of the Equator, negative values are south of it. Legal values lie between -90 and 90, inclusive.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/decimalLatitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/decimalLongitude",
+        "title": "Decimal Longitude",
+        "required": false,
+        "description": "The geographic longitude (in decimal degrees, using the spatial reference system given in dwc:geodeticDatum) of the geographic center of a dcterms:Location. Positive values are east of the Greenwich Meridian, negative values are west of it. Legal values lie between -180 and 180, inclusive.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/decimalLongitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/geodeticDatum",
+        "title": "Geodetic Datum",
+        "required": false,
+        "description": "The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geographic coordinates given in dwc:decimalLatitude and dwc:decimalLongitude are based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/geodeticDatum",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters",
+        "title": "Coordinate Uncertainty In Meters",
+        "required": false,
+        "description": "The horizontal distance (in meters) from the given dwc:decimalLatitude and dwc:decimalLongitude describing the smallest circle containing the whole of the dcterms:Location. Leave the value empty if the uncertainty is unknown, cannot be estimated, or is not applicable (because there are no coordinates). Zero is not a valid value for this term.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/coordinatePrecision",
+        "title": "Coordinate Precision",
+        "required": false,
+        "description": "A decimal representation of the precision of the coordinates given in the dwc:decimalLatitude and dwc:decimalLongitude.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/coordinatePrecision",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/pointRadiusSpatialFit",
+        "title": "Point Radius Spatial Fit",
+        "required": false,
+        "description": "The ratio of the area of the point-radius (dwc:decimalLatitude, dwc:decimalLongitude, dwc:coordinateUncertaintyInMeters) to the area of the true (original, or most specific) spatial representation of the dcterms:Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given point-radius does not completely contain the original representation. The dwc:pointRadiusSpatialFit is undefined (and should be left empty) if the original representation is any geometry without area (e.g., a point or polyline) and without uncertainty and the given georeference is not that same geometry (without uncertainty). If both the original and the given georeference are the same point, the dwc:pointRadiusSpatialFit is 1.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/pointRadiusSpatialFit",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimCoordinates",
+        "title": "Verbatim Coordinates",
+        "required": false,
+        "description": "The verbatim original spatial coordinates of the dcterms:Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in dwc:verbatimSRS and the coordinate system should be stored in dwc:verbatimCoordinateSystem.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimCoordinates",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLatitude",
+        "title": "Verbatim Latitude",
+        "required": false,
+        "description": "The verbatim original latitude of the dcterms:Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in dwc:verbatimSRS and the coordinate system should be stored in dwc:verbatimCoordinateSystem.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLatitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
+        "title": "Verbatim Longitude",
+        "required": false,
+        "description": "The verbatim original longitude of the dcterms:Location. The coordinate ellipsoid, geodeticDatum, or full Spatial Reference System (SRS) for these coordinates should be stored in dwc:verbatimSRS and the coordinate system should be stored in dwc:verbatimCoordinateSystem.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimLongitude",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem",
+        "title": "Verbatim Coordinate System",
+        "required": false,
+        "description": "The coordinate format for the dwc:verbatimLatitude and dwc:verbatimLongitude or the dwc:verbatimCoordinates of the dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimCoordinateSystem",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimSRS",
+        "title": "Verbatim SRS",
+        "required": false,
+        "description": "The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which coordinates given in dwc:verbatimLatitude and dwc:verbatimLongitude, or dwc:verbatimCoordinates are based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimSRS",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/footprintWKT",
+        "title": "Footprint WKT",
+        "required": false,
+        "description": "A Well-Known Text (WKT) representation of the shape (footprint, geometry) that defines the dcterms:Location. A dcterms:Location may have both a point-radius representation (see dwc:decimalLatitude) and a footprint representation, and they may differ from each other.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/footprintWKT",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/footprintSRS",
+        "title": "Footprint SRS",
+        "required": false,
+        "description": "The ellipsoid, geodetic datum, or spatial reference system (SRS) upon which the geometry given in dwc:footprintWKT is based.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/footprintSRS",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/footprintSpatialFit",
+        "title": "Footprint Spatial Fit",
+        "required": false,
+        "description": "The ratio of the area of the dwc:footprintWKT to the area of the true (original, or most specific) spatial representation of the dcterms:Location. Legal values are 0, greater than or equal to 1, or undefined. A value of 1 is an exact match or 100% overlap. A value of 0 should be used if the given dwc:footprintWKT does not completely contain the original representation. The dwc:footprintSpatialFit is undefined (and should be left empty) if the original representation is any geometry without area (e.g., a point or polyline) and without uncertainty and the given georeference is not that same geometry (without uncertainty). If both the original and the given georeference are the same point, the dwc:footprintSpatialFit is 1.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/footprintSpatialFit",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferencedBy",
+        "title": "Georeferenced By",
+        "required": false,
+        "description": "A list (concatenated and separated) of names of people, groups, or organizations who determined the georeference (spatial representation) for the dcterms:Location.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferencedBy",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferencedDate",
+        "title": "Georeferenced Date",
+        "required": false,
+        "description": "The date on which the dcterms:Location was georeferenced.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferencedDate",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceProtocol",
+        "title": "Georeference Protocol",
+        "required": false,
+        "description": "A description or reference to the methods used to determine the spatial footprint, coordinates, and uncertainties.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceProtocol",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceSources",
+        "title": "Georeference Sources",
+        "required": false,
+        "description": "A list (concatenated and separated) of maps, gazetteers, or other resources used to georeference the dcterms:Location, described specifically enough to allow anyone in the future to use the same resources.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceSources",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/georeferenceRemarks",
+        "title": "Georeference Remarks",
+        "required": false,
+        "description": "Comments or notes about the spatial description determination, explaining assumptions made in addition or opposition to the those formalized in the method referred to in dwc:georeferenceProtocol.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/georeferenceRemarks",
+        "group": "Location"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/geologicalContextID",
+        "title": "Geological Context ID",
+        "required": false,
+        "description": "An identifier for the set of information associated with a dwc:GeologicalContext (the location within a geological context, such as stratigraphy). May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/geologicalContextID",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestEonOrLowestEonothem",
+        "title": "Earliest Eon Or Lowest Eonothem",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic eon or lowest chrono-stratigraphic eonothem or the informal name (&quot;Precambrian&quot;) attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestEonOrLowestEonothem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestEonOrHighestEonothem",
+        "title": "Latest Eon Or Highest Eonothem",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic eon or highest chrono-stratigraphic eonothem or the informal name (&quot;Precambrian&quot;) attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestEonOrHighestEonothem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestEraOrLowestErathem",
+        "title": "Earliest Era Or Lowest Erathem",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic era or lowest chronostratigraphic erathem attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestEraOrLowestErathem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestEraOrHighestErathem",
+        "title": "Latest Era Or Highest Erathem",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic era or highest chronostratigraphic erathem attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestEraOrHighestErathem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestPeriodOrLowestSystem",
+        "title": "Earliest Period Or Lowest System",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic period or lowest chronostratigraphic system attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestPeriodOrLowestSystem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestPeriodOrHighestSystem",
+        "title": "Latest Period Or Highest System",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic period or highest chronostratigraphic system attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestPeriodOrHighestSystem",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestEpochOrLowestSeries",
+        "title": "Earliest Epoch Or Lowest Series",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic epoch or lowest chronostratigraphic series attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestEpochOrLowestSeries",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries",
+        "title": "Latest Epoch Or Highest Series",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic epoch or highest chronostratigraphic series attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestEpochOrHighestSeries",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/earliestAgeOrLowestStage",
+        "title": "Earliest Age Or Lowest Stage",
+        "required": false,
+        "description": "The full name of the earliest possible geochronologic age or lowest chronostratigraphic stage attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/earliestAgeOrLowestStage",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/latestAgeOrHighestStage",
+        "title": "Latest Age Or Highest Stage",
+        "required": false,
+        "description": "The full name of the latest possible geochronologic age or highest chronostratigraphic stage attributable to the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/latestAgeOrHighestStage",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/lowestBiostratigraphicZone",
+        "title": "Lowest Biostratigraphic Zone",
+        "required": false,
+        "description": "The full name of the lowest possible geological biostratigraphic zone of the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/lowestBiostratigraphicZone",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/highestBiostratigraphicZone",
+        "title": "Highest Biostratigraphic Zone",
+        "required": false,
+        "description": "The full name of the highest possible geological biostratigraphic zone of the stratigraphic horizon from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/highestBiostratigraphicZone",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/lithostratigraphicTerms",
+        "title": "Lithostratigraphic Terms",
+        "required": false,
+        "description": "The combination of all lithostratigraphic names for the rock from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/lithostratigraphicTerms",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/group",
+        "title": "Group",
+        "required": false,
+        "description": "The full name of the lithostratigraphic group from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/group",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/formation",
+        "title": "Formation",
+        "required": false,
+        "description": "The full name of the lithostratigraphic formation from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/formation",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/member",
+        "title": "Member",
+        "required": false,
+        "description": "The full name of the lithostratigraphic member from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/member",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/bed",
+        "title": "Bed",
+        "required": false,
+        "description": "The full name of the lithostratigraphic bed from which the dwc:MaterialEntity was collected.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/bed",
+        "group": "GeologicalContext"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identificationID",
+        "title": "Identification ID",
+        "required": false,
+        "description": "An identifier for the dwc:Identification (the body of information associated with the assignment of a scientific name). May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identificationID",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimIdentification",
+        "title": "Verbatim Identification",
+        "required": false,
+        "description": "A string representing the taxonomic identification as it appeared in the original record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimIdentification",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
+        "title": "Identification Qualifier",
+        "required": false,
+        "description": "A brief phrase or a standard term (&quot;cf.&quot;, &quot;aff.&quot;) to express the determiner&#x27;s doubts about the dwc:Identification.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identificationQualifier",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/typeStatus",
+        "title": "Type Status",
+        "required": false,
+        "description": "A list (concatenated and separated) of nomenclatural types (type status, typified scientific name, publication) applied to the subject.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/typeStatus",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/typifiedName",
+        "title": "Typified Name",
+        "required": false,
+        "description": "A scientific name that is based on a type specimen.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/typifiedName",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identifiedBy",
+        "title": "Identified By",
+        "required": false,
+        "description": "A list (concatenated and separated) of names of people, groups, or organizations who assigned the dwc:Taxon to the subject.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identifiedBy",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identifiedByID",
+        "title": "Identified By ID",
+        "required": false,
+        "description": "A list (concatenated and separated) of the globally unique identifier for the person, people, groups, or organizations responsible for assigning the dwc:Taxon to the subject.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identifiedByID",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/dateIdentified",
+        "title": "Date Identified",
+        "required": false,
+        "description": "The date on which the subject was determined as representing the dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/dateIdentified",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identificationReferences",
+        "title": "Identification References",
+        "required": false,
+        "description": "A list (concatenated and separated) of references (publication, global unique identifier, URI) used in the dwc:Identification.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identificationReferences",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identificationVerificationStatus",
+        "title": "Identification Verification Status",
+        "required": false,
+        "description": "A categorical indicator of the extent to which the taxonomic identification has been verified to be correct.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identificationVerificationStatus",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/identificationRemarks",
+        "title": "Identification Remarks",
+        "required": false,
+        "description": "Comments or notes about the dwc:Identification.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/identificationRemarks",
+        "group": "Identification"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonID",
+        "title": "Taxon ID",
+        "required": false,
+        "description": "An identifier for the set of dwc:Taxon information. May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/scientificNameID",
+        "title": "Scientific Name ID",
+        "required": false,
+        "description": "An identifier for the nomenclatural (not taxonomic) details of a scientific name.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/scientificNameID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID",
+        "title": "Accepted Name Usage ID",
+        "required": false,
+        "description": "An identifier for the name usage (documented meaning of the name according to a source) of the currently valid (zoological) or accepted (botanical) taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/parentNameUsageID",
+        "title": "Parent Name Usage ID",
+        "required": false,
+        "description": "An identifier for the name usage (documented meaning of the name according to a source) of the direct, most proximate higher-rank parent taxon (in a classification) of the most specific element of the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/parentNameUsageID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/originalNameUsageID",
+        "title": "Original Name Usage ID",
+        "required": false,
+        "description": "An identifier for the name usage (documented meaning of the name according to a source) in which the terminal element of the dwc:scientificName was originally established under the rules of the associated dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/originalNameUsageID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nameAccordingToID",
+        "title": "Name According To ID",
+        "required": false,
+        "description": "An identifier for the source in which the specific taxon concept circumscription is defined or implied. See dwc:nameAccordingTo.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingToID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/namePublishedInID",
+        "title": "Name Published In ID",
+        "required": false,
+        "description": "An identifier for the publication in which the dwc:scientificName was originally established under the rules of the associated dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/namePublishedInID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonConceptID",
+        "title": "Taxon Concept ID",
+        "required": false,
+        "description": "An identifier for the taxonomic concept to which the record refers - not for the nomenclatural details of a dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonConceptID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/scientificName",
+        "title": "Scientific Name",
+        "required": false,
+        "description": "The full scientific name, with authorship and date information if known. When forming part of a dwc:Identification, this should be the name in lowest level taxonomic rank that can be determined. This term should not contain identification qualifications, which should instead be supplied in the dwc:identificationQualifier term.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/scientificName",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/acceptedNameUsage",
+        "title": "Accepted Name Usage",
+        "required": false,
+        "description": "The full name, with authorship and date information if known, of the currently valid (zoological) or accepted (botanical) dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/acceptedNameUsage",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/parentNameUsage",
+        "title": "Parent Name Usage",
+        "required": false,
+        "description": "The full name, with authorship and date information if known, of the direct, most proximate higher-rank parent dwc:Taxon (in a classification) of the most specific element of the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/parentNameUsage",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/originalNameUsage",
+        "title": "Original Name Usage",
+        "required": false,
+        "description": "The taxon name, with authorship and date information if known, as it originally appeared when first established under the rules of the associated dwc:nomenclaturalCode. The basionym (botany) or basonym (bacteriology) of the dwc:scientificName or the senior/earlier homonym for replaced names.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/originalNameUsage",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
+        "title": "Name According To",
+        "required": false,
+        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin &quot;sensu&quot; or &quot;sec.&quot; (from secundum, meaning &quot;according to&quot;). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/namePublishedIn",
+        "title": "Name Published In",
+        "required": false,
+        "description": "A reference for the publication in which the dwc:scientificName was originally established under the rules of the associated dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/namePublishedIn",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/namePublishedInYear",
+        "title": "Name Published In Year",
+        "required": false,
+        "description": "The four-digit year in which the dwc:scientificName was published.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/namePublishedInYear",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/higherClassification",
+        "title": "Higher Classification",
+        "required": false,
+        "description": "A list (concatenated and separated) of taxa names terminating at the rank immediately superior to the referenced dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/higherClassification",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/kingdom",
+        "title": "Kingdom",
+        "required": false,
+        "description": "The full scientific name of the kingdom in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/kingdom",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/phylum",
+        "title": "Phylum",
+        "required": false,
+        "description": "The full scientific name of the phylum or division in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/phylum",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/class",
+        "title": "Class",
+        "required": false,
+        "description": "The full scientific name of the class in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/class",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/order",
+        "title": "Order",
+        "required": false,
+        "description": "The full scientific name of the order in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/order",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/superfamily",
+        "title": "Superfamily",
+        "required": false,
+        "description": "The full scientific name of the superfamily in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/superfamily",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/family",
+        "title": "Family",
+        "required": false,
+        "description": "The full scientific name of the family in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/family",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/subfamily",
+        "title": "Subfamily",
+        "required": false,
+        "description": "The full scientific name of the subfamily in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/subfamily",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/tribe",
+        "title": "Tribe",
+        "required": false,
+        "description": "The full scientific name of the tribe in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/tribe",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/subtribe",
+        "title": "Subtribe",
+        "required": false,
+        "description": "The full scientific name of the subtribe in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/subtribe",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/genus",
+        "title": "Genus",
+        "required": false,
+        "description": "The full scientific name of the genus in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/genus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/genericName",
+        "title": "Generic Name",
+        "required": false,
+        "description": "The genus part of the dwc:scientificName without authorship.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/genericName",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/subgenus",
+        "title": "Subgenus",
+        "required": false,
+        "description": "The full scientific name of the subgenus in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/subgenus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/infragenericEpithet",
+        "title": "Infrageneric Epithet",
+        "required": false,
+        "description": "The infrageneric part of a binomial name at ranks above species but below genus.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/infragenericEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/specificEpithet",
+        "title": "Specific Epithet",
+        "required": false,
+        "description": "The name of the first or species epithet of the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/specificEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/infraspecificEpithet",
+        "title": "Infraspecific Epithet",
+        "required": false,
+        "description": "The name of the lowest or terminal infraspecific epithet of the dwc:scientificName, excluding any rank designation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/infraspecificEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/cultivarEpithet",
+        "title": "Cultivar Epithet",
+        "required": false,
+        "description": "Part of the name of a cultivar, cultivar group or grex that follows the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/cultivarEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonRank",
+        "title": "Taxon Rank",
+        "required": false,
+        "description": "The taxonomic rank of the most specific name in the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonRank",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimTaxonRank",
+        "title": "Verbatim Taxon Rank",
+        "required": false,
+        "description": "The taxonomic rank of the most specific name in the dwc:scientificName as it appears in the original record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimTaxonRank",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship",
+        "title": "Scientific Name Authorship",
+        "required": false,
+        "description": "The authorship information for the dwc:scientificName formatted according to the conventions of the applicable dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/vernacularName",
+        "title": "Vernacular Name",
+        "required": false,
+        "description": "A common or vernacular name.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/vernacularName",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nomenclaturalCode",
+        "title": "Nomenclatural Code",
+        "required": false,
+        "description": "The nomenclatural code (or codes in the case of an ambiregnal name) under which the dwc:scientificName is constructed.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nomenclaturalCode",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonomicStatus",
+        "title": "Taxonomic Status",
+        "required": false,
+        "description": "The status of the use of the dwc:scientificName as a label for a taxon. Requires taxonomic opinion to define the scope of a dwc:Taxon. Rules of priority then are used to define the taxonomic status of the nomenclature contained in that scope, combined with the experts opinion. It must be linked to a specific taxonomic reference that defines the concept.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonomicStatus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus",
+        "title": "Nomenclatural Status",
+        "required": false,
+        "description": "The status related to the original publication of the name and its conformance to the relevant rules of nomenclature. It is based essentially on an algorithm according to the business rules of the code. It requires no taxonomic opinion.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonRemarks",
+        "title": "Taxon Remarks",
+        "required": false,
+        "description": "Comments or notes about the taxon or name.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonRemarks",
+        "group": "Taxon"
+      }
+    ]
+  },
+  {
+    "name": "Taxon",
+    "title": "Darwin Core Taxon",
+    "identifier": "http://rs.tdwg.org/dwc/terms/Taxon",
+    "url": "http://rs.gbif.org/core/dwc_taxon_2025-07-10.xml",
+    "rowType": "http://rs.tdwg.org/dwc/terms/Taxon",
+    "namespace": "http://rs.tdwg.org/dwc/terms/",
+    "issued": "2026-02-12",
+    "description": "Support for Darwin Core Taxon-based records.",
+    "subject": "",
+    "fields": [
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonID",
+        "title": "Taxon ID",
+        "required": false,
+        "description": "An identifier for the set of dwc:Taxon information. May be a global unique identifier or an identifier specific to the data set.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/scientificNameID",
+        "title": "Scientific Name ID",
+        "required": false,
+        "description": "An identifier for the nomenclatural (not taxonomic) details of a scientific name.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/scientificNameID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID",
+        "title": "Accepted Name Usage ID",
+        "required": false,
+        "description": "An identifier for the name usage (documented meaning of the name according to a source) of the currently valid (zoological) or accepted (botanical) taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/acceptedNameUsageID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/parentNameUsageID",
+        "title": "Parent Name Usage ID",
+        "required": false,
+        "description": "An identifier for the name usage (documented meaning of the name according to a source) of the direct, most proximate higher-rank parent taxon (in a classification) of the most specific element of the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/parentNameUsageID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/originalNameUsageID",
+        "title": "Original Name Usage ID",
+        "required": false,
+        "description": "An identifier for the name usage (documented meaning of the name according to a source) in which the terminal element of the dwc:scientificName was originally established under the rules of the associated dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/originalNameUsageID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nameAccordingToID",
+        "title": "Name According To ID",
+        "required": false,
+        "description": "An identifier for the source in which the specific taxon concept circumscription is defined or implied. See dwc:nameAccordingTo.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingToID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/namePublishedInID",
+        "title": "Name Published In ID",
+        "required": false,
+        "description": "An identifier for the publication in which the dwc:scientificName was originally established under the rules of the associated dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/namePublishedInID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonConceptID",
+        "title": "Taxon Concept ID",
+        "required": false,
+        "description": "An identifier for the taxonomic concept to which the record refers - not for the nomenclatural details of a dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonConceptID",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/scientificName",
+        "title": "Scientific Name",
+        "required": false,
+        "description": "The full scientific name, with authorship and date information if known. When forming part of a dwc:Identification, this should be the name in lowest level taxonomic rank that can be determined. This term should not contain identification qualifications, which should instead be supplied in the dwc:identificationQualifier term.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/scientificName",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/acceptedNameUsage",
+        "title": "Accepted Name Usage",
+        "required": false,
+        "description": "The full name, with authorship and date information if known, of the currently valid (zoological) or accepted (botanical) dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/acceptedNameUsage",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/parentNameUsage",
+        "title": "Parent Name Usage",
+        "required": false,
+        "description": "The full name, with authorship and date information if known, of the direct, most proximate higher-rank parent dwc:Taxon (in a classification) of the most specific element of the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/parentNameUsage",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/originalNameUsage",
+        "title": "Original Name Usage",
+        "required": false,
+        "description": "The taxon name, with authorship and date information if known, as it originally appeared when first established under the rules of the associated dwc:nomenclaturalCode. The basionym (botany) or basonym (bacteriology) of the dwc:scientificName or the senior/earlier homonym for replaced names.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/originalNameUsage",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
+        "title": "Name According To",
+        "required": false,
+        "description": "The reference to the source in which the specific taxon concept circumscription is defined or implied - traditionally signified by the Latin &quot;sensu&quot; or &quot;sec.&quot; (from secundum, meaning &quot;according to&quot;). For taxa that result from identifications, a reference to the keys, monographs, experts and other sources should be given.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nameAccordingTo",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/namePublishedIn",
+        "title": "Name Published In",
+        "required": false,
+        "description": "A reference for the publication in which the dwc:scientificName was originally established under the rules of the associated dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/namePublishedIn",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/namePublishedInYear",
+        "title": "Name Published In Year",
+        "required": false,
+        "description": "The four-digit year in which the dwc:scientificName was published.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/namePublishedInYear",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/higherClassification",
+        "title": "Higher Classification",
+        "required": false,
+        "description": "A list (concatenated and separated) of taxa names terminating at the rank immediately superior to the referenced dwc:Taxon.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/higherClassification",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/kingdom",
+        "title": "Kingdom",
+        "required": false,
+        "description": "The full scientific name of the kingdom in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/kingdom",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/phylum",
+        "title": "Phylum",
+        "required": false,
+        "description": "The full scientific name of the phylum or division in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/phylum",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/class",
+        "title": "Class",
+        "required": false,
+        "description": "The full scientific name of the class in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/class",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/order",
+        "title": "Order",
+        "required": false,
+        "description": "The full scientific name of the order in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/order",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/superfamily",
+        "title": "Superfamily",
+        "required": false,
+        "description": "The full scientific name of the superfamily in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/superfamily",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/family",
+        "title": "Family",
+        "required": false,
+        "description": "The full scientific name of the family in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/family",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/subfamily",
+        "title": "Subfamily",
+        "required": false,
+        "description": "The full scientific name of the subfamily in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/subfamily",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/tribe",
+        "title": "Tribe",
+        "required": false,
+        "description": "The full scientific name of the tribe in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/tribe",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/subtribe",
+        "title": "Subtribe",
+        "required": false,
+        "description": "The full scientific name of the subtribe in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/subtribe",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/genus",
+        "title": "Genus",
+        "required": false,
+        "description": "The full scientific name of the genus in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/genus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/genericName",
+        "title": "Generic Name",
+        "required": false,
+        "description": "The genus part of the dwc:scientificName without authorship.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/genericName",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/subgenus",
+        "title": "Subgenus",
+        "required": false,
+        "description": "The full scientific name of the subgenus in which the dwc:Taxon is classified.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/subgenus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/infragenericEpithet",
+        "title": "Infrageneric Epithet",
+        "required": false,
+        "description": "The infrageneric part of a binomial name at ranks above species but below genus.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/infragenericEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/specificEpithet",
+        "title": "Specific Epithet",
+        "required": false,
+        "description": "The name of the first or species epithet of the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/specificEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/infraspecificEpithet",
+        "title": "Infraspecific Epithet",
+        "required": false,
+        "description": "The name of the lowest or terminal infraspecific epithet of the dwc:scientificName, excluding any rank designation.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/infraspecificEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/cultivarEpithet",
+        "title": "Cultivar Epithet",
+        "required": false,
+        "description": "Part of the name of a cultivar, cultivar group or grex that follows the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/cultivarEpithet",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonRank",
+        "title": "Taxon Rank",
+        "required": false,
+        "description": "The taxonomic rank of the most specific name in the dwc:scientificName.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonRank",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/verbatimTaxonRank",
+        "title": "Verbatim Taxon Rank",
+        "required": false,
+        "description": "The taxonomic rank of the most specific name in the dwc:scientificName as it appears in the original record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/verbatimTaxonRank",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship",
+        "title": "Scientific Name Authorship",
+        "required": false,
+        "description": "The authorship information for the dwc:scientificName formatted according to the conventions of the applicable dwc:nomenclaturalCode.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/scientificNameAuthorship",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/vernacularName",
+        "title": "Vernacular Name",
+        "required": false,
+        "description": "A common or vernacular name.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/vernacularName",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nomenclaturalCode",
+        "title": "Nomenclatural Code",
+        "required": false,
+        "description": "The nomenclatural code (or codes in the case of an ambiregnal name) under which the dwc:scientificName is constructed.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nomenclaturalCode",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonomicStatus",
+        "title": "Taxonomic Status",
+        "required": false,
+        "description": "The status of the use of the dwc:scientificName as a label for a taxon. Requires taxonomic opinion to define the scope of a dwc:Taxon. Rules of priority then are used to define the taxonomic status of the nomenclature contained in that scope, combined with the experts opinion. It must be linked to a specific taxonomic reference that defines the concept.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonomicStatus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus",
+        "title": "Nomenclatural Status",
+        "required": false,
+        "description": "The status related to the original publication of the name and its conformance to the relevant rules of nomenclature. It is based essentially on an algorithm according to the business rules of the code. It requires no taxonomic opinion.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/nomenclaturalStatus",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/taxonRemarks",
+        "title": "Taxon Remarks",
+        "required": false,
+        "description": "Comments or notes about the taxon or name.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/taxonRemarks",
+        "group": "Taxon"
+      },
+      {
+        "name": "http://purl.org/dc/terms/modified",
+        "title": "Date Modified",
+        "required": false,
+        "description": "Date on which the resource was changed.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/modified",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/elements/1.1/language",
+        "title": "Language",
+        "required": false,
+        "description": "A language of the resource.",
+        "vocabulary": "http://purl.org/dc/elements/1.1/",
+        "iri": "http://purl.org/dc/elements/1.1/language",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/license",
+        "title": "License",
+        "required": false,
+        "description": "A legal document giving official permission to do something with the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/license",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/rightsHolder",
+        "title": "Rights Holder",
+        "required": false,
+        "description": "A person or organization owning or managing rights over the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/rightsHolder",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/accessRights",
+        "title": "Access Rights",
+        "required": false,
+        "description": "Information about who can access the resource or an indication of its security status.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/accessRights",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/bibliographicCitation",
+        "title": "Bibliographic Citation",
+        "required": false,
+        "description": "A bibliographic reference for the resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/bibliographicCitation",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://purl.org/dc/terms/references",
+        "title": "References",
+        "required": false,
+        "description": "A related resource that is referenced, cited, or otherwise pointed to by the described resource.",
+        "vocabulary": "http://purl.org/dc/terms/",
+        "iri": "http://purl.org/dc/terms/references",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/institutionCode",
+        "title": "Institution Code",
+        "required": false,
+        "description": "The name (or acronym) in use by the institution having custody of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/institutionCode",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/institutionID",
+        "title": "Institution ID",
+        "required": false,
+        "description": "An identifier for the institution having custody of the object(s) or information referred to in the record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/institutionID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/datasetID",
+        "title": "Dataset ID",
+        "required": false,
+        "description": "An identifier for the set of data. May be a global unique identifier or an identifier specific to a collection or institution.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/datasetID",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/datasetName",
+        "title": "Dataset Name",
+        "required": false,
+        "description": "The name identifying the data set from which the record was derived.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/datasetName",
+        "group": "Record-level"
+      },
+      {
+        "name": "http://rs.tdwg.org/dwc/terms/informationWithheld",
+        "title": "Information Withheld",
+        "required": false,
+        "description": "Additional information that exists, but that has not been shared in the given record.",
+        "vocabulary": "http://rs.tdwg.org/dwc/terms/",
+        "iri": "http://rs.tdwg.org/dwc/terms/informationWithheld",
+        "group": "Record-level"
+      }
+    ]
+  }
+]
