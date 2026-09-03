@@ -220,7 +220,7 @@ msgstr "Kart"
 #: components/WbPlanView/CustomSelectElement.tsx:328
 #, fuzzy
 msgid "unmap"
-msgstr "Fjern kartlegging"
+msgstr "Fjern mapping"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:554
