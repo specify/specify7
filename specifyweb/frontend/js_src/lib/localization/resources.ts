@@ -439,7 +439,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Andere Eigenschaften Ressource',
     'pt-br': 'Outros recursos de propriedades',
     'hr-hr': 'Drugi resursi za nekretnine',
-    nb: 'Andre egenskaper Ressurs',
+    nb: 'Ressurs for andre egenskaper',
   },
   otherAppResource: {
     'en-us': 'Other Resource',
@@ -472,7 +472,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Individuell',
     'pt-br': 'Personalizado',
     'hr-hr': 'Običaj',
-    nb: 'Skikk',
+    nb: 'Tillpasset',
   },
   leafletLayers: {
     'en-us': 'Leaflet Layers',

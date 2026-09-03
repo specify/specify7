@@ -35,7 +35,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Configuración de búsqueda rápida',
     'fr-fr': 'Configuration de la recherche express',
     'hr-hr': 'Konfiguracija brzog pretraživanja',
-    nb: 'Ekspresssøkkonfigurasjon',
+    nb: 'Konfigurer hurtigsøk',
     'pt-br': 'Configuração de Busca Expressa',
     'ru-ru': 'Экспресс-настройка поиска',
     'uk-ua': 'Конфігурація експрес-пошуку',
@@ -79,7 +79,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Mesas disponibles',
     'fr-fr': 'Tables disponibles',
     'hr-hr': 'Dostupni stolovi',
-    nb: 'Tilgjengelige bord',
+    nb: 'Tilgjengelige tabeller',
     'pt-br': 'Mesas disponíveis',
     'ru-ru': 'Доступные таблицы',
     'uk-ua': 'Доступні столи',
@@ -193,7 +193,7 @@ export const expressSearchConfigText = createDictionary({
       "Modifier l'ordre d'affichage des sections dans le volet des résultats de recherche.",
     'hr-hr':
       'Promijenite redoslijed prikaza odjeljaka u oknu s rezultatima pretraživanja.',
-    nb: 'Endre rekkefølgen på hvordan seksjoner vises i søkeresultatruten.',
+    nb: 'Endre rekkefølgen på hvordan seksjoner vises i ruten for søkeresultat.',
     'pt-br':
       'Reordene a forma como as seções aparecem no painel de resultados da pesquisa.',
     'ru-ru':
@@ -240,7 +240,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Deseleccionar todo',
     'fr-fr': 'Désélectionnez tout',
     'hr-hr': 'Poništi odabir svega',
-    nb: 'Fjern merkingen av alle',
+    nb: 'Fjern alle valg',
     'pt-br': 'Desmarcar tudo',
     'ru-ru': 'Снять выделение со всех элементов',
     'uk-ua': 'Зняти вибір усіх',
@@ -319,7 +319,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Localidad del evento de recolección',
     'fr-fr': "Localité de l'événement de collecte",
     'hr-hr': 'Mjesto prikupljanja događaja',
-    nb: 'Samle inn arrangementslokalitet',
+    nb: 'Lokalitet for innsamlingshendelse',
     'pt-br': 'Coletando a localidade do evento',
     'ru-ru': 'Место проведения мероприятия по сбору пожертвований',
     'uk-ua': 'Місце проведення події збору',
@@ -335,7 +335,7 @@ export const expressSearchConfigText = createDictionary({
       'Événement de collecte et leurs localités, y compris les dates et les coordonnées géographiques.',
     'hr-hr':
       'Prikupljanje podataka o događajima i njihovim lokacijama, uključujući datume događaja i geografske koordinate.',
-    nb: 'Samle inn hendelser og deres steder, inkludert hendelsesdatoer og geografiske koordinater.',
+    nb: 'Innsamlingshendelser og deres lokaliteter, inkludert datoer og geografiske koordinater.',
     'pt-br':
       'Coletar informações sobre eventos e suas localidades, incluindo datas e coordenadas geográficas.',
     'ru-ru':
@@ -349,7 +349,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Taxón de objetos de colección',
     'fr-fr': 'Objets et taxons',
     'hr-hr': 'Takson objekta zbirke',
-    nb: 'Samlingsobjekt Takson',
+    nb: 'Takson for samlingsobjekt',
     'pt-br': 'Taxonomia de Objetos de Coleção',
     'ru-ru': 'Таксон объектов коллекции',
     'uk-ua': "Таксон об'єкта колекції",
@@ -387,7 +387,7 @@ export const expressSearchConfigText = createDictionary({
       'Taxons liés aux données géographiques par la détermination des objets de collection et des lieux de collecte.',
     'hr-hr':
       'Taksoni povezani s geografskim zapisima putem određivanja objekata prikupljanja i lokaliteta događaja prikupljanja.',
-    nb: 'Taksa knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter og innsamling av hendelseslokaliteter.',
+    nb: 'Taksoner knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter og innsamling av hendelseslokaliteter.',
     'pt-br':
       'Taxa vinculados a registros geográficos por meio de determinações de objetos de coleção e localidades de eventos de coleta.',
     'ru-ru':
@@ -431,7 +431,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Taxón Taxón preferido',
     'fr-fr': 'Détermination actuelle',
     'hr-hr': 'Takson Preferirani takson',
-    nb: 'Takson Foretrukket takson',
+    nb: 'Takson Foretrukket taksonnavn',
     'pt-br': 'Táxon Táxon Preferencial',
     'ru-ru': 'Предпочитаемый таксон',
     'uk-ua': 'Таксон Бажаний таксон',
@@ -477,7 +477,7 @@ export const expressSearchConfigText = createDictionary({
       'Objets avec déterminations qui possèdent à la fois un taxon original et une détermination actuelle.',
     'hr-hr':
       'Zbirni objekti s determinacijama koje imaju i izvorni takson i preferirani takson.',
-    nb: 'Samlingsobjekter med bestemmelser som har både et originalt takson og et foretrukket takson.',
+    nb: 'Samlingsobjekter med bestemmelser som har både et originalt takson og et foretrukket taksonnavn.',
     'pt-br':
       'Objetos da coleção com determinações que possuem tanto um táxon original quanto um táxon preferencial.',
     'ru-ru':

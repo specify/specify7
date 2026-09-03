@@ -575,7 +575,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Divisão',
     'ru-ru': 'Разделение',
     'uk-ua': 'Дивізіон',
-    nb: 'Inndeling',
+    nb: 'Divisjon',
   },
   divisionName: {
     'en-us': 'Name',
