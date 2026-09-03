@@ -237,42 +237,37 @@ msgstr "Har et forhold til tabellen {tableName:string}"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:106
-#, fuzzy
 msgid "selectBaseTable"
 msgstr "Velg en basistabell"
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:51
 #: components/WbPlanView/State.tsx:96
-#, fuzzy
 msgid "chooseExistingPlan"
-msgstr "Velg eksisterende kartlegging"
+msgstr "Velg eksisterende mapping"
 
 #. Used in: Components > Schema Config > Tables
 #: components/SchemaConfig/Tables.tsx:158
-#, fuzzy
 msgid "showAllTables"
 msgstr "Vis alle tabeller"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:113
-#, fuzzy
 msgid "baseTableDescription"
 msgstr ""
-"En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger "
-"mellom kolonner og datafelt. Når den er lastet opp, vil hver rad i "
-"datasettet resultere i en ny post i Spesifiser i basistabellen du velger. "
-"Klikk på en basistabell i listen for å komme i gang."
+"En «basistabell» er tabellen som fungerer som utgangspunkt for mappinger av "
+"kolonner og datafelt. Når den er lastet opp, vil hver rad i datasettet gi i "
+"en ny post i Specify i basistabellen du velger. Klikk på en basistabell i "
+"listen for å komme i gang."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
 #, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
-"En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger "
-"mellom kolonner og datafelt. Hver importerte vedleggspost legges til som en "
-"ny rad i basistabellen du velger. Klikk på en basistabell i listen for å "
-"komme i gang."
+"En «basistabell» er tabellen som fungerer som utgangspunkt for mappinger av "
+"kolonner og datafelt. Hvert importerte vedlegg legges til som en ny rad i "
+"basistabellen du velger. Klikk på en basistabell i listen for å komme i gang."
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:105
