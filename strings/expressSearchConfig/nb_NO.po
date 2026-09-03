@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 11:51+0000\n"
-"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -178,7 +178,6 @@ msgid "ColObjCollectors"
 msgstr "Samlere for samlingsobjekter"
 
 #. Used in: 
-#, fuzzy
 msgid "ColObjCollectors_desc"
 msgstr ""
 "Samlingsobjekter og agentene som samlet dem inn, med datoer for "
@@ -198,7 +197,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs"
-msgstr "Samlingsobjekt Foretrukket takson"
+msgstr "Foretrukket takson for samlingsobjekt"
 
 #. Used in: 
 msgid "SynonymCollObjs_desc"
