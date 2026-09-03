@@ -1,64 +1,58 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-02 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-03 09:51+0000\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/wbPlan/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 #. Used in: Components > Preferences > User Definitions ⬤ Components > Work Bench > Wb View
 #: components/Preferences/UserDefinitions.tsx:2124
 #: components/WorkBench/WbView.tsx:252
-#, fuzzy
 msgid "dataMapper"
-msgstr "Datakartlegger"
+msgstr "Data mapping"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:54
 #: components/WbToolkit/DevShowPlan.tsx:205
-#, fuzzy
 msgid "importExportMapping"
-msgstr "Importer/eksporter kartlegging"
+msgstr "Importer/eksporter mapping"
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:209
-#, fuzzy
 msgid "importExportMappingDescription"
 msgstr ""
-"Du kan eksportere den gjeldende datasetttilordningen som en JSON-fil eller "
-"importere en eksisterende datasetttilordning."
+"Du kan eksportere den gjeldende mapping av datasett som en JSON-fil eller "
+"importere en eksisterende mapping av datasett."
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan ⬤ Components > Wb Plan View > State
 #: components/WbActions/WbNoUploadPlan.tsx:58
 #: components/WbPlanView/State.tsx:35
-#, fuzzy
 msgid "noUploadPlan"
-msgstr "Ingen datasetttilordning er definert"
+msgstr "Ingen mapping av datasett er definert"
 
 #. Used in: Components > Wb Actions > Wb No Upload Plan
 #: components/WbActions/WbNoUploadPlan.tsx:61
-#, fuzzy
 msgid "noUploadPlanDescription"
 msgstr ""
-"Ingen kartlegging er definert for dette datasettet. Vennligst velg en "
-"eksisterende kartlegging eller opprett en ny."
+"Ingen mapping er definert for dette datasettet. Vennligst velg en "
+"eksisterende mapping eller opprett en ny."
 
 #. Used in: Components > Work Bench > Hot Props
 #: components/WorkBench/hotProps.tsx:160
 #: components/WorkBench/hotProps.tsx:161
 #, fuzzy
 msgid "unmappedColumn"
-msgstr "Ukartlagt kolonne"
+msgstr "Kolonne mangler mapping"
 
 #. 🟥Show in pick list in Data Mapper when column is not mapped. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:618
 #: components/WbPlanView/CustomSelectElement.tsx:647
-#, fuzzy
 msgid "notSelected"
 msgstr "INGEN VALGT"
 
@@ -66,13 +60,13 @@ msgstr "INGEN VALGT"
 #: components/Molecules/TableIcon.tsx:96
 #, fuzzy
 msgid "unmapped"
-msgstr "Ikke kartlagt"
+msgstr "Mapping ikke utført"
 
 #. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:109
 #, fuzzy
 msgid "mapped"
-msgstr "Kartlagt"
+msgstr "Mapped/tilordnet"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:259
@@ -82,33 +76,28 @@ msgstr "Matchatferd:"
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:172
-#, fuzzy
 msgid "columnMapping"
-msgstr "Kolonnekartlegging"
+msgstr "Mapping av kolonner"
 
 #. Used in: Components > Wb Plan View > Custom Select Element ⬤ Components > Wb Plan View > Line Components
 #: components/WbPlanView/CustomSelectElement.tsx:891
 #: components/WbPlanView/LineComponents.tsx:210
-#, fuzzy
 msgid "suggestedMappings"
-msgstr "Foreslåtte kartlegginger:"
+msgstr "Foreslåtte mappinger:"
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:211
-#, fuzzy
 msgid "requiredFields"
 msgstr "Obligatoriske felt"
 
 #. Used in: Components > Wb Plan View > Line Components
 #: components/WbPlanView/LineComponents.tsx:212
-#, fuzzy
 msgid "optionalFields"
 msgstr "Valgfrie felt"
 
 #. Used in: Components > Query Builder > Import ⬤ Components > Wb Plan View > Line Components
 #: components/QueryBuilder/Import.tsx:155
 #: components/WbPlanView/LineComponents.tsx:213
-#, fuzzy
 msgid "hiddenFields"
 msgstr "Skjulte felt"
 
@@ -116,7 +105,6 @@ msgstr "Skjulte felt"
 #: components/FormMeta/CarryForward.tsx:426
 #: components/QueryBuilder/Toolbar.tsx:46
 #: components/WbPlanView/MapperComponents.tsx:83
-#, fuzzy
 msgid "revealHiddenFormFields"
 msgstr "Vis skjulte skjemafelt"
 
@@ -126,11 +114,10 @@ msgstr "Vis skjulte skjemafelt"
 #: components/WbPlanView/Mapper.tsx:677
 #, fuzzy
 msgid "mappingOptions"
-msgstr "Kartleggingsalternativer"
+msgstr "Alternativer for mapping"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:263
-#, fuzzy
 msgid "ignoreWhenBlank"
 msgstr "Ignorer når blank"
 
