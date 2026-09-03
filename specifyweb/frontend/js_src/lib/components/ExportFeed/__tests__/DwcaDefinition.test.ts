@@ -135,7 +135,8 @@ describe('DwCA query field term mapping', () => {
 
   test('automaps a newly inserted field instead of using its position', () => {
     const catalogNumber = 'http://rs.tdwg.org/dwc/terms/catalogNumber';
-    const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">
+    const [mapping] =
+      parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">
       <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
       <field stringId="1.collectionobject.catalogNumber" term="${catalogNumber}" />
     </query></queries></core></archive>`);
@@ -311,6 +312,50 @@ describe('DwCA query field term mapping', () => {
       throw new Error('Extension mapping was not parsed');
 
     expect(mapping.terms).toEqual([occurrenceId, undefined]);
+  });
+
+  test('automatically maps model-backed GBIF extension fields', () => {
+    const fields = [
+      [
+        '1,111-collectionObjectAttachments,41.attachment.title',
+        'http://purl.org/dc/terms/title',
+      ],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.fileCreatedDate',
+        'http://rs.tdwg.org/ac/terms/digitizationDate',
+      ],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.guid',
+        'http://purl.org/dc/terms/identifier',
+      ],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.type',
+        'http://purl.org/dc/elements/1.1/type',
+      ],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.subtype',
+        'http://rs.tdwg.org/ac/terms/subtype',
+      ],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.mimeType',
+        'http://purl.org/dc/elements/1.1/format',
+      ],
+      [
+        '1,111-collectionObjectAttachments,41.attachment.attachment',
+        'http://rs.tdwg.org/ac/terms/accessURI',
+      ],
+    ] as const;
+    const xml = `<archive><extension rowType="http://rs.tdwg.org/ac/terms/Multimedia"><queries><query name="Multimedia.csv" contextTableId="1">${fields
+      .map(([stringId]) => `<field stringId="${stringId}" />`)
+      .join('')}</query></queries></extension></archive>`;
+    const [mapping] = parseDefinition(xml);
+    if (mapping === undefined)
+      throw new Error('Extension mapping was not parsed');
+
+    expect(mapping.terms).toEqual([
+      occurrenceId,
+      ...fields.map(([, term]) => term),
+    ]);
   });
 
   test('limits templates to the matching mapping', () => {
