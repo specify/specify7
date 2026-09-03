@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -396,190 +396,160 @@ msgstr "Gruppe"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:37
-#, fuzzy
 msgid "userDefinedItems"
 msgstr "Brukerdefinerte elementer"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:38
-#, fuzzy
 msgid "entireTable"
-msgstr "Hele bordet"
+msgstr "Hele tabellen"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:39
-#, fuzzy
 msgid "fieldFromTable"
 msgstr "Felt fra tabell"
 
 #. Used in: Components > Form Cells > Index
 #: components/FormCells/index.tsx:319
-#, fuzzy
 msgid "unsupportedCellType"
-msgstr "Ustøttet celletype"
+msgstr "Ugyldig celletype"
 
 #. 🟥Represents truncated search dialog output (when lots of results returned). Used in: Components > Search Dialog > Index
 #: components/SearchDialog/index.tsx:326
-#, fuzzy
 msgid "additionalResultsOmitted"
 msgstr "Ytterligere resultater utelatt"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:289
-#, fuzzy
 msgid "recordSelectorUnloadProtect"
 msgstr "Fortsette uten å lagre?"
 
 #. 🟥When in record set and current record is unsaved and try to navigate to another record. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:292
-#, fuzzy
 msgid "recordSelectorUnloadProtectDescription"
-msgstr "Du bør kanskje lagre denne oppføringen før du navigerer videre."
+msgstr "Du bør kanskje lagre denne databasepost før du navigerer videre."
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:228
-#, fuzzy
 msgid "creatingNewRecord"
 msgstr "Oppretter ny post"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:376
-#, fuzzy
 msgid "createNewRecordSet"
 msgstr "Opprett et nytt postsett"
 
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 #: components/PickLists/definitions.ts:154
 #: components/SetupTool/setupResources.ts:97
-#, fuzzy
 msgid "forward"
-msgstr "Framover"
+msgstr "Frem"
 
 #. Used in: Components > Pick Lists > Definitions ⬤ Components > Setup Tool > Setup Resources
 #: components/PickLists/definitions.ts:153
 #: components/SetupTool/setupResources.ts:98
-#, fuzzy
 msgid "reverse"
-msgstr "Omvendt"
+msgstr "Tilbake"
 
 #. Used in: Components > Query Builder > Audit Log Formatter
 #: components/QueryBuilder/AuditLogFormatter.tsx:47
-#, fuzzy
 msgid "deletedInline"
 msgstr "(slettet)"
 
 #. 🟥Example: Duplicate Record Set Item. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:524
-#, fuzzy
 msgid "duplicateRecordSetItem"
 msgstr "Duplikat {recordSetItemTable:string}"
 
 #. Used in: Components > Form Sliders > Record Set
 #: components/FormSliders/RecordSet.tsx:529
-#, fuzzy
 msgid "duplicateRecordSetItemDescription"
-msgstr "Denne oppføringen finnes allerede i gjeldende {recordSetTable:string}"
+msgstr ""
+"Denne databaseposten finnes allerede i gjeldende {recordSetTable:string}"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:177
-#, fuzzy
 msgid "addToRecordSet"
 msgstr "Legg til i {recordSetTable:string}"
 
 #. Used in: Components > Form Sliders > Record Selector From Ids
 #: components/FormSliders/RecordSelectorFromIds.tsx:182
-#, fuzzy
 msgid "removeFromRecordSet"
 msgstr "Fjern fra {recordSetTable:string}"
 
 #. Used in: Components > Attachments Bulk Import > Utils ⬤ Components > Molecules > Auto Complete
 #: components/AttachmentsBulkImport/utils.ts:620
 #: components/Molecules/AutoComplete.tsx:558
-#, fuzzy
 msgid "nothingFound"
-msgstr "Ingenting funnet"
+msgstr "Ingen treff"
 
 #. 🟥Verb. Button label. Used in: Components > Forms > Bulk Carry Forward ⬤ Components > Forms > Save
 #: components/Forms/BulkCarryForward.tsx:290
 #: components/Forms/Save.tsx:253
-#, fuzzy
 msgid "carryForward"
-msgstr "Fortsett"
+msgstr "Ta med videre"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:121
-#, fuzzy
 msgid "carryForwardEnabled"
-msgstr "Vis knappen for videreføring"
+msgstr "Vis knappen for \"Ta med videre\""
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:201
-#, fuzzy
 msgid "bulkCarryForwardEnabled"
-msgstr "Vis antall masseoverføringer"
+msgstr "Vis antall massevidereføring"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:254
-#, fuzzy
 msgid "bulkCarryForwardCount"
-msgstr "Antall masseoverføringer"
+msgstr "Antall massevidereføring"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:254
-#, fuzzy
 msgid "carryForwardDescription"
 msgstr "Opprett en ny post med bestemte felt overført"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:124
 #: components/FormMeta/CarryForward.tsx:133
-#, fuzzy
 msgid "carryForwardSettingsDescription"
-msgstr "Konfigurer felt for videreføring"
+msgstr "Konfigurer felt for å ta med videre"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:204
 #: components/FormMeta/CarryForward.tsx:225
-#, fuzzy
 msgid "bulkCarryForwardSettingsDescription"
-msgstr "Konfigurer felt for masseoverføring fremover"
+msgstr "Konfigurer felt for massevidereføring til å ta med videre"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:394
-#, fuzzy
 msgid "carryForwardTableSettingsDescription"
-msgstr "Konfigurer felt for overføring fremover ({tableName:string})"
+msgstr "Konfigurer felt for å ta med videre ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:391
-#, fuzzy
 msgid "bulkCarryForwardTableSettingsDescription"
-msgstr "Konfigurer felt for masseoverføring ({tableName:string})"
+msgstr "Konfigurer felt for massevidereføring ({tableName:string})"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:464
-#, fuzzy
 msgid "carryForwardUniqueField"
-msgstr "Dette feltet må være unikt. Det kan ikke overføres"
+msgstr "Dette feltet må være unikt. Det kan ikke tas med videre"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:466
-#, fuzzy
 msgid "carryForwardRequiredField"
-msgstr "Dette feltet er obligatorisk. Det må overføres."
+msgstr "Dette feltet er obligatorisk. Det må tas med videre."
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:222
-#, fuzzy
 msgid "bulkCarryForwardRangeEnabled"
-msgstr "Vis rekkevidde for masseoverføring"
+msgstr "Vis intervall for massevidereføring"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:309
-#, fuzzy
 msgid "bulkCarryForwardRangeErrorDescription"
-msgstr ""
-"Kan ikke overføre posten fremover gjennom det angitte {field:string}-området."
+msgstr "Kan ikke ta posten videre gjennom det angitte {field:string}-området."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:303
