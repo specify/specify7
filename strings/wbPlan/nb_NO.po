@@ -145,7 +145,6 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:271
-#, fuzzy
 msgid "ignoreNever"
 msgstr "Aldri ignorer"
 
@@ -154,8 +153,7 @@ msgstr "Aldri ignorer"
 #, fuzzy
 msgid "ignoreNeverDescription"
 msgstr ""
-"Denne kolonnen vil alltid bli vurdert for samsvarsformål, uavhengig av "
-"verdien."
+"Denne kolonnen vil alltid bli vurdert for matching, uavhengig av verdien."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:300
