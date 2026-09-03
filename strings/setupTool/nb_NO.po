@@ -225,7 +225,6 @@ msgstr "Enforced"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
-#, fuzzy
 msgid "enforcedDescription"
 msgstr ""
 "Is Enforced sikrer at nivået ikke kan hoppes over når man legger til noder "
@@ -233,23 +232,21 @@ msgstr ""
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:135
-#, fuzzy
 msgid "inFullName"
 msgstr "I fullt navn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:136
-#, fuzzy
 msgid "inFullNameDescription"
 msgstr ""
-"«Er i fullt navn» inkluderer nivået når du bygger et uttrykk for fullt "
-"navn, som kan spørres og brukes i rapporter."
+"«Er i fullt navn» inkluderer nivået når du bygger et uttrykk for fullt navn, "
+"som kan spørres og brukes i rapporter."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:143
 #, fuzzy
 msgid "fullNameSeparator"
-msgstr "Separator"
+msgstr "Skilletegn"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:144
