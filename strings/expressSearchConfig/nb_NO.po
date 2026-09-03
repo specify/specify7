@@ -1,158 +1,134 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-02 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-03 09:51+0000\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
-#, fuzzy
 msgid "loadingConfig"
 msgstr "Laster inn..."
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:63
-#, fuzzy
 msgid "loadingMetadata"
 msgstr "Laster inn metadata ..."
 
 #. Used in: Components > Express Search Config > Express Search Config Dialog
 #: components/ExpressSearchConfig/ExpressSearchConfigDialog.tsx:74
-#, fuzzy
 msgid "expressSearchConfigTitle"
-msgstr "Ekspresssøkkonfigurasjon"
+msgstr "Konfigurer hurtigsøk"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:256
-#, fuzzy
 msgid "searchFieldsTab"
 msgstr "Søkefelt"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:263
-#, fuzzy
 msgid "relatedTablesTab"
 msgstr "Relaterte tabeller"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:272
-#, fuzzy
 msgid "resultsOrderingTab"
 msgstr "Resultatrekkefølge"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:289
-#, fuzzy
 msgid "availableTables"
-msgstr "Tilgjengelige bord"
+msgstr "Tilgjengelige tabeller"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:310
-#, fuzzy
 msgid "searchableFields"
 msgstr "Søkbare felt"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:316
-#, fuzzy
 msgid "searchLabel"
 msgstr "Søk"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:317
-#, fuzzy
 msgid "fieldName"
 msgstr "Felt"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:318
-#, fuzzy
 msgid "sortMode"
 msgstr "Sorteringsmodus"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:354
-#, fuzzy
 msgid "searchNone"
 msgstr "Ingen"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:357
-#, fuzzy
 msgid "ascendingOrder"
 msgstr "Stigende"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:360
-#, fuzzy
 msgid "descendingOrder"
 msgstr "Synkende"
 
 #. Used in: Components > Express Search Config > Search Fields Tab
 #: components/ExpressSearchConfig/SearchFieldsTab.tsx:375
-#, fuzzy
 msgid "displayFields"
 msgstr "Visningsfelt"
 
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:99
-#, fuzzy
 msgid "configureResultsOrdering"
 msgstr "Konfigurer resultatrekkefølgen"
 
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:102
-#, fuzzy
 msgid "reorderResultsOrderingDescription"
-msgstr "Endre rekkefølgen på hvordan seksjoner vises i søkeresultatruten."
+msgstr "Endre rekkefølgen på hvordan seksjoner vises i ruten for søkeresultat."
 
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:51
-#, fuzzy
 msgid "relatedQueryLabel"
 msgstr "Relatert spørring: {query:string}"
 
 #. Used in: Components > Express Search Config > Results Ordering Tab
 #: components/ExpressSearchConfig/ResultsOrderingTab.tsx:130
-#, fuzzy
 msgid "noDisplayItemsConfigured"
 msgstr "Ingen visningselementer er konfigurert."
 
 #. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:80
-#, fuzzy
 msgid "selectAllQueries"
 msgstr "Velg alle"
 
 #. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:83
-#, fuzzy
 msgid "deselectAllQueries"
-msgstr "Fjern merkingen av alle"
+msgstr "Fjern alle valg"
 
 #. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:117
-#, fuzzy
 msgid "noRelatedQueriesAvailable"
 msgstr "Ingen relaterte spørringer tilgjengelig for de valgte tabellene."
 
 #. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:63
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:133
-#, fuzzy
 msgid "selectRelatedQueryDescription"
 msgstr "Velg en relatert spørring for å se beskrivelsen."
 
 #. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
-#, fuzzy
 msgid "noDescriptionAvailable"
 msgstr "Ingen beskrivelse tilgjengelig."
 
@@ -169,21 +145,18 @@ msgstr ""
 "taksonnavnet, taksonets vanlige navn og bestemmer."
 
 #. Used in: 
-#, fuzzy
 msgid "CollObToLocality"
-msgstr "Samle inn arrangementslokalitet"
+msgstr "Lokalitet for innsamlingshendelse"
 
 #. Used in: 
-#, fuzzy
 msgid "CollObToLocality_desc"
 msgstr ""
-"Samle inn hendelser og deres steder, inkludert hendelsesdatoer og "
-"geografiske koordinater."
+"Innsamlingshendelser og deres lokaliteter, inkludert datoer og geografiske "
+"koordinater."
 
 #. Used in: 
-#, fuzzy
 msgid "CollObject"
-msgstr "Samlingsobjekt Takson"
+msgstr "Takson for samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
@@ -196,11 +169,10 @@ msgid "GeoToTaxon"
 msgstr "Taksongeografi"
 
 #. Used in: 
-#, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taksa knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter "
-"og innsamling av hendelseslokaliteter."
+"Taksoner knyttet til geografiske poster gjennom bestemmelse av "
+"samlingsobjekter og innsamling av hendelseslokaliteter."
 
 #. Used in: 
 #, fuzzy
@@ -215,12 +187,10 @@ msgstr ""
 "innsamlingshendelser."
 
 #. Used in: 
-#, fuzzy
 msgid "AcceptedTaxon"
-msgstr "Takson Foretrukket takson"
+msgstr "Takson Foretrukket taksonnavn"
 
 #. Used in: 
-#, fuzzy
 msgid "AcceptedTaxon_desc"
 msgstr ""
 "Taksoner med foretrukne, aksepterte taksonnavn, unntatt poster som mangler "
@@ -232,11 +202,10 @@ msgid "SynonymCollObjs"
 msgstr "Samlingsobjekt Foretrukket takson"
 
 #. Used in: 
-#, fuzzy
 msgid "SynonymCollObjs_desc"
 msgstr ""
 "Samlingsobjekter med bestemmelser som har både et originalt takson og et "
-"foretrukket takson."
+"foretrukket taksonnavn."
 
 #. Used in: 
 #, fuzzy
