@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 11:51+0000\n"
+"PO-Revision-Date: 2026-09-03 14:55+0000\n"
 "Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
@@ -347,57 +347,46 @@ msgid "AgentExchangeIn"
 msgstr "Bytte inn agent"
 
 #. Used in: 
-#, fuzzy
 msgid "AgentExchangeIn_desc"
-msgstr "Innkommende utvekslinger og agentmaterialet ble mottatt fra."
+msgstr "Innkommende byttemateriale og agentene det ble mottatt fra."
 
 #. Used in: 
-#, fuzzy
 msgid "AgentExchangeOut"
-msgstr "Bytte ut agent"
+msgstr "Utgående gaver til agent"
 
 #. Used in: 
-#, fuzzy
 msgid "AgentExchangeOut_desc"
-msgstr "Utgående utvekslinger og agentenes materiale ble sendt til."
+msgstr "Utgående byttemateriale og agentene materialet ble sendt til."
 
 #. Used in: 
-#, fuzzy
 msgid "GeographyCE"
-msgstr "Samle inn hendelsesgeografi"
+msgstr "Geografi for innsamlingshendelse"
 
 #. Used in: 
-#, fuzzy
 msgid "GeographyCE_desc"
-msgstr ""
-"Samler hendelser med det geografiske området til hvert arrangementssted."
+msgstr "Innsamlingshendelse med geografisk avgrensning for hver hendelse."
 
 #. Used in: 
-#, fuzzy
 msgid "GeographyCO"
-msgstr "Geografi for samlingsobjekt"
+msgstr "Geografisk avgrensning for samlingsobjekt"
 
 #. Used in: 
-#, fuzzy
 msgid "GeographyCO_desc"
 msgstr ""
-"Samlingsobjekter knyttet til de geografiske områdene der de samler "
-"hendelsene."
+"Samlingsobjekter knyttet til geografisk avgrensete innsamlingshendelser."
 
 #. Used in: 
-#, fuzzy
 msgid "GiftCO"
-msgstr "Samlingsobjekt Gave"
+msgstr "Samlingsobjekt som gave"
 
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
-msgstr "Gaver med samleobjektene knyttet til gaveforberedelser."
+msgstr "Gaver med samleobjektene knyttet til preparerte gaver."
 
 #. Used in: 
-#, fuzzy
 msgid "GiftAgent"
-msgstr "Agentgave"
+msgstr "Gave til agent"
 
 #. Used in: 
 #, fuzzy
@@ -405,14 +394,13 @@ msgid "GiftAgent_desc"
 msgstr "Gaver og agentene knyttet til disse gavene."
 
 #. Used in: 
-#, fuzzy
 msgid "LoanCO"
-msgstr "Samling Objektlån"
+msgstr "Utlån av samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
 msgid "LoanCO_desc"
-msgstr "Lån med samlingsobjektene på låneforberedelser."
+msgstr "Utlån med samlingsobjektene per preparat."
 
 #. Used in: 
 #, fuzzy
