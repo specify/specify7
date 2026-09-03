@@ -78,19 +78,16 @@ msgstr "Avvis fra sammenslåing"
 
 #. Used in: Components > Merging > Definitions
 #: components/Merging/definitions.ts:23
-#, fuzzy
 msgid "agentContainsGroupDescription"
 msgstr "Agenter inneholder gruppemedlemmer"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:30
-#, fuzzy
 msgid "recordNotBeMergedReason"
 msgstr "Følgende poster kan ikke slås sammen. Årsak:"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:93
-#, fuzzy
 msgid "someCannotBeMerged"
 msgstr "Enkelte poster kan ikke slås sammen"
 
