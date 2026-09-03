@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/wbPlan/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -472,21 +472,18 @@ msgstr "Spør"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:344
-#, fuzzy
 msgid "askDescription"
 msgstr ""
-"Du vil bli bedt om å velge en post blant alle postene som samsvarer med "
+"Du vil bli bedt om å velge en datapost blant alle postene som samsvarer med "
 "dette feltet."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:347
-#, fuzzy
 msgid "pickFirst"
 msgstr "Velg først"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:348
-#, fuzzy
 msgid "pickFirstDescription"
 msgstr ""
 "Når flere poster samsvarer med dette feltet, vil den første posten bli "
