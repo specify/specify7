@@ -131,14 +131,13 @@ msgstr "Velg en relatert spørring for å se beskrivelsen."
 
 #. Used in: Components > Express Search Config > Related Tables Tab
 #: components/ExpressSearchConfig/RelatedTablesTab.tsx:66
-#, fuzzy
 msgid "noDescriptionAvailable"
 msgstr "Ingen beskrivelse tilgjengelig."
 
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer"
-msgstr "TaksonsamlingObjekt"
+msgstr "Takson for samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
