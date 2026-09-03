@@ -107,11 +107,9 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/county': ['geography.county'],
   'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters': [
-    'collectingeventattribute.number12',
     'localitydetail.enddepth',
   ],
   'http://rs.tdwg.org/dwc/terms/minimumDepthInMeters': [
-    'collectingeventattribute.number13',
     'localitydetail.startdepth',
   ],
   'http://rs.tdwg.org/dwc/terms/locality': ['locality.localityname'],
@@ -123,7 +121,6 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/collectionCode': [
     'collection.code',
-    'collectionobject.text1',
   ],
   'http://rs.tdwg.org/dwc/terms/eventRemarks': ['collectingevent.remarks'],
   'http://rs.tdwg.org/dwc/terms/institutionCode': ['institution.code'],
@@ -152,11 +149,6 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.verbatimlocality',
   ],
   'http://rs.tdwg.org/dwc/terms/associatedTaxa': ['hosttaxon.taxon.hosttaxon'],
-  'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text10'],
-  'http://rs.tdwg.org/dwc/terms/lifeStage': ['collectionobjectattribute.text12'],
-  'http://rs.tdwg.org/dwc/terms/habitat': [
-    'collectingeventattribute.text17',
-  ],
   'http://rs.tdwg.org/dwc/terms/preparations': [
     'preparations.preparation.preparations',
   ],

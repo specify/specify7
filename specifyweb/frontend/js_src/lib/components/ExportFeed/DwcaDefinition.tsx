@@ -71,22 +71,51 @@ export function getMappingTerm(
     readonly fields: ReadonlyArray<{ readonly stringId: string }>;
     readonly terms: RA<string | undefined>;
   },
-  field: Pick<QueryField, 'id' | 'sourceIndex' | 'sourceStringId'>
+  field: Partial<Pick<QueryField, 'id' | 'sourceIndex' | 'sourceStringId'>> &
+    Partial<Pick<QueryField, 'mappingPath'>>
 ): string | undefined {
-  if (field.sourceStringId !== undefined) {
-    const fieldIndex = mapping.terms.findIndex(
-      (_, index) =>
-        mapping.terms[index] !== undefined &&
-        mapping.terms[index] !== '' &&
-        mapping.fields[index]?.stringId.toLowerCase() ===
-          field.sourceStringId!.toLowerCase()
-    );
-    if (fieldIndex >= 0) return mapping.terms[fieldIndex];
-  }
-  const fieldIndex = field.sourceIndex ?? field.id;
+  const fieldIndex = getMappingFieldIndex(mapping, field);
   return !mapping.extension && fieldIndex === 0
     ? occurrenceIdTerm
     : mapping.terms[fieldIndex];
+}
+
+function getMappingFieldIndex(
+  mapping: {
+    readonly fields: ReadonlyArray<{ readonly stringId: string }>;
+  },
+  field: Partial<Pick<QueryField, 'id' | 'sourceIndex' | 'sourceStringId'>> &
+    Partial<Pick<QueryField, 'mappingPath'>>
+): number {
+  if (field.sourceStringId !== undefined) {
+    const exactIndex = mapping.fields.findIndex(
+      ({ stringId }) =>
+        stringId.toLowerCase() === field.sourceStringId!.toLowerCase()
+    );
+    if (exactIndex >= 0) return exactIndex;
+  }
+  if (field.mappingPath !== undefined) {
+    const pathKey = JSON.stringify(field.mappingPath).toLowerCase();
+    const pathIndex = mapping.fields.findIndex(
+      (candidate) => fieldTermKey(candidate) === pathKey
+    );
+    if (pathIndex >= 0) return pathIndex;
+  }
+  return field.sourceIndex ?? field.id ?? -1;
+}
+
+export function updateMappingTerm(
+  mapping: Mapping,
+  field: Pick<QueryField, 'sourceIndex' | 'sourceStringId'> &
+    Partial<Pick<QueryField, 'mappingPath'>>,
+  term: string | undefined
+): Mapping {
+  const fieldIndex = getMappingFieldIndex(mapping, field);
+  if (fieldIndex < 0 || fieldIndex >= mapping.fields.length) return mapping;
+  return {
+    ...mapping,
+    terms: replaceItem(mapping.terms, fieldIndex, term),
+  };
 }
 
 export function getSerializedMappingTerm(
@@ -236,9 +265,14 @@ const normalizeStringId = (stringId: string, table: SpecifyTable): string =>
  * example `1,9-determinations,4.taxon.Kingdom`). Match those representations
  * by their resolved query path as well as by their serialized stringId.
  */
-function fieldTermKey(field: SerializedResource<SpQueryField>): string {
+function fieldTermKey(
+  field: Pick<SerializedResource<SpQueryField>, 'stringId'> &
+    Partial<SerializedResource<SpQueryField>>
+): string {
   try {
-    const [parsed] = parseQueryFields([field]);
+    const [parsed] = parseQueryFields([
+      field as SerializedResource<SpQueryField>,
+    ]);
     return parsed === undefined
       ? field.stringId.toLowerCase()
       : JSON.stringify(parsed.mappingPath).toLowerCase();
@@ -284,7 +318,7 @@ function availableTermNames(
   );
 }
 
-function updateMappingFields(
+export function updateMappingFields(
   mapping: Mapping,
   newFields: RA<SerializedResource<SpQueryField>>
 ): Mapping {
@@ -329,7 +363,7 @@ function updateMappingFields(
     const pathTerm = pathTerms?.[0];
     if (pathTerms !== undefined) oldMetadata.set(key, pathTerms.slice(1));
     const candidateTerm =
-      oldTerm ?? pathTerm ?? mapping.terms[index] ?? autoMapped[index];
+      oldTerm ?? pathTerm ?? autoMapped[index];
     if (candidateTerm === undefined) return undefined;
     // Pick-list terms may only be mapped once. Custom terms are intentionally
     // left untouched, even when they are not present in the catalogs.
@@ -783,7 +817,10 @@ function TermPicker({
 }): JSX.Element | null {
   const [isEditing, setIsEditing] = React.useState(false);
   const [showInfo, setShowInfo] = React.useState(false);
-  const mappingFieldIndex = field.sourceIndex ?? fieldIndex;
+  const mappingFieldIndex = getMappingFieldIndex(mapping, {
+    ...field,
+    id: fieldIndex,
+  });
   const isIdentifier = mappingFieldIndex === 0;
   const terms = mapping.extension
     ? [
@@ -822,22 +859,12 @@ function TermPicker({
           value={value}
           onBlur={(): void => {
             if (value === '') {
-              handleChange({
-                ...mapping,
-                terms: replaceItem(mapping.terms, mappingFieldIndex, undefined),
-              });
+              handleChange(updateMappingTerm(mapping, field, undefined));
               setIsEditing(false);
             }
           }}
           onValueChange={(term): void =>
-            handleChange({
-              ...mapping,
-              terms: replaceItem(
-                mapping.terms,
-                mappingFieldIndex,
-                term || undefined
-              ),
-            })
+            handleChange(updateMappingTerm(mapping, field, term || undefined))
           }
         />
       ) : (
@@ -850,23 +877,11 @@ function TermPicker({
               if (isIdentifier) return;
               if (term === customTermOption) {
                 setIsEditing(true);
-                handleChange({
-                  ...mapping,
-                  terms: replaceItem(
-                    mapping.terms,
-                    mappingFieldIndex,
-                    undefined
-                  ),
-                });
+                handleChange(updateMappingTerm(mapping, field, undefined));
               } else
-                handleChange({
-                  ...mapping,
-                  terms: replaceItem(
-                    mapping.terms,
-                    mappingFieldIndex,
-                    term || undefined
-                  ),
-                });
+                handleChange(
+                  updateMappingTerm(mapping, field, term || undefined)
+                );
             }}
           >
             <option value={customTermOption}>{resourcesText.custom()}</option>

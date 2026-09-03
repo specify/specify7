@@ -13,6 +13,7 @@ import {
   parseDefinition,
   serializeDefinition,
   updateMappingTerm,
+  updateMappingFields,
 } from '../DwcaDefinition';
 import { defaultTemplates } from '../data/defaultTemplates';
 
@@ -108,7 +109,8 @@ describe('DwCA query field term mapping', () => {
   });
 
   test('updates a term by field identity after fields move', () => {
-    const [mapping] = parseDefinition(`<archive><extension rowType="custom"><queries><query name="custom.csv" contextTableId="1">
+    const [mapping] =
+      parseDefinition(`<archive><extension rowType="custom"><queries><query name="custom.csv" contextTableId="1">
       <field stringId="1.collectionobject.guid" term="${occurrenceId}" />
       <field stringId="1.collectionobject.catalogNumber" />
     </query></queries></extension></archive>`);
@@ -120,11 +122,42 @@ describe('DwCA query field term mapping', () => {
       terms: [undefined, occurrenceId],
     };
     expect(
-      updateMappingTerm(moved, {
-        sourceIndex: 0,
-        sourceStringId: '1.collectionobject.guid',
-      }, kingdom).terms
+      updateMappingTerm(
+        moved,
+        {
+          sourceIndex: 0,
+          sourceStringId: '1.collectionobject.guid',
+        },
+        kingdom
+      ).terms
     ).toEqual([undefined, kingdom]);
+  });
+
+  test('automaps a newly inserted field instead of using its position', () => {
+    const catalogNumber = 'http://rs.tdwg.org/dwc/terms/catalogNumber';
+    const [mapping] = parseDefinition(`<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">
+      <id stringId="1.collectionobject.guid" term="${occurrenceId}" />
+      <field stringId="1.collectionobject.catalogNumber" term="${catalogNumber}" />
+    </query></queries></core></archive>`);
+    if (mapping === undefined) throw new Error('Mapping was not parsed');
+
+    const [guid, catalog] = mapping.fields;
+    const verbatimElevation = {
+      ...catalog,
+      stringId: '1,10,2.locality.verbatimelevation',
+      position: 1,
+    };
+    const updated = updateMappingFields(mapping, [
+      { ...guid!, position: 0 },
+      verbatimElevation,
+      { ...catalog!, position: 2 },
+    ]);
+
+    expect(updated.terms).toEqual([
+      occurrenceId,
+      'http://rs.tdwg.org/dwc/terms/verbatimElevation',
+      catalogNumber,
+    ]);
   });
 
   test('loads relationship fields with their XML terms into the mapper model', () => {
@@ -517,5 +550,56 @@ describe('DwCA query field term mapping', () => {
       );
       expect(mapping?.terms).toContain(term);
     });
+  });
+
+  test('automatically maps the remaining Darwin Core taxon ranks', () => {
+    const fields = [
+      [
+        '1,9-determinations,4.taxon.Superfamily',
+        'http://rs.tdwg.org/dwc/terms/superfamily',
+      ],
+      [
+        '1,9-determinations,4.taxon.Subfamily',
+        'http://rs.tdwg.org/dwc/terms/subfamily',
+      ],
+      [
+        '1,9-determinations,4.taxon.Tribe',
+        'http://rs.tdwg.org/dwc/terms/tribe',
+      ],
+      [
+        '1,9-determinations,4.taxon.Subtribe',
+        'http://rs.tdwg.org/dwc/terms/subtribe',
+      ],
+      [
+        '1,9-determinations,4.taxon.Subgenus',
+        'http://rs.tdwg.org/dwc/terms/subgenus',
+      ],
+      [
+        '1,9-determinations,4.taxon.Subgenus',
+        'http://rs.tdwg.org/dwc/terms/infragenericEpithet',
+      ],
+      [
+        '1,9-determinations,4.taxon.Genus',
+        'http://rs.tdwg.org/dwc/terms/genus',
+      ],
+      [
+        '1,9-determinations,4.taxon.Genus',
+        'http://rs.tdwg.org/dwc/terms/genericName',
+      ],
+      [
+        '1,9-determinations,4.taxon.Cultivar',
+        'http://rs.tdwg.org/dwc/terms/cultivarEpithet',
+      ],
+    ] as const;
+    const xml = `<archive><core rowType="http://rs.tdwg.org/dwc/terms/Occurrence"><queries><query name="core.csv" contextTableId="1">${fields
+      .map(([stringId]) => `<field stringId="${stringId}" />`)
+      .join('')}</query></queries></core></archive>`;
+    const [mapping] = parseDefinition(xml);
+    if (mapping === undefined) throw new Error('Core mapping was not parsed');
+
+    expect(mapping.terms).toEqual([
+      occurrenceId,
+      ...fields.map(([, term]) => term),
+    ]);
   });
 });
