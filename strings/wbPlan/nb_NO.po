@@ -298,7 +298,7 @@ msgstr "Basistabell"
 #: components/WbPlanView/MapperComponents.tsx:388
 #, fuzzy
 msgid "goToBaseTable"
-msgstr "Endre basistabellen for tilordning av datasettkolonner?"
+msgstr "Endre basistabellen for mapping av kolonner for datasett?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:389
