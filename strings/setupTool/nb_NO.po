@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 08:53+0000\n"
-"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/setupTool/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -89,7 +89,7 @@ msgstr "Adressen til institusjonen. Valgfritt."
 #: components/SetupTool/setupResources.ts:227
 #, fuzzy
 msgid "institutionIsAccessionGlobal"
-msgstr "Definer Accession globalt"
+msgstr "Definer tiltredelse globalt"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:228
@@ -122,13 +122,13 @@ msgstr "Byen der institusjonen ligger."
 #: components/SetupTool/setupResources.ts:197
 #, fuzzy
 msgid "addressState"
-msgstr "Fylke/Region"
+msgstr "Provins/Stat"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:198
 #, fuzzy
 msgid "addressStateDescription"
-msgstr "Fylket eller regionen."
+msgstr "Staten eller provinsen."
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:204
@@ -221,7 +221,7 @@ msgstr "Inkluder plasserer nivået i tredefinisjonen."
 #: components/SetupTool/setupResources.ts:126
 #, fuzzy
 msgid "enforced"
-msgstr "Obligatorisk"
+msgstr "Håndhevet"
 
 #. Used in: Components > Setup Tool > Setup Resources
 #: components/SetupTool/setupResources.ts:127
