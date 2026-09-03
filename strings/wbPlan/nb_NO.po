@@ -233,7 +233,7 @@ msgstr "Map valgt felt til valgt overskrift"
 #: components/WbPlanView/CustomSelectElement.tsx:340
 #, fuzzy
 msgid "relationshipWithTable"
-msgstr "Forholdet til tabellen {tableName:string}"
+msgstr "Har et forhold til tabellen {tableName:string}"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:106
