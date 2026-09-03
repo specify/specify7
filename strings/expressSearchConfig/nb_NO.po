@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 11:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -167,16 +167,15 @@ msgid "GeoToTaxon"
 msgstr "Taksongeografi"
 
 #. Used in: 
-#, fuzzy
 msgid "GeoToTaxon_desc"
 msgstr ""
-"Taksa knyttet til geografiske poster gjennom bestemmelse av samlingsobjekter "
-"og innsamling av hendelseslokaliteter."
+"Taksoner knyttet til geografiske poster gjennom bestemmelse av "
+"samlingsobjekter og innsamling av hendelseslokaliteter."
 
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors"
-msgstr "Samleobjekter Samlere"
+msgstr "Samlere for samlingsobjekter"
 
 #. Used in: 
 #, fuzzy
