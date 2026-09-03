@@ -39,28 +39,25 @@ msgstr "Vis bare motstridende felt"
 
 #. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:190
-#, fuzzy
 msgid "newMergedRecord"
 msgstr "Ny sammenslått post"
 
 #. Used in: Components > Merging > Compare Sub View ⬤ Components > Merging > Header
 #: components/Merging/CompareSubView.tsx:230
 #: components/Merging/Header.tsx:191
-#, fuzzy
 msgid "duplicateRecord"
 msgstr "Forhåndsvisning {index:number|formatted}"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:111
-#, fuzzy
 msgid "nRecords"
-msgstr "{count:number|formatted} poster"
+msgstr "{count:number|formatted} dataposter"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:425
 #, fuzzy
 msgid "subViewControls"
-msgstr "Undervisningskontroller"
+msgstr "Kontroller for undervindu"
 
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
