@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 11:51+0000\n"
-"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -175,7 +175,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors"
-msgstr "Samlere for samlingsobjekter"
+msgstr "Samleobjekter Samlere"
 
 #. Used in: 
 msgid "ColObjCollectors_desc"
@@ -186,7 +186,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "AcceptedTaxon"
-msgstr "Takson Foretrukket taksonnavn"
+msgstr "Takson Foretrukket takson"
 
 #. Used in: 
 msgid "AcceptedTaxon_desc"
@@ -197,7 +197,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "SynonymCollObjs"
-msgstr "Foretrukket takson for samlingsobjekt"
+msgstr "Samlingsobjekt Foretrukket takson"
 
 #. Used in: 
 msgid "SynonymCollObjs_desc"
@@ -208,7 +208,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs"
-msgstr "Takson for samlingsobjekt (alle synonymer)"
+msgstr "Samlingsobjekttakson (alle synonymer)"
 
 #. Used in: 
 #, fuzzy
@@ -220,7 +220,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "CurrCollObject"
-msgstr "Takson for samlingsobjekt (bestemmelse)"
+msgstr "Samlingsobjekttakson (bestemt)"
 
 #. Used in: 
 #, fuzzy
@@ -230,7 +230,7 @@ msgstr "Kun samlingsobjekter med gjeldende taksonbestemmelse."
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant"
-msgstr "Agent Agent Variant"
+msgstr "Agent Agentvariant"
 
 #. Used in: 
 msgid "AgentFromAgentVariant_desc"
@@ -259,7 +259,7 @@ msgstr "Lokalitet Lokalitet alias"
 #. Used in: 
 #, fuzzy
 msgid "LocalityAlias_desc"
-msgstr "Lokaliteter med tilhørende aliaser for lokalitetsnavn."
+msgstr "Lokalitetsoppføringer med tilhørende lokalitetsnavnaliaser."
 
 #. Used in: 
 msgid "CEToCO"
@@ -277,7 +277,7 @@ msgstr "Lokalitet for samlingsobjektet"
 #, fuzzy
 msgid "LocToCO_desc"
 msgstr ""
-"Lokaliteter og samlingsobjektene som ble funnet ved innsamlingshendelser."
+"Lokaliteter og samlingsobjektene som ble funnet på samlearrangementene deres."
 
 #. Used in: 
 #, fuzzy
