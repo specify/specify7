@@ -18,7 +18,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Datenzuordnung',
     'pt-br': 'Mapeador de Dados',
     'hr-hr': 'Maper podataka',
-    nb: 'Datakartlegger',
+    nb: 'Data mapping',
   },
   importExportMapping: {
     'en-us': 'Import/Export Mapping',
@@ -26,7 +26,7 @@ export const wbPlanText = createDictionary({
     'es-es': 'Mapeo de importación/exportación',
     'fr-fr': "Mapping d'import/export",
     'hr-hr': 'Mapiranje uvoza/izvoza',
-    nb: 'Importer/eksporter kartlegging',
+    nb: 'Importer/eksporter mapping',
     'pt-br': 'Mapeamento de Importação/Exportação',
     'ru-ru': 'Сопоставление импорта/экспорта',
     'uk-ua': 'Зіставлення імпорту/експорту',
@@ -42,7 +42,7 @@ export const wbPlanText = createDictionary({
       'Vous pouvez exporter le mappage de jeu de données actuel sous forme de fichier JSON ou importer un mappage de jeu de données existant.',
     'hr-hr':
       'Možete izvesti trenutno mapiranje skupa podataka kao JSON datoteku ili uvesti postojeće mapiranje skupa podataka.',
-    nb: 'Du kan eksportere den gjeldende datasetttilordningen som en JSON-fil eller importere en eksisterende datasetttilordning.',
+    nb: 'Du kan eksportere den gjeldende mapping av datasett som en JSON-fil eller importere en eksisterende mapping av datasett.',
     'pt-br':
       'Você pode exportar o mapeamento do conjunto de dados atual como um arquivo JSON ou importar um mapeamento de conjunto de dados existente.',
     'ru-ru':
@@ -59,7 +59,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Es ist keine Datensatzzuordnung definiert.',
     'pt-br': 'Nenhum mapeamento de conjunto de dados foi definido.',
     'hr-hr': 'Nije definirano mapiranje skupa podataka',
-    nb: 'Ingen datasetttilordning er definert',
+    nb: 'Ingen mapping av datasett er definert',
   },
   noUploadPlanDescription: {
     'en-us':
@@ -78,7 +78,7 @@ export const wbPlanText = createDictionary({
       'Não existe um mapeamento definido para este conjunto de dados. Por favor, escolha um mapeamento existente ou crie um novo.',
     'hr-hr':
       'Za ovaj skup podataka nije definirano mapiranje. Odaberite postojeće mapiranje ili stvorite novo.',
-    nb: 'Ingen kartlegging er definert for dette datasettet. Vennligst velg en eksisterende kartlegging eller opprett en ny.',
+    nb: 'Ingen mapping er definert for dette datasettet. Vennligst velg en eksisterende mapping eller opprett en ny.',
   },
   unmappedColumn: {
     'en-us': 'Unmapped Column',
@@ -145,7 +145,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Spaltenzuordnung',
     'pt-br': 'Mapeamento de colunas',
     'hr-hr': 'Mapiranje stupaca',
-    nb: 'Kolonnekartlegging',
+    nb: 'Mapping av kolonner',
   },
   suggestedMappings: {
     'en-us': 'Suggested Mappings:',
@@ -156,7 +156,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Vorgeschlagene Zuordnungen:',
     'pt-br': 'Mapeamentos sugeridos:',
     'hr-hr': 'Predložena mapiranja:',
-    nb: 'Foreslåtte kartlegginger:',
+    nb: 'Foreslåtte mappinger:',
   },
   requiredFields: {
     'en-us': 'Required Fields',
@@ -367,7 +367,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Die Validierung hat fehlende Zuordnungen gefunden:',
     'pt-br': 'A validação encontrou mapeamentos ausentes:',
     'hr-hr': 'Validacija je pronašla nedostajuća mapiranja:',
-    nb: 'Validering fant manglende tilordninger:',
+    nb: 'Validering fant manglende mappinger:',
   },
   validationFailedDescription: {
     'en-us':
@@ -398,7 +398,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Kartierung erforderlich',
     'pt-br': 'É necessário fazer mapeamento.',
     'hr-hr': 'Mapiranje je potrebno',
-    nb: 'Kartlegging er nødvendig',
+    nb: 'Mapping er nødvendig',
   },
   continueEditing: {
     'en-us': 'Continue Editing',
@@ -409,7 +409,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Bearbeitung fortsetzen',
     'pt-br': 'Continuar a edição',
     'hr-hr': 'Nastavi uređivanje',
-    nb: 'Fortsett redigeringen',
+    nb: 'Fortsett redigering',
   },
   saveUnfinished: {
     'en-us': 'Save Unfinished',
@@ -486,7 +486,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Vorhandene Zuordnung auswählen',
     'pt-br': 'Selecionar mapeamento existente',
     'hr-hr': 'Odaberite postojeće mapiranje',
-    nb: 'Velg eksisterende kartlegging',
+    nb: 'Velg eksisterende mapping',
   },
   showAllTables: {
     'en-us': 'Show All Tables',
@@ -510,7 +510,7 @@ export const wbPlanText = createDictionary({
       'Une « table de base » sert de point de départ pour la correspondance entre les colonnes et les champs de données. Une fois importée, chaque ligne de votre jeu de données créera un nouvel enregistrement dans la table de base sélectionnée. Cliquez sur une table de base dans la liste pour commencer.',
     'hr-hr':
       "'Osnovna tablica' je tablica koja služi kao početna točka za mapiranje stupaca u podatkovna polja. Nakon prijenosa, svaki redak u vašem skupu podataka rezultirat će novim zapisom u . Navedite u odabranoj osnovnoj tablici. Kliknite na osnovnu tablicu na popisu da biste započeli.",
-    nb: 'En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger mellom kolonner og datafelt. Når den er lastet opp, vil hver rad i datasettet resultere i en ny post i Spesifiser i basistabellen du velger. Klikk på en basistabell i listen for å komme i gang.',
+    nb: 'En «basistabell» er tabellen som fungerer som utgangspunkt for mappinger av kolonner og datafelt. Når den er lastet opp, vil hver rad i datasettet gi i en ny post i Specify i basistabellen du velger. Klikk på en basistabell i listen for å komme i gang.',
     'pt-br':
       "Uma 'tabela base' é a tabela que serve como ponto de partida para o mapeamento de colunas para campos de dados. Após o carregamento, cada linha do seu conjunto de dados resultará em um novo registro na tabela base que você selecionar. Clique em uma tabela base na lista para começar.",
     'ru-ru':
@@ -559,7 +559,7 @@ export const wbPlanText = createDictionary({
     'pt-br':
       'Conjunto de dados carregado. Este mapeamento não pode ser alterado.',
     'hr-hr': 'Skup podataka prenesen. Ovo mapiranje se ne može promijeniti.',
-    nb: 'Datasettet er lastet opp. Denne kartleggingen kan ikke endres.',
+    nb: 'Datasettet er lastet opp. Denne mappingen kan ikke endres.',
   },
   dataSetUploadedDescription: {
     'en-us':
@@ -578,7 +578,7 @@ export const wbPlanText = createDictionary({
       'Você está visualizando os mapeamentos de um conjunto de dados carregado.\n\nPara editar os mapeamentos, reverta os dados carregados ou crie um novo conjunto de dados.',
     'hr-hr':
       'Pregledavate mapiranja za preneseni skup podataka.\n\nDa biste uredili mapiranja, vratite prenesene podatke ili stvorite novi skup podataka.',
-    nb: 'Du ser på kartleggingene for et opplastet datasett.\n\nFor å redigere kartleggingene, tilbakestill de opplastede dataene eller opprett et nytt datasett.',
+    nb: 'Du ser på mappingene for et opplastet datasett.\n\nFor å redigere mappingene, tilbakestill de opplastede dataene eller opprett et nytt datasett.',
   },
   baseTable: {
     'en-us': 'Base Table',
@@ -635,7 +635,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Datenzuordnung zurücksetzen',
     'pt-br': 'Mapeamento claro',
     'hr-hr': 'Očisti mapiranje',
-    nb: 'Tydelig kartlegging',
+    nb: 'Tøm mapping',
   },
   reRunAutoMapper: {
     'en-us': 'Rerun AutoMapper',
@@ -657,7 +657,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'AutoMapper',
     'pt-br': 'AutoMapper',
     'hr-hr': 'AutoMapper',
-    nb: 'AutoMap',
+    nb: 'AutoMapper',
   },
   mappingEditor: {
     'en-us': 'Map Explorer',
@@ -701,7 +701,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Zuordnungen',
     'pt-br': 'Mapeamentos',
     'hr-hr': 'Mapiranje',
-    nb: 'Kartlegginger',
+    nb: 'Mappinger',
   },
   clearMappings: {
     'en-us': 'Clear Mappings',
@@ -712,7 +712,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Zuordnungen zurückstellen',
     'pt-br': 'Mapeamentos claros',
     'hr-hr': 'Očisti mapiranja',
-    nb: 'Tydelige kartlegginger',
+    nb: 'Tøm mappinger',
   },
   emptyDataSet: {
     'en-us': 'Empty Data Set',
@@ -723,7 +723,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Datenset leeren',
     'pt-br': 'Conjunto de dados vazio',
     'hr-hr': 'Prazan skup podataka',
-    nb: 'Tomt datasett',
+    nb: 'Tøm datasett',
   },
   emptyDataSetDescription: {
     'en-us': "This Data Set doesn't have any columns.",
@@ -753,7 +753,7 @@ export const wbPlanText = createDictionary({
       'Pressione o botão "Adicionar nova coluna" abaixo das linhas de mapeamento para adicionar novas colunas.',
     'hr-hr':
       'Pritisnite gumb "Dodaj novi stupac" ispod linija mapiranja da biste dodali nove stupce.',
-    nb: 'Trykk på knappen «Legg til ny kolonne» under kartleggingslinjene for å legge til nye kolonner.',
+    nb: 'Trykk på knappen «Legg til ny kolonne» under linjene for mapping for å legge til nye kolonner.',
   },
   reRunAutoMapperConfirmation: {
     'en-us': 'Automap to start a new mapping?',
@@ -764,7 +764,7 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Автоматичне створення карти, щоб розпочати нове відображення?',
     'pt-br': 'Automapa para iniciar um novo mapeamento?',
     'hr-hr': 'Automatsko mapiranje za početak novog mapiranja?',
-    nb: 'For å starte en ny kartlegging med Automap?',
+    nb: 'Start en ny kartlegging med Automap?',
   },
   reRunAutoMapperConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -775,7 +775,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Damit werden bestehende Zuordnungen von Datenfeldern gelöscht.',
     'pt-br': 'Isso apagará os mapeamentos de campos de dados existentes.',
     'hr-hr': 'Ovo će izbrisati postojeća mapiranja podatkovnih polja.',
-    nb: 'Dette vil slette eksisterende datafelttilordninger.',
+    nb: 'Dette vil slette eksisterende mappinger av datafelt.',
   },
   clearMappingsConfirmation: {
     'en-us': 'Clear all existing mappings?',
@@ -786,7 +786,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Alle bestehenden Zuordnungen löschen?',
     'pt-br': 'Limpar todos os mapeamentos existentes?',
     'hr-hr': 'Izbrisati sva postojeća mapiranja?',
-    nb: 'Fjern alle eksisterende tilordninger?',
+    nb: 'Fjern alle eksisterende mappinger?',
   },
   clearMappingsConfirmationDescription: {
     'en-us': 'This will erase existing data field mappings.',
@@ -797,7 +797,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Damit werden bestehende Zuordnungen von Datenfeldern gelöscht.',
     'pt-br': 'Isso apagará os mapeamentos de campos de dados existentes.',
     'hr-hr': 'Ovo će izbrisati postojeća mapiranja podatkovnih polja.',
-    nb: 'Dette vil slette eksisterende datafelttilordninger.',
+    nb: 'Dette vil slette eksisterende mappinger av datafelt.',
   },
   changeMatchingLogic: {
     'en-us': 'Change Matching Logic',
@@ -820,7 +820,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Benötigt Daten um vorhandene Datensätze vergleichen zu können',
     'pt-br': 'Exigir que os dados correspondam aos registros existentes',
     'hr-hr': 'Zahtijevajte podatke koji odgovaraju postojećim zapisima',
-    nb: 'Krev at data samsvarer med eksisterende poster',
+    nb: 'Krev at data samsvarer med eksisterende dataposter',
   },
   matchingLogicUnavailable: {
     'en-us': 'Matching logic is unavailable for current mappings',
@@ -834,7 +834,7 @@ export const wbPlanText = createDictionary({
     'pt-br':
       'A lógica de correspondência não está disponível para os mapeamentos atuais.',
     'hr-hr': 'Logika podudaranja nije dostupna za trenutna mapiranja',
-    nb: 'Samsvarslogikk er ikke tilgjengelig for gjeldende tilordninger',
+    nb: 'Samsvarslogikk er ikke tilgjengelig for gjeldende mappinger',
   },
   mustMatch: {
     'en-us': 'Must Match',
@@ -856,7 +856,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Dieses Mapping wurde nicht gespeichert.',
     'pt-br': 'Este mapeamento não foi salvo.',
     'hr-hr': 'Ovo mapiranje nije spremljeno.',
-    nb: 'Denne kartleggingen er ikke lagret.',
+    nb: 'Denne mappingen er ikke lagret.',
   },
   newHeaderName: {
     'en-us': 'New Column {index:number}',
@@ -923,7 +923,7 @@ export const wbPlanText = createDictionary({
     'pt-br':
       'O conjunto de dados selecionado não possui mapeamento. Selecione outro.',
     'hr-hr': 'Odabrani skup podataka nema mapiranje. Odaberite drugi.',
-    nb: 'Det valgte datasettet har ingen kartlegging. Vennligst velg et annet.',
+    nb: 'Det valgte datasettet har ingen mapping. Vennligst velg et annet.',
   },
   invalidJsonFile: {
     'en-us': 'The selected file is not valid JSON.',
@@ -970,7 +970,7 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Perguntar',
     'ru-ru': 'Просить',
     'uk-ua': 'Запитайте',
-    nb: 'Spørre',
+    nb: 'Spør',
   },
   askDescription: {
     'en-us':
@@ -989,7 +989,7 @@ export const wbPlanText = createDictionary({
       'Вам будет предложено выбрать запись из всех записей, соответствующих этому полю.',
     'uk-ua':
       'Вам буде запропоновано вибрати запис з усіх записів, що відповідають цьому полю.',
-    nb: 'Du vil bli bedt om å velge en post blant alle postene som samsvarer med dette feltet.',
+    nb: 'Du vil bli bedt om å velge en datapost blant alle postene som samsvarer med dette feltet.',
   },
   pickFirst: {
     'en-us': 'Pick first',
