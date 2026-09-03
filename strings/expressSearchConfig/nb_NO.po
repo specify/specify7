@@ -230,7 +230,7 @@ msgstr "Kun samlingsobjekter med gjeldende taksonbestemmelse."
 #. Used in: 
 #, fuzzy
 msgid "AgentFromAgentVariant"
-msgstr "Agent Agentvariant"
+msgstr "Agent Agent Variant"
 
 #. Used in: 
 #, fuzzy
