@@ -126,13 +126,12 @@ msgstr "Ignorer når blank"
 #, fuzzy
 msgid "ignoreWhenBlankDescription"
 msgstr ""
-"Når den er satt til «Ignorer når tom», vil ikke tomme verdier i denne "
-"kolonnen bli vurdert for samsvarsformål. Tomme verdier ignoreres ved samsvar "
-"selv om en standardverdi er oppgitt."
+"Når den er satt til «Ignorer når blank», vil ikke tomme verdier i denne "
+"kolonnen bli vurdert for matching. Tomme verdier ignoreres ved matching selv "
+"om en standardverdi er oppgitt."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:267
-#, fuzzy
 msgid "ignoreAlways"
 msgstr "Ignorer alltid"
 
