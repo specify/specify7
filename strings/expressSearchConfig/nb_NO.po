@@ -208,7 +208,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "OtherSynsCollObjs"
-msgstr "Samlingsobjekttakson (alle synonymer)"
+msgstr "Takson for samlingsobjekt (alle synonymer)"
 
 #. Used in: 
 #, fuzzy
