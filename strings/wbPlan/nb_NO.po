@@ -347,113 +347,95 @@ msgstr "Vis felt mapper"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:572
-#, fuzzy
 msgid "mappings"
-msgstr "Kartlegginger"
+msgstr "Mappinger"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:437
 #: components/WbPlanView/MapperComponents.tsx:446
-#, fuzzy
 msgid "clearMappings"
-msgstr "Tydelige kartlegginger"
+msgstr "Tøm mappinger"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:224
-#, fuzzy
 msgid "emptyDataSet"
-msgstr "Tomt datasett"
+msgstr "Tøm datasett"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:228
-#, fuzzy
 msgid "emptyDataSetDescription"
 msgstr "Dette datasettet har ingen kolonner."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:231
-#, fuzzy
 msgid "emptyDataSetSecondDescription"
 msgstr ""
-"Trykk på knappen «Legg til ny kolonne» under kartleggingslinjene for å legge "
+"Trykk på knappen «Legg til ny kolonne» under linjene for mapping for å legge "
 "til nye kolonner."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:414
-#, fuzzy
 msgid "reRunAutoMapperConfirmation"
-msgstr "For å starte en ny kartlegging med Automap?"
+msgstr "Start en ny kartlegging med Automap?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:415
-#, fuzzy
 msgid "reRunAutoMapperConfirmationDescription"
-msgstr "Dette vil slette eksisterende datafelttilordninger."
+msgstr "Dette vil slette eksisterende mappinger av datafelt."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:441
-#, fuzzy
 msgid "clearMappingsConfirmation"
-msgstr "Fjern alle eksisterende tilordninger?"
+msgstr "Fjern alle eksisterende mappinger?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:442
-#, fuzzy
 msgid "clearMappingsConfirmationDescription"
-msgstr "Dette vil slette eksisterende datafelttilordninger."
+msgstr "Dette vil slette eksisterende mappinger av datafelt."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:511
-#, fuzzy
 msgid "changeMatchingLogic"
 msgstr "Endre samsvarslogikk"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:519
-#, fuzzy
 msgid "matchingLogicDescription"
-msgstr "Krev at data samsvarer med eksisterende poster"
+msgstr "Krev at data samsvarer med eksisterende dataposter"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:515
-#, fuzzy
 msgid "matchingLogicUnavailable"
-msgstr "Samsvarslogikk er ikke tilgjengelig for gjeldende tilordninger"
+msgstr "Samsvarslogikk er ikke tilgjengelig for gjeldende mappinger"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:497
 #: components/WbPlanView/MapperComponents.tsx:531
-#, fuzzy
 msgid "mustMatch"
 msgstr "Må samsvare"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:195
-#, fuzzy
 msgid "unloadProtectMessage"
-msgstr "Denne kartleggingen er ikke lagret."
+msgstr "Denne mappingen er ikke lagret."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:65
-#, fuzzy
 msgid "newHeaderName"
 msgstr "Ny kolonne {index:number}"
 
 #. Used in: Components > Wb Plan View > Header Helper
 #: components/WbPlanView/headerHelper.ts:19
-#, fuzzy
 msgid "noHeader"
 msgstr "(ingen overskrift)"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:72
-#, fuzzy
 msgid "copyPlan"
 msgstr "Kopier plan fra eksisterende datasett"
 
 #. Used in: Components > Wb Utils > Dataset Variants
 #: components/WbUtils/datasetVariants.tsx:73
-#, fuzzy
 msgid "noPlansToCopyFrom"
 msgstr ""
 "Det finnes ingen tilgjengelige planer. Fortsett med å opprette en "
@@ -461,13 +443,11 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:38
-#, fuzzy
 msgid "invalidTemplatePlan"
-msgstr "Det valgte datasettet har ingen kartlegging. Vennligst velg et annet."
+msgstr "Det valgte datasettet har ingen mapping. Vennligst velg et annet."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:139
-#, fuzzy
 msgid "invalidJsonFile"
 msgstr "Den valgte filen er ikke gyldig JSON."
 
@@ -475,7 +455,7 @@ msgstr "Den valgte filen er ikke gyldig JSON."
 #: components/WbToolkit/DevShowPlan.tsx:142
 #, fuzzy
 msgid "invalidJsonFileDescription"
-msgstr "Velg en gyldig JSON-datasetttilordningsfil."
+msgstr "Velg en gyldig JSON-datasett mapping fil."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:339
@@ -485,9 +465,8 @@ msgstr "Flertydighetsatferd:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:343
-#, fuzzy
 msgid "ask"
-msgstr "Spørre"
+msgstr "Spør"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:344
