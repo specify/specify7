@@ -4,6 +4,7 @@ import type { LocalizedString } from 'typesafe-i18n';
 
 import { useId } from '../../hooks/useId';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { appResourceIds } from '../../utils/ajax/helpers';
@@ -28,6 +29,7 @@ import { getItemType } from './helpers';
 import type { ItemType } from './index';
 import type { SchemaData } from './schemaData';
 import { fetchSchemaPickLists } from './schemaData';
+import { SchemaConfigAlignment } from './Alignment';
 
 export function SchemaConfigFormat({
   schemaData,
@@ -161,6 +163,18 @@ export function SchemaConfigFormat({
             systemPickLists,
         }}
       />
+      <legend className="mt-2 flex items-center gap-1 font-semibold">
+        {schemaText.dataModelAlignment()}
+        <Link.Icon
+          aria-label={headerText.documentation()}
+          href="https://speciforum.org/t/data-model-alignment/4143"
+          icon="informationCircle"
+          rel="noopener"
+          target="_blank"
+          title={headerText.documentation()}
+        />
+      </legend>
+      <SchemaConfigAlignment field={field} />
     </fieldset>
   );
 }
