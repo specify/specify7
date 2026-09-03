@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-03 11:51+0000\n"
-"Last-Translator: Josh Jenkins Shaw <joshua.m.j.shaw@ntnu.no>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -135,7 +135,7 @@ msgstr "Ingen beskrivelse tilgjengelig."
 #. Used in: 
 #, fuzzy
 msgid "CollObjToDeterminer"
-msgstr "TaksonsamlingObjekt"
+msgstr "Takson for samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
