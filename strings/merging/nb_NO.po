@@ -1,21 +1,20 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-02 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-03 09:51+0000\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/merging/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1925
-#, fuzzy
 msgid "recordMerging"
-msgstr "Sammenslåing av poster"
+msgstr "Slå sammen poster"
 
 #. Used in: Components > Form Meta > Merge Record ⬤ Components > Merging > Index ⬤ Components > Router > Overlay Routes
 #: components/FormMeta/MergeRecord.tsx:56
@@ -24,13 +23,11 @@ msgstr "Sammenslåing av poster"
 #: components/Merging/index.tsx:408
 #: components/Merging/index.tsx:421
 #: components/Router/OverlayRoutes.tsx:240
-#, fuzzy
 msgid "mergeRecords"
 msgstr "Slå sammen poster"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:225
-#, fuzzy
 msgid "mergedRecord"
 msgstr "Sammenslått post"
 
