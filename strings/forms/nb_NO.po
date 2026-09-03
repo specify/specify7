@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-02 11:52+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-03 09:51+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.dev0\n"
+"X-Generator: Weblate 2026.9\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:810
@@ -205,14 +205,12 @@ msgstr "Første post"
 #: components/FormSliders/Slider.tsx:96
 #: components/FormSliders/Slider.tsx:98
 #: components/Preferences/UserDefinitions.tsx:1233
-#, fuzzy
 msgid "lastRecord"
 msgstr "Siste post"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:40
 #: components/FormSliders/Slider.tsx:43
-#, fuzzy
 msgid "previousRecord"
 msgstr "Forrige post"
 
@@ -224,7 +222,6 @@ msgstr "Neste post"
 
 #. Used in: Components > Form Sliders > Slider
 #: components/FormSliders/Slider.tsx:57
-#, fuzzy
 msgid "currentRecord"
 msgstr "Gjeldende objekt (av {total:number|formatted})"
 
@@ -232,7 +229,6 @@ msgstr "Gjeldende objekt (av {total:number|formatted})"
 #: components/FormMeta/Definition.tsx:93
 #: components/Forms/ResourceView.tsx:431
 #: components/Forms/Save.tsx:39
-#, fuzzy
 msgid "unsavedFormUnloadProtect"
 msgstr "Dette skjemaet er ikke lagret."
 
@@ -244,12 +240,11 @@ msgstr "Lagre-konflikt"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:308
-#, fuzzy
 msgid "saveConflictDescription"
 msgstr ""
 "Dataene som vises på denne siden er endret av en annen bruker eller i en "
-"annen nettleserfane, og er utdaterte. Siden må lastes inn på nytt for å "
-"forhindre at inkonsistente data lagres."
+"annen fane i nettleseren, og er utdaterte. Siden må lastes inn på nytt for å "
+"hindre at inkonsistente data blir lagret."
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:339
@@ -258,70 +253,60 @@ msgstr "Lagring blokkert"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:342
-#, fuzzy
 msgid "saveBlockedDescription"
 msgstr "Skjemaet kan ikke lagres på grunn av følgende feil:"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:115
 #: components/FormCommands/index.tsx:142
-#, fuzzy
 msgid "unavailableCommandButton"
-msgstr "Kommando Ikke aktuelt"
+msgstr "Kommando ikke tilgjengelig"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:120
 #: components/FormCommands/index.tsx:147
-#, fuzzy
 msgid "commandUnavailable"
 msgstr "Kommando ikke tilgjengelig"
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:124
-#, fuzzy
 msgid "commandUnavailableDescription"
-msgstr "Denne kommandoen er for øyeblikket ikke tilgjengelig for Specifice 7."
+msgstr "Denne kommandoen er for øyeblikket ikke tilgjengelig for Specify 7."
 
 #. Used in: Components > Form Commands > Index ⬤ Components > Form Plugins > Index
 #: components/FormCommands/index.tsx:126
 #: components/FormPlugins/index.tsx:205
-#, fuzzy
 msgid "commandUnavailableSecondDescription"
 msgstr ""
-"Det var sannsynligvis inkludert på dette skjemaet fra Spesifiser 6 og kan "
-"bli støttet i fremtiden."
+"Det var sannsynligvis inkludert i dette skjemaet i Specify 6 og kan bli "
+"støttet i fremtiden."
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:129
-#, fuzzy
 msgid "commandName"
 msgstr "Kommandonavn"
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:195
 #: components/FormPlugins/index.tsx:264
-#, fuzzy
 msgid "unavailablePluginButton"
-msgstr "Programtillegg ikke tilgjengelig"
+msgstr "Plugin ikke tilgjengelig"
 
 #. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:58
 #: components/FormPlugins/index.tsx:199
 #: components/FormPlugins/index.tsx:268
-#, fuzzy
 msgid "pluginNotAvailable"
 msgstr "Plugin ikke tilgjengelig"
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:203
-#, fuzzy
 msgid "pluginNotAvailableDescription"
-msgstr "Denne pluginen er for øyeblikket ikke tilgjengelig for Specifice 7"
+msgstr "Denne plugin er for øyeblikket ikke tilgjengelig for Specify 7"
 
 #. 🟥Example: ... Locality, Collecting Event or Collection Object forms. Used in: Components > Form Plugins > Paleo Location ⬤ Components > Form Plugins > Index
 #: components/FormPlugins/PaleoLocation.tsx:65
 #: components/FormPlugins/index.tsx:272
-#, fuzzy
 msgid "wrongTableForPlugin"
 msgstr ""
 "Denne plugin-modulen kan ikke brukes på {currentTable:string}-skjemaet. Prøv "
@@ -329,7 +314,6 @@ msgstr ""
 
 #. Used in: Components > Form Commands > Index
 #: components/FormCommands/index.tsx:151
-#, fuzzy
 msgid "wrongTableForCommand"
 msgstr ""
 "Kommandoen kan ikke brukes på {currentTable:string}-skjemaet. Den kan bare "
@@ -337,7 +321,6 @@ msgstr ""
 
 #. Used in: Components > Form Plugins > Index
 #: components/FormPlugins/index.tsx:208
-#, fuzzy
 msgid "pluginName"
 msgstr "Plugin-navn"
 
@@ -345,7 +328,6 @@ msgstr "Plugin-navn"
 #: utils/parser/definitions.ts:114
 #: utils/parser/__tests__/definitions.test.ts:184
 #: utils/parser/__tests__/definitions.test.ts:186
-#, fuzzy
 msgid "illegalBool"
 msgstr "Ugyldig verdi for et Ja/Nei-felt"
 
@@ -357,7 +339,6 @@ msgstr "Ugyldig verdi for et Ja/Nei-felt"
 #: utils/parser/__tests__/parse.test.ts:79
 #: utils/parser/__tests__/parse.test.ts:207
 #: utils/parser/__tests__/parse.test.ts:209
-#, fuzzy
 msgid "requiredField"
 msgstr "Felt er obligatorisk."
 
@@ -369,7 +350,6 @@ msgstr "Felt er obligatorisk."
 #: utils/parser/__tests__/definitions.test.ts:205
 #: utils/parser/__tests__/definitions.test.ts:221
 #: utils/parser/__tests__/definitions.test.ts:223
-#, fuzzy
 msgid "invalidValue"
 msgstr "Ugyldig verdi"
 
@@ -381,9 +361,8 @@ msgstr "Ugyldig verdi"
 #: utils/parser/definitions.ts:373
 #: utils/parser/__tests__/definitions.test.ts:78
 #: utils/parser/__tests__/parse.test.ts:228
-#, fuzzy
 msgid "requiredFormat"
-msgstr "Nødvendig format: {format:string}."
+msgstr "Påkrevd format: {format:string}."
 
 #. Used in: Hooks > __tests__ > Use Resource Value ⬤ Utils > Parser > Definitions ⬤ Parser > __tests__ > Parse
 #: hooks/__tests__/useResourceValue.test.tsx:195
@@ -397,25 +376,21 @@ msgstr "Verdien må være et tall"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:30
-#, fuzzy
 msgid "organization"
 msgstr "Organisasjon"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:31
-#, fuzzy
 msgid "person"
 msgstr "Person"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:32
-#, fuzzy
 msgid "other"
 msgstr "Annen"
 
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:33
-#, fuzzy
 msgid "group"
 msgstr "Gruppe"
 
