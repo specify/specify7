@@ -5,6 +5,8 @@ import {
 import { requireContext } from '../../../tests/helpers';
 import {
   getMappingTerm,
+  getMappingTabValue,
+  getMappingTabValues,
   getSerializedMappingTerm,
   ensureIdentifierTerm,
   defaultRowTypes,
@@ -24,6 +26,33 @@ const kingdom = 'http://rs.tdwg.org/dwc/terms/kingdom';
 requireContext();
 
 describe('DwCA query field term mapping', () => {
+  test('uses the core or row type as the mapping URL value', () => {
+    expect(
+      getMappingTabValue({ extension: false, rowType: 'occurrence' })
+    ).toBe('core');
+    expect(
+      getMappingTabValue({
+        extension: true,
+        rowType: 'http://rs.tdwg.org/dwc/terms/Identification',
+      })
+    ).toBe('identification');
+  });
+
+  test('disambiguates duplicate extension tab names', () => {
+    expect(
+      getMappingTabValues([
+        {
+          extension: true,
+          rowType: 'http://example.org/Multimedia',
+        },
+        {
+          extension: true,
+          rowType: 'http://example.org/Multimedia',
+        },
+      ])
+    ).toEqual(['multimedia', 'multimedia-2']);
+  });
+
   test('adds the GUID occurrenceID field to empty mappings', () => {
     const [core, extension] = parseDefinition(`
       <archive>
