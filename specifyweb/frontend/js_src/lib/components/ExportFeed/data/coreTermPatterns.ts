@@ -5,11 +5,18 @@ export const occurrenceIdTerm = 'http://rs.tdwg.org/dwc/terms/occurrenceID';
 const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   // These must precede eventDate because numeric date-part IDs also contain
   // "collectingevent.startdate".
-  'http://rs.tdwg.org/dwc/terms/day': ['collectingevent.startdatenumericday'],
+  'http://rs.tdwg.org/dwc/terms/day': [
+    'collectingevent.startdatenumericday',
+    'collectingevent.enddatenumericday',
+  ],
   'http://rs.tdwg.org/dwc/terms/month': [
     'collectingevent.startdatenumericmonth',
+    'collectingevent.enddatenumericmonth',
   ],
-  'http://rs.tdwg.org/dwc/terms/year': ['collectingevent.startdatenumericyear'],
+  'http://rs.tdwg.org/dwc/terms/year': [
+    'collectingevent.startdatenumericyear',
+    'collectingevent.enddatenumericyear',
+  ],
   'http://rs.tdwg.org/dwc/terms/verbatimEventDate': [
     'collectingevent.startdateverbatim',
     'collectingevent.enddateverbatim',
