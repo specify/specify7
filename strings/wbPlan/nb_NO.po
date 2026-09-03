@@ -336,7 +336,7 @@ msgstr "Kartutforsker"
 #: components/WbPlanView/MapperComponents.tsx:461
 #, fuzzy
 msgid "hideFieldMapper"
-msgstr "Skjul feltkartlegger"
+msgstr "Skjul felt mapper"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:146
