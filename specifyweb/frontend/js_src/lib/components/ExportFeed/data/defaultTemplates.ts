@@ -91,16 +91,18 @@ export const defaultTemplates: readonly DwcaTemplate[] = [
   <extension rowType="http://rs.tdwg.org/ac/terms/Multimedia">
     <queries>
       <query name="AudiovisualCore.csv" contextTableId="1">
-        <id term="http://rs.tdwg.org/dwc/terms/occurrenceID" stringId="1.collectionobject.guid" oper="11" value="" isNot="false" isRelFld="false" />
-        <field term="http://purl.org/dc/terms/title" stringId="1,111-collectionObjectAttachments,41.attachment.title" oper="12" value="" isNot="true" isRelFld="false" />
-        <field term="http://rs.tdwg.org/ac/terms/digitizationDate" stringId="1,111-collectionObjectAttachments,41.attachment.fileCreatedDate" oper="1" value="" isNot="false" isRelFld="false" />
-        <field term="http://purl.org/dc/terms/identifier" stringId="1,111-collectionObjectAttachments,41.attachment.guid" oper="11" value="" isNot="false" isRelFld="false" />
-        <field term="http://rs.tdwg.org/ac/terms/type" stringId="1,111-collectionObjectAttachments,41.attachment.type" oper="11" value="" isNot="false" isRelFld="false" />
-        <field term="http://rs.tdwg.org/ac/terms/subtype" stringId="1,111-collectionObjectAttachments,41.attachment.subtype" oper="11" value="" isNot="false" isRelFld="false" />
-        <field term="http://purl.org/dc/elements/1.1/format" stringId="1,111-collectionObjectAttachments,41.attachment.mimeType" oper="11" value="" isNot="false" isRelFld="false" />
-        <field term="http://rs.tdwg.org/ac/terms/accessURI" stringId="1,111-collectionObjectAttachments,41.attachment.attachment" oper="11" value="" isNot="false" isRelFld="true" />
-        <field term="http://purl.org/dc/terms/license" stringId="1,23,26,96,94.institution.copyright" oper="11" value="" isNot="false" isRelFld="false" />
-        <field term="http://purl.org/dc/terms/accessRights" stringId="1,23,26,96,94.institution.termsOfUse" oper="11" value="" isNot="false" isRelFld="false" />
+        <id stringId="1.collectionobject.guid" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/dwc/terms/occurrenceID"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.title" oper="12" value="" isNot="true" isRelFld="false" formatName="" term="http://purl.org/dc/terms/title"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.fileCreatedDate" oper="1" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/ac/terms/digitizationDate"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.guid" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/terms/identifier"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.credit" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/elements/1.1/creator"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.type" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/terms/type"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.subtype" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/ac/terms/subtype"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.mimeType" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/elements/1.1/format"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.subjectOrientation" oper="8" value="" isNot="false" isRelFld="false" formatName="" term="http://rs.tdwg.org/ac/terms/subjectOrientation"/>
+        <field stringId="1,111-collectionObjectAttachments,41.attachment.attachment" oper="11" value="" isNot="false" isRelFld="true" formatName="" term="http://rs.tdwg.org/ac/terms/accessURI"/>
+        <field stringId="1,23,26,96,94.institution.copyright" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://ns.adobe.com/xap/1.0/rights/UsageTerms"/>
+        <field stringId="1,23,26,96,94.institution.termsOfUse" oper="11" value="" isNot="false" isRelFld="false" formatName="" term="http://purl.org/dc/terms/rights"/>
       </query>
     </queries>
   </extension>
