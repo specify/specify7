@@ -197,19 +197,16 @@ msgstr ""
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
-#, fuzzy
 msgid "mappingIsRequired"
-msgstr "Kartlegging er nødvendig"
+msgstr "Mapping er nødvendig"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:109
-#, fuzzy
 msgid "continueEditing"
-msgstr "Fortsett redigeringen"
+msgstr "Fortsett redigering"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:112
-#, fuzzy
 msgid "saveUnfinished"
 msgstr "Lagre uferdig"
 
