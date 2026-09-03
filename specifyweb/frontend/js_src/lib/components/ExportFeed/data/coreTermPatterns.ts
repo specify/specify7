@@ -18,9 +18,7 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.enddate',
   ],
   'http://rs.tdwg.org/dwc/terms/basisOfRecord': [
-    'collection.basisofrecord',
     'collection.collectiontype',
-    'basisofrecord',
   ],
   'http://rs.tdwg.org/dwc/terms/datasetName': [
     'collection.description',
@@ -54,27 +52,37 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/coordinateUncertaintyInMeters': [
     'geocoorddetail.maxuncertaintyest',
   ],
-  'http://rs.tdwg.org/dwc/terms/countryCode': ['geography.code'],
+  // This only works if the rank is named exactly 'Country'
+  'http://rs.tdwg.org/dwc/terms/countryCode': ['geography.Country geographyCode'],
   'http://rs.tdwg.org/dwc/terms/decimalLatitude': ['locality.latitude1'],
   'http://rs.tdwg.org/dwc/terms/decimalLongitude': ['locality.longitude1'],
-  'http://rs.tdwg.org/dwc/terms/individualCount': ['.countamt'],
-  'http://rs.tdwg.org/dwc/terms/organismQuantity': ['.countamt'],
-  'http://rs.tdwg.org/dwc/terms/kingdom': ['.kingdom.name', 'taxon.kingdom'],
-  'http://rs.tdwg.org/dwc/terms/phylum': ['.phylum.name', 'taxon.phylum'],
-  'http://rs.tdwg.org/dwc/terms/class': ['.class.name', 'taxon.class'],
-  'http://rs.tdwg.org/dwc/terms/order': ['.order.name', 'taxon.order'],
-  'http://rs.tdwg.org/dwc/terms/family': ['.family.name', 'taxon.family'],
-  'http://rs.tdwg.org/dwc/terms/genus': ['.genus.name', 'taxon.genus'],
+  'http://rs.tdwg.org/dwc/terms/individualCount': [
+    'collectionobject.countamt',
+  ],
+  'http://rs.tdwg.org/dwc/terms/organismQuantity': [
+    'collectionobject.countamt',
+  ],
+  'http://rs.tdwg.org/dwc/terms/kingdom': ['taxon.kingdom'],
+  'http://rs.tdwg.org/dwc/terms/phylum': ['taxon.phylum'],
+  'http://rs.tdwg.org/dwc/terms/class': ['taxon.class'],
+  'http://rs.tdwg.org/dwc/terms/order': ['taxon.order'],
+  'http://rs.tdwg.org/dwc/terms/superfamily': ['taxon.superfamily'],
+  'http://rs.tdwg.org/dwc/terms/family': ['taxon.family'],
+  'http://rs.tdwg.org/dwc/terms/subfamily': ['taxon.subfamily'],
+  'http://rs.tdwg.org/dwc/terms/tribe': ['taxon.tribe'],
+  'http://rs.tdwg.org/dwc/terms/subtribe': ['taxon.subtribe'],
+  'http://rs.tdwg.org/dwc/terms/genus': ['taxon.genus'],
+  'http://rs.tdwg.org/dwc/terms/genericName': ['taxon.genus'],
+  'http://rs.tdwg.org/dwc/terms/subgenus': ['taxon.subgenus'],
+  'http://rs.tdwg.org/dwc/terms/infragenericEpithet': ['taxon.subgenus'],
   'http://rs.tdwg.org/dwc/terms/specificEpithet': [
-    '.species.name',
     'taxon.species',
   ],
   'http://rs.tdwg.org/dwc/terms/infraspecificEpithet': [
-    '.subspecies.name',
     'taxon.subspecies',
   ],
+  'http://rs.tdwg.org/dwc/terms/cultivarEpithet': ['taxon.cultivar'],
   'http://rs.tdwg.org/dwc/terms/taxonRank': [
-    'taxontreedef.rankname',
     'taxontreedefitem.name',
   ],
   'http://rs.tdwg.org/dwc/terms/eventID': [
@@ -83,26 +91,27 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://rs.tdwg.org/dwc/terms/recordNumber': ['fieldnumber'],
   'http://rs.tdwg.org/dwc/terms/identifiedBy': [
-    'determiners.determiner.determiners',
+    'agent.determiner',
     'determination.determiner',
+    'determiner.determiners',
   ],
   'http://rs.tdwg.org/dwc/terms/typeStatus': ['determination.typestatusname'],
   'http://rs.tdwg.org/dwc/terms/parentEventID': ['collectingtrip.guid'],
   'http://rs.tdwg.org/dwc/terms/waterBody': [
-    'geocoorddetail.waterbody',
     'localitydetail.waterbody',
   ],
   'http://rs.tdwg.org/dwc/terms/catalogNumber': ['.catalognumber'],
   'http://rs.tdwg.org/dwc/terms/recordedBy': ['.collectors'],
   'http://rs.tdwg.org/dwc/terms/stateProvince': [
-    'stateprovince.name',
     'geography.state',
   ],
   'http://rs.tdwg.org/dwc/terms/county': ['geography.county'],
   'http://rs.tdwg.org/dwc/terms/maximumDepthInMeters': [
+    'collectingeventattribute.number12',
     'localitydetail.enddepth',
   ],
   'http://rs.tdwg.org/dwc/terms/minimumDepthInMeters': [
+    'collectingeventattribute.number13',
     'localitydetail.startdepth',
   ],
   'http://rs.tdwg.org/dwc/terms/locality': ['locality.localityname'],
@@ -112,7 +121,10 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/georeferenceSources': [
     'locality.latlongmethod',
   ],
-  'http://rs.tdwg.org/dwc/terms/collectionCode': ['collection.code'],
+  'http://rs.tdwg.org/dwc/terms/collectionCode': [
+    'collection.code',
+    'collectionobject.text1',
+  ],
   'http://rs.tdwg.org/dwc/terms/eventRemarks': ['collectingevent.remarks'],
   'http://rs.tdwg.org/dwc/terms/institutionCode': ['institution.code'],
   'http://rs.tdwg.org/dwc/terms/fieldNumber': ['fieldnumber'],
@@ -140,10 +152,14 @@ export const coreTermPatterns: Readonly<Record<string, readonly string[]>> = {
     'collectingevent.verbatimlocality',
   ],
   'http://rs.tdwg.org/dwc/terms/associatedTaxa': ['hosttaxon.taxon.hosttaxon'],
+  'http://rs.tdwg.org/dwc/terms/sex': ['collectionobjectattribute.text10'],
+  'http://rs.tdwg.org/dwc/terms/lifeStage': ['collectionobjectattribute.text12'],
+  'http://rs.tdwg.org/dwc/terms/habitat': [
+    'collectingeventattribute.text17',
+  ],
   'http://rs.tdwg.org/dwc/terms/preparations': [
     'preparations.preparation.preparations',
   ],
-  'http://rs.tdwg.org/dwc/iri/habitat': ['locality.elevationmethod'],
   'http://rs.tdwg.org/dwc/terms/occurrenceRemarks': ['.remarks'],
   'http://rs.tdwg.org/dwc/terms/maximumElevationInMeters': [
     'locality.maxelevation',
