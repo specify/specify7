@@ -758,63 +758,53 @@ msgstr "Tillat at autofullføring utvides så bredt som nødvendig"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:858
-#, fuzzy
 msgid "tableNameInTitle"
 msgstr "Inkluder tabellnavnet i tittelen på nettlesersiden"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:865
-#, fuzzy
 msgid "focusFirstField"
-msgstr "Fokuser først på feltet"
+msgstr "Fokuser på første felt"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2241
-#, fuzzy
 msgid "doubleClickZoom"
 msgstr "Dobbeltklikk for å zoome"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2248
-#, fuzzy
 msgid "closePopupOnClick"
 msgstr "Lukk popup-vinduet ved klikk utenfor"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2255
-#, fuzzy
 msgid "animateTransitions"
 msgstr "Animer overganger"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2262
-#, fuzzy
 msgid "panInertia"
 msgstr "Pan-inerti"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2269
-#, fuzzy
 msgid "mouseDrags"
-msgstr "Musedrag"
+msgstr "Mus drar"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2276
-#, fuzzy
 msgid "scrollWheelZoom"
 msgstr "Zoom med rullehjul"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:911
-#, fuzzy
 msgid "flexibleColumnWidth"
 msgstr "Fleksibel kolonnebredde"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:918
-#, fuzzy
 msgid "flexibleSubGridColumnWidth"
-msgstr "Fleksibel kolonnebredde for delvisningsrutenett"
+msgstr "Fleksibel kolonnebredde for delvisnings-rutenett"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:552
