@@ -5,15 +5,11 @@ import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { Link } from '../Atoms/Link';
 import type { LiteralField, Relationship } from '../DataModel/specifyField';
-import darwinCore from '../ExportFeed/data/darwinCoreOccurrence.json';
 import gbifCores from '../ExportFeed/data/gbifCores.json';
 import { coreTermPatterns } from '../ExportFeed/data/coreTermPatterns';
 import gbifExtensions from '../ExportFeed/data/gbifExtensions.json';
 
-type Vocabulary =
-  | typeof darwinCore
-  | (typeof gbifCores)[number]
-  | (typeof gbifExtensions)[number];
+type Vocabulary = (typeof gbifCores)[number] | (typeof gbifExtensions)[number];
 type VocabularyField = Vocabulary['fields'][number];
 
 export type FieldAlignment = {
@@ -21,13 +17,7 @@ export type FieldAlignment = {
   readonly vocabulary: Vocabulary;
 };
 
-const vocabularies: readonly Vocabulary[] = [
-  darwinCore,
-  ...gbifCores.filter(
-    ({ rowType }) => rowType !== 'http://rs.tdwg.org/dwc/terms/Occurrence'
-  ),
-  ...gbifExtensions,
-];
+const vocabularies: readonly Vocabulary[] = [...gbifCores, ...gbifExtensions];
 
 const normalizeFieldIdentity = (field: LiteralField | Relationship): string =>
   `${field.table.name}.${field.name}`.toLowerCase();

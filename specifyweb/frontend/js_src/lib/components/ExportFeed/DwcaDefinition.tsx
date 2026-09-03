@@ -35,14 +35,13 @@ import { QueryBuilder } from '../QueryBuilder/Wrapped';
 import { parseQueryFields } from '../QueryBuilder/helpers';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
-import darwinCore from './data/darwinCoreOccurrence.json';
 import gbifCores from './data/gbifCores.json';
 import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
 import { coreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
 import gbifExtensions from './data/gbifExtensions.json';
 
 type ExtensionDefinition = (typeof gbifExtensions)[number];
-type CoreDefinition = typeof darwinCore | (typeof gbifCores)[number];
+type CoreDefinition = (typeof gbifCores)[number];
 type Definition = CoreDefinition | ExtensionDefinition;
 type Mapping = {
   readonly extension: boolean;
@@ -70,12 +69,11 @@ const customTermOption = '__custom__';
 const customRowTypeOption = '__custom_row_type__';
 const customExtensionOption = '__custom_extension__';
 const dwcaTabParameter = 'dwcaTab';
-const coreDefinitions: readonly CoreDefinition[] = [
-  darwinCore,
-  ...gbifCores.filter(
-    ({ rowType }) => rowType !== 'http://rs.tdwg.org/dwc/terms/Occurrence'
-  ),
-];
+const occurrenceCoreRowType = 'http://rs.tdwg.org/dwc/terms/Occurrence';
+const coreDefinitions: readonly CoreDefinition[] = gbifCores;
+const occurrenceCore = coreDefinitions.find(
+  ({ rowType }) => rowType === occurrenceCoreRowType
+)!;
 const coreIdentifierTerms: Readonly<Record<string, string>> = {
   'http://rs.tdwg.org/dwc/terms/Event': 'http://rs.tdwg.org/dwc/terms/eventID',
   'http://rs.tdwg.org/dwc/terms/Taxon': 'http://rs.tdwg.org/dwc/terms/taxonID',
@@ -158,7 +156,7 @@ export function getMappingTerm(
 ): string | undefined {
   const fieldIndex = getMappingFieldIndex(mapping, field);
   return !mapping.extension && fieldIndex === 0
-    ? getCoreIdentifierTerm(mapping.rowType ?? darwinCore.rowType)
+    ? getCoreIdentifierTerm(mapping.rowType ?? occurrenceCoreRowType)
     : mapping.terms[fieldIndex];
 }
 
@@ -283,11 +281,9 @@ export function isExtensionApplicableToCore(
 }
 
 const getRowTypeOptionLabel = (rowType: string): string =>
-  rowType === darwinCore.rowType
-    ? darwinCore.title
-    : (getCoreDefinitionForRowType(rowType)?.title ??
-      getExtensionDefinitionForRowType(rowType)?.title ??
-      rowType);
+  getCoreDefinitionForRowType(rowType)?.title ??
+  getExtensionDefinitionForRowType(rowType)?.title ??
+  rowType;
 
 function TermInfoDialog({
   term,
@@ -461,12 +457,14 @@ function availableTermNames(
   return new Set(
     (extension
       ? [
-          (getCoreDefinitionForRowType(coreRowType) ?? darwinCore).fields.find(
+          (
+            getCoreDefinitionForRowType(coreRowType) ?? occurrenceCore
+          ).fields.find(
             ({ name }) => name === getCoreIdentifierTerm(coreRowType)
           ),
           ...(definition?.fields ?? []),
         ]
-      : (definition ?? darwinCore).fields
+      : (definition ?? occurrenceCore).fields
     )
       .map((term) => term?.name)
       .filter((name): name is string => name !== undefined)
@@ -561,7 +559,7 @@ function autoMapCoreFields(
 function newMapping(
   extension: boolean,
   definition: Definition | undefined,
-  coreRowType = darwinCore.rowType
+  coreRowType = occurrenceCoreRowType
 ): Mapping {
   const baseTable = getBaseTableForCore(coreRowType);
   const query = createQuery(
@@ -815,7 +813,7 @@ export function parseDefinition(data: string | null): RA<Mapping> {
   const extensions = Array.from(root.documentElement.children).filter(
     ({ tagName }) => tagName === 'extension'
   );
-  const coreRowType = core?.getAttribute('rowType') ?? darwinCore.rowType;
+  const coreRowType = core?.getAttribute('rowType') ?? occurrenceCoreRowType;
   const baseTable = getBaseTableForCore(coreRowType);
   return [core, ...extensions]
     .filter((stanza): stanza is Element => stanza !== undefined)
@@ -982,7 +980,7 @@ function TermPicker({
   const terms = mapping.extension
     ? [
         (
-          getCoreDefinitionForRowType(mapping.coreRowType) ?? darwinCore
+          getCoreDefinitionForRowType(mapping.coreRowType) ?? occurrenceCore
         ).fields.find(
           ({ name }) => name === getCoreIdentifierTerm(mapping.coreRowType)
         )!,
@@ -990,7 +988,7 @@ function TermPicker({
           ({ name }) => name !== getCoreIdentifierTerm(mapping.coreRowType)
         ),
       ]
-    : (mapping.extensionDefinition?.fields ?? darwinCore.fields);
+    : (mapping.extensionDefinition?.fields ?? occurrenceCore.fields);
   const value = getMappingTerm(mapping, field) ?? '';
   const options: RA<TermDefinition> = terms.map(
     ({ name, title, description, vocabulary, iri, group, required }) => ({
@@ -1392,7 +1390,7 @@ function DwcaDefinitionEditorLoaded({
     const parsed = parseDefinition(data);
     return parsed.some(({ extension }) => !extension)
       ? parsed
-      : [newMapping(false, darwinCore), ...parsed];
+      : [newMapping(false, occurrenceCore), ...parsed];
   });
   const [tabValue, setTabValue] = useSearchParameter(dwcaTabParameter);
   const tabValues = React.useMemo(
@@ -1402,7 +1400,8 @@ function DwcaDefinitionEditorLoaded({
   const tabIndex = getMappingTabIndex(mappings, tabValues, tabValue);
   const tab = Math.max(0, tabIndex);
   const coreRowType =
-    mappings.find(({ extension }) => !extension)?.rowType ?? darwinCore.rowType;
+    mappings.find(({ extension }) => !extension)?.rowType ??
+    occurrenceCoreRowType;
   const baseTable = getBaseTableForCore(coreRowType);
   const [showExtensionPicker, setShowExtensionPicker] = React.useState(false);
   const [queries] = useAsyncState(
@@ -1479,7 +1478,8 @@ function DwcaDefinitionEditorLoaded({
   }, [setTabValue, tabIndex, tabValues, tabValue]);
   const update = (next: RA<Mapping>): void => {
     const selectedCoreRowType =
-      next.find(({ extension }) => !extension)?.rowType ?? darwinCore.rowType;
+      next.find(({ extension }) => !extension)?.rowType ??
+      occurrenceCoreRowType;
     const selectedBaseTable = getBaseTableForCore(selectedCoreRowType);
     const normalized = next.map((mapping) =>
       mapping.coreRowType === selectedCoreRowType &&
