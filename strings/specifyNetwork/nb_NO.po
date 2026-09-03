@@ -146,5 +146,5 @@ msgstr "GBIF-datasettnøkkel"
 #, fuzzy
 msgid "collectionKeyDescription"
 msgstr ""
-"GBIF-en «dataSetKey» (en UUID) for denne samlingen, brukt for Angi "
+"GBIF-en «dataSetKey» (en UUID) for denne samlingen, brukt for Specify "
 "nettverksintegrasjon."
