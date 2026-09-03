@@ -150,7 +150,7 @@ const darwinCoreTermPatterns: Readonly<Record<string, readonly string[]>> = {
   'http://rs.tdwg.org/dwc/terms/preparations': [
     'preparations.preparation.preparations',
   ],
-  'http://rs.tdwg.org/dwc/terms/occurrenceRemarks': ['.remarks'],
+  'http://rs.tdwg.org/dwc/terms/occurrenceRemarks': ['collectionobject.remarks'],
   'http://rs.tdwg.org/dwc/terms/maximumElevationInMeters': [
     'locality.maxelevation',
   ],
@@ -191,6 +191,7 @@ const gbifExtensionTermPatterns: Readonly<Record<string, readonly string[]>> = {
   ],
   'http://purl.org/dc/elements/1.1/format': ['attachment.mimetype'],
   'http://purl.org/dc/terms/format': ['attachment.mimetype'],
+  'http://purl.org/dc/elements/1.1/creator': ['attachment.credit'],
   'http://purl.org/dc/terms/created': [
     'attachment.filecreateddate',
     'attachment.dateimaged',
