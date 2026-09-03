@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 09:03+0000\n"
+"PO-Revision-Date: 2026-09-03 10:51+0000\n"
 "Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
@@ -202,55 +202,46 @@ msgstr "Tilgjengelige feltformateringer"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:138
-#, fuzzy
 msgid "selectDefaultFormatter"
 msgstr "Vennligst angi en av formateringene som standard"
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:51
-#, fuzzy
 msgid "duplicateFormatters"
 msgstr "Navn på postformatering må være unike"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:175
-#, fuzzy
 msgid "dataEntryTables"
 msgstr "Dataregistreringstabeller"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:183
-#, fuzzy
 msgid "interactionsTables"
 msgstr "Interaksjonstabeller"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:190
-#, fuzzy
 msgid "otherXmlResource"
 msgstr "Annen XML-ressurs"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:197
-#, fuzzy
 msgid "otherJsonResource"
 msgstr "Annen JSON-ressurs"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:204
-#, fuzzy
 msgid "otherPropertiesResource"
-msgstr "Andre egenskaper Ressurs"
+msgstr "Ressurs for andre egenskaper"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:211
-#, fuzzy
 msgid "otherAppResource"
 msgstr "Andre ressurser"
 
 #. Used in: Components > App Resources > Filters
 #: components/AppResources/Filters.tsx:63
-#, fuzzy
 msgid "filters"
 msgstr "Filtre"
 
@@ -258,9 +249,8 @@ msgstr "Filtre"
 #: components/AppResources/Filters.tsx:90
 #: components/AppResources/Filters.tsx:91
 #: components/AppResources/Filters.tsx:100
-#, fuzzy
 msgid "custom"
-msgstr "Skikk"
+msgstr "Tillpasset"
 
 #. Used in: Components > App Resources > Types
 #: components/AppResources/types.tsx:120
@@ -270,32 +260,27 @@ msgstr "Brosjyrelag"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:145
-#, fuzzy
 msgid "textEditor"
 msgstr "Tekstredigerer"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:143
-#, fuzzy
 msgid "xmlEditor"
 msgstr "XML-redigeringsprogram"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:144
-#, fuzzy
 msgid "jsonEditor"
 msgstr "JSON-redigeringsprogram"
 
 #. Used in: Components > App Resources > Tabs
 #: components/AppResources/Tabs.tsx:142
-#, fuzzy
 msgid "visualEditor"
 msgstr "Visuell redigerer"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:68
 #: components/AppResources/Create.tsx:90
-#, fuzzy
 msgid "selectResourceType"
 msgstr "Velg ressurstype"
 
@@ -303,7 +288,6 @@ msgstr "Velg ressurstype"
 #: components/AppResources/tree.ts:122
 #: components/AppResources/__tests__/disambiguateGlobalPrefs.test.ts:32
 #: components/AppResources/__tests__/getGlobalAllResources.test.ts:38
-#, fuzzy
 msgid "globalPreferences"
 msgstr "Globale preferanser"
 
