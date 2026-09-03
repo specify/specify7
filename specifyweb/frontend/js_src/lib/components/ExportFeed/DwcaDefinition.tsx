@@ -35,7 +35,6 @@ import { parseQueryFields } from '../QueryBuilder/helpers';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { Dialog, dialogClassNames, LoadingScreen } from '../Molecules/Dialog';
 import darwinCore from './data/darwinCoreOccurrence.json';
-import { defaultQueries } from './data/defaultQueries';
 import { defaultTemplates, type DwcaTemplate } from './data/defaultTemplates';
 import { coreTermPatterns, occurrenceIdTerm } from './data/coreTermPatterns';
 import gbifExtensions from './data/gbifExtensions.json';
@@ -137,13 +136,6 @@ const groupLabel = (group: string | undefined): string => {
   const label = group?.split('#').at(-1) ?? '';
   return label === '' ? '' : label[0].toUpperCase() + label.slice(1);
 };
-
-const defaultQueryFiles: Readonly<Record<string, keyof typeof defaultQueries>> =
-  {
-    Core: 'core',
-    Multimedia: 'Multimedia',
-    MeasurementOrFacts: 'MeasurementOrFacts',
-  };
 
 export const defaultRowTypes = Array.from(
   new Set(gbifExtensions.map(({ rowType }) => rowType))
@@ -513,7 +505,6 @@ function ExtensionDialog({
   readonly onAdd: (
     extension: ExtensionDefinition | undefined,
     query?: SpecifyResource<SpQuery>,
-    defaultFile?: keyof typeof defaultQueries,
     template?: DwcaTemplate
   ) => void;
   readonly onClose: () => void;
@@ -522,8 +513,15 @@ function ExtensionDialog({
   const [queryName, setQueryName] = React.useState('');
   const extension = extensions.find(({ name }) => name === extensionName);
   const isFromScratch = extensionName === customExtensionOption;
-  const defaultFile =
-    extension === undefined ? undefined : defaultQueryFiles[extension.name];
+  const templates =
+    extension === undefined
+      ? []
+      : defaultTemplates.filter((template) =>
+          template.targets.some(
+            ({ extension: isExtension, rowType }) =>
+              isExtension && rowType === extension.rowType
+          )
+        );
   return (
     <Dialog
       className={{ container: dialogClassNames.normalContainer }}
@@ -552,8 +550,7 @@ function ExtensionDialog({
               onAdd(
                 extension,
                 query === undefined ? undefined : deserializeResource(query),
-                queryName.startsWith('default:') ? defaultFile : undefined,
-                defaultTemplates.find(
+                templates.find(
                   (template) => queryName === `template:${template.name}`
                 )
               );
@@ -600,26 +597,14 @@ function ExtensionDialog({
                 {dwcaText.dwcaChoose({ item: queryText.query() })}
               </option>
               <option value="empty">{dwcaText.dwcaStartFromScratch()}</option>
-              {defaultFile !== undefined && (
-                <option value={`default:${extension.name}`}>
-                  {resourcesText.default()} {queryText.query()}
+              {templates.map((template) => (
+                <option
+                  key={`template:${template.name}`}
+                  value={`template:${template.name}`}
+                >
+                  {template.name}
                 </option>
-              )}
-              {defaultTemplates
-                .filter((template) =>
-                  template.targets.some(
-                    ({ extension: isExtension, rowType }) =>
-                      isExtension && rowType === extension.rowType
-                  )
-                )
-                .map((template) => (
-                  <option
-                    key={`template:${template.name}`}
-                    value={`template:${template.name}`}
-                  >
-                    {template.name}
-                  </option>
-                ))}
+              ))}
               {queries.map((query) => (
                 <option key={query.id} value={query.id.toString()}>
                   {query.name}
@@ -629,7 +614,7 @@ function ExtensionDialog({
           </Label.Block>
         )}
         {extension !== undefined &&
-          defaultFile === undefined &&
+          templates.length === 0 &&
           queries.length === 0 && (
             <p>
               {dwcaText.dwcaNoDefaultOrSaved({
@@ -1182,21 +1167,6 @@ function DwcaDefinitionEditorLoaded({
       ? parsed
       : [newMapping(false), ...parsed];
   });
-  const loadedCoreDefault = React.useRef(false);
-  React.useEffect(() => {
-    if (
-      loadedCoreDefault.current ||
-      (typeof data === 'string' && data.trim() !== '')
-    )
-      return;
-    loadedCoreDefault.current = true;
-    const core = parseDefinition(defaultQueries.core).find(
-      (mapping) => !mapping.extension
-    );
-    if (core === undefined) return;
-    setMappings([core]);
-    handleChange(serializeDefinition([core]));
-  }, [data, handleChange]);
   const [tab, setTab] = React.useState(0);
   const [showExtensionPicker, setShowExtensionPicker] = React.useState(false);
   const [queries] = useAsyncState(
@@ -1280,7 +1250,6 @@ function DwcaDefinitionEditorLoaded({
   const handleAddExtension = (
     extension: ExtensionDefinition | undefined,
     query?: SpecifyResource<SpQuery>,
-    defaultFile?: keyof typeof defaultQueries,
     template?: DwcaTemplate
   ): void => {
     const base = newMapping(true, extension);
@@ -1291,20 +1260,6 @@ function DwcaDefinitionEditorLoaded({
     }
     if (query !== undefined) {
       update([...mappings, mappingFromQuery(base, query)]);
-      setTab(mappings.length);
-    } else if (defaultFile !== undefined) {
-      const parsed = parseDefinition(defaultQueries[defaultFile]).find(
-        (mapping) => mapping.extension
-      );
-      update([
-        ...mappings,
-        parsed === undefined
-          ? base
-          : ensureIdentifierTerm({
-              ...parsed,
-              extensionDefinition: extension,
-            }),
-      ]);
       setTab(mappings.length);
     } else if (template !== undefined) {
       const parsed = parseDefinition(template.definition).find(
