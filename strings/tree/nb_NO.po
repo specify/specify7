@@ -191,9 +191,10 @@ msgstr "Synonymiser node"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:396
-#, fuzzy
 msgid "makeSynonym"
-msgstr "Gjør {nodeName:string} til et synonym for {synonymName:string}"
+msgstr ""
+"{nodeName:string}Gjør {nodeName:string} til et synonym for "
+"{synonymName:string}"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:347
