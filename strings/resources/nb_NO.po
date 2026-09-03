@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 08:54+0000\n"
+"PO-Revision-Date: 2026-09-03 09:03+0000\n"
 "Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
@@ -154,57 +154,49 @@ msgstr "Tabellformat"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:31
-#, fuzzy
 msgid "formatterDescription"
 msgstr ""
 "«Tabellformat» styrer hvordan data fra en bestemt tabell vises i "
-"spørreresultater, eksporter og kombinasjonsbokser for spørringer. Det "
+"spørreresultater, eksportfiler og kombinasjonsbokser for spørringer. Det "
 "bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget "
 "formatering kan konfigureres basert på en verdi i posten."
 
 #. Used in: Components > Formatters > Element
 #: components/Formatters/Element.tsx:133
-#, fuzzy
 msgid "aggregator"
 msgstr "Tabellaggregering"
 
 #. Used in: Components > Formatters > Table
 #: components/Formatters/Table.tsx:32
-#, fuzzy
 msgid "aggregatorDescription"
 msgstr ""
-"«Tabellaggregering» styrer hvordan flere tabellposter konsolideres sammen "
-"til én tekststreng. Tabellformatet, skilletegnet, suffikset, "
-"sorteringsfeltet og forhåndsvisningsgrensen for poster kan tilpasses. Det "
-"kan vises i spørreresultater og tabellformater."
+"«Tabellaggregering» styrer hvordan flere tabellposter konsolideres til én "
+"tekststreng. Tabellformatet, skilletegnet, suffikset, sorteringsfeltet og "
+"forhåndsvisningsgrensen for poster kan tilpasses. Dette resultatet kan vises "
+"i spørreresultater og tabellformater."
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:28
-#, fuzzy
 msgid "formattedResource"
 msgstr "Formatert ressurs"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:68
-#, fuzzy
 msgid "availableFormatters"
 msgstr "Tilgjengelige tabellformater"
 
 #. Used in: Components > Formatters > List
 #: components/Formatters/List.tsx:69
-#, fuzzy
 msgid "availableAggregators"
 msgstr "Tilgjengelige tabellaggregeringer"
 
 #. Used in: Components > Web Links > List
 #: components/WebLinks/List.tsx:21
-#, fuzzy
 msgid "availableWebLink"
 msgstr "Tilgjengelige nettlenker"
 
 #. Used in: Components > Field Formatters > List
 #: components/FieldFormatters/List.tsx:73
-#, fuzzy
 msgid "availableFieldFormatters"
 msgstr "Tilgjengelige feltformateringer"
 
