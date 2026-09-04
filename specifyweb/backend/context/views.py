@@ -6,11 +6,13 @@ import json
 import os
 import re
 from typing import List
+from xml.etree import ElementTree
 
 from django.conf import settings
 from django.contrib.auth import authenticate, login as auth_login, \
     logout as auth_logout
 from django.db import connection, transaction
+from django.db.models import Q
 from django.http import Http404, HttpResponse, HttpResponseBadRequest, \
     HttpResponseForbidden, JsonResponse
 from django.urls import URLPattern
@@ -28,7 +30,8 @@ from specifyweb.backend.permissions.permissions import PermissionTarget, \
     check_permission_targets, skip_collection_access_check, query_pt, \
     CollectionAccessPT
 from specifyweb.specify.models import Collection, Discipline, Division, Collectionobject, Institution, \
-    Specifyuser, Spprincipal, Spversion, Collectionobjecttype
+    Specifyuser, Spprincipal, Spversion, Collectionobjecttype, Picklist, Splocalecontainer, \
+    Splocalecontaineritem, Splocaleitemstr
 from specifyweb.specify.models_utils.schema import base_schema
 from specifyweb.specify.models_utils.serialize_datamodel import datamodel_to_json
 from specifyweb.specify.api.serializers import uri_for_model
@@ -475,6 +478,184 @@ def schema_localization(request):
     """
     lang = request.GET.get('lang', request.LANGUAGE_CODE)
     return JsonResponse(get_schema_localization(request.specify_collection, 0, lang))
+
+
+SCHEMA_IMPORT_FIELDS = {
+    Splocalecontainer: {'format', 'aggregator', 'ishidden'},
+    Splocalecontaineritem: {
+        'format', 'ishidden', 'isrequired', 'picklistname', 'weblinkname',
+    },
+}
+SCHEMA_IMPORT_BOOLEAN_FIELDS = {'ishidden', 'isrequired'}
+SCHEMA_IMPORT_TABLE_KEYS = {
+    'items', 'name', 'desc', *SCHEMA_IMPORT_FIELDS[Splocalecontainer]
+}
+SCHEMA_IMPORT_REFERENCE_FIELDS = {'format', 'picklistname', 'weblinkname'}
+
+
+def _schema_import_resource_names(collection, user, resource, path):
+    result = get_app_resource(collection, user, resource)
+    if result is None:
+        return set()
+    try:
+        root = ElementTree.fromstring(result[0])
+    except ElementTree.ParseError:
+        return set()
+    return {
+        (element.get('name') or element.text or '').lower()
+        for element in root.findall(path)
+        if element.get('name') or element.text
+    }
+
+
+def _schema_import_values(data, fields, references):
+    if not isinstance(data, dict):
+        raise ValueError
+    values = {}
+    for key, value in data.items():
+        key = key.lower()
+        if key not in fields:
+            continue
+        if key in SCHEMA_IMPORT_BOOLEAN_FIELDS:
+            if type(value) is not bool:
+                raise ValueError
+        elif value is not None and not isinstance(value, str):
+            raise ValueError
+        if key in SCHEMA_IMPORT_REFERENCE_FIELDS and value is not None \
+                and value.lower() not in references[key]:
+            continue
+        values[key] = value
+    return values
+
+
+def _schema_import_string(operations, parent, parent_field, text, language, country):
+    if text is None:
+        return
+    if not isinstance(text, str):
+        raise ValueError
+    string = Splocaleitemstr.objects.filter(
+        **{parent_field: parent, 'language': language, 'country': country}
+    ).filter(Q(variant='') | Q(variant__isnull=True)).order_by('-id').first()
+    if string is None:
+        operations.append((
+            'POST', Splocaleitemstr, None,
+            {
+                'text': text,
+                'language': language,
+                'country': country,
+                parent_field: uri_for_model(parent.__class__, parent.id),
+            },
+        ))
+    elif string.text != text:
+        operations.append(('PUT', Splocaleitemstr, string, {'text': text}))
+
+
+def _schema_import_operations(collection, schema, language, references=None):
+    if not isinstance(schema, dict) or not schema:
+        raise ValueError
+    if not any(
+        isinstance(data, dict)
+        and {key.lower() for key in data}.intersection(SCHEMA_IMPORT_TABLE_KEYS)
+        for data in schema.values()
+    ):
+        raise ValueError
+    language, _, country = language.lower().partition('-')
+    references = references or {key: set() for key in SCHEMA_IMPORT_REFERENCE_FIELDS}
+    containers = {
+        container.name.lower(): container
+        for container in Splocalecontainer.objects.filter(
+            discipline_id=collection.discipline_id, schematype=0
+        )
+    }
+    operations = []
+    for table_name, table_data in schema.items():
+        container = containers.get(table_name.lower())
+        if container is None:
+            continue
+        if not isinstance(table_data, dict):
+            raise ValueError
+        values = _schema_import_values(
+            table_data, SCHEMA_IMPORT_FIELDS[Splocalecontainer], references
+        )
+        if values:
+            operations.append(('PUT', Splocalecontainer, container, values))
+        _schema_import_string(
+            operations, container, 'containername', table_data.get('name'), language, country or None
+        )
+        _schema_import_string(
+            operations, container, 'containerdesc', table_data.get('desc'), language, country or None
+        )
+        items = table_data.get('items', {})
+        if not isinstance(items, dict):
+            raise ValueError
+        current_items = {item.name.lower(): item for item in container.items.all()}
+        for item_name, item_data in items.items():
+            item = current_items.get(item_name.lower())
+            if item is None:
+                continue
+            values = _schema_import_values(
+                item_data, SCHEMA_IMPORT_FIELDS[Splocalecontaineritem], references
+            )
+            if values:
+                operations.append(('PUT', Splocalecontaineritem, item, values))
+            _schema_import_string(
+                operations, item, 'itemname', item_data.get('name'), language, country or None
+            )
+            _schema_import_string(
+                operations, item, 'itemdesc', item_data.get('desc'), language, country or None
+            )
+    return operations
+
+
+@login_maybe_required
+@require_http_methods(['POST'])
+def schema_localization_import(request):
+    try:
+        payload = json.loads(request.body)
+        schema = payload.get('schema', payload)
+        language = payload.get('language', request.LANGUAGE_CODE)
+        if not isinstance(language, str) or not re.fullmatch(
+            r'[A-Za-z]{2}(?:-[A-Za-z]{2})?', language
+        ):
+            raise ValueError
+        operations = _schema_import_operations(
+            request.specify_collection,
+            schema,
+            language,
+            {
+                'format': _schema_import_resource_names(
+                    request.specify_collection, request.specify_user,
+                    'DataObjFormatters', './/format'
+                ),
+                'picklistname': {
+                    name.lower() for name in Picklist.objects.filter(
+                        collection=request.specify_collection
+                    ).values_list('name', flat=True)
+                },
+                'weblinkname': _schema_import_resource_names(
+                    request.specify_collection, request.specify_user,
+                    'WebLinks', './/weblinkdef/name'
+                ),
+            },
+        )
+    except (AttributeError, KeyError, TypeError, ValueError, json.JSONDecodeError):
+        return HttpResponseBadRequest()
+
+    from specifyweb.specify.api.crud import post_resource, put_resource
+
+    with transaction.atomic():
+        for method, model, resource, data in operations:
+            if method == 'PUT':
+                put_resource(
+                    request.specify_collection, request.specify_user_agent,
+                    model.__name__, resource.id, resource.version, data
+                )
+            else:
+                post_resource(
+                    request.specify_collection, request.specify_user_agent,
+                    model.__name__, data
+                )
+    return JsonResponse({'updated': len(operations)})
 
 view_parameters_schema = [
     {
