@@ -1133,7 +1133,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Заменённый препарат удалить нельзя.',
     'uk-ua': 'Обмінений препарат не можна видалити',
     'hr-hr': 'Zamijenjeni pripravak ne može se izbrisati',
-    nb: 'Et utskiftet preparat kan ikke slettes',
+    nb: 'Et preparat som er gitt eller byttet bort kan ikke slettes',
   },
   deleteExchangeInPrep: {
     'en-us': 'A exchanged in preparation cannot be deleted',
@@ -1145,7 +1145,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
-    nb: 'En utveksling som er under forberedelse kan ikke slettes',
+    nb: 'Et preparat som er fått i gave eller er byttet til seg kan ikke slettes',
   },
   selectDeterminationTaxon: {
     'en-us': 'Select one taxon-tree set to continue with:',
