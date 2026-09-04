@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-04 10:38+0000\n"
+"PO-Revision-Date: 2026-09-04 11:51+0000\n"
 "Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
@@ -324,7 +324,7 @@ msgstr "Innsamlingshendelser koblet med agentene som samlet inn specimens."
 
 #. Used in: 
 msgid "AgentExchangeIn"
-msgstr "Utveksling Inn Agent"
+msgstr "Materiale-utveksling Inn Agent"
 
 #. Used in: 
 msgid "AgentExchangeIn_desc"
@@ -332,11 +332,11 @@ msgstr "Innkommende utvekslingsmateriale og agentene det ble mottatt fra."
 
 #. Used in: 
 msgid "AgentExchangeOut"
-msgstr "Utveksling Ut Agent"
+msgstr "Materiale-utveksling Ut Agent"
 
 #. Used in: 
 msgid "AgentExchangeOut_desc"
-msgstr "Utgående byttemateriale og agentene materialet ble sendt til."
+msgstr "Utgående utvekslingsmateriale og agentene materialet ble sendt til."
 
 #. Used in: 
 msgid "GeographyCE"
@@ -457,16 +457,18 @@ msgstr "Samlingsobjekter og deres bestemmelses-taksonposter."
 
 #. Used in: 
 msgid "ExchangeInCO"
-msgstr "Samlingsobjekt Bytte Inn"
+msgstr "Samlingsobjekt materiale-utveksling Inn"
 
 #. Used in: 
 msgid "ExchangeInCO_desc"
-msgstr "Innkommende bytte-materiale med samleobjekter i utvekslede preparater."
+msgstr ""
+"Innkommende utvekslingsmateriale med samleobjekter i utvekslede preparater."
 
 #. Used in: 
 msgid "ExchangeOutCO"
-msgstr "Samlingsobjekt Utveksling Ut"
+msgstr "Samlingsobjekt Materiale-utveksling Ut"
 
 #. Used in: 
 msgid "ExchangeOutCO_desc"
-msgstr "Utgående utvekslinger med samleobjekter i utvekslede preparater."
+msgstr ""
+"Utgående utvekslingsmateriale med samleobjekter i utvekslede preparater."
