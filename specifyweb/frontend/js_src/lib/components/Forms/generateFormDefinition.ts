@@ -274,6 +274,7 @@ function getFieldDefinition(
                 minLength: parser.minLength,
                 maxLength: parser.maxLength,
                 whiteSpaceSensitive: parser.whiteSpaceSensitive,
+                isSeries: false,
               }),
     },
   };
