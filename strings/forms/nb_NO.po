@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-04 07:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -726,43 +726,36 @@ msgstr "Skjemameta"
 #: components/Formatters/formatters.ts:81
 #: components/Forms/BaseResourceView.tsx:124
 #: components/Forms/dataObjFormatters.ts:160
-#, fuzzy
 msgid "newResourceTitle"
 msgstr "Ny {tableName:string}"
 
 #. 🟥When resource does not have a formatter defined, this formatter is used. Used in: Components > Formatters > Formatters ⬤ Components > Forms > Data Obj Formatters
 #: components/Formatters/formatters.ts:82
 #: components/Forms/dataObjFormatters.ts:161
-#, fuzzy
 msgid "resourceFormatter"
 msgstr "{tableName:string} #{id:number}"
 
 #. Used in: Components > Forms > Resource View
 #: components/Forms/ResourceView.tsx:225
-#, fuzzy
 msgid "resourceDeleted"
 msgstr "Ressurs slettet"
 
 #. Used in: Components > Forms > Resource View
 #: components/Forms/ResourceView.tsx:228
-#, fuzzy
 msgid "resourceDeletedDescription"
-msgstr "Elementet ble slettet."
+msgstr "Sletting av element var vellykket."
 
 #. Used in: Components > Forms > Date Range
 #: components/Forms/DateRange.tsx:53
-#, fuzzy
 msgid "dateRange"
-msgstr "(Område: {from:string}–{to:string})"
+msgstr "(Utvalg: {from:string}–{to:string})"
 
 #. 🟥Meaning "Catalog Number Numeric formatter". Used in: Components > Field Formatters > Index
 #: components/FieldFormatters/index.ts:351
-#, fuzzy
 msgid "catalogNumberNumericFormatter"
 msgstr "Katalognummer Numerisk"
 
 #. Used in: Components > Form Cells > COJODialog
 #: components/FormCells/COJODialog.tsx:94
-#, fuzzy
 msgid "addCOGChildren"
-msgstr "Legg til COG-underordnede"
+msgstr "Legg til COG-underelementer"
