@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-04 07:51+0000\n"
+"PO-Revision-Date: 2026-09-04 10:51+0000\n"
 "Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
@@ -604,7 +604,6 @@ msgstr "Automatisk nummerering etter år"
 
 #. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:203
-#, fuzzy
 msgid "autoNumber"
 msgstr "Automatisk nummerering"
 
@@ -651,7 +650,6 @@ msgstr "Skjemakonfigurasjon"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:181
-#, fuzzy
 msgid "formState"
 msgstr "Skjemastatus"
 
