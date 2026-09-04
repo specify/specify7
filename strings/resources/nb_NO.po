@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 10:51+0000\n"
-"Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
+"PO-Revision-Date: 2026-09-04 11:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -620,15 +620,13 @@ msgstr "Et kassert preparat kan ikke slettes"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:926
-#, fuzzy
 msgid "deleteExchangeOutPrep"
-msgstr "Et utskiftet preparat kan ikke slettes"
+msgstr "Et preparat som er gitt eller byttet bort kan ikke slettes"
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:934
-#, fuzzy
 msgid "deleteExchangeInPrep"
-msgstr "En utveksling som er under forberedelse kan ikke slettes"
+msgstr "Et preparat som er fått i gave eller er byttet til seg kan ikke slettes"
 
 #. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:906
