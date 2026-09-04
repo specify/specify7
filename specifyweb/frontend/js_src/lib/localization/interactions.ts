@@ -78,7 +78,7 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Для наступних записів не знайдено жодних підготовчих матеріалів:',
     'pt-br': 'Não foram encontradas preparações para os seguintes registros:',
     'hr-hr': 'Nisu pronađene pripreme za sljedeće zapise:',
-    nb: 'Ingen forberedelser ble funnet for følgende poster:',
+    nb: 'For følgende poster ble ingen preparater ble funnet:',
   },
   preparationsNotAvailableFor: {
     'en-us':
@@ -97,7 +97,7 @@ export const interactionsText = createDictionary({
       'Não há preparações disponíveis para pelo menos um tipo de preparação nos seguintes registros:',
     'hr-hr':
       'U sljedećim zapisima nisu dostupni pripravci za barem jednu vrstu pripravka:',
-    nb: 'Ingen preparater er tilgjengelige for minst én type preparat i følgende poster:',
+    nb: 'I følgende poster er ingen preparater tilgjengelige for minst én type preparat:',
   },
   problemsFound: {
     'en-us': 'There are problems with the entry:',
@@ -125,7 +125,7 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Виберіть {recordSet:string} (доступно {count:number|formatted})',
     'hr-hr':
       'Odaberite {recordSet:string} (dostupno je {count:number|formatted})',
-    nb: 'Velg en {recordSet:string} ({count:number|formatted} tilgjengelig)',
+    nb: 'Velg et {recordSet:string} ({count:number|formatted} tilgjengelig)',
   },
   byEnteringNumbers: {
     comment: `
@@ -162,7 +162,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Ohne Präparate',
     'pt-br': 'Sem preparativos',
     'hr-hr': 'Bez priprema',
-    nb: 'Uten forberedelser',
+    nb: 'Uten preparater',
   },
   continueWithoutPreparations: {
     'en-us': 'Continue without preparations',
@@ -173,7 +173,7 @@ export const interactionsText = createDictionary({
     'uk-ua': 'Продовжуйте без підготовки',
     'pt-br': 'Continuar sem preparativos',
     'hr-hr': 'Nastavite bez pripreme',
-    nb: 'Fortsett uten forberedelser',
+    nb: 'Fortsett uten preparater',
   },
   addUnassociated: {
     'en-us': 'Add unassociated item',
@@ -195,7 +195,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Präparate',
     'pt-br': 'Preparativos',
     'hr-hr': 'Pripreme',
-    nb: 'Forberedelser',
+    nb: 'Preparater',
   },
   preparationsCanNotBeReturned: {
     'en-us': 'Preparations cannot be returned in this context.',
@@ -219,7 +219,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Für dieses Ausleihe bestehen keine ungelösten Vorbereitungen.',
     'pt-br': 'Não há pendências processuais relativas a este empréstimo.',
     'hr-hr': 'Nema neriješenih priprema za ovaj kredit.',
-    nb: 'Det er ingen uavklarte forberedelser for dette lånet.',
+    nb: 'Det er ingen uavklarte preparater for dette lånet.',
   },
   unresolved: {
     'en-us': 'Unresolved',
@@ -230,7 +230,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Ungelöst',
     'pt-br': 'Não resolvido',
     'hr-hr': 'Neriješeno',
-    nb: 'Uløst',
+    nb: 'Ikke avklart',
   },
   return: {
     comment: 'Verb',
@@ -265,7 +265,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Alle Präparate zurückgeben',
     'pt-br': 'Devolva todos os preparativos.',
     'hr-hr': 'Vratite sve pripreme',
-    nb: 'Returner alle forberedelser',
+    nb: 'Returner alle preparater',
   },
   returnSelectedPreparations: {
     'en-us': 'Return selected preparations',
@@ -309,7 +309,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Ausgewählte Anzahl',
     'pt-br': 'Valor selecionado',
     'hr-hr': 'Odabrani iznos',
-    nb: 'Valgt beløp',
+    nb: 'Valgt antall',
   },
   returnedAmount: {
     'en-us': 'Returned Amount',
@@ -457,7 +457,7 @@ export const interactionsText = createDictionary({
     'ru-ru': 'Ни одна из этих записей не была подготовлена. Хотите продолжить?',
     'uk-ua': 'Жоден із цих записів не має підготовки. Бажаєте продовжити?',
     'hr-hr': 'Nijedan od ovih zapisa nema pripreme. Želite li nastaviti?',
-    nb: 'Ingen av disse postene har forberedelser. Vil du fortsette?',
+    nb: 'Ingen av disse postene har preparater. Vil du fortsette?',
   },
   continue: {
     'en-us': 'Continue',

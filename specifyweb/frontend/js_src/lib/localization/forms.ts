@@ -1172,7 +1172,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Диапазон превышает рекордный предел {limit:number}.',
     'uk-ua': 'Діапазон перевищує ліміт записів {limit:number}.',
     'hr-hr': 'Raspon premašuje ograničenje zapisa od {limit:number}.',
-    nb: 'Rekkevidden overskrider opptaksgrensen på {limit:number}.',
+    nb: 'Omfanget overskrider databasepost-grensen på {limit:number}.',
   },
   bulkCarryForwardRangeExistingRecords: {
     'en-us': 'The following numbers for {field:string} are already being used:',
@@ -1194,7 +1194,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Начало диапазона переноса',
     'uk-ua': 'Початок діапазону перенесення вперед',
     'hr-hr': 'Početak raspona prijenosa naprijed',
-    nb: 'Start av fremdriftsrekkevidde',
+    nb: 'Ta med utvalg-start videre',
   },
   bulkCarryForwardRangeEnd: {
     'en-us': 'Carry Forward Range End',
@@ -1205,7 +1205,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Конец диапазона переноса',
     'uk-ua': 'Кінець діапазону перенесення вперед',
     'hr-hr': 'Kraj raspona prijenosa naprijed',
-    nb: 'End of Carry Forward Range',
+    nb: 'Ta med utvalg-slutt videre',
   },
   createRecordSetOnBulkCarryForward: {
     'en-us': 'Create record set on Bulk Carry Forward',
@@ -1315,7 +1315,7 @@ export const formsText = createDictionary({
     'de-ch': 'Lokalisierte Feldbezeichnungen verwenden',
     'pt-br': 'Usar rótulos de campo localizados',
     'hr-hr': 'Koristite lokalizirane oznake polja',
-    nb: 'Bruk lokaliserte feltetiketter',
+    nb: 'Bruk lokal-tilpassede feltetiketter',
   },
   showFieldLabels: {
     'en-us': 'Show Localized Field Labels',
@@ -1326,7 +1326,7 @@ export const formsText = createDictionary({
     'uk-ua': 'Показати локалізовані підписи полів',
     'pt-br': 'Exibir rótulos de campo localizados',
     'hr-hr': 'Prikaži lokalizirane oznake polja',
-    nb: 'Vis lokaliserte feltetiketter',
+    nb: 'Vis lokal-tilpassede feltetiketter',
   },
   showDataModelLabels: {
     'en-us': 'Show Data Model Field Names',
@@ -1392,7 +1392,7 @@ export const formsText = createDictionary({
     'de-ch': 'Datensatzinformationen',
     'pt-br': 'Informações do registro',
     'hr-hr': 'Podaci o zapisu',
-    nb: 'Opptaksinformasjon',
+    nb: 'Databasepost informasjon',
   },
   shareRecord: {
     'en-us': 'Share Record',
@@ -1425,7 +1425,7 @@ export const formsText = createDictionary({
     'de-ch': 'Verwendungsmöglichkeiten der Auswahlliste "{pickList:string}"',
     'pt-br': 'Usos da lista de seleção "{pickList:string}"',
     'hr-hr': 'Upotreba popisa za odabir "{pickList:string}"',
-    nb: 'Bruk av valglisten «{pickList:string}»',
+    nb: 'Bruk av plukklisten «{pickList:string}»',
   },
   subForm: {
     'en-us': 'Subform',
@@ -1560,7 +1560,7 @@ export const formsText = createDictionary({
     'de-ch': 'Der Artikel wurde erfolgreich gelöscht.',
     'pt-br': 'O item foi excluído com sucesso.',
     'hr-hr': 'Stavka je uspješno izbrisana.',
-    nb: 'Elementet ble slettet.',
+    nb: 'Sletting av element var vellykket.',
   },
   dateRange: {
     'en-us': '(Range: {from:string} - {to:string})',
@@ -1571,7 +1571,7 @@ export const formsText = createDictionary({
     'de-ch': '(Bereich: {from:string} - {to:string})',
     'pt-br': '(Intervalo: {from:string} - {to:string})',
     'hr-hr': '(Raspon: {from:string} - {to:string})',
-    nb: '(Område: {from:string}–{to:string})',
+    nb: '(Utvalg: {from:string}–{to:string})',
   },
   catalogNumberNumericFormatter: {
     comment: 'Meaning "Catalog Number Numeric formatter"',
@@ -1594,6 +1594,6 @@ export const formsText = createDictionary({
     'ru-ru': 'Добавить детей COG',
     'uk-ua': 'Додати дочірні елементи COG',
     'hr-hr': 'Dodajte COG djecu',
-    nb: 'Legg til COG-underordnede',
+    nb: 'Legg til COG-underelementer',
   },
 } as const);

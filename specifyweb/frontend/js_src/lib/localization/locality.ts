@@ -162,7 +162,7 @@ export const localityText = createDictionary({
     'de-ch': '{geographyTable:string} muss kartiert werden',
     'pt-br': '{geographyTable:string} deve ser mapeado.',
     'hr-hr': '{geographyTable:string} mora biti mapiran',
-    nb: '{geographyTable:string} må kartlegges',
+    nb: '{geographyTable:string} må mappes',
   },
   geographyRequiredDescription: {
     'en-us':
@@ -202,7 +202,7 @@ export const localityText = createDictionary({
     'de-ch': 'NW-Ecke',
     'pt-br': 'Canto noroeste',
     'hr-hr': 'SZ kut',
-    nb: 'NV-hjørnet',
+    nb: 'NV-hjørne',
   },
   southEastCorner: {
     comment: 'Represents coordinates. Careful with translation',
@@ -214,7 +214,7 @@ export const localityText = createDictionary({
     'de-ch': 'SO-Ecke',
     'pt-br': 'Canto sudeste',
     'hr-hr': 'JI kut',
-    nb: 'SE Corner',
+    nb: 'SØ-hjørne',
   },
   coordinateType: {
     'en-us': 'Coordinate Type',
