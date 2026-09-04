@@ -1,3 +1,4 @@
+from decimal import Decimal
 from django.db import IntegrityError
 from django.utils import timezone
 from specifyweb.specify import models
@@ -97,3 +98,48 @@ class GiftTests(ApiTests):
         self.assertEqual(fetched_gift_agent.gift, gift)
         self.assertEqual(fetched_gift_agent.agent, new_agent)
         self.assertEqual(fetched_gift_agent.discipline, self.discipline)
+
+    def test_add_shipment_with_all_fields_to_gift(self):
+        shipment_date = timezone.now()
+
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-SHIPMENT-001',
+            discipline=self.discipline,
+        )
+
+        shipment = gift.shipments.create(
+            shipmentnumber='SHIPMENT-001',
+            shipmentdate=shipment_date,
+            shipmentmethod='Courier',
+            numberofpackages=3,
+            insuredforamount='500.00',
+            weight='12.5 kg',
+            number1=Decimal('10.25'),
+            number2=Decimal('20.50'),
+            remarks='Shipment remarks',
+            text1='Shipment text one',
+            text2='Shipment text two',
+            yesno1=True,
+            yesno2=False,
+            shipper=self.agent,
+            discipline=self.discipline,
+        )
+
+        fetched = models.Shipment.objects.get(id=shipment.id)
+
+        self.assertEqual(fetched.gift, gift)
+        self.assertEqual(fetched.shipmentnumber, 'SHIPMENT-001')
+        self.assertEqual(fetched.shipmentdate, shipment_date)
+        self.assertEqual(fetched.shipmentmethod, 'Courier')
+        self.assertEqual(fetched.numberofpackages, 3)
+        self.assertEqual(fetched.insuredforamount, '500.00')
+        self.assertEqual(fetched.weight, '12.5 kg')
+        self.assertEqual(fetched.number1, Decimal('10.25'))
+        self.assertEqual(fetched.number2, Decimal('20.50'))
+        self.assertEqual(fetched.remarks, 'Shipment remarks')
+        self.assertEqual(fetched.text1, 'Shipment text one')
+        self.assertEqual(fetched.text2, 'Shipment text two')
+        self.assertIs(fetched.yesno1, True)
+        self.assertIs(fetched.yesno2, False)
+        self.assertEqual(fetched.shipper, self.agent)
+        self.assertEqual(fetched.discipline, self.discipline)
