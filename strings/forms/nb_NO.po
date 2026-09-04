@@ -578,32 +578,27 @@ msgstr "Opprett databasepost-sett på Bulk Carry Forward"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
-#, fuzzy
 msgid "cloneButtonEnabled"
 msgstr "Vis klone-knapp"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:57
-#, fuzzy
 msgid "addButtonEnabled"
 msgstr "Vis Legg til-knappen"
 
 #. Used in: Components > Forms > Save
 #: components/Forms/Save.tsx:280
-#, fuzzy
 msgid "addButtonDescription"
 msgstr "Opprett en ny, tom post"
 
 #. Used in: Components > Form Meta > Auto Numbering
 #: components/FormMeta/AutoNumbering.tsx:27
 #: components/FormMeta/AutoNumbering.tsx:92
-#, fuzzy
 msgid "autoNumbering"
 msgstr "Automatisk nummerering"
 
 #. Used in: Components > Field Formatters > Parts
 #: components/FieldFormatters/Parts.tsx:217
-#, fuzzy
 msgid "autoNumberByYear"
 msgstr "Automatisk nummerering etter år"
 
@@ -611,7 +606,7 @@ msgstr "Automatisk nummerering etter år"
 #: components/FieldFormatters/Parts.tsx:203
 #, fuzzy
 msgid "autoNumber"
-msgstr "Automatisk nummerering"
+msgstr "Automatisk nummer"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:153
