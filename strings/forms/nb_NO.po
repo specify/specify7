@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-04 07:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -370,7 +370,6 @@ msgstr "Påkrevd format: {format:string}."
 #: utils/parser/__tests__/parse.test.ts:139
 #: utils/parser/__tests__/parse.test.ts:158
 #: utils/parser/__tests__/parse.test.ts:181
-#, fuzzy
 msgid "inputTypeNumber"
 msgstr "Verdien må være et tall"
 
@@ -553,33 +552,29 @@ msgstr "Kan ikke ta posten videre gjennom det angitte {field:string}-området."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:303
-#, fuzzy
 msgid "bulkCarryForwardRangeLimitExceeded"
-msgstr "Rekkevidden overskrider opptaksgrensen på {limit:number}."
+msgstr "Omfanget overskrider databasepost-grensen på {limit:number}."
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:295
-#, fuzzy
 msgid "bulkCarryForwardRangeExistingRecords"
 msgstr "Følgende tall for {field:string} er allerede i bruk:"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:176
-#, fuzzy
 msgid "bulkCarryForwardRangeStart"
-msgstr "Start av fremdriftsrekkevidde"
+msgstr "Ta med utvalg-start videre"
 
 #. Used in: Components > Forms > Bulk Carry Forward
 #: components/Forms/BulkCarryForward.tsx:184
-#, fuzzy
 msgid "bulkCarryForwardRangeEnd"
-msgstr "End of Carry Forward Range"
+msgstr "Ta med utvalg-slutt videre"
 
 #. Used in: Components > Form Meta > Carry Forward
 #: components/FormMeta/CarryForward.tsx:240
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
-msgstr "Opprett postsett på masseoverføring"
+msgstr "Opprett databasepost-sett på Bulk Carry Forward"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
