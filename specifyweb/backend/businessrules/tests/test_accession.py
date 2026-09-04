@@ -48,8 +48,159 @@ class AccessionTests(ApiTests):
 
         accession.collectionobjects.clear()
 
+        accession_id = accession.id
+
         accession.delete()
+
+        self.assertFalse(
+            models.Accession.objects.filter(id=accession_id).exists()
+        )
 
         self.assertEqual(
             models.Collectionobject.objects.filter(id__in=[co.id for co in self.collectionobjects]).count(),
             len(self.collectionobjects))
+
+    def test_create_accession_with_number_status_and_type(self):
+        accession = models.Accession.objects.create(
+            accessionnumber="A-8454-001",
+            status="Complete",
+            type="Gift",
+            division=self.division,
+        )
+        fetched = models.Accession.objects.get(id=accession.id)
+
+        self.assertEqual(fetched.accessionnumber, "A-8454-001")
+        self.assertEqual(fetched.status, "Complete")
+        self.assertEqual(fetched.type, "Gift")
+        self.assertEqual(fetched.division, self.division)
+
+    def test_add_existing_permit_to_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-PERMIT-001',
+            division=self.division,
+        )
+
+        permit = models.Permit.objects.create( # since ApiTests doesn't have an existing permit, we create it
+            permitnumber='P-EXISTING-001',
+            institution=self.institution,
+        )
+
+        authorization = accession.accessionauthorizations.create(
+            permit=permit,
+            remarks='Existing permit authorizations',
+        )
+
+        fetched = models.Accessionauthorization.objects.get(
+            id=authorization.id
+        )
+
+        self.assertEqual(fetched.accession, accession)
+        self.assertEqual(fetched.permit, permit)
+        self.assertEqual(fetched.remarks, 'Existing permit authorizations')
+
+    def test_add_multiple_agents_and_authorizations(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-MULTIPLE-001',
+            division=self.division,
+        )
+        agent_1 = models.Agent.objects.create(
+            agenttype=0,
+            firstname='First',
+            lastname='Agent',
+            division=self.division,
+        )
+        agent_2 = models.Agent.objects.create(
+            agenttype=0,
+            firstname='Second',
+            lastname='Agent',
+            division=self.division,
+        )
+        permit_1 = models.Permit.objects.create(
+            permitnumber='P-MULTIPLE-001',
+            institution=self.institution,
+        )
+        permit_2 = models.Permit.objects.create(
+            permitnumber='P-MULTIPLE-002',
+            institution=self.institution,
+        )
+        accession.accessionagents.create(
+            agent=agent_1,
+            role='Collector',
+        )
+        accession.accessionagents.create(
+            agent=agent_2,
+            role='Donor',
+        )
+        accession.accessionauthorizations.create(
+            permit=permit_1,
+        )
+        accession.accessionauthorizations.create(
+            permit=permit_2,
+        )
+        self.assertEqual(accession.accessionagents.count(), 2)
+        self.assertEqual(accession.accessionauthorizations.count(), 2)
+
+        agent_ids = set(accession.accessionagents.values_list('agent_id', flat=True))
+        agent_roles = dict(
+            accession.accessionagents.values_list('agent_id', 'role')
+        )
+        permit_ids = set(accession.accessionauthorizations.values_list('permit_id', flat=True))
+
+        self.assertEqual(agent_ids, {agent_1.id, agent_2.id})
+        self.assertEqual(agent_roles, {
+            agent_1.id: 'Collector',
+            agent_2.id: 'Donor',
+        })
+        self.assertEqual(permit_ids, {permit_1.id, permit_2.id})
+
+    def test_add_attachment_to_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-ATTACHMENT-001',
+            division=self.division,
+        )
+        attachment = models.Attachment.objects.create(
+            origfilename='accession_document.pdf',
+            tableid=accession.specify_model.tableId,
+            title='Accession Document',
+            mimetype='application/pdf',
+        )
+
+        accession_attachment = models.Accessionattachment.objects.create(
+            accession=accession,
+            attachment=attachment,
+            ordinal=0,
+        )
+        fetched = models.Accessionattachment.objects.get(
+            id=accession_attachment.id
+        )
+
+        self.assertEqual(accession.accessionattachments.count(), 1)
+        self.assertEqual(fetched.accession, accession)
+        self.assertEqual(fetched.attachment, attachment)
+        self.assertEqual(fetched.attachment.origfilename, 'accession_document.pdf')
+        self.assertEqual(fetched.ordinal, 0)
+
+    def test_delete_attachment_from_accession(self):
+        accession = models.Accession.objects.create(
+            accessionnumber='A-DELETE-ATTACHMENT-001',
+            division=self.division,
+        )
+        attachment = models.Attachment.objects.create(
+            origfilename='delete_me.pdf',
+            tableid=accession.specify_model.tableId,
+            title='Delete Me',
+            mimetype='application/pdf',
+        )
+        accession_attachment = models.Accessionattachment.objects.create(
+            accession=accession,
+            attachment=attachment,
+            ordinal=0,
+        )
+        attachment_id = attachment.id
+
+        accession_attachment.delete()
+
+        self.assertEqual(accession.accessionattachments.count(), 0)
+        self.assertFalse(
+            models.Attachment.objects.filter(id=attachment_id).exists()
+        )
