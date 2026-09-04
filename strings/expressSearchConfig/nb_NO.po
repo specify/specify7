@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 14:55+0000\n"
+"PO-Revision-Date: 2026-09-04 07:51+0000\n"
 "Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
@@ -133,9 +133,8 @@ msgid "noDescriptionAvailable"
 msgstr "Ingen beskrivelse tilgjengelig."
 
 #. Used in: 
-#, fuzzy
 msgid "CollObjToDeterminer"
-msgstr "TaksonsamlingObjekt"
+msgstr "Takson for samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
@@ -175,7 +174,7 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "ColObjCollectors"
-msgstr "Samleobjekter Samlere"
+msgstr "Samlere for samlingsobjekt"
 
 #. Used in: 
 msgid "ColObjCollectors_desc"
@@ -184,9 +183,8 @@ msgstr ""
 "innsamlingshendelser."
 
 #. Used in: 
-#, fuzzy
 msgid "AcceptedTaxon"
-msgstr "Takson Foretrukket takson"
+msgstr "Taksonnavn for foretrukket takson"
 
 #. Used in: 
 msgid "AcceptedTaxon_desc"
@@ -195,9 +193,8 @@ msgstr ""
 "lenker til aksepterte taksoner."
 
 #. Used in: 
-#, fuzzy
 msgid "SynonymCollObjs"
-msgstr "Samlingsobjekt Foretrukket takson"
+msgstr "Samlingsobjekt for foretrukket takson"
 
 #. Used in: 
 msgid "SynonymCollObjs_desc"
@@ -206,26 +203,22 @@ msgstr ""
 "foretrukket taksonnavn."
 
 #. Used in: 
-#, fuzzy
 msgid "OtherSynsCollObjs"
-msgstr "Samlingsobjekttakson (alle synonymer)"
+msgstr "Takson for samlingsobjekt (alle synonymer)"
 
 #. Used in: 
-#, fuzzy
 msgid "OtherSynsCollObjs_desc"
 msgstr ""
-"Samlingsobjekter som viser bestemmelser, foretrukne taksonnavn og aksepterte "
-"synonyme barnenavn."
+"Samlingsobjekter med visning av bestemmelser, foretrukne taksonnavn og "
+"aksepterte synonyme barnenavn."
 
 #. Used in: 
-#, fuzzy
 msgid "CurrCollObject"
-msgstr "Samlingsobjekttakson (bestemt)"
+msgstr "Takson for samlingsobjekt (bestemmelse)"
 
 #. Used in: 
-#, fuzzy
 msgid "CurrCollObject_desc"
-msgstr "Kun samlingsobjekter med gjeldende taksonbestemmelse."
+msgstr "Samlingsobjekter, men kun med gjeldende taksonbestemmelse."
 
 #. Used in: 
 #, fuzzy
@@ -312,17 +305,16 @@ msgstr "Låner og agentene som er koblet sammen gjennom låneagentrollene."
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent"
-msgstr "Agentvurdering"
+msgstr "Vurdering av agent"
 
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent_desc"
-msgstr "Takseringer og deres tilknyttede agenter."
+msgstr "Vurderinger og agenter assosiert med dem."
 
 #. Used in: 
-#, fuzzy
 msgid "GeoTimePeriodToCO"
-msgstr "Samlingsobjekt Kronostratigrafi"
+msgstr "Kronostratigrafi for samlingsobjekt"
 
 #. Used in: 
 #, fuzzy
@@ -334,17 +326,17 @@ msgstr ""
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors"
-msgstr "Samler SamlingHendelse"
+msgstr "Innsamlingshendelse for samler"
 
 #. Used in: 
 #, fuzzy
 msgid "CollEventToCollectors_desc"
-msgstr "Innsamlingsarrangementer parret med agentene som samlet inn prøver."
+msgstr "Innsamlingshendelser og agentene som samlet inn specimens."
 
 #. Used in: 
 #, fuzzy
 msgid "AgentExchangeIn"
-msgstr "Bytte inn agent"
+msgstr "Bytte av agent"
 
 #. Used in: 
 msgid "AgentExchangeIn_desc"
@@ -382,7 +374,7 @@ msgstr "Samlingsobjekt som gave"
 #. Used in: 
 #, fuzzy
 msgid "GiftCO_desc"
-msgstr "Gaver med samleobjektene knyttet til preparerte gaver."
+msgstr "Gaver med samlingsobjektene knyttet til preparerte gaver."
 
 #. Used in: 
 msgid "GiftAgent"
@@ -398,14 +390,13 @@ msgid "LoanCO"
 msgstr "Utlån av samlingsobjekt"
 
 #. Used in: 
-#, fuzzy
 msgid "LoanCO_desc"
-msgstr "Utlån med samlingsobjektene per preparat."
+msgstr "Utlån med samlingsobjektene og type preparat."
 
 #. Used in: 
 #, fuzzy
 msgid "LoanAgent"
-msgstr "Agentlån"
+msgstr "Agent som har lånt"
 
 #. Used in: 
 #, fuzzy
