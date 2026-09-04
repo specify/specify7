@@ -589,6 +589,39 @@ class BoundTreeRecord(NamedTuple):
     def process_row(self) -> UploadResult:
         return self._handle_row(must_match=False)
 
+    # REFACTOR: better integrate this with WorkBench/BatchEdit
+    # This "hacky" solution was needed for a bug in BatchEdit
+    # See https://github.com/specify/specify7/issues/8470
+    # This initial approach was taken because:
+    # 1. This is very isolated from other areas of BatchEdit and WorkBench
+    #    (e.g., smaller bug surface area)
+    # 2. The amount of extra work for Specify and the database is relatively
+    #    minimal and this should perform somewhat similarly to the prior
+    #    implementation. (Assuming the field lookup for tree_node_id is cached
+    #    for the following _field_changed call in BoundUpdateTable).
+    #
+    # This approach is not as maintainable though, as it introduces more
+    # complexity into BatchEdit as a hyper specific case, and there's more
+    # contextual overhead for this function and the caller as both have to
+    # agree on what tree_node_id should be.
+    # Ideally this should be integregated better into the native matching
+    # behavior for tree records.
+    def process_with_exising(self, tree_node_id: int | None) -> UploadResult:
+        processed = self.process_row()
+        # We first check if the row can be resolved to an existing Tree node,
+        # or a new Tree node should be created
+        # If the row can not be resolved to a Tree node because there is no
+        # data, then we check if the passed-in record has some value for the
+        # relationship.
+        # If the row can't be resolved but the record does have data through
+        # the relationship, then just indicate a match against the exisitng
+        # record which presumably isn't present in the BatchEdit Data Set.
+        if isinstance(processed.record_result, NullRecord) and tree_node_id is not None:
+            columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
+            info = ReportInfo(tableName=self.name, columns=columns, treeInfo=None)
+            return UploadResult(Matched(id=tree_node_id, info=info), {}, {})
+        return processed
+
     def save_row(self, force=False) -> UploadResult:
         raise NotImplementedError()
 
