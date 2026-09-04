@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-04 10:38+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -172,9 +172,8 @@ msgstr ""
 "samlingsobjekter og innsamling av hendelseslokaliteter."
 
 #. Used in: 
-#, fuzzy
 msgid "ColObjCollectors"
-msgstr "Samlere for samlingsobjekt"
+msgstr "Samlere for samlingsobjekter"
 
 #. Used in: 
 msgid "ColObjCollectors_desc"
@@ -221,9 +220,8 @@ msgid "CurrCollObject_desc"
 msgstr "Samlingsobjekter, men kun med gjeldende taksonbestemmelse."
 
 #. Used in: 
-#, fuzzy
 msgid "AgentFromAgentVariant"
-msgstr "Agent Agentvariant"
+msgstr "Agent Agent variant"
 
 #. Used in: 
 msgid "AgentFromAgentVariant_desc"
@@ -250,9 +248,8 @@ msgid "LocalityAlias"
 msgstr "Lokalitet Lokalitet alias"
 
 #. Used in: 
-#, fuzzy
 msgid "LocalityAlias_desc"
-msgstr "Lokalitetsoppføringer med tilhørende lokalitetsnavnaliaser."
+msgstr "Lokalitetsposter med tilhørende lokalitetsnavn-aliaser."
 
 #. Used in: 
 msgid "CEToCO"
@@ -267,15 +264,14 @@ msgid "LocToCO"
 msgstr "Lokalitet for samlingsobjektet"
 
 #. Used in: 
-#, fuzzy
 msgid "LocToCO_desc"
 msgstr ""
-"Lokaliteter og samlingsobjektene som ble funnet på samlearrangementene deres."
+"Lokaliteter og samlingsobjektene som ble funnet på deres "
+"innsamlingshendelser."
 
 #. Used in: 
-#, fuzzy
 msgid "AccessionToCo"
-msgstr "Tilgang til samlingsobjekt"
+msgstr "Samlingsobjekt aksesjon"
 
 #. Used in: 
 msgid "AccessionToCo_desc"
@@ -283,24 +279,20 @@ msgstr ""
 "Aksesjoner og deres samlingsobjekter, filtrert til gjeldende bestemmelser."
 
 #. Used in: 
-#, fuzzy
 msgid "AccessionToAgent"
-msgstr "Agenttiltredelse"
+msgstr "Agent aksesjon"
 
 #. Used in: 
-#, fuzzy
 msgid "AccessionToAgent_desc"
-msgstr "Tiltredelser og agentene som er tilknyttet via tiltredelsesagentroller."
+msgstr "Aksesjoner og agentene som er tilknyttet via aksesjons agent-roller."
 
 #. Used in: 
-#, fuzzy
 msgid "BorrowToAgent"
-msgstr "Agent Lån"
+msgstr "Agent Innlån"
 
 #. Used in: 
-#, fuzzy
 msgid "BorrowToAgent_desc"
-msgstr "Låner og agentene som er koblet sammen gjennom låneagentrollene."
+msgstr "Innlån og agentene som er koblet sammen gjennom låneagentrollene."
 
 #. Used in: 
 #, fuzzy
@@ -317,34 +309,30 @@ msgid "GeoTimePeriodToCO"
 msgstr "Kronostratigrafi for samlingsobjekt"
 
 #. Used in: 
-#, fuzzy
 msgid "GeoTimePeriodToCO_desc"
 msgstr ""
-"Geologiske tidsperioder med samlingsobjekter knyttet sammen gjennom "
+"Geologiske tidsperioder med samlingsobjekter knyttet til disse gjennom "
 "kronostratigrafiske kontekster."
 
 #. Used in: 
-#, fuzzy
 msgid "CollEventToCollectors"
-msgstr "Innsamlingshendelse for samler"
+msgstr "Innsamler innsamlingshendelse"
 
 #. Used in: 
-#, fuzzy
 msgid "CollEventToCollectors_desc"
-msgstr "Innsamlingshendelser og agentene som samlet inn specimens."
+msgstr "Innsamlingshendelser koblet med agentene som samlet inn specimens."
 
 #. Used in: 
-#, fuzzy
 msgid "AgentExchangeIn"
-msgstr "Bytte av agent"
+msgstr "Utveksling Inn Agent"
 
 #. Used in: 
 msgid "AgentExchangeIn_desc"
-msgstr "Innkommende byttemateriale og agentene det ble mottatt fra."
+msgstr "Innkommende utvekslingsmateriale og agentene det ble mottatt fra."
 
 #. Used in: 
 msgid "AgentExchangeOut"
-msgstr "Utgående gaver til agent"
+msgstr "Utveksling Ut Agent"
 
 #. Used in: 
 msgid "AgentExchangeOut_desc"
@@ -372,16 +360,14 @@ msgid "GiftCO"
 msgstr "Samlingsobjekt som gave"
 
 #. Used in: 
-#, fuzzy
 msgid "GiftCO_desc"
-msgstr "Gaver med samlingsobjektene knyttet til preparerte gaver."
+msgstr "Gaver med samlingsobjektene knyttet til gave-preparater."
 
 #. Used in: 
 msgid "GiftAgent"
-msgstr "Gave til agent"
+msgstr "Agent Gave"
 
 #. Used in: 
-#, fuzzy
 msgid "GiftAgent_desc"
 msgstr "Gaver og agentene knyttet til disse gavene."
 
@@ -391,118 +377,96 @@ msgstr "Utlån av samlingsobjekt"
 
 #. Used in: 
 msgid "LoanCO_desc"
-msgstr "Utlån med samlingsobjektene og type preparat."
+msgstr "Utlån med samlingsobjektene på låne-preparater"
 
 #. Used in: 
-#, fuzzy
 msgid "LoanAgent"
-msgstr "Agent som har lånt"
+msgstr "Agent Utlån"
 
 #. Used in: 
-#, fuzzy
 msgid "LoanAgent_desc"
-msgstr "Lån og agentene som er involvert gjennom låneagentrollene."
+msgstr "Utlån og agentene som er involvert gjennom utlåns-agentrollene."
 
 #. Used in: 
-#, fuzzy
 msgid "LithoStratToCO"
 msgstr "Samlingsobjekt Litostratigrafi"
 
 #. Used in: 
-#, fuzzy
 msgid "LithoStratToCO_desc"
 msgstr ""
 "Litostratigrafiske enheter og samlingsobjekter assosiert gjennom "
 "paleokontekstforhold."
 
 #. Used in: 
-#, fuzzy
 msgid "PermitToCO"
-msgstr "Tillatelse til samling av objekter"
+msgstr "Samlingsobjekt tillatelse"
 
 #. Used in: 
-#, fuzzy
 msgid "PermitToCO_desc"
 msgstr ""
-"Tillatelser og samlingsobjekter knyttet gjennom "
-"tiltredelsesautorisasjonsforhold."
+"Tillatelser og samlingsobjekter knyttet til disse gjennom auorisasjons-"
+"relasjoner."
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedToAgent"
-msgstr "Agent utstedt for å tillatelse"
+msgstr "Agent Utstedt til Tillatelse"
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedToAgent_desc"
 msgstr "Tillatelser og agentene de ble utstedt til."
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedByAgent"
-msgstr "Agent utstedt med tillatelse"
+msgstr "Agent Utstedt av Tillatelse"
 
 #. Used in: 
-#, fuzzy
 msgid "PermitIssuedByAgent_desc"
 msgstr "Tillatelser og agentene som utstedte dem."
 
 #. Used in: 
-#, fuzzy
 msgid "ProjectAgent"
-msgstr "Agentprosjekt"
+msgstr "Agent Prosjekt"
 
 #. Used in: 
-#, fuzzy
 msgid "ProjectAgent_desc"
 msgstr "Prosjekter og deres tildelte agenter."
 
 #. Used in: 
-#, fuzzy
 msgid "RepoAgreeAgent"
-msgstr "Avtale for agentlager"
+msgstr "Agent Depot Avtale"
 
 #. Used in: 
-#, fuzzy
 msgid "RepoAgreeAgent_desc"
-msgstr "Lagringsavtaler og deres opprinnelsesagenter."
+msgstr "Depot avtaler og deres opprinnnelige agenter."
 
 #. Used in: 
-#, fuzzy
 msgid "StorageCO"
-msgstr "Lagring av samlingsobjekter"
+msgstr "Samlingsobjekt Lagring"
 
 #. Used in: 
-#, fuzzy
 msgid "StorageCO_desc"
 msgstr "Samlingsobjekter og deres lagringssteder."
 
 #. Used in: 
-#, fuzzy
 msgid "TaxCollObject"
 msgstr "Samlingsobjekt Takson"
 
 #. Used in: 
-#, fuzzy
 msgid "TaxCollObject_desc"
-msgstr "Samlingsobjekter og deres bestemmelsestaksonposter."
+msgstr "Samlingsobjekter og deres bestemmelses-taksonposter."
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeInCO"
-msgstr "Utveksling av samlingsobjekt i"
+msgstr "Samlingsobjekt Bytte Inn"
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeInCO_desc"
-msgstr "Innkommende utvekslinger med samleobjekter i utvekslede preparater."
+msgstr "Innkommende bytte-materiale med samleobjekter i utvekslede preparater."
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeOutCO"
-msgstr "Samling Objektbytte Ut"
+msgstr "Samlingsobjekt Utveksling Ut"
 
 #. Used in: 
-#, fuzzy
 msgid "ExchangeOutCO_desc"
 msgstr "Utgående utvekslinger med samleobjekter i utvekslede preparater."
