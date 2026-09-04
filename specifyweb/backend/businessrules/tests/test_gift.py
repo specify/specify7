@@ -64,3 +64,36 @@ class GiftTests(ApiTests):
         self.assertEqual(fetched.agent, self.agent)
         self.assertEqual(fetched.role, 'Recipient')
         self.assertEqual(fetched.discipline, self.discipline)
+
+    def test_create_new_agent_for_gift(self):
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-NEW-AGENT-001',
+            discipline=self.discipline,
+        )
+
+        new_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='New',
+            lastname='Gift Agent',
+            division=self.division,
+        )
+
+        gift_agent = models.Giftagent.objects.create(
+            gift=gift,
+            agent=new_agent,
+            role='Recipient',
+            discipline=self.discipline,
+        )
+
+        fetched_agent = models.Agent.objects.get(id=new_agent.id)
+        fetched_gift_agent = models.Giftagent.objects.get(id=gift_agent.id)
+
+        self.assertEqual(fetched_agent.firstname, 'New')
+        self.assertEqual(fetched_agent.lastname, 'Gift Agent')
+        self.assertEqual(fetched_agent.agenttype, 0)
+        self.assertEqual(fetched_agent.division, self.division)
+
+        self.assertEqual(fetched_gift_agent.role, 'Recipient')
+        self.assertEqual(fetched_gift_agent.gift, gift)
+        self.assertEqual(fetched_gift_agent.agent, new_agent)
+        self.assertEqual(fetched_gift_agent.discipline, self.discipline)
