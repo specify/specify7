@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-04 07:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -574,7 +574,7 @@ msgstr "Ta med utvalg-slutt videre"
 #: components/FormMeta/CarryForward.tsx:240
 #, fuzzy
 msgid "createRecordSetOnBulkCarryForward"
-msgstr "Opprett databasepost-sett på Bulk Carry Forward"
+msgstr "Opprett postsett på masseoverføring"
 
 #. Used in: Components > Form Meta > Clone
 #: components/FormMeta/Clone.tsx:31
@@ -606,7 +606,7 @@ msgstr "Automatisk nummerering etter år"
 #: components/FieldFormatters/Parts.tsx:203
 #, fuzzy
 msgid "autoNumber"
-msgstr "Automatisk nummer"
+msgstr "Automatisk nummerering"
 
 #. Used in: Components > Form Meta > Definition
 #: components/FormMeta/Definition.tsx:153
@@ -653,7 +653,7 @@ msgstr "Skjemakonfigurasjon"
 #: components/FormMeta/index.tsx:181
 #, fuzzy
 msgid "formState"
-msgstr "Skjema tilstand"
+msgstr "Skjemastatus"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:230
