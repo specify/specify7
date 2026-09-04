@@ -289,7 +289,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Objeto de colección de taxones',
     'fr-fr': "Taxon lié à l'objet",
     'hr-hr': 'Zbirka taksona Objekt',
-    nb: 'TaksonsamlingObjekt',
+    nb: 'Takson for samlingsobjekt',
     'pt-br': 'Objeto de Coleção Taxon',
     'ru-ru': 'Объект коллекции таксонов',
     'uk-ua': "Колекція таксонів Об'єкт",
@@ -401,7 +401,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Coleccionistas de objetos',
     'fr-fr': 'Collecteurs',
     'hr-hr': 'Kolekcionari objekata kolekcija',
-    nb: 'Samleobjekter Samlere',
+    nb: 'Samlere for samlingsobjekt',
     'pt-br': 'Colecionadores de Objetos de Coleção',
     'ru-ru': 'Коллекционеры предметов',
     'uk-ua': "Колекціонери об'єктів колекцій",
@@ -431,7 +431,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Taxón Taxón preferido',
     'fr-fr': 'Détermination actuelle',
     'hr-hr': 'Takson Preferirani takson',
-    nb: 'Takson Foretrukket takson',
+    nb: 'Taksonnavn for foretrukket takson',
     'pt-br': 'Táxon Táxon Preferencial',
     'ru-ru': 'Предпочитаемый таксон',
     'uk-ua': 'Таксон Бажаний таксон',
@@ -461,7 +461,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Taxón preferido del objeto de la colección',
     'fr-fr': "Détermination actuelle de l'objet",
     'hr-hr': 'Preferirani takson objekta zbirke',
-    nb: 'Samlingsobjekt Foretrukket takson',
+    nb: 'Samlingsobjekt for foretrukket takson',
     'pt-br': 'Objeto de coleção Taxon preferencial',
     'ru-ru': 'Предпочтительный таксон для объекта коллекции',
     'uk-ua': "Бажаний таксон об'єкта колекції",
@@ -491,7 +491,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Taxonomía de objetos de colección (todos los sinónimos)',
     'fr-fr': 'Objets et leurs taxons (tous les synonymes)',
     'hr-hr': 'Takson objekta zbirke (svi sinonimi)',
-    nb: 'Samlingsobjekttakson (alle synonymer)',
+    nb: 'Takson for samlingsobjekt (alle synonymer)',
     'pt-br': 'Taxonomia de Objetos de Coleção (todos os sinônimos)',
     'ru-ru': 'Таксон объектов коллекции (все синонимы)',
     'uk-ua': "Таксон об'єкта колекції (усі синоніми)",
@@ -507,7 +507,7 @@ export const expressSearchConfigText = createDictionary({
       'Objets avec déterminations, noms de taxons préférés et synonymes acceptés.',
     'hr-hr':
       'Objekti kolekcije koji prikazuju determinacije, preferirana imena taksona i prihvaćena imena sinonimne djece.',
-    nb: 'Samlingsobjekter som viser bestemmelser, foretrukne taksonnavn og aksepterte synonyme barnenavn.',
+    nb: 'Samlingsobjekter med visning av bestemmelser, foretrukne taksonnavn og aksepterte synonyme barnenavn.',
     'pt-br':
       'Objetos da coleção que mostram determinações, nomes de táxons preferenciais e nomes de sinônimos aceitos para os táxons filhos.',
     'ru-ru':
@@ -521,7 +521,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Taxón del objeto de la colección (determinado)',
     'fr-fr': "Taxon de l'objet (déterminé)",
     'hr-hr': 'Takson objekta zbirke (određen)',
-    nb: 'Samlingsobjekttakson (bestemt)',
+    nb: 'Takson for samlingsobjekt (bestemmelse)',
     'pt-br': 'Taxonomia do objeto da coleção (determinada)',
     'ru-ru': 'Таксон объекта коллекции (определен)',
     'uk-ua': "Таксон об'єкта колекції (визначений)",
@@ -533,7 +533,7 @@ export const expressSearchConfigText = createDictionary({
       'Solo se incluyen en la colección los objetos con su determinación taxonómica actual.',
     'fr-fr': 'Objets  avec leur détermination actuelle uniquement.',
     'hr-hr': 'Zbirni objekti samo s trenutnim određivanjem taksona.',
-    nb: 'Kun samlingsobjekter med gjeldende taksonbestemmelse.',
+    nb: 'Samlingsobjekter, men kun med gjeldende taksonbestemmelse.',
     'pt-br':
       'Objetos da coleção contendo apenas a sua classificação taxonômica atual.',
     'ru-ru':
@@ -780,7 +780,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Tasación del agente',
     'fr-fr': "Évaluation de l'agent",
     'hr-hr': 'Procjena agenta',
-    nb: 'Agentvurdering',
+    nb: 'Vurdering av agent',
     'pt-br': 'Avaliação do agente',
     'ru-ru': 'Оценка агента',
     'uk-ua': 'Оцінка агента',
@@ -791,7 +791,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Las tasaciones y sus agentes asociados.',
     'fr-fr': 'Les évaluations et leurs agents associés.',
     'hr-hr': 'Procjene i njihovi povezani agenti.',
-    nb: 'Takseringer og deres tilknyttede agenter.',
+    nb: 'Vurderinger og agenter assosiert med dem.',
     'pt-br': 'Avaliações e seus respectivos agentes.',
     'ru-ru': 'Оценочные компании и связанные с ними агенты.',
     'uk-ua': "Оцінки та пов'язані з ними агенти.",
@@ -802,7 +802,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Cronoestratigrafía de objetos de colección',
     'fr-fr': 'Chronostratigraphie des objets',
     'hr-hr': 'Kronostratigrafija zbirke objekata',
-    nb: 'Samlingsobjekt Kronostratigrafi',
+    nb: 'Kronostratigrafi for samlingsobjekt',
     'pt-br': 'Cronoestratigrafia de objetos da coleção',
     'ru-ru': 'Коллекция «Хроностратиграфия»',
     'uk-ua': "Хроностратиграфія колекційних об'єктів",
@@ -832,7 +832,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Evento de colección del coleccionista',
     'fr-fr': 'Collecteurs et événements de collecte',
     'hr-hr': 'KolekcionarSakupljanjeDogađaj',
-    nb: 'Samler SamlingHendelse',
+    nb: 'Innsamlingshendelse for samler',
     'pt-br': 'Colecionador ColecionandoEvento',
     'ru-ru': 'Collector CollectorEvent',
     'uk-ua': 'Колекціонер CollectingEvent',
@@ -847,7 +847,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Événements de collecte associés aux agents collecteurs',
     'hr-hr':
       'Događaji prikupljanja upareni s agentima koji su prikupljali uzorke.',
-    nb: 'Innsamlingsarrangementer parret med agentene som samlet inn prøver.',
+    nb: 'Innsamlingshendelser og agentene som samlet inn specimens.',
     'pt-br':
       'Coletando eventos relacionados aos agentes que coletaram as amostras.',
     'ru-ru':
@@ -860,7 +860,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Intercambio en el agente',
     'fr-fr': "Agents responsable de l'échange entrant",
     'hr-hr': 'Agent za zamjenu',
-    nb: 'Bytte inn agent',
+    nb: 'Bytte av agent',
     'pt-br': 'Troca no Agente',
     'ru-ru': 'Агент по обмену',
     'uk-ua': 'Агент обміну',
@@ -978,7 +978,7 @@ export const expressSearchConfigText = createDictionary({
     'fr-fr': 'Dons objets et préparations associées',
     'hr-hr':
       'Pokloni s predmetima za sakupljanje priloženim uz pripreme poklona.',
-    nb: 'Gaver med samleobjektene knyttet til preparerte gaver.',
+    nb: 'Gaver med samlingsobjektene knyttet til preparerte gaver.',
     'pt-br':
       'Presentes com objetos de coleção anexados às embalagens de presentes.',
     'ru-ru':
@@ -1027,7 +1027,7 @@ export const expressSearchConfigText = createDictionary({
       'Préstamos con los objetos de la colección en preparación de préstamos.',
     'fr-fr': 'Prêts associés aux objets et à leurs préparations',
     'hr-hr': 'Krediti s predmetima naplate na pripremi kredita.',
-    nb: 'Utlån med samlingsobjektene per preparat.',
+    nb: 'Utlån med samlingsobjektene og type preparat.',
     'pt-br':
       'Empréstimos com objetos de cobrança em preparativos de empréstimo.',
     'ru-ru':
@@ -1040,7 +1040,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Préstamo de agente',
     'fr-fr': 'Agents prêteur',
     'hr-hr': 'Zajam agenta',
-    nb: 'Agentlån',
+    nb: 'Agent som har lånt',
     'pt-br': 'Empréstimo do agente',
     'ru-ru': 'Агентский кредит',
     'uk-ua': 'Агентський кредит',
