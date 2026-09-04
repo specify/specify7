@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-04 07:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/forms/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -662,64 +662,54 @@ msgstr "Databasepost informasjon"
 
 #. Used in: Components > Form Meta > Share Record
 #: components/FormMeta/ShareRecord.tsx:44
-#, fuzzy
 msgid "shareRecord"
 msgstr "Del post"
 
 #. Used in: Components > Form Meta > Pick List Usages ⬤ Components > Form Meta > Query Tree Usages
 #: components/FormMeta/PickListUsages.tsx:26
 #: components/FormMeta/QueryTreeUsages.tsx:22
-#, fuzzy
 msgid "findUsages"
 msgstr "Finn bruksområder"
 
 #. Used in: Components > Form Meta > Pick List Usages
 #: components/FormMeta/PickListUsages.tsx:68
-#, fuzzy
 msgid "usagesOfPickList"
-msgstr "Bruk av valglisten «{pickList:string}»"
+msgstr "Bruk av plukklisten «{pickList:string}»"
 
 #. Used in: Components > Form Meta > Sub View Meta
 #: components/FormMeta/SubViewMeta.tsx:36
-#, fuzzy
 msgid "subForm"
 msgstr "Delskjema"
 
 #. Used in: Components > Form Meta > Sub View Meta ⬤ Components > Preferences > User Definitions
 #: components/FormMeta/SubViewMeta.tsx:37
 #: components/Preferences/UserDefinitions.tsx:1240
-#, fuzzy
 msgid "formTable"
 msgstr "Rutenett"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:199
-#, fuzzy
 msgid "subviewConfiguration"
 msgstr "Delvisning"
 
 #. Used in: Components > Form Meta > Read Only Mode ⬤ Components > Header > User Tools
 #: components/FormMeta/ReadOnlyMode.tsx:20
 #: components/Header/UserTools.tsx:91
-#, fuzzy
 msgid "disableReadOnly"
 msgstr "Deaktiver skrivebeskyttet modus"
 
 #. Used in: Components > Form Meta > Read Only Mode
 #: components/FormMeta/ReadOnlyMode.tsx:20
-#, fuzzy
 msgid "enableReadOnly"
 msgstr "Aktiver skrivebeskyttet modus"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:75
-#, fuzzy
 msgid "configureDataEntryTables"
 msgstr "Konfigurer datainntastingstabeller"
 
 #. Used in: Components > Data Entry Tables > Edit
 #: components/DataEntryTables/Edit.tsx:76
-#, fuzzy
 msgid "configureInteractionTables"
 msgstr "Konfigurer interaksjonstabeller"
 
@@ -728,7 +718,7 @@ msgstr "Konfigurer interaksjonstabeller"
 #: components/FormMeta/index.tsx:70
 #, fuzzy
 msgid "formMeta"
-msgstr "Skjemameta"
+msgstr "Skjema meta"
 
 #. Used in: Components > App Resources > Create ⬤ Components > App Resources > Editor ⬤ Components > Formatters > Formatters ⬤ Components > Forms > Base Resource View ⬤ Components > Forms > Data Obj Formatters
 #: components/AppResources/Create.tsx:287
