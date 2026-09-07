@@ -214,7 +214,10 @@ function LoadedDataViewFromTable({
                 if (isSavingQuery) return;
                 setIsSavingQuery(true);
                 saveUserDataViewQueries(queryData, tableName)
-                  .then(reloadQueries)
+                  .then(() => {
+                    setRuntimeFields(undefined);
+                    reloadQueries();
+                  })
                   .then(handleCloseQueryEditor)
                   .catch(raise)
                   .finally(() => setIsSavingQuery(false));
