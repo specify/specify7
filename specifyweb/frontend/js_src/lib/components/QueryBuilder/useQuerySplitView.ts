@@ -52,18 +52,28 @@ export function useQuerySplitView(
     splitViewOrientation === 'horizontal'
   );
 
+  const selectFirstResult = React.useCallback((): boolean => {
+    const firstId = resultsRef.current?.find(
+      (result) => result !== undefined
+    )?.[queryIdField];
+    if (typeof firstId !== 'number') return false;
+    setSelectedRows(new Set([firstId]));
+    setSelectedIndex(0);
+    return true;
+  }, [resultsRef]);
+
+  React.useEffect(() => {
+    if (!isSplit || selectedRows.size > 0 || selectFirstResult()) return;
+    const interval = setInterval(() => {
+      if (selectFirstResult()) clearInterval(interval);
+    }, 200);
+    return (): void => clearInterval(interval);
+  }, [isSplit, selectedRows.size, selectFirstResult]);
+
   const toggleSplit = (): void => {
     const nextIsSplit = !isSplit;
     setIsSplit(nextIsSplit);
-    if (nextIsSplit && selectedRows.size === 0) {
-      const firstId = resultsRef.current?.find(
-        (result) => result !== undefined
-      )?.[queryIdField];
-      if (typeof firstId === 'number') {
-        setSelectedRows(new Set([firstId]));
-        setSelectedIndex(0);
-      }
-    }
+    if (nextIsSplit && selectedRows.size === 0) selectFirstResult();
   };
   return {
     selectedRows,
