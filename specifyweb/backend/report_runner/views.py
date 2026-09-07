@@ -1,4 +1,5 @@
 import json
+import xml.etree.ElementTree as ET
 
 import requests
 from django.conf import settings
@@ -24,6 +25,54 @@ from specifyweb.backend.stored_queries.queryfield import QueryField
 
 class ReportException(Exception):
     pass
+
+
+_JASPER_NS = 'http://jasperreports.sourceforge.net/jasperreports'
+# jrxml property that opts a report into per-row label repetition.
+# Set its value to the field name whose integer value controls how many
+# times each row should be repeated, e.g.:
+#   <property name="specify.repeat.count.field"
+#             value="1,63-preparations.preparation.countAmt"/>
+_REPEAT_COUNT_PROPERTY = 'specify.repeat.count.field'
+
+
+def _expand_rows_for_repeat_count(report_jrxml, report_data):
+    """Duplicate rows according to a repeat-count field declared in the jrxml.
+
+    If the jrxml does not declare the ``specify.repeat.count.field`` property,
+    or the named field is not present in the result set, the data is returned
+    unchanged.  This restores the Specify 6 behaviour where a label could be
+    printed N times based on an integer preparation field (e.g. countAmt).
+    """
+    try:
+        root = ET.fromstring(report_jrxml)
+    except ET.ParseError:
+        return report_data
+
+    repeat_field = next(
+        (p.get('value') for p in root.findall('{%s}property' % _JASPER_NS)
+         if p.get('name') == _REPEAT_COUNT_PROPERTY),
+        None,
+    )
+
+    if not repeat_field:
+        return report_data
+
+    fields = report_data['fields']
+    if repeat_field not in fields:
+        return report_data
+
+    idx = fields.index(repeat_field)
+    expanded = []
+    for row in report_data['rows']:
+        try:
+            count = max(1, int(row[idx]))
+        except (TypeError, ValueError):
+            count = 1
+        expanded.extend([row] * count)
+
+    return {'fields': fields, 'rows': expanded}
+
 
 class ReportsPT(PermissionTarget):
     resource = "/report"
@@ -53,6 +102,8 @@ def run(request):
     report_data = run_query(request.specify_collection, request.specify_user, request.POST['query'])
     if len(report_data['rows']) < 1:
         return HttpResponse(_("The report query returned no results."), content_type="text/plain")
+
+    report_data = _expand_rows_for_repeat_count(request.POST['report'], report_data)
 
     r = requests.post("http://%s:%s/report" %
                       (settings.REPORT_RUNNER_HOST, port),

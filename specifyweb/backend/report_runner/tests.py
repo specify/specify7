@@ -3,6 +3,7 @@ from unittest.mock import Mock, patch
 
 from django.test import Client, override_settings
 
+from specifyweb.backend.report_runner.views import _expand_rows_for_repeat_count
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
     get_simple_query,
 )
@@ -178,3 +179,76 @@ class TestCreateLabel(SQLAlchemySetup):
             '1.collectionobject.catalogNumber',
             label_data.get_decoded_data(),
         )
+
+
+_JASPER_NS = 'http://jasperreports.sourceforge.net/jasperreports'
+
+def _make_jrxml(repeat_field=None):
+    """Build a minimal jrxml string, optionally with a repeat-count property."""
+    prop = (
+        f'<property xmlns="{_JASPER_NS}" name="specify.repeat.count.field"'
+        f' value="{repeat_field}"/>'
+        if repeat_field else ''
+    )
+    return (
+        f'<jasperReport xmlns="{_JASPER_NS}">'
+        f'{prop}'
+        f'</jasperReport>'
+    )
+
+
+class TestExpandRowsForRepeatCount(ApiTests):
+
+    def _data(self, rows):
+        return {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': rows,
+        }
+
+    def test_no_property_returns_data_unchanged(self):
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_for_repeat_count(_make_jrxml(), data)
+        self.assertEqual(result, data)
+
+    def test_rows_expanded_by_count_field(self):
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(result['fields'], data['fields'])
+        self.assertEqual(len(result['rows']), 5)  # 3 + 2
+        self.assertEqual(result['rows'][0], [1, 3])
+        self.assertEqual(result['rows'][3], [2, 2])
+
+    def test_count_of_one_does_not_duplicate(self):
+        data = self._data([[1, 1]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 1)
+
+    def test_null_count_defaults_to_one(self):
+        data = self._data([[1, None]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 1)
+
+    def test_zero_count_defaults_to_one(self):
+        data = self._data([[1, 0]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 1)
+
+    def test_field_not_in_result_set_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat_count(
+            _make_jrxml('1,63-preparations.preparation.nonexistent'), data
+        )
+        self.assertEqual(result, data)
+
+    def test_invalid_jrxml_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat_count('not valid xml', data)
+        self.assertEqual(result, data)
