@@ -5,5 +5,3 @@ jest.mock('../../Permissions/helpers', () => ({
   hasPermission: jest.fn(),
 }));
 
-const mockedHasPermission = hasPermission as jest.Mock;
-
