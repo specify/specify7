@@ -64,6 +64,60 @@ class SchemaLocalizationImportTests(ApiTests):
             'Imported Number',
         )
 
+    def test_import_updates_existing_countryless_string(self):
+        string = models.Splocaleitemstr.objects.create(
+            containername=self.container,
+            language='en',
+            country='',
+            text='Existing Accession',
+        )
+
+        response = self.client.post(
+            '/context/schema_localization_import.json',
+            data=json.dumps({
+                'language': 'en',
+                'schema': {'accession': {'name': 'Updated Accession'}},
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            models.Splocaleitemstr.objects.filter(
+                containername=self.container, language='en'
+            ).count(),
+            1,
+        )
+        string.refresh_from_db()
+        self.assertEqual(string.text, 'Updated Accession')
+
+    def test_import_updates_existing_case_insensitive_country_string(self):
+        string = models.Splocaleitemstr.objects.create(
+            containername=self.container,
+            language='en',
+            country='US',
+            text='Existing US Accession',
+        )
+
+        response = self.client.post(
+            '/context/schema_localization_import.json',
+            data=json.dumps({
+                'language': 'en-US',
+                'schema': {'accession': {'name': 'Updated US Accession'}},
+            }),
+            content_type='application/json',
+        )
+
+        self.assertEqual(response.status_code, 200)
+        self.assertEqual(
+            models.Splocaleitemstr.objects.filter(
+                containername=self.container, language='en'
+            ).count(),
+            1,
+        )
+        string.refresh_from_db()
+        self.assertEqual(string.text, 'Updated US Accession')
+
     def test_invalid_values_do_not_write(self):
         response = self.client.post(
             '/context/schema_localization_import.json',

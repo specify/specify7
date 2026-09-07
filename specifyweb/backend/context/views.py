@@ -533,9 +533,15 @@ def _schema_import_string(operations, parent, parent_field, text, language, coun
         return
     if not isinstance(text, str):
         raise ValueError
+    country = country.lower() if country else None
+    country_filter = Q(country__isnull=True) | Q(country='')
+    if country is not None:
+        country_filter = Q(country__iexact=country)
     string = Splocaleitemstr.objects.filter(
-        **{parent_field: parent, 'language': language, 'country': country}
-    ).filter(Q(variant='') | Q(variant__isnull=True)).order_by('-id').first()
+        **{parent_field: parent, 'language': language}
+    ).filter(country_filter).filter(
+        Q(variant='') | Q(variant__isnull=True)
+    ).order_by('-id').first()
     if string is None:
         operations.append((
             'POST', Splocaleitemstr, None,
