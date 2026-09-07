@@ -63,6 +63,7 @@ export function QueryResultsWrapper({
       <ErrorBoundary dismissible>
         <QueryResults
           {...newProps}
+          onResults={handleResults}
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           onReRun={handleReRun}
