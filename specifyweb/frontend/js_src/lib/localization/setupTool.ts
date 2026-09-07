@@ -29,7 +29,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Progresso:',
     'ru-ru': 'Прогресс:',
     'uk-ua': 'Прогрес:',
-    nb: 'Framgang:',
+    nb: 'Status:',
   },
   overview: {
     'en-us': 'Overview',
@@ -190,7 +190,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Definir Adesão Globalmente',
     'ru-ru': 'Определение доступа на глобальном уровне',
     'uk-ua': 'Визначте приєднання глобально',
-    nb: 'Definer tiltredelse globalt',
+    nb: 'Definer Aksesjon globalt',
   },
   institutionIsAccessionGlobalDescription: {
     'en-us':
@@ -209,7 +209,7 @@ export const setupToolText = createDictionary({
       'Глобальная область действия позволяет обмениваться данными о поступлении между всеми подразделениями. Область действия на уровне подразделений гарантирует, что данные о поступлении будут специфичны для каждого подразделения.',
     'uk-ua':
       'Глобальна область дії дозволяє вам ділитися приєднаннями між усіма підрозділами. Дивізіональна область дії гарантує, що приєднання є специфічними для кожного підрозділу.',
-    nb: 'Globalt omfang lar deg dele tilganger mellom alle divisjoner. Divisjonsomfang sikrer at tilgangene er spesifikke for hver divisjon.',
+    nb: 'Globalt omfang lar deg dele Aksesjoner mellom alle divisjoner. Divisjonsomfang sikrer at Aksesjoner er spesifikke for hver divisjon.',
   },
   address: {
     'en-us': 'Address',
@@ -575,7 +575,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Divisão',
     'ru-ru': 'Разделение',
     'uk-ua': 'Дивізіон',
-    nb: 'Inndeling',
+    nb: 'Divisjon',
   },
   divisionName: {
     'en-us': 'Name',
@@ -674,7 +674,7 @@ export const setupToolText = createDictionary({
     'pt-br': 'Especificar usuário',
     'ru-ru': 'Укажите пользователя',
     'uk-ua': 'Вказати користувача',
-    nb: 'Spesifiser bruker',
+    nb: 'Spesify bruker',
   },
   specifyUserName: {
     'en-us': 'Username',

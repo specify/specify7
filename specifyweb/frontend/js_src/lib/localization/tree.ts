@@ -345,7 +345,7 @@ export const treeText = createDictionary({
       'Aus {nodeName:string} ein Synonym von {synonymName:string} machen',
     'pt-br': 'Faça de {nodeName:string} um sinônimo de {synonymName:string}',
     'hr-hr': 'Učini {nodeName:string} sinonimom za {synonymName:string}',
-    nb: 'Gjør {nodeName:string} til et synonym for {synonymName:string}',
+    nb: '{nodeName:string}Gjør {nodeName:string} til et synonym for {synonymName:string}',
   },
   synonymizeNodeHintMessage: {
     'en-us': 'Select a target for "{nodeName:string}" to be synonymized to',

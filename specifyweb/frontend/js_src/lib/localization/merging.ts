@@ -18,7 +18,7 @@ export const mergingText = createDictionary({
     'uk-ua': "Об'єднання записів",
     'pt-br': 'Fusão de Registros',
     'hr-hr': 'Spajanje zapisa',
-    nb: 'Sammenslåing av poster',
+    nb: 'Slå sammen poster',
   },
   mergeRecords: {
     'en-us': 'Merge Records',
@@ -84,7 +84,7 @@ export const mergingText = createDictionary({
     'uk-ua': '{count:number|formatted} записи',
     'pt-br': '{count:number|formatted} registros',
     'hr-hr': '{count:number|formatted} zapisi',
-    nb: '{count:number|formatted} poster',
+    nb: '{count:number|formatted} dataposter',
   },
   subViewControls: {
     'en-us': 'Sub-view Controls',
@@ -194,7 +194,7 @@ export const mergingText = createDictionary({
       'Antes de prosseguir, observe que a ação a seguir pode interromper outros usuários. Essa ação pode causar atrasos ou indisponibilidade temporária de certos recursos para os usuários especificados. Considere o impacto na experiência deles. Essa mesclagem não pode ser desfeita.',
     'hr-hr':
       'Prije nego što nastavite, imajte na umu da sljedeća radnja može poremetiti rad drugih korisnika. Ova radnja može uzrokovati kašnjenja ili privremenu nedostupnost određenih značajki za određene korisnike. Molimo vas da uzmete u obzir utjecaj na njihovo iskustvo. Ovo spajanje nije moguće poništiti.',
-    nb: 'Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan dette påvirker opplevelsen deres. Denne sammenslåingen kan ikke angres.',
+    nb: 'Før du fortsetter, vær oppmerksom på at følgende handling kan forstyrre andre brukere. Denne handlingen kan forårsake forsinkelser eller midlertidig utilgjengelighet av enkelte funksjoner for Specify-brukere. Vurder hvordan dette påvirker opplevelsen deres. Denne sammenslåingen kan ikke angres',
   },
   mergeFailed: {
     'en-us': 'Merge Failed',

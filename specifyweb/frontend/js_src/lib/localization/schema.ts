@@ -18,7 +18,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Tabelle',
     'pt-br': 'Mesa',
     'hr-hr': 'Stol',
-    nb: 'Bord',
+    nb: 'Tabell',
   },
   tables: {
     'en-us': 'Tables',
@@ -51,7 +51,7 @@ export const schemaText = createDictionary({
     'uk-ua': 'Без столу',
     'pt-br': 'Sem mesa',
     'hr-hr': 'Bez stola',
-    nb: 'Uten bord',
+    nb: 'Uten tabell',
   },
   schemaConfig: {
     'en-us': 'Schema Config',
@@ -117,7 +117,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Felder',
     'pt-br': 'Campos',
     'hr-hr': 'Polja',
-    nb: 'Felt',
+    nb: 'Felter',
   },
   literalFields: {
     'en-us': 'Literal Fields',
@@ -172,7 +172,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Beschriftung',
     'pt-br': 'Rubrica',
     'hr-hr': 'Naslov',
-    nb: 'Tekst',
+    nb: 'Store/små bokstaver',
   },
   tableCaption: {
     'en-us': 'Table Caption',
@@ -290,7 +290,7 @@ export const schemaText = createDictionary({
     'es-es': 'Límite de caracteres',
     'fr-fr': 'Limite de caractères',
     'hr-hr': 'Ograničenje broja znakova',
-    nb: 'Tegngrense',
+    nb: 'Begrensning på antall tegn',
     'pt-br': 'Limite de caracteres',
     'ru-ru': 'Ограничение по количеству символов',
     'uk-ua': 'Обмеження символів',
@@ -370,7 +370,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Feldformat',
     'pt-br': 'Formato do campo',
     'hr-hr': 'Format polja',
-    nb: 'Feltformat',
+    nb: 'Felt-format',
   },
   uiFormattersForField: {
     'en-us': 'Field Formatters for {fieldLabel:string}',
@@ -381,7 +381,7 @@ export const schemaText = createDictionary({
     'ru-ru': 'Форматирование полей для {fieldLabel:string}',
     'uk-ua': 'Форматування полів для {fieldLabel:string}',
     'hr-hr': 'Formateri polja za {fieldLabel:string}',
-    nb: 'Feltformateringer for {fieldLabel:string}',
+    nb: 'Felt-formateringer for {fieldLabel:string}',
   },
   formatted: {
     'en-us': 'Formatted',
@@ -656,7 +656,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Anwendungsbereich',
     'pt-br': 'Escopo',
     'hr-hr': 'Opseg',
-    nb: 'Omfang',
+    nb: 'Omfang (scope)',
   },
   uniquenessDuplicatesFound: {
     'en-us': 'Duplicates found in database',
@@ -711,7 +711,7 @@ export const schemaText = createDictionary({
     'de-ch': 'Specify 7 Datenmodell',
     'pt-br': 'Especifique 7 modelos de dados',
     'hr-hr': 'Navedite 7 podatkovnih modela',
-    nb: 'Spesifiser 7 datamodell',
+    nb: 'Specify 7 datamodell',
   },
   hidden: {
     'en-us': 'hidden',
