@@ -104,8 +104,7 @@ export function defaultDataViewQuery(
     'timestampCreated',
   ].find((fieldName) =>
     table.literalFields.some(
-      ({ name, isHidden, isVirtual, isRelationship }) =>
-        !isHidden &&
+      ({ name, isVirtual, isRelationship }) =>
         !isVirtual &&
         !isRelationship &&
         name.toLowerCase() === fieldName.toLowerCase()

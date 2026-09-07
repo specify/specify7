@@ -151,29 +151,44 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     if (!Array.isArray(currentResults) || fetchResults === undefined) return;
 
     const generation = ++refreshGenerationRef.current;
+    const refreshedTotalCount = Math.max(
+      totalCount ?? 0,
+      currentResults.length
+    );
     const offsets = Array.from(
-      { length: Math.ceil(currentResults.length / props.fetchSize) },
+      { length: Math.ceil(refreshedTotalCount / props.fetchSize) },
       (_, index) => index * props.fetchSize
     );
     Promise.all(offsets.map((offset) => fetchResults(offset)))
       .then((pages) => {
         if (generation !== refreshGenerationRef.current) return;
         const refreshedResults = currentResults.slice();
+        let nextTotalCount = refreshedTotalCount;
         // Stop applying pages once a short page is hit, so a later full page
         // can't re-extend the array past the earliest known end of data
         for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
           const page = pages[pageIndex];
           const offset = offsets[pageIndex];
           refreshedResults.splice(offset, page.length, ...page);
+          nextTotalCount = Math.max(nextTotalCount, offset + page.length);
           if (page.length < props.fetchSize) {
             refreshedResults.length = offset + page.length;
+            nextTotalCount = Math.max(nextTotalCount, offset + page.length);
             break;
           }
         }
+        setTotalCount(nextTotalCount);
         setResults(refreshedResults);
       })
       .catch(() => undefined);
-  }, [fetchResults, props.fetchSize, refreshToken, setResults]);
+  }, [
+    fetchResults,
+    props.fetchSize,
+    refreshToken,
+    setResults,
+    setTotalCount,
+    totalCount,
+  ]);
 
   const canMergeTable = canMerge(table);
 
