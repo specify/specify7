@@ -37,14 +37,17 @@ export function SplitViewOrientationButton({
 
 export function SplitViewToggleButton({
   isSplit,
+  disabled = false,
   onToggle: handleToggle,
 }: {
   readonly isSplit: boolean;
+  readonly disabled?: boolean;
   readonly onToggle: () => void;
 }): JSX.Element {
   return (
     <Button.Icon
       aria-pressed={isSplit}
+      disabled={disabled}
       icon="template"
       title={treeText.splitView()}
       onClick={handleToggle}

@@ -1,9 +1,12 @@
 import React from 'react';
 
 import type { RA } from '../../utils/types';
+import { listen } from '../../utils/events';
 import { queryIdField, type QueryResultRow } from './Results';
 import { useSplitViewOrientation } from './SplitView';
 import { userPreferences } from '../Preferences/userPreferences';
+
+const SMALL_SCREEN_WIDTH = 768;
 
 export function useQuerySplitView(
   resultsRef: React.MutableRefObject<RA<QueryResultRow | undefined> | undefined>
@@ -15,6 +18,7 @@ export function useQuerySplitView(
   readonly selectedIndex: number;
   readonly setSelectedIndex: React.Dispatch<React.SetStateAction<number>>;
   readonly isSplit: boolean;
+  readonly canSplit: boolean;
   readonly isHorizontal: boolean;
   readonly toggleSplit: () => void;
   readonly toggleOrientation: () => void;
@@ -33,7 +37,17 @@ export function useQuerySplitView(
     'general',
     'splitViewOrientation'
   );
-  const [isSplit, setIsSplit] = React.useState(splitViewByDefault);
+  const [rawIsSplit, setIsSplit] = React.useState(splitViewByDefault);
+  const [canSplit, setCanSplit] = React.useState(
+    window.innerWidth >= SMALL_SCREEN_WIDTH
+  );
+  React.useEffect(() => {
+    const handleResize = (): void =>
+      setCanSplit(window.innerWidth >= SMALL_SCREEN_WIDTH);
+    handleResize();
+    return listen(window, 'resize', handleResize);
+  }, []);
+  const isSplit = rawIsSplit && canSplit;
   const { isHorizontal, toggleOrientation } = useSplitViewOrientation(
     splitViewOrientation === 'horizontal'
   );
@@ -57,6 +71,7 @@ export function useQuerySplitView(
     selectedIndex,
     setSelectedIndex,
     isSplit,
+    canSplit,
     isHorizontal,
     toggleSplit,
     toggleOrientation,

@@ -33,6 +33,9 @@ import type { DataViewQueriesFile } from './queries';
 import { DataViewQueryEditorContent } from './QueryEditor';
 import { TableIcon } from '../Molecules/TableIcon';
 import { userPreferences } from '../Preferences/userPreferences';
+import { listen } from '../../utils/events';
+
+const SMALL_SCREEN_WIDTH = 768;
 
 export function TableDataView(): JSX.Element {
   const { tableName = '' } = useParams();
@@ -104,7 +107,17 @@ function LoadedDataViewFromTable({
     'general',
     'splitViewOrientation'
   );
-  const [isSplit, setIsSplit] = React.useState(splitViewByDefault);
+  const [rawIsSplit, setIsSplit] = React.useState(splitViewByDefault);
+  const [canSplit, setCanSplit] = React.useState(
+    window.innerWidth >= SMALL_SCREEN_WIDTH
+  );
+  React.useEffect(() => {
+    const handleResize = (): void =>
+      setCanSplit(window.innerWidth >= SMALL_SCREEN_WIDTH);
+    handleResize();
+    return listen(window, 'resize', handleResize);
+  }, []);
+  const isSplit = rawIsSplit && canSplit;
   const { isHorizontal, toggleOrientation } = useSplitViewOrientation(
     splitViewOrientation === 'horizontal'
   );
@@ -163,7 +176,9 @@ function LoadedDataViewFromTable({
     setQueryData(
       serializeDataViewQueries({
         version: 1,
-        queries: { [tableName]: getDataViewQueryDefinition(queries, tableName) },
+        queries: {
+          [tableName]: getDataViewQueryDefinition(queries, tableName),
+        },
       })
     );
   if (table === undefined) return null;
@@ -303,6 +318,7 @@ function LoadedDataViewFromTable({
           <DataEntry.Edit onClick={handleOpenQueryEditor} />
         </div>
         <SplitViewToggleButton
+          disabled={!canSplit}
           isSplit={isSplit}
           onToggle={(): void => setIsSplit((split) => !split)}
         />

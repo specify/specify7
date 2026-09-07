@@ -280,6 +280,7 @@ function Wrapped({
     selectedIndex,
     setSelectedIndex,
     isSplit,
+    canSplit,
     isHorizontal,
     toggleSplit,
     toggleOrientation,
@@ -357,6 +358,7 @@ function Wrapped({
             }}
             onTriedToSave={handleTriedToSave}
             isSplit={isSplit}
+            canSplit={canSplit}
             isHorizontal={isHorizontal}
             onToggleSplit={toggleSplit}
             onToggleOrientation={toggleOrientation}
