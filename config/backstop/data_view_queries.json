@@ -959,8 +959,8 @@
       "fields": [
         {
           "tableList": "3",
-          "stringId": "3.geography.",
-          "fieldName": "",
+          "stringId": "3.geography.fullName",
+          "fieldName": "fullName",
           "isRelFld": false,
           "sortType": 0,
           "position": 0,
