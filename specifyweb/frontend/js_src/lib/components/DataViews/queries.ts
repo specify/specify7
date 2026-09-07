@@ -99,6 +99,18 @@ export function defaultDataViewQuery(
   tableName: keyof Tables
 ): DataViewQueryDefinition {
   const table = strictGetTable(tableName);
+  const hiddenAuditTimestampField = [
+    'timestampModified',
+    'timestampCreated',
+  ].find((fieldName) =>
+    table.literalFields.some(
+      ({ name, isHidden, isVirtual, isRelationship }) =>
+        !isHidden &&
+        !isVirtual &&
+        !isRelationship &&
+        name.toLowerCase() === fieldName.toLowerCase()
+    )
+  );
   const fields = table.literalFields
     .filter(
       ({ isHidden, isVirtual, name, isRelationship }) =>
@@ -106,13 +118,24 @@ export function defaultDataViewQuery(
         !isVirtual &&
         !isRelationship &&
         !dataViewDefaultFieldBlacklist.has(name.toLowerCase()) &&
-        name !== table.idField.name
+        name !== table.idField.name &&
+        name.toLowerCase() !== hiddenAuditTimestampField?.toLowerCase()
     )
     .map(({ name }) =>
       serializeResource(
         QueryFieldSpec.fromPath(table.name, [name]).toSpQueryField()
       )
     );
+
+  if (hiddenAuditTimestampField !== undefined) {
+    const hiddenAuditField = QueryFieldSpec.fromPath(table.name, [
+      hiddenAuditTimestampField,
+    ]).toSpQueryField();
+    hiddenAuditField.set('sortType', 2);
+    hiddenAuditField.set('isDisplay', false);
+    fields.push(serializeResource(hiddenAuditField));
+  }
+
   return {
     fields,
     selectDistinct: false,

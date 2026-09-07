@@ -102,7 +102,7 @@ test('stored table definitions override defaults in runtime queries', () => {
   expect(query.get('smushed')).toBe(true);
 });
 
-test('generated defaults include every unhidden literal field', () => {
+test('generated defaults include every unhidden literal field and a hidden audit timestamp sort', () => {
   const table = strictGetTable('Agent');
   const expected = new Set([
     ...table.literalFields
@@ -118,11 +118,24 @@ test('generated defaults include every unhidden literal field', () => {
       )
       .map(({ name }) => name),
   ]);
+  const fields = defaultDataViewQuery('Agent').fields;
+  console.log(
+    'Generated Agent default fields:',
+    fields.map(({ fieldName }) => fieldName)
+  );
+
   expect(
     new Set(
-      defaultDataViewQuery('Agent').fields.map(({ fieldName }) => fieldName)
+      fields
+        .filter(({ isDisplay }) => isDisplay !== false)
+        .map(({ fieldName }) => fieldName)
     )
   ).toEqual(expected);
+  expect(fields.at(-1)).toMatchObject({
+    fieldName: expect.stringMatching(/timestamp(created|modified)/i),
+    isDisplay: false,
+    sortType: 2,
+  });
 });
 
 test('runtime queries are ephemeral and use the configured fields', () => {

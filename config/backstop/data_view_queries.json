@@ -80,6 +80,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "7",
+          "stringId": "7.accession.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 6,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -148,6 +161,19 @@
           "sortType": 0,
           "position": 4,
           "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "5",
+          "stringId": "5.agent.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 5,
+          "isDisplay": false,
           "operStart": 8,
           "startValue": "",
           "isNot": false,
@@ -233,6 +259,19 @@
           "sortType": 0,
           "position": 5,
           "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "18",
+          "stringId": "18.borrow.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 6,
+          "isDisplay": false,
           "operStart": 8,
           "startValue": "",
           "isNot": false,
@@ -348,6 +387,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "10",
+          "stringId": "10.collectingevent.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 8,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -422,6 +474,19 @@
           "sortType": 0,
           "position": 4,
           "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "23",
+          "stringId": "23.collection.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 5,
+          "isDisplay": false,
           "operStart": 8,
           "startValue": "",
           "isNot": false,
@@ -622,6 +687,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "67",
+          "stringId": "67.appraisal.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 4,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -694,6 +772,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "163",
+          "stringId": "163.deaccession.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 5,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -736,6 +827,19 @@
           "sortType": 0,
           "position": 2,
           "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "26",
+          "stringId": "26.discipline.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 3,
+          "isDisplay": false,
           "operStart": 8,
           "startValue": "",
           "isNot": false,
@@ -824,6 +928,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "2",
+          "stringId": "2.locality.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 5,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -853,6 +970,19 @@
           "sortType": 0,
           "position": 1,
           "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "65",
+          "stringId": "65.preptype.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 2,
+          "isDisplay": false,
           "operStart": 8,
           "startValue": "",
           "isNot": false,
@@ -916,6 +1046,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "4",
+          "stringId": "4.taxon.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 4,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -949,6 +1092,19 @@
           "startValue": "",
           "isNot": false,
           "isStrict": false
+        },
+        {
+          "tableList": "58",
+          "stringId": "58.storage.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 2,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
         }
       ],
       "selectDistinct": false,
@@ -978,6 +1134,19 @@
           "sortType": 0,
           "position": 1,
           "isDisplay": true,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        },
+        {
+          "tableList": "3",
+          "stringId": "3.geography.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 2,
+          "position": 2,
+          "isDisplay": false,
           "operStart": 8,
           "startValue": "",
           "isNot": false,
