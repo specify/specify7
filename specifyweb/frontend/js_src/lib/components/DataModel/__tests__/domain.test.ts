@@ -2,6 +2,7 @@ import { overrideAjax } from '../../../tests/ajax';
 import { requireContext } from '../../../tests/helpers';
 import { monthsPickListName } from '../../PickLists/definitions';
 import { formatUrl } from '../../Router/queryString';
+import { Http } from '../../../utils/ajax/definitions';
 import { addMissingFields } from '../addMissingFields';
 import { formatRelationshipPath } from '../helpers';
 import { getResourceApiUrl } from '../resource';
@@ -125,6 +126,19 @@ describe('Resource initialization preferences', () => {
     jest.clearAllMocks();
   });
 
+  overrideAjax(
+    '/api/specify/collectionobject/',
+    {
+      resource_uri: getResourceApiUrl('CollectionObject', 2),
+      id: 2,
+      collection: getResourceApiUrl('Collection', 4),
+      collectionObjectType: getResourceApiUrl('CollectionObjectType', 2),
+      catalogNumber: 'num-regenerated',
+      text1: 'copied field',
+    },
+    { method: 'POST', responseCode: Http.CREATED }
+  );
+
   test('CO_CREATE_COA', () => {
     const collectionObject = new tables.CollectionObject.Resource();
     expect(collectionObject.get('collectionObjectAttribute')).toBe(
@@ -200,6 +214,12 @@ describe('Resource initialization preferences', () => {
     );
     expect(cloned.get('text1')).toBe('copied field');
     expect(cloned.get('catalogNumber')).toBeUndefined();
+
+    await cloned.save();
+
+    expect(cloned.id).toBe(2);
+    expect(cloned.get('catalogNumber')).toBe('num-regenerated');
+    expect(cloned.get('text1')).toBe('copied field');
 
     expect(original.id).toBe(1);
     expect(original.get('catalogNumber')).toBe('num-original');
