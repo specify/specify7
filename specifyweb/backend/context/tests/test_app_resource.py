@@ -24,7 +24,7 @@ class TestAppResource(ApiTests):
         }.get(level)
         load_from_filesystem.return_value = None
 
-        result = get_data_view_queries_resource(self.specify_collection, self.specifyuser)
+        result = get_data_view_queries_resource(self.collection, self.specifyuser)
 
         self.assertIsNotNone(result)
         self.assertEqual(
