@@ -8,3 +8,15 @@ jest.mock('../../Permissions/helpers', () => ({
 
 const mockedHasPermission = hasPermission as jest.Mock;
 
+const setBatchEditPreferences = (
+  enableRelationships: boolean,
+  showRollback: boolean
+): void => {
+  userPreferences.set(
+    'batchEdit',
+    'editor',
+    'enableRelationships',
+    enableRelationships
+  );
+  userPreferences.set('batchEdit', 'editor', 'showRollback', showRollback);
+};
