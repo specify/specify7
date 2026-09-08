@@ -1,36 +1,33 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-03 09:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-08 07:51+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 #. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
 #: components/Header/menuItemDefinitions.ts:50
 #: components/Router/OverlayRoutes.tsx:88
 #: components/SetupTool/SetupForm.tsx:330
 #: components/Toolbar/TreeRepair.tsx:42
-#, fuzzy
 msgid "trees"
 msgstr "Trær"
 
 #. Used in: Components > Data Model > Tree Business Rules
 #: components/DataModel/treeBusinessRules.ts:72
-#, fuzzy
 msgid "badStructure"
-msgstr "Dårlig trestruktur."
+msgstr "Ugyldig trestruktur."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:165
-#, fuzzy
 msgid "move"
-msgstr "Flytte"
+msgstr "Flytt"
 
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 #: components/Merging/CompareField.tsx:216
@@ -47,32 +44,27 @@ msgstr "Slå sammen"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
-#, fuzzy
 msgid "undoSynonymy"
-msgstr "Angre synonym"
+msgstr "Angre synonymisering"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
-#, fuzzy
 msgid "synonymize"
 msgstr "Synonymisere"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:408
-#, fuzzy
 msgid "actionFailed"
 msgstr "Operasjonen mislyktes"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:411
-#, fuzzy
 msgid "actionFailedDescription"
 msgstr "Operasjonen kunne ikke fullføres på grunn av følgende feil:"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:430
 #: components/TreeView/Actions.tsx:443
-#, fuzzy
 msgid "moveNode"
 msgstr "Flytt node"
 
@@ -83,7 +75,6 @@ msgstr "Legg til undernode"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:388
-#, fuzzy
 msgid "moveNodeHere"
 msgstr "Flytt «{nodeName:string}» hit"
 
@@ -95,12 +86,10 @@ msgstr "Flytt alle \"{nodeName:string}\"-forberedelsene hit"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:455
-#, fuzzy
 msgid "nodeMoveMessage"
 msgstr ""
 "{treeName:string}-noden «{nodeName:string}» vil bli plassert, sammen med "
-"alle dens etterkommere, under den nye overordnede noden «{parentName:string}"
-"»."
+"alle under-nodene, under den nye overordnede noden «{parentName:string}»."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:461
@@ -112,50 +101,42 @@ msgstr ""
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:361
-#, fuzzy
 msgid "cantMoveHere"
-msgstr "Kan ikke flytte denne treknuten hit"
+msgstr "Kan ikke flytte denne tre-noden hit"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:368
-#, fuzzy
 msgid "cantMergeHere"
-msgstr "Kan ikke slå sammen denne trenoden her"
+msgstr "Kan ikke slå sammen denne tre-noden her"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:362
-#, fuzzy
 msgid "cantMoveToSynonym"
 msgstr "Kan ikke flytte til et synonym"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:369
-#, fuzzy
 msgid "cantMergeIntoSynonym"
 msgstr "Kan ikke slås sammen til synonymer"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:372
-#, fuzzy
 msgid "cantSynonymizeSynonym"
 msgstr "Kan ikke synonymisere med et synonym"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:341
-#, fuzzy
 msgid "nodeMoveHintMessage"
 msgstr "Velg en ny forelder for «{nodeName:string}»"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:434
 #: components/TreeView/Actions.tsx:447
-#, fuzzy
 msgid "mergeNode"
 msgstr "Slå sammen node"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:394
-#, fuzzy
 msgid "mergeNodeHere"
 msgstr "Slå sammen «{nodeName:string}» her"
 
