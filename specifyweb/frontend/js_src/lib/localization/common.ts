@@ -343,6 +343,17 @@ export const commonText = createDictionary({
     'hr-hr': 'Pretraživanje',
     nb: 'Søk',
   },
+  searchFor: {
+    'en-us': 'Search for {resource:string}',
+    'ru-ru': 'Поиск {resource:string}',
+    'es-es': 'Buscar {resource:string}',
+    'fr-fr': 'Rechercher {resource:string}',
+    'uk-ua': 'Пошук {resource:string}',
+    'de-ch': 'Nach {resource:string} suchen',
+    'pt-br': 'Pesquisar {resource:string}',
+    'hr-hr': 'Pretraži {resource:string}',
+    nb: 'Søk etter {resource:string}',
+  },
   noResults: {
     'en-us': 'No Results',
     'ru-ru': 'Результаты отсутствуют',

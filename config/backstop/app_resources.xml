@@ -3,4 +3,5 @@
     <file level="0" mimetype="text/xml" name="UIFormatters"  description="UIFormatters" file="uiformatters.xml"/>
     <file level="0" mimetype="text/xml" name="DataObjFormatters" description="DataObjFormatters" file="dataobj_formatters.xml"/>
     <file level="0" mimetype="text/xml" name="TypeSearches"  description="TypeSearches" file="typesearch_def.xml"/>
+    <file level="0" mimetype="application/json" name="DataViewQueries" description="Data View queries" file="data_view_queries.json"/>
 </files>

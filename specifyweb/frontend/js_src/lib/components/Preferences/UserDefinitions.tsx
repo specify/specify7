@@ -19,6 +19,7 @@ import { reportsText } from '../../localization/report';
 import { resourcesText } from '../../localization/resources';
 import { schemaText } from '../../localization/schema';
 import { statsText } from '../../localization/stats';
+import { treeText } from '../../localization/tree';
 import type { Language } from '../../localization/utils/config';
 import { LANGUAGE } from '../../localization/utils/config';
 import { wbPlanText } from '../../localization/wbPlan';
@@ -1795,6 +1796,30 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: false,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
           noRestrictionsMode: definePref<boolean>({
             title: preferencesText.noRestrictionsMode(),
             description: (
@@ -1928,6 +1953,30 @@ export const userPreferenceDefinitions = {
       general: {
         title: preferencesText.general(),
         items: {
+          splitViewByDefault: definePref<boolean>({
+            title: dataViewsText.splitViewByDefault({
+              splitView: treeText.splitView(),
+            }),
+            description: dataViewsText.splitViewDescription({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: true,
+            type: 'java.lang.Boolean',
+          }),
+          splitViewOrientation: definePref<'horizontal' | 'vertical'>({
+            title: dataViewsText.splitViewOrientation({
+              splitView: treeText.splitView(),
+            }),
+            requiresReload: false,
+            visible: true,
+            defaultValue: 'horizontal',
+            values: [
+              { value: 'horizontal', title: treeText.horizontal() },
+              { value: 'vertical', title: treeText.vertical() },
+            ],
+          }),
           shownTables: definePref<RA<number>>({
             title: localized('_shownTables'),
             requiresReload: false,

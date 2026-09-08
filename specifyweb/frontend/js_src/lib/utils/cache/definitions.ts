@@ -155,6 +155,8 @@ export type CacheDefinitions = {
     readonly conformation: RA<AppResourcesConformation>;
     readonly filters: AppResourceFilters;
     readonly showHiddenTables: boolean;
+    /** Last table selected in the DataViewQueries visual editor */
+    readonly dataViewQueriesTable: keyof Tables;
   };
   readonly pageSizes: RR<Paginators, (typeof pageSizes)[number]>;
   readonly formEditor: {

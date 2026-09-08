@@ -24,6 +24,7 @@ import {
 } from './helpers';
 import type { QueryResultRow } from './Results';
 import { QueryResults } from './Results';
+import { SplitView } from './SplitView';
 
 // TODO: [FEATURE] allow customizing this and other constants as make sense
 const fetchSize = 40;
@@ -32,32 +33,57 @@ export function QueryResultsWrapper({
   createRecordSet,
   extraButtons,
   onSelected: handleSelected,
+  onResults: handleResults,
   onReRun: handleReRun,
+  refreshToken,
+  splitPane,
+  splitHorizontal,
   ...props
 }: ResultsProps & {
   readonly createRecordSet: JSX.Element | undefined;
   readonly extraButtons: JSX.Element | undefined;
   readonly onSelected?: (selected: RA<number>) => void;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+  readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
+  readonly refreshToken?: number;
+  readonly splitPane?: JSX.Element;
+  readonly splitHorizontal?: boolean;
   readonly onReRun: () => void;
 }): JSX.Element | null {
   const newProps = useQueryResultsWrapper(props);
 
-  return newProps === undefined ? (
-    props.queryRunCount === 0 ? null : (
+  if (newProps === undefined)
+    return props.queryRunCount === 0 ? null : (
       <div className="flex-1 snap-start">{loadingGif}</div>
-    )
-  ) : (
+    );
+
+  const queryResults = (
     <div className="flex flex-1 snap-start overflow-hidden">
       <ErrorBoundary dismissible>
         <QueryResults
           {...newProps}
+          onResults={handleResults}
           createRecordSet={createRecordSet}
           extraButtons={extraButtons}
           onReRun={handleReRun}
           onSelected={handleSelected}
+          refreshToken={refreshToken}
         />
       </ErrorBoundary>
     </div>
+  );
+
+  return splitPane === undefined ? (
+    queryResults
+  ) : (
+    <SplitView
+      isHorizontal={splitHorizontal ?? true}
+      primaryPane={queryResults}
+      primaryPaneKey="query-results"
+      secondaryPane={splitPane}
+      secondaryPaneKey="split-pane"
+    />
   );
 }
 
@@ -77,6 +103,11 @@ type ResultsProps = {
     newFields: RA<QueryField>
   ) => void;
   readonly selectedRows: GetSet<ReadonlySet<number>>;
+  readonly containerClassName?: string;
+  readonly tableClassName?: string;
+  readonly onResults?: (results: RA<QueryResultRow | undefined>) => void;
+  readonly scrollRef?: React.MutableRefObject<HTMLDivElement | null>;
+  readonly restoreScrollTopRef?: React.MutableRefObject<number | undefined>;
   readonly resultsRef?: React.MutableRefObject<
     RA<QueryResultRow | undefined> | undefined
   >;
@@ -109,6 +140,25 @@ export const runQuery = async <ROW_TYPE extends QueryResultRow>(
     }),
   }).then(({ data }) => data.results);
 
+const runQueryCount = async (
+  query: SerializedRecord<SpQuery> | SerializedResource<SpQuery>,
+  extras: Partial<{
+    readonly collectionId: number;
+    readonly limit: number;
+    readonly recordSetId: number;
+  }> = {}
+): Promise<number> =>
+  ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    errorMode: 'dismissible',
+    headers: { Accept: 'application/json' },
+    body: keysToLowerCase({
+      ...query,
+      ...extras,
+      countOnly: true,
+    }),
+  }).then(({ data }) => data.count);
+
 /**
  * Extracting the logic into a hook so that can be reused even outside the
  * Query Builder (in the Specify Network)
@@ -120,8 +170,13 @@ export function useQueryResultsWrapper({
   fields,
   recordSetId,
   forceCollection,
+  containerClassName,
+  tableClassName,
   onSortChange: handleSortChange,
+  onResults: handleResults,
   selectedRows: [selectedRows, setSelectedRows],
+  scrollRef,
+  restoreScrollTopRef,
   resultsRef,
 }: ResultsProps): PartialProps | undefined {
   /*
@@ -162,18 +217,9 @@ export function useQueryResultsWrapper({
     };
 
     setTotalCount(undefined);
-    ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
-      method: 'POST',
-      errorMode: 'dismissible',
-      headers: { Accept: 'application/json' },
-      body: keysToLowerCase({
-        ...query,
-        ...fetchPayload,
-        countOnly: true,
-      }),
-    })
-      .then(({ data }) => setTotalCount(data.count))
-      .catch(raise);
+    const fetchCount = async (): Promise<number> =>
+      runQueryCount(query, fetchPayload);
+    fetchCount().then(setTotalCount).catch(raise);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const countOnly = queryResource.get('countOnly') === true;
@@ -198,15 +244,21 @@ export function useQueryResultsWrapper({
       .then((initialData) =>
         setProps({
           queryResource,
+          containerClassName,
+          tableClassName,
           fetchSize,
           table,
           fetchResults: isCountOnly
             ? undefined
             : async (offset) => runQuery(query, { ...fetchPayload, offset }),
+          fetchCount,
           allFields,
           displayedFields: queryFields,
           fieldSpecs,
           initialData,
+          onResults: handleResults,
+          scrollRef,
+          restoreScrollTopRef,
           sortConfig: queryFields
             .filter(({ isDisplay }) => isDisplay)
             .map((field) => field.sortType),

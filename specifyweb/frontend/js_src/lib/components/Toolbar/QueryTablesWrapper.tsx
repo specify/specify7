@@ -109,27 +109,38 @@ export function useQueryTables(): GetSet<RA<SpecifyTable>> {
 export function QueryTables({
   tables,
   onClick: handleClick,
+  onEdit: handleEdit,
   counts,
   getHref = (tableName): string =>
     `/specify/query/new/${tableName.toLowerCase()}/`,
 }: {
   readonly tables: RA<SpecifyTable>;
   readonly onClick: ((tableName: keyof Tables) => void) | undefined;
+  readonly onEdit?: (tableName: keyof Tables) => void;
   readonly counts?: IR<number | undefined>;
   readonly getHref?: (tableName: keyof Tables) => string;
 }): JSX.Element {
   return (
     <Ul className="flex flex-col gap-1">
       {tables.map(({ name, label }, index) => (
-        <li className="contents" key={index}>
-          <QueryTableItem
-            count={counts?.[name]}
-            getHref={getHref}
-            isCountLoading={counts !== undefined && !(name in counts)}
-            label={label}
-            name={name}
-            onClick={handleClick}
-          />
+        <li className="flex items-center gap-2" key={index}>
+          <div className="min-w-0 flex-1">
+            <QueryTableItem
+              count={counts?.[name]}
+              getHref={getHref}
+              isCountLoading={counts !== undefined && !(name in counts)}
+              label={label}
+              name={name}
+              onClick={handleClick}
+            />
+          </div>
+          {handleEdit === undefined ? undefined : (
+            <Button.Icon
+              icon="pencil"
+              title={commonText.edit()}
+              onClick={(): void => handleEdit(name)}
+            />
+          )}
         </li>
       ))}
     </Ul>
