@@ -1,4 +1,6 @@
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -173,12 +175,18 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_collectionobject(self):
         original = self.collectionobjects[0]
 
-        clone = models.Collectionobject.objects.create(
-            collection=original.collection,
-            collectionobjecttype=original.collectionobjecttype,
-            collectionmemberid=original.collectionmemberid,
-            # Catalog number is unique per collection, so it is not copied
-            catalognumber='num-clone',
+        clone = post_resource(
+            self.collection,
+            self.agent,
+            'collectionobject',
+            {
+                'collection': uri_for_model('collection', original.collection_id),
+                'collectionobjecttype': uri_for_model(
+                    'collectionobjecttype', original.collectionobjecttype_id
+                ),
+                # Catalog number is unique per collection, so it is regenerated.
+                'catalognumber': 'num-clone',
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -186,6 +194,8 @@ class TestClonePreviousVersionObjects(ApiTests):
         self.assertEqual(
             clone.collectionobjecttype_id, original.collectionobjecttype_id
         )
+        self.assertEqual(clone.collectionmemberid, self.collection.id)
+        self.assertEqual(clone.createdbyagent_id, self.agent.id)
         self.assertNotEqual(clone.catalognumber, original.catalognumber)
 
         original.refresh_from_db()

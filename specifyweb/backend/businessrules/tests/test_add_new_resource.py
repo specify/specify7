@@ -1,4 +1,6 @@
 from specifyweb.specify import models
+from specifyweb.specify.api.crud import post_resource
+from specifyweb.specify.api.serializers import uri_for_model
 from specifyweb.specify.tests.test_api import ApiTests
 
 
@@ -10,11 +12,17 @@ class TestAddNewObjects(ApiTests):
     """
 
     def test_add_collectionobject(self):
-        collectionobject = models.Collectionobject.objects.create(
-            collection=self.collection,
-            collectionobjecttype=self.collectionobjecttype,
-            collectionmemberid=1,
-            catalognumber='num-add',
+        collectionobject = post_resource(
+            self.collection,
+            self.agent,
+            'collectionobject',
+            {
+                'collection': uri_for_model('collection', self.collection.id),
+                'collectionobjecttype': uri_for_model(
+                    'collectionobjecttype', self.collectionobjecttype.id
+                ),
+                'catalognumber': 'num-add',
+            },
         )
 
         self.assertIsNotNone(collectionobject.id)
