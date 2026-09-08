@@ -888,7 +888,7 @@
       "fields": [
         {
           "tableList": "52",
-          "stringId": "52.collectingtrip.timestampModified",
+          "stringId": "52.loan.timestampModified",
           "fieldName": "timestampModified",
           "isRelFld": false,
           "sortType": 0,
