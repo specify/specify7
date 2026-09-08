@@ -140,6 +140,25 @@ export const runQuery = async <ROW_TYPE extends QueryResultRow>(
     }),
   }).then(({ data }) => data.results);
 
+const runQueryCount = async (
+  query: SerializedRecord<SpQuery> | SerializedResource<SpQuery>,
+  extras: Partial<{
+    readonly collectionId: number;
+    readonly limit: number;
+    readonly recordSetId: number;
+  }> = {}
+): Promise<number> =>
+  ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
+    method: 'POST',
+    errorMode: 'dismissible',
+    headers: { Accept: 'application/json' },
+    body: keysToLowerCase({
+      ...query,
+      ...extras,
+      countOnly: true,
+    }),
+  }).then(({ data }) => data.count);
+
 /**
  * Extracting the logic into a hook so that can be reused even outside the
  * Query Builder (in the Specify Network)
@@ -198,18 +217,9 @@ export function useQueryResultsWrapper({
     };
 
     setTotalCount(undefined);
-    ajax<{ readonly count: number }>('/stored_query/ephemeral/', {
-      method: 'POST',
-      errorMode: 'dismissible',
-      headers: { Accept: 'application/json' },
-      body: keysToLowerCase({
-        ...query,
-        ...fetchPayload,
-        countOnly: true,
-      }),
-    })
-      .then(({ data }) => setTotalCount(data.count))
-      .catch(raise);
+    const fetchCount = async (): Promise<number> =>
+      runQueryCount(query, fetchPayload);
+    fetchCount().then(setTotalCount).catch(raise);
 
     const displayedFields = allFields.filter((field) => field.isDisplay);
     const countOnly = queryResource.get('countOnly') === true;
@@ -241,6 +251,7 @@ export function useQueryResultsWrapper({
           fetchResults: isCountOnly
             ? undefined
             : async (offset) => runQuery(query, { ...fetchPayload, offset }),
+          fetchCount,
           allFields,
           displayedFields: queryFields,
           fieldSpecs,

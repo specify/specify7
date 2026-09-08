@@ -71,6 +71,7 @@ export type QueryResultsProps = {
   readonly fetchResults:
     | ((offset: number) => Promise<RA<QueryResultRow>>)
     | undefined;
+  readonly fetchCount: (() => Promise<number>) | undefined;
   readonly totalCount: number | undefined;
   readonly fieldSpecs: RA<QueryFieldSpec>;
   readonly displayedFields: RA<QueryField>;
@@ -103,6 +104,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     table,
     label = commonText.results(),
     queryResource,
+    fetchCount,
     fetchResults,
     fieldSpecs,
     allFields,
@@ -148,46 +150,51 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
       return;
     previousRefreshToken.current = refreshToken;
     const currentResults = currentResultsRef.current;
-    if (!Array.isArray(currentResults) || fetchResults === undefined) return;
+    if (
+      !Array.isArray(currentResults) ||
+      fetchCount === undefined ||
+      fetchResults === undefined
+    )
+      return;
 
     const generation = ++refreshGenerationRef.current;
-    const refreshedTotalCount = Math.max(
-      totalCount ?? 0,
-      currentResults.length
-    );
-    const offsets = Array.from(
-      { length: Math.ceil(refreshedTotalCount / props.fetchSize) },
-      (_, index) => index * props.fetchSize
-    );
-    Promise.all(offsets.map((offset) => fetchResults(offset)))
-      .then((pages) => {
+    fetchCount()
+      .then(async (refreshedTotalCount) => {
+        if (generation !== refreshGenerationRef.current) return;
+        setTotalCount(refreshedTotalCount);
+        const offsets = Array.from(
+          { length: Math.ceil(refreshedTotalCount / props.fetchSize) },
+          (_, index) => index * props.fetchSize
+        );
+        const pages = await Promise.all(
+          offsets.map((offset) => fetchResults(offset))
+        );
         if (generation !== refreshGenerationRef.current) return;
         const refreshedResults = currentResults.slice();
-        let nextTotalCount = refreshedTotalCount;
+        let refreshedResultCount = refreshedTotalCount;
         // Stop applying pages once a short page is hit, so a later full page
         // can't re-extend the array past the earliest known end of data
         for (let pageIndex = 0; pageIndex < pages.length; pageIndex++) {
           const page = pages[pageIndex];
           const offset = offsets[pageIndex];
           refreshedResults.splice(offset, page.length, ...page);
-          nextTotalCount = Math.max(nextTotalCount, offset + page.length);
           if (page.length < props.fetchSize) {
-            refreshedResults.length = offset + page.length;
-            nextTotalCount = Math.max(nextTotalCount, offset + page.length);
+            refreshedResultCount = offset + page.length;
             break;
           }
         }
-        setTotalCount(nextTotalCount);
+        refreshedResults.length = refreshedResultCount;
+        setTotalCount(refreshedTotalCount);
         setResults(refreshedResults);
       })
       .catch(() => undefined);
   }, [
+    fetchCount,
     fetchResults,
     props.fetchSize,
     refreshToken,
     setResults,
     setTotalCount,
-    totalCount,
   ]);
 
   const canMergeTable = canMerge(table);
