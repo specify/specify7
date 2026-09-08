@@ -112,16 +112,19 @@ export function QueryListDialog({
   const [data, setData] = useAsyncState(
     React.useCallback(
       async () =>
-        fetchCollection('SpQuery', {
-          limit,
-          domainFilter: false,
-          ...(filters ?? { specifyUser: userInformation.id }),
-          offset,
-          orderBy,
-        },
-        searchFilter === ''
-          ? undefined
-          : backendFilter('name').caseInsensitiveContains(searchFilter)),
+        fetchCollection(
+          'SpQuery',
+          {
+            limit,
+            domainFilter: false,
+            ...(filters ?? { specifyUser: userInformation.id }),
+            offset,
+            orderBy,
+          },
+          searchFilter === ''
+            ? undefined
+            : backendFilter('name').caseInsensitiveContains(searchFilter)
+        ),
       [filters, limit, offset, orderBy, searchFilter]
     ),
     false
@@ -130,17 +133,16 @@ export function QueryListDialog({
   React.useEffect(
     () =>
       resourceEvents.on('deleted', (resource) => {
-        if (resource.specifyTable.name === 'SpQuery')
-          setData(
-            data === undefined
-              ? undefined
-              : {
-                  records: data.records.filter(
-                    (query) => query.id !== resource.id
-                  ),
-                  totalCount: data.totalCount - 1,
-                }
-          );
+        if (resource.specifyTable.name !== 'SpQuery' || data === undefined)
+          return;
+        const wasDisplayed = data.records.some(
+          (query) => query.id === resource.id
+        );
+        if (!wasDisplayed) return;
+        setData({
+          records: data.records.filter((query) => query.id !== resource.id),
+          totalCount: data.totalCount - 1,
+        });
       }),
     [data, setData]
   );
