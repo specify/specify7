@@ -45,7 +45,9 @@ export function DataViewTables(): JSX.Element {
     setQueryData(
       serializeDataViewQueries({
         version: 1,
-        queries: { [tableName]: getDataViewQueryDefinition(queries, tableName) },
+        queries: {
+          [tableName]: getDataViewQueryDefinition(queries, tableName),
+        },
       })
     );
     setQueryTable(tableName);
@@ -59,7 +61,10 @@ export function DataViewTables(): JSX.Element {
       <Dialog
         buttons={
           <>
-            <Button.Secondary onClick={handleCloseQueryEditor}>
+            <Button.Secondary
+              disabled={isSavingQuery}
+              onClick={handleCloseQueryEditor}
+            >
               {commonText.cancel()}
             </Button.Secondary>
             <Button.Success
@@ -79,7 +84,7 @@ export function DataViewTables(): JSX.Element {
           </>
         }
         header={dataViewsText.configureQuery()}
-        onClose={handleCloseQueryEditor}
+        onClose={isSavingQuery ? undefined : handleCloseQueryEditor}
       >
         <DataViewQueryEditorContent
           data={queryData}
@@ -92,11 +97,9 @@ export function DataViewTables(): JSX.Element {
   return isEditing ? (
     <TablesListEdit
       defaultTables={defaultDataViewTablesConfig}
-      header={
-        dataViewsText.configureDataViews({
-          dataViews: dataViewsText.dataViewsTitle(),
-        })
-      }
+      header={dataViewsText.configureDataViews({
+        dataViews: dataViewsText.dataViewsTitle(),
+      })}
       tables={tables}
       onChange={setTables}
       onClose={handleClose}

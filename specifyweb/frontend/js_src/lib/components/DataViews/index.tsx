@@ -205,7 +205,10 @@ function LoadedDataViewFromTable({
       <Dialog
         buttons={
           <>
-            <Button.Secondary onClick={handleCloseQueryEditor}>
+            <Button.Secondary
+              disabled={isSavingQuery}
+              onClick={handleCloseQueryEditor}
+            >
               {commonText.cancel()}
             </Button.Secondary>
             <Button.Success
@@ -228,7 +231,7 @@ function LoadedDataViewFromTable({
           </>
         }
         header={dataViewsText.configureQuery()}
-        onClose={handleCloseQueryEditor}
+        onClose={isSavingQuery ? undefined : handleCloseQueryEditor}
       >
         <DataViewQueryEditorContent
           data={queryData}
