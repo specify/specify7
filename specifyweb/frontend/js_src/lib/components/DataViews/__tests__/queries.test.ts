@@ -80,6 +80,17 @@ test('malformed table definitions use generated defaults', () => {
   expect(() => makeDataViewQuery('Agent', definition)).not.toThrow();
 });
 
+test('table definitions with null fields use generated defaults', () => {
+  const file = parseDataViewQueries(
+    JSON.stringify({ version: 1, queries: { Agent: { fields: [null] } } })
+  );
+
+  expect(getStoredDataViewQueryDefinition(file, 'Agent')).toBeUndefined();
+  expect(getDataViewQueryDefinition(file, 'Agent')).toEqual(
+    defaultDataViewQuery('Agent')
+  );
+});
+
 test('stored table definitions override defaults in runtime queries', () => {
   const definition = {
     fields: [addMissingFields('SpQueryField', { fieldName: 'Name' })],
