@@ -62,7 +62,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Sortiere nach',
     'pt-br': 'Ordem por',
     'hr-hr': 'Poredaj po',
-    nb: 'Bestill etter',
+    nb: 'Sorter etter',
   },
   uploadingInline: {
     'en-us': 'Uploading…',
@@ -95,7 +95,7 @@ export const attachmentsText = createDictionary({
     'de-ch': 'Verknüpfter Datensatz kann nicht gefunden werden',
     'pt-br': 'Não foi possível encontrar o registro relacionado.',
     'hr-hr': 'Nije moguće pronaći povezani zapis',
-    nb: 'Finner ikke relatert oppføring',
+    nb: 'Finner ikke posten',
   },
   unableToFindRelatedRecordDescription: {
     'en-us': 'Unable to find a record that this attachment is related to.',
@@ -110,7 +110,7 @@ export const attachmentsText = createDictionary({
     'pt-br':
       'Não foi possível encontrar nenhum registro ao qual este anexo esteja relacionado.',
     'hr-hr': 'Nije moguće pronaći zapis na koji se odnosi ovaj privitak.',
-    nb: 'Finner ikke en oppføring som dette vedlegget er relatert til.',
+    nb: 'Finner ikke en posten som dette vedlegget er relatert til.',
   },
   showForm: {
     'en-us': 'Show Form',
@@ -223,7 +223,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Скасовано',
     'pt-br': 'Cancelado',
     'hr-hr': 'Otkazano',
-    nb: 'Avlyst',
+    nb: 'Avbrutt',
   },
   frontEndInterruption: {
     'en-us': '{action:string} was in progress when interruption occurred',
@@ -344,7 +344,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Відкат перервано',
     'pt-br': 'Reversão interrompida',
     'hr-hr': 'Povratak prekinut',
-    nb: 'Tilbakerulling avbrutt',
+    nb: 'Tilbakestilling avbrutt',
   },
   rollbackInterruptedDescription: {
     'en-us':
@@ -363,7 +363,7 @@ export const attachmentsText = createDictionary({
       'O processo de reversão estava em andamento quando ocorreu uma interrupção. Alguns arquivos podem ter sido excluídos.',
     'hr-hr':
       'Vraćanje je bilo u tijeku kada je došlo do prekida. Neke datoteke su možda izbrisane.',
-    nb: 'Tilbakerullingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet.',
+    nb: 'Tilbakestillingen pågikk da et avbrudd oppsto. Noen filer kan ha blitt slettet.',
   },
   attachmentId: {
     'en-us': 'Attachment ID',
@@ -466,7 +466,7 @@ export const attachmentsText = createDictionary({
       'A reversão excluirá os anexos do banco de dados especificado e do servidor de ativos.',
     'hr-hr':
       'Vraćanje na prethodno stanje će izbrisati priloge iz Navedite bazu podataka i Poslužitelja imovine',
-    nb: 'Tilbakerulling vil slette vedleggene fra Specify-databasen og Asset Server',
+    nb: 'Tilbakestillingen vil slette vedleggene fra Specify-databasen og Vedleggserveren',
   },
   noMatch: {
     'en-us': 'No match',
@@ -545,7 +545,7 @@ export const attachmentsText = createDictionary({
       'Define se o formulário de anexos deve ser recolhido por padrão ao visualizar anexos existentes. Se os controles de anexos estiverem ocultos, essa configuração não terá efeito.',
     'hr-hr':
       'Treba li se obrazac za prilog prema zadanim postavkama sažeti prilikom pregleda postojećih priloga. Ako su kontrole priloga skrivene, ova postavka nema učinka.',
-    nb: 'Om vedleggsskjemaet skal skjules som standard når eksisterende vedlegg vises. Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt.',
+    nb: 'Skal vedleggsskjemaet skjules som standard når eksisterende vedlegg vises? Hvis vedleggskontrollene er skjult, har denne innstillingen ingen effekt.',
   },
   showControls: {
     'en-us': 'Show attachment controls',
@@ -586,7 +586,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Кілька збігів',
     'pt-br': 'Vários confrontos',
     'hr-hr': 'Višestruka podudaranja',
-    nb: 'Flere kamper',
+    nb: 'Flere treff',
   },
   multipleMatchesClick: {
     'en-us': 'Multiple Matches. Click To Disambiguate',
@@ -598,7 +598,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Кілька збігів. Натисніть, щоб усунути неоднозначність.',
     'pt-br': 'Vários resultados. Clique para desambiguar.',
     'hr-hr': 'Višestruka podudaranja. Kliknite za razrješenje dvosmislenosti',
-    nb: 'Flere treff. Klikk for å gjøre det mer entydig.',
+    nb: 'Flere treff. Klikk for å avklare',
   },
   totalFiles: {
     'en-us': 'Total files',
@@ -664,7 +664,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Знайдено дублікати файлів',
     'pt-br': 'Arquivos duplicados encontrados',
     'hr-hr': 'Pronađene duplikatne datoteke',
-    nb: 'Duplikatfiler funnet',
+    nb: 'Duplikater funnet',
   },
   duplicateFilesDescription: {
     'en-us':
@@ -683,7 +683,7 @@ export const attachmentsText = createDictionary({
       'Os seguintes arquivos não foram selecionados porque já existem neste conjunto de dados.',
     'hr-hr':
       'Sljedeće datoteke nisu odabrane jer već postoje u ovom skupu podataka.',
-    nb: 'Følgende filer er ikke valgt fordi de allerede finnes i dette datasettet.',
+    nb: 'Følgende filer er utelatt fordi de allerede finnes i dette datasettet.',
   },
   missingFilesFound: {
     'en-us': 'Files Missing From Mapping File',
