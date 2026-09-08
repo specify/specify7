@@ -29,7 +29,7 @@ export const treeText = createDictionary({
     'de-ch': 'Fehlerhafte Baumstruktur.',
     'pt-br': 'Má estrutura da árvore.',
     'hr-hr': 'Loša struktura stabla.',
-    nb: 'Dårlig trestruktur.',
+    nb: 'Ugyldig trestruktur.',
   },
   move: {
     'en-us': 'Move',
@@ -40,7 +40,7 @@ export const treeText = createDictionary({
     'de-ch': 'Verschieben',
     'pt-br': 'Mover',
     'hr-hr': 'Potez',
-    nb: 'Flytte',
+    nb: 'Flytt',
   },
   merge: {
     'en-us': 'Merge',
@@ -62,7 +62,7 @@ export const treeText = createDictionary({
     'de-ch': 'Synonymie rückgängig machen',
     'pt-br': 'Desfazer Sinônimo',
     'hr-hr': 'Poništi sinonimiju',
-    nb: 'Angre synonym',
+    nb: 'Angre synonymisering',
   },
   synonymize: {
     'en-us': 'Synonymize',
@@ -163,7 +163,7 @@ export const treeText = createDictionary({
       'O nó {treeName:string} "{nodeName:string}" será colocado, juntamente com todos os seus descendentes, sob o novo pai "{parentName:string}".',
     'hr-hr':
       'Čvor {treeName:string} "{nodeName:string}" bit će smješten, zajedno sa svim svojim potomcima, pod novim roditeljem "{parentName:string}".',
-    nb: '{treeName:string}-noden «{nodeName:string}» vil bli plassert, sammen med alle dens etterkommere, under den nye overordnede noden «{parentName:string}».',
+    nb: '{treeName:string}-noden «{nodeName:string}» vil bli plassert, sammen med alle under-nodene, under den nye overordnede noden «{parentName:string}».',
   },
   nodeBulkMoveMessage: {
     'en-us':
@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
     'pt-br': 'Não é possível mover este nó da árvore para cá.',
     'hr-hr': 'Ovaj čvor stabla ne može se premjestiti ovdje',
-    nb: 'Kan ikke flytte denne treknuten hit',
+    nb: 'Kan ikke flytte denne tre-noden hit',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",
@@ -204,7 +204,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann hier nicht zusammengelegt werden',
     'pt-br': 'Não é possível mesclar este nó da árvore aqui.',
     'hr-hr': 'Ovaj čvor stabla nije moguće spojiti ovdje',
-    nb: 'Kan ikke slå sammen denne trenoden her',
+    nb: 'Kan ikke slå sammen denne tre-noden her',
   },
   cantMoveToSynonym: {
     'en-us': "Can't move to a synonym",
