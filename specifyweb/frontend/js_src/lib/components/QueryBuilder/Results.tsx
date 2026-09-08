@@ -163,7 +163,12 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
         if (generation !== refreshGenerationRef.current) return;
         setTotalCount(refreshedTotalCount);
         const offsets = Array.from(
-          { length: Math.ceil(refreshedTotalCount / props.fetchSize) },
+          {
+            length: Math.min(
+              Math.ceil(currentResults.length / props.fetchSize),
+              Math.ceil(refreshedTotalCount / props.fetchSize)
+            ),
+          },
           (_, index) => index * props.fetchSize
         );
         const pages = await Promise.all(
