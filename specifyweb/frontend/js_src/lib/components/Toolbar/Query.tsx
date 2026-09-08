@@ -135,16 +135,18 @@ export function QueryListDialog({
       resourceEvents.on('deleted', (resource) => {
         if (resource.specifyTable.name !== 'SpQuery' || data === undefined)
           return;
-        const wasDisplayed = data.records.some(
-          (query) => query.id === resource.id
-        );
-        if (!wasDisplayed) return;
+        // Reconcile against searchFilter rather than current-page membership, since totalCount spans all pages
+        const name = (resource.get('name') as string | undefined) ?? '';
+        const matchesFilter =
+          searchFilter === '' ||
+          name.toLowerCase().includes(searchFilter.toLowerCase());
+        if (!matchesFilter) return;
         setData({
           records: data.records.filter((query) => query.id !== resource.id),
           totalCount: data.totalCount - 1,
         });
       }),
-    [data, setData]
+    [data, searchFilter, setData]
   );
 
   const totalCountRef = React.useRef<number | undefined>(undefined);
