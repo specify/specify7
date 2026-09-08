@@ -55,7 +55,11 @@ function isDataViewQueryDefinition(
     typeof value === 'object' &&
     value !== null &&
     !Array.isArray(value) &&
-    Array.isArray((value as { readonly fields?: unknown }).fields)
+    Array.isArray((value as { readonly fields?: unknown }).fields) &&
+    (value as { readonly fields: unknown[] }).fields.every(
+      (field) =>
+        typeof field === 'object' && field !== null && !Array.isArray(field)
+    )
   );
 }
 
