@@ -205,21 +205,22 @@ function Wrapped({
       ],
     });
 
+  const serializeQueryFields = (
+    fields: typeof state.fields = state.fields
+  ): ReturnType<typeof unParseQueryFields> =>
+    unParseQueryFields(state.baseTableName, fields);
+
   /*
    * That function does not need to be called most of the time if query
    * fields haven't changed yet. This avoids triggering needless save blocker
    */
-  const getQueryFieldRecords = saveRequired
-    ? (
-        fields: typeof state.fields = state.fields
-      ): ReturnType<typeof unParseQueryFields> =>
-        unParseQueryFields(state.baseTableName, fields)
-    : undefined;
+  const getQueryFieldRecords = saveRequired ? serializeQueryFields : undefined;
 
+  // runQuery must always serialize the fields it is given, not just when saveRequired
   const { runQuery, scheduleQueryRun } = useQueryExecution({
     query,
     fields: state.fields,
-    getQueryFieldRecords,
+    getQueryFieldRecords: serializeQueryFields,
     setQuery,
     onRun: (): void => dispatch({ type: 'RunQueryAction' }),
   });
