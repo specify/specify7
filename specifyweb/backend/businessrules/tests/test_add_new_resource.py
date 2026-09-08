@@ -36,9 +36,11 @@ class TestAddNewObjects(ApiTests):
         collectionobject.delete()
 
     def test_add_attachment(self):
-        attachment = models.Attachment.objects.create(
-            origfilename='new.txt',
-            tableid=1,
+        attachment = post_resource(
+            self.collection,
+            self.agent,
+            'attachment',
+            {'origfilename': 'new.txt', 'tableid': 1},
         )
 
         self.assertIsNotNone(attachment.id)
@@ -57,11 +59,16 @@ class TestAddNewObjects(ApiTests):
             rankid=0,
             treedef=self.taxontreedef,
         )
-        item = models.Taxontreedefitem.objects.create(
-            name='New taxon',
-            rankid=1,
-            parent=root,
-            treedef=self.taxontreedef,
+        item = post_resource(
+            self.collection,
+            self.agent,
+            'taxontreedefitem',
+            {
+                'name': 'New taxon',
+                'rankid': 1,
+                'parent': uri_for_model('taxontreedefitem', root.id),
+                'treedef': uri_for_model('taxontreedef', self.taxontreedef.id),
+            },
         )
 
         self.assertIsNotNone(item.id)
@@ -77,11 +84,18 @@ class TestAddNewObjects(ApiTests):
             rankid=0,
             treedef=self.geologictimeperiodtreedef,
         )
-        item = models.Geologictimeperiodtreedefitem.objects.create(
-            name='New geologic time period',
-            rankid=1,
-            parent=root,
-            treedef=self.geologictimeperiodtreedef,
+        item = post_resource(
+            self.collection,
+            self.agent,
+            'geologictimeperiodtreedefitem',
+            {
+                'name': 'New geologic time period',
+                'rankid': 1,
+                'parent': uri_for_model('geologictimeperiodtreedefitem', root.id),
+                'treedef': uri_for_model(
+                    'geologictimeperiodtreedef', self.geologictimeperiodtreedef.id
+                ),
+            },
         )
 
         self.assertIsNotNone(item.id)
@@ -100,11 +114,16 @@ class TestAddNewObjects(ApiTests):
             rankid=0,
             treedef=treedef,
         )
-        item = models.Lithostrattreedefitem.objects.create(
-            name='New lithostrat item',
-            rankid=1,
-            parent=root,
-            treedef=treedef,
+        item = post_resource(
+            self.collection,
+            self.agent,
+            'lithostrattreedefitem',
+            {
+                'name': 'New lithostrat item',
+                'rankid': 1,
+                'parent': uri_for_model('lithostrattreedefitem', root.id),
+                'treedef': uri_for_model('lithostrattreedef', treedef.id),
+            },
         )
 
         self.assertIsNotNone(item.id)
@@ -123,11 +142,16 @@ class TestAddNewObjects(ApiTests):
             rankid=0,
             treedef=treedef,
         )
-        item = models.Tectonicunittreedefitem.objects.create(
-            name='New tectonic unit item',
-            rankid=1,
-            parent=root,
-            treedef=treedef,
+        item = post_resource(
+            self.collection,
+            self.agent,
+            'tectonicunittreedefitem',
+            {
+                'name': 'New tectonic unit item',
+                'rankid': 1,
+                'parent': uri_for_model('tectonicunittreedefitem', root.id),
+                'treedef': uri_for_model('tectonicunittreedef', treedef.id),
+            },
         )
 
         self.assertIsNotNone(item.id)
@@ -140,11 +164,16 @@ class TestAddNewObjects(ApiTests):
         item.delete()
 
     def test_add_agent(self):
-        agent = models.Agent.objects.create(
-            agenttype=0,
-            firstname='New',
-            lastname='Agent',
-            division=self.division,
+        agent = post_resource(
+            self.collection,
+            self.agent,
+            'agent',
+            {
+                'agenttype': 0,
+                'firstname': 'New',
+                'lastname': 'Agent',
+                'division': uri_for_model('division', self.division.id),
+            },
         )
 
         self.assertIsNotNone(agent.id)
@@ -155,8 +184,11 @@ class TestAddNewObjects(ApiTests):
         agent.delete()
 
     def test_add_collectingevent(self):
-        collectingevent = models.Collectingevent.objects.create(
-            discipline=self.discipline,
+        collectingevent = post_resource(
+            self.collection,
+            self.agent,
+            'collectingevent',
+            {'discipline': uri_for_model('discipline', self.discipline.id)},
         )
 
         self.assertIsNotNone(collectingevent.id)
@@ -186,12 +218,21 @@ class TestAddNewObjects(ApiTests):
             parent=geography_root_definitionitem,
             treedef=self.geographytreedef,
         )
-        geography = models.Geography.objects.create(
-            name='New geography',
-            rankid=1,
-            definition=self.geographytreedef,
-            definitionitem=definitionitem,
-            parent=geography_root,
+        geography = post_resource(
+            self.collection,
+            self.agent,
+            'geography',
+            {
+                'name': 'New geography',
+                'rankid': 1,
+                'definition': uri_for_model(
+                    'geographytreedef', self.geographytreedef.id
+                ),
+                'definitionitem': uri_for_model(
+                    'geographytreedefitem', definitionitem.id
+                ),
+                'parent': uri_for_model('geography', geography_root.id),
+            },
         )
 
         self.assertIsNotNone(geography.id)
@@ -202,10 +243,15 @@ class TestAddNewObjects(ApiTests):
         geography.delete()
 
     def test_add_locality(self):
-        locality = models.Locality.objects.create(
-            localityname='New locality',
-            srclatlongunit=0,
-            discipline=self.discipline,
+        locality = post_resource(
+            self.collection,
+            self.agent,
+            'locality',
+            {
+                'localityname': 'New locality',
+                'srclatlongunit': 0,
+                'discipline': uri_for_model('discipline', self.discipline.id),
+            },
         )
 
         self.assertIsNotNone(locality.id)
@@ -235,10 +281,15 @@ class TestAddNewObjects(ApiTests):
             type='Discrete',
             collection=self.collection,
         )
-        group = models.Collectionobjectgroup.objects.create(
-            collection=self.collection,
-            cogtype=cogtype,
-            description='New description',
+        group = post_resource(
+            self.collection,
+            self.agent,
+            'collectionobjectgroup',
+            {
+                'collection': uri_for_model('collection', self.collection.id),
+                'cogtype': uri_for_model('collectionobjectgrouptype', cogtype.id),
+                'description': 'New description',
+            },
         )
 
         self.assertIsNotNone(group.id)
@@ -251,9 +302,14 @@ class TestAddNewObjects(ApiTests):
         group.delete()
 
     def test_add_accession(self):
-        accession = models.Accession.objects.create(
-            accessionnumber='New accession',
-            division=self.division,
+        accession = post_resource(
+            self.collection,
+            self.agent,
+            'accession',
+            {
+                'accessionnumber': 'New accession',
+                'division': uri_for_model('division', self.division.id),
+            },
         )
 
         self.assertIsNotNone(accession.id)
@@ -266,9 +322,14 @@ class TestAddNewObjects(ApiTests):
         accession.delete()
 
     def test_add_loan(self):
-        loan = models.Loan.objects.create(
-            loannumber='New loan',
-            discipline=self.discipline,
+        loan = post_resource(
+            self.collection,
+            self.agent,
+            'loan',
+            {
+                'loannumber': 'New loan',
+                'discipline': uri_for_model('discipline', self.discipline.id),
+            },
         )
 
         self.assertIsNotNone(loan.id)
@@ -279,9 +340,14 @@ class TestAddNewObjects(ApiTests):
         loan.delete()
 
     def test_add_gift(self):
-        gift = models.Gift.objects.create(
-            giftnumber='New gift',
-            discipline=self.discipline,
+        gift = post_resource(
+            self.collection,
+            self.agent,
+            'gift',
+            {
+                'giftnumber': 'New gift',
+                'discipline': uri_for_model('discipline', self.discipline.id),
+            },
         )
 
         self.assertIsNotNone(gift.id)
@@ -292,9 +358,11 @@ class TestAddNewObjects(ApiTests):
         gift.delete()
 
     def test_add_borrow(self):
-        borrow = models.Borrow.objects.create(
-            collectionmemberid=1,
-            invoicenumber='New invoice',
+        borrow = post_resource(
+            self.collection,
+            self.agent,
+            'borrow',
+            {'invoicenumber': 'New invoice'},
         )
 
         self.assertIsNotNone(borrow.id)
@@ -305,8 +373,11 @@ class TestAddNewObjects(ApiTests):
         borrow.delete()
 
     def test_add_disposal(self):
-        disposal = models.Disposal.objects.create(
-            disposalnumber='New disposal',
+        disposal = post_resource(
+            self.collection,
+            self.agent,
+            'disposal',
+            {'disposalnumber': 'New disposal'},
         )
 
         self.assertIsNotNone(disposal.id)
@@ -319,8 +390,11 @@ class TestAddNewObjects(ApiTests):
         disposal.delete()
 
     def test_add_deaccession(self):
-        deaccession = models.Deaccession.objects.create(
-            deaccessionnumber='New deaccession',
+        deaccession = post_resource(
+            self.collection,
+            self.agent,
+            'deaccession',
+            {'deaccessionnumber': 'New deaccession'},
         )
 
         self.assertIsNotNone(deaccession.id)

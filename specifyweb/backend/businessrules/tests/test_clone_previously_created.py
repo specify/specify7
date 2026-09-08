@@ -16,6 +16,9 @@ class TestClonePreviousVersionObjects(ApiTests):
     ResourceView.tsx hides the Clone button for that table.
     """
 
+    def _clone_resource(self, name, data):
+        return post_resource(self.collection, self.agent, name, data)
+
     def setUp(self):
         super().setUp()
 
@@ -206,10 +209,13 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_attachment(self):
         original = self.attachments[0]
 
-        clone = models.Attachment.objects.create(
-            origfilename=original.origfilename,
-            tableid=original.tableid,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'attachment',
+            {
+                'origfilename': original.origfilename,
+                'tableid': original.tableid,
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -225,13 +231,16 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_taxontreedefitem(self):
         original = self.taxontreedefitems[0]
 
-        clone = models.Taxontreedefitem.objects.create(
-            # Name is unique per tree definition, so it is not copied
-            name='Test taxon (clone)',
-            rankid=original.rankid,
-            parent=original.parent,
-            treedef=original.treedef,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'taxontreedefitem',
+            {
+                # Name is unique per tree definition, so it is not copied.
+                'name': 'Test taxon (clone)',
+                'rankid': original.rankid,
+                'parent': uri_for_model('taxontreedefitem', original.parent_id),
+                'treedef': uri_for_model('taxontreedef', original.treedef_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -249,12 +258,19 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_geologictimeperiodtreedefitem(self):
         original = self.geologictimeperiodtreedefitems[0]
 
-        clone = models.Geologictimeperiodtreedefitem.objects.create(
-            name=original.name,
-            rankid=original.rankid,
-            parent=original.parent,
-            treedef=original.treedef,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'geologictimeperiodtreedefitem',
+            {
+                'name': original.name,
+                'rankid': original.rankid,
+                'parent': uri_for_model(
+                    'geologictimeperiodtreedefitem', original.parent_id
+                ),
+                'treedef': uri_for_model(
+                    'geologictimeperiodtreedef', original.treedef_id
+                ),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -272,12 +288,15 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_lithostrattreedefitem(self):
         original = self.lithostrattreedefitems[0]
 
-        clone = models.Lithostrattreedefitem.objects.create(
-            name=original.name,
-            rankid=original.rankid,
-            parent=original.parent,
-            treedef=original.treedef,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'lithostrattreedefitem',
+            {
+                'name': original.name,
+                'rankid': original.rankid,
+                'parent': uri_for_model('lithostrattreedefitem', original.parent_id),
+                'treedef': uri_for_model('lithostrattreedef', original.treedef_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -295,12 +314,15 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_tectonicunittreedefitem(self):
         original = self.tectonicunittreedefitems[0]
 
-        clone = models.Tectonicunittreedefitem.objects.create(
-            name=original.name,
-            rankid=original.rankid,
-            parent=original.parent,
-            treedef=original.treedef,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'tectonicunittreedefitem',
+            {
+                'name': original.name,
+                'rankid': original.rankid,
+                'parent': uri_for_model('tectonicunittreedefitem', original.parent_id),
+                'treedef': uri_for_model('tectonicunittreedef', original.treedef_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -318,12 +340,15 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_agent(self):
         original = self.agents[0]
 
-        clone = models.Agent.objects.create(
-            agenttype=original.agenttype,
-            firstname=original.firstname,
-            lastname=original.lastname,
-            division=original.division,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'agent',
+            {
+                'agenttype': original.agenttype,
+                'firstname': original.firstname,
+                'lastname': original.lastname,
+                'division': uri_for_model('division', original.division_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -341,9 +366,12 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_collectingevent(self):
         original = self.collectingevents[0]
 
-        clone = models.Collectingevent.objects.create(
-            discipline=original.discipline,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'collectingevent',
+            {
+                'discipline': uri_for_model('discipline', original.discipline_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -358,13 +386,18 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_geography(self):
         original = self.geographies[0]
 
-        clone = models.Geography.objects.create(
-            name=original.name,
-            rankid=original.rankid,
-            definition=original.definition,
-            definitionitem=original.definitionitem,
-            parent=original.parent,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'geography',
+            {
+                'name': original.name,
+                'rankid': original.rankid,
+                'definition': uri_for_model('geographytreedef', original.definition_id),
+                'definitionitem': uri_for_model(
+                    'geographytreedefitem', original.definitionitem_id
+                ),
+                'parent': uri_for_model('geography', original.parent_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -382,11 +415,14 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_locality(self):
         original = self.localities[0]
 
-        clone = models.Locality.objects.create(
-            localityname=original.localityname,
-            srclatlongunit=original.srclatlongunit,
-            discipline=original.discipline,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'locality',
+            {
+                'localityname': original.localityname,
+                'srclatlongunit': original.srclatlongunit,
+                'discipline': uri_for_model('discipline', original.discipline_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -402,11 +438,14 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_accession(self):
         original = self.accessions[0]
 
-        clone = models.Accession.objects.create(
-            # Accession number is unique per division, so it is not copied
-            accessionnumber='Test accession (clone)',
-            division=original.division,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'accession',
+            {
+                # Accession number is unique per division, so it is not copied.
+                'accessionnumber': 'Test accession (clone)',
+                'division': uri_for_model('division', original.division_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -422,11 +461,14 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_loan(self):
         original = self.loans[0]
 
-        clone = models.Loan.objects.create(
-            # Loan number is unique per discipline, so it is not copied
-            loannumber='Test loan (clone)',
-            discipline=original.discipline,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'loan',
+            {
+                # Loan number is unique per discipline, so it is not copied.
+                'loannumber': 'Test loan (clone)',
+                'discipline': uri_for_model('discipline', original.discipline_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -442,11 +484,14 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_gift(self):
         original = self.gifts[0]
 
-        clone = models.Gift.objects.create(
-            # Gift number is unique per discipline, so it is not copied
-            giftnumber='Test gift (clone)',
-            discipline=original.discipline,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'gift',
+            {
+                # Gift number is unique per discipline, so it is not copied.
+                'giftnumber': 'Test gift (clone)',
+                'discipline': uri_for_model('discipline', original.discipline_id),
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -462,14 +507,16 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_borrow(self):
         original = self.borrows[0]
 
-        clone = models.Borrow.objects.create(
-            collectionmemberid=original.collectionmemberid,
-            invoicenumber=original.invoicenumber,
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'borrow',
+            {
+                'invoicenumber': original.invoicenumber,
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
-        self.assertEqual(clone.collectionmemberid, original.collectionmemberid)
+        self.assertEqual(clone.collectionmemberid, self.collection.id)
         self.assertEqual(clone.invoicenumber, original.invoicenumber)
         self.assertEqual(clone.remarks, original.remarks)
 
@@ -481,10 +528,13 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_disposal(self):
         original = self.disposals[0]
 
-        clone = models.Disposal.objects.create(
-            # Disposal number is unique, so it is not copied
-            disposalnumber='Test disposal (clone)',
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'disposal',
+            {
+                # Disposal number is unique, so it is not copied.
+                'disposalnumber': 'Test disposal (clone)',
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
@@ -499,10 +549,13 @@ class TestClonePreviousVersionObjects(ApiTests):
     def test_clone_deaccession(self):
         original = self.deaccessions[0]
 
-        clone = models.Deaccession.objects.create(
-            # Deaccession number is unique, so it is not copied
-            deaccessionnumber='Test deaccession (clone)',
-            remarks=original.remarks,
+        clone = self._clone_resource(
+            'deaccession',
+            {
+                # Deaccession number is unique, so it is not copied.
+                'deaccessionnumber': 'Test deaccession (clone)',
+                'remarks': original.remarks,
+            },
         )
 
         self.assertNotEqual(clone.id, original.id)
