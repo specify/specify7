@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-04 11:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-08 11:51+0000\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9\n"
+"X-Generator: Weblate 2026.9.1\n"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
@@ -140,8 +140,8 @@ msgstr "Takson for samlingsobjekt"
 #, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte "
-"taksonnavnet, taksonets vanlige navn og bestemmer."
+"Samlingsobjekter med gjeldende bestemmelser. Siste bestemmelse, taksonets "
+"populærnavn og bestemmers navn vises."
 
 #. Used in: 
 msgid "CollObToLocality"
