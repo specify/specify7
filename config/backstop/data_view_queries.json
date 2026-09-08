@@ -407,7 +407,21 @@
       "smushed": false
     },
     "CollectingTrip": {
-      "fields": [],
+      "fields": [
+        {
+          "tableList": "87",
+          "stringId": "87.collectingtrip.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
       "selectDistinct": false,
       "searchSynonymy": false,
       "smushed": false
@@ -851,13 +865,41 @@
       "smushed": false
     },
     "Gift": {
-      "fields": [],
+      "fields": [
+        {
+          "tableList": "131",
+          "stringId": "131.gift.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
       "selectDistinct": false,
       "searchSynonymy": false,
       "smushed": false
     },
     "Loan": {
-      "fields": [],
+      "fields": [
+        {
+          "tableList": "52",
+          "stringId": "52.collectingtrip.timestampModified",
+          "fieldName": "timestampModified",
+          "isRelFld": false,
+          "sortType": 0,
+          "position": 1,
+          "isDisplay": false,
+          "operStart": 8,
+          "startValue": "",
+          "isNot": false,
+          "isStrict": false
+        }
+      ],
       "selectDistinct": false,
       "searchSynonymy": false,
       "smushed": false
