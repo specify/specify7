@@ -27,9 +27,8 @@ msgstr "Legg til barn"
 #: components/SearchDialog/SelectRecordSet.tsx:136
 #: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:186
-#, fuzzy
 msgid "merge"
-msgstr "Fusjonere"
+msgstr "Slå sammen"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:372
@@ -39,7 +38,6 @@ msgstr "Kan ikke synonymisere med et synonym"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
-#, fuzzy
 msgid "undoSynonymy"
 msgstr "Angre synonym"
 
@@ -161,9 +159,8 @@ msgstr "Trær med innhold"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:507
-#, fuzzy
 msgid "resolveEncoding"
-msgstr "Slik løser du dette:"
+msgstr "Slik løser du det:"
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:444
@@ -252,7 +249,6 @@ msgstr ""
 #: components/Router/OverlayRoutes.tsx:88
 #: components/SetupTool/SetupForm.tsx:330
 #: components/Toolbar/TreeRepair.tsx:42
-#, fuzzy
 msgid "trees"
 msgstr "Trær"
 
@@ -345,7 +341,6 @@ msgstr "Kan ikke slå sammen denne trenoden her"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
-#, fuzzy
 msgid "synonymize"
 msgstr "Synonymisere"
 
@@ -375,9 +370,8 @@ msgstr "Paleobotanikk"
 
 #. Used in: Components > Data Model > Tree Business Rules
 #: components/DataModel/treeBusinessRules.ts:72
-#, fuzzy
 msgid "badStructure"
-msgstr "Dårlig trestruktur."
+msgstr "Ugyldig trestruktur."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:436
@@ -531,7 +525,6 @@ msgstr "Velg et mål som «{nodeName:string}» skal synonymiseres til"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:165
-#, fuzzy
 msgid "move"
 msgstr "Flytte"
 
@@ -641,8 +634,7 @@ msgstr ""
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:503
-#, fuzzy
 msgid "utf8EncodingWarning"
 msgstr ""
-"Disse tredataene kan ikke importeres til databasen din fordi de inneholder "
-"UTF-8-tegn, og denne databasen bruker {encoding:string}"
+"Disse tredataene kan ikke importeres i databasen din fordi de inneholder UTF‑"
+"8-tegn, og denne databasen bruker {encoding:string}"
