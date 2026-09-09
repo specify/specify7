@@ -54,7 +54,7 @@ export const batchEditText = createDictionary({
     'ru-ru':
       'Поле не поддерживается для пакетного редактирования. Либо удалите поле, либо скройте его.',
     'uk-ua':
-      'Поле не підтримується для пакетного редагування. Видаліть поле або зробіть його прихованим.',
+      'Поле не підтримується для пакетного редагування. Видаліть поле або приховайте його.',
     'hr-hr':
       'Polje nije podržano za skupno uređivanje. Uklonite polje ili ga sakrijte.',
     nb: 'Feltet støttes ikke for batch-redigering. Fjern feltet, eller gjør det skjult.',
