@@ -13,12 +13,12 @@ import type { SerializedResource } from '../DataModel/helperTypes';
 import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { genericTables, getTableById, tables } from '../DataModel/tables';
 import type { SpQuery, Tables } from '../DataModel/types';
+import { usePaginatedRecords } from '../FormSliders/hooks';
 import type { LeafletInstance } from '../Leaflet/addOns';
 import { LoadingScreen } from '../Molecules/Dialog';
 import { queryFromTree } from '../QueryBuilder/fromTree';
 import type { QueryField } from '../QueryBuilder/helpers';
 import { parseQueryFields } from '../QueryBuilder/helpers';
-import { useFetchQueryResults } from '../QueryBuilder/hooks';
 import type { QueryResultRow } from '../QueryBuilder/Results';
 import { useQueryResultsWrapper } from '../QueryBuilder/ResultsWrapper';
 import {
@@ -144,7 +144,7 @@ function Map({
     results: [results],
     canFetchMore,
     onFetchMore: handleFetchMore,
-  } = useFetchQueryResults(props);
+  } = usePaginatedRecords(props);
 
   const undefinedResult = results?.indexOf(undefined);
   const loadedResults = (
