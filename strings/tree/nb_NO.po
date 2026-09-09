@@ -13,9 +13,8 @@ msgstr ""
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:153
-#, fuzzy
 msgid "addChild"
-msgstr "Legg til barn"
+msgstr "Legg til underordnet"
 
 #. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 #: components/Merging/CompareField.tsx:216
@@ -195,7 +194,6 @@ msgstr "Kan ikke slås sammen til synonymer"
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:430
 #: components/TreeView/Actions.tsx:443
-#, fuzzy
 msgid "moveNode"
 msgstr "Flytt node"
 
