@@ -605,7 +605,7 @@ class BoundTreeRecord(NamedTuple):
     # complexity into BatchEdit as a hyper specific case, and there's more
     # contextual overhead for this function and the caller as both have to
     # agree on what tree_node_id should be.
-    # Ideally this should be integregated better into the native matching
+    # Ideally this should be integrated better into the native matching
     # behavior for tree records.
     def process_with_existing(self, tree_node_id: int | None) -> UploadResult:
         processed = self.process_row()
@@ -615,7 +615,7 @@ class BoundTreeRecord(NamedTuple):
         # data, then we check if the passed-in record has some value for the
         # relationship.
         # If the row can't be resolved but the record does have data through
-        # the relationship, then just indicate a match against the exisitng
+        # the relationship, then just indicate a match against the existing
         # record which presumably isn't present in the BatchEdit Data Set.
         if isinstance(processed.record_result, NullRecord) and tree_node_id is not None:
             columns = [pr.column for prs in self.parsedFields.values() for pr in prs]
