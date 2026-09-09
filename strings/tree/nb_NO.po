@@ -192,9 +192,8 @@ msgstr ""
 #: components/TreeView/Actions.tsx:400
 #: components/TreeView/Actions.tsx:437
 #: components/TreeView/Actions.tsx:450
-#, fuzzy
 msgid "desynonymizeNode"
-msgstr "Desynonymiser node"
+msgstr "Opphev synonymisering av node"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:350
