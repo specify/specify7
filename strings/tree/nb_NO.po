@@ -233,37 +233,31 @@ msgstr "Søketre"
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:280
-#, fuzzy
 msgid "opened"
 msgstr "Åpnet"
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:281
-#, fuzzy
 msgid "closed"
 msgstr "Lukket"
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:278
-#, fuzzy
 msgid "leafNode"
 msgstr "Bladknute"
 
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:255
-#, fuzzy
 msgid "nodeStats"
 msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
 
 #. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:254
-#, fuzzy
 msgid "leafNodeStats"
 msgstr "({directCount:number|formatted})"
 
 #. 🟥Used to show tree node's direct, indirect and synonymized usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:248
-#, fuzzy
 msgid "nodeStatsWithSynonyms"
 msgstr ""
 "({directCount:number|formatted}, {childCount:number|formatted}, "
@@ -271,32 +265,27 @@ msgstr ""
 
 #. 🟥Used to show leaf tree node's direct and synonymized usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:244
-#, fuzzy
 msgid "leafNodeStatsWithSynonyms"
 msgstr "({directCount:number|formatted}, {synonymCount:number|formatted})"
 
 #. 🟥Count of records determined as this node or any of its descendants that have been synonymized into another node. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:234
-#, fuzzy
 msgid "synonymizedCollectionObjectCount"
 msgstr "Synonymisert {collectionObjectTable:string} Antall"
 
 #. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:219
-#, fuzzy
 msgid "directCollectionObjectCount"
-msgstr "Direkte {collectionObjectTable:string}-telling"
+msgstr "Direkte {collectionObjectTable:string}-antall"
 
 #. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:227
-#, fuzzy
 msgid "indirectCollectionObjectCount"
-msgstr "Indirekte {collectionObjectTable:string}-telling"
+msgstr "Indirekte {collectionObjectTable:string}-antall"
 
 #. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:322
 #: components/TreeView/Row.tsx:334
-#, fuzzy
 msgid "geologicTimePeriodLine"
 msgstr "{label:string}: {value:string} {suffix:string}"
 
