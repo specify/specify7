@@ -235,7 +235,7 @@ export const resourcesText = createDictionary({
       '«Формат поля» контролює, як дані для певного поля таблиці відображаються в результатах запиту, експорті та формах. Він керує автонумерацією та композицією різних частин, що визначають поле.',
     'hr-hr':
       '„Format polja“ kontrolira kako se podaci za određeno polje tablice prikazuju u rezultatima upita, izvozima i obrascima. Upravlja automatskim numeriranjem i sastavom različitih dijelova koji definiraju polje.',
-    nb: '«Feltformat» styrer hvordan data for et bestemt tabellfelt vises i spørreresultater, eksporter og skjemaer. Den administrerer autonummerering og sammensetningen av ulike deler som definerer feltet.',
+    nb: '«Feltformat» styrer hvordan data for et bestemt tabellfelt vises i spørreresultater, eksporterte filer og skjemaer. Det administrerer autonummerering og sammensetningen av ulike deler som definerer feltet.',
   },
   dataObjectFormatters: {
     'en-us': 'Record Formatters',
@@ -246,7 +246,7 @@ export const resourcesText = createDictionary({
     'fr-fr': "Formateurs d'enregistrements",
     'pt-br': 'Formatadores de registro',
     'hr-hr': 'Formateri zapisa',
-    nb: 'Record Formaters',
+    nb: 'Postformaterere',
   },
   formatter: {
     'en-us': 'Table Format',
@@ -276,7 +276,7 @@ export const resourcesText = createDictionary({
       'O “Formato da Tabela” controla como os dados de uma tabela específica são exibidos nos resultados da consulta, nas exportações e nas caixas de combinação de consultas. Ele determina os campos a serem exibidos e a ordem em que serão exibidos. A formatação condicional pode ser configurada com base em um valor no registro.',
     'hr-hr':
       '„Format tablice“ kontrolira kako se podaci iz određene tablice prikazuju u rezultatima upita, izvozima i kombiniranim okvirima upita. Određuje polja za prikaz i njihov redoslijed. Uvjetno oblikovanje može se konfigurirati na temelju vrijednosti u zapisu.',
-    nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksporter og kombinasjonsbokser for spørringer. Det bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
+    nb: '«Tabellformat» styrer hvordan data fra en bestemt tabell vises i spørreresultater, eksportfiler og kombinasjonsbokser for spørringer. Det bestemmer hvilke felt som skal vises og rekkefølgen deres. Betinget formatering kan konfigureres basert på en verdi i posten.',
   },
   aggregator: {
     'en-us': 'Table Aggregation',
@@ -306,7 +306,7 @@ export const resourcesText = createDictionary({
       'A “Agregação de Tabelas” controla como vários registros de tabelas são consolidados em uma única string de texto. O formato da tabela, o separador, o sufixo, o campo de classificação e o limite de visualização do registro são personalizáveis. Essa configuração pode ser exibida nos resultados da consulta e nos formatos de tabela.',
     'hr-hr':
       '„Agregacija tablica“ kontrolira kako se više zapisa tablice konsolidira u jedan tekstualni niz. Format tablice, razdjelnik, sufiks, polje za sortiranje i ograničenje pregleda zapisa mogu se prilagoditi. Može se prikazati u rezultatima upita i formatima tablica.',
-    nb: '«Tabellaggregering» styrer hvordan flere tabellposter konsolideres sammen til én tekststreng. Tabellformatet, skilletegnet, suffikset, sorteringsfeltet og forhåndsvisningsgrensen for poster kan tilpasses. Det kan vises i spørreresultater og tabellformater.',
+    nb: '«Tabellaggregering» styrer hvordan flere tabellposter konsolideres til én tekststreng. Tabellformatet, skilletegnet, suffikset, sorteringsfeltet og forhåndsvisningsgrensen for poster kan tilpasses. Dette resultatet kan vises i spørreresultater og tabellformater.',
   },
   formattedResource: {
     'en-us': 'Formatted Resource',
@@ -439,7 +439,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Andere Eigenschaften Ressource',
     'pt-br': 'Outros recursos de propriedades',
     'hr-hr': 'Drugi resursi za nekretnine',
-    nb: 'Andre egenskaper Ressurs',
+    nb: 'Ressurs for andre egenskaper',
   },
   otherAppResource: {
     'en-us': 'Other Resource',
@@ -472,7 +472,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Individuell',
     'pt-br': 'Personalizado',
     'hr-hr': 'Običaj',
-    nb: 'Skikk',
+    nb: 'Tillpasset',
   },
   leafletLayers: {
     'en-us': 'Leaflet Layers',
@@ -876,7 +876,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Als Benutzer ausführen',
     'es-es': 'Ejecutar como usuario',
     'fr-fr': "Exécuter en tant qu'utilisateur",
-    'ru-ru': 'Запустить от имени пользователя',
+    'ru-ru': 'Запуск от имени пользователя',
     'uk-ua': 'Запуск від імені користувача',
     'pt-br': 'Executar como usuário',
     'hr-hr': 'Pokreni kao korisnik',
@@ -1008,7 +1008,7 @@ export const resourcesText = createDictionary({
   collapseConditionalField: {
     'en-us': 'Collapse Conditional Field',
     'de-ch': 'Zusammenbruch des bedingten Feldes',
-    'es-es': 'Campo condicional de colapso',
+    'es-es': 'Colapso del campo condicional',
     'fr-fr': 'Réduire le champ conditionnel',
     'ru-ru': 'Свернуть условное поле',
     'uk-ua': 'Згорнути умовне поле',
@@ -1133,7 +1133,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Заменённый препарат удалить нельзя.',
     'uk-ua': 'Обмінений препарат не можна видалити',
     'hr-hr': 'Zamijenjeni pripravak ne može se izbrisati',
-    nb: 'Et utskiftet preparat kan ikke slettes',
+    nb: 'Et preparat som er gitt eller byttet bort kan ikke slettes',
   },
   deleteExchangeInPrep: {
     'en-us': 'A exchanged in preparation cannot be deleted',
@@ -1145,7 +1145,7 @@ export const resourcesText = createDictionary({
     'ru-ru': 'Подготовленный обмен не может быть удален.',
     'uk-ua': 'Обмін, що готується, не можна видалити',
     'hr-hr': 'Razmjena u pripremi ne može se izbrisati',
-    nb: 'En utveksling som er under forberedelse kan ikke slettes',
+    nb: 'Et preparat som er fått i gave eller er byttet til seg kan ikke slettes',
   },
   selectDeterminationTaxon: {
     'en-us': 'Select one taxon-tree set to continue with:',
@@ -1223,7 +1223,7 @@ export const resourcesText = createDictionary({
     'es-es': 'La preparación se utiliza en un préstamo.',
     'fr-fr': 'Cette préparation est en cours de prêt.',
     'pt-br': 'O preparo é utilizado em um empréstimo.',
-    'ru-ru': 'Данный препарат используется при оформлении кредита.',
+    'ru-ru': 'Данный препарат используется в кредите.',
     'uk-ua': 'Препарат використовується у позиці.',
     'hr-hr': 'Priprema se koristi u zajmu.',
     nb: 'Preparatet brukes i et lån.',

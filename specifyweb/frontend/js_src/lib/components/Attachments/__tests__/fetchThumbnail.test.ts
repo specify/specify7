@@ -37,6 +37,7 @@ describe('fetchThumbnail', () => {
       alt: 'testLocation',
       width: 78,
       height: 78,
+      isServerBacked: true,
     });
   });
 

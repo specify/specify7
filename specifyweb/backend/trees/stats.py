@@ -10,7 +10,7 @@ from sqlalchemy import sql
 import logging
 logger = logging.getLogger(__name__)
 
-def get_tree_stats(treedef, tree, parentid, specify_collection, session_context, using_cte):
+def get_tree_stats(treedef, tree, parentid, specify_collection, session_context, using_cte, include_synonym_count=False):
     tree_table = datamodel.get_table(tree)
     tree_def_item = getattr(models, tree_table.name + 'TreeDefItem')
     parentid = None if parentid == 'null' else int(parentid)
@@ -112,8 +112,41 @@ def get_tree_stats(treedef, tree, parentid, specify_collection, session_context,
                 query = make_joins(query)
                 results = list(query)
 
+        if include_synonym_count:
+            synonym_counts = get_synonym_counts(
+                tree_node, treedef_col, treedef, parentid, specify_collection,
+                session)
+            results = [
+                (*row, synonym_counts.get(row[0], 0)) for row in results
+            ]
+
     logger.debug(str(query))
     return results
+
+
+def get_synonym_counts(tree_node, treedef_col, treedef, parentid, specify_collection, session):
+    """Count current determinations that still point directly at a node which has
+    since been synonymized into a different (preferred) node, aggregated over each
+    child's whole subtree so parents reflect their synonymized descendants."""
+    child = aliased(tree_node)
+    descendant = aliased(tree_node)
+    det = aliased(models.Determination)
+
+    query = session.query(child._id, sql.func.count(det._id)) \
+        .outerjoin(descendant, sql.and_(
+            descendant.nodeNumber.between(
+                child.nodeNumber, child.highestChildNodeNumber),
+            getattr(descendant, treedef_col) == int(treedef))) \
+        .outerjoin(det, sql.and_(
+            det.isCurrent,
+            det.collectionMemberId == specify_collection.id,
+            det.TaxonID == descendant._id,
+            det.PreferredTaxonID != descendant._id)) \
+        .filter(child.ParentID == parentid) \
+        .filter(getattr(child, treedef_col) == int(treedef)) \
+        .group_by(child._id)
+
+    return dict(query)
 
 class StatsQuerySpecialization(
     namedtuple('StatsQuerySpecialization', 'collection')):

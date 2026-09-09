@@ -29,7 +29,12 @@ import {
 } from '../Forms/useViewDefinition';
 import { loadingGif } from '../Molecules';
 import { userPreferences } from '../Preferences/userPreferences';
-import { fetchOriginalUrl, fetchThumbnail } from './attachments';
+import {
+  fetchOriginalUrl,
+  fetchThumbnail,
+  reportAttachmentServerFailure,
+  useAttachmentServerStatus,
+} from './attachments';
 import { AttachmentRecordLink, getAttachmentTable } from './Cell';
 import { Thumbnail } from './Preview';
 
@@ -48,12 +53,19 @@ export function AttachmentViewer({
     | ((table: SpecifyTable, recordId: number) => void)
     | undefined;
 }): JSX.Element {
+  const attachmentServerStatus = useAttachmentServerStatus();
   const serialized = React.useMemo(
     () => serializeResource(attachment),
     [attachment]
   );
   const [originalUrl] = useAsyncState(
-    React.useCallback(async () => fetchOriginalUrl(serialized), [serialized]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchOriginalUrl(serialized)
+          : undefined,
+      [attachmentServerStatus, serialized]
+    ),
     false
   );
 
@@ -104,7 +116,13 @@ export function AttachmentViewer({
   const type = mimeType?.split('/')[0];
 
   const [thumbnail] = useAsyncState(
-    React.useCallback(async () => fetchThumbnail(serialized), [serialized]),
+    React.useCallback(
+      async () =>
+        attachmentServerStatus !== 'unavailable'
+          ? fetchThumbnail(serialized)
+          : undefined,
+      [attachmentServerStatus, serialized]
+    ),
     false
   );
 
@@ -136,7 +154,9 @@ export function AttachmentViewer({
   return (
     <>
       <div className="flex min-h-[theme(spacing.60)] w-full min-w-[theme(spacing.60)] flex-1 items-center justify-center">
-        {displayOriginal === 'full' && !isTiffImage ? (
+        {attachmentServerStatus === 'unavailable' ? (
+          <AttachmentServerUnavailable />
+        ) : displayOriginal === 'full' && !isTiffImage ? (
           originalUrl === undefined ? (
             loadingGif
           ) : type === 'image' ? (
@@ -192,6 +212,7 @@ export function AttachmentViewer({
                 alt={title}
                 className="h-full w-full object-scale-down"
                 src={thumbnail?.src}
+                onError={reportAttachmentServerFailure}
               />
             </object>
           )
@@ -229,25 +250,29 @@ export function AttachmentViewer({
             <span className="flex-1" />
             {typeof originalUrl === 'string' && (
               <div className="flex flex-wrap gap-2">
-                <Component
-                  className="flex-1 whitespace-nowrap"
-                  download={new URL(originalUrl).searchParams.get(
-                    'downloadname'
-                  )}
-                  href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
-                  target="_blank"
-                  onClick={undefined}
-                >
-                  {notificationsText.download()}
-                </Component>
-                <Component
-                  className="flex-1 whitespace-nowrap"
-                  href={originalUrl}
-                  target="_blank"
-                  onClick={undefined}
-                >
-                  {commonText.openInNewTab()}
-                </Component>
+                {attachmentServerStatus !== 'unavailable' && (
+                  <>
+                    <Component
+                      className="flex-1 whitespace-nowrap"
+                      download={new URL(originalUrl).searchParams.get(
+                        'downloadname'
+                      )}
+                      href={`/attachment_gw/proxy/${new URL(originalUrl).search}`}
+                      target="_blank"
+                      onClick={undefined}
+                    >
+                      {notificationsText.download()}
+                    </Component>
+                    <Component
+                      className="flex-1 whitespace-nowrap"
+                      href={originalUrl}
+                      target="_blank"
+                      onClick={undefined}
+                    >
+                      {commonText.openInNewTab()}
+                    </Component>
+                  </>
+                )}
                 {typeof table === 'object' &&
                 typeof handleViewRecord === 'function' ? (
                   <AttachmentRecordLink
@@ -268,7 +293,7 @@ export function AttachmentViewer({
   );
 }
 
-function ImageTransformContent({
+export function ImageTransformContent({
   alt,
   canToggleSidebar,
   isSidebarExpanded,
@@ -286,12 +311,26 @@ function ImageTransformContent({
   readonly thumbnail: string | undefined;
 }): JSX.Element {
   const { resetTransform } = useControls();
+  const thumbnailFallbackAttempted = React.useRef(false);
+  const [imageFailed, setImageFailed] = React.useState(false);
+
+  React.useEffect(() => {
+    thumbnailFallbackAttempted.current = false;
+    setImageFailed(false);
+  }, [src]);
+
   const handleError = React.useCallback(
     (event: React.SyntheticEvent<HTMLImageElement>) => {
-      if (typeof thumbnail === 'string') {
+      if (
+        !thumbnailFallbackAttempted.current &&
+        typeof thumbnail === 'string'
+      ) {
+        thumbnailFallbackAttempted.current = true;
         const image = event.currentTarget;
-        image.onerror = null;
         image.src = thumbnail;
+      } else {
+        setImageFailed(true);
+        reportAttachmentServerFailure();
       }
     },
     [thumbnail]
@@ -310,13 +349,17 @@ function ImageTransformContent({
         wrapperClass="flex h-full w-full items-center justify-center"
         wrapperStyle={{ height: '100%', width: '100%' }}
       >
-        <img
-          alt={alt}
-          className="h-full w-full max-h-full max-w-full object-contain"
-          src={src}
-          onError={handleError}
-          onLoad={handleLoad}
-        />
+        {imageFailed ? (
+          <AttachmentServerUnavailable />
+        ) : (
+          <img
+            alt={alt}
+            className="h-full w-full max-h-full max-w-full object-contain"
+            src={src}
+            onError={handleError}
+            onLoad={handleLoad}
+          />
+        )}
       </TransformComponent>
       {showControls ? (
         <div
@@ -330,6 +373,15 @@ function ImageTransformContent({
           />
         </div>
       ) : undefined}
+    </div>
+  );
+}
+
+function AttachmentServerUnavailable(): JSX.Element {
+  return (
+    <div className="flex flex-col items-center gap-2 p-4 text-center">
+      <strong>{attachmentsText.attachmentServerUnavailable()}</strong>
+      <span>{attachmentsText.attachmentServerUnavailableDescription()}</span>
     </div>
   );
 }

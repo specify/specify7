@@ -81,6 +81,11 @@ def get_setup_progress() -> dict:
 def _setup_resources_complete(completed_resources: dict) -> bool:
     return all(bool(resource_ready) for resource_ready in completed_resources.values())
 
+
+def is_guided_setup_complete() -> bool:
+    """Return whether all Guided Setup resources have been created."""
+    return _setup_resources_complete(get_setup_resource_progress())
+
 def get_setup_resource_progress() -> dict:
     """Returns a dictionary of the status of database setup resources."""
     return {

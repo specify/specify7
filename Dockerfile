@@ -36,7 +36,7 @@ RUN mkdir -p /opt/specify7 \
 #####################################################################
 
 
-FROM node:20-alpine AS build-frontend
+FROM node:24-alpine AS build-frontend
 
 LABEL maintainer="Specify Collections Consortium <github.com/specify>"
 

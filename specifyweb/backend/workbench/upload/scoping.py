@@ -319,6 +319,7 @@ def apply_scoping_to_uploadtable(
         static=ut.static,
         toOne=to_ones,
         toMany=to_many,  # type: ignore
+        preserveIdentity=ut.preserveIdentity,
         scopingAttrs=scoping_relationships(collection, table),
         disambiguation=None,
         # Often, we'll need to recur down to clone (nested one-to-ones). Having this entire is handy in such a case

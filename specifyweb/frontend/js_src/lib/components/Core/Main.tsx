@@ -102,7 +102,7 @@ function MissingAgent(): JSX.Element {
       }}
       forceToTop
       header={userText.noAgent()}
-      onClose={(): void => globalThis.location.assign('/accounts/logout/')}
+      onClose={(): void => globalThis.location.assign('/specify/command/logout/')}
     >
       {userText.noAgentDescription()}
     </Dialog>
