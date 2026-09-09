@@ -1,6 +1,5 @@
 from functools import partialmethod
 from django.db import models
-from django.db.models import Q, CheckConstraint
 from django.utils import timezone
 from specifyweb.backend.businessrules.exceptions import AbortSave
 from specifyweb.specify.models_utils.model_timestamp import save_auto_timestamp_field_with_override

@@ -217,7 +217,7 @@ export const split = <LEFT_ITEM, RIGHT_ITEM = LEFT_ITEM>(
  * Convert an array of [key,value] tuples to a RA<[key, RA<value>]>
  *
  * @remarks
- * KEY doesn't have to be a string. It can be of any time
+ * KEY doesn't have to be a string. It can be of any type
  */
 export const group = <KEY, VALUE>(
   entries: RA<readonly [key: KEY, value: VALUE]>

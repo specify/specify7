@@ -1,24 +1,32 @@
+from collections import defaultdict
+
 from django import http
 from django.db import router, transaction
-from django.db.models.deletion import Collector
+from django.db.models.deletion import Collector, CASCADE, PROTECT
 from django.db.models import ForeignKey
+from django.views.decorators.http import require_POST
 
 from specifyweb.middleware.general import require_http_methods
 from specifyweb.specify.api.crud import (
     get_discipline_delete_guard_blockers,
     get_object_or_404,
+    get_model,
     prepare_discipline_for_delete,
 )
+from specifyweb.specify.models import protect_with_blockers
 from specifyweb.specify.api.serializers import toJson
 from specifyweb.specify.views import login_maybe_required
 
 @login_maybe_required
 @require_http_methods(['GET', 'HEAD'])
-def delete_blockers(request, model, id):
+def old_delete_blockers(request, model, id):
     """Returns a JSON list of fields on <model> that point to related
     resources which prevent the resource <id> of that model from being
     deleted.
     """
+    # limit = request.GET["limit"]
+    # depth_limit = request.GET["depthLimit"]
+
     obj = get_object_or_404(model, id=int(id))
     using = router.db_for_write(obj.__class__, instance=obj)
 
@@ -37,6 +45,60 @@ def delete_blockers(request, model, id):
         result = _collect_delete_blockers(obj, using)
 
     return http.HttpResponse(toJson(result), content_type='application/json')
+
+@login_maybe_required
+@require_http_methods(['GET'])
+def delete_blockers(request, model, id):
+    limit = int(request.GET["limit"]) if "limit" in request.GET else 20
+    offset = int(request.GET["offset"]) if "offset" in request.GET else 0
+    obj = get_object_or_404(model, id=int(id))
+    immediate, deferred = fetch_immediate_blockers(obj, limit=limit, offset=offset)
+    result = {
+        "results": immediate,
+        "next": deferred
+    }
+    return http.HttpResponse(toJson(result), content_type='application/json')
+
+def fetch_immediate_blockers(obj, limit=20, offset=0):
+    all_fields = obj._meta.get_fields(include_hidden=True)
+    all_relationships = filter(
+        # Check whether there are any concrete fields that SHOULD be included
+        # here, like some ToOne fields that acts as blockers
+        lambda field: field.is_relation and not field.concrete,
+        all_fields
+    )
+    results = []
+    next = []
+    for relationship in all_relationships:
+        related_ids = _prepare_blockers(obj, relationship, limit=limit, offset=offset)
+        if len(related_ids) == 0:
+            continue
+        complete = limit == 0 or len(related_ids) < limit
+        payload = {
+            "table": relationship.related_model._meta.model_name,
+            "field": relationship.field.name,
+            "ids": list(related_ids),
+            "offset": offset,
+            "limit": limit,
+            "complete": complete
+        }
+        if relationship.on_delete is protect_with_blockers or relationship.on_delete is PROTECT:
+            results.append(payload)
+        elif relationship.on_delete is CASCADE:
+            next.append(payload)
+    return results, next
+
+
+def _prepare_blockers(obj, relationship, limit=20, offset=0):
+    query_set = (
+        relationship.related_model.objects
+            .filter(
+                **{relationship.field.name: obj.pk}
+            ).order_by("pk")
+            .values_list("pk", flat=True))
+    if limit != 0:
+        query_set = query_set[offset: offset + limit]
+    return query_set
 
 def _collect_delete_blockers(obj, using) -> list[dict]:
     collector = Collector(using=using)

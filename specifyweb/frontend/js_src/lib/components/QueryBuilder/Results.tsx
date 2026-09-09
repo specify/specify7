@@ -13,6 +13,7 @@ import type { SpecifyResource } from '../DataModel/legacyTypes';
 import { schema } from '../DataModel/schema';
 import type { SpecifyTable } from '../DataModel/specifyTable';
 import type { SpQuery } from '../DataModel/types';
+import { usePaginatedRecords } from '../FormSliders/hooks';
 import { treeRanksPromise } from '../InitialContext/treeRanks';
 import { RecordMergingLink } from '../Merging';
 import { loadingGif } from '../Molecules';
@@ -31,7 +32,6 @@ import { CreateRecordSet } from './CreateRecordSet';
 import type { QueryFieldSpec } from './fieldSpec';
 import type { QueryField } from './helpers';
 import { sortTypes } from './helpers';
-import { useFetchQueryResults } from './hooks';
 import { QueryResultsTable } from './ResultsTable';
 import { QueryToForms } from './ToForms';
 import { QueryToMap } from './ToMap';
@@ -99,7 +99,7 @@ export function QueryResults(props: QueryResultsProps): JSX.Element {
     onFetchMore: handleFetchMore,
     totalCount: [totalCount, setTotalCount],
     canFetchMore,
-  } = useFetchQueryResults(props);
+  } = usePaginatedRecords(props);
 
   const canMergeTable = canMerge(table);
 
