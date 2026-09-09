@@ -147,17 +147,15 @@ msgstr "Velg et nytt mål som «{nodeName:string}» skal slås sammen med"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:345
-#, fuzzy
 msgid "bulkMoveNodeHintMessage"
 msgstr ""
-"Velg et nytt mål for \"{nodeName:string}\"-preparatene som skal flyttes til"
+"Velg et nytt mål for \"{nodeName:string}\"-forberedelser skal flyttes til"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:467
-#, fuzzy
 msgid "mergeNodeMessage"
 msgstr ""
-"Alle referanser til {treeName:string}-noden «{nodeName:string}» vil bli "
+"Alle referanser til {treeName:string} noden «{nodeName:string}» vil bli "
 "erstattet med «{parentName:string}», og alle etterkommere av «"
 "{nodeName:string}» vil bli flyttet til «{parentName:string}», der eventuelle "
 "etterkommere som samsvarer i navn og rang blir slått sammen rekursivt."
