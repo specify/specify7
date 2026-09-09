@@ -436,9 +436,8 @@ msgstr "Virveldyrpaleontologi"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:455
-#, fuzzy
 msgid "defaultTreeTaskFailed"
-msgstr "Oppretting av standardtre mislyktes."
+msgstr "Standard treopprettelse mislyktes."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:400
@@ -450,9 +449,8 @@ msgstr "Desynonymiser node"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:463
-#, fuzzy
 msgid "defaultTreeTaskCancelled"
-msgstr "Standardoppretting av tre ble avbrutt."
+msgstr "Standard treopprettelse ble avbrutt."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:396
@@ -464,7 +462,8 @@ msgstr "Gjør {nodeName:string} til et synonym for {synonymName:string}"
 #: components/TreeView/CreateTree.tsx:646
 #, fuzzy
 msgid "defaultTreeCreationProgress"
-msgstr "Oppretter trepost {current:number|formatted}/{total:number|formatted}"
+msgstr ""
+"Oppretter treelement {current:number|formatted}/{total:number|formatted}"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:555
@@ -492,9 +491,8 @@ msgstr "Standard treoppretting startet"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:471
-#, fuzzy
 msgid "defaultTreeTaskCompleted"
-msgstr "Standardtreoppretting fullført."
+msgstr "Standard treopprettelse ble fullført."
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:390
@@ -623,9 +621,8 @@ msgstr ""
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:447
-#, fuzzy
 msgid "defaultTreeTaskStarted"
-msgstr "Standardprosessen for oppretting av tre har startet."
+msgstr "Standardprosessen for treopprettelse har startet."
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:547
