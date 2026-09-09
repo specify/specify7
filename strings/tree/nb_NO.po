@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-09 10:43+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -458,13 +458,11 @@ msgstr "Steiner"
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:677
-#, fuzzy
 msgid "meteorites"
 msgstr "Meteoritter"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:427
-#, fuzzy
 msgid "emptyTrees"
 msgstr "Tomme trær"
 
