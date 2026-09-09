@@ -607,7 +607,7 @@ class BoundTreeRecord(NamedTuple):
     # agree on what tree_node_id should be.
     # Ideally this should be integregated better into the native matching
     # behavior for tree records.
-    def process_with_exising(self, tree_node_id: int | None) -> UploadResult:
+    def process_with_existing(self, tree_node_id: int | None) -> UploadResult:
         processed = self.process_row()
         # We first check if the row can be resolved to an existing Tree node,
         # or a new Tree node should be created
