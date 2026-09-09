@@ -467,9 +467,8 @@ msgstr ""
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:555
-#, fuzzy
 msgid "missingRanks"
-msgstr "Manglende rangeringer"
+msgstr "Manglende ranger"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:65
@@ -577,9 +576,8 @@ msgstr "Lukket"
 
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:294
-#, fuzzy
 msgid "defaultTreeCreationLoadingMessage"
-msgstr "Standard treoppretting pågår, vennligst vent ..."
+msgstr "Standard treopprettelse pågår, vennligst vent ..."
 
 #. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:322
