@@ -172,7 +172,7 @@ function Wrapped({
             <Button.BorderedGray
               onClick={(): void =>
                 loading(
-                  ping('/accounts/logout/', {method: 'POST'}).then(() =>
+                  ping('/accounts/logout/', { method: 'POST' }).then(() =>
                     globalThis.location.assign(
                       formatUrl('/specify/command/logout/', { next: nextUrl })
                     )
