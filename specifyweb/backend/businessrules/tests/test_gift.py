@@ -165,3 +165,38 @@ class GiftTests(ApiTests):
             'SHIPMENT-SHIPPED-BY-001',
         )
         self.assertEqual(fetched.discipline, self.discipline)
+
+    def test_add_new_shipped_by_agent(self):
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-NEW-SHIPPED-BY-001',
+            discipline=self.discipline,
+        )
+
+        new_shipped_by = models.Agent.objects.create(
+            agenttype=0,
+            firstname='New',
+            lastname='Shipped By Agent',
+            division=self.division,
+        )
+
+        shipment = gift.shipments.create(
+            shipmentnumber='SHIPMENT-NEW-SHIPPED-BY-001',
+            shippedby=new_shipped_by,
+            discipline=self.discipline,
+        )
+
+        fetched_agent = models.Agent.objects.get(id=new_shipped_by.id)
+        fetched_shipment = models.Shipment.objects.get(id=shipment.id)
+
+        self.assertEqual(fetched_agent.firstname, 'New')
+        self.assertEqual(fetched_agent.lastname, 'Shipped By Agent')
+        self.assertEqual(fetched_agent.agenttype, 0)
+        self.assertEqual(fetched_agent.division, self.division)
+
+        self.assertEqual(fetched_shipment.gift, gift)
+        self.assertEqual(fetched_shipment.shippedby, fetched_agent)
+        self.assertEqual(
+            fetched_shipment.shipmentnumber,
+            'SHIPMENT-NEW-SHIPPED-BY-001',
+        )
+        self.assertEqual(fetched_shipment.discipline, self.discipline)
