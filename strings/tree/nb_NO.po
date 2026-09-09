@@ -315,7 +315,7 @@ msgstr "Meteoritter"
 #: components/TreeView/Tree.tsx:307
 #, fuzzy
 msgid "initializeEmptyTree"
-msgstr "Initialiser et tomt tre"
+msgstr "Klargjør et tomt tre"
 
 #. 🟥Used to show tree node's direct, indirect and synonymized usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:248
@@ -365,7 +365,6 @@ msgstr "Skal de manglende ranger opprettes?"
 #. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 #: components/SetupTool/SetupForm.tsx:320
 #: components/TreeView/CreateTree.tsx:524
-#, fuzzy
 msgid "source"
 msgstr "Kilde"
 
