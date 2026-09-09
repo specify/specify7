@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-09 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -301,7 +301,7 @@ msgstr "Agentvurdering"
 #. Used in: 
 #, fuzzy
 msgid "AppraisalToAgent_desc"
-msgstr "Takseringer og deres tilknyttede agenter."
+msgstr "Vurderinger gjort av agenter."
 
 #. Used in: 
 msgid "GeoTimePeriodToCO"
