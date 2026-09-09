@@ -876,7 +876,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Als Benutzer ausführen',
     'es-es': 'Ejecutar como usuario',
     'fr-fr': "Exécuter en tant qu'utilisateur",
-    'ru-ru': 'Запустить от имени пользователя',
+    'ru-ru': 'Запуск от имени пользователя',
     'uk-ua': 'Запуск від імені користувача',
     'pt-br': 'Executar como usuário',
     'hr-hr': 'Pokreni kao korisnik',
