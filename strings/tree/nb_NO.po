@@ -210,9 +210,8 @@ msgstr "Kan ikke flytte denne treknuten hit"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:62
-#, fuzzy
 msgid "treeManagement"
-msgstr "Treforvaltning"
+msgstr "Treadministrasjon"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:434
