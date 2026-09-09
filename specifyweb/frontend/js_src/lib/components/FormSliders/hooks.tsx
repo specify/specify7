@@ -36,12 +36,12 @@ import { raise, softFail } from '../Errors/Crash';
  * // Now results will have the next fetchSize results
  * console.log(results); // [1, 2, 3, 4, 5, 6]
  * // We can pass in a specific index to fetch only from that index
- * const fetchFromFar = await handleFetchMore(100);
- * console.log(fetchFromFar); // [99, 100, 101]
+ * const fetchFromFar = await handleFetchMore(99);
+ * console.log(fetchFromFar); // [100, 101, 102]
  * // Note that the results array can be sparse, with holes at the indexes
  * // where results have not been fetched
  * console.log(results);
- * // [1, 2, 3, 4, 5, 6, <holes at in-between indexes>, 99, 100, 101]
+ * // [1, 2, 3, 4, 5, 6, <holes at in-between indexes>, 100, 101, 102]
  * ```
  */
 export function usePaginatedRecords<
