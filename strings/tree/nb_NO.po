@@ -637,8 +637,8 @@ msgstr "Biostratigrafi"
 #, fuzzy
 msgid "synonymizedNodesDescription"
 msgstr ""
-"Hvis dette er aktivert, kan brukere legge til barn til synonymiserte "
-"foreldre og synonymisere en node med barn."
+"Hvis aktivert, lar dette brukere legge til underordnede til synonymerte "
+"foreldre og gjøre en node med underordnede til et synonym."
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:503
