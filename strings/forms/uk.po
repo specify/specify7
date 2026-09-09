@@ -19,8 +19,9 @@ msgstr "Форми"
 
 #: components/Atoms/DataEntry.tsx:153
 #: components/Forms/Save.tsx:271
+#: components/Forms/__tests__/Save.test.tsx:24
 #: components/Statistics/ResultsDialog.tsx:69
-#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Components > Statistics > Results Dialog
+#. Used in: Components > Atoms > Data Entry ⬤ Components > Forms > Save ⬤ Forms > __tests__ > Save ⬤ Components > Statistics > Results Dialog
 msgid "clone"
 msgstr "Клон"
 
