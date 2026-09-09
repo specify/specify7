@@ -619,7 +619,7 @@ msgstr "Operasjonen mislyktes"
 #, fuzzy
 msgid "defaultTreeCreationStartedDescription"
 msgstr ""
-"Treet vil bli opprettet i bakgrunnen. Du vil bli varslet når det er fullført."
+"Treet vil bli opprettet i bakgrunnen. Du får et varslet når det er fullført."
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:447
