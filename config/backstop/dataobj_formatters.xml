@@ -296,7 +296,11 @@
 		</switch>
 	</format>
 	<format name="LoanPreparation" title="LoanPreparation" class="edu.ku.brc.specify.datamodel.LoanPreparation" default="true">
-		<switch single="true"/>
+		<switch single="true">
+			<fields>
+				<field sep=" ">preparation</field>
+			</fields>
+		</switch>
 	</format>
 	<format name="LoanReturnPreparation" title="LoanReturnPreparation" class="edu.ku.brc.specify.datamodel.LoanReturnPreparation" default="true">
 		<switch single="true">
@@ -552,7 +556,7 @@
 		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Collection" title="Collection" class="edu.ku.brc.specify.datamodel.Collection" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Discipline" title="Discipline" class="edu.ku.brc.specify.datamodel.Discipline" default="true" separator=" | " ending="" format=""/>
-		<aggregator name="Division" title="Division" class="edu.ku.brc.specify.datamodel.Division" default="true" separator=" |  " ending="" format=""/>
+		<aggregator name="Division" title="Division" class="edu.ku.brc.specify.datamodel.Division" default="true" separator=" | " ending="" format=""/>
 		<aggregator name="Taxon" title="Taxon" class="edu.ku.brc.specify.datamodel.Taxon" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Geography" title="Geography" class="edu.ku.brc.specify.datamodel.Geography" default="true" separator="; " ending="" format=""/>
 		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
