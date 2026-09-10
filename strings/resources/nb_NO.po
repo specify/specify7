@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-10 06:51+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -308,7 +308,6 @@ msgstr "Kunne ikke analysere XML"
 #: components/Formatters/Element.tsx:102
 #: components/QueryBuilder/FieldFilterSpec.tsx:557
 #: components/Statistics/StatsPageEditing.tsx:61
-#, fuzzy
 msgid "name"
 msgstr "Navn"
 
@@ -316,16 +315,14 @@ msgstr "Navn"
 #: components/ExportFeed/Editor.tsx:50
 #: components/ExportFeed/Editor.tsx:164
 #: components/Formatters/Element.tsx:169
-#, fuzzy
 msgid "title"
 msgstr "Tittel"
 
 #. Used in: Components > Formatters > Element ⬤ Components > Formatters > List
 #: components/Formatters/Element.tsx:193
 #: components/Formatters/List.tsx:128
-#, fuzzy
 msgid "default"
-msgstr "Misligholde"
+msgstr "Standard"
 
 #. Used in: Components > Field Formatters > Index ⬤ Components > Formatters > Aggregator ⬤ Components > Formatters > Fields
 #: components/FieldFormatters/index.ts:410
