@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-10 15:51+0000\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -18,16 +18,14 @@ msgstr ""
 #: components/Preferences/UserDefinitions.tsx:2162
 #: components/Router/Routes.tsx:259
 #: components/Security/registry.ts:218
-#, fuzzy
 msgid "appResources"
-msgstr "App-ressurser"
+msgstr "Appressurser"
 
 #. Used in: Components > App Resources > Create ⬤ Components > Form Meta > Definition ⬤ Components > Preferences > User Definitions
 #: components/AppResources/Create.tsx:288
 #: components/FormMeta/Definition.tsx:31
 #: components/FormMeta/Definition.tsx:74
 #: components/Preferences/UserDefinitions.tsx:908
-#, fuzzy
 msgid "formDefinition"
 msgstr "Skjemadefinisjon"
 
@@ -36,13 +34,11 @@ msgstr "Skjemadefinisjon"
 #: components/AppResources/Filters.tsx:73
 #: components/AppResources/Filters.tsx:118
 #: components/AppResources/types.tsx:35
-#, fuzzy
 msgid "formDefinitions"
 msgstr "Skjemadefinisjon"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:265
-#, fuzzy
 msgid "newViewDefinition"
 msgstr "Ny visningsdefinisjon"
 
@@ -67,15 +63,13 @@ msgstr "Disiplinressurser"
 #: components/FieldFormatters/Parts.tsx:51
 #: components/FieldFormatters/Parts.tsx:117
 #: components/SchemaConfig/Field.tsx:72
-#, fuzzy
 msgid "type"
-msgstr "Type"
+msgstr "Format"
 
 #. Used in: Components > App Resources > Tree
 #: components/AppResources/tree.ts:239
-#, fuzzy
 msgid "userTypes"
-msgstr "Brukertyper"
+msgstr "Bruker Format"
 
 #. Used in: Components > App Resources > Aside ⬤ Components > App Resources > Index
 #: components/AppResources/Aside.tsx:321
@@ -536,9 +530,8 @@ msgstr "Forhåndsvisning av format"
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:641
 #: components/DataModel/businessRuleDefs.ts:659
-#, fuzzy
 msgid "currentDeterminationRequired"
-msgstr "En aktuell avgjørelse er nødvendig."
+msgstr "En gyldig avgjørelse er nødvendig."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:344
