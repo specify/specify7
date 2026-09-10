@@ -241,7 +241,7 @@ export const wbPlanText = createDictionary({
       'Quando definida como "Ignorar quando em branco", os valores em branco nesta coluna não serão considerados para fins de correspondência. Os valores em branco são ignorados na correspondência, mesmo que um valor padrão seja fornecido.',
     'hr-hr':
       'Kada je postavljeno na "Zanemari kada je prazno", prazne vrijednosti u ovom stupcu neće se uzimati u obzir za potrebe podudaranja. Prazne vrijednosti se zanemaruju prilikom podudaranja čak i ako je navedena zadana vrijednost.',
-    nb: 'Når den er satt til «Ignorer når tom», vil ikke tomme verdier i denne kolonnen bli vurdert for samsvarsformål. Tomme verdier ignoreres ved samsvar selv om en standardverdi er oppgitt.',
+    nb: 'Når «Ignorer når tom» er valgt, tas tomme verdier i denne kolonnen ikke med i matching. Tomme verdier ignoreres ved matching selv om en standardverdi er angitt.',
   },
   ignoreAlways: {
     'en-us': 'Always Ignore',
@@ -271,7 +271,7 @@ export const wbPlanText = createDictionary({
       'Quando definida como "Ignorar sempre", o valor nesta coluna não será usado para fins de correspondência, apenas para carregamento.',
     'hr-hr':
       'Kada je postavljeno na "Uvijek zanemari", vrijednost u ovom stupcu neće se koristiti za potrebe podudaranja, već samo za prijenos.',
-    nb: 'Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen ikke bli brukt til samsvarsformål, kun til opplasting.',
+    nb: 'Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen ikke bli brukt til matching, kun til opplasting.',
   },
   ignoreNever: {
     'en-us': 'Never Ignore',
@@ -301,7 +301,7 @@ export const wbPlanText = createDictionary({
       'Esta coluna será sempre considerada para fins de correspondência, independentemente do seu valor.',
     'hr-hr':
       'Ovaj stupac bi se uvijek uzimao u obzir za potrebe podudaranja, bez obzira na njegovu vrijednost',
-    nb: 'Denne kolonnen vil alltid bli vurdert for samsvarsformål, uavhengig av verdien.',
+    nb: 'Denne kolonnen vil alltid bli vurdert for matching, uavhengig av verdien.',
   },
   allowNullValues: {
     'en-us': 'Allow Null Values',
@@ -345,7 +345,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Dieser Wert wird anstelle von leeren Zellen verwendet',
     'pt-br': 'Esse valor seria usado no lugar de células vazias.',
     'hr-hr': 'Ova vrijednost bi se koristila umjesto praznih ćelija',
-    nb: 'Denne verdien ville blitt brukt i stedet for tomme celler',
+    nb: 'Denne verdien vil bli brukt i stedet for tomme celler',
   },
   addNewColumn: {
     'en-us': 'Add New Column',
@@ -386,7 +386,7 @@ export const wbPlanText = createDictionary({
       'Este mapeamento de dados está incompleto, faltando um ou mais campos de dados necessários para o carregamento de acordo com a sua configuração. Adicione os mapeamentos ausentes mostrados ou salve este mapeamento como incompleto.',
     'hr-hr':
       'U ovom mapiranju podataka nedostaje jedno ili više podatkovnih polja potrebnih za učitavanje prema vašoj konfiguraciji Navedite. Dodajte prikazana mapiranja koja nedostaju ili spremite ovo mapiranje kao nedovršeno.',
-    nb: 'Denne datatilordningen mangler ett eller flere datafelt som kreves for opplasting av din Spesifiser-konfigurasjon. Legg til de manglende tilordningene som vises, eller lagre denne tilordningen som uferdig.',
+    nb: 'Denne datamappingen mangler ett eller flere datafelt som kreves for opplasting i henhold til Specify-konfigurasjonen din. Legg til de manglende mappingene som vises, eller lagre denne mappingen som ufullstendig.',
   },
   mappingIsRequired: {
     comment: 'I.e, this field must be mapped before you can continue',
@@ -431,7 +431,7 @@ export const wbPlanText = createDictionary({
     'uk-ua': 'Карта',
     'pt-br': 'Mapa',
     'hr-hr': 'Karta',
-    nb: 'Kart',
+    nb: 'Mappe felt',
   },
   unmap: {
     'en-us': 'Unmap',
@@ -442,7 +442,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Datenzuordnung auflösen',
     'pt-br': 'Desmapear',
     'hr-hr': 'Ukloni s mape',
-    nb: 'Fjern kartlegging',
+    nb: 'Fjern mapping',
   },
   mapButtonDescription: {
     'en-us': 'Map selected field to selected header',
@@ -464,7 +464,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Beziehung zur Tabelle {tableName:string}',
     'pt-br': 'Relação com a tabela {tableName:string}',
     'hr-hr': 'Odnos prema tablici {tableName:string}',
-    nb: 'Forholdet til tabellen {tableName:string}',
+    nb: 'Relasjon til tabellen {tableName:string}',
   },
   selectBaseTable: {
     'en-us': 'Select a Base Table',
@@ -529,7 +529,7 @@ export const wbPlanText = createDictionary({
       'Une « table de base » sert de point de départ pour la correspondance entre les colonnes et les champs de données. Chaque enregistrement de pièce jointe importée sera ajouté comme une nouvelle ligne dans la table de base sélectionnée. Cliquez sur une table de base dans la liste pour commencer.',
     'hr-hr':
       "'Osnovna tablica' je tablica koja služi kao početna točka za mapiranje stupaca u podatkovna polja. Svaki uvezeni zapis privitka bit će dodan kao novi redak u odabranoj osnovnoj tablici. Kliknite na osnovnu tablicu na popisu da biste započeli.",
-    nb: 'En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger mellom kolonner og datafelt. Hver importerte vedleggspost legges til som en ny rad i basistabellen du velger. Klikk på en basistabell i listen for å komme i gang.',
+    nb: 'En «basistabell» er tabellen som fungerer som utgangspunkt for mapping mellom kolonner og datafelt. Hver importerte vedleggsrad blir lagt til som en ny rad i basistabellen du velger. Klikk på en basistabell i listen for å komme i gang.',
     'pt-br':
       "Uma 'tabela base' é a tabela que serve como ponto de partida para o mapeamento de colunas para campos de dados. Cada registro de anexo importado será adicionado como uma nova linha na tabela base selecionada. Clique em uma tabela base na lista para começar.",
     'ru-ru':
@@ -589,7 +589,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Basistabelle',
     'pt-br': 'Tabela Base',
     'hr-hr': 'Osnovna tablica',
-    nb: 'Basisbord',
+    nb: 'Basistabell',
   },
   goToBaseTable: {
     'en-us': 'Change the Base Table for Mapping Data Set Columns?',
@@ -605,7 +605,7 @@ export const wbPlanText = createDictionary({
       'Alterar a tabela base para mapear as colunas do conjunto de dados?',
     'hr-hr':
       'Promijeniti osnovnu tablicu za stupce skupa podataka za mapiranje?',
-    nb: 'Endre basistabellen for tilordning av datasettkolonner?',
+    nb: 'Endre basistabell for mapping av datasettkolonner?',
   },
   goToBaseTableDescription: {
     'en-us':
@@ -668,7 +668,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Karten-Explorer',
     'pt-br': 'Explorador de mapas',
     'hr-hr': 'Istraživač karte',
-    nb: 'Kartutforsker',
+    nb: 'Utforsker for mapping',
   },
   hideFieldMapper: {
     'en-us': 'Hide Field Mapper',
@@ -679,7 +679,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Field Mapper ausblenden',
     'pt-br': 'Ocultar mapeador de campos',
     'hr-hr': 'Sakrij alat za mapiranje polja',
-    nb: 'Skjul feltkartlegger',
+    nb: 'Skjul feltmapper',
   },
   showFieldMapper: {
     'en-us': 'Show Field Mapper',
@@ -690,7 +690,7 @@ export const wbPlanText = createDictionary({
     'de-ch': 'Field Mapper einblenden',
     'pt-br': 'Mostrar Mapeador de Campos',
     'hr-hr': 'Prikaži terenski maper',
-    nb: 'Vis feltkartlegger',
+    nb: 'Vis feltmapper',
   },
   mappings: {
     'en-us': 'Mappings',
@@ -948,7 +948,7 @@ export const wbPlanText = createDictionary({
     'pt-br':
       'Selecione um arquivo de mapeamento de conjunto de dados JSON válido.',
     'hr-hr': 'Odaberite valjani JSON file.',
-    nb: 'Velg en gyldig JSON-datasetttilordningsfil.',
+    nb: 'Velg en gyldig JSON-fil for mapping av datasett.',
   },
   disambiguationBehavior: {
     'en-us': 'Disambiguation Behavior:',
@@ -959,7 +959,7 @@ export const wbPlanText = createDictionary({
     'pt-br': 'Comportamento de desambiguação:',
     'ru-ru': 'Поведение при разрешении неоднозначностей:',
     'uk-ua': 'Поведінка у визначенні неоднозначностей:',
-    nb: 'Flertydighetsatferd:',
+    nb: 'Hvordan tvetydighet skal håndteres:',
   },
   ask: {
     'en-us': 'Ask',
