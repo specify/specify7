@@ -301,7 +301,6 @@ msgstr "Fjerninnstillinger"
 
 #. Used in: Components > Formatters > Index
 #: components/Formatters/index.tsx:99
-#, fuzzy
 msgid "failedParsingXml"
 msgstr "Kunne ikke analysere XML"
 
