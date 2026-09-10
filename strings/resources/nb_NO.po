@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
+"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -426,7 +426,7 @@ msgstr "Verdien i betingelsesfeltet"
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Dette formatet vil kun bli brukt hvis verdien i betingelsesfeltet er lik "
+"Dette formatet vil bare bli brukt hvis verdien i betingelsesfeltet er lik "
 "denne betingelsen og ikke er null."
 
 #. Used in: Components > App Resources > Tabs
@@ -434,8 +434,8 @@ msgstr ""
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
-"Denne resursen tilhører en annen samling/fagfelt enn den du befinner deg i "
-"nå. Det anbefales å bytte samling før du redigerer denne resursen."
+"Denne ressursen tilhører en annen samling/disiplin enn den du er i for "
+"øyeblikket. Det anbefales å bytte samling før du redigerer denne ressursen."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
@@ -538,7 +538,7 @@ msgstr "Forhåndsvisning av format"
 #: components/DataModel/businessRuleDefs.ts:659
 #, fuzzy
 msgid "currentDeterminationRequired"
-msgstr "En gjeldende fastsettelse er påkrevd."
+msgstr "En aktuell avgjørelse er nødvendig."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:344
