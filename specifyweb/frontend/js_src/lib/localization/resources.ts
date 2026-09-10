@@ -18,7 +18,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'App Ressourcen',
     'pt-br': 'Recursos do aplicativo',
     'hr-hr': 'Resursi aplikacije',
-    nb: 'App-ressurser',
+    nb: 'Appressurser',
   },
   formDefinition: {
     'en-us': 'Form Definition',
@@ -95,7 +95,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Typ',
     'pt-br': 'Tipo',
     'hr-hr': 'Tip',
-    nb: 'Type',
+    nb: 'Format',
   },
   userTypes: {
     'en-us': 'User Types',
@@ -106,7 +106,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Benutzertypen',
     'pt-br': 'Tipos de usuários',
     'hr-hr': 'Vrste korisnika',
-    nb: 'Brukertyper',
+    nb: 'Bruker Format',
   },
   resources: {
     'en-us': 'Resources',
@@ -1047,7 +1047,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Потрібне поточне визначення.',
     'pt-br': 'É necessária uma avaliação atual.',
     'hr-hr': 'Potrebna je trenutna odluka.',
-    nb: 'En aktuell avgjørelse er nødvendig.',
+    nb: 'En gyldig avgjørelse er nødvendig.',
   },
   cogAddedToItself: {
     'en-us': 'A COG cannot be added to itself.',
