@@ -485,7 +485,7 @@ export const treeText = createDictionary({
     'de-ch': 'Blattknoten',
     'pt-br': 'Nó foliar',
     'hr-hr': 'Čvor lista',
-    nb: 'Bladknute',
+    nb: 'Bladnode',
   },
   nodeStats: {
     comment: "Used to show tree node's direct and indirect usages",
@@ -612,7 +612,7 @@ export const treeText = createDictionary({
     'es-es': 'Mamá',
     'fr-fr': 'Ma',
     'hr-hr': 'Ma',
-    nb: 'Mamma',
+    nb: 'Ma',
     'pt-br': 'Ma',
     'ru-ru': 'Ма',
     'uk-ua': 'Ма',
