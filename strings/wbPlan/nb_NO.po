@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-09 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-10 15:51+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/wbPlan/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -58,13 +58,11 @@ msgstr "INGEN VALGT"
 
 #. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:96
-#, fuzzy
 msgid "unmapped"
 msgstr "Ikke kartlagt"
 
 #. Used in: Components > Molecules > Table Icon
 #: components/Molecules/TableIcon.tsx:109
-#, fuzzy
 msgid "mapped"
 msgstr "Kartlagt"
 
@@ -112,7 +110,6 @@ msgstr "Vis skjulte skjemafelt"
 #: components/WbPlanView/Mapper.tsx:667
 #: components/WbPlanView/Mapper.tsx:669
 #: components/WbPlanView/Mapper.tsx:677
-#, fuzzy
 msgid "mappingOptions"
 msgstr "Kartleggingsalternativer"
 
@@ -123,12 +120,11 @@ msgstr "Ignorer når blank"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:264
-#, fuzzy
 msgid "ignoreWhenBlankDescription"
 msgstr ""
-"Når den er satt til «Ignorer når tom», vil ikke tomme verdier i denne "
-"kolonnen bli vurdert for samsvarsformål. Tomme verdier ignoreres ved samsvar "
-"selv om en standardverdi er oppgitt."
+"Når «Ignorer når tom» er valgt, tas tomme verdier i denne kolonnen ikke med "
+"i matching. Tomme verdier ignoreres ved matching selv om en standardverdi er "
+"angitt."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:267
@@ -137,11 +133,10 @@ msgstr "Ignorer alltid"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:268
-#, fuzzy
 msgid "ignoreAlwaysDescription"
 msgstr ""
 "Når den er satt til «Ignorer alltid», vil verdien i denne kolonnen ikke bli "
-"brukt til samsvarsformål, kun til opplasting."
+"brukt til matching, kun til opplasting."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:271
@@ -150,11 +145,9 @@ msgstr "Aldri ignorer"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:272
-#, fuzzy
 msgid "ignoreNeverDescription"
 msgstr ""
-"Denne kolonnen vil alltid bli vurdert for samsvarsformål, uavhengig av "
-"verdien."
+"Denne kolonnen vil alltid bli vurdert for matching, uavhengig av verdien."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:300
@@ -173,9 +166,8 @@ msgstr "Standardverdi"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:334
-#, fuzzy
 msgid "defaultValueDescription"
-msgstr "Denne verdien ville blitt brukt i stedet for tomme celler"
+msgstr "Denne verdien vil bli brukt i stedet for tomme celler"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:70
@@ -189,12 +181,11 @@ msgstr "Validering fant manglende mappinger:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:120
-#, fuzzy
 msgid "validationFailedDescription"
 msgstr ""
-"Denne datatilordningen mangler ett eller flere datafelt som kreves for "
-"opplasting av din Spesifiser-konfigurasjon. Legg til de manglende "
-"tilordningene som vises, eller lagre denne tilordningen som uferdig."
+"Denne datamappingen mangler ett eller flere datafelt som kreves for "
+"opplasting i henhold til Specify-konfigurasjonen din. Legg til de manglende "
+"mappingene som vises, eller lagre denne mappingen som ufullstendig."
 
 #. 🟥I.e, this field must be mapped before you can continue. Used in: Components > Formatters > Components
 #: components/Formatters/Components.tsx:226
@@ -213,28 +204,24 @@ msgstr "Lagre uferdig"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:557
-#, fuzzy
 msgid "map"
-msgstr "Kart"
+msgstr "Mappe felt"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:328
-#, fuzzy
 msgid "unmap"
-msgstr "Fjern kartlegging"
+msgstr "Fjern mapping"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:554
-#, fuzzy
 msgid "mapButtonDescription"
 msgstr "Tilordne valgt felt til valgt overskrift"
 
 #. Used in: Components > Wb Plan View > Custom Select Element
 #: components/WbPlanView/CustomSelectElement.tsx:333
 #: components/WbPlanView/CustomSelectElement.tsx:340
-#, fuzzy
 msgid "relationshipWithTable"
-msgstr "Forholdet til tabellen {tableName:string}"
+msgstr "Relasjon til tabellen {tableName:string}"
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:106
@@ -263,12 +250,11 @@ msgstr ""
 
 #. Used in: Components > Wb Plan View > State
 #: components/WbPlanView/State.tsx:112
-#, fuzzy
 msgid "baseTableWithAttachmentsDescription"
 msgstr ""
-"En «basistabell» er tabellen som fungerer som utgangspunkt for tilordninger "
-"mellom kolonner og datafelt. Hver importerte vedleggspost legges til som en "
-"ny rad i basistabellen du velger. Klikk på en basistabell i listen for å "
+"En «basistabell» er tabellen som fungerer som utgangspunkt for mapping "
+"mellom kolonner og datafelt. Hver importerte vedleggsrad blir lagt til som "
+"en ny rad i basistabellen du velger. Klikk på en basistabell i listen for å "
 "komme i gang."
 
 #. Used in: Components > Wb Plan View > State
@@ -292,15 +278,13 @@ msgstr ""
 #. Used in: Components > Wb Plan View > Mapper ⬤ Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/Mapper.tsx:491
 #: components/WbPlanView/MapperComponents.tsx:392
-#, fuzzy
 msgid "baseTable"
-msgstr "Basisbord"
+msgstr "Basistabell"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:388
-#, fuzzy
 msgid "goToBaseTable"
-msgstr "Endre basistabellen for tilordning av datasettkolonner?"
+msgstr "Endre basistabell for mapping av datasettkolonner?"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:389
@@ -329,23 +313,20 @@ msgstr "AutoMapper"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:185
-#, fuzzy
 msgid "mappingEditor"
-msgstr "Kartutforsker"
+msgstr "Utforsker for mapping"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:145
 #: components/WbPlanView/MapperComponents.tsx:461
-#, fuzzy
 msgid "hideFieldMapper"
-msgstr "Skjul feltkartlegger"
+msgstr "Skjul feltmapper"
 
 #. Used in: Components > Query Builder > Components ⬤ Components > Wb Plan View > Mapper Components
 #: components/QueryBuilder/Components.tsx:146
 #: components/WbPlanView/MapperComponents.tsx:462
-#, fuzzy
 msgid "showFieldMapper"
-msgstr "Vis feltkartlegger"
+msgstr "Vis feltmapper"
 
 #. Used in: Components > Wb Plan View > Mapper
 #: components/WbPlanView/Mapper.tsx:572
@@ -455,15 +436,13 @@ msgstr "Den valgte filen er ikke gyldig JSON."
 
 #. Used in: Components > Wb Toolkit > Dev Show Plan
 #: components/WbToolkit/DevShowPlan.tsx:142
-#, fuzzy
 msgid "invalidJsonFileDescription"
-msgstr "Velg en gyldig JSON-datasetttilordningsfil."
+msgstr "Velg en gyldig JSON-fil for mapping av datasett."
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:339
-#, fuzzy
 msgid "disambiguationBehavior"
-msgstr "Flertydighetsatferd:"
+msgstr "Hvordan tvetydighet skal håndteres:"
 
 #. Used in: Components > Wb Plan View > Mapper Components
 #: components/WbPlanView/MapperComponents.tsx:343
