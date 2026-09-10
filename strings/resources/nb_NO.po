@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 06:51+0000\n"
+"PO-Revision-Date: 2026-09-10 08:16+0000\n"
 "Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
@@ -329,33 +329,28 @@ msgstr "Standard"
 #: components/Formatters/Aggregator.tsx:28
 #: components/Formatters/Fields.tsx:74
 #: components/Formatters/Fields.tsx:178
-#, fuzzy
 msgid "separator"
-msgstr "Separator"
+msgstr "Skilletegn"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:41
-#, fuzzy
 msgid "suffix"
 msgstr "Suffiks"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:54
-#, fuzzy
 msgid "limit"
-msgstr "Begrense"
+msgstr "Grense"
 
 #. Used in: Components > Formatters > Components ⬤ Components > Query Builder > Formatter
 #: components/Formatters/Components.tsx:73
 #: components/Formatters/Components.tsx:131
 #: components/QueryBuilder/Formatter.tsx:212
-#, fuzzy
 msgid "defaultInline"
-msgstr "(misligholde)"
+msgstr "(standard)"
 
 #. Used in: Components > Formatters > Aggregator
 #: components/Formatters/Aggregator.tsx:85
-#, fuzzy
 msgid "sortField"
 msgstr "Sorteringsfelt"
 
@@ -363,7 +358,6 @@ msgstr "Sorteringsfelt"
 #: components/FormEditor/Create.tsx:214
 #: components/Formatters/Preview.tsx:74
 #: components/Merging/Header.tsx:164
-#, fuzzy
 msgid "preview"
 msgstr "Forhåndsvisning"
 
