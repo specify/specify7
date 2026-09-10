@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 08:16+0000\n"
+"PO-Revision-Date: 2026-09-10 09:51+0000\n"
 "Last-Translator: Heini Emilia Rämä <heini.e.rama@uit.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/resources/nb_NO/>\n"
@@ -363,29 +363,25 @@ msgstr "Forhåndsvisning"
 
 #. Used in: Components > Formatters > Preview
 #: components/Formatters/Preview.tsx:75
-#, fuzzy
 msgid "previewExplainer"
-msgstr "Søk i samlingspostene dine for å forhåndsvise postformateringen"
+msgstr "Søk i samlingspostene for å forhåndsvise formatet"
 
 #. Used in: Components > Field Formatters > Field Formatter ⬤ Components > Form Editor > Table ⬤ Components > Formatters > Formatter
 #: components/FieldFormatters/FieldFormatter.tsx:40
 #: components/FormEditor/Table.tsx:86
 #: components/Formatters/Formatter.tsx:33
-#, fuzzy
 msgid "editorNotAvailable"
 msgstr "Visuell redigering er ikke tilgjengelig for denne ressursen"
 
 #. Used in: Components > Form Editor > Table ⬤ Components > Web Links > Definition
 #: components/FormEditor/Table.tsx:83
 #: components/WebLinks/Definition.tsx:44
-#, fuzzy
 msgid "definition"
 msgstr "Definisjon"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:74
 #: components/Formatters/Definitions.tsx:85
-#, fuzzy
 msgid "addDefinition"
 msgstr "Legg til definisjon"
 
@@ -393,13 +389,11 @@ msgstr "Legg til definisjon"
 #: components/FormEditor/Editor.tsx:133
 #: components/Formatters/Definitions.tsx:172
 #: components/Formatters/Definitions.tsx:253
-#, fuzzy
 msgid "deleteDefinition"
 msgstr "Slett definisjon"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:27
-#, fuzzy
 msgid "urlPart"
 msgstr "URL-delen"
 
@@ -407,36 +401,32 @@ msgstr "URL-delen"
 #: components/FieldFormatters/Parts.tsx:90
 #: components/Formatters/Definitions.tsx:213
 #: components/Formatters/Fields.tsx:125
-#, fuzzy
 msgid "addField"
 msgstr "Legg til felt"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:26
-#, fuzzy
 msgid "thisField"
 msgstr "Dette feltet"
 
 #. Used in: Components > Web Links > Definition
 #: components/WebLinks/Definition.tsx:151
 #: components/WebLinks/Definition.tsx:165
-#, fuzzy
 msgid "selectTableFirst"
 msgstr "Velg tabell først"
 
 #. Used in: Components > Formatters > Definitions ⬤ Components > Formatters > Formatter
 #: components/Formatters/Definitions.tsx:151
 #: components/Formatters/Formatter.tsx:127
-#, fuzzy
 msgid "conditionFieldValue"
-msgstr "Verdi i betingelsesfeltet"
+msgstr "Verdien i betingelsesfeltet"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:184
 #, fuzzy
 msgid "conditionDescription"
 msgstr ""
-"Dette formatet vil bare bli brukt hvis verdien i betingelsesfeltet er lik "
+"Dette formatet vil kun bli brukt hvis verdien i betingelsesfeltet er lik "
 "denne betingelsen og ikke er null."
 
 #. Used in: Components > App Resources > Tabs
