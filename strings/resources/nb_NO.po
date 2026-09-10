@@ -439,73 +439,61 @@ msgstr ""
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
-#, fuzzy
 msgid "thisFieldName"
 msgstr "Dette feltnavnet (kun for forhåndsvisning)"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:295
-#, fuzzy
 msgid "publishEveryDays"
 msgstr "Publiser hver N. dag"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:292
-#, fuzzy
 msgid "publish"
-msgstr "Utgi"
+msgstr "Publiser"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:184
-#, fuzzy
 msgid "fileName"
 msgstr "Filnavn"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:243
-#, fuzzy
 msgid "runAsUser"
 msgstr "Kjør som bruker"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:258
-#, fuzzy
 msgid "notifyUser"
 msgstr "Send fullføringsvarsel til brukeren"
 
 #. Used in: Components > Export Feed > Editor
 #: components/ExportFeed/Editor.tsx:273
-#, fuzzy
 msgid "runInCollection"
-msgstr "Kjør inn samlingen"
+msgstr "Kjør i samlingen"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:73
-#, fuzzy
 msgid "createNewForm"
 msgstr "Opprett en ny visningsdefinisjon"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:78
-#, fuzzy
 msgid "copyFromExistingForm"
 msgstr "Kopier eksisterende visningsdefinisjon"
 
 #. Used in: Components > Form Editor > Create
 #: components/FormEditor/Create.tsx:84
-#, fuzzy
 msgid "copyDefaultForm"
 msgstr "Kopier standardvisningsdefinisjon"
 
 #. Used in: Components > App Resources > Create
 #: components/AppResources/Create.tsx:232
-#, fuzzy
 msgid "copyDefaultForms"
 msgstr "Kopier standardskjemaer"
 
 #. Used in: Components > Form Meta > Index
 #: components/FormMeta/index.tsx:114
-#, fuzzy
 msgid "saveFormFirst"
 msgstr "Lagre skjemaet først"
 
