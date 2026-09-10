@@ -505,37 +505,31 @@ msgstr "Du må lagre dette skjemaet før du redigerer et nytt."
 
 #. Used in: Components > Formatters > Formatter
 #: components/Formatters/Formatter.tsx:77
-#, fuzzy
 msgid "conditionalFormatter"
-msgstr "Betinget formatering"
+msgstr "Betinget format"
 
 #. Used in: Components > Formatters > Fields
 #: components/Formatters/Fields.tsx:136
-#, fuzzy
 msgid "customizeFieldFormatters"
 msgstr "Tilpass feltformater"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:262
-#, fuzzy
 msgid "expandConditionalField"
 msgstr "Utvid betinget felt"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:178
-#, fuzzy
 msgid "collapseConditionalField"
 msgstr "Skjul betinget felt"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:147
-#, fuzzy
 msgid "conditionalFieldValue"
 msgstr "Betinget feltverdi"
 
 #. Used in: Components > Formatters > Definitions
 #: components/Formatters/Definitions.tsx:219
-#, fuzzy
 msgid "formatPreview"
 msgstr "Forhåndsvisning av format"
 
@@ -544,7 +538,7 @@ msgstr "Forhåndsvisning av format"
 #: components/DataModel/businessRuleDefs.ts:659
 #, fuzzy
 msgid "currentDeterminationRequired"
-msgstr "En aktuell avgjørelse er nødvendig."
+msgstr "En gjeldende fastsettelse er påkrevd."
 
 #. Used in: Components > Data Model > Business Rule Defs
 #: components/DataModel/businessRuleDefs.ts:344
