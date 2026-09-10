@@ -604,7 +604,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'За замовчуванням',
     'pt-br': 'Padrão',
     'hr-hr': 'Zadano',
-    nb: 'Misligholde',
+    nb: 'Standard',
   },
   separator: {
     'en-us': 'Separator',
@@ -615,7 +615,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Роздільник',
     'pt-br': 'Separador',
     'hr-hr': 'Separator',
-    nb: 'Separator',
+    nb: 'Skilletegn',
   },
   suffix: {
     'en-us': 'Suffix',
@@ -637,7 +637,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Ліміт',
     'pt-br': 'Limite',
     'hr-hr': 'Ograničiti',
-    nb: 'Begrense',
+    nb: 'Grense',
   },
   defaultInline: {
     'en-us': '(default)',
@@ -648,7 +648,7 @@ export const resourcesText = createDictionary({
     'uk-ua': '(за умовчанням)',
     'pt-br': '(padrão)',
     'hr-hr': '(zadano)',
-    nb: '(misligholde)',
+    nb: '(standard)',
   },
   sortField: {
     'en-us': 'Sort Field',
