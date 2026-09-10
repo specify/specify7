@@ -257,3 +257,109 @@ class GiftTests(ApiTests):
             'SHIPMENT-NEW-SHIPPED-TO-001',
         )
         self.assertEqual(fetched_shipment.discipline, self.discipline)
+
+    def test_add_multiple_agents_preparations_and_shipments(self):
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-MULTIPLE-001',
+            discipline=self.discipline,
+        )
+
+        second_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='Second',
+            lastname='Gift Agent',
+            division=self.division,
+        )
+
+        models.Giftagent.objects.create(
+            gift=gift,
+            agent=self.agent,
+            role='Recipient',
+            discipline=self.discipline,
+        )
+        models.Giftagent.objects.create(
+            gift=gift,
+            agent=second_agent,
+            role='Donor',
+            discipline=self.discipline,
+        )
+
+        self._create_prep_type()
+
+        first_preparation = self._create_prep(
+            self.collectionobjects[0],
+            None,
+            countamt=2,
+        )
+        second_preparation = self._create_prep(
+            self.collectionobjects[1],
+            None,
+            countamt=3,
+        )
+
+        models.Giftpreparation.objects.create(
+            gift=gift,
+            preparation=first_preparation,
+            quantity=1,
+            discipline=self.discipline,
+        )
+        models.Giftpreparation.objects.create(
+            gift=gift,
+            preparation=second_preparation,
+            quantity=2,
+            discipline=self.discipline,
+        )
+
+        gift.shipments.create(
+            shipmentnumber='GIFT-SHIPMENT-001',
+            discipline=self.discipline,
+        )
+        gift.shipments.create(
+            shipmentnumber='GIFT-SHIPMENT-002',
+            discipline=self.discipline,
+        )
+
+        fetched = models.Gift.objects.get(id=gift.id)
+
+        self.assertEqual(fetched.giftagents.count(), 2)
+        self.assertEqual(fetched.giftpreparations.count(), 2)
+        self.assertEqual(fetched.shipments.count(), 2)
+
+        agent_roles = dict(
+            fetched.giftagents.values_list('agent_id', 'role')
+        )
+        self.assertEqual(
+            agent_roles,
+            {
+                self.agent.id: 'Recipient',
+                second_agent.id: 'Donor',
+            },
+        )
+
+        preparation_quantities = dict(
+            fetched.giftpreparations.values_list(
+                'preparation_id',
+                'quantity',
+            )
+        )
+        self.assertEqual(
+            preparation_quantities,
+            {
+                first_preparation.id: 1,
+                second_preparation.id: 2,
+            },
+        )
+
+        shipment_numbers = set(
+            fetched.shipments.values_list(
+                'shipmentnumber',
+                flat=True,
+            )
+        )
+        self.assertEqual(
+            shipment_numbers,
+            {
+                'GIFT-SHIPMENT-001',
+                'GIFT-SHIPMENT-002',
+            },
+        )
