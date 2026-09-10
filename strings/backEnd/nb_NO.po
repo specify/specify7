@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/backEnd/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -290,7 +290,7 @@ msgstr "Flere tredefinisjoner på rad"
 #. Used in: Components > Work Bench > Result Message Resolvers
 #: components/WorkBench/resultMessageResolvers.ts:301
 msgid "invalidCotype"
-msgstr "Ugyldig type for valgte trerangering(er)"
+msgstr "Ugyldig kategori for valgte nivå i treet"
 
 #. Used in: Components > Work Bench > Result Message Resolvers
 #: components/WorkBench/resultMessageResolvers.ts:303
