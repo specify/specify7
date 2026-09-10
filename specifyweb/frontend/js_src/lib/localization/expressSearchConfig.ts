@@ -35,7 +35,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Configuración de búsqueda rápida',
     'fr-fr': 'Configuration de la recherche express',
     'hr-hr': 'Konfiguracija brzog pretraživanja',
-    nb: 'Konfigurer hurtigsøk',
+    nb: 'Konfigurer enkelt søk',
     'pt-br': 'Configuração de Busca Expressa',
     'ru-ru': 'Экспресс-настройка поиска',
     'uk-ua': 'Конфігурація експрес-пошуку',

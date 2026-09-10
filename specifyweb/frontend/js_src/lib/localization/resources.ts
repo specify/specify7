@@ -183,7 +183,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Express Suche Konfigurieren',
     'pt-br': 'Configuração de Busca Expressa',
     'hr-hr': 'Konfiguracija brzog pretraživanja',
-    nb: 'Ekspresssøkkonfigurasjon',
+    nb: 'Konfigurer Enkelt søk',
   },
   typeSearches: {
     'en-us': 'Type Searches',
@@ -604,7 +604,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'За замовчуванням',
     'pt-br': 'Padrão',
     'hr-hr': 'Zadano',
-    nb: 'Misligholde',
+    nb: 'Standard',
   },
   separator: {
     'en-us': 'Separator',
@@ -615,7 +615,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Роздільник',
     'pt-br': 'Separador',
     'hr-hr': 'Separator',
-    nb: 'Separator',
+    nb: 'Skilletegn',
   },
   suffix: {
     'en-us': 'Suffix',
@@ -637,7 +637,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Ліміт',
     'pt-br': 'Limite',
     'hr-hr': 'Ograničiti',
-    nb: 'Begrense',
+    nb: 'Grense',
   },
   defaultInline: {
     'en-us': '(default)',
@@ -648,7 +648,7 @@ export const resourcesText = createDictionary({
     'uk-ua': '(за умовчанням)',
     'pt-br': '(padrão)',
     'hr-hr': '(zadano)',
-    nb: '(misligholde)',
+    nb: '(standard)',
   },
   sortField: {
     'en-us': 'Sort Field',
@@ -688,7 +688,7 @@ export const resourcesText = createDictionary({
       'Pesquise os registros da sua coleção para visualizar o formatador de registros.',
     'hr-hr':
       'Pretražite zapise svoje zbirke kako biste pregledali formater zapisa',
-    nb: 'Søk i samlingspostene dine for å forhåndsvise postformateringen',
+    nb: 'Søk i samlingspostene for å forhåndsvise formatet',
   },
   editorNotAvailable: {
     'en-us': 'Visual editor is not available for this resource',
@@ -787,7 +787,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Умова Значення поля',
     'pt-br': 'Valor do campo de condição',
     'hr-hr': 'Vrijednost polja uvjeta',
-    nb: 'Verdi i betingelsesfeltet',
+    nb: 'Verdien i betingelsesfeltet',
   },
   conditionDescription: {
     'en-us':
@@ -858,7 +858,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Опублікувати',
     'pt-br': 'Publicar',
     'hr-hr': 'Objaviti',
-    nb: 'Utgi',
+    nb: 'Publiser',
   },
   fileName: {
     'en-us': 'File name',
@@ -902,7 +902,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Запустити в колекції',
     'pt-br': 'Executar em coleção',
     'hr-hr': 'Pokreni u kolekciji',
-    nb: 'Kjør inn samlingen',
+    nb: 'Kjør i samlingen',
   },
   createNewForm: {
     'en-us': 'Create a new view definition',
@@ -981,7 +981,7 @@ export const resourcesText = createDictionary({
     'uk-ua': 'Умовний формат',
     'pt-br': 'Formatação condicional',
     'hr-hr': 'Uvjetni format',
-    nb: 'Betinget formatering',
+    nb: 'Betinget format',
   },
   customizeFieldFormatters: {
     'en-us': 'Customize Field Formats',

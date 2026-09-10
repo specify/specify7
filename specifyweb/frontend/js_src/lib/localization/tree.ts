@@ -29,7 +29,7 @@ export const treeText = createDictionary({
     'de-ch': 'Fehlerhafte Baumstruktur.',
     'pt-br': 'Má estrutura da árvore.',
     'hr-hr': 'Loša struktura stabla.',
-    nb: 'Dårlig trestruktur.',
+    nb: 'Ugyldig trestruktur.',
   },
   move: {
     'en-us': 'Move',
@@ -51,7 +51,7 @@ export const treeText = createDictionary({
     'de-ch': 'Zusammenführen',
     'pt-br': 'Fusão',
     'hr-hr': 'Spojiti',
-    nb: 'Fusjonere',
+    nb: 'Slå sammen',
   },
   undoSynonymy: {
     'en-us': 'Undo Synonymy',
@@ -121,7 +121,7 @@ export const treeText = createDictionary({
     'de-ch': 'Kind hinzuzufügen',
     'pt-br': 'Adicionar filho',
     'hr-hr': 'Dodaj dijete',
-    nb: 'Legg til barn',
+    nb: 'Legg til underordnet',
   },
   moveNodeHere: {
     'en-us': 'Move "{nodeName:string}" here',
@@ -144,7 +144,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Перемістіть сюди всі препарати "{nodeName:string}"',
     'pt-br': 'Mova todos os preparativos "{nodeName:string}" para cá.',
     'hr-hr': 'Premjestite sve pripreme "{nodeName:string}" ovdje',
-    nb: 'Flytt alle "{nodeName:string}"-forberedelsene hit',
+    nb: 'Flytt alle forberedelser for "{nodeName:string}" hit',
   },
   nodeMoveMessage: {
     'en-us':
@@ -163,7 +163,7 @@ export const treeText = createDictionary({
       'O nó {treeName:string} "{nodeName:string}" será colocado, juntamente com todos os seus descendentes, sob o novo pai "{parentName:string}".',
     'hr-hr':
       'Čvor {treeName:string} "{nodeName:string}" bit će smješten, zajedno sa svim svojim potomcima, pod novim roditeljem "{parentName:string}".',
-    nb: '{treeName:string}-noden «{nodeName:string}» vil bli plassert, sammen med alle dens etterkommere, under den nye overordnede noden «{parentName:string}».',
+    nb: 'Noden {treeName:string} «{nodeName:string}» vil bli plassert, sammen med alle sine underordnede, under den nye overordnede «{parentName:string}».',
   },
   nodeBulkMoveMessage: {
     'en-us':
@@ -182,7 +182,7 @@ export const treeText = createDictionary({
       'Os preparativos do nó {treeName:string} "{nodeName:string}" serão colocados no novo local "{parentName:string}".',
     'hr-hr':
       'Pripreme čvora {treeName:string} "{nodeName:string}" bit će smještene pod novu lokaciju "{parentName:string}".',
-    nb: 'Forberedelsene til {treeName:string}-noden «{nodeName:string}» vil bli plassert under den nye plasseringen «{parentName:string}».',
+    nb: 'Forberedelser for noden {treeName:string} «{nodeName:string}» vil bli plassert under det nye stedet «{parentName:string}».',
   },
   cantMoveHere: {
     'en-us': "Can't move this tree node here",
@@ -193,7 +193,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dieser Knoten kann nicht hierhin verschoben werden',
     'pt-br': 'Não é possível mover este nó da árvore para cá.',
     'hr-hr': 'Ovaj čvor stabla ne može se premjestiti ovdje',
-    nb: 'Kan ikke flytte denne treknuten hit',
+    nb: 'Kan ikke flytte denne tre­noden hit',
   },
   cantMergeHere: {
     'en-us': "Can't merge this tree node here",
@@ -226,7 +226,7 @@ export const treeText = createDictionary({
     'de-ch': 'Kann nicht zu Synonymen zusammenführen',
     'pt-br': 'Não é possível mesclar em sinônimos.',
     'hr-hr': 'Ne može se spojiti u sinonime',
-    nb: 'Kan ikke slås sammen til synonymer',
+    nb: 'Kan ikke slås sammen inn i synonymer',
   },
   cantSynonymizeSynonym: {
     'en-us': "Can't synonymize with a synonym",
@@ -248,7 +248,7 @@ export const treeText = createDictionary({
     'de-ch': 'Wählen Sie ein neues Elternelement für "{nodeName:string}"',
     'pt-br': 'Selecione um novo pai para "{nodeName:string}"',
     'hr-hr': 'Odaberite novog roditelja za "{nodeName:string}"',
-    nb: 'Velg en ny forelder for «{nodeName:string}»',
+    nb: 'Velg en ny overordnet for «{nodeName:string}»',
   },
   mergeNode: {
     'en-us': 'Merge node',
@@ -303,7 +303,7 @@ export const treeText = createDictionary({
       'Selecione um novo alvo para os preparativos "{nodeName:string}" a serem movidos para',
     'hr-hr':
       'Odaberite novi cilj za pripreme "{nodeName:string}" koje će se premjestiti u',
-    nb: 'Velg et nytt mål for "{nodeName:string}"-preparatene som skal flyttes til',
+    nb: 'Velg et nytt mål som forberedelsene til "{nodeName:string}" skal flyttes til',
   },
   mergeNodeMessage: {
     'en-us':
@@ -322,7 +322,7 @@ export const treeText = createDictionary({
       'Todas as referências ao nó {treeName:string} "{nodeName:string}" serão substituídas por "{parentName:string}", e todos os descendentes de "{nodeName:string}" serão movidos para "{parentName:string}", com quaisquer descendentes correspondentes em nome e classificação sendo eles próprios mesclados recursivamente.',
     'hr-hr':
       'Sve reference na čvor {treeName:string} "{nodeName:string}" bit će zamijenjene s "{parentName:string}", a svi potomci "{nodeName:string}" bit će premješteni u "{parentName:string}", a svi potomci koji se podudaraju po imenu i rangu bit će rekurzivno spojeni.',
-    nb: 'Alle referanser til {treeName:string}-noden «{nodeName:string}» vil bli erstattet med «{parentName:string}», og alle etterkommere av «{nodeName:string}» vil bli flyttet til «{parentName:string}», der eventuelle etterkommere som samsvarer i navn og rang blir slått sammen rekursivt.',
+    nb: 'Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli erstattet med «{parentName:string}», og alle underordnede av «{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede med samme navn og rang vil selv bli slått sammen automatisk.',
   },
   synonymizeNode: {
     'en-us': 'Synonymize node',
@@ -359,7 +359,7 @@ export const treeText = createDictionary({
     'de-ch': 'Wähle Ziel um "{nodeName:string}" daran zu synonymisieren',
     'pt-br': 'Selecione um alvo para "{nodeName:string}" a ser sinônimo de',
     'hr-hr': 'Odaberite cilj za koji će se "{nodeName:string}" sinonimizirati',
-    nb: 'Velg et mål som «{nodeName:string}» skal synonymiseres til',
+    nb: 'Velg et mål som «{nodeName:string}» skal synonymiseres med',
   },
   synonymizeMessage: {
     'en-us':
@@ -378,7 +378,7 @@ export const treeText = createDictionary({
       'O nó {treeName:string} "{nodeName:string}" será transformado em sinônimo de "{synonymName:string}".',
     'hr-hr':
       'Čvor {treeName:string} "{nodeName:string}" bit će sinonim za "{synonymName:string}".',
-    nb: '{treeName:string}-noden «{nodeName:string}» vil bli gjort til et synonym for «{synonymName:string}».',
+    nb: 'Noden {treeName:string} «{nodeName:string}» vil bli gjort til et synonym for «{synonymName:string}».',
   },
   desynonymizeNode: {
     'en-us': 'Desynonymize node',
@@ -389,7 +389,7 @@ export const treeText = createDictionary({
     'de-ch': 'Knoten desynonymisieren',
     'pt-br': 'Dessinonizar nó',
     'hr-hr': 'Desinonimiziraj čvor',
-    nb: 'Desynonymiser node',
+    nb: 'Opphev synonym for node',
   },
   desynonymizeNodeMessage: {
     'en-us':
@@ -452,7 +452,7 @@ export const treeText = createDictionary({
     'de-ch': 'Baum durchsuchen',
     'pt-br': 'Árvore de pesquisa',
     'hr-hr': 'Stablo pretraživanja',
-    nb: 'Søketre',
+    nb: 'Søk i treet',
   },
   opened: {
     'en-us': 'Opened',
@@ -485,7 +485,7 @@ export const treeText = createDictionary({
     'de-ch': 'Blattknoten',
     'pt-br': 'Nó foliar',
     'hr-hr': 'Čvor lista',
-    nb: 'Bladknute',
+    nb: 'Bladnode',
   },
   nodeStats: {
     comment: "Used to show tree node's direct and indirect usages",
@@ -561,7 +561,7 @@ export const treeText = createDictionary({
     'es-es': 'Conteo de sinónimos {collectionObjectTable:string}',
     'fr-fr': 'Compte synonymisé {collectionObjectTable:string}',
     'hr-hr': 'Sinonimizirani {collectionObjectTable:string} broj',
-    nb: 'Synonymisert {collectionObjectTable:string} Antall',
+    nb: 'Synonymisert {collectionObjectTable:string}-antall',
     'pt-br': 'Contagem {collectionObjectTable:string} Sinônimos',
     'ru-ru': 'Синонимизированное количество {collectionObjectTable:string}',
     'uk-ua': 'Синонімізована кількість {collectionObjectTable:string}',
@@ -576,7 +576,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Прямий підрахунок {collectionObjectTable:string}',
     'pt-br': 'Contagem direta {collectionObjectTable:string}',
     'hr-hr': 'Izravno {collectionObjectTable:string} brojanje',
-    nb: 'Direkte {collectionObjectTable:string}-telling',
+    nb: 'Direkte {collectionObjectTable:string}-antall',
   },
   indirectCollectionObjectCount: {
     comment: 'Example: Indirect Collection Object count',
@@ -588,7 +588,7 @@ export const treeText = createDictionary({
     'de-ch': 'Indirekte {collectionObjectTable:string} Anzahl',
     'pt-br': 'Contagem indireta {collectionObjectTable:string}',
     'hr-hr': 'Neizravno {collectionObjectTable:string} brojanje',
-    nb: 'Indirekte {collectionObjectTable:string}-telling',
+    nb: 'Indirekte {collectionObjectTable:string}-antall',
   },
   geologicTimePeriodLine: {
     comment: `
@@ -612,7 +612,7 @@ export const treeText = createDictionary({
     'es-es': 'Mamá',
     'fr-fr': 'Ma',
     'hr-hr': 'Ma',
-    nb: 'Mamma',
+    nb: 'Ma',
     'pt-br': 'Ma',
     'ru-ru': 'Ма',
     'uk-ua': 'Ма',
@@ -670,7 +670,7 @@ export const treeText = createDictionary({
     'de-ch': 'Positionen bearbeiten',
     'pt-br': 'Editar classificações',
     'hr-hr': 'Uredi rangove',
-    nb: 'Rediger rangeringer',
+    nb: 'Rediger ranger',
   },
   resourceToDelete: {
     'en-us': 'This will permanently delete the following resource',
@@ -681,7 +681,7 @@ export const treeText = createDictionary({
     'de-ch': 'Dadurch wird die folgende Ressource dauerhaft gelöscht',
     'pt-br': 'Isso excluirá permanentemente o seguinte recurso.',
     'hr-hr': 'Ovim će se trajno izbrisati sljedeći resurs',
-    nb: 'Dette vil slette følgende ressurs permanent',
+    nb: 'Dette vil permanent slette følgende ressurs',
   },
   associatedNodesOnly: {
     'en-us': 'Show only nodes with associated objects',
@@ -692,7 +692,7 @@ export const treeText = createDictionary({
     'uk-ua': "Показувати лише вузли з пов'язаними об'єктами",
     'pt-br': 'Mostrar apenas os nós com objetos associados.',
     'hr-hr': 'Prikaži samo čvorove s povezanim objektima',
-    nb: 'Vis bare noder med tilhørende objekter',
+    nb: 'Vis bare noder med tilknyttede objekter',
   },
   splitView: {
     'en-us': 'Split View',
@@ -747,7 +747,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Додати новий ранг',
     'pt-br': 'Adicionar novo cargo',
     'hr-hr': 'Dodaj novi rang',
-    nb: 'Legg til ny rangering',
+    nb: 'Legg til ny rang',
   },
   chooseParentRank: {
     'en-us': 'Choose Parent Rank',
@@ -758,7 +758,7 @@ export const treeText = createDictionary({
     'uk-ua': 'Виберіть батьківський рейтинг',
     'pt-br': 'Escolha a classificação principal',
     'hr-hr': 'Odaberite roditeljski rang',
-    nb: 'Velg foreldrerangering',
+    nb: 'Velg overordnet rang',
   },
   moveItems: {
     'en-us': 'Move Items',
@@ -791,7 +791,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Сборщик деревьев',
     'uk-ua': 'Збирач дерев',
     'hr-hr': 'Berač drveća',
-    nb: 'Treplukker',
+    nb: 'Trevelger',
   },
   botany: {
     'en-us': 'Botany',
@@ -857,7 +857,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Зоология беспозвоночных',
     'uk-ua': 'Зоологія безхребетних',
     'hr-hr': 'Zoologija beskralježnjaka',
-    nb: 'Virvelløse dyrs zoologi',
+    nb: 'Invertebratzoologi',
   },
   mammalogy: {
     'en-us': 'Mammalogy',
@@ -945,7 +945,7 @@ export const treeText = createDictionary({
     'ru-ru': 'Камни',
     'uk-ua': 'Скелі',
     'hr-hr': 'Stijene',
-    nb: 'Steiner',
+    nb: 'Bergarter',
   },
   meteorites: {
     'en-us': 'Meteorites',
@@ -989,7 +989,7 @@ export const treeText = createDictionary({
     'pt-br': 'Criação da árvore padrão iniciada',
     'ru-ru': 'Началось создание дерева по умолчанию.',
     'uk-ua': 'Розпочато створення дерева за замовчуванням',
-    nb: 'Standard treoppretting startet',
+    nb: 'Standardtreoppretting startet',
   },
   defaultTreeCreationStartedDescription: {
     'en-us':
@@ -1008,7 +1008,7 @@ export const treeText = createDictionary({
       'Дерево будет создано в фоновом режиме. Вы получите уведомление, как только процесс завершится.',
     'uk-ua':
       'Дерево буде створено у фоновому режимі. Ви отримаєте сповіщення, коли це буде завершено.',
-    nb: 'Treet vil bli opprettet i bakgrunnen. Du vil bli varslet når det er fullført.',
+    nb: 'Treet opprettes i bakgrunnen. Du blir varslet når det er fullført.',
   },
   defaultTreeTaskStarted: {
     'en-us': 'The default tree creation process has started.',
@@ -1129,7 +1129,7 @@ export const treeText = createDictionary({
     'pt-br': 'Deveriam ser criadas as patentes que faltam?',
     'ru-ru': 'Следует ли создать недостающие звания?',
     'uk-ua': 'Чи слід створювати відсутні ряди?',
-    nb: 'Bør de manglende rekkene opprettes?',
+    nb: 'Bør de manglende rangene opprettes?',
   },
   source: {
     'en-us': 'Source',
@@ -1151,7 +1151,7 @@ export const treeText = createDictionary({
     'pt-br': 'Inicialize uma árvore vazia',
     'ru-ru': 'Инициализировать пустое дерево',
     'uk-ua': 'Ініціалізувати порожнє дерево',
-    nb: 'Initialiser et tomt tre',
+    nb: 'Opprett et tomt tre',
   },
   treeManagement: {
     'en-us': 'Tree Management',
@@ -1192,7 +1192,7 @@ export const treeText = createDictionary({
       'Якщо це ввімкнено, користувачі можуть додавати дочірні елементи до синонімізованих батьківських елементів та синонімізувати вузол з дочірніми елементами.',
     'hr-hr':
       'Ako je omogućeno, ovo korisnicima omogućuje dodavanje djece sinonimiziranim roditeljima i sinonimizaciju čvora s djecom.',
-    nb: 'Hvis dette er aktivert, kan brukere legge til barn til synonymiserte foreldre og synonymisere en node med barn.',
+    nb: 'Hvis aktivert, kan brukere legge til underordnede noder til synonymiserte overordnede, og synonymisere en node har underordnede noder.',
   },
   utf8EncodingWarning: {
     'en-us':
@@ -1205,7 +1205,7 @@ export const treeText = createDictionary({
       "Ces données d'arbre ne peuvent pas être importées dans votre base de données car elles contiennent des caractères UTF-8 et cette base de données utilise {encoding:string}.",
     'hr-hr':
       'Podaci o ovom stablu ne mogu se uvesti u vašu bazu podataka jer sadrže UTF-8 znakove, a ova baza podataka koristi {encoding:string}',
-    nb: 'Disse tredataene kan ikke importeres til databasen din fordi de inneholder UTF-8-tegn, og denne databasen bruker {encoding:string}',
+    nb: 'Disse tredataene kan ikke importeres i databasen din fordi de inneholder UTF‑8-tegn, og denne databasen bruker {encoding:string}',
     'pt-br':
       'Esses dados da árvore não podem ser importados para o seu banco de dados porque contêm caracteres UTF-8 e este banco de dados usa {encoding:string}',
     'ru-ru':
@@ -1219,7 +1219,7 @@ export const treeText = createDictionary({
     'es-es': 'Cómo resolverlo:',
     'fr-fr': 'Comment résoudre ce problème :',
     'hr-hr': 'Kako riješiti:',
-    nb: 'Slik løser du dette:',
+    nb: 'Slik løser du det:',
     'pt-br': 'Como resolver:',
     'ru-ru': 'Как решить проблему:',
     'uk-ua': 'Як вирішити:',
