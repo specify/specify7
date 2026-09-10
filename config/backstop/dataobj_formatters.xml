@@ -78,6 +78,14 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="BorrowAgent" title="BorrowAgent" class="edu.ku.brc.specify.datamodel.BorrowAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
+			</fields>
+		</switch>
+	</format>
 	<format name="CollectingEvent" title="CollectingEvent" class="edu.ku.brc.specify.datamodel.CollectingEvent" default="true">
 		<switch single="true">
 			<fields>
@@ -163,6 +171,14 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="DeaccessionAgent" title="DeaccessionAgent" class="edu.ku.brc.specify.datamodel.DeaccessionAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
+			</fields>
+		</switch>
+	</format>
 	<format name="Determination" title="Determination" class="edu.ku.brc.specify.datamodel.Determination" default="true">
 		<switch single="false" field="isCurrent">
 			<fields value="true">
@@ -178,6 +194,14 @@
 		<switch single="true">
 			<fields>
 				<field>name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="DisposalAgent" title="DisposalAgent" class="edu.ku.brc.specify.datamodel.DisposalAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
 			</fields>
 		</switch>
 	</format>
@@ -249,6 +273,14 @@
 		<switch single="true">
 			<fields>
 				<field>fullName</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="GiftAgent" title="GiftAgent" class="edu.ku.brc.specify.datamodel.GiftAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
 			</fields>
 		</switch>
 	</format>
