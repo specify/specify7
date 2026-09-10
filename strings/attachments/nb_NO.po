@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-09 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-10 08:16+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -351,13 +351,11 @@ msgstr "Følgende filer er utelatt fordi de allerede finnes i dette datasettet."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:580
-#, fuzzy
 msgid "missingFilesFound"
 msgstr "Filer mangler fra kartleggingsfilen"
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:585
-#, fuzzy
 msgid "missingFilesDescription"
 msgstr ""
 "Følgende filer er oppført i kartleggingsfilen, men er ikke valgt. Velg eller "
@@ -365,68 +363,58 @@ msgstr ""
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:626
-#, fuzzy
 msgid "errorFetchingRecord"
-msgstr "Feil ved henting av oppføring"
+msgstr "Feil ved henting av databasepost"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:627
-#, fuzzy
 msgid "errorSavingRecord"
-msgstr "Feil ved lagring av oppføring"
+msgstr "Feil ved lagring av databasepost"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:625
-#, fuzzy
 msgid "interruptionStopped"
 msgstr "Stoppet på grunn av feil ved opplasting av en tidligere fil"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:267
-#, fuzzy
 msgid "chooseFilesToGetStarted"
 msgstr "Velg filer eller dra dem hit for å komme i gang."
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:268
-#, fuzzy
 msgid "selectIdentifier"
 msgstr "Velg en identifikator som skal matches med filnavnet."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:325
 #: components/AttachmentsBulkImport/Import.tsx:348
-#, fuzzy
 msgid "progress"
 msgstr "Framgang"
 
 #. Used in: Components > Attachments Bulk Import > Rollback
 #: components/AttachmentsBulkImport/Rollback.tsx:143
-#, fuzzy
 msgid "rollbackResults"
 msgstr "Tilbakerullingsresultater"
 
 #. Used in: Components > Attachments Bulk Import > Rollback ⬤ Components > Attachments Bulk Import > Upload
 #: components/AttachmentsBulkImport/Rollback.tsx:146
 #: components/AttachmentsBulkImport/Upload.tsx:274
-#, fuzzy
 msgid "resultValue"
 msgstr ""
-"{success: number} av {total: number} vedlegg i datasettet har vært {action: "
+"{success: number} av {total: number} vedlegg i datasettet har blitt {action: "
 "string}."
 
 #. Used in: Components > Attachments Bulk Import > Rename Data Set
 #: components/AttachmentsBulkImport/RenameDataSet.tsx:32
-#, fuzzy
 msgid "deleteAttachmentDataSetDescription"
 msgstr ""
-"Hvis du sletter et datasett permanent, fjernes det og opplastingsbanen. "
+"Hvis du sletter et datasett permanent, fjernes dét og opplastingsbanen. "
 "Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for "
 "et opplastet datasett."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:628
-#, fuzzy
 msgid "attachmentUploadError"
 msgstr ""
 "Feil under opplasting av vedlegg. Vedleggsserveren er kanskje ikke "
@@ -436,40 +424,34 @@ msgstr ""
 #: components/Attachments/RecordSetAttachment.tsx:150
 #: components/Attachments/RecordSetAttachment.tsx:221
 #: components/FormSliders/AttachmentsCollection.tsx:84
-#, fuzzy
 msgid "downloadAll"
 msgstr "Last ned alle"
 
 #. Used in: Components > Attachments > Record Set Attachment ⬤ Components > Form Sliders > Attachments Collection
 #: components/Attachments/RecordSetAttachment.tsx:135
 #: components/FormSliders/AttachmentsCollection.tsx:79
-#, fuzzy
 msgid "downloadAllDescription"
 msgstr "Last ned alle vedlegg som er funnet"
 
 #. Used in: Components > Attachments > Record Set Attachment
 #: components/Attachments/RecordSetAttachment.tsx:224
-#, fuzzy
 msgid "createRecordSetToDownloadAll"
 msgstr ""
-"Ikke alle vedleggene er lastet inn. Vennligst opprett et postsett med "
+"Ikke alle vedlegg er lastet inn. Vennligst opprett et databasepost-sett fra "
 "søkeresultatene for å laste ned alle vedleggene."
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:60
-#, fuzzy
 msgid "deleteAttachmentWarning"
 msgstr "Er du sikker på at du vil slette dette vedlegget?"
 
 #. Used in: Components > Form Sliders > Attachment Warning Deletion
 #: components/FormSliders/AttachmentWarningDeletion.tsx:57
-#, fuzzy
 msgid "attachmentDelition"
 msgstr "Sletting av vedlegg"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:50
-#, fuzzy
 msgid "publicDefault"
 msgstr "Gjør vedlegg offentlige som standard"
 
