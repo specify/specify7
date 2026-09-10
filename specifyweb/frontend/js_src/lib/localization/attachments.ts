@@ -724,7 +724,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка отримання запису',
     'pt-br': 'Erro ao buscar registro',
     'hr-hr': 'Pogreška pri dohvaćanju zapisa',
-    nb: 'Feil ved henting av oppføring',
+    nb: 'Feil ved henting av databasepost',
   },
   errorSavingRecord: {
     'en-us': 'Error saving record',
@@ -735,7 +735,7 @@ export const attachmentsText = createDictionary({
     'uk-ua': 'Помилка збереження запису',
     'pt-br': 'Erro ao salvar o registro',
     'hr-hr': 'Pogreška pri spremanju zapisa',
-    nb: 'Feil ved lagring av oppføring',
+    nb: 'Feil ved lagring av databasepost',
   },
   interruptionStopped: {
     'en-us': 'Stopped because of error uploading a previous file',
@@ -817,7 +817,7 @@ export const attachmentsText = createDictionary({
       '{success: number} dos {total: number} anexos no conjunto de dados foram {action: string}.',
     'hr-hr':
       '{success: number} od {total: number} privitaka u skupu podataka je {action: string}.',
-    nb: '{success: number} av {total: number} vedlegg i datasettet har vært {action: string}.',
+    nb: '{success: number} av {total: number} vedlegg i datasettet har blitt {action: string}.',
   },
   deleteAttachmentDataSetDescription: {
     'en-us':
@@ -836,7 +836,7 @@ export const attachmentsText = createDictionary({
       'A exclusão de um conjunto de dados remove permanentemente o conjunto e seu caminho de upload. Além disso, após a exclusão, a opção de reversão (rollback) não estará mais disponível para o conjunto de dados carregado.',
     'hr-hr':
       'Trajnim brisanjem skupa podataka uklanja se on i njegov put prijenosa. Također, nakon brisanja, vraćanje na prethodno stanje više neće biti moguće za preneseni skup podataka.',
-    nb: 'Hvis du sletter et datasett permanent, fjernes det og opplastingsbanen. Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for et opplastet datasett.',
+    nb: 'Hvis du sletter et datasett permanent, fjernes dét og opplastingsbanen. Etter sletting vil heller ikke tilbakerulling lenger være et alternativ for et opplastet datasett.',
   },
   attachmentUploadError: {
     'en-us':
@@ -896,7 +896,7 @@ export const attachmentsText = createDictionary({
       'Не всі вкладення завантажено. Будь ласка, створіть набір записів результатів запиту, щоб завантажити всі вкладення.',
     'hr-hr':
       'Nisu učitani svi privitci. Izradite skup zapisa rezultata upita kako biste preuzeli sve privitke.',
-    nb: 'Ikke alle vedleggene er lastet inn. Vennligst opprett et postsett med søkeresultatene for å laste ned alle vedleggene.',
+    nb: 'Ikke alle vedlegg er lastet inn. Vennligst opprett et databasepost-sett fra søkeresultatene for å laste ned alle vedleggene.',
   },
   deleteAttachmentWarning: {
     'en-us': 'Are you sure you want to delete this attachment?',

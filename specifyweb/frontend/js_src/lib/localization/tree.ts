@@ -452,7 +452,7 @@ export const treeText = createDictionary({
     'de-ch': 'Baum durchsuchen',
     'pt-br': 'Árvore de pesquisa',
     'hr-hr': 'Stablo pretraživanja',
-    nb: 'Søketre',
+    nb: 'Søk i treet',
   },
   opened: {
     'en-us': 'Opened',
