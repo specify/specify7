@@ -1,8 +1,8 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 06:51+0000\n"
-"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
+"PO-Revision-Date: 2026-09-10 09:51+0000\n"
+"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -338,7 +338,7 @@ msgstr "Synonymiser node"
 #: components/TreeView/Search.tsx:73
 #: components/TreeView/Search.tsx:74
 msgid "searchTreePlaceholder"
-msgstr "Søketre"
+msgstr "Søk i treet"
 
 #. Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:278
