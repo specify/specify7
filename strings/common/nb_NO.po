@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/common/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -895,7 +895,7 @@ msgstr "Ubrukt"
 #. Used in: Components > Pick Lists > Definitions
 #: components/PickLists/definitions.ts:56
 msgid "ordinal"
-msgstr "Ordinal"
+msgstr "Ordenstall"
 
 #. Used in: Components > Header > User Tool Definitions ⬤ Components > Query Builder > Edit ⬤ Components > Schema Config > Components ⬤ Components > Security > Import Export ⬤ Components > Wb Toolkit > Dev Show Plan ⬤ Components > Wb Toolkit > Index ⬤ Wb Toolkit > __tests__ > Export
 #: components/Header/userToolDefinitions.ts:122
