@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 08:16+0000\n"
+"PO-Revision-Date: 2026-09-10 09:51+0000\n"
 "Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/attachments/nb_NO/>\n"
@@ -457,7 +457,6 @@ msgstr "Gjør vedlegg offentlige som standard"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:51
-#, fuzzy
 msgid "publicDefaultDescription"
 msgstr ""
 "Dette kontrollerer om nye vedlegg som legges til i denne samlingen skal "
@@ -467,122 +466,103 @@ msgstr ""
 
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:62
-#, fuzzy
 msgid "matchingMode"
-msgstr "Samsvarsmodus"
+msgstr "Matching modus"
 
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:82
-#, fuzzy
 msgid "matchByFilename"
-msgstr "Samsvar etter filnavn"
+msgstr "Match på filnavn"
 
 #. Used in: Components > Attachments Bulk Import > Datasets ⬤ Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/Datasets.tsx:213
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:106
-#, fuzzy
 msgid "matchByMappingFile"
-msgstr "Samsvar etter kartleggingsfil"
+msgstr "Match med kartleggingsfil"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:629
-#, fuzzy
 msgid "fileMissing"
 msgstr "Fil mangler"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:68
-#, fuzzy
 msgid "awaitingFile"
 msgstr "Venter på fil"
 
 #. Used in: Components > Attachments Bulk Import > View Attachment Files
 #: components/AttachmentsBulkImport/ViewAttachmentFiles.tsx:208
-#, fuzzy
 msgid "mappingAwaitingFiles"
 msgstr "Vennligst velg filene dine, eller dra og slipp dem, for å begynne."
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:630
-#, fuzzy
 msgid "notInMappingFile"
 msgstr "Ikke i kartleggingsfilen"
 
 #. Used in: Components > Attachments Bulk Import > Utils
 #: components/AttachmentsBulkImport/utils.ts:631
-#, fuzzy
 msgid "duplicateInMappingFile"
 msgstr "Duplikat i kartleggingsfil"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:267
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:270
-#, fuzzy
 msgid "selectMatchValueColumn"
-msgstr "Samsvarsverdi-kolonnen"
+msgstr "Match verdi kolonne"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:296
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:299
-#, fuzzy
 msgid "selectFileNameColumn"
-msgstr "Filnavnkolonne"
+msgstr "Filnavn-kolonne"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:232
-#, fuzzy
 msgid "mappingFileLoaded"
 msgstr "Kartleggingsfil lastet inn ({count:number} rader)"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:237
-#, fuzzy
 msgid "mappingFileColumnsInfo"
 msgstr "Treff: {matchColumn:string} → Fil: {fileColumn:string}"
 
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:66
-#, fuzzy
 msgid "chooseMatchingMode"
-msgstr "Velg hvordan vedleggsfiler skal samsvare med databaseposter."
+msgstr "Velg hvordan vedleggsfiler skal matches med databaseposter."
 
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:85
-#, fuzzy
 msgid "matchByFilenameDescription"
 msgstr ""
-"Analyser postidentifikatoren fra hvert filnavn ved hjelp av en "
-"feltformatering. Fungerer best med strukturerte numeriske felt."
+"Gå gjennom databasepost-id fra hvert filnavn ved hjelp av en felt-"
+"formatterer. Fungerer best med strukturerte numeriske felt."
 
 #. Used in: Components > Attachments Bulk Import > Matching Mode Dialog
 #: components/AttachmentsBulkImport/MatchingModeDialog.tsx:109
-#, fuzzy
 msgid "matchByMappingFileDescription"
 msgstr ""
-"Bruk en eksplisitt CSV-tilordningsfil som viser hvilken oppføring hver fil "
+"Bruk en eksplisitt CSV-tilordningsfil som viser hvilken databaepost hver fil "
 "tilhører."
 
 #. Used in: Components > Attachments Bulk Import > Import
 #: components/AttachmentsBulkImport/Import.tsx:305
-#, fuzzy
 msgid "matchValue"
-msgstr "Samsvarsverdi"
+msgstr "Match verdi"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:188
-#, fuzzy
 msgid "csvParseError"
-msgstr "Kunne ikke analysere CSV-filen"
+msgstr "Kunne ikke lese CSV-filen"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:37
-#, fuzzy
 msgid "csvEmptyFile"
 msgstr "Tom CSV-fil"
 
 #. Used in: Components > Attachments Bulk Import > Mapping File Setup
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:286
 #: components/AttachmentsBulkImport/MappingFileSetup.tsx:315
-#, fuzzy
 msgid "columnPlaceholder"
 msgstr "Kolonne {columnNumber:number}"
