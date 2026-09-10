@@ -277,7 +277,7 @@ export const batchEditText = createDictionary({
     'ru-ru': 'Пожертвование',
     'uk-ua': 'Здійснення',
     'hr-hr': 'Počinjanje',
-    nb: 'Sender (committing)',
+    nb: 'Bekreft',
   },
   beStatusCommit: {
     'en-us': 'Data Set Commit Status',

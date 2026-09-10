@@ -142,7 +142,7 @@ export const headerText = createDictionary({
       'Atualização iniciada. Você receberá uma notificação para cada item do feed atualizado.',
     'hr-hr':
       'Ažuriranje je započelo. Primit ćete obavijest za svaku ažuriranu stavku feeda.',
-    nb: 'Oppdatering startet. Du vil motta et varsel for hvert feed-element som oppdateres.',
+    nb: 'Oppdatering startet. Du vil motta et varsel for hvert element som oppdateres.',
   },
   dwcaExportStarted: {
     'en-us': 'DwCA export started',
@@ -314,7 +314,7 @@ export const headerText = createDictionary({
     'de-ch': 'Expresssuche',
     'pt-br': 'Busca expressa',
     'hr-hr': 'Brzo pretraživanje',
-    nb: 'Ekspresssøk',
+    nb: 'Enkelt søk',
   },
   primarySearch: {
     'en-us': 'Primary Search',
@@ -380,7 +380,7 @@ export const headerText = createDictionary({
     'de-ch': 'Hilf beim übersetzen von Specify 7',
     'pt-br': 'Ajuda Localizar Especificar 7',
     'hr-hr': 'Pomoć pri lokalizaciji Navedite 7',
-    nb: 'Hjelp til å lokalt tilpasse Specify 7',
+    nb: 'Hjelp! Lokaliser Specify 7',
   },
   helpLocalizeSpecifyDescription: {
     'en-us':
@@ -462,7 +462,7 @@ export const headerText = createDictionary({
     'de-ch': 'Operations-API',
     'pt-br': 'API de Operações',
     'hr-hr': 'API za operacije',
-    nb: 'Operasjoner API',
+    nb: 'Drifts-API',
   },
   documentation: {
     'en-us': 'Documentation',
@@ -495,7 +495,7 @@ export const headerText = createDictionary({
     'de-ch': 'Ressourcen für Entwickler',
     'pt-br': 'Recursos para desenvolvedores',
     'hr-hr': 'Resursi za razvojne programere',
-    nb: 'Utviklerressurser',
+    nb: 'Utvikler-verktøy',
   },
   forum: {
     'en-us': 'Community Forum',
@@ -506,7 +506,7 @@ export const headerText = createDictionary({
     'de-ch': 'Community-Forum',
     'pt-br': 'Fórum da Comunidade',
     'hr-hr': 'Forum zajednice',
-    nb: 'Fellesskapsforum',
+    nb: 'Brukerforum',
   },
   clearCache: {
     'en-us': 'Clear Browser Cache',

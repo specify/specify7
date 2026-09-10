@@ -99,7 +99,7 @@ export const commonText = createDictionary({
     'de-ch': 'Express Search konfigurieren',
     'pt-br': 'Configurar pesquisa expressa',
     'hr-hr': 'Konfigurirajte Express Search',
-    nb: 'Konfigurer ekspresssøk',
+    nb: 'Konfigurer enkelt søk',
   },
   expressSearchInstructionsTitle: {
     'en-us': 'Search tips',
@@ -363,7 +363,7 @@ export const commonText = createDictionary({
     'de-ch': 'N/A',
     'pt-br': 'N / D',
     'hr-hr': 'N/A',
-    nb: 'Ikke aktuelt',
+    nb: 'Ikke relevant',
   },
   new: {
     'en-us': 'New',
@@ -466,7 +466,7 @@ export const commonText = createDictionary({
     'de-ch': 'Ansicht',
     'pt-br': 'Visualizar',
     'hr-hr': 'Pogled',
-    nb: 'Visning',
+    nb: 'Se på',
   },
   opensInNewTab: {
     comment: 'Used in a hover-over message for links that open in new tab',
@@ -724,7 +724,7 @@ export const commonText = createDictionary({
     'de-ch': 'Reihenfolge',
     'pt-br': 'Ordinal',
     'hr-hr': 'Redni',
-    nb: 'Ordinal',
+    nb: 'Ordenstall',
   },
   export: {
     'en-us': 'Export',
