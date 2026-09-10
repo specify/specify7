@@ -434,8 +434,8 @@ msgstr ""
 #, fuzzy
 msgid "wrongScopeWarning"
 msgstr ""
-"Denne ressursen tilhører en annen samling/disiplin enn den du er i for "
-"øyeblikket. Det anbefales å bytte samling før du redigerer denne ressursen."
+"Denne resursen tilhører en annen samling/fagfelt enn den du befinner deg i "
+"nå. Det anbefales å bytte samling før du redigerer denne resursen."
 
 #. Used in: Components > Web Links > Element
 #: components/WebLinks/Element.tsx:82
