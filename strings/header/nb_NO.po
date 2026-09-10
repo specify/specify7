@@ -2,7 +2,7 @@ msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
+"Last-Translator: Tommy Prestø <tommy.presto@ntnu.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/header/nb_NO/>\n"
 "Language: nb_NO\n"
@@ -195,7 +195,7 @@ msgstr "Brukerverktøy ({userName:string})"
 #: components/Toolbar/Language.tsx:80
 #: components/Toolbar/Language.tsx:155
 msgid "helpLocalizeSpecify"
-msgstr "Hjelp til å lokalt tilpasse Specify 7"
+msgstr "Hjelp! Lokaliser Specify 7"
 
 #. Used in: Components > Toolbar > Language
 #: components/Toolbar/Language.tsx:92
