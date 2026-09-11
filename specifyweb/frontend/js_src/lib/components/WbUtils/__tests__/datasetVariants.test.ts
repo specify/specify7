@@ -21,6 +21,9 @@ const setBatchEditPreferences = (
   userPreferences.set('batchEdit', 'editor', 'showRollback', showRollback);
 };
 
+// Drop every explicitly set preference so lookups fall back to the defaults 
+const resetPreferences = (): void => userPreferences.setRaw({});
+
 beforeAll(() => {
   jest.useFakeTimers();
 });
@@ -70,6 +73,8 @@ describe('batch edit rollback availability', () => {
   });
 
   test('rollback is hidden based off default preferences', () => {
+    resetPreferences();
+
     expect(
       userPreferences.definition('batchEdit', 'editor', 'enableRelationships')
         .defaultValue
@@ -79,10 +84,16 @@ describe('batch edit rollback availability', () => {
         .defaultValue
     ).toBe(true);
 
-    setBatchEditPreferences(true, true);
-    mockedHasPermission.mockReturnValue(true);
+    // Unset preferences resolve to the declared defaults
+    expect(
+      userPreferences.get('batchEdit', 'editor', 'enableRelationships')
+    ).toBe(true);
+    expect(userPreferences.get('batchEdit', 'editor', 'showRollback')).toBe(
+      true
+    );
 
     expect(datasetVariants.batchEdit.canUndo()).toBe(false);
+    expect(mockedHasPermission).not.toHaveBeenCalled();
   });
 
   test('workbench rollback is not affected by batch edit preferences', () => {
