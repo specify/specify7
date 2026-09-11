@@ -424,3 +424,32 @@ class GiftTests(ApiTests):
         self.assertEqual(fetched.yesno1, True)
         self.assertEqual(fetched.yesno2, False)
         self.assertEqual(fetched.discipline, self.discipline)
+
+    def test_add_attachment_to_gift(self):
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-ATTACHMENT-001',
+            discipline=self.discipline
+        )
+
+        attachment = models.Attachment.objects.create(
+            origfilename='gift_doc.pdf',
+            tableid=gift.specify_model.tableId,
+            title='Gift Document',
+        )
+
+        gift_attachment = models.Giftattachment.objects.create(
+            gift=gift,
+            attachment=attachment,
+            ordinal=0,
+        )
+
+        fetched = models.Giftattachment.objects.get(id=gift_attachment.id)
+
+        self.assertEqual(fetched.gift, gift)
+        self.assertEqual(fetched.attachment, attachment)
+        self.assertEqual(fetched.ordinal, 0)
+        self.assertEqual(fetched.attachment.origfilename, 'gift_doc.pdf')
+        self.assertEqual(fetched.attachment.tableid, gift.specify_model.tableId)
+        self.assertEqual(fetched.attachment.title, 'Gift Document')
+        self.assertEqual(fetched.gift.giftnumber, 'GIFT-ATTACHMENT-001')
+        self.assertEqual(fetched.gift.discipline, self.discipline)
