@@ -363,3 +363,64 @@ class GiftTests(ApiTests):
                 'GIFT-SHIPMENT-002',
             },
         )
+
+    def test_fill_remaining_gift_fields(self):
+        gift_date = timezone.now()
+        date_received = timezone.now()
+
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-REMAINING-001',
+            contents='Gift contents',
+            date1=gift_date,
+            date1precision=1,
+            datereceived=date_received,
+            integer1=1,
+            integer2=2,
+            integer3=3,
+            isfinancialresponsibility=True,
+            number1=Decimal('10.25'),
+            number2=Decimal('20.50'),
+            purposeofgift='Research',
+            receivedcomments='Received in good condition',
+            remarks='Gift remarks',
+            specialconditions='Handle with care',
+            srcgeography='USA',
+            srctaxonomy='Quercus',
+            status='Completed',
+            text1='Text one',
+            text2='Text two',
+            text3='Text three',
+            text4='Text four',
+            text5='Text five',
+            yesno1=True,
+            yesno2=False,
+            discipline=self.discipline,
+        )
+
+        fetched = models.Gift.objects.get(id=gift.id)
+
+        self.assertEqual(fetched.contents, 'Gift contents')
+        self.assertEqual(fetched.date1, gift_date)
+        self.assertEqual(fetched.date1precision, 1)
+        self.assertEqual(fetched.datereceived, date_received)
+        self.assertEqual(fetched.integer1, 1)
+        self.assertEqual(fetched.integer2, 2)
+        self.assertEqual(fetched.integer3, 3)
+        self.assertEqual(fetched.isfinancialresponsibility, True)
+        self.assertEqual(fetched.number1, Decimal('10.25'))
+        self.assertEqual(fetched.number2, Decimal('20.50'))
+        self.assertEqual(fetched.purposeofgift, 'Research')
+        self.assertEqual(fetched.receivedcomments, 'Received in good condition')
+        self.assertEqual(fetched.remarks, 'Gift remarks')
+        self.assertEqual(fetched.specialconditions, 'Handle with care')
+        self.assertEqual(fetched.srcgeography, 'USA')
+        self.assertEqual(fetched.srctaxonomy, 'Quercus')
+        self.assertEqual(fetched.status, 'Completed')
+        self.assertEqual(fetched.text1, 'Text one')
+        self.assertEqual(fetched.text2, 'Text two')
+        self.assertEqual(fetched.text3, 'Text three')
+        self.assertEqual(fetched.text4, 'Text four')
+        self.assertEqual(fetched.text5, 'Text five')
+        self.assertEqual(fetched.yesno1, True)
+        self.assertEqual(fetched.yesno2, False)
+        self.assertEqual(fetched.discipline, self.discipline)
