@@ -453,3 +453,31 @@ class GiftTests(ApiTests):
         self.assertEqual(fetched.attachment.title, 'Gift Document')
         self.assertEqual(fetched.gift.giftnumber, 'GIFT-ATTACHMENT-001')
         self.assertEqual(fetched.gift.discipline, self.discipline)
+
+    def test_delete_attachment_from_gift(self):
+        gift = models.Gift.objects.create(
+            giftnumber='GIFT-ATTACHMENT-DELETE-001',
+            discipline=self.discipline,
+        )
+        attachment = models.Attachment.objects.create(
+            origfilename='gift_doc_delete.pdf',
+            tableid=gift.specify_model.tableId,
+            title='Gift Document',
+        )
+        gift_attachment = models.Giftattachment.objects.create(
+            gift=gift,
+            attachment=attachment,
+            ordinal=0,
+        )
+        attachment_id = attachment.id
+        gift_attachment_id = gift_attachment.id
+
+        gift_attachment.delete()
+
+        self.assertEqual(
+            models.Giftattachment.objects.filter(id=gift_attachment_id).count(), 0
+        )
+        self.assertEqual(
+            models.Attachment.objects.filter(id=attachment_id).count(), 0
+        )
+
