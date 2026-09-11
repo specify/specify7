@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-11 13:51+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/expressSearchConfig/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #. Used in: Components > Express Search Config > Express Search Config Editor
 #: components/ExpressSearchConfig/ExpressSearchConfigEditor.tsx:252
@@ -137,11 +137,10 @@ msgid "CollObjToDeterminer"
 msgstr "Takson for samlingsobjekt"
 
 #. Used in: 
-#, fuzzy
 msgid "CollObjToDeterminer_desc"
 msgstr ""
-"Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte "
-"taksonnavnet, taksonets vanlige navn og bestemmer."
+"Samlingsobjekter med gjeldende bestemmelser, som viser det gjeldene "
+"taksonnavnet, norsk navn og bestemmer."
 
 #. Used in: 
 msgid "CollObToLocality"
@@ -294,14 +293,12 @@ msgid "BorrowToAgent_desc"
 msgstr "Innlån og agentene som er koblet sammen gjennom låneagentrollene."
 
 #. Used in: 
-#, fuzzy
 msgid "AppraisalToAgent"
-msgstr "Agentvurdering"
+msgstr "Vurdering gjort av agent"
 
 #. Used in: 
-#, fuzzy
 msgid "AppraisalToAgent_desc"
-msgstr "Takseringer og deres tilknyttede agenter."
+msgstr "Vurderinger og deres tilknyttede agenter."
 
 #. Used in: 
 msgid "GeoTimePeriodToCO"
