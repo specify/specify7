@@ -60,6 +60,7 @@ import type {
   PreferencesVisibilityContext,
 } from './types';
 import { definePref } from './types';
+import { dataViewsText } from '../../localization/dataViews';
 
 const isLightMode = ({
   isDarkMode,
@@ -1916,6 +1917,24 @@ export const userPreferenceDefinitions = {
             visible: true,
             defaultValue: false,
             type: 'java.lang.Boolean',
+          }),
+        },
+      },
+    },
+  },
+  dataViews: {
+    title: dataViewsText.dataViewsTitle(),
+    subCategories: {
+      general: {
+        title: preferencesText.general(),
+        items: {
+          shownTables: definePref<RA<number>>({
+            title: localized('_shownTables'),
+            requiresReload: false,
+            visible: false,
+            defaultValue: [],
+            renderer: f.never,
+            container: 'div',
           }),
         },
       },

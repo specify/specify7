@@ -12,9 +12,7 @@ import { filterArray } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
 import { Button } from '../Atoms/Button';
 import { getLocalityField } from '../Leaflet/helpers';
-import {
-  getSelectedLocalityColumns,
-} from '../Leaflet/wbLocalityDataExtractor';
+import { getSelectedLocalityColumns } from '../Leaflet/wbLocalityDataExtractor';
 import type { GeoLocatePayload } from '../Molecules/GeoLocate';
 import { GenericGeoLocate } from '../Molecules/GeoLocate';
 import type { Dataset } from '../WbPlanView/Wrapped';

@@ -377,6 +377,18 @@ export const routes: RA<EnhancedRoute> = [
     ],
   },
   {
+    path: 'dataviews',
+    children: [
+      {
+        path: ':tableName',
+        element: () =>
+          import('../DataViews/index').then(
+            ({ TableDataView }) => TableDataView
+          ),
+      },
+    ],
+  },
+  {
     path: 'user-preferences',
     title: preferencesText.preferences(),
     element: () =>
@@ -466,14 +478,11 @@ export const routes: RA<EnhancedRoute> = [
             ({ CacheBuster }) => CacheBuster
           ),
       },
-	  {
-		path: 'logout',
-		title: userText.logOut(),
-		element: () => 
-		  import('../Logout').then(
-			({ Logout }) => Logout
-		  )
-	  },
+      {
+        path: 'logout',
+        title: userText.logOut(),
+        element: () => import('../Logout').then(({ Logout }) => Logout),
+      },
     ],
   },
   {
