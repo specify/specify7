@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 09:51+0000\n"
+"PO-Revision-Date: 2026-09-11 12:51+0000\n"
 "Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/backEnd/nb_NO/>\n"
@@ -9,7 +9,7 @@ msgstr ""
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #. Used in: Components > Work Bench > Result Message Resolvers ⬤ Work Bench > __tests__ > Results Parser
 #: components/WorkBench/resultMessageResolvers.ts:24
@@ -149,7 +149,7 @@ msgstr "Trenodens overordnede har en høyere rang enn seg selv"
 #: components/Errors/JsonError.tsx:158
 #: components/WorkBench/resultMessageResolvers.ts:191
 msgid "nodeChildrenInvalidRank"
-msgstr "Trenodens rangering er høyere enn noen av dens barn"
+msgstr "Trenodens nivå er høyere enn noen av de underliggende"
 
 #. Used in: Components > Errors > Json Error ⬤ Components > Work Bench > Result Message Resolvers
 #: components/Errors/JsonError.tsx:160
