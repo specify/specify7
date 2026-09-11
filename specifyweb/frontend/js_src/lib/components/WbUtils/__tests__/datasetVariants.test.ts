@@ -60,3 +60,39 @@ describe('batch edit rollback availability', () => {
       'rollback'
     );
   });
+
+  test('does not consult permissions when relationships are enabled', () => {
+    setBatchEditPreferences(true, true);
+    mockedHasPermission.mockReturnValue(true);
+
+    expect(datasetVariants.batchEdit.canUndo()).toBe(false);
+    expect(mockedHasPermission).not.toHaveBeenCalled();
+  });
+
+  test('rollback is hidden based off default preferences', () => {
+    expect(
+      userPreferences.definition('batchEdit', 'editor', 'enableRelationships')
+        .defaultValue
+    ).toBe(true);
+    expect(
+      userPreferences.definition('batchEdit', 'editor', 'showRollback')
+        .defaultValue
+    ).toBe(true);
+
+    setBatchEditPreferences(true, true);
+    mockedHasPermission.mockReturnValue(true);
+
+    expect(datasetVariants.batchEdit.canUndo()).toBe(false);
+  });
+
+  test('workbench rollback is not affected by batch edit preferences', () => {
+    setBatchEditPreferences(true, true);
+    mockedHasPermission.mockReturnValue(true);
+
+    expect(datasetVariants.workbench.canUndo()).toBe(true);
+    expect(mockedHasPermission).toHaveBeenCalledWith(
+      '/workbench/dataset',
+      'unupload'
+    );
+  });
+});
