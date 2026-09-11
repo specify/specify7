@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-09 11:52+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-11 13:51+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/merging/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:1925
@@ -33,7 +33,6 @@ msgstr "Sammenslått post"
 
 #. Used in: Components > Merging > Index
 #: components/Merging/index.tsx:454
-#, fuzzy
 msgid "showConflictingFieldsOnly"
 msgstr "Vis bare motstridende felt"
 
@@ -55,9 +54,8 @@ msgstr "{count:number|formatted} dataposter"
 
 #. Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:425
-#, fuzzy
 msgid "subViewControls"
-msgstr "Undervisningskontroller"
+msgstr "Innstillinger for delvisning"
 
 #. 🟥Example: "Merge Addresses". Used in: Components > Merging > Compare Sub View
 #: components/Merging/CompareSubView.tsx:211
@@ -72,9 +70,8 @@ msgstr "Automatisk utfylling"
 
 #. Used in: Components > Merging > Header
 #: components/Merging/Header.tsx:88
-#, fuzzy
 msgid "dismissFromMerging"
-msgstr "Avvis fra sammenslåing"
+msgstr "Fjern fra sammenslåing"
 
 #. Used in: Components > Merging > Definitions
 #: components/Merging/definitions.ts:23
@@ -93,7 +90,6 @@ msgstr "Enkelte poster kan ikke slås sammen"
 
 #. Used in: Components > Merging > Invalid Merge Records
 #: components/Merging/InvalidMergeRecords.tsx:88
-#, fuzzy
 msgid "mergeOthers"
 msgstr "Slå sammen andre"
 
@@ -163,6 +159,5 @@ msgstr "Noe gikk galt under sammenslåingsprosessen."
 #: components/Molecules/LinkedRecords.tsx:90
 #: components/Molecules/LinkedRecords.tsx:94
 #: components/Molecules/LinkedRecords.tsx:129
-#, fuzzy
 msgid "linkedRecords"
 msgstr "Tilknyttede poster"
