@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-09 11:54+0000\n"
-"Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
+"PO-Revision-Date: 2026-09-11 13:51+0000\n"
+"Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/preferences/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #. Used in: Components > Preferences > Index ⬤ Components > Router > Routes
 #: components/Preferences/index.tsx:103
@@ -648,13 +648,11 @@ msgstr "Enter-tasten begynner å redigere cellen"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2031
-#, fuzzy
 msgid "tabMoveDirection"
 msgstr "Bevegelsesretning når <key>Tab</key>-tasten trykkes"
 
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:2032
-#, fuzzy
 msgid "tabMoveDirectionDescription"
 msgstr ""
 "Du kan bevege deg i motsatt retning ved å trykke <key>Shift</key>+<key>Tab</"
@@ -1185,7 +1183,6 @@ msgstr "Farge på fareknappen"
 #. Used in: Components > Preferences > User Definitions
 #: components/Preferences/UserDefinitions.tsx:412
 #: components/Preferences/UserDefinitions.tsx:473
-#, fuzzy
 msgid "infoButtonColor"
 msgstr "Farge på infoknappen"
 
@@ -1288,7 +1285,6 @@ msgstr ""
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:37
-#, fuzzy
 msgid "scopeEntireTablePicklists"
 msgstr "Omfang «Hele tabellen»-valglister"
 
