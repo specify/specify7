@@ -10,6 +10,7 @@ from celery.signals import setup_logging
 os.environ.setdefault('DJANGO_SETTINGS_MODULE', 'specifyweb.settings')
 
 app = Celery('specify7')
+app.conf.worker_max_tasks_per_child = 100
 
 # Using a string here means the worker doesn't have to serialize
 # the configuration object to child processes.
