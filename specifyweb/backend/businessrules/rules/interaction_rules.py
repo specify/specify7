@@ -6,7 +6,7 @@ from django.db import connection
 def get_availability(prep, iprepid, iprepid_fld):
     args = [prep.id]
     sql = """
-    select p.countAmt - coalesce(sum(lp.quantity-lp.quantityresolved),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0) 
+    select p.countAmt - coalesce(sum(coalesce(lp.quantity,0)-coalesce(lp.quantityresolved,0)),0) - coalesce(sum(gp.quantity),0) - coalesce(sum(ep.quantity),0)
     from preparation p
     left join loanpreparation lp on lp.preparationid = p.preparationid
     left join giftpreparation gp on gp.preparationid = p.preparationid
@@ -29,9 +29,6 @@ def get_availability(prep, iprepid, iprepid_fld):
 
 @orm_signal_handler('pre_save', 'Loanpreparation')
 def loanprep_quantity_must_be_lte_availability(ipreparation):
-    if ipreparation.id is None:
-        return
-
     if ipreparation.preparation is not None:
         available = get_availability(
             ipreparation.preparation, ipreparation.id, "loanpreparationid") or 0
