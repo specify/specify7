@@ -305,7 +305,7 @@ export const expressSearchConfigText = createDictionary({
       'Objets avec déterminations actuelles, indiquant le nom du taxon déterminé, le nom commun du taxon et le déterminant.',
     'hr-hr':
       'Objekti zbirke s trenutnim određenjima, koji prikazuju određeni naziv taksona, uobičajeni naziv taksona i odrednicu.',
-    nb: 'Samlingsobjekter med gjeldende bestemmelser, som viser det bestemte taksonnavnet, taksonets vanlige navn og bestemmer.',
+    nb: 'Samlingsobjekter med gjeldende bestemmelser, som viser det gjeldene taksonnavnet, norsk navn og bestemmer.',
     'pt-br':
       'Objetos da coleção com determinações atuais, mostrando o nome do táxon determinado, o nome comum do táxon e o determinante.',
     'ru-ru':
@@ -780,7 +780,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Tasación del agente',
     'fr-fr': "Évaluation de l'agent",
     'hr-hr': 'Procjena agenta',
-    nb: 'Agentvurdering',
+    nb: 'Vurdering gjort av agent',
     'pt-br': 'Avaliação do agente',
     'ru-ru': 'Оценка агента',
     'uk-ua': 'Оцінка агента',
@@ -791,7 +791,7 @@ export const expressSearchConfigText = createDictionary({
     'es-es': 'Las tasaciones y sus agentes asociados.',
     'fr-fr': 'Les évaluations et leurs agents associés.',
     'hr-hr': 'Procjene i njihovi povezani agenti.',
-    nb: 'Takseringer og deres tilknyttede agenter.',
+    nb: 'Vurderinger og deres tilknyttede agenter.',
     'pt-br': 'Avaliações e seus respectivos agentes.',
     'ru-ru': 'Оценочные компании и связанные с ними агенты.',
     'uk-ua': "Оцінки та пов'язані з ними агенти.",
