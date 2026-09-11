@@ -31,6 +31,7 @@ import { useResourceView } from './BaseResourceView';
 import { DeleteButton } from './DeleteButton';
 import { SaveButton } from './Save';
 import { propsToFormMode } from './useViewDefinition';
+import { SeriesFormContext } from './BulkCarryForward';
 
 /**
  * There is special behavior required when creating one of these resources,
@@ -307,20 +308,31 @@ export function ResourceView<SCHEMA extends AnySchema>({
     </ReadOnlyContext.Provider>
   );
 
+  const [seriesRangeEnd, setSeriesRangeEnd] = React.useState('');
+  const [usingSeries, setUsingSeries] = React.useState(false);
+
   if (dialog === false) {
     const formattedChildren = (
       <>
-        {formComponent}
-        {typeof deleteButton === 'object' ||
-        typeof saveButtonElement === 'object' ||
-        typeof extraButtons === 'object' ? (
-          <DataEntry.Footer>
-            {deleteButton}
-            {referencingRecordsButton}
-            {extraButtons ?? <span className="-ml-2 md:flex-1" />}
-            {saveButtonElement}
-          </DataEntry.Footer>
-        ) : undefined}
+        <SeriesFormContext.Provider value={{
+          seriesEnd: seriesRangeEnd,
+          setSeriesEnd: setSeriesRangeEnd,
+          usingSeries,
+          setUsingSeries,
+          }}>
+          {formComponent}
+          {typeof deleteButton === 'object' ||
+          typeof saveButtonElement === 'object' ||
+          typeof extraButtons === 'object' ? (
+            <DataEntry.Footer>
+              {deleteButton}
+              {referencingRecordsButton}
+              {extraButtons ?? <span className="-ml-2 md:flex-1" />}
+              {saveButtonElement}
+            </DataEntry.Footer>
+          ) : undefined}
+        </SeriesFormContext.Provider>
+        
       </>
     );
 
