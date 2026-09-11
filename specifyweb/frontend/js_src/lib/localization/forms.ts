@@ -1216,7 +1216,7 @@ export const formsText = createDictionary({
     'ru-ru': 'Создать набор записей в функции массового переноса.',
     'uk-ua': 'Створення набору записів для групового перенесення',
     'hr-hr': 'Stvori skup zapisa pri skupnom prijenosu naprijed',
-    nb: 'Opprett postsett på masseoverføring',
+    nb: 'Opprett datasett ved masseoverføring',
   },
   cloneButtonEnabled: {
     'en-us': 'Show Clone button',
@@ -1513,7 +1513,7 @@ export const formsText = createDictionary({
     'de-ch': 'Formular Meta',
     'pt-br': 'Formulário Meta',
     'hr-hr': 'Meta obrazaca',
-    nb: 'Skjemameta',
+    nb: 'Metadata for skjem',
   },
   newResourceTitle: {
     'en-us': 'New {tableName:string}',

@@ -108,7 +108,7 @@ export const interactionsText = createDictionary({
     'de-ch': 'Es gibt Probleme mit dem Eintrag:',
     'pt-br': 'Existem problemas com a entrada:',
     'hr-hr': 'Postoje problemi s unosom:',
-    nb: 'Det er problemer med inntastingen:',
+    nb: 'Feil ved oppføringen:',
   },
   byChoosingRecordSet: {
     comment: 'See documentation for syntax for plural rules',

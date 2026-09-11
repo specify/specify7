@@ -373,7 +373,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'A classificação do nó da árvore é maior que a de alguns de seus filhos.',
     'hr-hr': 'Rang čvora stabla je veći od ranga nekih njegovih potomaka',
-    nb: 'Trenodens rangering er høyere enn noen av dens barn',
+    nb: 'Trenodens nivå er høyere enn noen av de underliggende',
   },
   nodeOperationToSynonymizedParent: {
     'en-us':
