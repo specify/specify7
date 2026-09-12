@@ -9,6 +9,31 @@ import { createDictionary } from './utils';
 // Refer to "Guidelines for Programmers" in ./README.md before editing this file
 
 export const schemaText = createDictionary({
+  importSchema: {
+    'en-us': 'Import {schemaConfig:string}',
+  },
+  importSchemaWarning: {
+    'en-us':
+      'Importing a {schemaConfig:string} will overwrite the current one. This action cannot be undone.',
+  },
+  importSchemaBackupPrompt: {
+    'en-us':
+      'We strongly recommend downloading a backup of the current {schemaConfig:string} before importing.',
+  },
+  importSchemaLimitations: {
+    'en-us':
+      'This import will not assign pick lists, field formats, or web links unless they already exist.',
+  },
+  downloadSchemaBackup: {
+    'en-us': 'Export {schemaConfig:string}',
+  },
+  importSchemaContinue: {
+    'en-us': 'Continue Import',
+  },
+  importSchemaError: {
+    'en-us':
+      'The {schemaConfig:string} export provided is invalid and cannot be imported.',
+  },
   table: {
     'en-us': 'Table',
     'ru-ru': 'Стол',

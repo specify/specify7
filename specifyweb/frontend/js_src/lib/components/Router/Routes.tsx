@@ -466,14 +466,11 @@ export const routes: RA<EnhancedRoute> = [
             ({ CacheBuster }) => CacheBuster
           ),
       },
-	  {
-		path: 'logout',
-		title: userText.logOut(),
-		element: () => 
-		  import('../Logout').then(
-			({ Logout }) => Logout
-		  )
-	  },
+      {
+        path: 'logout',
+        title: userText.logOut(),
+        element: () => import('../Logout').then(({ Logout }) => Logout),
+      },
     ],
   },
   {
