@@ -53,3 +53,57 @@ class BorrowTests(ApiTests):
             fetched_borrow_agent.role,
             'Borrower',
         )
+
+    def test_create_new_agent_for_borrow(self):
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-NEW-AGENT-001',
+        )
+
+        new_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname='New',
+            lastname='Borrow Agent',
+            division=self.division,
+        )
+
+        borrow_agent = models.Borrowagent.objects.create(
+            borrow=borrow,
+            agent=new_agent,
+            collectionmemberid=self.collection.id,
+            role='Borrower',
+        )
+
+        fetched_agent = models.Agent.objects.get(id=new_agent.id)
+        fetched_borrow_agent = models.Borrowagent.objects.get(
+            id=borrow_agent.id,
+        )
+
+        self.assertEqual(
+            fetched_agent.firstname,
+            'New',
+        )
+        self.assertEqual(
+            fetched_agent.lastname,
+            'Borrow Agent',
+        )
+        self.assertEqual(
+            fetched_agent.agenttype,
+            0,
+        )
+        self.assertEqual(
+            fetched_agent.division,
+            self.division,
+        )
+        self.assertEqual(
+            fetched_borrow_agent.borrow,
+            borrow,
+        )
+        self.assertEqual(
+            fetched_borrow_agent.agent,
+            new_agent,
+        )
+        self.assertEqual(
+            fetched_borrow_agent.role,
+            'Borrower',
+        )
