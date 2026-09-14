@@ -483,7 +483,7 @@ export const resourcesText = createDictionary({
     'de-ch': 'Leaflet-Layer',
     'pt-br': 'Camadas de Folhetos',
     'hr-hr': 'Slojevi letaka',
-    nb: 'Brosjyrelag',
+    nb: 'Kartlag',
   },
   textEditor: {
     'en-us': 'Text Editor',
