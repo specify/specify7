@@ -64,7 +64,7 @@ export function PreferencesAside({
     <aside
       className={`
         top-0 flex min-w-fit flex-shrink-0 flex-col divide-y-4 divide-[color:var(--form-background)]
-        overflow-y-auto md:sticky md:flex-1
+        overflow-y-auto md:sticky md:w-64 md:flex-none md:flex-shrink-0
       `}
     >
       {definitions.map(([category, { title }], index) => (

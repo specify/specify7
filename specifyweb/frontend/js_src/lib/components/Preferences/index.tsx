@@ -161,7 +161,6 @@ function Preferences({
             forwardRefs={forwardRefs}
             prefType={prefType}
           />
-          <span className="flex-1" />
         </div>
         <div className="flex justify-end">
           {changesMade ? (
@@ -406,7 +405,7 @@ export function PreferencesContent({
   );
 
   return (
-    <div className="flex h-fit flex-col gap-6">
+    <div className="flex h-fit min-w-0 flex-1 flex-col gap-6">
       {definitions.map(
         (
           [category, { title, description = undefined, subCategories }],
