@@ -8,7 +8,9 @@ Replace this with more appropriate tests for your application.
 from collections import namedtuple
 from django.test import TestCase
 
-from .dwca import DwCAException, ExportField, validate_stanzas
+from specifyweb.specify.datamodel import datamodel
+
+from .dwca import DwCAException, ExportField, validate_definition, validate_stanzas
 
 class SimpleTest(TestCase):
     def test_basic_addition(self):
@@ -34,3 +36,28 @@ class DwcaValidationTest(TestCase):
         core = self.stanza(True, [ExportField(0, 'occurrenceID', True)])
         extension = self.stanza(False, [ExportField(0, 'occurrenceID', True)])
         validate_stanzas(core, [extension, extension])
+
+    def test_uses_core_row_type_base_table(self):
+        collecting_event_id = datamodel.get_table_strict('collectingevent').tableId
+        collection_object_id = datamodel.get_table_strict('collectionobject').tableId
+        definition = f'''
+            <archive>
+              <core rowType="http://rs.tdwg.org/dwc/terms/Event">
+                <queries>
+                  <query contextTableId="{collecting_event_id}" name="event.csv">
+                    <id stringId="1.collectingevent.guid" isRelFld="false"
+                        oper="11" value="" isNot="false"
+                        term="http://rs.tdwg.org/dwc/terms/eventID" />
+                  </query>
+                </queries>
+              </core>
+            </archive>
+        '''
+        validate_definition(definition)
+
+        invalid_definition = definition.replace(
+            f'contextTableId="{collecting_event_id}"',
+            f'contextTableId="{collection_object_id}"',
+        )
+        with self.assertRaises(DwCAException):
+            validate_definition(invalid_definition)
