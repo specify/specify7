@@ -1,3 +1,5 @@
+from decimal import Decimal
+
 from django.utils import timezone
 
 from specifyweb.specify import models
@@ -106,4 +108,99 @@ class BorrowTests(ApiTests):
         self.assertEqual(
             fetched_borrow_agent.role,
             'Borrower',
+        )
+
+    def test_add_shipment_with_all_fields_to_borrow(self):
+        shipment_date = timezone.now()
+
+        borrow = models.Borrow.objects.create(
+            collectionmemberid=self.collection.id,
+            invoicenumber='BORROW-SHIPMENT-001',
+        )
+
+        shipment = borrow.shipments.create(
+            shipmentnumber='BORROW-SHIPMENT-001',
+            shipmentdate=shipment_date,
+            shipmentmethod='Courier',
+            numberofpackages=3,
+            insuredforamount='500.00',
+            weight='12.5 kg',
+            number1=Decimal('10.25'),
+            number2=Decimal('20.50'),
+            remarks='Borrow shipment remarks',
+            text1='Borrow shipment text one',
+            text2='Borrow shipment text two',
+            yesno1=True,
+            yesno2=False,
+            shipper=self.agent,
+            discipline=self.discipline,
+        )
+
+        fetched_shipment = models.Shipment.objects.get(
+            id=shipment.id,
+        )
+
+        self.assertEqual(
+            fetched_shipment.borrow,
+            borrow,
+        )
+        self.assertEqual(
+            fetched_shipment.shipmentnumber,
+            'BORROW-SHIPMENT-001',
+        )
+        self.assertEqual(
+            fetched_shipment.shipmentdate,
+            shipment_date,
+        )
+        self.assertEqual(
+            fetched_shipment.shipmentmethod,
+            'Courier',
+        )
+        self.assertEqual(
+            fetched_shipment.numberofpackages,
+            3,
+        )
+        self.assertEqual(
+            fetched_shipment.insuredforamount,
+            '500.00',
+        )
+        self.assertEqual(
+            fetched_shipment.weight,
+            '12.5 kg',
+        )
+        self.assertEqual(
+            fetched_shipment.number1,
+            Decimal('10.25'),
+        )
+        self.assertEqual(
+            fetched_shipment.number2,
+            Decimal('20.50'),
+        )
+        self.assertEqual(
+            fetched_shipment.remarks,
+            'Borrow shipment remarks',
+        )
+        self.assertEqual(
+            fetched_shipment.text1,
+            'Borrow shipment text one',
+        )
+        self.assertEqual(
+            fetched_shipment.text2,
+            'Borrow shipment text two',
+        )
+        self.assertIs(
+            fetched_shipment.yesno1,
+            True,
+        )
+        self.assertIs(
+            fetched_shipment.yesno2,
+            False,
+        )
+        self.assertEqual(
+            fetched_shipment.shipper,
+            self.agent,
+        )
+        self.assertEqual(
+            fetched_shipment.discipline,
+            self.discipline,
         )
