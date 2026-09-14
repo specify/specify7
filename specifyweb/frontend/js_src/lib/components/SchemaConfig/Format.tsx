@@ -163,7 +163,7 @@ export function SchemaConfigFormat({
             systemPickLists,
         }}
       />
-      <legend className="mt-2 flex items-center gap-1 font-semibold">
+      <h3 className="mt-2 flex items-center gap-1 font-semibold">
         {schemaText.dataModelAlignment()}
         <Link.Icon
           aria-label={headerText.documentation()}
@@ -173,7 +173,7 @@ export function SchemaConfigFormat({
           target="_blank"
           title={headerText.documentation()}
         />
-      </legend>
+      </h3>
       <SchemaConfigAlignment field={field} />
     </fieldset>
   );
