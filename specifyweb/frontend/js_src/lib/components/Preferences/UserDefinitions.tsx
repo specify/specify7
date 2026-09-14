@@ -1258,6 +1258,10 @@ export const userPreferenceDefinitions = {
             defaultValue: false,
             type: 'java.lang.Boolean',
           }),
+          openRelatedRecordInNewTab: defineKeyboardShortcut(
+            preferencesText.openRelatedRecordInNewTab(),
+            'KeyO'
+          ),
         },
       },
       recordSet: {
@@ -1280,6 +1284,23 @@ export const userPreferenceDefinitions = {
               },
             ],
           }),
+          goToFirstRecord: defineKeyboardShortcut(
+            formsText.goToFirstRecord(),
+            'Ctrl+Shift+ArrowUp'
+          ),
+          goToPreviousRecord: defineKeyboardShortcut(
+            formsText.goToPreviousRecord(),
+            'Ctrl+Shift+ArrowLeft'
+          ),
+          goToNextRecord: defineKeyboardShortcut(
+            formsText.goToNextRecord(),
+            'Ctrl+Shift+ArrowRight'
+          ),
+          goToLastRecord: defineKeyboardShortcut(
+            formsText.goToLastRecord(),
+            'Ctrl+Shift+ArrowDown'
+          ),
+          addResource: defineKeyboardShortcut(resourcesText.addResource(), 'KeyA'),
         },
       },
       formTable: {
@@ -1436,32 +1457,6 @@ export const userPreferenceDefinitions = {
             type: 'java.lang.Boolean',
             container: 'div',
           }),
-        },
-      },
-      actions: {
-        title: commonText.actions(),
-        items: {
-          openRelatedRecordInNewTab: defineKeyboardShortcut(
-            preferencesText.openRelatedRecordInNewTab(),
-            'KeyO'
-          ),
-          goToFirstRecord: defineKeyboardShortcut(
-            formsText.goToFirstRecord(),
-            'Ctrl+Shift+ArrowUp'
-          ),
-          goToPreviousRecord: defineKeyboardShortcut(
-            formsText.goToPreviousRecord(),
-            'Ctrl+Shift+ArrowLeft'
-          ),
-          goToNextRecord: defineKeyboardShortcut(
-            formsText.goToNextRecord(),
-            'Ctrl+Shift+ArrowRight'
-          ),
-          goToLastRecord: defineKeyboardShortcut(
-            formsText.goToLastRecord(),
-            'Ctrl+Shift+ArrowDown'
-          ),
-          addResource: defineKeyboardShortcut(resourcesText.addResource(), 'KeyA'),
         },
       },
     },
