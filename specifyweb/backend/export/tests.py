@@ -27,14 +27,18 @@ class DwcaValidationTest(TestCase):
         )
 
     def test_requires_matching_extension_identifier(self):
-        core = self.stanza(True, [ExportField(0, 'occurrenceID', True)])
+        core = self.stanza(
+            True,
+            [ExportField(0, 'http://rs.tdwg.org/dwc/terms/occurrenceID', True)],
+        )
         extension = self.stanza(False, [ExportField(0, 'eventID', True)])
         with self.assertRaises(DwCAException):
             validate_stanzas(core, [extension])
 
     def test_allows_multiple_extensions(self):
-        core = self.stanza(True, [ExportField(0, 'occurrenceID', True)])
-        extension = self.stanza(False, [ExportField(0, 'occurrenceID', True)])
+        occurrence_id = 'http://rs.tdwg.org/dwc/terms/occurrenceID'
+        core = self.stanza(True, [ExportField(0, occurrence_id, True)])
+        extension = self.stanza(False, [ExportField(0, occurrence_id, True)])
         validate_stanzas(core, [extension, extension])
 
     def test_uses_core_row_type_base_table(self):
