@@ -1581,7 +1581,12 @@ function DwcaDefinitionEditorLoaded({
           <Button.Small
             key={index}
             aria-pressed={tab === index}
-            variant={tab === index ? className.infoButton : undefined}
+            className={`${className.ariaHandled} transition-colors`}
+            variant={
+              tab === index
+                ? `${className.infoButton} active:brightness-100`
+                : `${className.defaultSmallButtonVariant} active:brightness-100`
+            }
             onClick={(): void => {
               const nextTabValue = tabValues[index];
               if (nextTabValue !== tabValue) setTabValue(nextTabValue);
