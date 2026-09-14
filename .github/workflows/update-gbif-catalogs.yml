@@ -1,0 +1,65 @@
+name: Update GBIF catalogs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 6 1 * *'
+
+permissions:
+  contents: write
+  pull-requests: write
+
+concurrency:
+  group: update-gbif-catalogs
+  cancel-in-progress: true
+
+jobs:
+  update:
+    name: Generate GBIF catalogs
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version-file: specifyweb/frontend/js_src/package.json
+          cache: npm
+          cache-dependency-path: specifyweb/frontend/js_src/package-lock.json
+
+      - name: Install frontend dependencies
+        working-directory: specifyweb/frontend/js_src
+        run: npm ci
+
+      - name: Generate GBIF catalogs
+        working-directory: specifyweb/frontend/js_src
+        run: npm run dwca:catalog
+
+      - name: Check for catalog changes
+        id: changes
+        run: |
+          if git diff --quiet -- \
+            specifyweb/frontend/js_src/lib/components/DwcaDefinition/data/gbifCores.json \
+            specifyweb/frontend/js_src/lib/components/DwcaDefinition/data/gbifExtensions.json; then
+            echo 'changed=false' >> "$GITHUB_OUTPUT"
+          else
+            echo 'changed=true' >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Open update pull request if catalogs changed
+        if: steps.changes.outputs.changed == 'true'
+        uses: peter-evans/create-pull-request@v7
+        with:
+          commit-message: 'chore(dwca): update GBIF catalogs'
+          title: 'Update GBIF catalogs'
+          body: |
+            Updates the generated GBIF core and extension catalogs from the GBIF registry.
+
+            This pull request was created automatically by the monthly catalog refresh.
+          branch: automation/update-gbif-catalogs
+          delete-branch: true
+          add-paths: |
+            specifyweb/frontend/js_src/lib/components/DwcaDefinition/data/gbifCores.json
+            specifyweb/frontend/js_src/lib/components/DwcaDefinition/data/gbifExtensions.json
