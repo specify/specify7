@@ -76,7 +76,17 @@ function EditorDialog({
   onChange: handleChange,
 }: PreferenceRendererProps<UrlShortcuts>): JSX.Element | null {
   const [categorizedRoutes] = useAsyncState(getCategorizedRoutes, true);
+  const [userTools] = usePromise(rawUserToolsPromise(), false);
   const localValue = useTriggerState(value);
+  const userToolPaths = React.useMemo(
+    () =>
+      new Set(
+        Object.values(userTools ?? {})
+          .flatMap((tools) => Object.values(tools))
+          .map(({ url }) => url)
+      ),
+    [userTools]
+  );
   return categorizedRoutes ? (
     <Dialog
       buttons={commonText.close()}
@@ -95,7 +105,11 @@ function EditorDialog({
       <H3>{preferencesText.overlays()}</H3>
       <RouteBrowser routes={categorizedRoutes.overlays} value={localValue} />
       <H3>{preferencesText.customPages()}</H3>
-      <CustomRouteBrowser categorized={categorizedRoutes} value={localValue} />
+      <CustomRouteBrowser
+        categorized={categorizedRoutes}
+        excludedPaths={userToolPaths}
+        value={localValue}
+      />
     </Dialog>
   ) : null;
 }
@@ -279,16 +293,19 @@ function KeyboardShortcutContainer({
 function CustomRouteBrowser({
   value: [value, setValue],
   categorized,
+  excludedPaths,
 }: {
   readonly value: GetSet<UrlShortcuts>;
   readonly categorized: CategorizedRoutes;
+  readonly excludedPaths: ReadonlySet<string>;
 }): JSX.Element {
   const isReadOnly = React.useContext(ReadOnlyContext);
   return (
     <Ul className="flex flex-col gap-2">
       {Object.entries(value).map(([path, shortcuts], index) =>
         path in categorized.pages ||
-        path in categorized.overlays ? undefined : (
+        path in categorized.overlays ||
+        excludedPaths.has(path) ? undefined : (
           <CustomRouteShortcut
             // Don't use path as key to not lose focus as user types path
             key={index}
