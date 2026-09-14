@@ -5,7 +5,6 @@ import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
-import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { f } from '../../utils/functools';
 import type { GetSet, RA, WritableArray } from '../../utils/types';
@@ -29,10 +28,20 @@ export function UrlShortcutsEditor(
 ): JSX.Element {
   const [isOpen, _, __, handleToggle] = useBooleanState(false);
   const isReadOnly = React.useContext(ReadOnlyContext);
+  const [userTools] = usePromise(rawUserToolsPromise(), false);
 
   return (
     <>
-      <div>
+      {userTools === undefined ? (
+        <>{commonText.loading()}</>
+      ) : (
+        <UserToolBrowser
+          groups={userTools}
+          value={[props.value, props.onChange]}
+        />
+      )}
+      <div className="mt-6 border-t border-gray-300 pt-4">
+        <H3>{preferencesText.urlShortcuts()}</H3>
         <Button.Small
           aria-current={isOpen ? true : undefined}
           onClick={handleToggle}
@@ -67,7 +76,6 @@ function EditorDialog({
   onChange: handleChange,
 }: PreferenceRendererProps<UrlShortcuts>): JSX.Element | null {
   const [categorizedRoutes] = useAsyncState(getCategorizedRoutes, true);
-  const [userTools] = usePromise(rawUserToolsPromise(), false);
   const localValue = useTriggerState(value);
   return categorizedRoutes ? (
     <Dialog
@@ -82,12 +90,6 @@ function EditorDialog({
         )
       }
     >
-      {userTools !== undefined && (
-        <>
-          <H3>{headerText.userTools()}</H3>
-          <UserToolBrowser groups={userTools} value={localValue} />
-        </>
-      )}
       <H3>{preferencesText.pages()}</H3>
       <RouteBrowser routes={categorizedRoutes.pages} value={localValue} />
       <H3>{preferencesText.overlays()}</H3>

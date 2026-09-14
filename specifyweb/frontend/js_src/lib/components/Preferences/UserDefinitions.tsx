@@ -714,7 +714,7 @@ export const userPreferenceDefinitions = {
         title: commonText.actions(),
         items: {
           urlShortcuts: definePref<UrlShortcuts>({
-            title: preferencesText.urlShortcuts(),
+            title: headerText.userTools(),
             requiresReload: false,
             visible: true,
             defaultValue: {
