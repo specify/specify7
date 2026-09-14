@@ -1,10 +1,11 @@
 import React from 'react';
 import type { LocalizedString } from 'typesafe-i18n';
 
-import { useAsyncState } from '../../hooks/useAsyncState';
+import { useAsyncState, usePromise } from '../../hooks/useAsyncState';
 import { useBooleanState } from '../../hooks/useBooleanState';
 import { useTriggerState } from '../../hooks/useTriggerState';
 import { commonText } from '../../localization/common';
+import { headerText } from '../../localization/header';
 import { preferencesText } from '../../localization/preferences';
 import { f } from '../../utils/functools';
 import type { GetSet, RA, WritableArray } from '../../utils/types';
@@ -13,6 +14,8 @@ import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input } from '../Atoms/Form';
 import { ReadOnlyContext } from '../Core/Contexts';
+import type { MenuItem } from '../Core/Main';
+import { rawUserToolsPromise } from '../Header/userToolDefinitions';
 import { Dialog, dialogClassNames } from '../Molecules/Dialog';
 import type { PreferenceRendererProps } from '../Preferences/types';
 import type { EnhancedRoute } from '../Router/RouterUtils';
@@ -64,6 +67,7 @@ function EditorDialog({
   onChange: handleChange,
 }: PreferenceRendererProps<UrlShortcuts>): JSX.Element | null {
   const [categorizedRoutes] = useAsyncState(getCategorizedRoutes, true);
+  const [userTools] = usePromise(rawUserToolsPromise(), false);
   const localValue = useTriggerState(value);
   return categorizedRoutes ? (
     <Dialog
@@ -78,6 +82,12 @@ function EditorDialog({
         )
       }
     >
+      {userTools !== undefined && (
+        <>
+          <H3>{headerText.userTools()}</H3>
+          <UserToolBrowser groups={userTools} value={localValue} />
+        </>
+      )}
       <H3>{preferencesText.pages()}</H3>
       <RouteBrowser routes={categorizedRoutes.pages} value={localValue} />
       <H3>{preferencesText.overlays()}</H3>
@@ -86,6 +96,55 @@ function EditorDialog({
       <CustomRouteBrowser categorized={categorizedRoutes} value={localValue} />
     </Dialog>
   ) : null;
+}
+
+function UserToolBrowser({
+  groups,
+  value,
+}: {
+  readonly groups: Record<string, Record<string, MenuItem>>;
+  readonly value: GetSet<UrlShortcuts>;
+}): JSX.Element {
+  return (
+    <div className="mb-4 flex flex-col gap-4">
+      {Object.entries(groups).map(([groupName, tools]) => (
+        <section className="rounded border border-gray-300 p-3" key={groupName}>
+          <h4 className="mb-2 font-semibold">{groupName}</h4>
+          <Ul className="flex flex-col gap-2">
+            {Object.values(tools).map((tool) => (
+              <UserToolShortcut key={tool.name} tool={tool} value={value} />
+            ))}
+          </Ul>
+        </section>
+      ))}
+    </div>
+  );
+}
+
+function UserToolShortcut({
+  tool,
+  value: [value, setValue],
+}: {
+  readonly tool: MenuItem;
+  readonly value: GetSet<UrlShortcuts>;
+}): JSX.Element {
+  return (
+    <KeyboardShortcutContainer
+      label={
+        <div className="flex min-w-0 items-center gap-2">
+          <span className="flex-shrink-0">{tool.icon}</span>
+          <span className="truncate">{tool.title}</span>
+        </div>
+      }
+    >
+      <KeyboardShortcutPreferenceItem
+        value={value[tool.url]}
+        onChange={(newValue): void =>
+          setValue({ ...value, [tool.url]: newValue })
+        }
+      />
+    </KeyboardShortcutContainer>
+  );
 }
 
 const cleanupShortcuts = (shortcuts: UrlShortcuts): UrlShortcuts =>
