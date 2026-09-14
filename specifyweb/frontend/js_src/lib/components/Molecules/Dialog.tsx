@@ -19,7 +19,6 @@ import { Button, DialogContext } from '../Atoms/Button';
 import { className, dialogIconTriggers } from '../Atoms/className';
 import { dialogIcons } from '../Atoms/Icons';
 import { LoadingContext } from '../Core/Contexts';
-import { bindKeyboardShortcut } from '../KeyboardShortcuts/context';
 import {
   useHighContrast,
   useReducedTransparency,
@@ -354,26 +353,23 @@ export function Dialog({
 
   const [buttonContainer, setButtonContainer] =
     React.useState<HTMLDivElement | null>(null);
-
-  React.useEffect(() => {
-    if (!isOpen) return undefined;
-
-    const cleanups = [] as Array<() => void>;
-    if (typeof handleClose === 'function')
-      cleanups.push(
-        bindKeyboardShortcut({ other: ['KeyC'] }, handleClose)
-      );
-
-    const saveButton = buttonContainer?.querySelector<HTMLElement>(
-      'input[type="submit"], button[type="submit"]'
-    );
-    if (saveButton !== null && saveButton !== undefined)
-      cleanups.push(
-        bindKeyboardShortcut({ other: ['KeyS'] }, () => saveButton.click())
-      );
-
-    return (): void => cleanups.forEach((cleanup) => cleanup());
-  }, [buttonContainer, handleClose, isOpen]);
+  const saveButton = buttonContainer?.querySelector<HTMLElement>(
+    'input[type="submit"], button[type="submit"]'
+  );
+  userPreferences.useKeyboardShortcut(
+    'general',
+    'dialog',
+    'close',
+    isOpen && typeof handleClose === 'function' ? handleClose : undefined
+  );
+  userPreferences.useKeyboardShortcut(
+    'general',
+    'dialog',
+    'save',
+    isOpen && saveButton !== null && saveButton !== undefined
+      ? (): void => saveButton.click()
+      : undefined
+  );
 
   const iconType = React.useMemo(() => {
     if (!showIcon) return 'none';

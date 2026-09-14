@@ -584,6 +584,8 @@ export const userPreferenceDefinitions = {
             defaultValue: true,
             type: 'java.lang.Boolean',
           }),
+          close: defineKeyboardShortcut(commonText.close(), 'KeyC'),
+          save: defineKeyboardShortcut(commonText.save(), 'KeyS'),
           rememberPosition: definePref<boolean>({
             title: preferencesText.rememberDialogPositions(),
             requiresReload: false,
