@@ -61,24 +61,18 @@ export const dwcaText = createDictionary({
   dwcaChoose: {
     'en-us': 'Choose a {item:string}',
   },
-  dwcaSelect: {
-    'en-us': 'Select a {item:string}',
-  },
   dwcaNoDefaultOrSaved: {
     'en-us':
       'No {default:string} or saved {query:string} is available for this {extension:string}.',
   },
-  dwcaSeedFromSaved: {
-    'en-us': 'Seed from {query:string}',
+  dwcaChooseTemplateOrQuery: {
+    'en-us': 'Choose Template or Query',
   },
-  dwcaStartFromTemplate: {
-    'en-us': 'Start from template',
+  dwcaTemplates: {
+    'en-us': 'Templates',
   },
-  dwcaChooseATemplate: {
-    'en-us': 'Choose a template',
-  },
-  dwcaNoTemplatesAvailable: {
-    'en-us': 'No templates available',
+  dwcaSavedQueries: {
+    'en-us': 'Saved Queries',
   },
   dwcaAddField: {
     'en-us': 'Add a {query:string} field to begin mapping.',

@@ -719,7 +719,7 @@ function ExtensionDialog({
                 return;
               }
               const query = queries.find(
-                ({ id }) => id.toString() === queryName
+                ({ id }) => `query:${id}` === queryName
               );
               onAdd(
                 extension,
@@ -747,7 +747,27 @@ function ExtensionDialog({
             value={localized(extensionName)}
             onValueChange={(value): void => {
               setExtensionName(value);
-              setQueryName(value === customExtensionOption ? '' : 'empty');
+              if (value === customExtensionOption) {
+                setQueryName('');
+                return;
+              }
+              const selectedExtension = extensions.find(
+                ({ name }) => name === value
+              );
+              const defaultTemplate = defaultTemplates.find(
+                (template) =>
+                  selectedExtension !== undefined &&
+                  isTemplateApplicableToCore(template, coreRowType) &&
+                  template.targets.some(
+                    ({ extension: isExtension, rowType }) =>
+                      isExtension && rowType === selectedExtension.rowType
+                  )
+              );
+              setQueryName(
+                defaultTemplate === undefined
+                  ? 'empty'
+                  : `template:${defaultTemplate.name}`
+              );
             }}
           >
             <option value="">
@@ -765,25 +785,33 @@ function ExtensionDialog({
         </Label.Block>
         {extension !== undefined && (
           <Label.Block>
-            {queryText.query()} {resourcesText.definition()}
+            {dwcaText.dwcaChooseTemplateOrQuery()}
             <Select value={localized(queryName)} onValueChange={setQueryName}>
               <option value="">
                 {dwcaText.dwcaChoose({ item: queryText.query() })}
               </option>
               <option value="empty">{dwcaText.dwcaStartFromScratch()}</option>
-              {templates.map((template) => (
-                <option
-                  key={`template:${template.name}`}
-                  value={`template:${template.name}`}
-                >
-                  {template.name}
-                </option>
-              ))}
-              {queries.map((query) => (
-                <option key={query.id} value={query.id.toString()}>
-                  {query.name}
-                </option>
-              ))}
+              {templates.length > 0 && (
+                <optgroup label={dwcaText.dwcaTemplates()}>
+                  {templates.map((template) => (
+                    <option
+                      key={`template:${template.name}`}
+                      value={`template:${template.name}`}
+                    >
+                      {template.name}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              {queries.length > 0 && (
+                <optgroup label={dwcaText.dwcaSavedQueries()}>
+                  {queries.map((query) => (
+                    <option key={query.id} value={`query:${query.id}`}>
+                      {query.name}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </Select>
           </Label.Block>
         )}
@@ -1239,41 +1267,25 @@ function QueryMapping({
             </Select>
           )}
         </Label.Block>
-        {onTemplate !== undefined && (
+        {(onTemplate !== undefined || queries !== undefined) && (
           <Label.Block>
-            {dwcaText.dwcaStartFromTemplate()}
+            {dwcaText.dwcaChooseTemplateOrQuery()}
             <Select
-              disabled={availableTemplates.length === 0}
-              value={localized('')}
-              onValueChange={(name): void => {
-                const template = defaultTemplates.find(
-                  (candidate) => candidate.name === name
-                );
-                if (template !== undefined) onTemplate(template);
-              }}
-            >
-              <option value="">
-                {availableTemplates.length === 0
-                  ? dwcaText.dwcaNoTemplatesAvailable()
-                  : dwcaText.dwcaChooseATemplate()}
-              </option>
-              {availableTemplates.map((template) => (
-                <option key={template.name} value={template.name}>
-                  {template.name}
-                </option>
-              ))}
-            </Select>
-          </Label.Block>
-        )}
-        {queries !== undefined && (
-          <Label.Block>
-            {dwcaText.dwcaSeedFromSaved({
-              query: queryText.query().toLowerCase(),
-            })}
-            <Select
+              disabled={
+                availableTemplates.length === 0 &&
+                collectionObjectQueries.length === 0
+              }
               value={localized('')}
               onValueChange={(value): void => {
-                const id = Number(value);
+                if (value.startsWith('template:')) {
+                  const template = defaultTemplates.find(
+                    (candidate) => `template:${candidate.name}` === value
+                  );
+                  if (template !== undefined) onTemplate?.(template);
+                  return;
+                }
+                if (!value.startsWith('query:')) return;
+                const id = Number(value.slice('query:'.length));
                 if (!Number.isInteger(id)) return;
                 void fetchResource('SpQuery', id).then((resource) => {
                   if (resource === undefined) return;
@@ -1285,13 +1297,29 @@ function QueryMapping({
               }}
             >
               <option value="">
-                {dwcaText.dwcaSelect({ item: queryText.query().toLowerCase() })}
+                {dwcaText.dwcaChoose({ item: queryText.query().toLowerCase() })}
               </option>
-              {collectionObjectQueries.map((query) => (
-                <option key={query.id} value={query.id}>
-                  {query.name}
-                </option>
-              ))}
+              {availableTemplates.length > 0 && (
+                <optgroup label={dwcaText.dwcaTemplates()}>
+                  {availableTemplates.map((template) => (
+                    <option
+                      key={`template:${template.name}`}
+                      value={`template:${template.name}`}
+                    >
+                      {template.name}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
+              {collectionObjectQueries.length > 0 && (
+                <optgroup label={dwcaText.dwcaSavedQueries()}>
+                  {collectionObjectQueries.map((query) => (
+                    <option key={query.id} value={`query:${query.id}`}>
+                      {query.name}
+                    </option>
+                  ))}
+                </optgroup>
+              )}
             </Select>
           </Label.Block>
         )}
