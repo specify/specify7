@@ -1,15 +1,15 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-10 09:51+0000\n"
-"Last-Translator: Gunnhild Marthinsen <gunnhilm@nhm.uio.no>\n"
+"PO-Revision-Date: 2026-09-15 07:51+0000\n"
+"Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
 "Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
 "7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
-"X-Generator: Weblate 2026.9.1\n"
+"X-Generator: Weblate 2026.10.dev0\n"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:153
@@ -153,7 +153,7 @@ msgstr "Vis bare noder med tilknyttede objekter"
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:257
 msgid "editRanks"
-msgstr "Rediger ranger"
+msgstr "Rediger nivåer"
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:341
@@ -231,13 +231,13 @@ msgstr "Horisontal"
 #: components/TreeView/AddRank.tsx:47
 #: components/TreeView/AddRank.tsx:95
 msgid "addNewRank"
-msgstr "Legg til ny rang"
+msgstr "Legg til nytt nivå"
 
 #. Used in: Components > Tree View > Add Rank
 #: components/TreeView/AddRank.tsx:66
 #: components/TreeView/AddRank.tsx:71
 msgid "chooseParentRank"
-msgstr "Velg overordnet rang"
+msgstr "Velg overordnet nivå"
 
 #. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:255
@@ -309,7 +309,7 @@ msgstr "Mineraler"
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:567
 msgid "createMissingRanks"
-msgstr "Bør de manglende rangene opprettes?"
+msgstr "Bør de manglende nivåene opprettes?"
 
 #. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
 #: components/SetupTool/SetupForm.tsx:320
@@ -349,7 +349,7 @@ msgstr "Bladnode"
 #: components/TreeView/CreateTree.tsx:559
 msgid "missingRanksDescription"
 msgstr ""
-"Det utfylte treet du valgte å laste ned inneholder poster i ranger som "
+"Det utfylte treet du valgte å laste ned inneholder poster på nivåer som "
 "mangler i treet ditt."
 
 #. Used in: Components > Tree View > Index
@@ -375,7 +375,7 @@ msgstr "Virveldyrpaleontologi"
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:455
 msgid "defaultTreeTaskFailed"
-msgstr "Standard treopprettelse mislyktes."
+msgstr "Standardopprettelse av trestruktur mislyktes."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:400
@@ -387,7 +387,7 @@ msgstr "Opphev synonym for node"
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:463
 msgid "defaultTreeTaskCancelled"
-msgstr "Standard treopprettelse ble avbrutt."
+msgstr "Opprettelse av standardtrestrukturen ble avbrutt."
 
 #. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:396
@@ -397,12 +397,14 @@ msgstr "Gjør {nodeName:string} til et synonym for {synonymName:string}"
 #. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:646
 msgid "defaultTreeCreationProgress"
-msgstr "Oppretter trepost {current:number|formatted}/{total:number|formatted}"
+msgstr ""
+"Oppretter element i trestrukturen {current:number|formatted}/"
+"{total:number|formatted}"
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:555
 msgid "missingRanks"
-msgstr "Manglende ranger"
+msgstr "Manglende nivåer"
 
 #. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:65
@@ -417,12 +419,12 @@ msgstr "Tomt tre"
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:640
 msgid "defaultTreeCreationStarted"
-msgstr "Standardtreoppretting startet"
+msgstr "Standard oppretting av tre startet"
 
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:471
 msgid "defaultTreeTaskCompleted"
-msgstr "Standard treopprettelse ble fullført."
+msgstr "Opprettelse av standardtrestrukturen ble fullført."
 
 #. Used in: Components > Tree View > Index
 #: components/TreeView/index.tsx:390
@@ -495,7 +497,7 @@ msgstr "Lukket"
 #. Used in: Components > Tree View > Tree
 #: components/TreeView/Tree.tsx:294
 msgid "defaultTreeCreationLoadingMessage"
-msgstr "Standard treopprettelse pågår, vennligst vent ..."
+msgstr "Opprettelse av standardtrestrukturen pågår. Vent litt …"
 
 #. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
 #: components/TreeView/Row.tsx:322
@@ -531,7 +533,7 @@ msgstr "Treet opprettes i bakgrunnen. Du blir varslet når det er fullført."
 #. Used in: Components > Notifications > Notification Renderers
 #: components/Notifications/NotificationRenderers.tsx:447
 msgid "defaultTreeTaskStarted"
-msgstr "Standardprosessen for treopprettelse har startet."
+msgstr "Standardprosessen for opprettelse av trestruktur har startet."
 
 #. Used in: Components > Tree View > Defaults
 #: components/TreeView/defaults.ts:547
