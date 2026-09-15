@@ -88,7 +88,7 @@ msgstr "Angi brukeragenter"
 msgid "noAgent"
 msgstr "Gjeldende bruker har ikke en agent tildelt"
 
-#: components/Core/Main.tsx:107
+#: components/Core/Main.tsx:109
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Vennligst logg inn som administrator og tilordne en agent til denne brukeren"

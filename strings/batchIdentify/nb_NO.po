@@ -3,96 +3,96 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-10 15:51+0000\n"
 "Last-Translator: Eirik Rindal <eirik.rindal@nhm.uio.no>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/batchIdentify/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/batchIdentify/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.9.1\n"
 
-#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 #: components/BatchIdentify/index.tsx:787
 #: components/BatchIdentify/index.tsx:812
 #: components/BatchIdentify/index.tsx:877
 #: components/Header/userToolDefinitions.ts:144
 #: components/Router/OverlayRoutes.tsx:80
+#. Used in: Components > Batch Identify > Index ⬤ Components > Header > User Tool Definitions ⬤ Components > Router > Overlay Routes
 msgid "batchIdentify"
 msgstr "Batch-identifikasjon"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:883
+#. Used in: Components > Batch Identify > Index
 msgid "instructions"
 msgstr ""
-"Skriv katalognumre med et skilletegn (komma, mellomrom, tekstprefikser osv.)"
-". Bruk en bindestrek for å angi numeriske intervaller som 0001−0150."
+"Skriv katalognumre med et skilletegn (komma, mellomrom, tekstprefikser "
+"osv.). Bruk en bindestrek for å angi numeriske intervaller som 0001−0150."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:940
 #: components/BatchIdentify/index.tsx:951
+#. Used in: Components > Batch Identify > Index
 msgid "catalogNumbersNotFound"
 msgstr "Katalognumre ikke funnet"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:865
+#. Used in: Components > Batch Identify > Index
 msgid "identify"
 msgstr "Identifiser"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:792
+#. Used in: Components > Batch Identify > Index
 msgid "successMessage"
 msgstr "Alle poster ble identifisert til det angitte taksonet."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:206
+#. Used in: Components > Batch Identify > Index
 msgid "updatedRecordSet"
 msgstr "Batch-identifiser oppdaterte poster"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:610
+#. Used in: Components > Batch Identify > Index
 msgid "noCatalogNumbersParsed"
 msgstr "Skriv inn minst ett numerisk katalognummer."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:902
+#. Used in: Components > Batch Identify > Index
 msgid "validatingCatalogNumbers"
 msgstr "Validerer katalognumre..."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:887
+#. Used in: Components > Batch Identify > Index
 msgid "placeholder"
 msgstr "0001 0002 0003 - 0150"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:156
+#. Used in: Components > Batch Identify > Index
 msgid "previewQueryName"
 msgstr "Forhåndsvisning av batch-identifikasjon"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:915
 #: components/BatchIdentify/index.tsx:1023
+#. Used in: Components > Batch Identify > Index
 msgid "unknownTaxonTree"
 msgstr "Ukjent taksontre"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:920
+#. Used in: Components > Batch Identify > Index
 msgid "collectionObjectTypes"
 msgstr "Samlingsobjekttyper"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1012
+#. Used in: Components > Batch Identify > Index
 msgid "invalidRecordSetTitle"
 msgstr "Blandet datasett"
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1016
+#. Used in: Components > Batch Identify > Index
 msgid "invalidRecordSetMessage"
 msgstr ""
 "Den valgte databasepost-lista inneholder samlingsobjekter fra mer enn ett "
 "taksontre."
 
-#. Used in: Components > Batch Identify > Index
 #: components/BatchIdentify/index.tsx:1029
+#. Used in: Components > Batch Identify > Index
 msgid "invalidRecordSetInstructions"
 msgstr ""
 "Velg en annen databasepost-liste, eller rediger søket som ble brukt til å "

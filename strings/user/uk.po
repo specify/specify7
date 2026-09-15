@@ -89,7 +89,7 @@ msgstr "Налаштування агентів користувачів"
 msgid "noAgent"
 msgstr "Поточному користувачеві не призначено агента"
 
-#: components/Core/Main.tsx:107
+#: components/Core/Main.tsx:109
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Будь ласка, увійдіть як адміністратор і призначте агента цьому користувачеві"

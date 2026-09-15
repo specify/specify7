@@ -436,7 +436,7 @@ msgstr "Завантаження недоступне, оскільки в де�
 
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbToolkit/CoordinateConverter.tsx:56
-#: components/WbToolkit/GeoLocate.tsx:55
+#: components/WbToolkit/GeoLocate.tsx:53
 #: components/WbUtils/index.tsx:77
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
@@ -448,14 +448,14 @@ msgid "unavailableWhileValidating"
 msgstr "Ця дія недоступна під час перевірки даних."
 
 #: components/WbToolkit/CoordinateConverter.tsx:58
-#: components/WbToolkit/GeoLocate.tsx:57
+#: components/WbToolkit/GeoLocate.tsx:55
 #: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "Цей інструмент вимагає відображення стовпців локальності"
 
 #: components/WbToolkit/CoordinateConverter.tsx:54
-#: components/WbToolkit/GeoLocate.tsx:53
+#: components/WbToolkit/GeoLocate.tsx:51
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 msgid "unavailableWhenUploaded"
 msgstr "Цей інструмент не працює із завантаженими наборами даних"

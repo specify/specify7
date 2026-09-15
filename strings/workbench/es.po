@@ -444,7 +444,7 @@ msgstr ""
 
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbToolkit/CoordinateConverter.tsx:56
-#: components/WbToolkit/GeoLocate.tsx:55
+#: components/WbToolkit/GeoLocate.tsx:53
 #: components/WbUtils/index.tsx:77
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
@@ -458,14 +458,14 @@ msgid "unavailableWhileValidating"
 msgstr "Esta acción no está disponible mientras se realiza la comprobación de datos."
 
 #: components/WbToolkit/CoordinateConverter.tsx:58
-#: components/WbToolkit/GeoLocate.tsx:57
+#: components/WbToolkit/GeoLocate.tsx:55
 #: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "Esta herramienta requiere que se asignen columnas de localidad."
 
 #: components/WbToolkit/CoordinateConverter.tsx:54
-#: components/WbToolkit/GeoLocate.tsx:53
+#: components/WbToolkit/GeoLocate.tsx:51
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 msgid "unavailableWhenUploaded"
 msgstr "Esta herramienta no funciona con conjuntos de datos cargados."

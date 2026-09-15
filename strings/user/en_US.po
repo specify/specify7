@@ -78,7 +78,7 @@ msgstr "Set User Agents"
 msgid "noAgent"
 msgstr "Current user does not have an agent assigned"
 
-#: components/Core/Main.tsx:107
+#: components/Core/Main.tsx:109
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr "Please log in as admin and assign an agent to this user"

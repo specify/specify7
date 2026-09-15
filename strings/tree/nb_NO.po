@@ -3,20 +3,32 @@ msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
 "PO-Revision-Date: 2026-09-15 07:51+0000\n"
 "Last-Translator: Bjørn Petter Løfall <bplofall@gmail.com>\n"
-"Language-Team: Norwegian Bokmål <https://hosted.weblate.org/projects/specify-"
-"7/tree/nb_NO/>\n"
+"Language-Team: Norwegian Bokmål "
+"<https://hosted.weblate.org/projects/specify-7/tree/nb_NO/>\n"
 "Language: nb_NO\n"
 "Content-Type: text/plain\n"
 "Content-Transfer-Encoding: 8bit\n"
 "Plural-Forms: nplurals=2; plural=n != 1;\n"
 "X-Generator: Weblate 2026.10.dev0\n"
 
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:153
-msgid "addChild"
-msgstr "Legg til underordnet"
+#: components/Header/menuItemDefinitions.ts:50
+#: components/Router/OverlayRoutes.tsx:88
+#: components/SetupTool/SetupForm.tsx:330
+#: components/Toolbar/TreeRepair.tsx:42
+#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
+msgid "trees"
+msgstr "Trær"
 
-#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
+#: components/DataModel/treeBusinessRules.ts:72
+#. Used in: Components > Data Model > Tree Business Rules
+msgid "badStructure"
+msgstr "Ugyldig trestruktur."
+
+#: components/TreeView/Actions.tsx:165
+#. Used in: Components > Tree View > Actions
+msgid "move"
+msgstr "Flytte"
+
 #: components/Merging/CompareField.tsx:216
 #: components/Merging/CompareField.tsx:218
 #: components/Merging/index.tsx:365
@@ -26,535 +38,523 @@ msgstr "Legg til underordnet"
 #: components/SearchDialog/SelectRecordSet.tsx:136
 #: components/Toolbar/MergeRecordSets.tsx:79
 #: components/TreeView/Actions.tsx:186
+#. Used in: Components > Merging > Compare Field ⬤ Components > Merging > Index ⬤ Components > Search Dialog > Select Record Set ⬤ Components > Toolbar > Merge Record Sets ⬤ Components > Tree View > Actions
 msgid "merge"
 msgstr "Slå sammen"
 
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:372
-msgid "cantSynonymizeSynonym"
-msgstr "Kan ikke synonymisere med et synonym"
-
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:206
+#. Used in: Components > Tree View > Actions
 msgid "undoSynonymy"
 msgstr "Angre synonym"
 
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:381
-msgid "vertical"
-msgstr "Vertikal"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:529
-msgid "invertpaleo"
-msgstr "Paleontologi for virvelløse dyr"
-
+#: components/TreeView/Actions.tsx:206
 #. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:388
-msgid "moveNodeHere"
-msgstr "Flytt «{nodeName:string}» hit"
+msgid "synonymize"
+msgstr "Synonymisere"
 
+#: components/TreeView/Actions.tsx:408
 #. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:343
-msgid "mergeNodeHintMessage"
-msgstr "Velg et nytt mål som «{nodeName:string}» skal slås sammen med"
+msgid "actionFailed"
+msgstr "Operasjonen mislyktes"
 
+#: components/TreeView/Actions.tsx:411
 #. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:345
-msgid "bulkMoveNodeHintMessage"
-msgstr ""
-"Velg et nytt mål som forberedelsene til \"{nodeName:string}\" skal flyttes "
-"til"
+msgid "actionFailedDescription"
+msgstr "Operasjonen kunne ikke fullføres på grunn av følgende feil:"
 
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:467
-msgid "mergeNodeMessage"
-msgstr ""
-"Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli "
-"erstattet med «{parentName:string}», og alle underordnede av «"
-"{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede "
-"med samme navn og rang vil selv bli slått sammen automatisk."
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:473
-msgid "synonymizeMessage"
-msgstr ""
-"Noden {treeName:string} «{nodeName:string}» vil bli gjort til et synonym for "
-"«{synonymName:string}»."
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:350
-#: components/TreeView/Actions.tsx:478
-msgid "desynonymizeNodeMessage"
-msgstr ""
-"«{nodeName:string}» vil ikke lenger være et synonym for «{synonymName:string}"
-"»."
-
-#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
-#: components/TreeView/helpers.ts:254
-msgid "leafNodeStats"
-msgstr "({directCount:number|formatted})"
-
-#. 🟥Count of records determined as this node or any of its descendants that have been synonymized into another node. Used in: Components > Tree View > Helpers
-#: components/TreeView/helpers.ts:234
-msgid "synonymizedCollectionObjectCount"
-msgstr "Synonymisert {collectionObjectTable:string}-antall"
-
-#. 🟥Abbreviation for millions of years (Mega annum). Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:330
-#: components/TreeView/Row.tsx:331
-#: components/TreeView/Row.tsx:342
-#: components/TreeView/Row.tsx:343
-msgid "megaAnnum"
-msgstr "Ma"
-
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:144
-#: components/TreeView/CreateTree.tsx:157
-msgid "addTree"
-msgstr "Legg til tre"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:326
-#: components/TreeView/index.tsx:328
-msgid "treePicker"
-msgstr "Trevelger"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:589
-msgid "ornithology"
-msgstr "Ornitologi"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:362
-msgid "cantMoveToSynonym"
-msgstr "Kan ikke flytte til et synonym"
-
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:427
-msgid "emptyTrees"
-msgstr "Tomme trær"
-
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:486
-msgid "populatedTrees"
-msgstr "Trær med innhold"
-
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:507
-msgid "resolveEncoding"
-msgstr "Slik løser du det:"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:444
-msgid "associatedNodesOnly"
-msgstr "Vis bare noder med tilknyttede objekter"
-
-#. Used in: Components > Tree View > Tree
-#: components/TreeView/Tree.tsx:257
-msgid "editRanks"
-msgstr "Rediger nivåer"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:341
-msgid "nodeMoveHintMessage"
-msgstr "Velg en ny overordnet for «{nodeName:string}»"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:506
-msgid "ichthyology"
-msgstr "Iktyologi"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:369
-msgid "cantMergeIntoSynonym"
-msgstr "Kan ikke slås sammen inn i synonymer"
-
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:430
 #: components/TreeView/Actions.tsx:443
+#. Used in: Components > Tree View > Actions
 msgid "moveNode"
 msgstr "Flytt node"
 
+#: components/TreeView/Actions.tsx:153
 #. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:361
-msgid "cantMoveHere"
-msgstr "Kan ikke flytte denne tre­noden hit"
+msgid "addChild"
+msgstr "Legg til underordnet"
 
-#. Used in: Components > Preferences > Collection Definitions
-#: components/Preferences/CollectionDefinitions.tsx:62
-msgid "treeManagement"
-msgstr "Treadministrasjon"
-
+#: components/TreeView/Actions.tsx:388
 #. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:434
-#: components/TreeView/Actions.tsx:447
-msgid "mergeNode"
-msgstr "Slå sammen node"
+msgid "moveNodeHere"
+msgstr "Flytt «{nodeName:string}» hit"
 
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:571
-msgid "mammalogy"
-msgstr "Mammologi"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:458
-msgid "entomology"
-msgstr "Entomologi"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:485
-msgid "herpetology"
-msgstr "Herpetologi"
-
+#: components/TreeView/Actions.tsx:390
 #. Used in: Components > Tree View > Actions
+msgid "moveNodePreparationsHere"
+msgstr "Flytt alle forberedelser for \"{nodeName:string}\" hit"
+
 #: components/TreeView/Actions.tsx:455
+#. Used in: Components > Tree View > Actions
 msgid "nodeMoveMessage"
 msgstr ""
 "Noden {treeName:string} «{nodeName:string}» vil bli plassert, sammen med "
 "alle sine underordnede, under den nye overordnede «{parentName:string}»."
 
-#. Used in: Components > Header > Menu Item Definitions ⬤ Components > Router > Overlay Routes ⬤ Components > Setup Tool > Setup Form ⬤ Components > Toolbar > Tree Repair
-#: components/Header/menuItemDefinitions.ts:50
-#: components/Router/OverlayRoutes.tsx:88
-#: components/SetupTool/SetupForm.tsx:330
-#: components/Toolbar/TreeRepair.tsx:42
-msgid "trees"
-msgstr "Trær"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:381
-msgid "horizontal"
-msgstr "Horisontal"
-
-#. Used in: Components > Tree View > Add Rank
-#: components/TreeView/AddRank.tsx:47
-#: components/TreeView/AddRank.tsx:95
-msgid "addNewRank"
-msgstr "Legg til nytt nivå"
-
-#. Used in: Components > Tree View > Add Rank
-#: components/TreeView/AddRank.tsx:66
-#: components/TreeView/AddRank.tsx:71
-msgid "chooseParentRank"
-msgstr "Velg overordnet nivå"
-
-#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
-#: components/TreeView/helpers.ts:255
-msgid "nodeStats"
-msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
-
-#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
-#: components/TreeView/helpers.ts:219
-msgid "directCollectionObjectCount"
-msgstr "Direkte {collectionObjectTable:string}-antall"
-
-#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
-#: components/TreeView/helpers.ts:227
-msgid "indirectCollectionObjectCount"
-msgstr "Indirekte {collectionObjectTable:string}-antall"
-
-#. Used in: Components > Tree View > Actions
 #: components/TreeView/Actions.tsx:461
+#. Used in: Components > Tree View > Actions
 msgid "nodeBulkMoveMessage"
 msgstr ""
 "Forberedelser for noden {treeName:string} «{nodeName:string}» vil bli "
 "plassert under det nye stedet «{parentName:string}»."
 
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:677
-msgid "meteorites"
-msgstr "Meteoritter"
+#: components/TreeView/Actions.tsx:361
+#. Used in: Components > Tree View > Actions
+msgid "cantMoveHere"
+msgstr "Kan ikke flytte denne tre­noden hit"
 
-#. Used in: Components > Tree View > Tree
-#: components/TreeView/Tree.tsx:301
-#: components/TreeView/Tree.tsx:303
-#: components/TreeView/Tree.tsx:307
-msgid "initializeEmptyTree"
-msgstr "Opprett et tomt tre"
+#: components/TreeView/Actions.tsx:368
+#. Used in: Components > Tree View > Actions
+msgid "cantMergeHere"
+msgstr "Kan ikke slå sammen denne trenoden her"
 
-#. 🟥Used to show tree node's direct, indirect and synonymized usages. Used in: Components > Tree View > Helpers
+#: components/TreeView/Actions.tsx:362
+#. Used in: Components > Tree View > Actions
+msgid "cantMoveToSynonym"
+msgstr "Kan ikke flytte til et synonym"
+
+#: components/TreeView/Actions.tsx:369
+#. Used in: Components > Tree View > Actions
+msgid "cantMergeIntoSynonym"
+msgstr "Kan ikke slås sammen inn i synonymer"
+
+#: components/TreeView/Actions.tsx:372
+#. Used in: Components > Tree View > Actions
+msgid "cantSynonymizeSynonym"
+msgstr "Kan ikke synonymisere med et synonym"
+
+#: components/TreeView/Actions.tsx:341
+#. Used in: Components > Tree View > Actions
+msgid "nodeMoveHintMessage"
+msgstr "Velg en ny overordnet for «{nodeName:string}»"
+
+#: components/TreeView/Actions.tsx:434
+#: components/TreeView/Actions.tsx:447
+#. Used in: Components > Tree View > Actions
+msgid "mergeNode"
+msgstr "Slå sammen node"
+
+#: components/TreeView/Actions.tsx:394
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeHere"
+msgstr "Slå sammen «{nodeName:string}» her"
+
+#: components/TreeView/Actions.tsx:343
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeHintMessage"
+msgstr "Velg et nytt mål som «{nodeName:string}» skal slås sammen med"
+
+#: components/TreeView/Actions.tsx:345
+#. Used in: Components > Tree View > Actions
+msgid "bulkMoveNodeHintMessage"
+msgstr ""
+"Velg et nytt mål som forberedelsene til \"{nodeName:string}\" skal flyttes "
+"til"
+
+#: components/TreeView/Actions.tsx:467
+#. Used in: Components > Tree View > Actions
+msgid "mergeNodeMessage"
+msgstr ""
+"Alle referanser til noden {treeName:string} «{nodeName:string}» vil bli "
+"erstattet med «{parentName:string}», og alle underordnede av "
+"«{nodeName:string}» vil bli flyttet til «{parentName:string}». Underordnede "
+"med samme navn og rang vil selv bli slått sammen automatisk."
+
+#: components/TreeView/Actions.tsx:436
+#: components/TreeView/Actions.tsx:449
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeNode"
+msgstr "Synonymiser node"
+
+#: components/TreeView/Actions.tsx:396
+#. Used in: Components > Tree View > Actions
+msgid "makeSynonym"
+msgstr "Gjør {nodeName:string} til et synonym for {synonymName:string}"
+
+#: components/TreeView/Actions.tsx:347
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeNodeHintMessage"
+msgstr "Velg et mål som «{nodeName:string}» skal synonymiseres med"
+
+#: components/TreeView/Actions.tsx:473
+#. Used in: Components > Tree View > Actions
+msgid "synonymizeMessage"
+msgstr ""
+"Noden {treeName:string} «{nodeName:string}» vil bli gjort til et synonym "
+"for «{synonymName:string}»."
+
+#: components/TreeView/Actions.tsx:400
+#: components/TreeView/Actions.tsx:437
+#: components/TreeView/Actions.tsx:450
+#. Used in: Components > Tree View > Actions
+msgid "desynonymizeNode"
+msgstr "Opphev synonym for node"
+
+#: components/TreeView/Actions.tsx:350
+#: components/TreeView/Actions.tsx:478
+#. Used in: Components > Tree View > Actions
+msgid "desynonymizeNodeMessage"
+msgstr ""
+"«{nodeName:string}» vil ikke lenger være et synonym for "
+"«{synonymName:string}»."
+
+#: components/TreeView/Row.tsx:301
+#: components/TreeView/Row.tsx:368
+#. Used in: Components > Tree View > Row
+msgid "acceptedName"
+msgstr "Foretrukket: {name:string}"
+
+#: components/TreeView/Row.tsx:305
+#. Used in: Components > Tree View > Row
+msgid "synonyms"
+msgstr "Synonymer: {names:string}"
+
+#: components/TreeView/index.tsx:173
+#. Used in: Components > Tree View > Index
+msgid "treeViewTitle"
+msgstr "{treeName:string} Tre"
+
+#: components/TreeView/Search.tsx:72
+#: components/TreeView/Search.tsx:73
+#: components/TreeView/Search.tsx:74
+#. Used in: Components > Tree View > Search
+msgid "searchTreePlaceholder"
+msgstr "Søk i treet"
+
+#: components/TreeView/Row.tsx:280
+#. Used in: Components > Tree View > Row
+msgid "opened"
+msgstr "Åpnet"
+
+#: components/TreeView/Row.tsx:281
+#. Used in: Components > Tree View > Row
+msgid "closed"
+msgstr "Lukket"
+
+#: components/TreeView/Row.tsx:278
+#. Used in: Components > Tree View > Row
+msgid "leafNode"
+msgstr "Bladnode"
+
+#: components/TreeView/helpers.ts:255
+#. 🟥Used to show tree node's direct and indirect usages. Used in: Components > Tree View > Helpers
+msgid "nodeStats"
+msgstr "({directCount:number|formatted}, {childCount:number|formatted})"
+
+#: components/TreeView/helpers.ts:254
+#. 🟥Used to show leaf tree node's direct usages. Used in: Components > Tree View > Helpers
+msgid "leafNodeStats"
+msgstr "({directCount:number|formatted})"
+
 #: components/TreeView/helpers.ts:248
+#. 🟥Used to show tree node's direct, indirect and synonymized usages. Used in: Components > Tree View > Helpers
 msgid "nodeStatsWithSynonyms"
 msgstr ""
 "({directCount:number|formatted}, {childCount:number|formatted}, "
 "{synonymCount:number|formatted})"
 
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:449
-#: components/TreeView/index.tsx:450
-msgid "biostratFilter"
-msgstr "Filtrer etter biostratigrafi"
-
-#. 🟥Used to show leaf tree node's direct and synonymized usages. Used in: Components > Tree View > Helpers
 #: components/TreeView/helpers.ts:244
+#. 🟥Used to show leaf tree node's direct and synonymized usages. Used in: Components > Tree View > Helpers
 msgid "leafNodeStatsWithSynonyms"
 msgstr "({directCount:number|formatted}, {synonymCount:number|formatted})"
 
+#: components/TreeView/helpers.ts:234
+#. 🟥Count of records determined as this node or any of its descendants that have been synonymized into another node. Used in: Components > Tree View > Helpers
+msgid "synonymizedCollectionObjectCount"
+msgstr "Synonymisert {collectionObjectTable:string}-antall"
+
+#: components/TreeView/helpers.ts:219
+#. 🟥Example: Direct Collection Object count. Used in: Components > Tree View > Helpers
+msgid "directCollectionObjectCount"
+msgstr "Direkte {collectionObjectTable:string}-antall"
+
+#: components/TreeView/helpers.ts:227
+#. 🟥Example: Indirect Collection Object count. Used in: Components > Tree View > Helpers
+msgid "indirectCollectionObjectCount"
+msgstr "Indirekte {collectionObjectTable:string}-antall"
+
+#: components/TreeView/Row.tsx:322
+#: components/TreeView/Row.tsx:334
+#. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
+msgid "geologicTimePeriodLine"
+msgstr "{label:string}: {value:string} {suffix:string}"
+
+#: components/TreeView/Row.tsx:330
+#: components/TreeView/Row.tsx:331
+#: components/TreeView/Row.tsx:342
+#: components/TreeView/Row.tsx:343
+#. 🟥Abbreviation for millions of years (Mega annum). Used in: Components > Tree View > Row
+msgid "megaAnnum"
+msgstr "Ma"
+
+#: components/TreeView/index.tsx:449
+#: components/TreeView/index.tsx:450
+#. Used in: Components > Tree View > Index
+msgid "biostratFilter"
+msgstr "Filtrer etter biostratigrafi"
+
+#: components/TreeView/index.tsx:457
+#. Used in: Components > Tree View > Index
+msgid "biostratAll"
+msgstr "Alle noder"
+
+#: components/TreeView/index.tsx:458
+#. Used in: Components > Tree View > Index
+msgid "biostratChrono"
+msgstr "Kronostratigrafi"
+
+#: components/TreeView/index.tsx:459
+#. Used in: Components > Tree View > Index
+msgid "biostratBio"
+msgstr "Biostratigrafi"
+
+#: components/TreeView/Tree.tsx:257
+#. Used in: Components > Tree View > Tree
+msgid "editRanks"
+msgstr "Rediger nivåer"
+
+#: components/Forms/DeleteButton.tsx:182
+#. Used in: Components > Forms > Delete Button
+msgid "resourceToDelete"
+msgstr "Dette vil permanent slette følgende ressurs"
+
+#: components/TreeView/index.tsx:444
+#. Used in: Components > Tree View > Index
+msgid "associatedNodesOnly"
+msgstr "Vis bare noder med tilknyttede objekter"
+
+#: components/TreeView/index.tsx:375
+#. Used in: Components > Tree View > Index
+msgid "splitView"
+msgstr "Delt visning"
+
+#: components/TreeView/index.tsx:381
+#. Used in: Components > Tree View > Index
+msgid "horizontal"
+msgstr "Horisontal"
+
+#: components/TreeView/index.tsx:381
+#. Used in: Components > Tree View > Index
+msgid "vertical"
+msgstr "Vertikal"
+
+#: components/TreeView/index.tsx:390
+#. Used in: Components > Tree View > Index
+msgid "synchronize"
+msgstr "Synkroniser"
+
+#: components/TreeView/AddRank.tsx:47
+#: components/TreeView/AddRank.tsx:95
+#. Used in: Components > Tree View > Add Rank
+msgid "addNewRank"
+msgstr "Legg til nytt nivå"
+
+#: components/TreeView/AddRank.tsx:66
+#: components/TreeView/AddRank.tsx:71
+#. Used in: Components > Tree View > Add Rank
+msgid "chooseParentRank"
+msgstr "Velg overordnet nivå"
+
+#: components/TreeView/Actions.tsx:176
+#: components/TreeView/Actions.tsx:432
+#: components/TreeView/Actions.tsx:445
 #. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:368
-msgid "cantMergeHere"
-msgstr "Kan ikke slå sammen denne trenoden her"
+msgid "moveItems"
+msgstr "Flytt elementer"
 
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:206
-msgid "synonymize"
-msgstr "Synonymisere"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:669
-msgid "minerals"
-msgstr "Mineraler"
-
+#: components/TreeView/CreateTree.tsx:144
+#: components/TreeView/CreateTree.tsx:157
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:567
-msgid "createMissingRanks"
-msgstr "Bør de manglende nivåene opprettes?"
+msgid "addTree"
+msgstr "Legg til tre"
 
-#. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
-#: components/SetupTool/SetupForm.tsx:320
-#: components/TreeView/CreateTree.tsx:524
-msgid "source"
-msgstr "Kilde"
+#: components/TreeView/index.tsx:326
+#: components/TreeView/index.tsx:328
+#. Used in: Components > Tree View > Index
+msgid "treePicker"
+msgstr "Trevelger"
 
+#: components/TreeView/defaults.ts:431
 #. Used in: Components > Tree View > Defaults
+msgid "botany"
+msgstr "Botanikk"
+
+#: components/TreeView/defaults.ts:458
+#. Used in: Components > Tree View > Defaults
+msgid "entomology"
+msgstr "Entomologi"
+
+#: components/TreeView/defaults.ts:485
+#. Used in: Components > Tree View > Defaults
+msgid "herpetology"
+msgstr "Herpetologi"
+
+#: components/TreeView/defaults.ts:506
+#. Used in: Components > Tree View > Defaults
+msgid "ichthyology"
+msgstr "Iktyologi"
+
+#: components/TreeView/defaults.ts:529
+#. Used in: Components > Tree View > Defaults
+msgid "invertpaleo"
+msgstr "Paleontologi for virvelløse dyr"
+
+#: components/TreeView/defaults.ts:547
+#. Used in: Components > Tree View > Defaults
+msgid "invertzoo"
+msgstr "Invertebratzoologi"
+
+#: components/TreeView/defaults.ts:571
+#. Used in: Components > Tree View > Defaults
+msgid "mammalogy"
+msgstr "Mammologi"
+
+#: components/TreeView/defaults.ts:589
+#. Used in: Components > Tree View > Defaults
+msgid "ornithology"
+msgstr "Ornitologi"
+
 #: components/TreeView/defaults.ts:609
+#. Used in: Components > Tree View > Defaults
 msgid "paleobot"
 msgstr "Paleobotanikk"
 
-#. Used in: Components > Data Model > Tree Business Rules
-#: components/DataModel/treeBusinessRules.ts:72
-msgid "badStructure"
-msgstr "Ugyldig trestruktur."
+#: components/TreeView/defaults.ts:627
+#. Used in: Components > Tree View > Defaults
+msgid "vascplant"
+msgstr "Karplanter"
 
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:436
-#: components/TreeView/Actions.tsx:449
-msgid "synonymizeNode"
-msgstr "Synonymiser node"
+#: components/TreeView/defaults.ts:653
+#. Used in: Components > Tree View > Defaults
+msgid "vertpaleo"
+msgstr "Virveldyrpaleontologi"
 
-#. Used in: Components > Tree View > Search
-#: components/TreeView/Search.tsx:72
-#: components/TreeView/Search.tsx:73
-#: components/TreeView/Search.tsx:74
-msgid "searchTreePlaceholder"
-msgstr "Søk i treet"
+#: components/TreeView/defaults.ts:704
+#. Used in: Components > Tree View > Defaults
+msgid "emptyTree"
+msgstr "Tomt tre"
 
-#. Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:278
-msgid "leafNode"
-msgstr "Bladnode"
+#: components/TreeView/defaults.ts:669
+#. Used in: Components > Tree View > Defaults
+msgid "minerals"
+msgstr "Mineraler"
 
+#: components/TreeView/defaults.ts:684
+#. Used in: Components > Tree View > Defaults
+msgid "rocks"
+msgstr "Bergarter"
+
+#: components/TreeView/defaults.ts:677
+#. Used in: Components > Tree View > Defaults
+msgid "meteorites"
+msgstr "Meteoritter"
+
+#: components/TreeView/CreateTree.tsx:427
 #. Used in: Components > Tree View > Create Tree
+msgid "emptyTrees"
+msgstr "Tomme trær"
+
+#: components/TreeView/CreateTree.tsx:486
+#. Used in: Components > Tree View > Create Tree
+msgid "populatedTrees"
+msgstr "Trær med innhold"
+
+#: components/TreeView/CreateTree.tsx:640
+#. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationStarted"
+msgstr "Standard oppretting av tre startet"
+
+#: components/TreeView/CreateTree.tsx:652
+#. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationStartedDescription"
+msgstr "Treet opprettes i bakgrunnen. Du blir varslet når det er fullført."
+
+#: components/Notifications/NotificationRenderers.tsx:447
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskStarted"
+msgstr "Standardprosessen for opprettelse av trestruktur har startet."
+
+#: components/Notifications/NotificationRenderers.tsx:455
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskFailed"
+msgstr "Standardopprettelse av trestruktur mislyktes."
+
+#: components/Notifications/NotificationRenderers.tsx:463
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskCancelled"
+msgstr "Opprettelse av standardtrestrukturen ble avbrutt."
+
+#: components/Notifications/NotificationRenderers.tsx:471
+#. Used in: Components > Notifications > Notification Renderers
+msgid "defaultTreeTaskCompleted"
+msgstr "Opprettelse av standardtrestrukturen ble fullført."
+
+#: components/TreeView/CreateTree.tsx:646
+#. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
+msgid "defaultTreeCreationProgress"
+msgstr ""
+"Oppretter element i trestrukturen "
+"{current:number|formatted}/{total:number|formatted}"
+
+#: components/TreeView/Tree.tsx:294
+#. Used in: Components > Tree View > Tree
+msgid "defaultTreeCreationLoadingMessage"
+msgstr "Opprettelse av standardtrestrukturen pågår. Vent litt …"
+
+#: components/TreeView/CreateTree.tsx:555
+#. Used in: Components > Tree View > Create Tree
+msgid "missingRanks"
+msgstr "Manglende nivåer"
+
 #: components/TreeView/CreateTree.tsx:559
+#. Used in: Components > Tree View > Create Tree
 msgid "missingRanksDescription"
 msgstr ""
 "Det utfylte treet du valgte å laste ned inneholder poster på nivåer som "
 "mangler i treet ditt."
 
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:457
-msgid "biostratAll"
-msgstr "Alle noder"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:394
-msgid "mergeNodeHere"
-msgstr "Slå sammen «{nodeName:string}» her"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:627
-msgid "vascplant"
-msgstr "Karplanter"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:653
-msgid "vertpaleo"
-msgstr "Virveldyrpaleontologi"
-
-#. Used in: Components > Notifications > Notification Renderers
-#: components/Notifications/NotificationRenderers.tsx:455
-msgid "defaultTreeTaskFailed"
-msgstr "Standardopprettelse av trestruktur mislyktes."
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:400
-#: components/TreeView/Actions.tsx:437
-#: components/TreeView/Actions.tsx:450
-msgid "desynonymizeNode"
-msgstr "Opphev synonym for node"
-
-#. Used in: Components > Notifications > Notification Renderers
-#: components/Notifications/NotificationRenderers.tsx:463
-msgid "defaultTreeTaskCancelled"
-msgstr "Opprettelse av standardtrestrukturen ble avbrutt."
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:396
-msgid "makeSynonym"
-msgstr "Gjør {nodeName:string} til et synonym for {synonymName:string}"
-
-#. 🟥E.x, Creating tree record 999/1,000. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:646
-msgid "defaultTreeCreationProgress"
-msgstr ""
-"Oppretter element i trestrukturen {current:number|formatted}/"
-"{total:number|formatted}"
-
+#: components/TreeView/CreateTree.tsx:567
 #. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:555
-msgid "missingRanks"
-msgstr "Manglende nivåer"
+msgid "createMissingRanks"
+msgstr "Bør de manglende nivåene opprettes?"
 
+#: components/SetupTool/SetupForm.tsx:320
+#: components/TreeView/CreateTree.tsx:524
+#. Used in: Components > Setup Tool > Setup Form ⬤ Components > Tree View > Create Tree
+msgid "source"
+msgstr "Kilde"
+
+#: components/TreeView/Tree.tsx:301
+#: components/TreeView/Tree.tsx:303
+#: components/TreeView/Tree.tsx:307
+#. Used in: Components > Tree View > Tree
+msgid "initializeEmptyTree"
+msgstr "Opprett et tomt tre"
+
+#: components/Preferences/CollectionDefinitions.tsx:62
 #. Used in: Components > Preferences > Collection Definitions
+msgid "treeManagement"
+msgstr "Treadministrasjon"
+
 #: components/Preferences/CollectionDefinitions.tsx:65
+#. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodes"
 msgstr "Utvid synonymoppførsel"
 
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:704
-msgid "emptyTree"
-msgstr "Tomt tre"
-
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:640
-msgid "defaultTreeCreationStarted"
-msgstr "Standard oppretting av tre startet"
-
-#. Used in: Components > Notifications > Notification Renderers
-#: components/Notifications/NotificationRenderers.tsx:471
-msgid "defaultTreeTaskCompleted"
-msgstr "Opprettelse av standardtrestrukturen ble fullført."
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:390
-msgid "synchronize"
-msgstr "Synkroniser"
-
-#. Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:301
-#: components/TreeView/Row.tsx:368
-msgid "acceptedName"
-msgstr "Foretrukket: {name:string}"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:176
-#: components/TreeView/Actions.tsx:432
-#: components/TreeView/Actions.tsx:445
-msgid "moveItems"
-msgstr "Flytt elementer"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:431
-msgid "botany"
-msgstr "Botanikk"
-
-#. Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:305
-msgid "synonyms"
-msgstr "Synonymer: {names:string}"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:347
-msgid "synonymizeNodeHintMessage"
-msgstr "Velg et mål som «{nodeName:string}» skal synonymiseres med"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:165
-msgid "move"
-msgstr "Flytte"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:375
-msgid "splitView"
-msgstr "Delt visning"
-
-#. Used in: Components > Forms > Delete Button
-#: components/Forms/DeleteButton.tsx:182
-msgid "resourceToDelete"
-msgstr "Dette vil permanent slette følgende ressurs"
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:684
-msgid "rocks"
-msgstr "Bergarter"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:411
-msgid "actionFailedDescription"
-msgstr "Operasjonen kunne ikke fullføres på grunn av følgende feil:"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:390
-msgid "moveNodePreparationsHere"
-msgstr "Flytt alle forberedelser for \"{nodeName:string}\" hit"
-
-#. Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:281
-msgid "closed"
-msgstr "Lukket"
-
-#. Used in: Components > Tree View > Tree
-#: components/TreeView/Tree.tsx:294
-msgid "defaultTreeCreationLoadingMessage"
-msgstr "Opprettelse av standardtrestrukturen pågår. Vent litt …"
-
-#. 🟥Tooltip line showing a period with uncertainty. Example: Start: 298.9 (± 0.15 Ma). Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:322
-#: components/TreeView/Row.tsx:334
-msgid "geologicTimePeriodLine"
-msgstr "{label:string}: {value:string} {suffix:string}"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:458
-msgid "biostratChrono"
-msgstr "Kronostratigrafi"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:173
-msgid "treeViewTitle"
-msgstr "{treeName:string} Tre"
-
-#. Used in: Components > Tree View > Row
-#: components/TreeView/Row.tsx:280
-msgid "opened"
-msgstr "Åpnet"
-
-#. Used in: Components > Tree View > Actions
-#: components/TreeView/Actions.tsx:408
-msgid "actionFailed"
-msgstr "Operasjonen mislyktes"
-
-#. Used in: Components > Tree View > Create Tree
-#: components/TreeView/CreateTree.tsx:652
-msgid "defaultTreeCreationStartedDescription"
-msgstr "Treet opprettes i bakgrunnen. Du blir varslet når det er fullført."
-
-#. Used in: Components > Notifications > Notification Renderers
-#: components/Notifications/NotificationRenderers.tsx:447
-msgid "defaultTreeTaskStarted"
-msgstr "Standardprosessen for opprettelse av trestruktur har startet."
-
-#. Used in: Components > Tree View > Defaults
-#: components/TreeView/defaults.ts:547
-msgid "invertzoo"
-msgstr "Invertebratzoologi"
-
-#. Used in: Components > Tree View > Index
-#: components/TreeView/index.tsx:459
-msgid "biostratBio"
-msgstr "Biostratigrafi"
-
-#. Used in: Components > Preferences > Collection Definitions
 #: components/Preferences/CollectionDefinitions.tsx:66
+#. Used in: Components > Preferences > Collection Definitions
 msgid "synonymizedNodesDescription"
 msgstr ""
 "Hvis aktivert, kan brukere legge til underordnede noder til synonymiserte "
 "overordnede, og synonymisere en node har underordnede noder."
 
-#. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:503
+#. Used in: Components > Tree View > Create Tree
 msgid "utf8EncodingWarning"
 msgstr ""
-"Disse tredataene kan ikke importeres i databasen din fordi de inneholder UTF‑"
-"8-tegn, og denne databasen bruker {encoding:string}"
+"Disse tredataene kan ikke importeres i databasen din fordi de inneholder "
+"UTF‑8-tegn, og denne databasen bruker {encoding:string}"
+
+#: components/TreeView/CreateTree.tsx:507
+#. Used in: Components > Tree View > Create Tree
+msgid "resolveEncoding"
+msgstr "Slik løser du det:"

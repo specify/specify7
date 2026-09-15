@@ -88,7 +88,7 @@ msgstr "Définir les agents utilisateurs"
 msgid "noAgent"
 msgstr "L'utilisateur actuel n'a pas d'agent attribué."
 
-#: components/Core/Main.tsx:107
+#: components/Core/Main.tsx:109
 #. Used in: Components > Core > Main
 msgid "noAgentDescription"
 msgstr ""

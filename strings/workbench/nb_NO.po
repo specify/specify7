@@ -431,7 +431,7 @@ msgstr "Opplasting er ikke tilgjengelig, mens noen celler har valideringsfeil"
 
 #: components/WbActions/WbValidate.tsx:54
 #: components/WbToolkit/CoordinateConverter.tsx:56
-#: components/WbToolkit/GeoLocate.tsx:55
+#: components/WbToolkit/GeoLocate.tsx:53
 #: components/WbUtils/index.tsx:77
 #. Used in: Components > Wb Actions > Wb Validate ⬤ Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Utils > Index
 msgid "unavailableWhileViewingResults"
@@ -443,14 +443,14 @@ msgid "unavailableWhileValidating"
 msgstr "Denne handlingen er ikke tilgjengelig mens datakontrollen pågår"
 
 #: components/WbToolkit/CoordinateConverter.tsx:58
-#: components/WbToolkit/GeoLocate.tsx:57
+#: components/WbToolkit/GeoLocate.tsx:55
 #: components/WbToolkit/WbLeafletMap.tsx:62
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate ⬤ Components > Wb Toolkit > Wb Leaflet Map
 msgid "unavailableWithoutLocality"
 msgstr "Dette verktøyet krever at lokalitetskolonner kartlegges"
 
 #: components/WbToolkit/CoordinateConverter.tsx:54
-#: components/WbToolkit/GeoLocate.tsx:53
+#: components/WbToolkit/GeoLocate.tsx:51
 #. Used in: Components > Wb Toolkit > Coordinate Converter ⬤ Components > Wb Toolkit > Geo Locate
 msgid "unavailableWhenUploaded"
 msgstr "Dette verktøyet fungerer ikke med opplastede datasett"
