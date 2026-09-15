@@ -3,7 +3,12 @@ from unittest.mock import Mock, patch
 
 from django.test import Client, override_settings
 
-from specifyweb.backend.report_runner.views import _expand_rows_for_repeat_count
+from specifyweb.backend.report_runner.views import (
+    _expand_rows_by_count,
+    _expand_rows_by_field,
+    _expand_rows_for_repeat,
+    _expand_rows_for_repeat_count,
+)
 from specifyweb.backend.stored_queries.tests.test_views.raw_query import (
     get_simple_query,
 )
@@ -252,3 +257,115 @@ class TestExpandRowsForRepeatCount(ApiTests):
         data = self._data([[1, 3]])
         result = _expand_rows_for_repeat_count('not valid xml', data)
         self.assertEqual(result, data)
+
+
+class TestExpandRowsByField(ApiTests):
+
+    def _data(self, rows):
+        return {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': rows,
+        }
+
+    def test_rows_expanded_by_field_value(self):
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_by_field(
+            data, '1,63-preparations.preparation.countAmt'
+        )
+        self.assertEqual(len(result['rows']), 5)
+        self.assertEqual(result['rows'][0], [1, 3])
+        self.assertEqual(result['rows'][3], [2, 2])
+
+    def test_null_zero_and_invalid_default_to_one(self):
+        data = self._data([[1, None], [2, 0], [3, 'x']])
+        result = _expand_rows_by_field(
+            data, '1,63-preparations.preparation.countAmt'
+        )
+        self.assertEqual(len(result['rows']), 3)
+
+    def test_missing_field_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_by_field(data, 'not.a.field')
+        self.assertEqual(result, data)
+
+    def test_empty_field_returns_data_unchanged(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_by_field(data, None)
+        self.assertEqual(result, data)
+
+
+class TestExpandRowsByCount(ApiTests):
+
+    def _data(self, rows):
+        return {'fields': ['id'], 'rows': rows}
+
+    def test_every_row_repeated_fixed_count(self):
+        data = self._data([[1], [2]])
+        result = _expand_rows_by_count(data, 3)
+        self.assertEqual(len(result['rows']), 6)
+        self.assertEqual(result['rows'][:3], [[1], [1], [1]])
+
+    def test_count_of_one_returns_data_unchanged(self):
+        data = self._data([[1], [2]])
+        result = _expand_rows_by_count(data, 1)
+        self.assertEqual(result, data)
+
+    def test_invalid_count_returns_data_unchanged(self):
+        data = self._data([[1]])
+        self.assertEqual(_expand_rows_by_count(data, None), data)
+        self.assertEqual(_expand_rows_by_count(data, 'x'), data)
+
+
+class TestExpandRowsForRepeat(ApiTests):
+
+    def _data(self, rows):
+        return {
+            'fields': ['id', '1,63-preparations.preparation.countAmt'],
+            'rows': rows,
+        }
+
+    @patch('specifyweb.backend.report_runner.views.Spreport.objects.get')
+    def test_repeat_field_takes_precedence(self, get: Mock):
+        get.return_value = Mock(
+            repeatfield='1,63-preparations.preparation.countAmt',
+            repeatcount=99,
+        )
+        data = self._data([[1, 3], [2, 2]])
+        result = _expand_rows_for_repeat(_make_jrxml(), data, report_id=1)
+        self.assertEqual(len(result['rows']), 5)
+
+    @patch('specifyweb.backend.report_runner.views.Spreport.objects.get')
+    def test_repeat_count_used_when_no_field(self, get: Mock):
+        get.return_value = Mock(repeatfield=None, repeatcount=3)
+        data = self._data([[1, 9], [2, 9]])
+        result = _expand_rows_for_repeat(_make_jrxml(), data, report_id=1)
+        self.assertEqual(len(result['rows']), 6)
+
+    @patch('specifyweb.backend.report_runner.views.Spreport.objects.get')
+    def test_falls_back_to_jrxml_when_report_has_no_config(self, get: Mock):
+        get.return_value = Mock(repeatfield=None, repeatcount=None)
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat(
+            _make_jrxml('1,63-preparations.preparation.countAmt'),
+            data,
+            report_id=1,
+        )
+        self.assertEqual(len(result['rows']), 3)
+
+    def test_no_report_id_uses_jrxml(self):
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat(
+            _make_jrxml('1,63-preparations.preparation.countAmt'), data
+        )
+        self.assertEqual(len(result['rows']), 3)
+
+    @patch('specifyweb.backend.report_runner.views.Spreport.objects.get')
+    def test_missing_report_falls_back_to_jrxml(self, get: Mock):
+        get.side_effect = Spreport.DoesNotExist
+        data = self._data([[1, 3]])
+        result = _expand_rows_for_repeat(
+            _make_jrxml('1,63-preparations.preparation.countAmt'),
+            data,
+            report_id=999,
+        )
+        self.assertEqual(len(result['rows']), 3)

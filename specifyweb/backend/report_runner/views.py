@@ -36,30 +36,14 @@ _JASPER_NS = 'http://jasperreports.sourceforge.net/jasperreports'
 _REPEAT_COUNT_PROPERTY = 'specify.repeat.count.field'
 
 
-def _expand_rows_for_repeat_count(report_jrxml, report_data):
-    """Duplicate rows according to a repeat-count field declared in the jrxml.
+def _expand_rows_by_field(report_data, repeat_field):
+    """Duplicate each row by the integer value of the named result field.
 
-    If the jrxml does not declare the ``specify.repeat.count.field`` property,
-    or the named field is not present in the result set, the data is returned
-    unchanged.  This restores the Specify 6 behaviour where a label could be
-    printed N times based on an integer preparation field (e.g. countAmt).
+    Rows whose value is null, zero, or non-numeric default to a single copy.
+    If the field is not present in the result set, the data is unchanged.
     """
-    try:
-        root = ET.fromstring(report_jrxml)
-    except ET.ParseError:
-        return report_data
-
-    repeat_field = next(
-        (p.get('value') for p in root.findall('{%s}property' % _JASPER_NS)
-         if p.get('name') == _REPEAT_COUNT_PROPERTY),
-        None,
-    )
-
-    if not repeat_field:
-        return report_data
-
     fields = report_data['fields']
-    if repeat_field not in fields:
+    if not repeat_field or repeat_field not in fields:
         return report_data
 
     idx = fields.index(repeat_field)
@@ -72,6 +56,75 @@ def _expand_rows_for_repeat_count(report_jrxml, report_data):
         expanded.extend([row] * count)
 
     return {'fields': fields, 'rows': expanded}
+
+
+def _expand_rows_by_count(report_data, repeat_count):
+    """Duplicate every row a fixed number of times (Specify 6 RepeatCount)."""
+    try:
+        count = max(1, int(repeat_count))
+    except (TypeError, ValueError):
+        return report_data
+
+    if count == 1:
+        return report_data
+
+    expanded = [row for row in report_data['rows'] for _ in range(count)]
+    return {'fields': report_data['fields'], 'rows': expanded}
+
+
+def _repeat_field_from_jrxml(report_jrxml):
+    """Return the field named by the jrxml repeat-count property, or None."""
+    try:
+        root = ET.fromstring(report_jrxml)
+    except ET.ParseError:
+        return None
+
+    return next(
+        (p.get('value') for p in root.findall('{%s}property' % _JASPER_NS)
+         if p.get('name') == _REPEAT_COUNT_PROPERTY),
+        None,
+    )
+
+
+def _expand_rows_for_repeat_count(report_jrxml, report_data):
+    """Duplicate rows according to a repeat-count field declared in the jrxml.
+
+    If the jrxml does not declare the ``specify.repeat.count.field`` property,
+    or the named field is not present in the result set, the data is returned
+    unchanged.  This restores the Specify 6 behaviour where a label could be
+    printed N times based on an integer preparation field (e.g. countAmt).
+    """
+    return _expand_rows_by_field(
+        report_data, _repeat_field_from_jrxml(report_jrxml)
+    )
+
+
+def _expand_rows_for_repeat(report_jrxml, report_data, report_id=None):
+    """Expand rows for label repetition, mirroring Specify 6.
+
+    Precedence:
+      1. ``spreport.RepeatField`` — repeat each row by the integer value of the
+         named result field (e.g. preparation.countAmt).
+      2. ``spreport.RepeatCount`` — repeat every row a fixed number of times.
+      3. ``specify.repeat.count.field`` jrxml property — for self-contained
+         labels that carry the setting in their own XML.
+
+    The first two mirror how Specify 6 stores this configuration on the report
+    record, so labels migrated from Specify 6 repeat without editing the jrxml.
+    """
+    if report_id not in (None, ''):
+        try:
+            report = Spreport.objects.get(id=report_id)
+        except (Spreport.DoesNotExist, ValueError, TypeError):
+            report = None
+
+        if report is not None:
+            if report.repeatfield:
+                return _expand_rows_by_field(report_data, report.repeatfield)
+            if report.repeatcount:
+                return _expand_rows_by_count(report_data, report.repeatcount)
+
+    return _expand_rows_for_repeat_count(report_jrxml, report_data)
 
 
 class ReportsPT(PermissionTarget):
@@ -103,7 +156,11 @@ def run(request):
     if len(report_data['rows']) < 1:
         return HttpResponse(_("The report query returned no results."), content_type="text/plain")
 
-    report_data = _expand_rows_for_repeat_count(request.POST['report'], report_data)
+    report_data = _expand_rows_for_repeat(
+        request.POST['report'],
+        report_data,
+        request.POST.get('reportId'),
+    )
 
     r = requests.post("http://%s:%s/report" %
                       (settings.REPORT_RUNNER_HOST, port),
