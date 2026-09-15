@@ -168,16 +168,17 @@ class TestEditPreviousVersionObjects(ApiTests):
                 deaccessionnumber='Test deaccession',
             )
         ]
-        self.recordset = models.Recordset.objects.create(
-            name='Previous Record set',
-            collectionmemberid=self.collection.id,
-            dbtableid=models.Collectionobject.specify_model.tableId,
-            specifyuser=self.specifyuser,
-            type=0,
-        )
-        
+        self.recordset = [
+            models.Recordset.objects.create(
+                name='Previous Record set',
+                collectionmemberid=self.collection.id,
+                dbtableid=models.Collectionobject.specify_model.tableId,
+                specifyuser=self.specifyuser,
+                type=0,
+            )
+        ]
     def test_edit_recordset_created_in_previous_version(self):
-        recordset = self.recordset
+        recordset = self.recordset[0]
         
         recordset.name ='Updated Name'
         recordset.save()
