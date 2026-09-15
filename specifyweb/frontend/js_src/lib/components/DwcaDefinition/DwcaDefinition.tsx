@@ -1465,6 +1465,11 @@ function DwcaDefinitionEditorLoaded({
                 name: identifierTerm,
               }),
             ];
+              dwcaText.dwcaRequiredTerm({
+                title: identifierTerm.split(/[\/#]/).at(-1) ?? identifierTerm,
+                name: identifierTerm,
+              }),
+            ];
         if (!mapping.extension) return missingIdentifier;
         const required = (mapping.extensionDefinition?.fields ?? []).filter(
           ({ required }) => required === true
@@ -1605,8 +1610,9 @@ function DwcaDefinitionEditorLoaded({
     <div className="flex min-h-0 flex-1 flex-col gap-3 overflow-hidden">
       {missingRequiredTerms.length > 0 && (
         <ErrorMessage>
-          Map the required terms before saving:{' '}
-          {missingRequiredTerms.join(', ')}
+          {dwcaText.dwcaMapRequiredTerms({
+            terms: missingRequiredTerms.join(', '),
+          })}
         </ErrorMessage>
       )}
       <div className="flex flex-wrap gap-2 border-b pb-2">
