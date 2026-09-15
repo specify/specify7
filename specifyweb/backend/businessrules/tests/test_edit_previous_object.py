@@ -1,3 +1,6 @@
+from django.db import connection
+from django.db.migrations.loader import MigrationLoader
+
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -168,26 +171,30 @@ class TestEditPreviousVersionObjects(ApiTests):
                 deaccessionnumber='Test deaccession',
             )
         ]
-        self.recordset = models.Recordset.objects.create(
+        legacy_apps = MigrationLoader(connection).project_state(
+            [("specify", "0034_accession_date_fields")]
+        ).apps
+        legacy_recordset = legacy_apps.get_model("specify", "Recordset")
+        recordset = legacy_recordset.objects.create(
             name='Previous Record set',
             collectionmemberid=self.collection.id,
             dbtableid=models.Collectionobject.specify_model.tableId,
-            specifyuser=self.specifyuser,
+            specifyuser_id=self.specifyuser.id,
             type=0,
         )
-        
-    def test_edit_recordset_created_in_previous_version(self):
-        recordset = self.recordset
-        
-        recordset.name ='Updated Name'
-        recordset.save()
-        recordset.refresh_from_db()
+        self.recordset = models.Recordset.objects.get(pk=recordset.pk)
 
-        self.assertEqual(   
-            recordset.name,
+    def test_edit_recordset_created_in_previous_version(self):
+        recordset = models.Recordset.objects.get(pk=self.recordset.pk)
+
+        recordset.name = 'Updated Name'
+        recordset.save()
+
+        self.assertEqual(
+            models.Recordset.objects.get(pk=recordset.pk).name,
             'Updated Name',
         )
-    
+
     def test_edit_collectionobject_created_in_previous_version(self):
         collectionobject = self.collectionobjects[0]
 
