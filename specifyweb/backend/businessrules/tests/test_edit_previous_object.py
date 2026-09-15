@@ -1,3 +1,6 @@
+from django.db import connection
+from django.db.migrations.loader import MigrationLoader
+
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
@@ -184,11 +187,17 @@ class TestEditPreviousVersionObjects(ApiTests):
         recordset.save()
         recordset.refresh_from_db()
 
-        self.assertEqual(   
-            recordset.name,
+    def test_edit_recordset_created_in_previous_version(self):
+        recordset = models.Recordset.objects.get(pk=self.recordset.pk)
+
+        recordset.name = 'Updated Name'
+        recordset.save()
+
+        self.assertEqual(
+            models.Recordset.objects.get(pk=recordset.pk).name,
             'Updated Name',
         )
-    
+
     def test_edit_collectionobject_created_in_previous_version(self):
         collectionobject = self.collectionobjects[0]
 
