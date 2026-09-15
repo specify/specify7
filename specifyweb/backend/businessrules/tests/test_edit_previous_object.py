@@ -1,6 +1,3 @@
-from django.db import connection
-from django.db.migrations.loader import MigrationLoader
-
 from specifyweb.specify import models
 from specifyweb.specify.tests.test_api import ApiTests
 
