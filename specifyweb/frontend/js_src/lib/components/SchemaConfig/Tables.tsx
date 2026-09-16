@@ -1,12 +1,14 @@
 import React from 'react';
 
 import { useCachedState } from '../../hooks/useCachedState';
+import { commonText } from '../../localization/common';
+import { schemaText } from '../../localization/schema';
 import { wbPlanText } from '../../localization/wbPlan';
 import type { CacheDefinitions } from '../../utils/cache/definitions';
 import type { RA } from '../../utils/types';
 import { localized } from '../../utils/types';
 import { sortFunction } from '../../utils/utils';
-import { Ul } from '../Atoms';
+import { H3, Ul } from '../Atoms';
 import { Button } from '../Atoms/Button';
 import { Input, Label } from '../Atoms/Form';
 import { Link } from '../Atoms/Link';
@@ -135,11 +137,16 @@ export function TableList({
           return isVisible ? (
             <li className="contents" key={table.tableId}>
               {typeof action === 'function' ? (
-                <Button.LikeLink onClick={action}>{content}</Button.LikeLink>
+                <Button.LikeLink
+                  className={isCurrent ? 'font-bold text-brand-300' : undefined}
+                  onClick={action}
+                >
+                  {content}
+                </Button.LikeLink>
               ) : (
                 <Link.Default
                   aria-current={isCurrent ? 'page' : undefined}
-                  className={isCurrent ? 'font-bold' : undefined}
+                  className={isCurrent ? 'font-bold text-brand-300' : undefined}
                   forwardRef={isCurrent ? activeRef : undefined}
                   href={action}
                 >
@@ -158,5 +165,86 @@ export function TableList({
         {wbPlanText.showAllTables()}
       </Label.Inline>
     </div>
+  );
+}
+
+/**
+ * A `TableList` wrapped in a collapsible, searchable panel.
+ * Used by both the schema config sidebar and the data view query editor.
+ */
+export function CollapsibleTableList({
+  cacheKey,
+  getAction,
+  filter: extraFilter,
+  localizeTableNames = true,
+  currentTableName,
+  badge,
+  asAside = false,
+}: {
+  readonly cacheKey: CacheKey;
+  readonly getAction: (table: SpecifyTable) => string | (() => void);
+  readonly filter?: (table: SpecifyTable) => boolean;
+  readonly localizeTableNames?: boolean;
+  readonly currentTableName?: string;
+  readonly badge?: (table: SpecifyTable) => React.ReactNode;
+  // Use <aside> semantics and full-bleed responsive layout (as in the schema config sidebar)
+  readonly asAside?: boolean;
+}): JSX.Element {
+  const [search, setSearch] = React.useState('');
+  const [isCollapsed, setIsCollapsed] = React.useState(false);
+  const Wrapper = asAside ? 'aside' : 'div';
+
+  return isCollapsed ? (
+    <Wrapper
+      className={`flex flex-shrink-0 flex-col items-center gap-2 overflow-hidden ${
+        asAside ? 'order-2 w-full lg:order-1 lg:w-9 lg:border-r' : 'w-9'
+      }`}
+    >
+      <Button.Icon
+        icon="chevronDoubleRight"
+        title={`${commonText.expand()} ${schemaText.tables()}`}
+        onClick={(): void => setIsCollapsed(false)}
+      />
+    </Wrapper>
+  ) : (
+    <Wrapper
+      className={`flex flex-shrink-0 flex-col gap-2 overflow-hidden ${
+        asAside
+          ? 'order-2 w-full pr-2 lg:order-1 lg:w-64 lg:border-r'
+          : 'w-64 min-w-0'
+      }`}
+    >
+      <div className="flex items-center gap-2">
+        <H3 className="flex-1">{schemaText.tables()}</H3>
+        <Button.Icon
+          icon="chevronDoubleLeft"
+          title={`${commonText.collapse()} ${schemaText.tables()}`}
+          onClick={(): void => setIsCollapsed(true)}
+        />
+      </div>
+      <Input.Text
+        aria-label={commonText.search()}
+        placeholder={commonText.search()}
+        value={search}
+        onValueChange={setSearch}
+      />
+      <TableList
+        badge={badge}
+        cacheKey={cacheKey}
+        currentTableName={currentTableName}
+        filter={(showHiddenTables, table): boolean => {
+          const searchText = search.toLowerCase();
+          return (
+            tablesFilter(showHiddenTables, false, true, table) &&
+            (searchText === '' ||
+              table.name.toLowerCase().includes(searchText) ||
+              table.label.toLowerCase().includes(searchText)) &&
+            (extraFilter?.(table) ?? true)
+          );
+        }}
+        getAction={getAction}
+        localizeTableNames={localizeTableNames}
+      />
+    </Wrapper>
   );
 }

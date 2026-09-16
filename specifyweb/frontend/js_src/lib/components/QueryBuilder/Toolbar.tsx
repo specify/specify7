@@ -84,7 +84,16 @@ export function QueryToolbar({
           <Button.Small onClick={handleRunCountOnly}>
             {queryText.countOnly()}
           </Button.Small>
-          <Submit.Small onClick={handleSubmitClick}>
+          <Submit.Small
+            onClick={(event): void => {
+              // QueryBuilder can be embedded inside another form (for example
+              // the DataViewQueries app resource editor). Do not let this 
+              // submit that parent form and reload the page.
+              event.preventDefault();
+              event.stopPropagation();
+              handleSubmitClick();
+            }}
+          >
             {queryText.query()}
           </Submit.Small>
         </>

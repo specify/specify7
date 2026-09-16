@@ -78,6 +78,14 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="BorrowAgent" title="BorrowAgent" class="edu.ku.brc.specify.datamodel.BorrowAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
+			</fields>
+		</switch>
+	</format>
 	<format name="CollectingEvent" title="CollectingEvent" class="edu.ku.brc.specify.datamodel.CollectingEvent" default="true">
 		<switch single="true">
 			<fields>
@@ -163,6 +171,14 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="DeaccessionAgent" title="DeaccessionAgent" class="edu.ku.brc.specify.datamodel.DeaccessionAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
+			</fields>
+		</switch>
+	</format>
 	<format name="Determination" title="Determination" class="edu.ku.brc.specify.datamodel.Determination" default="true">
 		<switch single="false" field="isCurrent">
 			<fields value="true">
@@ -178,6 +194,21 @@
 		<switch single="true">
 			<fields>
 				<field>name</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="DisposalAgent" title="DisposalAgent" class="edu.ku.brc.specify.datamodel.DisposalAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="DisposalPreparation" title="DisposalPreparation" class="edu.ku.brc.specify.datamodel.DisposalPreparation" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">preparation</field>
 			</fields>
 		</switch>
 	</format>
@@ -252,6 +283,21 @@
 			</fields>
 		</switch>
 	</format>
+	<format name="GiftAgent" title="GiftAgent" class="edu.ku.brc.specify.datamodel.GiftAgent" default="true">
+		<switch single="true">
+			<fields>
+				<field formatter="Agent">agent</field>
+				<field sep=" - ">role</field>
+			</fields>
+		</switch>
+	</format>
+	<format name="GiftPreparation" title="GiftPreparation" class="edu.ku.brc.specify.datamodel.GiftPreparation" default="true">
+		<switch single="true">
+			<fields>
+				<field sep=" ">preparation</field>
+			</fields>
+		</switch>
+	</format>
 	<format name="Journal" title="Journal" class="edu.ku.brc.specify.datamodel.Journal" default="true">
 		<switch single="true">
 			<fields>
@@ -296,7 +342,11 @@
 		</switch>
 	</format>
 	<format name="LoanPreparation" title="LoanPreparation" class="edu.ku.brc.specify.datamodel.LoanPreparation" default="true">
-		<switch single="true"/>
+		<switch single="true">
+			<fields>
+				<field sep=" ">preparation</field>
+			</fields>
+		</switch>
 	</format>
 	<format name="LoanReturnPreparation" title="LoanReturnPreparation" class="edu.ku.brc.specify.datamodel.LoanReturnPreparation" default="true">
 		<switch single="true">
@@ -520,22 +570,28 @@
 		<aggregator name="Address" title="Address" class="edu.ku.brc.specify.datamodel.Address" default="true" separator="; " ending="" format="Address"/>
 		<aggregator name="AgentAttachment" title="AgentAttachment" class="edu.ku.brc.specify.datamodel.AgentAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="Author" title="Author" class="edu.ku.brc.specify.datamodel.Author" default="true" separator="; " ending="" format="Author" orderfieldname="orderNumber"/>
+		<aggregator name="BorrowAgent" title="BorrowAgent" class="edu.ku.brc.specify.datamodel.BorrowAgent" default="true" separator="; " ending="" format="BorrowAgent"/>
 		<aggregator name="BorrowAttachment" title="BorrowAttachment" class="edu.ku.brc.specify.datamodel.BorrowAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="CollectingEventAttachment" title="CollectingEventAttachment" class="edu.ku.brc.specify.datamodel.CollectingEventAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
-		<aggregator name="CollectionObject" title="CollectionObject" class="edu.ku.brc.specify.datamodel.CollectionObject" default="true" separator="; " ending="" format="CollectionObject"/>
+		<aggregator name="CollectionObject" title="CollectionObject" class="edu.ku.brc.specify.datamodel.CollectionObject" default="true" separator=" | " ending="" format="CollectionObject"/>
 		<aggregator name="CollectionObjectAttachment" title="CollectionObjectAttachment" class="edu.ku.brc.specify.datamodel.CollectionObjectAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="Collector" title="Collector" class="edu.ku.brc.specify.datamodel.Collector" default="true" separator="; " ending="" format="Collector" orderfieldname="orderNumber"/>
 		<aggregator name="ConservDescriptionAttachment" title="ConservDescriptionAttachment" class="edu.ku.brc.specify.datamodel.ConservDescriptionAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="ConservEventAttachment" title="ConservEventAttachment" class="edu.ku.brc.specify.datamodel.ConservEventAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="DNASequenceAttachment" title="DNASequenceAttachment" class="edu.ku.brc.specify.datamodel.DNASequenceAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="DNASequencingRunAttachment" title="DNASequencingRunAttachment" class="edu.ku.brc.specify.datamodel.DNASequencingRunAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
+		<aggregator name="DeaccessionAgent" title="DeaccessionAgent" class="edu.ku.brc.specify.datamodel.DeaccessionAgent" default="true" separator="; " ending="" format="DeaccessionAgent"/>
 		<aggregator name="Determination" title="Determination" class="edu.ku.brc.specify.datamodel.Determination" default="true" separator="; " ending="" count="1" format="Determination"/>
+		<aggregator name="DisposalAgent" title="DisposalAgent" class="edu.ku.brc.specify.datamodel.DisposalAgent" default="true" separator="; " ending="" format="DisposalAgent"/>
+		<aggregator name="DisposalPrep" title="Disposal Prep" class="edu.ku.brc.specify.datamodel.DisposalPreparation" default="true" separator="; " ending="" count="0" format="DisposalPreparation"/>
 		<aggregator name="Extractor" title="Extractor" class="edu.ku.brc.specify.datamodel.Extractor" default="true" separator="; " ending="" format="Extractor" orderfieldname="orderNumber"/>
 		<aggregator name="FieldNotebookAttachment" title="FieldNotebookAttachment" class="edu.ku.brc.specify.datamodel.FieldNotebookAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="FieldNotebookPageAttachment" title="FieldNotebookPageAttachment" class="edu.ku.brc.specify.datamodel.FieldNotebookPageAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="FieldNotebookPageSetAttachment" title="FieldNotebookPageSetAttachment" class="edu.ku.brc.specify.datamodel.FieldNotebookPageSetAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="FundingAgent" title="FundingAgent" class="edu.ku.brc.specify.datamodel.FundingAgent" default="true" separator="; " ending="" format="FundingAgent" orderfieldname="orderNumber"/>
+		<aggregator name="GiftAgent" title="GiftAgent" class="edu.ku.brc.specify.datamodel.GiftAgent" default="true" separator="; " ending="" format="GiftAgent"/>
 		<aggregator name="GiftAttachment" title="GiftAttachment" class="edu.ku.brc.specify.datamodel.GiftAttachment" default="true" separator="; " ending="" format="LoanAgent"/>
+		<aggregator name="GiftPrep" title="Gift Prep" class="edu.ku.brc.specify.datamodel.GiftPreparation" default="true" separator="; " ending="" count="0" format="GiftPreparation"/>
 		<aggregator name="LoanAgent" title="LoanAgent" class="edu.ku.brc.specify.datamodel.LoanAgent" default="true" separator="; " ending="" format="LoanAgent"/>
 		<aggregator name="LoanAttachment" title="LoanAttachment" class="edu.ku.brc.specify.datamodel.LoanAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="LoanPrep" title="LoanPrep" class="edu.ku.brc.specify.datamodel.LoanPreparation" default="true" separator="; " ending="" count="0" format="LoanPreparation"/>
@@ -550,5 +606,11 @@
 		<aggregator name="TaxonAttachment" title="TaxonAttachment" class="edu.ku.brc.specify.datamodel.TaxonAttachment" default="true" separator="; " ending="" format="identity" orderfieldname="ordinal"/>
 		<aggregator name="CollectionObjectGroupJoin" title="Collection Object Group Join" class="edu.ku.brc.specify.datamodel.CollectionObjectGroupJoin" default="true" separator="; " ending="" format=""/>
 		<aggregator name="AgentIdentifier" title="Agent Identifier" class="edu.ku.brc.specify.datamodel.AgentIdentifier" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Collection" title="Collection" class="edu.ku.brc.specify.datamodel.Collection" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="Discipline" title="Discipline" class="edu.ku.brc.specify.datamodel.Discipline" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="Division" title="Division" class="edu.ku.brc.specify.datamodel.Division" default="true" separator=" | " ending="" format=""/>
+		<aggregator name="Taxon" title="Taxon" class="edu.ku.brc.specify.datamodel.Taxon" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Geography" title="Geography" class="edu.ku.brc.specify.datamodel.Geography" default="true" separator="; " ending="" format=""/>
+		<aggregator name="Storage" title="Storage" class="edu.ku.brc.specify.datamodel.Storage" default="true" separator="; " ending="" format=""/>
 	</aggregators>
 </formatters>

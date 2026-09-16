@@ -26,6 +26,7 @@ import { useQueryViewPref } from './Context';
 import { QueryEditButton } from './Edit';
 import { QueryLoanReturn } from './LoanReturn';
 import type { MainState } from './reducer';
+import { SplitViewOrientationButton, SplitViewToggleButton } from './SplitView';
 
 export type QueryView = {
   readonly basicView: RA<number>;
@@ -45,6 +46,11 @@ export function QueryHeader({
   unsetUnloadProtect,
   onTriedToSave: handleTriedToSave,
   onSaved: handleSaved,
+  isSplit,
+  canSplit,
+  isHorizontal,
+  onToggleSplit,
+  onToggleOrientation,
 }: {
   readonly recordSet?: SpecifyResource<RecordSet>;
   readonly query: SerializedResource<SpQuery>;
@@ -60,6 +66,11 @@ export function QueryHeader({
   readonly unsetUnloadProtect: () => void;
   readonly onTriedToSave: () => void;
   readonly onSaved: () => void;
+  readonly isSplit: boolean;
+  readonly canSplit: boolean;
+  readonly isHorizontal: boolean;
+  readonly onToggleSplit: () => void;
+  readonly onToggleOrientation: () => void;
 }): JSX.Element {
   // Detects any query being deleted and updates it every where and redirect
   const navigate = useNavigate();
@@ -122,6 +133,17 @@ export function QueryHeader({
           />
         </ErrorBoundary>
       ) : undefined}
+      <SplitViewToggleButton
+        disabled={!canSplit}
+        isSplit={isSplit}
+        onToggle={onToggleSplit}
+      />
+      <SplitViewOrientationButton
+        disabled={!isSplit}
+        isHorizontal={isHorizontal}
+        onToggle={onToggleOrientation}
+      />
+      <span className="-ml-2 flex-1" />
       <div className="flex flex-wrap justify-center gap-2">
         <Button.Small onClick={() => setIsBasic(!isBasic)}>
           {isBasic
