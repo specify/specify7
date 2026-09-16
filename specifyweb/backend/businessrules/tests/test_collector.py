@@ -4,6 +4,25 @@ from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
 class CollectorTests(ApiTests):
+    def test_create_collector_with_new_agent(self):
+        new_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname="New",
+            lastname="Collector",
+            division=self.division)
+        collectingevent = models.Collectingevent.objects.create(
+            discipline=self.discipline)
+
+        collector = collectingevent.collectors.create(
+            isprimary=True,
+            ordernumber=0,
+            division=self.division,
+            agent=new_agent)
+
+        fetched_collector = models.Collector.objects.get(id=collector.id)
+        self.assertEqual(fetched_collector.agent, new_agent)
+        self.assertEqual(fetched_collector.collectingevent, collectingevent)
+
     def test_agent_unique_in_collecting_event(self):
         collectingevent = models.Collectingevent.objects.create(
             discipline=self.discipline)
