@@ -29,7 +29,7 @@ export const batchIdentifyText = createDictionary({
       "Saisissez les numéros de catalogue en utilisant n'importe quel délimiteur non numérique (virgules, espaces, préfixes textuels, etc.). Utilisez un tiret pour indiquer les plages numériques, par exemple 0001 - 0150.",
     'hr-hr':
       'Unesite kataloške brojeve koristeći nenumeričke razdjelnike (zareze, razmake, tekstualne prefikse itd.). Koristite crticu za označavanje numeričkih raspona poput 0001 - 0150.',
-    nb: 'Skriv inn katalognumre ved hjelp av ikke-numeriske skilletegn (komma, mellomrom, tekstprefikser osv.). Bruk en bindestrek for å definere numeriske områder som 0001 - 0150.',
+    nb: 'Skriv katalognumre med et skilletegn (komma, mellomrom, tekstprefikser osv.). Bruk en bindestrek for å angi numeriske intervaller som 0001−0150.',
     'pt-br':
       'Insira os números de catálogo usando quaisquer delimitadores não numéricos (vírgulas, espaços, prefixos de texto, etc.). Use um hífen para declarar intervalos numéricos, como 0001 - 0150.',
     'ru-ru':
@@ -154,7 +154,7 @@ export const batchIdentifyText = createDictionary({
     'es-es': 'Conjunto de récords mixtos',
     'fr-fr': "Ensemble d'enregistrements mixte",
     'hr-hr': 'Mješoviti set ploča',
-    nb: 'Blandet platesett',
+    nb: 'Blandet datasett',
     'pt-br': 'Conjunto de discos variados',
     'ru-ru': 'Смешанный набор записей',
     'uk-ua': 'Змішаний набір записів',
