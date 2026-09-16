@@ -62,7 +62,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Allgemein',
     'pt-br': 'Em geral',
     'hr-hr': 'General',
-    nb: 'General',
+    nb: 'Generelt',
   },
   ui: {
     'en-us': 'User Interface',
@@ -182,7 +182,7 @@ export const preferencesText = createDictionary({
       'Mostrar a contagem de Objetos de Coleção para todos os ranks, incluindo e abaixo deste.',
     'hr-hr':
       'Prikaži broj povezanih objekata kolekcije za sve rangove ispod ovog.',
-    nb: 'Vis antallet lenkede samlingsobjekter for alle ranger under denne.',
+    nb: 'Vis antallet lenkede samlingsobjekter for alle nivåer under dette.',
   },
   reduceTransparency: {
     'en-us': 'Reduce transparency',
@@ -193,7 +193,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Transparenz reduzieren',
     'pt-br': 'Reduzir a transparência',
     'hr-hr': 'Smanjite transparentnost',
-    nb: 'Reduser gjennomsiktigheten',
+    nb: 'Reduser gjennomsiktighet',
   },
   reduceTransparencyDescription: {
     'en-us':
@@ -212,7 +212,7 @@ export const preferencesText = createDictionary({
       'Desativar ou não os fundos translúcidos para componentes da interface do usuário sempre que possível (por exemplo, cabeçalhos de tabela em uma visualização em árvore).',
     'hr-hr':
       'Treba li onemogućiti prozirne pozadine za komponente korisničkog sučelja kad god je to moguće (npr. zaglavlja tablica u prikazu stabla).',
-    nb: 'Om gjennomskinnelige bakgrunner skal deaktiveres for brukergrensesnittkomponenter når det er mulig (f.eks. tabelloverskrifter i trevisning).',
+    nb: 'Om gjennomskinnelige bakgrunner skal deaktiveres for brukergrensesnittkomponenter når det er mulig (f.eks. tabelloverskrifter i tre-visning).',
   },
   contrast: {
     'en-us': 'Contrast',
@@ -234,7 +234,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Erhöhen',
     'pt-br': 'Aumentar',
     'hr-hr': 'Povećati',
-    nb: 'Øke',
+    nb: 'Øk',
   },
   reduce: {
     'en-us': 'Reduce',
@@ -245,7 +245,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Verringern',
     'pt-br': 'Reduzir',
     'hr-hr': 'Smanjiti',
-    nb: 'Redusere',
+    nb: 'Reduser',
   },
   noPreference: {
     'en-us': 'No preference',
@@ -278,7 +278,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Schrift-Familie',
     'pt-br': 'Família de fontes',
     'hr-hr': 'Obitelj fontova',
-    nb: 'Skriftfamilie',
+    nb: 'Skriftfont-familie',
   },
   fontFamilyDescription: {
     'en-us':
@@ -297,7 +297,7 @@ export const preferencesText = createDictionary({
       'Você pode especificar qualquer fonte que esteja instalada no seu computador, mesmo que ela não esteja na lista. Também é possível usar uma lista de fontes separadas por vírgulas, em que cada fonte subsequente será usada caso a anterior não esteja disponível.',
     'hr-hr':
       'Možete odrediti bilo koji font koji se nalazi na vašem računalu, čak i ako nije na popisu. Također je podržan popis fontova odvojen zarezima, gdje će se svaki sljedeći font koristiti ako prethodni nije dostupan.',
-    nb: 'Du kan angi hvilken som helst skrifttype som finnes på datamaskinen din, selv om den ikke er i listen. En kommaseparert liste over skrifter støttes også, der hver påfølgende skrifttype vil bli brukt hvis den forrige ikke er tilgjengelig.',
+    nb: 'Du kan angi hvilken som helst skrift-font som finnes på datamaskinen din, selv om den ikke er i listen. En kommaseparert liste over skrift-fonter støttes også, der hver påfølgende skrift-font vil bli brukt hvis den forrige ikke er tilgjengelig.',
   },
   defaultFont: {
     'en-us': '(default font)',
@@ -308,7 +308,7 @@ export const preferencesText = createDictionary({
     'de-ch': '(Standardschriftart)',
     'pt-br': '(fonte padrão)',
     'hr-hr': '(zadani font)',
-    nb: '(standardfont)',
+    nb: '(standard skrift-font)',
   },
   maxFormWidth: {
     'en-us': 'Max form width',
@@ -451,7 +451,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Кнопки (режим освітлення)',
     'pt-br': 'Botões (modo claro)',
     'hr-hr': 'Tipke (svjetlosni način rada)',
-    nb: 'Knapper (lysmodus)',
+    nb: 'Knapper (lys modus)',
   },
   buttonsDark: {
     'en-us': 'Buttons (dark mode)',
@@ -495,7 +495,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Immer zur Auswahl der Sammlung auffordern',
     'pt-br': 'Sempre solicitando a seleção da coleção',
     'hr-hr': 'Uvijek se traži odabir kolekcije',
-    nb: 'Alltid oppfordret til å velge samling',
+    nb: 'Alltid oppfordre til å velge samling',
   },
   treeEditor: {
     'en-us': 'Tree Editor',
@@ -506,7 +506,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Baumeditor',
     'pt-br': 'Editor de Árvores',
     'hr-hr': 'Uređivač stabla',
-    nb: 'Treredigerer',
+    nb: 'Tre-editor',
   },
   treeAccentColor: {
     'en-us': 'Tree accent color',
@@ -517,7 +517,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Baumakzentfarbe',
     'pt-br': 'cor de destaque da árvore',
     'hr-hr': 'Boja naglaska na drvetu',
-    nb: 'Aksentfarge for treet',
+    nb: 'Aksentfarge for trær',
   },
   synonymColor: {
     'en-us': 'Synonym color',
@@ -578,7 +578,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Anwendung',
     'pt-br': 'Aplicativo',
     'hr-hr': 'Primjena',
-    nb: 'Søknad',
+    nb: 'Applikasjon',
   },
   allowDismissingErrors: {
     'en-us': 'Allow dismissing error messages',
@@ -637,7 +637,7 @@ export const preferencesText = createDictionary({
       'Se o título da página deve ser atualizado para corresponder ao registro atual.',
     'hr-hr':
       'Treba li ažurirati naslov stranice kako bi odgovarao trenutnom zapisu.',
-    nb: 'Om sidetittelen skal oppdateres slik at den samsvarer med gjeldende oppføring.',
+    nb: 'Om sidetittelen skal oppdateres slik at den samsvarer med gjeldende databasepost.',
   },
   queryComboBox: {
     'en-us': 'Query Combo Box',
@@ -672,7 +672,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Suchalgorithmus (für Beziehungen mit Baumtabellen)',
     'pt-br': 'Algoritmo de busca (para relacionamentos com tabelas em árvore)',
     'hr-hr': 'Algoritam pretraživanja (za odnose s tablicama stabla)',
-    nb: 'Søkealgoritme (for relasjoner med tretabeller)',
+    nb: 'Søkealgoritme (for relasjoner med tre-tabeller)',
   },
   startsWithInsensitive: {
     'en-us': 'Starts With (case-insensitive)',
@@ -698,7 +698,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Pesquise valores que comecem com uma determinada sequência de consulta.',
     'hr-hr': 'Traži vrijednosti koje počinju zadanim nizom upita.',
-    nb: 'Søk etter verdier som begynner med en gitt spørrestreng.',
+    nb: 'Søk etter verdier som begynner med en gitt søkestreng.',
   },
   startsWithCaseSensitive: {
     'en-us': 'Starts With (case-sensitive)',
@@ -724,7 +724,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Pesquise valores que comecem com uma determinada sequência de consulta.',
     'hr-hr': 'Traži vrijednosti koje počinju zadanim nizom upita.',
-    nb: 'Søk etter verdier som begynner med en gitt spørrestreng.',
+    nb: 'Søk etter verdier som begynner med en gitt søkestreng.',
   },
   containsInsensitive: {
     'en-us': 'Contains (case-insensitive)',
@@ -765,7 +765,7 @@ export const preferencesText = createDictionary({
       'Pesquise valores que contenham uma determinada string de consulta (sem distinção entre maiúsculas e minúsculas).',
     'hr-hr':
       'Traži vrijednosti koje sadrže zadani niz upita (ne razlikuje velika i mala slova).',
-    nb: 'Søk etter verdier som inneholder en gitt spørrestreng (ikke skille mellom store og små bokstaver).',
+    nb: 'Søk etter verdier som inneholder en gitt søkestreng (ikke skille mellom store og små bokstaver).',
   },
   containsCaseSensitiveDescription: {
     'en-us':
@@ -784,7 +784,7 @@ export const preferencesText = createDictionary({
       'Pesquise valores que contenham uma determinada string de consulta (diferenciando maiúsculas de minúsculas).',
     'hr-hr':
       'Traži vrijednosti koje sadrže zadani niz upita (osjetljivo na velika i mala slova).',
-    nb: 'Søk etter verdier som inneholder en gitt spørrestreng (små- og store-/småskala-følsom).',
+    nb: 'Søk etter verdier som inneholder en gitt søkestreng (skiller mellom små og store bokstaver).',
   },
   containsSecondDescription: {
     'en-us':
@@ -814,7 +814,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Übereinstimmende Teilzeichenkette hervorheben',
     'pt-br': 'Destacar a substring correspondente',
     'hr-hr': 'Označi podudarni podniz',
-    nb: 'Marker samsvarende delstreng',
+    nb: 'Marker matchede delstreng',
   },
   languageDescription: {
     'en-us': 'Determines field captions, usage notes and table captions.',
@@ -831,7 +831,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Determina legendas de campos, notas de uso e legendas de tabelas.',
     'hr-hr': 'Određuje natpise polja, napomene o korištenju i natpise tablica.',
-    nb: 'Bestemmer felttekster, bruksnotater og tabelltekster.',
+    nb: 'Bestemmer felttekster, notater om bruk og tabelltekster.',
   },
   showDialogIcon: {
     'en-us': 'Show icon in the header',
@@ -895,7 +895,7 @@ export const preferencesText = createDictionary({
     'es-es': 'Campo utilizado por el botón de consulta de taxones',
     'fr-fr': 'Champ utilisé pour la recherche taxinomique',
     'hr-hr': 'Polje koje koristi gumb za upit taksona',
-    nb: 'Felt brukt av knappen Taxon Query',
+    nb: 'Felt brukt av knappen Taxon-søk',
     'pt-br': 'Campo usado pelo botão de consulta de táxon',
     'ru-ru': 'Поле, используемое кнопкой «Запрос таксона».',
     'uk-ua': 'Поле, яке використовується кнопкою запиту таксона',
@@ -911,7 +911,7 @@ export const preferencesText = createDictionary({
       "Choisissez si le bouton « Requête sur l'arbre taxonomique » doit filtrer par « Taxon » ou par « Taxon préféré ». L'option « Taxon préféré » correspondra au compteur de l'arbre ; l'option « Taxon » suit le taxon de la détermination d'origine.",
     'hr-hr':
       'Odaberite hoće li gumb Upit za stablo taksona filtrirati prema taksonu ili preferiranom taksonu. Preferirani takson odgovara broju stabala; takson slijedi izvorno određeni takson.',
-    nb: 'Velg om knappen for taksontrespørring filtrerer etter takson eller foretrukket takson. Foretrukket takson samsvarer med tretellingene; taksonen følger den opprinnelige bestemmelsestaxonen.',
+    nb: 'Velg om knappen for taksontre-søk filtrerer etter Takson eller Foretrukket takson. Foretrukket takson matcher tre-antall; Takson følger det opprinnelige bestemmelses-taksonet.',
     'pt-br':
       'Escolha se o botão Consulta da árvore taxonômica filtra por Táxon ou Táxon Preferencial. Táxon Preferencial corresponde à contagem de árvores; Táxon segue o táxon de determinação original.',
     'ru-ru':
@@ -980,7 +980,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Splash angeben',
     'pt-br': 'Especificar Splash',
     'hr-hr': 'Navedite prskanje',
-    nb: 'Spesifiser Splash',
+    nb: 'Specify Splash',
   },
   critterless: {
     'en-us': 'Specify Splash (No Critters)',
@@ -991,7 +991,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Kritterlos',
     'pt-br': 'Sem criaturas',
     'hr-hr': 'Navedite prskanje (bez stvorenja)',
-    nb: 'Spesifiser Splash (ingen kryp)',
+    nb: 'Specify Splash (ingen critters)',
   },
   customImage: {
     'en-us': 'Custom Image',
@@ -1025,7 +1025,7 @@ export const preferencesText = createDictionary({
       'Eine URL zu einer Seite, die auf der Startseite eingebettet werden soll:',
     'pt-br': 'Um URL para uma página que seria incorporada na página inicial:',
     'hr-hr': 'URL stranice koja bi bila ugrađena na početnu stranicu:',
-    nb: 'En URL til en side som ville bli innebygd på hjemmesiden:',
+    nb: 'En URL til en side som ville være innebygd på hjemmesiden:',
   },
   behavior: {
     'en-us': 'Behavior',
@@ -1058,7 +1058,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Modus ohne Einschränkungen',
     'pt-br': 'Modo sem restrições',
     'hr-hr': 'Način rada bez ograničenja',
-    nb: 'Ingen begrensningsmodus',
+    nb: 'Ingen begrensning-modus',
   },
   noRestrictionsModeWbDescription: {
     'en-us': 'Allows uploading data to any field in any table.',
@@ -1087,7 +1087,7 @@ export const preferencesText = createDictionary({
     'pt-br': 'Permite consultar dados de qualquer campo em qualquer tabela.',
     'hr-hr':
       'Omogućuje upite podataka iz bilo kojeg polja u bilo kojoj tablici.',
-    nb: 'Tillater spørring av data fra et hvilket som helst felt i en hvilken som helst tabell.',
+    nb: 'Tillater søking av data fra et hvilket som helst felt i en hvilken som helst tabell.',
   },
   noRestrictionsModeWarning: {
     'en-us':
@@ -1128,7 +1128,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Sticky Scroll Bar',
     'pt-br': 'Barra de rolagem fixa',
     'hr-hr': 'Ljepljiva traka za pomicanje',
-    nb: 'Klebrig rullefelt',
+    nb: 'Sticky rullefelt',
   },
   foreground: {
     'en-us': 'Foreground',
@@ -1328,7 +1328,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Spalte',
     'pt-br': 'Coluna',
     'hr-hr': 'Kolona',
-    nb: 'Søyle',
+    nb: 'Kolonne',
   },
   row: {
     'en-us': 'Row',
@@ -1382,7 +1382,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Filter-Auswahllistenelemente',
     'pt-br': 'Filtrar itens da lista de seleção',
     'hr-hr': 'Filtriranje stavki s popisa za odabir',
-    nb: 'Filtrer valglisteelementer',
+    nb: 'Filtrer plukkliste-elementer',
   },
   exportFileDelimiter: {
     'en-us': 'Export file delimiter',
@@ -1393,7 +1393,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Exportdatei-Trennzeichen',
     'pt-br': 'Delimitador de arquivo de exportação',
     'hr-hr': 'Razdjelnik izvozne datoteke',
-    nb: 'Eksporter filskilletegn',
+    nb: 'Eksporter fil-skilletegn',
   },
   exportCsvUtf8Bom: {
     'en-us': 'Add UTF-8 BOM to CSV file exports',
@@ -1434,7 +1434,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Groß-/Kleinschreibung beachten',
     'pt-br': 'Maiúsculas e minúsculas',
     'hr-hr': 'Razlikuje velika i mala slova',
-    nb: 'Store/små bokstaver',
+    nb: 'Skiller mellom store og små bokstaver',
   },
   caseInsensitive: {
     'en-us': 'Case-insensitive',
@@ -1445,7 +1445,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Groß-/Kleinschreibung wird nicht beachtet',
     'pt-br': 'Sem distinção entre maiúsculas e minúsculas',
     'hr-hr': 'Neosjetljivo na velika i mala slova',
-    nb: 'Uavhengig av store og små bokstaver',
+    nb: 'Skiller ikke mellom små og store bokstaver',
   },
   showNoReadTables: {
     'en-us': 'Show tables without "Read" access',
@@ -1504,7 +1504,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Limpa todos os filtros de consulta ao executar um relatório a partir de um formulário.',
     'hr-hr': 'Briše sve filtere upita prilikom pokretanja izvješća iz obrasca.',
-    nb: 'Fjerner alle spørringsfiltre når du kjører en rapport fra et skjema.',
+    nb: 'Fjerner alle søkefiltre når du kjører en Rapport fra et Skjema.',
   },
   queryParamtersFromForm: {
     'en-us': 'Show query filters when running a Report from a Form',
@@ -1519,7 +1519,7 @@ export const preferencesText = createDictionary({
     'pt-br':
       'Exibir filtros de consulta ao executar um relatório a partir de um formulário.',
     'hr-hr': 'Prikaz filtera upita prilikom pokretanja izvješća iz obrasca',
-    nb: 'Vis spørringsfiltre når du kjører en rapport fra et skjema',
+    nb: 'Vis søkefiltre når du kjører en Rapport fra et Skjema',
   },
   autoGrowAutoComplete: {
     'en-us': 'Allow autocomplete to grow as wide as need',
@@ -1559,7 +1559,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Фокус на першому полі',
     'pt-br': 'Foque primeiro no campo',
     'hr-hr': 'Fokusiraj prvo polje',
-    nb: 'Fokuser først på feltet',
+    nb: 'Fokuser på første felt',
   },
   doubleClickZoom: {
     'en-us': 'Double click to zoom',
@@ -1614,7 +1614,7 @@ export const preferencesText = createDictionary({
     'fr-fr': 'Glisser-déposer',
     'pt-br': 'Arrastar o mouse',
     'hr-hr': 'Povlačenje miša',
-    nb: 'Musedrag',
+    nb: 'Mus drar',
   },
   scrollWheelZoom: {
     'en-us': 'Scroll wheel zoom',
@@ -1647,7 +1647,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Flexible Spaltenbreite des Unteransichtsrasters',
     'pt-br': 'Largura flexível da coluna da grade da subvisualização',
     'hr-hr': 'Fleksibilna širina stupca mreže podprikaza',
-    nb: 'Fleksibel kolonnebredde for delvisningsrutenett',
+    nb: 'Fleksibel kolonnebredde for delvisnings-rutenett',
   },
   closeOnEsc: {
     'en-us': 'Close on <key>ESC</key> key press',
@@ -1680,7 +1680,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Netzwerkabzeichen angeben',
     'pt-br': 'Especificar o ícone de rede',
     'hr-hr': 'Navedite mrežnu značku',
-    nb: 'Spesifiser nettverksmerke',
+    nb: 'Specify nettverksmerke',
   },
   useAccessibleFullDatePicker: {
     'en-us': 'Use accessible full date picker',
@@ -1691,7 +1691,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Verwenden Sie die barrierefreie Datumsauswahl.',
     'pt-br': 'Use o seletor de datas completo e acessível.',
     'hr-hr': 'Koristite pristupačan alat za odabir cijelog datuma',
-    nb: 'Bruk tilgjengelig fullstendig datovelger',
+    nb: 'Bruk tilgjengelig full-dato-velger',
   },
   useAccessibleMonthPicker: {
     'en-us': 'Use accessible month picker',
@@ -1713,7 +1713,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Numerische Felder rechtsbündig ausrichten',
     'pt-br': 'Justificar campos numéricos à direita',
     'hr-hr': 'Desno poravnanje numeričkih polja',
-    nb: 'Høyrejusterte numeriske felt',
+    nb: 'Høyrejustér numeriske felt',
   },
   roundedCorners: {
     'en-us': 'Rounded corners',
@@ -1757,7 +1757,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Suchergebnisse zusammenfassen',
     'pt-br': 'Condensar resultados da consulta',
     'hr-hr': 'Sažetak rezultata upita',
-    nb: 'Kondenser spørreresultatene',
+    nb: 'Kondenser søkeresultatene',
   },
   blurContentBehindDialog: {
     'en-us': 'Blur content behind the dialog',
@@ -1790,7 +1790,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Standardmäßig zu öffnender Datensatz',
     'pt-br': 'Gravar para abrir por padrão',
     'hr-hr': 'Snimanje za otvaranje prema zadanim postavkama',
-    nb: 'Opptak skal åpnes som standard',
+    nb: 'Databasepost som åpnes som standard',
   },
   altClickToSupressNewTab: {
     'en-us':
@@ -1827,7 +1827,7 @@ export const preferencesText = createDictionary({
       '<key>{altKeyName:string}</key>+<key>Clique</key> em um link que normalmente abre em uma nova guia para abri-lo na guia atual.',
     'hr-hr':
       '<key>{altKeyName:string}</key>+<key>Kliknite</key> na poveznicu koja se obično otvara u novoj kartici kako biste je otvorili u trenutnoj kartici.',
-    nb: '<key>{altKeyName:string}</key>+<key>Klikk</key> på en lenke som vanligvis åpnes i en ny fane for å åpne den i gjeldende fane.',
+    nb: '<key>{altKeyName:string}</key>+<key>Klikk</key> en lenke som vanligvis åpnes i en ny fane for å åpne den i gjeldende fane.',
   },
   makeFormDialogsModal: {
     'en-us': 'Make form dialogs gray out the background',
@@ -1852,7 +1852,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Automatisches Scrollen des Baums zum fokussierten Knoten',
     'pt-br': 'A árvore de rolagem automática leva ao nó em foco.',
     'hr-hr': 'Automatsko pomicanje stabla do fokusiranog čvora',
-    nb: 'Automatisk rulling av tre til fokusert node',
+    nb: 'Automatisk scroll tre til fokusert node',
   },
   sortByField: {
     'en-us': 'Order By Field',
@@ -1896,7 +1896,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Einrücken mit <key>Tab</key>',
     'pt-br': 'Recuar com <key>Tab</key>',
     'hr-hr': 'Uvlačenje s <key>Tab</key>',
-    nb: 'Innrykk med <key>Tabulator</key>',
+    nb: 'Innrykk med <key>Tab</key>',
   },
   formHeaderFormat: {
     'en-us': 'Form header format',
@@ -1962,7 +1962,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Поиск с учетом регистра',
     'pt-br': 'Pesquisa que diferencia maiúsculas de minúsculas',
     'hr-hr': 'Pretraživanje koje razlikuje velika i mala slova',
-    nb: 'Søk med store og små bokstaver',
+    nb: 'Søk som skiller mellom store og små bokstaver',
   },
   searchField: {
     'en-us': 'Search Field',
@@ -1984,7 +1984,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Eine Interaktion erstellen',
     'pt-br': 'Criar uma interação',
     'hr-hr': 'Stvaranje interakcije',
-    nb: 'Å skape en interaksjon',
+    nb: 'Opprette en interaksjon',
   },
   tableIdentifier: {
     'en-us': '{tableName:string} identifier',
@@ -2070,7 +2070,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Automatische Erkennung anhand des Katalognummernformats.',
     'pt-br': 'Detecção automática com base no formato do número de catálogo.',
     'hr-hr': 'Automatsko otkrivanje na temelju formata kataloškog broja.',
-    nb: 'Registrer automatisk basert på katalognummerformat.',
+    nb: 'Oppdag automatisk basert på katalognummerformat.',
   },
   uniqueness: {
     'en-us': 'Uniqueness',
@@ -2148,7 +2148,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Links',
     'pt-br': 'Esquerda',
     'hr-hr': 'Lijevo',
-    nb: 'Igjen',
+    nb: 'Venstre',
   },
   right: {
     'en-us': 'Right',
@@ -2208,7 +2208,7 @@ export const preferencesText = createDictionary({
       'Preencha automaticamente o registro mesclado com os valores dos duplicados ao abrir a caixa de diálogo de mesclagem.',
     'hr-hr':
       'Automatski popuni spojeni zapis vrijednostima iz duplikata prilikom otvaranja dijaloga za spajanje.',
-    nb: 'Fyll automatisk ut den sammenslåtte posten med verdier fra duplikater når du åpner sammenslåingsdialogboksen.',
+    nb: 'Fyll automatisk ut den sammenslåtte databaseposten med verdier fra duplikater når du åpner sammenslåings-dialogboksen.',
   },
   autoCreateVariants: {
     'en-us': 'Automatically create {agentVariantTable:string} records',
@@ -2221,7 +2221,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Автоматично створювати записи {agentVariantTable:string}',
     'pt-br': 'Criar automaticamente registros {agentVariantTable:string}',
     'hr-hr': 'Automatski stvori {agentVariantTable:string} zapise',
-    nb: 'Opprett {agentVariantTable:string}-oppføringer automatisk',
+    nb: 'Opprett {agentVariantTable:string}-databaseposter automatisk',
   },
   autoCreateVariantsDescription: {
     'en-us':
@@ -2240,7 +2240,7 @@ export const preferencesText = createDictionary({
       'Ao mesclar agentes, crie automaticamente registros {agentVariantTable:string} com base nas variações de nome/sobrenome.',
     'hr-hr':
       'Prilikom spajanja agenata, automatski kreirajte {agentVariantTable:string} zapise na temelju varijacija imena/prezimena.',
-    nb: 'Når du slår sammen agenter, opprettes automatisk {agentVariantTable:string}-oppføringer basert på variasjonene av fornavn/etternavn.',
+    nb: 'Når du slår sammen agenter, opprett automatisk {agentVariantTable:string}-databaseposter basert på variasjonene av fornavn/etternavn.',
   },
   collectionPreferences: {
     'en-us': 'Collection Preferences',
@@ -2262,7 +2262,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Dialogfenstergrößen merken',
     'pt-br': 'Lembre-se dos tamanhos das janelas de diálogo.',
     'hr-hr': 'Zapamtite veličine dijaloških prozora',
-    nb: 'Husk størrelsen på dialogvinduene',
+    nb: 'Husk størrelsen på dialogvinduer',
   },
   rememberDialogPositions: {
     'en-us': 'Remember dialog window positions',
@@ -2273,7 +2273,7 @@ export const preferencesText = createDictionary({
     'de-ch': 'Dialogfensterpositionen merken',
     'pt-br': 'Lembre-se das posições das janelas de diálogo.',
     'hr-hr': 'Zapamti položaje dijaloških prozora',
-    nb: 'Husk posisjonene til dialogvinduene',
+    nb: 'Husk posisjonene til dialogvinduer',
   },
   autoPlayMedia: {
     'en-us': 'Automatically play media',
@@ -2312,7 +2312,7 @@ export const preferencesText = createDictionary({
       'Sempre utilize o construtor de consultas dentro do formulário de pesquisa.',
     'hr-hr':
       'Uvijek koristite pretragu alata za izradu upita unutar obrasca za pretraživanje',
-    nb: 'Bruk alltid søkeverktøyet i søkeskjemaet',
+    nb: 'Bruk alltid utvidet-søk-bygger inne i søkeskjemaet',
   },
   localizeResourceNames: {
     'en-us': 'Localize the names of recognized app resources',
@@ -2346,7 +2346,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'URL',
     'pt-br': 'URL',
     'hr-hr': 'URL',
-    nb: 'URL-adresse',
+    nb: 'URL',
   },
   pickAttachment: {
     'en-us': 'Pick an attachment',
@@ -2401,7 +2401,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'URL-адреса згорнутого зображення',
     'pt-br': 'URL da imagem recolhida',
     'hr-hr': 'URL sažete slike',
-    nb: 'URL-adressen til det skjulte bildet',
+    nb: 'Kollapset bilde-URL',
   },
   customLogoDescription: {
     'en-us':
@@ -2420,7 +2420,7 @@ export const preferencesText = createDictionary({
       'Um URL para uma imagem que será exibida ao lado do logotipo "Especificar" no menu de navegação.',
     'hr-hr':
       'URL slike koja bi se prikazivala pored logotipa Navedi u navigacijskom izborniku.',
-    nb: 'En URL til et bilde som ville blitt vist ved siden av Spesifiser-logoen i navigasjonsmenyen.',
+    nb: 'En URL til et bilde som vil vises ved siden av Specify-logoen i navigasjonsmenyen.',
   },
   showLineNumber: {
     'en-us': 'Show query result line number',
@@ -2442,7 +2442,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Колір кнопки «Зберегти»',
     'pt-br': 'Cor do botão Salvar',
     'hr-hr': 'Boja gumba za spremanje',
-    nb: 'Lagre knappfarge',
+    nb: 'Farge på lagringsknappen',
   },
   secondaryButtonColor: {
     'en-us': 'Secondary button color',
@@ -2464,7 +2464,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Колір кнопки додаткового світла',
     'pt-br': 'Cor do botão de luz secundário',
     'hr-hr': 'Boja tipke sekundarnog svjetla',
-    nb: 'Farge på sekundær lysknapp',
+    nb: 'Farge på sekundær lys knapp',
   },
   dangerButtonColor: {
     'en-us': 'Danger button color',
@@ -2519,7 +2519,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Відкрити всі записи в режимі лише для читання',
     'pt-br': 'Abrir todos os registros em modo somente leitura',
     'hr-hr': 'Otvori sve zapise u načinu rada samo za čitanje',
-    nb: 'Åpne alle poster i skrivebeskyttet modus',
+    nb: 'Åpne alle databaseposter i skrivebeskyttet modus',
   },
   displayBasicView: {
     'en-us': 'Display basic view',
@@ -2530,7 +2530,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Відображення базового вигляду',
     'pt-br': 'Exibir visualização básica',
     'hr-hr': 'Prikaži osnovni prikaz',
-    nb: 'Vis grunnleggende visning',
+    nb: 'Vis basis-visning',
   },
   showComparisonOperatorsForString: {
     'en-us': 'Show comparison operators for text-based fields',
@@ -2541,7 +2541,7 @@ export const preferencesText = createDictionary({
     'ru-ru': 'Показать операторы сравнения для текстовых полей',
     'uk-ua': 'Показати оператори порівняння для текстових полів',
     'hr-hr': 'Prikaži operatore usporedbe za tekstualna polja',
-    nb: 'Vis sammenligningsoperatorer for tekstbaserte felt',
+    nb: 'Vis sammenlignings-operatorer for tekstbaserte felt',
   },
   showComparisonOperatorsDescription: {
     'en-us':
@@ -2571,7 +2571,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Базовий вигляд',
     'pt-br': 'Visão básica',
     'hr-hr': 'Osnovni prikaz',
-    nb: 'Grunnleggende visning',
+    nb: 'Basis-visning',
   },
   detailedView: {
     'en-us': 'Detailed view',
@@ -2615,7 +2615,7 @@ export const preferencesText = createDictionary({
     'uk-ua': 'Мініатюра',
     'pt-br': 'Miniatura',
     'hr-hr': 'Sličica',
-    nb: 'Miniatyrbilde',
+    nb: 'Thumbnail',
   },
   addSearchBarHomePage: {
     'en-us': 'Add Search Bar on home page',
@@ -2645,7 +2645,7 @@ export const preferencesText = createDictionary({
       'Тільки записи {collectionObjectTableName: string} без {catalogNumberFieldName: string} успадкують його від основного {collectionObjectTableName: string} в {collectionObjectGroupTableName: string}.',
     'hr-hr':
       'Samo zapisi {collectionObjectTableName: string} bez {catalogNumberFieldName: string} naslijedit će jedan od primarnog {collectionObjectTableName: string} u {collectionObjectGroupTableName: string}.',
-    nb: 'Bare {collectionObjectTableName: string}-poster uten en {catalogNumberFieldName: string} vil arve en fra den primære {collectionObjectTableName: string} i en {collectionObjectGroupTableName: string}.',
+    nb: 'Bare {collectionObjectTableName: string}-databaseposter uten en {catalogNumberFieldName: string} vil arve en fra den primære {collectionObjectTableName: string} i en {collectionObjectGroupTableName: string}.',
   },
   inheritanceCatNumberPref: {
     'en-us':
@@ -2664,7 +2664,7 @@ export const preferencesText = createDictionary({
       'Увімкнути успадкування {catalogNumberFieldName: string} для братів і сестер {collectionObjectGroupTableName: string}',
     'hr-hr':
       'Omogući nasljeđivanje {catalogNumberFieldName: string} za {collectionObjectGroupTableName: string} objekte iste klase',
-    nb: 'Aktiver arv av {catalogNumberFieldName: string} for søsken i {collectionObjectGroupTableName: string}',
+    nb: 'Aktiver arv av {catalogNumberFieldName: string} for søsken-noder i {collectionObjectGroupTableName: string}',
   },
   inheritanceCatNumberParentCOPref: {
     'en-us':
@@ -2683,7 +2683,7 @@ export const preferencesText = createDictionary({
       'Увімкнути успадкування {catalogNumberFieldName: string} для записів {componentTableName: string}',
     'hr-hr':
       'Omogući nasljeđivanje {catalogNumberFieldName: string} za zapise {componentTableName: string}',
-    nb: 'Aktiver arv av {catalogNumberFieldName: string} for poster etter {componentTableName: string}',
+    nb: 'Aktiver arv av {catalogNumberFieldName: string} for databaseposter etter {componentTableName: string}',
   },
   uniqueCatNumberAcrossCompAndCo: {
     'en-us':
@@ -2732,7 +2732,7 @@ export const preferencesText = createDictionary({
       'Якщо ввімкнено, у списках вибору типу «Уся таблиця» відображатимуться лише ті елементи, які використовуються в поточній колекції.',
     'hr-hr':
       'Ako je omogućeno, popisi za odabir tipa "Cijela tablica" prikazivat će samo stavke koje se koriste unutar trenutne kolekcije.',
-    nb: 'Hvis aktivert, vil valglister av typen «Hele tabellen» bare vise elementer som er i bruk i gjeldende samling.',
+    nb: 'Hvis aktivert, vil plukklister av typen «Hele tabellen» bare vise elementer som er i bruk i gjeldende samling.',
   },
   inheritanceCatNumberParentCOPrefDescription: {
     'en-us':
@@ -2751,6 +2751,6 @@ export const preferencesText = createDictionary({
       'Тільки записи {componentTableName: string} без {catalogNumberFieldName: string} успадкують його від батьківського {collectionObjectTableName: string}.',
     'hr-hr':
       'Samo će zapisi {componentTableName: string} bez {catalogNumberFieldName: string} naslijediti jedan od svog roditelja {collectionObjectTableName: string}.',
-    nb: 'Bare {componentTableName: string}-poster uten en {catalogNumberFieldName: string} vil arve en fra den overordnede {collectionObjectTableName: string}.',
+    nb: 'Bare {componentTableName: string}-databaseposter uten en {catalogNumberFieldName: string} vil arve en fra den overordnede {collectionObjectTableName: string}.',
   },
 } as const);
