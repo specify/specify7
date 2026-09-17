@@ -221,7 +221,7 @@ export const backEndText = createDictionary({
       'O valor {value:string} não corresponde ao formatador {formatter:string}',
     'hr-hr':
       'vrijednost {value:string} ne odgovara formateru {formatter:string}',
-    nb: 'Verdien {value:string} samsvarer ikke med formateringsprogrammet {formatter:string}',
+    nb: 'Verdien {value:string} samsvarer ikke med forventet formatering {formatter:string}',
   },
   invalidPartialRecord: {
     'en-us': 'this field must be empty if {column:string} is empty',
@@ -373,7 +373,7 @@ export const backEndText = createDictionary({
     'pt-br':
       'A classificação do nó da árvore é maior que a de alguns de seus filhos.',
     'hr-hr': 'Rang čvora stabla je veći od ranga nekih njegovih potomaka',
-    nb: 'Trenodens rangering er høyere enn noen av dens barn',
+    nb: 'Trenodens nivå er høyere enn noen av de underliggende',
   },
   nodeOperationToSynonymizedParent: {
     'en-us':
@@ -698,7 +698,7 @@ export const backEndText = createDictionary({
     'ru-ru': 'Недопустимый тип для выбранного(ых) ранга(ов) дерева.',
     'uk-ua': 'Недійсний тип для вибраного(их) рангу(ів) дерева',
     'hr-hr': 'Nevažeća vrsta za odabrani rang(ove) stabla',
-    nb: 'Ugyldig type for valgte trerangering(er)',
+    nb: 'Ugyldig kategori for valgte nivå i treet',
   },
   invalidComponentType: {
     'en-us': 'Invalid {componentType: string} for selected tree rank(s)',
