@@ -1078,7 +1078,8 @@ export const treeText = createDictionary({
   },
   defaultTreeCreationLoadingMessage: {
     'en-us': 'Default tree creation is in progress, please wait...',
-    'de-ch': 'Die Erstellung der Standardbaumstruktur läuft, bitte warten...',
+    'de-ch':
+      'Die Erstellung der Standardbaumstruktur läuft, bitte warten Sie...',
     'es-es':
       'La creación del árbol predeterminado está en curso, por favor espere...',
     'fr-fr':
