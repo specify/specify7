@@ -1,7 +1,7 @@
 msgid ""
 msgstr ""
 "Report-Msgid-Bugs-To: support@specifysoftware.org\n"
-"PO-Revision-Date: 2026-09-15 16:51+0000\n"
+"PO-Revision-Date: 2026-09-17 09:51+0000\n"
 "Last-Translator: Google Translate <noreply-mt-google-translate@weblate.org>\n"
 "Language-Team: German (Switzerland) <https://hosted.weblate.org/projects/"
 "specify-7/tree/de_CH/>\n"
@@ -549,7 +549,7 @@ msgstr ""
 #: components/TreeView/Tree.tsx:294
 #, fuzzy
 msgid "defaultTreeCreationLoadingMessage"
-msgstr "Die Erstellung der Standardbaumstruktur läuft, bitte warten..."
+msgstr "Die Erstellung der Standardbaumstruktur läuft, bitte warten Sie..."
 
 #. Used in: Components > Tree View > Create Tree
 #: components/TreeView/CreateTree.tsx:555
