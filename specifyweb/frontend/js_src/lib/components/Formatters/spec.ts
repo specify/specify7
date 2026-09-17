@@ -26,9 +26,6 @@ export const formattersSpec = f.store(() =>
                   .filter((fieldGroup) => fieldGroup.fields.length > 0)
                   .map((fieldGroup) => ({
                     ...fieldGroup,
-                    fields: fieldGroup.fields.filter(
-                      (field) => field.field !== undefined
-                    ),
                   })),
                 isSingle: definition.fields.length <= 1,
               },
@@ -125,6 +122,7 @@ const fieldSpec = (table: SpecifyTable | undefined) =>
     ),
     aggregator: syncers.xmlAttribute('aggregator', 'skip'),
     formatter: syncers.xmlAttribute('formatter', 'skip'),
+    format: syncers.xmlAttribute('format', 'skip'),
     fieldFormatter: syncers.xmlAttribute('uiFieldFormatter', 'skip'),
     field: pipe(syncers.xmlContent, syncers.field(table?.name)),
     trimZeros: pipe(
