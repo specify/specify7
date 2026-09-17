@@ -4,6 +4,20 @@ from specifyweb.specify.tests.test_api import ApiTests
 from ..exceptions import BusinessRuleException
 
 class CollectorTests(ApiTests):
+    def test_create_collector_with_existing_agent(self):
+        collectingevent = models.Collectingevent.objects.create(
+            discipline=self.discipline)
+
+        collector = collectingevent.collectors.create(
+            isprimary=True,
+            ordernumber=0,
+            division=self.division,
+            agent=self.agent)
+
+        fetched_collector = models.Collector.objects.get(id=collector.id)
+        self.assertEqual(fetched_collector.agent, self.agent)
+        self.assertEqual(fetched_collector.collectingevent, collectingevent)
+
     def test_create_collector_with_new_agent(self):
         new_agent = models.Agent.objects.create(
             agenttype=0,
@@ -39,6 +53,33 @@ class CollectorTests(ApiTests):
                 ordernumber=1,
                 division=self.division,
                 agent=self.agent)
+
+    def test_add_multiple_collectors_to_event (self):
+        collectingevent = models.Collectingevent.objects.create(
+            discipline=self.discipline)
+
+        collector1 = collectingevent.collectors.create(
+            isprimary=True,
+            ordernumber=0,
+            division=self.division,
+            agent=self.agent)
+
+        new_agent = models.Agent.objects.create(
+            agenttype=0,
+            firstname="New",
+            lastname="Collector",
+            division=self.division)
+
+        collector2 = collectingevent.collectors.create(
+            isprimary=False,
+            ordernumber=1,
+            division=self.division,
+            agent=new_agent)
+
+        fetched_collectors = models.Collector.objects.filter(collectingevent=collectingevent)
+        self.assertEqual(fetched_collectors.count(), 2)
+        self.assertIn(collector1, fetched_collectors)
+        self.assertIn(collector2, fetched_collectors)
 
     @skip("business rule removed in https://github.com/specify/specify7/issues/327")
     def test_division_cannot_be_null(self):
