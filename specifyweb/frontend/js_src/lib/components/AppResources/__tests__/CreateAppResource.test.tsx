@@ -58,7 +58,7 @@ describe('CreateAppResource', () => {
 
     //  This is a lot more cleaner than the inner HTML
     expect(getByRole('dialog').textContent).toMatchInlineSnapshot(
-      `"Select Resource TypeTypeDocumentationLabelDocumentationReportDocumentationDefault User PreferencesDocumentationLeaflet LayersDocumentationRSS Export FeedDocumentationExpress Search ConfigDocumentationType SearchesDocumentationWeb LinksDocumentationField FormattersDocumentationRecord FormattersDocumentationData Entry TablesDocumentationInteractions TablesDocumentationOther XML ResourceOther JSON ResourceOther Properties ResourceOther ResourceCancel"`
+      `"Select Resource TypeTypeDocumentationLabelDocumentationReportDocumentationDefault User PreferencesDocumentationLeaflet LayersDocumentationRSS Export FeedDocumentationDarwin Core definitionExpress Search ConfigDocumentationType SearchesDocumentationWeb LinksDocumentationField FormattersDocumentationRecord FormattersDocumentationData Entry TablesDocumentationInteractions TablesDocumentationOther XML ResourceOther JSON ResourceOther Properties ResourceOther ResourceCancel"`
     );
   });
 

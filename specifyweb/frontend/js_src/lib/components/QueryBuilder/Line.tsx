@@ -63,6 +63,7 @@ export function QueryLine({
   onMoveUp: handleMoveUp,
   onMoveDown: handleMoveDown,
   onOpenMap: handleOpenMap,
+  renderFieldPrefix,
 }: {
   readonly isLast: boolean;
   readonly baseTableName: keyof Tables;
@@ -93,6 +94,7 @@ export function QueryLine({
   readonly onMoveUp: (() => void) | undefined;
   readonly onMoveDown: (() => void) | undefined;
   readonly onOpenMap: (() => void) | undefined;
+  readonly renderFieldPrefix?: (() => JSX.Element) | undefined;
 }): JSX.Element {
   const lineRef = React.useRef<HTMLDivElement>(null);
   const queryFieldFilterSpecs = useQueryFieldFilterSpecs();
@@ -292,11 +294,11 @@ export function QueryLine({
         ${isBasic ? 'contents' : ''}
       `}
       >
-        {typeof handleRemove === 'function' && (
+        {typeof handleRemove === 'function' ? (
           <Button.Small
             aria-label={commonText.remove()}
             className={`
-            ${isBasic ? 'h-full' : ''} print:hidden
+            w-16 shrink-0 ${isBasic ? 'h-full' : ''} print:hidden
           `}
             title={commonText.remove()}
             variant={className.dangerButton}
@@ -304,7 +306,11 @@ export function QueryLine({
           >
             {icons.trash}
           </Button.Small>
-        )}
+        ) : isBasic ? (
+          // Keep the basic-view grid aligned when a field cannot be removed.
+          <span aria-hidden="true" className="w-16 shrink-0" />
+        ) : undefined}
+        {renderFieldPrefix?.()}
         {/* eslint-disable-next-line jsx-a11y/no-noninteractive-element-interactions */}
         <div
           className={`

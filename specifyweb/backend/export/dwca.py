@@ -15,12 +15,35 @@ from xml.dom import minidom
 from specifyweb.backend.stored_queries.execution import query_to_csv
 from specifyweb.backend.stored_queries.queryfield import QueryField, EphemeralField
 from specifyweb.backend.stored_queries.models import session_context
+from specifyweb.specify.datamodel import datamodel
 
 logger = logging.getLogger(__name__)
 ET.register_namespace('eml', 'eml://ecoinformatics.org/eml-2.1.1')
 
 class DwCAException(Exception):
     pass
+
+OCCURRENCE_CORE_ROW_TYPE = 'http://rs.tdwg.org/dwc/terms/Occurrence'
+OCCURRENCE_IDENTIFIER_TERM = 'http://rs.tdwg.org/dwc/terms/occurrenceID'
+CORE_IDENTIFIER_TERMS = {
+    'http://rs.tdwg.org/dwc/terms/Event': 'http://rs.tdwg.org/dwc/terms/eventID',
+    'http://rs.tdwg.org/dwc/terms/Taxon': 'http://rs.tdwg.org/dwc/terms/taxonID',
+}
+CORE_TABLE_NAMES = {
+    'http://rs.tdwg.org/dwc/terms/Event': 'collectingevent',
+    'http://rs.tdwg.org/dwc/terms/Taxon': 'taxon',
+}
+
+
+def get_core_identifier_term(row_type):
+    return CORE_IDENTIFIER_TERMS.get(row_type, OCCURRENCE_IDENTIFIER_TERM)
+
+
+def get_core_table(row_type):
+    return datamodel.get_table_strict(
+        CORE_TABLE_NAMES.get(row_type, 'collectionobject')
+    )
+
 
 # from https://stackoverflow.com/a/17402424
 def prettify(elem):
@@ -34,7 +57,12 @@ class Stanza(namedtuple('Stanza', 'is_core row_type constant_fields export_field
     "Represents either a core or extension definition."
     @classmethod
     def from_xml(cls, node):
-        queries = [Query.from_xml(query_node) for query_node in node.find('queries')]
+        if 'rowType' not in node.attrib:
+            raise DwCAException(_("Definition is missing a row type."))
+        queries_node = node.find('queries')
+        if queries_node is None:
+            raise DwCAException(_("Definition doesn't include any queries."))
+        queries = [Query.from_xml(query_node) for query_node in queries_node]
         export_fields, id_field_idx = cls.get_export_fields(queries)
         constant_fields = [ConstantField.from_xml(fn) for fn in node.findall('field')]
 
@@ -113,16 +141,21 @@ class Query(namedtuple('Query', 'tableid file_name query_fields')):
     """
     @classmethod
     def from_xml(cls, query_node):
-        return cls(
-            tableid = int(query_node.attrib['contextTableId']),
+        if 'contextTableId' not in query_node.attrib or 'name' not in query_node.attrib:
+            raise DwCAException(_("Query is missing its table or file name."))
+        try:
+            return cls(
+                tableid = int(query_node.attrib['contextTableId']),
 
-            file_name = query_node.attrib['name'],
+                file_name = query_node.attrib['name'],
 
-            query_fields = [
-                QueryDefField.from_xml(field_node)
-                for field_node in query_node
-            ],
-        )
+                query_fields = [
+                    QueryDefField.from_xml(field_node)
+                    for field_node in query_node
+                ],
+            )
+        except ValueError as error:
+            raise DwCAException(_("Query contains invalid attributes.")) from error
 
     def get_export_fields(self):
         return tuple(
@@ -182,10 +215,7 @@ class ConstantField(namedtuple('ConstantField', 'value term')):
 def make_dwca(collection, user, definition, output_file, eml=None):
     output_dir = mkdtemp()
     try:
-        element_tree = ET.fromstring(definition)
-
-        core_stanza = Stanza.from_xml(element_tree.find('core'))
-        extension_stanzas = [Stanza.from_xml(node) for node in element_tree.findall('extension')]
+        core_stanza, extension_stanzas = validate_definition(definition)
 
         output_node = ET.Element('archive')
         output_node.set('xmlns', "http://rs.tdwg.org/dwc/text/")
@@ -206,7 +236,13 @@ def make_dwca(collection, user, definition, output_file, eml=None):
 
         core_ids = set()
         def collect_ids(row):
-            core_ids.add(row[core_stanza.id_field_idx + 1])
+            core_id = row[core_stanza.id_field_idx + 1]
+            if core_id in core_ids:
+                raise DwCAException(_(
+                    "The core query returned duplicate occurrenceID values. "
+                    "Each core row must have a unique occurrenceID."
+                ))
+            core_ids.add(core_id)
             return True
 
         with session_context() as session:
@@ -228,6 +264,59 @@ def make_dwca(collection, user, definition, output_file, eml=None):
         shutil.make_archive(basename, 'zip', output_dir, logger=logger)
     finally:
         shutil.rmtree(output_dir)
+
+
+def validate_stanzas(core_stanza, extension_stanzas):
+    if core_stanza is None or not core_stanza.is_core:
+        raise DwCAException(_("Definition must include exactly one core."))
+
+    core_row_type = getattr(core_stanza, 'row_type', OCCURRENCE_CORE_ROW_TYPE)
+    core_identifier_term = get_core_identifier_term(core_row_type)
+    core_id = core_stanza.export_fields[core_stanza.id_field_idx]
+    if core_id.term != core_identifier_term:
+        raise DwCAException(_(
+            "The core identifier must use the identifier term for its core row type."
+        ))
+    if any(field.term is None for field in core_stanza.export_fields):
+        raise DwCAException(_("Every displayed core field must have a term."))
+    for stanza in extension_stanzas:
+        extension_id = stanza.export_fields[stanza.id_field_idx]
+        if extension_id.term != core_identifier_term:
+            raise DwCAException(_(
+                "Every extension identifier must use the core identifier term."
+            ))
+        if any(field.term is None for field in stanza.export_fields):
+            raise DwCAException(_("Every displayed extension field must have a term."))
+
+
+def validate_definition(definition):
+    try:
+        element_tree = ET.fromstring(definition)
+    except (ET.ParseError, TypeError) as error:
+        raise DwCAException(_("Definition is not valid XML.")) from error
+
+    cores = element_tree.findall('core')
+    if len(cores) != 1:
+        raise DwCAException(_("Definition must include exactly one core."))
+    try:
+        core_stanza = Stanza.from_xml(cores[0])
+        core_table_id = get_core_table(core_stanza.row_type).tableId
+        extension_stanzas = [
+            Stanza.from_xml(node) for node in element_tree.findall('extension')
+        ]
+    except ValueError as error:
+        raise DwCAException(_("Definition contains invalid query attributes.")) from error
+    if any(
+        query.tableid != core_table_id
+        for stanza in [core_stanza, *extension_stanzas]
+        for query in stanza.queries
+    ):
+        raise DwCAException(_(
+            "All Darwin Core queries must use the base table associated with the core "
+            "row type."
+        ))
+    validate_stanzas(core_stanza, extension_stanzas)
+    return core_stanza, extension_stanzas
 
 def write_eml(source, output_path, pub_date=None, package_id=None):
     if pub_date is None:
