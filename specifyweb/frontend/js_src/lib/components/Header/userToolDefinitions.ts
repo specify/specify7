@@ -58,6 +58,11 @@ const rawUserTools = ensure<IR<IR<Omit<MenuItem, 'name'>>>>()({
       url: '/specify/user-preferences/',
       icon: icons.cog,
     },
+    userKeyboardShortcuts: {
+      title: preferencesText.keyboardShortcuts(),
+      url: '/specify/user-keyboard-shortcuts/',
+      icon: icons.cursorClick,
+    },
     collectionPreferences: {
       title: preferencesText.collectionPreferences(),
       url: '/specify/collection-preferences/',
