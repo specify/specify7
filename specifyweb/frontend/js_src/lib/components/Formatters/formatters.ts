@@ -245,9 +245,11 @@ async function formatField(
         ? '%d'
         : undefined;
     formatted =
-      formatted === undefined || substitution === undefined
+      substitution === undefined
         ? displayFormat
-        : displayFormat.replace(substitution, formatted ?? '');
+        : formatted === undefined || formatted === ''
+          ? undefined
+          : displayFormat.replace(substitution, formatted);
   }
 
   return {
@@ -272,6 +274,7 @@ export async function fetchPathAsString(
       separator: localized(''),
       aggregator: undefined,
       fieldFormatter: undefined,
+      format: undefined,
       formatFieldValue,
       trimZeros: false,
     },
