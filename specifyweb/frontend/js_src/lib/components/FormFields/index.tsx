@@ -187,6 +187,7 @@ const fieldRenderers: {
       maxLength,
       minLength,
       whiteSpaceSensitive,
+      isSeries,
     },
   }) {
     const parser = React.useMemo<Parser>(
@@ -218,6 +219,7 @@ const fieldRenderers: {
         name={name}
         parser={parser}
         resource={resource}
+        isSeries={isSeries}
       />
     );
   },
