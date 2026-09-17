@@ -20,6 +20,8 @@ class TestUpdateResource(ApiTests):
         recordset = self.recordset
 
         recordset.name= '2nd Record Set Name'
+
+        self.assertEqual(recordset.name, '2nd Record Set Name',)
         recordset.save()
         recordset.refresh_from_db()
         
