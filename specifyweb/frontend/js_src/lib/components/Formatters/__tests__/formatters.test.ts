@@ -143,6 +143,41 @@ describe('formatField', () => {
       separator: ', ',
     });
   });
+
+  test('applies a field format and preserves static formatter entries', async () => {
+    const parentResource = new tables.Collector.Resource({ id: collectorId });
+    await expect(
+      formatField(
+        {
+          field: [
+            tables.Collector.strictGetField('agent'),
+            tables.Agent.strictGetField('agentType'),
+          ],
+          formatter: undefined,
+          aggregator: undefined,
+          fieldFormatter: undefined,
+          format: '(%s)',
+          separator: localized(''),
+          trimZeros: false,
+        },
+        parentResource
+      )
+    ).resolves.toEqual({ formatted: '(Person)', separator: '' });
+    await expect(
+      formatField(
+        {
+          field: undefined,
+          formatter: undefined,
+          aggregator: undefined,
+          fieldFormatter: undefined,
+          format: undefined,
+          separator: localized(' / '),
+          trimZeros: false,
+        },
+        parentResource
+      )
+    ).resolves.toEqual({ formatted: ' / ', separator: '' });
+  });
 });
 
 const referenceWorkId = 1;
