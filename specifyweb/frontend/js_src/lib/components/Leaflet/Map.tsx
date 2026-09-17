@@ -46,6 +46,8 @@ export function LeafletMap({
   >(undefined);
   const [isFullScreen, __, ___, handleToggleFullScreen] = useBooleanState();
   const [tileLayers] = useAsyncState(fetchLeafletLayers, true);
+  const localityPointsRef = React.useRef(localityPoints);
+  localityPointsRef.current = localityPoints;
 
   const handleClickRef =
     React.useRef<typeof handleMarkerClick>(handleMarkerClick);
@@ -58,7 +60,7 @@ export function LeafletMap({
     const map = showLeafletMap({
       tileLayers,
       container,
-      localityPoints: localityPoints ?? [],
+      localityPoints: localityPointsRef.current ?? [],
       onMarkerClick: (...args) => handleClickRef.current?.(...args),
     });
     setHandleResize(() => throttle(() => map.invalidateSize(), resizeThrottle));
@@ -74,7 +76,6 @@ export function LeafletMap({
   }, [
     tileLayers,
     container,
-    localityPoints,
     forwardRef,
     handleToggleFullScreen,
   ]);
