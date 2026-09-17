@@ -1,0 +1,22 @@
+from specifyweb.specify import models
+from specifyweb.specify.tests.test_api import ApiTests
+
+
+class TestUpdateResource(ApiTests):
+
+    def setUp(self):
+            super().setUp()
+
+    self.recordset = models.Recordset.objects.create(
+        name='Previous Record set',
+        collectionmemberid=self.collection.id,
+        dbtableid=models.Collectionobject.specify_model.tableId,
+        specifyuser=self.specifyuser,
+        type=0,
+    )
+
+
+    def test_update_recordset(self):
+        reocrdset= self.test_update_recordset
+        recordset_id = recordset.id
+        
